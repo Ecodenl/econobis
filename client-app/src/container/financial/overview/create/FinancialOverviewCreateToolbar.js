@@ -34,7 +34,7 @@ class FinancialOverviewCreateToolbar extends Component {
                 </div>
                 <div className="col-md-4">
                     <h4 className="text-center">
-                        Te verzenden waardestaten versturen ({amountOfFinancialOverviewContacts})
+                        Te verzenden waardestaten versturen ({this.props.amountOfFinancialOverviewContacts})
                     </h4>
                 </div>
                 <div className="col-md-4" />

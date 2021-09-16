@@ -23,7 +23,7 @@ class ContactsInGroupList extends Component {
             editItem: {
                 id: '',
                 emailAddress: '',
-                lapostaMemberSince: '',
+                memberToGroupSince: '',
             },
         };
     }
@@ -52,7 +52,7 @@ class ContactsInGroupList extends Component {
         });
     };
 
-    showEditItemModal = (id, emailAddress, lapostaMemberSince) => {
+    showEditItemModal = (id, emailAddress, memberToGroupSince) => {
         this.setState({
             ...this.state,
             showEditItem: true,
@@ -60,7 +60,7 @@ class ContactsInGroupList extends Component {
                 ...this.state.editItem,
                 id: id,
                 emailAddress: emailAddress,
-                lapostaMemberSince: lapostaMemberSince,
+                memberToGroupSince: memberToGroupSince,
             },
         });
     };
@@ -73,7 +73,7 @@ class ContactsInGroupList extends Component {
                 ...this.state.editItem,
                 id: '',
                 emailAddress: '',
-                lapostaMemberSince: '',
+                memberToGroupSince: '',
             },
         });
     };

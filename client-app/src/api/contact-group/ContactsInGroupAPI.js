@@ -27,13 +27,13 @@ export default {
             .catch(error => error.response);
     },
 
-    updateContactInGroup: (contactGroup, id, lapostaMemberSince) => {
+    updateContactInGroup: (contactGroup, id, memberToGroupSince) => {
         const requestUrl = `${URL_CONTACT_GROUP}/${contactGroup}/contacts/update/${id}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
         return axios
-            .post(requestUrl, lapostaMemberSince)
+            .post(requestUrl, memberToGroupSince)
             .then(response => response.data.data)
             .catch(error => error.response);
     },

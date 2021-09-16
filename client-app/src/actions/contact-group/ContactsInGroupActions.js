@@ -19,11 +19,11 @@ export const deleteContactInGroup = (contactGroup, id) => {
     };
 };
 
-export const updateContactInGroup = (contactGroup, id, lapostaMemberSince) => {
+export const updateContactInGroup = (contactGroup, id, memberToGroupSince) => {
     return {
         type: 'UPDATE_CONTACT_IN_GROUP',
         contactGroup,
         id,
-        lapostaMemberSince,
+        memberToGroupSince,
     };
 };

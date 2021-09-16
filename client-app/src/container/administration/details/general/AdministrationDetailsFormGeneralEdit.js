@@ -321,7 +321,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
         }
 
         if (!validator.isEmpty(administration.website + '')) {
-            if (!validator.isFQDN(administration.website + '')) {
+            if (!validator.isURL(administration.website + '')) {
                 errors.website = true;
                 hasErrors = true;
             }

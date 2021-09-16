@@ -450,6 +450,9 @@ class TemplateVariableHelper
             case 'evaluatie_opmerking':
                 return optional($model->opportunityEvaluation)->note;
                 break;
+            case 'nummer':
+                return $model->number;
+                break;
 //            case 'offerteverzoek_bedrijf':
 //                break;
 //            case 'offerteverzoek_contactpersoon':

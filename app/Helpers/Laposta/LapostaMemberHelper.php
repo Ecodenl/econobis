@@ -74,8 +74,6 @@ class LapostaMemberHelper
             [
                 'laposta_member_id' => $lapostaMemberId,
                 'laposta_member_state' => $lapostaMemberState,
-                'laposta_member_created_at' => Carbon::now(),
-                'laposta_member_since' => Carbon::now(),
             ]);
 
         // Return member id
@@ -122,8 +120,6 @@ class LapostaMemberHelper
         $this->contactGroup->contacts()->updateExistingPivot($this->contact->id, [
             'laposta_member_id' => null,
             'laposta_member_state' => null,
-            'laposta_member_created_at' => null,
-            'laposta_member_since' => null,
         ]);
 
         // Return member id

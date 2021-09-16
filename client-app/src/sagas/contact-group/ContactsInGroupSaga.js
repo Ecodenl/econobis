@@ -22,9 +22,9 @@ export function* deleteContactInGroupSaga({ contactGroup, id }) {
     }
 }
 
-export function* updateContactInGroupSaga({ contactGroup, id, lapostaMemberSince }) {
+export function* updateContactInGroupSaga({ contactGroup, id, memberToGroupSince }) {
     try {
-        yield call(ContactsInGroupAPI.updateContactInGroup, contactGroup, id, lapostaMemberSince);
+        yield call(ContactsInGroupAPI.updateContactInGroup, contactGroup, id, memberToGroupSince);
         yield put({ type: 'UPDATE_CONTACT_IN_GROUP_SUCCESS', id });
         yield put({ type: 'CLEAR_CONTACTS_IN_GROUP' });
         yield put({ type: 'FETCH_CONTACTS_IN_GROUP', contactGroup });

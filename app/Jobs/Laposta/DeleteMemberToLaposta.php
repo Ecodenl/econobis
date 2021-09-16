@@ -53,8 +53,6 @@ class DeleteMemberToLaposta implements ShouldQueue
                 $this->contactGroup->contacts()->updateExistingPivot($this->contact->id, [
                     'laposta_member_id' => null,
                     'laposta_member_state' => null,
-                    'laposta_member_created_at' => null,
-                    'laposta_member_since' => null,
                 ]);
             }
 

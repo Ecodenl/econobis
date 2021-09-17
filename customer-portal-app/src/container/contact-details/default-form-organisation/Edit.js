@@ -10,6 +10,8 @@ import TextBlock from '../../../components/general/TextBlock';
 import moment from 'moment';
 import EnergySuppliers from '../../../data/EnergySuppliers';
 import InputDate from '../../../components/form/InputDate';
+import { FaInfoCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 
 const DefaultContactOrganisationEdit = function({
     portalSettings,
@@ -46,6 +48,27 @@ const DefaultContactOrganisationEdit = function({
                                 />
                             )}
                         />
+                        {initialContact.disableChangeContactNameOnPortal ? (
+                            <>
+                                <FaInfoCircle
+                                    color={'blue'}
+                                    size={'15px'}
+                                    data-tip={
+                                        'Je bent deelnemer in een project. Naam wijziging kan daarom alleen worden doorgevoerd door de beheerder van het project. Kijk in het menu onder "Over ons" voor contact gegevens.'
+                                    }
+                                    data-for={`contact-${initialContact.id}`}
+                                />
+                                <ReactTooltip
+                                    id={`contact-${initialContact.id}`}
+                                    effect="float"
+                                    place="bottom"
+                                    multiline={true}
+                                    aria-haspopup="true"
+                                />
+                            </>
+                        ) : (
+                            ''
+                        )}
                     </Col>
                 </Row>
 

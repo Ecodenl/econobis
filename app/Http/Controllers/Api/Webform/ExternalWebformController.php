@@ -485,6 +485,23 @@ class ExternalWebformController extends Controller
 
     protected function updateOrCreateContact(array $responsibleIds, array $data, Webform $webform)
     {
+        $ownerAndResponsibleUser = null;
+        if($responsibleIds['responsible_user_id']) {
+            $ownerAndResponsibleUser = User::find($responsibleIds['responsible_user_id']);
+            $this->log('Eigenaar contact : ' . $ownerAndResponsibleUser->id);
+        }elseif($responsibleIds['responsible_team_id'] && Team::find($responsibleIds['responsible_team_id'])) {
+            $ownerAndResponsibleUser = Team::find($responsibleIds['responsible_team_id'])->users->first();
+            $this->log('Eigenaar contact ' . $ownerAndResponsibleUser->id . ' (1e van team : '
+                . $responsibleIds['responsible_team_id'] . ')');
+        }elseif(!empty($webform->responsible_user_id)) {
+            $ownerAndResponsibleUser = User::find($webform->responsible_user_id);
+            $this->log('Eigenaar contact (default webformulier) : ' . $ownerAndResponsibleUser->id);
+        }elseif(!empty($webform->responsible_team_id) && Team::find($webform->responsible_team_id)) {
+            $ownerAndResponsibleUser = Team::find($webform->responsible_team_id)->users->first();
+            $this->log('Eigenaar contact (default webformulier) ' . $ownerAndResponsibleUser->id . ' (1e van team : '
+                . $webform->responsible_team_id . ')');
+        }
+
         $contact = $this->getContactByAddressAndEmail($data);
         $this->log('Actie: ' . $this->contactActie);
 
@@ -519,12 +536,12 @@ class ExternalWebformController extends Controller
                         $this->address = $address;
                     }
                     $this->addPhoneNumberToContact($data, $contact);
-                    $this->addContactToGroup($data, $contact);
+                    $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
                     break;
                 case 'NAT' :
                     $this->addAddressToContact($data, $contact);
                     $this->addPhoneNumberToContact($data, $contact);
-                    $this->addContactToGroup($data, $contact);
+                    $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw adres toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
                     $note .= "Adres type : " . AddressType::get($addressTypeId)->name . "\n";
@@ -542,7 +559,7 @@ class ExternalWebformController extends Controller
                 case 'NET' :
                     $this->addEmailToContact($data, $contact);
                     $this->addPhoneNumberToContact($data, $contact);
-                    $this->addContactToGroup($data, $contact);
+                    $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw e-mailadres  " . $data['email_address'] . " toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
                     $note .= "Controleer contactgegevens\n";
@@ -571,23 +588,6 @@ class ExternalWebformController extends Controller
             // contactActie = "NC"  -> Nieuw contact
             // contactActie = "NCT" -> Nieuw contact + taak
             $this->log('Geen enkel contact kunnen vinden op basis van meegegeven data, nieuw contact aanmaken.');
-
-            $ownerAndResponsibleUser = null;
-            if($responsibleIds['responsible_user_id']) {
-                $ownerAndResponsibleUser = User::find($responsibleIds['responsible_user_id']);
-                $this->log('Eigenaar contact : ' . $ownerAndResponsibleUser->id);
-            }elseif($responsibleIds['responsible_team_id'] && Team::find($responsibleIds['responsible_team_id'])) {
-                $ownerAndResponsibleUser = Team::find($responsibleIds['responsible_team_id'])->users->first();
-                $this->log('Eigenaar contact ' . $ownerAndResponsibleUser->id . ' (1e van team : '
-                    . $responsibleIds['responsible_team_id'] . ')');
-            }elseif(!empty($webform->responsible_user_id)) {
-                $ownerAndResponsibleUser = User::find($webform->responsible_user_id);
-                $this->log('Eigenaar contact (default webformulier) : ' . $ownerAndResponsibleUser->id);
-            }elseif(!empty($webform->responsible_team_id) && Team::find($webform->responsible_team_id)) {
-                $ownerAndResponsibleUser = Team::find($webform->responsible_team_id)->users->first();
-                $this->log('Eigenaar contact (default webformulier) ' . $ownerAndResponsibleUser->id . ' (1e van team : '
-                    . $webform->responsible_team_id . ')');
-            }
 
             $contact = $this->addContact($data, $ownerAndResponsibleUser);
             switch($this->contactActie){
@@ -1105,7 +1105,7 @@ class ExternalWebformController extends Controller
             $this->addAddressToContact($data, $contactOrganisation);
             $this->addEmailToContact($data, $contactOrganisation);
             $this->addPhoneNumberToContact($data, $contactOrganisation);
-            $this->addContactToGroup($data, $contactOrganisation);
+            $this->addContactToGroup($data, $contactOrganisation, $ownerAndResponsibleUser);
 
             // Validatie op title_id
 
@@ -1188,7 +1188,7 @@ class ExternalWebformController extends Controller
         $this->addAddressToContact($data, $contact);
         $this->addEmailToContact($data, $contact);
         $this->addPhoneNumberToContact($data, $contact);
-        $this->addContactToGroup($data, $contact);
+        $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
 
         return $contact;
     }
@@ -1669,7 +1669,7 @@ class ExternalWebformController extends Controller
         }
     }
 
-    protected function addContactToGroup(array $data, Contact $contact)
+    protected function addContactToGroup(array $data, Contact $contact, $ownerAndResponsibleUser)
     {
         if ($data['group_name']) {
             $this->log('Er is een contact groep meegegeven, groep koppelen.');
@@ -1695,6 +1695,8 @@ class ExternalWebformController extends Controller
                 $this->log('Contact ' . $contact->id . ' aan groep ' . $data['group_name'] . ' gekoppeld.');
 
                 if($contactGroup->laposta_list_id){
+                    Auth::setUser($ownerAndResponsibleUser);
+                    $this->log('Laposta contact groep verantwoordelijke gebruiker (zelfde als eigenaar) : ' . $ownerAndResponsibleUser->id);
                     $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, false);
                     $lapostaMemberId = $lapostaMemberHelper->createMember();
                     $this->log('Contact ' . $contact->id . ' als laposta relatie ' . $lapostaMemberId . ' aangemaakt.');
@@ -1726,6 +1728,8 @@ class ExternalWebformController extends Controller
                             $this->log('Contact ' . $contact->id . ' aan groep ' . $contactGroup->name . ' gekoppeld.');
 
                             if($contactGroup->laposta_list_id){
+                                Auth::setUser($ownerAndResponsibleUser);
+                                $this->log('Laposta contact groep verantwoordelijke gebruiker (zelfde als eigenaar) : ' . $ownerAndResponsibleUser->id);
                                 $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, false);
                                 $lapostaMemberId = $lapostaMemberHelper->createMember();
                                 $this->log('Contact ' . $contact->id . ' als laposta relatie ' . $lapostaMemberId . ' aangemaakt.');

@@ -48,6 +48,8 @@ const DefaultContactOrganisationEdit = function({
                                 />
                             )}
                         />
+                    </Col>
+                    <Col xs={12} sm={4}>
                         {initialContact.disableChangeContactNameOnPortal ? (
                             <>
                                 <FaInfoCircle

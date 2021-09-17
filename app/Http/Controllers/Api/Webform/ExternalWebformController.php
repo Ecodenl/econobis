@@ -501,6 +501,8 @@ class ExternalWebformController extends Controller
             $this->log('Eigenaar contact (default webformulier) ' . $ownerAndResponsibleUser->id . ' (1e van team : '
                 . $webform->responsible_team_id . ')');
         }
+        Auth::setUser($ownerAndResponsibleUser);
+        $this->log('Default Eigenaar contact verantwoordelijke gebruiker (zelfde als eigenaar) : ' . $ownerAndResponsibleUser->id);
 
         $contact = $this->getContactByAddressAndEmail($data);
         $this->log('Actie: ' . $this->contactActie);

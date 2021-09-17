@@ -38,8 +38,14 @@ class OrderCreateViewPdf extends Component {
     }
 
     render() {
-        return !this.state.file ? (
-            <div>Geen gegevens gevonden.</div>
+        return this.props.isLoading ? (
+            <div>Gegevens aan het laden.</div>
+        ) : !this.state.file ? (
+            this.props.amountOfOrders > 0 ? (
+                <div>Selecteer links in het scherm een contact om een preview te zien.</div>
+            ) : (
+                <div>Geen gegevens gevonden.</div>
+            )
         ) : (
             <div>
                 <PdfViewer file={this.state.file} />

@@ -29,8 +29,14 @@ class OrderCreateViewEmail extends Component {
     }
 
     render() {
-        return !this.state.email ? (
-            <div>Geen gegevens gevonden.</div>
+        return this.props.isLoading ? (
+            <div>Gegevens aan het laden.</div>
+        ) : !this.state.email ? (
+            this.props.amountOfOrders > 0 ? (
+                <div>Selecteer links in het scherm een contact om een preview te zien.</div>
+            ) : (
+                <div>Geen gegevens gevonden.</div>
+            )
         ) : (
             <div>
                 <div className="row margin-10-top">
@@ -53,7 +59,6 @@ class OrderCreateViewEmail extends Component {
                         </div>
                     </div>
                 </div>
-
                 <div className="row">
                     <ViewHtmlAsText label={'Tekst'} value={this.state.email.htmlBody} />
                 </div>

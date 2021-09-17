@@ -61,7 +61,7 @@ class ContactGroup extends Model
 
     public function contacts()
     {
-        return $this->belongsToMany(Contact::class, 'contact_groups_pivot')->withPivot('laposta_member_id', 'laposta_member_state', 'laposta_member_created_at', 'laposta_member_since');
+        return $this->belongsToMany(Contact::class, 'contact_groups_pivot')->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since');
     }
 
     public function participants()
@@ -253,8 +253,8 @@ class ContactGroup extends Model
 
             $groupContact->laposta_member_id = $contactGroupsPivot ? $contactGroupsPivot->laposta_member_id : null;
             $groupContact->laposta_member_state = $contactGroupsPivot ? $contactGroupsPivot->laposta_member_state : null;
-            $groupContact->laposta_member_created_at = $contactGroupsPivot ? $contactGroupsPivot->laposta_member_created_at : null;
-            $groupContact->laposta_member_since = $contactGroupsPivot ? $contactGroupsPivot->laposta_member_since : null;
+            $groupContact->member_created_at = $contactGroupsPivot ? $contactGroupsPivot->member_created_at : null;
+            $groupContact->member_to_group_since = $contactGroupsPivot ? $contactGroupsPivot->member_to_group_since : null;
         }
         return $groupContacts;
     }

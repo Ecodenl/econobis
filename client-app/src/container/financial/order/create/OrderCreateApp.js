@@ -16,6 +16,7 @@ class OrderCreateApp extends Component {
         this.state = {
             orders: [],
             orderId: '',
+            isLoading: false,
         };
     }
 
@@ -24,11 +25,17 @@ class OrderCreateApp extends Component {
     }
 
     componentDidMount() {
-        OrdersAPI.getOrdersForCreating(this.props.orderPreviewCreate).then(payload => {
-            this.setState({
-                orders: payload.data,
+        this.setState({ isLoading: true });
+        OrdersAPI.getOrdersForCreating(this.props.orderPreviewCreate)
+            .then(payload => {
+                this.setState({
+                    orders: payload.data,
+                    isLoading: false,
+                });
+            })
+            .catch(error => {
+                this.setState({ isLoading: false });
             });
-        });
     }
 
     changeOrder = orderId => {
@@ -46,9 +53,9 @@ class OrderCreateApp extends Component {
                             <Panel>
                                 <PanelBody className={'panel-small'}>
                                     <OrderCreateToolbar
+                                        orderIds={this.props.orderPreviewCreate}
                                         amountOfOrders={this.state.orders ? this.state.orders.length : 0}
                                         administrationId={this.props.params.id}
-                                        orderIds={this.props.orderPreviewCreate}
                                     />
                                 </PanelBody>
                             </Panel>
@@ -60,7 +67,11 @@ class OrderCreateApp extends Component {
                         <div className="col-md-12 margin-10-top">
                             <Panel>
                                 <PanelBody className={'panel-orders-list'}>
-                                    <OrderCreateList orders={this.state.orders} changeOrder={this.changeOrder} />
+                                    <OrderCreateList
+                                        orders={this.state.orders}
+                                        isLoading={this.state.isLoading}
+                                        changeOrder={this.changeOrder}
+                                    />
                                 </PanelBody>
                             </Panel>
                         </div>
@@ -69,7 +80,11 @@ class OrderCreateApp extends Component {
                         <div className="col-md-12 margin-10-top">
                             <Panel>
                                 <PanelBody>
-                                    <OrderCreateViewPdf orderId={this.state.orderId} />
+                                    <OrderCreateViewPdf
+                                        orderId={this.state.orderId}
+                                        isLoading={this.state.isLoading}
+                                        amountOfOrders={this.state.orders ? this.state.orders.length : 0}
+                                    />
                                 </PanelBody>
                             </Panel>
                         </div>
@@ -78,7 +93,11 @@ class OrderCreateApp extends Component {
                         <div className="col-md-12 margin-10-top">
                             <Panel>
                                 <PanelBody>
-                                    <OrderCreateViewEmail orderId={this.state.orderId} />
+                                    <OrderCreateViewEmail
+                                        orderId={this.state.orderId}
+                                        isLoading={this.state.isLoading}
+                                        amountOfOrders={this.state.orders ? this.state.orders.length : 0}
+                                    />
                                 </PanelBody>
                             </Panel>
                         </div>

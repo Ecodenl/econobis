@@ -450,6 +450,9 @@ class TemplateVariableHelper
             case 'evaluatie_opmerking':
                 return optional($model->opportunityEvaluation)->note;
                 break;
+            case 'nummer':
+                return $model->number;
+                break;
 //            case 'offerteverzoek_bedrijf':
 //                break;
 //            case 'offerteverzoek_contactpersoon':
@@ -1436,6 +1439,29 @@ class TemplateVariableHelper
                     return $model->participations_amount;
                 }
                 break;
+            case 'aantal_voor_aflossing':
+                if($model->revenue->category->code_ref !== 'redemptionEuro' || $projectTypeCodeRef == 'loan') {
+                    return 0;
+                }else{
+                    return $model->participations_amount;
+                }
+                break;
+            case 'bedrag_voor_aflossing':
+                if($model->revenue->category->code_ref !== 'redemptionEuro'){
+                    $amountBeforeRedemption = 0;
+                }elseif($projectTypeCodeRef == 'loan'){
+                    $amountBeforeRedemption = $model->participations_loan_amount ? $model->participations_loan_amount : 0;
+                }else{
+                    if($model->participations_amount)
+                    {
+                        $bookWorth = ProjectValueCourse::where('project_id', $model->revenue->project_id)
+                            ->where('date', '<=', $model->date_payout)
+                            ->orderBy('date', 'desc')
+                            ->value('book_worth');
+                        $amountBeforeRedemption = $bookWorth ? ( $bookWorth * $model->participations_amount ) : 0;
+                    }
+                }
+                return number_format($amountBeforeRedemption, 2, ',', '');
             case 'bedrag':
                 return number_format($model->payout, 2, ',', '');
                 break;

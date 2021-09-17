@@ -261,7 +261,7 @@ class ContactGroupController extends Controller
 
         foreach ($contactIds as $contactId) {
             $contact = Contact::find($contactId);
-            $contactGroup->contacts()->syncWithoutDetaching([ $contact => ['member_created_at' => Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
+            $contactGroup->contacts()->syncWithoutDetaching([ $contact->id => ['member_created_at' => Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
             if($contactGroup->laposta_list_id && $contact) {
                 $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, false);
                 $lapostaMemberHelper->createMember();

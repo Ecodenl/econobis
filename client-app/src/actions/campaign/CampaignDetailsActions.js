@@ -2,7 +2,7 @@ export const fetchCampaign = (id, pagination) => {
     return {
         type: 'FETCH_CAMPAIGN',
         id,
-        pagination
+        pagination,
     };
 };
 

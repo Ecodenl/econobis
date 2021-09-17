@@ -64,7 +64,7 @@ const mapDispatchToProps = dispatch => ({
     },
     clearCampaign: () => {
         dispatch(clearCampaign());
-    }
+    },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CampaignDetailsApp);

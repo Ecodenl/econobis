@@ -32,15 +32,13 @@ class CampaignDetailsOpportunityItem extends Component {
 
     render() {
         return (
-            <div>
-                <CampaignDetailsOpportunityView
-                    highlightLine={this.state.highlightLine}
-                    showActionButtons={this.state.showActionButtons}
-                    onLineEnter={this.onLineEnter}
-                    onLineLeave={this.onLineLeave}
-                    opportunity={this.state.opportunity}
-                />
-            </div>
+            <CampaignDetailsOpportunityView
+                highlightLine={this.state.highlightLine}
+                showActionButtons={this.state.showActionButtons}
+                onLineEnter={this.onLineEnter}
+                onLineLeave={this.onLineLeave}
+                opportunity={this.state.opportunity}
+            />
         );
     }
 }

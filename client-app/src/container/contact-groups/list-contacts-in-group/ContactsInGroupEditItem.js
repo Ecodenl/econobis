@@ -71,7 +71,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(ContactsEditItem);
+export default connect(null, mapDispatchToProps)(ContactsEditItem);

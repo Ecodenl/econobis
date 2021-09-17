@@ -8,10 +8,8 @@ export default {
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        console.log(pagination);
-
         return axios
-            .get(requestUrl + "?page=" + pagination.page)
+            .get(requestUrl + '?page=' + pagination.page)
             .then(response => response.data.data)
             .catch(error => {
                 console.log(error);

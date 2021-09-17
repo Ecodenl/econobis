@@ -125,7 +125,7 @@ class CampaignDetailsResponseNew extends Component {
 const mapStateToProps = state => {
     return {
         campaignId: state.campaignDetails.details.id,
-        campaignName: state.campaignDetails.details.name
+        campaignName: state.campaignDetails.details.name,
     };
 };
 

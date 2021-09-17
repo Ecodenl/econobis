@@ -34,7 +34,7 @@ class FullCampaign extends Resource
             'status' => GenericResource::make($this->whenLoaded('status')),
             'type' => GenericResource::make($this->whenLoaded('type')),
             'measureCategories' => GenericResource::collection($this->whenLoaded('measureCategories')),
-            'opportunities' => FullOpportunity::collection($this->whenLoaded('opportunities')),
+            'opportunities' => $this->whenLoaded('opportunities') ? CampaignOpportunityCollection::make($this->opportunities()->with(['measureCategory', 'status', 'intake.contact', 'quotationRequests'])->paginate(10)) : [],
             'intakes' => $this->whenLoaded('intakes') ? CampaignIntakesCollection::make($this->intakes()->with(['contact', 'address'])->paginate(10)) : [],
             'responses' => FullCampaignResponse::collection($this->whenLoaded('responses')),
             'organisations' => FullOrganisation::collection($this->whenLoaded('organisations')),

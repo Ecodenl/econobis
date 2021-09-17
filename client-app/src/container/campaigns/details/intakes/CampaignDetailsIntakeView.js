@@ -16,13 +16,6 @@ const CampaignDetailsIntakeView = props => {
             <td>{address && address.city}</td>
             <td>{createdAt ? moment(createdAt).format('L') : ''}</td>
         </tr>
-        // <div
-        //     className={`row border ${props.highlightLine}`}
-        //     onMouseEnter={() => props.onLineEnter()}
-        //     onMouseLeave={() => props.onLineLeave()}
-        // >
-        //
-        // </div>
     );
 };
 

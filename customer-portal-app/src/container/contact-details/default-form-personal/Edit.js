@@ -51,6 +51,8 @@ const DefaultContactPersonalEdit = function({
                                 />
                             )}
                         />
+                    </Col>
+                    <Col xs={12} sm={6}>
                         {initialContact.disableChangeContactNameOnPortal ? (
                             <>
                                 <FaInfoCircle

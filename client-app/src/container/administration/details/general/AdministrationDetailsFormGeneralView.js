@@ -46,6 +46,8 @@ const AdministrationDetailsFormGeneralView = props => {
         dateSyncTwinfieldContacts,
         dateSyncTwinfieldPayments,
         dateSyncTwinfieldInvoices,
+        pendingInvoicesPresent,
+        oldestUnpaidInvoiceDate,
         prefixInvoiceNumber,
         usesVat,
         emailBccNotas,
@@ -242,11 +244,27 @@ const AdministrationDetailsFormGeneralView = props => {
                                 />
                                 <div className="col-sm-6 form-group">
                                     <small style={{ fontWeight: 'normal' }}>
-                                        Nota aanmaakdatum vanaf wanneer contacten initieel gemaakt worden in Twinfield.
-                                        Indien gebruik Twinfield aangezet wordt en contacten van verzonden of betaalde
-                                        nota's die (nog) niet gesynchroniseerd zijn met Twinfield en die nog niet eerder
-                                        aangemaakt zijn in Twinfield zullen worden aangemaakt bij Opslaan. Laat datum
-                                        leeg als je geen contacten initieel wil aanmaken in Twinfield.
+                                        Nota (verzend)datum vanaf wanneer contacten initieel gemaakt worden in
+                                        Twinfield. Indien gebruik Twinfield aangezet wordt en contacten van verzonden of
+                                        betaalde nota's die (nog) niet gesynchroniseerd zijn met Twinfield en die nog
+                                        niet eerder aangemaakt zijn in Twinfield zullen worden aangemaakt bij Opslaan.
+                                        <br />
+                                        Laat datum leeg als je geen contacten initieel wil aanmaken in Twinfield.
+                                    </small>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <ViewText
+                                    label={"Nota's in behandeling"}
+                                    value={pendingInvoicesPresent ? 'Ja' : 'Nee'}
+                                />
+                                <div className="col-sm-6 form-group">
+                                    <small style={{ fontWeight: 'normal' }}>
+                                        Nota's in behandeling zijn nota's met status 'Wordt definitief gemaakt', 'Fout
+                                        bij maken', 'Wordt verstuurd', 'Opnieuw te verzenden' of 'Wordt opnieuw
+                                        verstuurd'. Zolang er nota's in behandeling zijn kunnen de datums hieronder
+                                        (Synchroniseer nota's vanaf en Synchroniseer betalingen vanaf) niet gewijzigd
+                                        worden.
                                     </small>
                                 </div>
                             </div>
@@ -259,8 +277,24 @@ const AdministrationDetailsFormGeneralView = props => {
                                 />
                                 <div className="col-sm-6 form-group">
                                     <small style={{ fontWeight: 'normal' }}>
-                                        Nota aanmaakdatum vanaf wanneer nota's gesynchroniseerd moeten worden naar
-                                        Twinfield
+                                        Nota (verzend)datum vanaf wanneer nota's gesynchroniseerd moeten worden naar
+                                        Twinfield. Nota's voor deze datum die niet naar Twinfield zijn gesynchroniseerd
+                                        zullen handmatig in Econobis op betaald gezet moeten worden. Over het algemeen
+                                        zet je hier de datum waarop je wilt gaan starten met Twinfield.
+                                        <br />
+                                        Laat datum leeg als je alle nota's wilt synchroniseren.
+                                    </small>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <ViewText
+                                    label={'Oudste nota datum met status niet betaald  '}
+                                    value={oldestUnpaidInvoiceDate ? moment(oldestUnpaidInvoiceDate).format('L') : ''}
+                                />
+                                <div className="col-sm-6 form-group">
+                                    <small style={{ fontWeight: 'normal' }}>
+                                        Je kan de datum 'Synchroniseer betaling vanaf '(zie hieronder) niet instellen op
+                                        een datum na de oudste nota (verzend)datum met status niet betaald.
                                     </small>
                                 </div>
                             </div>
@@ -273,8 +307,14 @@ const AdministrationDetailsFormGeneralView = props => {
                                 />
                                 <div className="col-sm-6 form-group">
                                     <small style={{ fontWeight: 'normal' }}>
-                                        Nota aanmaakdatum vanaf wanneer betalingen gesynchroniseerd moeten worden uit
-                                        Twinfield
+                                        Nota (verzend)datum vanaf wanneer betalingen gesynchroniseerd moeten worden uit
+                                        Twinfield. Datum 'Synchroniseer betaling vanaf ' moet voor oudste nota datum
+                                        (zier hierboven) met status niet betaald liggen.
+                                        <br />
+                                        Deze datum wordt gebruikt bij de procedure Synchroniseren betalingen die elke
+                                        nacht automatisch draait.
+                                        <br />
+                                        Laat datum leeg als je betalingen van alle nota's wilt synchroniseren.
                                     </small>
                                 </div>
                             </div>

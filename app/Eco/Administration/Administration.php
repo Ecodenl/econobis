@@ -407,6 +407,17 @@ class Administration extends Model
         return $financialOverview ? $financialOverview->year : null;
     }
 
+    public function getPendingInvoicesPresentAttribute() {
+
+        return $this->invoices()->whereIn('invoices.status_id', ['in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ])->exists();
+
+    }
+
+    public function getOldestUnpaidInvoiceDateAttribute() {
+        $oldestUnpaidInvoice = $this->invoices()->whereIn('invoices.status_id', ['sent', 'exported'])->whereNotNull('date_sent')->orderBy('date_sent')->first();
+        return $oldestUnpaidInvoice ? $oldestUnpaidInvoice->date_sent : null;
+    }
+
     /**
      * Mollie is ingesteld per administratie en kunnen de Mollie Api Key dus niet in .env zetten.
      * Daardoor is de standaard Mollie Facade ook niet bruikbaar.

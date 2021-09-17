@@ -135,6 +135,8 @@ class FullAdministration extends Resource
 
                 'emailBccNotas' => $this->email_bcc_notas,
                 'lastYearFinancialOverviewDefinitive' => $this->last_year_financial_overview_definitive,
+                'pendingInvoicesPresent' => $this->pending_invoices_present,
+                'oldestUnpaidInvoiceDate' => $this->oldest_unpaid_invoice_date,
                 'portalSettingsLayoutId' => $this->portal_settings_layout_id,
                 'portalSettingsLayout' => $this->portalSettingsLayout,
 

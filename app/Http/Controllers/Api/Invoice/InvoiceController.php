@@ -470,7 +470,8 @@ class InvoiceController extends ApiController
             header('Access-Control-Expose-Headers: X-Filename');
             header('X-Filename:' . $invoice->document->name);
         } else {
-            $invoiceNumber = 'F' . Carbon::now()->year . '-preview-' . $invoice->id;
+            $invoiceNumberPrefix =  $invoice->administration->prefix_invoice_number ? $invoice->administration->prefix_invoice_number : 'F';
+            $invoiceNumber = $invoiceNumberPrefix . Carbon::now()->year . '-preview-' . $invoice->id;
             header('X-Filename:' . $invoiceNumber . '.pdf');
             header('Access-Control-Expose-Headers: X-Filename');
             return InvoiceHelper::createInvoiceDocument($invoice, true);

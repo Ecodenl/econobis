@@ -42,7 +42,8 @@ class InvoiceObserver
 
     public function created(Invoice $invoice)
     {
-        $invoice->number = 'F' . Carbon::now()->year . '-new';
+        $invoiceNumberPrefix =  $invoice->administration->prefix_invoice_number ? $invoice->administration->prefix_invoice_number : 'F';
+        $invoice->number = $invoiceNumberPrefix . Carbon::now()->year . '-new';
         $invoice->setDaysToExpire();
         $invoice->setDaysLastReminder();
         $invoice->save();

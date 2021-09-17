@@ -1689,7 +1689,7 @@ class ExternalWebformController extends Controller
             if($contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
                 $this->log('Groep ' . $data['group_name'] . ' al gekoppeld aan: ' . $contact->id );
             }else{
-                $contactGroup->contacts()->syncWithoutDetaching([ $contact => ['member_created_at' => \Illuminate\Support\Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
+                $contactGroup->contacts()->syncWithoutDetaching([ $contact->id => ['member_created_at' => \Illuminate\Support\Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
 
                 $this->contactGroup = $contactGroup;
                 $this->log('Contact ' . $contact->id . ' aan groep ' . $data['group_name'] . ' gekoppeld.');
@@ -1722,7 +1722,7 @@ class ExternalWebformController extends Controller
                         if($contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
                             $this->log('Groep ' . $data['group_name'] . ' al gekoppeld aan: ' . $contact->id );
                         }else {
-                            $contactGroup->contacts()->syncWithoutDetaching([ $contact => ['member_created_at' => \Illuminate\Support\Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
+                            $contactGroup->contacts()->syncWithoutDetaching([ $contact->id => ['member_created_at' => \Illuminate\Support\Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
                             $this->log('Contact ' . $contact->id . ' aan groep ' . $contactGroup->name . ' gekoppeld.');
 
                             if($contactGroup->laposta_list_id){

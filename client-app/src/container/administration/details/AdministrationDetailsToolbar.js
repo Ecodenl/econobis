@@ -33,10 +33,12 @@ class AdministrationToolbar extends Component {
 
     syncInvoicesFromTwinfield = () => {
         this.setState({ syncingFromInvoices: true });
-        AdministrationDetailsAPI.syncSentInvoicesFromTwinfield(this.props.administrationDetails.id).then(payload => {
-            this.setState({ syncingFromInvoices: false });
-            this.props.setError(200, payload.data);
-        });
+        AdministrationDetailsAPI.syncSentInvoicesFromTwinfield(this.props.administrationDetails.id, null).then(
+            payload => {
+                this.setState({ syncingFromInvoices: false });
+                this.props.setError(200, payload.data);
+            }
+        );
     };
 
     render() {

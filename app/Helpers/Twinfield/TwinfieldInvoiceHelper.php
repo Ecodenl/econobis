@@ -27,6 +27,7 @@ class TwinfieldInvoiceHelper
 {
     private $connection;
     private $administration;
+    private $fromInvoiceDateSent;
     private $office;
     private $redirectUri;
     private $invoiceApiConnector;
@@ -36,9 +37,19 @@ class TwinfieldInvoiceHelper
      *
      * @param Administration $administration
      */
-    public function __construct(Administration $administration)
+    public function __construct(Administration $administration, $fromInvoiceDateSent)
     {
         $this->administration = $administration;
+
+
+        if($fromInvoiceDateSent){
+            $this->fromInvoiceDateSent = $fromInvoiceDateSent;
+        }elseif($this->administration->date_sync_twinfield_payments){
+            $this->fromInvoiceDateSent = $this->administration->date_sync_twinfield_payments;
+        }else{
+            $this->fromInvoiceDateSent = '2019-01-01';
+        }
+
         $this->office = Office::fromCode($administration->twinfield_office_code);
         $this->redirectUri = \Config::get('app.url_api') . '/twinfield';
 
@@ -66,7 +77,6 @@ class TwinfieldInvoiceHelper
         if(!$this->administration->uses_twinfield){
             return "Deze administratie maakt geen gebruik van Twinfield.";
         }
-
         set_time_limit(0);
 
         $browseDataApiConnector = new BrowseDataApiConnector($this->connection);
@@ -75,21 +85,12 @@ class TwinfieldInvoiceHelper
 
         $messages = [];
 
-        // We controleren alle invoices met status exported of paid en met koppeling Twinfield
-        // Standaard invoices vanaf 01-01-2019 tenzij anders opgegeven bij administratie.
-        if($this->administration->date_sync_twinfield_payments){
-            $invoicesToBeChecked = $this->administration->invoices()
-                ->whereIn('status_id', ['exported', 'paid'])
-                ->whereNotNull('twinfield_number')
-                ->where('date_sent', '>=', $this->administration->date_sync_twinfield_payments)
-                ->get();
-        }else{
-            $invoicesToBeChecked = $this->administration->invoices()
-                ->whereIn('status_id', ['exported', 'paid'])
-                ->whereNotNull('twinfield_number')
-                ->where('date_sent', '>=', '20190101')
-                ->get();
-        }
+        // We controleren alle invoices met status exported of paid en met koppeling Twinfield en vanaf gewenste date sent
+        $invoicesToBeChecked = $this->administration->invoices()
+            ->whereIn('status_id', ['exported', 'paid'])
+            ->whereNotNull('twinfield_number')
+            ->where('date_sent', '>=', $this->fromInvoiceDateSent)
+            ->get();
         foreach ($invoicesToBeChecked as $invoiceToBeChecked)
         {
             if(!$invoiceToBeChecked->twinfield_number){

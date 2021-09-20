@@ -386,17 +386,17 @@ class AdministrationController extends ApiController
         $sepa->delete();
     }
 
-//    public function syncSentInvoicesToTwinfield(Administration $administration){
-//        $twinfieldInvoiceHelper = new TwinfieldInvoiceHelper($administration);
-//        return $twinfieldInvoiceHelper->createAllInvoices();
-//    }
     public function syncSentInvoicesToTwinfield(Administration $administration){
         $twinfieldInvoiceHelper = new TwinfieldSalesTransactionHelper($administration);
         return $twinfieldInvoiceHelper->createAllSalesTransactions();
     }
 
-    public function syncSentInvoicesFromTwinfield(Administration $administration){
-        $twinfieldInvoiceHelper = new TwinfieldInvoiceHelper($administration);
+    public function syncSentInvoicesFromTwinfield(RequestInput $requestInput, Administration $administration){
+
+        $fromDateSent = $requestInput
+            ->string('fromDateSent')->onEmpty(null)->next()
+            ->get();
+        $twinfieldInvoiceHelper = new TwinfieldInvoiceHelper($administration, $fromDateSent);
         return $twinfieldInvoiceHelper->processPaidInvoices();
     }
 

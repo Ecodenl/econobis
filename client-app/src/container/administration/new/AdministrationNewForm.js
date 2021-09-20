@@ -912,7 +912,7 @@ class AdministrationNewForm extends Component {
                                     />
                                     <div className="col-sm-6 form-group">
                                         <small style={{ fontWeight: 'normal' }}>
-                                            Je kan de datum 'Synchroniseer betaling vanaf '(zie hieronder) niet
+                                            Je kan de datum 'Synchroniseer betalingen vanaf'(zie hieronder) niet
                                             instellen op een datum na de oudste nota (verzend)datum met status niet
                                             betaald.
                                         </small>
@@ -932,8 +932,8 @@ class AdministrationNewForm extends Component {
                                     <div className="col-sm-6 form-group">
                                         <small style={{ fontWeight: 'normal' }}>
                                             Nota (verzend)datum vanaf wanneer betalingen gesynchroniseerd moeten worden
-                                            uit Twinfield. Datum 'Synchroniseer betaling vanaf ' moet voor oudste nota
-                                            datum (zier hierboven) met status niet betaald liggen.
+                                            uit Twinfield. Datum 'Synchroniseer betalingen vanaf' moet voor oudste nota
+                                            datum (zie hierboven) met status niet betaald liggen.
                                             <br />
                                             Deze datum wordt gebruikt bij de procedure Synchroniseren betalingen die
                                             elke nacht automatisch draait.

@@ -56,7 +56,7 @@ const DefaultContactOrganisationEdit = function({
                                     color={'blue'}
                                     size={'15px'}
                                     data-tip={
-                                        'Je bent deelnemer in een project. Naam wijziging kan daarom alleen worden doorgevoerd door de beheerder van het project. Kijk in het menu onder "Over ons" voor contact gegevens.'
+                                        'Je neemt deel aan een project waarvan de deelnemingen op naam zijn uitgegeven. Daarom kun je jouw naam niet zelf wijzigen. Overige contactgegevens kun je wel zelf aanpassen. Een wijziging van rekeningnummer wordt door ons gecontroleerd. Heb je vragen of wil je jouw gegevens door de beheerder laten wijzigen? Kijk in het menu onder "Over ons" voor contact gegevens.'
                                     }
                                     data-for={`contact-${initialContact.id}`}
                                 />

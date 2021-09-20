@@ -68,7 +68,7 @@ const DefaultContactOrganisationEdit = function({
                                 <ReactTooltip
                                     id={`contact-${initialContact.id}`}
                                     effect="float"
-                                    place="bottom"
+                                    place="right"
                                     multiline={true}
                                     aria-haspopup="true"
                                 />

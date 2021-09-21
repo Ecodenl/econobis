@@ -198,7 +198,7 @@ class TwinfieldSalesTransactionHelper
             ->setDim2($twinfieldCustomer->getCode())
             ->setValue($totaalBedragIncl)
             ->setDebitCredit($totaalBedragIncl->getAmount()<0 ? DebitCredit::CREDIT() : DebitCredit::DEBIT())
-            ->setDescription($twinfieldCustomer ? $twinfieldCustomer->getName() : '' ." / ". $invoice->number );
+            ->setDescription($invoice->subject);
         $twinfieldSalesTransaction->addLine($twinfieldTransactionLineTotal);
 
         //Vanuit invoice products bedragen per product (omzet) / bedragen per btw code alvast doortellen voor VAT regels hierna
@@ -238,6 +238,8 @@ class TwinfieldSalesTransactionHelper
 
             $exclAmount = round($invoiceProduct->getAmountInclReductionExclVat()*100, 0);
             $invoiceDetailExcl = new Money($exclAmount, $this->currency );
+            $descriptionDetail = $twinfieldCustomer ? ($twinfieldCustomer->getCode() . " " . $twinfieldCustomer->getName()) : ($invoice->contact->number . " " . $invoice->contact->full_name);
+
             $twinfieldTransactionLineDetail = new SalesTransactionLine();
             $idTeller++;
             $twinfieldTransactionLineDetail
@@ -245,6 +247,7 @@ class TwinfieldSalesTransactionHelper
                 ->setLineType(LineType::DETAIL())
                 ->setDim1($ledgerCode)
                 ->setDim2($costCenterCode)
+                ->setDescription(substr($descriptionDetail, 0, 40))
                 ->setVatValue($invoiceVatAmount)
                 ->setValue($invoiceDetailExcl)
                 ->setDebitCredit($invoiceDetailExcl->getAmount()<0 ? DebitCredit::DEBIT() : DebitCredit::CREDIT());

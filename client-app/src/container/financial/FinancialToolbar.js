@@ -35,7 +35,11 @@ class FinancialToolbar extends Component {
             .catch(error => {
                 this.setState({ syncingToInvoices: false });
                 console.log(error);
-                alert('Er is iets misgegaan met synchroniseren van de gegevens. Probeer het later opnieuw');
+                this.props.setError(
+                    500,
+                    'Er is iets misgegaan met synchroniseren van de gegevens. Meld dit bij Econobis support.'
+                );
+                // alert('Er is iets misgegaan met synchroniseren van de gegevens. Probeer het later opnieuw');
             });
     };
 
@@ -56,7 +60,11 @@ class FinancialToolbar extends Component {
             .catch(error => {
                 this.setState({ ...this.state, syncingFromInvoices: false });
                 console.log(error);
-                alert('Er is iets misgegaan met synchroniseren van de gegevens. Probeer het later opnieuw');
+                this.props.setError(
+                    500,
+                    'Er is iets misgegaan met synchroniseren van de gegevens. Meld dit bij Econobis support.'
+                );
+                // alert('Er is iets misgegaan met synchroniseren van de gegevens. Probeer het later opnieuw');
             });
     };
 

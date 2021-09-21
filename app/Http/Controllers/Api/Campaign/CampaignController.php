@@ -17,6 +17,8 @@ use App\Helpers\Delete\Models\DeleteCampaign;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Campaign\Grid\RequestQuery;
+use App\Http\Resources\Campaign\CampaignIntakesCollection;
+use App\Http\Resources\Campaign\CampaignOpportunityCollection;
 use App\Http\Resources\Campaign\CampaignPeek;
 use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\Campaign\GridCampaign;
@@ -43,12 +45,7 @@ class CampaignController extends ApiController
 
     public function show(Campaign $campaign)
     {
-        set_time_limit(180);
         $campaign->load([
-            'opportunities.measureCategory',
-            'opportunities.intake.contact',
-            'opportunities.status',
-            'opportunities.quotationRequests',
             'measureCategories',
             'status',
             'type',
@@ -60,11 +57,33 @@ class CampaignController extends ApiController
             'tasks',
             'notes',
             'documents',
-            'intakes.contact',
-            'intakes.address'
         ]);
 
         return FullCampaign::make($campaign);
+    }
+
+    public function intakes(Campaign $campaign)
+    {
+        $intakes = $campaign->intakes()->paginate(10);
+        $intakes->load([
+            'contact',
+            'address',
+        ]);
+
+        return CampaignIntakesCollection::make($intakes);
+    }
+
+    public function opportunities(Campaign $campaign)
+    {
+        $opportunities = $campaign->opportunities()->paginate(10);
+        $opportunities->load([
+            'measureCategory',
+            'intake.contact',
+            'status',
+            'quotationRequests',
+        ]);
+
+        return CampaignOpportunityCollection::make($opportunities);
     }
 
     public function store(Request $request, RequestInput $requestInput)

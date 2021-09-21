@@ -1,33 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import CampaignDetailsOpportunityItem from './CampaignDetailsOpportunityItem';
 import DataTable from '../../../../components/dataTable/DataTable';
 import DataTableHead from '../../../../components/dataTable/DataTableHead';
 import DataTableHeadTitle from '../../../../components/dataTable/DataTableHeadTitle';
 import DataTableBody from '../../../../components/dataTable/DataTableBody';
-import CampaignDetailsIntakeItem from '../intakes/CampaignDetailsIntakeItem';
 import DataTablePagination from '../../../../components/dataTable/DataTablePagination';
 import { fetchCampaign } from '../../../../actions/campaign/CampaignDetailsActions';
 import { setCampaignPagination } from '../../../../actions/campaign/CampaignsPaginationActions';
+import CampaignDetailsOpportunityView from './CampaignDetailsOpportunityView';
 
-const CampaignDetailsOpportunitiesList = props => {
-    const { data = [], meta = {} } = props.opportunities;
-
-    function fetchCampaignData(page) {
-        setTimeout(() => {
-            const pagination = { page: page };
-
-            props.fetchCampaign(props.campaignId, pagination);
-        }, 100);
-    }
-
+const CampaignDetailsOpportunitiesList = ({ data, meta, page, setPage, isLoading }) => {
     function handlePageClick(data) {
-        let page = data.selected + 1;
-
-        props.setCampaignPagination({ page: page });
-
-        fetchCampaignData(page);
+        setPage(data.selected);
     }
 
     return (
@@ -44,9 +29,14 @@ const CampaignDetailsOpportunitiesList = props => {
                     </tr>
                 </DataTableHead>
                 <DataTableBody>
-                    {data.length > 0 ? (
+                    {isLoading ? (
+                        <tr>
+                            <td colSpan={7}>Bezig met laden.</td>
+                        </tr>
+                    ) : data.length > 0 ? (
                         data.map(opportunity => {
-                            return <CampaignDetailsOpportunityItem key={opportunity.id} opportunity={opportunity} />;
+                            console.log(opportunity);
+                            return <CampaignDetailsOpportunityView key={opportunity.id} {...opportunity} />;
                         })
                     ) : (
                         <tr>
@@ -58,12 +48,8 @@ const CampaignDetailsOpportunitiesList = props => {
             <div className="col-md-6 col-md-offset-3">
                 <DataTablePagination
                     onPageChangeAction={handlePageClick}
-                    totalRecords={props.opportunities.total}
-                    initialPage={
-                        props.campaignPagination.page > 0
-                            ? props.campaignPagination.page - 1
-                            : props.campaignPagination.page
-                    }
+                    totalRecords={meta.total}
+                    initialPage={page}
                     recordsPerPage={10}
                 />
             </div>
@@ -88,4 +74,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CampaignDetailsOpportunitiesList);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(CampaignDetailsOpportunitiesList);

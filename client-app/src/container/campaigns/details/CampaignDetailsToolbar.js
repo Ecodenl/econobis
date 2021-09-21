@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 
@@ -7,59 +7,43 @@ import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import CampaignDetailsDelete from './CampaignDetailsDelete';
 
-class CampaignDetailsToolbar extends Component {
-    constructor(props) {
-        super(props);
+function CampaignDetailsToolbar({ campaign, permissions }) {
+    const [showDelete, setShowDelete] = useState(false);
 
-        this.state = {
-            showDelete: false,
-        };
+    function toggleDelete() {
+        setShowDelete(prev => !prev);
     }
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
-    };
-
-    render() {
-        const { campaign } = this.props;
-
-        return (
-            <div className="row">
-                <div className="col-sm-12">
-                    <Panel>
-                        <PanelBody className={'panel-small'}>
-                            <div className="col-md-2">
-                                <div className="btn-group btn-group-flex margin-small" role="group">
-                                    <ButtonIcon
-                                        iconName={'glyphicon-arrow-left'}
-                                        onClickAction={browserHistory.goBack}
-                                    />
-                                    {this.props.permissions.manageMarketing && (
-                                        <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
-                                    )}
-                                </div>
+    return (
+        <div className="row">
+            <div className="col-sm-12">
+                <Panel>
+                    <PanelBody className={'panel-small'}>
+                        <div className="col-md-2">
+                            <div className="btn-group btn-group-flex margin-small" role="group">
+                                <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
+                                {permissions.manageMarketing && (
+                                    <ButtonIcon iconName={'glyphicon-trash'} onClickAction={toggleDelete} />
+                                )}
                             </div>
-                            <div className="col-md-8">
-                                <h4 className="text-center text-success margin-small">
-                                    <strong>{campaign.name ? 'Campagne: ' + campaign.name : ''}</strong>
-                                </h4>
-                            </div>
-                            <div className="col-md-2" />
-                        </PanelBody>
-                    </Panel>
-                </div>
-
-                {this.state.showDelete && (
-                    <CampaignDetailsDelete closeDeleteItemModal={this.toggleDelete} id={campaign.id} />
-                )}
+                        </div>
+                        <div className="col-md-8">
+                            <h4 className="text-center text-success margin-small">
+                                <strong>{campaign.name ? 'Campagne: ' + campaign.name : ''}</strong>
+                            </h4>
+                        </div>
+                        <div className="col-md-2" />
+                    </PanelBody>
+                </Panel>
             </div>
-        );
-    }
+
+            {showDelete && <CampaignDetailsDelete closeDeleteItemModal={toggleDelete} id={campaign.id} />}
+        </div>
+    );
 }
 
 const mapStateToProps = state => {
     return {
-        campaign: state.campaignDetails.details,
         permissions: state.meDetails.permissions,
     };
 };

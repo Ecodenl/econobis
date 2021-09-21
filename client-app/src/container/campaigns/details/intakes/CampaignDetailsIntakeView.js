@@ -3,17 +3,15 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 
-const CampaignDetailsIntakeView = props => {
-    const { id, contact, address, fullAddress, createdAt } = props.intake;
-
+const CampaignDetailsIntakeView = ({ id, contact, address, fullAddress, createdAt }) => {
     return (
         <tr onClick={() => hashHistory.push(`/intake/${id}`)}>
             <td>{id}</td>
-            <td>{contact && contact.type.name}</td>
-            <td>{contact && contact.fullName}</td>
-            <td>{fullAddress && fullAddress}</td>
-            <td>{address && address.postalCode}</td>
-            <td>{address && address.city}</td>
+            <td>{contact?.type?.name}</td>
+            <td>{contact?.fullName}</td>
+            <td>{fullAddress}</td>
+            <td>{address?.postalCode}</td>
+            <td>{address?.city}</td>
             <td>{createdAt ? moment(createdAt).format('L') : ''}</td>
         </tr>
     );

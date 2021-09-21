@@ -1,24 +1,28 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
 import Modal from '../../../../components/modal/Modal';
-import { fetchCampaign } from '../../../../actions/campaign/CampaignDetailsActions';
 import CampaignDetailsAPI from '../../../../api/campaign/CampaignDetailsAPI';
 
-const CampaignDetailsOrganisationDelete = props => {
-    const confirmAction = () => {
-        CampaignDetailsAPI.detachOrganisation(props.campaignId, props.organisationId).then(() => {
-            props.fetchCampaign(props.campaignId, null);
-            props.toggleDelete();
-        });
-    };
+const CampaignDetailsOrganisationDelete = ({ toggleDelete, fetchCampaignData, organisationId, campaignId }) => {
+    async function confirmAction() {
+        try {
+            await CampaignDetailsAPI.detachOrganisation(campaignId, organisationId);
+
+            fetchCampaignData();
+            toggleDelete();
+        } catch (error) {
+            alert(
+                'Er is iets misgegaan met het verwijderen van de organisatie. Herlaad de pagina en probeer het nogmaals.'
+            );
+        }
+    }
 
     return (
         <Modal
             buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
-            closeModal={props.toggleDelete}
-            confirmAction={() => confirmAction()}
+            closeModal={toggleDelete}
+            confirmAction={confirmAction}
             title="Verwijderen"
         >
             <p>Wil je deze organisatie ontkoppelen van deze campagne?</p>
@@ -26,16 +30,4 @@ const CampaignDetailsOrganisationDelete = props => {
     );
 };
 
-const mapStateToProps = state => {
-    return {
-        campaignId: state.campaignDetails.details.id,
-    };
-};
-
-const mapDispatchToProps = dispatch => ({
-    fetchCampaign: (id, pagination) => {
-        dispatch(fetchCampaign(id, pagination));
-    },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(CampaignDetailsOrganisationDelete);
+export default CampaignDetailsOrganisationDelete;

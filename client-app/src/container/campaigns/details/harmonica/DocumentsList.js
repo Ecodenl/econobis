@@ -1,49 +1,28 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { hashHistory } from 'react-router';
-import { connect } from 'react-redux';
 import moment from 'moment';
 
-class DocumentsList extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            relatedDocuments: '',
-        };
+function DocumentsList({ relatedDocuments }) {
+    function openItem(id) {
+        hashHistory.push(`/taak/${id}`);
     }
 
-    openItem = id => {
-        hashHistory.push(`/document/${id}`);
-    };
+    if (relatedDocuments.length === 0) return <div>Geen documenten gevonden.</div>;
 
-    render() {
-        const { relatedDocuments } = this.props;
-        return (
-            <div>
-                {relatedDocuments == '' && <div>Geen documenten gevonden.</div>}
-
-                {relatedDocuments != '' && (
-                    <table className="table harmonica-table">
-                        <tbody>
-                            {relatedDocuments.map((item, i) => {
-                                return (
-                                    <tr onClick={() => this.openItem(item.id)} key={i}>
-                                        <td className="col-xs-5 clickable">{moment(item.createdAt).format('L')}</td>
-                                        <td className="col-xs-6 clickable">{item.filename}</td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                )}
-            </div>
-        );
-    }
+    return (
+        <div>
+            <table className="table harmonica-table">
+                <tbody>
+                    {relatedDocuments.map(item => (
+                        <tr onClick={() => openItem(item.id)} key={item.id}>
+                            <td className="col-xs-5 clickable">{moment(item.createdAt).format('L')}</td>
+                            <td className="col-xs-6 clickable">{item.filename}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
 }
 
-const mapStateToProps = state => {
-    return {
-        relatedDocuments: state.campaignDetails.details.relatedDocuments,
-    };
-};
-
-export default connect(mapStateToProps)(DocumentsList);
+export default DocumentsList;

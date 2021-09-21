@@ -5,7 +5,14 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import DocumentsList from './DocumentsList';
 
-const DocumentHarmonica = ({ toggleShowList, showDocumentsList, newDocument, documentCount, permissions }) => {
+const DocumentHarmonica = ({
+    toggleShowList,
+    showDocumentsList,
+    newDocument,
+    documentCount,
+    permissions,
+    relatedDocuments,
+}) => {
     return (
         <Panel className={'harmonica-button'}>
             <PanelBody>
@@ -32,7 +39,9 @@ const DocumentHarmonica = ({ toggleShowList, showDocumentsList, newDocument, doc
                         </div>
                     )}
                 </div>
-                <div className="col-sm-12">{showDocumentsList && <DocumentsList />}</div>
+                <div className="col-sm-12">
+                    {showDocumentsList && <DocumentsList relatedDocuments={relatedDocuments} />}
+                </div>
             </PanelBody>
         </Panel>
     );
@@ -44,4 +53,7 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(DocumentHarmonica);
+export default connect(
+    mapStateToProps,
+    null
+)(DocumentHarmonica);

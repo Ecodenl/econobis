@@ -1,54 +1,40 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
 import { isEmpty } from 'lodash';
 
 import CampaignFormGeneral from './form/CampaignFormGeneral';
 import CampaignDetailsConclusionForm from './conclusion/CampaignDetailsConclusionForm';
-import CampaignDetailsOpportunities from './opportunities/CampaignDetailsOpportunities';
-import CampaignDetailsResponses from './responses/CampaignDetailsResponses';
 import CampaignDetailsOrganisations from './organisations/CampaignDetailsOrganisations';
 import CampaignDetailsIntakes from './intakes/CampaignDetailsIntakes';
+import CampaignDetailsOpportunities from './opportunities/CampaignDetailsOpportunities';
+import CampaignDetailsResponses from './responses/CampaignDetailsResponses';
 
-class CampaignDetailsForm extends Component {
-    constructor(props) {
-        super(props);
-    }
+function CampaignDetailsForm({ campaign, isLoading, hasError, fetchCampaignData }) {
+    if (hasError) return <div>Fout bij het ophalen van campagne.</div>;
 
-    render() {
-        let loadingText = '';
-        let loading = true;
+    if (isLoading) return <div>Gegevens aan het laden.</div>;
 
-        if (this.props.hasError) {
-            loadingText = 'Fout bij het ophalen van campagne.';
-        } else if (this.props.isLoading) {
-            loadingText = 'Gegevens aan het laden.';
-        } else if (isEmpty(this.props.campaign)) {
-            loadingText = 'Geen campagne gevonden!';
-        } else {
-            loading = false;
-        }
+    if (isEmpty(campaign)) return <div>Geen campagne gevonden!</div>;
 
-        return loading ? (
-            <div>{loadingText}</div>
-        ) : (
-            <div>
-                <CampaignFormGeneral />
-                <CampaignDetailsOrganisations />
-                <CampaignDetailsIntakes />
-                <CampaignDetailsOpportunities />
-                <CampaignDetailsResponses />
-                <CampaignDetailsConclusionForm />
-            </div>
-        );
-    }
+    return (
+        <>
+            <CampaignFormGeneral campaign={campaign} fetchCampaignData={fetchCampaignData} />
+            <CampaignDetailsOrganisations
+                campaignId={campaign.id}
+                campaignName={campaign.name}
+                organisations={campaign.organisations}
+                fetchCampaignData={fetchCampaignData}
+            />
+            <CampaignDetailsIntakes campaignId={campaign.id} />
+            <CampaignDetailsOpportunities campaignId={campaign.id} />
+            <CampaignDetailsResponses
+                campaignId={campaign.id}
+                campaignName={campaign.name}
+                responses={campaign.responses}
+                fetchCampaignData={fetchCampaignData}
+            />
+            <CampaignDetailsConclusionForm campaign={campaign} fetchCampaignData={fetchCampaignData} />
+        </>
+    );
 }
 
-const mapStateToProps = state => {
-    return {
-        campaign: state.campaignDetails.details,
-        isLoading: state.loadingData.isLoading,
-        hasError: state.loadingData.hasError,
-    };
-};
-
-export default connect(mapStateToProps)(CampaignDetailsForm);
+export default CampaignDetailsForm;

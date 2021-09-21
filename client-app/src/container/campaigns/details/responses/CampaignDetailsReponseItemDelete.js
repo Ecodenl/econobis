@@ -1,24 +1,27 @@
 import React from 'react';
-import { connect } from 'react-redux';
-
 import Modal from '../../../../components/modal/Modal';
-import { fetchCampaign } from '../../../../actions/campaign/CampaignDetailsActions';
 import CampaignDetailsAPI from '../../../../api/campaign/CampaignDetailsAPI';
 
-const CampaignDetailsReponseItemDelete = props => {
-    const confirmAction = () => {
-        CampaignDetailsAPI.detachResponse(props.campaignId, props.contactId).then(() => {
-            props.fetchCampaign(props.campaignId, null);
-            props.toggleDelete();
-        });
-    };
+const CampaignDetailsResponseItemDelete = ({ toggleDelete, fetchCampaignData, contactId, campaignId }) => {
+    async function confirmAction() {
+        try {
+            await CampaignDetailsAPI.detachResponse(campaignId, contactId);
+
+            fetchCampaignData();
+            toggleDelete();
+        } catch (error) {
+            alert(
+                'Er is iets misgegaan met het verwijderen van de response. Herlaad de pagina en probeer het nogmaals.'
+            );
+        }
+    }
 
     return (
         <Modal
             buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
-            closeModal={props.toggleDelete}
-            confirmAction={() => confirmAction()}
+            closeModal={toggleDelete}
+            confirmAction={confirmAction}
             title="Verwijderen"
         >
             <p>Wil je deze response ontkoppelen van deze campagne?</p>
@@ -26,16 +29,4 @@ const CampaignDetailsReponseItemDelete = props => {
     );
 };
 
-const mapStateToProps = state => {
-    return {
-        campaignId: state.campaignDetails.details.id,
-    };
-};
-
-const mapDispatchToProps = dispatch => ({
-    fetchCampaign: (id, pagination) => {
-        dispatch(fetchCampaign(id, pagination));
-    },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(CampaignDetailsReponseItemDelete);
+export default CampaignDetailsResponseItemDelete;

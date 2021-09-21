@@ -1,61 +1,55 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
 import CampaignDetailsOrganisationView from './CampaignDetailsOrganisationView';
 import CampaignDetailsOrganisationItemDelete from './CampaignDetailsOrganisationItemDelete';
 
-class CampaignDetailsOrganisationNew extends Component {
-    constructor(props) {
-        super(props);
+function CampaignDetailsOrganisationItem({ organisation, campaignId, fetchCampaignData }) {
+    const [state, setState] = useState({
+        showActionButtons: false,
+        highlightLine: '',
+        showDelete: false,
+    });
 
-        this.state = {
-            showActionButtons: false,
-            highlightLine: '',
-            showDelete: false,
-
-            organisation: {
-                ...props.organisation,
-            },
-        };
-    }
-
-    onLineEnter = () => {
-        this.setState({
+    function onLineEnter() {
+        setState({
+            ...state,
             showActionButtons: true,
             highlightLine: 'highlight-line',
         });
-    };
+    }
 
-    onLineLeave = () => {
-        this.setState({
+    function onLineLeave() {
+        setState({
+            ...state,
             showActionButtons: false,
             highlightLine: '',
         });
-    };
-
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
-    };
-
-    render() {
-        return (
-            <div>
-                <CampaignDetailsOrganisationView
-                    highlightLine={this.state.highlightLine}
-                    showActionButtons={this.state.showActionButtons}
-                    onLineEnter={this.onLineEnter}
-                    onLineLeave={this.onLineLeave}
-                    toggleDelete={this.toggleDelete}
-                    organisation={this.state.organisation}
-                />
-                {this.state.showDelete && (
-                    <CampaignDetailsOrganisationItemDelete
-                        toggleDelete={this.toggleDelete}
-                        organisationId={this.state.organisation.id}
-                    />
-                )}
-            </div>
-        );
     }
+
+    function toggleDelete() {
+        setState({ showDelete: !state.showDelete });
+    }
+
+    return (
+        <div>
+            <CampaignDetailsOrganisationView
+                highlightLine={state.highlightLine}
+                showActionButtons={state.showActionButtons}
+                onLineEnter={onLineEnter}
+                onLineLeave={onLineLeave}
+                toggleDelete={toggleDelete}
+                organisation={organisation}
+            />
+            {state.showDelete && (
+                <CampaignDetailsOrganisationItemDelete
+                    toggleDelete={toggleDelete}
+                    organisationId={organisation.id}
+                    campaignId={campaignId}
+                    fetchCampaignData={fetchCampaignData}
+                />
+            )}
+        </div>
+    );
 }
 
-export default CampaignDetailsOrganisationNew;
+export default CampaignDetailsOrganisationItem;

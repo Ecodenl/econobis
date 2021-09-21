@@ -221,7 +221,7 @@ const ProjectFormViewGeneral = ({
                 <div className="row">
                     <ViewText
                         label={
-                            'Blokkeer Wijzigen naam via contacten portal. Dit geldt dan ook voor het contact als hij of zij deelnemer is in een ander project waarbij naam wijzigen wel is toegestaan'
+                            'Blokkeer wijzigen naam via contacten portal. Voor contacten die ook in een project. waarbij "naam wijzigen" wel is toegestaan, deelnemen geldt dit dan ook.'
                         }
                         value={disableChangeContactNameOnPortal ? 'Ja' : 'Nee'}
                     />

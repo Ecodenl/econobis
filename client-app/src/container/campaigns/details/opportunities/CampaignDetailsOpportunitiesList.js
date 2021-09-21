@@ -1,13 +1,10 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
 import DataTable from '../../../../components/dataTable/DataTable';
 import DataTableHead from '../../../../components/dataTable/DataTableHead';
 import DataTableHeadTitle from '../../../../components/dataTable/DataTableHeadTitle';
 import DataTableBody from '../../../../components/dataTable/DataTableBody';
 import DataTablePagination from '../../../../components/dataTable/DataTablePagination';
-import { fetchCampaign } from '../../../../actions/campaign/CampaignDetailsActions';
-import { setCampaignPagination } from '../../../../actions/campaign/CampaignsPaginationActions';
 import CampaignDetailsOpportunityView from './CampaignDetailsOpportunityView';
 
 const CampaignDetailsOpportunitiesList = ({ data, meta, page, setPage, isLoading }) => {
@@ -57,24 +54,4 @@ const CampaignDetailsOpportunitiesList = ({ data, meta, page, setPage, isLoading
     );
 };
 
-const mapStateToProps = state => {
-    return {
-        campaignId: state.campaignDetails.details.id,
-        opportunities: state.campaignDetails.details.opportunities,
-        campaignPagination: state.campaignDetails.pagination,
-    };
-};
-
-const mapDispatchToProps = dispatch => ({
-    fetchCampaign: (id, pagination) => {
-        dispatch(fetchCampaign(id, pagination));
-    },
-    setCampaignPagination: pagination => {
-        dispatch(setCampaignPagination(pagination));
-    },
-});
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(CampaignDetailsOpportunitiesList);
+export default CampaignDetailsOpportunitiesList;

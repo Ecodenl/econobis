@@ -41,6 +41,7 @@ class ProjectJoryResource extends JoryResource
         $this->field('postal_code')->filterable()->sortable();
         $this->field('project_type_id')->filterable()->sortable();
         $this->field('check_postalcode_link')->filterable()->sortable();
+        $this->field('disable_change_contact_name_on_portal')->filterable()->sortable();
         $this->field('postalcode_link')->filterable()->sortable();
         $this->field('link_agree_terms')->filterable()->sortable();
         $this->field('link_understand_info')->filterable()->sortable();
@@ -85,6 +86,7 @@ class ProjectJoryResource extends JoryResource
         $this->field('project_type_id')->filterable()->sortable();
         $this->field('is_sce_project')->filterable()->sortable();
         $this->field('check_postalcode_link')->filterable()->sortable();
+        $this->field('disable_change_contact_name_on_portal')->filterable()->sortable();
         $this->field('postalcode_link')->filterable()->sortable();
         $this->field('link_agree_terms')->filterable()->sortable();
         $this->field('link_understand_info')->filterable()->sortable();

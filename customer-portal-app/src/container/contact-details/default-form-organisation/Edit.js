@@ -10,6 +10,8 @@ import TextBlock from '../../../components/general/TextBlock';
 import moment from 'moment';
 import EnergySuppliers from '../../../data/EnergySuppliers';
 import InputDate from '../../../components/form/InputDate';
+import { FaInfoCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 
 const DefaultContactOrganisationEdit = function({
     portalSettings,
@@ -42,9 +44,38 @@ const DefaultContactOrganisationEdit = function({
                                     touched={touched}
                                     id="name"
                                     placeholder={'Naam'}
+                                    disabled={initialContact.disableChangeContactNameOnPortal}
                                 />
                             )}
                         />
+                    </Col>
+                    <Col xs={12} sm={4}>
+                        {initialContact.disableChangeContactNameOnPortal ? (
+                            <>
+                                <FaInfoCircle
+                                    color={'blue'}
+                                    size={'15px'}
+                                    data-tip={
+                                        'Je neemt deel aan een project waarvan de deelnemingen op naam zijn uitgegeven.<br />' +
+                                        'Daarom kun je jouw naam niet zelf wijzigen.<br />' +
+                                        'Overige contactgegevens kun je wel zelf aanpassen.<br />' +
+                                        'Een wijziging van rekeningnummer wordt door ons gecontroleerd.<br />' +
+                                        'Heb je vragen of wil je jouw gegevens door de beheerder laten wijzigen?<br />' +
+                                        'Kijk in het menu onder "Over ons" voor contact gegevens.'
+                                    }
+                                    data-for={`contact-${initialContact.id}`}
+                                />
+                                <ReactTooltip
+                                    id={`contact-${initialContact.id}`}
+                                    effect="float"
+                                    place="right"
+                                    multiline={true}
+                                    aria-haspopup="true"
+                                />
+                            </>
+                        ) : (
+                            ''
+                        )}
                     </Col>
                 </Row>
 

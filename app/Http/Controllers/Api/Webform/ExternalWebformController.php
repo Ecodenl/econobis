@@ -238,11 +238,11 @@ class ExternalWebformController extends Controller
 
         $contact = $this->updateOrCreateContact($data['responsible_ids'], $data['contact'], $webform);
 
-        // IBAN nummer meegegeven, dan deze wijzigen.
-        // Hoeft niet indien: contact new aangemaakt is, dan is IBAN al overgenomen.
-        // En hoeft dus niet als IBAN niet is meegegeven (leeg maken / verwijderen van IBAN via mutatie kan dus niet).
-        // Voor IBAN tnv idem
+        // Indien contact gevonden en niet new aangemaakt.
         if($contact && !$this->newContactCreated){
+            // IBAN nummer meegegeven, dan deze wijzigen.
+            // En hoeft dus niet als IBAN niet is meegegeven (leeg maken / verwijderen van IBAN via mutatie kan dus niet).
+            // Voor IBAN tnv idem
             if($data['contact']['iban'] != ''
                 && $data['contact']['iban'] != $contact->iban){
                 $iban = $this->checkIban($data['contact']['iban'], 'contact.');
@@ -250,11 +250,60 @@ class ExternalWebformController extends Controller
                 $contact->save();
                 $this->log("IBAN gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
             }
+            // IBAN tnv meegegeven, dan deze wijzigen.
             if($data['contact']['iban_attn'] != ''
                 && $data['contact']['iban_attn'] != $contact->iban_attn){
                 $contact->iban_attn = $data['contact']['iban_attn'];
                 $contact->save();
                 $this->log("IBAN tnv gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
+            }
+
+            // Incasso machting gewijzigd.
+            if($data['contact']['is_collect_mandate'] != ''){
+                $isCollectMandate = (bool)$data['contact']['is_collect_mandate'];
+                $contact->is_collect_mandate = $isCollectMandate;
+                $this->log("Incasso machtiging Ja/Nee gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
+
+                if(!$isCollectMandate){
+                    $contact->collect_mandate_code = '';
+                    $contact->collect_mandate_signature_date = null;
+                    $contact->collect_mandate_first_run_date = null;
+                    $contact->collect_mandate_collection_schema = '';
+                }else{
+                    if($data['contact']['collect_mandate_code'] == '' && $contact->collect_mandate_code == '') {
+                        $data['contact']['collect_mandate_code'] = $contact->number;
+                    }
+                    if($data['contact']['collect_mandate_signature_date'] == '' && $contact->collect_mandate_signature_date == null) {
+                        $data['contact']['collect_mandate_signature_date'] = Carbon::now();
+                    }
+                    if($data['contact']['collect_mandate_first_run_date'] == '' && $contact->collect_mandate_first_run_date == null) {
+                        $data['contact']['collect_mandate_first_run_date'] = Carbon::now()->addMonth(1)->startOfMonth();
+                    }
+                    if($data['contact']['collect_mandate_collection_schema'] == '' && $contact->collect_mandate_collection_schema == '') {
+                        $data['contact']['collect_mandate_collection_schema'] = 'core';
+                    }
+                    // Incasso machtigingskenmerk gewijzigd.
+                    if($data['contact']['collect_mandate_code'] != '' && $data['contact']['collect_mandate_code'] != $contact->collect_mandate_code){
+                        $contact->collect_mandate_code = $data['contact']['collect_mandate_code'];
+                        $this->log("Incasso machtigingskenmerk gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
+                    }
+                    // Incasso ondertekening datum gewijzigd.
+                    if($data['contact']['collect_mandate_signature_date'] != '' && $data['contact']['collect_mandate_signature_date'] != $contact->collect_mandate_signature_date){
+                        $contact->collect_mandate_signature_date = Carbon::make($data['contact']['collect_mandate_signature_date']);
+                        $this->log("Incasso ondertekening datum gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
+                    }
+                    // Incasso eerste datum gewijzigd.
+                    if($data['contact']['collect_mandate_first_run_date'] != '' && $data['contact']['collect_mandate_first_run_date'] != $contact->collect_mandate_first_run_date){
+                        $contact->collect_mandate_first_run_date = Carbon::make($data['contact']['collect_mandate_first_run_date']);
+                        $this->log("Incasso eerste datum gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
+                    }
+                    // Incasso schema gewijzigd.
+                    if($data['contact']['collect_mandate_collection_schema'] != '' && $data['contact']['collect_mandate_collection_schema'] != $contact->collect_mandate_collection_schema){
+                        $contact->collect_mandate_collection_schema = $data['contact']['collect_mandate_collection_schema'];
+                        $this->log("Incasso schema gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
+                    }
+                }
+                $contact->save();
             }
         }
 
@@ -436,6 +485,25 @@ class ExternalWebformController extends Controller
 
     protected function updateOrCreateContact(array $responsibleIds, array $data, Webform $webform)
     {
+        $ownerAndResponsibleUser = null;
+        if($responsibleIds['responsible_user_id']) {
+            $ownerAndResponsibleUser = User::find($responsibleIds['responsible_user_id']);
+            $this->log('Eigenaar contact : ' . $ownerAndResponsibleUser->id);
+        }elseif($responsibleIds['responsible_team_id'] && Team::find($responsibleIds['responsible_team_id'])) {
+            $ownerAndResponsibleUser = Team::find($responsibleIds['responsible_team_id'])->users->first();
+            $this->log('Eigenaar contact ' . $ownerAndResponsibleUser->id . ' (1e van team : '
+                . $responsibleIds['responsible_team_id'] . ')');
+        }elseif(!empty($webform->responsible_user_id)) {
+            $ownerAndResponsibleUser = User::find($webform->responsible_user_id);
+            $this->log('Eigenaar contact (default webformulier) : ' . $ownerAndResponsibleUser->id);
+        }elseif(!empty($webform->responsible_team_id) && Team::find($webform->responsible_team_id)) {
+            $ownerAndResponsibleUser = Team::find($webform->responsible_team_id)->users->first();
+            $this->log('Eigenaar contact (default webformulier) ' . $ownerAndResponsibleUser->id . ' (1e van team : '
+                . $webform->responsible_team_id . ')');
+        }
+        Auth::setUser($ownerAndResponsibleUser);
+        $this->log('Default Eigenaar contact verantwoordelijke gebruiker (zelfde als eigenaar) : ' . $ownerAndResponsibleUser->id);
+
         $contact = $this->getContactByAddressAndEmail($data);
         $this->log('Actie: ' . $this->contactActie);
 
@@ -470,12 +538,12 @@ class ExternalWebformController extends Controller
                         $this->address = $address;
                     }
                     $this->addPhoneNumberToContact($data, $contact);
-                    $this->addContactToGroup($data, $contact);
+                    $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
                     break;
                 case 'NAT' :
                     $this->addAddressToContact($data, $contact);
                     $this->addPhoneNumberToContact($data, $contact);
-                    $this->addContactToGroup($data, $contact);
+                    $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw adres toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
                     $note .= "Adres type : " . AddressType::get($addressTypeId)->name . "\n";
@@ -493,7 +561,7 @@ class ExternalWebformController extends Controller
                 case 'NET' :
                     $this->addEmailToContact($data, $contact);
                     $this->addPhoneNumberToContact($data, $contact);
-                    $this->addContactToGroup($data, $contact);
+                    $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw e-mailadres  " . $data['email_address'] . " toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
                     $note .= "Controleer contactgegevens\n";
@@ -522,23 +590,6 @@ class ExternalWebformController extends Controller
             // contactActie = "NC"  -> Nieuw contact
             // contactActie = "NCT" -> Nieuw contact + taak
             $this->log('Geen enkel contact kunnen vinden op basis van meegegeven data, nieuw contact aanmaken.');
-
-            $ownerAndResponsibleUser = null;
-            if($responsibleIds['responsible_user_id']) {
-                $ownerAndResponsibleUser = User::find($responsibleIds['responsible_user_id']);
-                $this->log('Eigenaar contact : ' . $ownerAndResponsibleUser->id);
-            }elseif($responsibleIds['responsible_team_id'] && Team::find($responsibleIds['responsible_team_id'])) {
-                $ownerAndResponsibleUser = Team::find($responsibleIds['responsible_team_id'])->users->first();
-                $this->log('Eigenaar contact ' . $ownerAndResponsibleUser->id . ' (1e van team : '
-                    . $responsibleIds['responsible_team_id'] . ')');
-            }elseif(!empty($webform->responsible_user_id)) {
-                $ownerAndResponsibleUser = User::find($webform->responsible_user_id);
-                $this->log('Eigenaar contact (default webformulier) : ' . $ownerAndResponsibleUser->id);
-            }elseif(!empty($webform->responsible_team_id) && Team::find($webform->responsible_team_id)) {
-                $ownerAndResponsibleUser = Team::find($webform->responsible_team_id)->users->first();
-                $this->log('Eigenaar contact (default webformulier) ' . $ownerAndResponsibleUser->id . ' (1e van team : '
-                    . $webform->responsible_team_id . ')');
-            }
 
             $contact = $this->addContact($data, $ownerAndResponsibleUser);
             switch($this->contactActie){
@@ -1006,6 +1057,22 @@ class ExternalWebformController extends Controller
             return null;
         };
 
+        $isCollectMandate = (bool)$data['is_collect_mandate'];
+        if($isCollectMandate){
+            if($data['collect_mandate_code'] == '') {
+                $data['collect_mandate_code'] = '';
+            }
+            if($data['collect_mandate_signature_date'] == '') {
+                $data['collect_mandate_signature_date'] = Carbon::now();
+            }
+            if($data['collect_mandate_first_run_date'] == '') {
+                $data['collect_mandate_first_run_date'] = Carbon::now()->addMonth(1)->startOfMonth();
+            }
+            if($data['collect_mandate_collection_schema'] == '') {
+                $data['collect_mandate_collection_schema'] = 'core';
+            }
+        }
+
         if ($data['organisation_name']) {
             $this->log('Er is een organisatienaam meegegeven; organisatie aanmaken.');
 
@@ -1018,11 +1085,11 @@ class ExternalWebformController extends Controller
                 'iban_attn' => $data['iban_attn'],
                 'did_agree_avg' => (bool)$data['did_agree_avg'],
                 'date_did_agree_avg' => $data['date_did_agree_avg'] ? Carbon::make($data['date_did_agree_avg']): null,
-                'is_collect_mandate' => (bool)$data['is_collect_mandate'],
-                'collect_mandate_code' => $data['is_collect_mandate'] ? $data['collect_mandate_code'] : '',
-                'collect_mandate_signature_date' => $data['is_collect_mandate'] ? Carbon::make($data['collect_mandate_signature_date']): null,
-                'collect_mandate_first_run_date' => $data['is_collect_mandate'] ? Carbon::make($data['collect_mandate_first_run_date']): null,
-                'collect_mandate_collection_schema' => $data['is_collect_mandate'] ? 'core' : '',
+                'is_collect_mandate' => $isCollectMandate,
+                'collect_mandate_code' => $isCollectMandate ? $data['collect_mandate_code'] : '',
+                'collect_mandate_signature_date' => $isCollectMandate ? Carbon::make($data['collect_mandate_signature_date']): null,
+                'collect_mandate_first_run_date' => $isCollectMandate ? Carbon::make($data['collect_mandate_first_run_date']): null,
+                'collect_mandate_collection_schema' => $isCollectMandate ? 'core' : '',
                 'owner_id' => $ownerAndResponsibleUser->id,
             ]);
             $this->newContactCreated = true;
@@ -1040,7 +1107,7 @@ class ExternalWebformController extends Controller
             $this->addAddressToContact($data, $contactOrganisation);
             $this->addEmailToContact($data, $contactOrganisation);
             $this->addPhoneNumberToContact($data, $contactOrganisation);
-            $this->addContactToGroup($data, $contactOrganisation);
+            $this->addContactToGroup($data, $contactOrganisation, $ownerAndResponsibleUser);
 
             // Validatie op title_id
 
@@ -1123,7 +1190,7 @@ class ExternalWebformController extends Controller
         $this->addAddressToContact($data, $contact);
         $this->addEmailToContact($data, $contact);
         $this->addPhoneNumberToContact($data, $contact);
-        $this->addContactToGroup($data, $contact);
+        $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
 
         return $contact;
     }
@@ -1604,7 +1671,7 @@ class ExternalWebformController extends Controller
         }
     }
 
-    protected function addContactToGroup(array $data, Contact $contact)
+    protected function addContactToGroup(array $data, Contact $contact, $ownerAndResponsibleUser)
     {
         if ($data['group_name']) {
             $this->log('Er is een contact groep meegegeven, groep koppelen.');
@@ -1624,11 +1691,14 @@ class ExternalWebformController extends Controller
             if($contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
                 $this->log('Groep ' . $data['group_name'] . ' al gekoppeld aan: ' . $contact->id );
             }else{
-                $contactGroup->contacts()->syncWithoutDetaching($contact);
+                $contactGroup->contacts()->syncWithoutDetaching([ $contact->id => ['member_created_at' => \Illuminate\Support\Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
+
                 $this->contactGroup = $contactGroup;
                 $this->log('Contact ' . $contact->id . ' aan groep ' . $data['group_name'] . ' gekoppeld.');
 
                 if($contactGroup->laposta_list_id){
+                    Auth::setUser($ownerAndResponsibleUser);
+                    $this->log('Laposta contact groep verantwoordelijke gebruiker (zelfde als eigenaar) : ' . $ownerAndResponsibleUser->id);
                     $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, false);
                     $lapostaMemberId = $lapostaMemberHelper->createMember();
                     $this->log('Contact ' . $contact->id . ' als laposta relatie ' . $lapostaMemberId . ' aangemaakt.');
@@ -1656,10 +1726,12 @@ class ExternalWebformController extends Controller
                         if($contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
                             $this->log('Groep ' . $data['group_name'] . ' al gekoppeld aan: ' . $contact->id );
                         }else {
-                            $contactGroup->contacts()->syncWithoutDetaching($contact);
+                            $contactGroup->contacts()->syncWithoutDetaching([ $contact->id => ['member_created_at' => \Illuminate\Support\Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
                             $this->log('Contact ' . $contact->id . ' aan groep ' . $contactGroup->name . ' gekoppeld.');
 
                             if($contactGroup->laposta_list_id){
+                                Auth::setUser($ownerAndResponsibleUser);
+                                $this->log('Laposta contact groep verantwoordelijke gebruiker (zelfde als eigenaar) : ' . $ownerAndResponsibleUser->id);
                                 $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, false);
                                 $lapostaMemberId = $lapostaMemberHelper->createMember();
                                 $this->log('Contact ' . $contact->id . ' als laposta relatie ' . $lapostaMemberId . ' aangemaakt.');

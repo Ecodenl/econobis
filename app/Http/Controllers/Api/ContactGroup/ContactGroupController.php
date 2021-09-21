@@ -201,7 +201,7 @@ class ContactGroupController extends Controller
 
         if(!$contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
 
-            $contactGroup->contacts()->attach($contact);
+           $contactGroup->contacts()->attach([$contact->id => ['member_created_at' => Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
             if($contactGroup->laposta_list_id){
                 $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, $collectMessages);
                 $lapostaMemberHelper->createMember();
@@ -252,22 +252,19 @@ class ContactGroupController extends Controller
             $contactGroupUpdate = $contactGroup;
         }
 
-        $contactGroupUpdate->contacts()->updateExistingPivot($contact->id, ['laposta_member_since' => Carbon::parse($request->get('lapostaMemberSince'))]);
+        $contactGroupUpdate->contacts()->updateExistingPivot($contact->id, ['member_to_group_since' => Carbon::parse($request->get('memberToGroupSince'))]);
     }
 
     public function addContacts(ContactGroup $contactGroup, Request $request)
     {
         $contactIds = $request->input();
 
-        $contactGroup->contacts()->syncWithoutDetaching($contactIds);
-
-        if($contactGroup->laposta_list_id){
-            foreach ($contactIds as $contactId) {
-                $contact = Contact::find($contactId);
-                if($contact) {
-                    $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, false);
-                    $lapostaMemberHelper->createMember();
-                }
+        foreach ($contactIds as $contactId) {
+            $contact = Contact::find($contactId);
+            $contactGroup->contacts()->syncWithoutDetaching([ $contact->id => ['member_created_at' => Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
+            if($contactGroup->laposta_list_id && $contact) {
+                $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, false);
+                $lapostaMemberHelper->createMember();
             }
         }
     }
@@ -426,6 +423,8 @@ class ContactGroupController extends Controller
             if($contactGroup->type_id === 'composed' ){
                 $contactGroupNew = $contactGroup->replicate();
                 $contactGroupNew->type_id = 'simulated';
+                $contactGroupNew->composed_of = 'contacts';
+                $contactGroupNew->show_contact_form = false;
                 $contactGroupNew->save();
 
                 $contactGroup->simulated_group_id = $contactGroupNew->id;

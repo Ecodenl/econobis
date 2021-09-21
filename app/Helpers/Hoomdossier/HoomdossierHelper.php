@@ -12,6 +12,7 @@ use App\Helpers\Email\EmailHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Hoomdossier\Templates\HoomdossierMail;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Log;
@@ -46,7 +47,7 @@ class HoomdossierHelper
         if($this->cooperation->hoom_group_id) {
             $hoomdossierContactGroup = ContactGroup::find($this->cooperation->hoom_group_id);
 
-            $hoomdossierContactGroup->contacts()->syncWithoutDetaching($this->contact);
+            $hoomdossierContactGroup->contacts()->syncWithoutDetaching([ $this->contact->id => ['member_created_at' => \Illuminate\Support\Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
 
             if($hoomdossierContactGroup->laposta_list_id){
                 $lapostaMemberHelper = new LapostaMemberHelper($hoomdossierContactGroup, $this->contact, false);

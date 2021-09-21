@@ -141,7 +141,7 @@ class Contact extends Model
 
     public function groups()
     {
-        return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->withPivot('laposta_member_id', 'laposta_member_state', 'laposta_member_created_at', 'laposta_member_since')->orderBy('contact_groups.id', 'desc');
+        return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since')->orderBy('contact_groups.id', 'desc');
     }
 
     public function isPerson()
@@ -460,6 +460,17 @@ class Contact extends Model
     public function getIsParticipantAttribute()
     {
         return( $this->participations && $this->participations->count() > 0 );
+    }
+
+    public function getDisableChangeContactNameOnPortalAttribute()
+    {
+        foreach($this->participations as $participation)
+        {
+            if($participation->project && $participation->project->disable_change_contact_name_on_portal ){
+                return true;
+            }
+        }
+        return false;
     }
 
     public function getAddressForPostalCodeCheckAttribute()

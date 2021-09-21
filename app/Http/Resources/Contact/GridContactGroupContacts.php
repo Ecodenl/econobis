@@ -24,8 +24,8 @@ class GridContactGroupContacts extends Resource
             'statusName' => $this->present()->status,
             'lapostaMemberId' => $this->laposta_member_id,
             'lapostaMemberState' => $this->laposta_member_state,
-            'lapostaMemberCreatedAt' => $this->laposta_member_created_at,
-            'lapostaMemberSince' => $this->laposta_member_since,
+            'memberCreatedAt' => $this->member_created_at,
+            'memberToGroupSince' => $this->member_to_group_since,
         ];
     }
 }

@@ -9,4 +9,5 @@ export default [
     { code: 'create-financial-overview-project', name: 'Aanmaken waardestaat project' },
     { code: 'sent-financial-overview-contact', name: 'Maken/versturen waardestaten email' },
     { code: 'create-financial-overview-contact-post', name: 'Maken waardestaten post' },
+    { code: 'sync-laposta', name: 'Synchronisatie relatie in Laposta' },
 ];

@@ -52,7 +52,7 @@ class LapostaListHelper
         $this->createFields();
 
         foreach($this->contactGroup->contacts as $contact){
-            $lapostaMemberHelper = new LapostaMemberHelper($this->contactGroup, $contact, false);
+            $lapostaMemberHelper = new LapostaMemberHelper($this->contactGroup, $contact, true);
             $lapostaMemberHelper->createMember();
         }
 

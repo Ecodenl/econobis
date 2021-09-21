@@ -98,12 +98,8 @@ class TwinfieldInvoiceHelper
             }
             else {
 
-                $columnsSalesTransaction = $this->getSalesTransaction($invoiceToBeChecked);
-//                Log::info("getBrowseData 130_1 - getSalesTransaction");
-//                $twinfieldInvoiceTransactions = $browseDataApiConnector->getBrowseData('130_1', $columnsSalesTransaction);
-//                var_dump($twinfieldInvoiceTransactions);
-//                dd("stop");
                 //Salestransaction - ophalen van Twinfield
+                $columnsSalesTransaction = $this->getSalesTransaction($invoiceToBeChecked);
                 try {
                     $twinfieldInvoiceTransactions = $browseDataApiConnector->getBrowseData('100', $columnsSalesTransaction);
                 } catch (PhpTwinfieldException $exceptionTwinfield) {
@@ -121,12 +117,24 @@ class TwinfieldInvoiceHelper
                     // [1] - Dagboek (VRK)
                     // [3] - Matchstatus
                     // [4] - Matchnumber
-                    $dagBoek     = ($row->getCells()[1]->getValue());
-                    $matchStatus = ($row->getCells()[3]->getValue());
-                    $matchNumber = ($row->getCells()[4]->getValue());
+                    // [5] - Nota bedrag
+                    // [6] - Openstaand bedrag
+                    $dagBoekVRK     = ($row->getCells()[1]->getValue());
+                    $matchStatusVRK = ($row->getCells()[3]->getValue());
+                    $matchNumberVRK = ($row->getCells()[4]->getValue());
+                    $amountInvoiceVRK = ($row->getCells()[5]->getValue());
+                    $amountOpenVRK = ($row->getCells()[6]->getValue());
 
-                    //VRK is de verkoop nota
-                    if($dagBoek === 'VRK' && ($matchStatus=='matched' || !empty($matchNumber) ) )
+//                Log::info("Dagboek           :" . $dagBoekVRK);
+//                Log::info("Matchstatus       :" . $matchStatusVRK);
+//                Log::info("Matchnumber       :" . $matchNumberVRK);
+//                Log::info("Notabedrag        :" . $amountInvoiceVRK);
+//                Log::info("Openstaand bedrag :" . $amountOpenVRK);
+
+                    //VRK is de verkoop nota (zit al in ask filter getSalesTransaction
+                    //Bij openstaande nota's (met of zonder deelbetalingen) is matchstatus 'available'
+                    //Als er een betaling is, dan is matchnummer ingevuld. Dat zijn de nota's waar we paid data van willen ophalen.
+                    if(!empty($matchNumberVRK))
                     {
                         $getPaidData = true;
                     }
@@ -145,79 +153,32 @@ class TwinfieldInvoiceHelper
                         Log::error($e->getMessage());
                         return $e->getMessage() ? $e->getMessage() : 'Er is een fout opgetreden bij ophalen betaalgegevens notanr. ' . $invoiceToBeChecked->number . '.';
                     }
-//                dd($twinfieldInvoiceTransactions);
 
                     // Set huidige invoice payments op in_progress
                     foreach($invoiceToBeChecked->payments as $payment) {
                         $payment->in_progress = true;
                         $payment->save();
                     }
+
+                    // Indien 1 row (dat is dan alleen de VRK regel als het goed is), dan nota op betaald indien:
+                    // matchstatus = matched and openstaand bedrag is 0,00
+                    // Dit komt bijvoorbeeld voor als Nota's tegen elkaar afgeletterd worden (nota / creditnota biiv.)
+                    if($twinfieldInvoiceTransactions && $twinfieldInvoiceTransactions->getTotal() == 1
+                        && $matchStatusVRK == 'matched'
+                        && floatval(number_format($amountOpenVRK, 2, '.', '') == 0) ){
+                        $row = $twinfieldInvoiceTransactions->getRows()[0];
+                        $dagBoek = ($row->getCells()[1]->getValue());
+                        if($dagBoek === 'VRK') {
+                            $messages = $this->createOrUpdateInvoicePayment($row, $dagBoek, $invoiceToBeChecked, $messages);
+                        }
+                    }
+
                     // Sync nieuwe een aangepaste invoice payments
                     foreach($twinfieldInvoiceTransactions->getRows() as $row){
-
-                        // [1] - Dagboek (alle)
-                        // [3] - Notabedrag
-                        // [4] - Openstaand bedrag
-                        // [5] - Betaaldatum
-                        // [6] - Twinfieldnumber
-                        // [7] - Matchnumber
-                        // [8] - Wijzigingsdatum
-                        // [ ] - PaymentReference ??
-
-                        $dagBoek     = ($row->getCells()[1]->getValue());
-                        $amountInvoice = $row->getCells()[3]->getValue();
-                        $amountOpen = $row->getCells()[4]->getValue();
-                        $dateInput = $row->getCells()[5]->getValue(); //datetime
-                        $dateInput = date_format($dateInput, 'Y-m-d');
-                        //todo WM: nog uitzoeken of en hoe we deze kunnen bepalen vanuit Twinfield???
-                        $paymentReference = null;
-                        $twinfieldNumber = ($row->getCells()[6]->getValue());
-                        $twinfieldMatchNumber = ($row->getCells()[7]->getValue());
-                        $twinfieldModifiedDate = ($row->getCells()[8]->getValue());
-                        $twinfieldModifiedDate = Carbon::parse($twinfieldModifiedDate);
-
-                        //VRK is de verkoop nota, die slaan we nu over
-                        if($dagBoek !== 'VRK')
-                        {
-                            //-100 op debiteur is dus 100 betaald
-                            $amount = floatval(number_format(($amountInvoice-$amountOpen) * -1, 2, '.', ''));
-                            $invoicePaymentCheck = InvoicePayment::where('invoice_id', $invoiceToBeChecked->id)->where('twinfield_number', $twinfieldNumber)->where('twinfield_match_number', $twinfieldMatchNumber);
-                            // InvoicePayment bestaat nog niet, dan nieuw aanmaken
-                            if(!$invoicePaymentCheck->exists())
-                            {
-                                $invoicePayment = new InvoicePayment();
-                                $invoicePayment->invoice_id = $invoiceToBeChecked->id;
-                                $invoicePayment->twinfield_number = $twinfieldNumber;
-                                $invoicePayment->twinfield_match_number = $twinfieldMatchNumber;
-                                $invoicePayment->twinfield_modified = $twinfieldModifiedDate;
-                                $invoicePayment->amount = $amount;
-                                $invoicePayment->type_id = $dagBoek;
-                                $invoicePayment->date_paid = $dateInput;
-                                $invoicePayment->payment_reference = $paymentReference;
-                                $invoicePayment->in_progress = false;
-                                $invoicePayment->save();
-                                Log::info('Betaling van ' . $amount . ' toegevoegd via twinfield voor nota ' . $invoiceToBeChecked->number);
-                                array_push($messages, 'Betaling van €' . $amount . ' toegevoegd via Twinfield voor nota ' . $invoiceToBeChecked->number . '.');
-                            // anders bijwerken
-                            }else{
-                                $invoicePayment = $invoicePaymentCheck->first();
-                                $oldAmount = floatval(number_format($invoicePayment->amount, 2, '.', ''));
-                                $oldDateInput = $invoicePayment->date_paid;
-                                $oldTwinfieldModified = Carbon::parse($invoicePayment->twinfield_modified);
-                                $oldPaymentReference = $invoicePayment->payment_reference;
-                                if($oldAmount != $amount || $oldDateInput != $dateInput || $oldTwinfieldModified != $twinfieldModifiedDate || $oldPaymentReference != $paymentReference)
-                                {
-                                    $data = ['amount'=>$amount, 'date_paid'=>$dateInput, 'twinfield_modified'=>$twinfieldModifiedDate, 'payment_reference'=>$paymentReference];
-                                    $invoicePayment->fill($data);
-                                    $invoicePayment->in_progress = false;
-                                    $invoicePayment->save();
-                                    Log::info('Betaling van ' . $amount . ' (datum ' . $dateInput . ', kenmerk ' . ($paymentReference ? $paymentReference : '') . ') aangepast via twinfield voor nota ' . $invoiceToBeChecked->number . '. Bedrag was ' . $oldAmount . ' (datum ' . $oldDateInput . ').' );
-                                    array_push($messages, 'Betaling van €' . $amount . ' (datum ' . $dateInput . ') aangepast via Twinfield voor nota ' . $invoiceToBeChecked->number . '. Bedrag was €' . $oldAmount . ' (datum ' . $oldDateInput . ').');
-                                }else{
-                                    $invoicePayment->in_progress = false;
-                                    $invoicePayment->save();
-                                }
-                            }
+                        $dagBoek = ($row->getCells()[1]->getValue());
+                        // VRK is de verkoop nota, die slaan we nu hier over
+                        if($dagBoek !== 'VRK'){
+                            $messages = $this->createOrUpdateInvoicePayment($row, $dagBoek, $invoiceToBeChecked, $messages);
                         }
                     };
                     // Invoice payments die we niet meer binnenkrijgen verwijderen we (softdelete))
@@ -272,24 +233,26 @@ class TwinfieldInvoiceHelper
         $columns[] = (new BrowseColumn())
             ->setField('fin.trs.line.matchstatus')
             ->setLabel('Betaalstatus')
-            ->setVisible(true);
-//            ->setAsk(true)
-//            ->setOperator(BrowseColumnOperator::EQUAL())
-//            ->setFrom( "matched" );
+            ->setVisible(true)
+            ->setAsk(false);
         // [4] - Matchnumber
         $columns[] = (new BrowseColumn())
             ->setField('fin.trs.line.matchnumber')
             ->setLabel('Betaalnr.')
             ->setVisible(true)
             ->setAsk(false);
-//        $columns[] = (new BrowseColumn())
-//            ->setField('fin.trs.line.modified')
-//            ->setLabel('Wijzigingsdatum')
-//            ->setVisible(true)
-//            ->setAsk(false);
-//            ->setOperator(BrowseColumnOperator::BETWEEN())
-//            ->setFrom('19800101')
-//            ->setTo('20391201');
+        // [5] - Notabedrag in EUR
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.line.basevaluesigned')
+            ->setLabel('Bedrag in administratie valuta')
+            ->setVisible(true)
+            ->setAsk(false);
+        // [6] - Openstaand bedrag
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.line.openbasevaluesigned')
+            ->setLabel('Openstaand bedrag')
+            ->setVisible(true)
+            ->setAsk(false);
 
         return $columns;
 
@@ -312,8 +275,7 @@ class TwinfieldInvoiceHelper
             ->setField('fin.trs.head.code')
             ->setLabel('Dagboek')
             ->setVisible(true)
-            ->setAsk(true)
-            ->setOperator(BrowseColumnOperator::EQUAL());
+            ->setAsk(false);
         // [2] - Notanr.
         $columns[] = (new BrowseColumn())
             ->setField('fin.trs.line.invnumber')
@@ -327,15 +289,8 @@ class TwinfieldInvoiceHelper
             ->setField('fin.trs.line.basevaluesigned')
             ->setLabel('Bedrag in administratie valuta')
             ->setVisible(true)
-            ->setAsk(true)
-            ->setOperator(BrowseColumnOperator::BETWEEN());
-        // [4] - Openstaand bedrag
-        $columns[] = (new BrowseColumn())
-            ->setField('fin.trs.line.openbasevaluesigned')
-            ->setLabel('Openstaand bedrag')
-            ->setVisible(true)
             ->setAsk(false);
-        // [5] - Betaaldatum
+        // [4] - Betaaldatum
         $columns[] = (new BrowseColumn())
             ->setField('fin.trs.line.matchdate')
             ->setLabel('Betaaldatum')
@@ -344,26 +299,107 @@ class TwinfieldInvoiceHelper
             ->setOperator(BrowseColumnOperator::BETWEEN())
             ->setFrom('19800101')
             ->setTo('20391201');
-        // [6] - Twinfield nr.
+        // [5] - Twinfield nr.
         $columns[] = (new BrowseColumn())
             ->setField('fin.trs.head.number')
             ->setLabel('Boekst.nr.')
             ->setVisible(true)
-            ->setAsk(true);
-        // [7] - Matchnumber
+            ->setAsk(false);
+        // [6] - Matchnumber
         $columns[] = (new BrowseColumn())
             ->setField('fin.trs.line.matchnumber')
             ->setLabel('Betaalnr.')
             ->setVisible(true)
             ->setAsk(false);
-        // [8] - Wijzigingsdatum
+        // [7] - Wijzigingsdatum
         $columns[] = (new BrowseColumn())
             ->setField('fin.trs.line.modified')
             ->setLabel('Wijzigingsdatum')
-            ->setVisible(true);
+            ->setVisible(true)
+            ->setAsk(false);
 
         return $columns;
 
+    }
+
+    /**
+     * @param \PhpTwinfield\BrowseDataRow $row
+     * @param $invoiceToBeChecked
+     * @param array $messages
+     * @return array
+     */
+    private function createOrUpdateInvoicePayment(\PhpTwinfield\BrowseDataRow $row, $dagBoek, $invoiceToBeChecked, array $messages): array
+    {
+        // [1] - Dagboek
+        // [2] - Notanr.
+        // [3] - Bedrag
+        // [4] - Betaaldatum
+        // [5] - Twinfieldnumber
+        // [6] - Matchnumber
+        // [7] - Wijzigingsdatum
+
+        $amountInvoice = $row->getCells()[3]->getValue();
+        $dateInput = $row->getCells()[4]->getValue(); //datetime
+        $dateInput = date_format($dateInput, 'Y-m-d');
+        //todo WM: nog uitzoeken of en hoe we deze kunnen bepalen vanuit Twinfield???
+        $paymentReference = null;
+        $twinfieldNumber = ($row->getCells()[5]->getValue());
+        $twinfieldMatchNumber = ($row->getCells()[6]->getValue());
+        $twinfieldModifiedDate = ($row->getCells()[7]->getValue());
+        $twinfieldModifiedDate = Carbon::parse($twinfieldModifiedDate);
+
+//        Log::info("   Dagboek        :" . $dagBoek);
+//        Log::info("   Notabedrag     :" . $amountInvoice);
+//        Log::info("   Betaaldatum    :" . $dateInput);
+//        Log::info("   Twinfieldnumber:" . $twinfieldNumber);
+//        Log::info("   Matchnumber    :" . $twinfieldMatchNumber);
+//        Log::info("   Wijzigingsdatum:" . $twinfieldModifiedDate);
+
+        if($dagBoek === 'VRK') {
+            //Nota bedrag 100 is dus ook 100 betaald
+            $amount = floatval(number_format($amountInvoice, 2, '.', ''));
+        }else{
+            //Niet verkoop regel: -100 is dus 100 betaald
+            $amount = floatval(number_format($amountInvoice * -1, 2, '.', ''));
+        }
+
+        $invoicePaymentCheck = InvoicePayment::where('invoice_id', $invoiceToBeChecked->id)->where('twinfield_number', $twinfieldNumber)->where('twinfield_match_number', $twinfieldMatchNumber);
+        // InvoicePayment bestaat nog niet, dan nieuw aanmaken
+        if (!$invoicePaymentCheck->exists()) {
+            $invoicePayment = new InvoicePayment();
+            $invoicePayment->invoice_id = $invoiceToBeChecked->id;
+            $invoicePayment->twinfield_number = $twinfieldNumber;
+            $invoicePayment->twinfield_match_number = $twinfieldMatchNumber;
+            $invoicePayment->twinfield_modified = $twinfieldModifiedDate;
+            $invoicePayment->amount = $amount;
+            $invoicePayment->type_id = $dagBoek;
+            $invoicePayment->date_paid = $dateInput;
+            $invoicePayment->payment_reference = $paymentReference;
+            $invoicePayment->in_progress = false;
+            $invoicePayment->save();
+            Log::info('Betaling van ' . $amount . ' toegevoegd via twinfield voor nota ' . $invoiceToBeChecked->number);
+            array_push($messages, 'Betaling van €' . $amount . ' toegevoegd via Twinfield voor nota ' . $invoiceToBeChecked->number . '.');
+            // anders bijwerken
+        } else {
+            $invoicePayment = $invoicePaymentCheck->first();
+            $oldAmount = floatval(number_format($invoicePayment->amount, 2, '.', ''));
+            $oldDateInput = $invoicePayment->date_paid;
+            $oldTwinfieldModified = Carbon::parse($invoicePayment->twinfield_modified);
+            $oldPaymentReference = $invoicePayment->payment_reference;
+            if ($oldAmount != $amount || $oldDateInput != $dateInput || $oldTwinfieldModified != $twinfieldModifiedDate || $oldPaymentReference != $paymentReference) {
+                $data = ['amount' => $amount, 'date_paid' => $dateInput, 'twinfield_modified' => $twinfieldModifiedDate, 'payment_reference' => $paymentReference];
+                $invoicePayment->fill($data);
+                $invoicePayment->in_progress = false;
+                $invoicePayment->save();
+                Log::info('Betaling van ' . $amount . ' (datum ' . $dateInput . ', kenmerk ' . ($paymentReference ? $paymentReference : '') . ') aangepast via twinfield voor nota ' . $invoiceToBeChecked->number . '. Bedrag was ' . $oldAmount . ' (datum ' . $oldDateInput . ').');
+                array_push($messages, 'Betaling van €' . $amount . ' (datum ' . $dateInput . ') aangepast via Twinfield voor nota ' . $invoiceToBeChecked->number . '. Bedrag was €' . $oldAmount . ' (datum ' . $oldDateInput . ').');
+            } else {
+                $invoicePayment->in_progress = false;
+                $invoicePayment->save();
+            }
+        }
+
+        return $messages;
     }
 
     public function readBrowseDefinition(BrowseDataApiConnector $browseDataApiConnector){

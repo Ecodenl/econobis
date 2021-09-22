@@ -163,6 +163,11 @@ export default {
             .trim()
             .nullable()
             .required('Verplicht'),
+        organisation: Yup.object().shape({
+            chamberOfCommerceNumber: Yup.string()
+                .trim()
+                .required('Verplicht'),
+        }),
     }),
 
     validationSchemaPcrAdditional: Yup.object().shape({

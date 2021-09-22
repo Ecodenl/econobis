@@ -32,7 +32,7 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
             postalCode: Yup.string()
                 .test(
                     'postal-code-visit-address-in-pcr-area',
-                    'xxHelaas je postcode ligt niet binnen het gebied van potentiele deelnemers',
+                    'Helaas je postcode ligt niet binnen het gebied van potentiele deelnemers',
                     function(value) {
                         return !project.checkPostalcodeLink || project.postalcodeLink.includes(value.substring(0, 4));
                     }

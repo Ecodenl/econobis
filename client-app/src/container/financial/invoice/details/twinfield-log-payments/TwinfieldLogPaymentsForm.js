@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 
-import TwinfieldLogFormList from './TwinfieldLogFormList';
+import TwinfieldLogPaymentsFormList from './TwinfieldLogPaymentsFormList';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../../components/panel/PanelHeader';
 
-class TwinfieldLogForm extends Component {
+class TwinfieldLogPaymentsForm extends Component {
     render() {
         return (
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Twinfield log</span>
+                    <span className="h5 text-bold">Twinfield log betalingen</span>
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        <TwinfieldLogFormList />
+                        <TwinfieldLogPaymentsFormList />
                     </div>
                 </PanelBody>
             </Panel>
@@ -22,4 +22,4 @@ class TwinfieldLogForm extends Component {
     }
 }
 
-export default TwinfieldLogForm;
+export default TwinfieldLogPaymentsForm;

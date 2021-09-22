@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import TwinfieldLogFormView from './TwinfieldLogFormView';
+import TwinfieldLogInvoicesFormView from './TwinfieldLogInvoicesFormView';
 
-class TwinfieldLogFormItem extends Component {
+class TwinfieldLogInvoicesFormItem extends Component {
     constructor(props) {
         super(props);
 
@@ -15,10 +15,10 @@ class TwinfieldLogFormItem extends Component {
     render() {
         return (
             <div>
-                <TwinfieldLogFormView twinfieldMessage={this.state.twinfieldMessage} />
+                <TwinfieldLogInvoicesFormView twinfieldMessage={this.state.twinfieldMessage} />
             </div>
         );
     }
 }
 
-export default TwinfieldLogFormItem;
+export default TwinfieldLogInvoicesFormItem;

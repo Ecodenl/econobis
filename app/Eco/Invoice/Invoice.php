@@ -94,6 +94,18 @@ class Invoice extends Model
     {
         return $this->hasMany(TwinfieldLog::class);
     }
+    public function twinfieldMessagesContact()
+    {
+        return $this->hasMany(TwinfieldLog::class)->where('message_type', 'contact')->orderBy('created_at', 'desc')->orderBy('id', 'desc');
+    }
+    public function twinfieldMessagesInvoice()
+    {
+        return $this->hasMany(TwinfieldLog::class)->where('message_type', 'invoice')->orderBy('created_at', 'desc')->orderBy('id', 'desc');
+    }
+    public function twinfieldMessagesPayment()
+    {
+        return $this->hasMany(TwinfieldLog::class)->where('message_type', 'payment')->orderBy('created_at', 'desc')->orderBy('id', 'desc');
+    }
 
     public function getPaymentType()
     {

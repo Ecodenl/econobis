@@ -8,6 +8,7 @@ import InvoiceDetailsFormConclusion from './conclusion/InvoiceDetailsFormConclus
 import InvoiceProductsForm from './invoice-products/InvoiceProductsForm';
 import InvoicePaymentsForm from './invoice-payments/InvoicePaymentsForm';
 import InvoiceMolliePaymentsForm from './invoice-mollie-payments/InvoiceMolliePaymentsForm';
+import TwinfieldLogForm from './twinfield-log/TwinfieldLogForm';
 moment.locale('nl');
 
 class InvoiceDetailsForm extends Component {
@@ -37,6 +38,7 @@ class InvoiceDetailsForm extends Component {
                 <InvoiceProductsForm />
                 <InvoicePaymentsForm />
                 {this.props.invoiceDetails.usesMollie && <InvoiceMolliePaymentsForm />}
+                {this.props.invoiceDetails.usesTwinfield && <TwinfieldLogForm />}
                 <InvoiceDetailsFormConclusion />
             </div>
         );

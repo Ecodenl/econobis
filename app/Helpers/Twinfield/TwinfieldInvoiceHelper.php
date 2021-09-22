@@ -11,7 +11,9 @@ namespace App\Helpers\Twinfield;
 use App\Eco\Administration\Administration;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoicePayment;
+use App\Eco\Twinfield\TwinfieldLog;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use PhpTwinfield\ApiConnectors\InvoiceApiConnector;
 use PhpTwinfield\ApiConnectors\BrowseDataApiConnector;
@@ -104,10 +106,28 @@ class TwinfieldInvoiceHelper
                     $twinfieldInvoiceTransactions = $browseDataApiConnector->getBrowseData('100', $columnsSalesTransaction);
                 } catch (PhpTwinfieldException $exceptionTwinfield) {
                     Log::error($exceptionTwinfield->getMessage());
-                    return $exceptionTwinfield->getMessage() ? $exceptionTwinfield->getMessage() : 'Er is een twinfield fout opgetreden bij ophalen verkoopgegevens notanr. ' . $invoiceToBeChecked->number . '.';
+                    $message = $exceptionTwinfield->getMessage() ? $exceptionTwinfield->getMessage() : 'Er is een twinfield fout opgetreden bij ophalen verkoopgegevens notanr. ' . $invoiceToBeChecked->number . '.';
+                    TwinfieldLog::create([
+                        'invoice_id' => $invoiceToBeChecked->id,
+                        'contact_id' => null,
+                        'message_text' => substr($message, 0, 256),
+                        'message_type' => 'payment',
+                        'user_id' => Auth::user()->id,
+                        'is_error' => true,
+                    ]);
+                    return $message;
                 } catch (Exception $e) {
                     Log::error($e->getMessage());
-                    return $e->getMessage() ? $e->getMessage() : 'Er is een fout opgetreden bij ophalen verkoopgegevens notanr. ' . $invoiceToBeChecked->number . '.';
+                    $message = $e->getMessage() ? $e->getMessage() : 'Er is een fout opgetreden bij ophalen verkoopgegevens notanr. ' . $invoiceToBeChecked->number . '.';
+                    TwinfieldLog::create([
+                        'invoice_id' => $invoiceToBeChecked->id,
+                        'contact_id' => null,
+                        'message_text' => substr($message, 0, 256),
+                        'message_type' => 'payment',
+                        'user_id' => Auth::user()->id,
+                        'is_error' => true,
+                    ]);
+                    return $message;
                 }
 
                 $getPaidData = false;
@@ -377,8 +397,17 @@ class TwinfieldInvoiceHelper
             $invoicePayment->payment_reference = $paymentReference;
             $invoicePayment->in_progress = false;
             $invoicePayment->save();
-            Log::info('Betaling van ' . $amount . ' toegevoegd via twinfield voor nota ' . $invoiceToBeChecked->number);
-            array_push($messages, 'Betaling van €' . $amount . ' toegevoegd via Twinfield voor nota ' . $invoiceToBeChecked->number . '.');
+
+            $message = 'Betaling van €' . $amount . ' toegevoegd via Twinfield voor nota ' . $invoiceToBeChecked->number . '.';
+            TwinfieldLog::create([
+                'invoice_id' => $invoiceToBeChecked->id,
+                'contact_id' => null,
+                'message_text' => substr($message, 0, 256),
+                'message_type' => 'payment',
+                'user_id' => Auth::user()->id,
+                'is_error' => false,
+            ]);
+            array_push($messages, $message);
             // anders bijwerken
         } else {
             $invoicePayment = $invoicePaymentCheck->first();
@@ -391,8 +420,17 @@ class TwinfieldInvoiceHelper
                 $invoicePayment->fill($data);
                 $invoicePayment->in_progress = false;
                 $invoicePayment->save();
-                Log::info('Betaling van ' . $amount . ' (datum ' . $dateInput . ', kenmerk ' . ($paymentReference ? $paymentReference : '') . ') aangepast via twinfield voor nota ' . $invoiceToBeChecked->number . '. Bedrag was ' . $oldAmount . ' (datum ' . $oldDateInput . ').');
-                array_push($messages, 'Betaling van €' . $amount . ' (datum ' . $dateInput . ') aangepast via Twinfield voor nota ' . $invoiceToBeChecked->number . '. Bedrag was €' . $oldAmount . ' (datum ' . $oldDateInput . ').');
+
+                $message = 'Betaling van €' . $amount . ' (datum ' . $dateInput . ') aangepast via Twinfield voor nota ' . $invoiceToBeChecked->number . '. Bedrag was €' . $oldAmount . ' (datum ' . $oldDateInput . ').';
+                TwinfieldLog::create([
+                    'invoice_id' => $invoiceToBeChecked->id,
+                    'contact_id' => null,
+                    'message_text' => substr($message, 0, 256),
+                    'message_type' => 'payment',
+                    'user_id' => Auth::user()->id,
+                    'is_error' => false,
+                ]);
+                array_push($messages, $message);
             } else {
                 $invoicePayment->in_progress = false;
                 $invoicePayment->save();

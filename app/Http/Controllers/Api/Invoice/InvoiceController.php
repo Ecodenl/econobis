@@ -144,6 +144,7 @@ class InvoiceController extends ApiController
             'invoiceProducts',
             'payments',
             'molliePayments',
+            'twinfieldMessages',
             'tasks',
             'emails',
             'document',

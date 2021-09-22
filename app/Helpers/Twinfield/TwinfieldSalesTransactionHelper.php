@@ -10,9 +10,10 @@ namespace App\Helpers\Twinfield;
 
 use App\Eco\Administration\Administration;
 use App\Eco\Invoice\Invoice;
+use App\Eco\Twinfield\TwinfieldLog;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Money\Currency;
 use Money\Money;
@@ -106,7 +107,16 @@ class TwinfieldSalesTransactionHelper
             $response = $this->createSalesTransation($invoice);
 
             if($response === true){
-                array_push($this->messages, 'Transactie nota ' . $invoice->number . ' succesvol gesynchroniseerd.');
+                $message = 'Transactie nota ' . $invoice->number . ' succesvol gesynchroniseerd.';
+                TwinfieldLog::create([
+                    'invoice_id' => $invoice->id,
+                    'contact_id' => null,
+                    'message_text' => substr($message, 0, 256),
+                    'message_type' => 'invoice',
+                    'user_id' => Auth::user()->id,
+                    'is_error' => false,
+                ]);
+                array_push($this->messages, $message);
                 // Indien contact ingesteld op Incasso, maar nota is gekenmerkt voor Overboeking, dan blokkeer voor betaal/incasso run in Twinfield
                 $contact = $invoice->order->contact;
                 if($contact->is_collect_mandate && $invoice->payment_type_id=='transfer')
@@ -117,7 +127,16 @@ class TwinfieldSalesTransactionHelper
             else{
                 //soms zitten in de error message van Twinfield // voor de melding.
                 $response = str_replace('//', '', $response);
-                array_push($this->messages, 'Synchronisatie transactie nota ' . $invoice->number . ' gaf de volgende foutmelding: ' . $response);
+                $message = 'Synchronisatie transactie nota ' . $invoice->number . ' gaf de volgende foutmelding: ' . $response;
+                TwinfieldLog::create([
+                    'invoice_id' => $invoice->id,
+                    'contact_id' => null,
+                    'message_text' => substr($message, 0, 256),
+                    'message_type' => 'invoice',
+                    'user_id' => Auth::user()->id,
+                    'is_error' => true,
+                ]);
+                array_push($this->messages, $message);
             }
         }
 
@@ -284,11 +303,32 @@ class TwinfieldSalesTransactionHelper
             $invoice->twinfield_number = $response->getNumber();
             $invoice->save();
             return true;
-
-        } catch (PhpTwinfieldException $e) {
+        } catch (PhpTwinfieldException $exceptionTwinfield) {
+            Log::error($exceptionTwinfield->getMessage());
+            $message = $exceptionTwinfield->getMessage() ? $exceptionTwinfield->getMessage() : 'Er is een twinfield fout opgetreden bij het versturen van verkoopgegevens notanr. ' . $invoice->number . '.';
+            TwinfieldLog::create([
+                'invoice_id' => $invoice->id,
+                'contact_id' => null,
+                'message_text' => substr($message, 0, 256),
+                'message_type' => 'invoice',
+                'user_id' => Auth::user()->id,
+                'is_error' => true,
+            ]);
+            return $message;
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $e->getMessage() ? $e->getMessage() : 'Er is een fout opgetreden.';
+            $message = $e->getMessage() ? $e->getMessage() : 'Er is een fout opgetreden bij het versturen van verkoopgegevens notanr. ' . $invoice->number . '.';
+            TwinfieldLog::create([
+                'invoice_id' => $invoice->id,
+                'contact_id' => null,
+                'message_text' => substr($message, 0, 256),
+                'message_type' => 'invoice',
+                'user_id' => Auth::user()->id,
+                'is_error' => true,
+            ]);
+            return $message;
         }
+
     }
 
     public function setPayStatusNo(Invoice $invoice){
@@ -301,15 +341,45 @@ class TwinfieldSalesTransactionHelper
 
             //Salestransaction - versturen naar Twinfield
         try {
-        $testConnector = new ChangPayStatusTransactionApiConnector($this->connection);
-        $response = $testConnector->send($twinfieldSalesTransaction);
-        array_push($this->messages, 'Transactie nota ' . $invoice->number . ' geblokkeerd voor betaalrun.');
-        return true;
+            $testConnector = new ChangPayStatusTransactionApiConnector($this->connection);
+            $response = $testConnector->send($twinfieldSalesTransaction);
+            $message = 'Transactie nota ' . $invoice->number . ' geblokkeerd voor betaalrun.';
+            TwinfieldLog::create([
+                'invoice_id' => $invoice->id,
+                'contact_id' => null,
+                'message_text' => substr($message, 0, 256),
+                'message_type' => 'invoice',
+                'user_id' => Auth::user()->id,
+                'is_error' => false,
+            ]);
+            array_push($this->messages, $message);
+            return true;
 
-        return implode(';', $messages);
-        } catch (PhpTwinfieldException $e) {
+            return implode(';', $messages);
+        } catch (PhpTwinfieldException $exceptionTwinfield) {
+            Log::error($exceptionTwinfield->getMessage());
+            $message = 'Blokkeren voor betaalrun (nota ' . $invoice->number . ') gaf de volgende twinfield foutmelding: ' . $exceptionTwinfield->getMessage();
+            TwinfieldLog::create([
+                'invoice_id' => $invoice->id,
+                'contact_id' => null,
+                'message_text' => substr($message, 0, 256),
+                'message_type' => 'invoice',
+                'user_id' => Auth::user()->id,
+                'is_error' => true,
+            ]);
+            array_push($this->messages, $message);
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            array_push($this->messages, 'Blokkeren voor betaalrun (nota ' . $invoice->number . ') gaf de volgende foutmelding: ' . $e->getMessage());
+            $message = 'Blokkeren voor betaalrun (nota ' . $invoice->number . ') gaf de volgende foutmelding: ' . $e->getMessage();
+            TwinfieldLog::create([
+                'invoice_id' => $invoice->id,
+                'contact_id' => null,
+                'message_text' => substr($message, 0, 256),
+                'message_type' => 'invoice',
+                'user_id' => Auth::user()->id,
+                'is_error' => true,
+            ]);
+            return $message;
         }
 
     }

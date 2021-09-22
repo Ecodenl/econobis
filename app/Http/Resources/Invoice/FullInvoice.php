@@ -35,6 +35,7 @@ class FullInvoice extends Resource
 
                 'payments' => GenericResource::make($this->whenLoaded('payments')),
                 'molliePayments' => GenericResource::collection($this->whenLoaded('molliePayments')),
+                'twinfieldMessages' => GenericResource::collection($this->whenLoaded('twinfieldMessages')),
 
                 'invoiceProducts' => FullInvoiceProduct::collection($this->whenLoaded('invoiceProducts')),
 

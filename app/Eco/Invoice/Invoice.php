@@ -8,6 +8,7 @@ use App\Eco\Email\Email;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderPaymentType;
 use App\Eco\Task\Task;
+use App\Eco\Twinfield\TwinfieldLog;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
@@ -88,6 +89,10 @@ class Invoice extends Model
     public function molliePayments()
     {
         return $this->hasMany(InvoiceMolliePayment::class);
+    }
+    public function twinfieldMessages()
+    {
+        return $this->hasMany(TwinfieldLog::class);
     }
 
     public function getPaymentType()

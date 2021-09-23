@@ -52,15 +52,16 @@ class InvoiceController extends ApiController
             $invoice->emailToAddress = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
         }
 
-        $selectedInvoices = new Collection();
-        foreach ($requestQuery->totalIds() as $invoiceId) {
-            $invoice = Invoice::find($invoiceId);
-            $invoice->emailToAddress = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
-            $selectedInvoices->push($invoice);
-        }
+        $selectedInvoices = Invoice::whereIn('id', $requestQuery->totalIds())->get();
+        $selectedInvoices->load(['order.contact', 'invoiceProducts.product']);
 
         if ($onlyEmailInvoices)
         {
+            $selectedInvoices = $selectedInvoices->map(function($invoice) use($orderController) {
+                $invoice->emailToAddress = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
+                return $invoice;
+            });
+
             $invoices = $invoices->reject(function ($invoice) {
                 return ( $invoice->emailToAddress === 'Geen e-mail bekend' || ( empty($invoice->order->contact->iban) && $invoice->payment_type_id === 'collection' ) );
             });
@@ -76,6 +77,11 @@ class InvoiceController extends ApiController
         }
         elseif ($onlyPostInvoices)
         {
+            $selectedInvoices = $selectedInvoices->map(function($invoice) use($orderController) {
+                $invoice->emailToAddress = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
+                return $invoice;
+            });
+
             $invoices = $invoices->reject(function ($invoice) {
                 return ( $invoice->emailToAddress !== 'Geen e-mail bekend' || ( empty($invoice->order->contact->iban) && $invoice->payment_type_id === 'collection' ) );
             });

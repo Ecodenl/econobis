@@ -2,50 +2,50 @@
 
 namespace App\Http\Resources\SystemData;
 
+use App\Eco\Address\AddressType;
 use App\Eco\Administration\Administration;
+use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignStatus;
 use App\Eco\Campaign\CampaignType;
+use App\Eco\Contact\ContactStatus;
+use App\Eco\Contact\ContactType;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactGroup\ContactGroupType;
 use App\Eco\Cooperation\Cooperation;
+use App\Eco\CostCenter\CostCenter;
 use App\Eco\Country\Country;
 use App\Eco\Document\DocumentGroup;
 use App\Eco\Document\DocumentType;
 use App\Eco\DocumentTemplate\DocumentTemplateType;
 use App\Eco\Email\EmailStatus;
+use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\EnergySupplier\ContactEnergySupplierStatus;
 use App\Eco\EnergySupplier\ContactEnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\FinancialOverview\FinancialOverviewContactStatus;
+use App\Eco\HousingFile\BuildingType;
+use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\RoofType;
-use App\Eco\CostCenter\CostCenter;
+use App\Eco\Industry\Industry;
+use App\Eco\Intake\IntakeReason;
+use App\Eco\Intake\IntakeSource;
+use App\Eco\Intake\IntakeStatus;
+use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Ledger\Ledger;
 use App\Eco\Mailbox\IncomingServerType;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailboxIgnoreType;
+use App\Eco\Mailbox\MailgunDomain;
+use App\Eco\Measure\Measure;
 use App\Eco\Mailbox\OutgoingServerType;
 use App\Eco\Measure\MeasureCategory;
+use App\Eco\Occupation\Occupation;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Order\OrderCollectionFrequency;
 use App\Eco\Order\OrderPaymentType;
 use App\Eco\Order\OrderStatus;
 use App\Eco\OrganisationType\OrganisationType;
-use App\Eco\Address\AddressType;
-use App\Eco\HousingFile\BuildingType;
-use App\Eco\HousingFile\EnergyLabel;
-use App\Eco\Measure\Measure;
-use App\Eco\Intake\IntakeReason;
-use App\Eco\Intake\IntakeSource;
-use App\Eco\Campaign\Campaign;
-use App\Eco\Intake\IntakeStatus;
-use App\Eco\Contact\ContactStatus;
-use App\Eco\Contact\ContactType;
-use App\Eco\EmailAddress\EmailAddressType;
-use App\Eco\Industry\Industry;
-use App\Eco\LastNamePrefix\LastNamePrefix;
-use App\Eco\Mailbox\MailgunDomain;
-use App\Eco\Occupation\Occupation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
@@ -68,31 +68,29 @@ use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Eco\Task\TaskProperty;
 use App\Eco\Task\TaskType;
 use App\Eco\Team\Team;
+use App\Eco\Title\Title;
 use App\Eco\Twinfield\TwinfieldConnectionTypeWithIdAndName;
 use App\Eco\User\User;
 use App\Eco\VatCode\VatCode;
 use App\Http\Resources\Administration\AdministrationPeek;
-use App\Http\Resources\Administration\FullAdministration;
-use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\CostCenter\FullCostCenter;
+use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
-use App\Http\Resources\Ledger\FullLedger;
+use App\Http\Resources\Industry\FullIndustry;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
+use App\Http\Resources\Ledger\FullLedger;
 use App\Http\Resources\Measure\MeasurePeek;
+use App\Http\Resources\Occupation\FullOccupation;
 use App\Http\Resources\Occupation\PrimaryOccupation;
 use App\Http\Resources\Opportunity\OpportunityStatusResource;
 use App\Http\Resources\OrganisationType\FullOrganisationType;
-use App\Eco\Title\Title;
-use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
-use App\Http\Resources\Industry\FullIndustry;
-use App\Http\Resources\Occupation\FullOccupation;
 use App\Http\Resources\ParticipantMutation\FullParticipantMutationStatus;
 use App\Http\Resources\ParticipantMutation\FullParticipantMutationType;
 use App\Http\Resources\PersonType\FullPersonType;
 use App\Http\Resources\Product\FullProduct;
 use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\Title\FullTitle;
-use App\Http\Resources\User\FullUser;
+use App\Http\Resources\User\UserPeek;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\App;
 use Spatie\Permission\Models\Permission;
@@ -111,13 +109,17 @@ class SystemData extends JsonResource
         $environment = App::environment();
         //for testing
         if ($environment == 'production' && \Auth::user()->email != 'support@econobis.nl' && \Auth::user()->email != 'software@xaris.nl') {
-            $usersAll = FullUser::collection(User::where('id', '!=', '1')->orderBy('last_name', 'asc')->get());
-            $users = FullUser::collection(User::where('id', '!=', '1')->where('active', true)->orderBy('last_name', 'asc')->get());
-            $usersExtraAdministration = FullUser::collection(User::where('id', '1')->orderBy('last_name', 'asc')->get());
+            $allUsers = User::orderBy('last_name', 'asc')->get();
+
+            $usersWithInactive= UserPeek::collection($allUsers->where('id', '!=', '1'));
+            $users = UserPeek::collection($allUsers->where('active', true));
+            $usersExtraAdministration = UserPeek::collection($allUsers->where('id', '1'));
         }
         else {
-            $usersAll = FullUser::collection(User::orderBy('last_name', 'asc')->get());
-            $users = FullUser::collection(User::where('active', true)->orderBy('last_name', 'asc')->get());
+            $allUsers = User::orderBy('last_name', 'asc')->get();
+
+            $usersWithInactive = UserPeek::collection($allUsers);
+            $users = UserPeek::collection($allUsers->where('active', true));
             $usersExtraAdministration = null;
         }
 
@@ -214,7 +216,7 @@ class SystemData extends JsonResource
             'titles' => FullTitle::collection(Title::all()),
             'transactionCostsCodeRefs' => FullEnumWithIdAndName::collection(TransactionCostsCodeRef::collection()),
             'twinfieldConnectionTypes' => FullEnumWithIdAndName::collection(TwinfieldConnectionTypeWithIdAndName::collection()),
-            'usersAll' => $usersAll,
+            'usersAll' => $usersWithInactive,
             'users' => $users,
             'usersExtraAdministration' => $usersExtraAdministration,
             'usesTwinfield' => Administration::whereUsesTwinfield(1)->count() > 0 ? true : false,

@@ -1,9 +1,4 @@
 import React from 'react';
-
-import DataTable from '../../../../components/dataTable/DataTable';
-import DataTableHead from '../../../../components/dataTable/DataTableHead';
-import DataTableHeadTitle from '../../../../components/dataTable/DataTableHeadTitle';
-import DataTableBody from '../../../../components/dataTable/DataTableBody';
 import DataTablePagination from '../../../../components/dataTable/DataTablePagination';
 import CampaignDetailsOpportunityView from './CampaignDetailsOpportunityView';
 
@@ -14,35 +9,26 @@ const CampaignDetailsOpportunitiesList = ({ data, meta, page, setPage, isLoading
 
     return (
         <div>
-            <DataTable>
-                <DataTableHead>
-                    <tr className="thead-title-tertiary">
-                        <DataTableHeadTitle title={'Nummer'} width={'20%'} />
-                        <DataTableHeadTitle title={'Datum'} width={'15%'} />
-                        <DataTableHeadTitle title={'Naam'} width={'20%'} />
-                        <DataTableHeadTitle title={'Maatregel categorie'} width={'20%'} />
-                        <DataTableHeadTitle title={'Status'} width={'15%'} />
-                        <DataTableHeadTitle title={'Aantal offertes'} width={'10%'} />
-                    </tr>
-                </DataTableHead>
-                <DataTableBody>
-                    {isLoading ? (
-                        <tr>
-                            <td colSpan={7}>Bezig met laden.</td>
-                        </tr>
-                    ) : data.length > 0 ? (
-                        data.map(opportunity => {
-                            console.log(opportunity);
-                            return <CampaignDetailsOpportunityView key={opportunity.id} {...opportunity} />;
-                        })
-                    ) : (
-                        <tr>
-                            <td colSpan={6}>Geen kansen bekend.</td>
-                        </tr>
-                    )}
-                </DataTableBody>
-            </DataTable>
-            <div className="col-md-6 col-md-offset-3">
+            <div className="row border header">
+                <div className="col-sm-2">Nummer</div>
+                <div className="col-sm-1">Datum</div>
+                <div className="col-sm-3">Naam</div>
+                <div className="col-sm-3">Maatregel categorie</div>
+                <div className="col-sm-1">Status</div>
+                <div className="col-sm-2">Aantal offertes</div>
+            </div>
+            <div>
+                {isLoading ? (
+                    <div>Bezig met laden.</div>
+                ) : data.length > 0 ? (
+                    data.map(opportunity => {
+                        return <CampaignDetailsOpportunityView key={opportunity.id} {...opportunity} />;
+                    })
+                ) : (
+                    <div>Geen kansen bekend.</div>
+                )}
+            </div>
+            <div className="col-md-6 col-md-offset-3 margin-20-top">
                 <DataTablePagination
                     onPageChangeAction={handlePageClick}
                     totalRecords={meta.total}

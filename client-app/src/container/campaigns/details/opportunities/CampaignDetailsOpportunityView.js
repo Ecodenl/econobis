@@ -12,14 +12,14 @@ const CampaignDetailsOpportunityView = ({
     quotationRequests,
 }) => {
     return (
-        <tr onClick={() => hashHistory.push(`/kans/${id}`)}>
-            <td>{number}</td>
-            <td>{createdAt ? moment(createdAt).format('L') : ''}</td>
-            <td>{intake?.contact?.fullName || ''}</td>
-            <td>{measureCategory?.name || ''}</td>
-            <td>{status?.name || ''}</td>
-            <td>{quotationRequests?.length}</td>
-        </tr>
+        <div className={'row border'} onClick={() => hashHistory.push(`/kans/${id}`)}>
+            <div className="col-sm-2">{number}</div>
+            <div className="col-sm-1">{createdAt ? moment(createdAt).format('L') : ''}</div>
+            <div className="col-sm-3">{intake?.contact?.fullName || ''}</div>
+            <div className="col-sm-3">{measureCategory?.name || ''}</div>
+            <div className="col-sm-1">{status?.name || ''}</div>
+            <div className="col-sm-2">{quotationRequests?.length}</div>
+        </div>
     );
 };
 

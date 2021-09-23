@@ -1,8 +1,4 @@
 import React from 'react';
-import DataTable from '../../../../components/dataTable/DataTable';
-import DataTableHead from '../../../../components/dataTable/DataTableHead';
-import DataTableHeadTitle from '../../../../components/dataTable/DataTableHeadTitle';
-import DataTableBody from '../../../../components/dataTable/DataTableBody';
 import DataTablePagination from '../../../../components/dataTable/DataTablePagination';
 import CampaignDetailsIntakeView from './CampaignDetailsIntakeView';
 
@@ -13,35 +9,27 @@ const CampaignDetailsIntakesList = ({ data, meta, page, setPage, isLoading }) =>
 
     return (
         <div>
-            <DataTable>
-                <DataTableHead>
-                    <tr className="thead-title-tertiary">
-                        <DataTableHeadTitle title={'Id'} width={'10%'} />
-                        <DataTableHeadTitle title={'Type'} width={'15%'} />
-                        <DataTableHeadTitle title={'Naam'} width={'15%'} />
-                        <DataTableHeadTitle title={'Adres'} width={'15%'} />
-                        <DataTableHeadTitle title={'Postcode'} width={'15%'} />
-                        <DataTableHeadTitle title={'Plaats'} width={'15%'} />
-                        <DataTableHeadTitle title={'Gereageerd op'} width={'15%'} />
-                    </tr>
-                </DataTableHead>
-                <DataTableBody>
-                    {isLoading ? (
-                        <tr>
-                            <td colSpan={7}>Bezig met laden.</td>
-                        </tr>
-                    ) : data.length > 0 ? (
-                        data.map(intake => {
-                            return <CampaignDetailsIntakeView key={intake.id} {...intake} />;
-                        })
-                    ) : (
-                        <tr>
-                            <td colSpan={7}>Geen intakes bekend.</td>
-                        </tr>
-                    )}
-                </DataTableBody>
-            </DataTable>
-            <div className="col-md-6 col-md-offset-3">
+            <div className="row border header">
+                <div className="col-sm-1">Id</div>
+                <div className="col-sm-1">Type</div>
+                <div className="col-sm-2">Naam</div>
+                <div className="col-sm-3">Adres</div>
+                <div className="col-sm-1">Postcode</div>
+                <div className="col-sm-2">Plaats</div>
+                <div className="col-sm-2">Gereageerd op</div>
+            </div>
+            <div>
+                {isLoading ? (
+                    <div>Bezig met laden.</div>
+                ) : data.length > 0 ? (
+                    data.map(intake => {
+                        return <CampaignDetailsIntakeView key={intake.id} {...intake} />;
+                    })
+                ) : (
+                    <div>Geen intakes bekend.</div>
+                )}
+            </div>
+            <div className="col-md-6 col-md-offset-3 margin-20-top">
                 <DataTablePagination
                     onPageChangeAction={handlePageClick}
                     totalRecords={meta.total}

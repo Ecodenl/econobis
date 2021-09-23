@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
 import Panel from '../../../../components/panel/Panel';
@@ -6,61 +6,26 @@ import PanelBody from '../../../../components/panel/PanelBody';
 
 import CampaignFormEdit from './CampaignFormEdit';
 import CampaignFormView from './CampaignFormView';
+import useSwitchToEditView from '../../../../hooks/useSwitchToEditView';
 
-class OpportunityFormGeneral extends Component {
-    constructor(props) {
-        super(props);
+function OpportunityFormGeneral({ campaign, permissions, fetchCampaignData }) {
+    const { state, switchToEdit, switchToView, onDivEnter, onDivLeave } = useSwitchToEditView();
 
-        this.state = {
-            showEdit: false,
-            activeDiv: '',
-        };
-    }
-
-    switchToEdit = () => {
-        this.setState({
-            showEdit: true,
-        });
-    };
-
-    switchToView = () => {
-        this.setState({
-            showEdit: false,
-            activeDiv: '',
-        });
-    };
-
-    onDivEnter() {
-        this.setState({
-            activeDiv: 'panel-grey',
-        });
-    }
-
-    onDivLeave() {
-        if (!this.state.showEdit) {
-            this.setState({
-                activeDiv: '',
-            });
-        }
-    }
-
-    render() {
-        return (
-            <Panel
-                className={this.state.activeDiv}
-                onMouseEnter={() => this.onDivEnter()}
-                onMouseLeave={() => this.onDivLeave()}
-            >
-                <PanelBody>
-                    {this.state.showEdit && this.props.permissions.manageMarketing ? (
-                        <CampaignFormEdit switchToView={this.switchToView} />
-                    ) : (
-                        <CampaignFormView switchToEdit={this.switchToEdit} />
-                    )}
-                </PanelBody>
-            </Panel>
-        );
-    }
+    return (
+        <Panel className={state.activeDiv} onMouseEnter={() => onDivEnter()} onMouseLeave={() => onDivLeave()}>
+            <PanelBody>
+                {state.showEdit && permissions.manageMarketing ? (
+                    <CampaignFormEdit
+                        campaign={campaign}
+                        switchToView={switchToView}
+                        fetchCampaignData={fetchCampaignData}
+                    />
+                ) : (
+                    <CampaignFormView campaign={campaign} switchToEdit={switchToEdit} />
+                )}
+            </PanelBody>
+        </Panel>
+    );
 }
 
 const mapStateToProps = state => {

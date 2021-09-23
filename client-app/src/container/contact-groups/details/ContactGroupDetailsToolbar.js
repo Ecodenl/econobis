@@ -88,12 +88,11 @@ function ContactGroupDetailsToolbar({
                 </Panel>
             </div>
             {showDelete && (
-                    <ContactGroupDetailsDelete
-                        closeDeleteItemModal={toggleDelete}
-                        name={name}
-                        id={id}
-                        contactGroupType={type.id}
-
+                <ContactGroupDetailsDelete
+                    closeDeleteItemModal={toggleDelete}
+                    name={name}
+                    id={id}
+                    contactGroupType={type.id}
                 />
             )}
             {showSyncLapostaList && <ContactGroupDetailsLapostaList closeModal={toggleShowSyncLapostaList} />}

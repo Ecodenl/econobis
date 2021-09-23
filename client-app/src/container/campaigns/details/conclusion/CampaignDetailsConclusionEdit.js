@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
 import validator from 'validator';
 
 import InputText from '../../../../components/form/InputText';
@@ -10,122 +9,79 @@ import PanelFooter from '../../../../components/panel/PanelFooter';
 
 import CampaignDetailsAPI from '../../../../api/campaign/CampaignDetailsAPI';
 
-import { fetchCampaign } from '../../../../actions/campaign/CampaignDetailsActions';
 import InputDate from '../../../../components/form/InputDate';
 
-class CampaignFormEdit extends Component {
-    constructor(props) {
-        super(props);
-        const { id, createdBy = {}, createdAt = {}, ownedBy = {} } = props.campaign;
+function CampaignFormEdit({ campaign: { id, createdBy, createdAt, ownedBy }, switchToView, users, fetchCampaignData }) {
+    const [ownedById, setOwnedById] = useState(ownedBy?.id);
+    const [errors, setErrors] = useState({
+        ownedBy: false,
+    });
 
-        this.state = {
-            campaign: {
-                id,
-                createdBy: createdBy ? createdBy.fullName : '',
-                ownedById: ownedBy ? ownedBy.id : '',
-                createdAt: createdAt ? createdAt : '',
-            },
-            errors: {
-                ownedBy: false,
-            },
-        };
+    function handleInputChange(event) {
+        setOwnedById(event.target.value);
     }
 
-    handleInputChange = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-
-        this.setState({
-            ...this.state,
-            campaign: {
-                ...this.state.campaign,
-                [name]: value,
-            },
-        });
-    };
-
-    handleSubmit = event => {
+    async function handleSubmit(event) {
         event.preventDefault();
 
-        const { campaign } = this.state;
-
-        let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty('' + campaign.ownedById)) {
-            errors.ownedBy = true;
+        if (validator.isEmpty('' + ownedById)) {
+            setErrors({ ownedBy: true });
             hasErrors = true;
         }
 
-        this.setState({ ...this.state, errors: errors });
+        if (!hasErrors) {
+            try {
+                await CampaignDetailsAPI.updateCampaignOwner(id, ownedById);
 
-        !hasErrors &&
-            CampaignDetailsAPI.updateCampaignOwner(campaign.id, campaign.ownedById).then(payload => {
-                this.props.fetchCampaign(campaign.id);
-                this.props.switchToView();
-            });
-    };
-
-    render() {
-        const { createdBy, ownedById, createdAt } = this.state.campaign;
-
-        return (
-            <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
-                <div className="row">
-                    <InputText label={'Gemaakt door'} name={'createdBy'} value={createdBy} readOnly={true} />
-                    <InputSelect
-                        label={'Verantwoordelijke'}
-                        size={'col-sm-6'}
-                        name={'ownedById'}
-                        options={this.props.users}
-                        value={ownedById}
-                        optionName={'fullName'}
-                        onChangeAction={this.handleInputChange}
-                        error={this.state.errors.ownedBy}
-                    />
-                </div>
-                <div className="row">
-                    <InputDate
-                        label={'Gemaakt op'}
-                        size={'col-sm-6'}
-                        name={'createdAt'}
-                        value={createdAt ? createdAt : ''}
-                        readOnly={true}
-                    />
-                </div>
-
-                <PanelFooter>
-                    <div className="pull-right btn-group" role="group">
-                        <ButtonText
-                            buttonClassName={'btn-default'}
-                            buttonText={'Annuleren'}
-                            onClickAction={this.props.switchToView}
-                        />
-                        <ButtonText
-                            buttonText={'Opslaan'}
-                            onClickAction={this.handleSubmit}
-                            type={'submit'}
-                            value={'Submit'}
-                        />
-                    </div>
-                </PanelFooter>
-            </form>
-        );
+                fetchCampaignData();
+                switchToView();
+            } catch (error) {
+                alert('Er is iets misgegaan met het opslaan van de gegevens!');
+            }
+        }
     }
-}
 
-const mapDispatchToProps = dispatch => ({
-    fetchCampaign: id => {
-        dispatch(fetchCampaign(id));
-    },
-});
+    return (
+        <form className="form-horizontal col-md-12" onSubmit={handleSubmit}>
+            <div className="row">
+                <InputText label={'Gemaakt door'} name={'createdBy'} value={createdBy.fullName} readOnly={true} />
+                <InputSelect
+                    label={'Verantwoordelijke'}
+                    size={'col-sm-6'}
+                    name={'ownedById'}
+                    options={users}
+                    value={ownedById}
+                    optionName={'fullName'}
+                    onChangeAction={handleInputChange}
+                    error={errors.ownedBy}
+                />
+            </div>
+            <div className="row">
+                <InputDate
+                    label={'Gemaakt op'}
+                    size={'col-sm-6'}
+                    name={'createdAt'}
+                    value={createdAt ? createdAt : ''}
+                    readOnly={true}
+                />
+            </div>
+
+            <PanelFooter>
+                <div className="pull-right btn-group" role="group">
+                    <ButtonText buttonClassName={'btn-default'} buttonText={'Annuleren'} onClickAction={switchToView} />
+                    <ButtonText buttonText={'Opslaan'} onClickAction={handleSubmit} type={'submit'} value={'Submit'} />
+                </div>
+            </PanelFooter>
+        </form>
+    );
+}
 
 const mapStateToProps = state => {
     return {
-        campaign: state.campaignDetails,
         users: state.systemData.users,
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CampaignFormEdit);
+export default connect(mapStateToProps)(CampaignFormEdit);

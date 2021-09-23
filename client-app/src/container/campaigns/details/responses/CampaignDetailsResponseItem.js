@@ -1,61 +1,54 @@
-import React, { Component } from 'react';
-
+import React, { useState } from 'react';
 import CampaignDetailsResponseView from './CampaignDetailsResponseView';
 import CampaignDetailsResponseItemDelete from './CampaignDetailsReponseItemDelete';
 
-class CampaignDetailsResponseItem extends Component {
-    constructor(props) {
-        super(props);
+function CampaignDetailsResponseItem({ response, campaignId, fetchCampaignData }) {
+    const [state, setState] = useState({
+        showActionButtons: false,
+        highlightLine: '',
+        showDelete: false,
+    });
 
-        this.state = {
-            showActionButtons: false,
-            highlightLine: '',
-            showDelete: false,
-
-            response: {
-                ...props.response,
-            },
-        };
-    }
-
-    onLineEnter = () => {
-        this.setState({
+    function onLineEnter() {
+        setState({
+            ...state,
             showActionButtons: true,
             highlightLine: 'highlight-line',
         });
-    };
+    }
 
-    onLineLeave = () => {
-        this.setState({
+    function onLineLeave() {
+        setState({
+            ...state,
             showActionButtons: false,
             highlightLine: '',
         });
-    };
-
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
-    };
-
-    render() {
-        return (
-            <div>
-                <CampaignDetailsResponseView
-                    highlightLine={this.state.highlightLine}
-                    showActionButtons={this.state.showActionButtons}
-                    onLineEnter={this.onLineEnter}
-                    onLineLeave={this.onLineLeave}
-                    toggleDelete={this.toggleDelete}
-                    response={this.state.response}
-                />
-                {this.state.showDelete && (
-                    <CampaignDetailsResponseItemDelete
-                        toggleDelete={this.toggleDelete}
-                        contactId={this.state.response.contact.id}
-                    />
-                )}
-            </div>
-        );
     }
+
+    function toggleDelete() {
+        setState({ showDelete: !state.showDelete });
+    }
+
+    return (
+        <div>
+            <CampaignDetailsResponseView
+                highlightLine={state.highlightLine}
+                showActionButtons={state.showActionButtons}
+                onLineEnter={onLineEnter}
+                onLineLeave={onLineLeave}
+                toggleDelete={toggleDelete}
+                response={response}
+            />
+            {state.showDelete && (
+                <CampaignDetailsResponseItemDelete
+                    toggleDelete={toggleDelete}
+                    contactId={response.contact.id}
+                    campaignId={campaignId}
+                    fetchCampaignData={fetchCampaignData}
+                />
+            )}
+        </div>
+    );
 }
 
 export default CampaignDetailsResponseItem;

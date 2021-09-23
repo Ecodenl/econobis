@@ -1,20 +1,26 @@
 import React from 'react';
 
 import Modal from '../../../components/modal/Modal';
-import { deleteCampaign } from '../../../actions/campaign/CampaignDetailsActions';
-import { connect } from 'react-redux';
+import CampaignDetailsAPI from '../../../api/campaign/CampaignDetailsAPI';
+import { hashHistory } from 'react-router';
 
-const CampaignDetailsDelete = props => {
-    const confirmAction = () => {
-        props.deleteCampaign(props.id);
-        props.closeDeleteItemModal();
+const CampaignDetailsDelete = ({ id, closeDeleteItemModal }) => {
+    const confirmAction = async () => {
+        try {
+            await CampaignDetailsAPI.deleteCampaign(id);
+            hashHistory.push(`/campagnes`);
+        } catch (error) {
+            console.log(error);
+            alert('Er is iets misgegaan met het verwijderen van de campagne.');
+        }
+        closeDeleteItemModal();
     };
 
     return (
         <Modal
             buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
-            closeModal={props.closeDeleteItemModal}
+            closeModal={closeDeleteItemModal}
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
@@ -23,10 +29,4 @@ const CampaignDetailsDelete = props => {
     );
 };
 
-const mapDispatchToProps = dispatch => ({
-    deleteCampaign: id => {
-        dispatch(deleteCampaign(id));
-    },
-});
-
-export default connect(null, mapDispatchToProps)(CampaignDetailsDelete);
+export default CampaignDetailsDelete;

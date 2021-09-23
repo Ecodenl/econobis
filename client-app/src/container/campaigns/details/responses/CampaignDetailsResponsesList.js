@@ -1,9 +1,8 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
 import CampaignDetailsResponseItem from './CampaignDetailsResponseItem';
 
-const CampaignDetailsResponseList = props => {
+const CampaignDetailsResponseList = ({ responses, campaignId, fetchCampaignData }) => {
     return (
         <div>
             <div className="row border header">
@@ -16,9 +15,16 @@ const CampaignDetailsResponseList = props => {
                 <div className="col-sm-2">Gereageerd op</div>
                 <div className="col-sm-1" />
             </div>
-            {props.responses.length > 0 ? (
-                props.responses.map(response => {
-                    return <CampaignDetailsResponseItem key={response.id} response={response} />;
+            {responses.length > 0 ? (
+                responses.map(response => {
+                    return (
+                        <CampaignDetailsResponseItem
+                            key={response.id}
+                            response={response}
+                            campaignId={campaignId}
+                            fetchCampaignData={fetchCampaignData}
+                        />
+                    );
                 })
             ) : (
                 <div>Geen responses bekend.</div>
@@ -27,9 +33,4 @@ const CampaignDetailsResponseList = props => {
     );
 };
 
-const mapStateToProps = state => {
-    return {
-        responses: state.campaignDetails.responses,
-    };
-};
-export default connect(mapStateToProps)(CampaignDetailsResponseList);
+export default CampaignDetailsResponseList;

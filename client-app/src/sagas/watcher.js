@@ -1,4 +1,4 @@
-import { takeLatest, takeEvery } from 'redux-saga/effects';
+import { takeLatest } from 'redux-saga/effects';
 
 import { fetchAuditTrailSaga } from './audit-trail/AuditTrailSaga';
 import {
@@ -10,94 +10,93 @@ import {
 } from './administration/AdministrationDetailsSaga';
 import { deleteAdministrationSaga, fetchAdministrationsSaga } from './administration/AdministrationsSaga';
 import { fetchCampaignsSaga } from './campaign/CampaignsSaga';
-import { fetchCampaignSaga, deleteCampaignSaga } from './campaign/CampaignDetailsSaga';
 import {
-    fetchContactDetailsSaga,
     deleteAddressSaga,
-    deletePhoneNumberSaga,
-    deleteEmailAddressSaga,
-    deleteContactNoteSaga,
     deleteContactEnergySupplierSaga,
+    deleteContactNoteSaga,
+    deleteEmailAddressSaga,
+    deletePhoneNumberSaga,
     deletePortalUserSaga,
+    fetchContactDetailsSaga,
 } from './contact/ContactDetailsSaga';
 import { fetchContactGroupDetailsSaga } from './contact-group/ContactGroupDetailsSaga';
 import {
-    fetchContactGroupsSaga,
-    deleteContactGroupSaga,
     addContactToGroupSaga,
-    deleteComposedGroupSaga,
+    attachComposedExceptGroupSaga,
     attachComposedGroupSaga,
     deleteComposedExceptGroupSaga,
-    attachComposedExceptGroupSaga,
+    deleteComposedGroupSaga,
+    deleteContactGroupSaga,
+    fetchContactGroupsSaga,
 } from './contact-group/ContactGroupsSaga';
 import {
-    fetchContactsInGroupSaga,
     deleteContactInGroupSaga,
+    fetchContactsInGroupSaga,
     updateContactInGroupSaga,
 } from './contact-group/ContactsInGroupSaga';
-import { fetchContactsSaga, deleteContactSaga, deleteSelectedContactsSaga } from './contact/ContactsSaga';
+import { deleteContactSaga, deleteSelectedContactsSaga, fetchContactsSaga } from './contact/ContactsSaga';
 import { fetchDocumentsSaga } from './document/DocumentsSaga';
-import { fetchDocumentDetailsSaga, deleteDocumentSaga } from './document/DocumentDetailsSaga';
+import { deleteDocumentSaga, fetchDocumentDetailsSaga } from './document/DocumentDetailsSaga';
 import {
-    fetchDocumentTemplatesSaga,
-    fetchDocumentTemplateSaga,
     deleteDocumentTemplateSaga,
+    fetchDocumentTemplateSaga,
+    fetchDocumentTemplatesSaga,
 } from './document-template/DocumentTemplatesSaga';
-import { fetchEmailsSaga, fetchEmailSaga } from './email/EmailsSaga';
+import { fetchEmailSaga, fetchEmailsSaga } from './email/EmailsSaga';
 import {
-    fetchEmailTemplatesSaga,
-    fetchEmailTemplateSaga,
     deleteEmailTemplateSaga,
+    fetchEmailTemplateSaga,
+    fetchEmailTemplatesSaga,
 } from './email-template/EmailTemplatesSaga';
 import {
-    fetchMailboxDetailsSaga,
+    deleteMailboxIgnoreSaga,
     deleteMailboxSaga,
     deleteMailboxUserSaga,
-    deleteMailboxIgnoreSaga,
+    fetchMailboxDetailsSaga,
 } from './mailbox/MailboxDetailsSaga';
 import { fetchMailboxesSaga } from './mailbox/MailboxesSaga';
 import { fetchMailgunDomainsSaga } from './mailgun-domains/MailgunDomainsSaga';
 import * as MailgunDomainDetailsSaga from './mailgun-domains/MailgunDomainDetailsSaga';
 import { fetchMeasuresSaga } from './measure/MeasuresSaga';
 import { fetchMeasureSaga } from './measure/MeasureDetailsSaga';
-import { fetchOpportunitiesSaga, deleteOpportunitySaga } from './opportunity/OpportunitiesSaga';
+import { deleteOpportunitySaga, fetchOpportunitiesSaga } from './opportunity/OpportunitiesSaga';
 import { fetchOpportunitySaga } from './opportunity/OpportunityDetailsSaga';
-import { fetchOrdersSaga, deleteOrderSaga } from './order/OrdersSaga';
+import { deleteOrderSaga, fetchOrdersSaga } from './order/OrdersSaga';
 import { fetchOrderDetailsSaga, updateOrderDetailsSaga } from './order/OrderDetailsSaga';
-import { fetchPostalCodeLinksSaga, deletePostalCodeLinkSaga } from './postal-code-link/PostalCodeLinkSaga';
+import { deletePostalCodeLinkSaga, fetchPostalCodeLinksSaga } from './postal-code-link/PostalCodeLinkSaga';
 import { fetchProjectsSaga } from './project/ProjectsSaga';
 import {
-    fetchProjectSaga,
-    deleteValueCourseSaga,
-    deleteRevenueSaga,
     deleteProjectSaga,
+    deleteRevenueSaga,
+    deleteValueCourseSaga,
+    fetchProjectSaga,
 } from './project/ProjectDetailsSaga';
-import { fetchProjectRevenueSaga, fetchProjectRevenueDistributionSaga } from './project/ProjectRevenueDetailsSaga';
+import { fetchProjectRevenueDistributionSaga, fetchProjectRevenueSaga } from './project/ProjectRevenueDetailsSaga';
 import { fetchParticipantsProjectSaga } from './participant-project/ParticipantsProjectSaga';
 import {
-    fetchParticipantProjectDetailsSaga,
-    deleteParticipantProjectSaga,
     deleteObligationNumberSaga,
+    deleteParticipantProjectSaga,
     deleteRevenueSplitSaga,
+    fetchParticipantProjectDetailsSaga,
 } from './participant-project/ParticipantProjectDetailsSaga';
-import { fetchIntakeDetailsSaga, deleteIntakeMeasureRequestedSaga, deleteIntakeSaga } from './intake/IntakeDetailsSaga';
+import { deleteIntakeMeasureRequestedSaga, deleteIntakeSaga, fetchIntakeDetailsSaga } from './intake/IntakeDetailsSaga';
 import { fetchIntakesSaga } from './intake/IntakesSaga';
 import {
-    fetchHousingFileDetailsSaga,
     deleteHousingFileMeasureTakenSaga,
     deleteHousingFileSaga,
+    fetchHousingFileDetailsSaga,
 } from './housing-file/HousingFileDetailsSaga';
 import { fetchHousingFilesSaga } from './housing-file/HousingFilesSaga';
 import {
-    fetchQuotationRequestDetailsSaga,
     deleteQuotationRequestSaga,
+    fetchQuotationRequestDetailsSaga,
 } from './quotation-request/QuotationRequestDetailsSaga';
 import { fetchQuotationRequestsSaga } from './quotation-request/QuotationRequestsSaga';
-import { fetchTaskDetailsSaga, deleteTaskSaga } from './task/TaskDetailsSaga';
+import { deleteTaskSaga, fetchTaskDetailsSaga } from './task/TaskDetailsSaga';
 import { fetchTasksSaga, setTaskFinishedSaga } from './task/TasksSaga';
 import { fetchNotesSaga } from './task/NotesSaga';
-import { fetchTeamsSaga, deleteTeamSaga } from './team/TeamsSaga';
-import { fetchTeamDetailsSaga, deleteTeamUserSaga, updateTeamDetailsSaga } from './team/TeamDetailsSaga';
+import { deleteTeamSaga, fetchTeamsSaga } from './team/TeamsSaga';
+import { deleteTeamUserSaga, fetchTeamDetailsSaga, updateTeamDetailsSaga } from './team/TeamDetailsSaga';
 import { fetchUserDetailsSaga, updateUserDetailsSaga } from './user/UserDetailsSaga';
 import { fetchUserSaga } from './user/UsersSaga';
 import { meDetailsSaga } from './general/MeDetailsSaga';
@@ -111,7 +110,7 @@ import { deleteProductSaga, fetchProductsSaga } from './product/ProductsSaga';
 import { deleteInvoiceFromGridSaga, fetchInvoicesSaga } from './invoice/InvoicesSaga';
 import { deleteInvoiceSaga, fetchInvoiceDetailsSaga } from './invoice/InvoiceDetailsSaga';
 import { fetchPaymentInvoicesSaga } from './payment-invoice/PaymentInvoicesSaga';
-import { fetchWebformsSaga, deleteWebformSaga } from './webform/WebformsSaga';
+import { deleteWebformSaga, fetchWebformsSaga } from './webform/WebformsSaga';
 import { fetchWebformDetailsSaga, updateWebformDetailsSaga } from './webform/WebformDetailsSaga';
 
 export default function* watchSagas() {
@@ -134,8 +133,6 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_AUDIT_TRAIL', fetchAuditTrailSaga);
     // Campaign
     yield takeLatest('FETCH_CAMPAIGNS', fetchCampaignsSaga);
-    yield takeLatest('FETCH_CAMPAIGN', fetchCampaignSaga);
-    yield takeLatest('DELETE_CAMPAIGN', deleteCampaignSaga);
     // Contact
     yield takeLatest('FETCH_CONTACTS', fetchContactsSaga);
     yield takeLatest('DELETE_CONTACT', deleteContactSaga);

@@ -47,11 +47,7 @@ const AsyncSelectSet = props => {
                     <AsyncCreatableSelect
                         id={id}
                         name={name}
-                        onChange={
-                            multi
-                                ? option => onChangeAction(option ? option.map(item => item[optionId]).join() : '')
-                                : option => onChangeAction(option ? option[optionId] : '')
-                        }
+                        onChange={option => onChangeAction(option)}
                         value={value}
                         loadOptions={loadOptions}
                         onInputChange={handleInputChange}
@@ -69,6 +65,7 @@ const AsyncSelectSet = props => {
                         removeSelected
                         className={error ? ' has-error' : ''}
                         isLoading={isLoading}
+                        // allowCreateWhileLoading={true}
                         isDisabled={disabled}
                         styles={customStyles}
                         isClearable={clearable}

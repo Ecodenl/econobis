@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputTinyMCEUpdateable from '../../../../components/form/InputTinyMCEUpdateable';
@@ -10,10 +10,17 @@ import AsyncSelectSet from '../../../../components/form/AsyncSelectSet';
 function EmailAnswerFormGeneral(props) {
     const [searchTermContact, setSearchTermContact] = useState('');
     const [isLoadingContact, setLoadingContact] = useState(false);
+    const [valueSelectedTo, setValueSelectedTo] = useState([]);
+    const [valueSelectedCc, setValueSelectedCc] = useState([]);
+    const [valueSelectedBcc, setValueSelectedBcc] = useState([]);
+    const [selectedToMoreThanOne, setSelectedToMoreThanOne] = useState(false);
+    const [includesEmailAddress, setIncludesEmailAddress] = useState(false);
 
     let {
         email,
-        emailAddresses,
+        emailAddressesToSelected,
+        emailAddressesCcSelected,
+        emailAddressesBccSelected,
         mailboxAddresses,
         errors,
         hasLoaded,
@@ -28,18 +35,29 @@ function EmailAnswerFormGeneral(props) {
     } = props;
     const { mailboxId, to, cc, bcc, subject, htmlBody, emailTemplateId } = email;
 
-    function selectedTo() {
+    useEffect(() => {
+        setValueSelectedTo(getSelectedTo());
+    }, [to]);
+    useEffect(() => {
+        setValueSelectedCc(getSelectedCc());
+    }, [cc]);
+    useEffect(() => {
+        setValueSelectedBcc(getSelectedBcc());
+    }, [bcc]);
+
+    function getSelectedTo() {
         let toArray = [];
-        let includesEmailAddress = false;
+
         if (!Array.isArray(to)) {
             toArray = to.split(',');
         } else {
             toArray = to;
         }
         let selectedTo = [];
+        let hasEmailAddress = false;
         toArray.map(item => {
             if (item && item.includes('@')) {
-                includesEmailAddress = true;
+                hasEmailAddress = true;
                 selectedTo.push({
                     id: item,
                     name: item,
@@ -47,15 +65,22 @@ function EmailAnswerFormGeneral(props) {
                 });
             }
             if (item && !isNaN(item)) {
-                let emailaddress = emailAddresses.find(emailAddress => emailAddress.id === Number(item));
+                let emailaddress = emailAddressesToSelected.find(emailAddress => emailAddress.id === Number(item));
 
                 selectedTo.push(emailaddress);
             }
         });
+        setIncludesEmailAddress(hasEmailAddress);
+
+        if ((selectedTo + '').split(',').length > 1) {
+            setSelectedToMoreThanOne(true);
+        } else {
+            setSelectedToMoreThanOne(false);
+        }
         return selectedTo;
     }
 
-    function selectedCc() {
+    function getSelectedCc() {
         let ccArray = [];
         if (!Array.isArray(cc)) {
             ccArray = cc.split(',');
@@ -72,7 +97,7 @@ function EmailAnswerFormGeneral(props) {
                 });
             }
             if (item && !isNaN(item)) {
-                let emailaddress = emailAddresses.find(emailAddress => emailAddress.id === Number(item));
+                let emailaddress = emailAddressesCcSelected.find(emailAddress => emailAddress.id === Number(item));
 
                 selectedCc.push(emailaddress);
             }
@@ -80,7 +105,7 @@ function EmailAnswerFormGeneral(props) {
         return selectedCc;
     }
 
-    function selectedBcc() {
+    function getSelectedBcc() {
         let bccArray = [];
         if (!Array.isArray(bcc)) {
             bccArray = bcc.split(',');
@@ -97,7 +122,7 @@ function EmailAnswerFormGeneral(props) {
                 });
             }
             if (item && !isNaN(item)) {
-                let emailaddress = emailAddresses.find(emailAddress => emailAddress.id === Number(item));
+                let emailaddress = emailAddressesBccSelected.find(emailAddress => emailAddress.id === Number(item));
 
                 selectedBcc.push(emailaddress);
             }
@@ -145,7 +170,7 @@ function EmailAnswerFormGeneral(props) {
                     label={
                         <span>
                             Aan selecteren
-                            {(selectedTo + '').split(',').length > 1 ? (
+                            {selectedToMoreThanOne ? (
                                 <React.Fragment>
                                     <br />
                                     <small style={{ color: 'red', fontWeight: 'normal' }}>
@@ -173,7 +198,7 @@ function EmailAnswerFormGeneral(props) {
                         </span>
                     }
                     name={'to'}
-                    value={selectedTo()}
+                    value={valueSelectedTo}
                     loadOptions={getContactOptions}
                     optionName={'name'}
                     onChangeAction={handleToIds}
@@ -188,7 +213,7 @@ function EmailAnswerFormGeneral(props) {
                 <AsyncSelectSet
                     label="Cc selecteren"
                     name={'cc'}
-                    value={selectedCc()}
+                    value={valueSelectedCc}
                     loadOptions={getContactOptions}
                     optionName={'name'}
                     onChangeAction={handleCcIds}
@@ -202,7 +227,7 @@ function EmailAnswerFormGeneral(props) {
                 <AsyncSelectSet
                     label="Bcc selecteren"
                     name={'bcc'}
-                    value={selectedBcc()}
+                    value={valueSelectedBcc}
                     loadOptions={getContactOptions}
                     optionName={'name'}
                     onChangeAction={handleBccIds}
@@ -261,7 +286,9 @@ function EmailAnswerFormGeneral(props) {
 
 EmailAnswerFormGeneral.propTypes = {
     email: PropTypes.any,
-    emailAddresses: PropTypes.any,
+    emailAddressesToSelected: PropTypes.any,
+    emailAddressesCcSelected: PropTypes.any,
+    emailAddressesBccSelected: PropTypes.any,
     mailboxAddresses: PropTypes.any,
     errors: PropTypes.any,
     hasLoaded: PropTypes.any,

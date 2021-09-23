@@ -21,7 +21,9 @@ class EmailNewApp extends Component {
         this.state = {
             showModal: false,
             buttonLoading: false,
-            emailAddresses: [],
+            emailAddressesToSelected: [],
+            emailAddressesCcSelected: [],
+            emailAddressesBccSelected: [],
             mailboxAddresses: [],
             emailTemplates: [],
             email: {
@@ -82,13 +84,8 @@ class EmailNewApp extends Component {
             });
         }
 
-        EmailAddressAPI.fetchEmailAddressessPeek().then(payload => {
-            this.setState({
-                emailAddresses: payload,
-            });
-        });
-
         MailboxAPI.fetchMailboxesLoggedInUserPeek().then(payload => {
+            console.log(payload);
             this.setState({
                 mailboxAddresses: payload,
             });
@@ -133,6 +130,26 @@ class EmailNewApp extends Component {
         }
     }
 
+    handleEmailTemplates(selectedOption) {
+        this.setState({
+            ...this.state,
+            email: {
+                ...this.state.email,
+                emailTemplateId: selectedOption,
+            },
+        });
+        EmailTemplateAPI.fetchEmailTemplateWithUser(selectedOption).then(payload => {
+            this.setState({
+                ...this.state,
+                email: {
+                    ...this.state.email,
+                    subject: payload.subject ? payload.subject : this.state.email.subject,
+                    htmlBody: payload.htmlBody ? payload.htmlBody : this.state.email.htmlBody,
+                },
+            });
+        });
+    }
+
     handleInputChange(event) {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -158,53 +175,38 @@ class EmailNewApp extends Component {
     }
 
     handleToIds(selectedOption) {
+        const toIds = selectedOption ? selectedOption.map(item => item.id).join(',') : [];
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                to: selectedOption,
+                to: toIds,
             },
-        });
-    }
-
-    handleEmailTemplates(selectedOption) {
-        // .setContent(content, {format : 'raw'})
-        this.setState({
-            ...this.state,
-            email: {
-                ...this.state.email,
-                emailTemplateId: selectedOption,
-            },
-        });
-        EmailTemplateAPI.fetchEmailTemplateWithUser(selectedOption).then(payload => {
-            this.setState({
-                ...this.state,
-                email: {
-                    ...this.state.email,
-                    subject: payload.subject ? payload.subject : this.state.email.subject,
-                    htmlBody: payload.htmlBody ? payload.htmlBody : this.state.email.htmlBody,
-                },
-            });
+            emailAddressesToSelected: selectedOption,
         });
     }
 
     handleCcIds(selectedOption) {
+        const ccIds = selectedOption ? selectedOption.map(item => item.id).join(',') : [];
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                cc: selectedOption,
+                cc: ccIds,
             },
+            emailAddressesCcSelected: selectedOption,
         });
     }
 
     handleBccIds(selectedOption) {
+        const bccIds = selectedOption ? selectedOption.map(item => item.id).join(',') : [];
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                bcc: selectedOption,
+                bcc: bccIds,
             },
+            emailAddressesBccSelected: selectedOption,
         });
     }
 
@@ -392,7 +394,9 @@ class EmailNewApp extends Component {
                         <EmailNewForm
                             email={this.state.email}
                             contactGroupName={this.state.contactGroupName}
-                            emailAddresses={this.state.emailAddresses}
+                            emailAddressesToSelected={this.state.emailAddressesToSelected}
+                            emailAddressesCcSelected={this.state.emailAddressesCcSelected}
+                            emailAddressesBccSelected={this.state.emailAddressesBccSelected}
                             mailboxAddresses={this.state.mailboxAddresses}
                             emailTemplates={this.state.emailTemplates}
                             errors={this.state.errors}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputTinyMCE from '../../../../components/form/InputTinyMCE';
@@ -10,11 +10,18 @@ import AsyncSelectSet from '../../../../components/form/AsyncSelectSet';
 function ConceptFormGeneral(props) {
     const [searchTermContact, setSearchTermContact] = useState('');
     const [isLoadingContact, setLoadingContact] = useState(false);
+    const [valueSelectedTo, setValueSelectedTo] = useState([]);
+    const [valueSelectedCc, setValueSelectedCc] = useState([]);
+    const [valueSelectedBcc, setValueSelectedBcc] = useState([]);
+    const [selectedToMoreThanOne, setSelectedToMoreThanOne] = useState(false);
+    const [includesEmailAddress, setIncludesEmailAddress] = useState(false);
 
     let {
         email,
         contactGroupName,
-        emailAddresses,
+        emailAddressesToSelected,
+        emailAddressesCcSelected,
+        emailAddressesBccSelected,
         errors,
         hasLoaded,
         handleToIds,
@@ -25,18 +32,29 @@ function ConceptFormGeneral(props) {
     } = props;
     const { from, to, cc, bcc, subject, htmlBody, contactGroupId } = email;
 
-    function selectedTo() {
+    useEffect(() => {
+        setValueSelectedTo(getSelectedTo());
+    }, [to]);
+    useEffect(() => {
+        setValueSelectedCc(getSelectedCc());
+    }, [cc]);
+    useEffect(() => {
+        setValueSelectedBcc(getSelectedBcc());
+    }, [bcc]);
+
+    function getSelectedTo() {
         let toArray = [];
-        let includesEmailAddress = false;
+
         if (!Array.isArray(to)) {
             toArray = to.split(',');
         } else {
             toArray = to;
         }
         let selectedTo = [];
+        let hasEmailAddress = false;
         toArray.map(item => {
             if (item && item.includes('@')) {
-                includesEmailAddress = true;
+                hasEmailAddress = true;
                 selectedTo.push({
                     id: item,
                     name: item,
@@ -44,15 +62,22 @@ function ConceptFormGeneral(props) {
                 });
             }
             if (item && !isNaN(item)) {
-                let emailaddress = emailAddresses.find(emailAddress => emailAddress.id === Number(item));
+                let emailaddress = emailAddressesToSelected.find(emailAddress => emailAddress.id === Number(item));
 
                 selectedTo.push(emailaddress);
             }
         });
+        setIncludesEmailAddress(hasEmailAddress);
+
+        if ((selectedTo + '').split(',').length > 1) {
+            setSelectedToMoreThanOne(true);
+        } else {
+            setSelectedToMoreThanOne(false);
+        }
         return selectedTo;
     }
 
-    function selectedCc() {
+    function getSelectedCc() {
         let ccArray = [];
         if (!Array.isArray(cc)) {
             ccArray = cc.split(',');
@@ -69,7 +94,7 @@ function ConceptFormGeneral(props) {
                 });
             }
             if (item && !isNaN(item)) {
-                let emailaddress = emailAddresses.find(emailAddress => emailAddress.id === Number(item));
+                let emailaddress = emailAddressesCcSelected.find(emailAddress => emailAddress.id === Number(item));
 
                 selectedCc.push(emailaddress);
             }
@@ -77,7 +102,7 @@ function ConceptFormGeneral(props) {
         return selectedCc;
     }
 
-    function selectedBcc() {
+    function getSelectedBcc() {
         let bccArray = [];
         if (!Array.isArray(bcc)) {
             bccArray = bcc.split(',');
@@ -94,7 +119,7 @@ function ConceptFormGeneral(props) {
                 });
             }
             if (item && !isNaN(item)) {
-                let emailaddress = emailAddresses.find(emailAddress => emailAddress.id === Number(item));
+                let emailaddress = emailAddressesBccSelected.find(emailAddress => emailAddress.id === Number(item));
 
                 selectedBcc.push(emailaddress);
             }
@@ -158,7 +183,7 @@ function ConceptFormGeneral(props) {
                         label={
                             <span>
                                 Aan selecteren
-                                {(selectedTo + '').split(',').length > 1 ? (
+                                {selectedToMoreThanOne ? (
                                     <React.Fragment>
                                         <br />
                                         <small style={{ color: 'red', fontWeight: 'normal' }}>
@@ -186,7 +211,7 @@ function ConceptFormGeneral(props) {
                             </span>
                         }
                         name={'to'}
-                        value={selectedTo()}
+                        value={valueSelectedTo}
                         loadOptions={getContactOptions}
                         optionName={'name'}
                         onChangeAction={handleToIds}
@@ -202,7 +227,7 @@ function ConceptFormGeneral(props) {
                 <AsyncSelectSet
                     label={contactGroupId ? 'Extra contacten' : 'Cc selecteren'}
                     name={'cc'}
-                    value={selectedCc()}
+                    value={valueSelectedCc}
                     loadOptions={getContactOptions}
                     optionName={'name'}
                     onChangeAction={handleCcIds}
@@ -217,7 +242,7 @@ function ConceptFormGeneral(props) {
                     <AsyncSelectSet
                         label="Bcc selecteren"
                         name={'bcc'}
-                        value={selectedBcc()}
+                        value={valueSelectedBcc}
                         loadOptions={getContactOptions}
                         optionName={'name'}
                         onChangeAction={handleBccIds}
@@ -262,7 +287,9 @@ function ConceptFormGeneral(props) {
 ConceptFormGeneral.propTypes = {
     email: PropTypes.any,
     contactGroupName: PropTypes.any,
-    emailAddresses: PropTypes.any,
+    emailAddressesToSelected: PropTypes.any,
+    emailAddressesCcSelected: PropTypes.any,
+    emailAddressesBccSelected: PropTypes.any,
     errors: PropTypes.any,
     handleToIds: PropTypes.any,
     handleCcIds: PropTypes.any,

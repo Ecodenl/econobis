@@ -7,7 +7,6 @@ import EmailAnswerToolbar from './EmailAnswerToolbar';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import EmailAPI from '../../../api/email/EmailAPI';
-import EmailAddressAPI from '../../../api/contact/EmailAddressAPI';
 import { browserHistory, hashHistory } from 'react-router';
 import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
@@ -19,7 +18,9 @@ class EmailAnswerApp extends Component {
         this.state = {
             buttonLoading: false,
             oldEmailId: null,
-            emailAddresses: [],
+            emailAddressesToSelected: [],
+            emailAddressesCcSelected: [],
+            emailAddressesBccSelected: [],
             mailboxAddresses: [],
             originalHtmlBody: '',
             emailTemplates: [],
@@ -75,29 +76,8 @@ class EmailAnswerApp extends Component {
                 type = 'reply';
         }
 
-        EmailAddressAPI.fetchEmailAddressessPeek().then(payload => {
-            this.setState({
-                emailAddresses: [...this.state.emailAddresses, ...payload],
-            });
-            this.fetchEmailByType(type);
-        });
-
-        EmailTemplateAPI.fetchEmailTemplatesPeek().then(payload => {
-            this.setState({
-                emailTemplates: payload,
-            });
-        });
-
-        MailboxAPI.fetchMailboxesLoggedInUserPeek().then(payload => {
-            this.setState({
-                mailboxAddresses: payload,
-            });
-        });
-    }
-
-    fetchEmailByType(type) {
+        // this.fetchEmailByType(type);
         EmailAPI.fetchEmailByType(this.props.params.id, type).then(payload => {
-            const extraOptions = this.createExtraOptions(payload.to, payload.cc, payload.bcc);
             this.setState({
                 ...this.state,
                 oldEmailId: payload.id,
@@ -114,21 +94,33 @@ class EmailAnswerApp extends Component {
                     htmlBody: payload.htmlBody ? payload.htmlBody : '',
                     attachments: payload.attachments ? payload.attachments : '',
                 },
-                emailAddresses: [...this.state.emailAddresses, ...extraOptions],
+                emailAddressesToSelected: payload.emailAddressesToSelected,
+                emailAddressesCcSelected: payload.emailAddressesCcSelected,
+                emailAddressesBccSelected: payload.emailAddressesBccSelected,
                 hasLoaded: true,
             });
         });
+
+        EmailTemplateAPI.fetchEmailTemplatesPeek().then(payload => {
+            this.setState({
+                emailTemplates: payload,
+            });
+        });
+
+        MailboxAPI.fetchMailboxesLoggedInUserPeek()
+            .then(payload => {
+                console.log(payload.data.data);
+                this.setState({
+                    mailboxAddresses: payload.data.data,
+                });
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
     }
 
-    handleFromIds(selectedOption) {
-        this.setState({
-            ...this.state,
-            email: {
-                ...this.state.email,
-                mailboxId: selectedOption,
-            },
-        });
-    }
+    // fetchEmailByType(type) {
+    // }
 
     handleEmailTemplates(selectedOption) {
         this.setState({
@@ -151,18 +143,6 @@ class EmailAnswerApp extends Component {
         });
     }
 
-    createExtraOptions(to, cc, bcc) {
-        const emailAddresses = union(to, cc, bcc);
-
-        let options = [];
-
-        emailAddresses.map(emailAddress => {
-            options.push({ id: emailAddress, name: emailAddress });
-        });
-
-        return options;
-    }
-
     handleInputChange(event) {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -177,33 +157,51 @@ class EmailAnswerApp extends Component {
         });
     }
 
-    handleToIds(selectedOption) {
+    handleFromIds(selectedOption) {
+        console.log('handleFromIds');
+        console.log(selectedOption);
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                to: selectedOption,
+                mailboxId: selectedOption,
             },
+        });
+    }
+
+    handleToIds(selectedOption) {
+        const toIds = selectedOption ? selectedOption.map(item => item.id).join(',') : [];
+        this.setState({
+            ...this.state,
+            email: {
+                ...this.state.email,
+                to: toIds,
+            },
+            emailAddressesToSelected: selectedOption,
         });
     }
 
     handleCcIds(selectedOption) {
+        const ccIds = selectedOption ? selectedOption.map(item => item.id).join(',') : [];
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                cc: selectedOption,
+                cc: ccIds,
             },
+            emailAddressesCcSelected: selectedOption,
         });
     }
 
     handleBccIds(selectedOption) {
+        const bccIds = selectedOption ? selectedOption.map(item => item.id).join(',') : [];
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                bcc: selectedOption,
+                bcc: bccIds,
             },
+            emailAddressesBccSelected: selectedOption,
         });
     }
 
@@ -388,7 +386,9 @@ class EmailAnswerApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <EmailAnswerForm
                             email={this.state.email}
-                            emailAddresses={this.state.emailAddresses}
+                            emailAddressesToSelected={this.state.emailAddressesToSelected}
+                            emailAddressesCcSelected={this.state.emailAddressesCcSelected}
+                            emailAddressesBccSelected={this.state.emailAddressesBccSelected}
                             errors={this.state.errors}
                             hasLoaded={this.state.hasLoaded}
                             handleSubmit={this.handleSubmit}

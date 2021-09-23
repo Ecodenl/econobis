@@ -7,7 +7,9 @@ const EmailNewForm = ({
     email,
     contactGroupName,
     mailboxAddresses,
-    emailAddresses,
+    emailAddressesToSelected,
+    emailAddressesCcSelected,
+    emailAddressesBccSelected,
     emailTemplates,
     errors,
     handleSubmit,
@@ -27,7 +29,9 @@ const EmailNewForm = ({
             <EmailNewFormGeneral
                 email={email}
                 contactGroupName={contactGroupName}
-                emailAddresses={emailAddresses}
+                emailAddressesToSelected={emailAddressesToSelected}
+                emailAddressesCcSelected={emailAddressesCcSelected}
+                emailAddressesBccSelected={emailAddressesBccSelected}
                 mailboxAddresses={mailboxAddresses}
                 emailTemplates={emailTemplates}
                 errors={errors}

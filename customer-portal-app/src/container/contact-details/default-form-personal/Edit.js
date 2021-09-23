@@ -12,6 +12,8 @@ import Row from 'react-bootstrap/Row';
 import TextBlock from '../../../components/general/TextBlock';
 import moment from 'moment';
 import InputDate from '../../../components/form/InputDate';
+import { FaInfoCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 
 const DefaultContactPersonalEdit = function({
     portalSettings,
@@ -45,9 +47,38 @@ const DefaultContactPersonalEdit = function({
                                     id="title_id"
                                     placeholder={'Aanhef'}
                                     options={Titles}
+                                    disabled={initialContact.disableChangeContactNameOnPortal}
                                 />
                             )}
                         />
+                    </Col>
+                    <Col xs={12} sm={6}>
+                        {initialContact.disableChangeContactNameOnPortal ? (
+                            <>
+                                <FaInfoCircle
+                                    color={'blue'}
+                                    size={'15px'}
+                                    data-tip={
+                                        'Je neemt deel aan een project waarvan de deelnemingen op naam zijn uitgegeven.<br />' +
+                                        'Daarom kun je jouw naam niet zelf wijzigen.<br />' +
+                                        'Overige contactgegevens kun je wel zelf aanpassen.<br />' +
+                                        'Een wijziging van rekeningnummer wordt door ons gecontroleerd.<br />' +
+                                        'Heb je vragen of wil je jouw gegevens door de beheerder laten wijzigen?<br />' +
+                                        'Kijk in het menu onder "Over ons" voor contact gegevens.'
+                                    }
+                                    data-for={`contact-${initialContact.id}`}
+                                />
+                                <ReactTooltip
+                                    id={`contact-${initialContact.id}`}
+                                    effect="float"
+                                    place="right"
+                                    multiline={true}
+                                    aria-haspopup="true"
+                                />
+                            </>
+                        ) : (
+                            ''
+                        )}
                     </Col>
                 </Row>
                 <Row>
@@ -61,6 +92,7 @@ const DefaultContactPersonalEdit = function({
                                     touched={touched}
                                     id="initials"
                                     placeholder={'Initialen'}
+                                    disabled={initialContact.disableChangeContactNameOnPortal}
                                 />
                             )}
                         />
@@ -75,6 +107,7 @@ const DefaultContactPersonalEdit = function({
                                     touched={touched}
                                     id="first_name"
                                     placeholder={'Voornaam'}
+                                    disabled={initialContact.disableChangeContactNameOnPortal}
                                 />
                             )}
                         />
@@ -92,6 +125,7 @@ const DefaultContactPersonalEdit = function({
                                     id="last_name_prefix_id"
                                     options={LastNamePrefixes}
                                     placeholder={'Tussenvoegsel'}
+                                    disabled={initialContact.disableChangeContactNameOnPortal}
                                 />
                             )}
                         />
@@ -106,6 +140,7 @@ const DefaultContactPersonalEdit = function({
                                     touched={touched}
                                     id="last_name"
                                     placeholder={'Achternaam'}
+                                    disabled={initialContact.disableChangeContactNameOnPortal}
                                 />
                             )}
                         />

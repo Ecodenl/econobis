@@ -28,6 +28,7 @@ const ProjectFormView = props => {
         baseProjectCodeRefWithName,
         checkDoubleAddresses,
         checkPostalcodeLink,
+        disableChangeContactNameOnPortal,
         postalCode,
         address,
         city,
@@ -119,6 +120,7 @@ const ProjectFormView = props => {
                 checkDoubleAddresses={checkDoubleAddresses}
                 postalcodeLink={postalcodeLink}
                 checkPostalcodeLink={checkPostalcodeLink}
+                disableChangeContactNameOnPortal={disableChangeContactNameOnPortal}
                 requiredParticipants={requiredParticipants}
                 numberOfParticipantsStillNeeded={numberOfParticipantsStillNeeded}
                 address={address}

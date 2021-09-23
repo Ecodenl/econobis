@@ -54,6 +54,7 @@ class FullProject extends JsonResource
                 'baseProjectCodeRefWithName' => FullEnumWithIdAndName::make($this->getBaseProjectCodeRef()),
                 'checkDoubleAddresses' => $this->check_double_addresses,
                 'checkPostalcodeLink' => $this->check_postalcode_link,
+                'disableChangeContactNameOnPortal' => $this->disable_change_contact_name_on_portal,
                 'postalCode' => $this->postal_code,
                 'address' => $this->address,
                 'city' => $this->city,

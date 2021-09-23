@@ -19,6 +19,7 @@ export default {
                         'dateDidAgreeAvg',
                         'addressLines',
                         'isParticipant',
+                        'disableChangeContactNameOnPortal',
                         'noAddressesFound',
                         'isParticipantPcrProject',
                         'isParticipantSceProject',

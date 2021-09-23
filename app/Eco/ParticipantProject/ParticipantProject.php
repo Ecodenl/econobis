@@ -204,7 +204,7 @@ class ParticipantProject extends Model
             $total += $mutation->returns;
         }
 
-        return $total;
+        return floatval( number_format( $total, 2, '.', ''));
     }
 
     public function getParticipationsReturnsKwhTotalAttribute()
@@ -215,7 +215,7 @@ class ParticipantProject extends Model
             $total += $mutation->payout_kwh;
         }
 
-        return $total;
+        return floatval( number_format( $total, 2, '.', ''));
     }
 
     public function getParticipationsIndicationOfRestitutionEnergyTaxTotalAttribute()
@@ -226,7 +226,7 @@ class ParticipantProject extends Model
             $total += $mutation->indication_of_restitution_energy_tax;
         }
 
-        return $total;
+        return floatval( number_format( $total, 2, '.', ''));
     }
 
     public function getDateBeginNextRevenueKwhAttribute()

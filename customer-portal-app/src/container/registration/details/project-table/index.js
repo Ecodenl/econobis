@@ -1,5 +1,7 @@
 import React from 'react';
 import Table from 'react-bootstrap/Table';
+import classNameBasedOnTypePresenter from '../../../../helpers/classNameBasedOnTypePresenter';
+import valueBasedOnTypePresenter from '../../../../helpers/ValueBasedOnTypePresenter';
 
 function RegistrationDetailsProjectTable({ fields }) {
     if (!fields || fields.length === 0) return <p>Geen projectdetails bekend</p>;
@@ -12,7 +14,7 @@ function RegistrationDetailsProjectTable({ fields }) {
                         <td>
                             <strong>{field.label}</strong>
                         </td>
-                        <td>{field.value}</td>
+                        <td>{valueBasedOnTypePresenter(field)}</td>
                     </tr>
                 ))}
             </tbody>

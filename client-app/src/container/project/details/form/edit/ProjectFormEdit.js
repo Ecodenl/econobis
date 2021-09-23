@@ -693,6 +693,7 @@ class ProjectFormEdit extends Component {
             baseProjectCodeRef,
             checkDoubleAddresses,
             checkPostalcodeLink,
+            disableChangeContactNameOnPortal,
             address,
             postalCode,
             city,
@@ -797,6 +798,7 @@ class ProjectFormEdit extends Component {
                     checkDoubleAddresses={checkDoubleAddresses}
                     postalcodeLink={postalcodeLink}
                     checkPostalcodeLink={checkPostalcodeLink}
+                    disableChangeContactNameOnPortal={disableChangeContactNameOnPortal}
                     requiredParticipants={requiredParticipants}
                     numberOfParticipantsStillNeeded={numberOfParticipantsStillNeeded}
                     address={address}

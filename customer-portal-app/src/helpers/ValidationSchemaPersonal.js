@@ -75,7 +75,14 @@ export default {
         person: Yup.object().shape({
             firstName: Yup.string()
                 .trim()
-                .required('Verplicht'),
+                // .required('Verplicht'),
+                .test('initials-and-first-name-check', 'Voornaam of initialen verplicht', function(value) {
+                    if (value.trim() != '' || this.parent.initials.trim() != '') {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }),
             dateOfBirth: Yup.date()
                 .typeError('Verplicht of ongeldige datum')
                 .required('Verplicht'),

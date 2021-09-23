@@ -85,9 +85,8 @@ class EmailNewApp extends Component {
         }
 
         MailboxAPI.fetchMailboxesLoggedInUserPeek().then(payload => {
-            console.log(payload);
             this.setState({
-                mailboxAddresses: payload,
+                mailboxAddresses: payload.data.data,
             });
         });
 

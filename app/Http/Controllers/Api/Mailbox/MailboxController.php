@@ -33,6 +33,7 @@ use http\Header;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class MailboxController extends Controller
 {
@@ -297,6 +298,13 @@ class MailboxController extends Controller
         if (config('app.env') === 'local') $appUrl = str_replace('https', 'http', $appUrl);
 
         // TODO If callback is not valid then show message to the user
-        if ($gmailConnectionManager->callback($request->code)) header("Location: {$appUrl}/#/mailbox/{$mailbox->id}");
+        if ($gmailConnectionManager->callback($request->code)) {
+            header("Location: {$appUrl}/#/mailbox/{$mailbox->id}");
+            exit;
+        } else {
+            Log::error("Callback vanuit gmail is NIET ok");
+            header("Location: {$appUrl}/#/mailbox/{$mailbox->id}");
+            exit;
+        }
     }
 }

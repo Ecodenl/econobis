@@ -71,8 +71,9 @@ class EmailNewApp extends Component {
                     ...this.state,
                     email: {
                         ...this.state.email,
-                        to: payload.join(','),
+                        to: payload['emailIds'].join(','),
                     },
+                    emailAddressesToSelected: payload['emailAddressesToSelected'],
                 });
             });
         }
@@ -102,8 +103,9 @@ class EmailNewApp extends Component {
                     ...this.state,
                     email: {
                         ...this.state.email,
-                        to: payload.join(','),
+                        to: payload['emailIds'].join(','),
                     },
+                    emailAddressesToSelected: payload['emailAddressesToSelected'],
                 });
             });
         }
@@ -115,8 +117,9 @@ class EmailNewApp extends Component {
                             ...this.state,
                             email: {
                                 ...this.state.email,
-                                to: payload.join(','),
+                                to: payload['emailIds'].join(','),
                             },
+                            emailAddressesToSelected: payload['emailAddressesToSelected'],
                         });
                     });
                 }

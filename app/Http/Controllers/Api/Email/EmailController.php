@@ -391,7 +391,7 @@ class EmailController
     public function search(Request $request)
     {
         $contacts = Contact::select(DB::raw("`email_addresses`.`id`, concat(`contacts`.`full_name`, ' (', `email_addresses`.`email`, ')') as name, `email_addresses`.`email` as email"));
-        $contacts->leftJoin('email_addresses', function ($join) {
+        $contacts->join('email_addresses', function ($join) {
             $join->on('email_addresses.contact_id', '=', 'contacts.id')
                 ->whereNull('email_addresses.deleted_at');
         });

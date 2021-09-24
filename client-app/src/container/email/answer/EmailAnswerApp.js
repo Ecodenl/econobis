@@ -76,7 +76,6 @@ class EmailAnswerApp extends Component {
                 type = 'reply';
         }
 
-        // this.fetchEmailByType(type);
         EmailAPI.fetchEmailByType(this.props.params.id, type).then(payload => {
             this.setState({
                 ...this.state,
@@ -109,7 +108,6 @@ class EmailAnswerApp extends Component {
 
         MailboxAPI.fetchMailboxesLoggedInUserPeek()
             .then(payload => {
-                console.log(payload.data.data);
                 this.setState({
                     mailboxAddresses: payload.data.data,
                 });
@@ -118,9 +116,6 @@ class EmailAnswerApp extends Component {
                 console.log(error);
             });
     }
-
-    // fetchEmailByType(type) {
-    // }
 
     handleEmailTemplates(selectedOption) {
         this.setState({

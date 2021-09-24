@@ -12,10 +12,8 @@ const InputMultiSelect = props => {
         options,
         optionId,
         optionName,
-        onCreateOption,
         onChangeAction,
         required,
-        allowCreate,
         multi,
         error,
         errorMessage,
@@ -25,45 +23,11 @@ const InputMultiSelect = props => {
         clearable,
     } = props;
 
-    const onPromptTextCreator = label => {
-        return `Maak optie "${label}" aan`;
-    };
-
     const customStyles = {
         option: provided => ({ ...provided, fontSize: '12px' }),
         singleValue: provided => ({ ...provided, fontSize: '12px' }),
         menu: provided => ({ ...provided, zIndex: 20 }),
     };
-
-    if (value != '' && options && options.length > 0) {
-        let valueArray = [];
-        if (!Array.isArray(value)) {
-            valueArray = value.toString().split(',');
-        } else {
-            valueArray = value;
-        }
-
-        let newValues = [];
-        valueArray.map(valueItem => {
-            if (!searchNewItem(valueItem, options)) {
-                newValues.push({
-                    id: valueItem,
-                    name: valueItem,
-                    email: valueItem,
-                });
-            }
-        });
-        options.push(...newValues);
-    }
-
-    function searchNewItem(idKey, myArray) {
-        for (var i = 0; i < myArray.length; i++) {
-            if (myArray[i].id == idKey) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     return (
         <div className="form-group col-sm-12">
@@ -93,8 +57,6 @@ const InputMultiSelect = props => {
                                 ? option => onChangeAction(option ? option.map(item => item[optionId]).join() : '')
                                 : option => onChangeAction(option ? option[optionId] : '')
                         }
-                        // onCreateOption={option => onCreateOption(option ? option : '', name)}
-                        onCreateOption={onCreateOption}
                         options={options}
                         getOptionLabel={option => option[optionName]}
                         getOptionValue={option => option[optionId]}
@@ -113,16 +75,6 @@ const InputMultiSelect = props => {
                         isDisabled={disabled}
                         styles={customStyles}
                         isClearable={clearable}
-                        formatCreateLabel={onPromptTextCreator}
-                        getNewOptionData={(optionId, optionName) =>
-                            allowCreate
-                                ? {
-                                      id: optionName,
-                                      name: optionName,
-                                      __isNew__: true,
-                                  }
-                                : {}
-                        }
                         theme={theme => ({
                             ...theme,
                             colors: {
@@ -164,7 +116,6 @@ InputMultiSelect.defaultProps = {
 };
 
 InputMultiSelect.propTypes = {
-    allowCreate: PropTypes.bool,
     label: PropTypes.string.isRequired,
     size: PropTypes.string,
     id: PropTypes.string,
@@ -173,7 +124,6 @@ InputMultiSelect.propTypes = {
     optionId: PropTypes.string,
     optionName: PropTypes.string,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    onCreateOption: PropTypes.func,
     onChangeAction: PropTypes.func,
     onBlurAction: PropTypes.func,
     required: PropTypes.string,

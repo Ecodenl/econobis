@@ -11,10 +11,8 @@ const InputReactSelectLong = props => {
         options,
         optionId,
         optionName,
-        // onCreateOption,
         onChangeAction,
         required,
-        // allowCreate,
         multi,
         error,
         errorMessage,
@@ -24,45 +22,11 @@ const InputReactSelectLong = props => {
         clearable,
     } = props;
 
-    // const onPromptTextCreator = label => {
-    //     return `Maak optie "${label}" aan`;
-    // };
-
     const customStyles = {
         option: provided => ({ ...provided, fontSize: '12px' }),
         singleValue: provided => ({ ...provided, fontSize: '12px' }),
         menu: provided => ({ ...provided, zIndex: 20 }),
     };
-
-    // if (value != '' && options && options.length > 0) {
-    //     let valueArray = [];
-    //     if (!Array.isArray(value)) {
-    //         valueArray = value.toString().split(',');
-    //     } else {
-    //         valueArray = value;
-    //     }
-    //
-    //     let newValues = [];
-    //     valueArray.map(valueItem => {
-    //         if (!searchNewItem(valueItem, options)) {
-    //             newValues.push({
-    //                 id: valueItem,
-    //                 name: valueItem,
-    //                 email: valueItem,
-    //             });
-    //         }
-    //     });
-    //     options.push(...newValues);
-    // }
-    //
-    // function searchNewItem(idKey, myArray) {
-    //     for (var i = 0; i < myArray.length; i++) {
-    //         if (myArray[i].id == idKey) {
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
 
     return (
         <div className={`form-group col-sm-12`}>
@@ -92,7 +56,6 @@ const InputReactSelectLong = props => {
                                 ? option => onChangeAction(option ? option.map(item => item[optionId]).join() : '')
                                 : option => onChangeAction(option ? option[optionId] : '', name)
                         }
-                        // onCreateOption={onCreateOption}
                         options={options}
                         getOptionLabel={option => option[optionName]}
                         getOptionValue={option => option[optionId]}
@@ -111,16 +74,6 @@ const InputReactSelectLong = props => {
                         isDisabled={disabled}
                         styles={customStyles}
                         isClearable={clearable}
-                        // formatCreateLabel={onPromptTextCreator}
-                        // getNewOptionData={(optionId, optionName) =>
-                        //     allowCreate
-                        //         ? {
-                        //               id: optionName,
-                        //               name: optionName,
-                        //               __isNew__: true,
-                        //       }
-                        //         : {}
-                        // }
                         theme={theme => ({
                             ...theme,
                             colors: {
@@ -146,7 +99,6 @@ const InputReactSelectLong = props => {
 };
 
 InputReactSelectLong.defaultProps = {
-    // allowCreate: false,
     optionId: 'id',
     optionName: 'name',
     disabled: false,
@@ -161,7 +113,6 @@ InputReactSelectLong.defaultProps = {
 };
 
 InputReactSelectLong.propTypes = {
-    // allowCreate: PropTypes.bool,
     label: PropTypes.string.isRequired,
     id: PropTypes.string,
     name: PropTypes.string.isRequired,

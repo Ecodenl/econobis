@@ -99,9 +99,9 @@ class InvoiceController extends ApiController
         $totalIds = $selectedInvoices->pluck("id");
 
         $totalPrice = 0;
-        foreach ($selectedInvoices as $invoice) {
-            $totalPrice += $invoice->total_incl_vat_incl_reduction;
-        }
+//        foreach ($selectedInvoices as $invoice) {
+//            $totalPrice += $invoice->total_incl_vat_incl_reduction;
+//        }
 
         return GridInvoice::collection($invoices)
             ->additional([

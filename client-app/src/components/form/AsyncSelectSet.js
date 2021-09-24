@@ -55,7 +55,7 @@ const AsyncSelectSet = props => {
                         getOptionValue={option => option[optionId]}
                         placeholder={placeholder}
                         noOptionsMessage={function() {
-                            return 'Geen opties gevonden (tik om te zoeken minimaal 3 tekens)';
+                            return 'Geen opties gevonden (tik om te zoeken minimaal 2 tekens)';
                         }}
                         loadingMessage={function() {
                             return 'Laden';

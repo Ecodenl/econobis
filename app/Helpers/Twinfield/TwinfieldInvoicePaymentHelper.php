@@ -23,9 +23,8 @@ use PhpTwinfield\Exception as PhpTwinfieldException;
 use PhpTwinfield\Office;
 use PhpTwinfield\Secure\OpenIdConnectAuthentication;
 use PhpTwinfield\Secure\Provider\OAuthProvider;
-use PhpTwinfield\Secure\WebservicesAuthentication;
 
-class TwinfieldInvoiceHelper
+class TwinfieldInvoicePaymentHelper
 {
     private $connection;
     private $administration;
@@ -33,16 +32,16 @@ class TwinfieldInvoiceHelper
     private $office;
     private $redirectUri;
     private $invoiceApiConnector;
+    public $messages;
 
     /**
-     * TwinfieldInvoiceHelper constructor.
+     * TwinfieldInvoicePaymentHelper constructor.
      *
      * @param Administration $administration
      */
     public function __construct(Administration $administration, $fromInvoiceDateSent)
     {
         $this->administration = $administration;
-
 
         if($fromInvoiceDateSent){
             $this->fromInvoiceDateSent = $fromInvoiceDateSent;
@@ -68,24 +67,24 @@ class TwinfieldInvoiceHelper
                 $this->connection = null;
             }
 
-        }else{
-            $this->connection = new WebservicesAuthentication($administration->twinfield_username, $administration->twinfield_password, $administration->twinfield_organization_code);
         }
 
         $this->invoiceApiConnector = new InvoiceApiConnector($this->connection);
+        $this->messages = [];
     }
 
-    public function processPaidInvoices(){
+    public function processTwinfieldInvoicePayment(){
         if(!$this->administration->uses_twinfield){
             return "Deze administratie maakt geen gebruik van Twinfield.";
+        }
+        if(!$this->administration->twinfield_is_valid){
+            return "Twinfield is onjuist geconfigureerd. Pas de configuratie aan om Twinfield te gebruiken.";
         }
         set_time_limit(0);
 
         $browseDataApiConnector = new BrowseDataApiConnector($this->connection);
         //Deze function kan je gebruiken om te kijken wel browseDefinition fields er zijn voor een bepaald code
 //        $this->readBrowseDefinition($browseDataApiConnector);
-
-        $messages = [];
 
         // We controleren alle invoices met status exported of paid en met koppeling Twinfield en vanaf gewenste date sent
         $invoicesToBeChecked = $this->administration->invoices()
@@ -189,7 +188,7 @@ class TwinfieldInvoiceHelper
                         $row = $twinfieldInvoiceTransactions->getRows()[0];
                         $dagBoek = ($row->getCells()[1]->getValue());
                         if($dagBoek === 'VRK') {
-                            $messages = $this->createOrUpdateInvoicePayment($row, $dagBoek, $invoiceToBeChecked, $messages);
+                            $this->createOrUpdateInvoicePayment($row, $dagBoek, $invoiceToBeChecked);
                         }
                     }
 
@@ -198,7 +197,7 @@ class TwinfieldInvoiceHelper
                         $dagBoek = ($row->getCells()[1]->getValue());
                         // VRK is de verkoop nota, die slaan we nu hier over
                         if($dagBoek !== 'VRK'){
-                            $messages = $this->createOrUpdateInvoicePayment($row, $dagBoek, $invoiceToBeChecked, $messages);
+                            $this->createOrUpdateInvoicePayment($row, $dagBoek, $invoiceToBeChecked);
                         }
                     };
                     // Invoice payments die we niet meer binnenkrijgen verwijderen we (softdelete))
@@ -214,11 +213,11 @@ class TwinfieldInvoiceHelper
             }
         }
 
-        if(count($messages) == 0){
-            array_push($messages, 'Geen betalingen gevonden.');
+        if(count($this->messages) == 0){
+            array_push($this->messages, 'Geen betalingen gevonden.');
         }
 
-        return implode(';', $messages);
+        return implode(';', $this->messages);
     }
 
     public function getSalesTransaction($invoiceToBeChecked){
@@ -345,10 +344,8 @@ class TwinfieldInvoiceHelper
     /**
      * @param \PhpTwinfield\BrowseDataRow $row
      * @param $invoiceToBeChecked
-     * @param array $messages
-     * @return array
      */
-    private function createOrUpdateInvoicePayment(\PhpTwinfield\BrowseDataRow $row, $dagBoek, $invoiceToBeChecked, array $messages): array
+    private function createOrUpdateInvoicePayment(\PhpTwinfield\BrowseDataRow $row, $dagBoek, $invoiceToBeChecked)
     {
         // [1] - Dagboek
         // [2] - Notanr.
@@ -407,7 +404,7 @@ class TwinfieldInvoiceHelper
                 'user_id' => Auth::user()->id,
                 'is_error' => false,
             ]);
-            array_push($messages, $message);
+            array_push($this->messages, $message);
             // anders bijwerken
         } else {
             $invoicePayment = $invoicePaymentCheck->first();
@@ -430,14 +427,12 @@ class TwinfieldInvoiceHelper
                     'user_id' => Auth::user()->id,
                     'is_error' => false,
                 ]);
-                array_push($messages, $message);
+                array_push($this->messages, $message);
             } else {
                 $invoicePayment->in_progress = false;
                 $invoicePayment->save();
             }
         }
-
-        return $messages;
     }
 
     public function readBrowseDefinition(BrowseDataApiConnector $browseDataApiConnector){

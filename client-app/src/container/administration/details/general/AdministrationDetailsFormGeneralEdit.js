@@ -19,8 +19,6 @@ import InputToggle from '../../../../components/form/InputToggle';
 import ViewText from '../../../../components/form/ViewText';
 import InputDate from '../../../../components/form/InputDate';
 import moment from 'moment';
-import { Link } from 'react-router';
-import PortalSettingsLayoutAPI from '../../../../api/portal-settings-layout/PortalSettingsLayoutAPI';
 import AdministrationsAPI from '../../../../api/administration/AdministrationsAPI';
 
 class AdministrationDetailsFormGeneralEdit extends Component {
@@ -75,6 +73,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             dateSyncTwinfieldInvoices,
             pendingInvoicesPresent,
             oldestUnpaidInvoiceDate,
+            oldestTwinfieldInvoiceDate,
             prefixInvoiceNumber,
             usesVat,
             emailBccNotas,
@@ -132,10 +131,15 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 twinfieldOrganizationCode: twinfieldOrganizationCode ? twinfieldOrganizationCode : '',
                 twinfieldOfficeCode: twinfieldOfficeCode ? twinfieldOfficeCode : '',
                 dateSyncTwinfieldContacts: dateSyncTwinfieldContacts ? dateSyncTwinfieldContacts : '',
-                dateSyncTwinfieldPayments: dateSyncTwinfieldPayments ? dateSyncTwinfieldPayments : '',
-                dateSyncTwinfieldInvoices: dateSyncTwinfieldInvoices ? dateSyncTwinfieldInvoices : '',
+                dateSyncTwinfieldPayments: dateSyncTwinfieldPayments
+                    ? dateSyncTwinfieldPayments
+                    : moment('2019-01-01').format('YYYY-MM-DD'),
+                dateSyncTwinfieldInvoices: dateSyncTwinfieldInvoices
+                    ? dateSyncTwinfieldInvoices
+                    : moment('2019-01-01').format('YYYY-MM-DD'),
                 pendingInvoicesPresent: pendingInvoicesPresent,
                 oldestUnpaidInvoiceDate: oldestUnpaidInvoiceDate ? oldestUnpaidInvoiceDate : '',
+                oldestTwinfieldInvoiceDate: oldestTwinfieldInvoiceDate ? oldestTwinfieldInvoiceDate : '',
                 prefixInvoiceNumber: prefixInvoiceNumber ? prefixInvoiceNumber : 'F',
                 usesVat: usesVat,
                 emailBccNotas: emailBccNotas ? emailBccNotas : '',
@@ -346,18 +350,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 hasErrors = true;
             }
 
-            if (administration.twinfieldConnectionType === 'webservice') {
-                if (validator.isEmpty(administration.twinfieldUsername + '')) {
-                    errors.twinfieldUsername = true;
-                    hasErrors = true;
-                }
-                if (administration.twinfieldPasswordChange) {
-                    if (validator.isEmpty(administration.twinfieldPassword + '')) {
-                        errors.twinfieldPassword = true;
-                        hasErrors = true;
-                    }
-                }
-            }
             if (administration.twinfieldConnectionType === 'openid') {
                 if (validator.isEmpty(administration.twinfieldClientId + '')) {
                     errors.twinfieldClientId = true;
@@ -468,10 +460,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             data.append('usesTwinfield', administration.usesTwinfield);
             data.append('twinfieldConnectionType', administration.twinfieldConnectionType);
             data.append('twinfieldUsername', administration.twinfieldUsername);
-            // twinfield password alleen toevoegen indien ingevuld op scherm.
-            if (administration.twinfieldPasswordChange && administration.twinfieldConnectionType === 'webservice') {
-                data.append('twinfieldPassword', administration.twinfieldPassword);
-            }
+            // twinfield client secret alleen toevoegen indien ingevuld op scherm.
             if (administration.twinfieldPasswordChange && administration.twinfieldConnectionType === 'openid') {
                 data.append('twinfieldClientSecret', administration.twinfieldClientSecret);
             }
@@ -536,6 +525,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             dateSyncTwinfieldInvoices,
             pendingInvoicesPresent,
             oldestUnpaidInvoiceDate,
+            oldestTwinfieldInvoiceDate,
             prefixInvoiceNumber,
             usesVat,
             emailBccNotas,
@@ -553,19 +543,9 @@ class AdministrationDetailsFormGeneralEdit extends Component {
         let disableBeforeDateSyncTwinfieldPayments = moment(moment('2019-01-01').format('YYYY-MM-DD')).format(
             'YYYY-MM-DD'
         );
-
-        let disableAfterDateSyncTwinfieldContacts = null;
-        let disableAfterDateSyncTwinfieldInvoices = null;
-        let disableAfterDateSyncTwinfieldPayments = null;
-        if (dateSyncTwinfieldPayments) {
-            disableAfterDateSyncTwinfieldPayments = moment(moment(oldestUnpaidInvoiceDate).format('YYYY-MM-DD')).format(
-                'YYYY-MM-DD'
-            );
-        } else {
-            disableAfterDateSyncTwinfieldPayments = moment(moment('2019-01-01').format('YYYY-MM-DD')).format(
-                'YYYY-MM-DD'
-            );
-        }
+        // let disableAfterDateSyncTwinfieldContacts = null;
+        // let disableAfterDateSyncTwinfieldInvoices = null;
+        // let disableAfterDateSyncTwinfieldPayments = null;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -879,11 +859,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 name={'usesTwinfield'}
                                 value={usesTwinfield}
                                 onChangeAction={this.handleUsesTwinfieldChange}
-                                disabled={
-                                    !this.manageUsesTwinfield &&
-                                    ((twinfieldConnectionType === 'webservice' && !isEmpty(twinfieldUsername)) ||
-                                        (twinfieldConnectionType === 'openid' && !isEmpty(twinfieldClientId)))
-                                }
+                                disabled={!this.manageUsesTwinfield && !isEmpty(twinfieldClientId)}
                             />
                             {(usesTwinfield == true || !isEmpty(twinfieldUsername)) && (
                                 <InputSelect
@@ -923,41 +899,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         error={this.state.errors.twinfieldOfficeCode}
                                     />
                                 </div>
-                                {twinfieldConnectionType === 'webservice' && (
-                                    <React.Fragment>
-                                        <div className="row">
-                                            <InputText
-                                                label="Gebruikersnaam"
-                                                name={'twinfieldUsername'}
-                                                value={twinfieldUsername}
-                                                onChangeAction={this.handleInputChange}
-                                                required={'required'}
-                                                readOnly={usesTwinfield == false}
-                                                error={this.state.errors.twinfieldUsername}
-                                            />
-                                            <InputText
-                                                label="Wachtwoord"
-                                                name={'twinfieldPassword'}
-                                                value={twinfieldPassword}
-                                                placeholder="**********"
-                                                onChangeAction={this.handleInputChange}
-                                                required={'required'}
-                                                readOnly={usesTwinfield == false}
-                                                error={this.state.errors.twinfieldPassword}
-                                            />
-                                        </div>
-                                        <div className="row">
-                                            <InputToggle
-                                                label={'Wijzig wachtwoord'}
-                                                name={'twinfieldPasswordChange'}
-                                                value={twinfieldPasswordChange}
-                                                onChangeAction={this.handleInputChange}
-                                                className={'col-sm-push-6 col-sm-6'}
-                                                disabled={usesTwinfield == false}
-                                            />
-                                        </div>
-                                    </React.Fragment>
-                                )}
                                 {twinfieldConnectionType === 'openid' && (
                                     <React.Fragment>
                                         <div className="row">
@@ -1008,37 +949,27 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         value={dateSyncTwinfieldContacts}
                                         onChangeAction={this.handleInputChangeDate}
                                         disabledBefore={disableBeforeDateSyncTwinfieldContacts}
-                                        disabledAfter={disableAfterDateSyncTwinfieldContacts}
+                                        disabledAfter={dateSyncTwinfieldInvoices}
                                         readOnly={usesTwinfield == false}
                                         error={this.state.errors.dateSyncTwinfieldContacts}
+                                        size={'col-sm-5'}
+                                        textToolTip={`Na het maken van de koppeling worden contacten met een nota in Econobis
+                                            aangemaakt in Twinfield vanaf deze datum (op basis van nota datum). De nota’s
+                                            uit Econobis worden niet overgezet. In Twinfield kunnen vervolgens oude nota’s
+                                            worden gekoppeld. Als deze datum leeg blijft dan begint de synchronisatie vanaf
+                                            de eerste datum van niet betaald nota’s synchroniseren. Deze synchronisatie
+                                            draait ook automatisch nachts.`}
                                     />
-                                    <div className="col-sm-6 form-group">
-                                        <small style={{ fontWeight: 'normal' }}>
-                                            Nota (verzend)datum vanaf wanneer contacten initieel gemaakt worden in
-                                            Twinfield. Indien gebruik Twinfield aangezet wordt en contacten van
-                                            verzonden of betaalde nota's die (nog) niet gesynchroniseerd zijn met
-                                            Twinfield en die nog niet eerder aangemaakt zijn in Twinfield zullen worden
-                                            aangemaakt bij Opslaan.
-                                            <br />
-                                            Laat datum leeg als je geen contacten initieel wil aanmaken in Twinfield.
-                                        </small>
-                                    </div>
-                                </div>
-                                <div className="row">
                                     <ViewText
                                         className={'col-sm-6 form-group'}
                                         label={"Nota's in behandeling"}
                                         value={pendingInvoicesPresent ? 'Ja' : 'Nee'}
+                                        name={'pendingInvoicesPresent'}
+                                        textToolTip={`Nota's in behandeling zijn nota's met status 'Wordt definitief gemaakt',
+                                         'Fout bij maken', 'Wordt verstuurd', 'Opnieuw te verzenden' of 'Wordt opnieuw verstuurd'.
+                                          Zolang er nota's in behandeling zijn kunnen de datums "Synchroniseer nota's vanaf"
+                                          en "Synchroniseer betalingen vanaf" niet gewijzigd worden.`}
                                     />
-                                    <div className="col-sm-6 form-group">
-                                        <small style={{ fontWeight: 'normal' }}>
-                                            Nota's in behandeling zijn nota's met status 'Wordt definitief gemaakt',
-                                            'Fout bij maken', 'Wordt verstuurd', 'Opnieuw te verzenden' of 'Wordt
-                                            opnieuw verstuurd'. Zolang er nota's in behandeling zijn kunnen de datums
-                                            hieronder (Synchroniseer nota's vanaf en Synchroniseer betalingen vanaf)
-                                            niet gewijzigd worden.
-                                        </small>
-                                    </div>
                                 </div>
                                 <div className="row">
                                     <InputDate
@@ -1047,37 +978,23 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         value={dateSyncTwinfieldInvoices}
                                         onChangeAction={this.handleInputChangeDate}
                                         disabledBefore={disableBeforeDateSyncTwinfieldInvoices}
-                                        disabledAfter={disableAfterDateSyncTwinfieldInvoices}
+                                        disabledAfter={oldestTwinfieldInvoiceDate}
                                         readOnly={usesTwinfield == false || pendingInvoicesPresent}
                                         error={this.state.errors.dateSyncTwinfieldInvoices}
+                                        size={'col-sm-5'}
+                                        textToolTip={`Niet betaalde nota’s, incl. de contacten worden vanaf deze datum (op basis van
+                                            nota datum) gesynchroniseerd met Twinfield. De datum kan niet liggen na de datum van de oudste gesynchroniseerde
+                                            nota. Deze synchronisatie moet handmatig aangevraagd worden.`}
                                     />
-                                    <div className="col-sm-6 form-group">
-                                        <small style={{ fontWeight: 'normal' }}>
-                                            Nota (verzend)datum vanaf wanneer nota's gesynchroniseerd moeten worden naar
-                                            Twinfield. Nota's voor deze datum die niet naar Twinfield zijn
-                                            gesynchroniseerd zullen handmatig in Econobis op betaald gezet moeten
-                                            worden. Over het algemeen zet je hier de datum waarop je wilt gaan starten
-                                            met Twinfield.
-                                            <br />
-                                            Laat datum leeg als je alle nota's wilt synchroniseren.
-                                        </small>
-                                    </div>
-                                </div>
-                                <div className="row">
                                     <ViewText
                                         className={'col-sm-6 form-group'}
-                                        label={'Oudste nota datum met status niet betaald  '}
+                                        label={'Oudste nota datum gesynchronisserd met Twinfield'}
                                         value={
-                                            oldestUnpaidInvoiceDate ? moment(oldestUnpaidInvoiceDate).format('L') : ''
+                                            oldestTwinfieldInvoiceDate
+                                                ? moment(oldestTwinfieldInvoiceDate).format('L')
+                                                : ''
                                         }
                                     />
-                                    <div className="col-sm-6 form-group">
-                                        <small style={{ fontWeight: 'normal' }}>
-                                            Je kan de datum 'Synchroniseer betalingen vanaf'(zie hieronder) niet
-                                            instellen op een datum na de oudste nota (verzend)datum met status niet
-                                            betaald.
-                                        </small>
-                                    </div>
                                 </div>
                                 <div className="row">
                                     <InputDate
@@ -1086,22 +1003,21 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         value={dateSyncTwinfieldPayments}
                                         onChangeAction={this.handleInputChangeDate}
                                         disabledBefore={disableBeforeDateSyncTwinfieldPayments}
-                                        disabledAfter={disableAfterDateSyncTwinfieldPayments}
+                                        disabledAfter={oldestUnpaidInvoiceDate}
                                         readOnly={usesTwinfield == false || pendingInvoicesPresent}
                                         error={this.state.errors.dateSyncTwinfieldPayments}
+                                        size={'col-sm-5'}
+                                        textToolTip={`In de nacht worden betalingen gesynchroniseerd. Dit gebeurt vanaf deze datum (op
+                                            basis van nota datum). De datum kan niet liggen na de datum van de oudste nog
+                                            niet betaalde nota.`}
                                     />
-                                    <div className="col-sm-6 form-group">
-                                        <small style={{ fontWeight: 'normal' }}>
-                                            Nota (verzend)datum vanaf wanneer betalingen gesynchroniseerd moeten worden
-                                            uit Twinfield. Datum 'Synchroniseer betalingen vanaf' moet voor oudste nota
-                                            datum (zie hierboven) met status niet betaald liggen.
-                                            <br />
-                                            Deze datum wordt gebruikt bij de procedure Synchroniseren betalingen die
-                                            elke nacht automatisch draait.
-                                            <br />
-                                            Laat datum leeg als je betalingen van alle nota's wilt synchroniseren.
-                                        </small>
-                                    </div>
+                                    <ViewText
+                                        className={'col-sm-6 form-group'}
+                                        label={'Oudste nota datum met status niet betaald'}
+                                        value={
+                                            oldestUnpaidInvoiceDate ? moment(oldestUnpaidInvoiceDate).format('L') : ''
+                                        }
+                                    />
                                 </div>
                             </React.Fragment>
                         )}

@@ -16,7 +16,7 @@ use App\Helpers\Delete\Models\DeleteAdministration;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Twinfield\TwinfieldCustomerHelper;
 use App\Helpers\Twinfield\TwinfieldHelper;
-use App\Helpers\Twinfield\TwinfieldInvoiceHelper;
+use App\Helpers\Twinfield\TwinfieldInvoicePaymentHelper;
 use App\Helpers\Twinfield\TwinfieldSalesTransactionHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Administration\Grid\RequestQuery;
@@ -275,26 +275,6 @@ class AdministrationController extends ApiController
             $this->storeLogo($logo, $administration);
         }
 
-        // Als er twinfield gebruikt gaat worden, dan indien gewenst (date_sync_twinfield_contacts gezet)
-        // contacten aanmaken van reeds verzonden en betaalde notas vanaf opgegeven datum
-        if($isUsesTwinfieldDirty && $administration->uses_twinfield && $administration->twinfield_is_valid && $administration->date_sync_twinfield_contacts )
-        {
-            foreach ($administration->invoices()
-                ->whereNull('twinfield_number')
-                ->whereIn('status_id', ['sent', 'paid'])
-                ->where('created_at', '>=', $administration->date_sync_twinfield_contacts)
-                ->get() as $invoice)
-            {
-                $twinfieldNumbers = $administration->twinfieldNumbers;
-                $twinfieldNumber  = $twinfieldNumbers->where('contact_id', '=', $invoice->contact_id)->first();
-                // hoeft alleen indien contact nog niet gekoppeld is aan een Twinfield customer.
-                if(!$twinfieldNumber || !$twinfieldNumber->twinfield_number){
-                    $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration, null);
-                    $twinfieldCustomerHelper->createCustomer($invoice->order->contact);
-                }
-            }
-        }
-
         return $this->show($administration);
     }
 
@@ -386,9 +366,14 @@ class AdministrationController extends ApiController
         $sepa->delete();
     }
 
+    public function syncSentContactsToTwinfield(Administration $administration){
+        $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration, null);
+        return $twinfieldCustomerHelper->processTwinfieldCustomer();
+    }
+
     public function syncSentInvoicesToTwinfield(Administration $administration){
-        $twinfieldInvoiceHelper = new TwinfieldSalesTransactionHelper($administration);
-        return $twinfieldInvoiceHelper->createAllSalesTransactions();
+        $twinfieldSalesTransactionHelper = new TwinfieldSalesTransactionHelper($administration);
+        return $twinfieldSalesTransactionHelper->procesTwinfieldSalesTransaction();
     }
 
     public function syncSentInvoicesFromTwinfield(RequestInput $requestInput, Administration $administration){
@@ -396,8 +381,8 @@ class AdministrationController extends ApiController
         $fromDateSent = $requestInput
             ->string('fromDateSent')->onEmpty(null)->next()
             ->get();
-        $twinfieldInvoiceHelper = new TwinfieldInvoiceHelper($administration, $fromDateSent);
-        return $twinfieldInvoiceHelper->processPaidInvoices();
+        $twinfieldInvoicePaymentHelper = new TwinfieldInvoicePaymentHelper($administration, $fromDateSent);
+        return $twinfieldInvoicePaymentHelper->processTwinfieldInvoicePayment();
     }
 
     public function getTotalsInfoAdministration(Administration $administration)

@@ -48,6 +48,7 @@ const AdministrationDetailsFormGeneralView = props => {
         dateSyncTwinfieldInvoices,
         pendingInvoicesPresent,
         oldestUnpaidInvoiceDate,
+        oldestTwinfieldInvoiceDate,
         prefixInvoiceNumber,
         usesVat,
         emailBccNotas,
@@ -194,13 +195,6 @@ const AdministrationDetailsFormGeneralView = props => {
                                 <ViewText label={'Code'} value={twinfieldOfficeCode} />
                             </div>
 
-                            {twinfieldConnectionType === 'webservice' && (
-                                <div className="row">
-                                    <ViewText label={'Gebruikersnaam'} value={twinfieldUsername} />
-                                    <ViewText label={'Wachtwoord'} value="**********" />
-                                </div>
-                            )}
-
                             {twinfieldConnectionType === 'openid' && (
                                 <React.Fragment>
                                     <div className="row">
@@ -241,32 +235,23 @@ const AdministrationDetailsFormGeneralView = props => {
                                     value={
                                         dateSyncTwinfieldContacts ? moment(dateSyncTwinfieldContacts).format('L') : ''
                                     }
+                                    name={'dateSyncTwinfieldContacts'}
+                                    textToolTip={`Na het maken van de koppeling worden contacten met een nota in Econobis
+                                        aangemaakt in Twinfield vanaf deze datum (op basis van nota datum). De nota’s
+                                        uit Econobis worden niet overgezet. In Twinfield kunnen vervolgens oude nota’s
+                                        worden gekoppeld. Als deze datum leeg blijft dan begint de synchronisatie vanaf
+                                        de eerste datum van niet betaald nota’s synchroniseren. Deze synchronisatie
+                                        draait ook automatisch nachts.`}
                                 />
-                                <div className="col-sm-6 form-group">
-                                    <small style={{ fontWeight: 'normal' }}>
-                                        Nota (verzend)datum vanaf wanneer contacten initieel gemaakt worden in
-                                        Twinfield. Indien gebruik Twinfield aangezet wordt en contacten van verzonden of
-                                        betaalde nota's die (nog) niet gesynchroniseerd zijn met Twinfield en die nog
-                                        niet eerder aangemaakt zijn in Twinfield zullen worden aangemaakt bij Opslaan.
-                                        <br />
-                                        Laat datum leeg als je geen contacten initieel wil aanmaken in Twinfield.
-                                    </small>
-                                </div>
-                            </div>
-                            <div className="row">
                                 <ViewText
                                     label={"Nota's in behandeling"}
                                     value={pendingInvoicesPresent ? 'Ja' : 'Nee'}
+                                    name={'pendingInvoicesPresent'}
+                                    textToolTip={`Nota's in behandeling zijn nota's met status 'Wordt definitief gemaakt',
+                                     'Fout bij maken', 'Wordt verstuurd', 'Opnieuw te verzenden' of 'Wordt opnieuw verstuurd'.
+                                      Zolang er nota's in behandeling zijn kunnen de datums "Synchroniseer nota's vanaf"
+                                      en "Synchroniseer betalingen vanaf" niet gewijzigd worden.`}
                                 />
-                                <div className="col-sm-6 form-group">
-                                    <small style={{ fontWeight: 'normal' }}>
-                                        Nota's in behandeling zijn nota's met status 'Wordt definitief gemaakt', 'Fout
-                                        bij maken', 'Wordt verstuurd', 'Opnieuw te verzenden' of 'Wordt opnieuw
-                                        verstuurd'. Zolang er nota's in behandeling zijn kunnen de datums hieronder
-                                        (Synchroniseer nota's vanaf en Synchroniseer betalingen vanaf) niet gewijzigd
-                                        worden.
-                                    </small>
-                                </div>
                             </div>
                             <div className="row">
                                 <ViewText
@@ -274,29 +259,17 @@ const AdministrationDetailsFormGeneralView = props => {
                                     value={
                                         dateSyncTwinfieldInvoices ? moment(dateSyncTwinfieldInvoices).format('L') : ''
                                     }
+                                    name={'dateSyncTwinfieldInvoices'}
+                                    textToolTip={`Niet betaalde nota’s, incl. de contacten worden vanaf deze datum (op basis van
+                                            nota datum) gesynchroniseerd met Twinfield. De datum kan niet liggen na de datum van de oudste gesynchroniseerde
+                                            nota. Deze synchronisatie moet handmatig aangevraagd worden.`}
                                 />
-                                <div className="col-sm-6 form-group">
-                                    <small style={{ fontWeight: 'normal' }}>
-                                        Nota (verzend)datum vanaf wanneer nota's gesynchroniseerd moeten worden naar
-                                        Twinfield. Nota's voor deze datum die niet naar Twinfield zijn gesynchroniseerd
-                                        zullen handmatig in Econobis op betaald gezet moeten worden. Over het algemeen
-                                        zet je hier de datum waarop je wilt gaan starten met Twinfield.
-                                        <br />
-                                        Laat datum leeg als je alle nota's wilt synchroniseren.
-                                    </small>
-                                </div>
-                            </div>
-                            <div className="row">
                                 <ViewText
-                                    label={'Oudste nota datum met status niet betaald  '}
-                                    value={oldestUnpaidInvoiceDate ? moment(oldestUnpaidInvoiceDate).format('L') : ''}
+                                    label={'Oudste nota datum gesynchronisserd met Twinfield'}
+                                    value={
+                                        oldestTwinfieldInvoiceDate ? moment(oldestTwinfieldInvoiceDate).format('L') : ''
+                                    }
                                 />
-                                <div className="col-sm-6 form-group">
-                                    <small style={{ fontWeight: 'normal' }}>
-                                        Je kan de datum 'Synchroniseer betalingen vanaf'(zie hieronder) niet instellen
-                                        op een datum na de oudste nota (verzend)datum met status niet betaald.
-                                    </small>
-                                </div>
                             </div>
                             <div className="row">
                                 <ViewText
@@ -304,19 +277,15 @@ const AdministrationDetailsFormGeneralView = props => {
                                     value={
                                         dateSyncTwinfieldPayments ? moment(dateSyncTwinfieldPayments).format('L') : ''
                                     }
+                                    name={'dateSyncTwinfieldPayments'}
+                                    textToolTip={`In de nacht worden betalingen gesynchroniseerd. Dit gebeurt vanaf deze datum (op
+                                        basis van nota datum). De datum kan niet liggen na de datum van de oudste nog
+                                        niet betaalde nota.`}
                                 />
-                                <div className="col-sm-6 form-group">
-                                    <small style={{ fontWeight: 'normal' }}>
-                                        Nota (verzend)datum vanaf wanneer betalingen gesynchroniseerd moeten worden uit
-                                        Twinfield. Datum 'Synchroniseer betalingen vanaf' moet voor oudste nota datum
-                                        (zie hierboven) met status niet betaald liggen.
-                                        <br />
-                                        Deze datum wordt gebruikt bij de procedure Synchroniseren betalingen die elke
-                                        nacht automatisch draait.
-                                        <br />
-                                        Laat datum leeg als je betalingen van alle nota's wilt synchroniseren.
-                                    </small>
-                                </div>
+                                <ViewText
+                                    label={'Oudste nota datum met status niet betaald'}
+                                    value={oldestUnpaidInvoiceDate ? moment(oldestUnpaidInvoiceDate).format('L') : ''}
+                                />
                             </div>
                         </React.Fragment>
                     )}

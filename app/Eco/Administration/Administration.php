@@ -414,8 +414,13 @@ class Administration extends Model
     }
 
     public function getOldestUnpaidInvoiceDateAttribute() {
-        $oldestUnpaidInvoice = $this->invoices()->whereIn('invoices.status_id', ['sent', 'exported'])->whereNotNull('date_sent')->orderBy('date_sent')->first();
+        $oldestUnpaidInvoice = $this->invoices()->whereIn('invoices.status_id', ['sent', 'exported'])->whereNotNull('invoices.date_sent')->orderBy('invoices.date_sent')->first();
         return $oldestUnpaidInvoice ? $oldestUnpaidInvoice->date_sent : null;
+    }
+
+    public function getOldestTwinfieldInvoiceDateAttribute() {
+        $oldestTwinfieldInvoice = $this->invoices()->whereNotNull('invoices.twinfield_number')->whereNotNull('invoices.date_sent')->orderBy('invoices.date_sent')->first();
+        return $oldestTwinfieldInvoice ? $oldestTwinfieldInvoice->date_sent : null;
     }
 
     /**

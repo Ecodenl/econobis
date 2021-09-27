@@ -27,17 +27,17 @@ use PhpTwinfield\SalesTransaction;
 use PhpTwinfield\SalesTransactionLine;
 use PhpTwinfield\Secure\OpenIdConnectAuthentication;
 use PhpTwinfield\Secure\Provider\OAuthProvider;
-use PhpTwinfield\Secure\WebservicesAuthentication;
 
 class TwinfieldSalesTransactionHelper
 {
     private $connection;
     private $administration;
+    private $fromInvoiceDateSent;
     private $office;
     private $redirectUri;
     private $transactionApiConnector;
     private $currency;
-    private $messages;
+    public $messages;
 
     /**
      * TwinfieldSalesTransactionHelper constructor.
@@ -46,8 +46,14 @@ class TwinfieldSalesTransactionHelper
      */
     public function __construct(Administration $administration)
     {
-
         $this->administration = $administration;
+
+        if($this->administration->date_sync_twinfield_invoices){
+            $this->fromInvoiceDateSent = $this->administration->date_sync_twinfield_invoices;
+        }else{
+            $this->fromInvoiceDateSent = '2019-01-01';
+        }
+
         $this->office = Office::fromCode($administration->twinfield_office_code);
         $this->redirectUri = \Config::get('app.url_api') . '/twinfield';
 
@@ -64,8 +70,6 @@ class TwinfieldSalesTransactionHelper
                 $this->connection = null;
             }
 
-        }else{
-            $this->connection = new WebservicesAuthentication($administration->twinfield_username, $administration->twinfield_password, $administration->twinfield_organization_code);
         }
 
         $this->transactionApiConnector = new TransactionApiConnector($this->connection);
@@ -76,11 +80,13 @@ class TwinfieldSalesTransactionHelper
 
     }
 
-    public function createAllSalesTransactions(){
+    public function procesTwinfieldSalesTransaction(){
         if(!$this->administration->uses_twinfield){
             return "Deze administratie maakt geen gebruik van Twinfield.";
         }
-
+        if(!$this->administration->twinfield_is_valid){
+            return "Twinfield is onjuist geconfigureerd. Pas de configuratie aan om Twinfield te gebruiken.";
+        }
         set_time_limit(0);
 
         // We controleren alle invoices met status exported of paid en met koppeling Twinfield
@@ -88,7 +94,7 @@ class TwinfieldSalesTransactionHelper
         if($this->administration->date_sync_twinfield_invoices){
             $invoicesToBeChecked = $this->administration->invoices()
                 ->where('status_id', 'sent')
-                ->where('date_sent', '>=', $this->administration->date_sync_twinfield_invoices)
+                ->where('date_sent', '>=', $this->fromInvoiceDateSent)
                 ->whereDoesntHave('invoiceProducts', function ($query) {
                     $query->whereNull('twinfield_ledger_code');
                 })
@@ -355,7 +361,6 @@ class TwinfieldSalesTransactionHelper
             array_push($this->messages, $message);
             return true;
 
-//            return implode(';', $messages);
         } catch (PhpTwinfieldException $exceptionTwinfield) {
             Log::error($exceptionTwinfield->getMessage());
             $message = 'Blokkeren voor betaalrun (nota ' . $invoice->number . ') gaf de volgende twinfield foutmelding: ' . $exceptionTwinfield->getMessage();
@@ -368,7 +373,6 @@ class TwinfieldSalesTransactionHelper
                 'is_error' => true,
             ]);
             array_push($this->messages, $message);
-            return false;
         } catch (Exception $e) {
             Log::error($e->getMessage());
             $message = 'Blokkeren voor betaalrun (nota ' . $invoice->number . ') gaf de volgende foutmelding: ' . $e->getMessage();
@@ -381,9 +385,9 @@ class TwinfieldSalesTransactionHelper
                 'is_error' => true,
             ]);
             array_push($this->messages, $message);
-//            return $message;
-            return false;
         }
+
+        return false;
 
     }
 

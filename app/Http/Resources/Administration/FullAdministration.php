@@ -137,6 +137,7 @@ class FullAdministration extends Resource
                 'lastYearFinancialOverviewDefinitive' => $this->last_year_financial_overview_definitive,
                 'pendingInvoicesPresent' => $this->pending_invoices_present,
                 'oldestUnpaidInvoiceDate' => $this->oldest_unpaid_invoice_date,
+                'oldestTwinfieldInvoiceDate' => $this->oldest_twinfield_invoice_date,
                 'portalSettingsLayoutId' => $this->portal_settings_layout_id,
                 'portalSettingsLayout' => $this->portalSettingsLayout,
 

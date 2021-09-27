@@ -177,9 +177,9 @@ trait Attachment
         return $attachments;
     }
 
-    private function storeAttachments(string $messageId, Email $email)
+    private function storeAttachments(string $gmailMessageId, Email $email)
     {
-        $this->messageId = $messageId;
+        $this->messageId = $gmailMessageId;
 
         if($this->hasAttachments()) {
             foreach ($this->getAttachments() as $attachment){

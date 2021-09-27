@@ -81,10 +81,15 @@ class MailFetcherGmail
 
     private function processMessage(\Google_Service_Gmail_Message $message): void
     {
-        $messageId = $message->getId();
+        $gmailMessageId = $message->getId();
 
-        // Fetch the full email
-        $this->fetchEmail($messageId);
+        if(!Email::whereMailboxId($this->mailbox->id)
+            ->whereGmailMessageId($gmailMessageId)
+            ->exists()){
+            // Fetch the full email
+            $this->fetchEmail($gmailMessageId);
+        }
+
     }
 
     private function initGmailConfig(): void
@@ -100,10 +105,10 @@ class MailFetcherGmail
         $this->service = new Google_Service_Gmail($client);
     }
 
-    private function fetchEmail(string $messageId)
+    private function fetchEmail(string $gmailMessageId)
     {
         $optParamsGet['format'] = 'full';
-        $message = $this->service->users_messages->get($this->user, $messageId, $optParamsGet);
+        $message = $this->service->users_messages->get($this->user, $gmailMessageId, $optParamsGet);
 
         $messagePayload = $message->getPayload();
         $headers = $this->reformatHeaders($messagePayload->getHeaders());
@@ -157,6 +162,7 @@ class MailFetcherGmail
             'date_sent' => $headers['date'],
             'folder' => 'inbox',
             'imap_id' => null,
+            'gmail_message_id' => $gmailMessageId,
             'message_id' => $headers['message_id'],
             'status' => 'unread'
         ]);
@@ -165,7 +171,7 @@ class MailFetcherGmail
         //if from email exists in any of the email addresses make a pivot record.
         $this->addRelationToContacts($email);
 
-        $this->storeAttachments($messageId, $email);
+        $this->storeAttachments($gmailMessageId, $email);
 
         $this->fetchedEmails[] = $email;
     }

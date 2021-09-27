@@ -124,6 +124,7 @@ class InvoicesListItem extends Component {
             subStatus,
             usesTwinfield,
             invoiceInTwinfield,
+            invoicePaidInTwinfield,
             compatibleWithTwinfield,
         } = this.props;
 
@@ -225,6 +226,7 @@ class InvoicesListItem extends Component {
                         ''
                     )}
                     {!invoiceInTwinfield &&
+                    !invoicePaidInTwinfield &&
                     this.state.showActionButtons &&
                     (this.props.statusId === 'sent' || this.props.statusId === 'exported') ? (
                         <a role="button" onClick={() => this.showSetPaid()} title="Zet op betaald">

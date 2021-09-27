@@ -45,19 +45,17 @@ const AdministrationDetailsFormGeneralView = props => {
         twinfieldOfficeCode,
         dateSyncTwinfieldContacts,
         dateSyncTwinfieldPayments,
+        dateSyncTwinfieldInvoices,
+        pendingInvoicesPresent,
+        oldestUnpaidInvoiceDate,
+        oldestTwinfieldInvoiceDate,
+        prefixInvoiceNumber,
         usesVat,
         emailBccNotas,
         portalSettingsLayout,
         usesMollie,
         mollieApiKey,
     } = props.administrationDetails;
-
-    // const dateSyncTwinfieldContactsView = dateSyncTwinfieldContacts
-    //     ? moment(dateSyncTwinfieldContacts).format('L')
-    //     : '';
-    // const dateSyncTwinfieldPaymentsView = dateSyncTwinfieldPayments
-    //     ? moment(dateSyncTwinfieldPayments).format('L')
-    //     : '';
 
     return (
         <div onClick={props.switchToEdit}>
@@ -142,15 +140,16 @@ const AdministrationDetailsFormGeneralView = props => {
                             label={'E-mail template waardestaat'}
                             value={emailTemplateFinancialOverview ? emailTemplateFinancialOverview.name : ''}
                         />
-                        <ViewText label={'Logo'} value={logoName} />
+                        <ViewText label={'Prefix nota nummer'} value={prefixInvoiceNumber} />
                     </div>
                     <div className="row">
                         <ViewText label={"Afzender van Rapportages en nota's is e-mail adres"} value={mailboxEmail} />
-                        <ViewText label={'Gebruikt BTW'} value={usesVat ? 'Ja' : 'Nee'} hidden={true} />
+                        <ViewText label={'Logo'} value={logoName} />
                     </div>
 
                     <div className="row">
                         <ViewText label={"Nota's ook mailen in BCC naar"} value={emailBccNotas ? emailBccNotas : ''} />
+                        <ViewText label={'Gebruikt BTW'} value={usesVat ? 'Ja' : 'Nee'} hidden={true} />
                     </div>
 
                     <div className="row">
@@ -196,13 +195,6 @@ const AdministrationDetailsFormGeneralView = props => {
                                 <ViewText label={'Code'} value={twinfieldOfficeCode} />
                             </div>
 
-                            {twinfieldConnectionType === 'webservice' && (
-                                <div className="row">
-                                    <ViewText label={'Gebruikersnaam'} value={twinfieldUsername} />
-                                    <ViewText label={'Wachtwoord'} value="**********" />
-                                </div>
-                            )}
-
                             {twinfieldConnectionType === 'openid' && (
                                 <React.Fragment>
                                     <div className="row">
@@ -239,34 +231,60 @@ const AdministrationDetailsFormGeneralView = props => {
 
                             <div className="row">
                                 <ViewText
-                                    label={
-                                        <span>
-                                            Synchroniseer contacten vanaf
-                                            <br />
-                                            <small style={{ color: '#ccc', fontWeight: 'normal' }}>
-                                                Nota aanmaakdatum vanaf wanneer contacten initieel gemaakt worden in
-                                                Twinfield
-                                            </small>
-                                        </span>
-                                    }
+                                    label={'Synchroniseer contacten vanaf'}
                                     value={
                                         dateSyncTwinfieldContacts ? moment(dateSyncTwinfieldContacts).format('L') : ''
                                     }
+                                    name={'dateSyncTwinfieldContacts'}
+                                    textToolTip={`Na het maken van de koppeling worden contacten met een nota in Econobis
+                                        aangemaakt in Twinfield vanaf deze datum (op basis van nota datum). De nota’s
+                                        uit Econobis worden niet overgezet. In Twinfield kunnen vervolgens oude nota’s
+                                        worden gekoppeld. Als deze datum leeg blijft dan begint de synchronisatie vanaf
+                                        de eerste datum van niet betaald nota’s synchroniseren. Deze synchronisatie
+                                        draait ook automatisch nachts.`}
                                 />
                                 <ViewText
-                                    label={
-                                        <span>
-                                            Synchroniseer betalingen vanaf
-                                            <br />
-                                            <small style={{ color: '#ccc', fontWeight: 'normal' }}>
-                                                Nota aanmaakdatum vanaf wanneer betalingen opgehaald worden uit
-                                                Twinfield
-                                            </small>
-                                        </span>
+                                    label={"Nota's in behandeling"}
+                                    value={pendingInvoicesPresent ? 'Ja' : 'Nee'}
+                                    name={'pendingInvoicesPresent'}
+                                    textToolTip={`Nota's in behandeling zijn nota's met status 'Wordt definitief gemaakt',
+                                     'Fout bij maken', 'Wordt verstuurd', 'Opnieuw te verzenden' of 'Wordt opnieuw verstuurd'.
+                                      Zolang er nota's in behandeling zijn kunnen de datums "Synchroniseer nota's vanaf"
+                                      en "Synchroniseer betalingen vanaf" niet gewijzigd worden.`}
+                                />
+                            </div>
+                            <div className="row">
+                                <ViewText
+                                    label={"Synchroniseer nota's vanaf"}
+                                    value={
+                                        dateSyncTwinfieldInvoices ? moment(dateSyncTwinfieldInvoices).format('L') : ''
                                     }
+                                    name={'dateSyncTwinfieldInvoices'}
+                                    textToolTip={`Niet betaalde nota’s, incl. de contacten worden vanaf deze datum (op basis van
+                                            nota datum) gesynchroniseerd met Twinfield. De datum kan niet liggen na de datum van de oudste gesynchroniseerde
+                                            nota. Deze synchronisatie moet handmatig aangevraagd worden.`}
+                                />
+                                <ViewText
+                                    label={'Oudste nota datum gesynchronisserd met Twinfield'}
+                                    value={
+                                        oldestTwinfieldInvoiceDate ? moment(oldestTwinfieldInvoiceDate).format('L') : ''
+                                    }
+                                />
+                            </div>
+                            <div className="row">
+                                <ViewText
+                                    label={'Synchroniseer betalingen vanaf'}
                                     value={
                                         dateSyncTwinfieldPayments ? moment(dateSyncTwinfieldPayments).format('L') : ''
                                     }
+                                    name={'dateSyncTwinfieldPayments'}
+                                    textToolTip={`In de nacht worden betalingen gesynchroniseerd. Dit gebeurt vanaf deze datum (op
+                                        basis van nota datum). De datum kan niet liggen na de datum van de oudste nog
+                                        niet betaalde nota.`}
+                                />
+                                <ViewText
+                                    label={'Oudste nota datum met status niet betaald'}
+                                    value={oldestUnpaidInvoiceDate ? moment(oldestUnpaidInvoiceDate).format('L') : ''}
                                 />
                             </div>
                         </React.Fragment>

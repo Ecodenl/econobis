@@ -27,11 +27,13 @@ class InvoicePaymentsForm extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Betalingen</span>
-                    {!this.props.invoiceInTwinfield && this.props.permissions.manageFinancial && (
-                        <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                            <span className="glyphicon glyphicon-plus" />
-                        </a>
-                    )}
+                    {!this.props.invoiceInTwinfield &&
+                        !this.props.invoicePaidInTwinfield &&
+                        this.props.permissions.manageFinancial && (
+                            <a role="button" className="pull-right" onClick={this.toggleShowNew}>
+                                <span className="glyphicon glyphicon-plus" />
+                            </a>
+                        )}
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
@@ -50,6 +52,7 @@ const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
         invoiceInTwinfield: state.invoiceDetails.invoiceInTwinfield,
+        invoicePaidInTwinfield: state.invoiceDetails.invoicePaidInTwinfield,
     };
 };
 

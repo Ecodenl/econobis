@@ -43,6 +43,7 @@ class InvoiceController extends ApiController
 
         $onlyEmailInvoices = $requestQuery->getRequest()->onlyEmailInvoices == 'true';
         $onlyPostInvoices = $requestQuery->getRequest()->onlyPostInvoices == 'true';
+        $setInvoicesPaid = $requestQuery->getRequest()->setInvoicesPaid == 'true';
 
         $invoices->load(['order.contact']);
 
@@ -59,7 +60,24 @@ class InvoiceController extends ApiController
             $selectedInvoices->push($invoice);
         }
 
-        if ($onlyEmailInvoices)
+        if ($setInvoicesPaid)
+        {
+            $invoices = $invoices->reject(function ($invoice) {
+                $invoiceInTwinfield = ( $invoice->administration->uses_twinfield && $invoice->twinfield_number && !empty($invoice->twinfield_number) ) ? true : false;
+                return ( $invoiceInTwinfield || !$invoice->administration->date_sync_twinfield_invoices || ($invoice->date_sent >= $invoice->administration->date_sync_twinfield_invoices)  );
+            });
+            $invoices = $invoices->reject(function ($invoice) {
+                return ($invoice->total_incl_vat_incl_reduction < 0 && $invoice->payment_type_id === 'collection');
+            });
+            $selectedInvoices = $selectedInvoices->reject(function ($invoice) {
+                $invoiceInTwinfield = ( $invoice->administration->uses_twinfield && $invoice->twinfield_number && !empty($invoice->twinfield_number) ) ? true : false;
+                return ( $invoiceInTwinfield || !$invoice->administration->date_sync_twinfield_invoices || ($invoice->date_sent >= $invoice->administration->date_sync_twinfield_invoices)  );
+            });
+            $selectedInvoices = $selectedInvoices->reject(function ($invoice) {
+                return ($invoice->total_incl_vat_incl_reduction < 0 && $invoice->payment_type_id === 'collection');
+            });
+        }
+        elseif ($onlyEmailInvoices)
         {
             $invoices = $invoices->reject(function ($invoice) {
                 return ( $invoice->emailToAddress === 'Geen e-mail bekend' || ( empty($invoice->order->contact->iban) && $invoice->payment_type_id === 'collection' ) );
@@ -126,6 +144,8 @@ class InvoiceController extends ApiController
             'invoiceProducts',
             'payments',
             'molliePayments',
+            'twinfieldMessagesInvoice',
+            'twinfieldMessagesPayment',
             'tasks',
             'emails',
             'document',
@@ -470,7 +490,8 @@ class InvoiceController extends ApiController
             header('Access-Control-Expose-Headers: X-Filename');
             header('X-Filename:' . $invoice->document->name);
         } else {
-            $invoiceNumber = 'F' . Carbon::now()->year . '-preview-' . $invoice->id;
+            $invoiceNumberPrefix =  $invoice->administration->prefix_invoice_number ? $invoice->administration->prefix_invoice_number : 'F';
+            $invoiceNumber = $invoiceNumberPrefix . Carbon::now()->year . '-preview-' . $invoice->id;
             header('X-Filename:' . $invoiceNumber . '.pdf');
             header('Access-Control-Expose-Headers: X-Filename');
             return InvoiceHelper::createInvoiceDocument($invoice, true);

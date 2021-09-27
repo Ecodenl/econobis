@@ -79,10 +79,19 @@ class AlfrescoHelper
 
         $response = $this->executeCurl($url, null, 'application/json', false, false);
 
-        $exists = true;
+//        if(!$response || $response === null){
+//            Log::info('checkIfAccountExists - response null');
+//        }elseif(array_key_exists('succes', $response) && $response['succes']){
+//            Log::info('checkIfAccountExists - response "succes"');
+//            Log::info( $response );
+//        }else{
+//            Log::info('checkIfAccountExists - response (error?) "message"');
+//            Log::info( $response );
+//        }
 
-        if($response === null){
-            $exists = false;
+        $exists = false;
+        if(array_key_exists('succes', $response) && $response['succes']){
+            $exists = true;
         }
 
         return $exists;
@@ -98,7 +107,7 @@ class AlfrescoHelper
 
         $response = $this->executeCurl($url, $args, 'application/json', false, false);
 
-        if($response['succes']){
+        if(array_key_exists('succes', $response) && $response['succes']){
             return '';
         }else{
             return $response['message'];
@@ -120,7 +129,7 @@ class AlfrescoHelper
 
         $response = $this->executeCurl($url, $args, 'application/json', false, false);
 
-        if($response['succes']){
+        if(array_key_exists('succes', $response) && $response['succes']){
             return '';
         }else{
             return $response['message'];
@@ -133,7 +142,7 @@ class AlfrescoHelper
 
         $response = $this->executeCurl($url);
 
-        if($response['succes']){
+        if(array_key_exists('succes', $response) && $response['succes']){
             $siteNodeId =  $response['message']['entry']['guid'];
         }else{
             return $response['message'];
@@ -243,40 +252,41 @@ class AlfrescoHelper
                 $decoded_response = json_decode($response, true);
 
                 //catch alfresco errors
-                    if ($decoded_response && array_key_exists('error', $decoded_response)) {
-                        if($abort_on_error) {
-                            if(isset($decoded_response['error'])) {
-                                if(isset($decoded_response['error']['errorKey'])) {
-                                    Log::error('Alfresco error: '
-                                        . $decoded_response['error']['errorKey']);
-                                }
-                                if(isset($decoded_response['error']['briefSummary'])) {
-                                    Log::error('Alfresco error: '
-                                        . $decoded_response['error']['briefSummary']);
-                                }
-                                if(isset($decoded_response['error']['statusCode'])) {
-                                    Log::error('Alfresco error: '
-                                        . $decoded_response['error']['statusCode']);
-                                }
+                if ($decoded_response && array_key_exists('error', $decoded_response)) {
+                    if($abort_on_error) {
+                        if(isset($decoded_response['error'])) {
+                            if(isset($decoded_response['error']['errorKey'])) {
+                                Log::error('Alfresco error: '
+                                    . $decoded_response['error']['errorKey']);
                             }
-                            else{
-                                Log::error('Alfresco error: unknown');
+                            if(isset($decoded_response['error']['briefSummary'])) {
+                                Log::error('Alfresco error: '
+                                    . $decoded_response['error']['briefSummary']);
                             }
-                            abort($decoded_response['error']['statusCode']);
+                            if(isset($decoded_response['error']['statusCode'])) {
+                                Log::error('Alfresco error: '
+                                    . $decoded_response['error']['statusCode']);
+                            }
                         }
-                        //niet aborten, wel error in log.
-                        else {
-                            Log::error('Alfresco error (no abort): '
-                                . $decoded_response['error']['statusCode']);
-                            return [
-                                'succes' => true,
-                                'message' => $decoded_response
-                            ];
+                        else{
+                            Log::error('Alfresco error: unknown');
                         }
+                        abort($decoded_response['error']['statusCode']);
                     }
-
-                //else success
-                else {
+                    //niet aborten, wel error ter info in log.
+                    else {
+                        Log::info('Alfresco error (no abort): '
+                            . $decoded_response['error']['statusCode']);
+                        Log::info($decoded_response);
+                        return [
+                            'succes' => false,
+                            'message' => $decoded_response
+                        ];
+                    }
+                } else {
+                    //else success
+//                        Log::info("Decoded response (zonder error): ");
+//                        Log::info($decoded_response);
                     return [
                         'succes' => true,
                         'message' => $decoded_response

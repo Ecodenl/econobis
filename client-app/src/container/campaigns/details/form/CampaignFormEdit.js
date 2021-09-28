@@ -20,6 +20,7 @@ function CampaignFormEdit({ campaign, fetchCampaignData, switchToView, status, t
         statusId: campaign.status?.id || '',
         typeId: campaign.type?.id || '',
         measureCategoryIds: campaign.measureCategories?.map(item => item.id).join(','),
+        measureCategoryIdsSelected: campaign.measureCategories ? campaign.measureCategories : [],
     });
     const [errors, setErrors] = useState({
         name: false,
@@ -47,9 +48,11 @@ function CampaignFormEdit({ campaign, fetchCampaignData, switchToView, status, t
     }
 
     function handleMeasureCategoryIds(selectedOption) {
+        const measureCategoryIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         setFormState({
             ...formState,
-            measureCategoryIds: selectedOption,
+            measureCategoryIds: measureCategoryIds,
+            measureCategoryIdsSelected: selectedOption,
         });
     }
 
@@ -147,7 +150,7 @@ function CampaignFormEdit({ campaign, fetchCampaignData, switchToView, status, t
                 <InputMultiSelect
                     label="Aangeboden maatregelen"
                     name="measureCategoryIds"
-                    value={formState.measureCategoryIds}
+                    value={formState.measureCategoryIdsSelected}
                     options={measureCategories}
                     onChangeAction={handleMeasureCategoryIds}
                 />

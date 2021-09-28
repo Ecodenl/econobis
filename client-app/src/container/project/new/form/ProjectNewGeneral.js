@@ -36,6 +36,7 @@ const ProjectFormNewGeneral = ({
     dateEnd,
     dateEntry,
     contactGroupIds,
+    contactGroupIdsSelected,
     dateProduction,
     isMembershipRequired,
     visibleForAllContacts,
@@ -284,7 +285,7 @@ const ProjectFormNewGeneral = ({
                         label={'Onderdeel van groep'}
                         name={'contactGroupsIds'}
                         options={contactGroups}
-                        value={contactGroupIds}
+                        value={contactGroupIdsSelected}
                         onChangeAction={handleContactGroupIds}
                         error={errors.contactGroupIds}
                         required={'required'}

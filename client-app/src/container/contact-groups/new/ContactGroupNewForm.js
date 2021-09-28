@@ -37,6 +37,7 @@ class ContactGroupNewForm extends Component {
                 showPortal: false,
                 editPortal: false,
                 contactGroupIds: '',
+                contactGroupIdsSelected: [],
                 contactGroupComposedType: '',
                 sendEmailNewContactLink: false,
                 emailTemplateIdNewContactLink: '',
@@ -169,11 +170,13 @@ class ContactGroupNewForm extends Component {
     };
 
     handleContactGroupIds = selectedOption => {
+        const contactGroupIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             contactGroup: {
                 ...this.state.contactGroup,
-                contactGroupIds: selectedOption,
+                contactGroupIds: contactGroupIds,
+                contactGroupIdsSelected: selectedOption,
             },
         });
     };
@@ -200,6 +203,7 @@ class ContactGroupNewForm extends Component {
             editPortal,
             showContactForm,
             contactGroupIds,
+            contactGroupIdsSelected,
             sendEmailNewContactLink,
             emailTemplateIdNewContactLink,
         } = this.state.contactGroup;
@@ -353,7 +357,7 @@ class ContactGroupNewForm extends Component {
                         label={'Samengesteld uit'}
                         name={'contactGroupsIds'}
                         options={this.state.contactGroups}
-                        value={contactGroupIds}
+                        value={contactGroupIdsSelected}
                         onChangeAction={this.handleContactGroupIds}
                     />
                     {contactGroupIds && (

@@ -106,7 +106,7 @@ const AsyncSelectSet = props => {
 AsyncSelectSet.defaultProps = {
     allowCreate: false,
     className: '',
-    size: 'col-sm-6',
+    size: 'col-sm-8',
     optionId: 'id',
     optionName: 'name',
     disabled: false,

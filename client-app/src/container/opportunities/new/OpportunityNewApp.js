@@ -23,6 +23,7 @@ class OppportunitiesNewApp extends Component {
                 intakeId: '',
                 measureCategoryId: props.params.measureCategoryId,
                 measureIds: '',
+                measureIdsSelected: [],
                 statusId: '1',
                 quotationText: '',
                 evaluationAgreedDate: '',
@@ -108,11 +109,13 @@ class OppportunitiesNewApp extends Component {
     };
 
     handleMeasureIds = selectedOption => {
+        const measureIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             opportunity: {
                 ...this.state.opportunity,
-                measureIds: selectedOption,
+                measureIds: measureIds,
+                measureIdsSelected: selectedOption,
             },
         });
     };

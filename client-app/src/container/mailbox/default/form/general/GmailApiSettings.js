@@ -5,7 +5,7 @@ import InputText from '../../../../../components/form/InputText';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { REDIRECT_URL } from '../../../../../constants';
 
-function MailboxDefaultFormGeneralGmailApiSettings({ values, handleChange, handleBlur }) {
+function MailboxDefaultFormGeneralGmailApiSettings({ values, errors, touched, handleChange, handleBlur }) {
     return (
         <>
             <PanelHeader>
@@ -21,6 +21,9 @@ function MailboxDefaultFormGeneralGmailApiSettings({ values, handleChange, handl
                         value={values.gmailApiSettings?.projectId}
                         onChangeAction={handleChange}
                         onBlurAction={handleBlur}
+                        required={'required'}
+                        // error={errors.gmailApiSettings.projectId && touched.gmailApiSettings.projectId}
+                        // errorMessage={errors.gmailApiSettings.projectId}
                     />
                     <div className="form-group col-sm-6">
                         <label className="col-sm-6">Redirect url</label>

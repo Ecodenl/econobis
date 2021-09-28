@@ -75,14 +75,18 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                     </div>
                     <div className="row">
                         {incomingServerType === 'imap' ? (
-                            <ViewText label="Inkomend" value={imapHost} />
+                            <ViewText label="Inkomende IMAP host" value={imapHost} />
                         ) : (
                             <div className="form-group col-sm-6" />
                         )}
 
-                        {outgoingServerType === 'smtp' ? <ViewText label="Uitgaand" value={smtpHost} /> : null}
+                        {outgoingServerType === 'smtp' ? (
+                            <ViewText label="Uitgaande SMTP host" value={smtpHost} />
+                        ) : null}
 
-                        {outgoingServerType === 'mailgun' ? <ViewText label="Uitgaand" value={mailgunDomain} /> : null}
+                        {outgoingServerType === 'mailgun' ? (
+                            <ViewText label="Uitgaand Mailgun domein" value={mailgunDomain} />
+                        ) : null}
                     </div>
                 </PanelBody>
 
@@ -94,16 +98,10 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                             </span>
                         </PanelHeader>
                         <PanelBody>
-                            {incomingServerType === 'imap' && (
-                                <>
-                                    <div className="row">
-                                        <ViewText label={'Imap Gebruikersnaam'} value={username} />
-                                    </div>
-                                    <div className="row">
-                                        <ViewText label={'Imap Wachtwoord'} value="••••••••••" />
-                                    </div>
-                                </>
-                            )}
+                            <div className="row">
+                                <ViewText label={'Gebruikersnaam'} value={username} />
+                                <ViewText label={'Wachtwoord'} value="••••••••••" />
+                            </div>
                             <div className="row">
                                 {incomingServerType === 'imap' ? (
                                     <ViewText label={'Imap poort'} value={imapPort} />

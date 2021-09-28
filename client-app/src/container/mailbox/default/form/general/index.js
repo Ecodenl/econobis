@@ -10,14 +10,32 @@ import PanelHeader from '../../../../../components/panel/PanelHeader';
 import Panel from '../../../../../components/panel/Panel';
 import { useFormik } from 'formik';
 import { MailboxValidation } from './Validation';
+import { MailboxValidationImap } from './Validation';
+import { MailboxValidationSmtp } from './Validation';
+import { MailboxValidationMailgun } from './Validation';
+import { MailboxValidationGmail } from './Validation';
 import MailboxDefaultFormGeneralGmailApiSettings from './GmailApiSettings';
 import ViewText from '../../../../../components/form/ViewText';
 import moment from 'moment';
 
 function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain, mailboxServerTypes, switchToView }) {
+    let validationSchema = MailboxValidation;
+    if (initialValues.incomingServerType === 'imap') {
+        validationSchema = validationSchema.concat(MailboxValidationImap);
+    }
+    if (initialValues.outgoingServerType === 'smpt') {
+        validationSchema = validationSchema.concat(MailboxValidationSmtp);
+    }
+    if (initialValues.outgoingServerType === 'mailgun') {
+        validationSchema = validationSchema.concat(MailboxValidationMailgun);
+    }
+    if (initialValues.incomingServerType === 'gmail' || initialValues.outgoingServerType === 'gmail') {
+        validationSchema = validationSchema.concat(MailboxValidationGmail);
+    }
+
     const { values, errors, touched, handleChange, handleSubmit, setFieldValue, handleBlur, isSubmitting } = useFormik({
         initialValues: initialValues,
-        validationSchema: MailboxValidation,
+        validationSchema: validationSchema,
         onSubmit: (values, { setSubmitting }) => {
             processSubmit(values, setSubmitting);
         },
@@ -106,6 +124,7 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
                             options={mailboxServerTypes.incomingServerTypes}
                             onChangeAction={handleChange}
                             emptyOption={false}
+                            required={'required'}
                         />
                         <InputSelect
                             label="Uitgaande mail type"
@@ -114,16 +133,18 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
                             options={mailboxServerTypes.outgoingServerTypes}
                             onChangeAction={handleChange}
                             emptyOption={false}
+                            required={'required'}
                         />
                     </div>
                     <div className="row">
                         {values.incomingServerType === 'imap' ? (
                             <InputText
-                                label="Inkomend"
+                                label="Inkomende IMAP host"
                                 name={'imapHost'}
                                 value={values.imapHost}
                                 onChangeAction={handleChange}
                                 onBlurAction={handleBlur}
+                                required={'required'}
                                 error={errors.imapHost && touched.imapHost}
                                 errorMessage={errors.imapHost}
                             />
@@ -133,11 +154,12 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
 
                         {values.outgoingServerType === 'smtp' ? (
                             <InputText
-                                label="Uitgaand"
+                                label="Uitgaande SMTP host"
                                 name={'smtpHost'}
                                 value={values.smtpHost}
                                 onChangeAction={handleChange}
                                 onBlurAction={handleBlur}
+                                required={'required'}
                                 error={errors.smtpHost && touched.smtpHost}
                                 errorMessage={errors.smtpHost}
                             />
@@ -145,12 +167,13 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
 
                         {values.outgoingServerType === 'mailgun' ? (
                             <InputSelect
-                                label="Uitgaand"
+                                label="Uitgaand Mailgun domein"
                                 name={'mailgunDomainId'}
                                 value={values.mailgunDomainId}
                                 options={mailgunDomain}
                                 optionName={'domain'}
                                 onChangeAction={handleChange}
+                                required={'required'}
                                 error={errors.mailgunDomainId && touched.mailgunDomainId}
                                 errorMessage={errors.mailgunDomainId}
                             />
@@ -166,32 +189,28 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
                             </span>
                         </PanelHeader>
                         <PanelBody>
-                            {values.incomingServerType === 'imap' && (
-                                <>
-                                    <div className="row">
-                                        <InputText
-                                            label="Imap Gebruikersnaam"
-                                            name={'username'}
-                                            value={values.username}
-                                            onChangeAction={handleChange}
-                                            onBlurAction={handleBlur}
-                                            error={errors.username && touched.username}
-                                            errorMessage={errors.username}
-                                        />
-                                    </div>
-                                    <div className="row">
-                                        <InputText
-                                            label={'Imap Wachtwoord'}
-                                            name={'password'}
-                                            value={values.password}
-                                            onChangeAction={handleChange}
-                                            onBlurAction={handleBlur}
-                                            error={errors.password && touched.password}
-                                            errorMessage={errors.password}
-                                        />
-                                    </div>
-                                </>
-                            )}
+                            <div className="row">
+                                <InputText
+                                    label="Gebruikersnaam"
+                                    name={'username'}
+                                    value={values.username}
+                                    onChangeAction={handleChange}
+                                    onBlurAction={handleBlur}
+                                    required={'required'}
+                                    error={errors.username && touched.username}
+                                    errorMessage={errors.username}
+                                />
+                                <InputText
+                                    label={'Wachtwoord'}
+                                    name={'password'}
+                                    value={values.password}
+                                    onChangeAction={handleChange}
+                                    onBlurAction={handleBlur}
+                                    required={'required'}
+                                    error={errors.password && touched.password}
+                                    errorMessage={errors.password}
+                                />
+                            </div>
                             <div className="row">
                                 {values.incomingServerType === 'imap' ? (
                                     <InputText
@@ -200,6 +219,7 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
                                         value={values.imapPort}
                                         onChangeAction={handleChange}
                                         onBlurAction={handleBlur}
+                                        required={'required'}
                                         error={errors.imapPort && touched.imapPort}
                                         errorMessage={errors.imapPort}
                                     />
@@ -213,6 +233,7 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
                                         value={values.smtpPort}
                                         onChangeAction={handleChange}
                                         onBlurAction={handleBlur}
+                                        required={'required'}
                                         error={errors.smtpPort && touched.smtpPort}
                                         errorMessage={errors.smtpPort}
                                     />
@@ -255,6 +276,8 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
                 {(values.incomingServerType === 'gmail' || values.outgoingServerType === 'gmail') && (
                     <MailboxDefaultFormGeneralGmailApiSettings
                         values={values}
+                        errors={errors}
+                        touched={touched}
                         handleChange={handleChange}
                         handleBlur={handleBlur}
                     />

@@ -174,7 +174,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 axios.spread((emailTemplates, mailboxAddresses, twinfieldInfoAdministrations) => {
                     this.setState({
                         emailTemplates,
-                        mailboxAddresses,
+                        mailboxAddresses: mailboxAddresses.data.data,
                         twinfieldInfoAdministrations,
                         peekLoading: {
                             ...this.state.peekLoading,

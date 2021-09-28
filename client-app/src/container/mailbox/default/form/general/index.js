@@ -49,28 +49,6 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
                             errorMessage={errors.email}
                         />
                     </div>
-                    {values.incomingServerType === 'gmail' && values.outgoingServerType === 'gmail' ? null : (
-                        <div className="row">
-                            <InputText
-                                label="Gebruikersnaam"
-                                name={'username'}
-                                value={values.username}
-                                onChangeAction={handleChange}
-                                onBlurAction={handleBlur}
-                                error={errors.username && touched.username}
-                                errorMessage={errors.username}
-                            />
-                            <InputText
-                                label={'Wachtwoord'}
-                                name={'password'}
-                                value={values.password}
-                                onChangeAction={handleChange}
-                                onBlurAction={handleBlur}
-                                error={errors.password && touched.password}
-                                errorMessage={errors.password}
-                            />
-                        </div>
-                    )}
                     <div className="row">
                         <InputToggle
                             label="Actief"
@@ -180,22 +158,40 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
                     </div>
                 </PanelBody>
 
-                {(values.incomingServerType === 'gmail' || values.outgoingServerType === 'gmail') && (
-                    <MailboxDefaultFormGeneralGmailApiSettings
-                        values={values}
-                        handleChange={handleChange}
-                        handleBlur={handleBlur}
-                    />
-                )}
-
-                <PanelHeader>
-                    <span className="h5">
-                        <strong>Extra instellingen</strong>
-                    </span>
-                </PanelHeader>
-                <PanelBody>
-                    {values.incomingServerType !== 'imap' && values.outgoingServerType !== 'smtp' ? null : (
-                        <>
+                {(values.incomingServerType === 'imap' || values.outgoingServerType === 'smtp') && (
+                    <>
+                        <PanelHeader>
+                            <span className="h5">
+                                <strong>Instellingen</strong>
+                            </span>
+                        </PanelHeader>
+                        <PanelBody>
+                            {values.incomingServerType === 'imap' && (
+                                <>
+                                    <div className="row">
+                                        <InputText
+                                            label="Imap Gebruikersnaam"
+                                            name={'username'}
+                                            value={values.username}
+                                            onChangeAction={handleChange}
+                                            onBlurAction={handleBlur}
+                                            error={errors.username && touched.username}
+                                            errorMessage={errors.username}
+                                        />
+                                    </div>
+                                    <div className="row">
+                                        <InputText
+                                            label={'Imap Wachtwoord'}
+                                            name={'password'}
+                                            value={values.password}
+                                            onChangeAction={handleChange}
+                                            onBlurAction={handleBlur}
+                                            error={errors.password && touched.password}
+                                            errorMessage={errors.password}
+                                        />
+                                    </div>
+                                </>
+                            )}
                             <div className="row">
                                 {values.incomingServerType === 'imap' ? (
                                     <InputText
@@ -222,7 +218,6 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
                                     />
                                 )}
                             </div>
-
                             <div className="row">
                                 {values.incomingServerType === 'imap' ? (
                                     <InputSelect
@@ -245,14 +240,32 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
                                         label="Smtp versleutelde verbinding"
                                         name={'smtpEncryption'}
                                         value={values.smtpEncryption}
-                                        options={[{ id: 'ssl', name: 'SSL' }, { id: 'tls', name: 'TLS' }]}
+                                        options={[
+                                            { id: 'ssl', name: 'SSL' },
+                                            { id: 'tls', name: 'TLS' },
+                                        ]}
                                         onChangeAction={handleChange}
                                     />
                                 )}
                             </div>
-                        </>
-                    )}
+                        </PanelBody>
+                    </>
+                )}
 
+                {(values.incomingServerType === 'gmail' || values.outgoingServerType === 'gmail') && (
+                    <MailboxDefaultFormGeneralGmailApiSettings
+                        values={values}
+                        handleChange={handleChange}
+                        handleBlur={handleBlur}
+                    />
+                )}
+
+                <PanelHeader>
+                    <span className="h5">
+                        <strong>Extra instellingen</strong>
+                    </span>
+                </PanelHeader>
+                <PanelBody>
                     <div className="row">
                         <InputText
                             label={'Inbox prefix'}
@@ -263,6 +276,8 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
                             error={errors.imapInboxPrefix && touched.imapInboxPrefix}
                             errorMessage={errors.imapInboxPrefix}
                         />
+                    </div>
+                    <div className="row">
                         <InputToggle
                             label={'Zet email als gelezen op server'}
                             name={'emailMarkAsSeen'}

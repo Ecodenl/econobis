@@ -43,13 +43,6 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                         <ViewText label={'E-mail'} value={email} />
                     </div>
 
-                    {incomingServerType === 'gmail' && outgoingServerType === 'gmail' ? null : (
-                        <div className="row">
-                            <ViewText label={'Gebruikersnaam'} value={username} />
-                            <ViewText label={'Wachtwoord'} value="••••••••••" />
-                        </div>
-                    )}
-
                     <div className="row">
                         <ViewText label="Actief" value={isActive ? 'Ja' : 'Nee'} />
                         <ViewText label={'Primair (verzend wachtwoord mails)'} value={primary ? 'Ja' : 'Nee'} />
@@ -93,48 +86,24 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                     </div>
                 </PanelBody>
 
-                {(incomingServerType === 'gmail' || outgoingServerType === 'gmail') && (
+                {(incomingServerType === 'imap' || outgoingServerType === 'smtp') && (
                     <>
                         <PanelHeader>
                             <span className="h5">
-                                <strong>Gmail api instellingen</strong>
+                                <strong>Instellingen</strong>
                             </span>
                         </PanelHeader>
                         <PanelBody>
-                            <div className="row">
-                                <ViewText label={'Project id'} value={gmailApiSettings?.projectId} />
-                                <div className="form-group col-sm-6">
-                                    <label className="col-sm-6">Redirect url</label>
-                                    <div className="col-sm-6" style={{ paddingRight: '5px' }} onClick={null}>
-                                        {REDIRECT_URL}
-                                        <CopyToClipboard text={REDIRECT_URL}>
-                                            <span
-                                                className="glyphicon glyphicon-copy mybtn-success pull-right"
-                                                style={{ top: '5px' }}
-                                                role="button"
-                                                onClick={null}
-                                                title={'Kopieer sleutel'}
-                                            />
-                                        </CopyToClipboard>
+                            {incomingServerType === 'imap' && (
+                                <>
+                                    <div className="row">
+                                        <ViewText label={'Imap Gebruikersnaam'} value={username} />
                                     </div>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <ViewText label={'Client id'} value={gmailApiSettings?.clientId} />
-                                <ViewText label={'Client secret'} value={gmailApiSettings?.clientSecret} />
-                            </div>
-                        </PanelBody>
-                    </>
-                )}
-
-                <PanelHeader>
-                    <span className="h5">
-                        <strong>Extra instellingen</strong>
-                    </span>
-                </PanelHeader>
-                <PanelBody>
-                    {incomingServerType !== 'imap' && outgoingServerType !== 'smtp' ? null : (
-                        <>
+                                    <div className="row">
+                                        <ViewText label={'Imap Wachtwoord'} value="••••••••••" />
+                                    </div>
+                                </>
+                            )}
                             <div className="row">
                                 {incomingServerType === 'imap' ? (
                                     <ViewText label={'Imap poort'} value={imapPort} />
@@ -165,13 +134,71 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                                     <ViewText label="Smtp versleutelde verbinding" value={smtpEncryption} />
                                 )}
                             </div>
-                        </>
-                    )}
+                        </PanelBody>
+                    </>
+                )}
+
+                {(incomingServerType === 'gmail' || outgoingServerType === 'gmail') && (
+                    <>
+                        <PanelHeader>
+                            <span className="h5">
+                                <strong>Gmail api instellingen</strong>
+                            </span>
+                        </PanelHeader>
+                        <PanelBody>
+                            <div className="row">
+                                <ViewText label={'Project id'} value={gmailApiSettings?.projectId} />
+                                <div className="form-group col-sm-6">
+                                    <label className="col-sm-6">Redirect url</label>
+                                    <div className="col-sm-6" style={{ paddingRight: '5px' }} onClick={null}>
+                                        {REDIRECT_URL}
+                                        <CopyToClipboard text={REDIRECT_URL}>
+                                            <span
+                                                className="glyphicon glyphicon-copy mybtn-success pull-right"
+                                                style={{ top: '5px' }}
+                                                role="button"
+                                                onClick={null}
+                                                title={'Kopieer sleutel'}
+                                            />
+                                        </CopyToClipboard>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <ViewText label={'Client id'} value={gmailApiSettings?.clientId} />
+                                <ViewText label={'Client secret'} value={gmailApiSettings?.clientSecret} />
+                            </div>
+                            {incomingServerType === 'gmail' && (
+                                <>
+                                    <div className="row">
+                                        <ViewText label={'Inbox prefix'} value={imapInboxPrefix} />
+                                    </div>
+                                    <div className="row">
+                                        <ViewText
+                                            label={'Zet email als gelezen op server'}
+                                            value={emailMarkAsSeen ? 'Ja' : 'Nee'}
+                                        />
+                                    </div>
+                                </>
+                            )}
+                        </PanelBody>
+                    </>
+                )}
+
+                <PanelHeader>
+                    <span className="h5">
+                        <strong>Extra instellingen</strong>
+                    </span>
+                </PanelHeader>
+                <PanelBody>
                     <div className="row">
                         <ViewText label={'Inbox prefix'} value={imapInboxPrefix} />
+                    </div>
+                    <div className="row">
                         <ViewText label={'Zet email als gelezen op server'} value={emailMarkAsSeen ? 'Ja' : 'Nee'} />
                     </div>
                 </PanelBody>
+
                 <PanelHeader>
                     <span className="h5">
                         <strong>Log</strong>

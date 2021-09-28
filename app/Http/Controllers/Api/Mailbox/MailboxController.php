@@ -65,6 +65,7 @@ class MailboxController extends Controller
             ->string('username')->whenMissing('')->onEmpty('')->alias('username')->next()
             ->string('password')->whenMissing('')->onEmpty('')->alias('password')->next()
             ->integer('mailgunDomainId')->whenMissing(null)->onEmpty(null)->alias('mailgun_domain_id')->next()
+            ->string('incomingServerType')->whenMissing('imap')->onEmpty('imap')->alias('incoming_server_type')->next()
             ->string('outgoingServerType')->whenMissing('smtp')->onEmpty('smtp')->alias('outgoing_server_type')->next()
             ->boolean('isActive')->alias('is_active')->next()
             ->boolean('primary')->next()

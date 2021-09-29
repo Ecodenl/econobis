@@ -3,9 +3,9 @@
 namespace App\Http\Resources\Occupation;
 
 use App\Http\Resources\Contact\FullContact;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullOccupationContact extends Resource
+class FullOccupationContact extends JsonResource
 {
     /**
      * Transform the resource into an array.

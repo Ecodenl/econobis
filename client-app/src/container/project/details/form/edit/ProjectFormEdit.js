@@ -45,6 +45,7 @@ class ProjectFormEdit extends Component {
                 contactGroupIds:
                     props.project.requiresContactGroups &&
                     props.project.requiresContactGroups.map(requiresContactGroup => requiresContactGroup.id).join(','),
+                contactGroupIdsSelected: props.project.requiresContactGroups ? props.project.requiresContactGroups : [],
             },
             errors: {
                 name: false,
@@ -119,10 +120,10 @@ class ProjectFormEdit extends Component {
                             ? defaultTextBecomeNoMember
                             : this.state.project.textBecomeNoMember,
                         memberGroupId: isEmpty(this.state.project.memberGroupId)
-                            ? defaultContactGroupMemberId
+                            ? Number(defaultContactGroupMemberId)
                             : this.state.project.memberGroupId,
                         noMemberGroupId: isEmpty(this.state.project.noMemberGroupId)
-                            ? defaultContactGroupNoMemberId
+                            ? Number(defaultContactGroupNoMemberId)
                             : this.state.project.noMemberGroupId,
                     },
                 });
@@ -672,11 +673,13 @@ class ProjectFormEdit extends Component {
     };
 
     handleContactGroupIds = selectedOption => {
+        const contactGroupIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             project: {
                 ...this.state.project,
-                contactGroupIds: selectedOption,
+                contactGroupIds: contactGroupIds,
+                contactGroupIdsSelected: selectedOption,
             },
         });
     };
@@ -708,6 +711,7 @@ class ProjectFormEdit extends Component {
             dateProduction,
             isMembershipRequired,
             contactGroupIds,
+            contactGroupIdsSelected,
             visibleForAllContacts,
             textInfoProjectOnlyMembers,
             amountOfLoanNeeded,
@@ -816,6 +820,7 @@ class ProjectFormEdit extends Component {
                     dateEntry={dateEntry}
                     dateProduction={dateProduction}
                     contactGroupIds={contactGroupIds}
+                    contactGroupIdsSelected={contactGroupIdsSelected}
                     isMembershipRequired={isMembershipRequired}
                     visibleForAllContacts={visibleForAllContacts}
                     textInfoProjectOnlyMembers={textInfoProjectOnlyMembers}

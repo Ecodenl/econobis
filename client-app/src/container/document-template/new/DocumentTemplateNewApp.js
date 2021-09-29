@@ -23,6 +23,7 @@ class DocumentTemplateNewApp extends Component {
                 documentGroupId: '',
                 documentTemplateTypeId: '',
                 roleIds: '',
+                roleIdsSelected: [],
                 characteristic: '',
                 htmlBody: '',
                 baseTemplateId: '',
@@ -100,6 +101,7 @@ class DocumentTemplateNewApp extends Component {
                     ...this.state.documentTemplate,
                     documentTemplateTypeId: value,
                     roleIds: '',
+                    roleIdsSelected: [],
                     baseTemplateId: '',
                     headerTemplateId: '',
                     footerTemplateId: '',
@@ -119,11 +121,13 @@ class DocumentTemplateNewApp extends Component {
     }
 
     handleRoleIds = selectedOption => {
+        const roleIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             documentTemplate: {
                 ...this.state.documentTemplate,
-                roleIds: selectedOption,
+                roleIds: roleIds,
+                roleIdsSelected: selectedOption,
             },
         });
     };

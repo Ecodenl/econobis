@@ -8,9 +8,9 @@ use App\Http\Resources\EmailAddress\FullEmailAddress;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Organisation\FullOrganisation;
 use App\Http\Resources\Person\FullPerson;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullParticipantContact extends Resource
+class FullParticipantContact extends JsonResource
 {
     /**
      * Transform the resource into an array.

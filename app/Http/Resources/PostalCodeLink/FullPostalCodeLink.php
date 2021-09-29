@@ -9,9 +9,9 @@
 namespace App\Http\Resources\PostalCodeLink;
 
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullPostalCodeLink extends Resource
+class FullPostalCodeLink extends JsonResource
 {
     public function toArray($request)
     {

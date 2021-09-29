@@ -43,6 +43,11 @@ class Mailbox extends Model
         return $this->belongsTo(MailgunDomain::class);
     }
 
+    public function gmailApiSettings()
+    {
+        return $this->hasOne(MailboxGmailApiSettings::class);
+    }
+
     public static function getDefault()
     {
         return static::where('primary', true)->first();

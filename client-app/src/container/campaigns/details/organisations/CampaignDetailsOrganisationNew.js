@@ -1,6 +1,4 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-
+import React, { useEffect, useState } from 'react';
 import OrganisationAPI from '../../../../api/contact/OrganisationAPI';
 import CampaignDetailsAPI from '../../../../api/campaign/CampaignDetailsAPI';
 import InputText from '../../../../components/form/InputText';
@@ -8,130 +6,92 @@ import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from '../../../../components/form/InputSelect';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import { fetchCampaign } from '../../../../actions/campaign/CampaignDetailsActions';
 
-class CampaignDetailsResponseNew extends Component {
-    constructor(props) {
-        super(props);
+function CampaignDetailsOrganisationNew({ campaignId, campaignName, fetchCampaignData, toggleShowNew }) {
+    const [organisations, setOrganisations] = useState([]);
+    const [organisationId, setOrganisationId] = useState('');
+    const [errors, setErrors] = useState({
+        organisation: false,
+        hasErrors: false,
+    });
 
-        this.state = {
-            organisationId: '',
-            organisations: [],
-            errors: {
-                organisation: false,
-                hasErrors: true,
-            },
-        };
+    useEffect(function() {
+        (async function fetchOrganisation() {
+            try {
+                const response = await OrganisationAPI.getOrganisationPeek();
+
+                setOrganisations(response);
+            } catch (error) {
+                alert(
+                    'Er is iets misgegaan met ophalen van de organisaties! Herlaad de pagina en probeer het nogmaals.'
+                );
+            }
+        })();
+    }, []);
+
+    function handleOrganisationChange(event) {
+        setOrganisationId(event.target.value);
     }
 
-    componentDidMount() {
-        OrganisationAPI.getOrganisationPeek().then(payload => {
-            this.setState({
-                organisations: payload,
-            });
-        });
-    }
-
-    handleOrganisationChange = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-
-        if (value === '') {
-            this.setState({
-                ...this.state,
-                organisationId: '',
-                errors: {
-                    organisation: true,
-                    hasErrors: true,
-                },
-            });
-        } else {
-            this.setState({
-                ...this.state,
-                organisationId: value,
-                errors: {
-                    organisation: false,
-                    hasErrors: false,
-                },
-            });
-        }
-    };
-
-    handleSubmit = event => {
+    async function handleSubmit(event) {
         event.preventDefault();
 
-        if (!this.state.errors.hasErrors) {
-            CampaignDetailsAPI.attachOrganisation(this.props.campaignId, this.state.organisationId).then(() => {
-                this.props.fetchCampaign(this.props.campaignId);
-                this.props.toggleShowNew();
-            });
-        } else {
-            this.setState({
-                ...this.state,
-                errors: {
-                    organisation: true,
-                    hasErrors: true,
-                },
+        if (!organisationId) {
+            setErrors({
+                organisation: true,
+                hasErrors: true,
             });
         }
-    };
 
-    render() {
-        const { organisationId } = this.state;
-        return (
-            <form className="form-horizontal" onSubmit={this.handleSubmit}>
-                <Panel className={'panel-grey'}>
-                    <PanelBody>
-                        <div className="row">
-                            <InputText
-                                label={'Campagne'}
-                                name={'campaign'}
-                                value={this.props.campaignName}
-                                readOnly={true}
-                            />
-                            <InputSelect
-                                label={'Organisatie'}
-                                size={'col-sm-6'}
-                                name={'organisationId'}
-                                options={this.state.organisations}
-                                value={organisationId}
-                                onChangeAction={this.handleOrganisationChange}
-                                required={'required'}
-                                error={this.state.errors.organisation}
-                            />
-                        </div>
+        if (!errors.hasErrors) {
+            try {
+                await CampaignDetailsAPI.attachOrganisation(campaignId, organisationId);
 
-                        <div className="pull-right btn-group" role="group">
-                            <ButtonText
-                                buttonClassName={'btn-default'}
-                                buttonText={'Annuleren'}
-                                onClickAction={this.props.toggleShowNew}
-                            />
-                            <ButtonText
-                                buttonText={'Opslaan'}
-                                onClickAction={this.handleSubmit}
-                                type={'submit'}
-                                value={'Submit'}
-                            />
-                        </div>
-                    </PanelBody>
-                </Panel>
-            </form>
-        );
+                fetchCampaignData();
+                toggleShowNew();
+            } catch (error) {
+                alert(
+                    'Er is iets misgegaan met het toevoegen van de organisatie. Herlaad de pagina en probeer het nogmaals.'
+                );
+            }
+        }
     }
+
+    return (
+        <form className="form-horizontal" onSubmit={handleSubmit}>
+            <Panel className={'panel-grey'}>
+                <PanelBody>
+                    <div className="row">
+                        <InputText label={'Campagne'} name={'campaign'} value={campaignName} readOnly={true} />
+                        <InputSelect
+                            label={'Organisatie'}
+                            size={'col-sm-6'}
+                            name={'organisationId'}
+                            options={organisations}
+                            value={organisationId}
+                            onChangeAction={handleOrganisationChange}
+                            required={'required'}
+                            error={errors.organisation}
+                        />
+                    </div>
+
+                    <div className="pull-right btn-group" role="group">
+                        <ButtonText
+                            buttonClassName={'btn-default'}
+                            buttonText={'Annuleren'}
+                            onClickAction={toggleShowNew}
+                        />
+                        <ButtonText
+                            buttonText={'Opslaan'}
+                            onClickAction={handleSubmit}
+                            type={'submit'}
+                            value={'Submit'}
+                        />
+                    </div>
+                </PanelBody>
+            </Panel>
+        </form>
+    );
 }
 
-const mapStateToProps = state => {
-    return {
-        campaignId: state.campaignDetails.id,
-        campaignName: state.campaignDetails.name,
-    };
-};
-
-const mapDispatchToProps = dispatch => ({
-    fetchCampaign: id => {
-        dispatch(fetchCampaign(id));
-    },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(CampaignDetailsResponseNew);
+export default CampaignDetailsOrganisationNew;

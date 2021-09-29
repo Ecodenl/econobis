@@ -1,4 +1,10 @@
+import axiosInstance from '../default-setup/AxiosInstance';
 import axios from 'axios';
+
+axiosInstance.CancelToken = axios.CancelToken;
+axiosInstance.isCancel = axios.isCancel;
+
+let cancelToken;
 
 const URL_EMAIL_ADDRESS = `${URL_API}/api/email-address`;
 
@@ -48,19 +54,20 @@ export default {
             });
     },
 
-    fetchEmailAddressessPeek: () => {
-        const requestUrl = `${URL_API}/api/email/new/peek`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+    fetchEmailAddressessSearch: searchTermContact => {
+        const requestUrl = `${URL_API}/api/email/search?searchTerm=${searchTermContact}`;
 
-        return axios
-            .get(requestUrl)
-            .then(function(response) {
-                return response.data;
-            })
-            .catch(function(error) {
-                console.log(error);
-            });
+        if (typeof cancelToken != typeof undefined) {
+            //Check if there are any previous pending requests
+            cancelToken.cancel('Api call canceled due to new request.');
+        }
+
+        //Save the cancel token for the current request
+        cancelToken = axios.CancelToken.source();
+
+        return axiosInstance.get(requestUrl, {
+            cancelToken: cancelToken.token,
+        });
     },
 
     fetchPrimaryEmailAddressId: contactIds => {

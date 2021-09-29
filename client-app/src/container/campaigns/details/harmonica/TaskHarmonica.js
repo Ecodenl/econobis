@@ -5,7 +5,7 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import TasksList from './TasksList';
 
-const TaskHarmonica = ({ toggleShowList, showTasksList, taskCount, newTask, permissions }) => {
+const TaskHarmonica = ({ toggleShowList, showTasksList, taskCount, newTask, permissions, relatedTasks }) => {
     return (
         <Panel className={'harmonica-button'}>
             <PanelBody>
@@ -21,7 +21,7 @@ const TaskHarmonica = ({ toggleShowList, showTasksList, taskCount, newTask, perm
                         </a>
                     )}
                 </div>
-                <div className="col-sm-12">{showTasksList && <TasksList />}</div>
+                <div className="col-sm-12">{showTasksList && <TasksList relatedTasks={relatedTasks} />}</div>
             </PanelBody>
         </Panel>
     );
@@ -33,4 +33,7 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(TaskHarmonica);
+export default connect(
+    mapStateToProps,
+    null
+)(TaskHarmonica);

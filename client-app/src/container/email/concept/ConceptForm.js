@@ -7,7 +7,9 @@ import ConceptFormGeneral from './general/ConceptFormGeneral';
 const ConceptNewForm = ({
     email,
     contactGroupName,
-    emailAddresses,
+    emailAddressesToSelected,
+    emailAddressesCcSelected,
+    emailAddressesBccSelected,
     errors,
     hasLoaded,
     handleSubmit,
@@ -25,7 +27,9 @@ const ConceptNewForm = ({
                 <ConceptFormGeneral
                     email={email}
                     contactGroupName={contactGroupName}
-                    emailAddresses={emailAddresses}
+                    emailAddressesToSelected={emailAddressesToSelected}
+                    emailAddressesCcSelected={emailAddressesCcSelected}
+                    emailAddressesBccSelected={emailAddressesBccSelected}
                     errors={errors}
                     hasLoaded={hasLoaded}
                     handleSubmit={handleSubmit}

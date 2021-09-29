@@ -48,14 +48,7 @@ export default {
     fetchMailboxesLoggedInUserPeek: () => {
         const requestUrl = `${URL_MAILBOX}/logged-in/email-peek`;
 
-        return axiosInstance
-            .get(requestUrl)
-            .then(function(response) {
-                return response.data.data;
-            })
-            .catch(function(error) {
-                console.log(error);
-            });
+        return axiosInstance.get(requestUrl);
     },
 
     receiveMailFromMailboxesUser: () => {

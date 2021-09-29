@@ -9,9 +9,9 @@
 namespace App\Http\Resources\QuotationRequest;
 
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class QuotationRequestPeek extends Resource
+class QuotationRequestPeek extends JsonResource
 {
     public function toArray($request)
     {

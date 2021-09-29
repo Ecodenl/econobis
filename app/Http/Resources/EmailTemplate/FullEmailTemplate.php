@@ -14,9 +14,9 @@ use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Mailbox\FullMailbox;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullEmailTemplate extends Resource
+class FullEmailTemplate extends JsonResource
 {
     public function toArray($request)
     {

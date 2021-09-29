@@ -113,7 +113,7 @@ class AdministrationNewForm extends Component {
             axios.spread((emailTemplates, mailboxAddresses) => {
                 this.setState({
                     emailTemplates,
-                    mailboxAddresses,
+                    mailboxAddresses: mailboxAddresses.data.data,
                     peekLoading: {
                         ...this.state.peekLoading,
                         emailTemplates: false,

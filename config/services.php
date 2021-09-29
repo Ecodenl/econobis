@@ -47,4 +47,8 @@ return [
         're_captcha_server_side_url' => env('RE_CAPTCHA_SERVER_SIDE_URL', 'https://www.google.com/recaptcha/api/siteverify'),
         're_captcha_server_side_key' => env('RE_CAPTCHA_SERVER_SIDE_KEY'),
     ],
+
+    'gmailapi' => [
+        'mailbox_id' => null,
+    ],
 ];

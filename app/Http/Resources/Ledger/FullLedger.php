@@ -8,9 +8,9 @@
 
 namespace App\Http\Resources\Ledger;
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullLedger extends Resource
+class FullLedger extends JsonResource
 {
     public function toArray($request)
     {

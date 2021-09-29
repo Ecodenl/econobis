@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
 import CampaignDetailsResponsesList from './CampaignDetailsResponsesList';
 import CampaignDetailsResponseNew from './CampaignDetailsResponseNew';
@@ -7,43 +7,44 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import { connect } from 'react-redux';
 
-class CampaignDetailsResponses extends Component {
-    constructor(props) {
-        super(props);
+function CampaignDetailsResponses({ campaignId, campaignName, responses, permissions, fetchCampaignData }) {
+    const [showNew, setShowNew] = useState(false);
 
-        this.state = {
-            showNew: false,
-        };
+    function toggleShowNew() {
+        setShowNew(prevState => !prevState);
     }
 
-    toggleShowNew = () => {
-        this.setState({
-            showNew: !this.state.showNew,
-        });
-    };
-
-    render() {
-        return (
-            <Panel>
-                <PanelHeader>
-                    <span className="h5 text-bold">Responses</span>
-                    {this.props.permissions.manageMarketing && (
-                        <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                            <span className="glyphicon glyphicon-plus" />
-                        </a>
+    return (
+        <Panel>
+            <PanelHeader>
+                <span className="h5 text-bold">Responses</span>
+                {permissions.manageMarketing && (
+                    <a role="button" className="pull-right" onClick={toggleShowNew}>
+                        <span className="glyphicon glyphicon-plus" />
+                    </a>
+                )}
+            </PanelHeader>
+            <PanelBody>
+                <div className="col-md-12">
+                    <CampaignDetailsResponsesList
+                        responses={responses}
+                        campaignId={campaignId}
+                        fetchCampaignData={fetchCampaignData}
+                    />
+                </div>
+                <div className="col-md-12 margin-10-top">
+                    {showNew && (
+                        <CampaignDetailsResponseNew
+                            campaignId={campaignId}
+                            campaignName={campaignName}
+                            toggleShowNew={toggleShowNew}
+                            fetchCampaignData={fetchCampaignData}
+                        />
                     )}
-                </PanelHeader>
-                <PanelBody>
-                    <div className="col-md-12">
-                        <CampaignDetailsResponsesList />
-                    </div>
-                    <div className="col-md-12 margin-10-top">
-                        {this.state.showNew && <CampaignDetailsResponseNew toggleShowNew={this.toggleShowNew} />}
-                    </div>
-                </PanelBody>
-            </Panel>
-        );
-    }
+                </div>
+            </PanelBody>
+        </Panel>
+    );
 }
 
 const mapStateToProps = state => {

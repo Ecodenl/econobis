@@ -9,9 +9,9 @@
 namespace App\Http\Resources\Task;
 
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class TaskPeek extends Resource
+class TaskPeek extends JsonResource
 {
     public function toArray($request)
     {

@@ -10,7 +10,6 @@ import EmailAPI from '../../../api/email/EmailAPI';
 import EmailAddressAPI from '../../../api/contact/EmailAddressAPI';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
-import { isEqual } from 'lodash';
 import { connect } from 'react-redux';
 import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
 import Modal from '../../../components/modal/Modal';
@@ -22,7 +21,9 @@ class EmailNewApp extends Component {
         this.state = {
             showModal: false,
             buttonLoading: false,
-            emailAddresses: [],
+            emailAddressesToSelected: [],
+            emailAddressesCcSelected: [],
+            emailAddressesBccSelected: [],
             mailboxAddresses: [],
             emailTemplates: [],
             email: {
@@ -70,8 +71,9 @@ class EmailNewApp extends Component {
                     ...this.state,
                     email: {
                         ...this.state.email,
-                        to: payload.join(','),
+                        to: payload['emailIds'].join(','),
                     },
+                    emailAddressesToSelected: payload['emailAddressesToSelected'],
                 });
             });
         }
@@ -83,15 +85,9 @@ class EmailNewApp extends Component {
             });
         }
 
-        EmailAddressAPI.fetchEmailAddressessPeek().then(payload => {
-            this.setState({
-                emailAddresses: payload,
-            });
-        });
-
         MailboxAPI.fetchMailboxesLoggedInUserPeek().then(payload => {
             this.setState({
-                mailboxAddresses: payload,
+                mailboxAddresses: payload.data.data,
             });
         });
 
@@ -107,8 +103,9 @@ class EmailNewApp extends Component {
                     ...this.state,
                     email: {
                         ...this.state.email,
-                        to: payload.join(','),
+                        to: payload['emailIds'].join(','),
                     },
+                    emailAddressesToSelected: payload['emailAddressesToSelected'],
                 });
             });
         }
@@ -120,8 +117,9 @@ class EmailNewApp extends Component {
                             ...this.state,
                             email: {
                                 ...this.state.email,
-                                to: payload.join(','),
+                                to: payload['emailIds'].join(','),
                             },
+                            emailAddressesToSelected: payload['emailAddressesToSelected'],
                         });
                     });
                 }
@@ -132,6 +130,26 @@ class EmailNewApp extends Component {
                 });
             });
         }
+    }
+
+    handleEmailTemplates(selectedOption) {
+        this.setState({
+            ...this.state,
+            email: {
+                ...this.state.email,
+                emailTemplateId: selectedOption,
+            },
+        });
+        EmailTemplateAPI.fetchEmailTemplateWithUser(selectedOption).then(payload => {
+            this.setState({
+                ...this.state,
+                email: {
+                    ...this.state.email,
+                    subject: payload.subject ? payload.subject : this.state.email.subject,
+                    htmlBody: payload.htmlBody ? payload.htmlBody : this.state.email.htmlBody,
+                },
+            });
+        });
     }
 
     handleInputChange(event) {
@@ -159,53 +177,38 @@ class EmailNewApp extends Component {
     }
 
     handleToIds(selectedOption) {
+        const toIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                to: selectedOption,
+                to: toIds,
             },
-        });
-    }
-
-    handleEmailTemplates(selectedOption) {
-        // .setContent(content, {format : 'raw'})
-        this.setState({
-            ...this.state,
-            email: {
-                ...this.state.email,
-                emailTemplateId: selectedOption,
-            },
-        });
-        EmailTemplateAPI.fetchEmailTemplateWithUser(selectedOption).then(payload => {
-            this.setState({
-                ...this.state,
-                email: {
-                    ...this.state.email,
-                    subject: payload.subject ? payload.subject : this.state.email.subject,
-                    htmlBody: payload.htmlBody ? payload.htmlBody : this.state.email.htmlBody,
-                },
-            });
+            emailAddressesToSelected: selectedOption,
         });
     }
 
     handleCcIds(selectedOption) {
+        const ccIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                cc: selectedOption,
+                cc: ccIds,
             },
+            emailAddressesCcSelected: selectedOption,
         });
     }
 
     handleBccIds(selectedOption) {
+        const bccIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                bcc: selectedOption,
+                bcc: bccIds,
             },
+            emailAddressesBccSelected: selectedOption,
         });
     }
 
@@ -254,6 +257,12 @@ class EmailNewApp extends Component {
     setButtonLoading = () => {
         this.setState({
             buttonLoading: true,
+        });
+    };
+
+    toggleButtonLoading = () => {
+        this.setState({
+            buttonLoading: !this.state.buttonLoading,
         });
     };
 
@@ -328,7 +337,6 @@ class EmailNewApp extends Component {
                 email.bcc = email.bcc.split(',');
             }
             const data = new FormData();
-            //
 
             data.append('to', JSON.stringify(email.to));
             data.append('cc', JSON.stringify(email.cc));
@@ -351,6 +359,7 @@ class EmailNewApp extends Component {
                     })
                     .catch(function(error) {
                         console.log(error);
+                        this.toggleButtonLoading();
                     });
             } else {
                 this.setButtonLoading();
@@ -361,6 +370,7 @@ class EmailNewApp extends Component {
                     })
                     .catch(function(error) {
                         console.log(error);
+                        this.toggleButtonLoading();
                     });
             }
         }
@@ -386,7 +396,9 @@ class EmailNewApp extends Component {
                         <EmailNewForm
                             email={this.state.email}
                             contactGroupName={this.state.contactGroupName}
-                            emailAddresses={this.state.emailAddresses}
+                            emailAddressesToSelected={this.state.emailAddressesToSelected}
+                            emailAddressesCcSelected={this.state.emailAddressesCcSelected}
+                            emailAddressesBccSelected={this.state.emailAddressesBccSelected}
                             mailboxAddresses={this.state.mailboxAddresses}
                             emailTemplates={this.state.emailTemplates}
                             errors={this.state.errors}

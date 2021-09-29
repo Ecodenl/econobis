@@ -9,6 +9,7 @@
 namespace App\Http\Resources\Email;
 
 
+use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\User\User;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
@@ -23,9 +24,9 @@ use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\Task\FullTask;
 use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullEmail extends Resource
+class FullEmail extends JsonResource
 {
     public function toArray($request)
     {
@@ -36,10 +37,71 @@ class FullEmail extends Resource
             array_unshift($to, $this->contactGroup->name);
         }
 
+
+        $emailAddressesToSelected = [];
+        foreach ($this->to as $toSelected) {
+            if(is_numeric($toSelected)){
+                $emailAddress = EmailAddress::find($toSelected);
+                if($emailAddress){
+                    $emailAddressesToSelected[] = [
+                        'id' => $emailAddress->id,
+                        'name' => $emailAddress->contact->full_name . ' (' . $emailAddress->email . ')',
+                        'email' => $emailAddress->email
+                    ];
+                }
+            }else{
+                $emailAddressesToSelected[] = [
+                    'id' => $toSelected,
+                    'name' => $toSelected,
+                    'email' => $toSelected
+                ];
+            }
+        }
+        $emailAddressesCcSelected = [];
+        foreach ($this->cc as $ccSelected) {
+            if(is_numeric($ccSelected)){
+                $emailAddress = EmailAddress::find($ccSelected);
+                if($emailAddress){
+                    $emailAddressesCcSelected[] = [
+                        'id' => $emailAddress->id,
+                        'name' => $emailAddress->contact->full_name . ' (' . $emailAddress->email . ')',
+                        'email' => $emailAddress->email
+                    ];
+                }
+            }else{
+                $emailAddressesCcSelected[] = [
+                    'id' => $ccSelected,
+                    'name' => $ccSelected,
+                    'email' => $ccSelected
+                ];
+            }
+        }
+        $emailAddressesBccSelected = [];
+        foreach ($this->bcc as $bccSelected) {
+            if(is_numeric($bccSelected)){
+                $emailAddress = EmailAddress::find($bccSelected);
+                if($emailAddress){
+                    $emailAddressesBccSelected[] = [
+                        'id' => $emailAddress->id,
+                        'name' => $emailAddress->contact->full_name . ' (' . $emailAddress->email . ')',
+                        'email' => $emailAddress->email
+                    ];
+                }
+            }else{
+                $emailAddressesBccSelected[] = [
+                    'id' => $bccSelected,
+                    'name' => $bccSelected,
+                    'email' => $bccSelected
+                ];
+            }
+        }
         return [
             'id' => $this->id,
             'mailboxId' => $this->mailbox_id,
             'mailbox' => FullMailbox::make($this->whenLoaded('mailbox')),
+            'emailAddressesToSelected' => $emailAddressesToSelected,
+            'emailAddressesCcSelected' => $emailAddressesCcSelected,
+            'emailAddressesBccSelected' => $emailAddressesBccSelected,
             'from' => $this->from,
             'to' => $this->to,
             'toWithGroup' => $to,
@@ -51,6 +113,7 @@ class FullEmail extends Resource
             'dateSent' => $this->date_sent,
             'folder' => $this->folder,
             'imapId' => $this->imap_id,
+            'gmailMessageId' => $this->gmail_message_id,
             'messageId' => $this->message_id,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,

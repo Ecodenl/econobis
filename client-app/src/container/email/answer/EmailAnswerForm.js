@@ -10,7 +10,9 @@ const EmailAnswerForm = ({
     handleFromIds,
     handleEmailTemplates,
     email,
-    emailAddresses,
+    emailAddressesToSelected,
+    emailAddressesCcSelected,
+    emailAddressesBccSelected,
     errors,
     hasLoaded,
     handleSubmit,
@@ -27,7 +29,9 @@ const EmailAnswerForm = ({
             <Panel>
                 <EmailAnswerFormGeneral
                     email={email}
-                    emailAddresses={emailAddresses}
+                    emailAddressesToSelected={emailAddressesToSelected}
+                    emailAddressesCcSelected={emailAddressesCcSelected}
+                    emailAddressesBccSelected={emailAddressesBccSelected}
                     errors={errors}
                     hasLoaded={hasLoaded}
                     handleSubmit={handleSubmit}

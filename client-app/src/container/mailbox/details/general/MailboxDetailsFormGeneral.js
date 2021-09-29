@@ -1,63 +1,51 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 
 import MailboxDetailsFormGeneralEdit from './MailboxDetailsFormGeneralEdit';
 import MailboxDetailsFormGeneralView from './MailboxDetailsFormGeneralView';
 
-class MailboxDetailsFormGeneral extends Component {
-    constructor(props) {
-        super(props);
+function MailboxDetailsFormGeneral({ meDetails }) {
+    const [state, setState] = useState({ showEdit: false, activeDiv: '' });
 
-        this.state = {
-            showEdit: false,
-            activeDiv: '',
-        };
-    }
-
-    switchToEdit = () => {
-        this.setState({
+    function switchToEdit() {
+        setState({
+            ...state,
             showEdit: true,
         });
-    };
+    }
 
-    switchToView = () => {
-        this.setState({
+    function switchToView() {
+        setState({
             showEdit: false,
             activeDiv: '',
         });
-    };
+    }
 
-    onDivEnter() {
-        this.setState({
+    function onDivEnter() {
+        setState({
+            ...state,
             activeDiv: 'panel-grey',
         });
     }
 
-    onDivLeave() {
-        if (!this.state.showEdit) {
-            this.setState({
+    function onDivLeave() {
+        if (!state.showEdit) {
+            setState({
+                ...state,
                 activeDiv: '',
             });
         }
     }
 
-    render() {
-        const { permissions = {} } = this.props.meDetails;
-
-        return (
-            <div
-                className={this.state.activeDiv}
-                onMouseEnter={() => this.onDivEnter()}
-                onMouseLeave={() => this.onDivLeave()}
-            >
-                {this.state.showEdit && this.props.permissions.createMailbox ? (
-                    <MailboxDetailsFormGeneralEdit switchToView={this.switchToView} />
-                ) : (
-                    <MailboxDetailsFormGeneralView switchToEdit={this.switchToEdit} />
-                )}
-            </div>
-        );
-    }
+    return (
+        <div className={state.activeDiv} onMouseEnter={() => onDivEnter()} onMouseLeave={() => onDivLeave()}>
+            {state.showEdit && meDetails?.permissions?.createMailbox ? (
+                <MailboxDetailsFormGeneralEdit switchToView={switchToView} />
+            ) : (
+                <MailboxDetailsFormGeneralView switchToEdit={switchToEdit} />
+            )}
+        </div>
+    );
 }
 
 const mapStateToProps = state => {

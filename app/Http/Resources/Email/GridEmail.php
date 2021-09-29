@@ -13,9 +13,9 @@ use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class GridEmail extends Resource
+class GridEmail extends JsonResource
 {
     public function toArray($request)
     {

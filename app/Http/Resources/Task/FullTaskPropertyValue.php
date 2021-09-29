@@ -10,9 +10,9 @@ namespace App\Http\Resources\Task;
 
 
 use App\Http\Resources\GenericResource;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullTaskPropertyValue extends Resource
+class FullTaskPropertyValue extends JsonResource
 {
     /**
      * Transform the resource into an array.

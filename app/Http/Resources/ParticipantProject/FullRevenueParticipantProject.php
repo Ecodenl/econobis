@@ -5,9 +5,9 @@ namespace App\Http\Resources\ParticipantProject;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullRevenueParticipantProject extends Resource
+class FullRevenueParticipantProject extends JsonResource
 {
     /**
      * Transform the resource into an array.

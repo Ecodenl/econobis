@@ -5,9 +5,9 @@ namespace App\Http\Resources\Webform;
 
 use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullWebform extends Resource
+class FullWebform extends JsonResource
 {
     public function toArray($request)
     {

@@ -9,9 +9,9 @@
 namespace App\Http\Resources\Contact;
 
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class ContactPeek extends Resource
+class ContactPeek extends JsonResource
 {
     public function toArray($request)
     {

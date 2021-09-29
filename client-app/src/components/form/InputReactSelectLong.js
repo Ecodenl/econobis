@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import 'react-select/dist/react-select.css';
 
 const InputReactSelectLong = props => {
     const {
@@ -14,15 +13,18 @@ const InputReactSelectLong = props => {
         optionName,
         onChangeAction,
         required,
-        multi,
         error,
         errorMessage,
         isLoading,
         disabled,
+        placeholder,
+        clearable,
     } = props;
 
-    const onChange = selectedOption => {
-        onChangeAction(selectedOption || '', name);
+    const customStyles = {
+        option: provided => ({ ...provided, fontSize: '12px' }),
+        singleValue: provided => ({ ...provided, fontSize: '12px' }),
+        menu: provided => ({ ...provided, zIndex: 20 }),
     };
 
     return (
@@ -37,19 +39,38 @@ const InputReactSelectLong = props => {
                     <Select
                         id={id}
                         name={name}
-                        value={value}
-                        onChange={onChange}
+                        value={options && value ? options.find(option => option[optionId] === value) : ''}
+                        onChange={option => onChangeAction(option ? option[optionId] : '', name)}
                         options={options}
-                        valueKey={optionId}
-                        labelKey={optionName}
-                        placeholder={''}
-                        noResultsText={'Geen resultaat gevonden'}
-                        multi={multi}
+                        getOptionLabel={option => option[optionName]}
+                        getOptionValue={option => option[optionId]}
+                        placeholder={placeholder}
+                        noOptionsMessage={function() {
+                            return 'Geen opties gevonden';
+                        }}
+                        loadingMessage={function() {
+                            return 'Laden';
+                        }}
+                        isMulti={false}
                         simpleValue
                         removeSelected
                         className={error ? ' has-error' : ''}
                         isLoading={isLoading}
-                        disabled={disabled}
+                        isDisabled={disabled}
+                        styles={customStyles}
+                        isClearable={clearable}
+                        theme={theme => ({
+                            ...theme,
+                            colors: {
+                                ...theme.colors,
+                            },
+                            spacing: {
+                                ...theme.spacing,
+                                baseUnit: 2,
+                                controlHeight: 24,
+                                menuGutter: 4,
+                            },
+                        })}
                     />
                 </div>
                 {error && (
@@ -63,7 +84,6 @@ const InputReactSelectLong = props => {
 };
 
 InputReactSelectLong.defaultProps = {
-    className: '',
     optionId: 'id',
     optionName: 'name',
     disabled: false,
@@ -71,16 +91,16 @@ InputReactSelectLong.defaultProps = {
     error: false,
     errorMessage: '',
     value: '',
-    multi: true,
     isLoading: false,
+    placeholder: '',
+    clearable: false,
 };
 
 InputReactSelectLong.propTypes = {
     label: PropTypes.string.isRequired,
-    className: PropTypes.string,
     id: PropTypes.string,
     name: PropTypes.string.isRequired,
-    options: PropTypes.array.isRequired,
+    options: PropTypes.array,
     optionId: PropTypes.string,
     optionName: PropTypes.string,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -90,8 +110,9 @@ InputReactSelectLong.propTypes = {
     disabled: PropTypes.bool,
     error: PropTypes.bool,
     errorMessage: PropTypes.string,
-    multi: PropTypes.bool,
     isLoading: PropTypes.bool,
+    placeholder: PropTypes.string,
+    clearable: PropTypes.bool,
 };
 
 export default InputReactSelectLong;

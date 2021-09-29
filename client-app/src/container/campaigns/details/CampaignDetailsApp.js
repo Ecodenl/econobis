@@ -1,56 +1,75 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-
+import React, { useEffect, useReducer } from 'react';
 import CampaignDetailsToolbar from './CampaignDetailsToolbar';
 import CampaignDetailsForm from './CampaignDetailsForm';
 import CampaignDetailsHarmonica from './CampaignDetailsHarmonica';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+import CampaignDetailsAPI from '../../../api/campaign/CampaignDetailsAPI';
+import { INITIAL_STATE, reducer } from './CampaignReducer';
 
-import { fetchCampaign, clearCampaign } from '../../../actions/campaign/CampaignDetailsActions';
+function CampaignDetailsApp({ params }) {
+    const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
 
-class CampaignDetailsApp extends Component {
-    constructor(props) {
-        super(props);
+    useEffect(() => {
+        fetchCampaignData();
+    }, []);
+
+    async function fetchCampaignData() {
+        try {
+            const response = await CampaignDetailsAPI.fetchCampaign({ id: params.id });
+
+            updateResult(response.data.data);
+        } catch (error) {
+            setHasErrors(true);
+            alert('Er is iets misgegaan met het laden van de gegevens. Herlaad de pagina.');
+        }
+        setIsLoading(false);
     }
 
-    componentDidMount() {
-        this.props.fetchCampaign(this.props.params.id);
+    function setIsLoading(isLoading) {
+        dispatch({
+            type: 'updateIsLoading',
+            payload: isLoading,
+        });
     }
 
-    componentWillUnmount() {
-        this.props.clearCampaign();
+    function updateResult(payload) {
+        dispatch({
+            type: 'updateResult',
+            payload: payload,
+        });
     }
 
-    render() {
-        return (
-            <div className="row">
-                <div className="col-md-9">
-                    <div className="col-md-12">
-                        <CampaignDetailsToolbar />
-                    </div>
+    function setHasErrors(hasErrors) {
+        dispatch({
+            type: 'updateHasErrors',
+            payload: hasErrors,
+        });
+    }
 
-                    <div className="col-md-12">
-                        <CampaignDetailsForm />
-                    </div>
+    return (
+        <div className="row">
+            <div className="col-md-9">
+                <div className="col-md-12">
+                    <CampaignDetailsToolbar campaign={state.result} />
                 </div>
-                <Panel className="col-md-3 harmonica">
-                    <PanelBody>
-                        <CampaignDetailsHarmonica id={this.props.params.id} />
-                    </PanelBody>
-                </Panel>
+
+                <div className="col-md-12">
+                    <CampaignDetailsForm
+                        campaign={state.result}
+                        isLoading={state.isLoading}
+                        hasError={state.hasError}
+                        fetchCampaignData={fetchCampaignData}
+                    />
+                </div>
             </div>
-        );
-    }
+            <Panel className="col-md-3 harmonica">
+                <PanelBody>
+                    <CampaignDetailsHarmonica campaign={state.result} />
+                </PanelBody>
+            </Panel>
+        </div>
+    );
 }
 
-const mapDispatchToProps = dispatch => ({
-    fetchCampaign: id => {
-        dispatch(fetchCampaign(id));
-    },
-    clearCampaign: () => {
-        dispatch(clearCampaign());
-    },
-});
-
-export default connect(null, mapDispatchToProps)(CampaignDetailsApp);
+export default CampaignDetailsApp;

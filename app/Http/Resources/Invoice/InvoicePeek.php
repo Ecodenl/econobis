@@ -9,9 +9,9 @@
 namespace App\Http\Resources\Invoice;
 
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class InvoicePeek extends Resource
+class InvoicePeek extends JsonResource
 {
     public function toArray($request)
     {

@@ -9,9 +9,9 @@
 namespace App\Http\Resources\EnumWithIdAndName;
 
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullEnumWithIdAndName extends Resource
+class FullEnumWithIdAndName extends JsonResource
 {
     public function toArray($request)
     {

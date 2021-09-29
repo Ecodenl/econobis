@@ -3,9 +3,9 @@
 namespace App\Http\Resources\PhoneNumber;
 
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullPhoneNumber extends Resource
+class FullPhoneNumber extends JsonResource
 {
     /**
      * Transform the resource into an array.

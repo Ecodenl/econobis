@@ -7,7 +7,6 @@ import authReducer from './general/AuthReducer';
 import blockUIReducer from './general/BlockUIReducer';
 import calendarReducer from './calendar/CalendarReducer';
 import campaignsReducer from './campaign/CampaignsReducer';
-import campaignDetailsReducer from './campaign/CampaignDetailsReducer';
 import contactDetailsReducer from './contact/ContactDetailsReducer';
 import contactGroupDetailsReducer from './contact-group/ContactGroupDetailsReducer';
 import contactGroupsReducer from './contact-group/ContactGroupsReducer';
@@ -91,7 +90,6 @@ const rootReducer = combineReducers({
 
     // Campaign
     campaigns: campaignsReducer,
-    campaignDetails: campaignDetailsReducer,
     // Contact
     contacts: contactsReducer,
     contactDetails: contactDetailsReducer,

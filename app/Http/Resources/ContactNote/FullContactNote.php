@@ -10,9 +10,9 @@ namespace App\Http\Resources\ContactNote;
 
 
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullContactNote extends Resource
+class FullContactNote extends JsonResource
 {
     public function toArray($request)
     {

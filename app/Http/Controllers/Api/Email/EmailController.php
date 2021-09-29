@@ -27,6 +27,7 @@ use Carbon\Carbon;
 use Config;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class EmailController
@@ -385,6 +386,25 @@ class EmailController
             }
         }
         return $people;
+    }
+
+    public function search(Request $request)
+    {
+        $contacts = Contact::select(DB::raw("`email_addresses`.`id`, concat(`contacts`.`full_name`, ' (', `email_addresses`.`email`, ')') as name, `email_addresses`.`email` as email"));
+        $contacts->join('email_addresses', function ($join) {
+            $join->on('email_addresses.contact_id', '=', 'contacts.id')
+                ->whereNull('email_addresses.deleted_at');
+        });
+
+        foreach(explode(" ", $request->input('searchTerm')) as $searchTerm) {
+            $contacts->where(function ($contacts) use ($searchTerm) {
+                $contacts->where('contacts.full_name', 'like', '%' . $searchTerm . '%');
+                $contacts->orWhere('email_addresses.email', 'like', '%' . $searchTerm . '%');
+            });
+        }
+        $contacts = $contacts->get();
+
+        return $contacts;
     }
 
     public function downloadEmailAttachment(EmailAttachment $emailAttachment)

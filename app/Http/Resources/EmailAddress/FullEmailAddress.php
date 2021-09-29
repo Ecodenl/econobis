@@ -3,9 +3,9 @@
 namespace App\Http\Resources\EmailAddress;
 
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullEmailAddress extends Resource
+class FullEmailAddress extends JsonResource
 {
     /**
      * Transform the resource into an array.

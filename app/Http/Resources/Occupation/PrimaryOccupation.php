@@ -4,9 +4,9 @@
 namespace App\Http\Resources\Occupation;
 
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class PrimaryOccupation extends Resource
+class PrimaryOccupation extends JsonResource
 {
     public function toArray($request)
     {

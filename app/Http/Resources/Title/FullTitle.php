@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources\Title;
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullTitle extends Resource
+class FullTitle extends JsonResource
 {
     /**
      * Transform the resource into an array.

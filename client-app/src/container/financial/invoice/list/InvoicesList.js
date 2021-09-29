@@ -616,16 +616,16 @@ class InvoicesList extends Component {
                                 <div className="pull-right">Resultaten: {meta.total || 0}</div>
                             </div>
                             <div className="col-sm-12">
-                                <div className="pull-right">
-                                    Totaal:{' '}
-                                    {meta.totalPrice
-                                        ? '€' +
-                                          meta.totalPrice.toLocaleString('nl', {
-                                              minimumFractionDigits: 2,
-                                              maximumFractionDigits: 2,
-                                          })
-                                        : '€0,00'}
-                                </div>
+                                {/*<div className="pull-right">*/}
+                                {/*    Totaal:{' '}*/}
+                                {/*    {meta.totalPrice*/}
+                                {/*        ? '€' +*/}
+                                {/*          meta.totalPrice.toLocaleString('nl', {*/}
+                                {/*              minimumFractionDigits: 2,*/}
+                                {/*              maximumFractionDigits: 2,*/}
+                                {/*          })*/}
+                                {/*        : '€0,00'}*/}
+                                {/*</div>*/}
                             </div>
                         </div>
                     </div>

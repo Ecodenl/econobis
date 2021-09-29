@@ -187,6 +187,8 @@ Route::namespace('Api')
         Route::get('campaign/grid', 'Campaign\CampaignController@grid');
         Route::get('campaign/peek', 'Campaign\CampaignController@peek');
         Route::get('campaign/{campaign}', 'Campaign\CampaignController@show');
+        Route::get('campaign/{campaign}/intakes', 'Campaign\CampaignController@intakes');
+        Route::get('campaign/{campaign}/opportunities', 'Campaign\CampaignController@opportunities');
         Route::post('campaign/', 'Campaign\CampaignController@store');
         Route::post('campaign/{campaign}', 'Campaign\CampaignController@update');
         Route::post('campaign/{campaign}/delete', 'Campaign\CampaignController@destroy');
@@ -227,12 +229,13 @@ Route::namespace('Api')
         Route::get('mailbox/{mailbox}/make-primary', 'Mailbox\MailboxController@makePrimary');
 
         Route::get('email/grid/in-folder/{folder}', 'Email\EmailController@grid');
-        Route::get('email/new/peek', 'Email\EmailController@peek');
+        Route::get('email/search', 'Email\EmailController@search');
         Route::get('email/amount-open', 'Email\EmailController@getAmountOfOpenEmails');
         Route::get('email/{email}', 'Email\EmailController@show');
         Route::get('email/{email}/reply', 'Email\EmailController@getReply');
         Route::get('email/{email}/reply-all', 'Email\EmailController@getReplyAll');
         Route::get('email/{email}/forward', 'Email\EmailController@getForward');
+        Route::get('email/group/{contactGroup}', 'Email\EmailController@getEmailGroup');
         Route::get('email/group/{contactGroup}', 'Email\EmailController@getEmailGroup');
         Route::post('email/{email}/move-to-folder', 'Email\EmailController@moveEmailToFolder');
         Route::post('email/{email}/delete', 'Email\EmailController@destroy');

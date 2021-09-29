@@ -9,11 +9,10 @@
 namespace App\Http\Resources\Order;
 
 
-use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class GridOrder extends Resource
+class GridOrder extends JsonResource
 {
     public function toArray($request)
     {
@@ -22,8 +21,9 @@ class GridOrder extends Resource
             'number' => $this->number,
             'dateNextInvoice' => $this->date_next_invoice,
             'subject' => $this->subject,
-
-            'contact' => FullContact::make($this->whenLoaded('contact')),
+            'contact' => [
+                'fullName' => $this->contact->full_name,
+            ],
 
             'totalInclVatInclReductionPerYear' => $this->getTotalInclVatInclReductionPerYearAttribute(),
 

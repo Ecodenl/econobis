@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources\Occupation;
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullOccupation extends Resource
+class FullOccupation extends JsonResource
 {
     /**
      * Transform the resource into an array.

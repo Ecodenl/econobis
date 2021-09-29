@@ -1,49 +1,163 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import InputTinyMCE from '../../../../components/form/InputTinyMCE';
-import InputMultiSelectCreate from '../../../../components/form/InputMultiSelectCreate';
-
 import InputMultiSelect from '../../../../components/form/InputMultiSelect';
 import InputTinyMCEUpdateable from '../../../../components/form/InputTinyMCEUpdateable';
 import InputText from '../../../../components/form/InputText';
+import * as PropTypes from 'prop-types';
+import EmailAddressAPI from '../../../../api/contact/EmailAddressAPI';
+import AsyncSelectSet from '../../../../components/form/AsyncSelectSet';
+import InputReactSelectLong from '../../../../components/form/InputReactSelectLong';
 
-const EmailNewFormGeneral = ({
-    email,
-    contactGroupName,
-    emailAddresses,
-    mailboxAddresses,
-    emailTemplates,
-    errors,
-    handleFromIds,
-    handleToIds,
-    handleEmailTemplates,
-    handleCcIds,
-    handleBccIds,
-    handleInputChange,
-    handleTextChange,
-}) => {
+function EmailNewFormGeneral(props) {
+    const [searchTermContact, setSearchTermContact] = useState('');
+    const [isLoadingContact, setLoadingContact] = useState(false);
+    const [valueSelectedTo, setValueSelectedTo] = useState([]);
+    const [valueSelectedCc, setValueSelectedCc] = useState([]);
+    const [valueSelectedBcc, setValueSelectedBcc] = useState([]);
+    const [selectedToMoreThanOne, setSelectedToMoreThanOne] = useState(false);
+    const [includesEmailAddress, setIncludesEmailAddress] = useState(false);
+
+    let {
+        email,
+        contactGroupName,
+        emailAddressesToSelected,
+        emailAddressesCcSelected,
+        emailAddressesBccSelected,
+        mailboxAddresses,
+        emailTemplates,
+        errors,
+        handleFromIds,
+        handleToIds,
+        handleEmailTemplates,
+        handleCcIds,
+        handleBccIds,
+        handleInputChange,
+        handleTextChange,
+    } = props;
     const { from, to, cc, bcc, subject, htmlBody, emailTemplateId, contactGroupId } = email;
 
-    let toArray = [];
-    let includesEmailAddress = false;
-    if (!Array.isArray(to)) {
-        toArray = to.split(',');
-    } else {
-        toArray = to;
-    }
-    toArray.map(item => {
-        if (item.includes('@')) {
-            includesEmailAddress = true;
+    useEffect(() => {
+        setValueSelectedTo(getSelectedTo());
+    }, [to]);
+    useEffect(() => {
+        setValueSelectedCc(getSelectedCc());
+    }, [cc]);
+    useEffect(() => {
+        setValueSelectedBcc(getSelectedBcc());
+    }, [bcc]);
+
+    function getSelectedTo() {
+        let toArray = [];
+
+        if (!Array.isArray(to)) {
+            toArray = to.split(',');
+        } else {
+            toArray = to;
         }
-    });
+        let selectedTo = [];
+        let hasEmailAddress = false;
+        toArray.map(item => {
+            if (item && item.includes('@')) {
+                hasEmailAddress = true;
+                selectedTo.push({
+                    id: item,
+                    name: item,
+                    email: item,
+                });
+            }
+            if (item && !isNaN(item)) {
+                let emailaddress = emailAddressesToSelected.find(emailAddress => emailAddress.id === Number(item));
+
+                selectedTo.push(emailaddress);
+            }
+        });
+        setIncludesEmailAddress(hasEmailAddress);
+
+        if ((selectedTo + '').split(',').length > 1) {
+            setSelectedToMoreThanOne(true);
+        } else {
+            setSelectedToMoreThanOne(false);
+        }
+        return selectedTo;
+    }
+
+    function getSelectedCc() {
+        let ccArray = [];
+        if (!Array.isArray(cc)) {
+            ccArray = cc.split(',');
+        } else {
+            ccArray = cc;
+        }
+        let selectedCc = [];
+        ccArray.map(item => {
+            if (item && item.includes('@')) {
+                selectedCc.push({
+                    id: item,
+                    name: item,
+                    email: item,
+                });
+            }
+            if (item && !isNaN(item)) {
+                let emailaddress = emailAddressesCcSelected.find(emailAddress => emailAddress.id === Number(item));
+
+                selectedCc.push(emailaddress);
+            }
+        });
+        return selectedCc;
+    }
+
+    function getSelectedBcc() {
+        let bccArray = [];
+        if (!Array.isArray(bcc)) {
+            bccArray = bcc.split(',');
+        } else {
+            bccArray = bcc;
+        }
+        let selectedBcc = [];
+        bccArray.map(item => {
+            if (item && item.includes('@')) {
+                selectedBcc.push({
+                    id: item,
+                    name: item,
+                    email: item,
+                });
+            }
+            if (item && !isNaN(item)) {
+                let emailaddress = emailAddressesBccSelected.find(emailAddress => emailAddress.id === Number(item));
+
+                selectedBcc.push(emailaddress);
+            }
+        });
+        return selectedBcc;
+    }
+
+    const getContactOptions = async () => {
+        if (searchTermContact.length <= 1) return;
+
+        setLoadingContact(true);
+
+        try {
+            const results = await EmailAddressAPI.fetchEmailAddressessSearch(searchTermContact);
+            setLoadingContact(false);
+            return results.data;
+        } catch (error) {
+            setLoadingContact(false);
+
+            console.log(error);
+        }
+    };
+
+    function handleInputSearchChange(value) {
+        setSearchTermContact(value);
+    }
 
     return (
         <Panel>
             <PanelBody>
                 <div className="row">
-                    <InputMultiSelect
+                    <InputReactSelectLong
                         label="Van selecteren"
                         name={'from'}
                         value={from}
@@ -52,7 +166,6 @@ const EmailNewFormGeneral = ({
                         onChangeAction={handleFromIds}
                         required={'required'}
                         error={errors.from}
-                        multi={false}
                     />
                 </div>
                 <div className="row">
@@ -73,11 +186,11 @@ const EmailNewFormGeneral = ({
                             readOnly={true}
                         />
                     ) : (
-                        <InputMultiSelectCreate
+                        <AsyncSelectSet
                             label={
                                 <span>
                                     Aan selecteren
-                                    {(to + '').split(',').length > 1 ? (
+                                    {selectedToMoreThanOne ? (
                                         <React.Fragment>
                                             <br />
                                             <small style={{ color: 'red', fontWeight: 'normal' }}>
@@ -105,46 +218,55 @@ const EmailNewFormGeneral = ({
                                 </span>
                             }
                             name={'to'}
-                            value={to}
-                            options={emailAddresses}
+                            value={valueSelectedTo}
+                            loadOptions={getContactOptions}
                             optionName={'name'}
                             onChangeAction={handleToIds}
                             allowCreate={true}
                             required={'required'}
                             error={errors.to}
+                            isLoading={isLoadingContact}
+                            handleInputChange={handleInputSearchChange}
                         />
                     )}
                 </div>
                 <div className="row">
-                    <InputMultiSelectCreate
+                    <AsyncSelectSet
                         label={contactGroupId ? 'Extra contacten' : 'Cc selecteren'}
                         name={'cc'}
-                        value={cc}
-                        options={emailAddresses}
+                        value={valueSelectedCc}
+                        loadOptions={getContactOptions}
                         optionName={'name'}
                         onChangeAction={handleCcIds}
+                        allowCreate={true}
+                        error={errors.cc}
+                        isLoading={isLoadingContact}
+                        handleInputChange={handleInputSearchChange}
                     />
                 </div>
                 {!contactGroupId ? (
                     <div className="row">
-                        <InputMultiSelectCreate
+                        <AsyncSelectSet
                             label="Bcc selecteren"
                             name={'bcc'}
-                            value={bcc}
-                            options={emailAddresses}
+                            value={valueSelectedBcc}
+                            loadOptions={getContactOptions}
                             optionName={'name'}
                             onChangeAction={handleBccIds}
+                            allowCreate={true}
+                            error={errors.bcc}
+                            isLoading={isLoadingContact}
+                            handleInputChange={handleInputSearchChange}
                         />
                     </div>
                 ) : null}
                 <div className="row">
-                    <InputMultiSelect
+                    <InputReactSelectLong
                         label="Template"
                         name={'emailTemplateId'}
                         value={emailTemplateId}
                         options={emailTemplates}
                         onChangeAction={handleEmailTemplates}
-                        multi={false}
                     />
                 </div>
                 <div className="row">
@@ -179,6 +301,24 @@ const EmailNewFormGeneral = ({
             </PanelBody>
         </Panel>
     );
+}
+
+EmailNewFormGeneral.propTypes = {
+    email: PropTypes.any,
+    contactGroupName: PropTypes.any,
+    emailAddressesToSelected: PropTypes.any,
+    emailAddressesCcSelected: PropTypes.any,
+    emailAddressesBccSelected: PropTypes.any,
+    mailboxAddresses: PropTypes.any,
+    emailTemplates: PropTypes.any,
+    errors: PropTypes.any,
+    handleFromIds: PropTypes.any,
+    handleToIds: PropTypes.any,
+    handleEmailTemplates: PropTypes.any,
+    handleCcIds: PropTypes.any,
+    handleBccIds: PropTypes.any,
+    handleInputChange: PropTypes.any,
+    handleTextChange: PropTypes.any,
 };
 
 export default EmailNewFormGeneral;

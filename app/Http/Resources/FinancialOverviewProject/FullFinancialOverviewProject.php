@@ -10,9 +10,9 @@ namespace App\Http\Resources\FinancialOverviewProject;
 
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Project\FullProject;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullFinancialOverviewProject extends Resource
+class FullFinancialOverviewProject extends JsonResource
 {
     public function toArray($request)
     {

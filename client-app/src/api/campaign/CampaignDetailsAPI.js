@@ -1,117 +1,71 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
-const URL_CAMPAIGN = `${URL_API}/api/campaign`;
+const URL_CAMPAIGN = `/campaign`;
 
 export default {
-    fetchCampaign: id => {
+    fetchCampaign: ({ id }) => {
         const requestUrl = `${URL_CAMPAIGN}/${id}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
-            .get(requestUrl)
-            .then(response => response.data.data)
-            .catch(error => {
-                console.log(error);
-            });
+        return axiosInstance.get(requestUrl);
+    },
+
+    fetchCampaignIntakes: ({ id, page }) => {
+        const requestUrl = `${URL_CAMPAIGN}/${id}/intakes?page=${page}`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
+    fetchCampaignOpportunities: ({ id, page }) => {
+        const requestUrl = `${URL_CAMPAIGN}/${id}/opportunities?page=${page}`;
+
+        return axiosInstance.get(requestUrl);
     },
 
     updateCampaign: (id, data) => {
         const requestUrl = `${URL_CAMPAIGN}/${id}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
-            .post(requestUrl, data)
-            .then(response => response.data.data)
-            .catch(error => {
-                console.log(error);
-            });
+        return axiosInstance.post(requestUrl, data);
     },
 
     storeCampaign: data => {
         const requestUrl = `${URL_CAMPAIGN}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
-            .post(requestUrl, data)
-            .then(response => response.data.data)
-            .catch(error => {
-                console.log(error);
-            });
+        return axiosInstance.post(requestUrl, data);
     },
 
     deleteCampaign: id => {
         const requestUrl = `${URL_CAMPAIGN}/${id}/delete`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl);
+        return axiosInstance.post(requestUrl);
     },
 
     attachResponse: (campaignId, contactId) => {
         const requestUrl = `${URL_CAMPAIGN}/${campaignId}/response/${contactId}/attach`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
-            .post(requestUrl)
-            .then(response => response.data.data)
-            .catch(error => {
-                console.log(error);
-            });
+        return axiosInstance.post(requestUrl);
     },
 
     detachResponse: (campaignId, contactId) => {
         const requestUrl = `${URL_CAMPAIGN}/${campaignId}/response/${contactId}/detach`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
-            .post(requestUrl)
-            .then(response => response.data.data)
-            .catch(error => {
-                console.log(error);
-            });
+        return axiosInstance.post(requestUrl);
     },
 
     attachOrganisation: (campaignId, organisationId) => {
         const requestUrl = `${URL_CAMPAIGN}/${campaignId}/organisation/${organisationId}/attach`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
-            .post(requestUrl)
-            .then(response => response.data.data)
-            .catch(error => {
-                console.log(error);
-            });
+        return axiosInstance.post(requestUrl);
     },
 
     detachOrganisation: (campaignId, organisationId) => {
         const requestUrl = `${URL_CAMPAIGN}/${campaignId}/organisation/${organisationId}/detach`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
-            .post(requestUrl)
-            .then(response => response.data.data)
-            .catch(error => {
-                console.log(error);
-            });
+        return axiosInstance.post(requestUrl);
     },
 
     updateCampaignOwner: (campaignId, userId) => {
         const requestUrl = `${URL_CAMPAIGN}/${campaignId}/owner/${userId}/associate`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
-            .post(requestUrl)
-            .then(response => response.data.data)
-            .catch(error => {
-                console.log(error);
-            });
+        return axiosInstance.post(requestUrl);
     },
 };

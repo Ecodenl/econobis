@@ -7,7 +7,6 @@ import ConceptToolbar from './ConceptToolbar';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import EmailAPI from '../../../api/email/EmailAPI';
-import EmailAddressAPI from '../../../api/contact/EmailAddressAPI';
 import { browserHistory, hashHistory } from 'react-router';
 
 class ConceptApp extends Component {
@@ -16,7 +15,9 @@ class ConceptApp extends Component {
 
         this.state = {
             buttonLoading: false,
-            emailAddresses: [],
+            emailAddressesToSelected: [],
+            emailAddressesCcSelected: [],
+            emailAddressesBccSelected: [],
             email: {
                 from: '',
                 mailboxId: '',
@@ -47,15 +48,7 @@ class ConceptApp extends Component {
     }
 
     componentDidMount() {
-        EmailAddressAPI.fetchEmailAddressessPeek().then(payload => {
-            this.setState({
-                emailAddresses: [...this.state.emailAddresses, ...payload],
-            });
-        });
-
         EmailAPI.fetchEmail(this.props.params.id).then(payload => {
-            const extraOptions = this.createExtraOptions(payload.to, payload.cc, payload.bcc);
-
             this.setState(
                 {
                     ...this.state,
@@ -76,7 +69,9 @@ class ConceptApp extends Component {
                         oldEmailId: payload.oldEmailId ? payload.oldEmailId : '',
                         contactGroupId: payload.contactGroupId ? payload.contactGroupId : '',
                     },
-                    emailAddresses: [...this.state.emailAddresses, ...extraOptions],
+                    emailAddressesToSelected: payload.emailAddressesToSelected,
+                    emailAddressesCcSelected: payload.emailAddressesCcSelected,
+                    emailAddressesBccSelected: payload.emailAddressesBccSelected,
                     hasLoaded: true,
                 },
                 () => {
@@ -94,20 +89,6 @@ class ConceptApp extends Component {
         });
     }
 
-    createExtraOptions(to, cc, bcc) {
-        const emailAddresses = union(to, cc, bcc);
-
-        let options = [];
-
-        emailAddresses.map(emailAddress => {
-            if (!isNaN(emailAddress)) return;
-
-            options.push({ id: emailAddress, name: emailAddress });
-        });
-
-        return options;
-    }
-
     handleInputChange(event) {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -123,32 +104,38 @@ class ConceptApp extends Component {
     }
 
     handleToIds(selectedOption) {
+        const toIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                to: selectedOption,
+                to: toIds,
             },
+            emailAddressesToSelected: selectedOption,
         });
     }
 
     handleCcIds(selectedOption) {
+        const ccIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                cc: selectedOption,
+                cc: ccIds,
             },
+            emailAddressesCcSelected: selectedOption,
         });
     }
 
     handleBccIds(selectedOption) {
+        const bccIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                bcc: selectedOption,
+                bcc: bccIds,
             },
+            emailAddressesBccSelected: selectedOption,
         });
     }
 
@@ -316,7 +303,9 @@ class ConceptApp extends Component {
                         <ConceptForm
                             email={this.state.email}
                             contactGroupName={this.state.contactGroupName}
-                            emailAddresses={this.state.emailAddresses}
+                            emailAddressesToSelected={this.state.emailAddressesToSelected}
+                            emailAddressesCcSelected={this.state.emailAddressesCcSelected}
+                            emailAddressesBccSelected={this.state.emailAddressesBccSelected}
                             errors={this.state.errors}
                             hasLoaded={this.state.hasLoaded}
                             handleSubmit={this.handleSubmit}

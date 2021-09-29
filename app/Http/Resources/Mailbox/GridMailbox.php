@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources\Mailbox;
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class GridMailbox extends Resource
+class GridMailbox extends JsonResource
 {
     /**
      * Transform the resource into an array.

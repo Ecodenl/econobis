@@ -5,7 +5,7 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import NotesList from './NotesList';
 
-const NoteHarmonica = ({ toggleShowList, showNotesList, noteCount, newNote, permissions }) => {
+const NoteHarmonica = ({ toggleShowList, showNotesList, noteCount, newNote, permissions, relatedNotes }) => {
     return (
         <Panel className={'harmonica-button'}>
             <PanelBody>
@@ -21,7 +21,7 @@ const NoteHarmonica = ({ toggleShowList, showNotesList, noteCount, newNote, perm
                         </a>
                     )}
                 </div>
-                <div className="col-sm-12">{showNotesList && <NotesList />}</div>
+                <div className="col-sm-12">{showNotesList && <NotesList relatedNotes={relatedNotes} />}</div>
             </PanelBody>
         </Panel>
     );
@@ -33,4 +33,7 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(NoteHarmonica);
+export default connect(
+    mapStateToProps,
+    null
+)(NoteHarmonica);

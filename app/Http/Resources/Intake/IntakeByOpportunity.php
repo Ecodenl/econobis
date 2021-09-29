@@ -5,9 +5,9 @@ namespace App\Http\Resources\Intake;
 use App\Http\Resources\Address\FullAddress;
 use App\Http\Resources\Campaign\CampaignByIntake;
 use App\Http\Resources\Contact\FullContact;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class IntakeByOpportunity extends Resource
+class IntakeByOpportunity extends JsonResource
 {
     /**
      * Transform the resource into an array.

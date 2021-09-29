@@ -9,9 +9,9 @@
 namespace App\Http\Resources\Mailbox;
 
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class LoggedInEmailPeek extends Resource
+class LoggedInEmailPeek extends JsonResource
 {
     public function toArray($request)
     {

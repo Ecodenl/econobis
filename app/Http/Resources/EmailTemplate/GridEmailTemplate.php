@@ -9,9 +9,9 @@
 namespace App\Http\Resources\EmailTemplate;
 
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class GridEmailTemplate extends Resource
+class GridEmailTemplate extends JsonResource
 {
     public function toArray($request)
     {

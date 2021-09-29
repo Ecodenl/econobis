@@ -171,22 +171,33 @@ class ContactController extends Controller
 
         $contactIds = $request->input('contactIds');
         $emailIds = [];
+        $emailAddressesToSelected = [];
 
         if (is_array($contactIds)) {
             foreach ($contactIds as $contactId) {
                 $contact = Contact::find($contactId);
                 if ($contact->primaryEmailAddress) {
                     array_push($emailIds, $contact->primaryEmailAddress->id);
+                    $emailAddressesToSelected[] = [
+                        'id' => $contact->primaryEmailAddress->id,
+                        'name' => $contact->full_name . ' (' . $contact->primaryEmailAddress->email . ')',
+                        'email' => $contact->primaryEmailAddress->email
+                    ];
                 }
             }
         } else {
             $contact = Contact::find($contactIds);
             if ($contact->primaryEmailAddress) {
                 array_push($emailIds, $contact->primaryEmailAddress->id);
+                $emailAddressesToSelected[] = [
+                    'id' => $contact->primaryEmailAddress->id,
+                    'name' => $contact->full_name . ' (' . $contact->primaryEmailAddress->email . ')',
+                    'email' => $contact->primaryEmailAddress->email
+                ];
             }
         }
 
-        return array_unique($emailIds);
+        return ['emailIds' => array_unique($emailIds), 'emailAddressesToSelected'=> $emailAddressesToSelected];
     }
 
     public function makeHoomdossier(Contact $contact) {

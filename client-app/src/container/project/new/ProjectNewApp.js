@@ -86,6 +86,7 @@ class ProjectNewApp extends Component {
                 postalcodeLink: '',
                 checkPostalcodeLink: false,
                 contactGroupIds: '',
+                contactGroupIdsSelected: [],
                 amountOfLoanNeeded: null,
                 minAmountLoan: null,
                 maxAmountLoan: null,
@@ -288,6 +289,7 @@ class ProjectNewApp extends Component {
         // If isMemberShipRequired is false, set contactGroupIds to empty string
         if (!project.isMembershipRequired) {
             project.contactGroupIds = '';
+            project.contactGroupIdsSelected = [];
         }
 
         if (validator.isEmpty('' + project.baseProjectCodeRef)) {
@@ -326,11 +328,13 @@ class ProjectNewApp extends Component {
     }
 
     handleContactGroupIds = selectedOption => {
+        const contactGroupIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             project: {
                 ...this.state.project,
-                contactGroupIds: selectedOption,
+                contactGroupIds: contactGroupIds,
+                contactGroupIdsSelected: selectedOption,
             },
         });
     };
@@ -374,6 +378,7 @@ class ProjectNewApp extends Component {
             postalcodeLink,
             checkPostalcodeLink,
             contactGroupIds,
+            contactGroupIdsSelected,
             amountOfLoanNeeded,
             minAmountLoan,
             maxAmountLoan,
@@ -436,6 +441,7 @@ class ProjectNewApp extends Component {
                                         dateEntry={dateEntry}
                                         dateProduction={dateProduction}
                                         contactGroupIds={contactGroupIds}
+                                        contactGroupIdsSelected={contactGroupIdsSelected}
                                         isMembershipRequired={isMembershipRequired}
                                         visibleForAllContacts={visibleForAllContacts}
                                         textInfoProjectOnlyMembers={textInfoProjectOnlyMembers}

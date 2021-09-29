@@ -21,6 +21,7 @@ import OrdersAPI from '../../../../api/order/OrdersAPI';
 import InvoicesAPI from '../../../../api/invoice/InvoicesAPI';
 import InputSelectGroup from '../../../../components/form/InputSelectGroup';
 import validator from 'validator';
+import InputReactSelectMulti from '../../../../components/form/InputReactSelectMulti';
 
 class EmailFormEdit extends Component {
     constructor(props) {
@@ -65,6 +66,7 @@ class EmailFormEdit extends Component {
                 responsibleTeamId,
                 responsible,
             },
+            contactIdsSelected: contacts ? contacts : [],
             orders: [],
             invoices: [],
             contacts: [],
@@ -134,15 +136,26 @@ class EmailFormEdit extends Component {
     };
 
     handleContactIds = selectedOption => {
+        const contactIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                contactIds: selectedOption,
+                contactIds: contactIds,
             },
+            contactIdsSelected: selectedOption,
         });
     };
 
+    handleInputReactSelect = (selectedOption, name) => {
+        this.setState({
+            ...this.state,
+            email: {
+                ...this.state.email,
+                [name]: selectedOption,
+            },
+        });
+    };
     handleSubmit = event => {
         event.preventDefault();
 
@@ -205,8 +218,10 @@ class EmailFormEdit extends Component {
             dateRemoved,
         } = this.props.email;
 
+        const contactIdsSelected = this.state.contactIdsSelected;
         const maxContactsToShowDirectly = 5;
-        const manyContacts = contactIds.split(',').length > maxContactsToShowDirectly;
+        const manyContacts = contactIdsSelected.length > maxContactsToShowDirectly;
+
         return (
             <div>
                 {folder === 'removed' ? (
@@ -258,29 +273,30 @@ class EmailFormEdit extends Component {
                             value={
                                 <ButtonText
                                     buttonClassName={'btn-success btn-padding-small'}
-                                    buttonText={'Toon contacten (' + contactIds.split(',').length + ')'}
+                                    buttonText={'Toon contacten (' + contactIdsSelected.length + ')'}
                                     onClickAction={this.props.toggleShowContacten}
                                 />
                             }
                         />
                     ) : (
-                        <InputReactSelect
-                            label={'Contact'}
+                        <InputReactSelectMulti
+                            label={'Contacten'}
                             name={'contactIds'}
                             options={this.state.contacts}
-                            value={contactIds}
+                            value={this.state.contactIdsSelected}
                             onChangeAction={this.handleContactIds}
                             optionName={'fullName'}
                             isLoading={this.state.peekLoading.contacts}
                         />
                     )}
-                    <InputSelect
+                    <InputReactSelect
                         label={'Intake'}
                         size={'col-sm-6'}
                         name={'intakeId'}
                         options={this.state.intakes}
                         value={intakeId}
-                        onChangeAction={this.handleInputChange}
+                        onChangeAction={this.handleInputReactSelect}
+                        multi={false}
                     />
                 </div>
 

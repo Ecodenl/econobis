@@ -6,6 +6,7 @@ namespace App\Jobs\Email;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Jobs\JobsLog;
+use App\Eco\Mailbox\Mailbox;
 use App\Eco\User\User;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Template\TemplateTableHelper;
@@ -412,7 +413,7 @@ class SendEmailsWithVariables implements ShouldQueue {
         }
     }
 
-    public function failed(\Exception $exception) {
+    public function failed($exception) {
         $jobLog = new JobsLog();
         $jobLog->value = 'E-mail(s) versturen mislukt.';
         $jobLog->user_id = $this->userId;

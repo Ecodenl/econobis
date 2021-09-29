@@ -348,7 +348,6 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleReactSelectChange}
                                 required={portalActive ? 'required' : ''}
                                 error={this.state.errors.responsibleUserId}
-                                multi={false}
                             />
                         </div>
                         <div className="row">
@@ -362,7 +361,6 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleReactSelectChange}
                                 required={portalActive ? 'required' : ''}
                                 error={this.state.errors.contactResponsibleOwnerUserId}
-                                multi={false}
                             />
                         </div>
 
@@ -422,7 +420,6 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleReactSelectChange}
                                 required={portalActive ? 'required' : ''}
                                 error={this.state.errors.defaultContactGroupMemberId}
-                                multi={false}
                             />
                         </div>
                         <div className="row">
@@ -435,7 +432,6 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleReactSelectChange}
                                 required={portalActive ? 'required' : ''}
                                 error={this.state.errors.defaultContactGroupNoMemberId}
-                                multi={false}
                             />
                         </div>
                         <div className="row">
@@ -485,7 +481,6 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleReactSelectChange}
                                 required={portalActive ? 'required' : ''}
                                 error={this.state.errors.emailTemplateNewAccountId}
-                                multi={false}
                             />
                         </div>
                         <div className="row">
@@ -531,7 +526,6 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleReactSelectChange}
                                 required={portalActive ? 'required' : ''}
                                 error={this.state.errors.defaultAdministrationId}
-                                multi={false}
                             />
                         </div>
                     </PanelBody>

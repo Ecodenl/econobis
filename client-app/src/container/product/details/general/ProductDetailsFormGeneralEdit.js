@@ -412,7 +412,6 @@ class ProductDetailsFormGeneralEdit extends Component {
                                     optionName={'description'}
                                     value={ledgerId}
                                     onChangeAction={this.handleReactSelectChange}
-                                    multi={false}
                                 />
                                 <InputReactSelect
                                     label={'Kostenplaats'}
@@ -421,7 +420,6 @@ class ProductDetailsFormGeneralEdit extends Component {
                                     optionName={'description'}
                                     value={costCenterId}
                                     onChangeAction={this.handleReactSelectChange}
-                                    multi={false}
                                 />
                             </div>
                         ) : null}

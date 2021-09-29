@@ -28,7 +28,6 @@ const ContactDetailsFormOccupationsEdit = props => {
                                     value={contactId}
                                     onChangeAction={props.handleReactSelectChange}
                                     optionName={'fullName'}
-                                    multi={false}
                                     isLoading={props.peekLoading.contacts}
                                 />
                             ) : (
@@ -39,7 +38,6 @@ const ContactDetailsFormOccupationsEdit = props => {
                                     value={primaryContactId}
                                     onChangeAction={props.handleReactSelectChange}
                                     optionName={'fullName'}
-                                    multi={false}
                                     isLoading={props.peekLoading.contacts}
                                 />
                             )}

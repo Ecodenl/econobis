@@ -352,7 +352,6 @@ class InvoiceProductsFormNewProduct extends Component {
                                         optionName={'description'}
                                         value={ledgerId}
                                         onChangeAction={this.handleReactSelectChange}
-                                        multi={false}
                                     />
                                 </div>
                             )}

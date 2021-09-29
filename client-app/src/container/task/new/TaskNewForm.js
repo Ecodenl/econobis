@@ -130,7 +130,6 @@ const TaskNewForm = props => {
                     value={contactId}
                     onChangeAction={props.handleReactSelectChange}
                     optionName={'fullName'}
-                    multi={false}
                     isLoading={props.peekLoading.contacts}
                 />
             </div>

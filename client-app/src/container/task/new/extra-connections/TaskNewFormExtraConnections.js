@@ -37,7 +37,6 @@ const TaskNewFormExtraConnections = ({
                     options={campaigns}
                     value={campaignId}
                     onChangeAction={handleReactSelectChange}
-                    multi={false}
                     isLoading={peekLoading.campaigns}
                 />
                 <InputReactSelect
@@ -47,7 +46,6 @@ const TaskNewFormExtraConnections = ({
                     options={intakes}
                     value={intakeId}
                     onChangeAction={handleReactSelectChange}
-                    multi={false}
                     isLoading={peekLoading.intakes}
                 />
             </div>
@@ -60,7 +58,6 @@ const TaskNewFormExtraConnections = ({
                     options={contactGroups}
                     value={contactGroupId}
                     onChangeAction={handleReactSelectChange}
-                    multi={false}
                     isLoading={peekLoading.contactGroups}
                 />
                 <InputReactSelect
@@ -70,7 +67,6 @@ const TaskNewFormExtraConnections = ({
                     options={opportunities}
                     value={opportunityId}
                     onChangeAction={handleReactSelectChange}
-                    multi={false}
                     isLoading={peekLoading.opportunities}
                 />
             </div>
@@ -82,7 +78,6 @@ const TaskNewFormExtraConnections = ({
                     options={housingFiles}
                     value={housingFileId}
                     onChangeAction={handleReactSelectChange}
-                    multi={false}
                     isLoading={peekLoading.housingFiles}
                 />
                 <InputReactSelect
@@ -92,7 +87,6 @@ const TaskNewFormExtraConnections = ({
                     options={projects}
                     value={projectId}
                     onChangeAction={handleReactSelectChange}
-                    multi={false}
                     isLoading={peekLoading.projects}
                 />
             </div>
@@ -104,7 +98,6 @@ const TaskNewFormExtraConnections = ({
                     options={participants}
                     value={participantId}
                     onChangeAction={handleReactSelectChange}
-                    multi={false}
                     isLoading={peekLoading.participants}
                 />
                 <InputReactSelect
@@ -114,7 +107,6 @@ const TaskNewFormExtraConnections = ({
                     options={orders}
                     value={orderId}
                     onChangeAction={handleReactSelectChange}
-                    multi={false}
                     isLoading={peekLoading.orders}
                 />
             </div>
@@ -126,7 +118,6 @@ const TaskNewFormExtraConnections = ({
                     options={invoices}
                     value={invoiceId}
                     onChangeAction={handleReactSelectChange}
-                    multi={false}
                     isLoading={peekLoading.invoices}
                 />
             </div>

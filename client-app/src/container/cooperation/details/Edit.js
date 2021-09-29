@@ -224,7 +224,6 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                             value={values.hoomEmailTemplateId}
                             onChangeAction={(value, name) => setFieldValue(name, value)}
                             isLoading={isLoading}
-                            multi={false}
                         />
                         <InputReactSelect
                             label={'Hoom groep'}
@@ -233,7 +232,6 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                             value={values.hoomGroupId}
                             onChangeAction={(value, name) => setFieldValue(name, value)}
                             isLoading={isLoading}
-                            multi={false}
                         />
                     </div>
                     <div className="row">

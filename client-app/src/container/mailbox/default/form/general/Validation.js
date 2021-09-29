@@ -9,12 +9,14 @@ export const MailboxValidation = Yup.object().shape({
 
 export const MailboxValidationImap = Yup.object().shape({
     imapHost: Yup.string().required('Verplicht'),
+    imapPort: Yup.string().required('Verplicht'),
     username: Yup.string().required('Verplicht'),
     password: Yup.string().required('Verplicht'),
 });
 
 export const MailboxValidationSmtp = Yup.object().shape({
     smtpHost: Yup.string().required('Verplicht'),
+    smtpPort: Yup.string().required('Verplicht'),
     username: Yup.string().required('Verplicht'),
     password: Yup.string().required('Verplicht'),
 });
@@ -25,6 +27,9 @@ export const MailboxValidationMailgun = Yup.object().shape({
 
 export const MailboxValidationGmail = Yup.object().shape({
     gmailApiSettings: Yup.object().shape({
+        projectId: Yup.string()
+            .trim()
+            .required('Verplicht'),
         clientId: Yup.string()
             .trim()
             .required('Verplicht'),

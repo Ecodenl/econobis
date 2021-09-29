@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
 import InputText from '../../../../../components/form/InputText';
@@ -19,27 +19,57 @@ import ViewText from '../../../../../components/form/ViewText';
 import moment from 'moment';
 
 function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain, mailboxServerTypes, switchToView }) {
-    let validationSchema = MailboxValidation;
-    if (initialValues.incomingServerType === 'imap') {
-        validationSchema = validationSchema.concat(MailboxValidationImap);
-    }
-    if (initialValues.outgoingServerType === 'smpt') {
-        validationSchema = validationSchema.concat(MailboxValidationSmtp);
-    }
-    if (initialValues.outgoingServerType === 'mailgun') {
-        validationSchema = validationSchema.concat(MailboxValidationMailgun);
-    }
-    if (initialValues.incomingServerType === 'gmail' || initialValues.outgoingServerType === 'gmail') {
-        validationSchema = validationSchema.concat(MailboxValidationGmail);
-    }
+    const [currentIncomingServerType, setCurrentIncomingServerType] = useState(initialValues.incomingServerType);
+    const [currentOutgoingServerType, setCurrentOutgoingServerType] = useState(initialValues.outgoingServerType);
+    const [validationSchema, setValidationSchema] = useState(MailboxValidation);
 
     const { values, errors, touched, handleChange, handleSubmit, setFieldValue, handleBlur, isSubmitting } = useFormik({
         initialValues: initialValues,
-        validationSchema: validationSchema,
+        validationSchema: getValidationSchema(),
         onSubmit: (values, { setSubmitting }) => {
             processSubmit(values, setSubmitting);
         },
     });
+
+    useEffect(() => {
+        // console.log('useEffect');
+        // console.log(values);
+        if (values.incomingServerType) {
+            setCurrentIncomingServerType(values.incomingServerType);
+        }
+        if (values.outgoingServerType) {
+            setCurrentOutgoingServerType(values.outgoingServerType);
+        }
+        // getValidationSchema();
+    }, [values.incomingServerType, values.outgoingServerType]);
+
+    function getValidationSchema() {
+        // console.log('Test set validationschema');
+        // console.log('incomingServerType: ' + currentIncomingServerType);
+        // console.log('outgoingServerType: ' + currentOutgoingServerType);
+        // console.log('values: ' + values);
+        // console.log('values.incomingServerType: ' + values.incomingServerType);
+
+        let validationSchema = MailboxValidation;
+        if (currentIncomingServerType === 'imap') {
+            // console.log('add MailboxValidationImap');
+            validationSchema = validationSchema.concat(MailboxValidationImap);
+        }
+        if (currentOutgoingServerType === 'smtp') {
+            // console.log('add MailboxValidationSmtp');
+            validationSchema = validationSchema.concat(MailboxValidationSmtp);
+        }
+        if (currentOutgoingServerType === 'mailgun') {
+            // console.log('add MailboxValidationMailgun');
+            validationSchema = validationSchema.concat(MailboxValidationMailgun);
+        }
+        if (currentIncomingServerType === 'gmail' || currentOutgoingServerType === 'gmail') {
+            // console.log('add MailboxValidationGmail');
+            validationSchema = validationSchema.concat(MailboxValidationGmail);
+        }
+        // setValidationSchema(validationSchema);
+        return validationSchema;
+    }
 
     return (
         <form className="form-horizontal" onSubmit={handleSubmit}>

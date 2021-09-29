@@ -136,7 +136,7 @@ class EmailFormEdit extends Component {
     };
 
     handleContactIds = selectedOption => {
-        const contactIds = selectedOption ? selectedOption.map(item => item.id).join(',') : [];
+        const contactIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             email: {
@@ -280,7 +280,7 @@ class EmailFormEdit extends Component {
                         />
                     ) : (
                         <InputReactSelectMulti
-                            label={'Contact'}
+                            label={'Contacten'}
                             name={'contactIds'}
                             options={this.state.contacts}
                             value={this.state.contactIdsSelected}

@@ -37,6 +37,7 @@ class OpportunityFormEdit extends Component {
             opportunity: {
                 id,
                 measureIds: measures && measures.map(measure => measure.id).join(','),
+                measureIdsSelected: measures ? measures : [],
                 statusId: status ? status.id : '',
                 statusUsesWf: status ? status.usesWf : false,
                 datePlannedToSendWfEmailStatus: datePlannedToSendWfEmailStatus
@@ -91,11 +92,13 @@ class OpportunityFormEdit extends Component {
     }
 
     handleMeasureIds = selectedOption => {
+        const measureIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             opportunity: {
                 ...this.state.opportunity,
-                measureIds: selectedOption,
+                measureIds: measureIds,
+                measureIdsSelected: selectedOption,
             },
         });
     };
@@ -142,6 +145,7 @@ class OpportunityFormEdit extends Component {
             desiredDate,
             evaluationAgreedDate,
             measureIds,
+            measureIdsSelected,
         } = this.state.opportunity;
         const { intake, measureCategory } = this.props.opportunity;
         const measuresMatchToCategory = MeasuresOfCategory(this.props.measures, measureCategory.id);
@@ -172,7 +176,7 @@ class OpportunityFormEdit extends Component {
                     <InputMultiSelect
                         label={'Maatregel - specifiek'}
                         name="measureIds"
-                        value={measureIds}
+                        value={measureIdsSelected}
                         options={measuresMatchToCategory}
                         onChangeAction={this.handleMeasureIds}
                     />

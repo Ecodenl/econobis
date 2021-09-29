@@ -22,7 +22,9 @@ class IntakeNewFormGeneral extends Component {
                 campaignId: props.campaigns[0].id,
                 statusId: '1',
                 sourceIds: '',
+                sourceIdsSelected: [],
                 intakeReasonIds: '',
+                intakeReasonIdsSelected: [],
                 note: '',
             },
         };
@@ -43,21 +45,25 @@ class IntakeNewFormGeneral extends Component {
     };
 
     handleSourceIds = selectedOption => {
+        const sourceIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             intake: {
                 ...this.state.intake,
-                sourceIds: selectedOption,
+                sourceIds: sourceIds,
+                sourceIdsSelected: selectedOption,
             },
         });
     };
 
     handleIntakeReasonsIds = selectedOption => {
+        const intakeReasonIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             intake: {
                 ...this.state.intake,
-                intakeReasonIds: selectedOption,
+                intakeReasonIds: intakeReasonIds,
+                intakeReasonIdsSelected: selectedOption,
             },
         });
     };
@@ -81,7 +87,16 @@ class IntakeNewFormGeneral extends Component {
     };
 
     render() {
-        const { addressId, statusId, sourceIds, campaignId, intakeReasonIds, note } = this.state.intake;
+        const {
+            addressId,
+            statusId,
+            sourceIds,
+            sourceIdsSelected,
+            campaignId,
+            intakeReasonIds,
+            intakeReasonIdsSelected,
+            note,
+        } = this.state.intake;
         const { addresses = [], fullName } = this.props.contactDetails;
 
         function compareIntakeSources(a, b) {
@@ -155,14 +170,14 @@ class IntakeNewFormGeneral extends Component {
                     <InputMultiSelect
                         label="Aanmeldingsbron"
                         name="sourceIds"
-                        value={sourceIds}
+                        value={sourceIdsSelected}
                         options={this.props.intakeSources.sort(compareIntakeSources)}
                         onChangeAction={this.handleSourceIds}
                     />
                     <InputMultiSelect
                         label="Wat is belangrijk"
                         name="intakeReasonIds"
-                        value={intakeReasonIds}
+                        value={intakeReasonIdsSelected}
                         options={this.props.intakeReasons}
                         onChangeAction={this.handleIntakeReasonsIds}
                     />

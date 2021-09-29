@@ -4,7 +4,7 @@ import ButtonText from '../../../components/button/ButtonText';
 import PanelFooter from '../../../components/panel/PanelFooter';
 import InputText from '../../../components/form/InputText';
 import InputDate from '../../../components/form/InputDate';
-import InputMultiSelect from '../../../components/form/InputMultiSelect';
+import InputReactSelectLong from '../../../components/form/InputReactSelectLong';
 
 const ParticipantNewForm = ({
     participation,
@@ -48,7 +48,7 @@ const ParticipantNewForm = ({
     return (
         <form className="form-horizontal col-md-12" onSubmit={handleSubmit}>
             <div className="row">
-                <InputMultiSelect
+                <InputReactSelectLong
                     label={'Contact'}
                     name={'contactId'}
                     id={'contactId'}

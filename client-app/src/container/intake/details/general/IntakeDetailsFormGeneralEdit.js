@@ -26,7 +26,9 @@ class IntakeDetailsFormGeneralEdit extends Component {
                 campaignId: campaign && campaign.id,
                 statusId: status ? status.id : '',
                 sourceIds: sources && sources.map(source => source.id).join(','),
+                sourceIdsSelected: sources ? sources : [],
                 intakeReasonIds: reasons && reasons.map(reason => reason.id).join(','),
+                intakeReasonIdsSelected: reasons ? reasons : [],
                 note: note && note,
             },
         };
@@ -61,21 +63,25 @@ class IntakeDetailsFormGeneralEdit extends Component {
     };
 
     handleSourceIds = selectedOption => {
+        const sourceIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             intake: {
                 ...this.state.intake,
-                sourceIds: selectedOption,
+                sourceIds: sourceIds,
+                sourceIdsSelected: selectedOption,
             },
         });
     };
 
     handleIntakeReasonsIds = selectedOption => {
+        const intakeReasonIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             intake: {
                 ...this.state.intake,
-                intakeReasonIds: selectedOption,
+                intakeReasonIds: intakeReasonIds,
+                intakeReasonIdsSelected: selectedOption,
             },
         });
     };
@@ -100,7 +106,17 @@ class IntakeDetailsFormGeneralEdit extends Component {
     };
 
     render() {
-        const { contact, address, statusId, sourceIds, campaignId, intakeReasonIds, note } = this.state.intake;
+        const {
+            contact,
+            address,
+            statusId,
+            sourceIds,
+            sourceIdsSelected,
+            campaignId,
+            intakeReasonIds,
+            intakeReasonIdsSelected,
+            note,
+        } = this.state.intake;
 
         function compareIntakeSources(a, b) {
             const sourceA = a.name.toLowerCase();
@@ -148,7 +164,7 @@ class IntakeDetailsFormGeneralEdit extends Component {
                     <InputMultiSelect
                         label="Aanmeldingsbron"
                         name="sourceIds"
-                        value={sourceIds}
+                        value={sourceIdsSelected}
                         options={this.props.intakeSources.sort(compareIntakeSources)}
                         onChangeAction={this.handleSourceIds}
                     />
@@ -166,7 +182,7 @@ class IntakeDetailsFormGeneralEdit extends Component {
                     <InputMultiSelect
                         label="Wat is belangrijk"
                         name="intakeReasonIds"
-                        value={intakeReasonIds}
+                        value={intakeReasonIdsSelected}
                         options={this.props.intakeReasons}
                         onChangeAction={this.handleIntakeReasonsIds}
                     />

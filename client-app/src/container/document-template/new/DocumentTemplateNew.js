@@ -14,6 +14,7 @@ const DocumentTemplateNew = props => {
         documentGroupId,
         documentTemplateTypeId,
         roleIds,
+        roleIdsSelected,
         characteristic,
         htmlBody,
         baseTemplateId,
@@ -69,7 +70,7 @@ const DocumentTemplateNew = props => {
                     <InputMultiSelect
                         label="Rollen"
                         name="roleIds"
-                        value={roleIds}
+                        value={roleIdsSelected}
                         options={props.roles}
                         onChangeAction={props.handleRoleIds}
                     />

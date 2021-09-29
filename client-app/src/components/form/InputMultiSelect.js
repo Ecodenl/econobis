@@ -41,22 +41,8 @@ const InputMultiSelect = props => {
                     <CreatableSelect
                         id={id}
                         name={name}
-                        value={
-                            options && value
-                                ? multi
-                                    ? options.map(option => {
-                                          if (value.includes(option[optionId])) {
-                                              return option;
-                                          }
-                                      })
-                                    : options.find(option => option[optionId] === value)
-                                : ''
-                        }
-                        onChange={
-                            multi
-                                ? option => onChangeAction(option ? option.map(item => item[optionId]).join() : '')
-                                : option => onChangeAction(option ? option[optionId] : '')
-                        }
+                        onChange={option => onChangeAction(option)}
+                        value={value}
                         options={options}
                         getOptionLabel={option => option[optionName]}
                         getOptionValue={option => option[optionId]}

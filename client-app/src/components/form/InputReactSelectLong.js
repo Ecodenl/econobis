@@ -13,7 +13,6 @@ const InputReactSelectLong = props => {
         optionName,
         onChangeAction,
         required,
-        multi,
         error,
         errorMessage,
         isLoading,
@@ -40,22 +39,8 @@ const InputReactSelectLong = props => {
                     <Select
                         id={id}
                         name={name}
-                        value={
-                            options && value
-                                ? multi
-                                    ? options.map(option => {
-                                          if (value.includes(option[optionId])) {
-                                              return option;
-                                          }
-                                      })
-                                    : options.find(option => option[optionId] === value)
-                                : ''
-                        }
-                        onChange={
-                            multi
-                                ? option => onChangeAction(option ? option.map(item => item[optionId]).join() : '')
-                                : option => onChangeAction(option ? option[optionId] : '', name)
-                        }
+                        value={options && value ? options.find(option => option[optionId] === value) : ''}
+                        onChange={option => onChangeAction(option ? option[optionId] : '', name)}
                         options={options}
                         getOptionLabel={option => option[optionName]}
                         getOptionValue={option => option[optionId]}
@@ -66,7 +51,7 @@ const InputReactSelectLong = props => {
                         loadingMessage={function() {
                             return 'Laden';
                         }}
-                        isMulti={multi}
+                        isMulti={false}
                         simpleValue
                         removeSelected
                         className={error ? ' has-error' : ''}
@@ -106,7 +91,6 @@ InputReactSelectLong.defaultProps = {
     error: false,
     errorMessage: '',
     value: '',
-    multi: true,
     isLoading: false,
     placeholder: '',
     clearable: false,
@@ -126,7 +110,6 @@ InputReactSelectLong.propTypes = {
     disabled: PropTypes.bool,
     error: PropTypes.bool,
     errorMessage: PropTypes.string,
-    multi: PropTypes.bool,
     isLoading: PropTypes.bool,
     placeholder: PropTypes.string,
     clearable: PropTypes.bool,

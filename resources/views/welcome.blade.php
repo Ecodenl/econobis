@@ -13,11 +13,12 @@
 
 <script type="text/javascript">
     // Set some global JS variables
+    var URL_APP ="{{ config('app.url') }}";
     var URL_API ="{{ config('app.url_api') }}";
     var CLIENT_ID ="{{ config('app.oauth_client_id') }}";
     var CLIENT_KEY ="{{ $clientKey }}";
 </script>
 
 <div id="root"></div>
-<script type="text/javascript" src="./js/vendors~bundle.4bfe88f0c40d32c5301d.js"></script><script type="text/javascript" src="./js/bundle.d07a9f195092adec86fa.js"></script></body>
+<script type="text/javascript" src="./js/vendors~bundle.fe917b410ada362aba7d.js"></script><script type="text/javascript" src="./js/bundle.2d975e177e03ef8cfabb.js"></script></body>
 </html>

@@ -177,7 +177,7 @@ class EmailNewApp extends Component {
     }
 
     handleToIds(selectedOption) {
-        const toIds = selectedOption ? selectedOption.map(item => item.id).join(',') : [];
+        const toIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             email: {
@@ -189,7 +189,7 @@ class EmailNewApp extends Component {
     }
 
     handleCcIds(selectedOption) {
-        const ccIds = selectedOption ? selectedOption.map(item => item.id).join(',') : [];
+        const ccIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             email: {
@@ -201,7 +201,7 @@ class EmailNewApp extends Component {
     }
 
     handleBccIds(selectedOption) {
-        const bccIds = selectedOption ? selectedOption.map(item => item.id).join(',') : [];
+        const bccIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             email: {

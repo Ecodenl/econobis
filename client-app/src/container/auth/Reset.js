@@ -74,7 +74,7 @@ class Reset extends Component {
         let error = this.state.err;
         let passwordError = this.state.passwordError;
         let passwordMsg = passwordError
-            ? 'Het wachtwoord moet minimaal 8 karakters lang zijn en moet minimaal 1 cijfer en 1 hoofdletter bevatten.'
+            ? 'Het wachtwoord moet minimaal 8 karakters lang zijn en moet minimaal 1 cijfer, 1 kleine letter en 1 hoofdletter bevatten. Het wachtwoord mag geen spaties bevatten.'
             : null;
         let passwordError2 = this.state.passwordError2;
         let passwordMsg2 = passwordError2 ? 'Wachtwoorden komen niet overeen.' : null;

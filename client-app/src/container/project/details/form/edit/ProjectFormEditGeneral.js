@@ -43,6 +43,7 @@ const ProjectFormEditGeneral = ({
     dateEntry,
     disableBeforeEntryDate,
     contactGroupIds,
+    contactGroupIdsSelected,
     dateProduction,
     isMembershipRequired,
     visibleForAllContacts,
@@ -342,7 +343,7 @@ const ProjectFormEditGeneral = ({
                             label={'Onderdeel van groep'}
                             name={'contactGroupsIds'}
                             options={contactGroups}
-                            value={contactGroupIds}
+                            value={contactGroupIdsSelected}
                             onChangeAction={handleContactGroupIds}
                             error={errors.contactGroupIds}
                             required={'required'}

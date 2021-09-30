@@ -24,6 +24,7 @@ class CampaignNewApp extends Component {
                 statusId: '',
                 typeId: '',
                 measureCategoryIds: '',
+                measureCategoryIdsSelected: [],
             },
             errors: {
                 name: false,
@@ -57,11 +58,13 @@ class CampaignNewApp extends Component {
     };
 
     handleMeasureCategoryIds = selectedOption => {
+        const measureCategoryIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             campaign: {
                 ...this.state.campaign,
-                measureCategoryIds: selectedOption,
+                measureCategoryIds: measureCategoryIds,
+                measureCategoryIdsSelected: selectedOption,
             },
         });
     };
@@ -88,7 +91,7 @@ class CampaignNewApp extends Component {
 
         !hasErrors &&
             CampaignDetailsAPI.storeCampaign(campaign).then(payload => {
-                hashHistory.push(`/campagne/${payload.id}`);
+                hashHistory.push(`/campagne/${payload.data.data.id}`);
             });
     };
 

@@ -6,6 +6,7 @@ import * as PropTypes from 'prop-types';
 import InputMultiSelect from '../../../../components/form/InputMultiSelect';
 import EmailAddressAPI from '../../../../api/contact/EmailAddressAPI';
 import AsyncSelectSet from '../../../../components/form/AsyncSelectSet';
+import InputReactSelectLong from '../../../../components/form/InputReactSelectLong';
 
 function EmailAnswerFormGeneral(props) {
     const [searchTermContact, setSearchTermContact] = useState('');
@@ -153,7 +154,7 @@ function EmailAnswerFormGeneral(props) {
     return (
         <PanelBody>
             <div className="row">
-                <InputMultiSelect
+                <InputReactSelectLong
                     label="Van selecteren"
                     name={'mailboxId'}
                     value={mailboxId}

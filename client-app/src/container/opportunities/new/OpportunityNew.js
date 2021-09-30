@@ -18,6 +18,7 @@ const OpportunityNew = props => {
         desiredDate,
         measureCategoryId,
         measureIds,
+        measureIdsSelected,
     } = props.opportunity;
 
     const measuresMatchToCategory = MeasuresOfCategory(props.measures, measureCategoryId);
@@ -60,7 +61,7 @@ const OpportunityNew = props => {
                     label={'Maatregel - specifiek'}
                     name={'measureIds'}
                     options={measuresMatchToCategory}
-                    value={measureIds}
+                    value={measureIdsSelected}
                     onChangeAction={props.handleMeasureIds}
                 />
 

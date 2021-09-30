@@ -42,6 +42,7 @@ class DocumentTemplateFormEdit extends Component {
                 name,
                 documentGroupId: documentGroup ? documentGroup.id : '',
                 roleIds: roles && roles.map(role => role.id).join(','),
+                roleIdsSelected: roles ? roles : [],
                 characteristic: characteristic ? characteristic : '',
                 htmlBody: htmlBody ? htmlBody : '',
                 baseTemplateId: baseTemplate ? baseTemplate.id : '',
@@ -109,11 +110,13 @@ class DocumentTemplateFormEdit extends Component {
     }
 
     handleRoleIds = selectedOption => {
+        const roleIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
         this.setState({
             ...this.state,
             documentTemplate: {
                 ...this.state.documentTemplate,
-                roleIds: selectedOption,
+                roleIds: roleIds,
+                roleIdsSelected: selectedOption,
             },
         });
     };
@@ -149,6 +152,7 @@ class DocumentTemplateFormEdit extends Component {
             name,
             documentGroupId,
             roleIds,
+            roleIdsSelected,
             characteristic,
             htmlBody,
             baseTemplateId,
@@ -198,7 +202,7 @@ class DocumentTemplateFormEdit extends Component {
                         <InputMultiSelect
                             label="Rollen"
                             name="roleIds"
-                            value={roleIds}
+                            value={roleIdsSelected}
                             options={this.props.roles}
                             onChangeAction={this.handleRoleIds}
                         />

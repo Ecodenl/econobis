@@ -239,13 +239,12 @@ function EmailAnswerFormGeneral(props) {
             </div>
 
             <div className="row">
-                <InputMultiSelect
+                <InputReactSelectLong
                     label="Template"
                     name={'emailTemplateId'}
                     value={emailTemplateId}
                     options={emailTemplates}
                     onChangeAction={handleEmailTemplates}
-                    multi={false}
                 />
             </div>
 

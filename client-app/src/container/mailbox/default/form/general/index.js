@@ -21,7 +21,6 @@ import moment from 'moment';
 function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain, mailboxServerTypes, switchToView }) {
     const [currentIncomingServerType, setCurrentIncomingServerType] = useState(initialValues.incomingServerType);
     const [currentOutgoingServerType, setCurrentOutgoingServerType] = useState(initialValues.outgoingServerType);
-    const [validationSchema, setValidationSchema] = useState(MailboxValidation);
 
     const { values, errors, touched, handleChange, handleSubmit, setFieldValue, handleBlur, isSubmitting } = useFormik({
         initialValues: initialValues,
@@ -32,42 +31,28 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
     });
 
     useEffect(() => {
-        // console.log('useEffect');
-        // console.log(values);
         if (values.incomingServerType) {
             setCurrentIncomingServerType(values.incomingServerType);
         }
         if (values.outgoingServerType) {
             setCurrentOutgoingServerType(values.outgoingServerType);
         }
-        // getValidationSchema();
     }, [values.incomingServerType, values.outgoingServerType]);
 
     function getValidationSchema() {
-        // console.log('Test set validationschema');
-        // console.log('incomingServerType: ' + currentIncomingServerType);
-        // console.log('outgoingServerType: ' + currentOutgoingServerType);
-        // console.log('values: ' + values);
-        // console.log('values.incomingServerType: ' + values.incomingServerType);
-
         let validationSchema = MailboxValidation;
         if (currentIncomingServerType === 'imap') {
-            // console.log('add MailboxValidationImap');
             validationSchema = validationSchema.concat(MailboxValidationImap);
         }
         if (currentOutgoingServerType === 'smtp') {
-            // console.log('add MailboxValidationSmtp');
             validationSchema = validationSchema.concat(MailboxValidationSmtp);
         }
         if (currentOutgoingServerType === 'mailgun') {
-            // console.log('add MailboxValidationMailgun');
             validationSchema = validationSchema.concat(MailboxValidationMailgun);
         }
         if (currentIncomingServerType === 'gmail' || currentOutgoingServerType === 'gmail') {
-            // console.log('add MailboxValidationGmail');
             validationSchema = validationSchema.concat(MailboxValidationGmail);
         }
-        // setValidationSchema(validationSchema);
         return validationSchema;
     }
 
@@ -299,6 +284,31 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
                                     />
                                 )}
                             </div>
+
+                            {values.incomingServerType === 'imap' && (
+                                <>
+                                    <div className="row">
+                                        <InputText
+                                            label={'Inbox prefix'}
+                                            name={'imapInboxPrefix'}
+                                            value={values.imapInboxPrefix}
+                                            onChangeAction={handleChange}
+                                            onBlurAction={handleBlur}
+                                            error={errors.imapInboxPrefix && touched.imapInboxPrefix}
+                                            errorMessage={errors.imapInboxPrefix}
+                                        />
+                                    </div>
+                                    <div className="row">
+                                        <InputToggle
+                                            label={'Zet email als gelezen op server'}
+                                            name={'emailMarkAsSeen'}
+                                            value={values.emailMarkAsSeen}
+                                            onChangeAction={handleChange}
+                                            onBlurAction={handleBlur}
+                                        />
+                                    </div>
+                                </>
+                            )}
                         </PanelBody>
                     </>
                 )}
@@ -312,34 +322,6 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
                         handleBlur={handleBlur}
                     />
                 )}
-
-                <PanelHeader>
-                    <span className="h5">
-                        <strong>Extra instellingen</strong>
-                    </span>
-                </PanelHeader>
-                <PanelBody>
-                    <div className="row">
-                        <InputText
-                            label={'Inbox prefix'}
-                            name={'imapInboxPrefix'}
-                            value={values.imapInboxPrefix}
-                            onChangeAction={handleChange}
-                            onBlurAction={handleBlur}
-                            error={errors.imapInboxPrefix && touched.imapInboxPrefix}
-                            errorMessage={errors.imapInboxPrefix}
-                        />
-                    </div>
-                    <div className="row">
-                        <InputToggle
-                            label={'Zet email als gelezen op server'}
-                            name={'emailMarkAsSeen'}
-                            value={values.emailMarkAsSeen}
-                            onChangeAction={handleChange}
-                            onBlurAction={handleBlur}
-                        />
-                    </div>
-                </PanelBody>
 
                 {values.id && (
                     <>

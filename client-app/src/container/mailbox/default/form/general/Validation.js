@@ -22,7 +22,9 @@ export const MailboxValidationSmtp = Yup.object().shape({
 });
 
 export const MailboxValidationMailgun = Yup.object().shape({
-    mailgunDomainId: Yup.string().required('Verplicht'),
+    mailgunDomainId: Yup.string()
+        .required('Verplicht')
+        .typeError('Verplicht'),
 });
 
 export const MailboxValidationGmail = Yup.object().shape({

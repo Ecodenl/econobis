@@ -132,6 +132,19 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                                     <ViewText label="Smtp versleutelde verbinding" value={smtpEncryption} />
                                 )}
                             </div>
+                            {incomingServerType === 'imap' && (
+                                <>
+                                    <div className="row">
+                                        <ViewText label={'Inbox prefix'} value={imapInboxPrefix} />
+                                    </div>
+                                    <div className="row">
+                                        <ViewText
+                                            label={'Zet email als gelezen op server'}
+                                            value={emailMarkAsSeen ? 'Ja' : 'Nee'}
+                                        />
+                                    </div>
+                                </>
+                            )}
                         </PanelBody>
                     </>
                 )}
@@ -166,36 +179,9 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                                 <ViewText label={'Client id'} value={gmailApiSettings?.clientId} />
                                 <ViewText label={'Client secret'} value={gmailApiSettings?.clientSecret} />
                             </div>
-                            {incomingServerType === 'gmail' && (
-                                <>
-                                    <div className="row">
-                                        <ViewText label={'Inbox prefix'} value={imapInboxPrefix} />
-                                    </div>
-                                    <div className="row">
-                                        <ViewText
-                                            label={'Zet email als gelezen op server'}
-                                            value={emailMarkAsSeen ? 'Ja' : 'Nee'}
-                                        />
-                                    </div>
-                                </>
-                            )}
                         </PanelBody>
                     </>
                 )}
-
-                <PanelHeader>
-                    <span className="h5">
-                        <strong>Extra instellingen</strong>
-                    </span>
-                </PanelHeader>
-                <PanelBody>
-                    <div className="row">
-                        <ViewText label={'Inbox prefix'} value={imapInboxPrefix} />
-                    </div>
-                    <div className="row">
-                        <ViewText label={'Zet email als gelezen op server'} value={emailMarkAsSeen ? 'Ja' : 'Nee'} />
-                    </div>
-                </PanelBody>
 
                 <PanelHeader>
                     <span className="h5">

@@ -27,7 +27,16 @@ function MailboxDetailsFormGeneralEdit({ mailboxDetails, updateMailbox, fetchSys
 
     return (
         <MailboxDefaultFormGeneral
-            initialValues={mailboxDetails}
+            initialValues={{
+                ...mailboxDetails,
+                gmailApiSettings: mailboxDetails.gmailApiSettings
+                    ? mailboxDetails.gmailApiSettings
+                    : {
+                          projectId: '',
+                          clientId: '',
+                          clientSecret: '',
+                      },
+            }}
             processSubmit={processSubmit}
             switchToView={switchToView}
         />
@@ -42,7 +51,4 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ updateMailbox, fetchSystemData }, dispatch);
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(MailboxDetailsFormGeneralEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(MailboxDetailsFormGeneralEdit);

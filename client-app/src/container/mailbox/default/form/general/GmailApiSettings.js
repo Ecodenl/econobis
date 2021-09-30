@@ -6,11 +6,6 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { REDIRECT_URL } from '../../../../../constants';
 
 function MailboxDefaultFormGeneralGmailApiSettings({ values, errors, touched, handleChange, handleBlur }) {
-    // console.log('errors');
-    // console.log(errors.gmailApiSettings ? errors.gmailApiSettings : '');
-    // console.log('touched');
-    // console.log(touched.gmailApiSettings ? touched.gmailApiSettings : '');
-
     return (
         <>
             <PanelHeader>
@@ -27,13 +22,8 @@ function MailboxDefaultFormGeneralGmailApiSettings({ values, errors, touched, ha
                         onChangeAction={handleChange}
                         onBlurAction={handleBlur}
                         required={'required'}
-                        // error={
-                        //     errors.gmailApiSettings &&
-                        //     errors.gmailApiSettings.projectId &&
-                        //     touched.gmailApiSettings &&
-                        //     touched.gmailApiSettings.projectId
-                        // }
-                        // errorMessage={errors.gmailApiSettings && errors.gmailApiSettings.projectId}
+                        error={errors.gmailApiSettings?.projectId && touched.gmailApiSettings?.projectId}
+                        errorMessage={errors.gmailApiSettings?.projectId}
                     />
                     <div className="form-group col-sm-6">
                         <label className="col-sm-6">Redirect url</label>
@@ -59,6 +49,8 @@ function MailboxDefaultFormGeneralGmailApiSettings({ values, errors, touched, ha
                         onChangeAction={handleChange}
                         onBlurAction={handleBlur}
                         required={'required'}
+                        error={errors.gmailApiSettings?.clientId && touched.gmailApiSettings?.clientId}
+                        errorMessage={errors.gmailApiSettings?.clientId}
                     />
                     <InputText
                         label={'Client secret'}
@@ -67,6 +59,8 @@ function MailboxDefaultFormGeneralGmailApiSettings({ values, errors, touched, ha
                         onChangeAction={handleChange}
                         onBlurAction={handleBlur}
                         required={'required'}
+                        error={errors.gmailApiSettings?.clientSecret && touched.gmailApiSettings?.clientSecret}
+                        errorMessage={errors.gmailApiSettings?.clientSecret}
                     />
                 </div>
             </PanelBody>

@@ -394,7 +394,7 @@ class EmailController
         $contacts->join('email_addresses', function ($join) {
             $join->on('email_addresses.contact_id', '=', 'contacts.id')
                 ->whereNull('email_addresses.deleted_at');
-        });
+        })->orderBy('contacts.full_name');
 
         foreach(explode(" ", $request->input('searchTerm')) as $searchTerm) {
             $contacts->where(function ($contacts) use ($searchTerm) {

@@ -159,21 +159,22 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                         <PanelBody>
                             <div className="row">
                                 <ViewText label={'Project id'} value={gmailApiSettings?.projectId} />
-                                <div className="form-group col-sm-6">
-                                    <label className="col-sm-6">Redirect url</label>
-                                    <div className="col-sm-6" style={{ paddingRight: '5px' }} onClick={null}>
-                                        {REDIRECT_URL}
-                                        <CopyToClipboard text={REDIRECT_URL}>
-                                            <span
-                                                className="glyphicon glyphicon-copy mybtn-success pull-right"
-                                                style={{ top: '5px' }}
-                                                role="button"
-                                                onClick={null}
-                                                title={'Kopieer sleutel'}
-                                            />
-                                        </CopyToClipboard>
-                                    </div>
-                                </div>
+                                <ViewText label={'Redirect url'} value={REDIRECT_URL} />
+                                {/*<div className="form-group col-sm-6">*/}
+                                {/*    <label className="col-sm-6">Redirect url</label>*/}
+                                {/*    <div className="col-sm-6" style={{ paddingRight: '5px' }} onClick={null}>*/}
+                                {/*        {REDIRECT_URL}*/}
+                                {/*        <CopyToClipboard text={REDIRECT_URL}>*/}
+                                {/*            <span*/}
+                                {/*                className="glyphicon glyphicon-copy mybtn-success pull-right"*/}
+                                {/*                style={{ top: '5px' }}*/}
+                                {/*                role="button"*/}
+                                {/*                onClick={null}*/}
+                                {/*                title={'Kopieer sleutel'}*/}
+                                {/*            />*/}
+                                {/*        </CopyToClipboard>*/}
+                                {/*    </div>*/}
+                                {/*</div>*/}
                             </div>
                             <div className="row">
                                 <ViewText label={'Client id'} value={gmailApiSettings?.clientId} />

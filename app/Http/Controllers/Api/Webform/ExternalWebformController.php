@@ -1801,7 +1801,7 @@ class ExternalWebformController extends Controller
 
         if($intake){
             // Opmerking intake
-            $note = "Nieuwe intake.\n";
+            $note = $webform->name . " - Nieuwe intake.\n";
 
             if(count($intake->reasons)>0) {
                 $note .= "Gekoppeld aan motivaties: " . ( implode(', ', $intake->reasons->pluck('name' )->toArray() ) ) . ".\n";

@@ -725,7 +725,7 @@ class TemplateVariableHelper
 
     public static function getParticipantProjectVar($model, $varname){
         $projectTypeCodeRef = $model->project->projectType->code_ref;
-        $mutationType = ParticipantMutationType::where('project_type_id', $model->project->project_type_id)->where('code_ref', 'first_deposit')->value('id');
+        $mutationTypes = ParticipantMutationType::where('project_type_id', $model->project->project_type_id)->whereIn('code_ref', ['first_deposit', 'deposit'])->get()->pluck('id');
         switch ($varname) {
             case 'contact_naam':
                 return $model->contact->full_name;
@@ -1021,7 +1021,7 @@ class TemplateVariableHelper
                     return 0;
                 }else{
                     $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'interest')->first())->id;
-                    return $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->sum('quantity');
+                    return $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->sum('quantity');
                 }
                 break;
             case 'aantal_inleg_mutatie_ingeschreven':
@@ -1029,7 +1029,7 @@ class TemplateVariableHelper
                     return 0;
                 }else{
                     $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'option')->first())->id;
-                    return $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->sum('quantity');
+                    return $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->sum('quantity');
                 }
                 break;
             case 'aantal_inleg_mutatie_toegekend':
@@ -1037,7 +1037,7 @@ class TemplateVariableHelper
                     return 0;
                 }else{
                     $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'granted')->first())->id;
-                    return $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->sum('quantity');
+                    return $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->sum('quantity');
                 }
                 break;
             case 'aantal_inleg_mutatie_definitief':
@@ -1045,17 +1045,17 @@ class TemplateVariableHelper
                     return 0;
                 }else{
                     $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
-                    return $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->sum('quantity');
+                    return $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->sum('quantity');
                 }
                 break;
 
             case 'bedrag_inleg_mutatie_interesse':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'interest')->first())->id;
                 if($projectTypeCodeRef == 'loan'){
-                    return $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->sum('amount');
+                    return $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->sum('amount');
                 }else{
                     $firstMutationAmount = 0;
-                    foreach($model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType) as $mutation) {
+                    foreach($model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes) as $mutation) {
                         $bookWorth = ProjectValueCourse::where('project_id', $model->project_id)
                             ->where('date', '<=', $mutation->date_interest)
                             ->orderBy('date', 'desc')
@@ -1068,10 +1068,10 @@ class TemplateVariableHelper
             case 'bedrag_inleg_mutatie_ingeschreven':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'option')->first())->id;
                 if($projectTypeCodeRef == 'loan'){
-                    return $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->sum('amount');
+                    return $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->sum('amount');
                 }else{
                     $firstMutationAmount = 0;
-                    foreach($model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType) as $mutation) {
+                    foreach($model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes) as $mutation) {
                         $bookWorth = ProjectValueCourse::where('project_id', $model->project_id)
                             ->where('date', '<=', $mutation->date_option)
                             ->orderBy('date', 'desc')
@@ -1084,10 +1084,10 @@ class TemplateVariableHelper
             case 'bedrag_inleg_mutatie_toegekend':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'granted')->first())->id;
                 if($projectTypeCodeRef == 'loan'){
-                    return $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->sum('amount');
+                    return $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->sum('amount');
                 }else{
                     $firstMutationAmount = 0;
-                    foreach($model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType) as $mutation) {
+                    foreach($model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes) as $mutation) {
                         $bookWorth = ProjectValueCourse::where('project_id', $model->project_id)
                             ->where('date', '<=', $mutation->date_granted)
                             ->orderBy('date', 'desc')
@@ -1100,10 +1100,10 @@ class TemplateVariableHelper
             case 'bedrag_inleg_mutatie_definitief':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
                 if($projectTypeCodeRef == 'loan'){
-                    return $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->sum('amount');
+                    return $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->sum('amount');
                 }else{
                     $firstMutationAmount = 0;
-                    foreach($model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType) as $mutation) {
+                    foreach($model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes) as $mutation) {
                         $bookWorth = ProjectValueCourse::where('project_id', $model->project_id)
                             ->where('date', '<=', $mutation->date_entry)
                             ->orderBy('date', 'desc')
@@ -1119,7 +1119,8 @@ class TemplateVariableHelper
                     return 0;
                 }else{
                     $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'interest')->first())->id;
-                    $lastMutation = $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->last();
+                    // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
+                    $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->first();
                     return $lastMutation ? $lastMutation->quantity : 0;
                 }
                 break;
@@ -1128,7 +1129,8 @@ class TemplateVariableHelper
                     return 0;
                 }else{
                     $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'option')->first())->id;
-                    $lastMutation = $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->last();
+                    // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
+                    $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->first();
                     return $lastMutation ? $lastMutation->quantity : 0;
                 }
                 break;
@@ -1137,7 +1139,8 @@ class TemplateVariableHelper
                     return 0;
                 }else{
                     $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'granted')->first())->id;
-                    $lastMutation = $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->last();
+                    // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
+                    $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->first();
                     return $lastMutation ? $lastMutation->quantity : 0;
                 }
                 break;
@@ -1146,14 +1149,16 @@ class TemplateVariableHelper
                     return 0;
                 }else{
                     $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
-                    $lastMutation = $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->last();
+                    // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
+                    $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->first();
                     return $lastMutation ? $lastMutation->quantity : 0;
                 }
                 break;
             case 'bedrag_laatste_mutatie_interesse':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'interest')->first())->id;
                 $lastMutationAmount = 0;
-                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->last();
+                // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
+                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->first();
                 if($projectTypeCodeRef == 'loan'){
                     $lastMutationAmount = $lastMutation ? $lastMutation->amount : 0;
                 }else{
@@ -1171,7 +1176,8 @@ class TemplateVariableHelper
             case 'bedrag_laatste_mutatie_ingeschreven':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'option')->first())->id;
                 $lastMutationAmount = 0;
-                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->last();
+                // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
+                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->first();
                 if($projectTypeCodeRef == 'loan'){
                     $lastMutationAmount = $lastMutation ? $lastMutation->amount : 0;
                 }else{
@@ -1189,7 +1195,8 @@ class TemplateVariableHelper
             case 'bedrag_laatste_mutatie_toegekend':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'granted')->first())->id;
                 $lastMutationAmount = 0;
-                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->last();
+                // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
+                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->first();
                 if($projectTypeCodeRef == 'loan'){
                     $lastMutationAmount = $lastMutation ? $lastMutation->amount : 0;
                 }else{
@@ -1207,7 +1214,9 @@ class TemplateVariableHelper
             case 'bedrag_laatste_mutatie_definitief':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
                 $lastMutationAmount = 0;
-                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->last();
+                // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
+                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->first();
+//                dd($lastMutation);
                 if($projectTypeCodeRef == 'loan'){
                     $lastMutationAmount = $lastMutation ? $lastMutation->amount : 0;
                 }else{
@@ -1224,45 +1233,53 @@ class TemplateVariableHelper
                 break;
 
             case 'transactiekosten_laatste_mutatie':
-                $lastMutation = $model->mutations->where('type_id', $mutationType)->last();
+                // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
+                $lastMutation = $model->mutations->whereIn('type_id', $mutationTypes)->first();
                 $lastMutationTransactionCostsAmount = $lastMutation ? $lastMutation->transaction_costs_amount : 0;
                 return number_format($lastMutationTransactionCostsAmount, 2, ',', '');
                 break;
 
             case 'datum_laatste_mutatie_interesse':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'interest')->first())->id;
-                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->last();
+                // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
+                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->first();
                 return ($lastMutation && $lastMutation->date_interest) ? Carbon::parse($lastMutation->date_interest)->format('d/m/Y') : null;
                 break;
             case 'datum_laatste_mutatie_ingeschreven':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'option')->first())->id;
-                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->last();
+                // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
+                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->first();
                 return ($lastMutation && $lastMutation->date_option) ? Carbon::parse($lastMutation->date_option)->format('d/m/Y') : null;
                 break;
             case 'datum_laatste_mutatie_toegekend':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'granted')->first())->id;
-                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->last();
+                // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
+                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->first();
                 return ($lastMutation && $lastMutation->date_granted) ? Carbon::parse($lastMutation->date_granted)->format('d/m/Y') : null;
                 break;
             case 'datum_laatste_mutatie_definitief':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
-                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->last();
+                // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
+                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->first();
                 return ($lastMutation && $lastMutation->date_entry) ? Carbon::parse($lastMutation->date_entry)->format('d/m/Y') : null;
                 break;
 
             case 'mutatie_datum_betaald':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
-                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->last();
+                // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
+                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->first();
                 return ($lastMutation && $lastMutation->date_payment) ? Carbon::parse($lastMutation->date_payment)->format('d/m/Y') : null;
                 break;
             case 'mutatie_betalingskenmerk':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
-                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->last();
+                // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
+                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->first();
                 return ($lastMutation && $lastMutation->payment_reference) ? $lastMutation->payment_reference : null;
                 break;
             case 'mutatie_datum_contract_retour':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
-                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->last();
+                // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
+                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationTypes)->first();
                 return ($lastMutation && $lastMutation->date_contract_retour) ? Carbon::parse($lastMutation->date_contract_retour)->format('d/m/Y') : null;
                 break;
 

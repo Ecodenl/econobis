@@ -170,6 +170,10 @@ class TemplateVariableHelper
             case 'titel':
                 return optional(optional($model->person)->title)->name;
                 break;
+            case 'titel_adres':
+                return optional(optional($model->person)->title)->address;
+            case 'titel_aanhef':
+                return optional(optional($model->person)->title)->salutation;
             case 'naam':
                 if($model->type_id == 'person'){
                     $prefix = $model->person->last_name_prefix;

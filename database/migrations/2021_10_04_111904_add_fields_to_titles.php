@@ -21,77 +21,82 @@ class AddFieldsToTitles extends Migration
             $table->boolean('active')->default(true)->after('salutation');
         });
 
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table('titles')->truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
-        $titlesToSeed = [
-            [
-                'id' => 1,
-                'name' => 'Dhr',
+        // update for new fields
+        DB::table('titles')
+            ->where('id', 1)
+            ->orWhere('name', 'Dhr')
+            ->update([
                 'address' => 'De heer',
                 'salutation' => 'heer',
                 'active' => true,
-            ],
-            [
-                'id' => 2,
-                'name' => 'Mevr',
+            ]);
+        DB::table('titles')
+            ->where('id', 2)
+            ->orWhere('name', 'Mevr')
+            ->update([
                 'address' => 'Mevrouw',
                 'salutation' => 'mevrouw',
                 'active' => true,
-            ],
-            [
-                'id' => 3,
-                'name' => 'De heer, Mevrouw',
+            ]);
+        DB::table('titles')
+            ->where('id', 3)
+            ->orWhere('name', 'De heer, Mevrouw')
+            ->update([
                 'address' => 'De heer, Mevrouw',
                 'salutation' => 'heer, mevrouw',
                 'active' => true,
-            ],
-            [
-                'id' => 4,
-                'name' => 'Familie',
+            ]);
+        DB::table('titles')
+            ->where('id', 4)
+            ->orWhere('name', 'Familie')
+            ->update([
                 'address' => 'Familie',
                 'salutation' => 'familie',
                 'active' => true,
-            ],
-            [
-                'id' => 5,
-                'name' => 'De heer of mevrouw',
+            ]);
+        DB::table('titles')
+            ->where('id', 5)
+            ->orWhere('name', 'De heer of mevrouw')
+            ->update([
                 'address' => 'De heer of mevrouw',
                 'salutation' => 'heer of mevrouw',
                 'active' => true,
-            ],
-            [
-                'id' => 6,
-                'name' => 'De heren',
+            ]);
+        DB::table('titles')
+            ->where('id', 6)
+            ->orWhere('name', 'De heren')
+            ->update([
                 'address' => 'De heren',
                 'salutation' => 'heren',
                 'active' => true,
-            ],
-            [
-                'id' => 7,
-                'name' => 'De dames',
+            ]);
+        DB::table('titles')
+            ->where('id', 7)
+            ->orWhere('name', 'De dames')
+            ->update([
                 'address' => 'De dames',
                 'salutation' => 'dames',
                 'active' => true,
-            ],
-            [
-                'id' => 8,
-                'name' => 'Erven',
+            ]);
+        DB::table('titles')
+            ->where('id', 8)
+            ->orWhere('name', 'Erven')
+            ->update([
                 'address' => 'Erven van',
                 'salutation' => 'erven van',
                 'active' => false,
-            ],
+            ]);
+
+        // insert new
+        DB::table('titles')->insert(
             [
-                'id' => 9,
                 'name' => 'Geen voorkeur',
                 'address' => '',
                 'salutation' => '',
                 'active' => true,
             ]
-        ];
+        );
 
-        DB::table('titles')->insert($titlesToSeed);
     }
 
     /**
@@ -101,10 +106,25 @@ class AddFieldsToTitles extends Migration
      */
     public function down()
     {
-        Schema::table('titles', function (Blueprint $table) {
-            $table->removeColumn('address');
-            $table->removeColumn('salutation');
-            $table->removeColumn('active');
-        });
+        DB::table('titles')
+            ->where('id', 9)
+            ->orWhere('name', 'Geen voorkeur')
+            ->delete();
+
+        if (Schema::hasColumn('titles', 'address')) {
+            Schema::table('titles', function (Blueprint $table) {
+                $table->dropColumn('address');
+            });
+        }
+        if (Schema::hasColumn('titles', 'salutation')) {
+            Schema::table('titles', function (Blueprint $table) {
+                $table->dropColumn('salutation');
+            });
+        }
+        if (Schema::hasColumn('titles', 'active')) {
+            Schema::table('titles', function (Blueprint $table) {
+                $table->dropColumn('active');
+            });
+        }
     }
 }

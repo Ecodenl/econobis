@@ -25,8 +25,10 @@ class AddStatutoryNameColumnToOrganisations extends Migration
      */
     public function down()
     {
-        Schema::table('organisations', function (Blueprint $table) {
-            $table->removeColumn('statutory_name');
-        });
+        if (Schema::hasColumn('organisations', 'statutory_name')) {
+            Schema::table('organisations', function (Blueprint $table) {
+                $table->dropColumn('statutory_name');
+            });
+        }
     }
 }

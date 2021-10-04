@@ -25,6 +25,7 @@ class FullOrganisation extends JsonResource
             'contact' => FullContact::make($this->whenLoaded('contact')),
             'address' => $this->contact->primaryAddress,
             'name' => $this->name,
+            'statutoryName' => $this->statutory_name,
             'typeId' => $this->type_id,
             'type' => FullOrganisationType::make($this->whenLoaded('type')),
             'industryId' => $this->industry_id,

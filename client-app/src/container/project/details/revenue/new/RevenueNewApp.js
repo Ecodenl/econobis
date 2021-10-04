@@ -225,6 +225,13 @@ class RevenueNewApp extends Component {
         }
     }
 
+    isPeriodExceedingYear = (dateBegin, dateEnd) => {
+        dateBegin = moment(dateBegin);
+        dateEnd = moment(dateEnd);
+
+        return dateEnd.year() > dateBegin.year();
+    };
+
     handleSubmit = event => {
         event.preventDefault();
 
@@ -250,6 +257,33 @@ class RevenueNewApp extends Component {
         if (category.codeRef !== 'redemptionEuro' && !revenue.dateEnd) {
             errors.dateEnd = true;
             errorMessage.dateEnd = 'Verplicht';
+            hasErrors = true;
+        }
+        if (
+            category.codeRef !== 'redemptionEuro' &&
+            !revenue.kwhEndCalendarYearHigh &&
+            this.isPeriodExceedingYear(revenue.dateBegin, revenue.dateEnd)
+        ) {
+            errors.kwhEndCalendarYearHigh = true;
+            errorMessage.kwhEndCalendarYearHigh = 'Verplicht';
+            hasErrors = true;
+        }
+        if (
+            category.codeRef !== 'redemptionEuro' &&
+            !revenue.kwhEndHigh &&
+            this.isPeriodExceedingYear(revenue.dateBegin, revenue.dateEnd)
+        ) {
+            errors.kwhEndHigh = true;
+            errorMessage.kwhEndHigh = 'Verplicht';
+            hasErrors = true;
+        }
+        if (
+            category.codeRef !== 'redemptionEuro' &&
+            !revenue.payoutKwh &&
+            this.isPeriodExceedingYear(revenue.dateBegin, revenue.dateEnd)
+        ) {
+            errors.payoutKwh = true;
+            errorMessage.payoutKwh = 'Verplicht';
             hasErrors = true;
         }
         if (category.codeRef === 'redemptionEuro' && !revenue.dateBegin && revenue.dateEnd) {

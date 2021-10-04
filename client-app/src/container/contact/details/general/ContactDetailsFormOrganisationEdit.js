@@ -39,6 +39,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 number: number,
                 createdAt: createdAt,
                 name: organisation.name,
+                statutoryName: organisation.statutoryName,
                 chamberOfCommerceNumber: organisation.chamberOfCommerceNumber,
                 vatNumber: organisation.vatNumber,
                 industryId: organisation.industryId ? organisation.industryId : '',
@@ -169,6 +170,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
         const {
             number,
             name,
+            statutoryName,
             chamberOfCommerceNumber,
             vatNumber,
             createdAt,
@@ -216,6 +218,17 @@ class ContactDetailsFormOrganisationEdit extends Component {
                             onChangeAction={this.handleInputChange}
                             required={'required'}
                             error={this.state.errors.name}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputText
+                            label="Statutaire naam"
+                            divSize={'col-xs-12'}
+                            name={'statutoryName'}
+                            value={statutoryName}
+                            onChangeAction={this.handleInputChange}
+                            error={this.state.errors.statutoryName}
                         />
                     </div>
 
@@ -396,4 +409,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormOrganisationEdit);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ContactDetailsFormOrganisationEdit);

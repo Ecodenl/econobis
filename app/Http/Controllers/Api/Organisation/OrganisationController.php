@@ -36,6 +36,7 @@ class OrganisationController extends ApiController
                 'ibanAttn' => '',
                 'typeId' => 'exists:organisation_types,id',
                 'name' => '',
+                'statutoryName' => '',
                 'website' => '',
                 'chamberOfCommerceNumber' => '',
                 'vatNumber' => '',
@@ -63,6 +64,7 @@ class OrganisationController extends ApiController
         $organisationArray =
             [
                 'name' => $contactData['name'],
+                'statutory_name' => $contactData['statutory_name'],
                 'website' => $contactData['website'],
                 'chamber_of_commerce_number' => $contactData['chamber_of_commerce_number'],
                 'vat_number' => $contactData['vat_number'],
@@ -173,6 +175,7 @@ class OrganisationController extends ApiController
         $organisationData = $request->validate([
             'typeId' => 'exists:organisation_types,id',
             'name' => '',
+            'statutoryName' => '',
             'website' => '',
             'chamberOfCommerceNumber' => '',
             'vatNumber' => '',

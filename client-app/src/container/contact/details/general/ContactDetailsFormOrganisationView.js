@@ -39,6 +39,10 @@ const ContactDetailsFormOrganisationView = props => {
             </div>
 
             <div className="row">
+                <ViewText className={'col-xs-12'} label="Statutaire naam" value={organisation.statutoryName} />
+            </div>
+
+            <div className="row">
                 <ViewText className={'col-xs-12'} label="KvK" value={organisation.chamberOfCommerceNumber} />
             </div>
 

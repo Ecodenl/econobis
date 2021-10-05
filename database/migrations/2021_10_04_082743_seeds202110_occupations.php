@@ -16,7 +16,7 @@ class Seeds202110Occupations extends Migration
         $occupations = [
             'Adviseur' => 'Adviseur van',
             'Manager' => 'Manager van',
-            'Beheerder abbonement' => 'Abonnement beheerd door',
+            'Beheerder abonnement' => 'Abonnement beheerd door',
             'Factuur organisatie' => 'Afnemer organisatie',
             'Buren' => 'Buren van',
         ];

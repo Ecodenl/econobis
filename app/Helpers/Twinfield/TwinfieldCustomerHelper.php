@@ -271,6 +271,8 @@ class TwinfieldCustomerHelper
 
     public function updateCustomer(Contact $contact){
 
+        $response = null;
+
         // Check of contact / administratie al koppeling heeft met Twinfield
         $twinfieldCustomerNumber = $contact->twinfieldNumbers()->where('administration_id', $this->administration->id)->first();
         if($twinfieldCustomerNumber)

@@ -12,13 +12,21 @@ import { useFormik } from 'formik';
 import { MailboxValidation } from './Validation';
 import { MailboxValidationImap } from './Validation';
 import { MailboxValidationSmtp } from './Validation';
+import { MailboxValidationPassword } from './Validation';
 import { MailboxValidationMailgun } from './Validation';
 import { MailboxValidationGmail } from './Validation';
 import MailboxDefaultFormGeneralGmailApiSettings from './GmailApiSettings';
 import ViewText from '../../../../../components/form/ViewText';
 import moment from 'moment';
 
-function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain, mailboxServerTypes, switchToView }) {
+function MailboxDefaultFormGeneral({
+    initialValues,
+    processSubmit,
+    mailgunDomain,
+    mailboxServerTypes,
+    switchToView,
+    isNew,
+}) {
     const [currentIncomingServerType, setCurrentIncomingServerType] = useState(initialValues.incomingServerType);
     const [currentOutgoingServerType, setCurrentOutgoingServerType] = useState(initialValues.outgoingServerType);
 
@@ -43,9 +51,15 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
         let validationSchema = MailboxValidation;
         if (currentIncomingServerType === 'imap') {
             validationSchema = validationSchema.concat(MailboxValidationImap);
+            if (isNew) {
+                validationSchema = validationSchema.concat(MailboxValidationPassword);
+            }
         }
         if (currentOutgoingServerType === 'smtp') {
             validationSchema = validationSchema.concat(MailboxValidationSmtp);
+            if (isNew) {
+                validationSchema = validationSchema.concat(MailboxValidationPassword);
+            }
         }
         if (currentOutgoingServerType === 'mailgun') {
             validationSchema = validationSchema.concat(MailboxValidationMailgun);
@@ -216,9 +230,12 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
                                     errorMessage={errors.username}
                                 />
                                 <InputText
+                                    type={'text'}
                                     label={'Wachtwoord'}
                                     name={'password'}
                                     value={values.password}
+                                    className={'numeric-password'}
+                                    placeholder="**********"
                                     onChangeAction={handleChange}
                                     onBlurAction={handleBlur}
                                     required={'required'}

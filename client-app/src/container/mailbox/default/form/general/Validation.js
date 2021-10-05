@@ -11,13 +11,15 @@ export const MailboxValidationImap = Yup.object().shape({
     imapHost: Yup.string().required('Verplicht'),
     imapPort: Yup.string().required('Verplicht'),
     username: Yup.string().required('Verplicht'),
-    password: Yup.string().required('Verplicht'),
 });
 
 export const MailboxValidationSmtp = Yup.object().shape({
     smtpHost: Yup.string().required('Verplicht'),
     smtpPort: Yup.string().required('Verplicht'),
     username: Yup.string().required('Verplicht'),
+});
+
+export const MailboxValidationPassword = Yup.object().shape({
     password: Yup.string().required('Verplicht'),
 });
 

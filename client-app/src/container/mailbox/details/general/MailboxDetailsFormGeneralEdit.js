@@ -39,6 +39,7 @@ function MailboxDetailsFormGeneralEdit({ mailboxDetails, updateMailbox, fetchSys
             }}
             processSubmit={processSubmit}
             switchToView={switchToView}
+            isNew={false}
         />
     );
 }

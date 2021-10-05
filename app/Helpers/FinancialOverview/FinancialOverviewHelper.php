@@ -64,7 +64,7 @@ class FinancialOverviewHelper
         $contactName = null;
 
         if ($financialOverviewContact->contact->type_id == 'person') {
-            $title = $financialOverviewContact->contact->person->title ? $financialOverviewContact->contact->person->title->name . ' ' : '';
+            $title = $financialOverviewContact->contact->person->title ? $financialOverviewContact->contact->person->title->address . ' ' : '';
             $initials = $financialOverviewContact->contact->person->initials ? $financialOverviewContact->contact->person->initials : ($financialOverviewContact->contact->person->first_name ? substr($financialOverviewContact->contact->person->first_name, 0, 1).".": "");
             $prefix = $financialOverviewContact->contact->person->last_name_prefix ? $financialOverviewContact->contact->person->last_name_prefix . ' ' : '';
 

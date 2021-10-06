@@ -296,7 +296,6 @@ class EmailFormEdit extends Component {
                         options={this.state.intakes}
                         value={intakeId}
                         onChangeAction={this.handleInputReactSelect}
-                        multi={false}
                     />
                 </div>
 

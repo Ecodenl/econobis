@@ -316,7 +316,6 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 value={emailTemplateIdCollection}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
                             />
                             <InputSelect
                                 label={'Betaalwijze'}
@@ -345,7 +344,6 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 value={emailTemplateIdTransfer}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
                             />
                             <InputSelect
                                 label={'Nota frequentie'}
@@ -366,7 +364,6 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 value={emailTemplateReminderId}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
                             />
                             <InputSelect
                                 label={'Status'}
@@ -388,7 +385,6 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 value={emailTemplateExhortationId}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
                             />
                             <InputSelect
                                 label={'Aantal keer herinneringen nota'}

@@ -148,7 +148,6 @@ class ContactDetailsFormOccupationsNew extends Component {
                                 value={contactId}
                                 onChangeAction={this.handleReactSelectChange}
                                 optionName={'fullName'}
-                                multi={false}
                                 isLoading={this.state.peekLoading.contacts}
                                 error={this.state.errors.contactId}
                             />

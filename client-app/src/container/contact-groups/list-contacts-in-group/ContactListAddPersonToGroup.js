@@ -65,7 +65,6 @@ class ContactListAddPersonToGroup extends Component {
                             options={this.state.people}
                             optionId={'id'}
                             optionName={'fullName'}
-                            multi={false}
                             isLoading={this.state.peekLoading.people}
                         />
                     </div>

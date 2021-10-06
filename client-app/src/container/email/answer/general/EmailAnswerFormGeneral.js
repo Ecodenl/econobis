@@ -163,7 +163,6 @@ function EmailAnswerFormGeneral(props) {
                     onChangeAction={handleFromIds}
                     required={'required'}
                     error={errors.mailboxId}
-                    multi={false}
                 />
             </div>
             <div className="row">

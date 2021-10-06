@@ -588,7 +588,6 @@ class OrderProductsFormNewProduct extends Component {
                                         optionName={'description'}
                                         value={ledgerId}
                                         onChangeAction={this.handleLedgerChange}
-                                        multi={false}
                                         required={'required'}
                                         error={this.state.errors.ledgerId}
                                     />

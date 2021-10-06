@@ -125,7 +125,6 @@ class FinancialOverviewProjectNew extends Component {
                                         value={projectId}
                                         onChangeAction={this.handleReactSelectChange}
                                         required={'required'}
-                                        multi={false}
                                         error={this.state.errors.projectId}
                                         errorMessage={this.state.errorMessage.projectId}
                                     />

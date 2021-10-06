@@ -177,7 +177,6 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
                                         value={emailTemplateIdWfExpiredTask}
                                         onChangeAction={this.handleReactSelectChange}
                                         isLoading={this.state.peekLoading.emailTemplates}
-                                        multi={false}
                                         required={'required'}
                                         error={this.state.errors.emailTemplateIdWfExpiredTask}
                                     />
@@ -214,7 +213,6 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
                                         value={emailTemplateIdWfCompletedTask}
                                         onChangeAction={this.handleReactSelectChange}
                                         isLoading={this.state.peekLoading.emailTemplates}
-                                        multi={false}
                                         required={'required'}
                                         error={this.state.errors.emailTemplateIdWfCompletedTask}
                                     />
@@ -265,7 +263,6 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
                                         value={emailTemplateIdWfNewTask}
                                         onChangeAction={this.handleReactSelectChange}
                                         isLoading={this.state.peekLoading.emailTemplates}
-                                        multi={false}
                                         required={'required'}
                                         error={this.state.errors.emailTemplateIdWfNewTask}
                                     />

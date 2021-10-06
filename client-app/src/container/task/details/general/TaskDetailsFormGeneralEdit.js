@@ -421,7 +421,6 @@ class TaskDetailsFormGeneralEdit extends Component {
                         value={contactId}
                         onChangeAction={this.handleReactSelectChange}
                         optionName={'fullName'}
-                        multi={false}
                         isLoading={this.state.peekLoading.contacts}
                     />
                 </div>

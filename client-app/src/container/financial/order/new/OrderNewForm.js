@@ -314,7 +314,6 @@ class OrderNewForm extends Component {
                                 onChangeAction={this.handleReactSelectContactIdChange}
                                 optionName={'fullName'}
                                 isLoading={this.state.peekLoading.contacts}
-                                multi={false}
                                 error={this.state.errors.contactId}
                             />
                             <InputSelect
@@ -373,7 +372,6 @@ class OrderNewForm extends Component {
                                 value={emailTemplateIdCollection}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
                             />
                             <InputSelect
                                 label={'Betaalwijze'}
@@ -402,7 +400,6 @@ class OrderNewForm extends Component {
                                 value={emailTemplateIdTransfer}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
                             />
                             <InputSelect
                                 label={'Nota frequentie'}
@@ -423,7 +420,6 @@ class OrderNewForm extends Component {
                                 value={emailTemplateReminderId}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
                             />
                             <InputSelect
                                 label={'Status'}
@@ -445,7 +441,6 @@ class OrderNewForm extends Component {
                                 value={emailTemplateExhortationId}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
                             />
                             <InputSelect
                                 label={'Aantal keer herinneringen nota'}

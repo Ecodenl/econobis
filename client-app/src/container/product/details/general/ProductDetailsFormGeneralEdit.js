@@ -410,18 +410,16 @@ class ProductDetailsFormGeneralEdit extends Component {
                                     name={'ledgerId'}
                                     options={ledgerOptions}
                                     optionName={'description'}
-                                    value={ledgerId}
+                                    value={Number(ledgerId)}
                                     onChangeAction={this.handleReactSelectChange}
-                                    multi={false}
                                 />
                                 <InputReactSelect
                                     label={'Kostenplaats'}
                                     name={'costCenterId'}
                                     options={this.props.costCenters}
                                     optionName={'description'}
-                                    value={costCenterId}
+                                    value={Number(costCenterId)}
                                     onChangeAction={this.handleReactSelectChange}
-                                    multi={false}
                                 />
                             </div>
                         ) : null}

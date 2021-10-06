@@ -342,13 +342,12 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 label="Verantwoordelijke portal"
                                 divSize={'col-sm-8'}
                                 name={'responsibleUserId'}
-                                value={responsibleUserId}
+                                value={Number(responsibleUserId)}
                                 options={this.props.users}
                                 optionName={'fullName'}
                                 onChangeAction={this.handleReactSelectChange}
                                 required={portalActive ? 'required' : ''}
                                 error={this.state.errors.responsibleUserId}
-                                multi={false}
                             />
                         </div>
                         <div className="row">
@@ -356,13 +355,12 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 label="Eigenaar nieuwe contacten"
                                 divSize={'col-sm-8'}
                                 name={'contactResponsibleOwnerUserId'}
-                                value={contactResponsibleOwnerUserId}
+                                value={Number(contactResponsibleOwnerUserId)}
                                 options={this.props.users}
                                 optionName={'fullName'}
                                 onChangeAction={this.handleReactSelectChange}
                                 required={portalActive ? 'required' : ''}
                                 error={this.state.errors.contactResponsibleOwnerUserId}
-                                multi={false}
                             />
                         </div>
 
@@ -417,12 +415,11 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 label="Standaard contact groep lid worden"
                                 divSize={'col-sm-8'}
                                 name={'defaultContactGroupMemberId'}
-                                value={defaultContactGroupMemberId}
+                                value={Number(defaultContactGroupMemberId)}
                                 options={this.props.staticContactGroups}
                                 onChangeAction={this.handleReactSelectChange}
                                 required={portalActive ? 'required' : ''}
                                 error={this.state.errors.defaultContactGroupMemberId}
-                                multi={false}
                             />
                         </div>
                         <div className="row">
@@ -430,12 +427,11 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 label="Standaard contact groep geen lid worden"
                                 divSize={'col-sm-8'}
                                 name={'defaultContactGroupNoMemberId'}
-                                value={defaultContactGroupNoMemberId}
+                                value={Number(defaultContactGroupNoMemberId)}
                                 options={this.props.staticContactGroups}
                                 onChangeAction={this.handleReactSelectChange}
                                 required={portalActive ? 'required' : ''}
                                 error={this.state.errors.defaultContactGroupNoMemberId}
-                                multi={false}
                             />
                         </div>
                         <div className="row">
@@ -480,12 +476,11 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 label="E-mail template Nieuwe account activeren"
                                 divSize={'col-sm-8'}
                                 name={'emailTemplateNewAccountId'}
-                                value={emailTemplateNewAccountId}
+                                value={Number(emailTemplateNewAccountId)}
                                 options={this.props.emailTemplates}
                                 onChangeAction={this.handleReactSelectChange}
                                 required={portalActive ? 'required' : ''}
                                 error={this.state.errors.emailTemplateNewAccountId}
-                                multi={false}
                             />
                         </div>
                         <div className="row">
@@ -526,12 +521,11 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 label="Standaard administratie / uitgevende instantie"
                                 divSize={'col-sm-8'}
                                 name={'defaultAdministrationId'}
-                                value={defaultAdministrationId}
+                                value={Number(defaultAdministrationId)}
                                 options={this.props.administrations}
                                 onChangeAction={this.handleReactSelectChange}
                                 required={portalActive ? 'required' : ''}
                                 error={this.state.errors.defaultAdministrationId}
-                                multi={false}
                             />
                         </div>
                     </PanelBody>

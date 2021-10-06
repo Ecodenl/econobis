@@ -51,6 +51,13 @@ const RevenueNew = props => {
         projectTypeCodeRef = props.project.projectType.codeRef;
     }
 
+    const isPeriodExceedingYear = (dateBegin, dateEnd) => {
+        dateBegin = moment(dateBegin);
+        dateEnd = moment(dateEnd);
+
+        return dateEnd.year() > dateBegin.year();
+    };
+
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
             <div className="row">
@@ -199,7 +206,7 @@ const RevenueNew = props => {
                         </div>
                     </div>
 
-                    {moment(dateBegin).year() !== moment(dateEnd).year() ? (
+                    {isPeriodExceedingYear(dateBegin, dateEnd) ? (
                         <>
                             <div className="row">
                                 {props.project.kwhStartHighNextRevenue > 0 ? (
@@ -248,6 +255,7 @@ const RevenueNew = props => {
                                     onChangeAction={props.handleInputChange}
                                     error={props.errors.kwhEndCalendarYearHigh}
                                     errorMessage={props.errorMessage.kwhEndCalendarYearHigh}
+                                    required={'required'}
                                 />
                                 <InputText
                                     type={'number'}
@@ -257,6 +265,7 @@ const RevenueNew = props => {
                                     onChangeAction={props.handleInputChange}
                                     error={props.errors.kwhEndHigh}
                                     errorMessage={props.errorMessage.kwhEndHigh}
+                                    required={'required'}
                                 />
                             </div>
 
@@ -369,6 +378,9 @@ const RevenueNew = props => {
                                 payoutKwh.toLocaleString('nl', { minimumFractionDigits: 3, maximumFractionDigits: 5 })
                             }
                             onChangeAction={props.handleInputChange}
+                            error={props.errors.payoutKwh}
+                            errorMessage={props.errorMessage.payoutKwh}
+                            required={'required'}
                         />
                         <InputText
                             type={'number'}

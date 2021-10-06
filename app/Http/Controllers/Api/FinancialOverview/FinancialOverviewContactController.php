@@ -334,7 +334,7 @@ class FinancialOverviewContactController extends Controller
             if($contact->contactPerson()->exists()){
                 $contactPerson = '';
                 if ($contact->contactPerson->contact->type_id == 'person') {
-                    $title = $contact->contactPerson->contact->person->title ? $contact->contactPerson->contact->person->title->name . ' ' : '';
+                    $title = $contact->contactPerson->contact->person->title ? $contact->contactPerson->contact->person->title->address . ' ' : '';
                     $initials = $contact->contactPerson->contact->person->initials ? $contact->contactPerson->contact->person->initials : ($contact->contactPerson->contact->person->first_name ? substr($contact->contactPerson->contact->person->first_name, 0, 1).".": "");
                     $prefix = $contact->contactPerson->contact->person->last_name_prefix ? $contact->contactPerson->contact->person->last_name_prefix . ' ' : '';
 

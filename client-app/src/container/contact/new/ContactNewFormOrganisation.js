@@ -33,6 +33,7 @@ class ContactNewFormOrganisation extends Component {
                 number: '',
                 createdAt: '',
                 name: '',
+                statutoryName: '',
                 chamberOfCommerceNumber: '',
                 vatNumber: '',
                 memberSince: '',
@@ -337,6 +338,7 @@ class ContactNewFormOrganisation extends Component {
     render() {
         const {
             name,
+            statutoryName,
             chamberOfCommerceNumber,
             vatNumber,
             memberSince,
@@ -367,6 +369,16 @@ class ContactNewFormOrganisation extends Component {
                         onChangeAction={this.handleInputChange}
                         required={'required'}
                         error={this.state.errors.name}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputText
+                        label="Statutaire naam"
+                        name={'statutoryName'}
+                        value={statutoryName}
+                        onChangeAction={this.handleInputChange}
+                        error={this.state.errors.statutoryName}
                     />
                 </div>
 

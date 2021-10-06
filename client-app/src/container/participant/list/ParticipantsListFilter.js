@@ -79,6 +79,11 @@ const ParticipantsListFilter = props => {
         }, 100);
     };
 
+    const participantMutationStatusOptions = [
+        ...props.participantMutationStatuses,
+        { id: 'isTerminated', name: 'Beëindigd' },
+    ];
+
     return (
         <tr className="thead-filter">
             <th>
@@ -188,7 +193,7 @@ const ParticipantsListFilter = props => {
                         onChange={onParticipationMutationStatusIdChange}
                     >
                         <option />
-                        {props.participantMutationStatuses.map(participantMutationStatus => {
+                        {participantMutationStatusOptions.map(participantMutationStatus => {
                             return (
                                 <option key={participantMutationStatus.id} value={participantMutationStatus.id}>
                                     {participantMutationStatus.name}

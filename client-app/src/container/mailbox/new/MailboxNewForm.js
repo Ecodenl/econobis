@@ -51,12 +51,9 @@ function MailboxNewForm({ fetchSystemData }) {
             });
     }
 
-    return <MailboxDefaultFormGeneral initialValues={initialValues} processSubmit={processSubmit} />;
+    return <MailboxDefaultFormGeneral initialValues={initialValues} processSubmit={processSubmit} isNew={true} />;
 }
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(MailboxNewForm);
+export default connect(null, mapDispatchToProps)(MailboxNewForm);

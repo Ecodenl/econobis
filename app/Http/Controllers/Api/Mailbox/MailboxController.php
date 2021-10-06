@@ -296,8 +296,6 @@ class MailboxController extends Controller
 
         $appUrl = config('app.url');
 
-        if (config('app.env') === 'local') $appUrl = str_replace('https', 'http', $appUrl);
-
         // TODO If callback is not valid then show message to the user
         if ($gmailConnectionManager->callback($request->code)) {
             header("Location: {$appUrl}/#/mailbox/{$mailbox->id}");

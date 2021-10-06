@@ -2,10 +2,11 @@ import React from 'react';
 import PanelHeader from '../../../../../components/panel/PanelHeader';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import InputText from '../../../../../components/form/InputText';
-import CopyToClipboard from 'react-copy-to-clipboard';
+// import CopyToClipboard from 'react-copy-to-clipboard';
 import { REDIRECT_URL } from '../../../../../constants';
+import ViewText from '../../../../../components/form/ViewText';
 
-function MailboxDefaultFormGeneralGmailApiSettings({ values, handleChange, handleBlur }) {
+function MailboxDefaultFormGeneralGmailApiSettings({ values, errors, touched, handleChange, handleBlur }) {
     return (
         <>
             <PanelHeader>
@@ -21,22 +22,26 @@ function MailboxDefaultFormGeneralGmailApiSettings({ values, handleChange, handl
                         value={values.gmailApiSettings?.projectId}
                         onChangeAction={handleChange}
                         onBlurAction={handleBlur}
+                        required={'required'}
+                        error={errors.gmailApiSettings?.projectId && touched.gmailApiSettings?.projectId}
+                        errorMessage={errors.gmailApiSettings?.projectId}
                     />
-                    <div className="form-group col-sm-6">
-                        <label className="col-sm-6">Redirect url</label>
-                        <div className="col-sm-6" style={{ paddingRight: '5px' }} onClick={null}>
-                            {REDIRECT_URL}
-                            <CopyToClipboard text={REDIRECT_URL}>
-                                <span
-                                    className="glyphicon glyphicon-copy mybtn-success pull-right"
-                                    style={{ top: '5px' }}
-                                    role="button"
-                                    onClick={null}
-                                    title={'Kopieer sleutel'}
-                                />
-                            </CopyToClipboard>
-                        </div>
-                    </div>
+                    <ViewText className="form-group col-sm-6" label={'Redirect url'} value={REDIRECT_URL} />
+                    {/*<div className="form-group col-sm-6">*/}
+                    {/*    <label className="col-sm-6">Redirect url</label>*/}
+                    {/*    <div className="col-sm-6" style={{ paddingRight: '5px' }} onClick={null}>*/}
+                    {/*        {REDIRECT_URL}*/}
+                    {/*        <CopyToClipboard text={REDIRECT_URL}>*/}
+                    {/*            <span*/}
+                    {/*                className="glyphicon glyphicon-copy mybtn-success pull-right"*/}
+                    {/*                style={{ top: '5px' }}*/}
+                    {/*                role="button"*/}
+                    {/*                onClick={null}*/}
+                    {/*                title={'Kopieer sleutel'}*/}
+                    {/*            />*/}
+                    {/*        </CopyToClipboard>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
                 </div>
                 <div className="row">
                     <InputText
@@ -45,6 +50,9 @@ function MailboxDefaultFormGeneralGmailApiSettings({ values, handleChange, handl
                         value={values.gmailApiSettings?.clientId}
                         onChangeAction={handleChange}
                         onBlurAction={handleBlur}
+                        required={'required'}
+                        error={errors.gmailApiSettings?.clientId && touched.gmailApiSettings?.clientId}
+                        errorMessage={errors.gmailApiSettings?.clientId}
                     />
                     <InputText
                         label={'Client secret'}
@@ -52,6 +60,9 @@ function MailboxDefaultFormGeneralGmailApiSettings({ values, handleChange, handl
                         value={values.gmailApiSettings?.clientSecret}
                         onChangeAction={handleChange}
                         onBlurAction={handleBlur}
+                        required={'required'}
+                        error={errors.gmailApiSettings?.clientSecret && touched.gmailApiSettings?.clientSecret}
+                        errorMessage={errors.gmailApiSettings?.clientSecret}
                     />
                 </div>
             </PanelBody>

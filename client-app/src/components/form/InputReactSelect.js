@@ -29,16 +29,6 @@ const InputReactSelect = props => {
         menu: provided => ({ ...provided, zIndex: 20 }),
     };
 
-    if (name === 'responsibleUserId') {
-        console.log('InputReactSelect a');
-        console.log(name);
-        console.log(options);
-        console.log(value);
-        console.log(Number(value));
-        console.log(options.find(option => option[optionId] === Number(value)));
-        console.log('InputReactSelect b');
-    }
-
     return (
         <div className={`form-group ${divSize}`}>
             <label htmlFor={id} className={`col-sm-6 ${required}`}>

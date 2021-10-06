@@ -666,7 +666,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 value={emailTemplateIdCollection}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
                             />
                             <InputText
                                 label="E-mail"
@@ -685,7 +684,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 value={emailTemplateIdTransfer}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
                             />
                             <InputText
                                 label="RSIN nummer"
@@ -703,7 +701,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 value={emailTemplateReminderId}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
                             />
                             <InputText
                                 label="Standaard betalingstermijn(dagen)"
@@ -724,7 +721,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 value={emailTemplateExhortationId}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
                             />
                             <InputSelect
                                 label={'Aantal keer herinneringen nota'}
@@ -750,7 +746,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 value={emailTemplateFinancialOverviewId}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
                             />
                             <div className="form-group col-sm-6">
                                 <label className="col-sm-6">Kies logo</label>
@@ -803,7 +798,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 value={portalSettingsLayoutId}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.portalSettingsLayouts}
-                                multi={false}
                             />
                         </div>
 

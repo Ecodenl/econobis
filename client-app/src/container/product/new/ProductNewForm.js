@@ -317,7 +317,6 @@ class ProductNewForm extends Component {
                                 optionName={'description'}
                                 value={ledgerId}
                                 onChangeAction={this.handleReactSelectChange}
-                                multi={false}
                                 required={this.props.usesTwinfield ? 'required' : ''}
                                 error={this.state.errors.ledgerId}
                             />
@@ -328,7 +327,6 @@ class ProductNewForm extends Component {
                                 optionName={'description'}
                                 value={costCenterId}
                                 onChangeAction={this.handleReactSelectChange}
-                                multi={false}
                             />
                         </div>
 

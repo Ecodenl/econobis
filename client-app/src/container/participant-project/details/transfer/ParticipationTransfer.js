@@ -37,7 +37,6 @@ const ParticipantNew = props => {
                     value={transferToContactId}
                     onChangeAction={props.handleReactSelectChange}
                     optionName={'fullName'}
-                    multi={false}
                     isLoading={props.peekLoading.contacts}
                     required={'required'}
                     error={props.errors.transferToContactId}

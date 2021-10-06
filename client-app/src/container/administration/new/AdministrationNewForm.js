@@ -559,7 +559,6 @@ class AdministrationNewForm extends Component {
                                 value={emailTemplateIdCollection}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
                             />
                             <InputText
                                 label="E-mail"
@@ -578,7 +577,6 @@ class AdministrationNewForm extends Component {
                                 value={emailTemplateIdTransfer}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
                             />
                             <InputText
                                 label="RSIN nummer"
@@ -596,7 +594,6 @@ class AdministrationNewForm extends Component {
                                 value={emailTemplateReminderId}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
                             />
                             <InputText
                                 label="Standaard betalingstermijn(dagen)"
@@ -617,7 +614,6 @@ class AdministrationNewForm extends Component {
                                 value={emailTemplateExhortationId}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
                             />
                             <InputSelect
                                 label={'Aantal keer herinneringen nota'}
@@ -643,7 +639,6 @@ class AdministrationNewForm extends Component {
                                 value={emailTemplateFinancialOverviewId}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
                             />
                             <div className="form-group col-sm-6">
                                 <label className="col-sm-6">Kies logo</label>
@@ -695,7 +690,6 @@ class AdministrationNewForm extends Component {
                                 optionName={'description'}
                                 value={portalSettingsLayoutId}
                                 onChangeAction={this.handleReactSelectChange}
-                                multi={false}
                             />
                         </div>
 

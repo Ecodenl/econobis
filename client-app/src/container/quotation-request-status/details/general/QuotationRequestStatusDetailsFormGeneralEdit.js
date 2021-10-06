@@ -152,7 +152,6 @@ class QuotationRequestStatusDetailsFormGeneralEdit extends Component {
                                         value={emailTemplateIdWf}
                                         onChangeAction={this.handleReactSelectChange}
                                         isLoading={this.state.peekLoading.emailTemplates}
-                                        multi={false}
                                         required={'required'}
                                         error={this.state.errors.emailTemplateIdWf}
                                     />

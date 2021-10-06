@@ -204,7 +204,6 @@ class MeasureCategoryDetailsFormGeneralEdit extends Component {
                                         value={measureIdWfCreateOpportunity}
                                         onChangeAction={this.handleReactSelectChange}
                                         isLoading={this.state.peekLoading.measures}
-                                        multi={false}
                                         required={usesWfCreateOpportunity}
                                         error={this.state.errors.measureIdWfCreateOpportunity}
                                     />
@@ -217,7 +216,6 @@ class MeasureCategoryDetailsFormGeneralEdit extends Component {
                                         options={this.props.opportunityStatusses}
                                         value={opportunityStatusIdWfCreateOpportunity}
                                         onChangeAction={this.handleReactSelectChange}
-                                        multi={false}
                                         required={usesWfCreateOpportunity}
                                         error={this.state.errors.opportunityStatusIdWfCreateOpportunity}
                                     />
@@ -252,7 +250,6 @@ class MeasureCategoryDetailsFormGeneralEdit extends Component {
                                                 value={organisationIdWfCreateQuotationRequest}
                                                 onChangeAction={this.handleReactSelectChange}
                                                 isLoading={this.state.peekLoading.organisations}
-                                                multi={false}
                                                 required={usesWfCreateQuotationRequest}
                                                 error={this.state.errors.organisationIdWfCreateQuotationRequest}
                                             />
@@ -286,7 +283,6 @@ class MeasureCategoryDetailsFormGeneralEdit extends Component {
                                                         value={emailTemplateIdWfCreateQuotationRequest}
                                                         onChangeAction={this.handleReactSelectChange}
                                                         isLoading={this.state.peekLoading.emailTemplates}
-                                                        multi={false}
                                                         required={usesWfEmailQuotationRequest}
                                                         error={
                                                             this.state.errors.emailTemplateIdWfCreateQuotationRequest

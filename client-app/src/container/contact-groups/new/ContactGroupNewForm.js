@@ -330,7 +330,6 @@ class ContactGroupNewForm extends Component {
                             value={emailTemplateIdNewContactLink}
                             onChangeAction={this.handleReactSelectChange}
                             isLoading={this.state.peekLoading.emailTemplates}
-                            multi={false}
                             required={sendEmailNewContactLink ? 'required' : ''}
                             error={this.state.errors.emailTemplateIdNewContactLink}
                         />

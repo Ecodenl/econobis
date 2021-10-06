@@ -209,7 +209,6 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleReactSelectChange}
                                 required={'required'}
                                 // isLoading={peekLoading.documentTemplates}
-                                multi={false}
                                 error={this.state.errors.documentTemplateFinancialOverviewId}
                                 errorMessage={this.state.errorMessage.documentTemplateFinancialOverviewId}
                             />

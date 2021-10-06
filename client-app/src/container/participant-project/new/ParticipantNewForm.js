@@ -58,7 +58,6 @@ const ParticipantNewForm = ({
                     onChangeAction={handleInputChangeContactId}
                     required={'required'}
                     error={errors.contactId}
-                    multi={false}
                 />
                 <InputSelect
                     label={'Status'}

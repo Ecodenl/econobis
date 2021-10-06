@@ -49,7 +49,7 @@ class CreateMemberToLaposta implements ShouldQueue
             $memberFieldData = [
                 'contactnummer' => $this->contact->number ? $this->contact->number : '',
                 'contactvoornaam' => $this->contact->person->first_name ? $this->contact->person->first_name : ($this->contact->person->initials ? $this->contact->person->initials : ''),
-                'contacttitel' => $this->contact->person->title ? $this->contact->person->title->name : '',
+                'contacttitel' => $this->contact->person->title ? $this->contact->person->title->salutation : '',
                 'contactachternaam' => $this->contact->person->last_name . ($this->contact->person->last_name_prefix ? ', ' . $this->contact->person->last_name_prefix : ''),
             ];
         }

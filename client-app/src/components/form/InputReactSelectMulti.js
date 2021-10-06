@@ -16,7 +16,6 @@ const InputReactSelectMulti = props => {
         optionName,
         onChangeAction,
         required,
-        multi,
         error,
         errorMessage,
         isLoading,
@@ -52,7 +51,7 @@ const InputReactSelectMulti = props => {
                     loadingMessage={function() {
                         return 'Laden';
                     }}
-                    isMulti={multi}
+                    isMulti={true}
                     simpleValue
                     removeSelected
                     className={error ? ' has-error' : ''}
@@ -93,7 +92,6 @@ InputReactSelectMulti.defaultProps = {
     error: false,
     errorMessage: '',
     value: '',
-    multi: true,
     isLoading: false,
     placeholder: '',
     clearable: false,
@@ -115,7 +113,6 @@ InputReactSelectMulti.propTypes = {
     disabled: PropTypes.bool,
     error: PropTypes.bool,
     errorMessage: PropTypes.string,
-    multi: PropTypes.bool,
     isLoading: PropTypes.bool,
     placeholder: PropTypes.string,
     clearable: PropTypes.bool,

@@ -183,7 +183,7 @@ class SystemData extends JsonResource
             'mailgunDomain' => MailgunDomain::select(['id', 'domain'])->get(),
             'measureCategories' => MeasureCategory::select(['id', 'name'])->get(),
             'measures' => MeasurePeek::collection(Measure::all()),
-            'occupations' => FullOccupation::collection(Occupation::all()),
+            'occupations' => FullOccupation::collection(Occupation::orderBy('primary_occupation')->get()),
             'opportunityStatus' => OpportunityStatusResource::collection(OpportunityStatus::all()),
             'orderCollectionFrequencies' => FullEnumWithIdAndName::collection(OrderCollectionFrequency::collection()),
             'orderPaymentTypes' => FullEnumWithIdAndName::collection(OrderPaymentType::collection()),

@@ -6,7 +6,7 @@
  * Time: 11:48
  */
 
-namespace App\Http\Controllers\Api\Task\Grid;
+namespace App\Http\RequestQueries\Task\Grid;
 
 use App\Eco\User\User;
 use App\Helpers\RequestQuery\RequestFilter;
@@ -39,7 +39,7 @@ class Filter extends RequestFilter
 
     protected $defaultTypes = [
         '*' => 'ct',
-        'statusId' => 'eq',
+        'typeId' => 'eq',
     ];
 
     protected function applyResponsibleNameFilter($query, $type, $data)

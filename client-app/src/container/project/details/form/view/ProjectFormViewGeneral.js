@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ViewText from '../../../../../components/form/ViewText';
 import moment from 'moment';
 import ViewTextLong from '../../../../../components/form/ViewTextLong';
-import InputToggle from '../../../../../components/form/InputToggle';
 
 const ProjectFormViewGeneral = ({
     switchToEdit,
@@ -21,6 +20,7 @@ const ProjectFormViewGeneral = ({
     postalcodeLink,
     numberOfParticipantsStillNeeded,
     checkPostalcodeLink,
+    hideWhenNotMatchingPostalCheck,
     disableChangeContactNameOnPortal,
     postalCode,
     address,
@@ -114,6 +114,13 @@ const ProjectFormViewGeneral = ({
                     </div>
                     <div className="row">
                         <ViewText label={'Controle postcoderoosgebied'} value={checkPostalcodeLink ? 'Ja' : 'Nee'} />
+                        <ViewText
+                            label={'Verberg project in portal wanneer controle niet overeenkomt'}
+                            value={hideWhenNotMatchingPostalCheck ? 'Ja' : 'Nee'}
+                        />
+                    </div>
+                    <div className="row">
+                        <div className="col-sm-6" />
                         <ViewText label={'Postcoderoosgebied'} value={postalcodeLink} />
                     </div>
                     <div className="row">

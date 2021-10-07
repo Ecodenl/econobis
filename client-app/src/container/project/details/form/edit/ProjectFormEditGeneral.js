@@ -28,6 +28,7 @@ const ProjectFormEditGeneral = ({
     postalcodeLink,
     numberOfParticipantsStillNeeded,
     checkPostalcodeLink,
+    hideWhenNotMatchingPostalCheck,
     disableChangeContactNameOnPortal,
     postalCode,
     address,
@@ -214,6 +215,15 @@ const ProjectFormEditGeneral = ({
                             value={checkPostalcodeLink}
                             onChangeAction={handleInputChange}
                         />
+                        <InputToggle
+                            label={'Verberg project in portal wanneer controle niet overeenkomt'}
+                            name={'hideWhenNotMatchingPostalCheck'}
+                            value={hideWhenNotMatchingPostalCheck}
+                            onChangeAction={handleInputChange}
+                        />
+                    </div>
+                    <div className="row">
+                        <div className="form-group col-sm-6" />
                         <InputText
                             label={'Postcoderoosgebied'}
                             name={'postalcodeLink'}

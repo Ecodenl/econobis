@@ -646,6 +646,7 @@ class ProjectFormEdit extends Component {
         }
         if (!project.isSceProject && project.projectType.codeRef !== 'postalcode_link_capital') {
             project.checkPostalcodeLink = false;
+            project.hideWhenNotMatchingPostalCheck = false;
         }
 
         if (isNaN(project.amountOfLoanNeeded)) {
@@ -695,6 +696,7 @@ class ProjectFormEdit extends Component {
             isSceProject,
             baseProjectCodeRef,
             checkDoubleAddresses,
+            hideWhenNotMatchingPostalCheck,
             checkPostalcodeLink,
             disableChangeContactNameOnPortal,
             address,
@@ -801,6 +803,7 @@ class ProjectFormEdit extends Component {
                     powerKwAvailable={powerKwAvailable}
                     checkDoubleAddresses={checkDoubleAddresses}
                     postalcodeLink={postalcodeLink}
+                    hideWhenNotMatchingPostalCheck={hideWhenNotMatchingPostalCheck}
                     checkPostalcodeLink={checkPostalcodeLink}
                     disableChangeContactNameOnPortal={disableChangeContactNameOnPortal}
                     requiredParticipants={requiredParticipants}

@@ -126,6 +126,9 @@ const ProjectFormEditGeneral = ({
     let addressNumberSeriesFieldEnabled =
         postalcodeLink.replace(/\D/g, '').length === 4 && postalcodeLink.replace(/[0-9]/g, '').trim().length === 2;
 
+    let regExpAddressNumberSeries = new RegExp('^[0-9,-]*$');
+    errors.addressNumberSeries = !regExpAddressNumberSeries.exec(addressNumberSeries);
+
     return (
         <React.Fragment>
             <h4>Algemeen</h4>
@@ -239,6 +242,8 @@ const ProjectFormEditGeneral = ({
                                 name={'addressNumberSeries'}
                                 value={addressNumberSeries}
                                 onChangeAction={handleInputChange}
+                                error={errors.addressNumberSeries}
+                                errorMessage={'Controleer invoer'}
                             />
                         ) : (
                             <div className="form-group col-sm-6" />

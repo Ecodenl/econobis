@@ -2,6 +2,7 @@ import React from 'react';
 import ViewText from '../../../../../components/form/ViewText';
 import moment from 'moment';
 import ViewTextLong from '../../../../../components/form/ViewTextLong';
+import InputText from '../../../../../components/form/InputText';
 
 const ProjectFormViewGeneral = ({
     switchToEdit,
@@ -18,6 +19,7 @@ const ProjectFormViewGeneral = ({
     powerKwAvailable,
     requiredParticipants,
     postalcodeLink,
+    addressNumberSeries,
     numberOfParticipantsStillNeeded,
     checkPostalcodeLink,
     hideWhenNotMatchingPostalCheck,
@@ -120,8 +122,13 @@ const ProjectFormViewGeneral = ({
                         />
                     </div>
                     <div className="row">
-                        <div className="col-sm-6" />
                         <ViewText label={'Postcoderoosgebied'} value={postalcodeLink} />
+                        {postalcodeLink.replace(/\D/g, '').length === 4 &&
+                        postalcodeLink.replace(/[0-9]/g, '').trim().length === 2 ? (
+                            <ViewText label={'Huisnummergebied'} value={addressNumberSeries} />
+                        ) : (
+                            <div className="form-group col-sm-6" />
+                        )}
                     </div>
                     <div className="row">
                         <ViewText label={'Controle op dubbele adressen'} value={checkDoubleAddresses ? 'Ja' : 'Nee'} />

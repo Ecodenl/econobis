@@ -26,6 +26,7 @@ const ProjectFormEditGeneral = ({
     powerKwAvailable,
     requiredParticipants,
     postalcodeLink,
+    addressNumberSeries,
     numberOfParticipantsStillNeeded,
     checkPostalcodeLink,
     hideWhenNotMatchingPostalCheck,
@@ -121,6 +122,12 @@ const ProjectFormEditGeneral = ({
     const helpTextLinkAgreeTerms = 'Gebruik {voorwaarden_link} in tekst voor plaatsing van de voorwaarden link';
     const helpTextLinkUnderstandInfo =
         'Gebruik {project_informatie_link} in tekst voor plaatsing van de project informatie link';
+
+    let addressNumberSeriesFieldEnabled =
+        postalcodeLink.replace(/\D/g, '').length === 4 && postalcodeLink.replace(/[0-9]/g, '').trim().length === 2;
+
+    let regExpAddressNumberSeries = new RegExp('^[0-9,-]*$');
+    errors.addressNumberSeries = !regExpAddressNumberSeries.exec(addressNumberSeries);
 
     return (
         <React.Fragment>
@@ -223,13 +230,24 @@ const ProjectFormEditGeneral = ({
                         />
                     </div>
                     <div className="row">
-                        <div className="form-group col-sm-6" />
                         <InputText
                             label={'Postcoderoosgebied'}
                             name={'postalcodeLink'}
                             value={postalcodeLink}
                             onChangeAction={handleInputChange}
                         />
+                        {addressNumberSeriesFieldEnabled ? (
+                            <InputText
+                                label={'Huisnummergebied'}
+                                name={'addressNumberSeries'}
+                                value={addressNumberSeries}
+                                onChangeAction={handleInputChange}
+                                error={errors.addressNumberSeries}
+                                errorMessage={'Controleer invoer'}
+                            />
+                        ) : (
+                            <div className="form-group col-sm-6" />
+                        )}
                     </div>
                     <div className="row">
                         <InputToggle

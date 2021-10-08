@@ -95,6 +95,7 @@ class FullProject extends JsonResource
                 'relatedEmailsSent' => $this->relatedEmailsSent,
                 'currentParticipations' => $this->getCurrentParticipations(),
                 'postalcodeLink' => $this->postalcode_link,
+                'addressNumberSeries' => $this->address_number_series,
                 'administrationId' => $this->administration_id,
                 'administration' => FullAdministration::make($this->whenLoaded('administration')),
                 'usesMollie' => $this->uses_mollie,

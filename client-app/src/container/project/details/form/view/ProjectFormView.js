@@ -51,6 +51,7 @@ const ProjectFormView = props => {
         administration,
         usesMollie,
         postalcodeLink,
+        addressNumberSeries,
         requiresContactGroups,
         amountOfLoanNeeded,
         minAmountLoan,
@@ -120,6 +121,7 @@ const ProjectFormView = props => {
                 powerKwAvailable={powerKwAvailable}
                 checkDoubleAddresses={checkDoubleAddresses}
                 postalcodeLink={postalcodeLink}
+                addressNumberSeries={addressNumberSeries}
                 checkPostalcodeLink={checkPostalcodeLink}
                 hideWhenNotMatchingPostalCheck={hideWhenNotMatchingPostalCheck}
                 disableChangeContactNameOnPortal={disableChangeContactNameOnPortal}

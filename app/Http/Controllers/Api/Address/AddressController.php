@@ -51,6 +51,7 @@ class AddressController extends ApiController
         $contact = Contact::find($data['contactId']);
         if($contact){
             $contactAddressAllowed = $this->checkDoubleAddressAllowed($contact, $address);
+            $checkAddressOk = $this->checkAddress($contact, $address);
         }
 
         $address->save();
@@ -90,6 +91,7 @@ class AddressController extends ApiController
         $contact = Contact::find($address->contact_id);
         if($contact){
             $contactAddressAllowed = $this->checkDoubleAddressAllowed($contact, $address);
+            $checkAddressOk = $this->checkAddress($contact, $address);
         }
 
         $address->save();
@@ -186,4 +188,15 @@ class AddressController extends ApiController
         }
         return true;
     }
+
+    public function checkAddress($contact, Address $address)
+    {
+//        todo hier controles op address inzake postcode/huisnummer check
+//        $message = 'Test message, postcode: ' . $address->postal_code . ', huisnummer: ' . $address->number . ', toevoeging: ' . $address->addition;
+//        Log::error($message);
+//        abort(422, $message);
+
+        return null;
+    }
+
 }

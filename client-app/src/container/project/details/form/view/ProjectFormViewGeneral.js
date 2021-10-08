@@ -194,19 +194,17 @@ const ProjectFormViewGeneral = ({
                 />
             </div>
         </section>
-        {projectType.codeRef !== 'postalcode_link_capital' && (
-            <section>
-                <hr />
-                <h4 onClick={() => toggleCustomerPortalSettings(!showCustomerPortalSettings)}>
-                    {showCustomerPortalSettings ? (
-                        <span className="glyphicon glyphicon-menu-down" />
-                    ) : (
-                        <span className="glyphicon glyphicon-menu-right" />
-                    )}
-                    &nbsp;Contacten portal instellingen
-                </h4>
-            </section>
-        )}
+        <section>
+            <hr />
+            <h4 onClick={() => toggleCustomerPortalSettings(!showCustomerPortalSettings)}>
+                {showCustomerPortalSettings ? (
+                    <span className="glyphicon glyphicon-menu-down" />
+                ) : (
+                    <span className="glyphicon glyphicon-menu-right" />
+                )}
+                &nbsp;Contacten portal instellingen
+            </h4>
+        </section>
         {showCustomerPortalSettings ? (
             <section
                 onClick={

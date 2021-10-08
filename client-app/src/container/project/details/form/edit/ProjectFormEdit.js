@@ -731,6 +731,7 @@ class ProjectFormEdit extends Component {
             minParticipations,
             isParticipationTransferable,
             postalcodeLink,
+            addressNumberSeries,
             documentTemplateAgreementId,
             documentTemplates,
             emailTemplateAgreementId,
@@ -803,6 +804,7 @@ class ProjectFormEdit extends Component {
                     powerKwAvailable={powerKwAvailable}
                     checkDoubleAddresses={checkDoubleAddresses}
                     postalcodeLink={postalcodeLink}
+                    addressNumberSeries={addressNumberSeries}
                     hideWhenNotMatchingPostalCheck={hideWhenNotMatchingPostalCheck}
                     checkPostalcodeLink={checkPostalcodeLink}
                     disableChangeContactNameOnPortal={disableChangeContactNameOnPortal}

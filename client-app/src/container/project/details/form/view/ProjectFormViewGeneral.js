@@ -136,7 +136,7 @@ const ProjectFormViewGeneral = ({
                                 label={'Postcoderoosgebied'}
                                 value={postalcodeLink}
                                 name={'addressNumberSeries'}
-                                textToolTip={`Voor postcoderoosgebied geef de postcodes op gescheiden door een comma(,). Voorbeeld: 1001,1002,1003AA,1003AB`}
+                                textToolTip={`Voor postcoderoosgebied geef de postcodes op gescheiden door een comma(,). Gebruik geen spaties. Voorbeeld: 1001,1002,1003AA,1003AB`}
                             />
                             {addressNumberSeriesFieldEnabled ? (
                                 <ViewText
@@ -144,7 +144,7 @@ const ProjectFormViewGeneral = ({
                                     value={addressNumberSeries}
                                     size={'col-sm-5'}
                                     name={'addressNumberSeries'}
-                                    textToolTip={`Voor huisnummergebied geef de huisnummers op gescheiden door een comma(,). Gebruik een koppelteken (-) voor huisnummer toevoegingen.
+                                    textToolTip={`Voor huisnummergebied geef de huisnummers op gescheiden door een comma(,). Gebruik geen spaties. Gebruik een koppelteken (-) voor huisnummer toevoegingen.
                                       Voor huisnummer reeksen gebruik dubbelpunt (:). Voorbeeld: 1,2,4-10,11-a,11-b`}
                                 />
                             ) : (

@@ -84,7 +84,9 @@ class ProjectNewApp extends Component {
                 textInfoProjectOnlyMembers: defaultTextInfoProjectOnlyMembers,
                 isParticipationTransferable: false,
                 postalcodeLink: '',
+                addressNumberSeries: '',
                 checkPostalcodeLink: false,
+                hideWhenNotMatchingPostalCheck: false,
                 contactGroupIds: '',
                 contactGroupIdsSelected: [],
                 amountOfLoanNeeded: null,
@@ -304,6 +306,7 @@ class ProjectNewApp extends Component {
         }
         if (!project.isSceProject) {
             project.checkPostalcodeLink = false;
+            project.hideWhenNotMatchingPostalCheck = false;
         }
 
         this.setState({ ...this.state, errors: errors });
@@ -376,7 +379,9 @@ class ProjectNewApp extends Component {
             administrationId,
             usesMollie,
             postalcodeLink,
+            addressNumberSeries,
             checkPostalcodeLink,
+            hideWhenNotMatchingPostalCheck,
             contactGroupIds,
             contactGroupIdsSelected,
             amountOfLoanNeeded,
@@ -422,6 +427,8 @@ class ProjectNewApp extends Component {
                                         useSceProject={useSceProject}
                                         isSceProject={isSceProject}
                                         postalcodeLink={postalcodeLink}
+                                        addressNumberSeries={addressNumberSeries}
+                                        hideWhenNotMatchingPostalCheck={hideWhenNotMatchingPostalCheck}
                                         checkPostalcodeLink={checkPostalcodeLink}
                                         baseProjectCodeRef={baseProjectCodeRef}
                                         powerKwAvailable={powerKwAvailable}

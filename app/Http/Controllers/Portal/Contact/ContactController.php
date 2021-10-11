@@ -843,7 +843,7 @@ class ContactController extends ApiController
 
                     // Check address
                     $addressController = new AddressController();
-                    $checkAddressOk = $addressController->checkAddress($contact, $contact->addressForPostalCodeCheck, null, false);
+                    $checkAddressOk = $addressController->checkAddress($contact, $contact->addressForPostalCodeCheck, $project->id, false);
                     if(!$checkAddressOk){
                         $project->allowRegisterToProject = false;
                         $project->textNotAllowedRegisterToProject = implode(';', $addressController->messages);

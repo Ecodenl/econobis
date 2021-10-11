@@ -240,7 +240,7 @@ const ProjectFormEditGeneral = ({
                             value={postalcodeLink}
                             onChangeAction={handleInputChange}
                             size={'col-sm-5'}
-                            textToolTip={`Voor postcoderoosgebied geef de postcodes op gescheiden door een comma(,). Voorbeeld: 1001,1002,1003AA,1003AB`}
+                            textToolTip={`Voor postcoderoosgebied geef de postcodes op gescheiden door een comma(,). Gebruik geen spaties. Voorbeeld: 1001,1002,1003AA,1003AB`}
                             error={errors.postalcodeLink}
                             errorMessage={'Ongeldige invoer, klik (i) voor uitleg.'}
                         />
@@ -252,7 +252,7 @@ const ProjectFormEditGeneral = ({
                                 onChangeAction={handleInputChange}
                                 size={'col-sm-5'}
                                 textToolTip={`Voor huisnummergebied geef de huisnummers op gescheiden door een comma(,). Gebruik een koppelteken (-) voor huisnummer toevoegingen.
-                                      Voor huisnummer reeksen gebruik dubbelpunt (:). Voorbeeld: 1,2,4-10,11-a,11-b`}
+                                      Voor huisnummer reeksen gebruik dubbelpunt (:). Gebruik geen spaties. Voorbeeld: 1,2,4-10,11-a,11-b`}
                                 error={errors.addressNumberSeries}
                                 errorMessage={'Ongeldige invoer, klik (i) voor uitleg.'}
                             />

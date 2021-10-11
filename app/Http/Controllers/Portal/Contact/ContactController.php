@@ -27,6 +27,7 @@ use App\Eco\User\User;
 use App\Helpers\Document\DocumentHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
+use App\Http\Controllers\Api\Address\AddressController;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\ParticipationProject\ParticipationProjectController;
 use App\Http\Resources\Portal\Administration\AdministrationResource;
@@ -484,6 +485,9 @@ class ContactController extends ApiController
                 }else{
                     $address->fill($this->arrayKeysToSnakeCase($addressData));
 
+                    $addressController = new AddressController();
+                    $checkAddressOk = $addressController->checkAddress($contact, $address, $projectId, true);
+
                     if ($projectId) {
                         $project = Project::find($projectId);
                         if($project->check_double_addresses) {
@@ -530,6 +534,10 @@ class ContactController extends ApiController
 
                 $address = new Address($this->arrayKeysToSnakeCase($addressData));
                 $address->contact_id = $contact->id;
+
+                $addressController = new AddressController();
+                $checkAddressOk = $addressController->checkAddress($contact, $address, $projectId, true);
+
                 $address->save();
             }
         }
@@ -818,25 +826,28 @@ class ContactController extends ApiController
                 // if addresses found, check postalcode
                 }else{
                     // Check / get array postalcodes from postalcode_link. Postalcodes may be separted by a comma+space ('1001, 1002') or comma ('1001,1002') or space ('1001 1002');
-                    if (strpos($project->postalcode_link, ',') !== false) {
-                        $projectPostalcodeLink = str_replace(" ","", $project->postalcode_link);
-                        $validPostalAreas = explode(',', $projectPostalcodeLink);
-                    }else{
-                        $validPostalAreas = explode(' ', $project->postalcode_link);
-                    }
-                    $postalCodeAreaContact = substr($contact->addressForPostalCodeCheck->postal_code, 0 , 4);
-                    // if postalcode contact not in postalcode link of project, then don't allow register to project;
-                    if($validPostalAreas && !in_array($postalCodeAreaContact, $validPostalAreas)){
-//todo WM: for testing it is handy to show the projects where postalcode contact not in postalcode link project
-                        // If function came with incoming collection projects, then we remove (forget) this project.
-//                        if($projects){
-//                            $projects->forget($key);
-//                        }else{
-                            $project->allowRegisterToProject = false;
-                            $project->textNotAllowedRegisterToProject = 'Om in te schrijven voor dit project moet postcode nummer ' . $postalCodeAreaContact . ' van deelnemer voorkomen in deelnemende postcode(s): ' . implode(', ', $validPostalAreas) . '.';
-                            return false;
-//                        }
+// todo WM opschonen
+//                    if (strpos($project->postalcode_link, ',') !== false) {
+//                        $projectPostalcodeLink = str_replace(" ","", $project->postalcode_link);
+//                        $validPostalAreas = explode(',', $projectPostalcodeLink);
+//                    }else{
+//                        $validPostalAreas = explode(' ', $project->postalcode_link);
+//                    }
+//                    $postalCodeAreaContact = substr($contact->addressForPostalCodeCheck->postal_code, 0 , 4);
+//                    // if postalcode contact not in postalcode link of project, then don't allow register to project;
+//                    if($validPostalAreas && !in_array($postalCodeAreaContact, $validPostalAreas)){
+//                        $project->allowRegisterToProject = false;
+//                        $project->textNotAllowedRegisterToProject = 'Om in te schrijven voor dit project moet postcode nummer ' . $postalCodeAreaContact . ' van deelnemer voorkomen in deelnemende postcode(s): ' . implode(', ', $validPostalAreas) . '.';
+//                        return false;
+//                    }
 
+                    // Check address
+                    $addressController = new AddressController();
+                    $checkAddressOk = $addressController->checkAddress($contact, $contact->getAddressForPostalCodeCheckAttribute(), null, false);
+                    if(!$checkAddressOk){
+                        $project->allowRegisterToProject = false;
+                        $project->textNotAllowedRegisterToProject = implode(';', $addressController->messages);
+                        return false;
                     }
 
                 }

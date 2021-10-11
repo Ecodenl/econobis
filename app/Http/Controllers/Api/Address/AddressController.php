@@ -201,8 +201,13 @@ class AddressController extends ApiController
             return null;
         }
         // Bij organisaties alleen checken indien eerste visit address
-        if($contact->type_id === ContactType::ORGANISATION && $contact->addressForPostalCodeCheck->id !== $address->id) {
-            return null;
+        if($contact->type_id === ContactType::ORGANISATION) {
+            if($contact->addressForPostalCodeCheck && $contact->addressForPostalCodeCheck->id !== $address->id ) {
+                return null;
+            }
+            if(!$contact->addressForPostalCodeCheck && $address->type_id !== 'visit' ) {
+                return null;
+            }
         }
 
         $messages = [];

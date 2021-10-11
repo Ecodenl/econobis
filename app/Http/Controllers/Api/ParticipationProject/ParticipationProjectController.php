@@ -30,6 +30,7 @@ use App\Helpers\Excel\ParticipantExcelHelper;
 use App\Helpers\Excel\ParticipantExcelHelperHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
+use App\Http\Controllers\Api\Address\AddressController;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewParticipantProjectController;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\ContactGroup\FullContactGroup;
@@ -552,14 +553,19 @@ class ParticipationProjectController extends ApiController
     public function validatePostalCode(&$message, Project $project, Contact $contact)
     {
         $checkText = 'Postcode check: ';
-        $primaryAddress = $contact->primaryAddress;
-        if(!$primaryAddress){
-            array_push($message, $checkText . 'Deelnemer heeft geen primair adres.');
+        $addressForPostalCodeCheck = $contact->addressForPostalCodeCheck;
+        if($contact->type_id === ContactType::ORGANISATION) {
+            $typeAddress ='bezoek adres';
+        }else{
+            $typeAddress ='primair adres';
+        }
+        if(!$addressForPostalCodeCheck){
+            array_push($message, $checkText . 'Deelnemer heeft geen ' . $typeAddress. '.');
             return false;
         }
-        $postalCodeAreaContact = substr($primaryAddress->postal_code, 0 , 4);
+        $postalCodeAreaContact = substr($addressForPostalCodeCheck->postal_code, 0 , 4);
         if(!($postalCodeAreaContact > 999 && $postalCodeAreaContact < 9999)){
-            array_push($message, $checkText . 'Deelnemer heeft geen geldige postcode op zijn primaire adres.');
+            array_push($message, $checkText . 'Deelnemer heeft geen geldige postcode op zijn ' . $typeAddress. '.');
             return false;
         }
         if(!$project->postalcode_link){
@@ -567,19 +573,27 @@ class ParticipationProjectController extends ApiController
             return false;
         }
 
+// todo WM opschonen
         // Check / get array postalcodes from postalcode_link. Postalcodes may be separted by a comma+space ('1001, 1002') or comma ('1001,1002') or space ('1001 1002');
-        if (strpos($project->postalcode_link, ',') !== false) {
-            $projectPostalcodeLink = str_replace(" ","", $project->postalcode_link);
-            $validPostalAreas = explode(',', $projectPostalcodeLink);
-        }else{
-            $validPostalAreas = explode(' ', $project->postalcode_link);
-        }
-        if(!$validPostalAreas){
-            array_push($message, $checkText . 'Project heeft geen geldige deelnemende postcode(s) in postcoderoos.');
-            return false;
-        }
-        if(!in_array($postalCodeAreaContact, $validPostalAreas)){
-            array_push($message, $checkText . 'Postcode nummer ' . $postalCodeAreaContact . ' van deelnemer niet gevonden in deelnemende postcode(s) in ' . $project->projectType->name . ' project: ' . implode(', ', $validPostalAreas) . '.');
+//        if (strpos($project->postalcode_link, ',') !== false) {
+//            $projectPostalcodeLink = str_replace(" ","", $project->postalcode_link);
+//            $validPostalAreas = explode(',', $projectPostalcodeLink);
+//        }else{
+//            $validPostalAreas = explode(' ', $project->postalcode_link);
+//        }
+//        if(!$validPostalAreas){
+//            array_push($message, $checkText . 'Project heeft geen geldige deelnemende postcode(s) in postcoderoos.');
+//            return false;
+//        }
+//        if(!in_array($postalCodeAreaContact, $validPostalAreas)){
+//            array_push($message, $checkText . 'Postcode nummer ' . $postalCodeAreaContact . ' van deelnemer niet gevonden in deelnemende postcode(s) in ' . $project->projectType->name . ' project: ' . implode(', ', $validPostalAreas) . '.');
+//            return false;
+//        }
+        // Check address
+        $addressController = new AddressController();
+        $checkAddressOk = $addressController->checkAddress($contact, $addressForPostalCodeCheck, $project->id, false);
+        if(!$checkAddressOk){
+            array_push($message, $checkText . implode(';', $addressController->messages));
             return false;
         }
     }

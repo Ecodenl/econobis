@@ -891,9 +891,9 @@ class ExternalWebformController extends Controller
                 ->where('number', $data['address_number'])
                 ->where('addition', $data['address_addition'])
                 ->first();
-
+            // Adres met deze gegevens bestaat nog niet
             if (!$address) {
-                // Adres met deze gegevens bestaat nog niet, adres toevoegen met binnenkomende type of anders default "postadres"
+                // Adres toevoegen met binnenkomende type of anders default "postadres"
                 $this->log('Er bestaat nog geen adres met dit huisnummer en postcode; adres aanmaken');
 
                 // Validatie op addresstype
@@ -1484,7 +1484,7 @@ class ExternalWebformController extends Controller
             $addressHelper = new AddressHelper($contact, $contact->addressForPostalCodeCheck);
             $checkAddressOk = $addressHelper->checkAddress($project->id, false);
             if(!$checkAddressOk){
-                $this->log('Deelname kan niet worden aangemaakt vanweg volgende fouten:');
+                $this->log('Deelname kan niet worden aangemaakt vanwege volgende fouten:');
                 $this->log(implode(';', $addressHelper->messages));
                 return null;
             }

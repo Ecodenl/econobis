@@ -38,12 +38,15 @@ class AddressHelper
      * @param Address $address
      * @return bool
      */
-    public function checkDoubleAddressAllowed(): bool
+    public function checkDoubleAddressAllowed($abort): bool
     {
         foreach ($this->contact->participations as $participation) {
             if ($participation->project->check_double_addresses) {
                 if( $this->checkDoubleAddress($participation->project) ) {
-                    abort(412, 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.');
+                    if($abort){
+                        abort(412, 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.');
+                    }
+                    $this->messages = 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.';
                     return false;
                 }
             }
@@ -74,15 +77,15 @@ class AddressHelper
     {
         // Bij personen alleen checken indien primary address
         if($this->contact->type_id === ContactType::PERSON && !$this->address->primary) {
-            return null;
+            return true;
         }
         // Bij organisaties alleen checken indien eerste visit address
         if($this->contact->type_id === ContactType::ORGANISATION) {
             if($this->contact->addressForPostalCodeCheck && $this->contact->addressForPostalCodeCheck->id !== $this->address->id ) {
-                return null;
+                return true;
             }
             if(!$this->contact->addressForPostalCodeCheck && $this->address->type_id !== 'visit' ) {
-                return null;
+                return true;
             }
         }
 

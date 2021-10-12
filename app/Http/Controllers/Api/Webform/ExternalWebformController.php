@@ -58,10 +58,10 @@ use App\Eco\Team\Team;
 use App\Eco\Title\Title;
 use App\Eco\User\User;
 use App\Eco\Webform\Webform;
+use App\Helpers\Address\AddressHelper;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Workflow\IntakeWorkflowHelper;
-use App\Http\Controllers\Api\Address\AddressController;
 use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Controllers\Controller;
 use App\Notifications\WebformRequestProcessed;
@@ -1481,11 +1481,11 @@ class ExternalWebformController extends Controller
             if (!$project) $this->error('Er is een ongeldige waarde voor project meegegeven.');
 
             // Check address
-            $addressController = new AddressController();
-            $checkAddressOk = $addressController->checkAddress($contact, $contact->addressForPostalCodeCheck, $project->id, false);
+            $addressHelper = new AddressHelper($contact, $contact->addressForPostalCodeCheck);
+            $checkAddressOk = $addressHelper->checkAddress($project->id, false);
             if(!$checkAddressOk){
                 $this->log('Deelname kan niet worden aangemaakt vanweg volgende fouten:');
-                $this->log(implode(';', $addressController->messages));
+                $this->log(implode(';', $addressHelper->messages));
                 return null;
             }
 

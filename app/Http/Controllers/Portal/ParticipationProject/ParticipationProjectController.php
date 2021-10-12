@@ -20,6 +20,7 @@ use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\Project\Project;
 use App\Eco\User\User;
+use App\Helpers\Address\AddressHelper;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\Delete\Models\DeleteParticipation;
 use App\Helpers\Document\DocumentHelper;
@@ -131,8 +132,8 @@ class ParticipationProjectController extends Controller
         }
 
         if($project->check_double_addresses) {
-            $apiParticipationProjectController = new \App\Http\Controllers\Api\ParticipationProject\ParticipationProjectController();
-            if ($apiParticipationProjectController->checkDoubleAddress($project, $contact->id, $address->postalCodeNumberAddition)) {
+            $addressHelper = new AddressHelper($contact, $address);
+            if ($addressHelper->checkDoubleAddress($project)) {
                 abort(412, 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.');
                 return false;
             }

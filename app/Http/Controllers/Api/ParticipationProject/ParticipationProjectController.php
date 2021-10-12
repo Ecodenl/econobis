@@ -24,13 +24,13 @@ use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\ParticipantProject\ParticipantProjectStatus;
 use App\Eco\Project\ProjectValueCourse;
+use App\Helpers\Address\AddressHelper;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Excel\ParticipantExcelHelper;
 use App\Helpers\Excel\ParticipantExcelHelperHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
-use App\Http\Controllers\Api\Address\AddressController;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewParticipantProjectController;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\ContactGroup\FullContactGroup;
@@ -279,7 +279,8 @@ class ParticipationProjectController extends ApiController
                 $address = Address::where('contact_id', $contact->id)->where('type_id', 'visit')->first();
             }
 
-            $addressIsDouble = $this->checkDoubleAddress($project, $contact->id,  $address->postalCodeNumberAddition );
+            $addressHelper = new AddressHelper($contact, $address);
+            $addressIsDouble = $addressHelper->checkDoubleAddress($project );
             if($addressIsDouble){
                 array_push($errors, 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.' );
                 return ['id' => 0, 'message' => $errors];
@@ -529,26 +530,6 @@ class ParticipationProjectController extends ApiController
         return ParticipantProjectPeek::collection($participants);
     }
 
-
-    public function checkDoubleAddress(Project $project, $contactId, $postalCodeNumberAddition)
-    {
-        // For SCE projects with check on double addresses (as long as subsidy isn't provided):
-        // Check if all addresses of contact don't already exists as address of other participants.
-        $contactAddressesParticipants = [];
-        foreach ($project->participantsProject as $participant){
-            if($contactId != $participant->contact->id){
-                $contactAddressesParticipants = array_unique(array_merge($contactAddressesParticipants, $participant->contact->addressesActive->pluck('id', 'postalCodeNumberAddition')->toArray()));
-            }
-        }
-
-        $addressIsDouble = false;
-        if( array_key_exists($postalCodeNumberAddition, $contactAddressesParticipants) ){
-            $addressIsDouble = true;
-        }
-
-        return $addressIsDouble;
-    }
-
     public function validatePostalCode(&$message, Project $project, Contact $contact)
     {
         $checkText = 'Postcode check: ';
@@ -573,10 +554,10 @@ class ParticipationProjectController extends ApiController
         }
 
         // Check address
-        $addressController = new AddressController();
-        $checkAddressOk = $addressController->checkAddress($contact, $addressForPostalCodeCheck, $project->id, false);
+        $addressHelper = new AddressHelper($contact, $addressForPostalCodeCheck);
+        $checkAddressOk = $addressHelper->checkAddress($project->id, false);
         if(!$checkAddressOk){
-            array_push($message, $checkText . implode(';', $addressController->messages));
+            array_push($message, $checkText . implode(';', $addressHelper->messages));
             return false;
         }
     }

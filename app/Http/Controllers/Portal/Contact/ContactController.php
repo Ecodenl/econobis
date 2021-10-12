@@ -822,25 +822,8 @@ class ContactController extends ApiController
                 if($contact->noAddressesFound) {
                     $project->allowRegisterToProject = false;
                     $project->textNotAllowedRegisterToProject = 'Om in te schrijven voor dit project moeten er adresgegevens bekend zijn.';
-
                 // if addresses found, check postalcode
                 }else{
-                    // Check / get array postalcodes from postalcode_link. Postalcodes may be separted by a comma+space ('1001, 1002') or comma ('1001,1002') or space ('1001 1002');
-// todo WM opschonen
-//                    if (strpos($project->postalcode_link, ',') !== false) {
-//                        $projectPostalcodeLink = str_replace(" ","", $project->postalcode_link);
-//                        $validPostalAreas = explode(',', $projectPostalcodeLink);
-//                    }else{
-//                        $validPostalAreas = explode(' ', $project->postalcode_link);
-//                    }
-//                    $postalCodeAreaContact = substr($contact->addressForPostalCodeCheck->postal_code, 0 , 4);
-//                    // if postalcode contact not in postalcode link of project, then don't allow register to project;
-//                    if($validPostalAreas && !in_array($postalCodeAreaContact, $validPostalAreas)){
-//                        $project->allowRegisterToProject = false;
-//                        $project->textNotAllowedRegisterToProject = 'Om in te schrijven voor dit project moet postcode nummer ' . $postalCodeAreaContact . ' van deelnemer voorkomen in deelnemende postcode(s): ' . implode(', ', $validPostalAreas) . '.';
-//                        return false;
-//                    }
-
                     // Check address
                     $addressController = new AddressController();
                     $checkAddressOk = $addressController->checkAddress($contact, $contact->addressForPostalCodeCheck, $project->id, false);
@@ -849,7 +832,6 @@ class ContactController extends ApiController
                         $project->textNotAllowedRegisterToProject = implode(';', $addressController->messages);
                         return false;
                     }
-
                 }
             }
 

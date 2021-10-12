@@ -255,25 +255,20 @@ class AddressController extends ApiController
 
         if ($project->check_postalcode_link && !empty($project->postalcode_link)) {
 
-//todo WM opschonen Log regels
-//            Log::info('Project: ' . $project->id);
             $oneFullPostalCode = preg_match($this->regexPostalCode, $project->postalcode_link, $matches);
-//            Log::info('Postcoderoosgebied: ' . $project->postalcode_link . ', volledige postcode: ' . $oneFullPostalCode);
-//            Log::info('Huisnummerreeks   : ' . $project->address_number_series);
-
             if ($oneFullPostalCode && (!empty($project->address_number_series))) {
                 $checkPostalCodes = true;
                 $validPostalCodes[] = strtoupper($project->postalcode_link);
 
-                // Check / get array address number series from address_number_series. Address number series may be separted by a comma+space ('1, 2-5') or comma ('1,2-5');
+                // Check / get array address number series from address_number_series. Address number series may be separted by a  comma ('1,2:5,6-a');
                 if (strpos($project->address_number_series, ',') !== false) {
-                    $projectAddressNumberSeries = str_replace(" ", "", $project->address_number_series);
-                    $addressNumberSeries = explode(',', $projectAddressNumberSeries);
+                    $addressNumberSeries = explode(',', $project->address_number_series);
                 } else {
                     $addressNumberSeries[] = $project->address_number_series;
                 }
-                // Check / get ranges address number series from address_number_series. Address number series may be separted by a comma+space ('1, 2-5') or comma ('1,2-5');
+
                 foreach ($addressNumberSeries as $addressNumberSerie) {
+                    // Get address numbers from ranges (2:5 is range for address numbers 2,3,4,5);
                     if (strpos($addressNumberSerie, ':') !== false) {
                         $checkAddressNumbers = true;
                         $begin = substr($addressNumberSerie, 0, strpos($addressNumberSerie, ':'));
@@ -284,6 +279,7 @@ class AddressController extends ApiController
                             }
                         }
                     } else {
+                        // Get address numbers with additions (6-a is address number 6 with addition a);
                         if (strpos($addressNumberSerie, '-') !== false) {
                             $checkAddressNumberAdditions = true;
                             $validAddressNumberAdditions[] = strtoupper($addressNumberSerie);
@@ -292,7 +288,6 @@ class AddressController extends ApiController
                             $validAddressNumbers[] = strtoupper($addressNumberSerie);
                         }
                     }
-
                 }
             } else {
 
@@ -304,10 +299,8 @@ class AddressController extends ApiController
                     $postalCodes = explode(' ', $project->postalcode_link);
                 }
 
-
-                // Check / get ranges address number series from address_number_series. Address number series may be separted by a comma+space ('1, 2-5') or comma ('1,2-5');
                 foreach ($postalCodes as $postalCode) {
-
+                    // Split full postalcodes and postalcodeareas
                     $isFullPostalCode = preg_match($this->regexPostalCode, $postalCode, $matches);
                     if ($isFullPostalCode) {
                         $checkPostalCodes = true;
@@ -316,24 +309,12 @@ class AddressController extends ApiController
                         $checkPostalCodeAreas = true;
                         $validPostalCodeAreas[] = $postalCode;
                     }
-
                 }
             }
-
-//todo WM opschonen Log regels
-//                Log::info('Check Postcoderoosgebied: ' . $checkPostalCodeAreas );
-//                Log::info($validPostalCodeAreas );
-//                Log::info('Check Postcodes: ' . $checkPostalCodes );
-//                Log::info($validPostalCodes );
-//                Log::info('Check Huisnummerreeks: ' . $checkAddressNumbers );
-//                Log::info($validAddressNumbers );
-//                Log::info('Check Huisnummerreeks met toevoeging: ' . $checkAddressNumberAdditions );
-//                Log::info($validAddressNumberAdditions );
 
             if ($checkPostalCodeAreas || $checkPostalCodes) {
                 $postalCodeAreaContact = substr($address->postal_code, 0, 4);
                 $postalCodeContact = strtoupper(str_replace(" ", "", $address->postal_code));
-
                 if (!in_array($postalCodeAreaContact, $validPostalCodeAreas) && !in_array($postalCodeContact, $validPostalCodes)) {
                     $messages[] = 'Postcode ' . $address->postal_code . ' komt niet voor bij deelnemende postcodes "' . $project->postalcode_link . '" bij project ' . $project->name . ".";
                 }
@@ -341,7 +322,6 @@ class AddressController extends ApiController
             if ($checkAddressNumbers || $checkAddressNumberAdditions) {
                 $addressNumberContact = $address->number;
                 $addressNumberAdditionContact = strtoupper(str_replace(" ", "", $address->number . '-' . $address->addition));
-
                 if (!in_array($addressNumberContact, $validAddressNumbers) && !in_array($addressNumberAdditionContact, $validAddressNumberAdditions)) {
                     $messages[] = 'Postcode ' . $address->postal_code . ' en huisnummer ' . $address->number . '-' . $address->addition . ' komt niet voor bij deelnemende huisnummers "' . $project->address_number_series . '" bij project ' . $project->name . ".";
                 }

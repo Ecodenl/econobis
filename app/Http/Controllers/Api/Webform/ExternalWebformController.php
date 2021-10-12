@@ -177,11 +177,8 @@ class ExternalWebformController extends Controller
 
         $this->log('Aanroep succesvol afgerond tot nu toe. Eventueel verwerken van deelname, order, taak en aanmaak Hoomdossier volgen nog.');
 
-        // toevoegen deelname
         $participation = $this->addParticipationToContact($this->contact, $data['participation'], $this->webform);
-        // toevoegen order
         $order = $this->addOrderToContact($this->contact, $data['order']);
-        // toevoegen taak
         $this->addTaskToContact($this->contact, $data['responsible_ids'], $data['task'], $this->webform, $this->intake, $this->housingFile, $participation, $order);
 
         // evt nog Hoomdossier aanmaken indien van toepassing
@@ -2100,32 +2097,30 @@ class ExternalWebformController extends Controller
         $cooperation = Cooperation::first();
         $this->log("Aanmaken hoomdossier contact");
         if (!$cooperation || empty($cooperation->hoom_link)) {
-            $this->log("Kan geen Hoomdossier aanmaken want er is bij cooperatie geen hoomdossier link gevonden.");
+            return $this->log("Kan geen Hoomdossier aanmaken want er is bij cooperatie geen hoomdossier link gevonden.");
+        }
+        if (!$this->contact) {
+            return $this->log("Kan geen Hoomdossier aanmaken want er is geen contact gevonden.");
+        }
+        if ($this->contact->hoom_account_id) {
+            return $this->log("Koppeling hoomdossier bestaat al.");
         } else {
-            if (!$this->contact) {
-                $this->log("Kan geen Hoomdossier aanmaken want er is geen contact gevonden.");
-            } else {
-                if ($this->contact->hoom_account_id) {
-                    $this->log("Koppeling hoomdossier bestaat al.");
-                } else {
-                    // aanmaken hoomdossier
-                    try {
-                        $contactController = new ContactController();
-                        $contactController->makeHoomdossier($this->contact);
+            // aanmaken hoomdossier
+            try {
+                $contactController = new ContactController();
+                $contactController->makeHoomdossier($this->contact);
 
-                        $note = "Webformulier " . $this->webform->name . ".\n\n";
-                        $note .= "Hoomdossier aangemaakt voor contact " . $this->contact->full_name . " (" . $this->contact->number . ").\n";
-                        $this->addTaskCheckContact($this->responsibleIds, $this->contact, $this->webform, $note);
+                $note = "Webformulier " . $this->webform->name . ".\n\n";
+                $note .= "Hoomdossier aangemaakt voor contact " . $this->contact->full_name . " (" . $this->contact->number . ").\n";
+                $this->addTaskCheckContact($this->responsibleIds, $this->contact, $this->webform, $note);
 
-                    } catch (\Exception $errorHoomDossier) {
-                        $this->log("Fout bij aanmaken hoomdossier contact");
+            } catch (\Exception $errorHoomDossier) {
+                $this->log("Fout bij aanmaken hoomdossier contact");
 
-                        $note = "Webformulier " . $this->webform->name . ".\n\n";
-                        $note .= "Fout bij aanmaken hoomdossier voor contact " . $this->contact->full_name . " (" . $this->contact->number . ").\n";
-                        $note .= "Controleer contactgegevens\n";
-                        $this->addTaskCheckContact($this->responsibleIds, $this->contact, $this->webform, $note);
-                    }
-                }
+                $note = "Webformulier " . $this->webform->name . ".\n\n";
+                $note .= "Fout bij aanmaken hoomdossier voor contact " . $this->contact->full_name . " (" . $this->contact->number . ").\n";
+                $note .= "Controleer contactgegevens\n";
+                $this->addTaskCheckContact($this->responsibleIds, $this->contact, $this->webform, $note);
             }
         }
     }

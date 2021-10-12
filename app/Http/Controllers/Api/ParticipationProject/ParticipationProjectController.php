@@ -37,7 +37,6 @@ use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Jobs\ParticipationProject\CreateParticipantReport;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Eco\ParticipantProject\ParticipantProject;
-use App\Eco\PostalCodeLink\PostalCodeLink;
 use App\Eco\Project\Project;
 use App\Helpers\Delete\Models\DeleteParticipation;
 use App\Helpers\RequestInput\RequestInput;
@@ -573,22 +572,6 @@ class ParticipationProjectController extends ApiController
             return false;
         }
 
-// todo WM opschonen
-        // Check / get array postalcodes from postalcode_link. Postalcodes may be separted by a comma+space ('1001, 1002') or comma ('1001,1002') or space ('1001 1002');
-//        if (strpos($project->postalcode_link, ',') !== false) {
-//            $projectPostalcodeLink = str_replace(" ","", $project->postalcode_link);
-//            $validPostalAreas = explode(',', $projectPostalcodeLink);
-//        }else{
-//            $validPostalAreas = explode(' ', $project->postalcode_link);
-//        }
-//        if(!$validPostalAreas){
-//            array_push($message, $checkText . 'Project heeft geen geldige deelnemende postcode(s) in postcoderoos.');
-//            return false;
-//        }
-//        if(!in_array($postalCodeAreaContact, $validPostalAreas)){
-//            array_push($message, $checkText . 'Postcode nummer ' . $postalCodeAreaContact . ' van deelnemer niet gevonden in deelnemende postcode(s) in ' . $project->projectType->name . ' project: ' . implode(', ', $validPostalAreas) . '.');
-//            return false;
-//        }
         // Check address
         $addressController = new AddressController();
         $checkAddressOk = $addressController->checkAddress($contact, $addressForPostalCodeCheck, $project->id, false);

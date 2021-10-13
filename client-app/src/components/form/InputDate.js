@@ -155,7 +155,6 @@ InputDate.defaultProps = {
     required: '',
     readOnly: false,
     value: null,
-    id: '',
     name: '',
     textToolTip: '',
     error: false,

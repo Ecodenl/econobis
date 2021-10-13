@@ -20,5 +20,5 @@
 </script>
 
 <div id="root"></div>
-<script type="text/javascript" src="./js/vendors~bundle.3a1c9d46017220fa5799.js"></script><script type="text/javascript" src="./js/bundle.ccdd01311479cbe09ad7.js"></script></body>
+<script type="text/javascript" src="./js/vendors~bundle.d9e158c859f4395224ec.js"></script><script type="text/javascript" src="./js/bundle.79ec2ef449fd7b9d5cbe.js"></script></body>
 </html>

@@ -27,6 +27,7 @@ class OpportunityEvaluationFormEdit extends Component {
             opportunityEvaluation: {
                 id: props.opportunityEvaluation ? props.opportunityEvaluation.id : null,
                 opportunityId: props.opportunityId,
+                // isRealised: props.opportunityEvaluation ? props.opportunityEvaluation.isRealised : null,
                 isRealised: props.opportunityEvaluation ? props.opportunityEvaluation.isRealised : false,
                 isStatisfied: props.opportunityEvaluation ? props.opportunityEvaluation.isStatisfied : false,
                 wouldRecommendOrganisation: props.opportunityEvaluation
@@ -71,6 +72,12 @@ class OpportunityEvaluationFormEdit extends Component {
     render() {
         const { isRealised, isStatisfied, wouldRecommendOrganisation, note } = this.state.opportunityEvaluation;
 
+        // const statusRealised = [
+        //     // { id: '', name: 'Onbekend' },
+        //     { id: 0, name: 'Nee' },
+        //     { id: 1, name: 'Ja' },
+        // ];
+
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
@@ -80,6 +87,15 @@ class OpportunityEvaluationFormEdit extends Component {
                         value={isRealised}
                         onChangeAction={this.handleInputChange}
                     />
+                    {/*<InputSelect*/}
+                    {/*    label={'Is de maatregel uitgevoerd?'}*/}
+                    {/*    size={'col-sm-6'}*/}
+                    {/*    name={'isRealised'}*/}
+                    {/*    options={statusRealised}*/}
+                    {/*    value={isRealised}*/}
+                    {/*    placeholder={'Onbekend'}*/}
+                    {/*    onChangeAction={this.handleInputChange}*/}
+                    {/*/>*/}
                 </div>
 
                 <div className="row">

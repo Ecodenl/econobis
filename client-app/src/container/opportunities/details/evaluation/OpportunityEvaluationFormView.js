@@ -11,6 +11,13 @@ const OpportunityEvaluationFormView = props => {
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={'Is de maatregel uitgevoerd?'}
+                    // value={
+                    //     opportunityEvaluation === null || opportunityEvaluation.isRealised === null
+                    //         ? 'Onbekend'
+                    //         : opportunityEvaluation.isRealised
+                    //         ? 'Ja'
+                    //         : 'Nee'
+                    // }
                     value={opportunityEvaluation && opportunityEvaluation.isRealised ? 'Ja' : 'Nee'}
                 />
             </div>

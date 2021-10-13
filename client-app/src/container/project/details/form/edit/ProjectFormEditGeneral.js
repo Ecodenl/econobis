@@ -123,11 +123,15 @@ const ProjectFormEditGeneral = ({
     const helpTextLinkUnderstandInfo =
         'Gebruik {project_informatie_link} in tekst voor plaatsing van de project informatie link';
 
-    let addressNumberSeriesFieldEnabled =
-        postalcodeLink.replace(/\D/g, '').length === 4 && postalcodeLink.replace(/[0-9]/g, '').trim().length === 2;
+    let addressNumberSeriesFieldEnabled = postalcodeLink
+        ? postalcodeLink.replace(/\D/g, '').length === 4 && postalcodeLink.replace(/[0-9]/g, '').trim().length === 2
+        : false;
 
-    let regExpAddressNumberSeries = new RegExp('^[0-9,-]*$');
-    errors.addressNumberSeries = !regExpAddressNumberSeries.exec(addressNumberSeries);
+    let regExpPostalcodeLink = new RegExp('^[0-9a-zA-Z,]*$');
+    errors.postalcodeLink = postalcodeLink ? !regExpPostalcodeLink.exec(postalcodeLink) : false;
+
+    let regExpAddressNumberSeries = new RegExp('^[0-9a-zA-Z,:-]*$');
+    errors.addressNumberSeries = addressNumberSeries ? !regExpAddressNumberSeries.exec(addressNumberSeries) : false;
 
     return (
         <React.Fragment>
@@ -235,6 +239,10 @@ const ProjectFormEditGeneral = ({
                             name={'postalcodeLink'}
                             value={postalcodeLink}
                             onChangeAction={handleInputChange}
+                            size={'col-sm-5'}
+                            textToolTip={`Voor postcoderoosgebied geef de postcodes op gescheiden door een comma(,). Gebruik geen spaties. Voorbeeld: 1001,1002,1003AA,1003AB`}
+                            error={errors.postalcodeLink}
+                            errorMessage={'Ongeldige invoer, klik (i) voor uitleg.'}
                         />
                         {addressNumberSeriesFieldEnabled ? (
                             <InputText
@@ -242,8 +250,11 @@ const ProjectFormEditGeneral = ({
                                 name={'addressNumberSeries'}
                                 value={addressNumberSeries}
                                 onChangeAction={handleInputChange}
+                                size={'col-sm-5'}
+                                textToolTip={`Voor huisnummergebied geef de huisnummers op gescheiden door een comma(,). Gebruik een koppelteken (-) voor huisnummer toevoegingen.
+                                      Voor huisnummer reeksen gebruik dubbelpunt (:). Gebruik geen spaties. Voorbeeld: 1,2,4-10,11-a,11-b`}
                                 error={errors.addressNumberSeries}
-                                errorMessage={'Controleer invoer'}
+                                errorMessage={'Ongeldige invoer, klik (i) voor uitleg.'}
                             />
                         ) : (
                             <div className="form-group col-sm-6" />

@@ -127,7 +127,7 @@ const ProjectFormViewGeneral = ({
                                 value={checkPostalcodeLink ? 'Ja' : 'Nee'}
                             />
                             <ViewText
-                                label={'Verberg project in portal wanneer controle niet overeenkomt'}
+                                label={'Verberg project in contacten portal wanneer controle niet overeenkomt'}
                                 value={hideWhenNotMatchingPostalCheck ? 'Ja' : 'Nee'}
                             />
                         </div>
@@ -236,16 +236,16 @@ const ProjectFormViewGeneral = ({
                 </div>
             </section>
             <section>
-            <hr />
-            <h4 onClick={() => toggleCustomerPortalSettings(!showCustomerPortalSettings)}>
-                {showCustomerPortalSettings ? (
-                    <span className="glyphicon glyphicon-menu-down" />
-                ) : (
-                    <span className="glyphicon glyphicon-menu-right" />
-                )}
-                &nbsp;Contacten portal instellingen
-            </h4>
-        </section>
+                <hr />
+                <h4 onClick={() => toggleCustomerPortalSettings(!showCustomerPortalSettings)}>
+                    {showCustomerPortalSettings ? (
+                        <span className="glyphicon glyphicon-menu-down" />
+                    ) : (
+                        <span className="glyphicon glyphicon-menu-right" />
+                    )}
+                    &nbsp;Contacten portal instellingen
+                </h4>
+            </section>
             {showCustomerPortalSettings ? (
                 <section
                     onClick={

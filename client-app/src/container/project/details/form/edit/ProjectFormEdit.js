@@ -641,12 +641,14 @@ class ProjectFormEdit extends Component {
 
         // If isSceProject is false, init related fields.
         if (!project.isSceProject) {
-            project.checkDoubleAddresses = false;
             project.baseProjectCodeRef = null;
-        }
-        if (!project.isSceProject && project.projectType.codeRef !== 'postalcode_link_capital') {
-            project.checkPostalcodeLink = false;
+            project.checkDoubleAddresses = false;
+            project.postalcodeLink = null;
+            project.addressNumberSeries = null;
             project.hideWhenNotMatchingPostalCheck = false;
+            if (project.projectType.codeRef !== 'postalcode_link_capital') {
+                project.checkPostalcodeLink = false;
+            }
         }
 
         if (isNaN(project.amountOfLoanNeeded)) {

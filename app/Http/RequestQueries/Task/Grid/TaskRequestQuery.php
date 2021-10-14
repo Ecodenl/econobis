@@ -6,7 +6,7 @@
  * Time: 9:28
  */
 
-namespace App\Http\Controllers\Api\Task\Grid;
+namespace App\Http\RequestQueries\Task\Grid;
 
 use App\Eco\Task\Task;
 use Illuminate\Http\Request;

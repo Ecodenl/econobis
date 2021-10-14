@@ -6,7 +6,7 @@
  * Time: 11:30
  */
 
-namespace App\Http\Controllers\Api\Task\Grid;
+namespace App\Http\RequestQueries\Task\Grid;
 
 use App\Helpers\RequestQuery\RequestSort;
 

@@ -1097,6 +1097,7 @@ class ExternalWebformController extends Controller
             $organisation = Organisation::create([
                 'contact_id' => $contactOrganisation->id,
                 'name' => $data['organisation_name'],
+                'statutory_name' => '',
                 'website' => $data['website'],
                 'chamber_of_commerce_number' => $data['chamber_of_commerce_number'],
                 'vat_number' => $data['vat_number'],

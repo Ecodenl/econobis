@@ -171,6 +171,7 @@ class NewAccountController extends Controller
             $organisation = Organisation::create([
                 'contact_id' => $contactOrganisation->id,
                 'name' => $data['organisation_name'],
+                'statutory_name' => '',
             ]);
 
             $contactPerson = Contact::create([

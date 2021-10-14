@@ -512,7 +512,7 @@ class ContactController extends ApiController
             }
 
         }else{
-            if(!empty($addressData['street']) && !empty($addressData['postalCode']) && !empty($addressData['city'])) {
+            if(!empty($addressData['number']) && !empty($addressData['postalCode'])) {
                 $addressData['typeId'] = $addressType;
                 if ($addressType == 'visit') {
                     $addressData['primary'] = true;

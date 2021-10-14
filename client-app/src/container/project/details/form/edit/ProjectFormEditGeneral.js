@@ -227,7 +227,7 @@ const ProjectFormEditGeneral = ({
                             onChangeAction={handleInputChange}
                         />
                         <InputToggle
-                            label={'Verberg project in portal wanneer controle niet overeenkomt'}
+                            label={'Verberg project in contacten portal wanneer controle niet overeenkomt'}
                             name={'hideWhenNotMatchingPostalCheck'}
                             value={hideWhenNotMatchingPostalCheck}
                             onChangeAction={handleInputChange}

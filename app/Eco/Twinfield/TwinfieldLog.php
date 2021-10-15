@@ -41,17 +41,17 @@ class TwinfieldLog extends Model
         return $this->belongsTo(User::class);
     }
 
-//    public function getTwinfieldMessageType()
-//    {
-//        if (!$this->message_type) return null;
-//
-//        return TwinfieldMessageType::get($this->message_type);
-//    }
+    public function getTwinfieldLogMessageType()
+    {
+        if (!$this->message_type) return null;
 
-//    public function getTwinfieldMessageTypeNameAttribute()
-//    {
-//        if (!$this->message_type) return '';
-//
-//        return TwinfieldMessageType::get($this->message_type)->name;
-//    }
+        return TwinfieldLogMessageType::get($this->message_type);
+    }
+
+    public function getTwinfieldLogMessageTypeNameAttribute()
+    {
+        if (!$this->message_type) return '';
+
+        return TwinfieldLogMessageType::get($this->message_type)->name;
+    }
 }

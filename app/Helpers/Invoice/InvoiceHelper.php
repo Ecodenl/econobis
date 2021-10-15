@@ -428,8 +428,15 @@ class InvoiceHelper
             self::invoicePdfIsNotCreated($invoice);
             return false;
         }else{
+            $invoiceNumberPrefix =  $invoice->administration->prefix_invoice_number ? $invoice->administration->prefix_invoice_number : 'F';
+
             $invoice->invoice_number = $newInvoiceNumber;
-            $invoice->number = 'F' . $currentYear . '-' . $newInvoiceNumber;
+            if($currentYear > 2021){
+                $formatedNewInvoiceNumber = str_pad($newInvoiceNumber, 4, '0', STR_PAD_LEFT);
+            }else{
+                $formatedNewInvoiceNumber = $newInvoiceNumber;
+            }
+            $invoice->number = $invoiceNumberPrefix . $currentYear . '-' . $formatedNewInvoiceNumber;
             $invoice->save();
         }
 

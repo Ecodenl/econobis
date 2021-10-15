@@ -23,14 +23,20 @@ const InvoicePaymentsFormView = props => {
                 <div className="col-sm-3">{createdAt ? moment(createdAt).format('L') : ''}</div>
             </div>
             <div className="col-sm-1">
-                {props.showActionButtons && props.permissions.manageFinancial ? (
+                {!props.invoiceInTwinfield &&
+                !props.invoicePaidInTwinfield &&
+                props.showActionButtons &&
+                props.permissions.manageFinancial ? (
                     <a role="button" onClick={props.openEdit}>
                         <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
                     </a>
                 ) : (
                     ''
                 )}
-                {props.showActionButtons && props.permissions.manageFinancial ? (
+                {!props.invoiceInTwinfield &&
+                !props.invoicePaidInTwinfield &&
+                props.showActionButtons &&
+                props.permissions.manageFinancial ? (
                     <a role="button" onClick={props.toggleDelete}>
                         <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
                     </a>

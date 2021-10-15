@@ -27,6 +27,9 @@ class GridInvoice extends JsonResource
             $date = $this->date_sent;
         }
 
+        $invoiceInTwinfield = ($this->administration->uses_twinfield && $this->twinfield_number && !empty($this->twinfield_number)) ? true : false;
+        $invoicePaidInTwinfield = $invoiceInTwinfield || !$this->administration->date_sync_twinfield_invoices || $this->date_sent >= $this->administration->date_sync_twinfield_invoices;
+
         return [
             'id' => $this->id,
             'number' => $this->number,
@@ -53,7 +56,8 @@ class GridInvoice extends JsonResource
             'status' =>  FullEnumWithIdAndName::make($this->getStatus()),
             'subStatus' => $this->sub_status,
             'usesTwinfield' => $this->administration->uses_twinfield,
-            'invoiceInTwinfield' => ($this->administration->uses_twinfield && $this->twinfield_number && !empty($this->twinfield_number)) ? true : false,
+            'invoiceInTwinfield' => $invoiceInTwinfield,
+            'invoicePaidInTwinfield' => $invoicePaidInTwinfield,
             'compatibleWithTwinfield' => $this->isInvoiceFullyCompatibleWithTwinfield(),
             'twinfieldNumber' => $this->twinfield_number,
 

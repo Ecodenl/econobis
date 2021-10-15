@@ -12,7 +12,9 @@ use App\Eco\Address\Address;
 use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
 use App\Eco\Twinfield\TwinfieldCustomerNumber;
+use App\Eco\Twinfield\TwinfieldLog;
 use ErrorException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use phpDocumentor\Reflection\Types\Boolean;
 use PhpTwinfield\ApiConnectors\CustomerApiConnector;
@@ -26,16 +28,17 @@ use PhpTwinfield\Exception;
 use PhpTwinfield\Office;
 use PhpTwinfield\Secure\OpenIdConnectAuthentication;
 use PhpTwinfield\Secure\Provider\OAuthProvider;
-use PhpTwinfield\Secure\WebservicesAuthentication;
 use PhpTwinfield\Services\FinderService;
 
 class TwinfieldCustomerHelper
 {
     private $connection;
     private $administration;
+    private $fromInvoiceDateSent;
     private $office;
     private $redirectUri;
     private $customerApiConnector;
+    public $messages;
 
     /**
      * TwinfieldCustomerHelper constructor.
@@ -47,6 +50,12 @@ class TwinfieldCustomerHelper
         $this->administration = $administration;
         $this->office = Office::fromCode($administration->twinfield_office_code);
         $this->redirectUri = \Config::get('app.url_api') . '/twinfield';
+
+        if($this->administration->date_sync_twinfield_contacts){
+            $this->fromInvoiceDateSent = $this->administration->date_sync_twinfield_contacts;
+        }else{
+            $this->fromInvoiceDateSent = null;
+        }
 
         //Indien we al een connection hebben gemaakt (bijv. vanuit TwinfieldSalsTransaction), dan gebruiken we die, anders nieuwe maken.
         if($twinFieldConnection)
@@ -66,29 +75,75 @@ class TwinfieldCustomerHelper
                     $this->connection = null;
                 }
 
-            }else{
-                $this->connection = new WebservicesAuthentication($administration->twinfield_username, $administration->twinfield_password, $administration->twinfield_organization_code);
             }
         }
 
         $this->customerApiConnector = new CustomerApiConnector($this->connection);
+        $this->messages = [];
     }
 
-    public function createAllCustomers(){
+    public function processTwinfieldCustomer(){
         if(!$this->administration->uses_twinfield){
             return "Deze administratie maakt geen gebruik van Twinfield.";
+        }
+        if(!$this->administration->twinfield_is_valid){
+            return "Twinfield is onjuist geconfigureerd. Pas de configuratie aan om Twinfield te gebruiken.";
         }
         set_time_limit(0);
-        $contacts = Contact::all();
 
-        foreach ($contacts as $contact){
-            $this->createCustomer($contact);
+        // Als er twinfield gebruikt gaat worden, dan indien gewenst (date_sync_twinfield_contacts gezet)
+        // contacten aanmaken van reeds verzonden en betaalde notas vanaf opgegeven datum
+        if(!$this->fromInvoiceDateSent){
+            return "Synchroniseren contacten datum vanaf niet gezet. Er worden geen contacten gesynchroniseerd.";
         }
+
+        $invoicesToBeChecked = $this->administration->invoices()
+            ->whereNull('twinfield_number')
+            ->whereIn('status_id', ['sent', 'paid'])
+            ->where('date_sent', '>=', $this->fromInvoiceDateSent)
+            ->get();
+        foreach ($invoicesToBeChecked as $invoiceToBeChecked)
+        {
+            $twinfieldNumbers = $this->administration->twinfieldNumbers;
+            $twinfieldNumber  = $twinfieldNumbers->where('contact_id', '=', $invoiceToBeChecked->contact_id)->first();
+            // hoeft alleen indien contact nog niet gekoppeld is aan een Twinfield customer.
+            if(!$twinfieldNumber || !$twinfieldNumber->twinfield_number){
+                $this->createCustomer($invoiceToBeChecked->order->contact);
+            }
+        }
+        if(count($this->messages) == 0){
+            array_push($this->messages, 'Geen nieuwe contacten gevonden voor synchronisatie.');
+        }
+
+        return implode(';', $this->messages);
     }
 
-    public function createCustomer(Contact $contact){
+//    public function createAllCustomers(){
+//        if(!$this->administration->uses_twinfield){
+//            return "Deze administratie maakt geen gebruik van Twinfield.";
+//        }
+//        set_time_limit(0);
+//        $contacts = Contact::all();
+//
+//        foreach ($contacts as $contact){
+//            $this->createCustomer($contact);
+//        }
+//    }
+
+    public function createCustomer(Contact $contact)
+    {
         if(!$this->administration->uses_twinfield){
-            return "Deze administratie maakt geen gebruik van Twinfield.";
+            $message = 'Deze administratie maakt geen gebruik van Twinfield.';
+            TwinfieldLog::create([
+                'invoice_id' => null,
+                'contact_id' => $contact->id,
+                'message_text' => substr($message, 0, 256),
+                'message_type' => 'contact',
+                'user_id' => Auth::user()->id,
+                'is_error' => true,
+            ]);
+            array_push($this->messages, $message);
+            return false;
         }
 // Check of Customer al bestaat in Twinfield. We doen hier nog niets mee.
 //        if( $this->checkIfCustomerNameExists($contact) )
@@ -101,57 +156,123 @@ class TwinfieldCustomerHelper
 //        };
         // Check of contact / administratie al koppeling heeft met Twinfield
         $twinfieldCustomerNumber = $contact->twinfieldNumbers()->where('administration_id', $this->administration->id)->first();
+
+        $createNew = false;
         // Nog geen koppeling, dan aanmaken
         if(!$twinfieldCustomerNumber)
         {
             $customer = new Customer();
+            $createNew = true;
         }else{
             // Wel koppeling, check toch even of hij echt bestaat
-            // Zo niet, dan nieuw aanmaken ?
+            // Check of twinfieldnumber nog correct is
+            if($twinfieldCustomerNumber->twinfield_number != "D".$contact->number){
+                $message = 'Synchronisatie contact ' . $contact->number . ' niet gelukt. Mismatch Twinfieldnummer, in Econobis: ' . "D".$contact->number . ' in Twinfield: ' . $twinfieldCustomerNumber->twinfield_number . '.';
+                TwinfieldLog::create([
+                    'invoice_id' => null,
+                    'contact_id' => $contact->id,
+                    'message_text' => substr($message, 0, 256),
+                    'message_type' => 'contact',
+                    'user_id' => Auth::user()->id,
+                    'is_error' => true,
+                ]);
+                array_push($this->messages, $message);
+                return false;
+            }
+            // Check in Twinfield, bestaat hij daar echt, zo niet dan ook nieuw aanmaken ?
             try {
                 $customer = $this->getTwinfieldCustomerByCode($twinfieldCustomerNumber->twinfield_number);
+                if(!$customer || $customer->getUID() == null){
+                    $createNew = true;
+                }
             }
             catch(Exception $e){
-                $customer = new Customer();
-            }
-            catch(ErrorException $e){
-                $customer = new Customer();
+                $createNew = true;
             }
         }
 
-        $this->fillCustomer($contact, $customer);
+        if($createNew) {
+            $this->fillCustomer($contact, $customer);
 
-        if ($contact->iban) {
-            $this->fillCustomerBank($contact, $customer, null);
-        }
-        if ($contact->is_collect_mandate) {
-            $this->fillCustomerFinancials($contact, $customer);
-        }
-
-        try {
-            // Synchroniseren contact naar Twinfield customer
-            $response = $this->customerApiConnector->send($customer);
-            // Bij nieuwe koppeling, ook nieuw TwinfieldCustomerNumber aanmaken (twinfield nummer per contact/administratie
-            if(!$twinfieldCustomerNumber)
-            {
-                $twinfieldCustomerNumber = new TwinfieldCustomerNumber();
-                $twinfieldCustomerNumber->administration_id = $this->administration->id;
-                $twinfieldCustomerNumber->contact_id = $contact->id;
-                $twinfieldCustomerNumber->twinfield_number = $response->getCode();
-                $twinfieldCustomerNumber->save();
+            if ($contact->iban) {
+                $this->fillCustomerBank($contact, $customer, null);
+            }
+            if ($contact->is_collect_mandate) {
+                $this->fillCustomerFinancials($contact, $customer);
             }
 
-            return $response;
+            try {
+                // Synchroniseren contact naar Twinfield customer
+                $response = $this->customerApiConnector->send($customer);
 
-        } catch (PhpTwinfieldException $e) {
-            Log::error('Error: ' . $e->getMessage());
-            return 'Error: ' . $e->getMessage();
+                if($response && $response->getCode()) {
+                    $message = 'Contact ' . $contact->number . ' ' .  $contact->full_name  . ' succesvol gesynchroniseerd (' . $response->getCode() . ')';
+                    TwinfieldLog::create([
+                        'invoice_id' => null,
+                        'contact_id' => $contact->id,
+                        'message_text' => substr($message, 0, 256),
+                        'message_type' => 'contact',
+                        'user_id' => Auth::user()->id,
+                        'is_error' => false,
+                    ]);
+                    // Bij nieuwe koppeling, ook nieuw TwinfieldCustomerNumber aanmaken (twinfield nummer per contact/administratie
+                    if(!$twinfieldCustomerNumber)
+                    {
+                        $twinfieldCustomerNumber = new TwinfieldCustomerNumber();
+                        $twinfieldCustomerNumber->administration_id = $this->administration->id;
+                        $twinfieldCustomerNumber->contact_id = $contact->id;
+                        $twinfieldCustomerNumber->twinfield_number = $response->getCode();
+                        $twinfieldCustomerNumber->save();
+                    }
+                    array_push($this->messages, $message);
+                    return $response;
+                }else{
+                    $message = 'Synchronisatie contact ' . $contact->number . ' niet gelukt. Onbekende fout.';
+                    TwinfieldLog::create([
+                        'invoice_id' => null,
+                        'contact_id' => $contact->id,
+                        'message_text' => substr($message, 0, 256),
+                        'message_type' => 'contact',
+                        'user_id' => Auth::user()->id,
+                        'is_error' => true,
+                    ]);
+                    array_push($this->messages, $message);
+                }
+
+            } catch (PhpTwinfieldException $exceptionTwinfield) {
+                Log::error($exceptionTwinfield->getMessage());
+                $message = 'Synchronisatie contact ' . $contact->number . ' gaf de volgende twinfield foutmelding: ' . $exceptionTwinfield->getMessage();
+                TwinfieldLog::create([
+                    'invoice_id' => null,
+                    'contact_id' => $contact->id,
+                    'message_text' => substr($message, 0, 256),
+                    'message_type' => 'contact',
+                    'user_id' => Auth::user()->id,
+                    'is_error' => true,
+                ]);
+                array_push($this->messages, $message);
+            } catch (Exception $e) {
+                Log::error($e->getMessage());
+                $message = 'Synchronisatie contact ' . $contact->number . ' gaf de volgende foutmelding: ' . $e->getMessage();
+                TwinfieldLog::create([
+                    'invoice_id' => null,
+                    'contact_id' => $contact->id,
+                    'message_text' => substr($message, 0, 256),
+                    'message_type' => 'contact',
+                    'user_id' => Auth::user()->id,
+                    'is_error' => true,
+                ]);
+                array_push($this->messages, $message);
+            }
+
         }
+        return false;
     }
 
     public function updateCustomer(Contact $contact){
 
-        $messages = [];
+        $response = null;
+
         // Check of contact / administratie al koppeling heeft met Twinfield
         $twinfieldCustomerNumber = $contact->twinfieldNumbers()->where('administration_id', $this->administration->id)->first();
         if($twinfieldCustomerNumber)
@@ -168,19 +289,63 @@ class TwinfieldCustomerHelper
                 }
 
                 try {
-                        // Synchroniseren contact naar Twinfield customer
-                        $response = $this->customerApiConnector->send($customer);
-                        array_push($messages, 'Contact ' . $contact->number . ' ' .  $contact->full_name . ' succesvol gesynchroniseerd.');
-                    return null;
+                    // Synchroniseren contact naar Twinfield customer
+                    $response = $this->customerApiConnector->send($customer);
 
-                } catch (PhpTwinfieldException $e) {
-                    Log::error('Error: ' . $e->getMessage());
-                    array_push($messages, 'Synchronisatie contact gaf de volgende foutmelding: ' . $e->getMessage());
-                    return implode(';', $messages);
+                    if($response && $response->getCode()) {
+                        $message = 'Contact ' . $contact->number . ' ' .  $contact->full_name . ' succesvol gesynchroniseerd (' . $response->getCode() . ')';
+                        TwinfieldLog::create([
+                            'invoice_id' => null,
+                            'contact_id' => $contact->id,
+                            'message_text' => substr($message, 0, 256),
+                            'message_type' => 'contact',
+                            'user_id' => Auth::user()->id,
+                            'is_error' => false,
+                        ]);
+                        array_push($this->messages, $message);
+                        return $response;
+                    }else{
+                        $message = 'Synchronisatie contact ' . $contact->number . ' niet gelukt. Onbekende fout.';
+                        TwinfieldLog::create([
+                            'invoice_id' => null,
+                            'contact_id' => $contact->id,
+                            'message_text' => substr($message, 0, 256),
+                            'message_type' => 'contact',
+                            'user_id' => Auth::user()->id,
+                            'is_error' => true,
+                        ]);
+                        array_push($this->messages, $message);
+                    }
+
+                } catch (PhpTwinfieldException $exceptionTwinfield) {
+                    Log::error($exceptionTwinfield->getMessage());
+                    $message = 'Synchronisatie contact ' . $contact->number . ' gaf de volgende twinfield foutmelding: ' . $exceptionTwinfield->getMessage();
+                    TwinfieldLog::create([
+                        'invoice_id' => null,
+                        'contact_id' => $contact->id,
+                        'message_text' => substr($message, 0, 256),
+                        'message_type' => 'contact',
+                        'user_id' => Auth::user()->id,
+                        'is_error' => true,
+                    ]);
+                    array_push($this->messages, $message);
+                } catch (Exception $e) {
+                    Log::error($e->getMessage());
+                    $message = 'Synchronisatie contact ' . $contact->number . ' gaf de volgende foutmelding: ' . $e->getMessage();
+                    TwinfieldLog::create([
+                        'invoice_id' => null,
+                        'contact_id' => $contact->id,
+                        'message_text' => substr($message, 0, 256),
+                        'message_type' => 'contact',
+                        'user_id' => Auth::user()->id,
+                        'is_error' => true,
+                    ]);
+                    array_push($this->messages, $message);
                 }
             }
         }
 
+        return $response;
     }
 
     public function fillCustomerDimension(Contact $contact, Customer $customer){

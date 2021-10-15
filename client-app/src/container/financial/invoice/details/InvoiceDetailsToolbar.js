@@ -115,6 +115,7 @@ class InvoiceToolbar extends Component {
                                 <ButtonIcon iconName={'glyphicon-envelope'} onClickAction={this.showSendPost} />
                             )}
                         {!this.props.invoiceDetails.invoiceInTwinfield &&
+                            !this.props.invoiceDetails.invoicePaidInTwinfield &&
                             (this.props.invoiceDetails.statusId === 'sent' ||
                                 this.props.invoiceDetails.statusId === 'exported') && (
                                 <ButtonIcon iconName={'glyphicon-euro'} onClickAction={this.showSetPaid} />

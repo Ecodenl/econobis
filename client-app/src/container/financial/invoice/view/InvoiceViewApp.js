@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchInvoiceDetails } from '../../../../actions/invoice/InvoiceDetailsActions';
+import { fetchInvoiceFromTwinfieldDetails } from '../../../../actions/invoice/InvoiceDetailsActions';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InvoiceViewToolbar from './InvoiceViewToolbar';
@@ -21,7 +22,19 @@ class InvoiceViewApp extends Component {
     }
 
     componentDidMount() {
-        this.props.fetchInvoiceDetails(this.props.params.id);
+        if (this.props.params.id) {
+            this.props.fetchInvoiceDetails(
+                this.props.params.id,
+                this.props.params.twinfieldCode,
+                this.props.params.twinfieldNumber
+            );
+        }
+        if (this.props.params.twinfieldCode && this.props.params.twinfieldNumber) {
+            this.props.fetchInvoiceFromTwinfieldDetails(
+                this.props.params.twinfieldCode,
+                this.props.params.twinfieldNumber
+            );
+        }
     }
 
     zoomIn = () => {
@@ -59,7 +72,7 @@ class InvoiceViewApp extends Component {
                     </div>
 
                     <div className="col-md-12 margin-10-top">
-                        <InvoiceViewForm invoiceId={this.props.params.id} scale={this.state.scale} />
+                        <InvoiceViewForm invoiceDetails={this.props.invoiceDetails} scale={this.state.scale} />
                     </div>
                 </div>
             </div>
@@ -76,6 +89,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
     fetchInvoiceDetails: id => {
         dispatch(fetchInvoiceDetails(id));
+    },
+    fetchInvoiceFromTwinfieldDetails: (twinfieldCode, twinfieldNumber) => {
+        dispatch(fetchInvoiceFromTwinfieldDetails(twinfieldCode, twinfieldNumber));
     },
 });
 

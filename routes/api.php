@@ -411,6 +411,7 @@ Route::namespace('Api')
         Route::get('invoice/amount-unpaid', 'Invoice\InvoiceController@getAmountUnpaid');
         Route::post('invoice/send-all-post', 'Invoice\InvoiceController@sendAllPost');
         Route::post('invoice/create-sepa-for-invoice-ids', 'Invoice\InvoiceController@createSepaForInvoiceIds');
+        Route::get('invoice/from-twinfield', 'Invoice\InvoiceController@showFromTwinfield');
         Route::get('invoice/{invoice}', 'Invoice\InvoiceController@show');
         Route::get('invoice/{invoice}/download', 'Invoice\InvoiceController@download');
         Route::get('invoice/{invoice}/email-preview', 'Invoice\InvoiceController@getEmailPreview');

@@ -18,6 +18,21 @@ export default {
             });
     },
 
+    fetchInvoiceFromTwinfieldDetails: function(twinfieldCode, twinfieldNumber) {
+        const requestUrl = `${URL_INVOICE}/from-twinfield?twinfieldCode=${twinfieldCode}&twinfieldNumber=${twinfieldNumber}`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
+                return response.data.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    },
+
     newInvoice: invoice => {
         const requestUrl = `${URL_INVOICE}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');

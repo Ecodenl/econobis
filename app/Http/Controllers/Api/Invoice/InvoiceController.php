@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api\Invoice;
 
+use App\Eco\Administration\Administration;
 use App\Eco\Invoice\Invoice;
-use App\Eco\Invoice\InvoiceMolliePayment;
 use App\Eco\Invoice\InvoicePayment;
 use App\Eco\Invoice\InvoiceProduct;
 use App\Eco\Product\PriceHistory;
@@ -141,6 +141,22 @@ class InvoiceController extends ApiController
         $csv = $invoiceCSVHelper->downloadCSV();
 
         return $csv;
+    }
+
+    public function showFromTwinfield(Request $request)
+    {
+        $invoice = null;
+        if($request->input('twinfieldCode') && $request->input('twinfieldNumber')){
+            $administration = Administration::where('twinfield_office_code', $request->input('twinfieldCode') )->first();
+            if($administration){
+                $invoice = Invoice::where('administration_id', $administration->id )
+                    ->where('twinfield_number', $request->input('twinfieldNumber') )->first();
+            }
+        }
+        if($invoice){
+            return $this->show($invoice);
+        }
+        return null;
     }
 
     public function show(Invoice $invoice)

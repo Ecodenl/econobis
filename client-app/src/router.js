@@ -327,6 +327,7 @@ const Routes = () => {
                     /* Nota's */
                     <Route path="nota/:id" component={InvoiceDetailsApp} />
                     <Route path="nota/inzien/:id" component={InvoiceViewApp} />
+                    <Route path="nota/twinfield/:twinfieldCode/:twinfieldNumber" component={InvoiceViewApp} />
                     /* Waardestaten */
                     <Route path="waardestaten" component={FinancialOverviewListApp} />
                     <Route path="waardestaat/nieuw" component={FinancialOverviewNewApp} />

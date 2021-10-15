@@ -312,10 +312,10 @@ class ProjectNewApp extends Component {
         if (!project.isSceProject) {
             project.baseProjectCodeRef = null;
             project.checkDoubleAddresses = false;
-            project.postalcodeLink = null;
             project.addressNumberSeries = null;
             project.hideWhenNotMatchingPostalCheck = false;
             if (projectType && projectType.codeRef !== 'postalcode_link_capital') {
+                project.postalcodeLink = null;
                 project.checkPostalcodeLink = false;
             }
         }

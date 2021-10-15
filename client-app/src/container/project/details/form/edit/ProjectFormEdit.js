@@ -643,11 +643,11 @@ class ProjectFormEdit extends Component {
         if (!project.isSceProject) {
             project.baseProjectCodeRef = null;
             project.checkDoubleAddresses = false;
-            project.postalcodeLink = null;
             project.addressNumberSeries = null;
             project.hideWhenNotMatchingPostalCheck = false;
             if (project.projectType.codeRef !== 'postalcode_link_capital') {
                 project.checkPostalcodeLink = false;
+                project.postalcodeLink = null;
             }
         }
 

@@ -27,11 +27,11 @@ class OpportunityEvaluationFormEdit extends Component {
             opportunityEvaluation: {
                 id: props.opportunityEvaluation ? props.opportunityEvaluation.id : null,
                 opportunityId: props.opportunityId,
-                isRealised: props.opportunityEvaluation ? props.opportunityEvaluation.isRealised : false,
-                isStatisfied: props.opportunityEvaluation ? props.opportunityEvaluation.isStatisfied : false,
+                isRealised: props.opportunityEvaluation ? props.opportunityEvaluation.isRealised : null,
+                isStatisfied: props.opportunityEvaluation ? props.opportunityEvaluation.isStatisfied : null,
                 wouldRecommendOrganisation: props.opportunityEvaluation
                     ? props.opportunityEvaluation.wouldRecommendOrganisation
-                    : false,
+                    : null,
                 note: props.opportunityEvaluation ? props.opportunityEvaluation.note : '',
             },
         };
@@ -41,7 +41,6 @@ class OpportunityEvaluationFormEdit extends Component {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
-
         this.setState({
             ...this.state,
             opportunityEvaluation: {
@@ -71,31 +70,45 @@ class OpportunityEvaluationFormEdit extends Component {
     render() {
         const { isRealised, isStatisfied, wouldRecommendOrganisation, note } = this.state.opportunityEvaluation;
 
+        const statussen = [
+            { id: 0, name: 'Nee' },
+            { id: 1, name: 'Ja' },
+        ];
+
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
-                    <InputToggle
+                    <InputSelect
                         label={'Is de maatregel uitgevoerd?'}
+                        size={'col-sm-6'}
                         name={'isRealised'}
                         value={isRealised}
+                        options={statussen}
+                        placeholder={'Onbekend'}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
 
                 <div className="row">
-                    <InputToggle
+                    <InputSelect
                         label={'Bent u tevreden over de uitvoering?'}
+                        size={'col-sm-6'}
                         name={'isStatisfied'}
                         value={isStatisfied}
+                        options={statussen}
+                        placeholder={'Onbekend'}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
 
                 <div className="row">
-                    <InputToggle
+                    <InputSelect
                         label={'Zou u het bedrijf aanbevelen?'}
+                        size={'col-sm-6'}
                         name={'wouldRecommendOrganisation'}
                         value={wouldRecommendOrganisation}
+                        options={statussen}
+                        placeholder={'Onbekend'}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

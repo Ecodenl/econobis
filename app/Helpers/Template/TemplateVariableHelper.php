@@ -443,13 +443,13 @@ class TemplateVariableHelper
 //            case 'akkoord':
 //                break;
             case 'evaluatie_uitgevoerd':
-                return optional($model->opportunityEvaluation)->is_realised ? 'Ja' : 'Nee';
+                return (optional($model->opportunityEvaluation)->is_realised === null) ? 'Ónbekend' : ( $model->opportunityEvaluation->is_realised === '1' ? 'Ja' : 'Nee' );
                 break;
             case 'evaluatie_tevreden':
-                return optional($model->opportunityEvaluation)->is_statisfied ? 'Ja' : 'Nee';
+                return (optional($model->opportunityEvaluation)->is_statisfied === null) ? 'Ónbekend' : ( $model->opportunityEvaluation->is_statisfied === '1' ? 'Ja' : 'Nee' );
                 break;
             case 'evaluatie_aanbevelen':
-                return optional($model->opportunityEvaluation)->would_recommend_organisation ? 'Ja' : 'Nee';
+                return (optional($model->opportunityEvaluation)->would_recommend_organisation === null) ? 'Ónbekend' : ( $model->opportunityEvaluation->would_recommend_organisation === '1' ? 'Ja' : 'Nee' );
                 break;
             case 'evaluatie_opmerking':
                 return optional($model->opportunityEvaluation)->note;

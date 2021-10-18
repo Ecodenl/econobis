@@ -336,9 +336,7 @@ const DefaultContactOrganisationEdit = function({
                                     touched={touched}
                                     id="street_number"
                                     placeholder={'Nummer'}
-                                    disabled={
-                                        initialContact.isParticipantSceProject || initialContact.isParticipantPcrProject
-                                    }
+                                    disabled={initialContact.blockChangeAddressNumber}
                                 />
                             )}
                         />
@@ -353,9 +351,7 @@ const DefaultContactOrganisationEdit = function({
                                     touched={touched}
                                     id="addition"
                                     placeholder={'Toevoeging'}
-                                    disabled={
-                                        initialContact.isParticipantSceProject || initialContact.isParticipantPcrProject
-                                    }
+                                    disabled={initialContact.blockChangeAddressNumber}
                                 />
                             )}
                         />

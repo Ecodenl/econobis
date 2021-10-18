@@ -65,9 +65,9 @@ class OpportunityCSVHelper
                 $opportunity->created_at_date = $opportunity->created_at->format('d-m-Y');
                 $opportunity->updated_at_date = $opportunity->updated_at->format('d-m-Y');
 
-                $opportunity->is_realised = ($opportunity->opportunityEvaluation && $opportunity->opportunityEvaluation->is_realised) ? 'Ja' : 'Nee';
-                $opportunity->is_statisfied = ($opportunity->opportunityEvaluation && $opportunity->opportunityEvaluation->is_statisfied) ? 'Ja' : 'Nee';
-                $opportunity->would_recommend_organisation = ($opportunity->opportunityEvaluation && $opportunity->opportunityEvaluation->would_recommend_organisation) ? 'Ja' : 'Nee';
+                $opportunity->is_realised = ( !$opportunity->opportunityEvaluation || $opportunity->opportunityEvaluation->is_realised === null) ? 'Ónbekend' : ( $opportunity->opportunityEvaluation->is_realised === '1' ? 'Ja' : 'Nee' );
+                $opportunity->is_statisfied = ( !$opportunity->opportunityEvaluation || $opportunity->opportunityEvaluation->is_statisfied === null) ? 'Ónbekend' : ( $opportunity->opportunityEvaluation->is_statisfied === '1' ? 'Ja' : 'Nee' );
+                $opportunity->would_recommend_organisation = ( !$opportunity->opportunityEvaluation || $opportunity->opportunityEvaluation->would_recommend_organisation === null) ? 'Ónbekend' : ( $opportunity->opportunityEvaluation->would_recommend_organisation === '1' ? 'Ja' : 'Nee' );
 
                 $address = $opportunity->intake->address;
 

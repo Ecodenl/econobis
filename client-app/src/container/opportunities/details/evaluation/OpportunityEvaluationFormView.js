@@ -11,28 +11,39 @@ const OpportunityEvaluationFormView = props => {
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={'Is de maatregel uitgevoerd?'}
-                    // value={
-                    //     opportunityEvaluation === null || opportunityEvaluation.isRealised === null
-                    //         ? 'Onbekend'
-                    //         : opportunityEvaluation.isRealised
-                    //         ? 'Ja'
-                    //         : 'Nee'
-                    // }
-                    value={opportunityEvaluation && opportunityEvaluation.isRealised ? 'Ja' : 'Nee'}
+                    value={
+                        opportunityEvaluation === null || opportunityEvaluation.isRealised === null
+                            ? 'Onbekend'
+                            : opportunityEvaluation.isRealised === '1'
+                            ? 'Ja'
+                            : 'Nee'
+                    }
                 />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={'Bent u tevreden over de uitvoering?'}
-                    value={opportunityEvaluation && opportunityEvaluation.isStatisfied ? 'Ja' : 'Nee'}
+                    value={
+                        opportunityEvaluation === null || opportunityEvaluation.isStatisfied === null
+                            ? 'Onbekend'
+                            : opportunityEvaluation.isStatisfied === '1'
+                            ? 'Ja'
+                            : 'Nee'
+                    }
                 />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={'Zou u het bedrijf aanbevelen?'}
-                    value={opportunityEvaluation && opportunityEvaluation.wouldRecommendOrganisation ? 'Ja' : 'Nee'}
+                    value={
+                        opportunityEvaluation === null || opportunityEvaluation.wouldRecommendOrganisation === null
+                            ? 'Onbekend'
+                            : opportunityEvaluation.wouldRecommendOrganisation === '1'
+                            ? 'Ja'
+                            : 'Nee'
+                    }
                 />
             </div>
 

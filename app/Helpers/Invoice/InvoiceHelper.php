@@ -403,7 +403,7 @@ class InvoiceHelper
             $prefix = $invoice->order->contact->person->last_name_prefix;
             $contactName = $prefix ? $invoice->order->contact->person->first_name . ' ' . $prefix . ' ' . $invoice->order->contact->person->last_name : $invoice->order->contact->person->first_name . ' ' . $invoice->order->contact->person->last_name;
         } elseif ($invoice->order->contact->type_id == 'organisation') {
-            $contactName = $invoice->order->contact->full_name;
+            $contactName = optional($invoice->order->contact->organisation)->statutory_name ? $invoice->order->contact->organisation->statutory_name : $invoice->order->contact->full_name;
         }
         // indien preview, dan zijn we nu klaar om PDF te tonen
         if ($preview) {

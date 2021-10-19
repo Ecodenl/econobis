@@ -203,7 +203,7 @@ class SystemData extends JsonResource
             'productDurations' => FullEnumWithIdAndName::collection(ProductDuration::collection()),
             'productInvoiceFrequencies' => FullEnumWithIdAndName::collection(ProductInvoiceFrequency::collection()),
             'productPaymentTypes' => FullEnumWithIdAndName::collection(ProductPaymentType::collection()),
-            'products' => FullProduct::collection(Product::all()),
+            'products' => FullProduct::collection(Product::orderBy('name')->get()),
             'projectRevenueCategories' => GenericResource::collection(ProjectRevenueCategory::all()),
             'projectRevenueDistributionTypes' => FullEnumWithIdAndName::collection(ProjectRevenueDistributionType::collection()),
             'projectRevenueTypes' => GenericResource::collection(ProjectRevenueType::all()),

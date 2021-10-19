@@ -13,11 +13,17 @@ class ChangeFieldsOpportunityEvaluation extends Migration
      */
     public function up()
     {
-        Schema::table('opportunity_evaluation', function (Blueprint $table) {
-            $table->string('is_realised', 1)->nullable()->change();
-            $table->string('is_statisfied',1)->nullable()->change();
-            $table->string('would_recommend_organisation',1)->nullable()->change();
+        Schema::create('opportunity_evaluation_status', function (Blueprint $table) {
+            $table->unsignedInteger('id');
+            $table->string('name');
         });
+
+        DB::table('opportunity_evaluation_status')->insert(
+            [
+                ['id' => 0, 'name' => 'Nee'],
+                ['id' => 1, 'name' => 'Ja'],
+                ['id' => 9, 'name' => 'Onbekend'],
+            ]);
     }
 
     /**
@@ -27,10 +33,7 @@ class ChangeFieldsOpportunityEvaluation extends Migration
      */
     public function down()
     {
-        Schema::table('opportunity_evaluation', function (Blueprint $table) {
-            $table->boolean('is_realised')->change();
-            $table->boolean('is_statisfied')->change();
-            $table->boolean('would_recommend_organisation')->change();
-        });
+        Schema::dropIfExists('opportunity_evaluation_status');
+
     }
 }

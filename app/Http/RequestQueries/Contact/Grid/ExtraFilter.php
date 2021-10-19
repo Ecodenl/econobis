@@ -28,7 +28,10 @@ class ExtraFilter extends RequestExtraFilter
         'staticContactGroup',
         'occupation',
         'occupationPrimary',
-        'opportunity',
+        'opportunityMeasureCategory',
+        'opportunityStatus',
+        'opportunityMeasure',
+        'opportunityEvaluationStatus',
         'campaign',
         'product',
         'dateStart',
@@ -332,7 +335,7 @@ class ExtraFilter extends RequestExtraFilter
 
     }
 
-    protected function applyOpportunityFilter($query, $type, $data)
+    protected function applyOpportunityMeasureCategoryFilter($query, $type, $data)
     {
         if(empty($data)){
             switch($type) {
@@ -361,6 +364,122 @@ class ExtraFilter extends RequestExtraFilter
             }
         }
 
+    }
+
+    protected function applyOpportunityStatusFilter($query, $type, $data)
+    {
+        if(empty($data)){
+            switch($type) {
+                case 'eq':
+                    $query->whereHas('opportunities');
+                    break;
+                default:
+                    $query->whereDoesntHave('opportunities');
+                    break;
+            }
+        }else{
+            switch($type) {
+                case 'neq':
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('opportunities')
+                            ->orWhereDoesntHave('opportunities', function ($query) use ($type, $data) {
+                                RequestFilter::applyFilter($query, 'status_id', 'eq', $data);
+                            });
+                    });
+                    break;
+                default:
+                    $query->whereHas('opportunities', function ($query) use ($type, $data) {
+                        RequestFilter::applyFilter($query, 'status_id', $type, $data);
+                    });
+                    break;
+            }
+        }
+    }
+
+    protected function applyOpportunityMeasureFilter($query, $type, $data)
+    {
+        if(empty($data)){
+            switch($type) {
+                case 'eq':
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereHas('opportunities', function ($query) use ($type, $data) {
+                            $query->whereHas('measures');
+                            });
+                    });
+                    break;
+                default:
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('opportunities')
+                            ->orWhereHas('opportunities', function ($query) use ($type, $data) {
+                                $query->whereDoesntHave('measures');
+                            });
+                    });
+                    break;
+            }
+        }else{
+            switch($type) {
+                case 'neq':
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('opportunities')
+                            ->orWhereDoesntHave('opportunities', function ($query) use ($type, $data) {
+                                $query->whereHas('measures', function ($query) use ($type, $data) {
+                                    RequestFilter::applyFilter($query, 'measure_opportunity.measure_id', 'eq', $data);
+                                });
+                            });
+                    });
+                    break;
+                default:
+                    $query->whereHas('opportunities', function ($query) use ($type, $data) {
+                        $query->whereHas('measures', function ($query) use ($type, $data) {
+                            RequestFilter::applyFilter($query, 'measure_opportunity.measure_id', $type, $data);
+                        });
+                    });
+                    break;
+            }
+        }
+    }
+
+    protected function applyOpportunityEvaluationStatusFilter($query, $type, $data)
+    {
+        if(empty($data)){
+            switch($type) {
+                case 'eq':
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereHas('opportunities', function ($query) use ($type, $data) {
+                            $query->whereHas('opportunityEvaluation');
+                        });
+                    });
+                    break;
+                default:
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('opportunities')
+                            ->orWhereHas('opportunities', function ($query) use ($type, $data) {
+                                $query->whereDoesntHave('opportunityEvaluation');
+                            });
+                    });
+                    break;
+            }
+        }else{
+            switch($type) {
+                case 'neq':
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('opportunities')
+                            ->orWhereDoesntHave('opportunities', function ($query) use ($type, $data) {
+                                $query->whereHas('opportunityEvaluation', function ($query) use ($type, $data) {
+                                    RequestFilter::applyFilter($query, 'opportunity_evaluation.is_realised', 'eq', $data);
+                                });
+                            });
+                    });
+                    break;
+                default:
+                    $query->whereHas('opportunities', function ($query) use ($type, $data) {
+                        $query->whereHas('opportunityEvaluation', function ($query) use ($type, $data) {
+                            RequestFilter::applyFilter($query, 'opportunity_evaluation.is_realised', $type, $data);
+                        });
+                    });
+                    break;
+            }
+        }
     }
 
     protected function applyCampaignFilter($query, $type, $data)

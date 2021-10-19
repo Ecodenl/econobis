@@ -189,23 +189,14 @@ class OpportunityController extends ApiController
 
         $data = $requestInput
             ->integer('opportunityId')->validate('required|exists:opportunities,id')->alias('opportunity_id')->next()
-            ->string('isRealised')->whenMissing(null)->alias('is_realised')->next()
-            ->string('isStatisfied')->whenMissing(null)->alias('is_statisfied')->next()
-            ->string('wouldRecommendOrganisation')->whenMissing(null)->alias('would_recommend_organisation')->next()
+            ->integer('isRealised')->whenMissing(9)->alias('is_realised')->next()
+            ->integer('isStatisfied')->whenMissing(9)->alias('is_statisfied')->next()
+            ->integer('wouldRecommendOrganisation')->whenMissing(9)->alias('would_recommend_organisation')->next()
             ->string('note')->next()
             ->get();
 
         $opportunityEvaluation = new OpportunityEvaluation();
         $opportunityEvaluation->fill($data);
-        if($opportunityEvaluation->is_realised == '') {
-            $opportunityEvaluation->is_realised = null;
-        }
-        if($opportunityEvaluation->is_statisfied == '') {
-            $opportunityEvaluation->is_statisfied = null;
-        }
-        if($opportunityEvaluation->would_recommend_organisation == '') {
-            $opportunityEvaluation->would_recommend_organisation = null;
-        }
         $opportunityEvaluation->save();
 
         return $this->show($opportunityEvaluation->opportunity);
@@ -216,22 +207,13 @@ class OpportunityController extends ApiController
 
         $data = $requestInput
             ->integer('opportunityId')->validate('required|exists:opportunities,id')->alias('opportunity_id')->next()
-            ->string('isRealised')->whenMissing(null)->alias('is_realised')->next()
-            ->string('isStatisfied')->whenMissing(null)->alias('is_statisfied')->next()
-            ->string('wouldRecommendOrganisation')->whenMissing(null)->alias('would_recommend_organisation')->next()
+            ->integer('isRealised')->whenMissing(9)->alias('is_realised')->next()
+            ->integer('isStatisfied')->whenMissing(9)->alias('is_statisfied')->next()
+            ->integer('wouldRecommendOrganisation')->whenMissing(9)->alias('would_recommend_organisation')->next()
             ->string('note')->next()
             ->get();
 
         $opportunityEvaluation->fill($data);
-        if($opportunityEvaluation->is_realised == '') {
-            $opportunityEvaluation->is_realised = null;
-        }
-        if($opportunityEvaluation->is_statisfied == '') {
-            $opportunityEvaluation->is_statisfied = null;
-        }
-        if($opportunityEvaluation->would_recommend_organisation == '') {
-            $opportunityEvaluation->would_recommend_organisation = null;
-        }
         $opportunityEvaluation->save();
 
         return $this->show($opportunityEvaluation->opportunity);

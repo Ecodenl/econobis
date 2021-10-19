@@ -27,11 +27,11 @@ class OpportunityEvaluationFormEdit extends Component {
             opportunityEvaluation: {
                 id: props.opportunityEvaluation ? props.opportunityEvaluation.id : null,
                 opportunityId: props.opportunityId,
-                isRealised: props.opportunityEvaluation ? props.opportunityEvaluation.isRealised : null,
-                isStatisfied: props.opportunityEvaluation ? props.opportunityEvaluation.isStatisfied : null,
+                isRealised: props.opportunityEvaluation ? props.opportunityEvaluation.isRealised : 9,
+                isStatisfied: props.opportunityEvaluation ? props.opportunityEvaluation.isStatisfied : 9,
                 wouldRecommendOrganisation: props.opportunityEvaluation
                     ? props.opportunityEvaluation.wouldRecommendOrganisation
-                    : null,
+                    : 9,
                 note: props.opportunityEvaluation ? props.opportunityEvaluation.note : '',
             },
         };
@@ -41,6 +41,7 @@ class OpportunityEvaluationFormEdit extends Component {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
+
         this.setState({
             ...this.state,
             opportunityEvaluation: {
@@ -70,11 +71,6 @@ class OpportunityEvaluationFormEdit extends Component {
     render() {
         const { isRealised, isStatisfied, wouldRecommendOrganisation, note } = this.state.opportunityEvaluation;
 
-        const statussen = [
-            { id: 0, name: 'Nee' },
-            { id: 1, name: 'Ja' },
-        ];
-
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
@@ -83,8 +79,8 @@ class OpportunityEvaluationFormEdit extends Component {
                         size={'col-sm-6'}
                         name={'isRealised'}
                         value={isRealised}
-                        options={statussen}
-                        placeholder={'Onbekend'}
+                        options={this.props.opportunityEvaluationStatuses}
+                        emptyOption={false}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
@@ -95,8 +91,8 @@ class OpportunityEvaluationFormEdit extends Component {
                         size={'col-sm-6'}
                         name={'isStatisfied'}
                         value={isStatisfied}
-                        options={statussen}
-                        placeholder={'Onbekend'}
+                        options={this.props.opportunityEvaluationStatuses}
+                        emptyOption={false}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
@@ -107,8 +103,8 @@ class OpportunityEvaluationFormEdit extends Component {
                         size={'col-sm-6'}
                         name={'wouldRecommendOrganisation'}
                         value={wouldRecommendOrganisation}
-                        options={statussen}
-                        placeholder={'Onbekend'}
+                        options={this.props.opportunityEvaluationStatuses}
+                        emptyOption={false}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
@@ -152,6 +148,7 @@ const mapStateToProps = state => {
     return {
         opportunityEvaluation: state.opportunityDetails.opportunityEvaluation,
         opportunityId: state.opportunityDetails.id,
+        opportunityEvaluationStatuses: state.systemData.opportunityEvaluationStatuses,
     };
 };
 

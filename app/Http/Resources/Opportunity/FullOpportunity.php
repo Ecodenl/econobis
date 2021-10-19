@@ -30,7 +30,7 @@ class FullOpportunity extends JsonResource
             'number' => $this->number,
             'status' => GenericResource::make($this->whenLoaded('status')),
             'datePlannedToSendWfEmailStatus' => $this->date_planned_to_send_wf_email_status,
-            'opportunityEvaluation' => GenericResource::make($this->whenLoaded('opportunityEvaluation')),
+            'opportunityEvaluation' => FullOpportunityEvaluation::make($this->whenLoaded('opportunityEvaluation')),
             'intake' => FullIntake::make($this->whenLoaded('intake')),
             'quotationText' => $this->quotation_text,
             'quotationRequests' => FullQuotationRequest::collection($this->whenLoaded('quotationRequests')),

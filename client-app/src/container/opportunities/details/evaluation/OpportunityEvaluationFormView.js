@@ -12,11 +12,9 @@ const OpportunityEvaluationFormView = props => {
                 <ViewText
                     label={'Is de maatregel uitgevoerd?'}
                     value={
-                        opportunityEvaluation === null || opportunityEvaluation.isRealised === null
-                            ? 'Onbekend'
-                            : opportunityEvaluation.isRealised === '1'
-                            ? 'Ja'
-                            : 'Nee'
+                        opportunityEvaluation && opportunityEvaluation.realisedStatus
+                            ? opportunityEvaluation.realisedStatus.name
+                            : 'Nog geen evaluatie'
                     }
                 />
             </div>
@@ -25,11 +23,9 @@ const OpportunityEvaluationFormView = props => {
                 <ViewText
                     label={'Bent u tevreden over de uitvoering?'}
                     value={
-                        opportunityEvaluation === null || opportunityEvaluation.isStatisfied === null
-                            ? 'Onbekend'
-                            : opportunityEvaluation.isStatisfied === '1'
-                            ? 'Ja'
-                            : 'Nee'
+                        opportunityEvaluation && opportunityEvaluation.statisfiedStatus
+                            ? opportunityEvaluation.statisfiedStatus.name
+                            : 'Nog geen evaluatie'
                     }
                 />
             </div>
@@ -38,11 +34,9 @@ const OpportunityEvaluationFormView = props => {
                 <ViewText
                     label={'Zou u het bedrijf aanbevelen?'}
                     value={
-                        opportunityEvaluation === null || opportunityEvaluation.wouldRecommendOrganisation === null
-                            ? 'Onbekend'
-                            : opportunityEvaluation.wouldRecommendOrganisation === '1'
-                            ? 'Ja'
-                            : 'Nee'
+                        opportunityEvaluation && opportunityEvaluation.recommendOrganisationStatus
+                            ? opportunityEvaluation.recommendOrganisationStatus.name
+                            : 'Nog geen evaluatie'
                     }
                 />
             </div>

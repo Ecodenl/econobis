@@ -189,9 +189,9 @@ class OpportunityController extends ApiController
 
         $data = $requestInput
             ->integer('opportunityId')->validate('required|exists:opportunities,id')->alias('opportunity_id')->next()
-            ->boolean('isRealised')->alias('is_realised')->next()
-            ->boolean('isStatisfied')->alias('is_statisfied')->next()
-            ->boolean('wouldRecommendOrganisation')->alias('would_recommend_organisation')->next()
+            ->integer('isRealised')->whenMissing(9)->alias('is_realised')->next()
+            ->integer('isStatisfied')->whenMissing(9)->alias('is_statisfied')->next()
+            ->integer('wouldRecommendOrganisation')->whenMissing(9)->alias('would_recommend_organisation')->next()
             ->string('note')->next()
             ->get();
 
@@ -207,9 +207,9 @@ class OpportunityController extends ApiController
 
         $data = $requestInput
             ->integer('opportunityId')->validate('required|exists:opportunities,id')->alias('opportunity_id')->next()
-            ->boolean('isRealised')->alias('is_realised')->next()
-            ->boolean('isStatisfied')->alias('is_statisfied')->next()
-            ->boolean('wouldRecommendOrganisation')->alias('would_recommend_organisation')->next()
+            ->integer('isRealised')->whenMissing(9)->alias('is_realised')->next()
+            ->integer('isStatisfied')->whenMissing(9)->alias('is_statisfied')->next()
+            ->integer('wouldRecommendOrganisation')->whenMissing(9)->alias('would_recommend_organisation')->next()
             ->string('note')->next()
             ->get();
 

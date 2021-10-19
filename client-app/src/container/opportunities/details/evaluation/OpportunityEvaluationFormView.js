@@ -11,21 +11,33 @@ const OpportunityEvaluationFormView = props => {
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={'Is de maatregel uitgevoerd?'}
-                    value={opportunityEvaluation && opportunityEvaluation.isRealised ? 'Ja' : 'Nee'}
+                    value={
+                        opportunityEvaluation && opportunityEvaluation.realisedStatus
+                            ? opportunityEvaluation.realisedStatus.name
+                            : 'Nog geen evaluatie'
+                    }
                 />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={'Bent u tevreden over de uitvoering?'}
-                    value={opportunityEvaluation && opportunityEvaluation.isStatisfied ? 'Ja' : 'Nee'}
+                    value={
+                        opportunityEvaluation && opportunityEvaluation.statisfiedStatus
+                            ? opportunityEvaluation.statisfiedStatus.name
+                            : 'Nog geen evaluatie'
+                    }
                 />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={'Zou u het bedrijf aanbevelen?'}
-                    value={opportunityEvaluation && opportunityEvaluation.wouldRecommendOrganisation ? 'Ja' : 'Nee'}
+                    value={
+                        opportunityEvaluation && opportunityEvaluation.recommendOrganisationStatus
+                            ? opportunityEvaluation.recommendOrganisationStatus.name
+                            : 'Nog geen evaluatie'
+                    }
                 />
             </div>
 

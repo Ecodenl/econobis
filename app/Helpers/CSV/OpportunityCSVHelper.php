@@ -9,6 +9,7 @@
 namespace App\Helpers\CSV;
 
 use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\Opportunity\OpportunityEvaluationStatus;
 use App\Eco\Project\ProjectRevenue;
 use Carbon\Carbon;
 use League\Csv\Reader;
@@ -65,9 +66,9 @@ class OpportunityCSVHelper
                 $opportunity->created_at_date = $opportunity->created_at->format('d-m-Y');
                 $opportunity->updated_at_date = $opportunity->updated_at->format('d-m-Y');
 
-                $opportunity->is_realised = ($opportunity->opportunityEvaluation && $opportunity->opportunityEvaluation->is_realised) ? 'Ja' : 'Nee';
-                $opportunity->is_statisfied = ($opportunity->opportunityEvaluation && $opportunity->opportunityEvaluation->is_statisfied) ? 'Ja' : 'Nee';
-                $opportunity->would_recommend_organisation = ($opportunity->opportunityEvaluation && $opportunity->opportunityEvaluation->would_recommend_organisation) ? 'Ja' : 'Nee';
+                $opportunity->is_realised = optional($opportunity->opportunityEvaluation)->is_realised ? OpportunityEvaluationStatus::find($opportunity->opportunityEvaluation->is_realised)->name : 'Nog geen evaluatie';
+                $opportunity->is_statisfied = optional($opportunity->opportunityEvaluation)->is_statisfied ? OpportunityEvaluationStatus::find($opportunity->opportunityEvaluation->is_statisfied)->name : 'Nog geen evaluatie';
+                $opportunity->would_recommend_organisation = optional($opportunity->opportunityEvaluation)->would_recommend_organisation ? OpportunityEvaluationStatus::find($opportunity->opportunityEvaluation->would_recommend_organisation)->name : 'Nog geen evaluatie';
 
                 $address = $opportunity->intake->address;
 
@@ -89,8 +90,8 @@ class OpportunityCSVHelper
                 $opportunity->primaryphoneNumber = $opportunity->intake->contact->primaryphoneNumber ? $opportunity->intake->contact->primaryphoneNumber->number : '';
                 $opportunity->primaryEmailAddress = $opportunity->intake->contact->primaryEmailAddress ? $opportunity->intake->contact->primaryEmailAddress->email : '';
 
-                $opportunity->updated_by = $opportunity->updatedBy->present()->fullName();
-                $opportunity->created_by = $opportunity->createdBy->present()->fullName();
+                $opportunity->updated_by = $opportunity->updatedBy ? $opportunity->updatedBy->present()->fullName() : '';
+                $opportunity->created_by = $opportunity->createdBy ? $opportunity->createdBy->present()->fullName() : '';
             });
 
 

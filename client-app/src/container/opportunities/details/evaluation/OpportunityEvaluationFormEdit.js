@@ -27,11 +27,11 @@ class OpportunityEvaluationFormEdit extends Component {
             opportunityEvaluation: {
                 id: props.opportunityEvaluation ? props.opportunityEvaluation.id : null,
                 opportunityId: props.opportunityId,
-                isRealised: props.opportunityEvaluation ? props.opportunityEvaluation.isRealised : false,
-                isStatisfied: props.opportunityEvaluation ? props.opportunityEvaluation.isStatisfied : false,
+                isRealised: props.opportunityEvaluation ? props.opportunityEvaluation.isRealised : 9,
+                isStatisfied: props.opportunityEvaluation ? props.opportunityEvaluation.isStatisfied : 9,
                 wouldRecommendOrganisation: props.opportunityEvaluation
                     ? props.opportunityEvaluation.wouldRecommendOrganisation
-                    : false,
+                    : 9,
                 note: props.opportunityEvaluation ? props.opportunityEvaluation.note : '',
             },
         };
@@ -74,28 +74,37 @@ class OpportunityEvaluationFormEdit extends Component {
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
-                    <InputToggle
+                    <InputSelect
                         label={'Is de maatregel uitgevoerd?'}
+                        size={'col-sm-6'}
                         name={'isRealised'}
                         value={isRealised}
+                        options={this.props.opportunityEvaluationStatuses}
+                        emptyOption={false}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
 
                 <div className="row">
-                    <InputToggle
+                    <InputSelect
                         label={'Bent u tevreden over de uitvoering?'}
+                        size={'col-sm-6'}
                         name={'isStatisfied'}
                         value={isStatisfied}
+                        options={this.props.opportunityEvaluationStatuses}
+                        emptyOption={false}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
 
                 <div className="row">
-                    <InputToggle
+                    <InputSelect
                         label={'Zou u het bedrijf aanbevelen?'}
+                        size={'col-sm-6'}
                         name={'wouldRecommendOrganisation'}
                         value={wouldRecommendOrganisation}
+                        options={this.props.opportunityEvaluationStatuses}
+                        emptyOption={false}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
@@ -139,6 +148,7 @@ const mapStateToProps = state => {
     return {
         opportunityEvaluation: state.opportunityDetails.opportunityEvaluation,
         opportunityId: state.opportunityDetails.id,
+        opportunityEvaluationStatuses: state.systemData.opportunityEvaluationStatuses,
     };
 };
 

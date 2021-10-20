@@ -18,7 +18,7 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
         didAgreeAvg,
         dateDidAgreeAvg,
         number,
-        primaryContactEnergySupplier,
+        primaryAddressEnergySupplier,
     } = initialContact;
     return (
         <Row>
@@ -153,26 +153,26 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
                 <FormLabel className={'field-label'}>Huidige energie leverancier</FormLabel>
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'} placeholder={'Energieleverancier'}>
-                        {primaryContactEnergySupplier.energySupplier
-                            ? primaryContactEnergySupplier.energySupplier.name
+                        {primaryAddressEnergySupplier.energySupplier
+                            ? primaryAddressEnergySupplier.energySupplier.name
                             : ''}
                     </TextBlock>
                 </Row>
 
-                {primaryContactEnergySupplier && primaryContactEnergySupplier.energySupplierId ? (
+                {primaryAddressEnergySupplier && primaryAddressEnergySupplier.energySupplierId ? (
                     <>
                         <FormLabel className={'field-label'}>Klant nummer bij leverancier</FormLabel>
                         <Row>
                             <TextBlock className={'col-12 col-sm-8'} placeholder={'Klant nummer'}>
-                                {primaryContactEnergySupplier.esNumber}
+                                {primaryAddressEnergySupplier.esNumber}
                             </TextBlock>
                         </Row>
 
                         <FormLabel className={'field-label'}>Klant bij leverancier sinds</FormLabel>
                         <Row>
                             <TextBlock className={'col-12 col-sm-8'} placeholder={'Klant sinds'}>
-                                {primaryContactEnergySupplier.memberSince
-                                    ? moment(primaryContactEnergySupplier.memberSince).format('L')
+                                {primaryAddressEnergySupplier.memberSince
+                                    ? moment(primaryAddressEnergySupplier.memberSince).format('L')
                                     : ''}
                             </TextBlock>
                         </Row>
@@ -180,14 +180,14 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
                         <FormLabel className={'field-label'}>EAN nummer electriciteit</FormLabel>
                         <Row>
                             <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer electriciteit'}>
-                                {primaryContactEnergySupplier.eanElectricity}
+                                {primaryAddressEnergySupplier.eanElectricity}
                             </TextBlock>
                         </Row>
 
                         <FormLabel className={'field-label'}>EAN nummer gas</FormLabel>
                         <Row>
                             <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer gas'}>
-                                {primaryContactEnergySupplier.eanGas}
+                                {primaryAddressEnergySupplier.eanGas}
                             </TextBlock>
                         </Row>
                     </>

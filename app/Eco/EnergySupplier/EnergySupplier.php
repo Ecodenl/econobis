@@ -13,8 +13,8 @@ class EnergySupplier extends Model
 
     protected $guarded = ['id'];
 
-    public function contactEnergySuppliers()
+    public function addressEnergySuppliers()
     {
-        return $this->hasMany(ContactEnergySupplier::class);
+        return $this->hasMany(AddressEnergySupplier::class);
     }
 }

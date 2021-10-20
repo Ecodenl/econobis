@@ -12,6 +12,8 @@ export default {
         return axios
             .get(requestUrl)
             .then(function(response) {
+                console.log('contact');
+                console.log(response.data.data);
                 return response.data.data;
             })
             .catch(function(error) {

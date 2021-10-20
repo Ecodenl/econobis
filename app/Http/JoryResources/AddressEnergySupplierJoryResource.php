@@ -2,13 +2,13 @@
 
 namespace App\Http\JoryResources;
 
-use \App\Eco\EnergySupplier\ContactEnergySupplier;
+use \App\Eco\EnergySupplier\AddressEnergySupplier;
 use App\Http\JoryResources\Base\JoryResource;
 use Illuminate\Support\Facades\Auth;
 
-class ContactEnergySupplierJoryResource extends JoryResource
+class AddressEnergySupplierJoryResource extends JoryResource
 {
-    protected $modelClass = ContactEnergySupplier::class;
+    protected $modelClass = AddressEnergySupplier::class;
 
     protected function configureForApp(): void
     {

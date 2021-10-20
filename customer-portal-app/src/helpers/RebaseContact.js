@@ -46,15 +46,15 @@ export default function(contactData) {
     contactData.phoneNumberTwo = phoneNumberTwo ? { ...emptyPhoneNumber, ...phoneNumberTwo } : emptyPhoneNumber;
 
     // Set primary contact energy supplier
-    let emptyPrimaryContactEnergySupplier = {
+    let emptyPrimaryAddressEnergySupplier = {
         energySupplierId: null,
         esNumber: '',
         eanElectricity: '',
         memberSince: '',
         eanGas: '',
     };
-    if (!contactData.primaryContactEnergySupplier) {
-        contactData.primaryContactEnergySupplier = emptyPrimaryContactEnergySupplier;
+    if (!contactData.primaryAddressEnergySupplier) {
+        contactData.primaryAddressEnergySupplier = emptyPrimaryAddressEnergySupplier;
     }
     return contactData;
 }

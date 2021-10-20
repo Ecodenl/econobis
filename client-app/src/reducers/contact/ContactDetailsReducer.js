@@ -164,21 +164,21 @@ export default function(state = {}, action) {
                     };
                 }),
             };
-        case 'NEW_CONTACT_ENERGY_SUPPLIER':
+        case 'NEW_ADDRESS_ENERGY_SUPPLIER':
             return {
                 ...state,
-                contactEnergySuppliers: action.contactEnergySupplier,
+                addressEnergySuppliers: action.addressEnergySupplier,
             };
-        case 'UPDATE_CONTACT_ENERGY_SUPPLIER':
+        case 'UPDATE_ADDRESS_ENERGY_SUPPLIER':
             return {
                 ...state,
-                contactEnergySuppliers: action.contactEnergySupplier,
+                addressEnergySuppliers: action.addressEnergySupplier,
             };
-        case 'DELETE_CONTACT_ENERGY_SUPPLIER':
+        case 'DELETE_ADDRESS_ENERGY_SUPPLIER':
             return {
                 ...state,
-                contactEnergySuppliers: state.contactEnergySuppliers.filter(
-                    contactEnergySupplier => contactEnergySupplier.id !== action.id
+                addressEnergySuppliers: state.addressEnergySuppliers.filter(
+                    addressEnergySupplier => addressEnergySupplier.id !== action.id
                 ),
             };
         case 'UPDATE_HOOM_ACCOUNT_ID':

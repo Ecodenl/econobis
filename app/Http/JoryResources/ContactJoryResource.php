@@ -44,7 +44,8 @@ class ContactJoryResource extends JoryResource
         $this->relation('person');
         $this->relation('organisation');
         $this->relation('phoneNumbers');
-        $this->relation('primaryContactEnergySupplier');
+//        todo WM-es: cleanup es
+//        $this->relation('primaryAddressEnergySupplier');
         $this->relation('occupations');
         $this->relation('portalUser');
 

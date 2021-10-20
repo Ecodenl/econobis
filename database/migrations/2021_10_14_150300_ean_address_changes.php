@@ -13,39 +13,25 @@ class EanAddressChanges extends Migration
      */
     public function up()
     {
-        Schema::create('address_ean_numbers', function (Blueprint $table) {
-            $table->increments('id');
+        if (Schema::hasTable('contact_energy_supply_type', ))
+        {
+            Schema::rename('contact_energy_supply_type', 'energy_supply_types');
+        }
+        if (Schema::hasTable('contact_energy_supply_status', ))
+        {
+            Schema::rename('contact_energy_supply_status', 'energy_supply_statuses');
+        }
 
+        Schema::create('address_energy_suppliers', function (Blueprint $table) {
+            $table->increments('id');
             $table->unsignedInteger('address_id');
-            $table->foreign('address_id')->references('id')->on('addresses');
-
-            $table->date('ean_since')->nullable();
-
-            $table->unsignedInteger('energy_supply_status_id')->nullable();
-            $table->foreign('energy_supply_status_id')
-                ->references('id')->on('contact_energy_supply_status')
+            $table->foreign('address_id', 'address_es_address_id_foreign')
+                ->references('id')->on('addresses')
                 ->onDelete('restrict');
 
-            $table->string('ean_electricity')->nullable();
-            $table->string('ean_gas')->nullable();
-
-            $table->timestamps();
-
-            $table->unsignedInteger('created_by_id')->nullable();
-            $table->foreign('created_by_id')
-                ->references('id')->on('users')
-                ->onDelete('restrict');
-            $table->unsignedInteger('update_by_id')->nullable();
-            $table->foreign('update_by_id')
-                ->references('id')->on('users')
-                ->onDelete('restrict');
-        });
-
-        Schema::create('address_ean_energy_suppliers', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('address_ean_number_id');
-            $table->foreign('address_ean_number_id', 'address_ean_es_address_ean_number_id_foreign')
-                ->references('id')->on('address_ean_numbers')
+            $table->unsignedInteger('energy_supply_type_id');
+            $table->foreign('energy_supply_type_id')
+                ->references('id')->on('energy_supply_types')
                 ->onDelete('restrict');
 
             $table->unsignedInteger('energy_supplier_id');
@@ -55,8 +41,8 @@ class EanAddressChanges extends Migration
             $table->date('member_since')->nullable();
 
             $table->unsignedInteger('energy_supply_status_id')->nullable();
-            $table->foreign('energy_supply_status_id', 'address_ean_es_energy_supply_status_id_foreign')
-                ->references('id')->on('contact_energy_supply_status')
+            $table->foreign('energy_supply_status_id', 'address_es_energy_supply_status_id_foreign')
+                ->references('id')->on('energy_supply_statuses')
                 ->onDelete('restrict');
 
             $table->date('switch_date')->nullable();
@@ -76,12 +62,22 @@ class EanAddressChanges extends Migration
                 ->onDelete('restrict');
         });
 
+        Schema::table('addresses', function (Blueprint $table) {
+            $table->string('ean_electricity')->nullable();
+            $table->string('ean_gas')->nullable();
+        });
+
         Schema::table('participation_project', function (Blueprint $table) {
-            $table->unsignedInteger('address_ean_number_id')->nullable()->after('project_id');
-            $table->foreign('address_ean_number_id')
-                ->references('id')->on('address_ean_numbers')
+            $table->unsignedInteger('address_id')->nullable()->after('project_id');
+            $table->foreign('address_id')
+                ->references('id')->on('addresses')
                 ->onDelete('restrict');
         });
+
+        if (Schema::hasTable('contact_energy_supplier', ))
+        {
+          Schema::rename('contact_energy_supplier', 'xxx_contact_energy_supplier');
+        }
 
     }
 
@@ -92,15 +88,41 @@ class EanAddressChanges extends Migration
      */
     public function down()
     {
-        if (Schema::hasColumn('participation_project', 'address_ean_number_id'))
+        if (Schema::hasTable('xxx_contact_energy_supplier', ))
+        {
+            Schema::rename('xxx_contact_energy_supplier', 'contact_energy_supplier');
+        }
+
+        if (Schema::hasColumn('participation_project', 'address_id'))
         {
             Schema::table('participation_project', function (Blueprint $table)
             {
-                $table->dropForeign('participation_project_address_ean_number_id_foreign');
-                $table->dropColumn('address_ean_number_id');
+                $table->dropForeign('participation_project_address_id_foreign');
+                $table->dropColumn('address_id');
             });
         }
-        Schema::dropIfExists('address_ean_energy_suppliers');
-        Schema::dropIfExists('address_ean_numbers');
+        if (Schema::hasColumn('addresses', 'ean_electricity'))
+        {
+            Schema::table('addresses', function (Blueprint $table)
+            {
+                $table->dropColumn('ean_electricity');
+            });
+        }
+        if (Schema::hasColumn('addresses', 'ean_gas'))
+        {
+            Schema::table('addresses', function (Blueprint $table)
+            {
+                $table->dropColumn('ean_gas');
+            });
+        }
+        Schema::dropIfExists('address_energy_suppliers');
+        if (Schema::hasTable('energy_supply_statuses', ))
+        {
+            Schema::rename('energy_supply_statuses', 'contact_energy_supply_status');
+        }
+        if (Schema::hasTable('energy_supply_types', ))
+        {
+            Schema::rename('energy_supply_types', 'contact_energy_supply_type');
+        }
     }
 }

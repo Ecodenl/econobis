@@ -37,7 +37,7 @@ class RevenueParticipantsCSVHelper
                 'project',
                 'contact.person.title',
                 'contact.primaryAddress',
-                'contact.primaryContactEnergySupplier.energySupplier',
+                'contact.primaryAddressEnergySupplier.energySupplier',
                 'participantProjectPayoutType',
             ]);
 
@@ -120,7 +120,7 @@ class RevenueParticipantsCSVHelper
                 'payout_formatted' => 'Uit te keren bedrag',
                 'participantProjectPayoutType.name' => 'Uitkeren op',
                 'date_payed' => 'Datum uitkering',
-                'contact.primaryContactEnergySupplier.energySupplier.name' => 'Energieleverancier',
+                'contact.primaryAddressEnergySupplier.energySupplier.name' => 'Energieleverancier',
                 'delivered_total' => 'Geleverd totaal',
                 'kwh_return_formatted' => 'Teruggave energiebelasting',
                 'title.name' => 'Persoon titel',

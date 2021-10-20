@@ -238,12 +238,13 @@ class ParticipantExcelHelper
                 }
 
                 // Reformat energy supplier fields
-                if ($participant->contact->primaryContactEnergySupplier) {
+// todo WM-es: check participation->address???
+                if ($participant->contact->primaryAddress && $participant->contact->primaryAddress->primaryAddressEnergySupplier) {
                     // Reformat when supplier starts with equal sign (example '=om')
                     $participant->energy_supplier_name
-                        = $participant->contact->primaryContactEnergySupplier->energySupplier->name;
+                        = $participant->contact->primaryAddress->primaryAddressEnergySupplier->energySupplier->name;
                     $participant->energy_supplier_member_since
-                        = $this->formatDate($participant->contact->primaryContactEnergySupplier->member_since);
+                        = $this->formatDate($participant->contact->primaryAddress->primaryAddressEnergySupplier->member_since);
                 }
 
                 //reformat bools
@@ -318,9 +319,10 @@ class ParticipantExcelHelper
                 $rowData[44] = $participant->phonenumber_3;
                 $rowData[45] = $participant->energy_supplier_name;
                 $rowData[46] = $participant->energy_supplier_member_since;
-                $rowData[47] = $participant->contact->primaryContactEnergySupplier ? $participant->contact->primaryContactEnergySupplier->es_number : '';
-                $rowData[48] = $participant->contact->primaryContactEnergySupplier && !empty($participant->contact->primaryContactEnergySupplier->ean_electricity) ? 'EAN: ' . $participant->contact->primaryContactEnergySupplier->ean_electricity : '';
-                $rowData[49] = $participant->contact->primaryContactEnergySupplier && !empty($participant->contact->primaryContactEnergySupplier->ean_gas) ? 'EAN: ' . $participant->contact->primaryContactEnergySupplier->ean_gas : '';
+// todo WM-es: check participation->address???
+                $rowData[47] = $participant->contact->primaryAddress && $participant->contact->primaryAddress->primaryAddressEnergySupplier ? $participant->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
+                $rowData[48] = $participant->contact->primaryAddress && !empty($participant->contact->primaryAddress->ean_electricity) ? 'EAN: ' . $participant->address->primaryAddress->ean_electricity : '';
+                $rowData[49] = $participant->contact->primaryAddress && !empty($participant->contact->primaryAddress->ean_gas) ? 'EAN: ' . $participant->address->primaryAddress->ean_gas : '';
                 $rowData[50] = $projectCode;
                 $rowData[51] = $currentBalanceAccount;
                 $rowData[52] = $participant->participations_returns_total;

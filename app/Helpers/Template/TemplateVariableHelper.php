@@ -248,19 +248,19 @@ class TemplateVariableHelper
                 return optional($model->primaryEmailAddress)->email;
                 break;
             case 'energieleverancier':
-                return optional(optional($model->primaryContactEnergySupplier)->energySupplier)->name;
+                return optional(optional($model->primaryAddressEnergySupplier)->energySupplier)->name;
                 break;
             case 'energieleverancier_klantnummer':
-                return optional($model->primaryContactEnergySupplier)->es_number;
+                return optional($model->primaryAddressEnergySupplier)->es_number;
                 break;
             case 'energieleverancier_ean_elektra':
-                return optional($model->primaryContactEnergySupplier)->ean_electricity;
+                return optional($model->primaryAddressEnergySupplier)->ean_electricity;
                 break;
             case 'energieleverancier_klant_sinds':
-                return optional($model->primaryContactEnergySupplier)->member_since ? Carbon::parse(optional($model->primaryContactEnergySupplier)->member_since)->format('d/m/Y') : null;;
+                return optional($model->primaryAddressEnergySupplier)->member_since ? Carbon::parse(optional($model->primaryAddressEnergySupplier)->member_since)->format('d/m/Y') : null;;
                 break;
             case 'energieleverancier_mogelijke_overstap':
-                return optional($model->primaryContactEnergySupplier)->switch_date ? Carbon::parse(optional($model->primaryContactEnergySupplier)->switch_date)->format('d/m/Y') : null;;
+                return optional($model->primaryAddressEnergySupplier)->switch_date ? Carbon::parse(optional($model->primaryAddressEnergySupplier)->switch_date)->format('d/m/Y') : null;;
                 break;
             case 'kvk':
                 if($model->type_id == 'organisation'){
@@ -806,13 +806,13 @@ class TemplateVariableHelper
                 return optional(optional($model->contact)->primaryEmailAddress)->email;
                 break;
             case 'contact_energieleverancier':
-                return optional(optional(optional($model->contact)->primaryContactEnergySupplier)->energySupplier)->name;
+                return optional(optional(optional($model->contact)->primaryAddressEnergySupplier)->energySupplier)->name;
                 break;
             case 'contact_energieleverancier_klantnummer':
-                return optional(optional($model->contact)->primaryContactEnergySupplier)->es_number;
+                return optional(optional($model->contact)->primaryAddressEnergySupplier)->es_number;
                 break;
             case 'contact_energieleverancier_ean_elektra':
-                return optional(optional($model->contact)->primaryContactEnergySupplier)->ean_electricity;
+                return optional(optional($model->contact)->primaryAddressEnergySupplier)->ean_electricity;
                 break;
             case 'statussen':
                 return implode(', ', array_map(function ($status) {

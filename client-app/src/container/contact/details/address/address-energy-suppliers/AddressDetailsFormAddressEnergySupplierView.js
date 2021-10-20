@@ -3,16 +3,16 @@ import moment from 'moment/moment';
 import { connect } from 'react-redux';
 moment.locale('nl');
 
-const ContactDetailsFormContactEnergySupplierView = props => {
+const AddressDetailsFormAddressEnergySupplierView = props => {
     const {
         energySupplier,
-        contactEnergySupplyType,
+        energySupplyType,
         memberSince,
-        contactEnergySupplyStatus,
+        energySupplyStatus,
         switchDate,
         esNumber,
         isCurrentSupplier,
-    } = props.contactEnergySupplier;
+    } = props.addressEnergySupplier;
 
     return (
         <div
@@ -22,9 +22,9 @@ const ContactDetailsFormContactEnergySupplierView = props => {
         >
             <div onClick={props.openEdit}>
                 <div className="col-sm-2">{energySupplier && energySupplier.name}</div>
-                <div className="col-sm-1">{contactEnergySupplyType ? contactEnergySupplyType.name : ''}</div>
+                <div className="col-sm-1">{energySupplyType ? energySupplyType.name : ''}</div>
                 <div className="col-sm-2">{memberSince ? moment(memberSince).format('L') : ''}</div>
-                <div className="col-sm-2">{contactEnergySupplyStatus && contactEnergySupplyStatus.name}</div>
+                <div className="col-sm-2">{energySupplyStatus && energySupplyStatus.name}</div>
                 <div className="col-sm-2">{switchDate ? moment(switchDate).format('L') : ''}</div>
                 <div className="col-sm-1">{esNumber && esNumber}</div>
                 <div className="col-sm-1">{isCurrentSupplier ? 'Ja' : ''}</div>
@@ -55,4 +55,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ContactDetailsFormContactEnergySupplierView);
+export default connect(mapStateToProps)(AddressDetailsFormAddressEnergySupplierView);

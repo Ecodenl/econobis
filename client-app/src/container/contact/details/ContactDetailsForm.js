@@ -13,7 +13,7 @@ import ContactDetailsFormConclusion from './conclusion/ContactDetailsFormConclus
 import ContactDetailsQuotations from './quotations/ContactDetailsQuotations';
 import ContactDetailsCampaigns from './campaigns/ContactDetailsCampaigns';
 import ContactDetailsFormOccupations from './occupations/ContactDetailsFormOccupations';
-import ContactDetailsFormContactEnergySupplier from './contact-energy-suppliers/ContactDetailsFormContactEnergySupplier';
+import AddressDetailsFormAddressEnergySupplier from './address/address-energy-suppliers/AddressDetailsFormAddressEnergySupplier';
 import moment from 'moment/moment';
 import ContactDetailsFormPortalUser from './portal-user/ContactDetailsFormPortalUser';
 moment.locale('nl');
@@ -56,7 +56,8 @@ class ContactDetailsForm extends Component {
                 <ContactDetailsFormAddress />
                 <ContactDetailsFormEmail />
                 <ContactDetailsFormPhone />
-                <ContactDetailsFormContactEnergySupplier />
+                {/*todo WM-es: cleanup es*/}
+                {/*<AddressDetailsFormAddressEnergySupplier />*/}
                 {typeId == 'organisation' && <ContactDetailsQuotations />}
                 {typeId == 'organisation' && <ContactDetailsCampaigns />}
                 <ContactDetailsFormOccupations />

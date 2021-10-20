@@ -3,7 +3,7 @@
 namespace App\Http\Resources\Contact;
 
 use App\Http\Resources\Address\FullAddress;
-use App\Http\Resources\ContactEnergySupplier\FullContactEnergySupplier;
+use App\Http\Resources\AddressEnergySupplier\FullAddressEnergySupplier;
 use App\Http\Resources\EmailAddress\FullEmailAddress;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Organisation\FullOrganisation;
@@ -39,7 +39,7 @@ class FullParticipantContact extends JsonResource
             'primaryAddress' => FullAddress::make($this->whenLoaded('primaryAddress')),
             'emailAddresses' => FullEmailAddress::collection($this->whenLoaded('emailAddresses')),
             'primaryEmailAddress' => FullEmailAddress::make($this->whenLoaded('primaryEmailAddress')),
-            'primaryContactEnergySupplier' => FullContactEnergySupplier::make($this->whenLoaded('primaryContactEnergySupplier')),
+            'primaryAddressEnergySupplier' => FullAddressEnergySupplier::make($this->whenLoaded('primaryAddressEnergySupplier')),
         ];
     }
 }

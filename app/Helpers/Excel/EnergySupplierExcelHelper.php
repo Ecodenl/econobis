@@ -106,7 +106,7 @@ class EnergySupplierExcelHelper
                 'contact.primaryEmailAddress',
                 'contact.primaryphoneNumber',
                 'revenue',
-                'contact.primaryContactEnergySupplier',
+                'contact.primaryAddressEnergySupplier',
             ]);
 
             foreach ($chunk as $distribution) {
@@ -135,8 +135,9 @@ class EnergySupplierExcelHelper
                                 : '');
                     }
                     $rowData[] = $distribution->city;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    // todo WM-es: check participation->address???
+                    $rowData[] = $distribution->contact->primaryAddress && !empty($distribution->contact->primaryAddress->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryAddress->ean_electricity : '';
                     $rowData[] = $distribution->contact->primaryEmailAddress
                         ? $distribution->contact->primaryEmailAddress->email : '';
                     $rowData[] = $distribution->contact->primaryphoneNumber
@@ -145,8 +146,9 @@ class EnergySupplierExcelHelper
                     $rowData[] = '';
                     $rowData[] = $this->formatDate($this->projectRevenue->date_end);
                     $rowData[] = $distribution->participations_amount;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                    // todo WM-es: check participation->address???
+                    $rowData[] = $distribution->contact->primaryAddress && $distribution->contact->primaryAddress->primaryAddressEnergySupplier
+                        ? $distribution->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
                     $rowData[] = '';
                     $rowData[] = $distribution->delivered_total;
                     $rowData[] = '';
@@ -181,8 +183,8 @@ class EnergySupplierExcelHelper
                                 : '');
                     }
                     $rowData[] = $distribution->city;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryAddress && !empty($distribution->contact->primaryAddress->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryAddress->ean_electricity : '';
                     $rowData[] = $distribution->contact->primaryEmailAddress
                         ? $distribution->contact->primaryEmailAddress->email : '';
                     $rowData[] = $distribution->contact->primaryphoneNumber
@@ -191,8 +193,8 @@ class EnergySupplierExcelHelper
                     $rowData[] = '';
                     $rowData[] = $this->formatDate(Carbon::parse($this->projectRevenue->date_begin)->endOfYear());
                     $rowData[] = $distribution->participations_amount_end_calendar_year;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->primaryAddress && $distribution->contact->primaryAddress->primaryAddressEnergySupplier
+                        ? $distribution->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
                     $rowData[] = '';
                     $rowData[] = $distribution->delivered_total_last_es_end_calendar_year ?  $distribution->delivered_total_last_es_end_calendar_year : $distribution->delivered_total_end_calendar_year;
                     $rowData[] = '';
@@ -227,8 +229,8 @@ class EnergySupplierExcelHelper
                                 : '');
                     }
                     $rowData[] = $distribution->city;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryAddress && !empty($distribution->contact->primaryAddress->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryAddress->ean_electricity : '';
                     $rowData[] = $distribution->contact->primaryEmailAddress
                         ? $distribution->contact->primaryEmailAddress->email : '';
                     $rowData[] = $distribution->contact->primaryphoneNumber
@@ -237,8 +239,8 @@ class EnergySupplierExcelHelper
                     $rowData[] = '';
                     $rowData[] = $this->formatDate($this->projectRevenue->date_end);
                     $rowData[] = $distribution->participations_amount;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->primaryAddress && $distribution->contact->primaryAddress->primaryAddressEnergySupplier
+                        ? $distribution->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
                     $rowData[] = '';
                     $rowData[] = $distribution->delivered_total_last_es ?  ($distribution->delivered_total_last_es - $distribution->delivered_total_last_es_end_calendar_year) : ($distribution->delivered_total - $distribution->delivered_total_end_calendar_year);
                     $rowData[] = '';
@@ -306,7 +308,7 @@ class EnergySupplierExcelHelper
         foreach ($this->distributions->chunk(500) as $chunk) {
             $chunk->load([
                 'revenue',
-                'contact.primaryContactEnergySupplier',
+                'contact.primaryAddressEnergySupplier',
             ]);
 
             foreach ($chunk as $distribution) {
@@ -316,8 +318,8 @@ class EnergySupplierExcelHelper
 
                     $rowData = [];
                     $rowData[] = $distribution->participation_id;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryAddress && !empty($distribution->contact->primaryAddress->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryAddress->ean_electricity : '';
                     $rowData[] = str_replace(' ', '', $distribution->postal_code);
                     $rowData[] = $distribution->street_number;
                     $rowData[] = $distribution->street_number_addition;
@@ -325,8 +327,8 @@ class EnergySupplierExcelHelper
                     $rowData[] = $this->formatDate($this->projectRevenue->date_begin);
                     $rowData[] = $this->formatDate($this->projectRevenue->date_end);
                     $rowData[] = $this->fileName;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->primaryAddress && $distribution->contact->primaryAddress->primaryAddressEnergySupplier
+                        ? $distribution->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
                     $rowData[] = $distribution->contact->full_name;
                     $rowData[] = $this->projectRevenue->project->administration ? $this->projectRevenue->project->administration->name : '';
                     $rowData[] = $this->projectRevenue->project->name;
@@ -343,8 +345,8 @@ class EnergySupplierExcelHelper
 
                     $rowData = [];
                     $rowData[] = $distribution->participation_id;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryAddress && !empty($distribution->contact->primaryAddress->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryAddress->ean_electricity : '';
                     $rowData[] = str_replace(' ', '', $distribution->postal_code);
                     $rowData[] = $distribution->street_number;
                     $rowData[] = $distribution->street_number_addition;
@@ -352,8 +354,8 @@ class EnergySupplierExcelHelper
                     $rowData[] = $this->formatDate($this->projectRevenue->date_begin);
                     $rowData[] = $this->formatDate(Carbon::parse($this->projectRevenue->date_begin)->endOfYear());
                     $rowData[] = $this->fileName;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->primaryAddress && $distribution->contact->primaryAddress->primaryAddressEnergySupplier
+                        ? $distribution->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
                     $rowData[] = $distribution->contact->full_name;
                     $rowData[] = $this->projectRevenue->project->administration ? $this->projectRevenue->project->administration->name : '';
                     $rowData[] = $this->projectRevenue->project->name;
@@ -365,8 +367,8 @@ class EnergySupplierExcelHelper
 
                     $rowData = [];
                     $rowData[] = $distribution->participation_id;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryAddress && !empty($distribution->contact->primaryAddress->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryAddress->ean_electricity : '';
                     $rowData[] = str_replace(' ', '', $distribution->postal_code);
                     $rowData[] = $distribution->street_number;
                     $rowData[] = $distribution->street_number_addition;
@@ -374,8 +376,8 @@ class EnergySupplierExcelHelper
                     $rowData[] = $this->formatDate(Carbon::parse($this->projectRevenue->date_end)->startOfYear());
                     $rowData[] = $this->formatDate($this->projectRevenue->date_end);
                     $rowData[] = $this->fileName;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->primaryAddress && $distribution->contact->primaryAddress->primaryAddressEnergySupplier
+                        ? $distribution->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
                     $rowData[] = $distribution->contact->full_name;
                     $rowData[] = $this->projectRevenue->project->administration ? $this->projectRevenue->project->administration->name : '';
                     $rowData[] = $this->projectRevenue->project->name;
@@ -434,7 +436,7 @@ class EnergySupplierExcelHelper
         foreach ($this->distributions->chunk(500) as $chunk) {
             $chunk->load([
                 'revenue',
-                'contact.primaryContactEnergySupplier',
+                'contact.primaryAddressEnergySupplier',
             ]);
 
             foreach ($chunk as $distribution) {
@@ -450,10 +452,10 @@ class EnergySupplierExcelHelper
                     $rowData[] = $distribution->contact->full_name;
                     $rowData[] = $distribution->tax_referral;
                     $rowData[] = $distribution->postal_code;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->primaryAddress && !empty($distribution->contact->primaryAddress->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryAddress->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryAddress && $distribution->contact->primaryAddress->primaryAddressEnergySupplier
+                        ? $distribution->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
                     $rowData[] = $distribution->delivered_total;
                     $completeData[] = $rowData;
                 }else{
@@ -467,10 +469,10 @@ class EnergySupplierExcelHelper
                     $rowData[] = $distribution->contact->full_name;
                     $rowData[] = $distribution->tax_referral;
                     $rowData[] = $distribution->postal_code;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->primaryAddress && !empty($distribution->contact->primaryAddress->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryAddress->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryAddress && $distribution->contact->primaryAddress->primaryAddressEnergySupplier
+                        ? $distribution->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
                     $rowData[] = $distribution->delivered_total_last_es_end_calendar_year ?  $distribution->delivered_total_last_es_end_calendar_year : $distribution->delivered_total_end_calendar_year;
                     $completeData[] = $rowData;
 
@@ -484,10 +486,10 @@ class EnergySupplierExcelHelper
                     $rowData[] = $distribution->contact->full_name;
                     $rowData[] = $distribution->tax_referral;
                     $rowData[] = $distribution->postal_code;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->primaryAddress && !empty($distribution->contact->primaryAddress->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryAddress->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryAddress && $distribution->contact->primaryAddress->primaryAddressEnergySupplier
+                        ? $distribution->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
                     $rowData[] = $distribution->delivered_total_last_es ?  ($distribution->delivered_total_last_es - $distribution->delivered_total_last_es_end_calendar_year) : ($distribution->delivered_total - $distribution->delivered_total_end_calendar_year);
                     $completeData[] = $rowData;
                 }
@@ -550,7 +552,7 @@ class EnergySupplierExcelHelper
                 'contact.primaryEmailAddress',
                 'contact.primaryphoneNumber',
                 'revenue',
-                'contact.primaryContactEnergySupplier',
+                'contact.primaryAddressEnergySupplier',
             ]);
 
             foreach ($chunk as $distribution) {
@@ -571,11 +573,11 @@ class EnergySupplierExcelHelper
                     $rowData[] = $distribution->postal_code;
                     $rowData[] = $distribution->city;
                     $rowData[] = $distribution->energy_supplier_name;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->primaryAddress && $distribution->contact->primaryAddress->primaryAddressEnergySupplier
+                        ? $distribution->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
                     $rowData[] = $distribution->contact->iban;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryAddress && !empty($distribution->contact->primaryAddress->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryAddress->ean_electricity : '';
                     $rowData[] = $distribution->participations_amount;
                     $rowData[] = $this->formatDate($this->projectRevenue->date_begin);
                     $rowData[] = $this->formatDate($this->projectRevenue->date_end);
@@ -598,11 +600,11 @@ class EnergySupplierExcelHelper
                     $rowData[] = $distribution->postal_code;
                     $rowData[] = $distribution->city;
                     $rowData[] = $distribution->energy_supplier_name;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->primaryAddress && $distribution->contact->primaryAddress->primaryAddressEnergySupplier
+                        ? $distribution->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
                     $rowData[] = $distribution->contact->iban;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryAddress && !empty($distribution->contact->primaryAddress->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryAddress->ean_electricity : '';
                     $rowData[] = $distribution->participations_amount_end_calendar_year;
                     $rowData[] = $this->formatDate($this->projectRevenue->date_begin);
                     $rowData[] = $this->formatDate(Carbon::parse($this->projectRevenue->date_begin)->endOfYear());
@@ -625,11 +627,11 @@ class EnergySupplierExcelHelper
                     $rowData[] = $distribution->postal_code;
                     $rowData[] = $distribution->city;
                     $rowData[] = $distribution->energy_supplier_name;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->primaryAddress && $distribution->contact->primaryAddress->primaryAddressEnergySupplier
+                        ? $distribution->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
                     $rowData[] = $distribution->contact->iban;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryAddress && !empty($distribution->contact->primaryAddress->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryAddress->ean_electricity : '';
                     $rowData[] = $distribution->participations_amount;
                     $rowData[] = $this->formatDate(Carbon::parse($this->projectRevenue->date_end)->startOfYear());
                     $rowData[] = $this->formatDate($this->projectRevenue->date_end);
@@ -694,7 +696,7 @@ class EnergySupplierExcelHelper
                 'contact.primaryEmailAddress',
                 'contact.primaryphoneNumber',
                 'revenue',
-                'contact.primaryContactEnergySupplier',
+                'contact.primaryAddressEnergySupplier',
             ]);
 
             foreach ($chunk as $distribution) {
@@ -712,13 +714,13 @@ class EnergySupplierExcelHelper
                         $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
                     }
                     $rowData[] = $distribution->energy_supplier_name;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->primaryAddress && $distribution->contact->primaryAddress->primaryAddressEnergySupplier
+                        ? $distribution->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
                     $rowData[] = $distribution->postal_code;
                     $rowData[] = $distribution->street_number_addition ? $distribution->street_number . '-' . $distribution->street_number_addition : $distribution->street_number;
                     $rowData[] = $distribution->city;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryAddress && !empty($distribution->contact->primaryAddress->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryAddress->ean_electricity : '';
                     $rowData[] = $this->projectRevenue->project->name;
                     $rowData[] = $distribution->participations_amount;
                     $rowData[] = $distribution->delivered_total;
@@ -737,13 +739,13 @@ class EnergySupplierExcelHelper
                         $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
                     }
                     $rowData[] = $distribution->energy_supplier_name;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->primaryAddress && $distribution->contact->primaryAddress->primaryAddressEnergySupplier
+                        ? $distribution->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
                     $rowData[] = $distribution->postal_code;
                     $rowData[] = $distribution->street_number_addition ? $distribution->street_number . '-' . $distribution->street_number_addition : $distribution->street_number;
                     $rowData[] = $distribution->city;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryAddress && !empty($distribution->contact->primaryAddress->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryAddress->ean_electricity : '';
                     $rowData[] = $this->projectRevenue->project->name;
                     $rowData[] = $distribution->participations_amount_end_calendar_year;
                     $rowData[] = $distribution->delivered_total_last_es_end_calendar_year ?  $distribution->delivered_total_last_es_end_calendar_year : $distribution->delivered_total_end_calendar_year;
@@ -762,13 +764,13 @@ class EnergySupplierExcelHelper
                         $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
                     }
                     $rowData[] = $distribution->energy_supplier_name;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->primaryAddress && $distribution->contact->primaryAddress->primaryAddressEnergySupplier
+                        ? $distribution->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
                     $rowData[] = $distribution->postal_code;
                     $rowData[] = $distribution->street_number_addition ? $distribution->street_number . '-' . $distribution->street_number_addition : $distribution->street_number;
                     $rowData[] = $distribution->city;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryAddress && !empty($distribution->contact->primaryAddress->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryAddress->ean_electricity : '';
                     $rowData[] = $this->projectRevenue->project->name;
                     $rowData[] = $distribution->participations_amount;
                     $rowData[] = $distribution->delivered_total_last_es ?  ($distribution->delivered_total_last_es - $distribution->delivered_total_last_es_end_calendar_year) : ($distribution->delivered_total - $distribution->delivered_total_end_calendar_year);
@@ -851,7 +853,7 @@ class EnergySupplierExcelHelper
                 'contact.primaryEmailAddress',
                 'contact.primaryphoneNumber',
                 'revenue',
-                'contact.primaryContactEnergySupplier',
+                'contact.primaryAddressEnergySupplier',
             ]);
 
             foreach ($chunk as $distribution) {
@@ -884,8 +886,8 @@ class EnergySupplierExcelHelper
                                 : '');
                     }
                     $rowData[] = $distribution->city;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryAddress && !empty($distribution->contact->primaryAddress->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryAddress->ean_electricity : '';
                     $rowData[] = $distribution->contact->primaryEmailAddress
                         ? $distribution->contact->primaryEmailAddress->email : '';
                     $rowData[] = $distribution->contact->primaryphoneNumber
@@ -894,8 +896,8 @@ class EnergySupplierExcelHelper
                     $rowData[] = '';
                     $rowData[] = $this->formatDate($this->projectRevenue->date_end);
                     $rowData[] = $distribution->participations_amount;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->primaryAddress && $distribution->contact->primaryAddress->primaryAddressEnergySupplier
+                        ? $distribution->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
                     $rowData[] = $distribution->contact->number;
                     $rowData[] = $distribution->delivered_total;
                     $rowData[] = \Config::get('app.name');
@@ -946,8 +948,8 @@ class EnergySupplierExcelHelper
                                 : '');
                     }
                     $rowData[] = $distribution->city;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryAddress && !empty($distribution->contact->primaryAddress->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryAddress->ean_electricity : '';
                     $rowData[] = $distribution->contact->primaryEmailAddress
                         ? $distribution->contact->primaryEmailAddress->email : '';
                     $rowData[] = $distribution->contact->primaryphoneNumber
@@ -956,8 +958,8 @@ class EnergySupplierExcelHelper
                     $rowData[] = '';
                     $rowData[] = $this->formatDate(Carbon::parse($this->projectRevenue->date_begin)->endOfYear());
                     $rowData[] = $distribution->participations_amount_end_calendar_year;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->primaryAddress && $distribution->contact->primaryAddress->primaryAddressEnergySupplier
+                        ? $distribution->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
                     $rowData[] = $distribution->contact->number;
                     $rowData[] = $distribution->delivered_total_last_es_end_calendar_year ?  $distribution->delivered_total_last_es_end_calendar_year : $distribution->delivered_total_end_calendar_year;
                     $rowData[] = \Config::get('app.name');
@@ -1003,8 +1005,8 @@ class EnergySupplierExcelHelper
                                 : '');
                     }
                     $rowData[] = $distribution->city;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryAddress && !empty($distribution->contact->primaryAddress->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryAddress->ean_electricity : '';
                     $rowData[] = $distribution->contact->primaryEmailAddress
                         ? $distribution->contact->primaryEmailAddress->email : '';
                     $rowData[] = $distribution->contact->primaryphoneNumber
@@ -1013,8 +1015,8 @@ class EnergySupplierExcelHelper
                     $rowData[] = '';
                     $rowData[] = $this->formatDate($this->projectRevenue->date_end);
                     $rowData[] = $distribution->participations_amount;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->primaryAddress && $distribution->contact->primaryAddress->primaryAddressEnergySupplier
+                        ? $distribution->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
                     $rowData[] = $distribution->contact->number;
                     $rowData[] = $distribution->delivered_total_last_es ?  ($distribution->delivered_total_last_es - $distribution->delivered_total_last_es_end_calendar_year) : ($distribution->delivered_total - $distribution->delivered_total_end_calendar_year);
                     $rowData[] = \Config::get('app.name');
@@ -1111,7 +1113,7 @@ class EnergySupplierExcelHelper
         foreach ($this->distributions->chunk(500) as $chunk) {
             $chunk->load([
                 'revenue',
-                'contact.primaryContactEnergySupplier',
+                'contact.primaryAddressEnergySupplier',
             ]);
 
             foreach ($chunk as $distribution) {
@@ -1121,10 +1123,10 @@ class EnergySupplierExcelHelper
                     $rowData[] = $this->counter;
                     $rowData[] = $distribution->contact->full_name;
                     $rowData[] = str_replace(' ', '', $distribution->postal_code);
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryAddress && $distribution->contact->primaryAddress->primaryAddressEnergySupplier
+                        ? $distribution->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->primaryAddress && !empty($distribution->contact->primaryAddress->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryAddress->ean_electricity : '';
                     $rowData[] = $this->formatDate(new Carbon('now'));
                     $rowData[] = $this->formatDate($this->projectRevenue->date_begin);
                     $rowData[] = $this->formatDate($this->projectRevenue->date_end);
@@ -1141,10 +1143,10 @@ class EnergySupplierExcelHelper
                     $rowData[] = $this->counter;
                     $rowData[] = $distribution->contact->full_name;
                     $rowData[] = str_replace(' ', '', $distribution->postal_code);
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryAddress && $distribution->contact->primaryAddress->primaryAddressEnergySupplier
+                        ? $distribution->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->primaryAddress && !empty($distribution->contact->primaryAddress->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryAddress->ean_electricity : '';
                     $rowData[] = $this->formatDate(new Carbon('now'));
                     $rowData[] = $this->formatDate($this->projectRevenue->date_begin);
                     $rowData[] = $this->formatDate(Carbon::parse($this->projectRevenue->date_begin)->endOfYear());
@@ -1161,10 +1163,10 @@ class EnergySupplierExcelHelper
                     $rowData[] = $this->counter;
                     $rowData[] = $distribution->contact->full_name;
                     $rowData[] = str_replace(' ', '', $distribution->postal_code);
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryAddress && $distribution->contact->primaryAddress->primaryAddressEnergySupplier
+                        ? $distribution->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->primaryAddress && !empty($distribution->contact->primaryAddress->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryAddress->ean_electricity : '';
                     $rowData[] = $this->formatDate(new Carbon('now'));
                     $rowData[] = $this->formatDate(Carbon::parse($this->projectRevenue->date_end)->startOfYear());
                     $rowData[] = $this->formatDate($this->projectRevenue->date_end);

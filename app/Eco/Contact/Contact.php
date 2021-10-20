@@ -10,7 +10,7 @@ use App\Eco\ContactNote\ContactNote;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
-use App\Eco\EnergySupplier\ContactEnergySupplier;
+use App\Eco\EnergySupplier\AddressEnergySupplier;
 use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Intake\Intake;
@@ -206,16 +206,17 @@ class Contact extends Model
         return $this->hasManyThrough(HousingFile::class, Address::class)->orderBy('housing_files.id', 'desc');
     }
 
-    public function contactEnergySuppliers()
-    {
-        return $this->hasMany(ContactEnergySupplier::class);
-    }
-
-    public function primaryContactEnergySupplier()
-    {
-        return $this->hasOne(ContactEnergySupplier::class)->where('is_current_supplier', true);
-    }
-
+// todo WM-es: cleanup es
+//    public function addressEnergySuppliers()
+//    {
+//        return $this->hasMany(AddressEnergySupplier::class);
+//    }
+//
+//    public function primaryAddressEnergySupplier()
+//    {
+//        return $this->hasOne(AddressEnergySupplier::class)->where('is_current_supplier', true);
+//    }
+//
     public function participations()
     {
         return $this->hasMany(ParticipantProject::class)->orderBy('participation_project.id', 'desc');
@@ -522,25 +523,25 @@ class Contact extends Model
         }
         return false;
     }
-
-    /**
-     * Previous energy supplier
-     * @return int
-     */
-    public function getPreviousContactEnergySupplierIdAttribute()
-    {
-        if(!$this->primaryContactEnergySupplier) {
-            return 0;
-        }
-        $contactEnergySuppliers = $this->contactEnergySuppliers
-            ->whereNotNull('member_since')
-            ->where('member_since', '<', $this->primaryContactEnergySupplier->member_since)
-            ->sortByDesc('member_since');
-        if(count($contactEnergySuppliers) == 0){
-            return 0;
-        }
-        return($contactEnergySuppliers->first()->id);
-    }
+// todo WM-es: cleanup es
+//    /**
+//     * Previous energy supplier
+//     * @return int
+//     */
+//    public function getPreviousAddressEnergySupplierIdAttribute()
+//    {
+//        if(!$this->primaryAddressEnergySupplier) {
+//            return 0;
+//        }
+//        $addressEnergySuppliers = $this->addressEnergySuppliers
+//            ->whereNotNull('member_since')
+//            ->where('member_since', '<', $this->primaryAddressEnergySupplier->member_since)
+//            ->sortByDesc('member_since');
+//        if(count($addressEnergySuppliers) == 0){
+//            return 0;
+//        }
+//        return($addressEnergySuppliers->first()->id);
+//    }
 
     public function getPortalSettingsLayoutAssignedAttribute()
     {

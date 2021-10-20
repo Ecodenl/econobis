@@ -42,6 +42,7 @@ class FullAddress extends JsonResource
             'buildingType' => GenericResource::make($this->whenLoaded('building_type')),
             'intake' => FullIntake::make($this->whenLoaded('intake')),
             'contact' => FullContact::make($this->whenLoaded('contact')),
+            'addressEnergySuppliers' => GenericResource::make($this->whenLoaded('addressEnergySuppliers')),
         ];
     }
 }

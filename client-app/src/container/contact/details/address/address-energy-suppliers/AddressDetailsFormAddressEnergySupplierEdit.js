@@ -1,31 +1,31 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import InputText from '../../../../components/form/InputText';
-import ButtonText from '../../../../components/button/ButtonText';
-import InputSelect from '../../../../components/form/InputSelect';
-import Panel from '../../../../components/panel/Panel';
-import PanelBody from '../../../../components/panel/PanelBody';
-import InputDate from '../../../../components/form/InputDate';
+import InputText from '../../../../../components/form/InputText';
+import ButtonText from '../../../../../components/button/ButtonText';
+import InputSelect from '../../../../../components/form/InputSelect';
+import Panel from '../../../../../components/panel/Panel';
+import PanelBody from '../../../../../components/panel/PanelBody';
+import InputDate from '../../../../../components/form/InputDate';
 import moment from 'moment/moment';
-import InputToggle from '../../../../components/form/InputToggle';
+import InputToggle from '../../../../../components/form/InputToggle';
 import validator from 'validator';
 moment.locale('nl');
 
-const ContactDetailsFormContactEnergySupplierEdit = props => {
+const AddressDetailsFormAddressEnergySupplierEdit = props => {
     const {
         energySupplierId,
-        contactEnergySupplyTypeId,
+        energySupplyTypeId,
         memberSince,
         eanElectricity,
         eanGas,
-        contactEnergySupplyStatusId,
+        energySupplyStatusId,
         switchDate,
         esNumber,
         isCurrentSupplier,
         createdAt,
         createdBy,
-    } = props.contactEnergySupplier;
+    } = props.addressEnergySupplier;
 
     return (
         <div>
@@ -43,10 +43,10 @@ const ContactDetailsFormContactEnergySupplierEdit = props => {
                             />
                             <InputSelect
                                 label={'Type'}
-                                id="contactEnergySupplyTypeId"
-                                name={'contactEnergySupplyTypeId'}
-                                options={props.contactEnergySupplierTypes}
-                                value={contactEnergySupplyTypeId}
+                                id="energySupplyTypeId"
+                                name={'energySupplyTypeId'}
+                                options={props.energySupplierTypes}
+                                value={energySupplyTypeId}
                                 readOnly={true}
                             />
                         </div>
@@ -79,10 +79,10 @@ const ContactDetailsFormContactEnergySupplierEdit = props => {
                             />
                             <InputSelect
                                 label={'Overstap status'}
-                                id="contactEnergySupplyStatusId"
-                                name={'contactEnergySupplyStatusId'}
-                                options={props.contactEnergySupplierStatus}
-                                value={contactEnergySupplyStatusId}
+                                id="energySupplyStatusId"
+                                name={'energySupplyStatusId'}
+                                options={props.energySupplierStatuses}
+                                value={energySupplyStatusId}
                                 onChangeAction={props.handleInputChange}
                             />
                         </div>
@@ -159,9 +159,9 @@ const mapStateToProps = state => {
         // todo: Deze zou nodig zijn voor button Tussentijdse opbrengstverdeling
         // contactDetails: state.contactDetails,
         energySuppliers: state.systemData.energySuppliers,
-        contactEnergySupplierTypes: state.systemData.contactEnergySupplierTypes,
-        contactEnergySupplierStatus: state.systemData.contactEnergySupplierStatus,
+        energySupplierTypes: state.systemData.energySupplierTypes,
+        energySupplierStatuses: state.systemData.energySupplierStatuses,
     };
 };
 
-export default connect(mapStateToProps, null)(ContactDetailsFormContactEnergySupplierEdit);
+export default connect(mapStateToProps, null)(AddressDetailsFormAddressEnergySupplierEdit);

@@ -2,15 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import validator from 'validator';
 
-import ContactEnergySupplierAPI from '../../../../api/contact/ContactEnergySupplierAPI';
-import { updateContactEnergySupplier } from '../../../../actions/contact/ContactDetailsActions';
-import ContactDetailsFormContactEnergySupplierView from './ContactDetailsFormContactEnergySupplierView';
-import ContactDetailsFormContactEnergySupplierEdit from './ContactDetailsFormContactEnergySupplierEdit';
-import ContactDetailsFormContactEnergySupplierDelete from './ContactDetailsFormContactEnergySupplierDelete';
+import AddressEnergySupplierAPI from '../../../../../api/contact/AddressEnergySupplierAPI';
+import { updateAddressEnergySupplier } from '../../../../../actions/contact/ContactDetailsActions';
+import AddressDetailsFormAddressEnergySupplierView from './AddressDetailsFormAddressEnergySupplierView';
+import AddressDetailsFormAddressEnergySupplierEdit from './AddressDetailsFormAddressEnergySupplierEdit';
+import AddressDetailsFormAddressEnergySupplierDelete from './AddressDetailsFormAddressEnergySupplierDelete';
 import { isEqual } from 'lodash';
 import { hashHistory } from 'react-router';
 
-class ContactDetailsFormContactEnergySupplierItem extends Component {
+class AddressDetailsFormAddressEnergySupplierItem extends Component {
     constructor(props) {
         super(props);
 
@@ -19,8 +19,8 @@ class ContactDetailsFormContactEnergySupplierItem extends Component {
             highlightLine: '',
             showEdit: false,
             showDelete: false,
-            contactEnergySupplier: {
-                ...props.contactEnergySupplier,
+            addressEnergySupplier: {
+                ...props.addressEnergySupplier,
             },
             errors: {
                 memberSince: false,
@@ -31,11 +31,11 @@ class ContactDetailsFormContactEnergySupplierItem extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (!isEqual(this.state.contactEnergySupplier, nextProps.contactEnergySupplier)) {
+        if (!isEqual(this.state.addressEnergySupplier, nextProps.addressEnergySupplier)) {
             this.setState({
                 ...this.state,
-                contactEnergySupplier: {
-                    ...nextProps.contactEnergySupplier,
+                addressEnergySupplier: {
+                    ...nextProps.addressEnergySupplier,
                 },
             });
         }
@@ -66,7 +66,7 @@ class ContactDetailsFormContactEnergySupplierItem extends Component {
     cancelEdit = () => {
         this.setState({
             ...this.state,
-            contactEnergySupplier: { ...this.props.contactEnergySupplier },
+            addressEnergySupplier: { ...this.props.addressEnergySupplier },
         });
 
         this.closeEdit();
@@ -100,8 +100,8 @@ class ContactDetailsFormContactEnergySupplierItem extends Component {
 
         this.setState({
             ...this.state,
-            contactEnergySupplier: {
-                ...this.state.contactEnergySupplier,
+            addressEnergySupplier: {
+                ...this.state.addressEnergySupplier,
                 [name]: value,
             },
         });
@@ -110,8 +110,8 @@ class ContactDetailsFormContactEnergySupplierItem extends Component {
     handleInputChangeDate(value, name) {
         this.setState({
             ...this.state,
-            contactEnergySupplier: {
-                ...this.state.contactEnergySupplier,
+            addressEnergySupplier: {
+                ...this.state.addressEnergySupplier,
                 [name]: value,
             },
         });
@@ -120,14 +120,14 @@ class ContactDetailsFormContactEnergySupplierItem extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { contactEnergySupplier } = this.state;
+        const { addressEnergySupplier } = this.state;
 
         let errors = {};
         let hasErrors = false;
 
         if (
-            contactEnergySupplier.isCurrentSupplier &&
-            (!contactEnergySupplier.memberSince || validator.isEmpty(contactEnergySupplier.memberSince))
+            addressEnergySupplier.isCurrentSupplier &&
+            (!addressEnergySupplier.memberSince || validator.isEmpty(addressEnergySupplier.memberSince))
         ) {
             errors.memberSince = true;
             hasErrors = true;
@@ -137,8 +137,8 @@ class ContactDetailsFormContactEnergySupplierItem extends Component {
 
         // If no errors send form
         !hasErrors &&
-            ContactEnergySupplierAPI.updateContactEnergySupplier(contactEnergySupplier).then(payload => {
-                this.props.updateContactEnergySupplier(payload);
+            AddressEnergySupplierAPI.updateAddressEnergySupplier(addressEnergySupplier).then(payload => {
+                this.props.updateAddressEnergySupplier(payload);
                 this.closeEdit();
             });
     };
@@ -146,19 +146,19 @@ class ContactDetailsFormContactEnergySupplierItem extends Component {
     render() {
         return (
             <div>
-                <ContactDetailsFormContactEnergySupplierView
+                <AddressDetailsFormAddressEnergySupplierView
                     highlightLine={this.state.highlightLine}
                     showActionButtons={this.state.showActionButtons}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
                     openEdit={this.openEdit}
                     toggleDelete={this.toggleDelete}
-                    contactEnergySupplier={this.state.contactEnergySupplier}
+                    addressEnergySupplier={this.state.addressEnergySupplier}
                 />
                 {this.state.showEdit &&
                     (this.props.permissions.updatePerson || this.props.permissions.updateOrganisation) && (
-                        <ContactDetailsFormContactEnergySupplierEdit
-                            contactEnergySupplier={this.state.contactEnergySupplier}
+                        <AddressDetailsFormAddressEnergySupplierEdit
+                            addressEnergySupplier={this.state.addressEnergySupplier}
                             errors={this.state.errors}
                             handleInputChange={this.handleInputChange}
                             handleInputChangeDate={this.handleInputChangeDate}
@@ -169,9 +169,9 @@ class ContactDetailsFormContactEnergySupplierItem extends Component {
                         />
                     )}
                 {this.state.showDelete && (
-                    <ContactDetailsFormContactEnergySupplierDelete
+                    <AddressDetailsFormAddressEnergySupplierDelete
                         closeDeleteItemModal={this.toggleDelete}
-                        {...this.props.contactEnergySupplier}
+                        {...this.props.addressEnergySupplier}
                     />
                 )}
             </div>
@@ -188,9 +188,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    updateContactEnergySupplier: contactEnergySupplier => {
-        dispatch(updateContactEnergySupplier(contactEnergySupplier));
+    updateAddressEnergySupplier: addressEnergySupplier => {
+        dispatch(updateAddressEnergySupplier(addressEnergySupplier));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormContactEnergySupplierItem);
+export default connect(mapStateToProps, mapDispatchToProps)(AddressDetailsFormAddressEnergySupplierItem);

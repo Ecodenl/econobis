@@ -613,7 +613,7 @@ const DefaultContactOrganisationEdit = function({
                         <Row>
                             <Col xs={12} sm={12} md={8}>
                                 <Field
-                                    name="primaryContactEnergySupplier.energySupplierId"
+                                    name="primaryAddressEnergySupplier.energySupplierId"
                                     render={({ field }) => (
                                         <Select
                                             field={field}
@@ -623,8 +623,8 @@ const DefaultContactOrganisationEdit = function({
                                             placeholder={'Selecteer uw leverancier'}
                                             options={EnergySuppliers}
                                             // disabled={
-                                            //     initialContact.primaryContactEnergySupplier &&
-                                            //     initialContact.primaryContactEnergySupplier.energySupplierId &&
+                                            //     initialContact.primaryAddressEnergySupplier &&
+                                            //     initialContact.primaryAddressEnergySupplier.energySupplierId &&
                                             //     initialContact.isParticipant
                                             // }
                                         />
@@ -633,7 +633,7 @@ const DefaultContactOrganisationEdit = function({
                             </Col>
                         </Row>
 
-                        {values.primaryContactEnergySupplier && values.primaryContactEnergySupplier.energySupplierId ? (
+                        {values.primaryAddressEnergySupplier && values.primaryAddressEnergySupplier.energySupplierId ? (
                             <>
                                 <FormLabel
                                     htmlFor="es_number"
@@ -648,7 +648,7 @@ const DefaultContactOrganisationEdit = function({
                                 <Row>
                                     <Col xs={12} sm={12} md={8}>
                                         <Field
-                                            name="primaryContactEnergySupplier.esNumber"
+                                            name="primaryAddressEnergySupplier.esNumber"
                                             render={({ field }) => (
                                                 <InputText
                                                     field={field}
@@ -657,9 +657,9 @@ const DefaultContactOrganisationEdit = function({
                                                     id="es_number"
                                                     placeholder={'Klant nummer bij leverancier'}
                                                     // disabled={
-                                                    //     initialContact.primaryContactEnergySupplier &&
-                                                    //     initialContact.primaryContactEnergySupplier.energySupplierId &&
-                                                    //     initialContact.primaryContactEnergySupplier.esNumber &&
+                                                    //     initialContact.primaryAddressEnergySupplier &&
+                                                    //     initialContact.primaryAddressEnergySupplier.energySupplierId &&
+                                                    //     initialContact.primaryAddressEnergySupplier.esNumber &&
                                                     //     initialContact.isParticipant
                                                     // }
                                                 />
@@ -674,7 +674,7 @@ const DefaultContactOrganisationEdit = function({
                                 <Row>
                                     <Col xs={12} sm={12} md={8}>
                                         <Field
-                                            name="primaryContactEnergySupplier.memberSince"
+                                            name="primaryAddressEnergySupplier.memberSince"
                                             render={({ field }) => (
                                                 <InputDate
                                                     {...field}
@@ -684,9 +684,9 @@ const DefaultContactOrganisationEdit = function({
                                                     id="member_since"
                                                     placeholder={'Klant sinds'}
                                                     // readOnly={
-                                                    //     initialContact.primaryContactEnergySupplier &&
-                                                    //     initialContact.primaryContactEnergySupplier.energySupplierId &&
-                                                    //     initialContact.primaryContactEnergySupplier.memberSince
+                                                    //     initialContact.primaryAddressEnergySupplier &&
+                                                    //     initialContact.primaryAddressEnergySupplier.energySupplierId &&
+                                                    //     initialContact.primaryAddressEnergySupplier.memberSince
                                                     // }
                                                 />
                                             )}
@@ -707,7 +707,7 @@ const DefaultContactOrganisationEdit = function({
                                 <Row>
                                     <Col xs={12} sm={12} md={8}>
                                         <Field
-                                            name="primaryContactEnergySupplier.eanElectricity"
+                                            name="primaryAddressEnergySupplier.eanElectricity"
                                             render={({ field }) => (
                                                 <InputText
                                                     field={field}
@@ -716,9 +716,9 @@ const DefaultContactOrganisationEdit = function({
                                                     id="ean_electricity"
                                                     placeholder={'EAN nummer electriciteit'}
                                                     // disabled={
-                                                    //     initialContact.primaryContactEnergySupplier &&
-                                                    //     initialContact.primaryContactEnergySupplier.energySupplierId &&
-                                                    //     initialContact.primaryContactEnergySupplier.eanElectricity &&
+                                                    //     initialContact.primaryAddressEnergySupplier &&
+                                                    //     initialContact.primaryAddressEnergySupplier.energySupplierId &&
+                                                    //     initialContact.primaryAddressEnergySupplier.eanElectricity &&
                                                     //     initialContact.isParticipant
                                                     // }
                                                 />
@@ -733,7 +733,7 @@ const DefaultContactOrganisationEdit = function({
                                 <Row>
                                     <Col xs={12} sm={12} md={8}>
                                         <Field
-                                            name="primaryContactEnergySupplier.eanGas"
+                                            name="primaryAddressEnergySupplier.eanGas"
                                             render={({ field }) => (
                                                 <InputText
                                                     field={field}
@@ -742,9 +742,9 @@ const DefaultContactOrganisationEdit = function({
                                                     id="ean_gas"
                                                     placeholder={'EAN nummer gas'}
                                                     // disabled={
-                                                    //     initialContact.primaryContactEnergySupplier &&
-                                                    //     initialContact.primaryContactEnergySupplier.energySupplierId &&
-                                                    //     initialContact.primaryContactEnergySupplier.eanGas
+                                                    //     initialContact.primaryAddressEnergySupplier &&
+                                                    //     initialContact.primaryAddressEnergySupplier.energySupplierId &&
+                                                    //     initialContact.primaryAddressEnergySupplier.eanGas
                                                     // }
                                                 />
                                             )}

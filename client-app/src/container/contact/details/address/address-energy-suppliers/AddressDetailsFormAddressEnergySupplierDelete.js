@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import Modal from '../../../../components/modal/Modal';
-import { deleteContactEnergySupplier } from '../../../../actions/contact/ContactDetailsActions';
+import Modal from '../../../../../components/modal/Modal';
+import { deleteAddressEnergySupplier } from '../../../../../actions/contact/ContactDetailsActions';
 
-const ContactDetailsFormContactEnergySupplierDelete = props => {
+const AddressDetailsFormAddressEnergySupplierDelete = props => {
     const confirmAction = () => {
-        props.deleteContactEnergySupplier(props.id);
+        props.deleteAddressEnergySupplier(props.id);
         props.closeDeleteItemModal();
     };
 
@@ -27,9 +27,9 @@ const ContactDetailsFormContactEnergySupplierDelete = props => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteContactEnergySupplier: id => {
-        dispatch(deleteContactEnergySupplier(id));
+    deleteAddressEnergySupplier: id => {
+        dispatch(deleteAddressEnergySupplier(id));
     },
 });
 
-export default connect(null, mapDispatchToProps)(ContactDetailsFormContactEnergySupplierDelete);
+export default connect(null, mapDispatchToProps)(AddressDetailsFormAddressEnergySupplierDelete);

@@ -7,9 +7,9 @@ use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
-class ContactEnergySupplier extends Model
+class AddressEnergySupplier extends Model
 {
-    protected $table = 'contact_energy_supplier';
+    protected $table = 'address_energy_suppliers';
 
     use RevisionableTrait;
 
@@ -25,14 +25,14 @@ class ContactEnergySupplier extends Model
         return $this->belongsTo(EnergySupplier::class);
     }
 
-    public function contactEnergySupplyStatus()
+    public function energySupplyStatus()
     {
-        return $this->belongsTo(ContactEnergySupplierStatus::class);
+        return $this->belongsTo(EnergySupplierStatus::class);
     }
 
-    public function contactEnergySupplyType()
+    public function energySupplyType()
     {
-        return $this->belongsTo(ContactEnergySupplierType::class);
+        return $this->belongsTo(EnergySupplierType::class);
     }
 
     public function createdBy(){

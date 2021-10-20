@@ -106,7 +106,7 @@ export default {
                 .trim()
                 .matches(/(\d.*){10}|^$/, 'Minimaal 10 cijfers nodig'),
         }),
-        primaryContactEnergySupplier: Yup.object().shape({
+        primaryAddressEnergySupplier: Yup.object().shape({
             eanElectricity: Yup.string()
                 .nullable()
                 .trim()
@@ -171,7 +171,7 @@ export default {
     }),
 
     validationSchemaPcrAdditional: Yup.object().shape({
-        primaryContactEnergySupplier: Yup.object().shape({
+        primaryAddressEnergySupplier: Yup.object().shape({
             energySupplierId: Yup.string()
                 .nullable()
                 .required('Verplicht'),

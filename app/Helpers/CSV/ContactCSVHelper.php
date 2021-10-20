@@ -44,7 +44,7 @@ class ContactCSVHelper
                 'primaryphoneNumber',
                 'phoneNumbers',
                 'primaryAddress',
-                'primaryContactEnergySupplier.energySupplier',
+                'primaryAddress.primaryAddressEnergySupplier.energySupplier',
                 'contactNotes',
                 'occupations.occupation',
                 'occupations.primaryContact.person.title',
@@ -212,12 +212,12 @@ class ContactCSVHelper
                 }
 
                 // Reformat energy supplier fields
-                if ($contact->primaryContactEnergySupplier) {
+                if ($contact->primaryAddress && $contact->primaryAddress->primaryAddressEnergySupplier) {
                     // Reformat when supplier starts with equal sign (example '=om')
-                    $contact->energy_supplier_name = $contact->primaryContactEnergySupplier->energySupplier->name;
+                    $contact->energy_supplier_name = $contact->primaryAddress->primaryAddressEnergySupplier->energySupplier->name;
                     // Member since date format
                     $contact->energy_member_since
-                        = $this->formatDate($contact->primaryContactEnergySupplier->member_since);
+                        = $this->formatDate($contact->primaryAddress->primaryAddressEnergySupplier->member_since);
                 }
 
                 $contact->did_agree_avg = ($contact->did_agree_avg ? 'Ja' : 'Nee');
@@ -289,9 +289,9 @@ class ContactCSVHelper
                 'phonenumber_2' => 'Telefoonnummer 2',
                 'phonenumber_3' => 'Telefoonnummer 3',
                 'energy_supplier_name' => 'Energieleverancier',
-                'primaryContactEnergySupplier.es_number' => 'Klantnummer',
+                'primaryAddress.primaryAddressEnergySupplier.es_number' => 'Klantnummer',
                 'energy_member_since' => 'Klant sinds',
-                'primaryContactEnergySupplier.ean_electricity' => 'EAN electriciteit',
+                'primaryAddress.ean_electricity' => 'EAN electriciteit',
                 'latest_contactNotes' => 'Parkeerplaats',
                 'created_at_date' => 'Datum gemaakt op',
                 'updated_at_date' => 'Datum laatste update',

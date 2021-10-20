@@ -19,10 +19,11 @@ class FullRevenueParticipantProject extends JsonResource
     public function toArray($request)
     {
         $es = false;
-        
-        if($this->contact->primaryContactEnergySupplier)
+
+// todo WM-es: check participation->address???
+        if($this->contact->primaryAddress && $this->contact->primaryAddres->primaryAddressEnergySupplier)
         {
-         $es = $this->contact->primaryContactEnergySupplier->energySupplier;
+         $es = $this->contact->primaryAddress->primaryAddressEnergySupplier->energySupplier;
         }
 
         return
@@ -33,7 +34,7 @@ class FullRevenueParticipantProject extends JsonResource
                 'contactType' => FullEnumWithIdAndName::make($this->contact->getType()),
                 'contactName' => $this->contact->full_name,
                 'contactPrimaryAddress' => $this->contact->primaryAddress,
-                'contactPrimaryContactEnergySupplier' => $es,
+                'contactPrimaryAddressEnergySupplier' => $es,
                 'projectId' => $this->project_id,
                 'datePayed' => $this->date_payed,
                 'didAcceptAgreement' => $this->did_accept_agreement,

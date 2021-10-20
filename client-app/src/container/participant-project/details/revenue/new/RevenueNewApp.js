@@ -76,11 +76,11 @@ class RevenueNewApp extends Component {
                 if (participation) {
                     if (
                         participation.contact &&
-                        participation.contact.previousContactEnergySupplierId != 0 &&
-                        participation.contact.primaryContactEnergySupplier &&
-                        participation.contact.primaryContactEnergySupplier.memberSince
+                        participation.contact.previousAddressEnergySupplierId != 0 &&
+                        participation.contact.primaryAddressEnergySupplier &&
+                        participation.contact.primaryAddressEnergySupplier.memberSince
                     ) {
-                        const dateSplit = moment(participation.contact.primaryContactEnergySupplier.memberSince)
+                        const dateSplit = moment(participation.contact.primaryAddressEnergySupplier.memberSince)
                             .subtract(1, 'day')
                             .format('Y-MM-DD');
                         let dateBegin =
@@ -95,7 +95,7 @@ class RevenueNewApp extends Component {
                         }
 
                         revenue.distributionTypeId = 'inPossessionOf';
-                        revenue.contactEnergySupplierId = participation.contact.previousContactEnergySupplierId;
+                        revenue.addressEnergySupplierId = participation.contact.previousAddressEnergySupplierId;
                         revenue.dateBegin = dateBegin;
                         revenue.dateEnd = dateSplit;
                         revenue.kwhStartHigh = participation.nextRevenueKwhStartHigh;

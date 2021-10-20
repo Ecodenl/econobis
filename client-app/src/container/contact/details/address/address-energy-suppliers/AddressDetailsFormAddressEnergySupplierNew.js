@@ -1,37 +1,37 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import ContactEnergySupplierAPI from '../../../../api/contact/ContactEnergySupplierAPI';
-import { newContactEnergySupplier } from '../../../../actions/contact/ContactDetailsActions';
-import InputText from '../../../../components/form/InputText';
-import ButtonText from '../../../../components/button/ButtonText';
-import InputSelect from '../../../../components/form/InputSelect';
-import Panel from '../../../../components/panel/Panel';
-import PanelBody from '../../../../components/panel/PanelBody';
+import AddressEnergySupplierAPI from '../../../../../api/contact/AddressEnergySupplierAPI';
+import { newAddressEnergySupplier } from '../../../../../actions/contact/ContactDetailsActions';
+import InputText from '../../../../../components/form/InputText';
+import ButtonText from '../../../../../components/button/ButtonText';
+import InputSelect from '../../../../../components/form/InputSelect';
+import Panel from '../../../../../components/panel/Panel';
+import PanelBody from '../../../../../components/panel/PanelBody';
 import validator from 'validator';
-import InputToggle from '../../../../components/form/InputToggle';
-import InputDate from '../../../../components/form/InputDate';
+import InputToggle from '../../../../../components/form/InputToggle';
+import InputDate from '../../../../../components/form/InputDate';
 
-class ContactDetailsFormContactEnergySupplierNew extends Component {
+class AddressDetailsFormAddressEnergySupplierNew extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            contactEnergySupplier: {
+            addressEnergySupplier: {
                 contactId: this.props.id,
                 energySupplierId: '',
-                contactEnergySupplyTypeId: '',
+                energySupplyTypeId: '',
                 memberSince: '',
                 eanElectricity: '',
                 eanGas: '',
-                contactEnergySupplyStatusId: '',
+                energySupplyStatusId: '',
                 switchDate: '',
                 esNumber: '',
                 isCurrentSupplier: false,
             },
             errors: {
                 energySupplierId: false,
-                contactEnergySupplyTypeId: false,
+                energySupplyTypeId: false,
                 memberSince: false,
             },
         };
@@ -46,8 +46,8 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
 
         this.setState({
             ...this.state,
-            contactEnergySupplier: {
-                ...this.state.contactEnergySupplier,
+            addressEnergySupplier: {
+                ...this.state.addressEnergySupplier,
                 [name]: value,
             },
         });
@@ -56,8 +56,8 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
     handleInputChangeDate(value, name) {
         this.setState({
             ...this.state,
-            contactEnergySupplier: {
-                ...this.state.contactEnergySupplier,
+            addressEnergySupplier: {
+                ...this.state.addressEnergySupplier,
                 [name]: value,
             },
         });
@@ -66,24 +66,24 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { contactEnergySupplier } = this.state;
+        const { addressEnergySupplier } = this.state;
 
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(contactEnergySupplier.energySupplierId)) {
+        if (validator.isEmpty(addressEnergySupplier.energySupplierId)) {
             errors.energySupplierId = true;
             hasErrors = true;
         }
 
-        if (validator.isEmpty(contactEnergySupplier.contactEnergySupplyTypeId)) {
-            errors.contactEnergySupplyTypeId = true;
+        if (validator.isEmpty(addressEnergySupplier.energySupplyTypeId)) {
+            errors.energySupplyTypeId = true;
             hasErrors = true;
         }
 
         if (
-            contactEnergySupplier.isCurrentSupplier &&
-            (!contactEnergySupplier.memberSince || validator.isEmpty(contactEnergySupplier.memberSince))
+            addressEnergySupplier.isCurrentSupplier &&
+            (!addressEnergySupplier.memberSince || validator.isEmpty(addressEnergySupplier.memberSince))
         ) {
             errors.memberSince = true;
             hasErrors = true;
@@ -93,8 +93,8 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
 
         // If no errors send form
         !hasErrors &&
-            ContactEnergySupplierAPI.newContactEnergySupplier(contactEnergySupplier).then(payload => {
-                this.props.newContactEnergySupplier(payload);
+            AddressEnergySupplierAPI.newAddressEnergySupplier(addressEnergySupplier).then(payload => {
+                this.props.newAddressEnergySupplier(payload);
                 this.props.toggleShowNew();
             });
     };
@@ -102,15 +102,15 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
     render() {
         const {
             energySupplierId,
-            contactEnergySupplyTypeId,
+            energySupplyTypeId,
             memberSince,
             eanElectricity,
             eanGas,
-            contactEnergySupplyStatusId,
+            energySupplyStatusId,
             switchDate,
             esNumber,
             isCurrentSupplier,
-        } = this.state.contactEnergySupplier;
+        } = this.state.addressEnergySupplier;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -129,13 +129,13 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
                             />
                             <InputSelect
                                 label={'Type'}
-                                id="contactEnergySupplyTypeId"
-                                name={'contactEnergySupplyTypeId'}
-                                options={this.props.contactEnergySupplierTypes}
-                                value={contactEnergySupplyTypeId}
+                                id="energySupplyTypeId"
+                                name={'energySupplyTypeId'}
+                                options={this.props.energySupplierTypes}
+                                value={energySupplyTypeId}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
-                                error={this.state.errors.contactEnergySupplyTypeId}
+                                error={this.state.errors.energySupplyTypeId}
                             />
                         </div>
 
@@ -167,10 +167,10 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
                             />
                             <InputSelect
                                 label={'Overstap status'}
-                                id="contactEnergySupplyStatusId"
-                                name={'contactEnergySupplyStatusId'}
-                                options={this.props.contactEnergySupplierStatus}
-                                value={contactEnergySupplyStatusId}
+                                id="energySupplyStatusId"
+                                name={'energySupplyStatusId'}
+                                options={this.props.energySupplierStatuses}
+                                value={energySupplyStatusId}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>
@@ -224,16 +224,16 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
 const mapStateToProps = state => {
     return {
         energySuppliers: state.systemData.energySuppliers,
-        contactEnergySupplierStatus: state.systemData.contactEnergySupplierStatus,
-        contactEnergySupplierTypes: state.systemData.contactEnergySupplierTypes,
+        energySupplierStatuses: state.systemData.energySupplierStatuses,
+        energySupplierTypes: state.systemData.energySupplierTypes,
         id: state.contactDetails.id,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    newContactEnergySupplier: contactEnergySupplier => {
-        dispatch(newContactEnergySupplier(contactEnergySupplier));
+    newAddressEnergySupplier: addressEnergySupplier => {
+        dispatch(newAddressEnergySupplier(addressEnergySupplier));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormContactEnergySupplierNew);
+export default connect(mapStateToProps, mapDispatchToProps)(AddressDetailsFormAddressEnergySupplierNew);

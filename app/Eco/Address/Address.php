@@ -4,6 +4,7 @@ namespace App\Eco\Address;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Country\Country;
+use App\Eco\EnergySupplier\AddressEnergySupplier;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Intake\Intake;
 use App\Eco\Measure\Measure;
@@ -22,6 +23,17 @@ class Address extends Model
     protected $casts = [
         'primary' => 'boolean',
     ];
+
+    public function addressEnergySuppliers()
+    {
+        return $this->hasMany(AddressEnergySupplier::class);
+    }
+
+    public function primaryAddressEnergySupplier()
+    {
+        return $this->hasOne(AddressEnergySupplier::class)->where('is_current_supplier', true);
+    }
+
 
     public function contact()
     {
@@ -71,4 +83,23 @@ class Address extends Model
         return $postalCode;
     }
 
+
+    /**
+     * Previous energy supplier
+     * @return int
+     */
+    public function getPreviousAddressEnergySupplierIdAttribute()
+    {
+        if(!$this->primaryAddressEnergySupplier) {
+            return 0;
+        }
+        $addressEnergySuppliers = $this->addressEnergySuppliers
+            ->whereNotNull('member_since')
+            ->where('member_since', '<', $this->primaryAddressEnergySupplier->member_since)
+            ->sortByDesc('member_since');
+        if(count($addressEnergySuppliers) == 0){
+            return 0;
+        }
+        return($addressEnergySuppliers->first()->id);
+    }
 }

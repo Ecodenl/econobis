@@ -62,7 +62,7 @@ class ParticipationProjectController extends ApiController
     {
         $participantProject = $requestQuery->get();
         $participantProject->load([
-            'contact.primaryContactEnergySupplier.energySupplier',
+            'contact.primaryAddressEnergySupplier.energySupplier',
             'contact.primaryAddress',
             'contact.primaryEmailAddress',
             'project',
@@ -175,7 +175,7 @@ class ParticipationProjectController extends ApiController
             'contact.primaryEmailAddress',
             'contact.primaryphoneNumber',
             'contact.primaryAddress.country',
-            'contact.primaryContactEnergySupplier.energySupplier',
+            'contact.primaryAddressEnergySupplier.energySupplier',
             'giftedByContact',
             'legalRepContact',
             'project',
@@ -225,7 +225,7 @@ class ParticipationProjectController extends ApiController
         ]);
         $participantProject->load([
             'contact',
-            'contact.primaryContactEnergySupplier',
+            'contact.primaryAddressEnergySupplier',
             'project.projectType',
             'project.administration',
             'project.projectValueCourses',
@@ -620,14 +620,15 @@ class ParticipationProjectController extends ApiController
     {
         $checkText = 'Energieleverancier check: ';
 
-        $primaryContactEnergySupplier = $contact->primaryContactEnergySupplier;
+// todo WM-es: check participation->address???
+        $primaryAddressEnergySupplier = $contact->primaryAddress ? $contact->primaryAddress->primaryAddressEnergySupplier : null;
 
-        if(!$primaryContactEnergySupplier){
+        if(!$primaryAddressEnergySupplier){
             array_push($message, $checkText . 'Contact heeft nog geen energieleverancier.');
             return false;
         }
 
-        $energySupplier = $primaryContactEnergySupplier->energySupplier;
+        $energySupplier = $primaryAddressEnergySupplier->energySupplier;
 
         if(!$energySupplier->does_postal_code_links){
             array_push($message, $checkText . 'Energieleverancier van contact doet niet mee aan postcoderoos.');

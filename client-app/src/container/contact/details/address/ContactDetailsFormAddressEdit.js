@@ -8,6 +8,7 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputToggle from '../../../../components/form/InputToggle';
 import InputDate from '../../../../components/form/InputDate';
+import AddressDetailsFormAddressEnergySupplier from './address-energy-suppliers/AddressDetailsFormAddressEnergySupplier';
 
 const ContactDetailsFormAddressEdit = props => {
     const { street, number, addition, postalCode, city, typeId, endDate, primary, countryId } = props.address;
@@ -116,6 +117,8 @@ const ContactDetailsFormAddressEdit = props => {
                                 disabled={primary}
                             />
                         </div>
+
+                        <AddressDetailsFormAddressEnergySupplier address={props.address} />
 
                         <div className="pull-right btn-group" role="group">
                             <ButtonText

@@ -12,7 +12,7 @@ import { deleteAdministrationSaga, fetchAdministrationsSaga } from './administra
 import { fetchCampaignsSaga } from './campaign/CampaignsSaga';
 import {
     deleteAddressSaga,
-    deleteContactEnergySupplierSaga,
+    deleteAddressEnergySupplierSaga,
     deleteContactNoteSaga,
     deleteEmailAddressSaga,
     deletePhoneNumberSaga,
@@ -143,7 +143,7 @@ export default function* watchSagas() {
     yield takeLatest('DELETE_EMAIL_ADDRESS', deleteEmailAddressSaga);
     yield takeLatest('DELETE_PORTAL_USER', deletePortalUserSaga);
     yield takeLatest('DELETE_CONTACT_NOTE', deleteContactNoteSaga);
-    yield takeLatest('DELETE_CONTACT_ENERGY_SUPPLIER', deleteContactEnergySupplierSaga);
+    yield takeLatest('DELETE_ADDRESS_ENERGY_SUPPLIER', deleteAddressEnergySupplierSaga);
     // Contact group
     yield takeLatest('FETCH_CONTACT_GROUPS', fetchContactGroupsSaga);
     yield takeLatest('DELETE_CONTACT_GROUP', deleteContactGroupSaga);

@@ -321,6 +321,7 @@ class ProjectRevenueController extends ApiController
 
     public function saveParticipantsOfDistribution(ProjectRevenue $projectRevenue, $closing)
     {
+        set_time_limit(300);
         $project = $projectRevenue->project;
 
         if($projectRevenue->category->code_ref == 'revenueKwhSplit') {
@@ -954,6 +955,7 @@ class ProjectRevenueController extends ApiController
         $distributions, $datePayout
     )
     {
+        set_time_limit(300);
 
         $createdInvoices = [];
         $payoutTypeAccountId = ParticipantProjectPayoutType::where('code_ref', 'account')->first()->id;

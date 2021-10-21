@@ -281,6 +281,14 @@ class TemplateVariableHelper
                 }
                 return $btwnr;
                 break;
+            case 'organisatie_statutaire_naam':
+                if($model->type_id == 'organisation') {
+                    return $model->organisation->statutory_name;
+                }
+                else{
+                    return '';
+                }
+                break;
             case 'organisatie_primair_contact':
                 if($model->type_id == 'organisation') {
                     return optional(optional($model->contactPerson)->contact)->full_name;
@@ -1777,6 +1785,9 @@ class TemplateVariableHelper
         switch ($varname) {
             case 'organisatie_naam':
                 return $model->organisation->name;
+                break;
+            case 'organisatie_statutaire_naam':
+                return optional($model->organisation)->statutory_name;
                 break;
             case 'organisatie_adres':
                 return optional($model->organisation->contact->primaryAddress)->street . ' ' . optional($model->organisation->contact->primaryAddress)->number . (optional($model->organisation->contact->primaryAddress)->addition ? ('-' . optional($model->organisation->contact->primaryAddress)->addition) : '');

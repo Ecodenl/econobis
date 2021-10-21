@@ -34,7 +34,6 @@ class Address extends Model
         return $this->hasOne(AddressEnergySupplier::class)->where('is_current_supplier', true);
     }
 
-
     public function contact()
     {
         return $this->belongsTo(Contact::class);
@@ -82,7 +81,6 @@ class Address extends Model
 
         return $postalCode;
     }
-
 
     /**
      * Previous energy supplier

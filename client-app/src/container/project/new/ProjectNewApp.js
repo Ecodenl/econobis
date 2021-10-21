@@ -84,7 +84,9 @@ class ProjectNewApp extends Component {
                 textInfoProjectOnlyMembers: defaultTextInfoProjectOnlyMembers,
                 isParticipationTransferable: false,
                 postalcodeLink: '',
+                addressNumberSeries: '',
                 checkPostalcodeLink: false,
+                hideWhenNotMatchingPostalCheck: false,
                 contactGroupIds: '',
                 contactGroupIdsSelected: [],
                 amountOfLoanNeeded: null,
@@ -153,14 +155,16 @@ class ProjectNewApp extends Component {
         let projectType;
         projectType = this.props.projectTypesActive.find(projectType => projectType.id == projectTypeId);
 
+        let isSceProject = this.state.project.isSceProject;
+        if (projectType && projectType.codeRef === 'postalcode_link_capital') {
+            isSceProject = false;
+        }
+
         this.setState({
             ...this.state,
             project: {
                 ...this.state.project,
-                isSceProject:
-                    projectType && projectType.codeRef === 'postalcode_link_capital'
-                        ? false
-                        : this.state.project.isSceProject,
+                isSceProject: isSceProject,
                 projectTypeId: projectTypeId,
             },
         });
@@ -224,6 +228,8 @@ class ProjectNewApp extends Component {
             errors.projectTypeId = true;
             hasErrors = true;
         }
+        let projectType;
+        projectType = this.props.projectTypesActive.find(projectType => projectType.id == project.projectTypeId);
 
         if (
             project.isSceProject &&
@@ -290,20 +296,28 @@ class ProjectNewApp extends Component {
         if (!project.isMembershipRequired) {
             project.contactGroupIds = '';
             project.contactGroupIdsSelected = [];
+            project.visibleForAllContacts = false;
+        }
+
+        // If visibleForAllContacts is false, set textInfoProjectOnlyMembers to default
+        if (!project.visibleForAllContacts) {
+            project.textInfoProjectOnlyMembers = defaultTextInfoProjectOnlyMembers;
         }
 
         if (validator.isEmpty('' + project.baseProjectCodeRef)) {
             project.baseProjectCodeRef = null;
         }
+
         // If isSceProject is false, init related fields.
         if (!project.isSceProject) {
             project.baseProjectCodeRef = null;
             project.checkDoubleAddresses = false;
-            project.visibleForAllContacts = false;
-            project.textInfoProjectOnlyMembers = defaultTextInfoProjectOnlyMembers;
-        }
-        if (!project.isSceProject) {
-            project.checkPostalcodeLink = false;
+            project.addressNumberSeries = null;
+            project.hideWhenNotMatchingPostalCheck = false;
+            if (projectType && projectType.codeRef !== 'postalcode_link_capital') {
+                project.postalcodeLink = null;
+                project.checkPostalcodeLink = false;
+            }
         }
 
         this.setState({ ...this.state, errors: errors });
@@ -376,7 +390,9 @@ class ProjectNewApp extends Component {
             administrationId,
             usesMollie,
             postalcodeLink,
+            addressNumberSeries,
             checkPostalcodeLink,
+            hideWhenNotMatchingPostalCheck,
             contactGroupIds,
             contactGroupIdsSelected,
             amountOfLoanNeeded,
@@ -422,6 +438,8 @@ class ProjectNewApp extends Component {
                                         useSceProject={useSceProject}
                                         isSceProject={isSceProject}
                                         postalcodeLink={postalcodeLink}
+                                        addressNumberSeries={addressNumberSeries}
+                                        hideWhenNotMatchingPostalCheck={hideWhenNotMatchingPostalCheck}
                                         checkPostalcodeLink={checkPostalcodeLink}
                                         baseProjectCodeRef={baseProjectCodeRef}
                                         powerKwAvailable={powerKwAvailable}

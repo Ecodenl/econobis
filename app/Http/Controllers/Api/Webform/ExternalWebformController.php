@@ -58,6 +58,7 @@ use App\Eco\Team\Team;
 use App\Eco\Title\Title;
 use App\Eco\User\User;
 use App\Eco\Webform\Webform;
+use App\Helpers\Address\AddressHelper;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Workflow\IntakeWorkflowHelper;
@@ -80,12 +81,13 @@ class ExternalWebformController extends Controller
     /**
      * Het contact record aangemaakt of gevonden.
      * Bij dit contact wordt eventueel nog hoomdossier aanmaken.
-     * Hier hebben we dan ook createHoomDossier true/false en responsibleIds voor nodig.
+     * Voor taskToContact hebben we dan ook intake en housingFile nodig (indien aangemaakt).
      * @var Contact|null
      */
     protected $contact = null;
-    protected $createHoomDossier = false;
     protected $responsibleIds = [];
+    protected $intake = null;
+    protected $housingFile = null;
 
     /**
      * Het address record aangemaakt of gevonden obv postcode en huisnummer.
@@ -128,9 +130,13 @@ class ExternalWebformController extends Controller
 
     public function post(string $apiKey, Request $request)
     {
+        $data = $this->getDataFromRequest($request);
+        $createHoomDossier = (bool)$data['contact']['create_hoom_dossier'];
+        $this->responsibleIds = $data['responsible_ids'];
+
         try {
-            \DB::transaction(function () use ($request, $apiKey) {
-                $this->doPost($apiKey, $request);
+            \DB::transaction(function () use ($request, $apiKey, $data ) {
+                $this->doPost($apiKey, $request, $data);
             });
         } catch (WebformException $e) {
             // Er is een bewuste fout vanuit het verwerken van de aanroep onstaan
@@ -169,54 +175,22 @@ class ExternalWebformController extends Controller
             return Response::json($this->logs, 500);
         }
 
-        // Geen fouten evt nog Hoomdossier aanmaken indien van toepassing
-        $errorCreateHoomDossier = false;
-        if($this->createHoomDossier){
-            $cooperation = Cooperation::first();
-            $this->log("Aanmaken hoomdossier contact");
-            if(!$cooperation || empty($cooperation->hoom_link)){
-                $this->log("Kan geen Hoomdossier aanmaken want er is bij cooperatie geen hoomdossier link gevonden.");
-            }else{
-                if(!$this->contact ){
-                    $this->log("Kan geen Hoomdossier aanmaken want er is geen contact gevonden.");
-                }else{
-                    if($this->contact->hoom_account_id) {
-                        $this->log("Koppeling hoomdossier bestaat al.");
-                    }else{
-                        // aanmaken hoomdossier
-                        try {
-                            $contactController = new ContactController();
-                            $contactController->makeHoomdossier($this->contact);
+        $this->log('Aanroep succesvol afgerond tot nu toe. Eventueel verwerken van deelname, order, taak en aanmaak Hoomdossier volgen nog.');
 
-                            $note = "Webformulier " . $this->webform->name . ".\n\n";
-                            $note .= "Hoomdossier aangemaakt voor contact " . $this->contact->full_name . " (".$this->contact->number.").\n";
-                            $this->addTaskCheckContact($this->responsibleIds, $this->contact, $this->webform, $note);
+        $participation = $this->addParticipationToContact($this->contact, $data['participation'], $this->webform);
+        $order = $this->addOrderToContact($this->contact, $data['order']);
+        $this->addTaskToContact($this->contact, $data['responsible_ids'], $data['task'], $this->webform, $this->intake, $this->housingFile, $participation, $order);
 
-                        } catch (\Exception $errorHoomDossier) {
-                            $errorCreateHoomDossier = true;
-                            $this->log("Fout bij aanmaken hoomdossier contact");
-
-                            $note = "Webformulier " . $this->webform->name . ".\n\n";
-                            $note .= "Fout bij aanmaken hoomdossier voor contact " . $this->contact->full_name . " (".$this->contact->number.").\n";
-                            $note .= "Controleer contactgegevens\n";
-                            $this->addTaskCheckContact($this->responsibleIds, $this->contact, $this->webform, $note);
-                        }
-                    }
-                }
-            }
+        // evt nog Hoomdossier aanmaken indien van toepassing
+        if ($createHoomDossier) {
+            $this->createHoomDossier();
         }
 
-        // Geen fouten ontstaan, log weergeven met succes melding.
-        if($errorCreateHoomDossier){
-            $this->log('Aanroep succesvol afgerond, alleen fout bij aanmaak Hoomdossier.');
-        }else{
-            $this->log('Aanroep succesvol afgerond.');
-        }
         $this->logInfo();
         return Response::json($this->logs);
     }
 
-    protected function doPost(string $apiKey, Request $request)
+    protected function doPost(string $apiKey, Request $request, $data)
     {
         // Geëncrypte strings kunnen variëren, daarom alle models ophalen en op gedecrypte key filteren
         $webform = Webform::all()->first(function ($webform) use ($apiKey) {
@@ -233,8 +207,6 @@ class ExternalWebformController extends Controller
             $this->log('Webform met id ' . $webform->id . ' gevonden bij code ' . $apiKey . '.');
         }
         $this->checkMaxRequests($webform);
-
-        $data = $this->getDataFromRequest($request);
 
         $contact = $this->updateOrCreateContact($data['responsible_ids'], $data['contact'], $webform);
 
@@ -307,15 +279,6 @@ class ExternalWebformController extends Controller
             }
         }
 
-        // Bewaar contact als we later nog Hoomdossier moeten aanmaken
-        if($this->createHoomDossier){
-            if($contact){
-                $this->contact = $contact;
-            }else{
-                $this->contact = null;
-            }
-        }
-
         $this->addEnergySupplierToContact($contact, $data['energy_supplier']);
         if ($this->address) {
             $intake = $this->addIntakeToAddress($this->address, $data['intake'], $webform);
@@ -325,9 +288,11 @@ class ExternalWebformController extends Controller
             $housingFile = null;
             $this->log("Er is geen adres gevonden en kon ook niet aangemaakt worden met huidige gegevens, intake en woondossier konden niet worden aangemaakt.");
         }
-        $participation = $this->addParticipationToContact($contact, $data['participation'], $webform);
-        $order = $this->addOrderToContact($contact, $data['order']);
-        $this->addTaskToContact($contact, $data['responsible_ids'], $data['task'], $webform, $intake, $housingFile, $participation, $order);
+
+        // Bewaar intake en housingfile voor verdere acties later hiermee
+        $this->contact = $contact;
+        $this->intake = $intake;
+        $this->housingFile = $housingFile;
     }
 
 
@@ -475,10 +440,6 @@ class ExternalWebformController extends Controller
 
         // Sanitize
         $data['contact']['address_postal_code'] = strtoupper(str_replace(' ', '', $data['contact']['address_postal_code']));
-
-        // Kijken we later nog Hoomdossier moeten aanmaken
-        $this->createHoomDossier = (bool)$data['contact']['create_hoom_dossier'];
-        $this->responsibleIds = $data['responsible_ids'];
 
         return $data;
     }
@@ -930,9 +891,9 @@ class ExternalWebformController extends Controller
                 ->where('number', $data['address_number'])
                 ->where('addition', $data['address_addition'])
                 ->first();
-
+            // Adres met deze gegevens bestaat nog niet
             if (!$address) {
-                // Adres met deze gegevens bestaat nog niet, adres toevoegen met binnenkomende type of anders default "postadres"
+                // Adres toevoegen met binnenkomende type of anders default "postadres"
                 $this->log('Er bestaat nog geen adres met dit huisnummer en postcode; adres aanmaken');
 
                 // Validatie op addresstype
@@ -1520,6 +1481,15 @@ class ExternalWebformController extends Controller
             $project = Project::find($data['project_id']);
             if (!$project) $this->error('Er is een ongeldige waarde voor project meegegeven.');
 
+            // Check address
+            $addressHelper = new AddressHelper($contact, $contact->addressForPostalCodeCheck);
+            $checkAddressOk = $addressHelper->checkAddress($project->id, false);
+            if(!$checkAddressOk){
+                $this->log('Deelname kan niet worden aangemaakt vanwege volgende fouten:');
+                $this->log(implode(';', $addressHelper->messages));
+                return null;
+            }
+
             // Voor aanmaak van Participant Mutations wordt created by and updated by via ParticipantMutationObserver altijd bepaald obv Auth::id
             // Die moeten we eerst even setten als we dus hier vanuit webform komen.
             $responsibleUser = User::find($webform->responsible_user_id);
@@ -1957,7 +1927,7 @@ class ExternalWebformController extends Controller
             if (!$product) {
                 $this->log('Product met is ' . $data['product_id'] . ' is niet gevonden, geen order aangemaakt.');
                 $this->addTaskError('Ongeldige product code meegegeven bij verzenden webformulier.');
-                return;
+                return null;
             }
 
             $statusId = $data['status_id'];
@@ -2118,6 +2088,42 @@ class ExternalWebformController extends Controller
     protected function addTaskError(string $error)
     {
         $this->taskErrors[] = $error;
+    }
+
+    /**
+     * @return bool
+     */
+    private function createHoomDossier()
+    {
+        $cooperation = Cooperation::first();
+        $this->log("Aanmaken hoomdossier contact");
+        if (!$cooperation || empty($cooperation->hoom_link)) {
+            return $this->log("Kan geen Hoomdossier aanmaken want er is bij cooperatie geen hoomdossier link gevonden.");
+        }
+        if (!$this->contact) {
+            return $this->log("Kan geen Hoomdossier aanmaken want er is geen contact gevonden.");
+        }
+        if ($this->contact->hoom_account_id) {
+            return $this->log("Koppeling hoomdossier bestaat al.");
+        } else {
+            // aanmaken hoomdossier
+            try {
+                $contactController = new ContactController();
+                $contactController->makeHoomdossier($this->contact);
+
+                $note = "Webformulier " . $this->webform->name . ".\n\n";
+                $note .= "Hoomdossier aangemaakt voor contact " . $this->contact->full_name . " (" . $this->contact->number . ").\n";
+                $this->addTaskCheckContact($this->responsibleIds, $this->contact, $this->webform, $note);
+
+            } catch (\Exception $errorHoomDossier) {
+                $this->log("Fout bij aanmaken hoomdossier contact");
+
+                $note = "Webformulier " . $this->webform->name . ".\n\n";
+                $note .= "Fout bij aanmaken hoomdossier voor contact " . $this->contact->full_name . " (" . $this->contact->number . ").\n";
+                $note .= "Controleer contactgegevens\n";
+                $this->addTaskCheckContact($this->responsibleIds, $this->contact, $this->webform, $note);
+            }
+        }
     }
 
 }

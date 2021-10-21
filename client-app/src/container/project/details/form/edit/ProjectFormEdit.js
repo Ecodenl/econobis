@@ -641,11 +641,14 @@ class ProjectFormEdit extends Component {
 
         // If isSceProject is false, init related fields.
         if (!project.isSceProject) {
-            project.checkDoubleAddresses = false;
             project.baseProjectCodeRef = null;
-        }
-        if (!project.isSceProject && project.projectType.codeRef !== 'postalcode_link_capital') {
-            project.checkPostalcodeLink = false;
+            project.checkDoubleAddresses = false;
+            project.addressNumberSeries = null;
+            project.hideWhenNotMatchingPostalCheck = false;
+            if (project.projectType.codeRef !== 'postalcode_link_capital') {
+                project.checkPostalcodeLink = false;
+                project.postalcodeLink = null;
+            }
         }
 
         if (isNaN(project.amountOfLoanNeeded)) {
@@ -695,6 +698,7 @@ class ProjectFormEdit extends Component {
             isSceProject,
             baseProjectCodeRef,
             checkDoubleAddresses,
+            hideWhenNotMatchingPostalCheck,
             checkPostalcodeLink,
             disableChangeContactNameOnPortal,
             address,
@@ -729,6 +733,7 @@ class ProjectFormEdit extends Component {
             minParticipations,
             isParticipationTransferable,
             postalcodeLink,
+            addressNumberSeries,
             documentTemplateAgreementId,
             documentTemplates,
             emailTemplateAgreementId,
@@ -801,6 +806,8 @@ class ProjectFormEdit extends Component {
                     powerKwAvailable={powerKwAvailable}
                     checkDoubleAddresses={checkDoubleAddresses}
                     postalcodeLink={postalcodeLink}
+                    addressNumberSeries={addressNumberSeries}
+                    hideWhenNotMatchingPostalCheck={hideWhenNotMatchingPostalCheck}
                     checkPostalcodeLink={checkPostalcodeLink}
                     disableChangeContactNameOnPortal={disableChangeContactNameOnPortal}
                     requiredParticipants={requiredParticipants}

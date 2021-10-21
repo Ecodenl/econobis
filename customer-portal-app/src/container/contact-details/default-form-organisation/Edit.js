@@ -336,6 +336,7 @@ const DefaultContactOrganisationEdit = function({
                                     touched={touched}
                                     id="street_number"
                                     placeholder={'Nummer'}
+                                    disabled={initialContact.blockChangeAddressNumber}
                                 />
                             )}
                         />
@@ -350,6 +351,7 @@ const DefaultContactOrganisationEdit = function({
                                     touched={touched}
                                     id="addition"
                                     placeholder={'Toevoeging'}
+                                    disabled={initialContact.blockChangeAddressNumber}
                                 />
                             )}
                         />

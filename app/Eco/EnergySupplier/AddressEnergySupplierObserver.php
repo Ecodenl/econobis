@@ -26,19 +26,20 @@ class AddressEnergySupplierObserver
         {
             // Check if any project revenue distribution is present with status concept
             // If so, then change energy supplier
-            $projectRevenueDistributions = $addressEnergySupplier->contact->projectRevenueDistributions->whereIn('status', ['concept', 'confirmed']);
-
-            foreach($projectRevenueDistributions as $projectRevenueDistribution) {
-                if( $addressEnergySupplier->is_current_supplier == true){
-                    $projectRevenueDistribution->energy_supplier_name = $addressEnergySupplier->energySupplier->name;
-                    $projectRevenueDistribution->es_id = $addressEnergySupplier->energySupplier->id;
-                }else{
-                    $projectRevenueDistribution->energy_supplier_name = "";
-                    $projectRevenueDistribution->es_id = null;
-                }
-
-                $projectRevenueDistribution->save();
-            }
+// todo WM-es: dit moet anders $addressEnergySupplier->contact bestaat niet meer !!
+//            $projectRevenueDistributions = $addressEnergySupplier->contact->projectRevenueDistributions->whereIn('status', ['concept', 'confirmed']);
+//
+//            foreach($projectRevenueDistributions as $projectRevenueDistribution) {
+//                if( $addressEnergySupplier->is_current_supplier == true){
+//                    $projectRevenueDistribution->energy_supplier_name = $addressEnergySupplier->energySupplier->name;
+//                    $projectRevenueDistribution->es_id = $addressEnergySupplier->energySupplier->id;
+//                }else{
+//                    $projectRevenueDistribution->energy_supplier_name = "";
+//                    $projectRevenueDistribution->es_id = null;
+//                }
+//
+//                $projectRevenueDistribution->save();
+//            }
 
         }
 

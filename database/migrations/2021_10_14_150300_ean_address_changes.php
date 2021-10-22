@@ -76,7 +76,12 @@ class EanAddressChanges extends Migration
 
         if (Schema::hasTable('contact_energy_supplier', ))
         {
-          Schema::rename('contact_energy_supplier', 'xxx_contact_energy_supplier');
+            Schema::table('contact_energy_supplier', function (Blueprint $table) {
+                $table->unsignedInteger('address_id')->nullable();
+                $table->unsignedInteger('address_energy_supplier_id')->nullable();
+                $table->text('address_conversion_text')->default('');
+            });
+            Schema::rename('contact_energy_supplier', 'xxx_contact_energy_supplier');
         }
 
     }
@@ -90,6 +95,24 @@ class EanAddressChanges extends Migration
     {
         if (Schema::hasTable('xxx_contact_energy_supplier', ))
         {
+            if (Schema::hasColumn('xxx_contact_energy_supplier', 'address_id'))
+            {
+                Schema::table('xxx_contact_energy_supplier', function (Blueprint $table) {
+                    $table->dropColumn('address_id');
+                });
+            }
+            if (Schema::hasColumn('xxx_contact_energy_supplier', 'address_energy_supplier_id'))
+            {
+                Schema::table('xxx_contact_energy_supplier', function (Blueprint $table) {
+                    $table->dropColumn('address_energy_supplier_id');
+                });
+            }
+            if (Schema::hasColumn('xxx_contact_energy_supplier', 'address_conversion_text'))
+            {
+                Schema::table('xxx_contact_energy_supplier', function (Blueprint $table) {
+                    $table->dropColumn('address_conversion_text');
+                });
+            }
             Schema::rename('xxx_contact_energy_supplier', 'contact_energy_supplier');
         }
 

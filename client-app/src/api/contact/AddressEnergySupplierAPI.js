@@ -1,15 +1,15 @@
 import axios from 'axios';
 
-const URL_CONTACT_ENERGY_SUPPLIER = `${URL_API}/api/contact-energy-supplier`;
+const URL_ADDRESS_ENERGY_SUPPLIER = `${URL_API}/api/address-energy-supplier`;
 
 export default {
-    newContactEnergySupplier: contactEnergySupplier => {
-        const requestUrl = `${URL_CONTACT_ENERGY_SUPPLIER}`;
+    newAddressEnergySupplier: addressEnergySupplier => {
+        const requestUrl = `${URL_ADDRESS_ENERGY_SUPPLIER}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         return axios
-            .post(requestUrl, contactEnergySupplier)
+            .post(requestUrl, addressEnergySupplier)
             .then(function(response) {
                 return response.data.data;
             })
@@ -18,13 +18,13 @@ export default {
             });
     },
 
-    updateContactEnergySupplier: contactEnergySupplier => {
-        const requestUrl = `${URL_CONTACT_ENERGY_SUPPLIER}/${contactEnergySupplier.id}`;
+    updateAddressEnergySupplier: addressEnergySupplier => {
+        const requestUrl = `${URL_ADDRESS_ENERGY_SUPPLIER}/${addressEnergySupplier.id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         return axios
-            .post(requestUrl, contactEnergySupplier)
+            .post(requestUrl, addressEnergySupplier)
             .then(function(response) {
                 return response.data.data;
             })
@@ -33,8 +33,8 @@ export default {
             });
     },
 
-    deleteContactEnergySupplier: id => {
-        const requestUrl = `${URL_CONTACT_ENERGY_SUPPLIER}/${id}/delete`;
+    deleteAddressEnergySupplier: id => {
+        const requestUrl = `${URL_ADDRESS_ENERGY_SUPPLIER}/${id}/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

@@ -53,6 +53,11 @@ class ParticipantProject extends Model
         return $this->belongsTo(Project::class);
     }
 
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
+    }
+
     public function participantProjectPayoutType()
     {
         return $this->belongsTo(ParticipantProjectPayoutType::class, 'type_id');
@@ -235,10 +240,11 @@ class ParticipantProject extends Model
             return $this->date_next_revenue_kwh;
         }
 
-        if (empty($this->contact->primaryContactEnergySupplier->member_since)){
+        if (empty($this->address->primaryAddressEnergySupplier->member_since)){
             return null;
         }
-        $checkDate = $this->contact->primaryContactEnergySupplier->member_since;
+
+        $checkDate = $this->address->primaryAddressEnergySupplier->member_since;
         $projectRevenueKhw = $this->getProjectRevenueKhw($checkDate);
         if ($projectRevenueKhw != null) {
             return $projectRevenueKhw->date_begin;
@@ -253,11 +259,12 @@ class ParticipantProject extends Model
         if(empty($this->date_begin_next_revenue_kwh)){
             return null;
         }
-        $memberSince = null;
-        if (empty($this->contact->primaryContactEnergySupplier->member_since)){
+
+        if (empty($this->address->primaryAddressEnergySupplier->member_since)){
             return null;
         }
-        $memberSince = $this->contact->primaryContactEnergySupplier->member_since;
+
+        $memberSince = $this->address->primaryAddressEnergySupplier->member_since;
         if($memberSince && $memberSince <= $this->date_begin_next_revenue_kwh){
             return null;
         }
@@ -277,10 +284,10 @@ class ParticipantProject extends Model
             return $this->kwh_start_high_next_revenue;
         }
 
-        if (empty($this->contact->primaryContactEnergySupplier->member_since)){
+        if (empty($this->address->primaryAddressEnergySupplier->member_since)){
             return null;
         }
-        $checkDate = $this->contact->primaryContactEnergySupplier->member_since;
+        $checkDate = $this->address->primaryAddressEnergySupplier->member_since;
         $projectRevenueKhw = $this->getProjectRevenueKhw($checkDate);
         if ($projectRevenueKhw != null) {
             return $projectRevenueKhw->kwh_start_high;
@@ -296,10 +303,10 @@ class ParticipantProject extends Model
             return $this->kwh_start_low_next_revenue;
         }
 
-        if (empty($this->contact->primaryContactEnergySupplier->member_since)){
+        if (empty($this->address->primaryAddressEnergySupplier->member_since)){
             return null;
         }
-        $checkDate = $this->contact->primaryContactEnergySupplier->member_since;
+        $checkDate = $this->address->primaryAddressEnergySupplier->member_since;
         $projectRevenueKhw = $this->getProjectRevenueKhw($checkDate);
         if ($projectRevenueKhw != null) {
             return $projectRevenueKhw->kwh_start_low;

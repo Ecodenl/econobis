@@ -19,8 +19,8 @@ use App\Eco\Document\DocumentType;
 use App\Eco\DocumentTemplate\DocumentTemplateType;
 use App\Eco\Email\EmailStatus;
 use App\Eco\EmailAddress\EmailAddressType;
-use App\Eco\EnergySupplier\ContactEnergySupplierStatus;
-use App\Eco\EnergySupplier\ContactEnergySupplierType;
+use App\Eco\EnergySupplier\EnergySupplierStatus;
+use App\Eco\EnergySupplier\EnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\FinancialOverview\FinancialOverviewContactStatus;
 use App\Eco\HousingFile\BuildingType;
@@ -153,8 +153,8 @@ class SystemData extends JsonResource
             'campaigns' => Campaign::select(['id', 'name'])->get(),
             'campaignStatuses' => FullEnumWithIdAndName::collection(CampaignStatus::all()),
             'campaignTypes' => FullEnumWithIdAndName::collection(CampaignType::all()),
-            'contactEnergySupplierStatus' => GenericResource::collection(ContactEnergySupplierStatus::all()),
-            'contactEnergySupplierTypes' => GenericResource::collection(ContactEnergySupplierType::all()),
+            'energySupplierStatuses' => GenericResource::collection(EnergySupplierStatus::all()),
+            'energySupplierTypes' => GenericResource::collection(EnergySupplierType::all()),
             'staticContactGroups' => ContactGroup::select(['id', 'name'])->where('type_id', 'static')->get(),
             'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
             'contactStatuses' => FullEnumWithIdAndName::collection(ContactStatus::collection()),

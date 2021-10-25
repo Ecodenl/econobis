@@ -75,9 +75,12 @@ return [
             'visibility' => 'public',
         ],
 
+        // lokaal is public_path iets in trant van '/home/vagrant/code/econobis/public/'
+        // afhankelijk van hoe je vagrant/homestead hebt ingericht.
         'public_portal_local' => [
             'driver' => 'local',
-            'root' => public_path('portal'),
+//            'root' => public_path('portal'),
+            'root' => '/home/vagrant/code/econobis/customer-portal-app/public',
         ],
 
         'public_portal' => [

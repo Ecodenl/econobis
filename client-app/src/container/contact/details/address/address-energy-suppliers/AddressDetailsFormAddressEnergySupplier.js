@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 
-import ContactDetailsFormContactEnergySupplierList from './ContactDetailsFormContactEnergySupplierList';
-import ContactDetailsFormContactEnergySupplierNew from './ContactDetailsFormContactEnergySupplierNew';
-import Panel from '../../../../components/panel/Panel';
-import PanelBody from '../../../../components/panel/PanelBody';
-import PanelHeader from '../../../../components/panel/PanelHeader';
+import AddressDetailsFormAddressEnergySupplierList from './AddressDetailsFormAddressEnergySupplierList';
+import AddressDetailsFormAddressEnergySupplierNew from './AddressDetailsFormAddressEnergySupplierNew';
+import Panel from '../../../../../components/panel/Panel';
+import PanelBody from '../../../../../components/panel/PanelBody';
+import PanelHeader from '../../../../../components/panel/PanelHeader';
 import { connect } from 'react-redux';
 
-class ContactDetailsFormContactEnergySupplier extends Component {
+class AddressDetailsFormAddressEnergySupplier extends Component {
     constructor(props) {
         super(props);
 
@@ -35,11 +35,11 @@ class ContactDetailsFormContactEnergySupplier extends Component {
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        <ContactDetailsFormContactEnergySupplierList />
+                        <AddressDetailsFormAddressEnergySupplierList address={this.props.address} />
                     </div>
                     <div className="col-md-12 margin-10-top">
                         {this.state.showNew && (
-                            <ContactDetailsFormContactEnergySupplierNew toggleShowNew={this.toggleShowNew} />
+                            <AddressDetailsFormAddressEnergySupplierNew toggleShowNew={this.toggleShowNew} />
                         )}
                     </div>
                 </PanelBody>
@@ -54,4 +54,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ContactDetailsFormContactEnergySupplier);
+export default connect(mapStateToProps)(AddressDetailsFormAddressEnergySupplier);

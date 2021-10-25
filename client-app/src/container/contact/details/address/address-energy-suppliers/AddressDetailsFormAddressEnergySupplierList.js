@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import ContactDetailsFormContactEnergySupplierItem from './ContactDetailsFormContactEnergySupplierItem';
+import AddressDetailsFormAddressEnergySupplierItem from './AddressDetailsFormAddressEnergySupplierItem';
 
-const ContactDetailsFormContactEnergySupplierList = props => {
+const AddressDetailsFormAddressEnergySupplierList = props => {
     return (
         <div>
             <div className="row border header">
@@ -16,12 +16,13 @@ const ContactDetailsFormContactEnergySupplierList = props => {
                 <div className="col-sm-1">Huidige</div>
                 <div className="col-sm-1" />
             </div>
-            {props.contactEnergySuppliers.length > 0 ? (
-                props.contactEnergySuppliers.map(contactEnergySupplier => {
+            {props.address.addressEnergySuppliers.length > 0 ? (
+                props.address.addressEnergySuppliers.map(addressEnergySupplier => {
                     return (
-                        <ContactDetailsFormContactEnergySupplierItem
-                            key={contactEnergySupplier.id}
-                            contactEnergySupplier={contactEnergySupplier}
+                        <AddressDetailsFormAddressEnergySupplierItem
+                            key={addressEnergySupplier.id}
+                            addressEnergySupplier={addressEnergySupplier}
+                            address={props.address}
                         />
                     );
                 })
@@ -32,10 +33,4 @@ const ContactDetailsFormContactEnergySupplierList = props => {
     );
 };
 
-const mapStateToProps = state => {
-    return {
-        contactEnergySuppliers: state.contactDetails.contactEnergySuppliers,
-    };
-};
-
-export default connect(mapStateToProps)(ContactDetailsFormContactEnergySupplierList);
+export default AddressDetailsFormAddressEnergySupplierList;

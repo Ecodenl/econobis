@@ -122,9 +122,9 @@ Route::namespace('Api')
         Route::post('/contact-portal-user/{portalUser}', 'PortalUser\PortalUserController@update');
         Route::post('/contact-portal-user/{portalUser}/delete', 'PortalUser\PortalUserController@destroy');
 
-        Route::post('/contact-energy-supplier', 'ContactEnergySupplier\ContactEnergySupplierController@store');
-        Route::post('/contact-energy-supplier/{contactEnergySupplier}', 'ContactEnergySupplier\ContactEnergySupplierController@update');
-        Route::post('/contact-energy-supplier/{contactEnergySupplier}/delete', 'ContactEnergySupplier\ContactEnergySupplierController@destroy');
+        Route::post('/address-energy-supplier', 'AddressEnergySupplier\AddressEnergySupplierController@store');
+        Route::post('/address-energy-supplier/{addressEnergySupplier}', 'AddressEnergySupplier\AddressEnergySupplierController@update');
+        Route::post('/address-energy-supplier/{addressEnergySupplier}/delete', 'AddressEnergySupplier\AddressEnergySupplierController@destroy');
 
         Route::get('contact-group/grid', 'ContactGroup\ContactGroupController@grid');
         Route::get('contact-group/peek', 'ContactGroup\ContactGroupController@peek');

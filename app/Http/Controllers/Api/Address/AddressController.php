@@ -32,6 +32,8 @@ class AddressController extends ApiController
             'city' => '',
             'postalCode' => '',
             'primary' => 'boolean',
+            'eanElectricity' => '',
+            'eanGas' => '',
         ]);
 
         $data = $this->sanitizeData($data, [
@@ -55,7 +57,7 @@ class AddressController extends ApiController
 
         $address->save();
 
-        return new FullAddress($address->fresh()->load('country'));
+        return new FullAddress($address->fresh()->load('addressEnergySuppliers.energySupplier', 'addressEnergySuppliers.energySupplyType', 'addressEnergySuppliers.energySupplyStatus', 'country'));
     }
 
     public function update(Request $request, Address $address)
@@ -73,6 +75,8 @@ class AddressController extends ApiController
             'city' => '',
             'postalCode' => '',
             'primary' => 'boolean',
+            'eanElectricity' => '',
+            'eanGas' => '',
         ]);
 
         $data = $this->sanitizeData($data, [
@@ -113,7 +117,7 @@ class AddressController extends ApiController
                 abort(412, implode(';', $messages));
             }
         }
-        return new FullAddress($address->fresh()->load('country'));
+        return new FullAddress($address->fresh()->load('addressEnergySuppliers.energySupplier', 'addressEnergySuppliers.energySupplyType', 'addressEnergySuppliers.energySupplyStatus', 'country'));
     }
 
     public function destroy(Address $address)

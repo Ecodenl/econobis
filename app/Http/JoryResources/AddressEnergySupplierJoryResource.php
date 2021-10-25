@@ -2,13 +2,13 @@
 
 namespace App\Http\JoryResources;
 
-use \App\Eco\EnergySupplier\ContactEnergySupplier;
+use \App\Eco\EnergySupplier\AddressEnergySupplier;
 use App\Http\JoryResources\Base\JoryResource;
 use Illuminate\Support\Facades\Auth;
 
-class ContactEnergySupplierJoryResource extends JoryResource
+class AddressEnergySupplierJoryResource extends JoryResource
 {
-    protected $modelClass = ContactEnergySupplier::class;
+    protected $modelClass = AddressEnergySupplier::class;
 
     protected function configureForApp(): void
     {
@@ -21,8 +21,6 @@ class ContactEnergySupplierJoryResource extends JoryResource
         $this->field('energy_supplier_id')->filterable()->sortable();
         $this->field('es_number')->filterable()->sortable();
         $this->field('member_since')->filterable()->sortable();
-        $this->field('ean_electricity')->filterable()->sortable();
-        $this->field('ean_gas')->filterable()->sortable();
         $this->field('is_current_supplier')->filterable()->sortable();
 
         // Relations

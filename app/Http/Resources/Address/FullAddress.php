@@ -35,6 +35,8 @@ class FullAddress extends JsonResource
             'city' => $this->city,
             'postalCode' => $this->postal_code,
             'primary' => $this->primary,
+            'eanElectricity' => $this->ean_electricity,
+            'eanGas' => $this->ean_gas,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'measuresTaken' => FullMeasure::collection($this->whenLoaded('measuresTaken')),
@@ -42,6 +44,7 @@ class FullAddress extends JsonResource
             'buildingType' => GenericResource::make($this->whenLoaded('building_type')),
             'intake' => FullIntake::make($this->whenLoaded('intake')),
             'contact' => FullContact::make($this->whenLoaded('contact')),
+            'addressEnergySuppliers' => GenericResource::make($this->whenLoaded('addressEnergySuppliers')),
         ];
     }
 }

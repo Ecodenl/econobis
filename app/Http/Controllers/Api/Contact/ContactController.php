@@ -23,11 +23,13 @@ class ContactController extends Controller
     {
         $this->authorize('view', $contact);
 
-        $contact->load(['addresses.country', 'emailAddresses', 'phoneNumbers', 'createdBy', 'updatedBy', 'owner', 'portalUser', 'tasks', 'notes', 'financialOverviewContactsSend', 'documents', 'opportunities', 'participations', 'orders', 'invoices']);
+        $contact->load(['addresses.addressEnergySuppliers.energySupplier', 'addresses.addressEnergySuppliers.energySupplyType', 'addresses.addressEnergySuppliers.energySupplyStatus', 'addresses.primaryAddressEnergySupplier', 'addresses.country', 'emailAddresses', 'phoneNumbers', 'createdBy', 'updatedBy', 'owner', 'portalUser', 'tasks', 'notes', 'financialOverviewContactsSend', 'documents', 'opportunities', 'participations', 'orders', 'invoices']);
         $contact->contactNotes->load(['createdBy', 'updatedBy']);
         $contact->occupations->load(['occupation', 'primaryContact', 'contact']);
         $contact->primaryOccupations->load(['occupation', 'primaryContact', 'contact']);
-        $contact->contactEnergySuppliers->load(['energySupplier', 'contactEnergySupplyStatus', 'contactEnergySupplyType', 'createdBy', 'contact']);
+
+//        todo WM-es: cleanup es
+//        $contact->addressEnergySuppliers->load(['energySupplier', 'energySupplyStatuses', 'energySupplyTypes', 'createdBy', 'contact']);
 
         if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisation.quotationRequests.opportunity.measureCategory', 'organisation.quotationRequests.opportunity.status', 'organisation.campaigns', 'contactPerson.contact']);
         if($contact->isPerson()) $contact->load(['person', 'person.title', 'person.organisation', 'person.type']);

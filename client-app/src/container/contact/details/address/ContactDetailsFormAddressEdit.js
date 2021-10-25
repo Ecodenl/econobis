@@ -8,9 +8,22 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputToggle from '../../../../components/form/InputToggle';
 import InputDate from '../../../../components/form/InputDate';
+import AddressDetailsFormAddressEnergySupplier from './address-energy-suppliers/AddressDetailsFormAddressEnergySupplier';
 
 const ContactDetailsFormAddressEdit = props => {
-    const { street, number, addition, postalCode, city, typeId, endDate, primary, countryId } = props.address;
+    const {
+        street,
+        number,
+        addition,
+        postalCode,
+        city,
+        typeId,
+        endDate,
+        primary,
+        countryId,
+        eanElectricity,
+        eanGas,
+    } = props.address;
 
     return (
         <div>
@@ -116,6 +129,24 @@ const ContactDetailsFormAddressEdit = props => {
                                 disabled={primary}
                             />
                         </div>
+                        <div className="row">
+                            <InputText
+                                label={'EAN electriciteit'}
+                                id={'eanElectricity'}
+                                name={'eanElectricity'}
+                                value={eanElectricity}
+                                onChangeAction={props.handleInputChange}
+                                error={props.eanElectricityError}
+                            />
+                            <InputText
+                                label={'EAN gas'}
+                                id={'eanGas'}
+                                name={'eanGas'}
+                                value={eanGas}
+                                onChangeAction={props.handleInputChange}
+                                error={props.eanGasError}
+                            />
+                        </div>
 
                         <div className="pull-right btn-group" role="group">
                             <ButtonText
@@ -130,6 +161,9 @@ const ContactDetailsFormAddressEdit = props => {
                                 value={'Submit'}
                             />
                         </div>
+                    </PanelBody>
+                    <PanelBody>
+                        <AddressDetailsFormAddressEnergySupplier address={props.address} />
                     </PanelBody>
                 </Panel>
             </form>

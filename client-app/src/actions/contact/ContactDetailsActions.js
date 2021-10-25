@@ -149,23 +149,23 @@ export const unsetPrimaryEmailAddresses = () => {
     };
 };
 
-export const newContactEnergySupplier = contactEnergySupplier => {
+export const newAddressEnergySupplier = addressEnergySupplier => {
     return {
-        type: 'NEW_CONTACT_ENERGY_SUPPLIER',
-        contactEnergySupplier,
+        type: 'NEW_ADDRESS_ENERGY_SUPPLIER',
+        addressEnergySupplier,
     };
 };
 
-export const updateContactEnergySupplier = contactEnergySupplier => {
+export const updateAddressEnergySupplier = addressEnergySupplier => {
     return {
-        type: 'UPDATE_CONTACT_ENERGY_SUPPLIER',
-        contactEnergySupplier,
+        type: 'UPDATE_ADDRESS_ENERGY_SUPPLIER',
+        addressEnergySupplier,
     };
 };
 
-export const deleteContactEnergySupplier = id => {
+export const deleteAddressEnergySupplier = id => {
     return {
-        type: 'DELETE_CONTACT_ENERGY_SUPPLIER',
+        type: 'DELETE_ADDRESS_ENERGY_SUPPLIER',
         id,
     };
 };

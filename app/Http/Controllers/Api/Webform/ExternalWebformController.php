@@ -17,9 +17,9 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Country\Country;
 use App\Eco\EmailAddress\EmailAddress;
-use App\Eco\EnergySupplier\ContactEnergySupplier;
-use App\Eco\EnergySupplier\ContactEnergySupplierStatus;
-use App\Eco\EnergySupplier\ContactEnergySupplierType;
+use App\Eco\EnergySupplier\AddressEnergySupplier;
+use App\Eco\EnergySupplier\EnergySupplierStatus;
+use App\Eco\EnergySupplier\EnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
@@ -380,13 +380,14 @@ class ExternalWebformController extends Controller
                 'hoomdossier_aanmaken' => 'create_hoom_dossier',
             ],
             'energy_supplier' => [
-                // ContactEnergySupplier
+                // AddressEnergySupplier
                 'energieleverancier_id' => 'energy_supplier_id',
                 'energieleverancier_klantnummer' => 'es_number',
-                'energieleverancier_type_id' => 'contact_energy_supply_type_id',
+                'energieleverancier_type_id' => 'energy_supply_type_id',
                 'energieleverancier_klant_sinds' => 'member_since',
+// todo WM-es: moet deze ook niet verplaatst worden naar adres ?
                 'energieleverancier_ean_code_elektra' => 'ean_electricity',
-                'energieleverancier_status' => 'contact_energy_supply_status_id',
+                'energieleverancier_status' => 'energy_supply_status_id',
                 'energieleverancier_huidig' => 'is_current_supplier',
             ],
             'participation' => [
@@ -1206,37 +1207,35 @@ class ExternalWebformController extends Controller
                 $this->error('Ongeldige waarde voor energie leverancier meegegeven.');
             }
 
-            $contactEnergySupplierType = ContactEnergySupplierType::find($data['contact_energy_supply_type_id']);
-            if (!$contactEnergySupplierType) {
+            $energySupplierType = EnergySupplierType::find($data['energy_supply_type_id']);
+            if (!$energySupplierType) {
                 $this->error('Ongeldige waarde voor energie leverancier type meegegeven.');
             }
 
-//            $contactEnergySupplierStatus = ContactEnergySupplierStatus::find($data['contact_energy_supply_status_id']);
-//            if (!$contactEnergySupplierStatus) $this->error('Ongeldige waarde voor energie leverancier status meegegeven.');
-            $contactEnergySupplierStatusId = null;
-            if ($data['energy_supplier_id'] != '' && $data['contact_energy_supply_status_id'] != '') {
-                $contactEnergySupplierStatus
-                    = ContactEnergySupplierStatus::find($data['contact_energy_supply_status_id']);
-                if (!$contactEnergySupplierStatus) {
+            $energySupplierStatusId = null;
+            if ($data['energy_supplier_id'] != '' && $data['energy_supply_status_id'] != '') {
+                $energySupplierStatus
+                    = EnergySupplierStatus::find($data['energy_supply_status_id']);
+                if (!$energySupplierStatus) {
                     $this->log('Ongeldige waarde voor energie leverancier status meegegeven. Default naar null');
                 }else{
-                    $contactEnergySupplierStatusId = $contactEnergySupplierStatus->id;
+                    $energySupplierStatusId = $energySupplierStatus->id;
                 }
             }
 
-            if (ContactEnergySupplier::where('contact_id', $contact->id)->where('energy_supplier_id', $energySupplier->id)->exists()) {
+            if (AddressEnergySupplier::where('contact_id', $contact->id)->where('energy_supplier_id', $energySupplier->id)->exists()) {
                 $this->log('Koppeling met energieleverancier ' . $energySupplier->name . ' bestaat al; niet opnieuw aangemaakt.');
                 return;
             }
 
-            ContactEnergySupplier::create([
+            AddressEnergySupplier::create([
                 'contact_id' => $contact->id,
                 'energy_supplier_id' => $energySupplier->id,
                 'es_number' => $data['es_number'],
-                'contact_energy_supply_type_id' => $contactEnergySupplierType->id,
+                'energy_supply_type_id' => $energySupplierType->id,
                 'member_since' => $data['member_since'] ?: null,
-                'ean_electricity' => $data['ean_electricity'],
-                'contact_energy_supply_status_id' => $contactEnergySupplierStatusId,
+//                'ean_electricity' => $data['ean_electricity'],
+                'energy_supply_status_id' => $energySupplierStatusId,
                 'is_current_supplier' => (bool)$data['is_current_supplier'],
             ]);
 

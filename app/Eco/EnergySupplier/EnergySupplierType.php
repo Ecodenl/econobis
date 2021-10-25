@@ -5,9 +5,9 @@ namespace App\Eco\EnergySupplier;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
-class ContactEnergySupplierType extends Model
+class EnergySupplierType extends Model
 {
-    protected $table = 'contact_energy_supply_type';
+    protected $table = 'energy_supply_types';
 
     use RevisionableTrait;
 
@@ -20,8 +20,8 @@ class ContactEnergySupplierType extends Model
         'id', 'name'
     ];
 
-    public function contactEnergySuppliers()
+    public function addressEnergySuppliers()
     {
-        return $this->hasMany(ContactEnergySupplier::class);
+        return $this->hasMany(AddressEnergySupplier::class);
     }
 }

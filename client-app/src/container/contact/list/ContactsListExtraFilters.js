@@ -240,7 +240,7 @@ class ContactsListExtraFilters extends Component {
                 dropDownOptions: this.props.campaigns,
             },
             opportunityMeasureCategory: {
-                name: 'Kans',
+                name: 'Kans maatregel specifiek',
                 type: 'dropdownHas',
                 dropDownOptions: this.props.measureCategories,
             },
@@ -295,7 +295,7 @@ class ContactsListExtraFilters extends Component {
                 dropDownOptions: this.props.opportunityStatus,
             },
             opportunityMeasure: {
-                name: 'Kans Maatregel specifiek',
+                name: 'Kans maatregel specifiek',
                 type: 'dropdownHas',
                 dropDownOptions: this.props.measures,
             },

@@ -69,11 +69,6 @@ class conversionContactEnergySupplierToAddressEnergySuppliers extends Command
                 continue;
             }
 
-// todo WM-es: wat indien contact geen primair adres heeft? Ik stel voor:
-//            dan get laatst ingevoerde bezoek (visit) adres.
-//            is die er ook niet, dan laatst ingevoerde adress.
-//            is die er ook niet (dus helemaal geen adres bij contact), dan kunnen we ook geen address energy supllier record aanamken.
-
             $addressEnergySupplier = AddressEnergySupplier::create([
                 'address_id' => $address->id,
                 'energy_supplier_id' => $contactEnergySupplier->energy_supplier_id,
@@ -88,10 +83,12 @@ class conversionContactEnergySupplierToAddressEnergySuppliers extends Command
             $address->ean_gas = $contactEnergySupplier->ean_gas;
             $address->save();
 
-            $addressConversionText =' ';
+            foreach ($contact->participations as $participation){
+                $participation->address_id = $address->id;
+                $participation->save();
+            }
 
-            $addressConversionText .= $address->getType()->name . ' ';
-
+            $addressConversionText = $address->getType()->name . ' ';
             if($address->primary){
                 $addressConversionText .= '(primaire) ';
             }

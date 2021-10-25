@@ -238,13 +238,11 @@ class ParticipantExcelHelper
                 }
 
                 // Reformat energy supplier fields
-// todo WM-es: check participation->address???
-                if ($participant->contact->primaryAddress && $participant->contact->primaryAddress->primaryAddressEnergySupplier) {
-                    // Reformat when supplier starts with equal sign (example '=om')
+                if ($participant->address && $participant->address->primaryAddressEnergySupplier) {
                     $participant->energy_supplier_name
-                        = $participant->contact->primaryAddress->primaryAddressEnergySupplier->energySupplier->name;
+                        = $participant->address->primaryAddressEnergySupplier->energySupplier->name;
                     $participant->energy_supplier_member_since
-                        = $this->formatDate($participant->contact->primaryAddress->primaryAddressEnergySupplier->member_since);
+                        = $this->formatDate($participant->address->primaryAddressEnergySupplier->member_since);
                 }
 
                 //reformat bools
@@ -319,10 +317,9 @@ class ParticipantExcelHelper
                 $rowData[44] = $participant->phonenumber_3;
                 $rowData[45] = $participant->energy_supplier_name;
                 $rowData[46] = $participant->energy_supplier_member_since;
-// todo WM-es: check participation->address???
-                $rowData[47] = $participant->contact->primaryAddress && $participant->contact->primaryAddress->primaryAddressEnergySupplier ? $participant->contact->primaryAddress->primaryAddressEnergySupplier->es_number : '';
-                $rowData[48] = $participant->contact->primaryAddress && !empty($participant->contact->primaryAddress->ean_electricity) ? 'EAN: ' . $participant->address->primaryAddress->ean_electricity : '';
-                $rowData[49] = $participant->contact->primaryAddress && !empty($participant->contact->primaryAddress->ean_gas) ? 'EAN: ' . $participant->address->primaryAddress->ean_gas : '';
+                $rowData[47] = $participant->address->primaryAddressEnergySupplier ? $participant->address->primaryAddressEnergySupplier->es_number : '';
+                $rowData[48] = $participant->address && !empty($participant->address->ean_electricity) ? 'EAN: ' . $participant->address->ean_electricity : '';
+                $rowData[49] = $participant->address && !empty($participant->address->ean_gas) ? 'EAN: ' . $participant->address->ean_gas : '';
                 $rowData[50] = $projectCode;
                 $rowData[51] = $currentBalanceAccount;
                 $rowData[52] = $participant->participations_returns_total;
@@ -596,11 +593,11 @@ class ParticipantExcelHelper
                 $rowData[] = $participant->initials;
                 $rowData[] = $participant->first_name;
                 $rowData[] = $participant->last_name_prefix ? $participant->last_name_prefix . ' ' . $participant->last_name : $participant->last_name ;
-                $rowData[] = $participant->contact->primaryAddress ? $participant->contact->primaryAddress->street : '';
-                $rowData[] = $participant->contact->primaryAddress ? $participant->contact->primaryAddress->number : '';
-                $rowData[] = $participant->contact->primaryAddress ? $participant->contact->primaryAddress->addition : '';
-                $rowData[] = $participant->contact->primaryAddress ? $participant->contact->primaryAddress->postal_code : '';
-                $rowData[] = $participant->contact->primaryAddress ? $participant->contact->primaryAddress->city : '';
+                $rowData[] = $participant->address ? $participant->address->street : '';
+                $rowData[] = $participant->address ? $participant->address->number : '';
+                $rowData[] = $participant->address ? $participant->address->addition : '';
+                $rowData[] = $participant->address ? $participant->address->postal_code : '';
+                $rowData[] = $participant->address ? $participant->address->city : '';
                 $rowData[] = $participant->contact->primaryEmailAddress ? $participant->contact->primaryEmailAddress->email : '';
                 $rowData[] = $participant->contact->primaryphoneNumber ? $participant->contact->primaryphoneNumber->number : '';
                 $rowData[] = $participant->participations_definitive ;

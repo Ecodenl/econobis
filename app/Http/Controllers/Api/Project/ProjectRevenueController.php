@@ -242,8 +242,7 @@ class ProjectRevenueController extends ApiController
                     $lastProjectRevenueKhwSplit = $projectRevenuesKhwSplit->first();
                     if ($lastProjectRevenueKhwSplit && $lastProjectRevenueKhwSplit->date_end != $projectRevenue->date_end){
 
-// todo WM-es: check participation->address???
-                        $addressEnergySupplier = $lastProjectRevenueKhwSplit->participant->contact->primaryAddress->primaryAddressEnergySupplier;
+                        $addressEnergySupplier = $lastProjectRevenueKhwSplit->participant->address->primaryAddressEnergySupplier;
                         $closingReveneuKhwSplit = new ProjectRevenue();
                         $closingReveneuKhwSplit->category_id = $lastProjectRevenueKhwSplit->category_id;
                         $closingReveneuKhwSplit->project_id = $lastProjectRevenueKhwSplit->project_id;
@@ -283,8 +282,7 @@ class ProjectRevenueController extends ApiController
                     $projectRevenueKhw = $projectRevenuesKhw->first();
                     if ($projectRevenueKhw && $projectRevenueKhw->date_end != $projectRevenue->date_end){
 
-// todo WM-es: check participation->address???
-                        $addressEnergySupplier = $projectRevenue->participant->contact->primaryAddress->primaryAddressEnergySupplier;
+                        $addressEnergySupplier = $projectRevenue->participant->address->primaryAddressEnergySupplier;
                         $closingReveneuKhwSplit = new ProjectRevenue();
                         $closingReveneuKhwSplit->category_id = $projectRevenue->category_id;
                         $closingReveneuKhwSplit->project_id = $projectRevenue->project_id;
@@ -589,16 +587,13 @@ class ProjectRevenueController extends ApiController
     public function saveDistribution(ProjectRevenue $projectRevenue, ParticipantProject $participant, $closing)
     {
         $contact = Contact::find($participant->contact_id);
-// todo WM-es: check participation->address???
-        $primaryAddress = $contact->primaryAddress;
+        $participantAddress = $participant->address;
 
         if($projectRevenue->category->code_ref == 'revenueKwhSplit' && !$closing) {
-            $addressEnergySupplier
-                = AddressEnergySupplier::find($contact->previous_address_energy_supplier_id);
+            // todo WM-es: check previous_address_energy_supplier_id ???
+            $addressEnergySupplier = AddressEnergySupplier::find($contact->previous_address_energy_supplier_id);
         }else{
-// todo WM-es: check participation->address???
-            $addressEnergySupplier
-                = $contact->primaryAddress->primaryAddressEnergySupplier;
+            $addressEnergySupplier = $participant->address->primaryAddressEnergySupplier;
         }
 
         // If participant already is added to project revenue distribution then update
@@ -622,15 +617,15 @@ class ProjectRevenueController extends ApiController
             $distribution->status = 'concept';
         }
 
-        if ($primaryAddress) {
-            $distribution->street = $primaryAddress->street;
-            $distribution->street_number = $primaryAddress->number;
-            $distribution->street_number_addition = $primaryAddress->addition;
-            $distribution->address = $primaryAddress->present()
+        if ($participantAddress) {
+            $distribution->street = $participantAddress->street;
+            $distribution->street_number = $participantAddress->number;
+            $distribution->street_number_addition = $participantAddress->addition;
+            $distribution->address = $participantAddress->present()
                 ->streetAndNumber();
-            $distribution->postal_code = $primaryAddress->postal_code;
-            $distribution->city = $primaryAddress->city;
-            $distribution->country = $primaryAddress->country_id ? $primaryAddress->country->name : '';
+            $distribution->postal_code = $participantAddress->postal_code;
+            $distribution->city = $participantAddress->city;
+            $distribution->country = $participantAddress->country_id ? $participantAddress->country->name : '';
 
         }
 
@@ -652,8 +647,9 @@ class ProjectRevenueController extends ApiController
             $distribution->es_id
                 = $addressEnergySupplier->energySupplier->id;
 
+            // todo WM-es: check participation->address???
             $distribution->energy_supplier_ean_electricity
-                = $addressEnergySupplier->ean_electricity;
+                = $addressEnergySupplier->address->ean_electricity;
 
             $distribution->energy_supplier_number
                 = $addressEnergySupplier->es_number;
@@ -1017,12 +1013,10 @@ class ProjectRevenueController extends ApiController
                 // indien Opbrengst Kwh, dan alleen mutation aanmaken en daarna status op Afgehandeld (processed).
                 if ($distribution->revenue->category->code_ref === 'revenueKwh' || $distribution->revenue->category->code_ref === 'revenueKwhSplit') {
                     if($distribution->revenue->category->code_ref == 'revenueKwhSplit') {
-                        $addressEnergySupplier
-                            = AddressEnergySupplier::find($distribution->contact->previous_address_energy_supplier_id);
+                        // todo WM-es: check previous_address_energy_supplier_id ???
+                        $addressEnergySupplier = AddressEnergySupplier::find($distribution->contact->previous_address_energy_supplier_id);
                     }else{
-// todo WM-es: check participation->address???
-                        $addressEnergySupplier
-                            = $distribution->contact->primaryAddress->primaryAddressEnergySupplier;
+                        $addressEnergySupplier = $distribution->participation->address->primaryAddressEnergySupplier;
                     }
                     if($distribution->revenue->category->code_ref !== 'revenueKwhSplit'){
                         $this->createParticipantMutationForRevenueKwh($distribution, $datePayout, $addressEnergySupplier);

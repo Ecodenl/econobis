@@ -26,7 +26,7 @@ class Address extends Model
 
     public function addressEnergySuppliers()
     {
-        return $this->hasMany(AddressEnergySupplier::class);
+        return $this->hasMany(AddressEnergySupplier::class)->orderByDesc('is_current_supplier')->orderByDesc('id');
     }
 
     public function primaryAddressEnergySupplier()

@@ -94,11 +94,8 @@ class ContactController extends ApiController
                 $this->updatePhoneNumberPrimary($contact, $request);
                 $this->updatePhoneNumberTwo($contact, $request);
                 if (isset($request['primaryAddress'])) {
-                    $this->updateAddress($contact, $request['primaryAddress'], 'visit', $request->projectId);
-                }
-                if (isset($request['primaryAddressEnergySupplier']) && $request['primaryAddressEnergySupplier'] != null ) {
-// todo WM-es: wordt: updateEnergySupplierToAddress
-                    $this->updateEnergySupplierToContact($contact, $request['primaryAddressEnergySupplier']);
+                    $primaryAddressEnergySupplier = isset($request['primaryAddress']['primaryAddressEnergySupplier']) ? $request['primaryAddress']['primaryAddressEnergySupplier'] : null;
+                    $this->updateAddress(ContactType::PERSON, $contact, $request['primaryAddress'], $primaryAddressEnergySupplier,'visit', $request->projectId);
                 }
             }
 
@@ -111,17 +108,14 @@ class ContactController extends ApiController
                 $this->updatePhoneNumberPrimary($contact, $request);
                 $this->updatePhoneNumberTwo($contact, $request);
                 if (isset($request['visitAddress'])) {
-                    $this->updateAddress($contact, $request['visitAddress'], 'visit', $request->projectId);
+                    $primaryAddressEnergySupplier = isset($request['visitAddress']['primaryAddressEnergySupplier']) ? $request['visitAddress']['primaryAddressEnergySupplier'] : null;
+                    $this->updateAddress(ContactType::ORGANISATION, $contact, $request['visitAddress'], $primaryAddressEnergySupplier, 'visit', $request->projectId);
                 }
                 if (isset($request['postalAddress'])) {
-                    $this->updateAddress($contact, $request['postalAddress'], 'postal', null);
+                    $this->updateAddress(ContactType::ORGANISATION, $contact, $request['postalAddress'], null, 'postal', null);
                 }
                 if (isset($request['invoiceAddress'])) {
-                    $this->updateAddress($contact, $request['invoiceAddress'], 'invoice', null);
-                }
-                if (isset($request['primaryAddressEnergySupplier']) && $request['primaryAddressEnergySupplier'] != null ) {
-// todo WM-es: wordt: updateEnergySupplierToAddress
-                    $this->updateEnergySupplierToContact($contact, $request['primaryAddressEnergySupplier']);
+                    $this->updateAddress(ContactType::ORGANISATION, $contact, $request['invoiceAddress'], null, 'invoice', null);
                 }
             }
 
@@ -461,7 +455,7 @@ class ContactController extends ApiController
 
     }
 
-    protected function updateAddress($contact, $addressData, $addressType, $projectId)
+    protected function updateAddress($type, $contact, $addressData, $primaryAddressEnergySupplier, $addressType, $projectId)
     {
         unset($addressData['country']);
         if($addressData['countryId'] == ''){
@@ -474,6 +468,8 @@ class ContactController extends ApiController
         if(preg_match('/^\d{4}\s[A-Za-z]{2}$/', $addressData['postalCode'])){
             $addressData['postalCode'] = preg_replace('/\s+/', '', $addressData['postalCode']);
         }
+
+        $address = null;
         if (isset($addressData['id']))
         {
             $address = $contact->addresses->find($addressData['id']);
@@ -483,6 +479,9 @@ class ContactController extends ApiController
                 {
                     $address->delete();
                 }else{
+                    if ($type == ContactType::ORGANISATION && $addressType == 'visit') {
+                        $addressData['primary'] = true;
+                    }
                     $address->fill($this->arrayKeysToSnakeCase($addressData));
 
                     if ($projectId) {
@@ -514,7 +513,7 @@ class ContactController extends ApiController
         }else{
             if(!empty($addressData['street']) && !empty($addressData['postalCode']) && !empty($addressData['city'])) {
                 $addressData['typeId'] = $addressType;
-                if ($addressType == 'visit') {
+                if ($type == ContactType::ORGANISATION && $addressType == 'visit') {
                     $addressData['primary'] = true;
                 }
 
@@ -534,10 +533,13 @@ class ContactController extends ApiController
                 $address->save();
             }
         }
+        if ($address != null && $primaryAddressEnergySupplier != null ) {
+            $this->updateEnergySupplierToAddress($address, $primaryAddressEnergySupplier);
+        }
+
     }
 
-// todo WM-es: wordt: updateEnergySupplierToAddress
-    protected function updateEnergySupplierToContact(Contact $contact, $primaryAddressEnergySupplierData)
+    protected function updateEnergySupplierToAddress(Address $address, $primaryAddressEnergySupplierData)
     {
         unset($primaryAddressEnergySupplierData['energySupplier']);
 
@@ -549,7 +551,7 @@ class ContactController extends ApiController
         }
         if (isset($primaryAddressEnergySupplierData['id']))
         {
-            $primaryAddressEnergySupplierOld = $contact->addressEnergySuppliers->find($primaryAddressEnergySupplierData['id']);
+            $primaryAddressEnergySupplierOld = $address->addressEnergySuppliers->find($primaryAddressEnergySupplierData['id']);
         }else{
             $primaryAddressEnergySupplierOld = null;
         }
@@ -558,7 +560,7 @@ class ContactController extends ApiController
         {
             $primaryAddressEnergySupplierData['isCurrentSupplier'] = true;
             $primaryAddressEnergySupplierData['energySupplyTypeId'] = 2;
-            if(isset($primaryAddressEnergySupplierData['eanGas']) && trim($primaryAddressEnergySupplierData['eanGas']) != '' )
+            if(!empty($address->ean_gas) )
             {
                 $primaryAddressEnergySupplierData['energySupplyTypeId'] = 3;
             }
@@ -577,8 +579,6 @@ class ContactController extends ApiController
                 || $primaryAddressEnergySupplierOld->energy_supplier_id != $primaryAddressEnergySupplierData['energySupplierId']
                 || $primaryAddressEnergySupplierOld->es_number != $primaryAddressEnergySupplierData['esNumber']
                 || $primaryAddressEnergySupplierOld->member_since != $primaryAddressEnergySupplierData['memberSince']
-                || $primaryAddressEnergySupplierOld->ean_electricity != $primaryAddressEnergySupplierData['eanElectricity']
-                || $primaryAddressEnergySupplierOld->ean_gas != $primaryAddressEnergySupplierData['eanGas']
             ) {
 
                 if ($primaryAddressEnergySupplierOld != null)
@@ -590,9 +590,8 @@ class ContactController extends ApiController
                 }
 
                 $primaryAddressEnergySupplierNew = new AddressEnergySupplier($this->arrayKeysToSnakeCase($primaryAddressEnergySupplierData));
-                $primaryAddressEnergySupplierNew->contact_id = $contact->id;
+                $primaryAddressEnergySupplierNew->address_id = $address->id;
                 $primaryAddressEnergySupplierNew->save();
-
 
                 //Make task note of changes
                 $note = "Controleren wijziging energie leverancier gegevens:\n";
@@ -614,18 +613,19 @@ class ContactController extends ApiController
                 if( ($primaryAddressEnergySupplierOld == null && $primaryAddressEnergySupplierNew->member_since != null) || ($primaryAddressEnergySupplierOld != null && $primaryAddressEnergySupplierOld->member_since != $primaryAddressEnergySupplierNew->member_since)){
                     $note = $note . "Nieuwe klant sinds:" . $primaryAddressEnergySupplierNew->member_since . "\n";
                 }
-                if($primaryAddressEnergySupplierOld != null && $primaryAddressEnergySupplierOld->ean_electricity != $primaryAddressEnergySupplierNew->ean_electricity){
-                    $note = $note . "Oude EAN electriciteit: " . $primaryAddressEnergySupplierOld->ean_electricity . "\n";
-                }
-                if( ($primaryAddressEnergySupplierOld == null && $primaryAddressEnergySupplierNew->ean_electricity != null) || ($primaryAddressEnergySupplierOld != null && $primaryAddressEnergySupplierOld->ean_electricity != $primaryAddressEnergySupplierNew->ean_electricity)){
-                    $note = $note . "Nieuwe EAN electriciteit:" . $primaryAddressEnergySupplierNew->ean_electricity . "\n";
-                }
-                if($primaryAddressEnergySupplierOld != null && $primaryAddressEnergySupplierOld->ean_gas != $primaryAddressEnergySupplierNew->ean_gas){
-                    $note = $note . "Oude EAN gas: " . $primaryAddressEnergySupplierOld->ean_gas . "\n";
-                }
-                if( ($primaryAddressEnergySupplierOld == null && $primaryAddressEnergySupplierNew->ean_gas != null) || ($primaryAddressEnergySupplierOld != null && $primaryAddressEnergySupplierOld->ean_gas != $primaryAddressEnergySupplierNew->ean_gas)){
-                    $note = $note . "Nieuwe EAN gas:" . $primaryAddressEnergySupplierNew->ean_gas . "\n";
-                }
+// todo WM-es: ean nummers verschoven naar adres. Deze info nog verschuiven naar update adres ?
+//                if($primaryAddressEnergySupplierOld != null && $primaryAddressEnergySupplierOld->ean_electricity != $primaryAddressEnergySupplierNew->ean_electricity){
+//                    $note = $note . "Oude EAN electriciteit: " . $primaryAddressEnergySupplierOld->ean_electricity . "\n";
+//                }
+//                if( ($primaryAddressEnergySupplierOld == null && $primaryAddressEnergySupplierNew->ean_electricity != null) || ($primaryAddressEnergySupplierOld != null && $primaryAddressEnergySupplierOld->ean_electricity != $primaryAddressEnergySupplierNew->ean_electricity)){
+//                    $note = $note . "Nieuwe EAN electriciteit:" . $primaryAddressEnergySupplierNew->ean_electricity . "\n";
+//                }
+//                if($primaryAddressEnergySupplierOld != null && $primaryAddressEnergySupplierOld->ean_gas != $primaryAddressEnergySupplierNew->ean_gas){
+//                    $note = $note . "Oude EAN gas: " . $primaryAddressEnergySupplierOld->ean_gas . "\n";
+//                }
+//                if( ($primaryAddressEnergySupplierOld == null && $primaryAddressEnergySupplierNew->ean_gas != null) || ($primaryAddressEnergySupplierOld != null && $primaryAddressEnergySupplierOld->ean_gas != $primaryAddressEnergySupplierNew->ean_gas)){
+//                    $note = $note . "Nieuwe EAN gas:" . $primaryAddressEnergySupplierNew->ean_gas . "\n";
+//                }
 
                 $checkContactTaskResponsibleUserId = PortalSettings::get('checkContactTaskResponsibleUserId');
                 $checkContactTaskResponsibleTeamId = PortalSettings::get('checkContactTaskResponsibleTeamId');
@@ -635,18 +635,14 @@ class ContactController extends ApiController
                     $newTask = new Task();
                     $newTask->note = $note;
                     $newTask->type_id = $taskTypeForPortal->id;
-                    $newTask->contact_id = $contact->id;
+                    $newTask->contact_id = $address->contact_id;
                     $newTask->responsible_user_id = !empty($checkContactTaskResponsibleUserId) ? $checkContactTaskResponsibleUserId : null;
                     $newTask->responsible_team_id = !empty($checkContactTaskResponsibleTeamId) ? $checkContactTaskResponsibleTeamId : null;
                     $newTask->date_planned_start = Carbon::today();
-
                     $newTask->save();
                 }
-
-
             }
         }
-
     }
 
     protected function createTaskIbanChange(Contact $contact, $ibanOld, $ibanAttnOld)

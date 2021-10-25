@@ -1,7 +1,22 @@
 export default function(contactData) {
     const typeContact = contactData.typeId ? contactData.typeId : null;
 
-    let emptyAddress = { street: '', number: '', addition: '', postalCode: '', city: '', countryId: null };
+    let emptyPrimaryAddressEnergySupplier = {
+        energySupplierId: null,
+        esNumber: '',
+        memberSince: '',
+    };
+    let emptyAddress = {
+        street: '',
+        number: '',
+        addition: '',
+        postalCode: '',
+        city: '',
+        countryId: null,
+        eanElectricity: '',
+        eanGas: '',
+        primaryAddressEnergySupplier: emptyPrimaryAddressEnergySupplier,
+    };
     let primaryAddress = null;
     let visitAddress = null;
     let postalAddress = null;
@@ -11,11 +26,23 @@ export default function(contactData) {
             // Set primary address
             primaryAddress = contactData.addresses.find(address => address.primary);
             contactData.primaryAddress = primaryAddress ? { ...emptyAddress, ...primaryAddress } : emptyAddress;
+            if (!contactData.primaryAddress.primaryAddressEnergySupplier) {
+                contactData.primaryAddress.primaryAddressEnergySupplier = {
+                    ...contactData.primaryAddress,
+                    emptyPrimaryAddressEnergySupplier,
+                };
+            }
             break;
         case 'organisation':
             // Set visit, postal, invoice addresses
             visitAddress = contactData.addresses.find(address => address.typeId === 'visit');
             contactData.visitAddress = visitAddress ? { ...emptyAddress, ...visitAddress } : emptyAddress;
+            if (!contactData.visitAddress.primaryAddressEnergySupplier) {
+                contactData.visitAddress.primaryAddressEnergySupplier = {
+                    ...contactData.visitAddress,
+                    emptyPrimaryAddressEnergySupplier,
+                };
+            }
             postalAddress = contactData.addresses.find(address => address.typeId === 'postal');
             contactData.postalAddress = postalAddress ? { ...emptyAddress, ...postalAddress } : emptyAddress;
             invoiceAddress = contactData.addresses.find(address => address.typeId === 'invoice');
@@ -45,16 +72,5 @@ export default function(contactData) {
     const phoneNumberTwo = contactData.phoneNumbers.filter(phoneNumber => !phoneNumber.primary)[0];
     contactData.phoneNumberTwo = phoneNumberTwo ? { ...emptyPhoneNumber, ...phoneNumberTwo } : emptyPhoneNumber;
 
-    // Set primary contact energy supplier
-    let emptyPrimaryAddressEnergySupplier = {
-        energySupplierId: null,
-        esNumber: '',
-        eanElectricity: '',
-        memberSince: '',
-        eanGas: '',
-    };
-    if (!contactData.primaryAddressEnergySupplier) {
-        contactData.primaryAddressEnergySupplier = emptyPrimaryAddressEnergySupplier;
-    }
     return contactData;
 }

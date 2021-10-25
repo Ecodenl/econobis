@@ -17,8 +17,6 @@ const AddressDetailsFormAddressEnergySupplierEdit = props => {
         energySupplierId,
         energySupplyTypeId,
         memberSince,
-        eanElectricity,
-        eanGas,
         energySupplyStatusId,
         switchDate,
         esNumber,
@@ -59,23 +57,6 @@ const AddressDetailsFormAddressEnergySupplierEdit = props => {
                                 onChangeAction={props.handleInputChangeDate}
                                 required={isCurrentSupplier ? 'required' : ''}
                                 error={props.errors.memberSince}
-                            />
-                            <InputText
-                                label={'EAN electriciteit'}
-                                id={'eanElectricity'}
-                                name={'eanElectricity'}
-                                value={eanElectricity}
-                                onChangeAction={props.handleInputChange}
-                            />
-                        </div>
-
-                        <div className="row">
-                            <InputText
-                                label={'EAN gas'}
-                                id={'eanGas'}
-                                name={'eanGas'}
-                                value={eanGas}
-                                onChangeAction={props.handleInputChange}
                             />
                             <InputSelect
                                 label={'Overstap status'}

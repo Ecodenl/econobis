@@ -18,7 +18,6 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
         didAgreeAvg,
         dateDidAgreeAvg,
         number,
-        primaryAddressEnergySupplier,
     } = initialContact;
     return (
         <Row>
@@ -112,6 +111,18 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
                         {primaryAddress.country ? primaryAddress.country.name : ''}
                     </TextBlock>
                 </Row>
+                <FormLabel className={'field-label'}>EAN nummer electriciteit</FormLabel>
+                <Row>
+                    <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer electriciteit'}>
+                        {primaryAddress.eanElectricity}
+                    </TextBlock>
+                </Row>
+                <FormLabel className={'field-label'}>EAN nummer gas</FormLabel>
+                <Row>
+                    <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer gas'}>
+                        {primaryAddress.eanGas}
+                    </TextBlock>
+                </Row>
             </Col>
             <Col xs={12} md={6}>
                 <FormLabel className={'field-label'}>IBAN gegevens</FormLabel>
@@ -153,41 +164,28 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
                 <FormLabel className={'field-label'}>Huidige energie leverancier</FormLabel>
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'} placeholder={'Energieleverancier'}>
-                        {primaryAddressEnergySupplier.energySupplier
-                            ? primaryAddressEnergySupplier.energySupplier.name
+                        {primaryAddress.primaryAddressEnergySupplier.energySupplier
+                            ? primaryAddress.primaryAddressEnergySupplier.energySupplier.name
                             : ''}
                     </TextBlock>
                 </Row>
 
-                {primaryAddressEnergySupplier && primaryAddressEnergySupplier.energySupplierId ? (
+                {primaryAddress.primaryAddressEnergySupplier &&
+                primaryAddress.primaryAddressEnergySupplier.energySupplierId ? (
                     <>
                         <FormLabel className={'field-label'}>Klant nummer bij leverancier</FormLabel>
                         <Row>
                             <TextBlock className={'col-12 col-sm-8'} placeholder={'Klant nummer'}>
-                                {primaryAddressEnergySupplier.esNumber}
+                                {primaryAddress.primaryAddressEnergySupplier.esNumber}
                             </TextBlock>
                         </Row>
 
                         <FormLabel className={'field-label'}>Klant bij leverancier sinds</FormLabel>
                         <Row>
                             <TextBlock className={'col-12 col-sm-8'} placeholder={'Klant sinds'}>
-                                {primaryAddressEnergySupplier.memberSince
-                                    ? moment(primaryAddressEnergySupplier.memberSince).format('L')
+                                {primaryAddress.primaryAddressEnergySupplier.memberSince
+                                    ? moment(primaryAddress.primaryAddressEnergySupplier.memberSince).format('L')
                                     : ''}
-                            </TextBlock>
-                        </Row>
-
-                        <FormLabel className={'field-label'}>EAN nummer electriciteit</FormLabel>
-                        <Row>
-                            <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer electriciteit'}>
-                                {primaryAddressEnergySupplier.eanElectricity}
-                            </TextBlock>
-                        </Row>
-
-                        <FormLabel className={'field-label'}>EAN nummer gas</FormLabel>
-                        <Row>
-                            <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer gas'}>
-                                {primaryAddressEnergySupplier.eanGas}
                             </TextBlock>
                         </Row>
                     </>

@@ -2,6 +2,7 @@
 
 namespace App\Eco\EnergySupplier;
 
+use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
@@ -15,9 +16,9 @@ class AddressEnergySupplier extends Model
 
     protected $guarded = ['id'];
 
-    public function contact()
+    public function address()
     {
-        return $this->belongsTo(Contact::class);
+        return $this->belongsTo(Address::class);
     }
 
     public function energySupplier()

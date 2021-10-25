@@ -61,20 +61,13 @@ export default {
                             ],
                             rlt: {
                                 country: { fld: ['id', 'name'] },
-                                addressEnergySuppliers: {
-                                    fld: ['id', 'energySupplierId', 'esNumber', 'memberSince', 'isCurrentSupplier'],
-                                    rlt: { energySupplier: [] },
-                                },
+                                // todo WM-es: check of deze nodig is?
+                                // addressEnergySuppliers: {
+                                //     fld: ['id', 'energySupplierId', 'esNumber', 'memberSince', 'isCurrentSupplier'],
+                                //     rlt: { energySupplier: [] },
+                                // },
                                 primaryAddressEnergySupplier: {
-                                    fld: [
-                                        'id',
-                                        'energySupplierId',
-                                        'esNumber',
-                                        'eanElectricity',
-                                        'eanGas',
-                                        'memberSince',
-                                        'isCurrentSupplier',
-                                    ],
+                                    fld: ['id', 'energySupplierId', 'esNumber', 'memberSince', 'isCurrentSupplier'],
                                     rlt: { energySupplier: [] },
                                     flt: {
                                         f: 'isCurrentSupplier',

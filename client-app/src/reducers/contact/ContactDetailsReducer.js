@@ -177,10 +177,16 @@ export default function(state = {}, action) {
         case 'DELETE_ADDRESS_ENERGY_SUPPLIER':
             return {
                 ...state,
-                addressEnergySuppliers: state.addressEnergySuppliers.filter(
-                    addressEnergySupplier => addressEnergySupplier.id !== action.id
-                ),
+                addresses: state.addresses.map(address => {
+                    return {
+                        ...address,
+                        addressEnergySuppliers: address.addressEnergySuppliers.filter(
+                            addressEnergySupplier => addressEnergySupplier.id !== action.id
+                        ),
+                    };
+                }),
             };
+
         case 'UPDATE_HOOM_ACCOUNT_ID':
             return { ...state, hoomAccountId: action.hoomAccountId };
         default:

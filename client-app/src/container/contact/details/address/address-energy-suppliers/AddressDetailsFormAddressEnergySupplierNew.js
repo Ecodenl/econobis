@@ -18,12 +18,10 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
 
         this.state = {
             addressEnergySupplier: {
-                contactId: this.props.id,
+                addressId: this.props.id,
                 energySupplierId: '',
                 energySupplyTypeId: '',
                 memberSince: '',
-                eanElectricity: '',
-                eanGas: '',
                 energySupplyStatusId: '',
                 switchDate: '',
                 esNumber: '',
@@ -104,8 +102,6 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
             energySupplierId,
             energySupplyTypeId,
             memberSince,
-            eanElectricity,
-            eanGas,
             energySupplyStatusId,
             switchDate,
             esNumber,
@@ -147,23 +143,6 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
                                 onChangeAction={this.handleInputChangeDate}
                                 required={isCurrentSupplier ? 'required' : ''}
                                 error={this.state.errors.memberSince}
-                            />
-                            <InputText
-                                label={'EAN electriciteit'}
-                                id={'eanElectricity'}
-                                name={'eanElectricity'}
-                                value={eanElectricity}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
-
-                        <div className="row">
-                            <InputText
-                                label={'EAN gas'}
-                                id={'eanGas'}
-                                name={'eanGas'}
-                                value={eanGas}
-                                onChangeAction={this.handleInputChange}
                             />
                             <InputSelect
                                 label={'Overstap status'}
@@ -226,7 +205,6 @@ const mapStateToProps = state => {
         energySuppliers: state.systemData.energySuppliers,
         energySupplierStatuses: state.systemData.energySupplierStatuses,
         energySupplierTypes: state.systemData.energySupplierTypes,
-        id: state.contactDetails.id,
     };
 };
 

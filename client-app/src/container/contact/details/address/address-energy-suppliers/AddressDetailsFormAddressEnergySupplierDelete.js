@@ -5,6 +5,16 @@ import Modal from '../../../../../components/modal/Modal';
 import { deleteAddressEnergySupplier } from '../../../../../actions/contact/ContactDetailsActions';
 
 const AddressDetailsFormAddressEnergySupplierDelete = props => {
+    const addressLine =
+        props.address.street +
+        ' ' +
+        props.address.number +
+        (props.address.addition ? '-' + props.address.addition : '') +
+        ', ' +
+        props.address.postalCode +
+        ', ' +
+        props.address.city +
+        (props.address.country ? ', ' + props.address.country.name : '');
     const confirmAction = () => {
         props.deleteAddressEnergySupplier(props.id);
         props.closeDeleteItemModal();
@@ -19,8 +29,8 @@ const AddressDetailsFormAddressEnergySupplierDelete = props => {
             title="Verwijderen"
         >
             <p>
-                Verwijder energieleverancier: <strong> {`${props.energySupplier.name}`} </strong> bij contact{' '}
-                <strong> {`${props.contact.fullName}`} </strong>?
+                Verwijder energieleverancier: <strong> {`${props.energySupplier.name}`} </strong> bij adres{' '}
+                <strong> {`${addressLine}`} </strong>?
             </p>
         </Modal>
     );

@@ -2,13 +2,8 @@
 
 namespace App\Http\Resources\AddressEnergySupplier;
 
-use App\Eco\Measure\Measure;
 use App\Http\Resources\Contact\FullContact;
-use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
-use App\Http\Resources\HousingFile\FullHousingFile;
-use App\Http\Resources\Intake\FullIntake;
-use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -30,8 +25,6 @@ class FullAddressEnergySupplier extends JsonResource
             'energySupplier' => GenericResource::make($this->whenLoaded('energySupplier')),
             'type' => $this->type,
             'memberSince' => $this->member_since,
-            'eanElectricity' => $this->ean_electricity,
-            'eanGas' => $this->ean_gas,
             'energySupplyStatusId' => $this->energy_supply_status_id,
             'energySupplyStatus' => GenericResource::make($this->whenLoaded('energySupplyStatus')),
             'energySupplyTypeId' => $this->energy_supply_type_id,

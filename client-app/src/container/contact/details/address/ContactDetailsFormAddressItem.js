@@ -28,6 +28,8 @@ class ContactDetailFormAddressItem extends Component {
                 number: false,
                 countryId: false,
                 endDate: false,
+                eanElectricity: false,
+                eanGas: false,
             },
         };
     }
@@ -193,6 +195,8 @@ class ContactDetailFormAddressItem extends Component {
                         postalCodeError={this.state.errors.postalCode}
                         numberError={this.state.errors.number}
                         countryIdError={this.state.errors.countryId}
+                        eanElectricityError={this.state.errors.eanElectricity}
+                        eanGasError={this.state.errors.eanGas}
                         cancelEdit={this.cancelEdit}
                     />
                 )}

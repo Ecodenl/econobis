@@ -22,6 +22,7 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
             addressEnergySupplier: {
                 ...props.addressEnergySupplier,
             },
+            address: { ...props.address },
             errors: {
                 memberSince: false,
             },
@@ -171,7 +172,8 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
                 {this.state.showDelete && (
                     <AddressDetailsFormAddressEnergySupplierDelete
                         closeDeleteItemModal={this.toggleDelete}
-                        {...this.props.addressEnergySupplier}
+                        address={this.state.address}
+                        {...this.state.addressEnergySupplier}
                     />
                 )}
             </div>

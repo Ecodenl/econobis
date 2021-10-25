@@ -66,7 +66,7 @@ class Contact extends Model
 
     public function addresses()
     {
-        return $this->hasMany(Address::class);
+        return $this->hasMany(Address::class)->orderByDesc('primary')->orderByDesc('id');
     }
 
     public function addressesActive()

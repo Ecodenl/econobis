@@ -35,6 +35,8 @@ class FullAddress extends JsonResource
             'city' => $this->city,
             'postalCode' => $this->postal_code,
             'primary' => $this->primary,
+            'eanElectricity' => $this->ean_electricity,
+            'eanGas' => $this->ean_gas,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'measuresTaken' => FullMeasure::collection($this->whenLoaded('measuresTaken')),

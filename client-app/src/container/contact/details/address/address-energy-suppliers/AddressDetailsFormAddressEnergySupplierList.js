@@ -4,9 +4,6 @@ import { connect } from 'react-redux';
 import AddressDetailsFormAddressEnergySupplierItem from './AddressDetailsFormAddressEnergySupplierItem';
 
 const AddressDetailsFormAddressEnergySupplierList = props => {
-    // todo WM-es: cleanup es
-    // console.log('props');
-    // console.log(props);
     return (
         <div>
             <div className="row border header">
@@ -25,6 +22,7 @@ const AddressDetailsFormAddressEnergySupplierList = props => {
                         <AddressDetailsFormAddressEnergySupplierItem
                             key={addressEnergySupplier.id}
                             addressEnergySupplier={addressEnergySupplier}
+                            address={props.address}
                         />
                     );
                 })
@@ -35,11 +33,4 @@ const AddressDetailsFormAddressEnergySupplierList = props => {
     );
 };
 
-// const mapStateToProps = state => {
-//     return {
-//         addressEnergySuppliers: state.address.addressEnergySuppliers,
-//     };
-// };
-//
-// export default connect(mapStateToProps)(AddressDetailsFormAddressEnergySupplierList);
 export default AddressDetailsFormAddressEnergySupplierList;

@@ -72,6 +72,14 @@ export default {
                     }
                 }),
             city: Yup.string().trim(),
+            eanElectricity: Yup.string()
+                .nullable()
+                .trim()
+                .matches(/(\d.*){18}|^$/, 'Minimaal 18 cijfers nodig'),
+            eanGas: Yup.string()
+                .nullable()
+                .trim()
+                .matches(/(\d.*){18}|^$/, 'Minimaal 18 cijfers nodig'),
         }),
         invoiceAddress: Yup.object().shape({
             street: Yup.string().trim(),
@@ -105,16 +113,6 @@ export default {
             number: Yup.string()
                 .trim()
                 .matches(/(\d.*){10}|^$/, 'Minimaal 10 cijfers nodig'),
-        }),
-        primaryAddressEnergySupplier: Yup.object().shape({
-            eanElectricity: Yup.string()
-                .nullable()
-                .trim()
-                .matches(/(\d.*){18}|^$/, 'Minimaal 18 cijfers nodig'),
-            eanGas: Yup.string()
-                .nullable()
-                .trim()
-                .matches(/(\d.*){18}|^$/, 'Minimaal 18 cijfers nodig'),
         }),
     }),
 
@@ -171,23 +169,21 @@ export default {
     }),
 
     validationSchemaPcrAdditional: Yup.object().shape({
-        primaryAddressEnergySupplier: Yup.object().shape({
-            energySupplierId: Yup.string()
-                .nullable()
-                .required('Verplicht'),
-            esNumber: Yup.string()
-                .nullable()
-                .trim()
-                .required('Verplicht'),
+        visitAddress: Yup.object().shape({
             eanElectricity: Yup.string()
                 .nullable()
                 .trim()
                 .matches(/(\d.*){18}|^$/, 'Minimaal 18 cijfers nodig')
                 .required('Verplicht'),
-            eanGas: Yup.string()
-                .nullable()
-                .trim()
-                .matches(/(\d.*){18}|^$/, 'Minimaal 18 cijfers nodig'),
+            primaryAddressEnergySupplier: Yup.object().shape({
+                energySupplierId: Yup.string()
+                    .nullable()
+                    .required('Verplicht'),
+                esNumber: Yup.string()
+                    .nullable()
+                    .trim()
+                    .required('Verplicht'),
+            }),
         }),
     }),
 };

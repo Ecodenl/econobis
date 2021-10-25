@@ -41,11 +41,10 @@ class ContactJoryResource extends JoryResource
         // Relations
         $this->relation('addresses');
         $this->relation('emailAddresses');
+        $this->relation('primaryAddress');
         $this->relation('person');
         $this->relation('organisation');
         $this->relation('phoneNumbers');
-//        todo WM-es: cleanup es
-//        $this->relation('primaryAddressEnergySupplier');
         $this->relation('occupations');
         $this->relation('portalUser');
 

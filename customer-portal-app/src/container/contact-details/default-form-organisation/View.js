@@ -20,7 +20,6 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
         didAgreeAvg,
         dateDidAgreeAvg,
         number,
-        primaryAddressEnergySupplier,
         primaryOccupations,
     } = initialContact;
 
@@ -148,6 +147,19 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                         {visitAddress.country ? visitAddress.country.name : ''}
                     </TextBlock>
                 </Row>
+                <FormLabel className={'field-label'}>EAN nummer electriciteit</FormLabel>
+                <Row>
+                    <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer electriciteit'}>
+                        {visitAddress.eanElectricity}
+                    </TextBlock>
+                </Row>
+                <FormLabel className={'field-label'}>EAN nummer gas</FormLabel>
+                <Row>
+                    <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer gas'}>
+                        {visitAddress.eanGas}
+                    </TextBlock>
+                </Row>
+
                 <FormLabel className={'field-label'}>Postadres</FormLabel>
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'} placeholder={'Straat'}>
@@ -206,65 +218,34 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                 <FormLabel className={'field-label'}>Huidige energie leverancier</FormLabel>
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'} placeholder={'Energieleverancier'}>
-                        {primaryAddressEnergySupplier.energySupplier
-                            ? primaryAddressEnergySupplier.energySupplier.name
+                        {visitAddress.primaryAddressEnergySupplier.energySupplier
+                            ? visitAddress.primaryAddressEnergySupplier.energySupplier.name
                             : ''}
                     </TextBlock>
                 </Row>
 
-                {primaryAddressEnergySupplier && primaryAddressEnergySupplier.energySupplierId ? (
+                {visitAddress.primaryAddressEnergySupplier &&
+                visitAddress.primaryAddressEnergySupplier.energySupplierId ? (
                     <>
                         <FormLabel className={'field-label'}>Klant nummer bij leverancier</FormLabel>
                         <Row>
                             <TextBlock className={'col-12 col-sm-8'} placeholder={'Klant nummer'}>
-                                {primaryAddressEnergySupplier.esNumber}
+                                {visitAddress.primaryAddressEnergySupplier.esNumber}
                             </TextBlock>
                         </Row>
 
                         <FormLabel className={'field-label'}>Klant bij leverancier sinds</FormLabel>
                         <Row>
                             <TextBlock className={'col-12 col-sm-8'} placeholder={'Klant sinds'}>
-                                {primaryAddressEnergySupplier.memberSince
-                                    ? moment(primaryAddressEnergySupplier.memberSince).format('L')
+                                {visitAddress.primaryAddressEnergySupplier.memberSince
+                                    ? moment(visitAddress.primaryAddressEnergySupplier.memberSince).format('L')
                                     : ''}
-                            </TextBlock>
-                        </Row>
-
-                        <FormLabel className={'field-label'}>EAN nummer electriciteit</FormLabel>
-                        <Row>
-                            <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer electriciteit'}>
-                                {primaryAddressEnergySupplier.eanElectricity}
-                            </TextBlock>
-                        </Row>
-
-                        <FormLabel className={'field-label'}>EAN nummer gas</FormLabel>
-                        <Row>
-                            <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer gas'}>
-                                {primaryAddressEnergySupplier.eanGas}
                             </TextBlock>
                         </Row>
                     </>
                 ) : (
                     ''
                 )}
-
-                {/*<FormLabel className={'field-label'}>Contacten</FormLabel>*/}
-                {/*{primaryOccupations ? (*/}
-                {/*primaryOccupations.map(primaryOccupation => (*/}
-                {/*<Row>*/}
-                {/*<TextBlock className={'col-12 col-sm-4'} placeholder={'Contact naam'}>*/}
-                {/*{primaryOccupation.contact.fullName}*/}
-                {/*</TextBlock>*/}
-                {/*<TextBlock className={'col-12 col-sm-4'} placeholder={'Contact verbinding'}>*/}
-                {/*{primaryOccupation.occupation.primaryOccupation}*/}
-                {/*</TextBlock>*/}
-                {/*</Row>*/}
-                {/*))*/}
-                {/*) : (*/}
-                {/*<Row>*/}
-                {/*<TextBlock className={'col-12 col-sm-8'} />*/}
-                {/*</Row>*/}
-                {/*)}*/}
             </Col>
         </Row>
     );

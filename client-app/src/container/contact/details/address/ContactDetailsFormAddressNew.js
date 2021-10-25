@@ -29,6 +29,8 @@ class ContactDetailsFormAddressNew extends Component {
                 endDate: '',
                 primary: false,
                 countryId: '',
+                eanElectricity: '',
+                eanGas: '',
             },
             errors: {
                 typeId: false,
@@ -36,6 +38,8 @@ class ContactDetailsFormAddressNew extends Component {
                 postalCode: false,
                 number: false,
                 countryId: false,
+                eanElectricity: false,
+                eanGas: false,
             },
         };
     }
@@ -62,7 +66,6 @@ class ContactDetailsFormAddressNew extends Component {
                 validator.isEmpty(address.street)
             ) {
                 AddressAPI.getPicoAddress(address.postalCode, address.number).then(payload => {
-                    // console.log(payload);
                     this.setState({
                         ...this.state,
                         address: {
@@ -167,7 +170,19 @@ class ContactDetailsFormAddressNew extends Component {
     };
 
     render() {
-        const { street, number, addition, postalCode, city, typeId, endDate, primary, countryId } = this.state.address;
+        const {
+            street,
+            number,
+            addition,
+            postalCode,
+            city,
+            typeId,
+            endDate,
+            primary,
+            countryId,
+            eanElectricity,
+            eanGas,
+        } = this.state.address;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -270,6 +285,25 @@ class ContactDetailsFormAddressNew extends Component {
                                 name={'primary'}
                                 value={primary}
                                 onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputText
+                                label={'EAN electriciteit'}
+                                id={'eanElectricity'}
+                                name={'eanElectricity'}
+                                value={eanElectricity}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.eanElectricity}
+                            />
+                            <InputText
+                                label={'EAN gas'}
+                                id={'eanGas'}
+                                name={'eanGas'}
+                                value={eanGas}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.eanGas}
                             />
                         </div>
 

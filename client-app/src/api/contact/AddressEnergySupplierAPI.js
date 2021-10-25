@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const URL_ADDRESS_ENERGY_SUPPLIER = `${URL_API}/api/contact-energy-supplier`;
+const URL_ADDRESS_ENERGY_SUPPLIER = `${URL_API}/api/address-energy-supplier`;
 
 export default {
     newAddressEnergySupplier: addressEnergySupplier => {

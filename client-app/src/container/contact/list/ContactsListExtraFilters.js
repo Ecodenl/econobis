@@ -46,7 +46,7 @@ class ContactsListExtraFilters extends Component {
         let filters = this.state.filters;
         let amountOfFilters = this.state.amountOfFilters;
 
-        if (filters[filterNumber].field === 'product') {
+        if (filters[filterNumber].field === 'product' || filters[filterNumber].field === 'opportunityMeasureCategory') {
             filters = filters.filter(filter => filter.connectedTo !== filters[filterNumber].connectName);
             delete filters[filterNumber].connectName;
             amountOfFilters = filters.length;
@@ -76,6 +76,36 @@ class ContactsListExtraFilters extends Component {
 
             filters.splice(filterNumber + 3, 0, {
                 field: 'orderStatus',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
+            });
+
+            amountOfFilters = filters.length;
+        } else if (data === 'opportunityMeasureCategory') {
+            filters[filterNumber] = {
+                field: 'opportunityMeasureCategory',
+                type: 'eq',
+                data: '',
+                connectName: data + filterNumber,
+            };
+
+            filters.splice(filterNumber + 1, 0, {
+                field: 'opportunityStatus',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
+            });
+
+            filters.splice(filterNumber + 2, 0, {
+                field: 'opportunityMeasure',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
+            });
+
+            filters.splice(filterNumber + 3, 0, {
+                field: 'opportunityEvaluationStatus',
                 type: 'eq',
                 data: '',
                 connectedTo: data + filterNumber,
@@ -138,7 +168,10 @@ class ContactsListExtraFilters extends Component {
     deleteFilterRow(filterNumber) {
         let newFilters = this.state.filters;
 
-        if (newFilters[filterNumber].field === 'product') {
+        if (
+            newFilters[filterNumber].field === 'product' ||
+            newFilters[filterNumber].field === 'opportunityMeasureCategory'
+        ) {
             newFilters = newFilters.filter(filter => filter.connectedTo !== newFilters[filterNumber].connectName);
         }
 
@@ -207,24 +240,9 @@ class ContactsListExtraFilters extends Component {
                 dropDownOptions: this.props.campaigns,
             },
             opportunityMeasureCategory: {
-                name: 'Kans',
+                name: 'Kans maatregel specifiek',
                 type: 'dropdownHas',
                 dropDownOptions: this.props.measureCategories,
-            },
-            opportunityStatus: {
-                name: 'Kans status',
-                type: 'dropdownHas',
-                dropDownOptions: this.props.opportunityStatus,
-            },
-            opportunityMeasure: {
-                name: 'Kans Maatregel specifiek',
-                type: 'dropdownHas',
-                dropDownOptions: this.props.measures,
-            },
-            opportunityEvaluationStatus: {
-                name: 'Kans status evaluatie',
-                type: 'dropdownHas',
-                dropDownOptions: this.props.opportunityEvaluationStatuses,
             },
             product: {
                 name: 'Product',
@@ -266,6 +284,25 @@ class ContactsListExtraFilters extends Component {
                 name: 'Order status',
                 type: 'dropdownHas',
                 dropDownOptions: this.props.orderStatuses,
+            },
+        };
+
+        // Options only if kans is set
+        const customOpportunityFields = {
+            opportunityStatus: {
+                name: 'Kans status',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.opportunityStatus,
+            },
+            opportunityMeasure: {
+                name: 'Kans maatregel specifiek',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.measures,
+            },
+            opportunityEvaluationStatus: {
+                name: 'Kans status evaluatie',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.opportunityEvaluationStatuses,
             },
         };
 
@@ -327,7 +364,7 @@ class ContactsListExtraFilters extends Component {
                                         key={i}
                                         filter={filter}
                                         filterNumber={i}
-                                        fields={{ ...fields, ...customProductFields }}
+                                        fields={{ ...fields, ...customProductFields, ...customOpportunityFields }}
                                         handleFilterFieldChange={this.handleFilterFieldChange}
                                         deleteFilterRow={this.deleteFilterRow}
                                         handleFilterValueChange={this.handleFilterValueChange}

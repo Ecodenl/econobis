@@ -109,9 +109,20 @@ class ExtraFilter extends RequestExtraFilter
             }
             return;
         }
+        // Ook Uitzondering voor kans filters, hier zitten extra argumenten bij. Aparte routine laten doorlopen
+        if($filter['field'] == 'opportunityMeasureCategory'){
+            if($filterType === 'or'){
+                $query->orWhere(function ($query) use ($filter) {
+                    $this->applyOpportunityMeasureCategoryFilter($query, $filter['type'], $filter['data'], $filter['connectName']);
+                });
+            }else{
+                $this->applyOpportunityMeasureCategoryFilter($query, $filter['type'], $filter['data'], $filter['connectName']);
+            }
+            return;
+        }
 
-        // Als er een connectedTo waarde is, dan is het een subfilter van product. Niet op standaard wijze filteren.
-        // Filtering hierop wordt in applyProductFilter geregeld.
+        // Als er een connectedTo waarde is, dan is het een subfilter van product of kans. Niet op standaard wijze filteren.
+        // Filtering hierop wordt in applyProductFilter of applyOpportunityMeasureCategoryFilter geregeld.
         if($filter['connectedTo']) return;
 
         // Betreft geen uitzondering; standaar functie doorlopen:
@@ -335,153 +346,6 @@ class ExtraFilter extends RequestExtraFilter
 
     }
 
-    protected function applyOpportunityMeasureCategoryFilter($query, $type, $data)
-    {
-        if(empty($data)){
-            switch($type) {
-                case 'eq':
-                    $query->whereHas('opportunities');
-                    break;
-                default:
-                    $query->whereDoesntHave('opportunities');
-                    break;
-            }
-        }else{
-            switch($type) {
-                case 'neq':
-                    $query->where(function ($query) use ($type, $data) {
-                        $query->whereDoesntHave('opportunities')
-                            ->orWhereDoesntHave('opportunities', function ($query) use ($type, $data) {
-                                RequestFilter::applyFilter($query, 'measure_category_id', 'eq', $data);
-                            });
-                    });
-                    break;
-                default:
-                    $query->whereHas('opportunities', function ($query) use ($type, $data) {
-                        RequestFilter::applyFilter($query, 'measure_category_id', $type, $data);
-                    });
-                    break;
-            }
-        }
-
-    }
-
-    protected function applyOpportunityStatusFilter($query, $type, $data)
-    {
-        if(empty($data)){
-            switch($type) {
-                case 'eq':
-                    $query->whereHas('opportunities');
-                    break;
-                default:
-                    $query->whereDoesntHave('opportunities');
-                    break;
-            }
-        }else{
-            switch($type) {
-                case 'neq':
-                    $query->where(function ($query) use ($type, $data) {
-                        $query->whereDoesntHave('opportunities')
-                            ->orWhereDoesntHave('opportunities', function ($query) use ($type, $data) {
-                                RequestFilter::applyFilter($query, 'status_id', 'eq', $data);
-                            });
-                    });
-                    break;
-                default:
-                    $query->whereHas('opportunities', function ($query) use ($type, $data) {
-                        RequestFilter::applyFilter($query, 'status_id', $type, $data);
-                    });
-                    break;
-            }
-        }
-    }
-
-    protected function applyOpportunityMeasureFilter($query, $type, $data)
-    {
-        if(empty($data)){
-            switch($type) {
-                case 'eq':
-                    $query->where(function ($query) use ($type, $data) {
-                        $query->whereHas('opportunities', function ($query) use ($type, $data) {
-                            $query->whereHas('measures');
-                            });
-                    });
-                    break;
-                default:
-                    $query->where(function ($query) use ($type, $data) {
-                        $query->whereDoesntHave('opportunities')
-                            ->orWhereHas('opportunities', function ($query) use ($type, $data) {
-                                $query->whereDoesntHave('measures');
-                            });
-                    });
-                    break;
-            }
-        }else{
-            switch($type) {
-                case 'neq':
-                    $query->where(function ($query) use ($type, $data) {
-                        $query->whereDoesntHave('opportunities')
-                            ->orWhereDoesntHave('opportunities', function ($query) use ($type, $data) {
-                                $query->whereHas('measures', function ($query) use ($type, $data) {
-                                    RequestFilter::applyFilter($query, 'measure_opportunity.measure_id', 'eq', $data);
-                                });
-                            });
-                    });
-                    break;
-                default:
-                    $query->whereHas('opportunities', function ($query) use ($type, $data) {
-                        $query->whereHas('measures', function ($query) use ($type, $data) {
-                            RequestFilter::applyFilter($query, 'measure_opportunity.measure_id', $type, $data);
-                        });
-                    });
-                    break;
-            }
-        }
-    }
-
-    protected function applyOpportunityEvaluationStatusFilter($query, $type, $data)
-    {
-        if(empty($data)){
-            switch($type) {
-                case 'eq':
-                    $query->where(function ($query) use ($type, $data) {
-                        $query->whereHas('opportunities', function ($query) use ($type, $data) {
-                            $query->whereHas('opportunityEvaluation');
-                        });
-                    });
-                    break;
-                default:
-                    $query->where(function ($query) use ($type, $data) {
-                        $query->whereDoesntHave('opportunities')
-                            ->orWhereHas('opportunities', function ($query) use ($type, $data) {
-                                $query->whereDoesntHave('opportunityEvaluation');
-                            });
-                    });
-                    break;
-            }
-        }else{
-            switch($type) {
-                case 'neq':
-                    $query->where(function ($query) use ($type, $data) {
-                        $query->whereDoesntHave('opportunities')
-                            ->orWhereDoesntHave('opportunities', function ($query) use ($type, $data) {
-                                $query->whereHas('opportunityEvaluation', function ($query) use ($type, $data) {
-                                    RequestFilter::applyFilter($query, 'opportunity_evaluation.is_realised', 'eq', $data);
-                                });
-                            });
-                    });
-                    break;
-                default:
-                    $query->whereHas('opportunities', function ($query) use ($type, $data) {
-                        $query->whereHas('opportunityEvaluation', function ($query) use ($type, $data) {
-                            RequestFilter::applyFilter($query, 'opportunity_evaluation.is_realised', $type, $data);
-                        });
-                    });
-                    break;
-            }
-        }
-    }
-
     protected function applyCampaignFilter($query, $type, $data)
     {
         if(empty($data)){
@@ -643,5 +507,82 @@ class ExtraFilter extends RequestExtraFilter
         }
     }
 
+    protected function applyOpportunityMeasureCategoryFilter($query, $type, $data, $connectName)
+    {
+        $opportunityStatusFilter = array_values(array_filter($this->filters, function($element) use($connectName){
+            return ($element['connectedTo'] == $connectName && $element['field'] == 'opportunityStatus');
+        }))[0];
+        $opportunityMeasureFilter = array_values(array_filter($this->filters, function($element) use($connectName){
+            return ($element['connectedTo'] == $connectName && $element['field'] == 'opportunityMeasure');
+        }))[0];
+        $opportunityEvaluationStatusFilter = array_values(array_filter($this->filters, function($element) use($connectName){
+            return ($element['connectedTo'] == $connectName && $element['field'] == 'opportunityEvaluationStatus');
+        }))[0];
+
+        if(empty($data)){
+            switch($type) {
+                case 'eq':
+                    $query->whereHas('opportunities', function ($query) use ($data, $opportunityStatusFilter, $opportunityMeasureFilter, $opportunityEvaluationStatusFilter) {
+                        // Eventueel extra filters toepassen
+                        if($opportunityStatusFilter['data'] || $opportunityStatusFilter['type'] == 'nl' || $opportunityStatusFilter['type'] == 'nnl'){
+                            static::applyFilter($query, 'opportunities.status_id', $opportunityStatusFilter['type'], $opportunityStatusFilter['data']);
+                        }
+                        if($opportunityMeasureFilter['data']){
+                            $query->whereHas('measures', function($query) use ($opportunityMeasureFilter) {
+                                $query->where('measure_opportunity.measure_id', $opportunityMeasureFilter['data']);
+                            });
+                        }elseif($opportunityMeasureFilter['type'] == 'neq'){
+                            $query->whereDoesntHave('measures');
+                        }
+                        if($opportunityEvaluationStatusFilter['data']){
+                            $query->whereHas('opportunityEvaluation', function($query) use ($opportunityEvaluationStatusFilter) {
+                                $query->where('opportunity_evaluation.is_realised', $opportunityEvaluationStatusFilter['data']);
+                            });
+                        }elseif($opportunityEvaluationStatusFilter['type'] == 'neq'){
+                            $query->whereDoesntHave('opportunityEvaluation');
+                        }
+
+                    });
+                    break;
+                default:
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('opportunities');
+                    });
+                    break;
+            }
+
+        }else{
+            switch($type) {
+                case 'neq':
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('opportunities')
+                            ->orWhereDoesntHave('opportunities', function ($query) use ($data) {
+                                $query->where('measure_category_id', $data);
+                            });
+                    });
+                    break;
+                default:
+                    $query->whereHas('opportunities', function ($query) use ($data, $opportunityStatusFilter, $opportunityMeasureFilter, $opportunityEvaluationStatusFilter) {
+                        $query->where('measure_category_id', $data);
+
+                        // Eventueel extra filters toepassen
+                        if($opportunityStatusFilter['data'] || $opportunityStatusFilter['type'] == 'nl' || $opportunityStatusFilter['type'] == 'nnl'){
+                            static::applyFilter($query, 'opportunities.status_id', $opportunityStatusFilter['type'], $opportunityStatusFilter['data']);
+                        }
+                        if($opportunityMeasureFilter['data']){
+                            $query->whereHas('measures', function($query) use ($opportunityMeasureFilter) {
+                                $query->where('measure_opportunity.measure_id', $opportunityMeasureFilter['data']);
+                            });
+                        }
+                        if($opportunityEvaluationStatusFilter['data']){
+                            $query->whereHas('opportunityEvaluation', function($query) use ($opportunityEvaluationStatusFilter) {
+                                $query->where('opportunity_evaluation.is_realised', $opportunityEvaluationStatusFilter['data']);
+                            });
+                        }
+                    });
+                    break;
+            }
+        }
+    }
 
 }

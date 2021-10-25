@@ -3,6 +3,7 @@
 namespace App\Http\Resources\ParticipantProject;
 
 use App\Eco\Order\Order;
+use App\Http\Resources\Address\FullAddress;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\GenericResource;
@@ -30,6 +31,7 @@ class FullParticipantProject extends JsonResource
                 'name' => $this->contact->full_name . ' ' . $this->project->name,
                 'contactId' => $this->contact_id,
                 'contact' => FullContact::make($this->whenLoaded('contact')),
+                'address' => FullAddress::make($this->whenLoaded('address')),
                 'projectId' => $this->project_id,
                 'project' => FullProject::make($this->whenLoaded('project')),
                 'relatedOrders' => FullOrder::collection(Order::where('participation_id', $this->id)->get()),

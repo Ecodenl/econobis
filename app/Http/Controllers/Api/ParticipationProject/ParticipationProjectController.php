@@ -62,7 +62,7 @@ class ParticipationProjectController extends ApiController
     {
         $participantProject = $requestQuery->get();
         $participantProject->load([
-            'contact.primaryAddressEnergySupplier.energySupplier',
+            'address.primaryAddressEnergySupplier.energySupplier',
             'contact.primaryAddress',
             'contact.primaryEmailAddress',
             'project',
@@ -175,7 +175,7 @@ class ParticipationProjectController extends ApiController
             'contact.primaryEmailAddress',
             'contact.primaryphoneNumber',
             'contact.primaryAddress.country',
-            'contact.primaryAddressEnergySupplier.energySupplier',
+            'address.primaryAddressEnergySupplier.energySupplier',
             'giftedByContact',
             'legalRepContact',
             'project',
@@ -225,7 +225,7 @@ class ParticipationProjectController extends ApiController
         ]);
         $participantProject->load([
             'contact',
-            'contact.primaryAddressEnergySupplier',
+            'address.primaryAddressEnergySupplier',
             'project.projectType',
             'project.administration',
             'project.projectValueCourses',
@@ -265,6 +265,7 @@ class ParticipationProjectController extends ApiController
 
         $project = Project::find($participantProject->project_id);
         $contact = Contact::find($participantProject->contact_id);
+        $address = Contact::find($participantProject->address_id);
 
         if($project->check_double_addresses){
             $errors = [];
@@ -331,7 +332,7 @@ class ParticipationProjectController extends ApiController
         if($project->projectType->code_ref === 'postalcode_link_capital'){
             $this->validatePostalCode($message, $project, $contact);
             $this->validateUsage($message, $project, $participantProject);
-            $this->validateEnergySupplier($message, $contact);
+            $this->validateEnergySupplier($message, $address);
             return ['id' => $participantProject->id, 'message' => $message];
         }
         if($project->check_postalcode_link && $project->is_sce_project){
@@ -616,12 +617,11 @@ class ParticipationProjectController extends ApiController
         }
     }
 
-    public function validateEnergySupplier(&$message, Contact $contact)
+    public function validateEnergySupplier(&$message, Address $address)
     {
         $checkText = 'Energieleverancier check: ';
 
-// todo WM-es: check participation->address???
-        $primaryAddressEnergySupplier = $contact->primaryAddress ? $contact->primaryAddress->primaryAddressEnergySupplier : null;
+        $primaryAddressEnergySupplier = $address ? $address->primaryAddressEnergySupplier : null;
 
         if(!$primaryAddressEnergySupplier){
             array_push($message, $checkText . 'Contact heeft nog geen energieleverancier.');

@@ -8,6 +8,7 @@ use App\Eco\EnergySupplier\AddressEnergySupplier;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Intake\Intake;
 use App\Eco\Measure\Measure;
+use App\Eco\ParticipantProject\ParticipantProject;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laracasts\Presenter\PresentableTrait;
@@ -37,6 +38,11 @@ class Address extends Model
     public function contact()
     {
         return $this->belongsTo(Contact::class);
+    }
+
+    public function participations()
+    {
+        return $this->hasMany(ParticipantProject::class);
     }
 
     public function housingFile()

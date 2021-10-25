@@ -39,7 +39,6 @@ class FullParticipantContact extends JsonResource
             'primaryAddress' => FullAddress::make($this->whenLoaded('primaryAddress')),
             'emailAddresses' => FullEmailAddress::collection($this->whenLoaded('emailAddresses')),
             'primaryEmailAddress' => FullEmailAddress::make($this->whenLoaded('primaryEmailAddress')),
-            'primaryAddressEnergySupplier' => FullAddressEnergySupplier::make($this->whenLoaded('primaryAddressEnergySupplier')),
         ];
     }
 }

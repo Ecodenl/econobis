@@ -75,12 +75,12 @@ class RevenueNewApp extends Component {
                 const revenue = this.state.revenue;
                 if (participation) {
                     if (
-                        participation.contact &&
-                        participation.contact.previousAddressEnergySupplierId != 0 &&
-                        participation.contact.primaryAddressEnergySupplier &&
-                        participation.contact.primaryAddressEnergySupplier.memberSince
+                        participation.address &&
+                        participation.address.previousAddressEnergySupplierId != 0 &&
+                        participation.address.primaryAddressEnergySupplier &&
+                        participation.address.primaryAddressEnergySupplier.memberSince
                     ) {
-                        const dateSplit = moment(participation.contact.primaryAddressEnergySupplier.memberSince)
+                        const dateSplit = moment(participation.address.primaryAddressEnergySupplier.memberSince)
                             .subtract(1, 'day')
                             .format('Y-MM-DD');
                         let dateBegin =

@@ -258,6 +258,43 @@ const DefaultContactPersonalEdit = function({
                     className={initialContact.isParticipant ? 'field-label required' : 'field-label'}
                 >
                     Adres
+                    {initialContact.blockChangeAddressNumber ? (
+                        <>
+                            {' '}
+                            <FaInfoCircle
+                                color={'blue'}
+                                size={'15px'}
+                                data-tip={`Postcode en huisnummer is niet meer wijzigen vanwege deelname aan project op een specifiek postcodegebied met huisnummerreeks`}
+                                data-for={`participant-${initialContact.id}`}
+                            />
+                            <ReactTooltip
+                                id={`participant-${initialContact.id}`}
+                                effect="float"
+                                place="bottom"
+                                multiline={true}
+                                aria-haspopup="true"
+                            />
+                        </>
+                    ) : initialContact.isParticipantSceProject || initialContact.isParticipantPcrProject ? (
+                        <>
+                            {' '}
+                            <FaInfoCircle
+                                color={'blue'}
+                                size={'15px'}
+                                data-tip={`Postcode is niet meer wijzigen vanwege deelname aan project op een specifiek postcodegebied`}
+                                data-for={`participant-${initialContact.id}`}
+                            />
+                            <ReactTooltip
+                                id={`participant-${initialContact.id}`}
+                                effect="float"
+                                place="bottom"
+                                multiline={true}
+                                aria-haspopup="true"
+                            />
+                        </>
+                    ) : (
+                        ''
+                    )}
                 </FormLabel>
                 <Row>
                     <Col xs={12} sm={12}>

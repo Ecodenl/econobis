@@ -1482,12 +1482,19 @@ class ExternalWebformController extends Controller
             if (!$project) $this->error('Er is een ongeldige waarde voor project meegegeven.');
 
             // Check address
-            $addressHelper = new AddressHelper($contact, $contact->addressForPostalCodeCheck);
-            $checkAddressOk = $addressHelper->checkAddress($project->id, false);
-            if(!$checkAddressOk){
-                $this->log('Deelname kan niet worden aangemaakt vanwege volgende fouten:');
-                $this->log(implode(';', $addressHelper->messages));
-                return null;
+            if($contact->addressForPostalCodeCheck){
+                $addressHelper = new AddressHelper($contact, $contact->addressForPostalCodeCheck);
+                $checkAddressOk = $addressHelper->checkAddress($project->id, false);
+                if(!$checkAddressOk){
+                    $note = "Webformulier " . $this->webform->name . ".\n\n";
+                    $note .= "Deelname kan niet worden aangemaakt voor contact " . $this->contact->full_name . " (" . $this->contact->number . ")  vanwege volgende fouten:\n";
+                    $note .= implode("\n", $addressHelper->messages);
+                    $this->addTaskCheckContact($this->responsibleIds, $this->contact, $this->webform, $note);
+
+                    $this->log('Deelname kan niet worden aangemaakt vanwege volgende fouten:');
+                    $this->log(implode(';', $addressHelper->messages));
+                    return null;
+                }
             }
 
             // Voor aanmaak van Participant Mutations wordt created by and updated by via ParticipantMutationObserver altijd bepaald obv Auth::id

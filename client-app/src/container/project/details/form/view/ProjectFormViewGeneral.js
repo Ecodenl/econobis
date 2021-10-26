@@ -236,16 +236,16 @@ const ProjectFormViewGeneral = ({
                 </div>
             </section>
             <section>
-            <hr />
-            <h4 onClick={() => toggleCustomerPortalSettings(!showCustomerPortalSettings)}>
-                {showCustomerPortalSettings ? (
-                    <span className="glyphicon glyphicon-menu-down" />
-                ) : (
-                    <span className="glyphicon glyphicon-menu-right" />
-                )}
-                &nbsp;Contacten portal instellingen
-            </h4>
-        </section>
+                <hr />
+                <h4 onClick={() => toggleCustomerPortalSettings(!showCustomerPortalSettings)}>
+                    {showCustomerPortalSettings ? (
+                        <span className="glyphicon glyphicon-menu-down" />
+                    ) : (
+                        <span className="glyphicon glyphicon-menu-right" />
+                    )}
+                    &nbsp;Contacten portal instellingen
+                </h4>
+            </section>
             {showCustomerPortalSettings ? (
                 <section
                     onClick={

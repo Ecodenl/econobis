@@ -3,7 +3,11 @@
 namespace App\Eco\ContactGroup;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Measure\Measure;
+use App\Eco\Measure\MeasureCategory;
 use App\Eco\Occupation\Occupation;
+use App\Eco\Opportunity\OpportunityEvaluationStatus;
+use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Order\OrderStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -32,14 +36,45 @@ class DynamicContactGroupFilter extends Model
             $yesNoFields = ['didAcceptAgreement'];
             if (in_array($this->field, $yesNoFields)) return $this->data ? 'Ja' : 'Nee';
 
+            // opportunityMeasureCategory omzetten
+            if ($this->field == 'opportunityMeasureCategory'){
+                if($this->data){
+                    $measureCategory = MeasureCategory::find($this->data);
+                    return $measureCategory ? $measureCategory->name : ''   ;
+                }
+                return '';
+            }
+            // opportunityStatus omzetten
+            if ($this->field == 'opportunityStatus'){
+                if($this->data){
+                    $opportunityStatus = OpportunityStatus::find($this->data);
+                    return $opportunityStatus ? $opportunityStatus->name : ''   ;
+                }
+                return '';
+            }
+            // opportunityMeasure omzetten
+            if ($this->field == 'opportunityMeasure'){
+                if($this->data){
+                    $measure = Measure::find($this->data);
+                    return $measure ? $measure->name : ''   ;
+                }
+                return '';
+            }
+            // opportunityEvaluationStatus omzetten
+            if ($this->field == 'opportunityEvaluationStatus'){
+                if($this->data){
+                    $opportunityEvaluationStatus = OpportunityEvaluationStatus::find($this->data);
+                    return $opportunityEvaluationStatus ? $opportunityEvaluationStatus->name : ''   ;
+                }
+                return '';
+            }
+
             // orderStatus omzetten
             if ($this->field == 'orderStatus'){
                 if($this->data){
                     return OrderStatus::get($this->data)->name;
                 }
-                else{
-                    return '';
-                }
+                return '';
             }
 
             return $this->data;

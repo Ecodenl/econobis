@@ -51,7 +51,7 @@ class ChangeFieldsOpportunityEvaluation extends Migration
     {
         DB::table('dynamic_contact_group_filter')
             ->where('field', 'opportunityMeasureCategory')
-            ->update(['field' => 'opportunity', 'connect_name' => '']);
+            ->update(['field' => 'opportunity', 'connect_name' => 'App\Eco\Measure\MeasureCategory']);
         DB::table('dynamic_contact_group_filter')
             ->where('field', 'opportunityStatus')
             ->delete();

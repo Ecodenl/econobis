@@ -110,7 +110,7 @@ class ExtraFilter extends RequestExtraFilter
             return;
         }
         // Ook Uitzondering voor kans filters, hier zitten extra argumenten bij. Aparte routine laten doorlopen
-        if($filter['field'] == 'opportunityMeasureCategory'){
+        if($filter['field'] == 'opportunityMeasureCategory' ){
             if($filterType === 'or'){
                 $query->orWhere(function ($query) use ($filter) {
                     $this->applyOpportunityMeasureCategoryFilter($query, $filter['type'], $filter['data'], $filter['connectName']);
@@ -511,34 +511,37 @@ class ExtraFilter extends RequestExtraFilter
     {
         $opportunityStatusFilter = array_values(array_filter($this->filters, function($element) use($connectName){
             return ($element['connectedTo'] == $connectName && $element['field'] == 'opportunityStatus');
-        }))[0];
+        }));
+        $opportunityStatusFilter = $opportunityStatusFilter ? $opportunityStatusFilter[0] : null;
         $opportunityMeasureFilter = array_values(array_filter($this->filters, function($element) use($connectName){
             return ($element['connectedTo'] == $connectName && $element['field'] == 'opportunityMeasure');
-        }))[0];
+        }));
+        $opportunityMeasureFilter = $opportunityMeasureFilter ? $opportunityMeasureFilter[0] : null;
         $opportunityEvaluationStatusFilter = array_values(array_filter($this->filters, function($element) use($connectName){
             return ($element['connectedTo'] == $connectName && $element['field'] == 'opportunityEvaluationStatus');
-        }))[0];
+        }));
+        $opportunityEvaluationStatusFilter = $opportunityEvaluationStatusFilter ? $opportunityEvaluationStatusFilter[0] : null;
 
         if(empty($data)){
             switch($type) {
                 case 'eq':
                     $query->whereHas('opportunities', function ($query) use ($data, $opportunityStatusFilter, $opportunityMeasureFilter, $opportunityEvaluationStatusFilter) {
                         // Eventueel extra filters toepassen
-                        if($opportunityStatusFilter['data'] || $opportunityStatusFilter['type'] == 'nl' || $opportunityStatusFilter['type'] == 'nnl'){
+                        if($opportunityStatusFilter && ($opportunityStatusFilter['data'] || $opportunityStatusFilter['type'] == 'nl' || $opportunityStatusFilter['type'] == 'nnl') ){
                             static::applyFilter($query, 'opportunities.status_id', $opportunityStatusFilter['type'], $opportunityStatusFilter['data']);
                         }
-                        if($opportunityMeasureFilter['data']){
+                        if($opportunityStatusFilter && $opportunityMeasureFilter['data']){
                             $query->whereHas('measures', function($query) use ($opportunityMeasureFilter) {
                                 $query->where('measure_opportunity.measure_id', $opportunityMeasureFilter['data']);
                             });
-                        }elseif($opportunityMeasureFilter['type'] == 'neq'){
+                        }elseif($opportunityStatusFilter && $opportunityMeasureFilter['type'] == 'neq'){
                             $query->whereDoesntHave('measures');
                         }
-                        if($opportunityEvaluationStatusFilter['data']){
+                        if($opportunityStatusFilter && $opportunityEvaluationStatusFilter['data']){
                             $query->whereHas('opportunityEvaluation', function($query) use ($opportunityEvaluationStatusFilter) {
                                 $query->where('opportunity_evaluation.is_realised', $opportunityEvaluationStatusFilter['data']);
                             });
-                        }elseif($opportunityEvaluationStatusFilter['type'] == 'neq'){
+                        }elseif($opportunityStatusFilter && $opportunityEvaluationStatusFilter['type'] == 'neq'){
                             $query->whereDoesntHave('opportunityEvaluation');
                         }
 
@@ -566,15 +569,15 @@ class ExtraFilter extends RequestExtraFilter
                         $query->where('measure_category_id', $data);
 
                         // Eventueel extra filters toepassen
-                        if($opportunityStatusFilter['data'] || $opportunityStatusFilter['type'] == 'nl' || $opportunityStatusFilter['type'] == 'nnl'){
+                        if($opportunityStatusFilter && ($opportunityStatusFilter['data'] || $opportunityStatusFilter['type'] == 'nl' || $opportunityStatusFilter['type'] == 'nnl') ){
                             static::applyFilter($query, 'opportunities.status_id', $opportunityStatusFilter['type'], $opportunityStatusFilter['data']);
                         }
-                        if($opportunityMeasureFilter['data']){
+                        if($opportunityStatusFilter && $opportunityMeasureFilter['data'] ){
                             $query->whereHas('measures', function($query) use ($opportunityMeasureFilter) {
                                 $query->where('measure_opportunity.measure_id', $opportunityMeasureFilter['data']);
                             });
                         }
-                        if($opportunityEvaluationStatusFilter['data']){
+                        if($opportunityStatusFilter && $opportunityEvaluationStatusFilter['data']){
                             $query->whereHas('opportunityEvaluation', function($query) use ($opportunityEvaluationStatusFilter) {
                                 $query->where('opportunity_evaluation.is_realised', $opportunityEvaluationStatusFilter['data']);
                             });

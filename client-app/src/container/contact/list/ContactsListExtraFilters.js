@@ -300,7 +300,7 @@ class ContactsListExtraFilters extends Component {
                 dropDownOptions: this.props.measures,
             },
             opportunityEvaluationStatus: {
-                name: 'Kans status evaluatie',
+                name: 'Kans status evaluatie uitgevoerd',
                 type: 'dropdownHas',
                 dropDownOptions: this.props.opportunityEvaluationStatuses,
             },

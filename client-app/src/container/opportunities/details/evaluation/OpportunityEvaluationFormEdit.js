@@ -75,7 +75,7 @@ class OpportunityEvaluationFormEdit extends Component {
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputSelect
-                        label={'Is de maatregel uitgevoerd?'}
+                        label={'Is de evaluatie uitgevoerd?'}
                         size={'col-sm-6'}
                         name={'isRealised'}
                         value={isRealised}

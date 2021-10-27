@@ -44,6 +44,8 @@ export default (type, field) => {
                     return 'Verbinding';
                 case 'occupationPrimary':
                     return 'Primaire verbinding';
+                case 'campaign':
+                    return 'Campagne';
                 case 'opportunityMeasureCategory':
                     return 'Kans maatregel categorie';
                 case 'opportunityStatus':
@@ -51,7 +53,7 @@ export default (type, field) => {
                 case 'opportunityMeasure':
                     return 'Kans maatregel specifiek';
                 case 'opportunityEvaluationStatus':
-                    return 'Kans status evaluatie';
+                    return 'Kans status evaluatie uitgevoerd';
                 case 'portalUser':
                     return 'Portal gebruiker actief';
                 case 'product':

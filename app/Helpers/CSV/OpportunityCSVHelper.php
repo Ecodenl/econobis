@@ -119,7 +119,7 @@ class OpportunityCSVHelper
                 'quotation_text' => 'Toelichting op maatregel',
                 'desired_date' => 'Datum uitvoering',
                 'evaluation_agreed_date' => 'Datum evaluatie',
-                'is_realised' => 'Is de maatregel uitgevoerd?',
+                'is_realised' => 'Is de evaluatie uitgevoerd?',
                 'is_statisfied' => 'Bent u tevreden over de uitvoering?',
                 'would_recommend_organisation' => 'Zou u het bedrijf aanbevelen?',
                 'opportunityEvaluation.note' => 'Heeft u verder opmerkingen of aanbevelingen?',

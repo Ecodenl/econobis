@@ -86,7 +86,7 @@ class ProjectNewApp extends Component {
                 postalcodeLink: '',
                 addressNumberSeries: '',
                 checkPostalcodeLink: false,
-                hideWhenNotMatchingPostalCheck: false,
+                hideWhenNotMatchingPostalCheck: true,
                 contactGroupIds: '',
                 contactGroupIdsSelected: [],
                 amountOfLoanNeeded: null,

@@ -158,7 +158,6 @@ class ContactController extends ApiController
             ->whereIn('project_type_id', $activeProjectTypes)
             ->where('date_start_registrations', '<=', Carbon::today()->format('Y-m-d'))
             ->where('date_end_registrations', '>=', Carbon::today()->format('Y-m-d'))
-            ->where('hide_when_not_matching_postal_check', '=', false)
             ->get();
         foreach ($projects as $key => $project) {
             $this->setContactProjectIndicators($project, $contact, $projects, $key);
@@ -825,6 +824,11 @@ class ContactController extends ApiController
                     $addressHelper = new AddressHelper($contact, $contact->addressForPostalCodeCheck);
                     $checkAddressOk = $addressHelper->checkAddress($project->id, false);
                     if(!$checkAddressOk){
+                        // If hide when not matching postal check and if function came with incoming collection projects, then we remove (forget) this project.
+                        if ($project->hide_when_not_matching_postal_check && $projects) {
+                            $projects->forget($key);
+                            return false;
+                        }
                         $project->allowRegisterToProject = false;
                         $project->textNotAllowedRegisterToProject = implode(';', $addressHelper->messages);
                         return false;

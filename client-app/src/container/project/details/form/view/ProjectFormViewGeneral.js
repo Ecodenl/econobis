@@ -235,7 +235,7 @@ const ProjectFormViewGeneral = ({
                     />
                 </div>
             </section>
-            {projectType.codeRef !== 'postalcode_link_capital' && (
+
                 <section>
                     <hr />
                     <h4 onClick={() => toggleCustomerPortalSettings(!showCustomerPortalSettings)}>
@@ -247,7 +247,7 @@ const ProjectFormViewGeneral = ({
                         &nbsp;Contacten portal instellingen
                     </h4>
                 </section>
-            )}
+
             {showCustomerPortalSettings ? (
                 <section
                     onClick={

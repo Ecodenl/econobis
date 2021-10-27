@@ -310,7 +310,7 @@ class OrderNewForm extends Component {
                                 label={'Order op naam van'}
                                 name={'contactId'}
                                 options={this.state.contacts}
-                                value={contactId}
+                                value={Number(contactId)}
                                 onChangeAction={this.handleReactSelectContactIdChange}
                                 optionName={'fullName'}
                                 isLoading={this.state.peekLoading.contacts}

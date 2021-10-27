@@ -158,7 +158,6 @@ class ContactController extends ApiController
             ->whereIn('project_type_id', $activeProjectTypes)
             ->where('date_start_registrations', '<=', Carbon::today()->format('Y-m-d'))
             ->where('date_end_registrations', '>=', Carbon::today()->format('Y-m-d'))
-            ->where('hide_when_not_matching_postal_check', '=', false)
             ->get();
         foreach ($projects as $key => $project) {
             $this->setContactProjectIndicators($project, $contact, $projects, $key);

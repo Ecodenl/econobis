@@ -135,7 +135,7 @@ const ProjectFormViewGeneral = ({
                             <ViewText
                                 label={'Postcoderoosgebied'}
                                 value={postalcodeLink}
-                                name={'addressNumberSeries'}
+                                name={'postalcodeLink'}
                                 textToolTip={`Voor postcoderoosgebied geef de postcodes op gescheiden door een comma(,). Gebruik geen spaties. Voorbeeld: 1001,1002,1003AA,1003AB`}
                             />
                             {addressNumberSeriesFieldEnabled ? (

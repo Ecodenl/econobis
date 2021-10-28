@@ -1,7 +1,7 @@
 import React from 'react';
 import InputText from '../../../components/form/InputText';
 
-const ProjectFormEditPostalcodeLinkCapital = ({
+const ProjectFormDefaultPostalcodeLinkCapital = ({
     postalcodeLink,
     taxReferral,
     eanManager,
@@ -9,16 +9,21 @@ const ProjectFormEditPostalcodeLinkCapital = ({
     warrantyOrigin,
     eanSupply,
     handleInputChange,
+    errors,
 }) => (
     <React.Fragment>
         <hr style={{ margin: '10px 0' }} />
         <h4>Postcoderoos kapitaal</h4>
         <div className="row">
             <InputText
-                label={'Postcoderoos'}
+                label={'Postcoderoosgebied'}
                 name={'postalcodeLink'}
                 value={postalcodeLink}
                 onChangeAction={handleInputChange}
+                size={'col-sm-5'}
+                textToolTip={`Voor postcoderoosgebied geef de postcodes op gescheiden door een comma(,). Gebruik geen spaties. Voorbeeld: 1001,1002,1003AA,1003AB`}
+                error={errors.postalcodeLink}
+                errorMessage={'Ongeldige invoer, klik (i) voor uitleg.'}
             />
             <InputText
                 label={'Aanwijzing Belastingdienst'}
@@ -48,4 +53,4 @@ const ProjectFormEditPostalcodeLinkCapital = ({
     </React.Fragment>
 );
 
-export default ProjectFormEditPostalcodeLinkCapital;
+export default ProjectFormDefaultPostalcodeLinkCapital;

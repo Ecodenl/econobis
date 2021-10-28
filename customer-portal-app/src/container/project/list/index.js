@@ -141,8 +141,7 @@ function ProjectList(props) {
                     initialContact={contact}
                     handleSubmitContactAddressValues={handleSubmitContactAddressValues}
                 />
-            ) : null}
-            {sceOrPcrProjectsAvailable && contact.noAddressesFound && contact.typeId === 'organisation' ? (
+            ) : sceOrPcrProjectsAvailable && contact.noAddressesFound && contact.typeId === 'organisation' ? (
                 <OrganisationAddressEdit
                     initialContact={contact}
                     handleSubmitContactAddressValues={handleSubmitContactAddressValues}

@@ -46,6 +46,22 @@ function OrganisationAddressEdit({ initialContact, handleSubmitContactAddressVal
                                     <Row>
                                         <Col xs={12} sm={4}>
                                             <Field
+                                                name="visitAddress.postalCode"
+                                                render={({ field }) => (
+                                                    <InputText
+                                                        field={field}
+                                                        errors={errors}
+                                                        touched={touched}
+                                                        id="postal_code"
+                                                        placeholder={'Postcode'}
+                                                    />
+                                                )}
+                                            />
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col xs={12} sm={4}>
+                                            <Field
                                                 name="visitAddress.number"
                                                 render={({ field }) => (
                                                     <InputText
@@ -68,22 +84,6 @@ function OrganisationAddressEdit({ initialContact, handleSubmitContactAddressVal
                                                         touched={touched}
                                                         id="addition"
                                                         placeholder={'Toevoeging'}
-                                                    />
-                                                )}
-                                            />
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col xs={12} sm={4}>
-                                            <Field
-                                                name="visitAddress.postalCode"
-                                                render={({ field }) => (
-                                                    <InputText
-                                                        field={field}
-                                                        errors={errors}
-                                                        touched={touched}
-                                                        id="postal_code"
-                                                        placeholder={'Postcode'}
                                                     />
                                                 )}
                                             />

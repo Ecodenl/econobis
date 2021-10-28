@@ -105,7 +105,7 @@ class ParticipantsListItem extends Component {
                 <td>{dateRegister ? moment(dateRegister).format('L') : ''}</td>
                 {this.props.projectTypeRef === 'postalcode_link_capital' ? (
                     <td>
-                        {address.primaryAddressEnergySupplier
+                        {address && address.primaryAddressEnergySupplier
                             ? address.primaryAddressEnergySupplier.energySupplier.name
                             : ''}
                     </td>

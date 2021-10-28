@@ -96,11 +96,11 @@ class AddressHelper
             if($project){
                 $messages = $this->checkAddressProject($project, $this->address, $messages);
             }
+        } else {
+            foreach ($this->contact->participations as $participation) {
+                $messages = $this->checkAddressProject($participation->project, $this->address, $messages);
+            }
         }
-        foreach ($this->contact->participations as $participation) {
-            $messages = $this->checkAddressProject($participation->project, $this->address, $messages);
-        }
-
         if( !empty($messages) )
         {
             if($abort){
@@ -189,14 +189,6 @@ class AddressHelper
                 }
             }
 
-            if ($checkPostalCodeAreas || $checkPostalCodes) {
-                $postalCodeAreaContact = substr($address->postal_code, 0, 4);
-                $postalCodeContact = strtoupper(str_replace(" ", "", $address->postal_code));
-                $postalcodeLink = strtoupper(str_replace(",", ", ", $project->postalcode_link));
-                if (!in_array($postalCodeAreaContact, $validPostalCodeAreas) && !in_array($postalCodeContact, $validPostalCodes)) {
-                    $messages[] = 'Je kunt niet meedoen in dit project omdat je postcode/huisnummer ' . $address->postal_code . ' nr. ' .  $address->number . ($address->addition ? '-' : '') . ' niet valt binnen postcode gebied "' . $postalcodeLink . '" bij project ' . $project->name . ".";
-                }
-            }
             if ($checkAddressNumbers || $checkAddressNumberAdditions) {
                 if ($addressNumberSeriesArrayFormated) {
                     $addressNumberSeriesFormated = implode(',', $addressNumberSeriesArrayFormated);
@@ -208,6 +200,17 @@ class AddressHelper
                 $addressNumberSeriesFormated = str_replace(",", ", ", $addressNumberSeriesFormated);
                 if (!in_array($addressNumberContact, $validAddressNumbers) && !in_array($addressNumberAdditionContact, $validAddressNumberAdditions)) {
                     $messages[] = 'Je kunt niet meedoen in dit project omdat je postcode/huisnummer ' . $address->postal_code . ' nr. ' .  $address->number . ($address->addition ? '-' : '') . ' niet valt binnen postcode gebied "' . $postalcodeLink . '" nr(s) "' . $addressNumberSeriesFormated . '" bij project ' . $project->name . ".";
+                    return $messages;
+                }
+            }
+
+            if ($checkPostalCodeAreas || $checkPostalCodes) {
+                $postalCodeAreaContact = substr($address->postal_code, 0, 4);
+                $postalCodeContact = strtoupper(str_replace(" ", "", $address->postal_code));
+                $postalcodeLink = strtoupper(str_replace(",", ", ", $project->postalcode_link));
+                if (!in_array($postalCodeAreaContact, $validPostalCodeAreas) && !in_array($postalCodeContact, $validPostalCodes)) {
+                    $messages[] = 'Je kunt niet meedoen in dit project omdat je postcode/huisnummer ' . $address->postal_code . ' nr. ' .  $address->number . ($address->addition ? '-' : '') . ' niet valt binnen postcode gebied "' . $postalcodeLink . '" bij project ' . $project->name . ".";
+                    return $messages;
                 }
             }
         }

@@ -157,7 +157,7 @@ export default {
         iban: Yup.string()
             .trim()
             .nullable()
-            .required('yyVerplicht')
+            .required('Verplicht')
             .test('iban', 'Ongeldige IBAN of gebruik geen spaties.', value => ibantools.isValidIBAN(value)),
         ibanAttn: Yup.string()
             .trim()

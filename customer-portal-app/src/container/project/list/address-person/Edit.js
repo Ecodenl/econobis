@@ -46,6 +46,22 @@ function PersonalAddressEdit({ initialContact, handleSubmitContactAddressValues 
                                     <Row>
                                         <Col xs={12} sm={4}>
                                             <Field
+                                                name="primaryAddress.postalCode"
+                                                render={({ field }) => (
+                                                    <InputText
+                                                        field={field}
+                                                        errors={errors}
+                                                        touched={touched}
+                                                        id="postal_code"
+                                                        placeholder={'Postcode'}
+                                                    />
+                                                )}
+                                            />
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col xs={12} sm={4}>
+                                            <Field
                                                 name="primaryAddress.number"
                                                 render={({ field }) => (
                                                     <InputText
@@ -68,22 +84,6 @@ function PersonalAddressEdit({ initialContact, handleSubmitContactAddressValues 
                                                         touched={touched}
                                                         id="addition"
                                                         placeholder={'Toevoeging'}
-                                                    />
-                                                )}
-                                            />
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col xs={12} sm={4}>
-                                            <Field
-                                                name="primaryAddress.postalCode"
-                                                render={({ field }) => (
-                                                    <InputText
-                                                        field={field}
-                                                        errors={errors}
-                                                        touched={touched}
-                                                        id="postal_code"
-                                                        placeholder={'Postcode'}
                                                     />
                                                 )}
                                             />

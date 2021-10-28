@@ -529,6 +529,7 @@ class ProjectNewApp extends Component {
                                             eanSupply={eanSupply}
                                             handleInputChange={this.handleInputChange}
                                             projectTypeId={projectTypeId}
+                                            errors={this.state.errors}
                                         />
                                     ) : null}
 

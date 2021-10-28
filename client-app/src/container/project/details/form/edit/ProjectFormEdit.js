@@ -644,7 +644,7 @@ class ProjectFormEdit extends Component {
             project.baseProjectCodeRef = null;
             project.checkDoubleAddresses = false;
             project.addressNumberSeries = null;
-            project.hideWhenNotMatchingPostalCheck = false;
+            project.hideWhenNotMatchingPostalCheck = true;
             if (project.projectType.codeRef !== 'postalcode_link_capital') {
                 project.checkPostalcodeLink = false;
                 project.postalcodeLink = null;

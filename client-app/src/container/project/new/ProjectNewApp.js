@@ -313,7 +313,7 @@ class ProjectNewApp extends Component {
             project.baseProjectCodeRef = null;
             project.checkDoubleAddresses = false;
             project.addressNumberSeries = null;
-            project.hideWhenNotMatchingPostalCheck = false;
+            project.hideWhenNotMatchingPostalCheck = true;
             if (projectType && projectType.codeRef !== 'postalcode_link_capital') {
                 project.postalcodeLink = null;
                 project.checkPostalcodeLink = false;

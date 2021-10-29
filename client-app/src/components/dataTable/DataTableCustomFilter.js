@@ -45,7 +45,7 @@ const DataTableCustomFilter = props => {
 
     const fieldList = Object.entries(fields).map(([key, value], i) => {
         if (key === 'dateStart' || key === 'dateFinish' || key === 'orderStatus') return;
-        if (key === 'opportunityStatus' || key === 'opportunityMeasure' || key === 'opportunityEvaluationStatus')
+        if (key === 'opportunityStatus' || key === 'opportunityMeasure' || key === 'opportunityEvaluationRealised')
             return;
         if (props.contactType === 'organisation' && key === 'portalUser') return;
 
@@ -58,7 +58,7 @@ const DataTableCustomFilter = props => {
 
     const isCustomProductField = field == 'dateStart' || field == 'dateFinish' || field == 'orderStatus';
     const isCustomOpportunityField =
-        field == 'opportunityStatus' || field == 'opportunityMeasure' || field == 'opportunityEvaluationStatus';
+        field == 'opportunityStatus' || field == 'opportunityMeasure' || field == 'opportunityEvaluationRealised';
     const fieldType = props.fields[props.filter.field].type;
     const optionName = props.fields[props.filter.field].optionName
         ? props.fields[props.filter.field].optionName

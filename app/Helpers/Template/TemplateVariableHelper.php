@@ -10,7 +10,6 @@ namespace App\Helpers\Template;
 
 
 use App\Eco\Document\Document;
-use App\Eco\Opportunity\OpportunityEvaluationStatus;
 use App\Helpers\Settings\PortalSettings;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
@@ -452,16 +451,16 @@ class TemplateVariableHelper
 //            case 'akkoord':
 //                break;
             case 'evaluatie_uitgevoerd':
-                return  optional($model->opportunityEvaluation)->is_realised ? OpportunityEvaluationStatus::find($model->opportunityEvaluation->is_realised)->name : 'Nog geen evaluatie';
+                return  $model->evaluationRealised ? $model->evaluationRealised->name : 'Onbekend';
                 break;
             case 'evaluatie_tevreden':
-                return  optional($model->opportunityEvaluation)->is_statisfied ? OpportunityEvaluationStatus::find($model->opportunityEvaluation->is_statisfied)->name : 'Nog geen evaluatie';
+                return  $model->evaluationStatisfied ? $model->evaluationStatisfied->name : 'Onbekend';
                 break;
             case 'evaluatie_aanbevelen':
-                return  optional($model->opportunityEvaluation)->would_recommend_organisation ? OpportunityEvaluationStatus::find($model->opportunityEvaluation->would_recommend_organisation)->name : 'Nog geen evaluatie';
+                return  $model->evaluationRecommendOrganisation ? $model->evaluationRecommendOrganisation->name : 'Onbekend';
                 break;
             case 'evaluatie_opmerking':
-                return optional($model->opportunityEvaluation)->note;
+                return $model->evaluation_note;
                 break;
             case 'nummer':
                 return $model->number;

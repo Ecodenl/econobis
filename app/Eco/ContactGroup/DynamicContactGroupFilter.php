@@ -60,8 +60,8 @@ class DynamicContactGroupFilter extends Model
                 }
                 return '';
             }
-            // opportunityEvaluationStatus omzetten
-            if ($this->field == 'opportunityEvaluationStatus'){
+            // opportunityEvaluationRealised omzetten
+            if ($this->field == 'opportunityEvaluationRealised'){
                 if($this->data){
                     $opportunityEvaluationStatus = OpportunityEvaluationStatus::find($this->data);
                     return $opportunityEvaluationStatus ? $opportunityEvaluationStatus->name : ''   ;

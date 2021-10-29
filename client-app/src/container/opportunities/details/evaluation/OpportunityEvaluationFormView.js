@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import ViewText from '../../../../components/form/ViewText';
 
 const OpportunityEvaluationFormView = props => {
-    const { opportunityEvaluation } = props;
+    const { opportunity } = props;
 
     return (
         <div>
@@ -12,9 +12,7 @@ const OpportunityEvaluationFormView = props => {
                 <ViewText
                     label={'Is de evaluatie uitgevoerd?'}
                     value={
-                        opportunityEvaluation && opportunityEvaluation.realisedStatus
-                            ? opportunityEvaluation.realisedStatus.name
-                            : 'Nog geen evaluatie'
+                        opportunity && opportunity.evaluationRealised ? opportunity.evaluationRealised.name : 'Onbekend'
                     }
                 />
             </div>
@@ -23,9 +21,9 @@ const OpportunityEvaluationFormView = props => {
                 <ViewText
                     label={'Bent u tevreden over de uitvoering?'}
                     value={
-                        opportunityEvaluation && opportunityEvaluation.statisfiedStatus
-                            ? opportunityEvaluation.statisfiedStatus.name
-                            : 'Nog geen evaluatie'
+                        opportunity && opportunity.evaluationStatisfied
+                            ? opportunity.evaluationStatisfied.name
+                            : 'Onbekend'
                     }
                 />
             </div>
@@ -34,9 +32,9 @@ const OpportunityEvaluationFormView = props => {
                 <ViewText
                     label={'Zou u het bedrijf aanbevelen?'}
                     value={
-                        opportunityEvaluation && opportunityEvaluation.recommendOrganisationStatus
-                            ? opportunityEvaluation.recommendOrganisationStatus.name
-                            : 'Nog geen evaluatie'
+                        opportunity && opportunity.evaluationRecommendOrganisation
+                            ? opportunity.evaluationRecommendOrganisation.name
+                            : 'Onbekend'
                     }
                 />
             </div>
@@ -48,7 +46,7 @@ const OpportunityEvaluationFormView = props => {
                     </label>
                 </div>
                 <div className="col-sm-9" id="quotationText">
-                    {opportunityEvaluation && opportunityEvaluation.note}
+                    {opportunity && opportunity.evaluationNote}
                 </div>
             </div>
         </div>
@@ -57,7 +55,7 @@ const OpportunityEvaluationFormView = props => {
 
 const mapStateToProps = state => {
     return {
-        opportunityEvaluation: state.opportunityDetails.opportunityEvaluation,
+        opportunity: state.opportunityDetails,
     };
 };
 

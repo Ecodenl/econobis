@@ -52,7 +52,7 @@ export default (type, field) => {
                     return 'Kans status';
                 case 'opportunityMeasure':
                     return 'Kans maatregel specifiek';
-                case 'opportunityEvaluationStatus':
+                case 'opportunityEvaluationRealised':
                     return 'Kans status evaluatie uitgevoerd';
                 case 'portalUser':
                     return 'Portal gebruiker actief';

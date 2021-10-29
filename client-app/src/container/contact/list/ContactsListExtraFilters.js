@@ -105,7 +105,7 @@ class ContactsListExtraFilters extends Component {
             });
 
             filters.splice(filterNumber + 3, 0, {
-                field: 'opportunityEvaluationStatus',
+                field: 'opportunityEvaluationRealised',
                 type: 'eq',
                 data: '',
                 connectedTo: data + filterNumber,
@@ -299,7 +299,7 @@ class ContactsListExtraFilters extends Component {
                 type: 'dropdownHas',
                 dropDownOptions: this.props.measures,
             },
-            opportunityEvaluationStatus: {
+            opportunityEvaluationRealised: {
                 name: 'Kans status evaluatie uitgevoerd',
                 type: 'dropdownHas',
                 dropDownOptions: this.props.opportunityEvaluationStatuses,

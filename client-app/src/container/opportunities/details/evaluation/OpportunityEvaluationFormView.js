@@ -4,28 +4,38 @@ import { connect } from 'react-redux';
 import ViewText from '../../../../components/form/ViewText';
 
 const OpportunityEvaluationFormView = props => {
-    const { opportunityEvaluation } = props;
+    const { opportunity } = props;
 
     return (
         <div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={'Is de maatregel uitgevoerd?'}
-                    value={opportunityEvaluation && opportunityEvaluation.isRealised ? 'Ja' : 'Nee'}
+                    label={'Is de evaluatie uitgevoerd?'}
+                    value={
+                        opportunity && opportunity.evaluationRealised ? opportunity.evaluationRealised.name : 'Onbekend'
+                    }
                 />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={'Bent u tevreden over de uitvoering?'}
-                    value={opportunityEvaluation && opportunityEvaluation.isStatisfied ? 'Ja' : 'Nee'}
+                    value={
+                        opportunity && opportunity.evaluationStatisfied
+                            ? opportunity.evaluationStatisfied.name
+                            : 'Onbekend'
+                    }
                 />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={'Zou u het bedrijf aanbevelen?'}
-                    value={opportunityEvaluation && opportunityEvaluation.wouldRecommendOrganisation ? 'Ja' : 'Nee'}
+                    value={
+                        opportunity && opportunity.evaluationRecommendOrganisation
+                            ? opportunity.evaluationRecommendOrganisation.name
+                            : 'Onbekend'
+                    }
                 />
             </div>
 
@@ -36,7 +46,7 @@ const OpportunityEvaluationFormView = props => {
                     </label>
                 </div>
                 <div className="col-sm-9" id="quotationText">
-                    {opportunityEvaluation && opportunityEvaluation.note}
+                    {opportunity && opportunity.evaluationNote}
                 </div>
             </div>
         </div>
@@ -45,7 +55,7 @@ const OpportunityEvaluationFormView = props => {
 
 const mapStateToProps = state => {
     return {
-        opportunityEvaluation: state.opportunityDetails.opportunityEvaluation,
+        opportunity: state.opportunityDetails,
     };
 };
 

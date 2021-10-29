@@ -157,7 +157,7 @@ export default {
         iban: Yup.string()
             .trim()
             .nullable()
-            .required('yyVerplicht')
+            .required('Verplicht')
             .test('iban', 'Ongeldige IBAN of gebruik geen spaties.', value => ibantools.isValidIBAN(value)),
         ibanAttn: Yup.string()
             .trim()
@@ -188,6 +188,33 @@ export default {
                 .nullable()
                 .trim()
                 .matches(/(\d.*){18}|^$/, 'Minimaal 18 cijfers nodig'),
+        }),
+    }),
+
+    validationSchemaPostalCodeAndNumber: Yup.object().shape({
+        visitAddress: Yup.object().shape({
+            number: Yup.string()
+                .nullable()
+                .trim()
+                .required('Verplicht')
+                .test('number', 'Alleen nummers', value => {
+                    return Number.isInteger(+value);
+                }),
+            postalCode: Yup.string()
+                .trim()
+                .required('Verplicht')
+                .test('postal-code-nl-check', 'Formaat Nederlandse postcode is 1234 AB', function(value) {
+                    if (
+                        (this.parent.countryId !== 'NL' &&
+                            this.parent.countryId !== null &&
+                            this.parent.countryId != '') ||
+                        value.trim() == ''
+                    ) {
+                        return true;
+                    } else {
+                        return !value.search(/^[1-9][0-9]{3}[ ]?([A-RT-Za-rt-z][A-Za-z]|[sS][BCbcE-Re-rT-Zt-z])$/);
+                    }
+                }),
         }),
     }),
 };

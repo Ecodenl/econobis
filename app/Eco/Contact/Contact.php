@@ -523,6 +523,17 @@ class Contact extends Model
         return false;
     }
 
+    public function getBlockChangeAddressNumberAttribute()
+    {
+        foreach($this->participations as $participation)
+        {
+            if($participation->project && $participation->project->is_sce_project && !empty($participation->project->address_number_series) ){
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Previous energy supplier
      * @return int

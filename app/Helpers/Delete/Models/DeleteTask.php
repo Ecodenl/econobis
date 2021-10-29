@@ -60,7 +60,7 @@ class DeleteTask implements DeleteInterface
     public function canDelete()
     {
         if(!$this->task->finished){
-            array_push($this->errorMessage, "Er is nog een taak die niet afgerond is.");
+            array_push($this->errorMessage, "Er is nog een taak die niet is afgerond. Zet de taak op afgehandeld en verwijder dan opnieuw.");
         }
     }
 

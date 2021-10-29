@@ -41,6 +41,7 @@ use App\Eco\Measure\Measure;
 use App\Eco\Mailbox\OutgoingServerType;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Occupation\Occupation;
+use App\Eco\Opportunity\OpportunityEvaluationStatus;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Order\OrderCollectionFrequency;
 use App\Eco\Order\OrderPaymentType;
@@ -82,6 +83,7 @@ use App\Http\Resources\Ledger\FullLedger;
 use App\Http\Resources\Measure\MeasurePeek;
 use App\Http\Resources\Occupation\FullOccupation;
 use App\Http\Resources\Occupation\PrimaryOccupation;
+use App\Http\Resources\Opportunity\OpportunityEvaluationStatusResource;
 use App\Http\Resources\Opportunity\OpportunityStatusResource;
 use App\Http\Resources\OrganisationType\FullOrganisationType;
 use App\Http\Resources\ParticipantMutation\FullParticipantMutationStatus;
@@ -181,10 +183,11 @@ class SystemData extends JsonResource
             'mailboxIgnoreTypes' => FullEnumWithIdAndName::collection(MailboxIgnoreType::collection()),
             'mailboxServerTypes' => ['incomingServerTypes' => FullEnumWithIdAndName::collection(IncomingServerType::collection()), 'outgoingServerTypes' => FullEnumWithIdAndName::collection(OutgoingServerType::collection())],
             'mailgunDomain' => MailgunDomain::select(['id', 'domain'])->get(),
-            'measureCategories' => MeasureCategory::select(['id', 'name'])->get(),
-            'measures' => MeasurePeek::collection(Measure::all()),
+            'measureCategories' => MeasureCategory::select(['id', 'name'])->orderBy('name')->get(),
+            'measures' => MeasurePeek::collection(Measure::orderBy('name')->get()),
             'occupations' => FullOccupation::collection(Occupation::orderBy('primary_occupation')->get()),
             'opportunityStatus' => OpportunityStatusResource::collection(OpportunityStatus::all()),
+            'opportunityEvaluationStatuses' => OpportunityEvaluationStatusResource::collection(OpportunityEvaluationStatus::all()),
             'orderCollectionFrequencies' => FullEnumWithIdAndName::collection(OrderCollectionFrequency::collection()),
             'orderPaymentTypes' => FullEnumWithIdAndName::collection(OrderPaymentType::collection()),
             'orderStatuses' => FullEnumWithIdAndName::collection(OrderStatus::collection()),
@@ -200,7 +203,7 @@ class SystemData extends JsonResource
             'productDurations' => FullEnumWithIdAndName::collection(ProductDuration::collection()),
             'productInvoiceFrequencies' => FullEnumWithIdAndName::collection(ProductInvoiceFrequency::collection()),
             'productPaymentTypes' => FullEnumWithIdAndName::collection(ProductPaymentType::collection()),
-            'products' => FullProduct::collection(Product::all()),
+            'products' => FullProduct::collection(Product::orderBy('name')->get()),
             'projectRevenueCategories' => GenericResource::collection(ProjectRevenueCategory::all()),
             'projectRevenueDistributionTypes' => FullEnumWithIdAndName::collection(ProjectRevenueDistributionType::collection()),
             'projectRevenueTypes' => GenericResource::collection(ProjectRevenueType::all()),

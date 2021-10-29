@@ -8,9 +8,6 @@
 
 namespace App\Helpers\CSV;
 
-use App\Eco\EnergySupplier\EnergySupplier;
-use App\Eco\Opportunity\OpportunityEvaluationStatus;
-use App\Eco\Project\ProjectRevenue;
 use Carbon\Carbon;
 use League\Csv\Reader;
 
@@ -37,7 +34,9 @@ class OpportunityCSVHelper
                 'measures',
                 'intake.contact.person.title',
                 'status',
-                'opportunityEvaluation',
+                'evaluationRealised',
+                'evaluationStatisfied',
+                'evaluationRecommendOrganisation',
                 'intake.campaign',
                 'intake.address.country',
                 'createdBy',
@@ -65,10 +64,6 @@ class OpportunityCSVHelper
 
                 $opportunity->created_at_date = $opportunity->created_at->format('d-m-Y');
                 $opportunity->updated_at_date = $opportunity->updated_at->format('d-m-Y');
-
-                $opportunity->is_realised = optional($opportunity->opportunityEvaluation)->is_realised ? OpportunityEvaluationStatus::find($opportunity->opportunityEvaluation->is_realised)->name : 'Nog geen evaluatie';
-                $opportunity->is_statisfied = optional($opportunity->opportunityEvaluation)->is_statisfied ? OpportunityEvaluationStatus::find($opportunity->opportunityEvaluation->is_statisfied)->name : 'Nog geen evaluatie';
-                $opportunity->would_recommend_organisation = optional($opportunity->opportunityEvaluation)->would_recommend_organisation ? OpportunityEvaluationStatus::find($opportunity->opportunityEvaluation->would_recommend_organisation)->name : 'Nog geen evaluatie';
 
                 $address = $opportunity->intake->address;
 
@@ -119,10 +114,10 @@ class OpportunityCSVHelper
                 'quotation_text' => 'Toelichting op maatregel',
                 'desired_date' => 'Datum uitvoering',
                 'evaluation_agreed_date' => 'Datum evaluatie',
-                'is_realised' => 'Is de evaluatie uitgevoerd?',
-                'is_statisfied' => 'Bent u tevreden over de uitvoering?',
-                'would_recommend_organisation' => 'Zou u het bedrijf aanbevelen?',
-                'opportunityEvaluation.note' => 'Heeft u verder opmerkingen of aanbevelingen?',
+                'evaluationRealised.name' => 'Is de evaluatie uitgevoerd?',
+                'evaluationStatisfied.name' => 'Bent u tevreden over de uitvoering?',
+                'evaluationRecommendOrganisation.name' => 'Zou u het bedrijf aanbevelen?',
+                'evaluation_note' => 'Heeft u verder opmerkingen of aanbevelingen?',
                 'updated_at_date' => 'Laatste update op',
                 'updated_by' => 'Laatste update door',
                 'created_at_date' => 'Gemaakt op',

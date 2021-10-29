@@ -31,7 +31,7 @@ class ExtraFilter extends RequestExtraFilter
         'opportunityMeasureCategory',
         'opportunityStatus',
         'opportunityMeasure',
-        'opportunityEvaluationStatus',
+        'opportunityEvaluationRealised',
         'campaign',
         'product',
         'dateStart',
@@ -517,15 +517,15 @@ class ExtraFilter extends RequestExtraFilter
             return ($element['connectedTo'] == $connectName && $element['field'] == 'opportunityMeasure');
         }));
         $opportunityMeasureFilter = $opportunityMeasureFilter ? $opportunityMeasureFilter[0] : null;
-        $opportunityEvaluationStatusFilter = array_values(array_filter($this->filters, function($element) use($connectName){
-            return ($element['connectedTo'] == $connectName && $element['field'] == 'opportunityEvaluationStatus');
+        $opportunityEvaluationRealisedFilter = array_values(array_filter($this->filters, function($element) use($connectName){
+            return ($element['connectedTo'] == $connectName && $element['field'] == 'opportunityEvaluationRealised');
         }));
-        $opportunityEvaluationStatusFilter = $opportunityEvaluationStatusFilter ? $opportunityEvaluationStatusFilter[0] : null;
+        $opportunityEvaluationRealisedFilter = $opportunityEvaluationRealisedFilter ? $opportunityEvaluationRealisedFilter[0] : null;
 
         if(empty($data)){
             switch($type) {
                 case 'eq':
-                    $query->whereHas('opportunities', function ($query) use ($data, $opportunityStatusFilter, $opportunityMeasureFilter, $opportunityEvaluationStatusFilter) {
+                    $query->whereHas('opportunities', function ($query) use ($data, $opportunityStatusFilter, $opportunityMeasureFilter, $opportunityEvaluationRealisedFilter) {
                         // Eventueel extra filters toepassen
                         if($opportunityStatusFilter && ($opportunityStatusFilter['data'] || $opportunityStatusFilter['type'] == 'nl' || $opportunityStatusFilter['type'] == 'nnl') ){
                             static::applyFilter($query, 'opportunities.status_id', $opportunityStatusFilter['type'], $opportunityStatusFilter['data']);
@@ -537,12 +537,8 @@ class ExtraFilter extends RequestExtraFilter
                         }elseif($opportunityStatusFilter && $opportunityMeasureFilter['type'] == 'neq'){
                             $query->whereDoesntHave('measures');
                         }
-                        if($opportunityStatusFilter && $opportunityEvaluationStatusFilter['data']){
-                            $query->whereHas('opportunityEvaluation', function($query) use ($opportunityEvaluationStatusFilter) {
-                                $query->where('opportunity_evaluation.is_realised', $opportunityEvaluationStatusFilter['data']);
-                            });
-                        }elseif($opportunityStatusFilter && $opportunityEvaluationStatusFilter['type'] == 'neq'){
-                            $query->whereDoesntHave('opportunityEvaluation');
+                        if($opportunityStatusFilter && $opportunityEvaluationRealisedFilter['data']){
+                            static::applyFilter($query, 'opportunities.evaluation_is_realised', $opportunityEvaluationRealisedFilter['type'], $opportunityEvaluationRealisedFilter['data']);
                         }
 
                     });
@@ -565,7 +561,7 @@ class ExtraFilter extends RequestExtraFilter
                     });
                     break;
                 default:
-                    $query->whereHas('opportunities', function ($query) use ($data, $opportunityStatusFilter, $opportunityMeasureFilter, $opportunityEvaluationStatusFilter) {
+                    $query->whereHas('opportunities', function ($query) use ($data, $opportunityStatusFilter, $opportunityMeasureFilter, $opportunityEvaluationRealisedFilter) {
                         $query->where('measure_category_id', $data);
 
                         // Eventueel extra filters toepassen
@@ -577,10 +573,8 @@ class ExtraFilter extends RequestExtraFilter
                                 $query->where('measure_opportunity.measure_id', $opportunityMeasureFilter['data']);
                             });
                         }
-                        if($opportunityStatusFilter && $opportunityEvaluationStatusFilter['data']){
-                            $query->whereHas('opportunityEvaluation', function($query) use ($opportunityEvaluationStatusFilter) {
-                                $query->where('opportunity_evaluation.is_realised', $opportunityEvaluationStatusFilter['data']);
-                            });
+                        if($opportunityStatusFilter && $opportunityEvaluationRealisedFilter['data']){
+                            static::applyFilter($query, 'opportunities.evaluation_is_realised', $opportunityEvaluationRealisedFilter['type'], $opportunityEvaluationRealisedFilter['data']);
                         }
                     });
                     break;

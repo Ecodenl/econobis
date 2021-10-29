@@ -13,7 +13,7 @@ const ContactGroupExtraFilterView = props => {
             field === 'opportunityMeasureCategory' ||
             field === 'opportunityStatus' ||
             field === 'opportunityMeasure' ||
-            field === 'opportunityEvaluationStatus' ||
+            field === 'opportunityEvaluationRealised' ||
             field === 'occupationPrimary' ||
             field === 'occupation' ||
             field === 'staticContactGroup' ||

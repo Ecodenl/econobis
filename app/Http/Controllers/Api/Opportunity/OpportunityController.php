@@ -11,7 +11,6 @@ namespace App\Http\Controllers\Api\Opportunity;
 use App\Eco\Email\Email;
 use App\Eco\Intake\Intake;
 use App\Eco\Opportunity\Opportunity;
-use App\Eco\Opportunity\OpportunityEvaluation;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Helpers\CSV\OpportunityCSVHelper;
 use App\Helpers\Delete\Models\DeleteOpportunity;
@@ -50,6 +49,9 @@ class OpportunityController extends ApiController
             'quotationRequests.createdBy',
             'quotationRequests.status',
             'status',
+            'evaluationRealised',
+            'evaluationStatisfied',
+            'evaluationRecommendOrganisation',
             'createdBy',
             'updatedBy',
             'intake.contact',
@@ -57,7 +59,6 @@ class OpportunityController extends ApiController
             'tasks',
             'notes',
             'documents',
-            'opportunityEvaluation',
             'measures'
         ]);
 
@@ -184,39 +185,20 @@ class OpportunityController extends ApiController
         return $chartData;
     }
 
-    public function storeEvaluation(RequestInput $requestInput){
+    public function updateEvaluation(Request $request, RequestInput $requestInput, Opportunity $opportunity) {
         $this->authorize('manage', Opportunity::class);
 
         $data = $requestInput
-            ->integer('opportunityId')->validate('required|exists:opportunities,id')->alias('opportunity_id')->next()
-            ->integer('isRealised')->whenMissing(9)->alias('is_realised')->next()
-            ->integer('isStatisfied')->whenMissing(9)->alias('is_statisfied')->next()
-            ->integer('wouldRecommendOrganisation')->whenMissing(9)->alias('would_recommend_organisation')->next()
-            ->string('note')->next()
+            ->integer('evaluationIsRealised')->whenMissing(1)->alias('evaluation_is_realised')->next()
+            ->integer('evaluationIsStatisfied')->whenMissing(1)->alias('evaluation_is_statisfied')->next()
+            ->integer('evaluationWouldRecommendOrganisation')->whenMissing(1)->alias('evaluation_would_recommend_organisation')->next()
+            ->string('evaluationNote')->alias('evaluation_note')->next()
             ->get();
 
-        $opportunityEvaluation = new OpportunityEvaluation();
-        $opportunityEvaluation->fill($data);
-        $opportunityEvaluation->save();
+        $opportunity->fill($data);
+        $opportunity->save();
 
-        return $this->show($opportunityEvaluation->opportunity);
-    }
-
-    public function updateEvaluation(RequestInput $requestInput, OpportunityEvaluation $opportunityEvaluation){
-        $this->authorize('manage', Opportunity::class);
-
-        $data = $requestInput
-            ->integer('opportunityId')->validate('required|exists:opportunities,id')->alias('opportunity_id')->next()
-            ->integer('isRealised')->whenMissing(9)->alias('is_realised')->next()
-            ->integer('isStatisfied')->whenMissing(9)->alias('is_statisfied')->next()
-            ->integer('wouldRecommendOrganisation')->whenMissing(9)->alias('would_recommend_organisation')->next()
-            ->string('note')->next()
-            ->get();
-
-        $opportunityEvaluation->fill($data);
-        $opportunityEvaluation->save();
-
-        return $this->show($opportunityEvaluation->opportunity);
+        return $this->show($opportunity);
     }
 
     public function getRelatedEmails($id, $folder)

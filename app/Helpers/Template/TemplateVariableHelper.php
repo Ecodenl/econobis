@@ -280,6 +280,14 @@ class TemplateVariableHelper
                 }
                 return $btwnr;
                 break;
+            case 'organisatie_statutaire_naam':
+                if($model->type_id == 'organisation') {
+                    return $model->organisation->statutory_name;
+                }
+                else{
+                    return '';
+                }
+                break;
             case 'organisatie_primair_contact':
                 if($model->type_id == 'organisation') {
                     return optional(optional($model->contactPerson)->contact)->full_name;
@@ -443,16 +451,16 @@ class TemplateVariableHelper
 //            case 'akkoord':
 //                break;
             case 'evaluatie_uitgevoerd':
-                return optional($model->opportunityEvaluation)->is_realised ? 'Ja' : 'Nee';
+                return  $model->evaluationRealised ? $model->evaluationRealised->name : 'Onbekend';
                 break;
             case 'evaluatie_tevreden':
-                return optional($model->opportunityEvaluation)->is_statisfied ? 'Ja' : 'Nee';
+                return  $model->evaluationStatisfied ? $model->evaluationStatisfied->name : 'Onbekend';
                 break;
             case 'evaluatie_aanbevelen':
-                return optional($model->opportunityEvaluation)->would_recommend_organisation ? 'Ja' : 'Nee';
+                return  $model->evaluationRecommendOrganisation ? $model->evaluationRecommendOrganisation->name : 'Onbekend';
                 break;
             case 'evaluatie_opmerking':
-                return optional($model->opportunityEvaluation)->note;
+                return $model->evaluation_note;
                 break;
             case 'nummer':
                 return $model->number;
@@ -1776,6 +1784,9 @@ class TemplateVariableHelper
         switch ($varname) {
             case 'organisatie_naam':
                 return $model->organisation->name;
+                break;
+            case 'organisatie_statutaire_naam':
+                return optional($model->organisation)->statutory_name;
                 break;
             case 'organisatie_adres':
                 return optional($model->organisation->contact->primaryAddress)->street . ' ' . optional($model->organisation->contact->primaryAddress)->number . (optional($model->organisation->contact->primaryAddress)->addition ? ('-' . optional($model->organisation->contact->primaryAddress)->addition) : '');

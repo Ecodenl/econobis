@@ -61,6 +61,9 @@ class GeneralSearchController
             ],
         ];
 
+        //set locale to nl_NL for best iconv of $searchField and $searchWord
+        setlocale(LC_CTYPE, 'nl_NL');
+
         //get search words
         $searchText = [$request['searchText']];
         $searchWords = explode(' ', $request['searchText']);
@@ -102,12 +105,11 @@ class GeneralSearchController
                     $search_field
                 ) {
                     $searchField = iconv('UTF-8', 'ASCII//TRANSLIT', $item[$search_field]);
-                    $searchField = preg_replace('/[^A-Za-z0-9 -]/', '', $searchField);
+//                    $searchField = preg_replace('/[^A-Za-z0-9 -]/', '', $searchField);
 
                     foreach ($searchWords as $searchWord) {
                         $searchWord = iconv('UTF-8', 'ASCII//TRANSLIT', $searchWord);
-                        $searchWord = preg_replace('/[^A-Za-z0-9 -]/', '', $searchWord);
-
+//                        $searchWord = preg_replace('/[^A-Za-z0-9 -]/', '', $searchWord);
                         if (str_contains(strtolower($searchField),
                             $searchWord)
                         ) {

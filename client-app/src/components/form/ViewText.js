@@ -71,7 +71,6 @@ const ViewText = props => {
 ViewText.defaultProps = {
     className: 'col-sm-6',
     value: '',
-    id: '',
     name: '',
     textToolTip: '',
     link: '',

@@ -2,8 +2,6 @@
 
 namespace App\Http\Resources\Opportunity;
 
-use App\Http\Resources\Campaign\FullCampaign;
-use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Intake\FullIntake;
 use App\Http\Resources\Measure\FullMeasure;
@@ -30,11 +28,17 @@ class FullOpportunity extends JsonResource
             'number' => $this->number,
             'status' => GenericResource::make($this->whenLoaded('status')),
             'datePlannedToSendWfEmailStatus' => $this->date_planned_to_send_wf_email_status,
-            'opportunityEvaluation' => GenericResource::make($this->whenLoaded('opportunityEvaluation')),
             'intake' => FullIntake::make($this->whenLoaded('intake')),
             'quotationText' => $this->quotation_text,
             'quotationRequests' => FullQuotationRequest::collection($this->whenLoaded('quotationRequests')),
             'desiredDate' => $this->desired_date,
+            'evaluationIsRealised' => $this->evaluation_is_realised,
+            'evaluationRealised' => GenericResource::make($this->whenLoaded('evaluationRealised')),
+            'evaluationIsStatisfied' => $this->evaluation_is_statisfied,
+            'evaluationStatisfied' => GenericResource::make($this->whenLoaded('evaluationStatisfied')),
+            'evaluationWouldRecommendOrganisation' => $this->evaluation_would_recommend_organisation,
+            'evaluationRecommendOrganisation' => GenericResource::make($this->whenLoaded('evaluationRecommendOrganisation')),
+            'evaluationNote' => $this->evaluation_note,
             'evaluationAgreedDate' => $this->evaluation_agreed_date,
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
             'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),

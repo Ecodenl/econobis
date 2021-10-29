@@ -15,7 +15,6 @@ import InputTextArea from '../../../../components/form/InputTextarea';
 import InputMultiSelect from '../../../../components/form/InputMultiSelect';
 import MeasuresOfCategory from '../../../../selectors/MeasuresOfCategory';
 import moment from 'moment';
-import ViewText from './OpportunityFormView';
 moment.locale('nl');
 
 class OpportunityFormEdit extends Component {
@@ -46,6 +45,12 @@ class OpportunityFormEdit extends Component {
                 quotationText: quotationText,
                 evaluationAgreedDate: evaluationAgreedDate ? evaluationAgreedDate : '',
                 desiredDate: desiredDate ? desiredDate : '',
+                // evaluationIsRealised: props.opportunity ? props.opportunity.evaluationIsRealised : 1,
+                // evaluationIsStatisfied: props.opportunity ? props.opportunity.evaluationIsStatisfied : 1,
+                // evaluationWouldRecommendOrganisation: props.opportunity
+                //     ? props.opportunity.evaluationWouldRecommendOrganisation
+                //     : 1,
+                // evaluationNote: props.opportunity ? props.opportunity.evaluationNote : '',
             },
             errors: {
                 statusId: false,

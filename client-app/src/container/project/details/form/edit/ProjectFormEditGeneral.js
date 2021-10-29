@@ -26,8 +26,10 @@ const ProjectFormEditGeneral = ({
     powerKwAvailable,
     requiredParticipants,
     postalcodeLink,
+    addressNumberSeries,
     numberOfParticipantsStillNeeded,
     checkPostalcodeLink,
+    hideWhenNotMatchingPostalCheck,
     disableChangeContactNameOnPortal,
     postalCode,
     address,
@@ -120,6 +122,16 @@ const ProjectFormEditGeneral = ({
     const helpTextLinkAgreeTerms = 'Gebruik {voorwaarden_link} in tekst voor plaatsing van de voorwaarden link';
     const helpTextLinkUnderstandInfo =
         'Gebruik {project_informatie_link} in tekst voor plaatsing van de project informatie link';
+
+    let addressNumberSeriesFieldEnabled = postalcodeLink
+        ? postalcodeLink.replace(/\D/g, '').length === 4 && postalcodeLink.replace(/[0-9]/g, '').trim().length === 2
+        : false;
+
+    let regExpPostalcodeLink = new RegExp('^[0-9a-zA-Z,]*$');
+    errors.postalcodeLink = postalcodeLink ? !regExpPostalcodeLink.exec(postalcodeLink) : false;
+
+    let regExpAddressNumberSeries = new RegExp('^[0-9a-zA-Z,:-]*$');
+    errors.addressNumberSeries = addressNumberSeries ? !regExpAddressNumberSeries.exec(addressNumberSeries) : false;
 
     return (
         <React.Fragment>
@@ -214,12 +226,39 @@ const ProjectFormEditGeneral = ({
                             value={checkPostalcodeLink}
                             onChangeAction={handleInputChange}
                         />
+                        <InputToggle
+                            label={'Verberg project in contacten portal wanneer controle niet overeenkomt'}
+                            name={'hideWhenNotMatchingPostalCheck'}
+                            value={hideWhenNotMatchingPostalCheck}
+                            onChangeAction={handleInputChange}
+                        />
+                    </div>
+                    <div className="row">
                         <InputText
                             label={'Postcoderoosgebied'}
                             name={'postalcodeLink'}
                             value={postalcodeLink}
                             onChangeAction={handleInputChange}
+                            size={'col-sm-5'}
+                            textToolTip={`Voor postcoderoosgebied geef de postcodes op gescheiden door een comma(,). Gebruik geen spaties. Voorbeeld: 1001,1002,1003AA,1003AB`}
+                            error={errors.postalcodeLink}
+                            errorMessage={'Ongeldige invoer, klik (i) voor uitleg.'}
                         />
+                        {addressNumberSeriesFieldEnabled ? (
+                            <InputText
+                                label={'Huisnummergebied'}
+                                name={'addressNumberSeries'}
+                                value={addressNumberSeries}
+                                onChangeAction={handleInputChange}
+                                size={'col-sm-5'}
+                                textToolTip={`Voor huisnummergebied geef de huisnummers op gescheiden door een comma(,). Gebruik een koppelteken (-) voor huisnummer toevoegingen.
+                                      Voor huisnummer reeksen gebruik dubbelpunt (:). Gebruik geen spaties. Voorbeeld: 1,2,4-10,11-a,11-b`}
+                                error={errors.addressNumberSeries}
+                                errorMessage={'Ongeldige invoer, klik (i) voor uitleg.'}
+                            />
+                        ) : (
+                            <div className="form-group col-sm-6" />
+                        )}
                     </div>
                     <div className="row">
                         <InputToggle

@@ -6,3 +6,4 @@ node_modules/
 testcafe/config/constants.js
 src/index.html
 /package-lock.json
+/yarn.lock

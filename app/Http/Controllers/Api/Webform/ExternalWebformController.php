@@ -1690,8 +1690,9 @@ class ExternalWebformController extends Controller
                     }
                 }
             }
+        }
 
-        }elseif($data['contact_group_ids']){
+        if($data['contact_group_ids']){
             $contactGroups = ContactGroup::whereIn('id', explode(',', $data['contact_group_ids']))->get();
             if ($contactGroups->count() > 0) {
                 $this->log('Er is 1 of meerdere contactgroep meegegeven, groep(en) koppelen.');
@@ -1729,7 +1730,9 @@ class ExternalWebformController extends Controller
             } else {
                 $this->log('Er is geen contact groep meegegeven, geen groep koppelen.');
             }
-        } else {
+        }
+
+        if (!$data['group_name'] && !$data['contact_group_ids']) {
             $this->log('Er is geen contact groep meegegeven, geen groep koppelen.');
         }
     }

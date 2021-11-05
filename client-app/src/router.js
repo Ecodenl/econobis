@@ -203,6 +203,7 @@ const OpportunityStatusDetailsApp = React.lazy(() =>
     import('./container/opportunity-status/details/OpportunityStatusDetailsApp')
 );
 const ProcessesListApp = React.lazy(() => import('./container/processes/list'));
+const TwinfieldListApp = React.lazy(() => import('./container/twinfield/list'));
 const CooperationDetailsApp = React.lazy(() => import('./container/cooperation/details'));
 
 const Routes = () => {
@@ -327,6 +328,7 @@ const Routes = () => {
                     /* Nota's */
                     <Route path="nota/:id" component={InvoiceDetailsApp} />
                     <Route path="nota/inzien/:id" component={InvoiceViewApp} />
+                    <Route path="nota/twinfield/:twinfieldCode/:twinfieldNumber" component={InvoiceViewApp} />
                     /* Waardestaten */
                     <Route path="waardestaten" component={FinancialOverviewListApp} />
                     <Route path="waardestaat/nieuw" component={FinancialOverviewNewApp} />
@@ -423,6 +425,8 @@ const Routes = () => {
                     <Route path="project/deelnemer/opbrengst/:id" component={ParticipantProjectRevenueDetailsApp} />
                     /* Processes */
                     <route path="processen" component={ProcessesListApp} />
+                    /* Twinfield */
+                    <route path="twinfield" component={TwinfieldListApp} />
                     /* Task / notes */
                     <Route path="taak/nieuw" component={TaskNewApp} />
                     <Route path="taak/nieuw/:closed" component={TaskNewApp} />

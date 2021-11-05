@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api\Invoice;
 
+use App\Eco\Administration\Administration;
 use App\Eco\Invoice\Invoice;
-use App\Eco\Invoice\InvoiceMolliePayment;
 use App\Eco\Invoice\InvoicePayment;
 use App\Eco\Invoice\InvoiceProduct;
 use App\Eco\Product\PriceHistory;
@@ -43,6 +43,7 @@ class InvoiceController extends ApiController
 
         $onlyEmailInvoices = $requestQuery->getRequest()->onlyEmailInvoices == 'true';
         $onlyPostInvoices = $requestQuery->getRequest()->onlyPostInvoices == 'true';
+        $setInvoicesPaid = $requestQuery->getRequest()->setInvoicesPaid == 'true';
 
         $invoices->load(['order.contact']);
 
@@ -55,7 +56,24 @@ class InvoiceController extends ApiController
         $selectedInvoices = Invoice::whereIn('id', $requestQuery->totalIds())->get();
         $selectedInvoices->load(['order.contact', 'invoiceProducts.product']);
 
-        if ($onlyEmailInvoices)
+        if ($setInvoicesPaid)
+        {
+            $invoices = $invoices->reject(function ($invoice) {
+                $invoiceInTwinfield = ( $invoice->administration->uses_twinfield && $invoice->twinfield_number && !empty($invoice->twinfield_number) ) ? true : false;
+                return ( $invoiceInTwinfield || !$invoice->administration->date_sync_twinfield_invoices || ($invoice->date_sent >= $invoice->administration->date_sync_twinfield_invoices)  );
+            });
+            $invoices = $invoices->reject(function ($invoice) {
+                return ($invoice->total_incl_vat_incl_reduction < 0 && $invoice->payment_type_id === 'collection');
+            });
+            $selectedInvoices = $selectedInvoices->reject(function ($invoice) {
+                $invoiceInTwinfield = ( $invoice->administration->uses_twinfield && $invoice->twinfield_number && !empty($invoice->twinfield_number) ) ? true : false;
+                return ( $invoiceInTwinfield || !$invoice->administration->date_sync_twinfield_invoices || ($invoice->date_sent >= $invoice->administration->date_sync_twinfield_invoices)  );
+            });
+            $selectedInvoices = $selectedInvoices->reject(function ($invoice) {
+                return ($invoice->total_incl_vat_incl_reduction < 0 && $invoice->payment_type_id === 'collection');
+            });
+        }
+        elseif ($onlyEmailInvoices)
         {
             $selectedInvoices = $selectedInvoices->map(function($invoice) use($orderController) {
                 $invoice->emailToAddress = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
@@ -125,6 +143,22 @@ class InvoiceController extends ApiController
         return $csv;
     }
 
+    public function showFromTwinfield(Request $request)
+    {
+        $invoice = null;
+        if($request->input('twinfieldCode') && $request->input('twinfieldNumber')){
+            $administration = Administration::where('twinfield_office_code', $request->input('twinfieldCode') )->first();
+            if($administration){
+                $invoice = Invoice::where('administration_id', $administration->id )
+                    ->where('twinfield_number', $request->input('twinfieldNumber') )->first();
+            }
+        }
+        if($invoice){
+            return $this->show($invoice);
+        }
+        return null;
+    }
+
     public function show(Invoice $invoice)
     {
         $invoice->load([
@@ -132,6 +166,8 @@ class InvoiceController extends ApiController
             'invoiceProducts',
             'payments',
             'molliePayments',
+            'twinfieldMessagesInvoice',
+            'twinfieldMessagesPayment',
             'tasks',
             'emails',
             'document',
@@ -476,7 +512,8 @@ class InvoiceController extends ApiController
             header('Access-Control-Expose-Headers: X-Filename');
             header('X-Filename:' . $invoice->document->name);
         } else {
-            $invoiceNumber = 'F' . Carbon::now()->year . '-preview-' . $invoice->id;
+            $invoiceNumberPrefix =  $invoice->administration->prefix_invoice_number ? $invoice->administration->prefix_invoice_number : 'F';
+            $invoiceNumber = $invoiceNumberPrefix . Carbon::now()->year . '-preview-' . $invoice->id;
             header('X-Filename:' . $invoiceNumber . '.pdf');
             header('Access-Control-Expose-Headers: X-Filename');
             return InvoiceHelper::createInvoiceDocument($invoice, true);

@@ -21,6 +21,9 @@ class FullInvoice extends JsonResource
      */
     public function toArray($request)
     {
+        $invoiceInTwinfield = ($this->administration->uses_twinfield && $this->twinfield_number && !empty($this->twinfield_number)) ? true : false;
+        $invoicePaidInTwinfield = $invoiceInTwinfield || !$this->administration->date_sync_twinfield_invoices || $this->date_sent >= $this->administration->date_sync_twinfield_invoices;
+
         return
             [
                 'id' => $this->id,
@@ -32,6 +35,8 @@ class FullInvoice extends JsonResource
 
                 'payments' => GenericResource::make($this->whenLoaded('payments')),
                 'molliePayments' => GenericResource::collection($this->whenLoaded('molliePayments')),
+                'twinfieldMessagesInvoice' => GenericResource::collection($this->whenLoaded('twinfieldMessagesInvoice')),
+                'twinfieldMessagesPayment' => GenericResource::collection($this->whenLoaded('twinfieldMessagesPayment')),
 
                 'invoiceProducts' => FullInvoiceProduct::collection($this->whenLoaded('invoiceProducts')),
 
@@ -45,7 +50,8 @@ class FullInvoice extends JsonResource
                 'usesTwinfield' => $this->administration->uses_twinfield,
                 'usesMollie' => $this->administration->uses_mollie,
                 'isPaidByMollie' => $this->is_paid_by_mollie,
-                'invoiceInTwinfield' => ($this->administration->uses_twinfield && $this->twinfield_number && !empty($this->twinfield_number)) ? true : false,
+                'invoiceInTwinfield' => $invoiceInTwinfield,
+                'invoicePaidInTwinfield' => $invoicePaidInTwinfield,
                 'twinfieldNumber' => $this->twinfield_number,
 
                 'amountOpen' => $this->amount_open,

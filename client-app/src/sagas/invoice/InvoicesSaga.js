@@ -9,6 +9,7 @@ export function* fetchInvoicesSaga({
     administrationId,
     onlyEmailInvoices,
     onlyPostInvoices,
+    setInvoicesPaid,
 }) {
     try {
         yield put({ type: 'IS_LOADING' });
@@ -19,6 +20,7 @@ export function* fetchInvoicesSaga({
             administrationId,
             onlyEmailInvoices,
             onlyPostInvoices,
+            setInvoicesPaid,
         });
         yield put({ type: 'FETCH_INVOICES_SUCCESS', invoices });
         yield put({ type: 'IS_LOADING_COMPLETE' });

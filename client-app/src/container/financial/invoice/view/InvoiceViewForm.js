@@ -7,7 +7,6 @@ import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
 class InvoiceViewForm extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             file: null,
         };
@@ -18,7 +17,7 @@ class InvoiceViewForm extends Component {
     }
 
     downloadFile(i = 0) {
-        InvoiceDetailsAPI.download(this.props.invoiceId)
+        InvoiceDetailsAPI.download(this.props.invoiceDetails.id)
             .then(payload => {
                 this.setState({
                     file: payload.data,

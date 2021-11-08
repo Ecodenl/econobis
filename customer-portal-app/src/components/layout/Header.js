@@ -88,11 +88,49 @@ function Header({ location, history }) {
             <div className="header-portal">
                 <div className="profile-pic">
                     <PortalUserConsumer>
-                        {({ currentSelectedContact }) => (
-                            <p className="profile-title">
-                                {ReactHtmlParser(formatProfilePicName(currentSelectedContact.fullName))}
-                            </p>
-                        )}
+                        {({ user, currentSelectedContact, switchCurrentContact, resetCurrentUserToDefault }) => {
+                            return (
+                                <Dropdown alignRight>
+                                    <Dropdown.Toggle style={{ marginTop: '0' }}>
+                                        {ReactHtmlParser(formatProfilePicName(user.fullName))}
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        <Dropdown.Header>Beheren van</Dropdown.Header>
+                                        <Dropdown.Item
+                                            onClick={() => {
+                                                switchCurrentContact(user);
+                                                redirect('gegevens');
+                                            }}
+                                            active={currentSelectedContact.id === user.id ? true : false}
+                                        >
+                                            {user.fullName}
+                                        </Dropdown.Item>
+                                        {user.occupations
+                                            ? user.occupations.map(occupationContact =>
+                                                  (occupationContact.primaryContact.typeId === 'organisation' &&
+                                                      occupationContact.primary) ||
+                                                  (occupationContact.primaryContact.typeId === 'person' &&
+                                                      occupationContact.occupation.occupationForPortal) ? (
+                                                      <Dropdown.Item
+                                                          key={occupationContact.id}
+                                                          onClick={() => {
+                                                              switchCurrentContact(occupationContact.primaryContact);
+                                                              redirect('gegevens');
+                                                          }}
+                                                          active={
+                                                              currentSelectedContact.id ===
+                                                              occupationContact.primaryContact.id
+                                                          }
+                                                      >
+                                                          {occupationContact.primaryContact.fullName}
+                                                      </Dropdown.Item>
+                                                  ) : null
+                                              )
+                                            : null}
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            );
+                        }}
                     </PortalUserConsumer>
                 </div>
 
@@ -112,12 +150,14 @@ function Header({ location, history }) {
                         <Col xs={6}>
                             <div className="d-flex justify-content-end">
                                 {/* Hambuger menu */}
-                                <div className="bm-burger-button" onClick={openMenu}>
+                                <div className="bm-burger-button text-center" onClick={openMenu}>
                                     <span>
                                         <span className="bm-burger-bars bm-burger-bar-1" />
                                         <span className="bm-burger-bars bm-burger-bar-2" />
                                         <span className="bm-burger-bars bm-burger-bar-3" />
                                     </span>
+                                    <br />
+                                    <small style={{ fontSize: '10px', marginLeft: '-3.5px' }}>MENU</small>
                                 </div>
                                 {/* User switch menu */}
                                 <AuthConsumer>
@@ -132,8 +172,12 @@ function Header({ location, history }) {
                                                 }) => {
                                                     return (
                                                         <Dropdown alignRight>
-                                                            <Dropdown.Toggle>
+                                                            <Dropdown.Toggle
+                                                                style={{ padding: '0', marginTop: '14px' }}
+                                                            >
                                                                 <FaUser />
+                                                                <br />
+                                                                <small style={{ fontSize: '10px' }}>ACCOUNT</small>
                                                             </Dropdown.Toggle>
                                                             <Dropdown.Menu>
                                                                 <Dropdown.Header>Ingelogd als</Dropdown.Header>
@@ -146,60 +190,6 @@ function Header({ location, history }) {
                                                                         Wijzig inloggegevens
                                                                     </Link>
                                                                 </Dropdown.Item>
-                                                                {/*<Dropdown.Item*/}
-                                                                {/*href={'#/wijzig-inloggegevens'}*/}
-                                                                {/*className={'dropdown-link'}*/}
-                                                                {/*>*/}
-                                                                {/*Wijzig inloggegevens*/}
-                                                                {/*</Dropdown.Item>*/}
-                                                                <Dropdown.Divider />
-                                                                <Dropdown.Header>Beheren van</Dropdown.Header>
-                                                                <Dropdown.Item
-                                                                    onClick={() => {
-                                                                        switchCurrentContact(user);
-                                                                        redirect('gegevens');
-                                                                    }}
-                                                                    active={
-                                                                        currentSelectedContact.id === user.id
-                                                                            ? true
-                                                                            : false
-                                                                    }
-                                                                >
-                                                                    {user.fullName}
-                                                                </Dropdown.Item>
-                                                                {user.occupations
-                                                                    ? user.occupations.map(occupationContact =>
-                                                                          (occupationContact.primaryContact.typeId ===
-                                                                              'organisation' &&
-                                                                              occupationContact.primary) ||
-                                                                          (occupationContact.primaryContact.typeId ===
-                                                                              'person' &&
-                                                                              occupationContact.occupation
-                                                                                  .occupationForPortal) ? (
-                                                                              <Dropdown.Item
-                                                                                  key={occupationContact.id}
-                                                                                  onClick={() => {
-                                                                                      switchCurrentContact(
-                                                                                          occupationContact.primaryContact
-                                                                                      );
-                                                                                      redirect('gegevens');
-                                                                                  }}
-                                                                                  active={
-                                                                                      currentSelectedContact.id ===
-                                                                                      occupationContact.primaryContact
-                                                                                          .id
-                                                                                          ? true
-                                                                                          : false
-                                                                                  }
-                                                                              >
-                                                                                  {
-                                                                                      occupationContact.primaryContact
-                                                                                          .fullName
-                                                                                  }
-                                                                              </Dropdown.Item>
-                                                                          ) : null
-                                                                      )
-                                                                    : null}
                                                                 <Dropdown.Divider />
                                                                 <Dropdown.Item
                                                                     onClick={() => {

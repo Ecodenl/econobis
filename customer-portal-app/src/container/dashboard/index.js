@@ -6,10 +6,12 @@ import ContactAPI from '../../api/contact/ContactAPI';
 import rebaseContact from '../../helpers/RebaseContact';
 import DashboardWidget from './widget';
 import { ContactDetailsDashboardWidget } from './widget/default';
+import DashboardSettingsAPI from '../../api/dashboard/DashboardSettingsAPI';
 
 const Dashboard = function(props) {
     const [isLoading, setLoading] = useState(true);
     const [contact, setContact] = useState({});
+    const [dashboardSettings, setDashboardSettings] = useState({});
     const prevCurrentSelectedContact = usePrevious(props.currentSelectedContact);
 
     useEffect(() => {
@@ -30,6 +32,21 @@ const Dashboard = function(props) {
 
                 setContact(contactData);
                 props.updateNameSelectedContact(contactData.fullName);
+            })
+            .catch(error => {
+                console.log(error);
+                alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                setLoading(false);
+            })
+            .finally(() => callFetchDashboardSettings());
+    }
+
+    function callFetchDashboardSettings() {
+        setLoading(true);
+        const keys = '?keys[]=welcomeMessage&keys[]=widgets';
+        DashboardSettingsAPI.fetchDashboardSettings(keys)
+            .then(payload => {
+                setDashboardSettings(payload.data);
                 setLoading(false);
             })
             .catch(error => {
@@ -54,40 +71,24 @@ const Dashboard = function(props) {
             ) : (
                 <div className="content-container w-container">
                     <h1 className="content-heading mt-0 text-center">Welkom op jouw energieportaal</h1>
-                    <p className={'text-center'}>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque eaque facilis fugit incidunt
-                        inventore iste labore magni modi molestias nemo nisi numquam, porro quaerat recusandae suscipit
-                        tenetur unde ut, vel.
+                    <p className={'text-center'} style={{ whiteSpace: 'break-spaces' }}>
+                        {dashboardSettings.welcomeMessage}
                     </p>
                     <Row>
-                        <Col md={6}>
-                            <DashboardWidget
-                                id={'project-schrijf-je-in'}
-                                image={'images/page-head5.jpg'}
-                                title={'Schrijf je in'}
-                                text={
-                                    'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid ex harum in\n' +
-                                    '                                        incidunt ipsam minus nam, nisi nobis numquam quasi quidem repudiandae sed sint\n' +
-                                    '                                        tempora voluptates? Adipisci dolores nesciunt tempore.'
-                                }
-                                buttonText={'Lees meer'}
-                                buttonLink={'/'}
-                            />
-                        </Col>
-                        <Col md={6}>
-                            <DashboardWidget
-                                id={'over-ons'}
-                                image={'images/page-head5.jpg'}
-                                title={'Over ons'}
-                                text={
-                                    'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid ex harum in\n' +
-                                    '                                        incidunt ipsam minus nam, nisi nobis numquam quasi quidem repudiandae sed sint\n' +
-                                    '                                        tempora voluptates? Adipisci dolores nesciunt tempore.'
-                                }
-                                buttonText={'Lees meer'}
-                                buttonLink={'/'}
-                            />
-                        </Col>
+                        {dashboardSettings.widgets
+                            .sort((a, b) => (a.order > b.order ? 1 : -1))
+                            .map(widget => (
+                                <Col md={6}>
+                                    <DashboardWidget
+                                        id={widget.id}
+                                        image={widget.image}
+                                        title={widget.title}
+                                        text={widget.text}
+                                        buttonText={widget.buttonText}
+                                        buttonLink={widget.buttonLink}
+                                    />
+                                </Col>
+                            ))}
                     </Row>
                     <Row>
                         <Col md={6}>

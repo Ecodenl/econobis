@@ -179,6 +179,9 @@ const CostCentersListApp = React.lazy(() => import('./container/cost-center/list
 const CostCenterNewApp = React.lazy(() => import('./container/cost-center/new/CostCenterNewApp'));
 const CostCenterDetailsApp = React.lazy(() => import('./container/cost-center/details/CostCenterDetailsApp'));
 const PortalSettingsApp = React.lazy(() => import('./container/portal-settings/PortalSettingsApp'));
+const PortalSettingsDashboardApp = React.lazy(() =>
+    import('./container/portal-settings-dashboard/PortalSettingsDashboardApp')
+);
 const PortalSettingsLayoutListApp = React.lazy(() =>
     import('./container/portal-settings-layout/list/PortalSettingsLayoutListApp')
 );
@@ -347,6 +350,8 @@ const Routes = () => {
                     <Route path="kostenplaatsen" component={CostCentersListApp} />
                     <Route path="kostenplaats/nieuw" component={CostCenterNewApp} />
                     <Route path="kostenplaats/:id" component={CostCenterDetailsApp} />
+                    /* PortalSettingsLayout */
+                    <Route path="portal-instellingen-dashboard" component={PortalSettingsDashboardApp} />
                     /* PortalSettingsLayout */
                     <Route path="portal-instellingen-layout" component={PortalSettingsLayoutListApp} />
                     <Route path="portal-instellingen-layout/nieuw" component={PortalSettingsLayoutNewApp} />

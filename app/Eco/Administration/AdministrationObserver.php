@@ -8,8 +8,6 @@
 
 namespace App\Eco\Administration;
 
-use App\Helpers\Twinfield\TwinfieldCustomerHelper;
-use App\Helpers\Twinfield\TwinfieldInvoiceHelper;
 use Illuminate\Support\Facades\Auth;
 
 class AdministrationObserver

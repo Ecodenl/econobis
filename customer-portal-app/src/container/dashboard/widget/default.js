@@ -11,14 +11,18 @@ export const ContactDetailsDashboardWidget = function({ contact }) {
             <div className="card-body">
                 <h5 className="card-title">{contact.fullName}</h5>
                 <div className="card-text">
-                    <div>
-                        <b>Adres</b>
-                        <br />
-                        {contact.primaryAddress.street} {contact.primaryAddress.number}
-                        <br />
-                        {contact.primaryAddress.postalCode} {contact.primaryAddress.city},{' '}
-                        {contact.primaryAddress.country.name}
-                    </div>
+                    {contact.primaryAddress !== undefined ? (
+                        <div>
+                            <b>Adres</b>
+                            <br />
+                            {contact.primaryAddress.street} {contact.primaryAddress.number}
+                            <br />
+                            {contact.primaryAddress.postalCode} {contact.primaryAddress.city},{' '}
+                            {contact.primaryAddress.country.name}
+                        </div>
+                    ) : (
+                        <></>
+                    )}
                     <div>
                         <br />
                         <b>Telefoon</b>

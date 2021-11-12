@@ -28,13 +28,16 @@ const InputText = props => {
         divSize,
         divClassName,
         autoComplete,
+        disabled,
     } = props;
 
     return (
         <div className={`form-group ${divSize} ${divClassName}`}>
-            <label htmlFor={id} className={`col-sm-6 ${required}`}>
-                {label}
-            </label>
+            {!!label && (
+                <label htmlFor={id} className={`${divSize} ${required}`}>
+                    {label}
+                </label>
+            )}
             <div className={`${size}`}>
                 <input
                     type={type}
@@ -52,6 +55,7 @@ const InputText = props => {
                     max={max}
                     autoComplete={autoComplete}
                     step={step}
+                    disabled={disabled}
                 />
             </div>{' '}
             {textToolTip && (
@@ -93,13 +97,14 @@ InputText.defaultProps = {
     textToolTip: '',
     errorMessage: '',
     autoComplete: 'off',
+    disabled: false,
     onBlurAction: () => {},
     onClickAction: () => {},
     onChangeAction: () => {},
 };
 
 InputText.propTypes = {
-    label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+    label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     type: PropTypes.string,
     className: PropTypes.string,
     divClassName: PropTypes.string,
@@ -122,6 +127,7 @@ InputText.propTypes = {
     textToolTip: PropTypes.string,
     errorMessage: PropTypes.string,
     autoComplete: PropTypes.string,
+    disabled: PropTypes.bool,
 };
 
 export default InputText;

@@ -90,7 +90,7 @@ class PortalSettingsDashboardController extends Controller
 
     public function store(RequestInput $input, Request $request)
     {
-        $this->authorize('manage', PortalSettingsDashboard::class);
+        //$this->authorize('manage', PortalSettingsDashboard::class);
 
         $data = $input->string('id')->whenMissing('')->onEmpty('')->next()
                 ->string('order')->whenMissing('')->onEmpty('')->next()
@@ -101,12 +101,12 @@ class PortalSettingsDashboardController extends Controller
                 ->get();
 
         $widget = new \stdClass();
-        $widget->id = $data->id;
-        $widget->order = $data->order;
-        $widget->title = $data->title;
-        $widget->text = $data->text;
-        $widget->buttonText = $data->buttonText;
-        $widget->buttonLink = $data->buttonLink;
+        $widget->id = $data['id'];
+        $widget->order = $data['order'];
+        $widget->title = $data['title'];
+        $widget->text = $data['text'];
+        $widget->buttonText = $data['buttonText'];
+        $widget->buttonLink = $data['buttonLink'];
 
         $this->getStore()->push('widgets', $widget);
 
@@ -124,5 +124,19 @@ class PortalSettingsDashboardController extends Controller
         $portalSettingsDashboard->save();
 
         return GenericResource::make($portalSettingsDashboard);
+    }
+
+    public function destroy(RequestInput $input, Request $request) {
+        $data = $input->string('id')->whenMissing('')->onEmpty('')->next()->get();
+
+        $widgets = $this->getStore()->get('widgets');
+
+        $widgets = array_filter($widgets, function($value) use ($data) {
+            return $value['id'] !== $data['id'];
+        });
+
+        $this->getStore()->put('widgets', $widgets);
+
+        return response()->json($this->getStore()->get('widgets'));
     }
 }

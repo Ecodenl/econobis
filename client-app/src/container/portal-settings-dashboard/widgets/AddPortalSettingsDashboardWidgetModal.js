@@ -7,7 +7,7 @@ import InputTextArea from '../../../components/form/InputTextarea';
 import PortalSettingsDashboardAPI from '../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
 import { Col } from 'react-bootstrap';
 
-const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal }) => {
+const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal, addWidget }) => {
     const [widget, setWidget] = useState({
         id: '',
         order: '',
@@ -27,6 +27,7 @@ const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal }) => {
         PortalSettingsDashboardAPI.addDashboardWidget(widget)
             .then(response => {
                 console.log(response.data);
+                addWidget(response.data);
                 toggleModal();
             })
             .catch(error => {
@@ -56,6 +57,7 @@ const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal }) => {
                         size={'col-sm-12'}
                         label={'ID'}
                         name={'id'}
+                        value={widget.id}
                         onChangeAction={handleInputChange}
                     />
                 </Col>
@@ -67,6 +69,7 @@ const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal }) => {
                         min={'3'}
                         label={'Volgorde'}
                         name={'order'}
+                        value={widget.order}
                         onChangeAction={handleInputChange}
                     />
                 </Col>
@@ -76,6 +79,7 @@ const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal }) => {
                         size={'col-sm-12'}
                         label={'Titel'}
                         name={'title'}
+                        value={widget.title}
                         onChangeAction={handleInputChange}
                     />
                 </Col>
@@ -85,6 +89,7 @@ const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal }) => {
                         size={'col-sm-12'}
                         label={'Tekst'}
                         name={'text'}
+                        value={widget.text}
                         onChangeAction={handleInputChange}
                     />
                 </Col>
@@ -94,6 +99,7 @@ const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal }) => {
                         size={'col-sm-12'}
                         label={'Knoptekst'}
                         name={'buttonText'}
+                        value={widget.buttonText}
                         onChangeAction={handleInputChange}
                     />
                 </Col>
@@ -103,6 +109,7 @@ const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal }) => {
                         size={'col-sm-12'}
                         label={'Knoplink'}
                         name={'buttonLink'}
+                        value={widget.buttonLink}
                         onChangeAction={handleInputChange}
                     />
                 </Col>

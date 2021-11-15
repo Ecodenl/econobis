@@ -504,6 +504,7 @@ Route::namespace('Api')
 
         Route::get('portal-settings-dashboard/jory', 'PortalSettingsDashboard\PortalSettingsDashboardController@jory');
         Route::post('portal-settings-dashboard', 'PortalSettingsDashboard\PortalSettingsDashboardController@store');
+        Route::post('portal-settings-dashboard/delete', 'PortalSettingsDashboard\PortalSettingsDashboardController@destroy');
         Route::put('portal-settings-dashboard/{portalSettingsDashboard}', 'PortalSettingsDashboard\PortalSettingsDashboardController@update');
         
         Route::get('portal-settings-layout/jory', 'PortalSettingsLayout\PortalSettingsLayoutController@jory');

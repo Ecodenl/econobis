@@ -3,6 +3,7 @@ import { hashHistory } from 'react-router';
 import moment from 'moment';
 import InputTextArea from '../../../components/form/InputTextarea';
 import InputText from '../../../components/form/InputText';
+import ButtonIcon from '../../../components/button/ButtonIcon';
 moment.locale('nl');
 
 class PortalSettingsDashboardWidgetListItem extends Component {
@@ -48,13 +49,16 @@ class PortalSettingsDashboardWidgetListItem extends Component {
                 <td>
                     {edit ? (
                         <InputText
+                            type={'number'}
+                            min={'3'}
                             divSize={'col-sm-12'}
                             divClassName={'no-padding'}
                             size={'col-sm-12'}
                             name={`${id}-order`}
                             value={order}
                             disabled={staticWidgets.includes(id)}
-                            onChangeAction={this.handleChange}
+                            onChangeAction={this.props.handleInputChange}
+                            itemId={id}
                         />
                     ) : (
                         order
@@ -69,7 +73,8 @@ class PortalSettingsDashboardWidgetListItem extends Component {
                             name={`${id}-title`}
                             value={title}
                             disabled={staticWidgets.includes(id)}
-                            onChangeAction={this.handleChange}
+                            onChangeAction={this.props.handleInputChange}
+                            itemId={id}
                         />
                     ) : (
                         title
@@ -82,7 +87,8 @@ class PortalSettingsDashboardWidgetListItem extends Component {
                             size={'col-sm-12'}
                             name={`${id}-text`}
                             value={text}
-                            onChangeAction={this.handleChange}
+                            onChangeAction={this.props.handleInputChange}
+                            itemId={id}
                         />
                     ) : (
                         text
@@ -96,7 +102,8 @@ class PortalSettingsDashboardWidgetListItem extends Component {
                             size={'col-sm-12'}
                             name={`${id}-buttonText`}
                             value={buttonText}
-                            onChangeAction={this.handleChange}
+                            onChangeAction={this.props.handleInputChange}
+                            itemId={id}
                         />
                     ) : (
                         buttonText
@@ -111,12 +118,23 @@ class PortalSettingsDashboardWidgetListItem extends Component {
                             name={`${id}-buttonLink`}
                             value={buttonLink}
                             disabled={staticWidgets.includes(id)}
-                            onChangeAction={this.handleChange}
+                            onChangeAction={this.props.handleInputChange}
+                            itemId={id}
                         />
                     ) : (
                         buttonLink
                     )}
                 </td>
+                {edit && (
+                    <td>
+                        <ButtonIcon
+                            iconName={'glyphicon-remove'}
+                            buttonClassName={'btn-danger btn-sm'}
+                            disabled={staticWidgets.includes(id)}
+                            onClickAction={() => this.props.removeWidget(id)}
+                        />
+                    </td>
+                )}
             </tr>
         );
     }

@@ -20,4 +20,10 @@ export default {
 
         return axiosInstance.post(requestUrl, widget);
     },
+
+    removeDashboardWidget: id => {
+        const requestUrl = `portal-settings-dashboard/delete`;
+
+        return axiosInstance.post(requestUrl, { id: id });
+    },
 };

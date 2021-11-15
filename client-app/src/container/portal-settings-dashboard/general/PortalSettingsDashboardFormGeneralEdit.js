@@ -21,22 +21,11 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
             dashboardSettings: {
                 ...props.dashboardSettings,
             },
+            widgets: [...props.dashboardSettings.widgets],
             errors: {
                 welcomeMessage: '',
             },
         };
-
-        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
-    }
-
-    handleReactSelectChange(selectedOption, name) {
-        this.setState({
-            ...this.state,
-            dashboardSettings: {
-                ...this.state.dashboardSettings,
-                [name]: selectedOption,
-            },
-        });
     }
 
     handleInputChange = event => {
@@ -56,7 +45,7 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { dashboardSettings } = this.state;
+        const { dashboardSettings, widgets } = this.state;
 
         // Validation
         let errors = {};
@@ -73,6 +62,7 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
         !hasErrors &&
             PortalSettingsDashboardAPI.updateDashboardSettings({
                 welcomeMessage: dashboardSettings.welcomeMessage,
+                widgets: widgets,
             })
                 .then(payload => {
                     this.props.updateState(payload.data);
@@ -84,11 +74,51 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
                 });
     };
 
+    handleWidgetInputChange = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const id = target.getAttribute('data-item-id');
+        const name = target.name.replace(id + '-', '');
+
+        const widgets = Object.assign([...this.state.widgets], {
+            [this.state.widgets.findIndex(el => el.id === id)]: {
+                ...this.state.widgets[this.state.widgets.findIndex(el => el.id === id)],
+                [name]: value,
+            },
+        });
+
+        this.setState({
+            ...this.state,
+            widgets: widgets,
+        });
+    };
+
+    addWidget = widget => {
+        this.setState({
+            ...this.state,
+            widgets: [...this.state.widgets, widget],
+        });
+    };
+
+    removeWidget = id => {
+        PortalSettingsDashboardAPI.removeDashboardWidget(id)
+            .then(response => {
+                this.setState({
+                    ...this.state,
+                    widgets: response.data,
+                });
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
+
     render() {
-        const { welcomeMessage, widgets } = this.state.dashboardSettings;
+        const { welcomeMessage } = this.state.dashboardSettings;
+        const { widgets } = this.state;
 
         return (
-            <form className="form-horizontal" onSubmit={this.handleSubmit} onChange={() => {}}>
+            <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel>
                     <PanelBody>
                         <div className="row">
@@ -106,7 +136,13 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
 
                     <PanelBody>
                         <div className="row" style={{ margin: '0' }}>
-                            <PortalSettingsDashboardWidgetList widgets={widgets} edit={true} />
+                            <PortalSettingsDashboardWidgetList
+                                widgets={widgets}
+                                edit={true}
+                                handleWidgetInputChange={this.handleWidgetInputChange}
+                                addWidget={this.addWidget}
+                                removeWidget={this.removeWidget}
+                            />
                         </div>
                     </PanelBody>
 

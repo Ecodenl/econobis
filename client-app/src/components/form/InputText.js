@@ -29,6 +29,7 @@ const InputText = props => {
         divClassName,
         autoComplete,
         disabled,
+        attribute,
     } = props;
 
     return (
@@ -56,6 +57,7 @@ const InputText = props => {
                     autoComplete={autoComplete}
                     step={step}
                     disabled={disabled}
+                    data-item-id={props.itemId ?? ''}
                 />
             </div>{' '}
             {textToolTip && (

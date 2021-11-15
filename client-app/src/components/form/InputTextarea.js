@@ -21,6 +21,7 @@ const InputTextArea = props => {
                         onChange={onChangeAction}
                         className={'form-control input-sm ' + (error ? 'has-error' : '')}
                         rows={rows}
+                        data-item-id={props.itemId ?? ''}
                     />
                 </div>
             </div>

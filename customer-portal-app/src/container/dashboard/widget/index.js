@@ -7,7 +7,7 @@ const DashboardWidget = function({ id, image, title, text, buttonText, buttonLin
     const key = 'widget-' + id;
 
     return (
-        <Card key={key} id={key}>
+        <Card key={key} id={key} style={{ marginTop: '30px' }}>
             <CardImg src={image} variant={'top'} />
             <div className="card-body">
                 <h5 className="card-title">{title}</h5>

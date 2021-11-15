@@ -56,17 +56,23 @@ class PortalSettingsDashboardWidgetList extends Component {
                 )}
                 <DataTable>
                     <DataTableHead>
-                        <PortalSettingsDashboardWidgetListHead />
+                        <PortalSettingsDashboardWidgetListHead edit={edit} />
                     </DataTableHead>
                     <DataTableBody>
                         {loading ? (
                             <tr>
-                                <td colSpan={6}>{loadingText}</td>
+                                <td colSpan={edit ? 7 : 6}>{loadingText}</td>
                             </tr>
                         ) : (
                             data.map(widget => {
                                 return (
-                                    <PortalSettingsDashboardWidgetListItem key={widget.id} edit={edit} {...widget} />
+                                    <PortalSettingsDashboardWidgetListItem
+                                        key={widget.id}
+                                        edit={edit}
+                                        handleInputChange={this.props.handleWidgetInputChange}
+                                        removeWidget={this.props.removeWidget}
+                                        {...widget}
+                                    />
                                 );
                             })
                         )}
@@ -76,6 +82,7 @@ class PortalSettingsDashboardWidgetList extends Component {
                     <AddPortalSettingsDashboardWidgetModal
                         title={'Widget toevoegen'}
                         toggleModal={this.toggleAddWidgetModal}
+                        addWidget={this.props.addWidget}
                     />
                 )}
             </>

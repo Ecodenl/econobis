@@ -581,10 +581,10 @@ class ExternalWebformController extends Controller
             $contactTypeId = 'person';
         }
 
-//        $this->log('Data emailadres |' . $data['email_address'] . '|');
-//        $this->log('Data address_postal_code |' . $data['address_postal_code'] . '|');
-//        $this->log('Data address_number |' . $data['address_number'] . '|');
-//        $this->log('Data address_addition |' . $data['address_addition'] . '|');
+        //        $this->log('Data emailadres |' . $data['email_address'] . '|');
+        //        $this->log('Data address_postal_code |' . $data['address_postal_code'] . '|');
+        //        $this->log('Data address_number |' . $data['address_number'] . '|');
+        //        $this->log('Data address_addition |' . $data['address_addition'] . '|');
         // Kijken of er een persoon gematcht kan worden op basis van adres (postcode, huisnummer en huisnummer toevoeging)
         if($data['address_postal_code'] && $data['address_number'] && isset($data['address_addition'])) {
             $this->log('Er zijn adres gegevens meegegeven');
@@ -786,10 +786,10 @@ class ExternalWebformController extends Controller
         } else {
             // Kijken of er een persoon gematcht kan worden op basis van alleen email
             $person = Person::whereHas('contact', function ($query) use ($data) {
-                    $query->whereHas('emailAddresses', function ($query) use ($data) {
-                        $query->where('email', $data['email_address']);
-                    });
+                $query->whereHas('emailAddresses', function ($query) use ($data) {
+                    $query->where('email', $data['email_address']);
                 });
+            });
             $this->log('Contacten gevonden op emailadres ' . $data['email_address'] . ': ' . $person->count());
             // Gevonden op email contact.
             if ($person->count() > 0) {
@@ -835,45 +835,45 @@ class ExternalWebformController extends Controller
         return null;
     }
 
-//    protected function getContactByNameAndAddress(array $data)
-//    {
-//        // Kijken of er een persoon gematcht kan worden op basis van naam en adres
-//        $person = Person::where('first_name', $data['first_name'])
-//            ->where('last_name', $data['last_name'])
-//            ->whereHas('contact', function ($query) use ($data) {
-//                $query->whereHas('addresses', function ($query) use ($data) {
-//                    $query->where('number', $data['address_number'])
-//                        ->where('postal_code', $data['address_postal_code']);
-//                });
-//            })
-//            ->first();
-//
-//        if ($person) {
-//            $this->log('Persoon ' . $person->contact->full_name . ' gevonden op basis van naam en adres');
-//            return $person->contact;
-//        } else {
-//            $this->log('Geen persoon gevonden op basis van naam en adres');
-//        }
-//
-//        // Er is geen persoon gevonden op basis van naam en email, kijken of er een organisatie matcht
-//        $organisation = Organisation::where('name', $data['organisation_name'])
-//            ->whereHas('contact', function ($query) use ($data) {
-//                $query->whereHas('addresses', function ($query) use ($data) {
-//                    $query->where('number', $data['address_number'])
-//                        ->where('postal_code', $data['address_postal_code']);
-//                });
-//            })
-//            ->first();
-//
-//        if ($organisation) {
-//            $this->log('Organisatie ' . $organisation->contact->full_name . ' gevonden op basis van naam en adres');
-//            return $organisation->contact;
-//        } else {
-//            $this->log('Geen organisatie gevonden op basis van naam en adres');
-//        }
-//
-//        return null;
-//    }
+    //    protected function getContactByNameAndAddress(array $data)
+    //    {
+    //        // Kijken of er een persoon gematcht kan worden op basis van naam en adres
+    //        $person = Person::where('first_name', $data['first_name'])
+    //            ->where('last_name', $data['last_name'])
+    //            ->whereHas('contact', function ($query) use ($data) {
+    //                $query->whereHas('addresses', function ($query) use ($data) {
+    //                    $query->where('number', $data['address_number'])
+    //                        ->where('postal_code', $data['address_postal_code']);
+    //                });
+    //            })
+    //            ->first();
+    //
+    //        if ($person) {
+    //            $this->log('Persoon ' . $person->contact->full_name . ' gevonden op basis van naam en adres');
+    //            return $person->contact;
+    //        } else {
+    //            $this->log('Geen persoon gevonden op basis van naam en adres');
+    //        }
+    //
+    //        // Er is geen persoon gevonden op basis van naam en email, kijken of er een organisatie matcht
+    //        $organisation = Organisation::where('name', $data['organisation_name'])
+    //            ->whereHas('contact', function ($query) use ($data) {
+    //                $query->whereHas('addresses', function ($query) use ($data) {
+    //                    $query->where('number', $data['address_number'])
+    //                        ->where('postal_code', $data['address_postal_code']);
+    //                });
+    //            })
+    //            ->first();
+    //
+    //        if ($organisation) {
+    //            $this->log('Organisatie ' . $organisation->contact->full_name . ' gevonden op basis van naam en adres');
+    //            return $organisation->contact;
+    //        } else {
+    //            $this->log('Geen organisatie gevonden op basis van naam en adres');
+    //        }
+    //
+    //        return null;
+    //    }
 
     /**
      * @param array $data
@@ -1172,8 +1172,8 @@ class ExternalWebformController extends Controller
                 $this->error('Ongeldige waarde voor energie leverancier type meegegeven.');
             }
 
-//            $contactEnergySupplierStatus = ContactEnergySupplierStatus::find($data['contact_energy_supply_status_id']);
-//            if (!$contactEnergySupplierStatus) $this->error('Ongeldige waarde voor energie leverancier status meegegeven.');
+            //            $contactEnergySupplierStatus = ContactEnergySupplierStatus::find($data['contact_energy_supply_status_id']);
+            //            if (!$contactEnergySupplierStatus) $this->error('Ongeldige waarde voor energie leverancier status meegegeven.');
             $contactEnergySupplierStatusId = null;
             if ($data['energy_supplier_id'] != '' && $data['contact_energy_supply_status_id'] != '') {
                 $contactEnergySupplierStatus
@@ -1690,8 +1690,9 @@ class ExternalWebformController extends Controller
                     }
                 }
             }
+        }
 
-        }elseif($data['contact_group_ids']){
+        if($data['contact_group_ids']){
             $contactGroups = ContactGroup::whereIn('id', explode(',', $data['contact_group_ids']))->get();
             if ($contactGroups->count() > 0) {
                 $this->log('Er is 1 of meerdere contactgroep meegegeven, groep(en) koppelen.');
@@ -1729,7 +1730,9 @@ class ExternalWebformController extends Controller
             } else {
                 $this->log('Er is geen contact groep meegegeven, geen groep koppelen.');
             }
-        } else {
+        }
+
+        if (!$data['group_name'] && !$data['contact_group_ids']) {
             $this->log('Er is geen contact groep meegegeven, geen groep koppelen.');
         }
     }

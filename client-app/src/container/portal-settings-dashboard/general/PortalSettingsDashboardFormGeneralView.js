@@ -5,11 +5,19 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import PortalSettingsDashboardWidgetList from '../widgets/PortalSettingsDashboardWidgetList';
 
-const PortalSettingsDashboardFormGeneralView = ({ welcomeMessage, widgets, switchToEdit }) => {
+const PortalSettingsDashboardFormGeneralView = ({ welcomeTitle, welcomeMessage, widgets, switchToEdit }) => {
     return (
         <div onClick={switchToEdit}>
             <Panel>
                 <PanelBody>
+                    <div className="row">
+                        <ViewText
+                            label={'Welkomsttitel'}
+                            divSize={'col-sm-8'}
+                            value={welcomeTitle}
+                            className={'col-sm-8 form-group'}
+                        />
+                    </div>
                     <div className="row">
                         <ViewText
                             label={'Welkomstbericht'}

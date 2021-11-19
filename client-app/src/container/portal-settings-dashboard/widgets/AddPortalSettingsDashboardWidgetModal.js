@@ -9,8 +9,6 @@ import { Col } from 'react-bootstrap';
 
 const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal, addWidget }) => {
     const [widget, setWidget] = useState({
-        id: '',
-        order: '',
         image: '',
         title: '',
         text: '',
@@ -51,28 +49,6 @@ const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal, addWidget }
             confirmAction={addWidgetAction}
         >
             <div className={'row'}>
-                <Col sm={8}>
-                    <InputText
-                        divSize={'col-sm-12'}
-                        size={'col-sm-12'}
-                        label={'ID'}
-                        name={'id'}
-                        value={widget.id}
-                        onChangeAction={handleInputChange}
-                    />
-                </Col>
-                <Col sm={4}>
-                    <InputText
-                        divSize={'col-sm-12'}
-                        size={'col-sm-12'}
-                        type={'number'}
-                        min={'3'}
-                        label={'Volgorde'}
-                        name={'order'}
-                        value={widget.order}
-                        onChangeAction={handleInputChange}
-                    />
-                </Col>
                 <Col sm={12}>
                     <InputText
                         divSize={'col-sm-12'}

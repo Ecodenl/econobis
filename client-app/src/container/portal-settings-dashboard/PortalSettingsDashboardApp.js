@@ -23,7 +23,7 @@ class PortalSettingsDashboardApp extends Component {
 
     callFetchDashboardSettings = () => {
         this.setState({ isLoading: true, hasError: false });
-        const keys = '?keys[]=welcomeMessage&keys[]=widgets';
+        const keys = '?keys[]=welcomeTitle&keys[]=welcomeMessage&keys[]=widgets';
         PortalSettingsDashboardAPI.fetchDashboardSettings(keys)
             .then(payload => {
                 this.setState({

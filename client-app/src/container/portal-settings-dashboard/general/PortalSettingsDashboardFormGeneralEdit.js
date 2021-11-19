@@ -23,6 +23,7 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
             },
             widgets: [...props.dashboardSettings.widgets],
             errors: {
+                welcomeTitle: '',
                 welcomeMessage: '',
             },
         };
@@ -56,11 +57,17 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
+        if (validator.isEmpty(dashboardSettings.welcomeTitle)) {
+            errors.welcomeTitle = true;
+            hasErrors = true;
+        }
+
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
             PortalSettingsDashboardAPI.updateDashboardSettings({
+                welcomeTitle: dashboardSettings.welcomeTitle,
                 welcomeMessage: dashboardSettings.welcomeMessage,
                 widgets: widgets,
             })
@@ -114,13 +121,24 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
     };
 
     render() {
-        const { welcomeMessage } = this.state.dashboardSettings;
+        const { welcomeTitle, welcomeMessage } = this.state.dashboardSettings;
         const { widgets } = this.state;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel>
                     <PanelBody>
+                        <div className="row">
+                            <InputTextArea
+                                label="Welkomsttitel"
+                                divSize={'col-sm-8'}
+                                name={'welcomeTitle'}
+                                value={welcomeTitle}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={!!this.state.errors.welcomeTitle}
+                            />
+                        </div>
                         <div className="row">
                             <InputTextArea
                                 label="Welkomstbericht"

@@ -89,6 +89,10 @@ function Header({ location, history }) {
                 <div className="profile-pic">
                     <PortalUserConsumer>
                         {({ user, currentSelectedContact, switchCurrentContact, resetCurrentUserToDefault }) => {
+                            // if (!user.occupations || user.occupations.length < 2) {
+                            //     return <>{ReactHtmlParser(formatProfilePicName(user.fullName))}</>;
+                            // }
+
                             return (
                                 <Dropdown alignRight>
                                     <Dropdown.Toggle style={{ marginTop: '0' }}>
@@ -105,7 +109,7 @@ function Header({ location, history }) {
                                         >
                                             {user.fullName}
                                         </Dropdown.Item>
-                                        {user.occupations
+                                        {user.occupations && user.occupations.length > 1
                                             ? user.occupations.map(occupationContact =>
                                                   (occupationContact.primaryContact.typeId === 'organisation' &&
                                                       occupationContact.primary) ||
@@ -173,6 +177,7 @@ function Header({ location, history }) {
                                                     return (
                                                         <Dropdown alignRight>
                                                             <Dropdown.Toggle
+                                                                id={'account-dropdown'}
                                                                 style={{ padding: '0', marginTop: '14px' }}
                                                             >
                                                                 <FaUser />

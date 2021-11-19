@@ -9,6 +9,7 @@ use App\Http\Resources\GenericResource;
 use Illuminate\Http\Request;
 use JosKolenberg\LaravelJory\Facades\Jory;
 use Config;
+use Ramsey\Uuid\Uuid;
 use Spatie\Valuestore\Valuestore;
 
 class PortalSettingsDashboardController extends Controller
@@ -79,7 +80,7 @@ class PortalSettingsDashboardController extends Controller
 
     protected function isWhiteListed($key): bool
     {
-        return in_array($key, ['welcomeMessage', 'widgets']);
+        return in_array($key, ['welcomeTitle', 'welcomeMessage', 'widgets']);
     }
 
     protected function getStore(): Valuestore
@@ -92,17 +93,15 @@ class PortalSettingsDashboardController extends Controller
     {
         //$this->authorize('manage', PortalSettingsDashboard::class);
 
-        $data = $input->string('id')->whenMissing('')->onEmpty('')->next()
-                ->string('order')->whenMissing('')->onEmpty('')->next()
-                ->string('title')->whenMissing('')->onEmpty('')->next()
+        $data = $input->string('title')->whenMissing('')->onEmpty('')->next()
                 ->string('text')->whenMissing('')->onEmpty('')->next()
                 ->string('buttonText')->whenMissing('')->onEmpty('')->next()
                 ->string('buttonLink')->whenMissing('')->onEmpty('')->next()
                 ->get();
 
         $widget = new \stdClass();
-        $widget->id = $data['id'];
-        $widget->order = $data['order'];
+        $widget->id = Uuid::uuid1();
+        $widget->order = count($this->getStore()['widgets']) + 1;
         $widget->title = $data['title'];
         $widget->text = $data['text'];
         $widget->buttonText = $data['buttonText'];
@@ -117,7 +116,8 @@ class PortalSettingsDashboardController extends Controller
     {
         $this->authorize('manage', PortalSettingsDashboard::class);
 
-        $data = $input->string('welcomeMessage')->whenMissing('')->onEmpty('')->next()
+        $data = $input->string('welcomeTitle')->whenMissing('')->onEmpty('')->next()
+            ->string('welcomeMessage')->whenMissing('')->onEmpty('')->next()
             ->get();
 
         $portalSettingsDashboard->fill($data);

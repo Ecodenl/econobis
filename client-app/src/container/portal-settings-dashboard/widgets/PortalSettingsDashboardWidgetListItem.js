@@ -45,7 +45,6 @@ class PortalSettingsDashboardWidgetListItem extends Component {
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
-                <td>{id}</td>
                 <td>
                     {edit ? (
                         <InputText
@@ -56,7 +55,6 @@ class PortalSettingsDashboardWidgetListItem extends Component {
                             size={'col-sm-12'}
                             name={`${id}-order`}
                             value={order}
-                            disabled={staticWidgets.includes(id)}
                             onChangeAction={this.props.handleInputChange}
                             itemId={id}
                         />
@@ -72,7 +70,6 @@ class PortalSettingsDashboardWidgetListItem extends Component {
                             size={'col-sm-12'}
                             name={`${id}-title`}
                             value={title}
-                            disabled={staticWidgets.includes(id)}
                             onChangeAction={this.props.handleInputChange}
                             itemId={id}
                         />

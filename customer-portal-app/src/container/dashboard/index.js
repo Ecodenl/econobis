@@ -43,7 +43,7 @@ const Dashboard = function(props) {
 
     function callFetchDashboardSettings() {
         setLoading(true);
-        const keys = '?keys[]=welcomeMessage&keys[]=widgets';
+        const keys = '?keys[]=welcomeTitle&keys[]=welcomeMessage&keys[]=widgets';
         DashboardSettingsAPI.fetchDashboardSettings(keys)
             .then(payload => {
                 setDashboardSettings(payload.data);
@@ -70,7 +70,7 @@ const Dashboard = function(props) {
                 <LoadingView />
             ) : (
                 <div className="content-container w-container">
-                    <h1 className="content-heading mt-0 text-center">Welkom op jouw energieportaal</h1>
+                    <h1 className="content-heading mt-0 text-center">{dashboardSettings.welcomeTitle}</h1>
                     <p className={'text-center'} style={{ whiteSpace: 'break-spaces' }}>
                         {dashboardSettings.welcomeMessage}
                     </p>

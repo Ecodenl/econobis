@@ -24,11 +24,11 @@ use App\Eco\Project\ProjectType;
 use App\Eco\Task\Task;
 use App\Eco\Task\TaskType;
 use App\Eco\User\User;
+use App\Helpers\Address\AddressHelper;
 use App\Helpers\Document\DocumentHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
-use App\Http\Controllers\Api\ParticipationProject\ParticipationProjectController;
 use App\Http\Resources\Portal\Administration\AdministrationResource;
 use App\Http\Resources\Portal\Documents\FinancialOverviewDocumentResource;
 use App\Http\Resources\Project\ProjectRegister;
@@ -484,11 +484,13 @@ class ContactController extends ApiController
                     }
                     $address->fill($this->arrayKeysToSnakeCase($addressData));
 
+                    $addressHelper = new AddressHelper($contact, $address);
+                    $checkAddressOk = $addressHelper->checkAddress($projectId, true);
+
                     if ($projectId) {
                         $project = Project::find($projectId);
                         if($project->check_double_addresses) {
-                            $participationProjectController = new ParticipationProjectController();
-                            $addressIsDouble = $participationProjectController->checkDoubleAddress($project, $contact->id, $address->postalCodeNumberAddition);
+                            $addressIsDouble = $addressHelper->checkDoubleAddress($project);
                             if ($addressIsDouble) {
                                 abort(412, 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.');
                             }
@@ -498,8 +500,7 @@ class ContactController extends ApiController
                     foreach ($contact->participations as $participation) {
 
                         if($participation->project->check_double_addresses){
-                            $participationProjectController = new ParticipationProjectController();
-                            $addressIsDouble = $participationProjectController->checkDoubleAddress($participation->project, $contact->id,  $address->postalCodeNumberAddition );
+                            $addressIsDouble = $addressHelper->checkDoubleAddress($participation->project);
                             if($addressIsDouble){
                                 abort(412, 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.' );
                             }
@@ -511,7 +512,7 @@ class ContactController extends ApiController
             }
 
         }else{
-            if(!empty($addressData['street']) && !empty($addressData['postalCode']) && !empty($addressData['city'])) {
+            if(!empty($addressData['number']) && !empty($addressData['postalCode'])) {
                 $addressData['typeId'] = $addressType;
                 if ($type == ContactType::ORGANISATION && $addressType == 'visit') {
                     $addressData['primary'] = true;
@@ -530,6 +531,10 @@ class ContactController extends ApiController
 
                 $address = new Address($this->arrayKeysToSnakeCase($addressData));
                 $address->contact_id = $contact->id;
+
+                $addressHelper = new AddressHelper($contact, $address);
+                $checkAddressOk = $addressHelper->checkAddress($projectId, true);
+
                 $address->save();
             }
         }
@@ -812,37 +817,26 @@ class ContactController extends ApiController
                 if($contact->noAddressesFound) {
                     $project->allowRegisterToProject = false;
                     $project->textNotAllowedRegisterToProject = 'Om in te schrijven voor dit project moeten er adresgegevens bekend zijn.';
-
                 // if addresses found, check postalcode
                 }else{
-                    // Check / get array postalcodes from postalcode_link. Postalcodes may be separted by a comma+space ('1001, 1002') or comma ('1001,1002') or space ('1001 1002');
-                    if (strpos($project->postalcode_link, ',') !== false) {
-                        $projectPostalcodeLink = str_replace(" ","", $project->postalcode_link);
-                        $validPostalAreas = explode(',', $projectPostalcodeLink);
-                    }else{
-                        $validPostalAreas = explode(' ', $project->postalcode_link);
-                    }
-                    $postalCodeAreaContact = substr($contact->addressForPostalCodeCheck->postal_code, 0 , 4);
-                    // if postalcode contact not in postalcode link of project, then don't allow register to project;
-                    if($validPostalAreas && !in_array($postalCodeAreaContact, $validPostalAreas)){
-//todo WM: for testing it is handy to show the projects where postalcode contact not in postalcode link project
-                        // If function came with incoming collection projects, then we remove (forget) this project.
-//                        if($projects){
-//                            $projects->forget($key);
-//                        }else{
-                            $project->allowRegisterToProject = false;
-                            $project->textNotAllowedRegisterToProject = 'Om in te schrijven voor dit project moet postcode nummer ' . $postalCodeAreaContact . ' van deelnemer voorkomen in deelnemende postcode(s): ' . implode(', ', $validPostalAreas) . '.';
+                    // Check address
+                    $addressHelper = new AddressHelper($contact, $contact->addressForPostalCodeCheck);
+                    $checkAddressOk = $addressHelper->checkAddress($project->id, false);
+                    if(!$checkAddressOk){
+                        // If hide when not matching postal check and if function came with incoming collection projects, then we remove (forget) this project.
+                        if ($project->hide_when_not_matching_postal_check && $projects) {
+                            $projects->forget($key);
                             return false;
-//                        }
-
+                        }
+                        $project->allowRegisterToProject = false;
+                        $project->textNotAllowedRegisterToProject = implode(';', $addressHelper->messages);
+                        return false;
                     }
-
                 }
             }
 
             // if to check double addresses (not allowed) and register to project was still allowed at this moment
             if($project->check_double_addresses && $project->allowRegisterToProject) {
-                $participationProjectController = new ParticipationProjectController();
 
                 $address = null;
                 // PERSON
@@ -853,7 +847,8 @@ class ContactController extends ApiController
                 if ($contact->type_id == ContactType::ORGANISATION) {
                     $address = Address::where('contact_id', $contact->id)->where('type_id', 'visit')->first();
                 }
-                $addressIsDouble = $participationProjectController->checkDoubleAddress($project, $contact->id,  $address->postalCodeNumberAddition );
+                $addressHelper = new AddressHelper($contact, $address);
+                $addressIsDouble = $addressHelper->checkDoubleAddress($project);
                 if($addressIsDouble){
                     $project->allowRegisterToProject = false;
                     $project->textNotAllowedRegisterToProject = 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.';

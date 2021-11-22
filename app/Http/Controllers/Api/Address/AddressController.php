@@ -6,10 +6,10 @@ use App\Eco\Address\Address;
 use App\Eco\Address\AddressType;
 use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
+use App\Helpers\Address\AddressHelper;
 use App\Helpers\Delete\Models\DeleteAddress;
 use App\Helpers\Twinfield\TwinfieldCustomerHelper;
 use App\Http\Controllers\Api\ApiController;
-use App\Http\Controllers\Api\ParticipationProject\ParticipationProjectController;
 use App\Http\Resources\Address\FullAddress;
 use App\Rules\EnumExists;
 use Illuminate\Http\Request;
@@ -52,7 +52,9 @@ class AddressController extends ApiController
 
         $contact = Contact::find($data['contactId']);
         if($contact){
-            $contactAddressAllowed = $this->checkDoubleAddressAllowed($contact, $address);
+            $addressHelper = new AddressHelper($contact, $address);
+            $contactAddressAllowed = $addressHelper->checkDoubleAddressAllowed(true);
+            $checkAddressOk = $addressHelper->checkAddress(null, true);
         }
 
         $address->save();
@@ -93,7 +95,9 @@ class AddressController extends ApiController
 
         $contact = Contact::find($address->contact_id);
         if($contact){
-            $contactAddressAllowed = $this->checkDoubleAddressAllowed($contact, $address);
+            $addressHelper = new AddressHelper($contact, $address);
+            $contactAddressAllowed = $addressHelper->checkDoubleAddressAllowed(true);
+            $checkAddressOk = $addressHelper->checkAddress(null, true);
         }
 
         $address->save();
@@ -172,22 +176,4 @@ class AddressController extends ApiController
 
     }
 
-    /**
-     * @param $contact
-     * @param Address $address
-     * @return bool
-     */
-    protected function checkDoubleAddressAllowed($contact, Address $address): bool
-    {
-        foreach ($contact->participations as $participation) {
-            if ($participation->project->check_double_addresses) {
-                $participationProjectController = new ParticipationProjectController();
-                if( $participationProjectController->checkDoubleAddress($participation->project, $contact->id, $address->postalCodeNumberAddition) ) {
-                    abort(412, 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.');
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
 }

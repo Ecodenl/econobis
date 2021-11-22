@@ -24,6 +24,7 @@ use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\ParticipantProject\ParticipantProjectStatus;
 use App\Eco\Project\ProjectValueCourse;
+use App\Helpers\Address\AddressHelper;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Excel\ParticipantExcelHelper;
@@ -36,7 +37,6 @@ use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Jobs\ParticipationProject\CreateParticipantReport;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Eco\ParticipantProject\ParticipantProject;
-use App\Eco\PostalCodeLink\PostalCodeLink;
 use App\Eco\Project\Project;
 use App\Helpers\Delete\Models\DeleteParticipation;
 use App\Helpers\RequestInput\RequestInput;
@@ -280,9 +280,10 @@ class ParticipationProjectController extends ApiController
                 $address = Address::where('contact_id', $contact->id)->where('type_id', 'visit')->first();
             }
 
-            $addressIsDouble = $this->checkDoubleAddress($project, $contact->id,  $address->postalCodeNumberAddition );
+            $addressHelper = new AddressHelper($contact, $address);
+            $addressIsDouble = $addressHelper->checkDoubleAddress($project);
             if($addressIsDouble){
-                array_push($errors, 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.' );
+                $errors[] = 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.';
                 return ['id' => 0, 'message' => $errors];
             }
         }
@@ -325,7 +326,7 @@ class ParticipationProjectController extends ApiController
                 }
             }
             if(!$hasGroup){
-                array_push($message, 'Contact zit niet in de benodigde groep.');
+                $message[] = 'Contact zit niet in de benodigde groep.';
             }
         }
 
@@ -530,57 +531,34 @@ class ParticipationProjectController extends ApiController
         return ParticipantProjectPeek::collection($participants);
     }
 
-
-    public function checkDoubleAddress(Project $project, $contactId, $postalCodeNumberAddition)
-    {
-        // For SCE projects with check on double addresses (as long as subsidy isn't provided):
-        // Check if all addresses of contact don't already exists as address of other participants.
-        $contactAddressesParticipants = [];
-        foreach ($project->participantsProject as $participant){
-            if($contactId != $participant->contact->id){
-                $contactAddressesParticipants = array_unique(array_merge($contactAddressesParticipants, $participant->contact->addressesActive->pluck('id', 'postalCodeNumberAddition')->toArray()));
-            }
-        }
-
-        $addressIsDouble = false;
-        if( array_key_exists($postalCodeNumberAddition, $contactAddressesParticipants) ){
-            $addressIsDouble = true;
-        }
-
-        return $addressIsDouble;
-    }
-
     public function validatePostalCode(&$message, Project $project, Contact $contact)
     {
         $checkText = 'Postcode check: ';
-        $primaryAddress = $contact->primaryAddress;
-        if(!$primaryAddress){
-            array_push($message, $checkText . 'Deelnemer heeft geen primair adres.');
+        $addressForPostalCodeCheck = $contact->addressForPostalCodeCheck;
+        if($contact->type_id === ContactType::ORGANISATION) {
+            $typeAddress ='bezoek adres';
+        }else{
+            $typeAddress ='primair adres';
+        }
+        if(!$addressForPostalCodeCheck){
+            $message[] = $checkText . 'Deelnemer heeft geen ' . $typeAddress. '.';
             return false;
         }
-        $postalCodeAreaContact = substr($primaryAddress->postal_code, 0 , 4);
+        $postalCodeAreaContact = substr($addressForPostalCodeCheck->postal_code, 0 , 4);
         if(!($postalCodeAreaContact > 999 && $postalCodeAreaContact < 9999)){
-            array_push($message, $checkText . 'Deelnemer heeft geen geldige postcode op zijn primaire adres.');
+            $message[] = $checkText . 'Deelnemer heeft geen geldige postcode op zijn ' . $typeAddress. '.';
             return false;
         }
         if(!$project->postalcode_link){
-            array_push($message, $checkText . 'Project heeft geen deelnemende postcode(s) in postcoderoos.');
+            $message[] = $checkText . 'Project heeft geen deelnemende postcode(s) in postcoderoos.';
             return false;
         }
 
-        // Check / get array postalcodes from postalcode_link. Postalcodes may be separted by a comma+space ('1001, 1002') or comma ('1001,1002') or space ('1001 1002');
-        if (strpos($project->postalcode_link, ',') !== false) {
-            $projectPostalcodeLink = str_replace(" ","", $project->postalcode_link);
-            $validPostalAreas = explode(',', $projectPostalcodeLink);
-        }else{
-            $validPostalAreas = explode(' ', $project->postalcode_link);
-        }
-        if(!$validPostalAreas){
-            array_push($message, $checkText . 'Project heeft geen geldige deelnemende postcode(s) in postcoderoos.');
-            return false;
-        }
-        if(!in_array($postalCodeAreaContact, $validPostalAreas)){
-            array_push($message, $checkText . 'Postcode nummer ' . $postalCodeAreaContact . ' van deelnemer niet gevonden in deelnemende postcode(s) in ' . $project->projectType->name . ' project: ' . implode(', ', $validPostalAreas) . '.');
+        // Check address
+        $addressHelper = new AddressHelper($contact, $addressForPostalCodeCheck);
+        $checkAddressOk = $addressHelper->checkAddress($project->id, false);
+        if(!$checkAddressOk){
+            $message[] = $checkText . implode(';', $addressHelper->messages);
             return false;
         }
     }
@@ -590,29 +568,29 @@ class ParticipationProjectController extends ApiController
         $checkText = 'Gebruik check: ';
 
         if(!$project->power_kw_available){
-            array_push($message, $checkText . 'Project heeft nog geen opgesteld vermogen.');
+            $message[] = $checkText . 'Project heeft nog geen opgesteld vermogen.';
             return false;
         }
 
         if(!$project->total_participations){
-            array_push($message, $checkText . 'Project heeft nog geen totaal aantal participaties.');
+            $message[] = $checkText . 'Project heeft nog geen totaal aantal participaties.';
             return false;
         }
 
         if(!$participant->power_kwh_consumption){
-            array_push($message, $checkText . 'Participant heeft nog geen jaarlijks verbruik.');
+            $message[] = $checkText . 'Participant heeft nog geen jaarlijks verbruik.';
             return false;
         }
 
         if(!$participant->participations_requested){
-            array_push($message, $checkText . 'Participant heeft nog geen participaties aangevraagd.');
+            $message[] = $checkText . 'Participant heeft nog geen participaties aangevraagd.';
             return false;
         }
 
         $participant =  (($project->power_kw_available /  $project->total_participations) * $participant->participations_requested) * 0.8;
 
         if($participant > $participant->power_kwh_consumption){
-            array_push($message, $checkText . 'Participant produceert ' . round($participant, 2) . ' dit is meer dan hij consumeert: ' . round($participant->power_kwh_consumption, 2) . '.');
+            $message[] = $checkText . 'Participant produceert ' . round($participant, 2) . ' dit is meer dan hij consumeert: ' . round($participant->power_kwh_consumption, 2) . '.';
             return false;
         }
     }
@@ -624,14 +602,14 @@ class ParticipationProjectController extends ApiController
         $primaryAddressEnergySupplier = $address ? $address->primaryAddressEnergySupplier : null;
 
         if(!$primaryAddressEnergySupplier){
-            array_push($message, $checkText . 'Contact heeft nog geen energieleverancier.');
+            $message[] = $checkText . 'Contact heeft nog geen energieleverancier.';
             return false;
         }
 
         $energySupplier = $primaryAddressEnergySupplier->energySupplier;
 
         if(!$energySupplier->does_postal_code_links){
-            array_push($message, $checkText . 'Energieleverancier van contact doet niet mee aan postcoderoos.');
+            $message[] = $checkText . 'Energieleverancier van contact doet niet mee aan postcoderoos.';
             return false;
         }
     }
@@ -871,7 +849,7 @@ class ParticipationProjectController extends ApiController
         } catch (\Exception $e) {
             Log::error('Fout bij maken rapport document voor ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
             Log::error($e->getMessage());
-            array_push($messages, 'Fout bij maken rapport document voor ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
+            $messages[] = 'Fout bij maken rapport document voor ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')';
         }
 
         //send email
@@ -917,7 +895,7 @@ class ParticipationProjectController extends ApiController
             } catch (\Exception $e) {
                 Log::error( 'Fout bij verzenden email naar ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
                 Log::error($e->getMessage());
-                array_push($messages, 'Fout bij verzenden email naar ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
+                $messages[] = 'Fout bij verzenden email naar ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')';
             }
 
             //delete file on server, still saved on alfresco.

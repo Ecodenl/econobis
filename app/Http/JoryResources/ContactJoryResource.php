@@ -36,6 +36,7 @@ class ContactJoryResource extends JoryResource
         $this->field('no_addresses_found')->filterable()->sortable();
         $this->field('is_participant_pcr_project')->filterable()->sortable();
         $this->field('is_participant_sce_project')->filterable()->sortable();
+        $this->field('block_change_address_number')->filterable()->sortable();
         $this->field('portal_settings_layout_assigned')->filterable()->sortable();
 
         // Relations

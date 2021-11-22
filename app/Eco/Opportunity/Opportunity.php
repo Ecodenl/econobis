@@ -44,6 +44,21 @@ class Opportunity extends Model
         return $this->belongsTo(OpportunityStatus::class);
     }
 
+    public function evaluationRealised()
+    {
+        return $this->belongsTo(OpportunityEvaluationStatus::class,'evaluation_is_realised');
+    }
+
+    public function evaluationStatisfied()
+    {
+        return $this->belongsTo(OpportunityEvaluationStatus::class,'evaluation_is_statisfied');
+    }
+
+    public function evaluationRecommendOrganisation()
+    {
+        return $this->belongsTo(OpportunityEvaluationStatus::class,'evaluation_would_recommend_organisation');
+    }
+
     public function quotationRequests(){
         return $this->hasMany(QuotationRequest::class);
     }
@@ -71,11 +86,6 @@ class Opportunity extends Model
     public function documents()
     {
         return $this->hasMany(Document::class)->orderBy('documents.id', 'desc');
-    }
-
-    public function opportunityEvaluation()
-    {
-        return $this->hasOne(OpportunityEvaluation::class);
     }
 
     public function emails(){

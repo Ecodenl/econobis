@@ -1,38 +1,25 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
-import validator from 'validator';
-
-import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
-import InputDate from '../../../../components/form/InputDate';
-import InputTinyMCE from '../../../../components/form/InputTinyMCE';
 import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from '../../../../components/panel/PanelFooter';
-
-import ContactsAPI from '../../../../api/contact/ContactsAPI';
-import IntakesAPI from '../../../../api/intake/IntakesAPI';
 import OpportunityDetailsAPI from '../../../../api/opportunity/OpportunityDetailsAPI';
-
 import { fetchOpportunity } from '../../../../actions/opportunity/OpportunityDetailsActions';
-import InputReactSelect from '../../../../components/form/InputReactSelect';
-import InputToggle from '../../../../components/form/InputToggle';
 import InputTextArea from '../../../../components/form/InputTextarea';
+import moment from 'moment';
 
 class OpportunityEvaluationFormEdit extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            opportunityEvaluation: {
-                id: props.opportunityEvaluation ? props.opportunityEvaluation.id : null,
-                opportunityId: props.opportunityId,
-                isRealised: props.opportunityEvaluation ? props.opportunityEvaluation.isRealised : false,
-                isStatisfied: props.opportunityEvaluation ? props.opportunityEvaluation.isStatisfied : false,
-                wouldRecommendOrganisation: props.opportunityEvaluation
-                    ? props.opportunityEvaluation.wouldRecommendOrganisation
-                    : false,
-                note: props.opportunityEvaluation ? props.opportunityEvaluation.note : '',
+            opportunity: {
+                evaluationIsRealised: props.opportunity ? props.opportunity.evaluationIsRealised : 1,
+                evaluationIsStatisfied: props.opportunity ? props.opportunity.evaluationIsStatisfied : 1,
+                evaluationWouldRecommendOrganisation: props.opportunity
+                    ? props.opportunity.evaluationWouldRecommendOrganisation
+                    : 1,
+                evaluationNote: props.opportunity ? props.opportunity.evaluationNote : '',
             },
         };
     }
@@ -44,8 +31,8 @@ class OpportunityEvaluationFormEdit extends Component {
 
         this.setState({
             ...this.state,
-            opportunityEvaluation: {
-                ...this.state.opportunityEvaluation,
+            opportunity: {
+                ...this.state.opportunity,
                 [name]: value,
             },
         });
@@ -53,49 +40,55 @@ class OpportunityEvaluationFormEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { opportunityEvaluation } = this.state;
-
-        if (opportunityEvaluation.id === null) {
-            OpportunityDetailsAPI.storeOpportunityEvaluation(opportunityEvaluation).then(payload => {
-                this.props.fetchOpportunity(opportunityEvaluation.opportunityId);
-                this.props.switchToView();
-            });
-        } else {
-            OpportunityDetailsAPI.updateOpportunityEvaluation(opportunityEvaluation).then(payload => {
-                this.props.fetchOpportunity(opportunityEvaluation.opportunityId);
-                this.props.switchToView();
-            });
-        }
+        const { opportunity } = this.state;
+        OpportunityDetailsAPI.updateOpportunityEvaluation(this.props.opportunity.id, opportunity).then(payload => {
+            this.props.fetchOpportunity(this.props.opportunity.id);
+            this.props.switchToView();
+        });
     };
 
     render() {
-        const { isRealised, isStatisfied, wouldRecommendOrganisation, note } = this.state.opportunityEvaluation;
+        const {
+            evaluationIsRealised,
+            evaluationIsStatisfied,
+            evaluationWouldRecommendOrganisation,
+            evaluationNote,
+        } = this.state.opportunity;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
-                    <InputToggle
-                        label={'Is de maatregel uitgevoerd?'}
-                        name={'isRealised'}
-                        value={isRealised}
+                    <InputSelect
+                        label={'Is de evaluatie uitgevoerd?'}
+                        size={'col-sm-6'}
+                        name={'evaluationIsRealised'}
+                        value={evaluationIsRealised}
+                        options={this.props.opportunityEvaluationStatuses}
+                        emptyOption={false}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
 
                 <div className="row">
-                    <InputToggle
+                    <InputSelect
                         label={'Bent u tevreden over de uitvoering?'}
-                        name={'isStatisfied'}
-                        value={isStatisfied}
+                        size={'col-sm-6'}
+                        name={'evaluationIsStatisfied'}
+                        value={evaluationIsStatisfied}
+                        options={this.props.opportunityEvaluationStatuses}
+                        emptyOption={false}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
 
                 <div className="row">
-                    <InputToggle
+                    <InputSelect
                         label={'Zou u het bedrijf aanbevelen?'}
-                        name={'wouldRecommendOrganisation'}
-                        value={wouldRecommendOrganisation}
+                        size={'col-sm-6'}
+                        name={'evaluationWouldRecommendOrganisation'}
+                        value={evaluationWouldRecommendOrganisation}
+                        options={this.props.opportunityEvaluationStatuses}
+                        emptyOption={false}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
@@ -103,8 +96,8 @@ class OpportunityEvaluationFormEdit extends Component {
                 <div className="row">
                     <InputTextArea
                         label={'Heeft u verder opmerkingen of aanbevelingen?'}
-                        name={'note'}
-                        value={note}
+                        name={'evaluationNote'}
+                        value={evaluationNote}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
@@ -137,8 +130,8 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = state => {
     return {
-        opportunityEvaluation: state.opportunityDetails.opportunityEvaluation,
-        opportunityId: state.opportunityDetails.id,
+        opportunity: state.opportunityDetails,
+        opportunityEvaluationStatuses: state.systemData.opportunityEvaluationStatuses,
     };
 };
 

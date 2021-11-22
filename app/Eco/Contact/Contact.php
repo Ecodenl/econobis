@@ -543,6 +543,17 @@ class Contact extends Model
 //        return($addressEnergySuppliers->first()->id);
 //    }
 
+    public function getBlockChangeAddressNumberAttribute()
+    {
+        foreach($this->participations as $participation)
+        {
+            if($participation->project && $participation->project->is_sce_project && !empty($participation->project->address_number_series) ){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function getPortalSettingsLayoutAssignedAttribute()
     {
         return PortalSettingsLayout::where('is_default', true)->first();

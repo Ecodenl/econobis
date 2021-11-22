@@ -428,8 +428,8 @@ class ParticipantExcelHelper
                         $rowData[110] = $mutation->date_entry ? Carbon::parse($mutation->date_entry)->format('d-m-Y') : "";
                         $rowData[111] = $logFinalDateTime;
                         $rowData[112] = "";
-                        $rowData[113] = "";
-                        $rowData[114] = "";
+                        $rowData[113] = $mutation->date_payment ? Carbon::parse($mutation->date_payment)->format('d-m-Y') : "";
+                        $rowData[114] = $mutation->payment_reference ? $mutation->payment_reference : "";
                         $rowData[115] = "";
                         $rowData[116] = "";
                         $rowData[117] = "";
@@ -510,8 +510,8 @@ class ParticipantExcelHelper
                         $rowData[110] = "";
                         $rowData[111] = "";
                         $rowData[112] = "";
-                        $rowData[113] = "";
-                        $rowData[114] = "";
+                        $rowData[113] = $mutation->date_payment ? Carbon::parse($mutation->date_payment)->format('d-m-Y') : "";
+                        $rowData[114] = $mutation->payment_reference ? $mutation->payment_reference : "";
                         $rowData[115] = "";
                         $rowData[116] = "";
                         $rowData[117] = $mutation->payout_kwh_price;

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\PortalSettingsDashboard;
 
 use App\Eco\PortalSettingsDashboard\PortalSettingsDashboard;
+use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
@@ -91,8 +92,6 @@ class PortalSettingsDashboardController extends Controller
 
     public function store(RequestInput $input, Request $request)
     {
-        //$this->authorize('manage', PortalSettingsDashboard::class);
-
         $data = $input->string('title')->whenMissing('')->onEmpty('')->next()
                 ->string('text')->whenMissing('')->onEmpty('')->next()
                 ->string('buttonText')->whenMissing('')->onEmpty('')->next()
@@ -114,8 +113,6 @@ class PortalSettingsDashboardController extends Controller
 
     public function update(PortalSettingsDashboard $portalSettingsDashboard, RequestInput $input, Request $request)
     {
-        $this->authorize('manage', PortalSettingsDashboard::class);
-
         $data = $input->string('welcomeTitle')->whenMissing('')->onEmpty('')->next()
             ->string('welcomeMessage')->whenMissing('')->onEmpty('')->next()
             ->get();

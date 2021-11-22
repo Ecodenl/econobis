@@ -384,3 +384,13 @@ h3 {
 #account-dropdown::after {
   display: none;
 }
+
+.floating-action-button {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+}
+.floating-action-button > button {
+  display: flex;
+  align-items: center;
+}

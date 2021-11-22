@@ -4,6 +4,7 @@ import { isEmpty } from 'lodash';
 
 import PortalSettingsDashboardFormGeneralEdit from './PortalSettingsDashboardFormGeneralEdit';
 import PortalSettingsDashboardFormGeneralView from './PortalSettingsDashboardFormGeneralView';
+import ErrorUnauthorized from '../../global/ErrorUnauthorized';
 
 class PortalSettingsDashboardFormGeneral extends Component {
     constructor(props) {
@@ -44,6 +45,10 @@ class PortalSettingsDashboardFormGeneral extends Component {
 
     render() {
         const { permissions = {} } = this.props.meDetails;
+
+        if (!permissions.managePortalSettings) {
+            return <ErrorUnauthorized />;
+        }
 
         return (
             <div

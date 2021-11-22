@@ -5,7 +5,7 @@ import { Col, Row } from 'react-bootstrap';
 import ContactAPI from '../../api/contact/ContactAPI';
 import rebaseContact from '../../helpers/RebaseContact';
 import DashboardWidget from './widget';
-import { ContactDetailsDashboardWidget } from './widget/default';
+import { ContactDetailsDashboardWidget, SwitchContactDashboardWidget } from './widget/default';
 import DashboardSettingsAPI from '../../api/dashboard/DashboardSettingsAPI';
 
 const Dashboard = function(props) {
@@ -94,6 +94,21 @@ const Dashboard = function(props) {
                         <Col md={6}>
                             <ContactDetailsDashboardWidget contact={contact} />
                         </Col>
+                        <PortalUserConsumer>
+                            {({ user, currentSelectedContact, switchCurrentContact }) => {
+                                if (user.occupations && user.occupations.length > 0) {
+                                    return (
+                                        <Col md={6}>
+                                            <SwitchContactDashboardWidget
+                                                user={user}
+                                                currentSelectedContact={currentSelectedContact}
+                                                switchCurrentContact={switchCurrentContact}
+                                            />
+                                        </Col>
+                                    );
+                                }
+                            }}
+                        </PortalUserConsumer>
                     </Row>
                 </div>
             )}

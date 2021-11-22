@@ -11,7 +11,9 @@ const DashboardWidget = function({ id, image, title, text, buttonText, buttonLin
             <CardImg src={image} variant={'top'} />
             <div className="card-body">
                 <h5 className="card-title">{title}</h5>
-                <p className="card-text">{text}</p>
+                <p className="card-text" style={{ whiteSpace: 'break-spaces' }}>
+                    {text}
+                </p>
                 <button className="btn btn-primary btn-sm" onClick={() => history.push(buttonLink)}>
                     {buttonText}
                 </button>

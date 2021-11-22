@@ -8,9 +8,10 @@ import { PortalUserConsumer } from '../../context/PortalUserContext';
 import { ThemeSettingsConsumer } from '../../context/ThemeSettingsContext';
 import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
-import { FaUser } from 'react-icons/fa';
+import { FaHome, FaUser } from 'react-icons/fa';
 import Dropdown from 'react-bootstrap/Dropdown';
 import ReactHtmlParser from 'react-html-parser';
+import { Button } from 'react-bootstrap';
 
 function Header({ location, history }) {
     const [menuOpen, updateStateMenu] = useState(false);
@@ -84,210 +85,222 @@ function Header({ location, history }) {
     }
 
     return (
-        <header>
-            <div className="header-portal">
-                <div className="profile-pic">
-                    <PortalUserConsumer>
-                        {({ user, currentSelectedContact, switchCurrentContact, resetCurrentUserToDefault }) => {
-                            // if (!user.occupations || user.occupations.length < 2) {
-                            //     return <>{ReactHtmlParser(formatProfilePicName(user.fullName))}</>;
-                            // }
+        <>
+            <header>
+                <div className="header-portal">
+                    <div className="profile-pic">
+                        <PortalUserConsumer>
+                            {({ user, currentSelectedContact, switchCurrentContact, resetCurrentUserToDefault }) => {
+                                if (!user.occupations || user.occupations.length < 1) {
+                                    return <>{ReactHtmlParser(formatProfilePicName(user.fullName))}</>;
+                                }
 
-                            return (
-                                <Dropdown alignRight>
-                                    <Dropdown.Toggle style={{ marginTop: '0' }}>
-                                        {ReactHtmlParser(formatProfilePicName(user.fullName))}
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu>
-                                        <Dropdown.Header>Beheren van</Dropdown.Header>
-                                        <Dropdown.Item
-                                            onClick={() => {
-                                                switchCurrentContact(user);
-                                                redirect('gegevens');
-                                            }}
-                                            active={currentSelectedContact.id === user.id ? true : false}
-                                        >
-                                            {user.fullName}
-                                        </Dropdown.Item>
-                                        {user.occupations && user.occupations.length > 1
-                                            ? user.occupations.map(occupationContact =>
-                                                  (occupationContact.primaryContact.typeId === 'organisation' &&
-                                                      occupationContact.primary) ||
-                                                  (occupationContact.primaryContact.typeId === 'person' &&
-                                                      occupationContact.occupation.occupationForPortal) ? (
-                                                      <Dropdown.Item
-                                                          key={occupationContact.id}
-                                                          onClick={() => {
-                                                              switchCurrentContact(occupationContact.primaryContact);
-                                                              redirect('gegevens');
-                                                          }}
-                                                          active={
-                                                              currentSelectedContact.id ===
-                                                              occupationContact.primaryContact.id
-                                                          }
-                                                      >
-                                                          {occupationContact.primaryContact.fullName}
-                                                      </Dropdown.Item>
-                                                  ) : null
-                                              )
-                                            : null}
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            );
-                        }}
-                    </PortalUserConsumer>
-                </div>
-
-                <Container>
-                    <Row>
-                        <Col xs={6}>
-                            <ThemeSettingsConsumer>
-                                {({ currentThemeSettings }) => (
-                                    <div className="header-logo">
-                                        {currentThemeSettings.portal_logo_file_name !== undefined && (
-                                            <Image src={`images/${currentThemeSettings.portal_logo_file_name}`} />
-                                        )}
-                                    </div>
-                                )}
-                            </ThemeSettingsConsumer>
-                        </Col>
-                        <Col xs={6}>
-                            <div className="d-flex justify-content-end">
-                                {/* Hambuger menu */}
-                                <div className="bm-burger-button text-center" onClick={openMenu}>
-                                    <span>
-                                        <span className="bm-burger-bars bm-burger-bar-1" />
-                                        <span className="bm-burger-bars bm-burger-bar-2" />
-                                        <span className="bm-burger-bars bm-burger-bar-3" />
-                                    </span>
-                                    <br />
-                                    <small style={{ fontSize: '10px', marginLeft: '-3.5px' }}>MENU</small>
-                                </div>
-                                {/* User switch menu */}
-                                <AuthConsumer>
-                                    {({ logout }) => {
-                                        return (
-                                            <PortalUserConsumer>
-                                                {({
-                                                    user,
-                                                    currentSelectedContact,
-                                                    switchCurrentContact,
-                                                    resetCurrentUserToDefault,
-                                                }) => {
-                                                    return (
-                                                        <Dropdown alignRight>
-                                                            <Dropdown.Toggle
-                                                                id={'account-dropdown'}
-                                                                style={{ padding: '0', marginTop: '14px' }}
-                                                            >
-                                                                <FaUser />
-                                                                <br />
-                                                                <small style={{ fontSize: '10px' }}>ACCOUNT</small>
-                                                            </Dropdown.Toggle>
-                                                            <Dropdown.Menu>
-                                                                <Dropdown.Header>Ingelogd als</Dropdown.Header>
-                                                                <Dropdown.Item disabled>{user.fullName}</Dropdown.Item>
-                                                                <Dropdown.Item>
-                                                                    <Link
-                                                                        to={'/wijzig-inloggegevens'}
-                                                                        className={'dropdown-link'}
-                                                                    >
-                                                                        Wijzig inloggegevens
-                                                                    </Link>
-                                                                </Dropdown.Item>
-                                                                <Dropdown.Divider />
-                                                                <Dropdown.Item
-                                                                    onClick={() => {
-                                                                        logout();
-                                                                        resetCurrentUserToDefault();
-                                                                    }}
-                                                                >
-                                                                    Log uit
-                                                                </Dropdown.Item>
-                                                            </Dropdown.Menu>
-                                                        </Dropdown>
-                                                    );
+                                return (
+                                    <Dropdown alignRight>
+                                        <Dropdown.Toggle style={{ marginTop: '0' }}>
+                                            {ReactHtmlParser(formatProfilePicName(user.fullName))}
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Header>Beheren van</Dropdown.Header>
+                                            <Dropdown.Item
+                                                onClick={() => {
+                                                    switchCurrentContact(user);
+                                                    redirect('gegevens');
                                                 }}
-                                            </PortalUserConsumer>
-                                        );
-                                    }}
-                                </AuthConsumer>
-                            </div>
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
-            {/* Sidebar menu */}
-            <Menu
-                right
-                width={'300px'}
-                // noOverlay
-                isOpen={menuOpen}
-                onStateChange={state => handleStateChange(state)}
-                customBurgerIcon={false}
-            >
-                <div className={'sidebar-menu'}>
-                    <React.Fragment>
-                        <h6 className="heading in-menu">MENU</h6>
-                        <Link
-                            to={'/inschrijvingen-projecten'}
-                            className={`nav-link w-nav-link w--nav-link-open ${
-                                location.pathname === '/inschrijvingen-projecten' ? 'w--current' : ''
-                            }`}
-                            onClick={closeMenu}
-                        >
-                            Huidige deelnames
-                        </Link>
-                        <Link
-                            to={'/gegevens'}
-                            className={`nav-link w-nav-link w--nav-link-open ${
-                                location.pathname === '/gegevens' ? 'w--current' : ''
-                            }`}
-                            onClick={closeMenu}
-                        >
-                            Gegevens
-                        </Link>
-                        {/* later */}
-                        {/*<Link*/}
-                        {/*to={'/deelname-projecten'}*/}
-                        {/*className={`nav-link w-nav-link w--nav-link-open ${*/}
-                        {/*location.pathname === '/' ? 'w--current' : ''*/}
-                        {/*}`}*/}
-                        {/*onClick={closeMenu}*/}
-                        {/*>*/}
-                        {/*Deelnames*/}
-                        {/*</Link>*/}
-                        <Link
-                            to={'/inschrijven-projecten'}
-                            className={`nav-link w-nav-link w--nav-link-open ${
-                                location.pathname === '/inschrijven-projecten' ? 'w--current' : ''
-                            }`}
-                            onClick={closeMenu}
-                        >
-                            Inschrijven projecten
-                        </Link>
-                        <Link
-                            to={'/waardestaat-documenten'}
-                            className={`nav-link w-nav-link w--nav-link-open ${
-                                location.pathname === '/waardestaat-documenten' ? 'w--current' : ''
-                            }`}
-                            onClick={closeMenu}
-                        >
-                            Waardestaat documenten
-                        </Link>
-                        <Link
-                            to={'/over-ons'}
-                            className={`nav-link w-nav-link w--nav-link-open ${
-                                location.pathname === '/over-ons' ? 'w--current' : ''
-                            }`}
-                            onClick={closeMenu}
-                        >
-                            Over ons
-                        </Link>
-                    </React.Fragment>
+                                                active={currentSelectedContact.id === user.id ? true : false}
+                                            >
+                                                {user.fullName}
+                                            </Dropdown.Item>
+                                            {user.occupations && user.occupations.length > 0
+                                                ? user.occupations.map(occupationContact =>
+                                                      (occupationContact.primaryContact.typeId === 'organisation' &&
+                                                          occupationContact.primary) ||
+                                                      (occupationContact.primaryContact.typeId === 'person' &&
+                                                          occupationContact.occupation.occupationForPortal) ? (
+                                                          <Dropdown.Item
+                                                              key={occupationContact.id}
+                                                              onClick={() => {
+                                                                  switchCurrentContact(
+                                                                      occupationContact.primaryContact
+                                                                  );
+                                                                  redirect('gegevens');
+                                                              }}
+                                                              active={
+                                                                  currentSelectedContact.id ===
+                                                                  occupationContact.primaryContact.id
+                                                              }
+                                                          >
+                                                              {occupationContact.primaryContact.fullName}
+                                                          </Dropdown.Item>
+                                                      ) : null
+                                                  )
+                                                : null}
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                );
+                            }}
+                        </PortalUserConsumer>
+                    </div>
+
+                    <Container>
+                        <Row>
+                            <Col xs={6}>
+                                <ThemeSettingsConsumer>
+                                    {({ currentThemeSettings }) => (
+                                        <div className="header-logo">
+                                            {currentThemeSettings.portal_logo_file_name !== undefined && (
+                                                <Image src={`images/${currentThemeSettings.portal_logo_file_name}`} />
+                                            )}
+                                        </div>
+                                    )}
+                                </ThemeSettingsConsumer>
+                            </Col>
+                            <Col xs={6}>
+                                <div className="d-flex justify-content-end">
+                                    {/* Hambuger menu */}
+                                    <div className="bm-burger-button text-center" onClick={openMenu}>
+                                        <span>
+                                            <span className="bm-burger-bars bm-burger-bar-1" />
+                                            <span className="bm-burger-bars bm-burger-bar-2" />
+                                            <span className="bm-burger-bars bm-burger-bar-3" />
+                                        </span>
+                                        <br />
+                                        <small style={{ fontSize: '10px', marginLeft: '-3.5px' }}>MENU</small>
+                                    </div>
+                                    {/* User switch menu */}
+                                    <AuthConsumer>
+                                        {({ logout }) => {
+                                            return (
+                                                <PortalUserConsumer>
+                                                    {({
+                                                        user,
+                                                        currentSelectedContact,
+                                                        switchCurrentContact,
+                                                        resetCurrentUserToDefault,
+                                                    }) => {
+                                                        return (
+                                                            <Dropdown alignRight>
+                                                                <Dropdown.Toggle
+                                                                    id={'account-dropdown'}
+                                                                    style={{ padding: '0', marginTop: '14px' }}
+                                                                >
+                                                                    <FaUser />
+                                                                    <br />
+                                                                    <small style={{ fontSize: '10px' }}>ACCOUNT</small>
+                                                                </Dropdown.Toggle>
+                                                                <Dropdown.Menu>
+                                                                    <Dropdown.Header>Ingelogd als</Dropdown.Header>
+                                                                    <Dropdown.Item disabled>
+                                                                        {user.fullName}
+                                                                    </Dropdown.Item>
+                                                                    <Dropdown.Item>
+                                                                        <Link
+                                                                            to={'/wijzig-inloggegevens'}
+                                                                            className={'dropdown-link'}
+                                                                        >
+                                                                            Wijzig inloggegevens
+                                                                        </Link>
+                                                                    </Dropdown.Item>
+                                                                    <Dropdown.Divider />
+                                                                    <Dropdown.Item
+                                                                        onClick={() => {
+                                                                            logout();
+                                                                            resetCurrentUserToDefault();
+                                                                        }}
+                                                                    >
+                                                                        Log uit
+                                                                    </Dropdown.Item>
+                                                                </Dropdown.Menu>
+                                                            </Dropdown>
+                                                        );
+                                                    }}
+                                                </PortalUserConsumer>
+                                            );
+                                        }}
+                                    </AuthConsumer>
+                                </div>
+                            </Col>
+                        </Row>
+                    </Container>
                 </div>
-            </Menu>
-        </header>
+                {/* Sidebar menu */}
+                <Menu
+                    right
+                    width={'300px'}
+                    // noOverlay
+                    isOpen={menuOpen}
+                    onStateChange={state => handleStateChange(state)}
+                    customBurgerIcon={false}
+                >
+                    <div className={'sidebar-menu'}>
+                        <React.Fragment>
+                            <h6 className="heading in-menu">MENU</h6>
+                            <Link
+                                to={'/inschrijvingen-projecten'}
+                                className={`nav-link w-nav-link w--nav-link-open ${
+                                    location.pathname === '/inschrijvingen-projecten' ? 'w--current' : ''
+                                }`}
+                                onClick={closeMenu}
+                            >
+                                Huidige deelnames
+                            </Link>
+                            <Link
+                                to={'/gegevens'}
+                                className={`nav-link w-nav-link w--nav-link-open ${
+                                    location.pathname === '/gegevens' ? 'w--current' : ''
+                                }`}
+                                onClick={closeMenu}
+                            >
+                                Gegevens
+                            </Link>
+                            {/* later */}
+                            {/*<Link*/}
+                            {/*to={'/deelname-projecten'}*/}
+                            {/*className={`nav-link w-nav-link w--nav-link-open ${*/}
+                            {/*location.pathname === '/' ? 'w--current' : ''*/}
+                            {/*}`}*/}
+                            {/*onClick={closeMenu}*/}
+                            {/*>*/}
+                            {/*Deelnames*/}
+                            {/*</Link>*/}
+                            <Link
+                                to={'/inschrijven-projecten'}
+                                className={`nav-link w-nav-link w--nav-link-open ${
+                                    location.pathname === '/inschrijven-projecten' ? 'w--current' : ''
+                                }`}
+                                onClick={closeMenu}
+                            >
+                                Inschrijven projecten
+                            </Link>
+                            <Link
+                                to={'/waardestaat-documenten'}
+                                className={`nav-link w-nav-link w--nav-link-open ${
+                                    location.pathname === '/waardestaat-documenten' ? 'w--current' : ''
+                                }`}
+                                onClick={closeMenu}
+                            >
+                                Waardestaat documenten
+                            </Link>
+                            <Link
+                                to={'/over-ons'}
+                                className={`nav-link w-nav-link w--nav-link-open ${
+                                    location.pathname === '/over-ons' ? 'w--current' : ''
+                                }`}
+                                onClick={closeMenu}
+                            >
+                                Over ons
+                            </Link>
+                        </React.Fragment>
+                    </div>
+                </Menu>
+            </header>
+            <div className={'floating-action-button'}>
+                <Button onClick={() => history.push('/dashboard')}>
+                    <FaHome />
+                    &nbsp;Dashboard
+                </Button>
+            </div>
+        </>
     );
 }
 

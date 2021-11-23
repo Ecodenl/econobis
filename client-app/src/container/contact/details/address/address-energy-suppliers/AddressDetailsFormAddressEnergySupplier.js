@@ -39,7 +39,10 @@ class AddressDetailsFormAddressEnergySupplier extends Component {
                     </div>
                     <div className="col-md-12 margin-10-top">
                         {this.state.showNew && (
-                            <AddressDetailsFormAddressEnergySupplierNew toggleShowNew={this.toggleShowNew} />
+                            <AddressDetailsFormAddressEnergySupplierNew
+                                addressId={this.props.address.id}
+                                toggleShowNew={this.toggleShowNew}
+                            />
                         )}
                     </div>
                 </PanelBody>

@@ -18,7 +18,7 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
 
         this.state = {
             addressEnergySupplier: {
-                addressId: this.props.id,
+                addressId: this.props.addressId,
                 energySupplierId: '',
                 energySupplyTypeId: '',
                 memberSince: '',

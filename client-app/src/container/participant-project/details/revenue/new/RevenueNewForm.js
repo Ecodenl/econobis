@@ -32,6 +32,13 @@ const RevenueNew = props => {
         projectRevenueCategorie => projectRevenueCategorie.id == categoryId
     );
 
+    const isPeriodExceedingYear = (dateBegin, dateEnd) => {
+        dateBegin = moment(dateBegin);
+        dateEnd = moment(dateEnd);
+
+        return dateEnd.year() > dateBegin.year();
+    };
+
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
             {props.participation && props.participation.project ? (
@@ -66,7 +73,7 @@ const RevenueNew = props => {
                             </div>
                         </div>
 
-                        {moment(dateBegin).year() !== moment(dateEnd).year() ? (
+                        {isPeriodExceedingYear(dateBegin, dateEnd) ? (
                             <>
                                 <div className="row">
                                     {props.participation.nextRevenueKwhStartHigh > 0 ||
@@ -117,6 +124,7 @@ const RevenueNew = props => {
                                         onChangeAction={props.handleInputChange}
                                         error={props.errors.kwhEndCalendarYearHigh}
                                         errorMessage={props.errorMessage.kwhEndCalendarYearHigh}
+                                        required={'required'}
                                     />
                                     <InputText
                                         type={'number'}
@@ -126,6 +134,7 @@ const RevenueNew = props => {
                                         onChangeAction={props.handleInputChange}
                                         error={props.errors.kwhEndHigh}
                                         errorMessage={props.errorMessage.kwhEndHigh}
+                                        required={'required'}
                                     />
                                 </div>
                                 <div className="row">
@@ -241,6 +250,9 @@ const RevenueNew = props => {
                                     })
                                 }
                                 onChangeAction={props.handleInputChange}
+                                error={props.errors.payoutKwh}
+                                errorMessage={props.errorMessage.payoutKwh}
+                                required={'required'}
                             />
                             <InputText
                                 type={'number'}

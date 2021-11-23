@@ -28,9 +28,6 @@ class ContactController extends Controller
         $contact->occupations->load(['occupation', 'primaryContact', 'contact']);
         $contact->primaryOccupations->load(['occupation', 'primaryContact', 'contact']);
 
-//        todo WM-es: cleanup es
-//        $contact->addressEnergySuppliers->load(['energySupplier', 'energySupplyStatuses', 'energySupplyTypes', 'createdBy', 'contact']);
-
         if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisation.quotationRequests.opportunity.measureCategory', 'organisation.quotationRequests.opportunity.status', 'organisation.campaigns', 'contactPerson.contact']);
         if($contact->isPerson()) $contact->load(['person', 'person.title', 'person.organisation', 'person.type']);
 

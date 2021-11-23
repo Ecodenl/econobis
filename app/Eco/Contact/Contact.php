@@ -206,17 +206,6 @@ class Contact extends Model
         return $this->hasManyThrough(HousingFile::class, Address::class)->orderBy('housing_files.id', 'desc');
     }
 
-// todo WM-es: cleanup es
-//    public function addressEnergySuppliers()
-//    {
-//        return $this->hasMany(AddressEnergySupplier::class);
-//    }
-//
-//    public function primaryAddressEnergySupplier()
-//    {
-//        return $this->hasOne(AddressEnergySupplier::class)->where('is_current_supplier', true);
-//    }
-//
     public function participations()
     {
         return $this->hasMany(ParticipantProject::class)->orderBy('participation_project.id', 'desc');

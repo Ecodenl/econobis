@@ -118,6 +118,5 @@ class conversionContactEnergySupplierToAddressEnergySuppliers extends Command
             ]);
 
         }
-    dd('klaar');
     }
 }

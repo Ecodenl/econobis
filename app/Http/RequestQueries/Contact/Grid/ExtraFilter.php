@@ -502,7 +502,7 @@ class ExtraFilter extends RequestExtraFilter
         }
         elseif($type === 'nl'){
             $query->whereDoesntHave('addresses')
-                ->orWhereHas('address', function ($query) use ($type, $data) {
+                ->orWhereHas('addresses', function ($query) use ($type, $data) {
                     $query->whereDoesntHave('primaryAddressEnergySupplier')
                         ->whereDoesntHave('primaryAddressEnergySupplier', function ($query) use ($type, $data) {
                             $data = str_replace(' ', '', $data);

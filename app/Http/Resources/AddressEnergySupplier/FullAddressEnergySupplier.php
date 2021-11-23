@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\AddressEnergySupplier;
 
-use App\Http\Resources\Contact\FullContact;
+use App\Http\Resources\Address\FullAddress;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -19,8 +19,8 @@ class FullAddressEnergySupplier extends JsonResource
     {
         return [
             'id' => $this->id,
-            'contactId' => $this->contact_id,
-            'contact' => FullContact::make($this->whenLoaded('contact')),
+            'addressId' => $this->address_id,
+            'address' => FullAddress::make($this->whenLoaded('address')),
             'energySupplierId' => $this->energy_supplier_id,
             'energySupplier' => GenericResource::make($this->whenLoaded('energySupplier')),
             'type' => $this->type,

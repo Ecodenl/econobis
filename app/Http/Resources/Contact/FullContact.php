@@ -63,8 +63,6 @@ class FullContact extends JsonResource
             'ownerId' => $this->owner_id,
             'owner' => FullUser::make($this->whenLoaded('owner')),
             'portalUser' => FullPortalUser::make($this->whenLoaded('portalUser')),
-            'addressEnergySuppliers' => FullAddressEnergySupplier::collection($this->whenLoaded('addressEnergySuppliers')),
-            'primaryAddressEnergySupplier' => FullAddressEnergySupplier::make($this->whenLoaded('primaryAddressEnergySupplier')),
             'primaryOccupations' => FullOccupationContact::collection($this->whenLoaded('primaryOccupations')),
             'contactPerson' => FullOccupationContact::make($this->whenLoaded('contactPerson')),
             'occupations' => FullOccupationContact::collection($this->whenLoaded('occupations')),
@@ -100,7 +98,6 @@ class FullContact extends JsonResource
             'collectMandateSignatureDate' => $this->collect_mandate_signature_date,
             'collectMandateFirstRunDate' => $this->collect_mandate_first_run_date,
             'collectMandateCollectionSchema' => $this->collect_mandate_collection_schema,
-            'previousAddressEnergySupplierId' => $this->previous_address_energy_supplier_id,
         ];
     }
 }

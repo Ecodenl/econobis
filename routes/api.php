@@ -474,6 +474,7 @@ Route::namespace('Api')
 
         Route::post('setting', 'Setting\SettingController@store');
         Route::put('setting-dashboard', 'PortalSettingsDashboard\PortalSettingsDashboardController@put');
+        Route::post('setting-dashboard/widget', 'PortalSettingsDashboard\PortalSettingsDashboardController@updateWidget');
 
         Route::get('financial-overview/jory', 'FinancialOverview\FinancialOverviewController@jory');
         Route::post('financial-overview', 'FinancialOverview\FinancialOverviewController@store');

@@ -590,7 +590,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(RevenueFormEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(RevenueFormEdit);

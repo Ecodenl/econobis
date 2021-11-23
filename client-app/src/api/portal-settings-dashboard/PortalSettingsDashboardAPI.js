@@ -15,6 +15,12 @@ export default {
         return axiosInstance.put(requestUrl, dashboardSettings);
     },
 
+    updateDashboardWidget: data => {
+        const requestUrl = `${URL_PORTAL_SETTINGS_DASHBOARD}/widget`;
+
+        return axiosInstance.post(requestUrl, data);
+    },
+
     addDashboardWidget: widget => {
         const requestUrl = `portal-settings-dashboard`;
 

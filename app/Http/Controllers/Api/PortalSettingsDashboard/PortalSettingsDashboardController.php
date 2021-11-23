@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\PortalSettingsDashboard;
 
 use App\Eco\PortalSettingsDashboard\PortalSettingsDashboard;
-use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
@@ -135,6 +134,34 @@ class PortalSettingsDashboardController extends Controller
         $this->getStore()->push('widgets', $widget);
 
         return response()->json($widget);
+    }
+
+    public function updateWidget(RequestInput $input, Request $request) {
+        $data = $input->string('id')->whenMissing('')->onEmpty('')->next()
+            ->get();
+
+        if ($request->file('image') && !$request->file('image')->isValid()) {
+            abort('422', 'Error uploading file image.');
+        }
+
+        if (!$request->file('image')) {
+            return response()->json(['message' => 'Geen bestand gevonden...']);
+        }
+
+        try {
+            $widgetImageFileName = $data['id'] . '.png';
+
+            if (Config::get('app.env') == "local") {
+                Storage::disk('public_portal_local')->putFileAs('images', $request->file('image'), $widgetImageFileName);
+            } else {
+                Storage::disk('public_portal')->putFileAs('images', $request->file('image'), $widgetImageFileName);
+            }
+
+        } catch (Exception $exception) {
+            Log::error('Opslaan widget afbeelding mislukt : ' . $exception->getMessage());
+        }
+
+        return response()->json(['message' => 'Bestand succesvol opgeslagen.']);
     }
 
     public function update(PortalSettingsDashboard $portalSettingsDashboard, RequestInput $input, Request $request)

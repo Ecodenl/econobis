@@ -45,7 +45,7 @@ class AddressEnergySupplierController extends ApiController
 
         $addressEnergySupplier->save();
 
-        return FullAddressEnergySupplier::collection(AddressEnergySupplier::where('address_id', $addressEnergySupplier->address_id)->orderBy('member_since')->with('energySupplier', 'energySupplyStatuses', 'createdBy', 'address', 'energySupplyTypes')->get());
+        return FullAddressEnergySupplier::collection(AddressEnergySupplier::where('address_id', $addressEnergySupplier->address_id)->orderBy('member_since')->with('energySupplier', 'energySupplyStatus', 'createdBy', 'address', 'energySupplyTypes')->get());
     }
 
     public function update(RequestInput $requestInput, AddressEnergySupplier $addressEnergySupplier)
@@ -75,7 +75,7 @@ class AddressEnergySupplierController extends ApiController
 
         $addressEnergySupplier->save();
 
-        return FullAddressEnergySupplier::collection(AddressEnergySupplier::where('address_id', $addressEnergySupplier->address_id)->orderBy('member_since')->with('energySupplier', 'energySupplyStatuses', 'createdBy', 'address', 'energySupplyTypes')->get());
+        return FullAddressEnergySupplier::collection(AddressEnergySupplier::where('address_id', $addressEnergySupplier->address_id)->orderBy('member_since')->with('energySupplier', 'energySupplyStatus', 'createdBy', 'address', 'energySupplyTypes')->get());
     }
 
     public function destroy(AddressEnergySupplier $addressEnergySupplier)

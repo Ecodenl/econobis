@@ -84,6 +84,8 @@ class EanAddressChanges extends Migration
             Schema::rename('contact_energy_supplier', 'xxx_contact_energy_supplier');
         }
 
+        Artisan::call('project:conversionContactESToAddressES');
+
     }
 
     /**

@@ -21,7 +21,7 @@ class FullRevenueParticipantProject extends JsonResource
         $es = false;
 
 // todo WM-es: check participation->address???
-        if($this->contact->primaryAddress && $this->contact->primaryAddres->primaryAddressEnergySupplier)
+        if($this->contact->primaryAddress && $this->contact->primaryAddress->primaryAddressEnergySupplier)
         {
          $es = $this->contact->primaryAddress->primaryAddressEnergySupplier->energySupplier;
         }

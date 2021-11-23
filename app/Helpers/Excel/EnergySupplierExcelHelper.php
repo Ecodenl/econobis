@@ -106,7 +106,7 @@ class EnergySupplierExcelHelper
                 'contact.primaryEmailAddress',
                 'contact.primaryphoneNumber',
                 'revenue',
-                'contact.primaryAddressEnergySupplier',
+                'contact.primaryAddress.primaryAddressEnergySupplier',
             ]);
 
             foreach ($chunk as $distribution) {
@@ -308,7 +308,7 @@ class EnergySupplierExcelHelper
         foreach ($this->distributions->chunk(500) as $chunk) {
             $chunk->load([
                 'revenue',
-                'contact.primaryAddressEnergySupplier',
+                'contact.primaryAddress.primaryAddressEnergySupplier',
             ]);
 
             foreach ($chunk as $distribution) {
@@ -436,7 +436,7 @@ class EnergySupplierExcelHelper
         foreach ($this->distributions->chunk(500) as $chunk) {
             $chunk->load([
                 'revenue',
-                'contact.primaryAddressEnergySupplier',
+                'contact.primaryAddress.primaryAddressEnergySupplier',
             ]);
 
             foreach ($chunk as $distribution) {
@@ -552,7 +552,7 @@ class EnergySupplierExcelHelper
                 'contact.primaryEmailAddress',
                 'contact.primaryphoneNumber',
                 'revenue',
-                'contact.primaryAddressEnergySupplier',
+                'contact.primaryAddress.primaryAddressEnergySupplier',
             ]);
 
             foreach ($chunk as $distribution) {
@@ -696,7 +696,7 @@ class EnergySupplierExcelHelper
                 'contact.primaryEmailAddress',
                 'contact.primaryphoneNumber',
                 'revenue',
-                'contact.primaryAddressEnergySupplier',
+                'contact.primaryAddress.primaryAddressEnergySupplier',
             ]);
 
             foreach ($chunk as $distribution) {
@@ -853,7 +853,7 @@ class EnergySupplierExcelHelper
                 'contact.primaryEmailAddress',
                 'contact.primaryphoneNumber',
                 'revenue',
-                'contact.primaryAddressEnergySupplier',
+                'contact.primaryAddress.primaryAddressEnergySupplier',
             ]);
 
             foreach ($chunk as $distribution) {
@@ -1113,7 +1113,7 @@ class EnergySupplierExcelHelper
         foreach ($this->distributions->chunk(500) as $chunk) {
             $chunk->load([
                 'revenue',
-                'contact.primaryAddressEnergySupplier',
+                'contact.primaryAddress.primaryAddressEnergySupplier',
             ]);
 
             foreach ($chunk as $distribution) {

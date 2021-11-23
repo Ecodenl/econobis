@@ -4,6 +4,8 @@ import moment from 'moment';
 import InputTextArea from '../../../components/form/InputTextarea';
 import InputText from '../../../components/form/InputText';
 import ButtonIcon from '../../../components/button/ButtonIcon';
+import InputToggle from '../../../components/form/InputToggle';
+import { Image } from 'react-bootstrap';
 moment.locale('nl');
 
 class PortalSettingsDashboardWidgetListItem extends Component {
@@ -37,7 +39,9 @@ class PortalSettingsDashboardWidgetListItem extends Component {
 
     render() {
         const staticWidgets = ['project-schrijf-je-in', 'over-ons'];
-        const { edit, id, order, title, text, buttonText, buttonLink } = this.props;
+        const { edit, id, order, title, text, image, buttonText, buttonLink, active } = this.props;
+
+        const logoUrl = image.includes('images/') ? `${URL_API}/portal${image}` : `${URL_API}/portal/images/${image}`;
 
         return (
             <tr
@@ -49,7 +53,6 @@ class PortalSettingsDashboardWidgetListItem extends Component {
                     {edit ? (
                         <InputText
                             type={'number'}
-                            min={'3'}
                             divSize={'col-sm-12'}
                             divClassName={'no-padding'}
                             size={'col-sm-12'}
@@ -91,6 +94,7 @@ class PortalSettingsDashboardWidgetListItem extends Component {
                         text
                     )}
                 </td>
+                <td>{edit ? <>image</> : <Image src={logoUrl} />}</td>
                 <td>
                     {edit ? (
                         <InputText
@@ -120,6 +124,20 @@ class PortalSettingsDashboardWidgetListItem extends Component {
                         />
                     ) : (
                         buttonLink
+                    )}
+                </td>
+                <td>
+                    {edit ? (
+                        <InputToggle
+                            name={`${id}-active`}
+                            value={active}
+                            onChangeAction={this.props.handleInputChange}
+                            itemId={id}
+                        />
+                    ) : active ? (
+                        'Ja'
+                    ) : (
+                        'Nee'
                     )}
                 </td>
                 {edit && (

@@ -8,8 +8,10 @@ const PortalSettingsDashboardWidgetListHead = props => {
             <DataTableHeadTitle title={'Volgorde'} width={'7.5%'} />
             <DataTableHeadTitle title={'Titel'} width={props.edit ? '17.5%' : '20%'} />
             <DataTableHeadTitle title={'Tekst'} width={props.edit ? '25%' : '27.5%'} />
+            <DataTableHeadTitle title={'Afbeelding'} width={'10%'} />
             <DataTableHeadTitle title={'Knoptekst'} width={'15%'} />
             <DataTableHeadTitle title={'Knoplink'} width={'15%'} />
+            <DataTableHeadTitle title={'Actief'} width={'10%'} />
             {props.edit && <DataTableHeadTitle title={''} width={'5%'} />}
         </tr>
     );

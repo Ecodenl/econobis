@@ -76,6 +76,7 @@ const Dashboard = function(props) {
                     </p>
                     <Row>
                         {dashboardSettings.widgets
+                            .filter(w => w.active)
                             .sort((a, b) => (a.order > b.order ? 1 : -1))
                             .map(widget => (
                                 <Col md={6}>

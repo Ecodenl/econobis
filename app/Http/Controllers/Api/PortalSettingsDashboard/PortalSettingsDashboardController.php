@@ -8,6 +8,9 @@ use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use JosKolenberg\LaravelJory\Facades\Jory;
 use Config;
 use Ramsey\Uuid\Uuid;
@@ -98,13 +101,36 @@ class PortalSettingsDashboardController extends Controller
                 ->string('buttonLink')->whenMissing('')->onEmpty('')->next()
                 ->get();
 
+        if ($request->file('image') && !$request->file('image')->isValid()) {
+            abort('422', 'Error uploading file image.');
+        }
+
+        $uuid = Uuid::uuid1();
         $widget = new \stdClass();
-        $widget->id = Uuid::uuid1();
+
+        if ($request->file('image')) {
+            try {
+                $widgetImageFileName = $uuid . '.png';
+
+                if (Config::get('app.env') == "local") {
+                    Storage::disk('public_portal_local')->putFileAs('images', $request->file('image'), $widgetImageFileName);
+                } else {
+                    Storage::disk('public_portal')->putFileAs('images', $request->file('image'), $widgetImageFileName);
+                }
+
+                $widget->image = $widgetImageFileName;
+            } catch (Exception $exception) {
+                Log::error('Opslaan widget afbeelding mislukt : ' . $exception->getMessage());
+            }
+        }
+
+        $widget->id = $uuid;
         $widget->order = count($this->getStore()['widgets']) + 1;
         $widget->title = $data['title'];
         $widget->text = $data['text'];
         $widget->buttonText = $data['buttonText'];
         $widget->buttonLink = $data['buttonLink'];
+        $widget->active = true;
 
         $this->getStore()->push('widgets', $widget);
 
@@ -127,12 +153,19 @@ class PortalSettingsDashboardController extends Controller
         $data = $input->string('id')->whenMissing('')->onEmpty('')->next()->get();
 
         $widgets = $this->getStore()->get('widgets');
+        $this->getStore()->forget('widgets');
 
-        $widgets = array_filter($widgets, function($value) use ($data) {
+        Storage::disk('public_portal_local')->delete('images/' . $data['id'] . '.png');
+
+        $widgets = Arr::where($widgets, function ($value, $key) use ($data) {
             return $value['id'] !== $data['id'];
         });
 
-        $this->getStore()->put('widgets', $widgets);
+        $this->getStore()->put('widgets', array());
+
+        foreach ($widgets as $widget) {
+            $this->getStore()->push('widgets', [$widget]);
+        }
 
         return response()->json($this->getStore()->get('widgets'));
     }

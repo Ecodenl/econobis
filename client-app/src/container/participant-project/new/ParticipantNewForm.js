@@ -12,8 +12,10 @@ const ParticipantNewForm = ({
     handleInputChange,
     handleInputChangeDate,
     handleInputChangeContactId,
+    handleInputChangeAddressId,
     handleSubmit,
     contacts,
+    addresses,
     projects,
     participantMutationStatuses,
     projectTypeCodeRef,
@@ -21,6 +23,7 @@ const ParticipantNewForm = ({
 }) => {
     const {
         contactId,
+        addressId,
         statusId,
         projectId,
         quantityInterest,
@@ -59,6 +62,33 @@ const ParticipantNewForm = ({
                     required={'required'}
                     error={errors.contactId}
                 />
+            </div>
+            <div className="row">
+                <InputReactSelectLong
+                    label={'Adres'}
+                    name={'addressId'}
+                    id={'addressId'}
+                    options={addresses}
+                    optionName={'streetPostalCodeCity'}
+                    value={Number(addressId)}
+                    onChangeAction={handleInputChangeAddressId}
+                    required={'required'}
+                    error={errors.addressId}
+                />
+            </div>
+            <div className="row">
+                <InputReactSelectLong
+                    label={'Project'}
+                    name={'projectId'}
+                    id={'projectId'}
+                    options={projects}
+                    value={Number(projectId)}
+                    onChangeAction={handleInputChange}
+                    required={'required'}
+                    error={errors.projectId}
+                />
+            </div>
+            <div className="row">
                 <InputSelect
                     label={'Status'}
                     name={'statusId'}
@@ -68,19 +98,6 @@ const ParticipantNewForm = ({
                     onChangeAction={handleInputChange}
                     required={'required'}
                     error={errors.statusId}
-                />
-            </div>
-
-            <div className="row">
-                <InputSelect
-                    label={'Project'}
-                    name={'projectId'}
-                    id={'projectId'}
-                    options={projects}
-                    value={projectId}
-                    onChangeAction={handleInputChange}
-                    required={'required'}
-                    error={errors.projectId}
                 />
             </div>
 

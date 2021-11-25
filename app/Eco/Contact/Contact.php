@@ -512,25 +512,15 @@ class Contact extends Model
         }
         return false;
     }
-// todo WM-es: cleanup es
-//    /**
-//     * Previous energy supplier
-//     * @return int
-//     */
-//    public function getPreviousAddressEnergySupplierIdAttribute()
-//    {
-//        if(!$this->primaryAddressEnergySupplier) {
-//            return 0;
-//        }
-//        $addressEnergySuppliers = $this->addressEnergySuppliers
-//            ->whereNotNull('member_since')
-//            ->where('member_since', '<', $this->primaryAddressEnergySupplier->member_since)
-//            ->sortByDesc('member_since');
-//        if(count($addressEnergySuppliers) == 0){
-//            return 0;
-//        }
-//        return($addressEnergySuppliers->first()->id);
-//    }
+
+    /**
+     * Primary address Id
+     * @return int
+     */
+    public function getPrimaryAddressIdAttribute()
+    {
+        return($this->primaryAddress ? $this->primaryAddress->id : 0);
+    }
 
     public function getBlockChangeAddressNumberAttribute()
     {

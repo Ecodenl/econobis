@@ -27,11 +27,13 @@ class ParticipantNewApp extends Component {
             modalRedirectTask: '',
             modalRedirectParticipation: '',
             contacts: [],
+            addresses: [],
             projects: [],
             participationWorth: 0,
             projectTypeCodeRef: '',
             participation: {
                 contactId: props.params.contactId || '',
+                addressId: '',
                 statusId: '',
                 projectId: props.params.projectId || '',
                 quantityInterest: 0,
@@ -53,6 +55,7 @@ class ParticipantNewApp extends Component {
             },
             errors: {
                 contactId: false,
+                addressId: false,
                 statusId: false,
                 projectId: false,
                 amountOption: false,
@@ -67,7 +70,9 @@ class ParticipantNewApp extends Component {
     }
 
     componentDidMount() {
-        ContactsAPI.getContactsPeek().then(payload => {
+        ContactsAPI.getContactsAddressesPeek().then(payload => {
+            console.log('contacts');
+            console.log(payload);
             this.setState({
                 contacts: payload,
             });
@@ -201,11 +206,29 @@ class ParticipantNewApp extends Component {
     };
 
     handleInputChangeContactId = selectedOption => {
+        console.log('contact selectedOption');
+        console.log(selectedOption);
+        const contact = this.state.contacts.find(contacts => contacts.id == selectedOption);
+        console.log('contact');
+        console.log(contact);
+
         this.setState({
             ...this.state,
             participation: {
                 ...this.state.participation,
                 contactId: selectedOption,
+                addressId: contact ? contact.primaryAddressId : 0,
+            },
+            addresses: contact ? contact.addresses : [],
+        });
+    };
+
+    handleInputChangeAddressId = selectedOption => {
+        this.setState({
+            ...this.state,
+            participation: {
+                ...this.state.participation,
+                addressId: selectedOption,
             },
         });
     };
@@ -280,12 +303,14 @@ class ParticipantNewApp extends Component {
                                         handleInputChangeDate={this.handleInputChangeDate}
                                         handleSubmit={this.handleSubmit}
                                         contacts={this.state.contacts}
+                                        addresses={this.state.addresses}
                                         projects={this.state.projects}
                                         handleProjectChange={this.handleProjectChange}
                                         projectTypeCodeRef={this.state.projectTypeCodeRef}
                                         projectDateEntry={this.state.projectDateEntry}
                                         participantMutationStatuses={this.props.participantMutationStatuses}
                                         handleInputChangeContactId={this.handleInputChangeContactId}
+                                        handleInputChangeAddressId={this.handleInputChangeAddressId}
                                         isLoading={this.state.isLoading}
                                     />
                                 </div>

@@ -10,6 +10,7 @@ use App\Helpers\Delete\Models\DeleteContact;
 use App\Helpers\Hoomdossier\HoomdossierHelper;
 use App\Helpers\Import\ContactImportHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Contact\ContactWithAddressPeek;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\Contact\FullContactWithGroups;
 use App\Http\Resources\Task\SidebarTask;
@@ -118,9 +119,16 @@ class ContactController extends Controller
 
     public function peek()
     {
-        $contact = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->get();
+        $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->get();
 
-        return ContactPeek::collection($contact);
+        return ContactPeek::collection($contacts);
+    }
+
+    public function peekWithAddress()
+    {
+        $contacts = Contact::select('id', 'full_name', 'number')->with('addresses')->orderBy('full_name')->get();
+
+        return ContactWithAddressPeek::collection($contacts);
     }
 
     public function groups(Contact $contact)

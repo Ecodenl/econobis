@@ -52,7 +52,6 @@ class ParticipantsListItem extends Component {
         const participantionsTotal =
             participationsInteressed + participationsOptioned + participationsGranted + participationsDefinitive;
         const amountTotal = amountInteressed + amountOptioned + amountGranted + amountDefinitive;
-        // const primaryAddress = contact.primaryAddress;
         let street = '';
         let number = '';
         let addition = '';
@@ -93,7 +92,7 @@ class ParticipantsListItem extends Component {
 
                 <td>{contact.type ? contact.type.name : ''}</td>
                 <td>{contact.fullName}</td>
-                <td>{address ? street + ' ' + number + (addition ? '-' + addition : '') : ''}</td>
+                <td>{street + ' ' + number + (addition ? '-' + addition : '')}</td>
                 <td>{address ? address.postalCode : ''}</td>
                 <td>{address ? address.city : ''}</td>
                 {this.props.projectTypeRef === 'loan' ? (

@@ -73,7 +73,7 @@ class ParticipantFormEdit extends Component {
     }
 
     componentDidMount() {
-        ContactsAPI.getContactsPeek().then(payload => {
+        ContactsAPI.getContactsAddressesPeek().then(payload => {
             this.setState({
                 contacts: payload,
             });

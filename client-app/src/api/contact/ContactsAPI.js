@@ -70,6 +70,20 @@ export default {
                 console.log(error);
             });
     },
+    getContactsAddressesPeek: () => {
+        const requestUrl = `${URL_API}/api/contact/address/peek`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
+                return response.data.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    },
 
     getCSV: ({ filters, extraFilters, sorts }) => {
         const requestUrl = `${URL_API}/api/contact/csv`;

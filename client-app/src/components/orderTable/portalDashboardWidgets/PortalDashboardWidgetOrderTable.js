@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTable } from 'react-table';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import PortalDashboardWidgetOrderRow from './PortalDashboardWidgetOrderRow';
+import update from 'immutability-helper';
 
 const PortalDashboardWidgetOrderTable = ({ columns, data, edit, handleInputChange, removeWidget }) => {
-    const [records, setRecords] = React.useState(data);
+    const [records, setRecords] = useState(data);
 
     const getRowId = React.useCallback(row => {
         return row.id;
@@ -19,14 +20,24 @@ const PortalDashboardWidgetOrderTable = ({ columns, data, edit, handleInputChang
 
     const moveRow = (dragIndex, hoverIndex) => {
         const dragRecord = records[dragIndex];
-        setRecords();
-        // update(records, {
-        //     $splice: [
-        //         [dragIndex, 1],
-        //         [hoverIndex, 0, dragRecord],
-        //     ],
-        // })
+        setRecords(
+            update(records, {
+                $splice: [
+                    [dragIndex, 1],
+                    [hoverIndex, 0, dragRecord],
+                ],
+            })
+        );
     };
+
+    useEffect(
+        function() {
+            for (let [index, value] of records.entries()) {
+                value.order = index + 1;
+            }
+        },
+        [records]
+    );
 
     return (
         <DndProvider backend={HTML5Backend}>
@@ -34,7 +45,7 @@ const PortalDashboardWidgetOrderTable = ({ columns, data, edit, handleInputChang
                 <thead>
                     {headerGroups.map(headerGroup => (
                         <tr {...headerGroup.getHeaderGroupProps()} className={'thead-title'}>
-                            <th></th>
+                            {edit && <th />}
                             {headerGroup.headers.map(column => (
                                 <th {...column.getHeaderProps()}>{column.render('Header')}</th>
                             ))}

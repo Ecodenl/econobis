@@ -39,10 +39,6 @@ class PortalSettingsDashboardWidgetList extends Component {
 
         const columns = [
             {
-                Header: 'Volgorde',
-                accessor: 'order',
-            },
-            {
                 Header: 'Titel',
                 accessor: 'title',
             },
@@ -83,7 +79,7 @@ class PortalSettingsDashboardWidgetList extends Component {
                 )}
                 <PortalDashboardWidgetOrderTable
                     columns={columns}
-                    data={data}
+                    data={data.sort((a, b) => (a.order > b.order ? 1 : -1))}
                     edit={edit}
                     handleInputChange={this.props.handleWidgetInputChange}
                     removeWidget={this.props.removeWidget}

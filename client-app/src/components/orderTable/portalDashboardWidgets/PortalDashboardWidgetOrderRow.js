@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { sort } from 'react-icons-kit/fa/sort';
 import Icon from 'react-icons-kit';
@@ -13,8 +13,8 @@ import { Image } from 'react-bootstrap';
 const DND_ITEM_TYPE = 'row';
 
 const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputChange, removeWidget }) => {
-    const dropRef = React.useRef(null);
-    const dragRef = React.useRef(null);
+    const dropRef = useRef(null);
+    const dragRef = useRef(null);
     const [newWidgetImage, setNewWidgetImage] = useState();
     const [widgetImage, setWidgetImage] = useState();
 
@@ -62,7 +62,7 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
     });
 
     const [{ isDragging }, drag, preview] = useDrag({
-        type: 'ROW',
+        type: DND_ITEM_TYPE,
         item: { type: DND_ITEM_TYPE, index },
         collect: monitor => ({
             isDragging: monitor.isDragging(),
@@ -98,27 +98,14 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
     return (
         <>
             <tr ref={dropRef} style={{ opacity }}>
-                <td ref={dragRef}>
-                    <Icon icon={sort} />
-                </td>
+                {edit && (
+                    <td ref={dragRef}>
+                        <Icon icon={sort} />
+                    </td>
+                )}
                 {edit
                     ? row.cells.map(cell => {
                           switch (cell.column.id) {
-                              case 'order':
-                                  return (
-                                      <td key={cell.column.id}>
-                                          <InputText
-                                              type={'number'}
-                                              divSize={'col-sm-12'}
-                                              divClassName={'no-padding'}
-                                              size={'col-sm-12'}
-                                              name={`${cell.row.id}-${cell.column.id}`}
-                                              value={cell.value}
-                                              disabled={true}
-                                              itemId={cell.row.id}
-                                          />
-                                      </td>
-                                  );
                               case 'text':
                                   return (
                                       <td key={cell.column.id}>
@@ -183,9 +170,10 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
                                       ? `${URL_API}/portal${cell.value}`
                                       : `${URL_API}/portal/images/${cell.value}`;
                                   return (
-                                      <td>
+                                      <td key={cell.column.id}>
                                           <Image
                                               src={widgetImage && widgetImage.preview ? widgetImage.preview : logoUrl}
+                                              thumbnail={true}
                                           />
                                       </td>
                                   );

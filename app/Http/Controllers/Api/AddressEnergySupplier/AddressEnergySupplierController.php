@@ -19,6 +19,7 @@ class AddressEnergySupplierController extends ApiController
             ->date('memberSince')->whenMissing(null)->onEmpty(null)->alias('member_since')->next()
             ->string('energySupplyStatusId')->validate('nullable|exists:energy_supply_statuses,id')->whenMissing(null)->onEmpty(null)->alias('energy_supply_status_id')->next()
             ->date('switchDate')->whenMissing(null)->onEmpty(null)->alias('switch_date')->next()
+            ->date('endDate')->whenMissing(null)->onEmpty(null)->alias('end_date')->next()
             ->string('esNumber')->alias('es_number')->next()
             ->boolean('isCurrentSupplier')->alias('is_current_supplier')->next()
             ->get();
@@ -55,6 +56,7 @@ class AddressEnergySupplierController extends ApiController
             ->date('memberSince')->whenMissing(null)->onEmpty(null)->alias('member_since')->next()
             ->string('energySupplyStatusId')->validate('nullable|exists:energy_supply_statuses,id')->whenMissing(null)->onEmpty(null)->alias('energy_supply_status_id')->next()
             ->date('switchDate')->whenMissing(null)->onEmpty(null)->alias('switch_date')->next()
+            ->date('endDate')->whenMissing(null)->onEmpty(null)->alias('end_date')->next()
             ->string('esNumber')->alias('es_number')->next()
             ->boolean('isCurrentSupplier')->alias('is_current_supplier')->next()
             ->get();

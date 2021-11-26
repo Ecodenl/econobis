@@ -30,6 +30,7 @@ class FullAddressEnergySupplier extends JsonResource
             'energySupplyTypeId' => $this->energy_supply_type_id,
             'energySupplyType' => GenericResource::make($this->whenLoaded('energySupplyType')),
             'switchDate' => $this->switch_date,
+            'endDate' => $this->end_date,
             'isCurrentSupplier' => $this->is_current_supplier,
             'createdById' =>  $this->created_by_id,
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),

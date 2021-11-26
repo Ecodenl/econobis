@@ -259,6 +259,9 @@ class TemplateVariableHelper
             case 'energieleverancier_klant_sinds':
                 return optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->member_since ? Carbon::parse(optional($model->primaryAddressEnergySupplier)->member_since)->format('d/m/Y') : null;;
                 break;
+            case 'energieleverancier_klant_einddatum':
+                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->end_date ? Carbon::parse(optional($model->primaryAddressEnergySupplier)->end_date)->format('d/m/Y') : null;;
+                break;
             case 'energieleverancier_mogelijke_overstap':
                 return optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->switch_date ? Carbon::parse(optional($model->primaryAddressEnergySupplier)->switch_date)->format('d/m/Y') : null;;
                 break;

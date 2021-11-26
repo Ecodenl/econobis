@@ -104,6 +104,6 @@ class Address extends Model
         if(count($addressEnergySuppliers) == 0){
             return 0;
         }
-        return($addressEnergySuppliers->first()->id);
+        return $addressEnergySuppliers->first()->id;
     }
 }

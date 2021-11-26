@@ -24,6 +24,7 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
                 memberSince: '',
                 energySupplyStatusId: '',
                 switchDate: '',
+                endDate: '',
                 esNumber: '',
                 isCurrentSupplier: false,
             },
@@ -104,6 +105,7 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
             memberSince,
             energySupplyStatusId,
             switchDate,
+            endDate,
             esNumber,
             isCurrentSupplier,
         } = this.state.addressEnergySupplier;
@@ -136,30 +138,12 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
                         </div>
 
                         <div className="row">
-                            <InputDate
-                                label="Klant sinds"
-                                name="memberSince"
-                                value={memberSince ? memberSince : ''}
-                                onChangeAction={this.handleInputChangeDate}
-                                required={isCurrentSupplier ? 'required' : ''}
-                                error={this.state.errors.memberSince}
-                            />
-                            <InputSelect
-                                label={'Overstap status'}
-                                id="energySupplyStatusId"
-                                name={'energySupplyStatusId'}
-                                options={this.props.energySupplierStatuses}
-                                value={energySupplyStatusId}
+                            <InputToggle
+                                label={'Is huidige leverancier'}
+                                name={'isCurrentSupplier'}
+                                value={Boolean(isCurrentSupplier)}
                                 onChangeAction={this.handleInputChange}
-                            />
-                        </div>
-
-                        <div className="row">
-                            <InputDate
-                                label="Mogelijke overstap datum"
-                                name="switchDate"
-                                value={switchDate ? switchDate : ''}
-                                onChangeAction={this.handleInputChangeDate}
+                                disabled={validator.isEmpty('' + memberSince)}
                             />
                             <InputText
                                 label={'Klantnummer'}
@@ -171,12 +155,38 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
                         </div>
 
                         <div className="row">
-                            <InputToggle
-                                label={'Is huidige leverancier'}
-                                name={'isCurrentSupplier'}
-                                value={Boolean(isCurrentSupplier)}
+                            <InputDate
+                                label="Klant sinds"
+                                name="memberSince"
+                                value={memberSince ? memberSince : ''}
+                                onChangeAction={this.handleInputChangeDate}
+                                required={isCurrentSupplier ? 'required' : ''}
+                                error={this.state.errors.memberSince}
+                            />
+                            <InputDate
+                                label={'Eind datum'}
+                                name="endDate"
+                                value={endDate ? endDate : ''}
+                                onChangeAction={this.handleInputChangeDate}
+                                required={isCurrentSupplier ? 'required' : ''}
+                                error={this.state.errors.endDate}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputDate
+                                label="Mogelijke overstap datum"
+                                name="switchDate"
+                                value={switchDate ? switchDate : ''}
+                                onChangeAction={this.handleInputChangeDate}
+                            />
+                            <InputSelect
+                                label={'Overstap status'}
+                                id="energySupplyStatusId"
+                                name={'energySupplyStatusId'}
+                                options={this.props.energySupplierStatuses}
+                                value={energySupplyStatusId}
                                 onChangeAction={this.handleInputChange}
-                                disabled={validator.isEmpty('' + memberSince)}
                             />
                         </div>
 

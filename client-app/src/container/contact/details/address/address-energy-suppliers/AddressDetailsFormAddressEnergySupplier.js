@@ -26,7 +26,7 @@ class AddressDetailsFormAddressEnergySupplier extends Component {
         return (
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Energieleveranciers</span>
+                    <span className="h5 text-bold">Energieleverancier gegevens</span>
                     {(this.props.permissions.updatePerson || this.props.permissions.updateOrganisation) && (
                         <a role="button" className="pull-right" onClick={this.toggleShowNew}>
                             <span className="glyphicon glyphicon-plus" />

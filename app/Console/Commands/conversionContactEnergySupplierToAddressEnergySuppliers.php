@@ -3,14 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Eco\Address\Address;
-use App\Eco\Address\AddressType;
 use App\Eco\Contact\Contact;
 use App\Eco\EnergySupplier\AddressEnergySupplier;
-use App\Eco\Project\ProjectRevenue;
-use App\Eco\User\User;
-use ContactEnergySupplier;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class conversionContactEnergySupplierToAddressEnergySuppliers extends Command
@@ -118,5 +114,25 @@ class conversionContactEnergySupplierToAddressEnergySuppliers extends Command
             ]);
 
         }
+
+        $addressEnergySuppliers = AddressEnergySupplier::all();
+        foreach($addressEnergySuppliers as $addressEnergySupplier) {
+//            print_r("addressEnergySupplier Id: " . $addressEnergySupplier->id . "\n");
+
+            $previousAddressEnergySuppliers = $addressEnergySupplier->address->addressEnergySuppliers
+            ->whereNotNull('member_since')
+            ->where('member_since', '<', $addressEnergySupplier->member_since)
+            ->sortByDesc('member_since');
+        if($previousAddressEnergySuppliers && count($previousAddressEnergySuppliers) > 0){
+            $previousAddressEnergySupplier = $previousAddressEnergySuppliers->first();
+            $previousAddressEnergySupplier->end_date = Carbon::parse($addressEnergySupplier->member_since)->subDay();
+            $previousAddressEnergySupplier->save();
+//            print_r("Current klant sinds: " . $addressEnergySupplier->member_since . "\n");
+//            print_r("Previous AddressEnergySupplier: " . $previousAddressEnergySupplier->id . "\n");
+//            print_r("Previous klant sinds: " . $previousAddressEnergySupplier->member_since . "\n");
+//            print_r("Previous Eind datum: " . $previousAddressEnergySupplier->end_date . "\n");
+        }
+    }
+
     }
 }

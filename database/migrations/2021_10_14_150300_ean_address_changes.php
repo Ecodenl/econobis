@@ -39,6 +39,7 @@ class EanAddressChanges extends Migration
                 ->references('id')->on('energy_suppliers')
                 ->onDelete('restrict');
             $table->date('member_since')->nullable();
+            $table->date('end_date')->nullable();
 
             $table->unsignedInteger('energy_supply_status_id')->nullable();
             $table->foreign('energy_supply_status_id', 'address_es_energy_supply_status_id_foreign')

@@ -8,6 +8,7 @@ import ButtonIcon from '../../button/ButtonIcon';
 import InputText from '../../form/InputText';
 import InputTextArea from '../../form/InputTextarea';
 import InputToggle from '../../form/InputToggle';
+import { Image } from 'react-bootstrap';
 
 const DND_ITEM_TYPE = 'row';
 
@@ -174,6 +175,23 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
                           }
                       })
                     : row.cells.map(cell => {
+                          switch (cell.column.id) {
+                              case 'active':
+                                  return <td {...cell.getCellProps()}>{cell.value ? 'Ja' : 'Nee'}</td>;
+                              case 'image': {
+                                  const logoUrl = cell.value.includes('images/')
+                                      ? `${URL_API}/portal${cell.value}`
+                                      : `${URL_API}/portal/images/${cell.value}`;
+                                  return (
+                                      <td>
+                                          <Image
+                                              src={widgetImage && widgetImage.preview ? widgetImage.preview : logoUrl}
+                                          />
+                                      </td>
+                                  );
+                              }
+                          }
+
                           return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
                       })}
                 {edit && (

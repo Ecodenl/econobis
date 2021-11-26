@@ -88,30 +88,6 @@ class PortalSettingsDashboardWidgetList extends Component {
                     handleInputChange={this.props.handleWidgetInputChange}
                     removeWidget={this.props.removeWidget}
                 />
-                {/*<DataTable>*/}
-                {/*    <DataTableHead>*/}
-                {/*        <PortalSettingsDashboardWidgetListHead edit={edit} />*/}
-                {/*    </DataTableHead>*/}
-                {/*    <DataTableBody>*/}
-                {/*        {loading ? (*/}
-                {/*            <tr>*/}
-                {/*                <td colSpan={edit ? 7 : 6}>{loadingText}</td>*/}
-                {/*            </tr>*/}
-                {/*        ) : (*/}
-                {/*            data.map(widget => {*/}
-                {/*                return (*/}
-                {/*                    <PortalSettingsDashboardWidgetListItem*/}
-                {/*                        key={widget.id}*/}
-                {/*                        edit={edit}*/}
-                {/*                        handleInputChange={this.props.handleWidgetInputChange}*/}
-                {/*                        removeWidget={this.props.removeWidget}*/}
-                {/*                        {...widget}*/}
-                {/*                    />*/}
-                {/*                );*/}
-                {/*            })*/}
-                {/*        )}*/}
-                {/*    </DataTableBody>*/}
-                {/*</DataTable>*/}
                 {this.state.addWidgetModal && (
                     <AddPortalSettingsDashboardWidgetModal
                         title={'Widget toevoegen'}

@@ -31,6 +31,8 @@ class ParticipantNewApp extends Component {
             projects: [],
             participationWorth: 0,
             projectTypeCodeRef: '',
+            disableClientSelection: !props.params.contactId ? false : true,
+            disableProjectSelection: !props.params.projectId ? false : true,
             participation: {
                 contactId: props.params.contactId || '',
                 addressId: '',
@@ -71,11 +73,21 @@ class ParticipantNewApp extends Component {
 
     componentDidMount() {
         ContactsAPI.getContactsAddressesPeek().then(payload => {
-            console.log('contacts');
-            console.log(payload);
             this.setState({
                 contacts: payload,
             });
+
+            if (this.props.params.contactId) {
+                let contact = payload.find(contact => contact.id == this.props.params.contactId);
+                this.setState({
+                    ...this.state,
+                    participation: {
+                        ...this.state.participation,
+                        addressId: contact ? contact.primaryAddressId : 0,
+                    },
+                    addresses: contact ? contact.addresses : [],
+                });
+            }
         });
 
         ProjectsAPI.peekProjects().then(payload => {
@@ -140,62 +152,12 @@ class ParticipantNewApp extends Component {
             showModalError: false,
         });
     };
+
     handleInputChange = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        this.setState(
-            {
-                ...this.state,
-                participation: {
-                    ...this.state.participation,
-                    [name]: value,
-                },
-            },
-            () => this.linkedValueAdjustment(name)
-        );
-    };
-
-    linkedValueAdjustment = name => {
-        // If field statusId is changed then change dateGranted when applicable
-        if (name === 'statusId') {
-            const currentStatusId = Number(this.state.participation.statusId);
-            const checkStatusId = this.props.participantMutationStatuses.find(
-                participantMutationStatuses => participantMutationStatuses.codeRef === 'final'
-            ).id;
-            const dateGranted = currentStatusId === checkStatusId ? null : moment().format('YYYY-MM-DD');
-
-            this.setState({
-                ...this.state,
-                participation: {
-                    ...this.state.participation,
-                    dateGranted,
-                },
-            });
-        }
-
-        if (name === 'projectId') {
-            let project = this.state.projects.find(project => project.id == this.state.participation.projectId);
-            let disableBeforeEntryDate = this.getDisableBeforeEntryDate(project);
-
-            this.setState({
-                ...this.state,
-                projectTypeCodeRef: project.typeCodeRef,
-                participation: {
-                    ...this.state.participation,
-                    dateEntry: project.dateEntry
-                        ? moment(project.dateEntry).format('YYYY-MM-DD')
-                        : !validator.isEmpty(disableBeforeEntryDate + '')
-                        ? moment(disableBeforeEntryDate).format('YYYY-MM-DD')
-                        : moment().format('YYYY-MM-DD'),
-                    disableBeforeEntryDate: disableBeforeEntryDate,
-                },
-            });
-        }
-    };
-
-    handleInputChangeDate = (value, name) => {
         this.setState({
             ...this.state,
             participation: {
@@ -206,12 +168,7 @@ class ParticipantNewApp extends Component {
     };
 
     handleInputChangeContactId = selectedOption => {
-        console.log('contact selectedOption');
-        console.log(selectedOption);
         const contact = this.state.contacts.find(contacts => contacts.id == selectedOption);
-        console.log('contact');
-        console.log(contact);
-
         this.setState({
             ...this.state,
             participation: {
@@ -229,6 +186,58 @@ class ParticipantNewApp extends Component {
             participation: {
                 ...this.state.participation,
                 addressId: selectedOption,
+            },
+        });
+    };
+
+    handleInputChangeProjectId = selectedOption => {
+        const projectId = selectedOption;
+
+        let project = this.state.projects.find(project => project.id == projectId);
+        let disableBeforeEntryDate = this.getDisableBeforeEntryDate(project);
+
+        this.setState({
+            ...this.state,
+            projectTypeCodeRef: project.typeCodeRef,
+            participation: {
+                ...this.state.participation,
+                projectId: projectId,
+                dateEntry: project.dateEntry
+                    ? moment(project.dateEntry).format('YYYY-MM-DD')
+                    : !validator.isEmpty(disableBeforeEntryDate + '')
+                    ? moment(disableBeforeEntryDate).format('YYYY-MM-DD')
+                    : moment().format('YYYY-MM-DD'),
+                disableBeforeEntryDate: disableBeforeEntryDate,
+            },
+        });
+    };
+
+    handleInputChangeStatusId = event => {
+        const target = event.target;
+        const statusId = target.value;
+
+        const currentStatusId = Number(statusId);
+        const checkStatusId = this.props.participantMutationStatuses.find(
+            participantMutationStatuses => participantMutationStatuses.codeRef === 'final'
+        ).id;
+        const dateGranted = currentStatusId === checkStatusId ? null : moment().format('YYYY-MM-DD');
+
+        this.setState({
+            ...this.state,
+            participation: {
+                ...this.state.participation,
+                statusId: statusId,
+                dateGranted,
+            },
+        });
+    };
+
+    handleInputChangeDate = (value, name) => {
+        this.setState({
+            ...this.state,
+            participation: {
+                ...this.state.participation,
+                [name]: value,
             },
         });
     };
@@ -307,10 +316,14 @@ class ParticipantNewApp extends Component {
                                         projects={this.state.projects}
                                         handleProjectChange={this.handleProjectChange}
                                         projectTypeCodeRef={this.state.projectTypeCodeRef}
+                                        disableProjectSelection={this.state.disableProjectSelection}
+                                        disableClientSelection={this.state.disableClientSelection}
                                         projectDateEntry={this.state.projectDateEntry}
                                         participantMutationStatuses={this.props.participantMutationStatuses}
                                         handleInputChangeContactId={this.handleInputChangeContactId}
                                         handleInputChangeAddressId={this.handleInputChangeAddressId}
+                                        handleInputChangeProjectId={this.handleInputChangeProjectId}
+                                        handleInputChangeStatusId={this.handleInputChangeStatusId}
                                         isLoading={this.state.isLoading}
                                     />
                                 </div>

@@ -13,12 +13,15 @@ const ParticipantNewForm = ({
     handleInputChangeDate,
     handleInputChangeContactId,
     handleInputChangeAddressId,
+    handleInputChangeProjectId,
     handleSubmit,
     contacts,
     addresses,
     projects,
     participantMutationStatuses,
     projectTypeCodeRef,
+    disableProjectSelection,
+    disableClientSelection,
     isLoading,
 }) => {
     const {
@@ -52,6 +55,20 @@ const ParticipantNewForm = ({
         <form className="form-horizontal col-md-12" onSubmit={handleSubmit}>
             <div className="row">
                 <InputReactSelectLong
+                    label={'Project'}
+                    name={'projectId'}
+                    id={'projectId'}
+                    options={projects}
+                    value={Number(projectId)}
+                    onChangeAction={handleInputChangeProjectId}
+                    required={'required'}
+                    error={errors.projectId}
+                    disabled={disableProjectSelection}
+                />
+            </div>
+
+            <div className="row">
+                <InputReactSelectLong
                     label={'Contact'}
                     name={'contactId'}
                     id={'contactId'}
@@ -61,33 +78,26 @@ const ParticipantNewForm = ({
                     onChangeAction={handleInputChangeContactId}
                     required={'required'}
                     error={errors.contactId}
+                    disabled={disableClientSelection}
                 />
             </div>
-            <div className="row">
-                <InputReactSelectLong
-                    label={'Adres'}
-                    name={'addressId'}
-                    id={'addressId'}
-                    options={addresses}
-                    optionName={'streetPostalCodeCity'}
-                    value={Number(addressId)}
-                    onChangeAction={handleInputChangeAddressId}
-                    required={'required'}
-                    error={errors.addressId}
-                />
-            </div>
-            <div className="row">
-                <InputReactSelectLong
-                    label={'Project'}
-                    name={'projectId'}
-                    id={'projectId'}
-                    options={projects}
-                    value={Number(projectId)}
-                    onChangeAction={handleInputChange}
-                    required={'required'}
-                    error={errors.projectId}
-                />
-            </div>
+
+            {projectTypeCodeRef === 'postalcode_link_capital' ? (
+                <div className="row">
+                    <InputReactSelectLong
+                        label={'Adres'}
+                        name={'addressId'}
+                        id={'addressId'}
+                        options={addresses}
+                        optionName={'streetPostalCodeCity'}
+                        value={Number(addressId)}
+                        onChangeAction={handleInputChangeAddressId}
+                        required={'required'}
+                        error={errors.addressId}
+                    />
+                </div>
+            ) : null}
+
             <div className="row">
                 <InputSelect
                     label={'Status'}

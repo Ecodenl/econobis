@@ -1537,6 +1537,7 @@ class ExternalWebformController extends Controller
             $participation = ParticipantProject::create([
                 'created_with' => 'webform',
                 'contact_id' => $contact->id,
+                'address_id' => $contact->addressForPostalCodeCheck->id,
                 'project_id' => $project->id,
                 'iban_payout' => $ibanPayout,
                 'iban_payout_attn' => $data['iban_payout_attn'],

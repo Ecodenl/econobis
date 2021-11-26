@@ -139,7 +139,7 @@ class ParticipationProjectController extends Controller
             }
         }
 
-        DB::transaction(function () use ($contact, $project, $request, $portalUser, $responsibleUserId) {
+        DB::transaction(function () use ($contact, $address, $project, $request, $portalUser, $responsibleUserId) {
             /**
              * Als er eerder op dit project is ingeschreven dan kan de
              * participatie nog worden overschreven, maar alleen als:
@@ -152,7 +152,7 @@ class ParticipationProjectController extends Controller
                 $this->deleteParticipantProject($previousMutation, $previousParticipantProject);
             }
 
-            $participation = $this->createParticipantProject($contact, $project, $request, $portalUser, $responsibleUserId);
+            $participation = $this->createParticipantProject($contact, $address, $project, $request, $portalUser, $responsibleUserId);
 
             /**
              * Alleen aanmaken bevestigingsformulier en mailen als Mollie is uitgeschakeld, als Mollie
@@ -358,7 +358,7 @@ class ParticipationProjectController extends Controller
         return $field;
     }
 
-    protected function createParticipantProject($contact, $project, $request, $portalUser, $responsibleUserId)
+    protected function createParticipantProject($contact, $address, $project, $request, $portalUser, $responsibleUserId)
     {
         // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu zetten we responisibleUserId in Auth user tbv observers die create_by en updated_by hiermee vastleggen
         $responsibleUser = User::find($responsibleUserId);
@@ -380,6 +380,7 @@ class ParticipationProjectController extends Controller
         $participation = ParticipantProject::create([
             'created_with' => 'portal',
             'contact_id' => $contact->id,
+            'address_id' => $address->id,
             'project_id' => $project->id,
             'type_id' => $payoutTypeId,
             'did_accept_agreement' => (bool)$request->didAcceptAgreement,

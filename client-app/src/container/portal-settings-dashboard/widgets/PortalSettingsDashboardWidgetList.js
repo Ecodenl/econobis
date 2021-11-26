@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 
-import DataTable from '../../../components/dataTable/DataTable';
-import DataTableHead from '../../../components/dataTable/DataTableHead';
-import DataTableBody from '../../../components/dataTable/DataTableBody';
-import PortalSettingsDashboardWidgetListItem from './PortalSettingsDashboardWidgetListItem';
 import { connect } from 'react-redux';
-import PortalSettingsDashboardWidgetListHead from './PortalSettingsDashboardWidgetListHead';
 import PortalSettingsDashboardWidgetListToolbar from './PortalSettingsDashboardWidgetListToolbar';
 import AddPortalSettingsDashboardWidgetModal from './AddPortalSettingsDashboardWidgetModal';
+import PortalDashboardWidgetOrderTable from '../../../components/orderTable/portalDashboardWidgets/PortalDashboardWidgetOrderTable';
 
 class PortalSettingsDashboardWidgetList extends Component {
     constructor(props) {
@@ -41,6 +37,37 @@ class PortalSettingsDashboardWidgetList extends Component {
             loading = false;
         }
 
+        const columns = [
+            {
+                Header: 'Volgorde',
+                accessor: 'order',
+            },
+            {
+                Header: 'Titel',
+                accessor: 'title',
+            },
+            {
+                Header: 'Tekst',
+                accessor: 'text',
+            },
+            {
+                Header: 'Afbeelding',
+                accessor: 'image',
+            },
+            {
+                Header: 'Knoptekst',
+                accessor: 'buttonText',
+            },
+            {
+                Header: 'Knoplink',
+                accessor: 'buttonLink',
+            },
+            {
+                Header: 'Actief',
+                accessor: 'active',
+            },
+        ];
+
         return (
             <>
                 {edit ? (
@@ -54,30 +81,37 @@ class PortalSettingsDashboardWidgetList extends Component {
                 ) : (
                     <h5>Widgets</h5>
                 )}
-                <DataTable>
-                    <DataTableHead>
-                        <PortalSettingsDashboardWidgetListHead edit={edit} />
-                    </DataTableHead>
-                    <DataTableBody>
-                        {loading ? (
-                            <tr>
-                                <td colSpan={edit ? 7 : 6}>{loadingText}</td>
-                            </tr>
-                        ) : (
-                            data.map(widget => {
-                                return (
-                                    <PortalSettingsDashboardWidgetListItem
-                                        key={widget.id}
-                                        edit={edit}
-                                        handleInputChange={this.props.handleWidgetInputChange}
-                                        removeWidget={this.props.removeWidget}
-                                        {...widget}
-                                    />
-                                );
-                            })
-                        )}
-                    </DataTableBody>
-                </DataTable>
+                <PortalDashboardWidgetOrderTable
+                    columns={columns}
+                    data={data}
+                    edit={edit}
+                    handleInputChange={this.props.handleWidgetInputChange}
+                    removeWidget={this.props.removeWidget}
+                />
+                {/*<DataTable>*/}
+                {/*    <DataTableHead>*/}
+                {/*        <PortalSettingsDashboardWidgetListHead edit={edit} />*/}
+                {/*    </DataTableHead>*/}
+                {/*    <DataTableBody>*/}
+                {/*        {loading ? (*/}
+                {/*            <tr>*/}
+                {/*                <td colSpan={edit ? 7 : 6}>{loadingText}</td>*/}
+                {/*            </tr>*/}
+                {/*        ) : (*/}
+                {/*            data.map(widget => {*/}
+                {/*                return (*/}
+                {/*                    <PortalSettingsDashboardWidgetListItem*/}
+                {/*                        key={widget.id}*/}
+                {/*                        edit={edit}*/}
+                {/*                        handleInputChange={this.props.handleWidgetInputChange}*/}
+                {/*                        removeWidget={this.props.removeWidget}*/}
+                {/*                        {...widget}*/}
+                {/*                    />*/}
+                {/*                );*/}
+                {/*            })*/}
+                {/*        )}*/}
+                {/*    </DataTableBody>*/}
+                {/*</DataTable>*/}
                 {this.state.addWidgetModal && (
                     <AddPortalSettingsDashboardWidgetModal
                         title={'Widget toevoegen'}

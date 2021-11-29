@@ -24,19 +24,6 @@ class PortalSettingsDashboardWidgetList extends Component {
         const data = this.props.widgets;
         const edit = this.props.edit;
 
-        let loadingText = '';
-        let loading = true;
-
-        if (this.props.hasError) {
-            loadingText = 'Fout bij het ophalen van dashboard widgets.';
-        } else if (this.props.isLoading) {
-            loadingText = 'Gegevens aan het laden.';
-        } else if (data.length === 0) {
-            loadingText = 'Geen widgets gevonden!';
-        } else {
-            loading = false;
-        }
-
         const columns = [
             {
                 Header: 'Titel',

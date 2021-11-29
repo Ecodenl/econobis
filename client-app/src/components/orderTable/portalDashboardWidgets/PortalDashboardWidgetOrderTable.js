@@ -8,6 +8,22 @@ import update from 'immutability-helper';
 const PortalDashboardWidgetOrderTable = ({ columns, data, edit, handleInputChange, removeWidget }) => {
     const [records, setRecords] = useState(data);
 
+    useEffect(
+        function() {
+            setRecords(data);
+        },
+        [data]
+    );
+
+    useEffect(
+        function() {
+            for (let [index, value] of records.entries()) {
+                value.order = index + 1;
+            }
+        },
+        [records]
+    );
+
     const getRowId = React.useCallback(row => {
         return row.id;
     }, []);
@@ -29,15 +45,6 @@ const PortalDashboardWidgetOrderTable = ({ columns, data, edit, handleInputChang
             })
         );
     };
-
-    useEffect(
-        function() {
-            for (let [index, value] of records.entries()) {
-                value.order = index + 1;
-            }
-        },
-        [records]
-    );
 
     return (
         <DndProvider backend={HTML5Backend}>

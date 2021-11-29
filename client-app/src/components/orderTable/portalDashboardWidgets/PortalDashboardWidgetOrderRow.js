@@ -19,6 +19,7 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
     const [widgetImage, setWidgetImage] = useState();
 
     const staticWidgets = ['project-schrijf-je-in', 'over-ons'];
+    const staticInput = ['buttonLink'];
 
     const [, drop] = useDrop({
         accept: DND_ITEM_TYPE,
@@ -156,6 +157,10 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
                                               value={cell.value}
                                               onChangeAction={handleInputChange}
                                               itemId={cell.row.id}
+                                              disabled={
+                                                  staticWidgets.includes(cell.row.id) &&
+                                                  staticInput.includes(cell.column.id)
+                                              }
                                           />
                                       </td>
                                   );

@@ -76,7 +76,7 @@ class UpdateMemberToLaposta implements ShouldQueue
         ];
 
         try {
-//            $lapostaResponse = $member->update($contactGroupsPivot->laposta_member_id, $memberData);
+            sleep(1);
             $lapostaResponse = $member->update($this->lapostaMemberId, $memberData);
 
             $lapostaMemberState = $lapostaResponse['member']['state'];

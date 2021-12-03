@@ -254,7 +254,7 @@ class TemplateVariableHelper
                 return optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->es_number;
                 break;
             case 'energieleverancier_ean_elektra':
-                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->ean_electricity;
+                return optional($model->primaryAddress)->ean_electricity;
                 break;
             case 'energieleverancier_klant_sinds':
                 return optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->member_since ? Carbon::parse(optional($model->primaryAddressEnergySupplier)->member_since)->format('d/m/Y') : null;;
@@ -823,7 +823,7 @@ class TemplateVariableHelper
                 return optional(optional($model->address)->primaryAddressEnergySupplier)->es_number;
                 break;
             case 'contact_energieleverancier_ean_elektra':
-                return optional(optional($model->address)->primaryAddressEnergySupplier)->ean_electricity;
+                return optional($model->address)->ean_electricity;
                 break;
             case 'statussen':
                 return implode(', ', array_map(function ($status) {

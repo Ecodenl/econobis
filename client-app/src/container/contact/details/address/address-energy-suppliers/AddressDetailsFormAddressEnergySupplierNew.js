@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import { setError } from '../../../../../actions/general/ErrorActions';
 import AddressEnergySupplierAPI from '../../../../../api/contact/AddressEnergySupplierAPI';
-import { newAddressEnergySupplier } from '../../../../../actions/contact/ContactDetailsActions';
+import { newStateAddressEnergySuppliers } from '../../../../../actions/contact/ContactDetailsActions';
 import InputText from '../../../../../components/form/InputText';
 import ButtonText from '../../../../../components/button/ButtonText';
 import InputSelect from '../../../../../components/form/InputSelect';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import validator from 'validator';
-import InputToggle from '../../../../../components/form/InputToggle';
 import InputDate from '../../../../../components/form/InputDate';
 
 class AddressDetailsFormAddressEnergySupplierNew extends Component {
@@ -80,11 +80,19 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
             hasErrors = true;
         }
 
+        if (!addressEnergySupplier.memberSince || validator.isEmpty(addressEnergySupplier.memberSince)) {
+            errors.memberSince = true;
+            hasErrors = true;
+        }
+
         if (
-            addressEnergySupplier.isCurrentSupplier &&
-            (!addressEnergySupplier.memberSince || validator.isEmpty(addressEnergySupplier.memberSince))
+            !hasErrors &&
+            addressEnergySupplier.endDate &&
+            !validator.isEmpty(addressEnergySupplier.endDate) &&
+            addressEnergySupplier.endDate < addressEnergySupplier.memberSince
         ) {
             errors.memberSince = true;
+            errors.endDate = true;
             hasErrors = true;
         }
 
@@ -92,10 +100,18 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
 
         // If no errors send form
         !hasErrors &&
-            AddressEnergySupplierAPI.newAddressEnergySupplier(addressEnergySupplier).then(payload => {
-                this.props.newAddressEnergySupplier(payload);
-                this.props.toggleShowNew();
-            });
+            AddressEnergySupplierAPI.newAddressEnergySupplier(addressEnergySupplier)
+                .then(payload => {
+                    this.props.newStateAddressEnergySuppliers(payload.data.data);
+                    this.props.toggleShowNew();
+                })
+                .catch(error => {
+                    if (error.response) {
+                        this.props.setError(error.response.status, error.response.data.message);
+                    } else {
+                        console.log(error);
+                    }
+                });
     };
 
     render() {
@@ -138,13 +154,7 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
                         </div>
 
                         <div className="row">
-                            <InputToggle
-                                label={'Is huidige leverancier'}
-                                name={'isCurrentSupplier'}
-                                value={Boolean(isCurrentSupplier)}
-                                onChangeAction={this.handleInputChange}
-                                disabled={validator.isEmpty('' + memberSince)}
-                            />
+                            <div className="form-group col-sm-6" />
                             <InputText
                                 label={'Klantnummer'}
                                 id={'esNumber'}
@@ -160,7 +170,7 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
                                 name="memberSince"
                                 value={memberSince ? memberSince : ''}
                                 onChangeAction={this.handleInputChangeDate}
-                                required={isCurrentSupplier ? 'required' : ''}
+                                required={true}
                                 error={this.state.errors.memberSince}
                             />
                             <InputDate
@@ -168,7 +178,6 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
                                 name="endDate"
                                 value={endDate ? endDate : ''}
                                 onChangeAction={this.handleInputChangeDate}
-                                required={isCurrentSupplier ? 'required' : ''}
                                 error={this.state.errors.endDate}
                             />
                         </div>
@@ -219,8 +228,11 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    newAddressEnergySupplier: addressEnergySupplier => {
-        dispatch(newAddressEnergySupplier(addressEnergySupplier));
+    newStateAddressEnergySuppliers: addressEnergySuppliers => {
+        dispatch(newStateAddressEnergySuppliers(addressEnergySuppliers));
+    },
+    setError: (http_code, message) => {
+        dispatch(setError(http_code, message));
     },
 });
 

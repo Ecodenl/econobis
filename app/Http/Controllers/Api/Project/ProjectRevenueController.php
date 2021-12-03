@@ -590,8 +590,7 @@ class ProjectRevenueController extends ApiController
         $participantAddress = $participant->address;
 
         if($projectRevenue->category->code_ref == 'revenueKwhSplit' && !$closing) {
-            // todo WM-es: check previous_address_energy_supplier_id ???
-            $addressEnergySupplier = AddressEnergySupplier::find($contact->previous_address_energy_supplier_id);
+            $addressEnergySupplier = AddressEnergySupplier::find($participant->address->previous_address_energy_supplier_id);
         }else{
             $addressEnergySupplier = $participant->address->primaryAddressEnergySupplier;
         }
@@ -1013,8 +1012,7 @@ class ProjectRevenueController extends ApiController
                 // indien Opbrengst Kwh, dan alleen mutation aanmaken en daarna status op Afgehandeld (processed).
                 if ($distribution->revenue->category->code_ref === 'revenueKwh' || $distribution->revenue->category->code_ref === 'revenueKwhSplit') {
                     if($distribution->revenue->category->code_ref == 'revenueKwhSplit') {
-                        // todo WM-es: check previous_address_energy_supplier_id ???
-                        $addressEnergySupplier = AddressEnergySupplier::find($distribution->contact->previous_address_energy_supplier_id);
+                        $addressEnergySupplier = AddressEnergySupplier::find($distribution->participation->address->previous_address_energy_supplier_id);
                     }else{
                         $addressEnergySupplier = $distribution->participation->address->primaryAddressEnergySupplier;
                     }

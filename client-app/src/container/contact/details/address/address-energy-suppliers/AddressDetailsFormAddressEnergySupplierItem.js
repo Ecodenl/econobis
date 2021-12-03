@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import validator from 'validator';
 
+import { setError } from '../../../../../actions/general/ErrorActions';
 import AddressEnergySupplierAPI from '../../../../../api/contact/AddressEnergySupplierAPI';
-import { updateAddressEnergySupplier } from '../../../../../actions/contact/ContactDetailsActions';
+import { updateStateAddressEnergySuppliers } from '../../../../../actions/contact/ContactDetailsActions';
 import AddressDetailsFormAddressEnergySupplierView from './AddressDetailsFormAddressEnergySupplierView';
 import AddressDetailsFormAddressEnergySupplierEdit from './AddressDetailsFormAddressEnergySupplierEdit';
 import AddressDetailsFormAddressEnergySupplierDelete from './AddressDetailsFormAddressEnergySupplierDelete';
 import { isEqual } from 'lodash';
-import { hashHistory } from 'react-router';
 
 class AddressDetailsFormAddressEnergySupplierItem extends Component {
     constructor(props) {
@@ -73,23 +73,6 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
         this.closeEdit();
     };
 
-    //todo: WM even als test. ik denk dat we voor Tussenstijdse opbrengstverdelingen een list moeten maken over deelnames, wellicht in harmonica ??
-    // revenueKwhSplit = () => {
-    //     console.log('do revenueKwhSplit');
-    //
-    //     const revenueKwhSplitCategoryId = this.props.projectRevenueCategories.find(
-    //         projectRevenueCategory => projectRevenueCategory.codeRef === 'revenueKwhSplit'
-    //     ).id;
-    //
-    //     // const participationId = 348;
-    //     // const projectId = 48;
-    //     // const hrefNewRevenueKwhSplit = `/project/deelnemer/opbrengst/nieuw/${participationId}/${revenueKwhSplitCategoryId}`;
-    //     const revenueId = 121;
-    //     const hrefNewRevenueKwhSplit = `/project/deelnemer/opbrengst/${revenueId}`;
-    //
-    //     hashHistory.push(hrefNewRevenueKwhSplit);
-    // };
-
     toggleDelete = () => {
         this.setState({ showDelete: !this.state.showDelete });
     };
@@ -126,11 +109,19 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
         let errors = {};
         let hasErrors = false;
 
+        if (!addressEnergySupplier.memberSince || validator.isEmpty(addressEnergySupplier.memberSince)) {
+            errors.memberSince = true;
+            hasErrors = true;
+        }
+
         if (
-            addressEnergySupplier.isCurrentSupplier &&
-            (!addressEnergySupplier.memberSince || validator.isEmpty(addressEnergySupplier.memberSince))
+            !hasErrors &&
+            addressEnergySupplier.endDate &&
+            !validator.isEmpty(addressEnergySupplier.endDate) &&
+            addressEnergySupplier.endDate < addressEnergySupplier.memberSince
         ) {
             errors.memberSince = true;
+            errors.endDate = true;
             hasErrors = true;
         }
 
@@ -138,10 +129,18 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
 
         // If no errors send form
         !hasErrors &&
-            AddressEnergySupplierAPI.updateAddressEnergySupplier(addressEnergySupplier).then(payload => {
-                this.props.updateAddressEnergySupplier(payload);
-                this.closeEdit();
-            });
+            AddressEnergySupplierAPI.updateAddressEnergySupplier(addressEnergySupplier)
+                .then(payload => {
+                    this.props.updateStateAddressEnergySuppliers(payload.data.data);
+                    this.closeEdit();
+                })
+                .catch(error => {
+                    if (error.response) {
+                        this.props.setError(error.response.status, error.response.data.message);
+                    } else {
+                        console.log(error);
+                    }
+                });
     };
 
     render() {
@@ -190,8 +189,11 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    updateAddressEnergySupplier: addressEnergySupplier => {
-        dispatch(updateAddressEnergySupplier(addressEnergySupplier));
+    updateStateAddressEnergySuppliers: addressEnergySuppliers => {
+        dispatch(updateStateAddressEnergySuppliers(addressEnergySuppliers));
+    },
+    setError: (http_code, message) => {
+        dispatch(setError(http_code, message));
     },
 });
 

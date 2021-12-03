@@ -81,6 +81,20 @@ class Address extends Model
         return $this->postal_code . '-' . $this->number . '-' . $this->addition;
     }
 
+    public function getStreetPostalCodeCityAttribute(){
+        $streetPostalCodeCity = $this->street . ' ' . $this->number;
+        $streetPostalCodeCity .= $this->addition ? '-' . $this->addition : '';
+        $streetPostalCodeCity .= $this->postal_code ? ', ' . $this->postal_code : '';
+        $streetPostalCodeCity .= $this->city ? ', ' . $this->city : '';
+        return $streetPostalCodeCity;
+    }
+    public function getTypeAndPrimaryAttribute(){
+        $typeAndPrimary = $this->getType() ? $this->getType()->name : '';
+        $typeAndPrimary .= $this->primary ? ($this->getType() ? ' - ' : '') . 'primair' : '';
+        return $typeAndPrimary;
+    }
+
+
     public function getPostalCodeAttribute($postalCode){
         if(preg_match('/^\d{4}[A-Za-z]{2}$/', $postalCode)){
             $postalCode = substr_replace($postalCode, ' ', 4, 0);

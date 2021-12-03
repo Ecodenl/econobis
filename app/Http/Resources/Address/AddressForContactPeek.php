@@ -14,19 +14,9 @@ class AddressForContactPeek extends JsonResource
      */
     public function toArray($request)
     {
-        $streetPostalCodeCity = $this->street . ' ' . $this->number;
-        $streetPostalCodeCity .= $this->addition ? '-' . $this->addition : '';
-        $streetPostalCodeCity .= $this->postal_code ? ', ' . $this->postal_code : '';
-        $streetPostalCodeCity .= $this->city ? ', ' . $this->city : '';
-        $streetPostalCodeCity .= ' (';
-        $streetPostalCodeCity .= $this->getType() ? $this->getType()->name : '';
-        $streetPostalCodeCity .= $this->primary ? ($this->getType() ? ' - ' : '') . 'primair' : '';
-        $streetPostalCodeCity .= ')';
-
-
         return [
             'id' => $this->id,
-            'streetPostalCodeCity' => $streetPostalCodeCity,
+            'streetPostalCodeCity' => $this->streetPostalCodeCity . ' (' . $this->typeAndPrimary . ')',
         ];
     }
 }

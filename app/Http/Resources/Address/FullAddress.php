@@ -35,6 +35,8 @@ class FullAddress extends JsonResource
             'city' => $this->city,
             'postalCode' => $this->postal_code,
             'primary' => $this->primary,
+            'streetPostalCodeCity' => $this->street_postal_code_city,
+            'typeAndPrimary' => $this->type_and_primary,
             'eanElectricity' => $this->ean_electricity,
             'eanGas' => $this->ean_gas,
             'createdAt' => $this->created_at,

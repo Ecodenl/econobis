@@ -27,12 +27,13 @@ class Address extends Model
 
     public function addressEnergySuppliers()
     {
-        return $this->hasMany(AddressEnergySupplier::class)->orderByDesc('is_current_supplier')->orderByDesc('id');
+        return $this->hasMany(AddressEnergySupplier::class)->orderByDesc('member_since')->orderByDesc('id');
     }
 
+    // primaryAddressEnergySupplier: only for Electricity ! (type 2 or 3)
     public function primaryAddressEnergySupplier()
     {
-        return $this->hasOne(AddressEnergySupplier::class)->where('is_current_supplier', true);
+        return $this->hasOne(AddressEnergySupplier::class)->where('is_current_supplier', true)->whereIn('energy_supply_type_id', [2, 3] );
     }
 
     public function contact()
@@ -88,10 +89,20 @@ class Address extends Model
         return $postalCode;
     }
 
-    /**
-     * Previous energy supplier
-     * @return int
-     */
+    public function getIsInRevenueDistributionAttribute()
+    {
+        if($this->participations && $this->participations->count() > 0){
+            foreach ($this->participations as $participation){
+                if($participation->projectRevenueDistributions && $participation->projectRevenueDistributions->count() > 0){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    // previousAddressEnergySupplierId: only for Electricity ! (type 2 or 3)
     public function getPreviousAddressEnergySupplierIdAttribute()
     {
         if(!$this->primaryAddressEnergySupplier) {
@@ -99,6 +110,7 @@ class Address extends Model
         }
         $addressEnergySuppliers = $this->addressEnergySuppliers
             ->whereNotNull('member_since')
+            ->whereIn('energy_supply_type_id', [2, 3] )
             ->where('member_since', '<', $this->primaryAddressEnergySupplier->member_since)
             ->sortByDesc('member_since');
         if(count($addressEnergySuppliers) == 0){

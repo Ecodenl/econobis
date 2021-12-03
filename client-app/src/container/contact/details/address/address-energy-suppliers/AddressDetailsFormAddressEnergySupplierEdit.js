@@ -8,8 +8,7 @@ import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import InputDate from '../../../../../components/form/InputDate';
 import moment from 'moment/moment';
-import InputToggle from '../../../../../components/form/InputToggle';
-import validator from 'validator';
+import ViewText from '../../../../../components/form/ViewText';
 moment.locale('nl');
 
 const AddressDetailsFormAddressEnergySupplierEdit = props => {
@@ -51,12 +50,10 @@ const AddressDetailsFormAddressEnergySupplierEdit = props => {
                         </div>
 
                         <div className="row">
-                            <InputToggle
+                            <ViewText
+                                className={'form-group col-sm-6'}
                                 label={'Is huidige leverancier'}
-                                name={'isCurrentSupplier'}
-                                value={Boolean(isCurrentSupplier)}
-                                onChangeAction={props.handleInputChange}
-                                disabled={validator.isEmpty('' + memberSince)}
+                                value={isCurrentSupplier ? 'Ja' : 'Nee'}
                             />
                             <InputText
                                 label={'Klantnummer'}
@@ -72,7 +69,7 @@ const AddressDetailsFormAddressEnergySupplierEdit = props => {
                                 name="memberSince"
                                 value={memberSince ? memberSince : ''}
                                 onChangeAction={props.handleInputChangeDate}
-                                required={isCurrentSupplier ? 'required' : ''}
+                                required={true}
                                 error={props.errors.memberSince}
                             />
                             <InputDate

@@ -167,12 +167,22 @@ export default function(state = {}, action) {
         case 'NEW_ADDRESS_ENERGY_SUPPLIER':
             return {
                 ...state,
-                addressEnergySuppliers: action.addressEnergySupplier,
+                addresses: state.addresses.map(address => {
+                    return {
+                        ...address,
+                        addressEnergySuppliers: action.addressEnergySuppliers,
+                    };
+                }),
             };
         case 'UPDATE_ADDRESS_ENERGY_SUPPLIER':
             return {
                 ...state,
-                addressEnergySuppliers: action.addressEnergySupplier,
+                addresses: state.addresses.map(address => {
+                    return {
+                        ...address,
+                        addressEnergySuppliers: action.addressEnergySuppliers,
+                    };
+                }),
             };
         case 'DELETE_ADDRESS_ENERGY_SUPPLIER':
             return {

@@ -350,7 +350,6 @@ class ExternalWebformController extends Controller
                 'energieleverancier_klantnummer' => 'es_number',
                 'energieleverancier_type_id' => 'energy_supply_type_id',
                 'energieleverancier_klant_sinds' => 'member_since',
-// todo WM-es: moet deze ook niet verplaatst worden naar adres ?
                 'energieleverancier_ean_code_elektra' => 'ean_electricity',
                 'energieleverancier_status' => 'energy_supply_status_id',
                 'energieleverancier_huidig' => 'is_current_supplier',

@@ -33,7 +33,6 @@ use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\Order\OrderController;
-use App\Http\Resources\ParticipantProject\FullRevenueParticipantProject;
 use App\Http\Resources\ParticipantProject\Templates\ParticipantReportMail;
 use App\Http\Resources\Project\FullProjectRevenue;
 use App\Http\Resources\Project\FullProjectRevenueDistribution;
@@ -646,7 +645,6 @@ class ProjectRevenueController extends ApiController
             $distribution->es_id
                 = $addressEnergySupplier->energySupplier->id;
 
-            // todo WM-es: check participation->address???
             $distribution->energy_supplier_ean_electricity
                 = $addressEnergySupplier->address->ean_electricity;
 

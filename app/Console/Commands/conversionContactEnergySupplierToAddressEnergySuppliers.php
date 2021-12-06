@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Eco\Address\Address;
+use App\Eco\Address\AddressType;
 use App\Eco\Contact\Contact;
 use App\Eco\EnergySupplier\AddressEnergySupplier;
 use Illuminate\Console\Command;
@@ -45,7 +46,6 @@ class conversionContactEnergySupplierToAddressEnergySuppliers extends Command
         $contactEnergySuppliers = DB::table('xxx_contact_energy_supplier')->get();
 
         foreach($contactEnergySuppliers as $contactEnergySupplier) {
-//            print_r("contactEnergySupplier Id: " . $contactEnergySupplier->id . "\n");
 
             $contact = Contact::find($contactEnergySupplier->contact_id);
             if(!$contact){
@@ -60,9 +60,21 @@ class conversionContactEnergySupplierToAddressEnergySuppliers extends Command
                     $address = Address::where('contact_id', $contactEnergySupplier->contact_id)->orderBy('id', 'desc')->first();
                 }
             }
+
+            $newAddress = false;
             if(!$address){
-                DB::table('xxx_contact_energy_supplier')->where('id', $contactEnergySupplier->id)->update(["address_conversion_text" => "Geen conversie, adres kon niet bepaald worden!"]);
-                continue;
+                $address = Address::create([
+                    'contact_id' => $contact->id,
+                    'type_id' => 'old',
+                    'end_date' => Carbon::parse('1999-12-31'),
+                    'street' => 'Onbekend',
+                    'number' => 0,
+                    'addition' => '',
+                    'city' => 'Onbekend',
+                    'postal_code' => '9999ZZ',
+                    'primary' => true,
+                ]);
+                $newAddress = true;
             }
 
             $addressEnergySupplier = AddressEnergySupplier::create([
@@ -84,7 +96,11 @@ class conversionContactEnergySupplierToAddressEnergySuppliers extends Command
                 $participation->save();
             }
 
-            $addressConversionText = $address->getType()->name . ' ';
+            if($newAddress){
+                $addressConversionText = 'Geen adres gevonden. Adres Onbekend toevoegd. ';
+            }else{
+                $addressConversionText = $address->getType()->name . ' ';
+            }
             if($address->primary){
                 $addressConversionText .= '(primaire) ';
             }
@@ -117,22 +133,44 @@ class conversionContactEnergySupplierToAddressEnergySuppliers extends Command
 
         $addressEnergySuppliers = AddressEnergySupplier::all();
         foreach($addressEnergySuppliers as $addressEnergySupplier) {
-//            print_r("addressEnergySupplier Id: " . $addressEnergySupplier->id . "\n");
 
-            $previousAddressEnergySuppliers = $addressEnergySupplier->address->addressEnergySuppliers
-            ->whereNotNull('member_since')
-            ->where('member_since', '<', $addressEnergySupplier->member_since)
-            ->sortByDesc('member_since');
-        if($previousAddressEnergySuppliers && count($previousAddressEnergySuppliers) > 0){
-            $previousAddressEnergySupplier = $previousAddressEnergySuppliers->first();
-            $previousAddressEnergySupplier->end_date = Carbon::parse($addressEnergySupplier->member_since)->subDay();
-            $previousAddressEnergySupplier->save();
-//            print_r("Current klant sinds: " . $addressEnergySupplier->member_since . "\n");
-//            print_r("Previous AddressEnergySupplier: " . $previousAddressEnergySupplier->id . "\n");
-//            print_r("Previous klant sinds: " . $previousAddressEnergySupplier->member_since . "\n");
-//            print_r("Previous Eind datum: " . $previousAddressEnergySupplier->end_date . "\n");
+            if(!$addressEnergySupplier->is_current_supplier && $addressEnergySupplier->member_since==null && $addressEnergySupplier->end_date==null) {
+                $addressEnergySupplier->member_since = Carbon::parse('1900-01-01');
+                $addressEnergySupplier->end_date = Carbon::parse('1999-12-31');
+                $addressEnergySupplier->save();
+                continue;
+            }
+
+            if($addressEnergySupplier->member_since == null){
+                $addressEnergySupplier->member_since = Carbon::parse('1900-01-01');
+            }
+            $previousAddressEnergySuppliers = AddressEnergySupplier::where('address_id', $addressEnergySupplier->address_id)
+                ->whereNotNull('member_since')
+                ->where('member_since', '<', $addressEnergySupplier->member_since)
+                ->orderBy('member_since', 'desc');
+
+            if($previousAddressEnergySuppliers->exists()){
+                $previousAddressEnergySupplier = $previousAddressEnergySuppliers->first();
+                $previousAddressEnergySupplier->end_date = Carbon::parse($addressEnergySupplier->member_since)->subDay();
+                $previousAddressEnergySupplier->save();
+            }
         }
-    }
+
+        $addressEnergySuppliers = AddressEnergySupplier::where('is_current_supplier', true)->whereNull('member_since')->get();
+        foreach($addressEnergySuppliers as $addressEnergySupplier) {
+
+            $hasOldAddressEnergySupplier = AddressEnergySupplier::where('address_id', $addressEnergySupplier->address_id)
+                ->where('member_since', '1900-01-01')
+                ->exists();
+
+            if($hasOldAddressEnergySupplier){
+                $addressEnergySupplier->member_since = Carbon::parse('2000-01-01');
+                $addressEnergySupplier->save();
+            }else{
+                $addressEnergySupplier->member_since = Carbon::parse('1900-01-01');
+                $addressEnergySupplier->save();
+            }
+        }
 
     }
 }

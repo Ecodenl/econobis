@@ -586,12 +586,16 @@ class ProjectRevenueController extends ApiController
     public function saveDistribution(ProjectRevenue $projectRevenue, ParticipantProject $participant, $closing)
     {
         $contact = Contact::find($participant->contact_id);
-        $participantAddress = $participant->address;
+        if($participant->address){
+            $participantAddress = $participant->address;
+        }else{
+            $participantAddress = $participant->contact->primaryAddress;
+        }
 
         if($projectRevenue->category->code_ref == 'revenueKwhSplit' && !$closing) {
-            $addressEnergySupplier = AddressEnergySupplier::find($participant->address->previous_address_energy_supplier_id);
+            $addressEnergySupplier = AddressEnergySupplier::find($participantAddress->previous_address_energy_supplier_id);
         }else{
-            $addressEnergySupplier = $participant->address->primaryAddressEnergySupplier;
+            $addressEnergySupplier = $participantAddress->primaryAddressEnergySupplier;
         }
 
         // If participant already is added to project revenue distribution then update

@@ -7,6 +7,7 @@ use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\AddressEnergySupplier\FullAddressEnergySupplier;
 use Carbon\Carbon;
+//use Illuminate\Support\Facades\Log;
 
 class AddressEnergySupplierController extends ApiController
 {
@@ -31,13 +32,24 @@ class AddressEnergySupplierController extends ApiController
 
         $this->validateAddressEnergySupplier($addressEnergySupplier);
 
+        $addressEnergySupplier->save();
+
+        // LETOP: Laravel 7 uses a new date serialization format when using the toArray or toJson method on Eloquent models.
+        // To format dates for serialization, the framework now uses Carbon's toJSON method, which produces an ISO-8601 compatible
+        // date including timezone information and fractional seconds. In addition, this change provides better support and
+        // integration with client-side date parsing libraries.
+        // Previously, dates would be serialized to a format like the following: 2019-11-30 00:00:00.000000. Dates serialized using the
+        // new format will appear like: 2019-11-29T23:00:00.000000Z. Please note that ISO-8601 dates are always expressed in UTC.
+        //
+        // We halen hierom voor teruggeven AddressEnergySupplier even opnieuw op, anders geven we verkeerde datum terug (nl. 2019-11-29 in
+        // bovenstaand voorbeeld).
+        $addressEnergySupplier = AddressEnergySupplier::find($addressEnergySupplier->id);
+
         // determine is current_supplier
         $this->determineIsCurrentSupplier($addressEnergySupplier);
 
-        $addressEnergySupplier->save();
-
-        return FullAddressEnergySupplier::collection(AddressEnergySupplier::where('address_id', $addressEnergySupplier->address_id)->orderByDesc('member_since')->with('energySupplier', 'energySupplyStatus', 'createdBy', 'address', 'energySupplyType')->get());
-//        return FullAddressEnergySupplier::make($addressEnergySupplier);
+        $addressEnergySupplier->load('energySupplier', 'energySupplyStatus', 'createdBy', 'address', 'energySupplyType');
+        return FullAddressEnergySupplier::make($addressEnergySupplier);
     }
 
     public function update(RequestInput $requestInput, AddressEnergySupplier $addressEnergySupplier)
@@ -58,11 +70,22 @@ class AddressEnergySupplierController extends ApiController
 
         $addressEnergySupplier->save();
 
+        // LETOP: Laravel 7 uses a new date serialization format when using the toArray or toJson method on Eloquent models.
+        // To format dates for serialization, the framework now uses Carbon's toJSON method, which produces an ISO-8601 compatible
+        // date including timezone information and fractional seconds. In addition, this change provides better support and
+        // integration with client-side date parsing libraries.
+        // Previously, dates would be serialized to a format like the following: 2019-11-30 00:00:00.000000. Dates serialized using the
+        // new format will appear like: 2019-11-29T23:00:00.000000Z. Please note that ISO-8601 dates are always expressed in UTC.
+        //
+        // We halen hierom voor teruggeven AddressEnergySupplier even opnieuw op, anders geven we verkeerde datum terug (nl. 2019-11-29 in
+        // bovenstaand voorbeeld).
+        $addressEnergySupplier = AddressEnergySupplier::find($addressEnergySupplier->id);
+
         // determine is current_supplier
         $this->determineIsCurrentSupplier($addressEnergySupplier);
 
-        return FullAddressEnergySupplier::collection(AddressEnergySupplier::where('address_id', $addressEnergySupplier->address_id)->orderByDesc('member_since')->with('energySupplier', 'energySupplyStatus', 'createdBy', 'address', 'energySupplyType')->get());
-//        return FullAddressEnergySupplier::make($addressEnergySupplier);
+        $addressEnergySupplier->load('energySupplier', 'energySupplyStatus', 'createdBy', 'address', 'energySupplyType');
+        return FullAddressEnergySupplier::make($addressEnergySupplier);
     }
 
     public function destroy(AddressEnergySupplier $addressEnergySupplier)
@@ -88,6 +111,7 @@ class AddressEnergySupplierController extends ApiController
             if ($dateTo == null) {
                 $dateTo = Carbon::parse('9999-12-31');
             }
+
             $otherAddressEnergySuppliers
                 ->where(function ($otherAddressEnergySuppliers) use ($dateTo) {
                     $otherAddressEnergySuppliers
@@ -132,21 +156,33 @@ class AddressEnergySupplierController extends ApiController
      */
     public function determineIsCurrentSupplier(AddressEnergySupplier $addressEnergySupplier)
     {
-        $today = Carbon::today();
-        $dateFrom = $addressEnergySupplier->member_since;
-        if ($dateFrom == null) {
-            $dateFrom = Carbon::parse('1900-01-01');
-        }
-        $dateTo = $addressEnergySupplier->end_date;
-        if ($dateTo == null) {
-            $dateTo = Carbon::parse('9999-12-31');
-        }
-        if($dateFrom <= $today && $dateTo >= $today){
-            $addressEnergySupplier->is_current_supplier = true;
+        $today = Carbon::today()->format('Y-m-d');
+
+        if ($addressEnergySupplier->member_since == null) {
+            $dateFrom = Carbon::parse('1900-01-01')->format('Y-m-d');
         }else{
-            $addressEnergySupplier->is_current_supplier = false;
+            $dateFrom = Carbon::parse($addressEnergySupplier->member_since)->format('Y-m-d');
         }
-        $addressEnergySupplier->save();
+        if ($addressEnergySupplier->end_date == null) {
+            $dateTo = Carbon::parse('9999-12-31')->format('Y-m-d');
+        }else{
+            $dateTo = Carbon::parse($addressEnergySupplier->end_date)->format('Y-m-d');
+        }
+
+        if($dateFrom <= $today && $dateTo >= $today){
+            if($addressEnergySupplier->is_current_supplier == false) {
+                $addressEnergySupplier->is_current_supplier = true;
+                $addressEnergySupplier->save();
+//                Log::info('AddressEnergySupplier ' . $addressEnergySupplier->id . ' is Huidige leverancier geworden!');
+            }
+        }else{
+            if($addressEnergySupplier->is_current_supplier == true)
+            {
+                $addressEnergySupplier->is_current_supplier = false;
+                $addressEnergySupplier->save();
+//                Log::info('AddressEnergySupplier ' . $addressEnergySupplier->id . ' is niet langer meer Huidige leverancier!');
+            }
+        }
     }
 
 }

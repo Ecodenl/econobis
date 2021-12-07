@@ -4,7 +4,7 @@ import validator from 'validator';
 
 import { setError } from '../../../../../actions/general/ErrorActions';
 import AddressEnergySupplierAPI from '../../../../../api/contact/AddressEnergySupplierAPI';
-import { updateStateAddressEnergySuppliers } from '../../../../../actions/contact/ContactDetailsActions';
+import { updateStateAddressEnergySupplier } from '../../../../../actions/contact/ContactDetailsActions';
 import AddressDetailsFormAddressEnergySupplierView from './AddressDetailsFormAddressEnergySupplierView';
 import AddressDetailsFormAddressEnergySupplierEdit from './AddressDetailsFormAddressEnergySupplierEdit';
 import AddressDetailsFormAddressEnergySupplierDelete from './AddressDetailsFormAddressEnergySupplierDelete';
@@ -131,7 +131,7 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
         !hasErrors &&
             AddressEnergySupplierAPI.updateAddressEnergySupplier(addressEnergySupplier)
                 .then(payload => {
-                    this.props.updateStateAddressEnergySuppliers(payload.data.data);
+                    this.props.updateStateAddressEnergySupplier(payload.data.data);
                     this.closeEdit();
                 })
                 .catch(error => {
@@ -189,8 +189,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    updateStateAddressEnergySuppliers: addressEnergySuppliers => {
-        dispatch(updateStateAddressEnergySuppliers(addressEnergySuppliers));
+    updateStateAddressEnergySupplier: addressEnergySuppliers => {
+        dispatch(updateStateAddressEnergySupplier(addressEnergySuppliers));
     },
     setError: (http_code, message) => {
         dispatch(setError(http_code, message));

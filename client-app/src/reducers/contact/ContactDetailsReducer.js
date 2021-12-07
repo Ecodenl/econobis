@@ -167,23 +167,40 @@ export default function(state = {}, action) {
         case 'NEW_ADDRESS_ENERGY_SUPPLIER':
             return {
                 ...state,
-                addresses: state.addresses.map(address => {
-                    return {
-                        ...address,
-                        addressEnergySuppliers: action.addressEnergySuppliers,
-                    };
-                }),
+                addresses: state.addresses.map(address =>
+                    address.id === action.addressEnergySupplier.addressId
+                        ? {
+                              ...address,
+                              addressEnergySuppliers: [
+                                  ...address.addressEnergySuppliers,
+                                  {
+                                      ...action.addressEnergySupplier,
+                                  },
+                              ],
+                          }
+                        : address
+                ),
             };
+
         case 'UPDATE_ADDRESS_ENERGY_SUPPLIER':
             return {
                 ...state,
-                addresses: state.addresses.map(address => {
-                    return {
-                        ...address,
-                        addressEnergySuppliers: action.addressEnergySuppliers,
-                    };
-                }),
+                addresses: state.addresses.map(address =>
+                    address.id === action.addressEnergySupplier.addressId
+                        ? {
+                              ...address,
+                              addressEnergySuppliers: address.addressEnergySuppliers.map(addressEnergySupplier =>
+                                  addressEnergySupplier.id === action.addressEnergySupplier.id
+                                      ? {
+                                            ...action.addressEnergySupplier,
+                                        }
+                                      : addressEnergySupplier
+                              ),
+                          }
+                        : address
+                ),
             };
+
         case 'DELETE_ADDRESS_ENERGY_SUPPLIER':
             return {
                 ...state,

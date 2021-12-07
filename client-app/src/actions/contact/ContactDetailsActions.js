@@ -149,17 +149,17 @@ export const unsetPrimaryEmailAddresses = () => {
     };
 };
 
-export const newStateAddressEnergySuppliers = addressEnergySuppliers => {
+export const newStateAddressEnergySupplier = addressEnergySupplier => {
     return {
         type: 'NEW_ADDRESS_ENERGY_SUPPLIER',
-        addressEnergySuppliers,
+        addressEnergySupplier,
     };
 };
 
-export const updateStateAddressEnergySuppliers = addressEnergySuppliers => {
+export const updateStateAddressEnergySupplier = addressEnergySupplier => {
     return {
         type: 'UPDATE_ADDRESS_ENERGY_SUPPLIER',
-        addressEnergySuppliers,
+        addressEnergySupplier,
     };
 };
 

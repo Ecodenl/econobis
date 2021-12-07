@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { setError } from '../../../../../actions/general/ErrorActions';
 import AddressEnergySupplierAPI from '../../../../../api/contact/AddressEnergySupplierAPI';
-import { newStateAddressEnergySuppliers } from '../../../../../actions/contact/ContactDetailsActions';
+import { newStateAddressEnergySupplier } from '../../../../../actions/contact/ContactDetailsActions';
 import InputText from '../../../../../components/form/InputText';
 import ButtonText from '../../../../../components/button/ButtonText';
 import InputSelect from '../../../../../components/form/InputSelect';
@@ -102,7 +102,7 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
         !hasErrors &&
             AddressEnergySupplierAPI.newAddressEnergySupplier(addressEnergySupplier)
                 .then(payload => {
-                    this.props.newStateAddressEnergySuppliers(payload.data.data);
+                    this.props.newStateAddressEnergySupplier(payload.data.data);
                     this.props.toggleShowNew();
                 })
                 .catch(error => {
@@ -228,8 +228,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    newStateAddressEnergySuppliers: addressEnergySuppliers => {
-        dispatch(newStateAddressEnergySuppliers(addressEnergySuppliers));
+    newStateAddressEnergySupplier: addressEnergySupplier => {
+        dispatch(newStateAddressEnergySupplier(addressEnergySupplier));
     },
     setError: (http_code, message) => {
         dispatch(setError(http_code, message));

@@ -25,7 +25,7 @@ class ContactDetailsFormAddress extends Component {
         return (
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Adres gegevens</span>
+                    <span className="h5 text-bold">Adres / Energieleverancier gegevens</span>
                     <a role="button" className="pull-right" onClick={this.toggleShowNew}>
                         <span className="glyphicon glyphicon-plus" />
                     </a>

@@ -10,6 +10,7 @@ use App\Helpers\Delete\Models\DeleteContact;
 use App\Helpers\Hoomdossier\HoomdossierHelper;
 use App\Helpers\Import\ContactImportHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Contact\ContactWithAddressPeek;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\Contact\FullContactWithGroups;
 use App\Http\Resources\Task\SidebarTask;
@@ -27,9 +28,6 @@ class ContactController extends Controller
         $contact->contactNotes->load(['createdBy', 'updatedBy']);
         $contact->occupations->load(['occupation', 'primaryContact', 'contact']);
         $contact->primaryOccupations->load(['occupation', 'primaryContact', 'contact']);
-
-//        todo WM-es: cleanup es
-//        $contact->addressEnergySuppliers->load(['energySupplier', 'energySupplyStatuses', 'energySupplyTypes', 'createdBy', 'contact']);
 
         if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisation.quotationRequests.opportunity.measureCategory', 'organisation.quotationRequests.opportunity.status', 'organisation.campaigns', 'contactPerson.contact']);
         if($contact->isPerson()) $contact->load(['person', 'person.title', 'person.organisation', 'person.type']);
@@ -121,9 +119,16 @@ class ContactController extends Controller
 
     public function peek()
     {
-        $contact = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->get();
+        $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->get();
 
-        return ContactPeek::collection($contact);
+        return ContactPeek::collection($contacts);
+    }
+
+    public function peekWithAddress()
+    {
+        $contacts = Contact::select('id', 'full_name', 'number')->with('addresses')->orderBy('full_name')->get();
+
+        return ContactWithAddressPeek::collection($contacts);
     }
 
     public function groups(Contact $contact)

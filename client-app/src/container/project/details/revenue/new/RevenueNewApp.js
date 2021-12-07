@@ -277,11 +277,7 @@ class RevenueNewApp extends Component {
             errorMessage.kwhEndHigh = 'Verplicht';
             hasErrors = true;
         }
-        if (
-            category.codeRef !== 'redemptionEuro' &&
-            !revenue.payoutKwh &&
-            this.isPeriodExceedingYear(revenue.dateBegin, revenue.dateEnd)
-        ) {
+        if ((category.codeRef === 'revenueKwh' || category.codeRef === 'revenueKwhSplit') && !revenue.payoutKwh) {
             errors.payoutKwh = true;
             errorMessage.payoutKwh = 'Verplicht';
             hasErrors = true;

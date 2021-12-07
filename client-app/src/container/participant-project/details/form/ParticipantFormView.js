@@ -11,6 +11,7 @@ import ParticipantFormViewPostalcodeLinkCapital from './view/ParticipantFormView
 const ParticipantFormView = props => {
     const {
         contact,
+        address,
         uniqueMutationStatuses,
         project,
         participationsDefinitive,
@@ -39,21 +40,28 @@ const ParticipantFormView = props => {
         <div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={'Contact'}
-                    value={contact ? contact.fullName : ''}
-                    link={contact ? 'contact/' + contact.id : ''}
+                    label={'Project'}
+                    value={project ? project.name : ''}
+                    link={project ? 'project/' + project.id : ''}
                 />
                 <ViewText label={'Status'} value={uniqueMutationStatuses.map(item => item.name).join(', ')} />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={'Project'}
-                    value={project ? project.name : ''}
-                    link={project ? 'project/' + project.id : ''}
+                    label={'Contact'}
+                    value={contact ? contact.fullName : ''}
+                    link={contact ? 'contact/' + contact.id : ''}
                 />
                 <ViewText label={'Administratie'} value={project.administration ? project.administration.name : ''} />
             </div>
+
+            {projectTypeCodeRef === 'postalcode_link_capital' ? (
+                <div className="row" onClick={props.switchToEdit}>
+                    <ViewText label={'Adres'} value={address ? address.streetPostalCodeCity : ''} />
+                    <ViewText label={'Adrestype'} value={address ? address.typeAndPrimary : ''} />
+                </div>
+            ) : null}
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText

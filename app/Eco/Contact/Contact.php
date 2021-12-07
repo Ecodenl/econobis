@@ -206,17 +206,6 @@ class Contact extends Model
         return $this->hasManyThrough(HousingFile::class, Address::class)->orderBy('housing_files.id', 'desc');
     }
 
-// todo WM-es: cleanup es
-//    public function addressEnergySuppliers()
-//    {
-//        return $this->hasMany(AddressEnergySupplier::class);
-//    }
-//
-//    public function primaryAddressEnergySupplier()
-//    {
-//        return $this->hasOne(AddressEnergySupplier::class)->where('is_current_supplier', true);
-//    }
-//
     public function participations()
     {
         return $this->hasMany(ParticipantProject::class)->orderBy('participation_project.id', 'desc');
@@ -523,25 +512,26 @@ class Contact extends Model
         }
         return false;
     }
-// todo WM-es: cleanup es
-//    /**
-//     * Previous energy supplier
-//     * @return int
-//     */
-//    public function getPreviousAddressEnergySupplierIdAttribute()
-//    {
-//        if(!$this->primaryAddressEnergySupplier) {
-//            return 0;
-//        }
-//        $addressEnergySuppliers = $this->addressEnergySuppliers
-//            ->whereNotNull('member_since')
-//            ->where('member_since', '<', $this->primaryAddressEnergySupplier->member_since)
-//            ->sortByDesc('member_since');
-//        if(count($addressEnergySuppliers) == 0){
-//            return 0;
-//        }
-//        return($addressEnergySuppliers->first()->id);
-//    }
+
+    /**
+     * Primary address Id
+     * @return int
+     */
+    public function getPrimaryAddressIdAttribute()
+    {
+        return($this->primaryAddress ? $this->primaryAddress->id : 0);
+    }
+
+    public function getBlockChangeAddressNumberAttribute()
+    {
+        foreach($this->participations as $participation)
+        {
+            if($participation->project && $participation->project->is_sce_project && !empty($participation->project->address_number_series) ){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public function getPortalSettingsLayoutAssignedAttribute()
     {

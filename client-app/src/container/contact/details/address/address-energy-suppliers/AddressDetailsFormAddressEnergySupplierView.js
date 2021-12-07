@@ -10,6 +10,7 @@ const AddressDetailsFormAddressEnergySupplierView = props => {
         memberSince,
         energySupplyStatus,
         switchDate,
+        endDate,
         esNumber,
         isCurrentSupplier,
     } = props.addressEnergySupplier;
@@ -23,9 +24,10 @@ const AddressDetailsFormAddressEnergySupplierView = props => {
             <div onClick={props.openEdit}>
                 <div className="col-sm-2">{energySupplier && energySupplier.name}</div>
                 <div className="col-sm-1">{energySupplyType ? energySupplyType.name : ''}</div>
-                <div className="col-sm-2">{memberSince ? moment(memberSince).format('L') : ''}</div>
+                <div className="col-sm-1">{memberSince ? moment(memberSince).format('L') : ''}</div>
+                <div className="col-sm-1">{endDate ? moment(endDate).format('L') : ''}</div>
                 <div className="col-sm-2">{energySupplyStatus && energySupplyStatus.name}</div>
-                <div className="col-sm-2">{switchDate ? moment(switchDate).format('L') : ''}</div>
+                <div className="col-sm-1">{switchDate ? moment(switchDate).format('L') : ''}</div>
                 <div className="col-sm-1">{esNumber && esNumber}</div>
                 <div className="col-sm-1">{isCurrentSupplier ? 'Ja' : ''}</div>
             </div>

@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources\ParticipantProject;
 
+use App\Http\Resources\Address\FullParticipantAddress;
 use App\Http\Resources\Contact\FullParticipantContact;
-use App\Http\Resources\GenericResource;
 use App\Http\Resources\Project\ProjectPeek;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -23,6 +23,7 @@ class GridParticipantProject extends JsonResource
                 'id' => $this->id,
                 'contactId' => $this->contact_id,
                 'contact' => FullParticipantContact::make($this->whenLoaded('contact')),
+                'address' => FullParticipantAddress::make($this->whenLoaded('address')),
                 'participationsInteressed' => $this->participations_interessed,
                 'participationsOptioned' => $this->participations_optioned,
                 'participationsGranted' => $this->participations_granted,

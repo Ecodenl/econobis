@@ -44,8 +44,16 @@ export default (type, field) => {
                     return 'Verbinding';
                 case 'occupationPrimary':
                     return 'Primaire verbinding';
-                case 'opportunity':
-                    return 'Kans';
+                case 'campaign':
+                    return 'Campagne';
+                case 'opportunityMeasureCategory':
+                    return 'Kans maatregel categorie';
+                case 'opportunityStatus':
+                    return 'Kans status';
+                case 'opportunityMeasure':
+                    return 'Kans maatregel specifiek';
+                case 'opportunityEvaluationRealised':
+                    return 'Kans status evaluatie uitgevoerd';
                 case 'portalUser':
                     return 'Portal gebruiker actief';
                 case 'product':

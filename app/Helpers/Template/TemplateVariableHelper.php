@@ -248,19 +248,22 @@ class TemplateVariableHelper
                 return optional($model->primaryEmailAddress)->email;
                 break;
             case 'energieleverancier':
-                return optional(optional($model->primaryAddressEnergySupplier)->energySupplier)->name;
+                return optional(optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->energySupplier)->name;
                 break;
             case 'energieleverancier_klantnummer':
-                return optional($model->primaryAddressEnergySupplier)->es_number;
+                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->es_number;
                 break;
             case 'energieleverancier_ean_elektra':
-                return optional($model->primaryAddressEnergySupplier)->ean_electricity;
+                return optional($model->primaryAddress)->ean_electricity;
                 break;
             case 'energieleverancier_klant_sinds':
-                return optional($model->primaryAddressEnergySupplier)->member_since ? Carbon::parse(optional($model->primaryAddressEnergySupplier)->member_since)->format('d/m/Y') : null;;
+                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->member_since ? Carbon::parse(optional($model->primaryAddressEnergySupplier)->member_since)->format('d/m/Y') : null;;
+                break;
+            case 'energieleverancier_klant_einddatum':
+                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->end_date ? Carbon::parse(optional($model->primaryAddressEnergySupplier)->end_date)->format('d/m/Y') : null;;
                 break;
             case 'energieleverancier_mogelijke_overstap':
-                return optional($model->primaryAddressEnergySupplier)->switch_date ? Carbon::parse(optional($model->primaryAddressEnergySupplier)->switch_date)->format('d/m/Y') : null;;
+                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->switch_date ? Carbon::parse(optional($model->primaryAddressEnergySupplier)->switch_date)->format('d/m/Y') : null;;
                 break;
             case 'kvk':
                 if($model->type_id == 'organisation'){
@@ -279,6 +282,14 @@ class TemplateVariableHelper
                     $btwnr = '';
                 }
                 return $btwnr;
+                break;
+            case 'organisatie_statutaire_naam':
+                if($model->type_id == 'organisation') {
+                    return $model->organisation->statutory_name;
+                }
+                else{
+                    return '';
+                }
                 break;
             case 'organisatie_primair_contact':
                 if($model->type_id == 'organisation') {
@@ -443,16 +454,16 @@ class TemplateVariableHelper
 //            case 'akkoord':
 //                break;
             case 'evaluatie_uitgevoerd':
-                return optional($model->opportunityEvaluation)->is_realised ? 'Ja' : 'Nee';
+                return  $model->evaluationRealised ? $model->evaluationRealised->name : 'Onbekend';
                 break;
             case 'evaluatie_tevreden':
-                return optional($model->opportunityEvaluation)->is_statisfied ? 'Ja' : 'Nee';
+                return  $model->evaluationStatisfied ? $model->evaluationStatisfied->name : 'Onbekend';
                 break;
             case 'evaluatie_aanbevelen':
-                return optional($model->opportunityEvaluation)->would_recommend_organisation ? 'Ja' : 'Nee';
+                return  $model->evaluationRecommendOrganisation ? $model->evaluationRecommendOrganisation->name : 'Onbekend';
                 break;
             case 'evaluatie_opmerking':
-                return optional($model->opportunityEvaluation)->note;
+                return $model->evaluation_note;
                 break;
             case 'nummer':
                 return $model->number;
@@ -806,13 +817,13 @@ class TemplateVariableHelper
                 return optional(optional($model->contact)->primaryEmailAddress)->email;
                 break;
             case 'contact_energieleverancier':
-                return optional(optional(optional($model->contact)->primaryAddressEnergySupplier)->energySupplier)->name;
+                return optional(optional(optional($model->address)->primaryAddressEnergySupplier)->energySupplier)->name;
                 break;
             case 'contact_energieleverancier_klantnummer':
-                return optional(optional($model->contact)->primaryAddressEnergySupplier)->es_number;
+                return optional(optional($model->address)->primaryAddressEnergySupplier)->es_number;
                 break;
             case 'contact_energieleverancier_ean_elektra':
-                return optional(optional($model->contact)->primaryAddressEnergySupplier)->ean_electricity;
+                return optional($model->address)->ean_electricity;
                 break;
             case 'statussen':
                 return implode(', ', array_map(function ($status) {
@@ -1776,6 +1787,9 @@ class TemplateVariableHelper
         switch ($varname) {
             case 'organisatie_naam':
                 return $model->organisation->name;
+                break;
+            case 'organisatie_statutaire_naam':
+                return optional($model->organisation)->statutory_name;
                 break;
             case 'organisatie_adres':
                 return optional($model->organisation->contact->primaryAddress)->street . ' ' . optional($model->organisation->contact->primaryAddress)->number . (optional($model->organisation->contact->primaryAddress)->addition ? ('-' . optional($model->organisation->contact->primaryAddress)->addition) : '');

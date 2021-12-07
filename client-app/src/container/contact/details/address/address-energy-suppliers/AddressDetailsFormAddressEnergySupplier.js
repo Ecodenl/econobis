@@ -26,7 +26,7 @@ class AddressDetailsFormAddressEnergySupplier extends Component {
         return (
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Energieleveranciers</span>
+                    <span className="h5 text-bold">Energieleverancier gegevens</span>
                     {(this.props.permissions.updatePerson || this.props.permissions.updateOrganisation) && (
                         <a role="button" className="pull-right" onClick={this.toggleShowNew}>
                             <span className="glyphicon glyphicon-plus" />
@@ -39,7 +39,10 @@ class AddressDetailsFormAddressEnergySupplier extends Component {
                     </div>
                     <div className="col-md-12 margin-10-top">
                         {this.state.showNew && (
-                            <AddressDetailsFormAddressEnergySupplierNew toggleShowNew={this.toggleShowNew} />
+                            <AddressDetailsFormAddressEnergySupplierNew
+                                addressId={this.props.address.id}
+                                toggleShowNew={this.toggleShowNew}
+                            />
                         )}
                     </div>
                 </PanelBody>

@@ -33,7 +33,6 @@ use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\Order\OrderController;
-use App\Http\Resources\ParticipantProject\FullRevenueParticipantProject;
 use App\Http\Resources\ParticipantProject\Templates\ParticipantReportMail;
 use App\Http\Resources\Project\FullProjectRevenue;
 use App\Http\Resources\Project\FullProjectRevenueDistribution;
@@ -587,13 +586,16 @@ class ProjectRevenueController extends ApiController
     public function saveDistribution(ProjectRevenue $projectRevenue, ParticipantProject $participant, $closing)
     {
         $contact = Contact::find($participant->contact_id);
-        $participantAddress = $participant->address;
+        if($participant->address){
+            $participantAddress = $participant->address;
+        }else{
+            $participantAddress = $participant->contact->primaryAddress;
+        }
 
         if($projectRevenue->category->code_ref == 'revenueKwhSplit' && !$closing) {
-            // todo WM-es: check previous_address_energy_supplier_id ???
-            $addressEnergySupplier = AddressEnergySupplier::find($contact->previous_address_energy_supplier_id);
+            $addressEnergySupplier = AddressEnergySupplier::find($participantAddress->previous_address_energy_supplier_id);
         }else{
-            $addressEnergySupplier = $participant->address->primaryAddressEnergySupplier;
+            $addressEnergySupplier = $participantAddress->primaryAddressEnergySupplier;
         }
 
         // If participant already is added to project revenue distribution then update
@@ -647,7 +649,6 @@ class ProjectRevenueController extends ApiController
             $distribution->es_id
                 = $addressEnergySupplier->energySupplier->id;
 
-            // todo WM-es: check participation->address???
             $distribution->energy_supplier_ean_electricity
                 = $addressEnergySupplier->address->ean_electricity;
 
@@ -1013,8 +1014,7 @@ class ProjectRevenueController extends ApiController
                 // indien Opbrengst Kwh, dan alleen mutation aanmaken en daarna status op Afgehandeld (processed).
                 if ($distribution->revenue->category->code_ref === 'revenueKwh' || $distribution->revenue->category->code_ref === 'revenueKwhSplit') {
                     if($distribution->revenue->category->code_ref == 'revenueKwhSplit') {
-                        // todo WM-es: check previous_address_energy_supplier_id ???
-                        $addressEnergySupplier = AddressEnergySupplier::find($distribution->contact->previous_address_energy_supplier_id);
+                        $addressEnergySupplier = AddressEnergySupplier::find($distribution->participation->address->previous_address_energy_supplier_id);
                     }else{
                         $addressEnergySupplier = $distribution->participation->address->primaryAddressEnergySupplier;
                     }

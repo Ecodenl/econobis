@@ -95,6 +95,13 @@ class RevenueFormEdit extends Component {
         };
     }
 
+    isPeriodExceedingYear = (dateBegin, dateEnd) => {
+        dateBegin = moment(dateBegin);
+        dateEnd = moment(dateEnd);
+
+        return dateEnd.year() > dateBegin.year();
+    };
+
     toggleShowModal = () => {
         this.setState({
             showModal: !this.state.showModal,
@@ -204,6 +211,27 @@ class RevenueFormEdit extends Component {
         if (validator.isEmpty(revenue.dateEnd + '')) {
             errors.dateEnd = true;
             errorMessage.dateEnd = 'Verplicht';
+            hasErrors = true;
+        }
+        if (
+            validator.isEmpty(revenue.kwhEndCalendarYearHigh + '') &&
+            this.isPeriodExceedingYear(revenue.dateBegin, revenue.dateEnd)
+        ) {
+            errors.kwhEndCalendarYearHigh = true;
+            errorMessage.kwhEndCalendarYearHigh = 'Verplicht';
+            hasErrors = true;
+        }
+        if (
+            validator.isEmpty(revenue.kwhEndHigh + '') &&
+            this.isPeriodExceedingYear(revenue.dateBegin, revenue.dateEnd)
+        ) {
+            errors.kwhEndHigh = true;
+            errorMessage.kwhEndHigh = 'Verplicht';
+            hasErrors = true;
+        }
+        if (!revenue.payoutKwh) {
+            errors.payoutKwh = true;
+            errorMessage.payoutKwh = 'Verplicht';
             hasErrors = true;
         }
         if (!hasErrors && revenue.dateEnd < revenue.dateBegin) {
@@ -355,7 +383,7 @@ class RevenueFormEdit extends Component {
                         </div>
                     </div>
 
-                    {moment(dateBegin).year() !== moment(dateEnd).year() ? (
+                    {this.isPeriodExceedingYear(dateBegin, dateEnd) ? (
                         <>
                             <div className="row">
                                 {participantKwhStartHighNextRevenue > 0 || participantInConfirmedRevenue ? (
@@ -404,6 +432,7 @@ class RevenueFormEdit extends Component {
                                     onChangeAction={this.handleInputChange}
                                     error={this.state.errors.kwhEndCalendarYearHigh}
                                     errorMessage={this.state.errorMessage.kwhEndCalendarYearHigh}
+                                    required={'required'}
                                 />
                                 <InputText
                                     type={'number'}
@@ -413,6 +442,7 @@ class RevenueFormEdit extends Component {
                                     onChangeAction={this.handleInputChange}
                                     error={this.state.errors.kwhEndHigh}
                                     errorMessage={this.state.errorMessage.kwhEndHigh}
+                                    required={'required'}
                                 />
                             </div>
                             <div className="row">
@@ -518,7 +548,6 @@ class RevenueFormEdit extends Component {
                             type={'number'}
                             label={'Opbrengst kWh €'}
                             name={'payoutKwh'}
-                            // value={payoutKwh}
                             value={
                                 payoutKwh &&
                                 payoutKwh.toLocaleString('nl', {
@@ -527,6 +556,9 @@ class RevenueFormEdit extends Component {
                                 })
                             }
                             onChangeAction={this.handleInputChange}
+                            error={this.state.errors.payoutKwh}
+                            errorMessage={this.state.errorMessage.payoutKwh}
+                            required={'required'}
                         />
                         <InputText
                             type={'number'}
@@ -590,7 +622,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(RevenueFormEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(RevenueFormEdit);

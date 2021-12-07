@@ -37,6 +37,7 @@ Route::namespace('Api')
         Route::get('/contact/csv', 'Contact\GridController@csv');
         Route::get('/contact/save-as-group', 'Contact\GridController@saveAsGroup');
         Route::get('/contact/peek', 'Contact\ContactController@peek');
+        Route::get('/contact/address/peek', 'Contact\ContactController@peekWithAddress');
         Route::get('/contact/chart-data', 'Contact\ContactController@chartData');
         Route::get('/contact/get-primary-email-addresses-id', 'Contact\ContactController@getPrimaryEmailAddressesId');
         Route::post('/contacts/delete', 'Contact\ContactController@destroyContacts');
@@ -161,8 +162,7 @@ Route::namespace('Api')
         Route::get('opportunity/chart-data', 'Opportunity\OpportunityController@chartData');
         Route::get('opportunity/{opportunity}', 'Opportunity\OpportunityController@show');
         Route::post('opportunity/', 'Opportunity\OpportunityController@store');
-        Route::post('opportunity/evaluation', 'Opportunity\OpportunityController@storeEvaluation');
-        Route::post('opportunity/evaluation/{opportunityEvaluation}', 'Opportunity\OpportunityController@updateEvaluation');
+        Route::post('opportunity/evaluation/{opportunity}', 'Opportunity\OpportunityController@updateEvaluation');
         Route::post('opportunity/{opportunity}', 'Opportunity\OpportunityController@update');
         Route::post('opportunity/{opportunity}/delete', 'Opportunity\OpportunityController@destroy');
 

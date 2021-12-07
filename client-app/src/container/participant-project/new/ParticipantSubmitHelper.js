@@ -1,6 +1,7 @@
 export default function(participation, statusCodeRef, projectTypeCodeRef) {
     const values = {
         contactId: participation.contactId,
+        addressId: participation.addressId,
         statusId: participation.statusId,
         projectId: participation.projectId,
     };

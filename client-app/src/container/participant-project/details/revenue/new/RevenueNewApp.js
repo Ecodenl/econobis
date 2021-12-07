@@ -75,12 +75,12 @@ class RevenueNewApp extends Component {
                 const revenue = this.state.revenue;
                 if (participation) {
                     if (
-                        participation.contact &&
-                        participation.contact.previousAddressEnergySupplierId != 0 &&
-                        participation.contact.primaryAddressEnergySupplier &&
-                        participation.contact.primaryAddressEnergySupplier.memberSince
+                        participation.address &&
+                        participation.address.previousAddressEnergySupplierId != 0 &&
+                        participation.address.primaryAddressEnergySupplier &&
+                        participation.address.primaryAddressEnergySupplier.memberSince
                     ) {
-                        const dateSplit = moment(participation.contact.primaryAddressEnergySupplier.memberSince)
+                        const dateSplit = moment(participation.address.primaryAddressEnergySupplier.memberSince)
                             .subtract(1, 'day')
                             .format('Y-MM-DD');
                         let dateBegin =
@@ -90,12 +90,12 @@ class RevenueNewApp extends Component {
                                       .startOf('year')
                                       .format('Y-MM-DD');
                         if (dateBegin > dateSplit) {
-                            alert('Overstapdatum leverancier kon niet bepaald worden bij contact.');
+                            alert('Overstapdatum leverancier kon niet bepaald worden bij contact/adres.');
                             hashHistory.replace(`/project/deelnemer/${this.props.params.participationId}`);
                         }
 
                         revenue.distributionTypeId = 'inPossessionOf';
-                        revenue.addressEnergySupplierId = participation.contact.previousAddressEnergySupplierId;
+                        revenue.addressEnergySupplierId = participation.address.previousAddressEnergySupplierId;
                         revenue.dateBegin = dateBegin;
                         revenue.dateEnd = dateSplit;
                         revenue.kwhStartHigh = participation.nextRevenueKwhStartHigh;
@@ -107,7 +107,7 @@ class RevenueNewApp extends Component {
                             revenue,
                         });
                     } else {
-                        alert('Overstapdatum leverancier kon niet bepaald worden bij contact.');
+                        alert('Overgang leverancier kon niet bepaald worden bij contact/adres.');
                         hashHistory.replace(`/project/deelnemer/${this.props.params.participationId}`);
                     }
                 }
@@ -181,6 +181,13 @@ class RevenueNewApp extends Component {
         }
     }
 
+    isPeriodExceedingYear = (dateBegin, dateEnd) => {
+        dateBegin = moment(dateBegin);
+        dateEnd = moment(dateEnd);
+
+        return dateEnd.year() > dateBegin.year();
+    };
+
     handleSubmit = event => {
         event.preventDefault();
 
@@ -200,6 +207,32 @@ class RevenueNewApp extends Component {
             errorMessage.dateEnd = 'Verplicht';
             hasErrors = true;
         }
+        if (!revenue.kwhEndCalendarYearHigh && this.isPeriodExceedingYear(revenue.dateBegin, revenue.dateEnd)) {
+            errors.kwhEndCalendarYearHigh = true;
+            errorMessage.kwhEndCalendarYearHigh = 'Verplicht';
+            hasErrors = true;
+        }
+        if (!revenue.kwhEndHigh && this.isPeriodExceedingYear(revenue.dateBegin, revenue.dateEnd)) {
+            errors.kwhEndHigh = true;
+            errorMessage.kwhEndHigh = 'Verplicht';
+            hasErrors = true;
+        }
+        if (!revenue.payoutKwh) {
+            errors.payoutKwh = true;
+            errorMessage.payoutKwh = 'Verplicht';
+            hasErrors = true;
+        }
+        if (!revenue.dateBegin && revenue.dateEnd) {
+            errors.dateBegin = true;
+            errorMessage.dateBegin = 'Begin periode moet ook ingevuld worden als Eind periode ingevuld is.';
+            hasErrors = true;
+        }
+        if (revenue.dateBegin && !revenue.dateEnd) {
+            errors.dateEnd = true;
+            errorMessage.dateEnd = 'Eind periode moet ook ingevuld worden als Begin periode ingevuld is.';
+            hasErrors = true;
+        }
+
         if (!hasErrors && revenue.dateEnd < revenue.dateBegin) {
             errors.dateEnd = true;
             errorMessage.dateEnd = 'Eind periode mag niet voor Begin periode liggen.';

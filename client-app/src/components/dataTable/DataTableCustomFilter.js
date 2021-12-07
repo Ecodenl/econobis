@@ -45,6 +45,8 @@ const DataTableCustomFilter = props => {
 
     const fieldList = Object.entries(fields).map(([key, value], i) => {
         if (key === 'dateStart' || key === 'dateFinish' || key === 'orderStatus') return;
+        if (key === 'opportunityStatus' || key === 'opportunityMeasure' || key === 'opportunityEvaluationRealised')
+            return;
         if (props.contactType === 'organisation' && key === 'portalUser') return;
 
         return (
@@ -55,6 +57,8 @@ const DataTableCustomFilter = props => {
     });
 
     const isCustomProductField = field == 'dateStart' || field == 'dateFinish' || field == 'orderStatus';
+    const isCustomOpportunityField =
+        field == 'opportunityStatus' || field == 'opportunityMeasure' || field == 'opportunityEvaluationRealised';
     const fieldType = props.fields[props.filter.field].type;
     const optionName = props.fields[props.filter.field].optionName
         ? props.fields[props.filter.field].optionName
@@ -63,7 +67,7 @@ const DataTableCustomFilter = props => {
     return (
         <tr>
             <td className="col-md-4">
-                {isCustomProductField ? (
+                {isCustomProductField || isCustomOpportunityField ? (
                     <select disabled={true} className="form-control input-sm" name={'field'} value={field}>
                         <option key={0} value={field}>
                             {fields[field].name}
@@ -231,7 +235,7 @@ const DataTableCustomFilter = props => {
                     </React.Fragment>
                 )}
             </td>
-            {isCustomProductField || props.filter.readOnly ? (
+            {isCustomProductField || isCustomOpportunityField || props.filter.readOnly ? (
                 <td />
             ) : (
                 <td className="col-md-1">

@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import { setError } from '../../../../../actions/general/ErrorActions';
 import AddressEnergySupplierAPI from '../../../../../api/contact/AddressEnergySupplierAPI';
-import { newAddressEnergySupplier } from '../../../../../actions/contact/ContactDetailsActions';
+import { newStateAddressEnergySupplier } from '../../../../../actions/contact/ContactDetailsActions';
 import InputText from '../../../../../components/form/InputText';
 import ButtonText from '../../../../../components/button/ButtonText';
 import InputSelect from '../../../../../components/form/InputSelect';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import validator from 'validator';
-import InputToggle from '../../../../../components/form/InputToggle';
 import InputDate from '../../../../../components/form/InputDate';
 
 class AddressDetailsFormAddressEnergySupplierNew extends Component {
@@ -18,12 +18,13 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
 
         this.state = {
             addressEnergySupplier: {
-                addressId: this.props.id,
+                addressId: this.props.addressId,
                 energySupplierId: '',
                 energySupplyTypeId: '',
                 memberSince: '',
                 energySupplyStatusId: '',
                 switchDate: '',
+                endDate: '',
                 esNumber: '',
                 isCurrentSupplier: false,
             },
@@ -79,11 +80,19 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
             hasErrors = true;
         }
 
+        if (!addressEnergySupplier.memberSince || validator.isEmpty(addressEnergySupplier.memberSince)) {
+            errors.memberSince = true;
+            hasErrors = true;
+        }
+
         if (
-            addressEnergySupplier.isCurrentSupplier &&
-            (!addressEnergySupplier.memberSince || validator.isEmpty(addressEnergySupplier.memberSince))
+            !hasErrors &&
+            addressEnergySupplier.endDate &&
+            !validator.isEmpty(addressEnergySupplier.endDate) &&
+            addressEnergySupplier.endDate < addressEnergySupplier.memberSince
         ) {
             errors.memberSince = true;
+            errors.endDate = true;
             hasErrors = true;
         }
 
@@ -91,10 +100,18 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
 
         // If no errors send form
         !hasErrors &&
-            AddressEnergySupplierAPI.newAddressEnergySupplier(addressEnergySupplier).then(payload => {
-                this.props.newAddressEnergySupplier(payload);
-                this.props.toggleShowNew();
-            });
+            AddressEnergySupplierAPI.newAddressEnergySupplier(addressEnergySupplier)
+                .then(payload => {
+                    this.props.newStateAddressEnergySupplier(payload.data.data);
+                    this.props.toggleShowNew();
+                })
+                .catch(error => {
+                    if (error.response) {
+                        this.props.setError(error.response.status, error.response.data.message);
+                    } else {
+                        console.log(error);
+                    }
+                });
     };
 
     render() {
@@ -104,6 +121,7 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
             memberSince,
             energySupplyStatusId,
             switchDate,
+            endDate,
             esNumber,
             isCurrentSupplier,
         } = this.state.addressEnergySupplier;
@@ -136,31 +154,7 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
                         </div>
 
                         <div className="row">
-                            <InputDate
-                                label="Klant sinds"
-                                name="memberSince"
-                                value={memberSince ? memberSince : ''}
-                                onChangeAction={this.handleInputChangeDate}
-                                required={isCurrentSupplier ? 'required' : ''}
-                                error={this.state.errors.memberSince}
-                            />
-                            <InputSelect
-                                label={'Overstap status'}
-                                id="energySupplyStatusId"
-                                name={'energySupplyStatusId'}
-                                options={this.props.energySupplierStatuses}
-                                value={energySupplyStatusId}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
-
-                        <div className="row">
-                            <InputDate
-                                label="Mogelijke overstap datum"
-                                name="switchDate"
-                                value={switchDate ? switchDate : ''}
-                                onChangeAction={this.handleInputChangeDate}
-                            />
+                            <div className="form-group col-sm-6" />
                             <InputText
                                 label={'Klantnummer'}
                                 id={'esNumber'}
@@ -171,12 +165,37 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
                         </div>
 
                         <div className="row">
-                            <InputToggle
-                                label={'Is huidige leverancier'}
-                                name={'isCurrentSupplier'}
-                                value={Boolean(isCurrentSupplier)}
+                            <InputDate
+                                label="Klant sinds"
+                                name="memberSince"
+                                value={memberSince ? memberSince : ''}
+                                onChangeAction={this.handleInputChangeDate}
+                                required={true}
+                                error={this.state.errors.memberSince}
+                            />
+                            <InputDate
+                                label={'Eind datum'}
+                                name="endDate"
+                                value={endDate ? endDate : ''}
+                                onChangeAction={this.handleInputChangeDate}
+                                error={this.state.errors.endDate}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputDate
+                                label="Mogelijke overstap datum"
+                                name="switchDate"
+                                value={switchDate ? switchDate : ''}
+                                onChangeAction={this.handleInputChangeDate}
+                            />
+                            <InputSelect
+                                label={'Overstap status'}
+                                id="energySupplyStatusId"
+                                name={'energySupplyStatusId'}
+                                options={this.props.energySupplierStatuses}
+                                value={energySupplyStatusId}
                                 onChangeAction={this.handleInputChange}
-                                disabled={validator.isEmpty('' + memberSince)}
                             />
                         </div>
 
@@ -209,8 +228,11 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    newAddressEnergySupplier: addressEnergySupplier => {
-        dispatch(newAddressEnergySupplier(addressEnergySupplier));
+    newStateAddressEnergySupplier: addressEnergySupplier => {
+        dispatch(newStateAddressEnergySupplier(addressEnergySupplier));
+    },
+    setError: (http_code, message) => {
+        dispatch(setError(http_code, message));
     },
 });
 

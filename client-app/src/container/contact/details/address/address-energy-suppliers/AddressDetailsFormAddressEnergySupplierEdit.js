@@ -8,8 +8,7 @@ import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import InputDate from '../../../../../components/form/InputDate';
 import moment from 'moment/moment';
-import InputToggle from '../../../../../components/form/InputToggle';
-import validator from 'validator';
+import ViewText from '../../../../../components/form/ViewText';
 moment.locale('nl');
 
 const AddressDetailsFormAddressEnergySupplierEdit = props => {
@@ -19,6 +18,7 @@ const AddressDetailsFormAddressEnergySupplierEdit = props => {
         memberSince,
         energySupplyStatusId,
         switchDate,
+        endDate,
         esNumber,
         isCurrentSupplier,
         createdAt,
@@ -50,21 +50,34 @@ const AddressDetailsFormAddressEnergySupplierEdit = props => {
                         </div>
 
                         <div className="row">
+                            <ViewText
+                                className={'form-group col-sm-6'}
+                                label={'Is huidige leverancier'}
+                                value={isCurrentSupplier ? 'Ja' : 'Nee'}
+                            />
+                            <InputText
+                                label={'Klantnummer'}
+                                name={'esNumber'}
+                                value={esNumber ? esNumber : ''}
+                                onChangeAction={props.handleInputChange}
+                            />
+                        </div>
+
+                        <div className="row">
                             <InputDate
                                 label="Klant sinds"
                                 name="memberSince"
                                 value={memberSince ? memberSince : ''}
                                 onChangeAction={props.handleInputChangeDate}
-                                required={isCurrentSupplier ? 'required' : ''}
+                                required={true}
                                 error={props.errors.memberSince}
                             />
-                            <InputSelect
-                                label={'Overstap status'}
-                                id="energySupplyStatusId"
-                                name={'energySupplyStatusId'}
-                                options={props.energySupplierStatuses}
-                                value={energySupplyStatusId}
-                                onChangeAction={props.handleInputChange}
+                            <InputDate
+                                label={'Eind datum'}
+                                name="endDate"
+                                value={endDate ? endDate : ''}
+                                onChangeAction={props.handleInputChangeDate}
+                                error={props.errors.endDate}
                             />
                         </div>
 
@@ -75,10 +88,12 @@ const AddressDetailsFormAddressEnergySupplierEdit = props => {
                                 value={switchDate ? switchDate : ''}
                                 onChangeAction={props.handleInputChangeDate}
                             />
-                            <InputText
-                                label={'Klantnummer'}
-                                name={'esNumber'}
-                                value={esNumber ? esNumber : ''}
+                            <InputSelect
+                                label={'Overstap status'}
+                                id="energySupplyStatusId"
+                                name={'energySupplyStatusId'}
+                                options={props.energySupplierStatuses}
+                                value={energySupplyStatusId}
                                 onChangeAction={props.handleInputChange}
                             />
                         </div>
@@ -97,25 +112,8 @@ const AddressDetailsFormAddressEnergySupplierEdit = props => {
                                 readOnly={true}
                             />
                         </div>
-                        <div className="row">
-                            <InputToggle
-                                label={'Is huidige leverancier'}
-                                name={'isCurrentSupplier'}
-                                value={Boolean(isCurrentSupplier)}
-                                onChangeAction={props.handleInputChange}
-                                disabled={validator.isEmpty('' + memberSince)}
-                            />
-                        </div>
 
                         <div className="pull-right btn-group" role="group">
-                            {/*todo: WM dit moet per project participant*/}
-                            {/*{isCurrentSupplier && props.contactDetails.isParticipantPcrProject && (*/}
-                            {/*    <ButtonText*/}
-                            {/*        buttonClassName={'btn-default'}*/}
-                            {/*        buttonText={'Tussentijdse opbrengstverdeling'}*/}
-                            {/*        onClickAction={props.revenueKwhSplit}*/}
-                            {/*    />*/}
-                            {/*)}*/}
                             <ButtonText
                                 buttonClassName={'btn-default'}
                                 buttonText={'Annuleren'}

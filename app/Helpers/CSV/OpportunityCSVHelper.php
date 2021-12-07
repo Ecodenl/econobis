@@ -8,8 +8,6 @@
 
 namespace App\Helpers\CSV;
 
-use App\Eco\EnergySupplier\EnergySupplier;
-use App\Eco\Project\ProjectRevenue;
 use Carbon\Carbon;
 use League\Csv\Reader;
 
@@ -36,7 +34,9 @@ class OpportunityCSVHelper
                 'measures',
                 'intake.contact.person.title',
                 'status',
-                'opportunityEvaluation',
+                'evaluationRealised',
+                'evaluationStatisfied',
+                'evaluationRecommendOrganisation',
                 'intake.campaign',
                 'intake.address.country',
                 'createdBy',
@@ -65,10 +65,6 @@ class OpportunityCSVHelper
                 $opportunity->created_at_date = $opportunity->created_at->format('d-m-Y');
                 $opportunity->updated_at_date = $opportunity->updated_at->format('d-m-Y');
 
-                $opportunity->is_realised = ($opportunity->opportunityEvaluation && $opportunity->opportunityEvaluation->is_realised) ? 'Ja' : 'Nee';
-                $opportunity->is_statisfied = ($opportunity->opportunityEvaluation && $opportunity->opportunityEvaluation->is_statisfied) ? 'Ja' : 'Nee';
-                $opportunity->would_recommend_organisation = ($opportunity->opportunityEvaluation && $opportunity->opportunityEvaluation->would_recommend_organisation) ? 'Ja' : 'Nee';
-
                 $address = $opportunity->intake->address;
 
                 $opportunity->street = ($address ? $address->street : '');
@@ -89,8 +85,8 @@ class OpportunityCSVHelper
                 $opportunity->primaryphoneNumber = $opportunity->intake->contact->primaryphoneNumber ? $opportunity->intake->contact->primaryphoneNumber->number : '';
                 $opportunity->primaryEmailAddress = $opportunity->intake->contact->primaryEmailAddress ? $opportunity->intake->contact->primaryEmailAddress->email : '';
 
-                $opportunity->updated_by = $opportunity->updatedBy->present()->fullName();
-                $opportunity->created_by = $opportunity->createdBy->present()->fullName();
+                $opportunity->updated_by = $opportunity->updatedBy ? $opportunity->updatedBy->present()->fullName() : '';
+                $opportunity->created_by = $opportunity->createdBy ? $opportunity->createdBy->present()->fullName() : '';
             });
 
 
@@ -118,10 +114,10 @@ class OpportunityCSVHelper
                 'quotation_text' => 'Toelichting op maatregel',
                 'desired_date' => 'Datum uitvoering',
                 'evaluation_agreed_date' => 'Datum evaluatie',
-                'is_realised' => 'Is de maatregel uitgevoerd?',
-                'is_statisfied' => 'Bent u tevreden over de uitvoering?',
-                'would_recommend_organisation' => 'Zou u het bedrijf aanbevelen?',
-                'opportunityEvaluation.note' => 'Heeft u verder opmerkingen of aanbevelingen?',
+                'evaluationRealised.name' => 'Is de evaluatie uitgevoerd?',
+                'evaluationStatisfied.name' => 'Bent u tevreden over de uitvoering?',
+                'evaluationRecommendOrganisation.name' => 'Zou u het bedrijf aanbevelen?',
+                'evaluation_note' => 'Heeft u verder opmerkingen of aanbevelingen?',
                 'updated_at_date' => 'Laatste update op',
                 'updated_by' => 'Laatste update door',
                 'created_at_date' => 'Gemaakt op',

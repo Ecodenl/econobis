@@ -2,6 +2,7 @@
 
 namespace App\Eco\ParticipantProject;
 
+use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;

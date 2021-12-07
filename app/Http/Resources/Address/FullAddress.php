@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\Address;
 
-use App\Eco\Measure\Measure;
+use App\Http\Resources\AddressEnergySupplier\FullAddressEnergySupplier;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
@@ -35,6 +35,8 @@ class FullAddress extends JsonResource
             'city' => $this->city,
             'postalCode' => $this->postal_code,
             'primary' => $this->primary,
+            'streetPostalCodeCity' => $this->street_postal_code_city,
+            'typeAndPrimary' => $this->type_and_primary,
             'eanElectricity' => $this->ean_electricity,
             'eanGas' => $this->ean_gas,
             'createdAt' => $this->created_at,
@@ -45,6 +47,9 @@ class FullAddress extends JsonResource
             'intake' => FullIntake::make($this->whenLoaded('intake')),
             'contact' => FullContact::make($this->whenLoaded('contact')),
             'addressEnergySuppliers' => GenericResource::make($this->whenLoaded('addressEnergySuppliers')),
+            'previousAddressEnergySupplierId' => $this->previous_address_energy_supplier_id,
+            'primaryAddressEnergySupplier' => FullAddressEnergySupplier::make($this->whenLoaded('primaryAddressEnergySupplier')),
+            'isInRevenueDistribution' => $this->is_in_revenue_distribution,
         ];
     }
 }

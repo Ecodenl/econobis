@@ -161,11 +161,10 @@ const RevenueFormView = props => {
                             label={'Opbrengst kWh €'}
                             value={
                                 payoutKwh &&
-                                '€ ' +
-                                    payoutKwh.toLocaleString('nl', {
-                                        minimumFractionDigits: 3,
-                                        maximumFractionDigits: 5,
-                                    })
+                                payoutKwh.toLocaleString('nl', {
+                                    minimumFractionDigits: 3,
+                                    maximumFractionDigits: 5,
+                                })
                             }
                         />
                         <ViewText label={'Totaal productie kWh'} value={kwhTotal && kwhTotal} />

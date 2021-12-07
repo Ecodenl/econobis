@@ -29,6 +29,7 @@ class ProjectRegister extends JsonResource
                 'allowPayMollie' => $this->allowPayMollie,
                 'econobisPaymentLink' => $this->econobisPaymentLink,
                 'allowRegisterToProject' => $this->allowRegisterToProject,
+                'hideWhenNotMatchingPostalCheck' => $this->hide_when_not_matching_postal_check,
                 'textNotAllowedRegisterToProject' => $this->textNotAllowedRegisterToProject,
                 'participationsOptioned' => $this->participationsOptioned,
                 'amountOptioned' => $this->amountOptioned,

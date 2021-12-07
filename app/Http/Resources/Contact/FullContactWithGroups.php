@@ -64,8 +64,6 @@ class FullContactWithGroups extends JsonResource
             'ownerId' => $this->owner_id,
             'owner' => FullUser::make($this->whenLoaded('owner')),
             'portalUser' => FullPortalUser::make($this->whenLoaded('portalUser')),
-            'addressEnergySuppliers' => FullAddressEnergySupplier::collection($this->whenLoaded('addressEnergySuppliers')),
-            'primaryAddressEnergySupplier' => FullAddressEnergySupplier::make($this->whenLoaded('primaryAddressEnergySupplier')),
             'primaryOccupations' => FullOccupationContact::collection($this->whenLoaded('primaryOccupations')),
             'contactPerson' => FullOccupationContact::make($this->whenLoaded('contactPerson')),
             'occupations' => FullOccupationContact::collection($this->whenLoaded('occupations')),

@@ -256,6 +256,7 @@ class ParticipationProjectController extends ApiController
         // TODO clean up store inputs
         $data = $requestInput
             ->integer('contactId')->validate('required|exists:contacts,id')->alias('contact_id')->next()
+            ->integer('addressId')->validate('nullable|exists:addresses,id')->alias('address_id')->next()
             ->integer('projectId')->validate('required|exists:projects,id')->alias('project_id')->next()
             ->get();
 
@@ -265,25 +266,16 @@ class ParticipationProjectController extends ApiController
 
         $project = Project::find($participantProject->project_id);
         $contact = Contact::find($participantProject->contact_id);
+
         if($project->projectType->code_ref === 'postalcode_link_capital'){
             $address = Address::find($participantProject->address_id);
         } else {
-            $address = $contact->primaryAddress;
+            $address = $contact->addressForPostalCodeCheck;
+            $participantProject->address_id = $address ? $address->id : null;
         }
-        $participantProject->address_id = $address ? $address->id : null;
 
         if($project->check_double_addresses){
             $errors = [];
-
-            $address = null;
-            // PERSON
-            if ($contact->type_id == ContactType::PERSON) {
-                $address = $contact->primaryAddress;
-            }
-            // ORGANISATION, use visit address
-            if ($contact->type_id == ContactType::ORGANISATION) {
-                $address = Address::where('contact_id', $contact->id)->where('type_id', 'visit')->first();
-            }
 
             $addressHelper = new AddressHelper($contact, $address);
             $addressIsDouble = $addressHelper->checkDoubleAddress($project);

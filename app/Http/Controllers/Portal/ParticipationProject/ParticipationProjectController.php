@@ -121,18 +121,8 @@ class ParticipationProjectController extends Controller
             abort(501, 'Er is helaas een fout opgetreden (5).');
         }
 
-        $address = null;
-        // PERSON
-        if ($contact->type_id == ContactType::PERSON) {
-            $address = $contact->primaryAddress;
-        }
-        // ORGANISATION, use visit address
-        if ($contact->type_id == ContactType::ORGANISATION) {
-            $address = Address::where('contact_id', $contact->id)->where('type_id', 'visit')->first();
-        }
-
-        if($project->check_double_addresses) {
-            $addressHelper = new AddressHelper($contact, $address);
+        if($project->check_double_addresses && $contact->addressForPostalCodeCheck) {
+            $addressHelper = new AddressHelper($contact, $contact->addressForPostalCodeCheck);
             if ($addressHelper->checkDoubleAddress($project)) {
                 abort(412, 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.');
                 return false;

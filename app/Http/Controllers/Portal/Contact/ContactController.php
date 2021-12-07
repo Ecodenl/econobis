@@ -836,18 +836,9 @@ class ContactController extends ApiController
             }
 
             // if to check double addresses (not allowed) and register to project was still allowed at this moment
-            if($project->check_double_addresses && $project->allowRegisterToProject) {
+            if($project->check_double_addresses && $project->allowRegisterToProject && $contact->addressForPostalCodeCheck) {
 
-                $address = null;
-                // PERSON
-                if ($contact->type_id == ContactType::PERSON) {
-                    $address = $contact->primaryAddress;
-                }
-                // ORGANISATION, use visit address
-                if ($contact->type_id == ContactType::ORGANISATION) {
-                    $address = Address::where('contact_id', $contact->id)->where('type_id', 'visit')->first();
-                }
-                $addressHelper = new AddressHelper($contact, $address);
+                $addressHelper = new AddressHelper($contact, $contact->addressForPostalCodeCheck);
                 $addressIsDouble = $addressHelper->checkDoubleAddress($project);
                 if($addressIsDouble){
                     $project->allowRegisterToProject = false;

@@ -2050,14 +2050,15 @@ class ExternalWebformController extends Controller
             $this->log($error);
             return '';
         }
-
-        if (!(new IBAN($iban))->validate()) {
+        $iban = preg_replace('/[^a-z0-9]+/i', '', trim(strtoupper($iban)));
+        $newIban = new IBAN($iban);
+        if (!$newIban->validate()) {
             $error = 'Ongeldige Iban ingelezen voor ' . $errorSubject;
             $this->log($error);
             $this->addTaskError($error);
         }
 
-        return strtoupper($iban);
+        return $iban;
     }
 
     protected function mailLog(array $data, bool $success, Webform $webform = null)

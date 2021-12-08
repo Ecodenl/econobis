@@ -15,11 +15,11 @@ class AddNewEnergySuppliersDec2021 extends Migration
     public function up()
     {
         $newEnergieSuppliers = [
-            ['name' => 'EnerZie (www.enerzie.eu)', 'doesPCR' => 1, 'excelTemplateId' => 2, 'abbreviation' => 'ENZ'],
-            ['name' => 'DVEP Energie (www.dvep.nl)', 'doesPCR' => 1, 'excelTemplateId' => 2, 'abbreviation' => 'DVP'],
-            ['name' => 'Clean Energy (www.cleanenergy.nl)', 'doesPCR' => 1, 'excelTemplateId' => 2, 'abbreviation' => 'CE'],
-            ['name' => 'Samsam (wijsamsam.nl)', 'doesPCR' => 1, 'excelTemplateId' => 2, 'abbreviation' => 'SAM'],
-            ['name' => 'Gezinsenergie (Gezinsenergie.nl)', 'doesPCR' => 1, 'excelTemplateId' => 2, 'abbreviation' => 'GZE'],
+            ['name' => 'EnerZie', 'doesPCR' => 1, 'excelTemplateId' => 2, 'abbreviation' => 'ENZ'],
+            ['name' => 'DVEP Energie', 'doesPCR' => 1, 'excelTemplateId' => 2, 'abbreviation' => 'DVP'],
+            ['name' => 'Clean Energy', 'doesPCR' => 1, 'excelTemplateId' => 2, 'abbreviation' => 'CE'],
+            ['name' => 'Samsam', 'doesPCR' => 1, 'excelTemplateId' => 2, 'abbreviation' => 'SAM'],
+            ['name' => 'Gezinsenergie', 'doesPCR' => 1, 'excelTemplateId' => 2, 'abbreviation' => 'GZE'],
             ['name' => 'Onbekend', 'doesPCR' => 1, 'excelTemplateId' => 2, 'abbreviation' => 'ONB'],
         ];
 

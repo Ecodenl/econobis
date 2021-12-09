@@ -379,6 +379,12 @@ class ContactGroupController extends Controller
                         $this->errorMessagesLaposta = array_merge($this->errorMessagesLaposta, $lapostaMemberHelper->getMessages() );
                     }
                 }
+                $contactGroupToUpdate = $contactGroupWithAddedAndRemoved->simulatedGroup->contacts->where('pivot.laposta_member_state', 'unknown');
+                foreach ($contactGroupToUpdate as $contact){
+                    $lapostaMemberHelper = new LapostaMemberHelper($contactGroupWithAddedAndRemoved->simulatedGroup, $contact, true);
+                    $lapostaMemberHelper->updateMember();
+                    $this->errorMessagesLaposta = array_merge($this->errorMessagesLaposta, $lapostaMemberHelper->getMessages() );
+                }
 
             }else{
                 $lapostaListHelper = new LapostaListHelper($contactGroup, true);

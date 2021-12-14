@@ -46,6 +46,10 @@ class ProjectFormEdit extends Component {
                     props.project.requiresContactGroups &&
                     props.project.requiresContactGroups.map(requiresContactGroup => requiresContactGroup.id).join(','),
                 contactGroupIdsSelected: props.project.requiresContactGroups ? props.project.requiresContactGroups : [],
+                allowChangeDateInterestBearingKwh:
+                    props.project.hasRevenueKwh != null && props.project.hasRevenueKwh != undefined
+                        ? !props.project.hasRevenueKwh
+                        : false,
             },
             errors: {
                 name: false,
@@ -713,6 +717,8 @@ class ProjectFormEdit extends Component {
             dateEnd,
             dateEntry,
             dateProduction,
+            dateInterestBearingKwh,
+            allowChangeDateInterestBearingKwh,
             isMembershipRequired,
             contactGroupIds,
             contactGroupIdsSelected,
@@ -826,6 +832,8 @@ class ProjectFormEdit extends Component {
                     dateEnd={dateEnd}
                     dateEntry={dateEntry}
                     dateProduction={dateProduction}
+                    dateInterestBearingKwh={dateInterestBearingKwh}
+                    allowChangeDateInterestBearingKwh={allowChangeDateInterestBearingKwh}
                     contactGroupIds={contactGroupIds}
                     contactGroupIdsSelected={contactGroupIdsSelected}
                     isMembershipRequired={isMembershipRequired}

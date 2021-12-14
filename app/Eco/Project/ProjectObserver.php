@@ -35,10 +35,5 @@ class ProjectObserver
 
     public function saving(Project $project)
     {
-        if($project->isDirty('date_production') && $project->projectType->code_ref == 'postalcode_link_capital'){
-            if(count($project->projectRevenues) == 0 && !empty($project->date_production)){
-                $project->date_interest_bearing_kwh = $project->date_production;
-            }
-        }
     }
 }

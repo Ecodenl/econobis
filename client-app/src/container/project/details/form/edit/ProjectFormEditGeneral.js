@@ -47,6 +47,8 @@ const ProjectFormEditGeneral = ({
     contactGroupIds,
     contactGroupIdsSelected,
     dateProduction,
+    dateInterestBearingKwh,
+    allowChangeDateInterestBearingKwh,
     isMembershipRequired,
     visibleForAllContacts,
     textInfoProjectOnlyMembers,
@@ -429,6 +431,16 @@ const ProjectFormEditGeneral = ({
                     onChangeAction={handleInputChangeDate}
                     disabledBefore={disableBeforeEntryDate}
                     error={errors.dateEntry}
+                />
+            </div>
+            <div className="row">
+                <InputDate
+                    label={'Volgende begin periode opbrengst kWh'}
+                    name={'dateInterestBearingKwh'}
+                    value={dateInterestBearingKwh}
+                    onChangeAction={handleInputChangeDate}
+                    disabledBefore={dateProduction}
+                    readOnly={!allowChangeDateInterestBearingKwh}
                 />
             </div>
 

@@ -489,6 +489,94 @@ const DefaultContactOrganisationEdit = function({
                     </Col>
                 </Row>
 
+                {projectTypeCodeRef === 'postalcode_link_capital' || projectTypeCodeRef === undefined ? (
+                    <>
+                        <FormLabel
+                            htmlFor="energy_supplier_id"
+                            className={
+                                initialContact.isParticipantPcrProject ||
+                                projectTypeCodeRef === 'postalcode_link_capital'
+                                    ? 'field-label required'
+                                    : 'field-label'
+                            }
+                        >
+                            Huidige energie leverancier
+                        </FormLabel>
+                        <Row>
+                            <Col xs={12} sm={12} md={8}>
+                                <Field
+                                    name="visitAddress.primaryAddressEnergySupplier.energySupplierId"
+                                    render={({ field }) => (
+                                        <Select
+                                            field={field}
+                                            errors={errors}
+                                            touched={touched}
+                                            id="energy_supplier_id"
+                                            placeholder={'Selecteer uw leverancier'}
+                                            options={EnergySuppliers}
+                                        />
+                                    )}
+                                />
+                            </Col>
+                        </Row>
+
+                        {values.visitAddress.primaryAddressEnergySupplier &&
+                        values.visitAddress.primaryAddressEnergySupplier.energySupplierId ? (
+                            <>
+                                <FormLabel
+                                    htmlFor="es_number"
+                                    className={
+                                        projectTypeCodeRef === 'postalcode_link_capital'
+                                            ? 'field-label required'
+                                            : 'field-label'
+                                    }
+                                >
+                                    Klant nummer bij leverancier
+                                </FormLabel>
+                                <Row>
+                                    <Col xs={12} sm={12} md={8}>
+                                        <Field
+                                            name="visitAddress.primaryAddressEnergySupplier.esNumber"
+                                            render={({ field }) => (
+                                                <InputText
+                                                    field={field}
+                                                    errors={errors}
+                                                    touched={touched}
+                                                    id="es_number"
+                                                    placeholder={'Klant nummer bij leverancier'}
+                                                />
+                                            )}
+                                        />
+                                    </Col>
+                                </Row>
+
+                                <FormLabel htmlFor="member_since" className={'field-label'}>
+                                    Klant bij leverancier sinds
+                                </FormLabel>
+                                <Row>
+                                    <Col xs={12} sm={12} md={8}>
+                                        <Field
+                                            name="visitAddress.primaryAddressEnergySupplier.memberSince"
+                                            render={({ field }) => (
+                                                <InputDate
+                                                    {...field}
+                                                    errors={errors}
+                                                    touched={touched}
+                                                    onChangeAction={setFieldValue}
+                                                    id="member_since"
+                                                    placeholder={'Klant sinds'}
+                                                />
+                                            )}
+                                        />
+                                    </Col>
+                                </Row>
+                            </>
+                        ) : (
+                            ''
+                        )}
+                    </>
+                ) : null}
+
                 <FormLabel htmlFor="street" className="field-label">
                     Postadres
                 </FormLabel>
@@ -681,93 +769,6 @@ const DefaultContactOrganisationEdit = function({
                         />
                     </Col>
                 </Row>
-                {projectTypeCodeRef === 'postalcode_link_capital' || projectTypeCodeRef === undefined ? (
-                    <>
-                        <FormLabel
-                            htmlFor="energy_supplier_id"
-                            className={
-                                initialContact.isParticipantPcrProject ||
-                                projectTypeCodeRef === 'postalcode_link_capital'
-                                    ? 'field-label required'
-                                    : 'field-label'
-                            }
-                        >
-                            Huidige energie leverancier
-                        </FormLabel>
-                        <Row>
-                            <Col xs={12} sm={12} md={8}>
-                                <Field
-                                    name="visitAddress.primaryAddressEnergySupplier.energySupplierId"
-                                    render={({ field }) => (
-                                        <Select
-                                            field={field}
-                                            errors={errors}
-                                            touched={touched}
-                                            id="energy_supplier_id"
-                                            placeholder={'Selecteer uw leverancier'}
-                                            options={EnergySuppliers}
-                                        />
-                                    )}
-                                />
-                            </Col>
-                        </Row>
-
-                        {values.visitAddress.primaryAddressEnergySupplier &&
-                        values.visitAddress.primaryAddressEnergySupplier.energySupplierId ? (
-                            <>
-                                <FormLabel
-                                    htmlFor="es_number"
-                                    className={
-                                        projectTypeCodeRef === 'postalcode_link_capital'
-                                            ? 'field-label required'
-                                            : 'field-label'
-                                    }
-                                >
-                                    Klant nummer bij leverancier
-                                </FormLabel>
-                                <Row>
-                                    <Col xs={12} sm={12} md={8}>
-                                        <Field
-                                            name="visitAddress.primaryAddressEnergySupplier.esNumber"
-                                            render={({ field }) => (
-                                                <InputText
-                                                    field={field}
-                                                    errors={errors}
-                                                    touched={touched}
-                                                    id="es_number"
-                                                    placeholder={'Klant nummer bij leverancier'}
-                                                />
-                                            )}
-                                        />
-                                    </Col>
-                                </Row>
-
-                                <FormLabel htmlFor="member_since" className={'field-label'}>
-                                    Klant bij leverancier sinds
-                                </FormLabel>
-                                <Row>
-                                    <Col xs={12} sm={12} md={8}>
-                                        <Field
-                                            name="visitAddress.primaryAddressEnergySupplier.memberSince"
-                                            render={({ field }) => (
-                                                <InputDate
-                                                    {...field}
-                                                    errors={errors}
-                                                    touched={touched}
-                                                    onChangeAction={setFieldValue}
-                                                    id="member_since"
-                                                    placeholder={'Klant sinds'}
-                                                />
-                                            )}
-                                        />
-                                    </Col>
-                                </Row>
-                            </>
-                        ) : (
-                            ''
-                        )}
-                    </>
-                ) : null}
             </Col>
         </Row>
     );

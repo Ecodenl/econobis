@@ -180,6 +180,21 @@ class Project extends Model
         return false;
     }
 
+    public function getHasRevenueKwh(){
+
+        if($this->projectType->code_ref == 'postalcode_link_capital') {
+            $projectRevenueKwhCategories = ProjectRevenueCategory::where('code_ref', 'revenueKwh')->orWhere('code_ref', 'revenueKwhSplit')->get()->pluck('id')->toArray();
+            if($projectRevenueKwhCategories){
+                foreach ($this->projectRevenues as $revenue) {
+                    if (in_array($revenue->category_id, $projectRevenueKwhCategories)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     public function getHasNotConfirmedRevenuesKwhSplit(){
         if($this->projectType->code_ref == 'postalcode_link_capital') {
             $participants = $this->participantsProject()->get();

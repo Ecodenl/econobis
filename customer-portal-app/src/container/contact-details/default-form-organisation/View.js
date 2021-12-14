@@ -159,6 +159,36 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                         {visitAddress.eanGas}
                     </TextBlock>
                 </Row>
+                <FormLabel className={'field-label'}>Huidige energie leverancier</FormLabel>
+                <Row>
+                    <TextBlock className={'col-12 col-sm-8'} placeholder={'Energieleverancier'}>
+                        {visitAddress.primaryAddressEnergySupplier.energySupplier
+                            ? visitAddress.primaryAddressEnergySupplier.energySupplier.name
+                            : ''}
+                    </TextBlock>
+                </Row>
+                {visitAddress.primaryAddressEnergySupplier &&
+                visitAddress.primaryAddressEnergySupplier.energySupplierId ? (
+                    <>
+                        <FormLabel className={'field-label'}>Klant nummer bij leverancier</FormLabel>
+                        <Row>
+                            <TextBlock className={'col-12 col-sm-8'} placeholder={'Klant nummer'}>
+                                {visitAddress.primaryAddressEnergySupplier.esNumber}
+                            </TextBlock>
+                        </Row>
+
+                        <FormLabel className={'field-label'}>Klant bij leverancier sinds</FormLabel>
+                        <Row>
+                            <TextBlock className={'col-12 col-sm-8'} placeholder={'Klant sinds'}>
+                                {visitAddress.primaryAddressEnergySupplier.memberSince
+                                    ? moment(visitAddress.primaryAddressEnergySupplier.memberSince).format('L')
+                                    : ''}
+                            </TextBlock>
+                        </Row>
+                    </>
+                ) : (
+                    ''
+                )}
 
                 <FormLabel className={'field-label'}>Postadres</FormLabel>
                 <Row>
@@ -214,38 +244,6 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                         {invoiceAddress.country ? invoiceAddress.country.name : ''}
                     </TextBlock>
                 </Row>
-
-                <FormLabel className={'field-label'}>Huidige energie leverancier</FormLabel>
-                <Row>
-                    <TextBlock className={'col-12 col-sm-8'} placeholder={'Energieleverancier'}>
-                        {visitAddress.primaryAddressEnergySupplier.energySupplier
-                            ? visitAddress.primaryAddressEnergySupplier.energySupplier.name
-                            : ''}
-                    </TextBlock>
-                </Row>
-
-                {visitAddress.primaryAddressEnergySupplier &&
-                visitAddress.primaryAddressEnergySupplier.energySupplierId ? (
-                    <>
-                        <FormLabel className={'field-label'}>Klant nummer bij leverancier</FormLabel>
-                        <Row>
-                            <TextBlock className={'col-12 col-sm-8'} placeholder={'Klant nummer'}>
-                                {visitAddress.primaryAddressEnergySupplier.esNumber}
-                            </TextBlock>
-                        </Row>
-
-                        <FormLabel className={'field-label'}>Klant bij leverancier sinds</FormLabel>
-                        <Row>
-                            <TextBlock className={'col-12 col-sm-8'} placeholder={'Klant sinds'}>
-                                {visitAddress.primaryAddressEnergySupplier.memberSince
-                                    ? moment(visitAddress.primaryAddressEnergySupplier.memberSince).format('L')
-                                    : ''}
-                            </TextBlock>
-                        </Row>
-                    </>
-                ) : (
-                    ''
-                )}
             </Col>
         </Row>
     );

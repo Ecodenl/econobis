@@ -141,11 +141,6 @@ class ProjectRevenueController extends ApiController
 
         $this->saveParticipantsOfDistribution($projectRevenue, false);
 
-//                ->where(function ($query) use($projectRevenue) {
-//                    $query->where('date_end', '>=', $projectRevenue->date_begin)
-//                        ->orwhere('date_end', '>=', $projectRevenue->date_begin)
-//                    });
-
         if ($projectRevenue->confirmed) {
             $projectRevenue->load('distribution');
         }

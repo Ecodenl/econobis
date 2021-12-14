@@ -3,12 +3,12 @@
 namespace App\Console\Commands;
 
 use App\Eco\Address\Address;
-use App\Eco\Address\AddressType;
 use App\Eco\Contact\Contact;
 use App\Eco\EnergySupplier\AddressEnergySupplier;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class conversionContactEnergySupplierToAddressEnergySuppliers extends Command
 {
@@ -128,6 +128,9 @@ class conversionContactEnergySupplierToAddressEnergySuppliers extends Command
                 "address_energy_supplier_id" => $addressEnergySupplier->id,
                 "address_conversion_text" => $addressConversionText
             ]);
+            DB::table('project_revenues')->where('xxx_contact_energy_supplier_id', $contactEnergySupplier->id)->update([
+                "address_energy_supplier_id" => $addressEnergySupplier->id,
+            ]);
 
         }
 
@@ -171,6 +174,31 @@ class conversionContactEnergySupplierToAddressEnergySuppliers extends Command
                 $addressEnergySupplier->save();
             }
         }
+
+// Onderstaand moet per type electra / gas !
+//        $addressEnergySuppliers = AddressEnergySupplier::where('is_current_supplier', false)->whereNull('end_date')->orderBy('member_since', 'asc')->orderBy('id', 'asc')->get();
+//        foreach($addressEnergySuppliers as $addressEnergySupplier) {
+//
+//            $nextAddressEnergySuppliers = AddressEnergySupplier::where('id', '!=', $addressEnergySupplier->id)
+//                ->where('address_id', $addressEnergySupplier->address_id)
+//                ->whereNotNull('member_since')
+//                ->where('member_since', '>=', $addressEnergySupplier->member_since)
+//                ->orderBy('member_since', 'asc')
+//                ->orderBy('id', 'asc');
+//
+//            if($nextAddressEnergySuppliers->exists()){
+//                $nextAddressEnergySupplier = $nextAddressEnergySuppliers->first();
+//                Log::info('Id                 : ' . $nextAddressEnergySupplier->id);
+//                Log::info('Klant sinds (next) : ' . $nextAddressEnergySupplier->member_since);
+//                Log::info('Einddatum (next)   : ' . $nextAddressEnergySupplier->end_date);
+//                Log::info('Id                 : ' . $addressEnergySupplier->id);
+//                Log::info('Klant sinds        : ' . $addressEnergySupplier->member_since);
+//                Log::info('Einddatum (oud)    : ' . $addressEnergySupplier->end_date);
+//                $addressEnergySupplier->end_date = Carbon::parse($nextAddressEnergySupplier->member_since)->subDay();
+//                Log::info('Einddatum (nieuw)! : ' . $addressEnergySupplier->end_date);
+////                $addressEnergySupplier->save();
+//            }
+//        }
 
     }
 }

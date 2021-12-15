@@ -30,7 +30,7 @@ class AddressEnergySupplierController extends ApiController
 
         $addressEnergySupplier->fill($data);
 
-        $this->validateAddressEnergySupplier($addressEnergySupplier);
+        $this->validateAddressEnergySupplier($addressEnergySupplier, true);
 
         $addressEnergySupplier->save();
 
@@ -66,7 +66,7 @@ class AddressEnergySupplierController extends ApiController
 
         $addressEnergySupplier->fill($data);
 
-        $this->validateAddressEnergySupplier($addressEnergySupplier);
+        $this->validateAddressEnergySupplier($addressEnergySupplier, true);
 
         $addressEnergySupplier->save();
 
@@ -96,7 +96,7 @@ class AddressEnergySupplierController extends ApiController
     /**
      * @param AddressEnergySupplier $addressEnergySupplier
      */
-    public function validateAddressEnergySupplier(AddressEnergySupplier $addressEnergySupplier)
+    public function validateAddressEnergySupplier(AddressEnergySupplier $addressEnergySupplier, $withAbort = true)
     {
         $otherAddressEnergySuppliers = AddressEnergySupplier::where('address_id', '=', $addressEnergySupplier->address_id)
             ->where('id', '!=', $addressEnergySupplier->id);
@@ -147,8 +147,13 @@ class AddressEnergySupplierController extends ApiController
         }
 
         if ($otherAddressEnergySuppliers->exists()) {
-            abort('422', "Periode 'Klant sinds' t/m 'Eind datum' overlapt met een andere periode voor zelfde adres en leverancierstype Electriciteit en/of Gas");
+            if($withAbort){
+                abort('422', "Periode 'Klant sinds' t/m 'Eind datum' overlapt met een andere periode voor zelfde adres en leverancierstype Electriciteit en/of Gas");
+            }else{
+                return "Periode 'Klant sinds' t/m 'Eind datum' overlapt met een andere periode voor zelfde adres en leverancierstype Electriciteit en/of Gas";
+            }
         }
+        return false;
     }
 
     /**

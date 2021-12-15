@@ -385,6 +385,7 @@ class ExternalWebformController extends Controller
                 'order_nota_frequentie_id' => 'collection_frequency_id',
                 'order_volgende_nota_datum' => 'date_next_invoice',
                 'order_begindatum' => 'date_start',
+                'order_eerste_notadatum_start_op' => 'date_period_start_first_invoice',
                 'order_aanvraagdatum' => 'date_requested',
                 'order_betreft' => 'subject',
                 'order_opmerking' => 'invoice_text',
@@ -1958,7 +1959,7 @@ class ExternalWebformController extends Controller
                 $paymentTypeId = $product->payment_type_id;
             }
 
-            $iban = $this->checkIban($data['iban'], 'order.');
+//            $iban = $this->checkIban($data['iban'], 'order.');
 
             $dateNextInvoice = Carbon::make($data['date_next_invoice']);
             if (!$dateNextInvoice) {
@@ -1977,6 +1978,11 @@ class ExternalWebformController extends Controller
                 $this->log('Geen bekende startdatum meegegeven voor orderproduct, default naar datum van vandaag.');
                 $dateStart = new Carbon();
             }
+            $datePeriodStartFirstInvoice = Carbon::make($data['date_period_start_first_invoice']);
+            if (!$datePeriodStartFirstInvoice) {
+                $this->log('Geen bekende notadatum start op meegegeven voor orderproduct, default naar datum van vandaag.');
+                $datePeriodStartFirstInvoice = new Carbon();
+            }
 
             $order = Order::create([
                 'contact_id' => $contact->id,
@@ -1988,12 +1994,12 @@ class ExternalWebformController extends Controller
                 'email_template_id_collection' => $product->administration ? $product->administration->email_template_id_collection : null,
                 'email_template_reminder_id' => $product->administration ? $product->administration->email_template_reminder_id : null,
                 'email_template_exhortation_id' => $product->administration ? $product->administration->email_template_exhortation_id : null,
-                'IBAN' => $iban,
-                'iban_attn' => $data['iban_attn'],
                 'date_requested' => $dateRequested,
                 'date_next_invoice' => $dateNextInvoice,
                 'collection_frequency_id' => $collectionFrequencyId,
                 'invoice_text' => ( isset($data['invoice_text']) && !empty($data['invoice_text']) ) ? $data['invoice_text'] : null,
+                'IBAN' => '',
+                'iban_attn' => '',
             ]);
 
             $this->log('Order met id ' . $order->id . ' aangemaakt.');
@@ -2005,6 +2011,7 @@ class ExternalWebformController extends Controller
                 'order_id' => $order->id,
                 'amount' => $amount,
                 'date_start' => $dateStart,
+                'date_period_start_first_invoice' => $datePeriodStartFirstInvoice,
             ]);
 
             $this->log('Orderregel met id ' . $orderProduct->id . ' aangemaakt en gekoppeld aan order.');

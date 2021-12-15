@@ -28,6 +28,7 @@ use App\Helpers\Address\AddressHelper;
 use App\Helpers\Document\DocumentHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
+use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\Portal\Administration\AdministrationResource;
 use App\Http\Resources\Portal\Documents\FinancialOverviewDocumentResource;
@@ -598,11 +599,14 @@ class ContactController extends ApiController
             $primaryAddressEnergySupplierOld = null;
         }
 
+        $primaryAddressEnergySupplierNew = null;
+
         if ($primaryAddressEnergySupplierOld == null){
             if($primaryAddressEnergySupplierData['energySupplierId'] == null) {
                 return;
             }
-// nieuw
+
+            // new
             if(!empty($address->ean_gas) )
             {
                 $primaryAddressEnergySupplierData['energySupplyTypeId'] = 3;
@@ -621,46 +625,48 @@ class ContactController extends ApiController
             ]);
             $primaryAddressEnergySupplierNew = new AddressEnergySupplier($this->arrayKeysToSnakeCase($primaryAddressEnergySupplierData));
 
-//            $this->validateAddressEnergySupplier($primaryAddressEnergySupplierNew);
+            $addressEnergySupplierController = new AddressEnergySupplierController();
+            $addressEnergySupplierController->validateAddressEnergySupplier($primaryAddressEnergySupplierNew, true);
 
             $primaryAddressEnergySupplierNew->save();
 
         } else {
             if($primaryAddressEnergySupplierData['energySupplierId'] == null) {
-// delete
+
+                // delete
                 $primaryAddressEnergySupplierOld->delete();
             }else{
-// update
-                $primaryAddressEnergySupplierOld->member_since = $primaryAddressEnergySupplierData['memberSince'];
-                $primaryAddressEnergySupplierOld->es_number = $primaryAddressEnergySupplierData['esNumber'];
 
-//            $this->validateAddressEnergySupplier($primaryAddressEnergySupplierOld);
+                // update
+                $primaryAddressEnergySupplierNew = $primaryAddressEnergySupplierOld;
+                $primaryAddressEnergySupplierNew->member_since = $primaryAddressEnergySupplierData['memberSince'];
+                $primaryAddressEnergySupplierNew->es_number = $primaryAddressEnergySupplierData['esNumber'];
 
-                $primaryAddressEnergySupplierOld->save();
+                $addressEnergySupplierController = new AddressEnergySupplierController();
+                $addressEnergySupplierController->validateAddressEnergySupplier($primaryAddressEnergySupplierNew, true);
 
+                $primaryAddressEnergySupplierNew->save();
             }
-
-
         }
 
         //Make task note of changes
         $noteAddressEnergySupplier = "Controleren wijziging energie leverancier gegevens:\n";
-        if($primaryAddressEnergySupplierOld != null && $primaryAddressEnergySupplierOld->energy_supplier_id != $primaryAddressEnergySupplierNew->energy_supplier_id){
+        if($primaryAddressEnergySupplierOld != null && ($primaryAddressEnergySupplierNew == null || $primaryAddressEnergySupplierOld->energy_supplier_id != $primaryAddressEnergySupplierNew->energy_supplier_id) ){
             $noteAddressEnergySupplier = $noteAddressEnergySupplier . "Oude leverancier: " . EnergySupplier::find($primaryAddressEnergySupplierOld->energy_supplier_id)->name . "\n";
         }
-        if( ($primaryAddressEnergySupplierOld == null && $primaryAddressEnergySupplierNew->energy_supplier_id != null) || ($primaryAddressEnergySupplierOld != null && $primaryAddressEnergySupplierOld->energy_supplier_id != $primaryAddressEnergySupplierNew->energy_supplier_id)){
+        if( ($primaryAddressEnergySupplierOld == null && $primaryAddressEnergySupplierNew != null && $primaryAddressEnergySupplierNew->energy_supplier_id != null) || ($primaryAddressEnergySupplierOld != null && $primaryAddressEnergySupplierNew != null && $primaryAddressEnergySupplierOld->energy_supplier_id != $primaryAddressEnergySupplierNew->energy_supplier_id)){
             $noteAddressEnergySupplier = $noteAddressEnergySupplier . "Nieuwe leverancier:" . EnergySupplier::find($primaryAddressEnergySupplierNew->energy_supplier_id)->name . "\n";
         }
-        if($primaryAddressEnergySupplierOld != null && $primaryAddressEnergySupplierOld->es_number != $primaryAddressEnergySupplierNew->es_number){
+        if($primaryAddressEnergySupplierOld != null && ($primaryAddressEnergySupplierNew == null || $primaryAddressEnergySupplierOld->es_number != $primaryAddressEnergySupplierNew->es_number) ){
             $noteAddressEnergySupplier = $noteAddressEnergySupplier . "Oude klantnummer: " . $primaryAddressEnergySupplierOld->es_number . "\n";
         }
-        if( ($primaryAddressEnergySupplierOld == null && $primaryAddressEnergySupplierNew->es_number != null) || ($primaryAddressEnergySupplierOld != null && $primaryAddressEnergySupplierOld->es_number != $primaryAddressEnergySupplierNew->es_number)){
+        if( ($primaryAddressEnergySupplierOld == null && $primaryAddressEnergySupplierNew != null && $primaryAddressEnergySupplierNew->es_number != null) || ($primaryAddressEnergySupplierOld != null && $primaryAddressEnergySupplierNew != null && $primaryAddressEnergySupplierOld->es_number != $primaryAddressEnergySupplierNew->es_number)){
             $noteAddressEnergySupplier = $noteAddressEnergySupplier . "Nieuwe klantnummer: " . $primaryAddressEnergySupplierNew->es_number . "\n";
         }
-        if($primaryAddressEnergySupplierOld != null && $primaryAddressEnergySupplierOld->member_since != $primaryAddressEnergySupplierNew->member_since){
+        if($primaryAddressEnergySupplierOld != null && ($primaryAddressEnergySupplierNew == null || $primaryAddressEnergySupplierOld->member_since != $primaryAddressEnergySupplierNew->member_since) ){
             $noteAddressEnergySupplier = $noteAddressEnergySupplier . "Oude klant sinds: " . $primaryAddressEnergySupplierOld->member_since . "\n";
         }
-        if( ($primaryAddressEnergySupplierOld == null && $primaryAddressEnergySupplierNew->member_since != null) || ($primaryAddressEnergySupplierOld != null && $primaryAddressEnergySupplierOld->member_since != $primaryAddressEnergySupplierNew->member_since)){
+        if( ($primaryAddressEnergySupplierOld == null && $primaryAddressEnergySupplierNew != null && $primaryAddressEnergySupplierNew->member_since != null) || ($primaryAddressEnergySupplierOld != null && $primaryAddressEnergySupplierNew != null && $primaryAddressEnergySupplierOld->member_since != $primaryAddressEnergySupplierNew->member_since)){
             $noteAddressEnergySupplier = $noteAddressEnergySupplier . "Nieuwe klant sinds: " . $primaryAddressEnergySupplierNew->member_since . "\n";
         }
 

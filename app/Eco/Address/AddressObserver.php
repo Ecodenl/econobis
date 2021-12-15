@@ -53,24 +53,30 @@ class AddressObserver
                 || $address->isDirty('addition')
                 || $address->isDirty('postal_code')
                 || $address->isDirty('city')
-                || $address->isDirty('country_id') )
+                || $address->isDirty('country_id')
+                || $address->isDirty('ean_electricity') )
         )
         {
-            // Check if any project revenue distribution is present with status concept
-            // If so, then change address
-            $projectRevenueDistributions = $address->contact->projectRevenueDistributions->whereIn('status', ['concept', 'confirmed']);
+            // Check if any linked project revenue distribution is present with status concept or confirmed
+            // If so, then change address data
+            $participations = $address->participations;
 
-            foreach($projectRevenueDistributions as $projectRevenueDistribution) {
-                $projectRevenueDistribution->street = $address->street;
-                $projectRevenueDistribution->street_number = $address->number;
-                $projectRevenueDistribution->street_number_addition = $address->addition;
-                $projectRevenueDistribution->address = $address->present()
-                    ->streetAndNumber();
-                $projectRevenueDistribution->postal_code = $address->postal_code;
-                $projectRevenueDistribution->city = $address->city;
-                $projectRevenueDistribution->country = $address->country_id ? $address->country->name : '';
+            foreach($participations as $participation) {
+                $projectRevenueDistributions = $participation->projectRevenueDistributions->whereIn('status', ['concept', 'confirmed']);
 
-                $projectRevenueDistribution->save();
+                foreach($projectRevenueDistributions as $projectRevenueDistribution) {
+                    $projectRevenueDistribution->street = $address->street;
+                    $projectRevenueDistribution->street_number = $address->number;
+                    $projectRevenueDistribution->street_number_addition = $address->addition;
+                    $projectRevenueDistribution->address = $address->present()
+                        ->streetAndNumber();
+                    $projectRevenueDistribution->postal_code = $address->postal_code;
+                    $projectRevenueDistribution->city = $address->city;
+                    $projectRevenueDistribution->country = $address->country_id ? $address->country->name : '';
+                    $projectRevenueDistribution->energy_supplier_ean_electricity = $address->ean_electricity;
+
+                    $projectRevenueDistribution->save();
+                }
             }
 
         }

@@ -8,7 +8,7 @@
 
 namespace App\Eco\EnergySupplier;
 
-use Carbon\Carbon;
+use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use Illuminate\Support\Facades\Auth;
 
 class AddressEnergySupplierObserver
@@ -22,26 +22,35 @@ class AddressEnergySupplierObserver
 
     public function saved(AddressEnergySupplier $addressEnergySupplier)
     {
-        if($addressEnergySupplier->isDirty('is_current_supplier') )
+        if($addressEnergySupplier->isDirty('member_since') )
         {
-            // Check if any project revenue distribution is present with status concept
-            // If so, then change energy supplier
-// todo WM-es: dit moet anders $addressEnergySupplier->contact bestaat niet meer !!
-//            $projectRevenueDistributions = $addressEnergySupplier->contact->projectRevenueDistributions->whereIn('status', ['concept', 'confirmed']);
-//
-//            foreach($projectRevenueDistributions as $projectRevenueDistribution) {
-//                if( $addressEnergySupplier->is_current_supplier == true){
-//                    $projectRevenueDistribution->energy_supplier_name = $addressEnergySupplier->energySupplier->name;
-//                    $projectRevenueDistribution->es_id = $addressEnergySupplier->energySupplier->id;
-//                }else{
-//                    $projectRevenueDistribution->energy_supplier_name = "";
-//                    $projectRevenueDistribution->es_id = null;
-//                }
-//
-//                $projectRevenueDistribution->save();
-//            }
-
+            $addressEnergySupplierController = new AddressEnergySupplierController();
+            $addressEnergySupplierController->determineIsCurrentSupplier($addressEnergySupplier);
         }
 
+        if($addressEnergySupplier->isDirty('es_number') || $addressEnergySupplier->isDirty('is_current_supplier') )
+        {
+            // Check if any linked project revenue distribution is present with status concept or confirmed
+            // If so, then change energy supplier data
+            $participations = $addressEnergySupplier->address->participations;
+
+            foreach($participations as $participation) {
+                $projectRevenueDistributions = $participation->projectRevenueDistributions->whereIn('status', ['concept', 'confirmed']);
+
+                foreach($projectRevenueDistributions as $projectRevenueDistribution) {
+                    if( $addressEnergySupplier->is_current_supplier == true){
+                        $projectRevenueDistribution->energy_supplier_name = $addressEnergySupplier->energySupplier->name;
+                        $projectRevenueDistribution->energy_supplier_number = $addressEnergySupplier->es_number;
+                        $projectRevenueDistribution->es_id = $addressEnergySupplier->energySupplier->id;
+                    }else{
+                        $projectRevenueDistribution->energy_supplier_name = "";
+                        $projectRevenueDistribution->energy_supplier_number = "";
+                        $projectRevenueDistribution->es_id = null;
+                    }
+
+                    $projectRevenueDistribution->save();
+                }
+            }
+        }
     }
 }

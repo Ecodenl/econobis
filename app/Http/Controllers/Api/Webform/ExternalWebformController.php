@@ -62,6 +62,7 @@ use App\Helpers\Address\AddressHelper;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Workflow\IntakeWorkflowHelper;
+use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Controllers\Controller;
 use App\Notifications\WebformRequestProcessed;
@@ -279,8 +280,8 @@ class ExternalWebformController extends Controller
             }
         }
 
-        $this->addEnergySupplierToContact($contact, $data['energy_supplier']);
         if ($this->address) {
+            $this->addEnergySupplierToAddress($this->address, $data['energy_supplier']);
             $intake = $this->addIntakeToAddress($this->address, $data['intake'], $webform);
             $housingFile = $this->addHousingFileToAddress($this->address, $data['housing_file'], $webform);
         } else {
@@ -324,6 +325,8 @@ class ExternalWebformController extends Controller
                 'adres_postcode' => 'address_postal_code',
                 'adres_plaats' => 'address_city',
                 'adres_land_id' => 'address_country_id',
+                // Ean electra
+                'energieleverancier_ean_code_elektra' => 'ean_electricity',
                 // PhoneNumber
                 'telefoonnummer' => 'phone_number',
                 // ContactEmail
@@ -350,9 +353,9 @@ class ExternalWebformController extends Controller
                 'energieleverancier_klantnummer' => 'es_number',
                 'energieleverancier_type_id' => 'energy_supply_type_id',
                 'energieleverancier_klant_sinds' => 'member_since',
-                'energieleverancier_ean_code_elektra' => 'ean_electricity',
+//                'energieleverancier_ean_code_elektra' => 'ean_electricity',
                 'energieleverancier_status' => 'energy_supply_status_id',
-                'energieleverancier_huidig' => 'is_current_supplier',
+//                'energieleverancier_huidig' => 'is_current_supplier',
             ],
             'participation' => [
                 // ParticipantProject
@@ -930,6 +933,7 @@ class ExternalWebformController extends Controller
                     'postal_code' => $data['address_postal_code'],
                     'country_id' => $countryCode,
                     'addition' => $data['address_addition'],
+                    'ean_electricity' => $data['ean_electricity'],
                 ]);
                 $this->log('Adres aangemaakt met id ' . $address->id);
             } else {
@@ -1157,7 +1161,7 @@ class ExternalWebformController extends Controller
         return $contact;
     }
 
-    protected function addEnergySupplierToContact(Contact $contact, $data)
+    protected function addEnergySupplierToAddress(Address $address, $data)
     {
         if ($data['energy_supplier_id'] != '') {
             $this->log('Er is een energie leverancier meegegeven');
@@ -1172,7 +1176,7 @@ class ExternalWebformController extends Controller
                 $this->error('Ongeldige waarde voor energie leverancier type meegegeven.');
             }
 
-                        $energySupplierStatusId = null;
+            $energySupplierStatusId = null;
             if ($data['energy_supplier_id'] != '' && $data['energy_supply_status_id'] != '') {
                 $energySupplierStatus
                     = EnergySupplierStatus::find($data['energy_supply_status_id']);
@@ -1183,23 +1187,44 @@ class ExternalWebformController extends Controller
                 }
             }
 
-            if (AddressEnergySupplier::where('contact_id', $contact->id)->where('energy_supplier_id', $energySupplier->id)->exists()) {
+            if (AddressEnergySupplier::where('address_id', $address->id)->where('energy_supplier_id', $energySupplier->id)->exists()) {
                 $this->log('Koppeling met energieleverancier ' . $energySupplier->name . ' bestaat al; niet opnieuw aangemaakt.');
                 return;
             }
 
-            AddressEnergySupplier::create([
-                'contact_id' => $contact->id,
+//            $addressEnergySupplier = AddressEnergySupplier::create([
+//                'address_id' => $address->id,
+//                'energy_supplier_id' => $energySupplier->id,
+//                'es_number' => $data['es_number'],
+//                'energy_supply_type_id' => $energySupplierType->id,
+//                'member_since' => $data['member_since'] ?: null,
+////                'ean_electricity' => $data['ean_electricity'],
+//                'energy_supply_status_id' => $energySupplierStatusId,
+////                'is_current_supplier' => (bool)$data['is_current_supplier'],
+//            ]);
+//            $addressEnergySupplier->save();
+//            $this->log('Koppeling met energieleverancier ' . $energySupplier->name . ' gemaakt.');
+
+            $addressEnergySupplierData = [
+                'address_id' => $address->id,
                 'energy_supplier_id' => $energySupplier->id,
                 'es_number' => $data['es_number'],
                 'energy_supply_type_id' => $energySupplierType->id,
                 'member_since' => $data['member_since'] ?: null,
-//                'ean_electricity' => $data['ean_electricity'],
                 'energy_supply_status_id' => $energySupplierStatusId,
-                'is_current_supplier' => (bool)$data['is_current_supplier'],
-            ]);
+            ];
+            $addressEnergySupplier = new AddressEnergySupplier();
+            $addressEnergySupplier->fill($addressEnergySupplierData);
+            $addressEnergySupplierController = new AddressEnergySupplierController();
+            $response = $addressEnergySupplierController->validateAddressEnergySupplier($addressEnergySupplier, false);
 
-            $this->log('Koppeling met energieleverancier ' . $energySupplier->name . ' gemaakt.');
+            if($response){
+                $this->log('Koppeling met energieleverancier ' . $energySupplier->name . ' NIET gemaakt.');
+                $this->log($response);
+            } else {
+                $addressEnergySupplier->save();
+                $this->log('Koppeling met energieleverancier ' . $energySupplier->name . ' gemaakt.');
+            }
         } else {
             $this->log('Er is geen energie leverancier meegegeven, niet koppelen.');
         }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\AddressEnergySupplier;
 
+use App\Helpers\AddressEnergySupplier\AddressEnergySupplierHelper;
 use App\Http\Resources\Address\FullAddress;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\User\FullUser;
@@ -17,6 +18,9 @@ class FullAddressEnergySupplier extends JsonResource
      */
     public function toArray($request)
     {
+        $addressEnergySupplierHelper = new AddressEnergySupplierHelper();
+        $isDoubleEsNumber = $addressEnergySupplierHelper->checkDoubleEsNumber($this->id, $this->energy_supplier_id, $this->es_number);
+
         return [
             'id' => $this->id,
             'addressId' => $this->address_id,
@@ -37,6 +41,7 @@ class FullAddressEnergySupplier extends JsonResource
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'esNumber' => $this->es_number,
+            'isDoubleEsNumber' => $isDoubleEsNumber,
         ];
     }
 }

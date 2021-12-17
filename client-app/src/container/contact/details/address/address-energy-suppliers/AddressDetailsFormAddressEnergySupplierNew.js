@@ -17,6 +17,7 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
         super(props);
 
         this.state = {
+            showWarningEsNumber: true,
             addressEnergySupplier: {
                 addressId: this.props.addressId,
                 energySupplierId: '',
@@ -43,13 +44,24 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        this.setState({
-            ...this.state,
-            addressEnergySupplier: {
-                ...this.state.addressEnergySupplier,
-                [name]: value,
-            },
-        });
+        if (name == 'esNumber') {
+            this.setState({
+                ...this.state,
+                addressEnergySupplier: {
+                    ...this.state.addressEnergySupplier,
+                    [name]: value,
+                },
+                showWarningEsNumber: true,
+            });
+        } else {
+            this.setState({
+                ...this.state,
+                addressEnergySupplier: {
+                    ...this.state.addressEnergySupplier,
+                    [name]: value,
+                },
+            });
+        }
     };
 
     handleInputChangeDate(value, name) {
@@ -59,6 +71,13 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
                 ...this.state.addressEnergySupplier,
                 [name]: value,
             },
+        });
+    }
+
+    toggleShowWarningEsNumber() {
+        this.setState({
+            ...this.state,
+            showWarningEsNumber: !this.state.showWarningEsNumber,
         });
     }
 
@@ -103,6 +122,17 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
             AddressEnergySupplierAPI.newAddressEnergySupplier(addressEnergySupplier)
                 .then(payload => {
                     this.props.newStateAddressEnergySupplier(payload.data.data);
+                    if (this.state.showWarningEsNumber && payload.data.data.isDoubleEsNumber) {
+                        this.props.setError(
+                            412,
+                            'Klantnummer leverancier ' +
+                                payload.data.data.esNumber +
+                                ' komt al voor bij een andere adres voor leverancier ' +
+                                payload.data.data.energySupplier.name +
+                                '. (N.B. dit kan ook bij een ander contact zijn). Gewijzigde gegevens van deze adres/energie leverancier zijn wel opgeslagen'
+                        );
+                        this.toggleShowWarningEsNumber();
+                    }
                     this.props.toggleShowNew();
                 })
                 .catch(error => {

@@ -45,8 +45,8 @@ class AddressEnergySupplierController extends ApiController
         // bovenstaand voorbeeld).
         $addressEnergySupplier = AddressEnergySupplier::find($addressEnergySupplier->id);
 
-        // determine is current_supplier
-        $this->determineIsCurrentSupplier($addressEnergySupplier);
+        // determine is current_supplier (verplaatst naar AddressEnergySupplierObserver, als member_since wijzigt).
+//        $this->determineIsCurrentSupplier($addressEnergySupplier);
 
         $addressEnergySupplier->load('energySupplier', 'energySupplyStatus', 'createdBy', 'address', 'energySupplyType');
         return FullAddressEnergySupplier::make($addressEnergySupplier);
@@ -81,8 +81,8 @@ class AddressEnergySupplierController extends ApiController
         // bovenstaand voorbeeld).
         $addressEnergySupplier = AddressEnergySupplier::find($addressEnergySupplier->id);
 
-        // determine is current_supplier
-        $this->determineIsCurrentSupplier($addressEnergySupplier);
+        // determine is current_supplier (verplaatst naar AddressEnergySupplierObserver, als member_since wijzigt)
+//        $this->determineIsCurrentSupplier($addressEnergySupplier);
 
         $addressEnergySupplier->load('energySupplier', 'energySupplyStatus', 'createdBy', 'address', 'energySupplyType');
         return FullAddressEnergySupplier::make($addressEnergySupplier);

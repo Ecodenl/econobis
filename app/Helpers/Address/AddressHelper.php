@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: StagiarSoftware
- * Date: 19-1-2018
- * Time: 11:55
- */
 
 namespace App\Helpers\Address;
 
@@ -23,7 +17,7 @@ class AddressHelper
     private $address;
 
     /**
-     * TwinfieldHelper constructor.
+     * AddressHelper constructor.
      *
      * @param Administration $administration
      */
@@ -35,7 +29,7 @@ class AddressHelper
 
 
     /**
-     * @param Address $address
+     * @param bool $abort
      * @return bool
      */
     public function checkDoubleAddressAllowed($abort): bool

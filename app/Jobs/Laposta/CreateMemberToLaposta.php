@@ -67,6 +67,7 @@ class CreateMemberToLaposta implements ShouldQueue
         ];
 
         try {
+            sleep(1);
             $lapostaResponse = $member->create($memberData);
 
             $lapostaMemberId = $lapostaResponse['member']['member_id'];

@@ -19,6 +19,7 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
             highlightLine: '',
             showEdit: false,
             showDelete: false,
+            showWarningEsNumber: true,
             addressEnergySupplier: {
                 ...props.addressEnergySupplier,
             },
@@ -82,13 +83,24 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        this.setState({
-            ...this.state,
-            addressEnergySupplier: {
-                ...this.state.addressEnergySupplier,
-                [name]: value,
-            },
-        });
+        if (name == 'esNumber') {
+            this.setState({
+                ...this.state,
+                addressEnergySupplier: {
+                    ...this.state.addressEnergySupplier,
+                    [name]: value,
+                },
+                showWarningEsNumber: true,
+            });
+        } else {
+            this.setState({
+                ...this.state,
+                addressEnergySupplier: {
+                    ...this.state.addressEnergySupplier,
+                    [name]: value,
+                },
+            });
+        }
     };
 
     handleInputChangeDate(value, name) {
@@ -98,6 +110,13 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
                 ...this.state.addressEnergySupplier,
                 [name]: value,
             },
+        });
+    }
+
+    toggleShowWarningEsNumber() {
+        this.setState({
+            ...this.state,
+            showWarningEsNumber: !this.state.showWarningEsNumber,
         });
     }
 
@@ -132,7 +151,19 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
             AddressEnergySupplierAPI.updateAddressEnergySupplier(addressEnergySupplier)
                 .then(payload => {
                     this.props.updateStateAddressEnergySupplier(payload.data.data);
-                    this.closeEdit();
+                    if (this.state.showWarningEsNumber && payload.data.data.isDoubleEsNumber) {
+                        this.props.setError(
+                            412,
+                            'Klantnummer leverancier ' +
+                                payload.data.data.esNumber +
+                                ' komt al voor bij een andere adres voor leverancier ' +
+                                payload.data.data.energySupplier.name +
+                                '. (N.B. dit kan ook bij een ander contact zijn). Gewijzigde gegevens van deze adres/energie leverancier zijn wel opgeslagen'
+                        );
+                        this.toggleShowWarningEsNumber();
+                    } else {
+                        this.closeEdit();
+                    }
                 })
                 .catch(error => {
                     if (error.response) {
@@ -164,8 +195,6 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
                             handleInputChangeDate={this.handleInputChangeDate}
                             handleSubmit={this.handleSubmit}
                             cancelEdit={this.cancelEdit}
-                            //todo: WM even als test. ik denk dat we voor Tussenstijdse opbrengstverdelingen een list moeten maken over deelnames, wellicht in harmonica ??
-                            // revenueKwhSplit={this.revenueKwhSplit}
                         />
                     )}
                 {this.state.showDelete && (
@@ -183,8 +212,6 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        //todo: WM even als test. ik denk dat we voor Tussenstijdse opbrengstverdelingen een list moeten maken over deelnames, wellicht in harmonica ??
-        // projectRevenueCategories: state.systemData.projectRevenueCategories,
     };
 };
 

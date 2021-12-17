@@ -360,18 +360,30 @@ class ContactGroupController extends Controller
                     $this->addContact($contactGroup->simulatedGroup, $contact, true);
                 }
 
-                $contactGroupToRemove = $contactGroup->simulatedGroup->getAllContacts()->diff($contactGroup->getAllContacts());
+                // haal contactgroup opnieuw op, er kunnen contacten zijn toegevoegd.
+                $contactGroupWithAdded = ContactGroup::find($contactGroup->id);
+
+                $contactGroupToRemove = $contactGroupWithAdded->simulatedGroup->getAllContacts()->diff($contactGroupWithAdded->getAllContacts());
                 foreach ($contactGroupToRemove as $contact){
-                    $this->removeContact($contactGroup->simulatedGroup, $contact, true);
+                    $this->removeContact($contactGroupWithAdded->simulatedGroup, $contact, true);
                 }
 
-                $contactGroupToUpdate = $contactGroup->simulatedGroup->contacts->whereNull('pivot.laposta_member_id');
+                // haal contactgroup opnieuw op, er kunnen contacten zijn verwijderd.
+                $contactGroupWithAddedAndRemoved = ContactGroup::find($contactGroup->id);
+
+                $contactGroupToUpdate = $contactGroupWithAddedAndRemoved->simulatedGroup->contacts->whereNull('pivot.laposta_member_id');
                 foreach ($contactGroupToUpdate as $contact){
-                    if($contactGroup->simulatedGroup->laposta_list_id){
-                        $lapostaMemberHelper = new LapostaMemberHelper($contactGroup->simulatedGroup, $contact, true);
+                    if($contactGroupWithAddedAndRemoved->simulatedGroup->laposta_list_id){
+                        $lapostaMemberHelper = new LapostaMemberHelper($contactGroupWithAddedAndRemoved->simulatedGroup, $contact, true);
                         $lapostaMemberHelper->createMember();
                         $this->errorMessagesLaposta = array_merge($this->errorMessagesLaposta, $lapostaMemberHelper->getMessages() );
                     }
+                }
+                $contactGroupToUpdate = $contactGroupWithAddedAndRemoved->simulatedGroup->contacts->where('pivot.laposta_member_state', 'unknown');
+                foreach ($contactGroupToUpdate as $contact){
+                    $lapostaMemberHelper = new LapostaMemberHelper($contactGroupWithAddedAndRemoved->simulatedGroup, $contact, true);
+                    $lapostaMemberHelper->updateMember();
+                    $this->errorMessagesLaposta = array_merge($this->errorMessagesLaposta, $lapostaMemberHelper->getMessages() );
                 }
 
             }else{

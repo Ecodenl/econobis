@@ -77,6 +77,7 @@ const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal, addWidget }
                 <Col sm={12}>
                     <InputText
                         divSize={'col-sm-12'}
+                        labelSize={'col-sm-12'}
                         size={'col-sm-12'}
                         label={'Titel'}
                         name={'title'}
@@ -114,6 +115,7 @@ const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal, addWidget }
                 <Col sm={5}>
                     <InputText
                         divSize={'col-sm-12'}
+                        labelSize={'col-sm-12'}
                         size={'col-sm-12'}
                         label={'Knoptekst'}
                         name={'buttonText'}
@@ -124,6 +126,7 @@ const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal, addWidget }
                 <Col sm={7}>
                     <InputText
                         divSize={'col-sm-12'}
+                        labelSize={'col-sm-12'}
                         size={'col-sm-12'}
                         label={'Knoplink'}
                         name={'buttonLink'}

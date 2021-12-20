@@ -87,7 +87,7 @@ function ProjectDetails({ match }) {
                     <Row>
                         <Col>
                             <h1 className="content-heading">Inschrijven project</h1>
-                            <div className="content-subheading">Uitgevende instantie {project.administration.name}</div>
+                            <div className="content-subheading">Organisatie {project.administration.name}</div>
                         </Col>
                     </Row>
 

@@ -134,7 +134,7 @@ function ProjectList(props) {
                                 <Table responsive>
                                     <thead>
                                         <tr>
-                                            <th>Uitgevende instantie</th>
+                                            <th>Organisatie</th>
                                             <th>Project</th>
                                             <th>Ingeschreven</th>
                                             <th>Start inschrijving</th>

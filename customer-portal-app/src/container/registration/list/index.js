@@ -67,7 +67,7 @@ function RegistrationList(props) {
                         <Table responsive>
                             <thead>
                                 <tr>
-                                    <th>Uitgevende instantie</th>
+                                    <th>Organisatie</th>
                                     <th>Project</th>
                                     <th>Deelname</th>
                                 </tr>

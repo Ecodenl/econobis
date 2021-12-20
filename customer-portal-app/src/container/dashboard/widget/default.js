@@ -1,29 +1,80 @@
 import { Button, Card } from 'react-bootstrap';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import Dropdown from 'react-bootstrap/Dropdown';
+import { isEmpty } from 'lodash';
 
 export const ContactDetailsDashboardWidget = function({ contact }) {
     const history = useHistory();
     const key = 'widget-' + 'contact-details';
+
+    const typeContact = contact.typeId ? contact.typeId : null;
 
     return (
         <Card key={key} id={key}>
             <div className="card-body">
                 <h5 className="card-title">{contact.fullName}</h5>
                 <div className="card-text">
-                    {contact.primaryAddress !== undefined ? (
-                        <div>
-                            <b>Adres</b>
-                            <br />
-                            {contact.primaryAddress.street} {contact.primaryAddress.number}
-                            <br />
-                            {contact.primaryAddress.postalCode} {contact.primaryAddress.city},{' '}
-                            {contact.primaryAddress.country.name}
-                        </div>
-                    ) : (
-                        <></>
-                    )}
+                    {typeContact === 'person' ? (
+                        <>
+                            {contact.primaryAddress !== undefined ? (
+                                <div>
+                                    <b>Adres</b>
+                                    <br />
+                                    {contact.primaryAddress.street} {contact.primaryAddress.number}
+                                    <br />
+                                    {contact.primaryAddress.postalCode} {contact.primaryAddress.city},{' '}
+                                    {contact.primaryAddress.country ? contact.primaryAddress.country.name : ''}
+                                </div>
+                            ) : (
+                                <></>
+                            )}
+                        </>
+                    ) : null}
+                    {typeContact === 'organisation' ? (
+                        <>
+                            {contact.visitAddress !== undefined ? (
+                                <div>
+                                    <b>Bezoekadres</b>
+                                    <br />
+                                    {contact.visitAddress.street} {contact.visitAddress.number}
+                                    <br />
+                                    {contact.visitAddress.postalCode} {contact.visitAddress.city},{' '}
+                                    {contact.visitAddress.country ? contact.visitAddress.country.name : ''}
+                                </div>
+                            ) : (
+                                <></>
+                            )}
+                            {contact.postalAddress !== undefined &&
+                            contact.postalAddress &&
+                            !isEmpty(contact.postalAddress.postalCode) ? (
+                                <div>
+                                    <b>Postadres</b>
+                                    <br />
+                                    {contact.postalAddress.street} {contact.postalAddress.number}
+                                    <br />
+                                    {contact.postalAddress.postalCode} {contact.postalAddress.city},{' '}
+                                    {contact.postalAddress.country ? contact.postalAddress.country.name : ''}
+                                </div>
+                            ) : (
+                                <></>
+                            )}
+                            {contact.invoiceAddress !== undefined &&
+                            contact.invoiceAddress &&
+                            !isEmpty(contact.invoiceAddress.postalCode) ? (
+                                <div>
+                                    <b>Nota adres</b>
+                                    <br />
+                                    {contact.invoiceAddress.street} {contact.invoiceAddress.number}
+                                    <br />
+                                    {contact.invoiceAddress.postalCode} {contact.invoiceAddress.city},{' '}
+                                    {contact.invoiceAddress.country ? contact.invoiceAddress.country.name : ''}
+                                </div>
+                            ) : (
+                                <></>
+                            )}
+                        </>
+                    ) : null}
+
                     <div>
                         <br />
                         <b>Telefoon</b>

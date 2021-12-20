@@ -92,20 +92,22 @@ function Header({ location, history }) {
                         <PortalUserConsumer>
                             {({ user, currentSelectedContact, switchCurrentContact, resetCurrentUserToDefault }) => {
                                 if (!user.occupations || user.occupations.length < 1) {
-                                    return <>{ReactHtmlParser(formatProfilePicName(user.fullName))}</>;
+                                    return (
+                                        <>{ReactHtmlParser(formatProfilePicName(currentSelectedContact.fullName))}</>
+                                    );
                                 }
 
                                 return (
                                     <Dropdown alignRight>
                                         <Dropdown.Toggle style={{ marginTop: '0' }}>
-                                            {ReactHtmlParser(formatProfilePicName(user.fullName))}
+                                            {ReactHtmlParser(formatProfilePicName(currentSelectedContact.fullName))}
                                         </Dropdown.Toggle>
                                         <Dropdown.Menu>
                                             <Dropdown.Header>Beheren van</Dropdown.Header>
                                             <Dropdown.Item
                                                 onClick={() => {
                                                     switchCurrentContact(user);
-                                                    redirect('gegevens');
+                                                    redirect('dashboard');
                                                 }}
                                                 active={currentSelectedContact.id === user.id ? true : false}
                                             >
@@ -123,7 +125,7 @@ function Header({ location, history }) {
                                                                   switchCurrentContact(
                                                                       occupationContact.primaryContact
                                                                   );
-                                                                  redirect('gegevens');
+                                                                  redirect('dashboard');
                                                               }}
                                                               active={
                                                                   currentSelectedContact.id ===
@@ -221,6 +223,12 @@ function Header({ location, history }) {
                                 </div>
                             </Col>
                         </Row>
+                        <div className="header-dashboard-button">
+                            <Button className={'w-button'} onClick={() => history.push('/dashboard')}>
+                                <FaHome />
+                                &nbsp;Dashboard
+                            </Button>
+                        </div>
                     </Container>
                 </div>
                 {/* Sidebar menu */}
@@ -295,7 +303,7 @@ function Header({ location, history }) {
                 </Menu>
             </header>
             <div className={'floating-action-button'}>
-                <Button onClick={() => history.push('/dashboard')}>
+                <Button className={'w-button'} onClick={() => history.push('/dashboard')}>
                     <FaHome />
                     &nbsp;Dashboard
                 </Button>

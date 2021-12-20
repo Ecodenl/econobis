@@ -385,6 +385,10 @@ h3 {
   display: none;
 }
 
+.header-dashboard-button {
+  position: absolute;
+  top: 200px;
+}
 .floating-action-button {
   position: fixed;
   bottom: 25px;

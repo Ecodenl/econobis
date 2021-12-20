@@ -114,21 +114,6 @@ function ProjectList(props) {
     return (
         <Container className={'content-section'}>
             <Row>
-                <ButtonGroup aria-label="Steps" className="float-left">
-                    <Link to={`/gegevens`}>
-                        <Button className={'w-button'} size="sm">
-                            Gegevens
-                        </Button>
-                    </Link>
-                    &nbsp;
-                    <Link to={`/inschrijvingen-projecten`}>
-                        <Button className={'w-button'} size="sm">
-                            Huidige deelnames
-                        </Button>
-                    </Link>
-                </ButtonGroup>
-            </Row>
-            <Row>
                 <Col>
                     <h1 className="content-heading">
                         Overzicht projecten waarop{' '}

@@ -59,9 +59,11 @@ function ProjectDetails({ match }) {
                 {isLoading ? (
                     <LoadingView />
                 ) : (
-                    <>
-                        <p>Geen projectdetails bekend</p>
-                    </>
+                    <Row>
+                        <Col>
+                            <p>Geen projectdetails bekend</p>
+                        </Col>
+                    </Row>
                 )}
             </Container>
         );
@@ -74,7 +76,7 @@ function ProjectDetails({ match }) {
             ) : (
                 <>
                     <Row>
-                        <ButtonGroup aria-label="Steps" className="float-left">
+                        <ButtonGroup aria-label="Steps" className="w-button-group-left">
                             <Link to={`/inschrijven-projecten`}>
                                 <Button className={'w-button'} size="sm">
                                     Inschrijven projecten

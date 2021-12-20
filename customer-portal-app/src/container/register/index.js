@@ -275,7 +275,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                         ) : (
                             <>
                                 <Row>
-                                    <ButtonGroup aria-label="Steps" className="float-left">
+                                    <ButtonGroup aria-label="Steps" className="w-button-group-left">
                                         <Link to={`/inschrijven-projecten`}>
                                             <Button className={'w-button'} size="sm">
                                                 Inschrijven projecten

@@ -16,6 +16,9 @@ import InputToggle from '../../../../components/form/InputToggle';
 import PortalLogoLayoutNew from './PortalLogoLayoutNew';
 import PortalFaviconLayoutNew from './PortalFaviconLayoutNew';
 import Image from 'react-bootstrap/es/Image';
+import PortalLogoHeaderLayoutNew from './PortalLogoHeaderLayoutNew';
+import PortalImageBgLoginLayoutNew from './PortalImageBgLoginLayoutNew';
+import PortalImageBgHeaderLayoutNew from './PortalImageBgHeaderLayoutNew';
 
 class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -33,6 +36,15 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
             attachmentLogo: '',
             filenameLogo: '',
             newLogo: false,
+            attachmentLogoHeader: '',
+            filenameLogoHeader: '',
+            newLogoHeader: false,
+            attachmentImageBgLogin: '',
+            filenameImageBgLogin: '',
+            newImageBgLogin: false,
+            attachmentImageBgHeader: '',
+            filenameImageBgHeader: '',
+            newImageBgHeader: false,
             attachmentFavicon: '',
             filenameFavicon: '',
             newFavicon: false,
@@ -40,6 +52,9 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
             errors: {
                 description: false,
                 portalLogoFileName: false,
+                portalLogoFileNameHeader: false,
+                portalImageBgFileNameLogin: false,
+                portalImageBgFileNameHeader: false,
                 portalFaviconFileName: false,
                 portalBackgroundColor: false,
                 portalBackgroundTextColor: false,
@@ -61,6 +76,27 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
             });
         }
     };
+    toggleNewLogoHeader = () => {
+        if (this.manageTechnicalPortalSettings) {
+            this.setState({
+                newLogoHeader: !this.state.newLogoHeader,
+            });
+        }
+    };
+    toggleNewImageBgLogin = () => {
+        if (this.manageTechnicalPortalSettings) {
+            this.setState({
+                newImageBgLogin: !this.state.newImageBgLogin,
+            });
+        }
+    };
+    toggleNewImageBgHeader = () => {
+        if (this.manageTechnicalPortalSettings) {
+            this.setState({
+                newImageBgHeader: !this.state.newImageBgHeader,
+            });
+        }
+    };
     toggleNewFavicon = () => {
         if (this.manageTechnicalPortalSettings) {
             this.setState({
@@ -73,6 +109,27 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
             ...this.state,
             attachmentLogo: file[0],
             filenameLogo: file[0].name,
+        });
+    };
+    addLogoHeader = file => {
+        this.setState({
+            ...this.state,
+            attachmentLogoHeader: file[0],
+            filenameLogoHeader: file[0].name,
+        });
+    };
+    addImageBgLogin = file => {
+        this.setState({
+            ...this.state,
+            attachmentImageBgLogin: file[0],
+            filenameImageBgLogin: file[0].name,
+        });
+    };
+    addImageBgHeader = file => {
+        this.setState({
+            ...this.state,
+            attachmentImageBgHeader: file[0],
+            filenameImageBgHeader: file[0].name,
         });
     };
     addFavicon = file => {
@@ -100,7 +157,14 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { portalSettingsLayout, attachmentLogo, attachmentFavicon } = this.state;
+        const {
+            portalSettingsLayout,
+            attachmentLogo,
+            attachmentLogoHeader,
+            attachmentImageBgLogin,
+            attachmentImageBgHeader,
+            attachmentFavicon,
+        } = this.state;
 
         // Validation
         let errors = {};
@@ -162,6 +226,9 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
         data.append('description', portalSettingsLayout.description);
         data.append('isDefault', portalSettingsLayout.isDefault);
         data.append('portalLogoFileName', portalSettingsLayout.portalLogoFileName);
+        data.append('portalLogoFileNameHeader', portalSettingsLayout.portalLogoFileNameHeader);
+        data.append('portalImageBgFileNameLogin', portalSettingsLayout.portalImageBgFileNameLogin);
+        data.append('portalImageBgFileNameHeader', portalSettingsLayout.portalImageBgFileNameHeader);
         data.append('portalFaviconFileName', portalSettingsLayout.portalFaviconFileName);
         data.append('description', portalSettingsLayout.description);
         data.append('portalBackgroundColor', portalSettingsLayout.portalBackgroundColor);
@@ -175,6 +242,9 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
         data.append('buttonTextColor', portalSettingsLayout.buttonTextColor);
 
         data.append('attachmentLogo', attachmentLogo);
+        data.append('attachmentLogoHeader', attachmentLogoHeader);
+        data.append('attachmentImageBgLogin', attachmentImageBgLogin);
+        data.append('attachmentImageBgHeader', attachmentImageBgHeader);
         data.append('attachmentFavicon', attachmentFavicon);
 
         this.setState({ ...this.state, errors: errors });
@@ -199,6 +269,9 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
             description,
             isDefault,
             portalLogoFileName,
+            portalLogoFileNameHeader,
+            portalImageBgFileNameLogin,
+            portalImageBgFileNameHeader,
             portalFaviconFileName,
             portalBackgroundColor,
             portalBackgroundTextColor,
@@ -212,6 +285,9 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
         } = this.state.portalSettingsLayout;
 
         const logoUrl = `${URL_API}/portal/images/${portalLogoFileName}?${this.props.imageHash}`;
+        const logoHeaderUrl = `${URL_API}/portal/images/${portalLogoFileNameHeader}?${this.props.imageHash}`;
+        const imageBgLoginUrl = `${URL_API}/portal/images/${portalImageBgFileNameLogin}?${this.props.imageHash}`;
+        const imageBgHeaderUrl = `${URL_API}/portal/images/${portalImageBgFileNameHeader}?${this.props.imageHash}`;
         const faviconUrl = `${URL_API}/portal/${portalFaviconFileName}?${this.props.imageHash}`;
 
         return (
@@ -240,7 +316,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputText
                                 Men
-                                label="Logo (bestandstype PNG)"
+                                label="Logo login (bestandstype PNG)"
                                 divSize={'col-sm-8'}
                                 value={
                                     this.state.attachmentLogo.name ? this.state.attachmentLogo.name : portalLogoFileName
@@ -271,6 +347,126 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         {this.state.newLogo && (
                             <PortalLogoLayoutNew toggleShowNewLogo={this.toggleNewLogo} addLogo={this.addLogo} />
+                        )}
+                        <div className="row">
+                            <InputText
+                                Men
+                                label="Logo header (bestandstype PNG)"
+                                divSize={'col-sm-8'}
+                                value={
+                                    this.state.attachmentLogoHeader.name
+                                        ? this.state.attachmentLogoHeader.name
+                                        : portalLogoFileNameHeader
+                                }
+                                onClickAction={this.toggleNewLogoHeader}
+                                onChangeaction={() => {}}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
+                                error={this.state.errors.portalLogoFileNameHeader}
+                            />
+                            <Image
+                                src={
+                                    this.state.attachmentLogoHeader && this.state.attachmentLogoHeader.preview
+                                        ? this.state.attachmentLogoHeader.preview
+                                        : logoHeaderUrl
+                                }
+                                style={{
+                                    backgroundColor: loginHeaderBackgroundColor,
+                                    color: loginHeaderBackgroundTextColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '1px',
+                                    borderRadius: '1px',
+                                    height: '50px',
+                                    boxShadow: '0 0 0 1px #fff inset',
+                                }}
+                            />
+                        </div>
+                        {this.state.newLogoHeader && (
+                            <PortalLogoHeaderLayoutNew
+                                toggleShowNewLogoHeader={this.toggleNewLogoHeader}
+                                addLogoHeader={this.addLogoHeader}
+                            />
+                        )}
+                        <div className="row">
+                            <InputText
+                                Men
+                                label="Background image login (bestandstype PNG)"
+                                divSize={'col-sm-8'}
+                                value={
+                                    this.state.attachmentImageBgLogin.name
+                                        ? this.state.attachmentImageBgLogin.name
+                                        : portalImageBgFileNameLogin
+                                }
+                                onClickAction={this.toggleNewImageBgLogin}
+                                onChangeaction={() => {}}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
+                                error={this.state.errors.portalImageBgFileNameLogin}
+                            />
+                            <Image
+                                src={
+                                    this.state.attachmentImageBgLogin && this.state.attachmentImageBgLogin.preview
+                                        ? this.state.attachmentImageBgLogin.preview
+                                        : imageBgLoginUrl
+                                }
+                                style={{
+                                    backgroundColor: loginHeaderBackgroundColor,
+                                    color: loginHeaderBackgroundTextColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '1px',
+                                    borderRadius: '1px',
+                                    height: '50px',
+                                    boxShadow: '0 0 0 1px #fff inset',
+                                }}
+                            />
+                        </div>
+                        {this.state.newImageBgLogin && (
+                            <PortalImageBgLoginLayoutNew
+                                toggleShowNewImageBgLogin={this.toggleNewImageBgLogin}
+                                addImageBgLogin={this.addImageBgLogin}
+                            />
+                        )}
+                        <div className="row">
+                            <InputText
+                                Men
+                                label="Background image header (bestandstype PNG)"
+                                divSize={'col-sm-8'}
+                                value={
+                                    this.state.attachmentImageBgHeader.name
+                                        ? this.state.attachmentImageBgHeader.name
+                                        : portalImageBgFileNameHeader
+                                }
+                                onClickAction={this.toggleNewImageBgHeader}
+                                onChangeaction={() => {}}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
+                                error={this.state.errors.portalImageBgFileNameHeader}
+                            />
+                            <Image
+                                src={
+                                    this.state.attachmentImageBgHeader && this.state.attachmentImageBgHeader.preview
+                                        ? this.state.attachmentImageBgHeader.preview
+                                        : imageBgHeaderUrl
+                                }
+                                style={{
+                                    backgroundColor: loginHeaderBackgroundColor,
+                                    color: loginHeaderBackgroundTextColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '1px',
+                                    borderRadius: '1px',
+                                    height: '50px',
+                                    boxShadow: '0 0 0 1px #fff inset',
+                                }}
+                            />
+                        </div>
+                        {this.state.newImageBgHeader && (
+                            <PortalImageBgHeaderLayoutNew
+                                toggleShowNewImageBgHeader={this.toggleNewImageBgHeader}
+                                addImageBgHeader={this.addImageBgHeader}
+                            />
                         )}
                         <div className="row">
                             <InputText

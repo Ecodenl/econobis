@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 const Dropzone = require('react-dropzone').default;
 
-import Modal from '../../../components/modal/Modal';
+import Modal from '../../../../components/modal/Modal';
 
-class PortalFaviconNew extends Component {
+class PortalImageBgHeaderLayoutNew extends Component {
     constructor(props) {
         super(props);
 
@@ -14,9 +14,9 @@ class PortalFaviconNew extends Component {
     }
 
     onDropAccepted(file) {
-        this.props.addFavicon(file);
+        this.props.addImageBgHeader(file);
         setTimeout(() => {
-            this.props.toggleShowNewFavicon();
+            this.props.toggleShowNewImageBgHeader();
         }, 500);
     }
 
@@ -29,18 +29,18 @@ class PortalFaviconNew extends Component {
     render() {
         return (
             <Modal
-                closeModal={this.props.toggleShowNewFavicon}
+                closeModal={this.props.toggleShowNewImageBgHeader}
                 showConfirmAction={false}
-                title="Upload favicon bestand (ICO)"
+                title="Upload background image header bestand (PNG)"
             >
                 <div className="upload-file-content">
                     <Dropzone
-                        accept=".ico"
+                        accept="image/png"
                         multiple={false}
                         className="dropzone"
                         onDropAccepted={this.onDropAccepted.bind(this)}
                         onDropRejected={this.onDropRejected.bind(this)}
-                        maxSize={1000000}
+                        maxSize={6000000}
                     >
                         <p>Klik hier voor het uploaden van een bestand</p>
                         <p>
@@ -53,7 +53,7 @@ class PortalFaviconNew extends Component {
                 )}
                 {this.state.errorMaxSize && (
                     <p className="has-error-message">
-                        Uploaden mislukt. Het bestand moet bestandstype ICO zijn en mag maximaal 1MB groot zijn.
+                        Uploaden mislukt. Het bestand moet bestandstype PNG zijn en mag maximaal 6MB groot zijn.
                     </p>
                 )}
             </Modal>
@@ -61,4 +61,4 @@ class PortalFaviconNew extends Component {
     }
 }
 
-export default PortalFaviconNew;
+export default PortalImageBgHeaderLayoutNew;

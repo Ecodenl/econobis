@@ -31,7 +31,13 @@ const Dashboard = function(props) {
                 const contactData = rebaseContact(payload.data.data);
 
                 setContact(contactData);
-                props.updateNameSelectedContact(contactData.fullNameFnf);
+                props.updateNameSelectedContact(
+                    contactData.fullNameFnf,
+                    contactData.typeId,
+                    contactData.firstName,
+                    contactData.lastNamePrefix,
+                    contactData.lastName
+                );
             })
             .catch(error => {
                 console.log(error);

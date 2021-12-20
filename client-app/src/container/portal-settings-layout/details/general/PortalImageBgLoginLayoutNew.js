@@ -3,7 +3,7 @@ const Dropzone = require('react-dropzone').default;
 
 import Modal from '../../../../components/modal/Modal';
 
-class PortalLogoLayoutNew extends Component {
+class PortalImageBgLoginLayoutNew extends Component {
     constructor(props) {
         super(props);
 
@@ -14,9 +14,9 @@ class PortalLogoLayoutNew extends Component {
     }
 
     onDropAccepted(file) {
-        this.props.addLogo(file);
+        this.props.addImageBgLogin(file);
         setTimeout(() => {
-            this.props.toggleShowNewLogo();
+            this.props.toggleShowNewImageBgLogin();
         }, 500);
     }
 
@@ -29,9 +29,9 @@ class PortalLogoLayoutNew extends Component {
     render() {
         return (
             <Modal
-                closeModal={this.props.toggleShowNewLogo}
+                closeModal={this.props.toggleShowNewImageBgLogin}
                 showConfirmAction={false}
-                title="Upload logo login bestand (PNG)"
+                title="Upload background image login bestand (PNG)"
             >
                 <div className="upload-file-content">
                     <Dropzone
@@ -61,4 +61,4 @@ class PortalLogoLayoutNew extends Component {
     }
 }
 
-export default PortalLogoLayoutNew;
+export default PortalImageBgLoginLayoutNew;

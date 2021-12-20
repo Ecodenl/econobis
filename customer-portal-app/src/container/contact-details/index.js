@@ -53,7 +53,13 @@ const ContactDetails = function(props) {
                 const contactData = rebaseContact(payload.data.data);
 
                 setContact(contactData);
-                props.updateNameSelectedContact(contactData.fullNameFnf);
+                props.updateNameSelectedContact(
+                    contactData.fullNameFnf,
+                    contactData.typeId,
+                    contactData.firstName,
+                    contactData.lastNamePrefix,
+                    contactData.lastName
+                );
                 setLoading(false);
             })
             .catch(error => {

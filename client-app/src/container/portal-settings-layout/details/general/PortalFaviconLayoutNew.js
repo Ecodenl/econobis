@@ -3,7 +3,7 @@ const Dropzone = require('react-dropzone').default;
 
 import Modal from '../../../../components/modal/Modal';
 
-class PortalFaviconNew extends Component {
+class PortalFaviconLayoutNew extends Component {
     constructor(props) {
         super(props);
 
@@ -61,4 +61,4 @@ class PortalFaviconNew extends Component {
     }
 }
 
-export default PortalFaviconNew;
+export default PortalFaviconLayoutNew;

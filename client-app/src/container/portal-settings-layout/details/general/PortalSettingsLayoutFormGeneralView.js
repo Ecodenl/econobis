@@ -10,6 +10,9 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
     description,
     isDefault,
     portalLogoFileName,
+    portalLogoFileNameHeader,
+    portalImageBgFileNameLogin,
+    portalImageBgFileNameHeader,
     portalFaviconFileName,
     portalBackgroundColor,
     portalBackgroundTextColor,
@@ -24,6 +27,9 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
     imageHash,
 }) => {
     const logoUrl = `${URL_API}/portal/images/${portalLogoFileName}?${imageHash}`;
+    const logoHeaderUrl = `${URL_API}/portal/images/${portalLogoFileNameHeader}?${imageHash}`;
+    const imageBgLoginUrl = `${URL_API}/portal/images/${portalImageBgFileNameLogin}?${imageHash}`;
+    const imageBgHeaderUrl = `${URL_API}/portal/images/${portalImageBgFileNameHeader}?${imageHash}`;
     const faviconUrl = `${URL_API}/portal/${portalFaviconFileName}?${imageHash}`;
 
     return (
@@ -46,13 +52,76 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Logo (bestandstype PNG)'}
+                            label={'Logo login (bestandstype PNG)'}
                             divSize={'col-sm-8'}
                             value={portalLogoFileName}
                             className={'col-sm-8 form-group'}
                         />
                         <Image
                             src={logoUrl}
+                            style={{
+                                backgroundColor: loginHeaderBackgroundColor,
+                                color: loginHeaderBackgroundTextColor,
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '1px',
+                                borderRadius: '1px',
+                                height: '50px',
+                                boxShadow: '0 0 0 1px #fff inset',
+                            }}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Logo header (bestandstype PNG)'}
+                            divSize={'col-sm-8'}
+                            value={portalLogoFileNameHeader}
+                            className={'col-sm-8 form-group'}
+                        />
+                        <Image
+                            src={logoHeaderUrl}
+                            style={{
+                                backgroundColor: loginHeaderBackgroundColor,
+                                color: loginHeaderBackgroundTextColor,
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '1px',
+                                borderRadius: '1px',
+                                height: '50px',
+                                boxShadow: '0 0 0 1px #fff inset',
+                            }}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Background image login (bestandstype PNG)'}
+                            divSize={'col-sm-8'}
+                            value={portalImageBgFileNameLogin}
+                            className={'col-sm-8 form-group'}
+                        />
+                        <Image
+                            src={imageBgLoginUrl}
+                            style={{
+                                backgroundColor: loginHeaderBackgroundColor,
+                                color: loginHeaderBackgroundTextColor,
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '1px',
+                                borderRadius: '1px',
+                                height: '50px',
+                                boxShadow: '0 0 0 1px #fff inset',
+                            }}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Background image header (bestandstype PNG)'}
+                            divSize={'col-sm-8'}
+                            value={portalImageBgFileNameHeader}
+                            className={'col-sm-8 form-group'}
+                        />
+                        <Image
+                            src={imageBgHeaderUrl}
                             style={{
                                 backgroundColor: loginHeaderBackgroundColor,
                                 color: loginHeaderBackgroundTextColor,

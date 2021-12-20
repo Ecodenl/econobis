@@ -39,16 +39,16 @@ function Header({ location, history }) {
         updateStateMenu(!menuOpen);
     }
 
-    function formatProfilePicName(fullName) {
-        if (fullName) {
-            if (fullName.search(',') < 0) {
-                return fullName.replace(/\s(?=\S*$)/, '<br>');
-            } else {
-                const firstName = fullName.slice(fullName.search(',') + 2);
-                let lastName = fullName.slice(0, fullName.search(','));
-                lastName = lastName.replace(/\s(?=\S*$)/, '<br>');
-                return firstName + '<br>' + lastName;
-            }
+    function formatProfilePicName(currentSelectedContact) {
+        if (currentSelectedContact.typeId === 'person') {
+            return (
+                currentSelectedContact.firstName +
+                (currentSelectedContact.lastNamePrefix ? ' ' + currentSelectedContact.lastNamePrefix : '') +
+                (currentSelectedContact.firstName || currentSelectedContact.lastNamePrefix ? '<br>' : '') +
+                currentSelectedContact.lastName
+            );
+        } else if (currentSelectedContact.typeId === 'organisation') {
+            return currentSelectedContact.fullNameFnf.replace(/\s(?=\S*$)/, '<br>');
         } else {
             return '?';
         }
@@ -92,15 +92,13 @@ function Header({ location, history }) {
                         <PortalUserConsumer>
                             {({ user, currentSelectedContact, switchCurrentContact, resetCurrentUserToDefault }) => {
                                 if (!user.occupations || user.occupations.length < 1) {
-                                    return (
-                                        <>{ReactHtmlParser(formatProfilePicName(currentSelectedContact.fullName))}</>
-                                    );
+                                    return <>{ReactHtmlParser(formatProfilePicName(currentSelectedContact))}</>;
                                 }
 
                                 return (
                                     <Dropdown alignRight>
                                         <Dropdown.Toggle style={{ marginTop: '0' }}>
-                                            {ReactHtmlParser(formatProfilePicName(currentSelectedContact.fullName))}
+                                            {ReactHtmlParser(formatProfilePicName(currentSelectedContact))}
                                         </Dropdown.Toggle>
                                         <Dropdown.Menu>
                                             <Dropdown.Header>Beheren van</Dropdown.Header>
@@ -111,7 +109,7 @@ function Header({ location, history }) {
                                                 }}
                                                 active={currentSelectedContact.id === user.id ? true : false}
                                             >
-                                                {user.fullName}
+                                                {user.fullNameFnf}
                                             </Dropdown.Item>
                                             {user.occupations && user.occupations.length > 0
                                                 ? user.occupations.map(occupationContact =>
@@ -132,7 +130,7 @@ function Header({ location, history }) {
                                                                   occupationContact.primaryContact.id
                                                               }
                                                           >
-                                                              {occupationContact.primaryContact.fullName}
+                                                              {occupationContact.primaryContact.fullNameFnf}
                                                           </Dropdown.Item>
                                                       ) : null
                                                   )
@@ -193,7 +191,7 @@ function Header({ location, history }) {
                                                                 <Dropdown.Menu>
                                                                     <Dropdown.Header>Ingelogd als</Dropdown.Header>
                                                                     <Dropdown.Item disabled>
-                                                                        {user.fullName}
+                                                                        {user.fullNameFnf}
                                                                     </Dropdown.Item>
                                                                     <Dropdown.Item>
                                                                         <Link

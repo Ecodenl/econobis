@@ -54,20 +54,6 @@ function AboutUs() {
         [currentSelectedContact.id]
     );
 
-    function formatFullName(fullName) {
-        if (fullName) {
-            if (fullName.search(',') < 0) {
-                return fullName;
-            } else {
-                const firstName = fullName.slice(fullName.search(',') + 2);
-                const lastName = fullName.slice(0, fullName.search(','));
-                return firstName + ' ' + lastName;
-            }
-        } else {
-            return ' ';
-        }
-    }
-
     function setIsLoading(isLoading) {
         dispatch({
             type: 'updateIsLoading',
@@ -80,8 +66,8 @@ function AboutUs() {
             <Row>
                 <Col>
                     <h1 className="content-heading">
-                        Overzicht organisaties waar <strong>{formatFullName(currentSelectedContact.fullName)}</strong>{' '}
-                        een relatie mee heeft.
+                        Overzicht organisaties waar <strong>{currentSelectedContact.fullNameFnf}</strong> een relatie
+                        mee heeft.
                     </h1>
                 </Col>
             </Row>

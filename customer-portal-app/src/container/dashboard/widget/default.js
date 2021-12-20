@@ -12,7 +12,7 @@ export const ContactDetailsDashboardWidget = function({ contact }) {
     return (
         <Card key={key} id={key}>
             <div className="card-body">
-                <h5 className="card-title">{contact.fullName}</h5>
+                <h5 className="card-title">{contact.fullNameFnf}</h5>
                 <div className="card-text">
                     {typeContact === 'person' ? (
                         <>
@@ -112,13 +112,15 @@ export const SwitchContactDashboardWidget = function({ user, currentSelectedCont
                     {user.occupations && user.occupations.length > 0 ? (
                         <>
                             <Button
+                                key={'user-' + user.id}
+                                id={'user-' + user.id}
                                 onClick={() => {
                                     switchCurrentContact(user);
                                 }}
                                 disabled={currentSelectedContact.id === user.id}
                                 style={{ margin: '5px' }}
                             >
-                                {user.fullName}
+                                {user.fullNameFnf}
                             </Button>
                             {user.occupations.map(occupationContact =>
                                 (occupationContact.primaryContact.typeId === 'organisation' &&
@@ -126,13 +128,15 @@ export const SwitchContactDashboardWidget = function({ user, currentSelectedCont
                                 (occupationContact.primaryContact.typeId === 'person' &&
                                     occupationContact.occupation.occupationForPortal) ? (
                                     <Button
+                                        key={'user-' + occupationContact.primaryContact.id}
+                                        id={'user-' + occupationContact.primaryContact.id}
                                         onClick={() => {
                                             switchCurrentContact(occupationContact.primaryContact);
                                         }}
                                         disabled={currentSelectedContact.id === occupationContact.primaryContact.id}
                                         style={{ margin: '5px' }}
                                     >
-                                        {occupationContact.primaryContact.fullName}
+                                        {occupationContact.primaryContact.fullNameFnf}
                                     </Button>
                                 ) : null
                             )}

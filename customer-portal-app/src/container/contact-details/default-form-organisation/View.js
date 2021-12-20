@@ -253,7 +253,7 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                 {/*primaryOccupations.map(primaryOccupation => (*/}
                 {/*<Row>*/}
                 {/*<TextBlock className={'col-12 col-sm-4'} placeholder={'Contact naam'}>*/}
-                {/*{primaryOccupation.contact.fullName}*/}
+                {/*{primaryOccupation.contact.fullNameFnf}*/}
                 {/*</TextBlock>*/}
                 {/*<TextBlock className={'col-12 col-sm-4'} placeholder={'Contact verbinding'}>*/}
                 {/*{primaryOccupation.occupation.primaryOccupation}*/}

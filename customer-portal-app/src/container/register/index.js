@@ -155,20 +155,6 @@ function RegisterProject({ match, currentSelectedContact }) {
         })();
     }, [match, currentSelectedContact]);
 
-    function formatFullName(fullName) {
-        if (fullName) {
-            if (fullName.search(',') < 0) {
-                return fullName;
-            } else {
-                const firstName = fullName.slice(fullName.search(',') + 2);
-                const lastName = fullName.slice(0, fullName.search(','));
-                return firstName + ' ' + lastName;
-            }
-        } else {
-            return ' ';
-        }
-    }
-
     function handleSubmitRegisterValues(values) {
         setRegisterValues({ ...registerValues, ...values });
     }
@@ -248,7 +234,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                     <Row>
                         <Col>
                             <h1 className="content-heading">
-                                <strong>{formatFullName(contact.fullName)}</strong> is al ingeschreven voor project{' '}
+                                <strong>{contact.fullNameFnf}</strong> is al ingeschreven voor project{' '}
                                 <strong>{project.name}</strong>
                             </h1>
                         </Col>
@@ -284,7 +270,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                                     </ButtonGroup>
                                 </Row>
                                 <h1 className="content-heading">
-                                    Schrijf <strong>{formatFullName(contact.fullName)}</strong> in voor project{' '}
+                                    Schrijf <strong>{contact.fullNameFnf}</strong> in voor project{' '}
                                     <strong>{project.name}</strong>
                                 </h1>
                             </>

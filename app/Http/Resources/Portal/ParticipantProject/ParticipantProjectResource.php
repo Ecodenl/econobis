@@ -2,9 +2,6 @@
 
 namespace App\Http\Resources\Portal\ParticipantProject;
 
-use App\Http\Resources\Portal\Administration\CollectionAdministration;
-use App\Http\Resources\Portal\Contact\CollectionContact;
-use App\Http\Resources\Portal\Project\CollectionProject;
 use App\Http\Resources\Portal\ParticipantMutation\ParticipantMutationCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -21,7 +18,7 @@ class ParticipantProjectResource extends JsonResource
     {
         $projectTypeCodeRef = $this->project->projectType->code_ref;
         $basicInformation = [
-            'contactName' => $this->contact ? $this->contact->full_name : '',
+            'contactName' => $this->contact ? $this->contact->full_name_fnf : '',
             'projectName' => $this->project ? $this->project->name : '',
             'administrationName' => ($this->project && $this->project->administration) ? $this->project->administration->name : '',
             'portalSettingsLayoutAssigned' => ($this->project && $this->project->administration) ? $this->project->administration->portalSettingsLayoutAssigned : '',

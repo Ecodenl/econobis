@@ -73,20 +73,6 @@ function ProjectList(props) {
             });
     }
 
-    function formatFullName(fullName) {
-        if (fullName) {
-            if (fullName.search(',') < 0) {
-                return fullName;
-            } else {
-                const firstName = fullName.slice(fullName.search(',') + 2);
-                const lastName = fullName.slice(0, fullName.search(','));
-                return firstName + ' ' + lastName;
-            }
-        } else {
-            return ' ';
-        }
-    }
-
     function usePrevious(value) {
         const ref = useRef();
         useEffect(() => {
@@ -116,8 +102,8 @@ function ProjectList(props) {
             <Row>
                 <Col>
                     <h1 className="content-heading">
-                        Overzicht projecten waarop{' '}
-                        <strong>{formatFullName(props.currentSelectedContact.fullName)}</strong> kan inschrijven.
+                        Overzicht projecten waarop <strong>{props.currentSelectedContact.fullNameFnf}</strong> kan
+                        inschrijven.
                     </h1>
                 </Col>
             </Row>

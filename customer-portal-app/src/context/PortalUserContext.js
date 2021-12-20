@@ -55,16 +55,16 @@ const PortalUserProvider = function(props) {
         setCurrentContact({});
     }
 
-    function updateNameSelectedContact(fullName) {
-        setCurrentContact({ ...currentSelectedContact, fullName });
+    function updateNameSelectedContact(fullNameFnf) {
+        setCurrentContact({ ...currentSelectedContact, fullNameFnf });
 
         if (user.id === currentSelectedContact.id) {
-            user.fullName = fullName;
+            user.fullNameFnf = fullNameFnf;
         }
 
         const updatedOccupations = user.occupations.map(occupationContact => {
             if (occupationContact.primaryContact.id === currentSelectedContact.id) {
-                occupationContact.primaryContact.fullName = fullName;
+                occupationContact.primaryContact.fullNameFnf = fullNameFnf;
             }
             return occupationContact;
         });

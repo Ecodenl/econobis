@@ -48,26 +48,12 @@ function RegistrationList(props) {
         return ref.current;
     }
 
-    function formatFullName(fullName) {
-        if (fullName) {
-            if (fullName.search(',') < 0) {
-                return fullName;
-            } else {
-                const firstName = fullName.slice(fullName.search(',') + 2);
-                const lastName = fullName.slice(0, fullName.search(','));
-                return firstName + ' ' + lastName;
-            }
-        } else {
-            return ' ';
-        }
-    }
-
     return (
         <Container className={'content-section'}>
             <Row>
                 <Col>
                     <h1 className="content-heading">
-                        De projecten waarin <strong>{formatFullName(contact.fullName)}</strong> deelneemt.
+                        De projecten waarin <strong>{contact.fullNameFnf}</strong> deelneemt.
                     </h1>
                 </Col>
             </Row>

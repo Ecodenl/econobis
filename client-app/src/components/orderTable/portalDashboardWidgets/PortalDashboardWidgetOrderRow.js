@@ -18,7 +18,7 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
     const [newWidgetImage, setNewWidgetImage] = useState();
     const [widgetImage, setWidgetImage] = useState();
 
-    const staticWidgets = ['project-schrijf-je-in', 'over-ons'];
+    const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
     const staticInput = ['buttonLink'];
 
     const [, drop] = useDrop({

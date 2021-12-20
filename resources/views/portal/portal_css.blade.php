@@ -100,7 +100,7 @@ font-family: initial;
 ::-moz-focus-inner {border:0;}
 
 .content-section {
-padding-top: 80px;
+padding-top: 100px;
 padding-bottom: 60px;
 }
 
@@ -213,6 +213,11 @@ color: red;
 font-size: 18px;
 }
 /* ----------------- BUTTON STYLING -----------------*/
+.w-button-group-left {
+float: left !important;
+left: 15px;
+}
+
 .w-button.w-button {
 background-color: var(--button-primary-color);
 border-color: var(--button-primary-color);
@@ -568,6 +573,7 @@ border-radius: 50%;
 -ms-transform: translate(-50%, 0px);
 transform: translate(-50%, 0px);
 padding: 10px 20px;
+z-index: 1000;
 }
 .heading-content {
 margin-bottom: 0px;
@@ -633,6 +639,7 @@ border-radius: 100%;
 text-align: center;
 display: flex;
 text-wrap: normal;
+z-index: 1000;
 }
 
 .alert-wrapper{

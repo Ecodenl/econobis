@@ -70,10 +70,14 @@ const Dashboard = function(props) {
                 <LoadingView />
             ) : (
                 <div className="content-container w-container">
-                    <h1 className="content-heading mt-0 text-center">{dashboardSettings.welcomeTitle}</h1>
-                    <p className={'text-center'} style={{ whiteSpace: 'break-spaces' }}>
-                        {dashboardSettings.welcomeMessage}
-                    </p>
+                    <Row>
+                        <Col>
+                            <h1 className="content-heading mt-0 text-center">{dashboardSettings.welcomeTitle}</h1>
+                            <p className={'text-center'} style={{ whiteSpace: 'break-spaces' }}>
+                                {dashboardSettings.welcomeMessage}
+                            </p>
+                        </Col>
+                    </Row>
                     <Row>
                         {dashboardSettings.widgets
                             .filter(w => w.active)

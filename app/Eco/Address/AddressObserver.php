@@ -8,9 +8,6 @@
 
 namespace App\Eco\Address;
 
-use App\Eco\Administration\Administration;
-use App\Helpers\Twinfield\TwinfieldCustomerHelper;
-
 class AddressObserver
 {
 

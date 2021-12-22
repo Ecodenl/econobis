@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\Invoice;
 
 use App\Eco\Invoice\Invoice;
-use App\Eco\Invoice\InvoiceMolliePayment;
 use App\Eco\Invoice\InvoicePayment;
 use App\Eco\Invoice\InvoiceProduct;
 use App\Eco\Product\PriceHistory;
@@ -354,7 +353,7 @@ class InvoiceController extends ApiController
                         }elseif($invoice->status_id === 'error-sending'){
                             InvoiceHelper::invoiceIsResending($invoice);
                         }else{
-                            abort(404, "Nota met ID " . $invoice->id . " heeft geen status Te verzenden of Opnieuw te verzenden");
+                            abort(404, "Nota met ID " . $invoice->id . " heeft geen status Te verzenden of Opnieuw te verzenden. Huidige status: " . $invoice->status_id);
                         }
                     }
                 }
@@ -476,7 +475,8 @@ class InvoiceController extends ApiController
             header('Access-Control-Expose-Headers: X-Filename');
             header('X-Filename:' . $invoice->document->name);
         } else {
-            $invoiceNumber = 'F' . Carbon::now()->year . '-preview-' . $invoice->id;
+            $invoiceNumberPrefix =  $invoice->administration->prefix_invoice_number ? $invoice->administration->prefix_invoice_number : 'F';
+            $invoiceNumber = $invoiceNumberPrefix . Carbon::now()->year . '-preview-' . $invoice->id;
             header('X-Filename:' . $invoiceNumber . '.pdf');
             header('Access-Control-Expose-Headers: X-Filename');
             return InvoiceHelper::createInvoiceDocument($invoice, true);

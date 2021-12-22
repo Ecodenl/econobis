@@ -72,6 +72,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             twinfieldOfficeCode,
             dateSyncTwinfieldContacts,
             dateSyncTwinfieldPayments,
+            prefixInvoiceNumber,
             usesVat,
             emailBccNotas,
             portalSettingsLayoutId,
@@ -129,6 +130,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 twinfieldOfficeCode: twinfieldOfficeCode ? twinfieldOfficeCode : '',
                 dateSyncTwinfieldContacts: dateSyncTwinfieldContacts ? dateSyncTwinfieldContacts : '',
                 dateSyncTwinfieldPayments: dateSyncTwinfieldPayments ? dateSyncTwinfieldPayments : '',
+                prefixInvoiceNumber: prefixInvoiceNumber ? prefixInvoiceNumber : 'F',
                 usesVat: usesVat,
                 emailBccNotas: emailBccNotas ? emailBccNotas : '',
                 portalSettingsLayoutId: portalSettingsLayoutId ? portalSettingsLayoutId : '',
@@ -152,6 +154,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 twinfieldOfficeCode: false,
                 dateSyncTwinfieldContacts: false,
                 dateSyncTwinfieldPayments: false,
+                prefixInvoiceNumber: false,
                 mailboxId: false,
                 emailBccNotas: false,
                 countryId: false,
@@ -467,6 +470,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             data.append('twinfieldOfficeCode', administration.twinfieldOfficeCode);
             data.append('dateSyncTwinfieldContacts', administration.dateSyncTwinfieldContacts);
             data.append('dateSyncTwinfieldPayments', administration.dateSyncTwinfieldPayments);
+            data.append('prefixInvoiceNumber', administration.prefixInvoiceNumber);
             data.append('usesVat', administration.usesVat);
             data.append('emailBccNotas', administration.emailBccNotas);
             data.append('portalSettingsLayoutId', administration.portalSettingsLayoutId);
@@ -518,6 +522,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             twinfieldOfficeCode,
             dateSyncTwinfieldContacts,
             dateSyncTwinfieldPayments,
+            prefixInvoiceNumber,
             usesVat,
             emailBccNotas,
             portalSettingsLayoutId,
@@ -747,6 +752,26 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
                             />
+                            <InputText
+                                label="Prefix nota nummer"
+                                name={'prefixInvoiceNumber'}
+                                value={prefixInvoiceNumber}
+                                maxLength={5}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.prefixInvoiceNumber}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputSelect
+                                label={"Afzender van Rapportages en nota's is e-mail adres"}
+                                id="mailboxId"
+                                size={'col-sm-6'}
+                                name={'mailboxId'}
+                                options={this.state.mailboxAddresses}
+                                optionName={'email'}
+                                value={mailboxId}
+                                onChangeAction={this.handleInputChange}
+                            />
                             <div className="form-group col-sm-6">
                                 <label className="col-sm-6">Kies logo</label>
                                 <div className="col-sm-6">
@@ -760,24 +785,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="row">
-                            <InputSelect
-                                label={"Afzender van Rapportages en nota's is e-mail adres"}
-                                id="mailboxId"
-                                size={'col-sm-6'}
-                                name={'mailboxId'}
-                                options={this.state.mailboxAddresses}
-                                optionName={'email'}
-                                value={mailboxId}
-                                onChangeAction={this.handleInputChange}
-                            />
-                            <ViewText
-                                label={'Gebruikt BTW'}
-                                value={usesVat ? 'Ja' : 'Nee'}
-                                className={'col-sm-6 form-group'}
-                                hidden={true}
-                            />
-                        </div>
 
                         <div className="row">
                             <InputText
@@ -786,6 +793,12 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 value={emailBccNotas}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.emailBccNotas}
+                            />
+                            <ViewText
+                                label={'Gebruikt BTW'}
+                                value={usesVat ? 'Ja' : 'Nee'}
+                                className={'col-sm-6 form-group'}
+                                hidden={true}
                             />
                         </div>
 

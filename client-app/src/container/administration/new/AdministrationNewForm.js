@@ -19,7 +19,6 @@ import InputToggle from '../../../components/form/InputToggle';
 import ViewText from '../../../components/form/ViewText';
 import InputDate from '../../../components/form/InputDate';
 import moment from 'moment';
-import PortalSettingsLayoutAPI from '../../../api/portal-settings-layout/PortalSettingsLayoutAPI';
 
 class AdministrationNewForm extends Component {
     constructor(props) {
@@ -67,6 +66,7 @@ class AdministrationNewForm extends Component {
                 twinfieldOfficeCode: '',
                 dateSyncTwinfieldContacts: '',
                 dateSyncTwinfieldPayments: '',
+                prefixInvoiceNumber: 'F',
                 usesVat: true,
                 emailBccNotas: '',
                 portalSettingsLayoutId: '',
@@ -90,6 +90,7 @@ class AdministrationNewForm extends Component {
                 twinfieldOfficeCode: false,
                 dateSyncTwinfieldContacts: false,
                 dateSyncTwinfieldPayments: false,
+                prefixInvoiceNumber: false,
                 mailboxId: false,
                 emailBccNotas: false,
                 countryId: false,
@@ -371,6 +372,7 @@ class AdministrationNewForm extends Component {
             data.append('twinfieldOfficeCode', administration.twinfieldOfficeCode);
             data.append('dateSyncTwinfieldContacts', administration.dateSyncTwinfieldContacts);
             data.append('dateSyncTwinfieldPayments', administration.dateSyncTwinfieldPayments);
+            data.append('prefixInvoiceNumber', administration.prefixInvoiceNumber);
             data.append('usesVat', administration.usesVat);
             data.append('emailBccNotas', administration.emailBccNotas);
             data.append('portalSettingsLayoutId', administration.portalSettingsLayoutId);
@@ -425,6 +427,7 @@ class AdministrationNewForm extends Component {
             twinfieldOfficeCode,
             dateSyncTwinfieldContacts,
             dateSyncTwinfieldPayments,
+            prefixInvoiceNumber,
             usesVat,
             emailBccNotas,
             portalSettingsLayoutId,
@@ -640,6 +643,27 @@ class AdministrationNewForm extends Component {
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
                             />
+                            <InputText
+                                label="Prefix nota nummer"
+                                name={'prefixInvoiceNumber'}
+                                value={prefixInvoiceNumber}
+                                maxLength={5}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.prefixInvoiceNumber}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputSelect
+                                label={"Afzender van Rapportages en nota's is e-mail adres"}
+                                id="mailboxId"
+                                size={'col-sm-6'}
+                                name={'mailboxId'}
+                                options={this.state.mailboxAddresses}
+                                optionName={'email'}
+                                value={mailboxId}
+                                onChangeAction={this.handleInputChange}
+                            />
                             <div className="form-group col-sm-6">
                                 <label className="col-sm-6">Kies logo</label>
                                 <div className="col-sm-6">
@@ -654,31 +678,18 @@ class AdministrationNewForm extends Component {
                         </div>
 
                         <div className="row">
-                            <InputSelect
-                                label={"Afzender van Rapportages en nota's is e-mail adres"}
-                                id="mailboxId"
-                                size={'col-sm-6'}
-                                name={'mailboxId'}
-                                options={this.state.mailboxAddresses}
-                                optionName={'email'}
-                                value={mailboxId}
-                                onChangeAction={this.handleInputChange}
-                            />
-                            <ViewText
-                                label={'Gebruikt BTW'}
-                                value={usesVat ? 'Ja' : 'Nee'}
-                                className={'col-sm-6 form-group'}
-                                hidden={true}
-                            />
-                        </div>
-
-                        <div className="row">
                             <InputText
                                 label="Nota's ook mailen in BCC naar"
                                 name={'emailBccNotas'}
                                 value={emailBccNotas}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.emailBccNotas}
+                            />
+                            <ViewText
+                                label={'Gebruikt BTW'}
+                                value={usesVat ? 'Ja' : 'Nee'}
+                                className={'col-sm-6 form-group'}
+                                hidden={true}
                             />
                         </div>
 

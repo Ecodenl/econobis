@@ -104,7 +104,7 @@ class ProjectRevenueDistributionCalculator
         $this->projectRevenueDistribution->delivered_total_end_calendar_year = $totalDeliveredKwhEndCalendarYear;
         $this->projectRevenueDistribution->payout_kwh = $projectRevenue->payout_kwh;
         $lastDeliveredKwhPeriod = $this->projectRevenueDistribution->deliveredKwhPeriod()->orderBy('id', 'desc')->first();
-        $dateEndCalendarYear = Carbon::parse($projectRevenue->date_begin)->endOfYear();
+        $dateEndCalendarYear = Carbon::parse($projectRevenue->date_begin)->endOfYear()->format('Y-m-d');
         $lastDeliveredKwhPeriodEndCalendarYear = $this->projectRevenueDistribution->deliveredKwhPeriod()->where('date_begin', '<=', $dateEndCalendarYear)->where('date_end', '>=', $dateEndCalendarYear)->orderBy('id', 'desc')->first();
         $this->projectRevenueDistribution->participations_amount = $lastDeliveredKwhPeriod ? $lastDeliveredKwhPeriod->participations_quantity : 0;
         $this->projectRevenueDistribution->participations_amount_end_calendar_year = $lastDeliveredKwhPeriodEndCalendarYear ? $lastDeliveredKwhPeriodEndCalendarYear->participations_quantity : 0;

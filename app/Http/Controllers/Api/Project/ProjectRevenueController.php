@@ -755,9 +755,11 @@ class ProjectRevenueController extends ApiController
             if($dateEnd >= $dateBegin) {
 
                 $kwhEndCalendarYear = ($revenue->kwh_end_calendar_year_high ? $revenue->kwh_end_calendar_year_high : 0) + ($revenue->kwh_end_calendar_year_low ? $revenue->kwh_end_calendar_year_low : 0);
+                $dateEndForCheck = clone $dateEnd;
+                $dateEndForCheck->endOfDay();
                 if ( $kwhEndCalendarYear > 0
                     && $dateBegin < $dateEndCalendarYearFromRevenue
-                    && $dateEnd > $dateEndCalendarYearFromRevenue ) {
+                    && $dateEndForCheck >= $dateEndCalendarYearFromRevenue ) {
                     $daysOfPeriod = $dateEndCalendarYearFromRevenueForPeriod->addDay()->diffInDays($dateBegin);
 
                     $deliveredKwhPeriod = ProjectRevenueDeliveredKwhPeriod::updateOrCreate(

@@ -81,8 +81,8 @@ class ProjectFormEdit extends Component {
                 let defaultTextIsNoMember = '';
                 let defaultTextBecomeMember = '';
                 let defaultTextBecomeNoMember = '';
-                let defaultContactGroupMemberId = null;
-                let defaultContactGroupNoMemberId = null;
+                let defaultContactGroupMemberId = '';
+                let defaultContactGroupNoMemberId = '';
                 if (payload.data.cooperativeName) {
                     let cooperatie_naam = payload.data.cooperativeName;
                     defaultTextIsMember = 'Ik ben lid van ' + cooperatie_naam + ' en ik betaal geen inschrijfkosten';
@@ -124,10 +124,14 @@ class ProjectFormEdit extends Component {
                             ? defaultTextBecomeNoMember
                             : this.state.project.textBecomeNoMember,
                         memberGroupId: isEmpty(this.state.project.memberGroupId)
-                            ? Number(defaultContactGroupMemberId)
+                            ? defaultContactGroupMemberId != null
+                                ? Number(defaultContactGroupMemberId)
+                                : null
                             : this.state.project.memberGroupId,
                         noMemberGroupId: isEmpty(this.state.project.noMemberGroupId)
-                            ? Number(defaultContactGroupNoMemberId)
+                            ? defaultContactGroupNoMemberId != null
+                                ? Number(defaultContactGroupNoMemberId)
+                                : null
                             : this.state.project.noMemberGroupId,
                     },
                 });

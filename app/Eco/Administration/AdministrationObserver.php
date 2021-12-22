@@ -8,6 +8,7 @@
 
 namespace App\Eco\Administration;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class AdministrationObserver
@@ -21,6 +22,15 @@ class AdministrationObserver
 
     public function saved(Administration $administration)
     {
+        if($administration->isDirty('prefix_invoice_number')){
+            $oldConceptInvoiceNumber = $administration->getOriginal('prefix_invoice_number') . Carbon::now()->year . '-new';
+            $newConceptInvoiceNumber = $administration->prefix_invoice_number . Carbon::now()->year . '-new';
+            foreach ($administration->invoices()->where('number', $oldConceptInvoiceNumber)->get() as $invoice) {
+                $invoice->number = $newConceptInvoiceNumber;
+                $invoice->save();
+            }
+        }
+
         foreach ($administration->invoices()->where('payment_type_id', 'transfer')->whereNotNull('date_sent')->get() as $invoice) {
             $invoice->setDaysToExpire();
             $invoice->save();

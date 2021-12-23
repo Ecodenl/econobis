@@ -45,19 +45,13 @@ const AdministrationDetailsFormGeneralView = props => {
         twinfieldOfficeCode,
         dateSyncTwinfieldContacts,
         dateSyncTwinfieldPayments,
+        prefixInvoiceNumber,
         usesVat,
         emailBccNotas,
         portalSettingsLayout,
         usesMollie,
         mollieApiKey,
     } = props.administrationDetails;
-
-    // const dateSyncTwinfieldContactsView = dateSyncTwinfieldContacts
-    //     ? moment(dateSyncTwinfieldContacts).format('L')
-    //     : '';
-    // const dateSyncTwinfieldPaymentsView = dateSyncTwinfieldPayments
-    //     ? moment(dateSyncTwinfieldPayments).format('L')
-    //     : '';
 
     return (
         <div onClick={props.switchToEdit}>
@@ -142,15 +136,16 @@ const AdministrationDetailsFormGeneralView = props => {
                             label={'E-mail template waardestaat'}
                             value={emailTemplateFinancialOverview ? emailTemplateFinancialOverview.name : ''}
                         />
-                        <ViewText label={'Logo'} value={logoName} />
+                        <ViewText label={'Prefix nota nummer'} value={prefixInvoiceNumber} />
                     </div>
                     <div className="row">
                         <ViewText label={"Afzender van Rapportages en nota's is e-mail adres"} value={mailboxEmail} />
-                        <ViewText label={'Gebruikt BTW'} value={usesVat ? 'Ja' : 'Nee'} hidden={true} />
+                        <ViewText label={'Logo'} value={logoName} />
                     </div>
 
                     <div className="row">
                         <ViewText label={"Nota's ook mailen in BCC naar"} value={emailBccNotas ? emailBccNotas : ''} />
+                        <ViewText label={'Gebruikt BTW'} value={usesVat ? 'Ja' : 'Nee'} hidden={true} />
                     </div>
 
                     <div className="row">

@@ -61,8 +61,8 @@ function RegistrationList(props) {
                 <Col>
                     {isLoading ? (
                         <LoadingView />
-                    ) : contact.length === 0 ? (
-                        'Nog geen inschrijvingen.'
+                    ) : contact.participations.length === 0 ? (
+                        'Geen huidige deelnames aanwezig.'
                     ) : (
                         <Table responsive>
                             <thead>

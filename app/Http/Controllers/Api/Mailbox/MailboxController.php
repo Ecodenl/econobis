@@ -195,7 +195,7 @@ class MailboxController extends Controller
         } else {
             $mailFetcher = new MailFetcher($mailbox);
         }
-        $mailFetcher->fetchNew();
+        return $mailFetcher->fetchNew();
     }
 
     public function receiveMailFromMailboxesUser()
@@ -206,8 +206,18 @@ class MailboxController extends Controller
 
         $mailboxes = $user->mailboxes()->get();
 
+        $errorMessages = false;
         foreach ($mailboxes as $mailbox) {
-            $this->receive($mailbox);
+            $errorMessage = $this->receive($mailbox);
+            if($errorMessage){
+                $responseArray = json_decode($errorMessage, true);
+                if(isset($responseArray['error'])){
+                    $errorMessages[] = "Error mailbox " . $mailbox->name . " (" . $mailbox->id . "): " . $responseArray['error'] . (isset($responseArray['error_description']) ? " - " . $responseArray['error_description'] : '');
+                }
+            }
+        }
+        if($errorMessages) {
+            abort("412", implode("\n", $errorMessages));
         }
     }
 

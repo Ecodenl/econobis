@@ -8,6 +8,7 @@
 
 namespace App\Eco\Administration;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class AdministrationObserver
@@ -21,6 +22,15 @@ class AdministrationObserver
 
     public function saved(Administration $administration)
     {
+        if($administration->isDirty('prefix_invoice_number')){
+            $oldConceptInvoiceNumber = $administration->getOriginal('prefix_invoice_number') . Carbon::now()->year . '-new';
+            $newConceptInvoiceNumber = $administration->prefix_invoice_number . Carbon::now()->year . '-new';
+            foreach ($administration->invoices()->where('number', $oldConceptInvoiceNumber)->get() as $invoice) {
+                $invoice->number = $newConceptInvoiceNumber;
+                $invoice->save();
+            }
+        }
+
         foreach ($administration->invoices()->where('payment_type_id', 'transfer')->whereNotNull('date_sent')->get() as $invoice) {
             $invoice->setDaysToExpire();
             $invoice->save();
@@ -33,34 +43,5 @@ class AdministrationObserver
             }
         }
 
-        //TODO moet dit? Niet in eerste versie met Twinfield aanpassingen. We bekijken dit opnieuw in volgende sprint met Twinfield aanpassingen
-        //Als er iets in de twinfield instelling veranderd is moeten we dit opnieuw synchroniseren
-//        if(
-//            ($administration->isDirty('twinfield_connection_type')
-//                || $administration->isDirty('twinfield_username')
-//                || $administration->isDirty('twinfield_client_id')
-//                || $administration->isDirty('twinfield_organization_code')
-//                || $administration->isDirty('twinfield_office_code') )
-//            && $administration->twinfield_is_valid)
-//        {
-//            foreach ($administration->twinfieldNumbers as $twinfieldNumber) {
-//                $twinfieldNumber->delete();
-//            }
-//
-//            foreach ($administration->invoices()->whereNotNull('twinfield_number')->where('status_id', 'exported')->get() as $invoice) {
-//                $invoice->twinfield_number = null;
-//                $invoice->status_id = 'sent';
-//                $invoice->save();
-//            }
-//
-//            foreach ($administration->invoices()->whereNotNull('twinfield_number')->get() as $invoice) {
-//                $invoice->twinfield_number = null;
-//                $invoice->save();
-//            }
-//
-//            //alle contacten als klanten in Twinfield zetten
-//            $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration, null);
-//            $twinfieldCustomerHelper->createAllCustomers();
-//        }
     }
 }

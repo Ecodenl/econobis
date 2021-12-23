@@ -16,6 +16,7 @@ export default {
                         'firstName',
                         'lastNamePrefix',
                         'lastName',
+                        'hasFinancialOverviews',
                         'iban',
                         'ibanAttn',
                         'didAgreeAvg',

@@ -441,6 +441,11 @@ class Contact extends Model
         }
         return $fullNameFnf;
     }
+    // Has contact financialoverview documents ?.
+    public function getHasFinancialOverviewsAttribute()
+    {
+        return $this->financialOverviewContactsSend()->exists();
+    }
     // Contact firstname (only if person).
     public function getFirstNameAttribute()
     {

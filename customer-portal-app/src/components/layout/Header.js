@@ -261,16 +261,6 @@ function Header({ location, history }) {
                             >
                                 Gegevens
                             </Link>
-                            {/* later */}
-                            {/*<Link*/}
-                            {/*to={'/deelname-projecten'}*/}
-                            {/*className={`nav-link w-nav-link w--nav-link-open ${*/}
-                            {/*location.pathname === '/' ? 'w--current' : ''*/}
-                            {/*}`}*/}
-                            {/*onClick={closeMenu}*/}
-                            {/*>*/}
-                            {/*Deelnames*/}
-                            {/*</Link>*/}
                             <Link
                                 to={'/inschrijven-projecten'}
                                 className={`nav-link w-nav-link w--nav-link-open ${
@@ -280,15 +270,28 @@ function Header({ location, history }) {
                             >
                                 Inschrijven projecten
                             </Link>
-                            <Link
-                                to={'/waardestaat-documenten'}
-                                className={`nav-link w-nav-link w--nav-link-open ${
-                                    location.pathname === '/waardestaat-documenten' ? 'w--current' : ''
-                                }`}
-                                onClick={closeMenu}
-                            >
-                                Waardestaat documenten
-                            </Link>
+                            <PortalUserConsumer>
+                                {({
+                                    user,
+                                    currentSelectedContact,
+                                    switchCurrentContact,
+                                    resetCurrentUserToDefault,
+                                }) => {
+                                    if (currentSelectedContact && currentSelectedContact.hasFinancialOverviews) {
+                                        return (
+                                            <Link
+                                                to={'/waardestaat-documenten'}
+                                                className={`nav-link w-nav-link w--nav-link-open ${
+                                                    location.pathname === '/waardestaat-documenten' ? 'w--current' : ''
+                                                }`}
+                                                onClick={closeMenu}
+                                            >
+                                                Waardestaat
+                                            </Link>
+                                        );
+                                    }
+                                }}
+                            </PortalUserConsumer>
                             <Link
                                 to={'/over-ons'}
                                 className={`nav-link w-nav-link w--nav-link-open ${

@@ -23,7 +23,6 @@ class ContactJoryResource extends JoryResource
         $this->field('id')->filterable()->sortable();
         $this->field('number')->filterable()->sortable();
         $this->field('type_id')->filterable()->sortable();
-        $this->field('full_name_fnf')->filterable()->sortable();
         $this->field('first_name')->filterable()->sortable();
         $this->field('last_name_prefix')->filterable()->sortable();
         $this->field('last_name')->filterable()->sortable();
@@ -33,6 +32,8 @@ class ContactJoryResource extends JoryResource
         $this->field('date_did_agree_avg')->filterable()->sortable();
 
         // Custom attributes
+        $this->field('full_name_fnf')->filterable()->sortable();
+        $this->field('has_financial_overviews')->filterable()->sortable();
         $this->field('address_lines')->hideByDefault();
         $this->field('is_participant')->filterable()->sortable();
         $this->field('disable_change_contact_name_on_portal')->filterable()->sortable();

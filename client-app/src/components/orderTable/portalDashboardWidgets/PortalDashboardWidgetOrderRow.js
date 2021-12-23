@@ -179,6 +179,15 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
                                           <Image
                                               src={widgetImage && widgetImage.preview ? widgetImage.preview : logoUrl}
                                               thumbnail={true}
+                                              style={{
+                                                  border: '1px solid #999',
+                                                  display: 'inline-block',
+                                                  padding: '1px',
+                                                  borderRadius: '1px',
+                                                  height: '100%',
+                                                  width: '100px',
+                                                  boxShadow: '0 0 0 1px #fff inset',
+                                              }}
                                           />
                                       </td>
                                   );

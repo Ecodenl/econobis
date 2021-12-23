@@ -14,7 +14,7 @@ const DashboardWidget = function({ id, title, text, image, buttonText, buttonLin
                 <p className="card-text" style={{ whiteSpace: 'break-spaces' }}>
                     {text}
                 </p>
-                <button className="btn btn-primary btn-sm" onClick={() => history.push(buttonLink)}>
+                <button className="w-button btn btn-primary btn-sm" onClick={() => history.push(buttonLink)}>
                     {buttonText}
                 </button>
             </div>

@@ -30,6 +30,14 @@ const ThemeSettingsProvider = function(props) {
     }
 
     function handleChangeCurrentThemeSettings() {
+        console.log('currentThemeSettings');
+        console.log(currentThemeSettings);
+        document.documentElement.style.setProperty(
+            '--main-header-background-image-url',
+            'url(images/' + currentThemeSettings.portal_image_bg_file_name_header + ')'
+        );
+        // --main-header-background-image-url: url({{ (!empty($defaultPortalSettingsLayout->portal_image_bg_file_name_header) ? 'images/' . $defaultPortalSettingsLayout->portal_image_bg_file_name_header : 'images/page-head5.jpg') }});
+
         document.documentElement.style.setProperty(
             '--main-primary-color',
             currentThemeSettings.portal_background_color

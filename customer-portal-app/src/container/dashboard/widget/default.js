@@ -89,7 +89,7 @@ export const ContactDetailsDashboardWidget = function({ contact }) {
                     </div>
                 </div>
                 <br />
-                <button className="btn btn-primary btn-sm" onClick={() => history.push('/gegevens')}>
+                <button className="w-button btn btn-primary btn-sm" onClick={() => history.push('/gegevens')}>
                     Gegevens beheren
                 </button>
             </div>

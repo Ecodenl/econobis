@@ -393,6 +393,7 @@ h3 {
   position: fixed;
   bottom: 25px;
   right: 25px;
+  z-index: 9999;
 }
 .floating-action-button > button {
   display: flex;

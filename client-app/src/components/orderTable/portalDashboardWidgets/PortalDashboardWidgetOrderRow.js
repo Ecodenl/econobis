@@ -171,9 +171,10 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
                               case 'active':
                                   return <td {...cell.getCellProps()}>{cell.value ? 'Ja' : 'Nee'}</td>;
                               case 'image': {
-                                  const logoUrl = cell.value.includes('images/')
-                                      ? `${URL_API}/portal${cell.value}`
-                                      : `${URL_API}/portal/images/${cell.value}`;
+                                  const logoUrl =
+                                      cell.value && cell.value.includes('images/')
+                                          ? `${URL_API}/portal${cell.value}`
+                                          : `${URL_API}/portal/images/${cell.value}`;
                                   return (
                                       <td key={cell.column.id}>
                                           <Image

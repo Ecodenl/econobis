@@ -159,6 +159,7 @@ class PortalSettingsDashboardController extends Controller
 
         } catch (Exception $exception) {
             Log::error('Opslaan widget afbeelding mislukt : ' . $exception->getMessage());
+            abort('422', 'Opslaan widget afbeelding mislukt : ' . $exception->getMessage());
         }
 
         return response()->json(['message' => 'Bestand succesvol opgeslagen.']);

@@ -10,11 +10,11 @@
 
 # build portal
 /portal
-/build/images/logo*
+/build/images/
 /build/favicon*
 /build/js/server-data.js
 /build/portal.css
-/public/images/*
+/public/images/
 /public/favicon*
 /public/js/server-data.js
 /public/portal.css
@@ -33,4 +33,3 @@ yarn-error.log*
 
 .env
 /package-lock.json
-/public/images/

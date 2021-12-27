@@ -83,6 +83,10 @@ return [
 //        ],
         'public_portal_local' => [
             'driver' => 'local',
+            'root' => '/home/vagrant/code/econobis/public/portal',
+        ],
+        'customer_portal_app_build_local' => [
+            'driver' => 'local',
             'root' => '/home/vagrant/code/econobis/customer-portal-app/build',
         ],
         'customer_portal_app_public_local' => [

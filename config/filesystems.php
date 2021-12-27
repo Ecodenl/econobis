@@ -80,7 +80,7 @@ return [
         'public_portal_local' => [
             'driver' => 'local',
 //            'root' => public_path('portal'),
-            'root' => '/home/vagrant/code/econobis/customer-portal-app/public',
+            'root' => '/home/vagrant/code/econobis/public/portal',
         ],
 
         'public_portal' => [

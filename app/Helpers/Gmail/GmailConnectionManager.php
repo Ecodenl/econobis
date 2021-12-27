@@ -43,6 +43,7 @@ class GmailConnectionManager
             if ($this->client->getRefreshToken()) {
                 $this->client->fetchAccessTokenWithRefreshToken($this->client->getRefreshToken());
             } else {
+                Log::error("Geen refresh token verkregen, mailbox " . $this->mailbox->id . " op invalid!");
                 $this->mailbox->valid = false;
                 $this->mailbox->save();
 
@@ -68,6 +69,9 @@ class GmailConnectionManager
 
         // Check to see if there was an error.
         if (array_key_exists('error', $accessToken)) {
+            Log::error("Geen access token verkregen vanuit callback, mailbox " . $this->mailbox->id . " op invalid!");
+            $this->mailbox->valid = false;
+            $this->mailbox->save();
 //            throw new Exception('GmailConnectionManager->callback error: ' . join(', ', $accessToken));
             return false;
         }

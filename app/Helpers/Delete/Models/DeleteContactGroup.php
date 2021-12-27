@@ -10,6 +10,7 @@ namespace App\Helpers\Delete\Models;
 
 use App\Helpers\Delete\DeleteInterface;
 use App\Helpers\Laposta\LapostaListHelper;
+use App\Helpers\Settings\PortalSettings;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -58,7 +59,12 @@ class DeleteContactGroup implements DeleteInterface
      */
     public function canDelete()
     {
-
+        // Group can not be deleted if it is used in portalsettings
+        $defaultContactGroupMemberId = PortalSettings::get('defaultContactGroupMemberId');
+        $defaultContactGroupNoMemberId = PortalSettings::get('defaultContactGroupNoMemberId');
+        if($this->contactGroup->id == $defaultContactGroupMemberId || $this->contactGroup->id == $defaultContactGroupNoMemberId){
+            array_push($this->errorMessage, "Deze groep wordt nog gebruikt in algemene portal instellingen.");
+        }
     }
 
     /** Deletes models recursive

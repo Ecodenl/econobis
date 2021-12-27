@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import Modal from '../../../../components/modal/Modal';
 import DocumentsAPI from '../../../../api/document/DocumentsAPI';
-import Select from 'react-select';
+import InputMultiSelect from '../../../../components/form/InputMultiSelect';
 
 function EmailAttachmentsDocument(props) {
     const [documents, setDocuments] = useState([]);
@@ -20,7 +20,7 @@ function EmailAttachmentsDocument(props) {
 
     function addDocuments() {
         if (documentIds) {
-            documentIds.split(',').forEach(documentId => props.addDocumentAsAttachment(documentId));
+            documentIds.forEach(item => props.addDocumentAsAttachment(item.id));
             props.toggleSelectDocument();
         }
     }
@@ -34,18 +34,16 @@ function EmailAttachmentsDocument(props) {
         >
             <div className="row">
                 <div className="col-sm-12">
-                    <Select
+                    <InputMultiSelect
+                        label={'Document(en)'}
                         name={'documentIds'}
                         value={documentIds}
-                        onChange={handleDocumentIds}
+                        onChangeAction={handleDocumentIds}
                         options={documents}
-                        valueKey={'id'}
-                        labelKey={'filename'}
+                        optionId={'id'}
+                        optionName={'filename'}
                         placeholder={''}
-                        noResultsText={'Geen resultaat gevonden'}
-                        multi={true}
-                        simpleValue
-                        removeSelected
+                        size={'col-sm-9'}
                     />
                 </div>
             </div>

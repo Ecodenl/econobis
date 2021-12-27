@@ -351,46 +351,6 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputText
                                 Men
-                                label="Logo header (bestandstype PNG)"
-                                divSize={'col-sm-8'}
-                                value={
-                                    this.state.attachmentLogoHeader.name
-                                        ? this.state.attachmentLogoHeader.name
-                                        : portalLogoFileNameHeader
-                                }
-                                onClickAction={this.toggleNewLogoHeader}
-                                onChangeaction={() => {}}
-                                readOnly={!this.manageTechnicalPortalSettings}
-                                required={'required'}
-                                error={this.state.errors.portalLogoFileNameHeader}
-                            />
-                            <Image
-                                src={
-                                    this.state.attachmentLogoHeader && this.state.attachmentLogoHeader.preview
-                                        ? this.state.attachmentLogoHeader.preview
-                                        : logoHeaderUrl
-                                }
-                                style={{
-                                    backgroundColor: loginHeaderBackgroundColor,
-                                    color: loginHeaderBackgroundTextColor,
-                                    border: '1px solid #999',
-                                    display: 'inline-block',
-                                    padding: '1px',
-                                    borderRadius: '1px',
-                                    height: '50px',
-                                    boxShadow: '0 0 0 1px #fff inset',
-                                }}
-                            />
-                        </div>
-                        {this.state.newLogoHeader && (
-                            <PortalLogoHeaderLayoutNew
-                                toggleShowNewLogoHeader={this.toggleNewLogoHeader}
-                                addLogoHeader={this.addLogoHeader}
-                            />
-                        )}
-                        <div className="row">
-                            <InputText
-                                Men
                                 label="Background image login (bestandstype PNG)"
                                 divSize={'col-sm-8'}
                                 value={
@@ -426,6 +386,46 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             <PortalImageBgLoginLayoutNew
                                 toggleShowNewImageBgLogin={this.toggleNewImageBgLogin}
                                 addImageBgLogin={this.addImageBgLogin}
+                            />
+                        )}
+                        <div className="row">
+                            <InputText
+                                Men
+                                label="Logo header (bestandstype PNG)"
+                                divSize={'col-sm-8'}
+                                value={
+                                    this.state.attachmentLogoHeader.name
+                                        ? this.state.attachmentLogoHeader.name
+                                        : portalLogoFileNameHeader
+                                }
+                                onClickAction={this.toggleNewLogoHeader}
+                                onChangeaction={() => {}}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
+                                error={this.state.errors.portalLogoFileNameHeader}
+                            />
+                            <Image
+                                src={
+                                    this.state.attachmentLogoHeader && this.state.attachmentLogoHeader.preview
+                                        ? this.state.attachmentLogoHeader.preview
+                                        : logoHeaderUrl
+                                }
+                                style={{
+                                    backgroundColor: loginHeaderBackgroundColor,
+                                    color: loginHeaderBackgroundTextColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '1px',
+                                    borderRadius: '1px',
+                                    height: '50px',
+                                    boxShadow: '0 0 0 1px #fff inset',
+                                }}
+                            />
+                        </div>
+                        {this.state.newLogoHeader && (
+                            <PortalLogoHeaderLayoutNew
+                                toggleShowNewLogoHeader={this.toggleNewLogoHeader}
+                                addLogoHeader={this.addLogoHeader}
                             />
                         )}
                         <div className="row">

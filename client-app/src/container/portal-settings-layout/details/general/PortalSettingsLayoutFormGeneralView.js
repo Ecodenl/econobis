@@ -73,13 +73,13 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Logo header (bestandstype PNG)'}
+                            label={'Background image login (bestandstype PNG)'}
                             divSize={'col-sm-8'}
-                            value={portalLogoFileNameHeader}
+                            value={portalImageBgFileNameLogin}
                             className={'col-sm-8 form-group'}
                         />
                         <Image
-                            src={logoHeaderUrl}
+                            src={imageBgLoginUrl}
                             style={{
                                 backgroundColor: loginHeaderBackgroundColor,
                                 color: loginHeaderBackgroundTextColor,
@@ -94,13 +94,13 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Background image login (bestandstype PNG)'}
+                            label={'Logo header (bestandstype PNG)'}
                             divSize={'col-sm-8'}
-                            value={portalImageBgFileNameLogin}
+                            value={portalLogoFileNameHeader}
                             className={'col-sm-8 form-group'}
                         />
                         <Image
-                            src={imageBgLoginUrl}
+                            src={logoHeaderUrl}
                             style={{
                                 backgroundColor: loginHeaderBackgroundColor,
                                 color: loginHeaderBackgroundTextColor,

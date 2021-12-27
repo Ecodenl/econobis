@@ -20,7 +20,6 @@ class AddPortalImagesToPortalSettingsLayoutsTable extends Migration
             $table->string('portal_image_bg_file_name_header')->after('portal_image_bg_file_name_login');
         });
 
-        //
         $portalSettingsLayoutDefaultQuery = PortalSettingsLayout::where('is_default', true);
 
         if($portalSettingsLayoutDefaultQuery->exists()) {
@@ -72,8 +71,6 @@ class AddPortalImagesToPortalSettingsLayoutsTable extends Migration
 
                 }
 
-                Storage::disk('app')->copy(DIRECTORY_SEPARATOR . 'portal-settings-dashboard-example.json', DIRECTORY_SEPARATOR . 'portal-settings-dashboard.json');
-
             } catch (\Exception $exception) {
                 Log::error('Copy logo.png mislukt : ' . $exception->getMessage());
             }
@@ -84,6 +81,11 @@ class AddPortalImagesToPortalSettingsLayoutsTable extends Migration
             $portalSettingsLayoutDefault->save();
         }
 
+        try {
+            Storage::disk('local')->copy(DIRECTORY_SEPARATOR . 'portal-settings-dashboard-example.json', DIRECTORY_SEPARATOR . 'portal-settings-dashboard.json');
+        } catch (\Exception $exception) {
+            Log::error('Copy portal-settings-dashboard-example.json mislukt: ' . $exception->getMessage());
+        }
 
     }
 

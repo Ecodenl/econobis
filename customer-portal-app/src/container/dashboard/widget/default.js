@@ -112,6 +112,7 @@ export const SwitchContactDashboardWidget = function({ user, currentSelectedCont
                     {user.occupations && user.occupations.length > 0 ? (
                         <>
                             <Button
+                                className="w-button btn btn-primary btn-sm"
                                 key={'user-' + user.id}
                                 id={'user-' + user.id}
                                 onClick={() => {
@@ -128,6 +129,7 @@ export const SwitchContactDashboardWidget = function({ user, currentSelectedCont
                                 (occupationContact.primaryContact.typeId === 'person' &&
                                     occupationContact.occupation.occupationForPortal) ? (
                                     <Button
+                                        className="w-button btn btn-primary btn-sm"
                                         key={'user-' + occupationContact.primaryContact.id}
                                         id={'user-' + occupationContact.primaryContact.id}
                                         onClick={() => {

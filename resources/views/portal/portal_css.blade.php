@@ -10,13 +10,15 @@
 --button-primary-text-color: {{ (!empty($defaultPortalSettingsLayout->button_text_color) ? $defaultPortalSettingsLayout->button_text_color : '#fff') }};
 --main-warning-color: #dc3545;
 --black-color: #252525;
+--main-login-background-image-url: url({{ (!empty($defaultPortalSettingsLayout->portal_image_bg_file_name_login) ? 'images/' . $defaultPortalSettingsLayout->portal_image_bg_file_name_login : 'images/page-head5.jpg') }});
+--main-header-background-image-url: url({{ (!empty($defaultPortalSettingsLayout->portal_image_bg_file_name_header) ? 'images/' . $defaultPortalSettingsLayout->portal_image_bg_file_name_header : 'images/page-head5.jpg') }});
 }
 
 /* ----------------- LOGIN STYLING -----------------*/
 .authorization-container {
 background-color: var(--main-primary-color);
-background-image: -webkit-gradient(linear, left top, left bottom, from(var(--main-primary-rgba)), to(var(--main-primary-rgba))), url('images/page-head5.jpg');
-background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-primary-rgba)), url('images/page-head5.jpg');
+background-image: -webkit-gradient(linear, left top, left bottom, from(var(--main-primary-rgba)), to(var(--main-primary-rgba))), var(--main-login-background-image-url);
+background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-primary-rgba)), var(--main-login-background-image-url);
 background-position: 0px 0px, 50% 50%;
 background-size: auto, cover;
 font-family: Montserrat, sans-serif;
@@ -100,7 +102,7 @@ font-family: initial;
 ::-moz-focus-inner {border:0;}
 
 .content-section {
-padding-top: 80px;
+padding-top: 100px;
 padding-bottom: 60px;
 }
 
@@ -163,8 +165,8 @@ text-decoration: none;
 .header-portal {
 position: relative;
 height: 128px;
-background-image: -webkit-gradient(linear, left top, left bottom, from(var(--main-primary-rgba)), to(var(--main-primary-rgba))), url('images/page-head5.jpg');
-background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-primary-rgba)), url('images/page-head5.jpg');
+background-image: -webkit-gradient(linear, left top, left bottom, from(var(--main-primary-rgba)), to(var(--main-primary-rgba))), var(--main-header-background-image-url);
+background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-primary-rgba)), var(--main-header-background-image-url);
 background-position: 0px 0px, 50% 50%;
 background-size: auto, cover;
 background-repeat: repeat, no-repeat;
@@ -213,6 +215,11 @@ color: red;
 font-size: 18px;
 }
 /* ----------------- BUTTON STYLING -----------------*/
+.w-button-group-left {
+float: left !important;
+left: 15px;
+}
+
 .w-button.w-button {
 background-color: var(--button-primary-color);
 border-color: var(--button-primary-color);
@@ -475,104 +482,105 @@ border-bottom: 17px solid transparent;
 }
 }
 
-@media (max-width: 479px) {
-.body {
-background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(3, 75, 140, 0.9)), to(rgba(3, 75, 140, 0.9))), url('../images/page-head5.jpg');
-background-image: linear-gradient(180deg, rgba(3, 75, 140, 0.9), rgba(3, 75, 140, 0.9)), url('../images/page-head5.jpg');
-background-position: 0px 0px, 100% 50%;
-}
-.div-block {
-padding-right: 20px;
-padding-left: 20px;
-}
-.text-input {
-min-width: 240px;
-}
-.text-input.content._w-40 {
-width: 100%;
-}
-.text-input.content._w-40._w-40-mob {
-width: 25%;
-}
-.text-input.content._w-90 {
-width: 100%;
-}
-.text-input.content._w-90._w-90-mob {
-width: 91%;
-}
-.text-input.content._w-70 {
-width: 100%;
-}
-.text-input.content._w-70._w-70-mob {
-width: 71%;
-}
-.text-input.content._w-50 {
-display: inline-block;
-}
-.button {
-margin-bottom: 10px;
-}
-.login-button {
-cursor: pointer;
-}
-.header-portal {
-position: relative;
-height: 128px;
-}
-.navbar {
-position: fixed;
-width: 100%;
-background-color: transparent;
-}
-.container {
-background-color: rgba(3, 75, 140, 0);
-}
-.icon {
-color: #fff;
-}
-.nav-menu {
-width: 100%;
-background-color: #034b8c;
-}
-.nav-link {
-display: block;
-margin-left: 40px;
-line-height: 32px;
-}
-.nav-link.w--current {
-border-left: 1px solid #fff;
-color: #fff;
-}
-.heading {
-margin-left: 40px;
-padding-left: 20px;
-text-align: left;
-}
-.heading.in-menu {
-margin-top: 100px;
-}
-.menu-button.w--open {
-background-color: #034b8c;
-}
-.profile-pic {
-position: absolute;
-left: 50%;
-top: auto;
-right: auto;
-bottom: -60px;
-min-width: 120px;
-height: 120px;
-border: 4px solid #fff;
-border-radius: 50%;
--webkit-transform: translate(-50%, 0px);
--ms-transform: translate(-50%, 0px);
-transform: translate(-50%, 0px);
-padding: 10px 20px;
-}
-.heading-content {
-margin-bottom: 0px;
-}
-}
+{{--@media (max-width: 479px) {--}}
+{{--.body {--}}
+{{--background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(3, 75, 140, 0.9)), to(rgba(3, 75, 140, 0.9))), var(--main-header-background-image-url);--}}
+{{--background-image: linear-gradient(180deg, rgba(3, 75, 140, 0.9), rgba(3, 75, 140, 0.9)), var(--main-header-background-image-url);--}}
+{{--background-position: 0px 0px, 100% 50%;--}}
+{{--}--}}
+{{--.div-block {--}}
+{{--padding-right: 20px;--}}
+{{--padding-left: 20px;--}}
+{{--}--}}
+{{--.text-input {--}}
+{{--min-width: 240px;--}}
+{{--}--}}
+{{--.text-input.content._w-40 {--}}
+{{--width: 100%;--}}
+{{--}--}}
+{{--.text-input.content._w-40._w-40-mob {--}}
+{{--width: 25%;--}}
+{{--}--}}
+{{--.text-input.content._w-90 {--}}
+{{--width: 100%;--}}
+{{--}--}}
+{{--.text-input.content._w-90._w-90-mob {--}}
+{{--width: 91%;--}}
+{{--}--}}
+{{--.text-input.content._w-70 {--}}
+{{--width: 100%;--}}
+{{--}--}}
+{{--.text-input.content._w-70._w-70-mob {--}}
+{{--width: 71%;--}}
+{{--}--}}
+{{--.text-input.content._w-50 {--}}
+{{--display: inline-block;--}}
+{{--}--}}
+{{--.button {--}}
+{{--margin-bottom: 10px;--}}
+{{--}--}}
+{{--.login-button {--}}
+{{--cursor: pointer;--}}
+{{--}--}}
+{{--.header-portal {--}}
+{{--position: relative;--}}
+{{--height: 128px;--}}
+{{--}--}}
+{{--.navbar {--}}
+{{--position: fixed;--}}
+{{--width: 100%;--}}
+{{--background-color: transparent;--}}
+{{--}--}}
+{{--.container {--}}
+{{--background-color: rgba(3, 75, 140, 0);--}}
+{{--}--}}
+{{--.icon {--}}
+{{--color: #fff;--}}
+{{--}--}}
+{{--.nav-menu {--}}
+{{--width: 100%;--}}
+{{--background-color: #034b8c;--}}
+{{--}--}}
+{{--.nav-link {--}}
+{{--display: block;--}}
+{{--margin-left: 40px;--}}
+{{--line-height: 32px;--}}
+{{--}--}}
+{{--.nav-link.w--current {--}}
+{{--border-left: 1px solid #fff;--}}
+{{--color: #fff;--}}
+{{--}--}}
+{{--.heading {--}}
+{{--margin-left: 40px;--}}
+{{--padding-left: 20px;--}}
+{{--text-align: left;--}}
+{{--}--}}
+{{--.heading.in-menu {--}}
+{{--margin-top: 100px;--}}
+{{--}--}}
+{{--.menu-button.w--open {--}}
+{{--background-color: #034b8c;--}}
+{{--}--}}
+{{--.profile-pic {--}}
+{{--position: absolute;--}}
+{{--left: 50%;--}}
+{{--top: auto;--}}
+{{--right: auto;--}}
+{{--bottom: -60px;--}}
+{{--min-width: 120px;--}}
+{{--height: 120px;--}}
+{{--border: 4px solid #fff;--}}
+{{--border-radius: 50%;--}}
+{{---webkit-transform: translate(-50%, 0px);--}}
+{{---ms-transform: translate(-50%, 0px);--}}
+{{--transform: translate(-50%, 0px);--}}
+{{--padding: 10px 20px;--}}
+{{--z-index: 1000;--}}
+{{--}--}}
+{{--.heading-content {--}}
+{{--margin-bottom: 0px;--}}
+{{--}--}}
+{{--}--}}
 
 /* ----------------- End ARROW STEPS STYLING -----------------*/
 
@@ -633,6 +641,7 @@ border-radius: 100%;
 text-align: center;
 display: flex;
 text-wrap: normal;
+z-index: 1000;
 }
 
 .alert-wrapper{
@@ -654,8 +663,16 @@ white-space: nowrap;
 
 /* ----------------- LOGO STYLING -----------------*/
 header .header-logo {
+max-width: 450px;
+padding: 0 0;
+}
+@media only screen and (max-width: 480px) {
+header .header-logo {
 max-width: 100px;
-padding: 10px 0;
+}
+}
+.header-logo img {
+max-height: 100px;
 }
 .logo-container {
 max-width: 200px;

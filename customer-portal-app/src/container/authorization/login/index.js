@@ -15,7 +15,7 @@ export default props => {
     const [showError, toggleError] = useState(false);
 
     const [redirectToReferrer, toggleRedirect] = useState(false);
-    let { from } = props.location.state || { from: { pathname: '/gegevens' } };
+    let { from } = props.location.state || { from: { pathname: '/dashboard' } };
 
     const [portalActive, setPortalActive] = useState(false);
     const [showNewAtCooperativeLink, setShowNewAtCooperativeLink] = useState(false);

@@ -7,11 +7,13 @@ const InputTextArea = props => {
     return (
         <div className={`form-group ${size}`}>
             <div className="row">
-                <div className={sizeLabel}>
-                    <label htmlFor={id} className={`col-sm-12 ${required}`}>
-                        {label}
-                    </label>
-                </div>
+                {!!label && (
+                    <div className={sizeLabel}>
+                        <label htmlFor={id} className={`col-sm-12 ${required}`}>
+                            {label}
+                        </label>
+                    </div>
+                )}
                 <div className={sizeInput}>
                     <textarea
                         name={name}
@@ -19,6 +21,7 @@ const InputTextArea = props => {
                         onChange={onChangeAction}
                         className={'form-control input-sm ' + (error ? 'has-error' : '')}
                         rows={rows}
+                        data-item-id={props.itemId ?? ''}
                     />
                 </div>
             </div>
@@ -37,7 +40,7 @@ InputTextArea.defaultProps = {
 };
 
 InputTextArea.propTypes = {
-    label: PropTypes.string.isRequired,
+    label: PropTypes.string,
     type: PropTypes.string,
     size: PropTypes.string,
     sizeLabel: PropTypes.string,

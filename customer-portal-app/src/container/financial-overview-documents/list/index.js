@@ -86,28 +86,34 @@ function FinancialOverviewDocuments() {
                             <h1 className="content-heading mt-0">Waardestaat documenten</h1>
                         </Col>
                     </Row>
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>Naam</th>
-                                <th>Omschrijving</th>
-                                <th>Downloaden</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {state.result.map(item => (
-                                <tr key={item.id}>
-                                    <td>{item.name}</td>
-                                    <td>{item.description}</td>
-                                    <td>
-                                        <a href="#" onClick={e => downloadFile(e, item.id)}>
-                                            <FaFileDownload /> downloaden
-                                        </a>
-                                    </td>
+                    {state.result.length === 0 ? (
+                        <Row>
+                            <Col>Geen waardestaat documenten aanwezig om te tonen.</Col>
+                        </Row>
+                    ) : (
+                        <Table>
+                            <thead>
+                                <tr>
+                                    <th>Naam</th>
+                                    <th>Omschrijving</th>
+                                    <th>Downloaden</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </Table>
+                            </thead>
+                            <tbody>
+                                {state.result.map(item => (
+                                    <tr key={item.id}>
+                                        <td>{item.name}</td>
+                                        <td>{item.description}</td>
+                                        <td>
+                                            <a href="#" onClick={e => downloadFile(e, item.id)}>
+                                                <FaFileDownload /> downloaden
+                                            </a>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </Table>
+                    )}
                 </>
             )}
         </Container>

@@ -3,7 +3,7 @@ const Dropzone = require('react-dropzone').default;
 
 import Modal from '../../../../components/modal/Modal';
 
-class PortalLogoNew extends Component {
+class PortalLogoLayoutNew extends Component {
     constructor(props) {
         super(props);
 
@@ -31,8 +31,13 @@ class PortalLogoNew extends Component {
             <Modal
                 closeModal={this.props.toggleShowNewLogo}
                 showConfirmAction={false}
-                title="Upload logo bestand (PNG)"
+                title="Upload logo bestand (PNG) tbv login pagina"
             >
+                <p>Alleen image bestanden met bestandstype PNG kunnen gebruikt worden.</p>
+                <p>
+                    Maximale breedte van image zal 200px zijn. De hoogte variabel. Breedte/Hoogte verhouding logo blijft
+                    behouden. Aanbevolen afmeting (in pixels): 200 x 200.
+                </p>
                 <div className="upload-file-content">
                     <Dropzone
                         accept="image/png"
@@ -61,4 +66,4 @@ class PortalLogoNew extends Component {
     }
 }
 
-export default PortalLogoNew;
+export default PortalLogoLayoutNew;

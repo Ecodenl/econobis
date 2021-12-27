@@ -375,3 +375,27 @@ h3 {
     font-weight: 500;
   }
 }
+
+.row {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+#account-dropdown::after {
+  display: none;
+}
+
+.header-dashboard-button {
+  position: absolute;
+  top: 200px;
+}
+.floating-action-button {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  z-index: 9999;
+}
+.floating-action-button > button {
+  display: flex;
+  align-items: center;
+}

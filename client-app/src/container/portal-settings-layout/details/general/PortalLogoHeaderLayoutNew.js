@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 const Dropzone = require('react-dropzone').default;
 
-import Modal from '../../../components/modal/Modal';
+import Modal from '../../../../components/modal/Modal';
 
-class PortalLogoNew extends Component {
+class PortalLogoHeaderLayoutNew extends Component {
     constructor(props) {
         super(props);
 
@@ -14,9 +14,9 @@ class PortalLogoNew extends Component {
     }
 
     onDropAccepted(file) {
-        this.props.addLogo(file);
+        this.props.addLogoHeader(file);
         setTimeout(() => {
-            this.props.toggleShowNewLogo();
+            this.props.toggleShowNewLogoHeader();
         }, 500);
     }
 
@@ -29,10 +29,17 @@ class PortalLogoNew extends Component {
     render() {
         return (
             <Modal
-                closeModal={this.props.toggleShowNewLogo}
+                closeModal={this.props.toggleShowNewLogoHeader}
                 showConfirmAction={false}
-                title="Upload logo bestand (PNG)"
+                title="Upload logo bestand (PNG) tbv de portaal header"
             >
+                <p>Alleen image bestanden met bestandstype PNG kunnen gebruikt worden.</p>
+                <p>
+                    Maximale hoogte van image zal 100px zijn. Maximale breedte van image zal 450px zijn als window
+                    breedte &gt; 480px is en 150px als window breedte &lt; 480px. Breedte/Hoogte verhouding logo blijft
+                    behouden. Aanbevolen afmeting (in pixels): tussen de 450x100 voor maximale benutting op een PC of
+                    100x100 voor best view op een mobiel.
+                </p>
                 <div className="upload-file-content">
                     <Dropzone
                         accept="image/png"
@@ -61,4 +68,4 @@ class PortalLogoNew extends Component {
     }
 }
 
-export default PortalLogoNew;
+export default PortalLogoHeaderLayoutNew;

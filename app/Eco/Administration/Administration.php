@@ -9,6 +9,7 @@ use App\Eco\Invoice\Invoice;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Order\Order;
 use App\Eco\PaymentInvoice\PaymentInvoice;
+use App\Eco\PortalSettingsDashboard\PortalSettingsDashboard;
 use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
 use App\Eco\Product\Product;
 use App\Eco\Project\Project;
@@ -42,7 +43,7 @@ class Administration extends Model
     //Per administratie heeft de contact een ander twinfield nummer
     public function twinfieldNumbers()
     {
-        return $this->hasMany(TwinfieldcustomerNumber::class);
+        return $this->hasMany(TwinfieldCustomerNumber::class);
     }
 
     public function getTwinfieldConnectionTypeWithIdAndName()
@@ -52,6 +53,10 @@ class Administration extends Model
         return TwinfieldConnectionTypeWithIdAndName::get($this->twinfield_connection_type);
     }
 
+    public function portalSettingsDashboard()
+    {
+        return $this->belongsTo(PortalSettingsDashboard::class);
+    }
 
     public function users()
     {
@@ -142,10 +147,25 @@ class Administration extends Model
     {
         if($this->portal_settings_layout_id)
         {
-            return PortalSettingsLayout::where('id', $this->portal_settings_layout_id)->first();
+            $portalSettingsLayout = PortalSettingsLayout::where('id', $this->portal_settings_layout_id)->first();
         }else{
-            return PortalSettingsLayout::where('is_default', true)->first();
+            $portalSettingsLayout = PortalSettingsLayout::where('is_default', true)->first();
         }
+
+        if(empty($portalSettingsLayout->portal_logo_file_name_header))
+        {
+            $portalSettingsLayout->portal_logo_file_name_header = $portalSettingsLayout->portal_logo_file_name;
+        }
+        if(empty($portalSettingsLayout->portal_image_bg_file_name_login))
+        {
+            $portalSettingsLayout->portal_image_bg_file_name_login = 'page-head5.jpg';
+        }
+        if(empty($portalSettingsLayout->portal_image_bg_file_name_header))
+        {
+            $portalSettingsLayout->portal_image_bg_file_name_header = $portalSettingsLayout->portal_image_bg_file_name_login;
+        }
+
+        return $portalSettingsLayout;
     }
 
     public function getTotalOrdersAttribute()

@@ -16,7 +16,7 @@ const Reset = ({ location, match, login }) => {
     const email = decodeURIComponent(match.params.email);
 
     const [redirectToReferrer, toggleRedirect] = useState(false);
-    let { from } = location.state || { from: { pathname: '/gegevens' } };
+    let { from } = location.state || { from: { pathname: '/dashboard' } };
 
     function handleSubmit(values, actions) {
         AuthAPI.reset({ token, email, password: values.password, password_confirmation: values.passwordConfirmation })

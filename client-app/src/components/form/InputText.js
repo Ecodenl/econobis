@@ -26,15 +26,20 @@ const InputText = props => {
         textToolTip,
         errorMessage,
         divSize,
+        labelSize,
         divClassName,
         autoComplete,
+        disabled,
+        attribute,
     } = props;
 
     return (
         <div className={`form-group ${divSize} ${divClassName}`}>
-            <label htmlFor={id} className={`col-sm-6 ${required}`}>
-                {label}
-            </label>
+            {!!label && (
+                <label htmlFor={id} className={`${labelSize} ${required}`}>
+                    {label}
+                </label>
+            )}
             <div className={`${size}`}>
                 <input
                     type={type}
@@ -52,6 +57,8 @@ const InputText = props => {
                     max={max}
                     autoComplete={autoComplete}
                     step={step}
+                    disabled={disabled}
+                    data-item-id={props.itemId ?? ''}
                 />
             </div>{' '}
             {textToolTip && (
@@ -80,6 +87,7 @@ InputText.defaultProps = {
     className: '',
     size: 'col-sm-6',
     divSize: 'col-sm-6',
+    labelSize: 'col-sm-6',
     name: '',
     type: 'text',
     value: '',
@@ -93,18 +101,20 @@ InputText.defaultProps = {
     textToolTip: '',
     errorMessage: '',
     autoComplete: 'off',
+    disabled: false,
     onBlurAction: () => {},
     onClickAction: () => {},
     onChangeAction: () => {},
 };
 
 InputText.propTypes = {
-    label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+    label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     type: PropTypes.string,
     className: PropTypes.string,
     divClassName: PropTypes.string,
     size: PropTypes.string,
     divSize: PropTypes.string,
+    labelSize: PropTypes.string,
     id: PropTypes.string,
     placeholder: PropTypes.string,
     name: PropTypes.string.isRequired,
@@ -122,6 +132,7 @@ InputText.propTypes = {
     textToolTip: PropTypes.string,
     errorMessage: PropTypes.string,
     autoComplete: PropTypes.string,
+    disabled: PropTypes.bool,
 };
 
 export default InputText;

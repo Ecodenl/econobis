@@ -55,16 +55,24 @@ const PortalUserProvider = function(props) {
         setCurrentContact({});
     }
 
-    function updateNameSelectedContact(fullName) {
-        setCurrentContact({ ...currentSelectedContact, fullName });
+    function updateNameSelectedContact(fullNameFnf, typeId, firstName, lastNamePrefix, lastName) {
+        setCurrentContact({ ...currentSelectedContact, fullNameFnf, typeId, firstName, lastNamePrefix, lastName });
 
         if (user.id === currentSelectedContact.id) {
-            user.fullName = fullName;
+            user.fullNameFnf = fullNameFnf;
+            user.typeId = typeId;
+            user.firstName = firstName;
+            user.lastNamePrefix = lastNamePrefix;
+            user.lastName = lastName;
         }
 
         const updatedOccupations = user.occupations.map(occupationContact => {
             if (occupationContact.primaryContact.id === currentSelectedContact.id) {
-                occupationContact.primaryContact.fullName = fullName;
+                occupationContact.primaryContact.fullNameFnf = fullNameFnf;
+                occupationContact.primaryContact.typeId = typeId;
+                occupationContact.primaryContact.firstName = firstName;
+                occupationContact.primaryContact.lastNamePrefix = lastNamePrefix;
+                occupationContact.primaryContact.lastName = lastName;
             }
             return occupationContact;
         });

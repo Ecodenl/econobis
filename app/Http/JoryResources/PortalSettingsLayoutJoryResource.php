@@ -16,6 +16,9 @@ class PortalSettingsLayoutJoryResource extends JoryResource
         $this->field('description')->filterable()->sortable();
         $this->field('is_default')->filterable()->sortable();
         $this->field('portal_logo_file_name')->filterable()->sortable();
+        $this->field('portal_logo_file_name_header')->filterable()->sortable();
+        $this->field('portal_image_bg_file_name_login')->filterable()->sortable();
+        $this->field('portal_image_bg_file_name_header')->filterable()->sortable();
         $this->field('portal_favicon_file_name')->filterable()->sortable();
         $this->field('portal_background_color')->filterable()->sortable();
         $this->field('portal_background_text_color')->filterable()->sortable();

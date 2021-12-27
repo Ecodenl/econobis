@@ -53,7 +53,13 @@ const ContactDetails = function(props) {
                 const contactData = rebaseContact(payload.data.data);
 
                 setContact(contactData);
-                props.updateNameSelectedContact(contactData.fullName);
+                props.updateNameSelectedContact(
+                    contactData.fullNameFnf,
+                    contactData.typeId,
+                    contactData.firstName,
+                    contactData.lastNamePrefix,
+                    contactData.lastName
+                );
                 setLoading(false);
             })
             .catch(error => {
@@ -107,23 +113,12 @@ const ContactDetails = function(props) {
                 <LoadingView />
             ) : (
                 <div className="content-container w-container">
-                    <Row>
-                        <ButtonGroup aria-label="Steps" className="float-left">
-                            <Link to={`/inschrijven-projecten`}>
-                                <Button className={'w-button'} size="sm">
-                                    Inschrijven projecten
-                                </Button>
-                            </Link>
-                            &nbsp;
-                            <Link to={`/inschrijvingen-projecten`}>
-                                <Button className={'w-button'} size="sm">
-                                    Huidige deelnames
-                                </Button>
-                            </Link>
-                        </ButtonGroup>
-                    </Row>
                     {editForm ? (
-                        <h1 className="content-heading mt-0">Contactgegevens</h1>
+                        <Row>
+                            <Col>
+                                <h1 className="content-heading mt-0">Contactgegevens</h1>
+                            </Col>
+                        </Row>
                     ) : (
                         <Row>
                             <Col>

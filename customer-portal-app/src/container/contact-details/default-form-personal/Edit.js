@@ -29,11 +29,6 @@ const DefaultContactPersonalEdit = function({
     return (
         <Row>
             <Col xs={12} md={6}>
-                <FormLabel className={'field-label'}>Contactnummer</FormLabel>
-                <Row>
-                    <TextBlock className={'col-12 col-sm-8'}>{values.number}</TextBlock>
-                </Row>
-
                 <FormLabel className={'field-label required'}>Naam</FormLabel>
                 <Row>
                     <Col xs={12} sm={6}>
@@ -312,7 +307,6 @@ const DefaultContactPersonalEdit = function({
                         />
                     </Col>
                 </Row>
-
                 <Row>
                     <Col xs={12} sm={4}>
                         <Field
@@ -394,6 +388,11 @@ const DefaultContactPersonalEdit = function({
                             )}
                         />
                     </Col>
+                </Row>
+
+                <FormLabel className={'field-label'}>Contactnummer</FormLabel>
+                <Row>
+                    <TextBlock className={'col-12 col-sm-8'}>{values.number}</TextBlock>
                 </Row>
             </Col>
 

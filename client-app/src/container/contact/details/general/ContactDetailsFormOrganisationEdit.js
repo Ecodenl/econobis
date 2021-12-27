@@ -409,7 +409,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ContactDetailsFormOrganisationEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormOrganisationEdit);

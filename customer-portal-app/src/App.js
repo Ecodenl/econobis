@@ -8,6 +8,7 @@ import Login from './container/authorization/login';
 import Register from './container/authorization/register';
 import Forgot from './container/authorization/forgot';
 import Reset from './container/authorization/reset';
+import Dashboard from './container/dashboard';
 import ContactDetails from './container/contact-details';
 import MyAreasOfInterest from './container/my-areas-of-interest';
 import RegisterProject from './container/register';
@@ -22,7 +23,7 @@ import RegistrationDetails from './container/registration/details';
 import FinancialOverviewDocuments from './container/financial-overview-documents/list';
 import { ThemeSettingsProvider } from './context/ThemeSettingsContext';
 import AboutUsAdministration from './container/about-us/details';
-import ProjectMollieRedirectWithContext from "./container/register/mollie-redirect";
+import ProjectMollieRedirectWithContext from './container/register/mollie-redirect';
 
 function App() {
     return (
@@ -31,10 +32,14 @@ function App() {
                 <PortalUserProvider>
                     <ThemeSettingsProvider>
                         <Switch>
-                            <ProtectedRoute exact path="/" component={ContactDetails} />
+                            <ProtectedRoute exact path="/" component={Dashboard} />
+                            <ProtectedRoute path="/dashboard" component={Dashboard} />
                             <ProtectedRoute path="/gegevens" component={ContactDetails} />
                             <ProtectedRoute path="/mijn-interessegebieden" component={MyAreasOfInterest} />
-                            <ProtectedRoute path="/inschrijven/mollie-resultaat/:code" component={ProjectMollieRedirectWithContext} />
+                            <ProtectedRoute
+                                path="/inschrijven/mollie-resultaat/:code"
+                                component={ProjectMollieRedirectWithContext}
+                            />
                             <ProtectedRoute path="/inschrijven/:id" component={RegisterProject} />
                             <ProtectedRoute path="/inschrijven-projecten" component={ProjectList} />
                             <ProtectedRoute path="/inschrijvingen-projecten" component={RegistrationList} />

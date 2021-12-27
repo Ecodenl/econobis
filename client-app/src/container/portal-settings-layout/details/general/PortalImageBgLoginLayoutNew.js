@@ -31,8 +31,15 @@ class PortalImageBgLoginLayoutNew extends Component {
             <Modal
                 closeModal={this.props.toggleShowNewImageBgLogin}
                 showConfirmAction={false}
-                title="Upload background image login bestand (PNG)"
+                title="Upload background image bestand (PNG) tbv login pagina"
             >
+                <p>Alleen image bestanden met bestandstype PNG kunnen gebruikt worden.</p>
+                <p>
+                    Breedte en hoogte zijn variabel en afhankelijk van window breedte/hoogte. Image zal gecentreerd over
+                    de hele breedte/hoogte getoond worden. Breedte/Hoogte verhouding background image blijft behouden.
+                    Aanbevolen afmeting (in pixels): tussen de 800 x450 en 1200x675 voor best view op een PC (verhouding
+                    16:9) of 400x800 voor best view op een mobiel (verhouding 1:2).
+                </p>
                 <div className="upload-file-content">
                     <Dropzone
                         accept="image/png"

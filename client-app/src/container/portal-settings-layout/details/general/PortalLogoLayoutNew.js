@@ -31,8 +31,13 @@ class PortalLogoLayoutNew extends Component {
             <Modal
                 closeModal={this.props.toggleShowNewLogo}
                 showConfirmAction={false}
-                title="Upload logo login bestand (PNG)"
+                title="Upload logo bestand (PNG) tbv login pagina"
             >
+                <p>Alleen image bestanden met bestandstype PNG kunnen gebruikt worden.</p>
+                <p>
+                    Maximale breedte van image zal 200px zijn. De hoogte variabel. Breedte/Hoogte verhouding logo blijft
+                    behouden. Aanbevolen afmeting (in pixels): 200 x 200.
+                </p>
                 <div className="upload-file-content">
                     <Dropzone
                         accept="image/png"

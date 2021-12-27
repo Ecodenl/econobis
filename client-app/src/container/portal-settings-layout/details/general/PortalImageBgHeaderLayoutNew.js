@@ -31,8 +31,16 @@ class PortalImageBgHeaderLayoutNew extends Component {
             <Modal
                 closeModal={this.props.toggleShowNewImageBgHeader}
                 showConfirmAction={false}
-                title="Upload background image header bestand (PNG)"
+                title="Upload background image bestand (PNG) tbv de portaal header"
             >
+                <p>Alleen image bestanden met bestandstype PNG kunnen gebruikt worden.</p>
+                <p>
+                    Maximale hoogte van image zal 128px zijn. De breedte is afhankelijk van window breedte. Image zal
+                    gecentreerd over de hele breedte getoond worden. Breedte/Hoogte verhouding background image blijft
+                    behouden. Aanbevolen afmeting (in pixels): tussen de 1200 x 128 voor waarschijnlijk maximale
+                    benutting op een PC of 360x128 voor waarschijnlijk maximaal benutting op een mobiel.
+                </p>
+
                 <div className="upload-file-content">
                     <Dropzone
                         accept="image/png"

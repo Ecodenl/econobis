@@ -31,8 +31,15 @@ class PortalLogoHeaderLayoutNew extends Component {
             <Modal
                 closeModal={this.props.toggleShowNewLogoHeader}
                 showConfirmAction={false}
-                title="Upload logo header bestand (PNG)"
+                title="Upload logo bestand (PNG) tbv de portaal header"
             >
+                <p>Alleen image bestanden met bestandstype PNG kunnen gebruikt worden.</p>
+                <p>
+                    Maximale hoogte van image zal 100px zijn. Maximale breedte van image zal 450px zijn als window
+                    breedte &gt; 480px is en 150px als window breedte &lt; 480px. Breedte/Hoogte verhouding logo blijft
+                    behouden. Aanbevolen afmeting (in pixels): tussen de 450x100 voor maximale benutting op een PC of
+                    100x100 voor best view op een mobiel.
+                </p>
                 <div className="upload-file-content">
                     <Dropzone
                         accept="image/png"

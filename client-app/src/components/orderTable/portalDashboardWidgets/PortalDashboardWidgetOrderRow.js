@@ -9,6 +9,7 @@ import InputText from '../../form/InputText';
 import InputTextArea from '../../form/InputTextarea';
 import InputToggle from '../../form/InputToggle';
 import { Image } from 'react-bootstrap';
+import Modal from '../../modal/Modal';
 
 const DND_ITEM_TYPE = 'row';
 
@@ -17,6 +18,8 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
     const dragRef = useRef(null);
     const [newWidgetImage, setNewWidgetImage] = useState();
     const [widgetImage, setWidgetImage] = useState();
+    const [showUploadSucces, setShowUploadSucces] = useState(false);
+    const [uploadSuccesMessage, setUploadSuccesMessage] = useState('');
 
     const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
     const staticInput = ['buttonLink'];
@@ -79,6 +82,10 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
         setNewWidgetImage(!newWidgetImage);
     };
 
+    const toggleShowUploadSucces = () => {
+        setShowUploadSucces(!showUploadSucces);
+    };
+
     const addWidgetImage = file => {
         setWidgetImage(file[0]);
 
@@ -88,7 +95,9 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
 
         PortalSettingsDashboardAPI.updateDashboardWidget(data)
             .then(payload => {
-                alert(payload.data.message);
+                setShowUploadSucces(true);
+                setUploadSuccesMessage(payload.data.message);
+                // alert(payload.data.message);
             })
             .catch(error => {
                 console.log(error);
@@ -105,9 +114,13 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
                     </td>
                 )}
                 {edit
-                    ? row.cells.map(cell => {
+                    ? // edit
+                      row.cells.map(cell => {
                           switch (cell.column.id) {
+                              case 'title':
                               case 'text':
+                              case 'buttonText':
+                              case 'buttonLink':
                                   return (
                                       <td key={cell.column.id}>
                                           <InputTextArea
@@ -121,9 +134,28 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
                                       </td>
                                   );
                               case 'image':
+                                  const logoUrl =
+                                      cell.value && cell.value.includes('images/')
+                                          ? `${URL_API}/portal${cell.value}`
+                                          : `${URL_API}/portal/images/${cell.value}`;
                                   return (
                                       <td key={cell.column.id}>
+                                          <Image
+                                              src={widgetImage && widgetImage.preview ? widgetImage.preview : logoUrl}
+                                              thumbnail={true}
+                                              style={{
+                                                  border: '1px solid #999',
+                                                  display: 'inline-block',
+                                                  padding: '1px',
+                                                  borderRadius: '1px',
+                                                  height: '100%',
+                                                  width: '100px',
+                                                  boxShadow: '0 0 0 1px #fff inset',
+                                              }}
+                                              onClick={toggleNewWidgetImage}
+                                          />
                                           <InputText
+                                              type={'hidden'}
                                               label={''}
                                               divSize={'col-sm-12'}
                                               size={'col-sm-12'}
@@ -166,7 +198,8 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
                                   );
                           }
                       })
-                    : row.cells.map(cell => {
+                    : // view
+                      row.cells.map(cell => {
                           switch (cell.column.id) {
                               case 'active':
                                   return <td {...cell.getCellProps()}>{cell.value ? 'Ja' : 'Nee'}</td>;
@@ -213,6 +246,16 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
                     toggleNewWidgetImage={toggleNewWidgetImage}
                     addWidgetImage={addWidgetImage}
                 />
+            )}
+            {showUploadSucces && (
+                <Modal
+                    title={'Succes'}
+                    closeModal={toggleShowUploadSucces}
+                    buttonCancelText={'Ok'}
+                    showConfirmAction={false}
+                >
+                    {uploadSuccesMessage}
+                </Modal>
             )}
         </>
     );

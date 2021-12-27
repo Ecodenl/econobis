@@ -38,6 +38,7 @@ class PortalSettingsLayoutObserver
             $layoutLogoName = 'logo-' . $portalSettingsLayout->id . '.png';
             if (Config::get('app.env') == "local") {
                 Storage::disk('public_portal_local')->put('images/logo.png' , Storage::disk('public_portal_local')->get('images/' . $layoutLogoName));
+                Storage::disk('customer_portal_app_build_local')->put('images/logo.png' , Storage::disk('customer_portal_app_public_local')->get('images/' . $layoutLogoName));
                 Storage::disk('customer_portal_app_public_local')->put('images/logo.png' , Storage::disk('customer_portal_app_public_local')->get('images/' . $layoutLogoName));
             } else {
                 Storage::disk('public_portal')->put('images/logo.png' , Storage::disk('public_portal')->get('images/' . $layoutLogoName));
@@ -47,6 +48,7 @@ class PortalSettingsLayoutObserver
             $layoutLogoHeaderName = 'logo-header-' . $portalSettingsLayout->id . '.png';
             if (Config::get('app.env') == "local") {
                 Storage::disk('public_portal_local')->put('images/logo-header.png' , Storage::disk('public_portal_local')->get('images/' . $layoutLogoHeaderName));
+                Storage::disk('customer_portal_app_build_local')->put('images/logo-header.png' , Storage::disk('customer_portal_app_public_local')->get('images/' . $layoutLogoHeaderName));
                 Storage::disk('customer_portal_app_public_local')->put('images/logo-header.png' , Storage::disk('customer_portal_app_public_local')->get('images/' . $layoutLogoHeaderName));
             } else {
                 Storage::disk('public_portal')->put('images/logo-header.png' , Storage::disk('public_portal')->get('images/' . $layoutLogoHeaderName));
@@ -56,6 +58,7 @@ class PortalSettingsLayoutObserver
             $layoutImageBgLoginName = 'background-login-' . $portalSettingsLayout->id . '.png';
             if (Config::get('app.env') == "local") {
                 Storage::disk('public_portal_local')->put('images/background-login.png' , Storage::disk('public_portal_local')->get('images/' . $layoutImageBgLoginName));
+                Storage::disk('customer_portal_app_build_local')->put('images/background-login.png' , Storage::disk('customer_portal_app_public_local')->get('images/' . $layoutImageBgLoginName));
                 Storage::disk('customer_portal_app_public_local')->put('images/background-login.png' , Storage::disk('customer_portal_app_public_local')->get('images/' . $layoutImageBgLoginName));
             } else {
                 Storage::disk('public_portal')->put('images/background-login.png' , Storage::disk('public_portal')->get('images/' . $layoutImageBgLoginName));
@@ -65,6 +68,7 @@ class PortalSettingsLayoutObserver
             $layoutImageBgHeaderName = 'background-header-' . $portalSettingsLayout->id . '.png';
             if (Config::get('app.env') == "local") {
                 Storage::disk('public_portal_local')->put('images/background-header.png' , Storage::disk('public_portal_local')->get('images/' . $layoutImageBgHeaderName));
+                Storage::disk('customer_portal_app_build_local')->put('images/background-header.png' , Storage::disk('customer_portal_app_public_local')->get('images/' . $layoutImageBgHeaderName));
                 Storage::disk('customer_portal_app_public_local')->put('images/background-header.png' , Storage::disk('customer_portal_app_public_local')->get('images/' . $layoutImageBgHeaderName));
             } else {
                 Storage::disk('public_portal')->put('images/background-header.png' , Storage::disk('public_portal')->get('images/' . $layoutImageBgHeaderName));

@@ -77,10 +77,17 @@ return [
 
         // lokaal is public_path iets in trant van '/home/vagrant/code/econobis/public/'
         // afhankelijk van hoe je vagrant/homestead hebt ingericht.
+//        'public_portal_local' => [
+//            'driver' => 'local',
+//            'root' => public_path('portal'),
+//        ],
         'public_portal_local' => [
             'driver' => 'local',
-//            'root' => public_path('portal'),
             'root' => '/home/vagrant/code/econobis/public/portal',
+        ],
+        'customer_portal_app_public_local' => [
+            'driver' => 'local',
+            'root' => '/home/vagrant/code/econobis/customer-portal-app/public',
         ],
 
         'public_portal' => [

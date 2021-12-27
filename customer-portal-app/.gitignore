@@ -10,7 +10,7 @@
 
 # build portal
 /portal
-/build/images/logo*
+/build/images/*
 /build/favicon*
 /build/js/server-data.js
 /build/portal.css

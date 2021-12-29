@@ -5,7 +5,7 @@ import InputSelect from '../../../../components/form/InputSelect';
 import InputText from '../../../../components/form/InputText';
 import InputToggle from '../../../../components/form/InputToggle';
 
-const DocumentNewFormProjectGeneral = ({
+const DocumentNewFormGeneral = ({
     document,
     errors,
     contacts = [],
@@ -231,4 +231,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(DocumentNewFormProjectGeneral);
+export default connect(mapStateToProps, null)(DocumentNewFormGeneral);

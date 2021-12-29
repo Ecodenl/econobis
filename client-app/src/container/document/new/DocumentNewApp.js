@@ -26,6 +26,8 @@ import OrdersAPI from '../../../api/order/OrdersAPI';
 import EmailDetailsAPI from '../../../api/email/EmailAPI';
 import QuotationRequestDetailsAPI from '../../../api/quotation-request/QuotationRequestDetailsAPI';
 import DocumentNewFormProject from './DocumentNewFormProject';
+import DocumentNewFormAdministration from './DocumentNewFormAdministration';
+import DocumentNewFormParticipant from './DocumentNewFormParticipant';
 
 class DocumentNewApp extends Component {
     constructor(props) {
@@ -404,6 +406,30 @@ class DocumentNewApp extends Component {
                                 document={this.state.document}
                                 templates={this.state.templates}
                                 projects={this.state.projects}
+                                errors={this.state.errors}
+                                handleSubmit={this.handleSubmit}
+                                handleDocumentGroupChange={this.handleDocumentGroupChange}
+                                handleInputChange={this.handleInputChange}
+                                onDropAccepted={this.onDropAccepted}
+                                onDropRejected={this.onDropRejected}
+                            />
+                        ) : this.state.document.documentCreatedFrom === 'administration' ? (
+                            <DocumentNewFormAdministration
+                                document={this.state.document}
+                                templates={this.state.templates}
+                                errors={this.state.errors}
+                                handleSubmit={this.handleSubmit}
+                                handleDocumentGroupChange={this.handleDocumentGroupChange}
+                                handleInputChange={this.handleInputChange}
+                                onDropAccepted={this.onDropAccepted}
+                                onDropRejected={this.onDropRejected}
+                            />
+                        ) : this.state.document.documentCreatedFrom === 'participant' ? (
+                            <DocumentNewFormParticipant
+                                document={this.state.document}
+                                templates={this.state.templates}
+                                projects={this.state.projects}
+                                participants={this.state.participants}
                                 errors={this.state.errors}
                                 handleSubmit={this.handleSubmit}
                                 handleDocumentGroupChange={this.handleDocumentGroupChange}

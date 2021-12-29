@@ -5,8 +5,15 @@ import InputSelect from '../../../../components/form/InputSelect';
 import InputText from '../../../../components/form/InputText';
 import InputToggle from '../../../../components/form/InputToggle';
 
-const DocumentNewFormProjectGeneral = ({ document, errors, projects = [], handleInputChange, documentTypes }) => {
-    const { documentType, description, projectId, showOnPortal } = document;
+const DocumentNewFormParticipantGeneral = ({
+    document,
+    errors,
+    projects = [],
+    participants = [],
+    handleInputChange,
+    documentTypes,
+}) => {
+    const { documentType, description, projectId, participantId, showOnPortal } = document;
     const documentTypeName = documentTypes.find(item => {
         return item.id == documentType;
     }).name;
@@ -24,6 +31,18 @@ const DocumentNewFormProjectGeneral = ({ document, errors, projects = [], handle
                     error={errors.docLinkedAtAny}
                 />
                 <InputText label="Type" name={'documentTypeName'} value={documentTypeName} readOnly={true} />
+            </div>
+
+            <div className="row">
+                <InputSelect
+                    label="Deelnemer project"
+                    name={'participantId'}
+                    value={participantId}
+                    options={participants}
+                    onChangeAction={handleInputChange}
+                    required={'required'}
+                    error={errors.docLinkedAtAny}
+                />
             </div>
 
             <div className="row">
@@ -63,4 +82,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(DocumentNewFormProjectGeneral);
+export default connect(mapStateToProps, null)(DocumentNewFormParticipantGeneral);

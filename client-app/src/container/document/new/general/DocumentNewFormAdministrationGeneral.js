@@ -5,8 +5,14 @@ import InputSelect from '../../../../components/form/InputSelect';
 import InputText from '../../../../components/form/InputText';
 import InputToggle from '../../../../components/form/InputToggle';
 
-const DocumentNewFormProjectGeneral = ({ document, errors, projects = [], handleInputChange, documentTypes }) => {
-    const { documentType, description, projectId, showOnPortal } = document;
+const DocumentNewFormAdministrationGeneral = ({
+    document,
+    errors = [],
+    handleInputChange,
+    documentTypes,
+    administrations,
+}) => {
+    const { documentType, description, administrationId, showOnPortal } = document;
     const documentTypeName = documentTypes.find(item => {
         return item.id == documentType;
     }).name;
@@ -15,10 +21,10 @@ const DocumentNewFormProjectGeneral = ({ document, errors, projects = [], handle
         <div className={'margin-30-bottom'}>
             <div className="row">
                 <InputSelect
-                    label="Project"
-                    name={'projectId'}
-                    value={projectId}
-                    options={projects}
+                    label="Administratie"
+                    name={'administrationId'}
+                    value={administrationId}
+                    options={administrations}
                     onChangeAction={handleInputChange}
                     required={'required'}
                     error={errors.docLinkedAtAny}
@@ -60,7 +66,8 @@ const DocumentNewFormProjectGeneral = ({ document, errors, projects = [], handle
 const mapStateToProps = state => {
     return {
         documentTypes: state.systemData.documentTypes,
+        administrations: state.meDetails.administrations,
     };
 };
 
-export default connect(mapStateToProps, null)(DocumentNewFormProjectGeneral);
+export default connect(mapStateToProps, null)(DocumentNewFormAdministrationGeneral);

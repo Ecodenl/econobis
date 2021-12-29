@@ -14,7 +14,6 @@ class ProjectDetailsHarmonica extends Component {
         this.state = {
             toggleShowList: {
                 tasks: false,
-                documents: false,
                 documentsNotOnPortal: false,
                 documentsOnPortal: false,
                 emailsInbox: false,

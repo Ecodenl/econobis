@@ -3,16 +3,10 @@ import { connect } from 'react-redux';
 
 import ViewText from '../../../../components/form/ViewText';
 
-const DocumentDetailsFormView = props => {
+const DocumentDetailsFormProjectView = props => {
     const {
         id,
-        administration,
         project,
-        participant,
-        contact,
-        contactGroup,
-        intake,
-        opportunity,
         documentType,
         description,
         freeText1,
@@ -20,12 +14,6 @@ const DocumentDetailsFormView = props => {
         documentGroup,
         filename,
         template,
-        task,
-        quotationRequest,
-        housingFile,
-        campaign,
-        measure,
-        order,
         showOnPortal,
     } = props.documentDetails;
 
@@ -33,50 +21,8 @@ const DocumentDetailsFormView = props => {
         <div>
             <div className="row" onClick={props.switchToEdit}>
                 <div className="row">
-                    <ViewText label={'Contact'} value={contact && contact.fullName} />
-                    <ViewText label={'Type'} value={documentType && documentType.name} />
-                </div>
-            </div>
-            <div className="row" onClick={props.switchToEdit}>
-                <div className="row">
-                    <ViewText label={'Groep'} value={contactGroup && contactGroup.name} />
-                    <ViewText label={'Intake'} value={intake && intake.fullAddress} />
-                </div>
-            </div>
-            <div className="row" onClick={props.switchToEdit}>
-                <div className="row">
-                    <ViewText
-                        label={'Kans'}
-                        value={opportunity && opportunity.measureCategory.name + ' ' + opportunity.status.name}
-                    />
-                    <ViewText label={'Taak'} value={task && task.name} />
-                </div>
-            </div>
-            <div className="row" onClick={props.switchToEdit}>
-                <div className="row">
-                    <ViewText label={'Offerteverzoek'} value={quotationRequest && quotationRequest.name} />
-                    <ViewText label={'Woningdossier'} value={housingFile && housingFiles.name} />
-                </div>
-            </div>
-
-            <div className="row" onClick={props.switchToEdit}>
-                <div className="row">
                     <ViewText label={'Project'} value={project && project.name} />
-                    <ViewText label={'Deelnemer project'} value={participant && participant.name} />
-                </div>
-            </div>
-
-            <div className="row" onClick={props.switchToEdit}>
-                <div className="row">
-                    <ViewText label={'Order'} value={order && order.name} />
-                    <ViewText label={'Administratie'} value={administration && administration.name} />
-                </div>
-            </div>
-
-            <div className="row" onClick={props.switchToEdit}>
-                <div className="row">
-                    <ViewText label={'Campagne'} value={campaign && campaign.name} />
-                    <ViewText label={'Maatregel'} value={measure && measure.name} />
+                    <ViewText label={'Type'} value={documentType && documentType.name} />
                 </div>
             </div>
 
@@ -130,4 +76,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(DocumentDetailsFormView);
+export default connect(mapStateToProps)(DocumentDetailsFormProjectView);

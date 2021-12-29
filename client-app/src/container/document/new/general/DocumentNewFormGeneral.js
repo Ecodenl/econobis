@@ -5,7 +5,7 @@ import InputSelect from '../../../../components/form/InputSelect';
 import InputText from '../../../../components/form/InputText';
 import InputToggle from '../../../../components/form/InputToggle';
 
-const DocumentNewFormGeneral = ({
+const DocumentNewFormProjectGeneral = ({
     document,
     errors,
     contacts = [],
@@ -18,6 +18,8 @@ const DocumentNewFormGeneral = ({
     projects = [],
     participants = [],
     orders = [],
+    measures = [],
+    campaigns = [],
     handleInputChange,
     documentTypes,
     administrations,
@@ -36,6 +38,8 @@ const DocumentNewFormGeneral = ({
         projectId,
         participantId,
         orderId,
+        measureId,
+        campaignId,
         showOnPortal,
     } = document;
     const documentTypeName = documentTypes.find(item => {
@@ -173,6 +177,23 @@ const DocumentNewFormGeneral = ({
             </div>
 
             <div className="row">
+                <InputSelect
+                    label="Maatregel"
+                    name={'measureId'}
+                    value={measureId}
+                    options={measures}
+                    onChangeAction={handleInputChange}
+                />
+                <InputSelect
+                    label="Campagne"
+                    name={'campaignId'}
+                    value={campaignId}
+                    options={campaigns}
+                    onChangeAction={handleInputChange}
+                />
+            </div>
+
+            <div className="row">
                 <InputToggle
                     label="Tonen op portal"
                     name={'showOnPortal'}
@@ -210,4 +231,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(DocumentNewFormGeneral);
+export default connect(mapStateToProps, null)(DocumentNewFormProjectGeneral);

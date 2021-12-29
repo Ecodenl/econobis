@@ -6,6 +6,8 @@ import PanelBody from '../../../../components/panel/PanelBody';
 
 import DocumentDetailsFormEdit from './DocumentFormEdit';
 import DocumentDetailsFormView from './DocumentFormView';
+import DocumentDetailsFormProjectEdit from './DocumentFormProjectEdit';
+import DocumentDetailsFormProjectView from './DocumentFormProjectView';
 
 class DocumentDetailsFormGeneral extends Component {
     constructor(props) {
@@ -53,7 +55,13 @@ class DocumentDetailsFormGeneral extends Component {
             >
                 <PanelBody>
                     {this.state.showEdit && this.props.permissions.createDocument ? (
-                        <DocumentDetailsFormEdit switchToView={this.switchToView} />
+                        this.props.documentCreatedFrom.id === 'project' ? (
+                            <DocumentDetailsFormProjectEdit switchToView={this.switchToView} />
+                        ) : (
+                            <DocumentDetailsFormEdit switchToView={this.switchToView} />
+                        )
+                    ) : this.props.documentCreatedFrom.id === 'project' ? (
+                        <DocumentDetailsFormProjectView switchToEdit={this.switchToEdit} />
                     ) : (
                         <DocumentDetailsFormView switchToEdit={this.switchToEdit} />
                     )}

@@ -12,7 +12,6 @@ import ContactGroupAPI from '../../../../api/contact-group/ContactGroupAPI';
 import IntakesAPI from '../../../../api/intake/IntakesAPI';
 import OpportunitiesAPI from '../../../../api/opportunity/OpportunitiesAPI';
 import ContactsAPI from '../../../../api/contact/ContactsAPI';
-import ViewText from '../../../../components/form/ViewText';
 import TasksAPI from '../../../../api/task/TasksAPI';
 import HousingFileAPI from '../../../../api/housing-file/HousingFilesAPI';
 import MeasureAPI from '../../../../api/measure/MeasureAPI';
@@ -23,7 +22,7 @@ import ProjectsAPI from '../../../../api/project/ProjectsAPI';
 import OrdersAPI from '../../../../api/order/OrdersAPI';
 import InputToggle from '../../../../components/form/InputToggle';
 
-class DocumentFormEdit extends Component {
+class DocumentDetailsFormEdit extends Component {
     constructor(props) {
         super(props);
 
@@ -44,7 +43,10 @@ class DocumentFormEdit extends Component {
             taskId,
             documentType,
             description,
+            freeText1,
+            freeText2,
             documentGroup,
+            template,
             filename,
             showOnPortal,
         } = props.documentDetails;
@@ -80,7 +82,10 @@ class DocumentFormEdit extends Component {
                 orderId: orderId || '',
                 documentType: documentType && documentType.id,
                 description: description,
+                freeText1: freeText1,
+                freeText2: freeText2,
                 documentGroup: documentGroup && documentGroup.id,
+                template: template && template.id,
                 showOnPortal: showOnPortal,
             },
             errors: {
@@ -220,6 +225,8 @@ class DocumentFormEdit extends Component {
             taskId,
             documentType,
             description,
+            freeText1,
+            freeText2,
             participantId,
             projectId,
             showOnPortal,
@@ -363,31 +370,24 @@ class DocumentFormEdit extends Component {
                         />
                     </div>
 
-                    {documentType === 'upload' && (
-                        <div className="row">
-                            <InputSelect
-                                label="Maatregel"
-                                name={'measureId'}
-                                value={measureId}
-                                options={measures}
-                                onChangeAction={this.handleInputChange}
-                            />
-                            <InputSelect
-                                label="Campagne"
-                                name={'campaignId'}
-                                value={campaignId}
-                                options={campaigns}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
-                    )}
                     <div className="row">
-                        <ViewText
-                            label={'Template'}
-                            value={
-                                this.props.documentDetails.template ? this.props.documentDetails.template.name : 'Geen'
-                            }
+                        <InputSelect
+                            label="Maatregel"
+                            name={'measureId'}
+                            value={measureId}
+                            options={measures}
+                            onChangeAction={this.handleInputChange}
                         />
+                        <InputSelect
+                            label="Campagne"
+                            name={'campaignId'}
+                            value={campaignId}
+                            options={campaigns}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+
+                    <div className="row">
                         <InputToggle
                             label="Tonen op portal"
                             name={'showOnPortal'}
@@ -414,23 +414,83 @@ class DocumentFormEdit extends Component {
                         </div>
                     </div>
 
-                    <div className="row margin-30-top">
-                        <InputText
-                            label="Documentgroep"
-                            name={'documentGroup'}
-                            value={
-                                this.props.documentDetails.documentGroup &&
-                                this.props.documentDetails.documentGroup.name
-                            }
-                            readOnly={true}
-                        />
-                        <InputText
-                            label="Bestandsnaam"
-                            name={'filename'}
-                            value={this.props.documentDetails.filename}
-                            readOnly={true}
-                        />
-                    </div>
+                    {documentType === 'upload' ? (
+                        <div className="row margin-30-top">
+                            <InputText
+                                label="Documentgroep"
+                                name={'documentGroup'}
+                                value={
+                                    this.props.documentDetails.documentGroup &&
+                                    this.props.documentDetails.documentGroup.name
+                                }
+                                readOnly={true}
+                            />
+                            <InputText
+                                label="Bestandsnaam"
+                                name={'filename'}
+                                value={this.props.documentDetails.filename}
+                                readOnly={true}
+                            />
+                        </div>
+                    ) : (
+                        <>
+                            <div className="row margin-30-top">
+                                <InputText
+                                    label="Documentgroep"
+                                    name={'documentGroup'}
+                                    value={
+                                        this.props.documentDetails.documentGroup &&
+                                        this.props.documentDetails.documentGroup.name
+                                    }
+                                    readOnly={true}
+                                />
+                                <InputText
+                                    label="Template"
+                                    name={'template'}
+                                    value={
+                                        this.props.documentDetails.template && this.props.documentDetails.template.name
+                                    }
+                                    readOnly={true}
+                                />
+                            </div>
+                            <div className="row">
+                                <div className="form-group col-sm-12">
+                                    <div className="row">
+                                        <div className="col-sm-3">
+                                            <label className="col-sm-12">Tekst veld 1</label>
+                                        </div>
+                                        <div className="col-sm-9">
+                                            <input
+                                                type="text"
+                                                className="form-control input-sm"
+                                                name="freeText1"
+                                                value={freeText1}
+                                                onChange={this.handleInputChange}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="form-group col-sm-12">
+                                    <div className="row">
+                                        <div className="col-sm-3">
+                                            <label className="col-sm-12">Tekst veld 2</label>
+                                        </div>
+                                        <div className="col-sm-9">
+                                            <input
+                                                type="text"
+                                                className="form-control input-sm"
+                                                name="freeText2"
+                                                value={freeText2}
+                                                onChange={this.handleInputChange}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 <PanelFooter>
@@ -466,4 +526,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentFormEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(DocumentDetailsFormEdit);

@@ -1,28 +1,22 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
-import DocumentNewFormGeneral from './general/DocumentNewFormGeneral';
-import PanelFooter from '../../../components/panel/PanelFooter';
-import Panel from '../../../components/panel/Panel';
-import PanelBody from '../../../components/panel/PanelBody';
-import ButtonText from '../../../components/button/ButtonText';
-import DocumentNewFormCreateDocument from './create-document/DocumentNewFormCreateDocument';
-import DocumentNewFormUpload from './upload/DocumentNewFormUpload';
+import PanelFooter from '../../../../components/panel/PanelFooter';
+import Panel from '../../../../components/panel/Panel';
+import PanelBody from '../../../../components/panel/PanelBody';
+import ButtonText from '../../../../components/button/ButtonText';
+import DocumentNewFormCreateDocument from '../create-document/DocumentNewFormCreateDocument';
+import DocumentNewFormUpload from '../upload/DocumentNewFormUpload';
+import InputSelect from '../../../../components/form/InputSelect';
+import InputText from '../../../../components/form/InputText';
 
 const DocumentNewForm = ({
+    documentTypes,
     document,
     projects,
-    participants,
-    orders,
-    contacts,
-    contactGroups,
     templates,
-    intakes,
-    opportunities,
     campaigns,
-    housingFiles,
-    quotationRequests,
     measures,
-    tasks,
     errors,
     handleSubmit,
     handleInputChange,
@@ -31,28 +25,29 @@ const DocumentNewForm = ({
     onDropRejected,
 }) => {
     const submitText = document.documentType === 'internal' ? 'Maak document' : 'Upload document';
+    const { documentType, description, projectId, showOnPortal } = document;
+    const documentTypeName = documentTypes.find(item => {
+        return item.id == documentType;
+    }).name;
+    // const documentTypeName = '';
 
     return (
         <form className="form-horizontal" onSubmit={handleSubmit}>
             <Panel>
                 <PanelBody>
-                    <DocumentNewFormGeneral
-                        tasks={tasks}
-                        quotationRequests={quotationRequests}
-                        housingFiles={housingFiles}
-                        document={document}
-                        contacts={contacts}
-                        contactGroups={contactGroups}
-                        intakes={intakes}
-                        opportunities={opportunities}
-                        projects={projects}
-                        participants={participants}
-                        orders={orders}
-                        measures={measures}
-                        campaigns={campaigns}
-                        errors={errors}
-                        handleInputChange={handleInputChange}
-                    />
+                    <div className="row">
+                        <InputSelect
+                            label="Project"
+                            name={'projectId'}
+                            value={projectId}
+                            options={projects}
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.docLinkedAtAny}
+                        />
+                        <InputText label="Type" name={'documentTypeName'} value={documentTypeName} readOnly={true} />
+                    </div>
+
                     {document.documentType === 'internal' ? (
                         <DocumentNewFormCreateDocument
                             document={document}
@@ -63,6 +58,8 @@ const DocumentNewForm = ({
                         />
                     ) : (
                         <DocumentNewFormUpload
+                            measures={measures}
+                            campaigns={campaigns}
                             document={document}
                             errors={errors}
                             handleInputChange={handleInputChange}
@@ -87,4 +84,10 @@ const DocumentNewForm = ({
     );
 };
 
-export default DocumentNewForm;
+const mapStateToProps = state => {
+    return {
+        documentTypes: state.systemData.documentTypes,
+    };
+};
+
+export default connect(mapStateToProps, null)(DocumentNewForm);

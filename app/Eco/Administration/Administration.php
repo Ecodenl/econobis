@@ -143,6 +143,15 @@ class Administration extends Model
         return $this->belongsTo(PortalSettingsLayout::class);
     }
 
+    public function documentsNotOnPortal(){
+        return $this->hasMany(Document::class)->where('show_on_portal', false)->orderBy('documents.id', 'desc');
+    }
+
+    public function documentsOnPortal(){
+        return $this->hasMany(Document::class)->where('show_on_portal', true)->orderBy('documents.id', 'desc');
+    }
+
+
     //appended fields
     public function getPortalSettingsLayoutAssignedAttribute()
     {

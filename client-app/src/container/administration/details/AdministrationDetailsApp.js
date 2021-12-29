@@ -6,6 +6,7 @@ import AdministrationDetailsToolbar from './AdministrationDetailsToolbar';
 import AdministrationDetailsForm from './AdministrationDetailsForm';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+import AdministrationDetailsHarmonica from './AdministrationDetailsHarmonica';
 
 class AdministrationDetailsApp extends Component {
     constructor(props) {
@@ -32,7 +33,11 @@ class AdministrationDetailsApp extends Component {
                         <AdministrationDetailsForm />
                     </div>
                 </div>
-                <div className="col-md-3" />
+                <Panel className="col-md-3 harmonica">
+                    <PanelBody>
+                        <AdministrationDetailsHarmonica administration={this.props.administrationDetails} />
+                    </PanelBody>
+                </Panel>
             </div>
         );
     }

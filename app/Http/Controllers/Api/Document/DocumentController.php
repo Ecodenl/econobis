@@ -84,8 +84,9 @@ class DocumentController extends Controller
             ->integer('participantId')->validate('exists:participation_project,id')->onEmpty(null)->alias('participation_project_id')->next()
             ->integer('orderId')->validate('exists:orders,id')->onEmpty(null)->alias('order_id')->next()
             ->integer('administrationId')->validate('exists:administrations,id')->onEmpty(null)->alias('administration_id')->next()
-            ->boolean('showOnPortal')->onEmpty(false)->alias('show_on_portal')->next()
             ->get();
+
+        $data['show_on_portal'] = (bool) $request->input('showOnPortal') && $request->input('showOnPortal') !== 'false';
 
         $document = new Document();
         $document->fill($data);
@@ -165,7 +166,7 @@ class DocumentController extends Controller
         return FullDocument::make($document->fresh());
     }
 
-    public function update(RequestInput $requestInput, Document $document) {
+    public function update(RequestInput $requestInput, Request $request, Document $document) {
 
         $this->authorize('create', Document::class);
 
@@ -191,8 +192,9 @@ class DocumentController extends Controller
             ->integer('participantId')->validate('exists:participation_project,id')->onEmpty(null)->alias('participation_project_id')->next()
             ->integer('orderId')->validate('exists:orders,id')->onEmpty(null)->alias('order_id')->next()
             ->integer('administrationId')->validate('exists:administrations,id')->onEmpty(null)->alias('administration_id')->next()
-            ->boolean('showOnPortal')->onEmpty(false)->alias('show_on_portal')->next()
             ->get();
+
+        $data['show_on_portal'] = (bool) $request->input('showOnPortal') && $request->input('showOnPortal') !== 'false';
 
         $document->fill($data);
         $document->save();

@@ -7,12 +7,12 @@ import DocumentsList from './DocumentsList';
 
 const DocumentHarmonica = ({
     title,
-    showOnPortal,
     toggleShowList,
     showDocumentsList,
     newDocument,
     documentCount,
     permissions,
+    relatedDocuments,
 }) => {
     return (
         <Panel className={'harmonica-button'}>
@@ -45,7 +45,7 @@ const DocumentHarmonica = ({
                         </div>
                     )}
                 </div>
-                <div className="col-sm-12">{showDocumentsList && <DocumentsList showOnPortal={showOnPortal} />}</div>
+                {showDocumentsList && <DocumentsList relatedDocuments={relatedDocuments} />}
             </PanelBody>
         </Panel>
     );

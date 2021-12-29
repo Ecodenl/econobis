@@ -55,7 +55,12 @@ class DocumentDetailsToolbar extends Component {
                         <h4 className="text-center">{'Document: ' + documentFilename}</h4>
                     </div>
                 )}
-                <div className="col-md-4" />
+                <div className="col-md-4">
+                    <h4 className="text-right margin-10-right">
+                        Gemaakt vanuit:{' '}
+                        <strong>{this.props.documentCreatedFrom ? this.props.documentCreatedFrom.name : ''}</strong>
+                    </h4>
+                </div>
                 {this.state.showDelete && (
                     <DocumentDeleteItem
                         id={this.props.documentId}
@@ -71,6 +76,7 @@ class DocumentDetailsToolbar extends Component {
 const mapStateToProps = state => {
     return {
         documentFilename: state.documentDetails.filename,
+        documentCreatedFrom: state.documentDetails.documentCreatedFrom,
         documentId: state.documentDetails.id,
     };
 };

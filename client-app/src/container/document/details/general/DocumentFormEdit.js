@@ -21,6 +21,7 @@ import QuotationRequestsAPI from '../../../../api/quotation-request/QuotationReq
 import ParticipantsProjectAPI from '../../../../api/participant-project/ParticipantsProjectAPI';
 import ProjectsAPI from '../../../../api/project/ProjectsAPI';
 import OrdersAPI from '../../../../api/order/OrdersAPI';
+import InputToggle from '../../../../components/form/InputToggle';
 
 class DocumentFormEdit extends Component {
     constructor(props) {
@@ -28,6 +29,7 @@ class DocumentFormEdit extends Component {
 
         const {
             id,
+            administrationId,
             orderId,
             projectId,
             participantId,
@@ -44,6 +46,7 @@ class DocumentFormEdit extends Component {
             description,
             documentGroup,
             filename,
+            showOnPortal,
         } = props.documentDetails;
 
         this.state = {
@@ -59,8 +62,10 @@ class DocumentFormEdit extends Component {
             participants: [],
             projects: [],
             orders: [],
+            administrations: [],
             document: {
                 id: id,
+                administrationId: administrationId || '',
                 contactId: contactId || '',
                 contactGroupId: contactGroupId || '',
                 intakeId: intakeId || '',
@@ -76,6 +81,7 @@ class DocumentFormEdit extends Component {
                 documentType: documentType && documentType.id,
                 description: description,
                 documentGroup: documentGroup && documentGroup.id,
+                showOnPortal: showOnPortal,
             },
             errors: {
                 docLinkedAtAny: false,
@@ -160,6 +166,7 @@ class DocumentFormEdit extends Component {
         let hasErrors = false;
 
         if (
+            validator.isEmpty(document.administrationId + '') &&
             validator.isEmpty(document.contactId + '') &&
             validator.isEmpty(document.contactGroupId + '') &&
             validator.isEmpty(document.intakeId + '') &&
@@ -200,6 +207,7 @@ class DocumentFormEdit extends Component {
             participants,
         } = this.state;
         const {
+            administrationId,
             orderId,
             contactId,
             contactGroupId,
@@ -214,8 +222,10 @@ class DocumentFormEdit extends Component {
             description,
             participantId,
             projectId,
+            showOnPortal,
         } = document;
         const oneOfFieldRequired =
+            administrationId === '' &&
             contactId === '' &&
             orderId === '' &&
             contactGroupId === '' &&
@@ -342,6 +352,15 @@ class DocumentFormEdit extends Component {
                             required={oneOfFieldRequired && 'required'}
                             error={errors.docLinkedAtAny}
                         />
+                        <InputSelect
+                            label="Administratie"
+                            name={'administrationId'}
+                            value={administrationId}
+                            options={this.props.administrations}
+                            onChangeAction={this.handleInputChange}
+                            required={oneOfFieldRequired && 'required'}
+                            error={errors.docLinkedAtAny}
+                        />
                     </div>
 
                     {documentType === 'upload' && (
@@ -368,6 +387,12 @@ class DocumentFormEdit extends Component {
                             value={
                                 this.props.documentDetails.template ? this.props.documentDetails.template.name : 'Geen'
                             }
+                        />
+                        <InputToggle
+                            label="Tonen op portal"
+                            name={'showOnPortal'}
+                            value={showOnPortal}
+                            onChangeAction={this.handleInputChange}
                         />
                     </div>
                     <div className="row">
@@ -437,6 +462,7 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => {
     return {
         documentDetails: state.documentDetails,
+        administrations: state.meDetails.administrations,
     };
 };
 

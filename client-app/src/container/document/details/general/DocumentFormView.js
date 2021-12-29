@@ -10,6 +10,7 @@ const createMarkup = value => {
 const EmailTemplateFormView = props => {
     const {
         id,
+        administration,
         project,
         participant,
         contact,
@@ -27,6 +28,7 @@ const EmailTemplateFormView = props => {
         campaign,
         measure,
         order,
+        showOnPortal,
     } = props.documentDetails;
 
     return (
@@ -69,6 +71,7 @@ const EmailTemplateFormView = props => {
             <div className="row" onClick={props.switchToEdit}>
                 <div className="row">
                     <ViewText label={'Order'} value={order && order.name} />
+                    <ViewText label={'Administratie'} value={administration && administration.name} />
                 </div>
             </div>
 
@@ -82,7 +85,7 @@ const EmailTemplateFormView = props => {
             )}
             <div className="row" onClick={props.switchToEdit}>
                 <div className="row">
-                    <ViewText label={'Template'} value={template && template.name} />
+                    <ViewText label={'Tonen op portal'} value={showOnPortal ? 'Ja' : 'Nee'} />
                 </div>
             </div>
             <div className="row" onClick={props.switchToEdit}>
@@ -94,6 +97,11 @@ const EmailTemplateFormView = props => {
             <div className="row margin-30-top" onClick={props.switchToEdit}>
                 <div className="row">
                     <ViewText label={'Documentgroep'} value={documentGroup && documentGroup.name} />
+                    <ViewText label={'Template'} value={template && template.name} />
+                </div>
+            </div>
+            <div className="row" onClick={props.switchToEdit}>
+                <div className="row">
                     <ViewText label={'Bestandsnaam'} value={filename} />
                 </div>
             </div>

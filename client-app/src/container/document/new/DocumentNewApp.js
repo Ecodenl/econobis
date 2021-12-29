@@ -29,6 +29,42 @@ import QuotationRequestDetailsAPI from '../../../api/quotation-request/Quotation
 class DocumentNewApp extends Component {
     constructor(props) {
         super(props);
+
+        let documentCreatedFrom = '';
+        if (props.params.participantId) {
+            documentCreatedFrom = 'participant';
+        } else if (props.params.opportunityId) {
+            documentCreatedFrom = 'opportunity';
+        } else if (props.params.quotationRequestId) {
+            documentCreatedFrom = 'quotationreguest';
+        } else if (props.params.housingFileId) {
+            documentCreatedFrom = 'housingfile';
+        } else if (props.params.intakeId) {
+            documentCreatedFrom = 'intake';
+        } else if (props.params.measureId) {
+            documentCreatedFrom = 'measure';
+        } else if (props.params.administrationId) {
+            documentCreatedFrom = 'administration';
+        } else if (props.params.campaignId) {
+            documentCreatedFrom = 'campagne';
+        } else if (props.params.taskId) {
+            documentCreatedFrom = 'task';
+        } else if (props.params.projectId) {
+            documentCreatedFrom = 'project';
+        } else if (props.params.orderId) {
+            documentCreatedFrom = 'order';
+        } else if (props.params.contactGroupId) {
+            documentCreatedFrom = 'contactgroup';
+        } else if (props.params.contactId) {
+            documentCreatedFrom = 'contact';
+        } else {
+            documentCreatedFrom = 'document';
+        }
+
+        const documentCreatedFromName = this.props.documentCreatedFroms.find(item => {
+            return item.id == documentCreatedFrom;
+        }).name;
+
         this.state = {
             contacts: [],
             contactsGroups: [],
@@ -44,6 +80,7 @@ class DocumentNewApp extends Component {
             participants: [],
             orders: [],
             document: {
+                administrationId: this.props.params.administrationId || '',
                 contactId: this.props.params.contactId || '',
                 contactGroupId: this.props.params.contactGroupId || '',
                 intakeId: this.props.params.intakeId || '',
@@ -56,6 +93,8 @@ class DocumentNewApp extends Component {
                 projectId: this.props.params.projectId || '',
                 participantId: this.props.params.participantId || '',
                 orderId: this.props.params.orderId || '',
+                documentCreatedFrom: documentCreatedFrom,
+                documentCreatedFromName: documentCreatedFromName,
                 documentType: this.props.params.type,
                 description: '',
                 documentGroup: '',
@@ -65,6 +104,7 @@ class DocumentNewApp extends Component {
                 sentById: '',
                 attachment: '',
                 filename: 'temp',
+                showOnPortal: false,
             },
             errors: {
                 docLinkedAtAny: false,
@@ -236,10 +276,12 @@ class DocumentNewApp extends Component {
         event.preventDefault();
 
         const {
+            administrationId,
             contactId,
             contactGroupId,
             intakeId,
             opportunityId,
+            documentCreatedFrom,
             documentType,
             description,
             documentGroup,
@@ -257,6 +299,7 @@ class DocumentNewApp extends Component {
             participantId,
             orderId,
             attachment,
+            showOnPortal,
         } = this.state.document;
 
         // Validation
@@ -264,6 +307,7 @@ class DocumentNewApp extends Component {
         let hasErrors = false;
 
         if (
+            validator.isEmpty(administrationId + '') &&
             validator.isEmpty(contactId + '') &&
             validator.isEmpty(contactGroupId + '') &&
             validator.isEmpty(intakeId + '') &&
@@ -300,10 +344,12 @@ class DocumentNewApp extends Component {
         if (!hasErrors) {
             const data = new FormData();
 
+            data.append('administrationId', administrationId);
             data.append('contactId', contactId);
             data.append('contactGroupId', contactGroupId);
             data.append('intakeId', intakeId);
             data.append('opportunityId', opportunityId);
+            data.append('documentCreatedFrom', documentCreatedFrom);
             data.append('documentType', documentType);
             data.append('description', description);
             data.append('documentGroup', documentGroup);
@@ -321,6 +367,7 @@ class DocumentNewApp extends Component {
             data.append('participantId', participantId);
             data.append('orderId', orderId);
             data.append('attachment', attachment);
+            data.append('showOnPortal', showOnPortal);
 
             DocumentDetailsAPI.newDocument(data)
                 .then(payload => {
@@ -343,7 +390,10 @@ class DocumentNewApp extends Component {
                     <div className="col-md-12">
                         <Panel>
                             <PanelBody className="panel-small">
-                                <DocumentNewToolbar handleSubmit={this.handleSubmit} />
+                                <DocumentNewToolbar
+                                    handleSubmit={this.handleSubmit}
+                                    documentCreatedFromName={this.state.document.documentCreatedFromName}
+                                />
                             </PanelBody>
                         </Panel>
                     </div>
@@ -384,4 +434,10 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(DocumentNewApp);
+const mapStateToProps = state => {
+    return {
+        documentCreatedFroms: state.systemData.documentCreatedFroms,
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DocumentNewApp);

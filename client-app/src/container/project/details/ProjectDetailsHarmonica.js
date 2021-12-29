@@ -15,6 +15,8 @@ class ProjectDetailsHarmonica extends Component {
             toggleShowList: {
                 tasks: false,
                 documents: false,
+                documentsNotOnPortal: false,
+                documentsOnPortal: false,
                 emailsInbox: false,
                 emailsSent: false,
             },
@@ -56,10 +58,21 @@ class ProjectDetailsHarmonica extends Component {
                 />
 
                 <DocumentHarmonica
-                    toggleShowList={() => this.toggleShowList('documents')}
-                    showDocumentsList={this.state.toggleShowList.documents}
+                    title={'DOCUMENTEN ALLEEN IN ECONOBIS'}
+                    showOnPortal={false}
+                    toggleShowList={() => this.toggleShowList('documentsNotOnPortal')}
+                    showDocumentsList={this.state.toggleShowList.documentsNotOnPortal}
                     newDocument={this.newDocument}
-                    documentCount={this.props.project.documentCount}
+                    documentCount={this.props.project.documentCountNotOnPortal}
+                />
+
+                <DocumentHarmonica
+                    title={'DOCUMENTEN PORTAL'}
+                    showOnPortal={true}
+                    toggleShowList={() => this.toggleShowList('documentsOnPortal')}
+                    showDocumentsList={this.state.toggleShowList.documentsOnPortal}
+                    newDocument={this.newDocument}
+                    documentCount={this.props.project.documentCountOnPortal}
                 />
 
                 <EmailInboxHarmonica

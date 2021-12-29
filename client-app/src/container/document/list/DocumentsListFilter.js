@@ -9,6 +9,7 @@ import {
     setFilterDocumentDate,
     setFilterDocumentFilename,
     setFilterDocumentContact,
+    setFilterDocumentDocumentCreatedFrom,
     setFilterDocumentDocumentType,
     setFilterDocumentDocumentGroup,
 } from '../../../actions/document/DocumentFiltersActions';
@@ -33,6 +34,14 @@ const DocumentsListFilter = props => {
 
     const onContactChange = e => {
         props.setFilterDocumentContact(e.target.value);
+    };
+
+    const onDocumentCreatedFromChange = e => {
+        props.setFilterDocumentDocumentCreatedFrom(e.target.value);
+
+        setTimeout(() => {
+            props.onSubmitFilter();
+        }, 100);
     };
 
     const onDocumentTypeChange = e => {
@@ -87,6 +96,23 @@ const DocumentsListFilter = props => {
             <th>
                 <select
                     className="form-control input-sm"
+                    value={props.filters.documentCreatedFrom.data}
+                    onChange={onDocumentCreatedFromChange}
+                >
+                    <option />
+                    {props.documentCreatedFroms.map(documentCreatedFrom => {
+                        return (
+                            <option key={documentCreatedFrom.id} value={documentCreatedFrom.id}>
+                                {documentCreatedFrom.name}
+                            </option>
+                        );
+                    })}
+                </select>
+            </th>
+
+            <th>
+                <select
+                    className="form-control input-sm"
                     value={props.filters.documentType.data}
                     onChange={onDocumentTypeChange}
                 >
@@ -125,6 +151,7 @@ const DocumentsListFilter = props => {
 
 const mapStateToProps = state => ({
     filters: state.documents.filters,
+    documentCreatedFroms: state.systemData.documentCreatedFroms,
     documentTypes: state.systemData.documentTypes,
     documentGroups: state.systemData.documentGroups,
 });
@@ -136,6 +163,7 @@ const mapDispatchToProps = dispatch => {
             setFilterDocumentDate,
             setFilterDocumentFilename,
             setFilterDocumentContact,
+            setFilterDocumentDocumentCreatedFrom,
             setFilterDocumentDocumentType,
             setFilterDocumentDocumentGroup,
         },

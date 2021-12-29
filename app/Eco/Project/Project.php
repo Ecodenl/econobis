@@ -69,6 +69,14 @@ class Project extends Model
         return $this->hasMany(Document::class)->orderBy('documents.id', 'desc');
     }
 
+    public function documentsNotOnPortal(){
+        return $this->hasMany(Document::class)->where('show_on_portal', false)->orderBy('documents.id', 'desc');
+    }
+
+    public function documentsOnPortal(){
+        return $this->hasMany(Document::class)->where('show_on_portal', true)->orderBy('documents.id', 'desc');
+    }
+
     public function emails()
     {
         return $this->hasMany(Email::class)->orderBy('emails.id', 'desc');

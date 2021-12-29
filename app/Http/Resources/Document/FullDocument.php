@@ -9,6 +9,7 @@
 namespace App\Http\Resources\Document;
 
 
+use App\Http\Resources\Administration\AdministrationPeek;
 use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\ContactGroup\FullContactGroup;
@@ -35,6 +36,7 @@ class FullDocument extends JsonResource
             'number' => $this->number,
             'name' => $this->name,
             'description' => $this->description,
+            'documentCreatedFrom' => FullEnumWithIdAndName::make($this->getDocumentCreatedFrom()),
             'documentType' => FullEnumWithIdAndName::make($this->getDocumentType()),
             'documentGroup' => FullEnumWithIdAndName::make($this->getDocumentGroup()),
             'freeText1' => $this->free_text_1,
@@ -64,11 +66,14 @@ class FullDocument extends JsonResource
             'participant' => ParticipantProjectPeek::make($this->whenLoaded('participant')),
             'orderId' => $this->order_id,
             'order' => OrderPeek::make($this->whenLoaded('order')),
+            'administrationId' => $this->administration_id,
+            'administration' => AdministrationPeek::make($this->whenLoaded('administration')),
             'sentBy' => FullUser::make($this->whenLoaded('sentBy')),
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
             'template' => FullDocumentTemplate::make($this->whenLoaded('template')),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
+            'showOnPortal' => $this->show_on_portal,
         ];
     }
 }

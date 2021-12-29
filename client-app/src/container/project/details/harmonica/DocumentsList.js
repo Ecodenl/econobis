@@ -7,7 +7,8 @@ class DocumentsList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            relatedDocuments: '',
+            relatedDocumentsNotOnPortal: '',
+            relatedDocumentsOnPortal: '',
         };
     }
 
@@ -16,12 +17,15 @@ class DocumentsList extends Component {
     };
 
     render() {
-        const { relatedDocuments } = this.props;
+        // const { relatedDocuments } = this.props;
+        const relatedDocuments = this.props.showOnPortal
+            ? this.props.relatedDocumentsOnPortal
+            : this.props.relatedDocumentsNotOnPortal;
         return (
             <div>
-                {relatedDocuments == '' && <div>Geen documenten gevonden.</div>}
+                {relatedDocuments && relatedDocuments == '' && <div>Geen documenten gevonden.</div>}
 
-                {relatedDocuments != '' && (
+                {relatedDocuments && relatedDocuments != '' && (
                     <table className="table harmonica-table">
                         <tbody>
                             {relatedDocuments.map((item, i) => {
@@ -42,7 +46,8 @@ class DocumentsList extends Component {
 
 const mapStateToProps = state => {
     return {
-        relatedDocuments: state.projectDetails.relatedDocuments,
+        relatedDocumentsNotOnPortal: state.projectDetails.relatedDocumentsNotOnPortal,
+        relatedDocumentsOnPortal: state.projectDetails.relatedDocumentsOnPortal,
     };
 };
 

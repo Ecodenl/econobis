@@ -26,7 +26,13 @@ const DocumentsListHead = props => {
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort sortColumn={'contact'} title={'Contact'} width={'20%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'documentType'} title={'Type'} width={'20%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort
+                sortColumn={'documentCreatedFrom'}
+                title={'Aangemaakt vanuit'}
+                width={'10%'}
+                setSorts={setSorts}
+            />
+            <DataTableHeadTitleAndSort sortColumn={'documentType'} title={'Type'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'documentGroup'}
                 title={'Documentgroep'}

@@ -3,6 +3,7 @@
 namespace App\Eco\Administration;
 
 use App\Eco\Country\Country;
+use App\Eco\Document\Document;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\Invoice\Invoice;
@@ -71,6 +72,11 @@ class Administration extends Model
     public function sepas()
     {
         return $this->hasMany(Sepa::class)->orderBy('created_at', 'desc');
+    }
+
+    public function documents()
+    {
+        return $this->belongsToMany(Document::class);
     }
 
     public function projects()

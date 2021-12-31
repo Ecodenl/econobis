@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { sort } from 'react-icons-kit/fa/sort';
+import { arrows_vertical } from 'react-icons-kit/ikons/arrows_vertical';
 import Icon from 'react-icons-kit';
 
 const DND_ITEM_TYPE = 'row';
@@ -66,7 +66,7 @@ const OrderRow = ({ row, index, moveRow }) => {
     return (
         <tr ref={dropRef} style={{ opacity }}>
             <td ref={dragRef}>
-                <Icon icon={sort} />
+                <Icon icon={arrows_vertical} />
             </td>
             {row.cells.map(cell => {
                 return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;

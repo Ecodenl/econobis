@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { sort } from 'react-icons-kit/fa/sort';
+import { arrows_vertical } from 'react-icons-kit/ikons/arrows_vertical';
 import Icon from 'react-icons-kit';
 import AddPortalSettingsDashboardWidgetImageModal from '../../../container/portal-settings-dashboard/widgets/AddPortalSettingsDashboardWidgetImageModal';
 import PortalSettingsDashboardAPI from '../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
@@ -10,6 +10,8 @@ import InputTextArea from '../../form/InputTextarea';
 import InputToggle from '../../form/InputToggle';
 import { Image } from 'react-bootstrap';
 import Modal from '../../modal/Modal';
+import { FaInfoCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 
 const DND_ITEM_TYPE = 'row';
 
@@ -110,7 +112,20 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
             <tr ref={dropRef} style={{ opacity }}>
                 {edit && (
                     <td ref={dragRef}>
-                        <Icon icon={sort} />
+                        <Icon icon={arrows_vertical} />
+                        <FaInfoCircle
+                            color={'blue'}
+                            size={'15px'}
+                            data-tip={'Je kunt de volgorde van de widgets aanpassen door deze te slepen'}
+                            data-for={`tooltip-${dropRef}`}
+                        />
+                        <ReactTooltip
+                            id={`tooltip-${dropRef}`}
+                            effect="float"
+                            place="right"
+                            multiline={true}
+                            aria-haspopup="true"
+                        />
                     </td>
                 )}
                 {edit

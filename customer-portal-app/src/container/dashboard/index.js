@@ -7,6 +7,7 @@ import rebaseContact from '../../helpers/RebaseContact';
 import DashboardWidget from './widget';
 import { ContactDetailsDashboardWidget, SwitchContactDashboardWidget } from './widget/default';
 import DashboardSettingsAPI from '../../api/dashboard/DashboardSettingsAPI';
+import { isEmpty } from 'lodash';
 
 const Dashboard = function(props) {
     const [isLoading, setLoading] = useState(true);
@@ -78,10 +79,14 @@ const Dashboard = function(props) {
                 <div className="content-container w-container">
                     <Row>
                         <Col>
-                            <h1 className="content-heading mt-0 text-center">{dashboardSettings.welcomeTitle}</h1>
-                            <p className={'text-center'} style={{ whiteSpace: 'break-spaces' }}>
-                                {dashboardSettings.welcomeMessage}
-                            </p>
+                            {!isEmpty(dashboardSettings.welcomeTitle) ? (
+                                <h1 className="content-heading mt-0 text-center">{dashboardSettings.welcomeTitle}</h1>
+                            ) : null}
+                            {!isEmpty(dashboardSettings.welcomeMessage) ? (
+                                <p className={'text-center'} style={{ whiteSpace: 'break-spaces' }}>
+                                    {dashboardSettings.welcomeMessage}
+                                </p>
+                            ) : null}
                         </Col>
                     </Row>
                     <Row>

@@ -473,7 +473,7 @@ Route::namespace('Api')
         Route::get('setting-dashboard/multiple', 'PortalSettingsDashboard\PortalSettingsDashboardController@multiple');
 
         Route::post('setting', 'Setting\SettingController@store');
-        Route::put('setting-dashboard', 'PortalSettingsDashboard\PortalSettingsDashboardController@put');
+        Route::post('setting-dashboard', 'PortalSettingsDashboard\PortalSettingsDashboardController@put');
         Route::post('setting-dashboard/widget', 'PortalSettingsDashboard\PortalSettingsDashboardController@updateWidget');
 
         Route::get('financial-overview/jory', 'FinancialOverview\FinancialOverviewController@jory');
@@ -506,8 +506,7 @@ Route::namespace('Api')
         Route::get('portal-settings-dashboard/jory', 'PortalSettingsDashboard\PortalSettingsDashboardController@jory');
         Route::post('portal-settings-dashboard', 'PortalSettingsDashboard\PortalSettingsDashboardController@store');
         Route::post('portal-settings-dashboard/delete', 'PortalSettingsDashboard\PortalSettingsDashboardController@destroy');
-        Route::put('portal-settings-dashboard/{portalSettingsDashboard}', 'PortalSettingsDashboard\PortalSettingsDashboardController@update');
-        
+
         Route::get('portal-settings-layout/jory', 'PortalSettingsLayout\PortalSettingsLayoutController@jory');
         Route::post('portal-settings-layout', 'PortalSettingsLayout\PortalSettingsLayoutController@store');
         Route::post('portal-settings-layout/{portalSettingsLayout}', 'PortalSettingsLayout\PortalSettingsLayoutController@update');

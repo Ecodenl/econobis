@@ -215,6 +215,10 @@ color: red;
 font-size: 18px;
 }
 /* ----------------- BUTTON STYLING -----------------*/
+.w-button-group {
+margin-bottom: 10px;
+}
+
 .w-button-group-left {
 float: left !important;
 left: 15px;

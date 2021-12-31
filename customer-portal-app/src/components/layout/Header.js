@@ -223,12 +223,14 @@ function Header({ location, history }) {
                                 </div>
                             </Col>
                         </Row>
-                        <div className="header-dashboard-button">
-                            <Button className={'w-button'} onClick={() => history.push('/dashboard')}>
-                                <FaHome />
-                                &nbsp;Dashboard
-                            </Button>
-                        </div>
+                        {location.pathname !== '/' && location.pathname !== '/dashboard' ? (
+                            <div className="header-dashboard-button">
+                                <Button className={'w-button'} onClick={() => history.push('/dashboard')}>
+                                    <FaHome />
+                                    &nbsp;Dashboard
+                                </Button>
+                            </div>
+                        ) : null}
                     </Container>
                 </div>
                 {/* Sidebar menu */}
@@ -305,12 +307,14 @@ function Header({ location, history }) {
                     </div>
                 </Menu>
             </header>
-            <div className={'floating-action-button'}>
-                <Button className={'w-button'} onClick={() => history.push('/dashboard')}>
-                    <FaHome />
-                    &nbsp;Dashboard
-                </Button>
-            </div>
+            {location.pathname !== '/' && location.pathname !== '/dashboard' ? (
+                <div className={'floating-action-button'}>
+                    <Button className={'w-button'} onClick={() => history.push('/dashboard')}>
+                        <FaHome />
+                        &nbsp;Dashboard
+                    </Button>
+                </div>
+            ) : null}
         </>
     );
 }

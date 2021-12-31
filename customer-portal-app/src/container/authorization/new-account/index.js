@@ -10,6 +10,7 @@ import NewAccountFormOrganisation from './NewAccountFormOrganisation';
 import { Redirect } from 'react-router-dom';
 import { Button, ButtonToolbar } from 'react-bootstrap';
 import ButtonText from '../../../components/button/ButtonText';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
 const NewAccount = props => {
     const { executeRecaptcha } = useGoogleReCaptcha();
@@ -127,7 +128,7 @@ const NewAccount = props => {
                                             </Row>
                                         ) : null}
                                         <Row className="justify-content-center">
-                                            <ButtonToolbar toggle>
+                                            <ButtonGroup aria-label="redirect-to-login" className="w-button-group">
                                                 <Col>
                                                     <ButtonText
                                                         buttonText={'Heb je al een account ?'}
@@ -136,7 +137,7 @@ const NewAccount = props => {
                                                         size="sm"
                                                     />
                                                 </Col>
-                                            </ButtonToolbar>
+                                            </ButtonGroup>
                                         </Row>
                                     </>
                                 )}

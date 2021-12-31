@@ -52,15 +52,15 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(dashboardSettings.welcomeMessage)) {
-            errors.welcomeMessage = true;
-            hasErrors = true;
-        }
-
-        if (validator.isEmpty(dashboardSettings.welcomeTitle)) {
-            errors.welcomeTitle = true;
-            hasErrors = true;
-        }
+        // if (validator.isEmpty(dashboardSettings.welcomeMessage)) {
+        //     errors.welcomeMessage = true;
+        //     hasErrors = true;
+        // }
+        //
+        // if (validator.isEmpty(dashboardSettings.welcomeTitle)) {
+        //     errors.welcomeTitle = true;
+        //     hasErrors = true;
+        // }
 
         this.setState({ ...this.state, errors: errors });
 
@@ -135,7 +135,6 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
                                 name={'welcomeTitle'}
                                 value={welcomeTitle}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
                                 error={!!this.state.errors.welcomeTitle}
                             />
                         </div>
@@ -146,7 +145,6 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
                                 name={'welcomeMessage'}
                                 value={welcomeMessage}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
                                 error={!!this.state.errors.welcomeMessage}
                             />
                         </div>

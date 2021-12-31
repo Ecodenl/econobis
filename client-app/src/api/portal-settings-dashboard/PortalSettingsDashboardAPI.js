@@ -12,7 +12,7 @@ export default {
     updateDashboardSettings: dashboardSettings => {
         const requestUrl = `${URL_PORTAL_SETTINGS_DASHBOARD}`;
 
-        return axiosInstance.put(requestUrl, dashboardSettings);
+        return axiosInstance.post(requestUrl, dashboardSettings);
     },
 
     updateDashboardWidget: data => {

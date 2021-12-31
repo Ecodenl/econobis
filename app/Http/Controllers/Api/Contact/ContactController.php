@@ -84,6 +84,20 @@ class ContactController extends Controller
         }
     }
 
+    public function search(Request $request)
+    {
+        $contacts = Contact::select('id', 'full_name', 'number')->with('addresses')->orderBy('full_name');
+        foreach(explode(" ", $request->input('searchTerm')) as $searchTerm) {
+            $contacts->where(function ($contacts) use ($searchTerm) {
+                $contacts->where('contacts.full_name', 'like', '%' . $searchTerm . '%');
+            });
+        }
+        $contacts = $contacts->get();
+
+        return ContactWithAddressPeek::collection($contacts);
+    }
+
+
     public function intakes(Contact $contact)
     {
         $intakes = $contact->intakes;

@@ -83,6 +83,7 @@ class ParticipantNewApp extends Component {
                     ...this.state,
                     participation: {
                         ...this.state.participation,
+                        contactId: contact.id,
                         addressId: contact ? contact.primaryAddressId : 0,
                     },
                     addresses: contact ? contact.addresses : [],
@@ -168,12 +169,14 @@ class ParticipantNewApp extends Component {
     };
 
     handleInputChangeContactId = selectedOption => {
-        const contact = this.state.contacts.find(contacts => contacts.id == selectedOption);
+        const selectedContactId = selectedOption ? selectedOption.id : 0;
+        const contact = this.state.contacts.find(contacts => contacts.id == selectedContactId);
+
         this.setState({
             ...this.state,
             participation: {
                 ...this.state.participation,
-                contactId: selectedOption,
+                contactId: selectedContactId,
                 addressId: contact ? contact.primaryAddressId : 0,
             },
             addresses: contact ? contact.addresses : [],

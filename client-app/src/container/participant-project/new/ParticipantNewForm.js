@@ -1,29 +1,37 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import InputSelect from '../../../components/form/InputSelect';
 import ButtonText from '../../../components/button/ButtonText';
 import PanelFooter from '../../../components/panel/PanelFooter';
 import InputText from '../../../components/form/InputText';
 import InputDate from '../../../components/form/InputDate';
 import InputReactSelectLong from '../../../components/form/InputReactSelectLong';
+import AsyncSelectSet from '../../../components/form/AsyncSelectSet';
+import ContactsAPI from '../../../api/contact/ContactsAPI';
 
-const ParticipantNewForm = ({
-    participation,
-    errors,
-    handleInputChange,
-    handleInputChangeDate,
-    handleInputChangeContactId,
-    handleInputChangeAddressId,
-    handleInputChangeProjectId,
-    handleSubmit,
-    contacts,
-    addresses,
-    projects,
-    participantMutationStatuses,
-    projectTypeCodeRef,
-    disableProjectSelection,
-    disableClientSelection,
-    isLoading,
-}) => {
+function ParticipantNewForm(props) {
+    const [searchTermContact, setSearchTermContact] = useState('');
+    const [isLoadingContact, setLoadingContact] = useState(false);
+    const [valueSelectedContact, setValueSelectedContact] = useState([]);
+
+    let {
+        participation,
+        errors,
+        handleInputChange,
+        handleInputChangeDate,
+        handleInputChangeContactId,
+        handleInputChangeAddressId,
+        handleInputChangeProjectId,
+        handleSubmit,
+        contacts,
+        addresses,
+        projects,
+        participantMutationStatuses,
+        projectTypeCodeRef,
+        disableProjectSelection,
+        disableClientSelection,
+        isLoading,
+    } = props;
+
     const {
         contactId,
         addressId,
@@ -51,6 +59,36 @@ const ParticipantNewForm = ({
     );
     const statusCodeRef = status ? status.codeRef : null;
 
+    useEffect(() => {
+        setValueSelectedContact(getSelectedContact());
+    }, [contactId]);
+
+    function getSelectedContact() {
+        let selectedContact = [];
+        let contact = contacts.find(contact => contact.id === Number(contactId));
+        selectedContact.push(contact);
+        return selectedContact;
+    }
+
+    const getContactOptions = async () => {
+        if (searchTermContact.length <= 1) return;
+
+        setLoadingContact(true);
+
+        try {
+            const results = await ContactsAPI.fetchContactSearch(searchTermContact);
+            setLoadingContact(false);
+            return results.data.data;
+        } catch (error) {
+            setLoadingContact(false);
+            // console.log(error);
+        }
+    };
+
+    function handleInputSearchChange(value) {
+        setSearchTermContact(value);
+    }
+
     return (
         <form className="form-horizontal col-md-12" onSubmit={handleSubmit}>
             <div className="row">
@@ -68,17 +106,20 @@ const ParticipantNewForm = ({
             </div>
 
             <div className="row">
-                <InputReactSelectLong
+                <AsyncSelectSet
                     label={'Contact'}
                     name={'contactId'}
                     id={'contactId'}
-                    options={contacts}
+                    loadOptions={getContactOptions}
                     optionName={'fullName'}
-                    value={Number(contactId)}
+                    value={valueSelectedContact}
                     onChangeAction={handleInputChangeContactId}
                     required={'required'}
                     error={errors.contactId}
                     disabled={disableClientSelection}
+                    isLoading={isLoadingContact}
+                    handleInputChange={handleInputSearchChange}
+                    multi={false}
                 />
             </div>
 
@@ -300,6 +341,6 @@ const ParticipantNewForm = ({
             </PanelFooter>
         </form>
     );
-};
+}
 
 export default ParticipantNewForm;

@@ -4,6 +4,7 @@ use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Spatie\Valuestore\Valuestore;
 
 class AddPortalImagesToPortalSettingsLayoutsTable extends Migration
 {
@@ -82,11 +83,44 @@ class AddPortalImagesToPortalSettingsLayoutsTable extends Migration
         }
 
         try {
-            Storage::disk('local')->copy(DIRECTORY_SEPARATOR . 'portal-settings-dashboard-example.json', DIRECTORY_SEPARATOR . 'portal-settings-dashboard.json');
-        } catch (\Exception $exception) {
-            Log::error('Copy portal-settings-dashboard-example.json mislukt: ' . $exception->getMessage());
-        }
+            $portalSettingsDashboard = Valuestore::make(storage_path('app' . DIRECTORY_SEPARATOR . 'portal-settings-dashboard.json'));
+            $portalSettingsDashboard->put('welcomeTitle', 'Welkom op jouw energie gemeenschap');
+            $portalSettingsDashboard->put('welcomeMessage', '');
+            $widgetOverons = new stdClass();
+            $widgetOverons->id = 'over-ons';
+            $widgetOverons->order = 1;
+            $widgetOverons->image = '/images/over-ons.png';
+            $widgetOverons->title = 'Over ons';
+            $widgetOverons->text = 'Vind hier onze contact gegevens';
+            $widgetOverons->buttonText = 'Over Ons';
+            $widgetOverons->buttonLink = 'over-ons';
+            $widgetOverons->active = true;
+            $widgetProject = new stdClass();
+            $widgetProject->id = 'project-schrijf-je-in';
+            $widgetProject->order = 2;
+            $widgetProject->image = '/images/project-schrijf-je-in.png';
+            $widgetProject->title = 'Projecten';
+            $widgetProject->text = 'Doe mee met onze projecten en participeer';
+            $widgetProject->buttonText = 'Projecten';
+            $widgetProject->buttonLink = 'inschrijven-projecten';
+            $widgetProject->active = true;
+            $widgetDeelnames = new stdClass();
+            $widgetDeelnames->id = 'huidige-deelnames';
+            $widgetDeelnames->order = 3;
+            $widgetDeelnames->image = '/images/huidige-deelnames.png';
+            $widgetDeelnames->title = 'Huidige deelnames';
+            $widgetDeelnames->text = 'Vind hier de projecten waar aan je deelneemt';
+            $widgetDeelnames->buttonText = 'Huidige deelnames';
+            $widgetDeelnames->buttonLink = 'inschrijvingen-projecten';
+            $widgetDeelnames->active = true;
 
+            $portalSettingsDashboard->push('widgets', $widgetOverons);
+            $portalSettingsDashboard->push('widgets', $widgetProject);
+            $portalSettingsDashboard->push('widgets', $widgetDeelnames);
+
+        } catch (\Exception $exception) {
+            Log::error('Set portal-settings-dashboard.json mislukt: ' . $exception->getMessage());
+        }
     }
 
     /**
@@ -113,3 +147,4 @@ class AddPortalImagesToPortalSettingsLayoutsTable extends Migration
         }
     }
 }
+

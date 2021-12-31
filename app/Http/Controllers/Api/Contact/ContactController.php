@@ -84,20 +84,6 @@ class ContactController extends Controller
         }
     }
 
-    public function search(Request $request)
-    {
-        $contacts = Contact::select('id', 'full_name', 'number')->with('addresses')->orderBy('full_name');
-        foreach(explode(" ", $request->input('searchTerm')) as $searchTerm) {
-            $contacts->where(function ($contacts) use ($searchTerm) {
-                $contacts->where('contacts.full_name', 'like', '%' . $searchTerm . '%');
-            });
-        }
-        $contacts = $contacts->get();
-
-        return ContactWithAddressPeek::collection($contacts);
-    }
-
-
     public function intakes(Contact $contact)
     {
         $intakes = $contact->intakes;
@@ -136,6 +122,27 @@ class ContactController extends Controller
         $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->get();
 
         return ContactPeek::collection($contacts);
+    }
+
+    public function search(Request $request)
+    {
+        $contacts = Contact::select('id', 'full_name', 'number')->with('addresses')->orderBy('full_name');
+        foreach(explode(" ", $request->input('searchTerm')) as $searchTerm) {
+            $contacts->where(function ($contacts) use ($searchTerm) {
+                $contacts->where('contacts.full_name', 'like', '%' . $searchTerm . '%');
+            });
+        }
+        $contacts = $contacts->get();
+
+        return ContactWithAddressPeek::collection($contacts);
+    }
+
+    public function getContactWithAddresses(Contact $contact, Request $request)
+    {
+        $contact->load(['addresses']);
+        $contact->select('id', 'full_name', 'number')->orderBy('full_name')->first();
+
+        return new ContactWithAddressPeek($contact);
     }
 
     public function peekWithAddress()

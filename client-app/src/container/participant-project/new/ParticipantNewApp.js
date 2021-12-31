@@ -6,7 +6,6 @@ import ParticipantNewToolbar from './ParticipantNewToolbar';
 import ParticipantProjectDetailsAPI from '../../../api/participant-project/ParticipantProjectDetailsAPI';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import ContactsAPI from '../../../api/contact/ContactsAPI';
 import ProjectsAPI from '../../../api/project/ProjectsAPI';
 import { connect } from 'react-redux';
 import MultipleMessagesModal from '../../../components/modal/MultipleMessagesModal';
@@ -15,6 +14,7 @@ import ParticipantSubmitHelper from './ParticipantSubmitHelper';
 import ParticipantValidateForm from './ParticipantValidateForm';
 import moment from 'moment';
 import validator from 'validator';
+import ContactDetailsAPI from '../../../api/contact/ContactDetailsAPI';
 
 class ParticipantNewApp extends Component {
     constructor(props) {
@@ -26,7 +26,7 @@ class ParticipantNewApp extends Component {
             modalText: [],
             modalRedirectTask: '',
             modalRedirectParticipation: '',
-            contacts: [],
+            selectedContact: {},
             addresses: [],
             projects: [],
             participationWorth: 0,
@@ -72,15 +72,13 @@ class ParticipantNewApp extends Component {
     }
 
     componentDidMount() {
-        ContactsAPI.getContactsAddressesPeek().then(payload => {
-            this.setState({
-                contacts: payload,
-            });
+        if (this.props.params.contactId) {
+            ContactDetailsAPI.getContactDetailsWithAddresses(this.props.params.contactId).then(payload => {
+                let contact = payload;
 
-            if (this.props.params.contactId) {
-                let contact = payload.find(contact => contact.id == this.props.params.contactId);
                 this.setState({
                     ...this.state,
+                    selectedContact: contact,
                     participation: {
                         ...this.state.participation,
                         contactId: contact.id,
@@ -88,8 +86,8 @@ class ParticipantNewApp extends Component {
                     },
                     addresses: contact ? contact.addresses : [],
                 });
-            }
-        });
+            });
+        }
 
         ProjectsAPI.peekProjects().then(payload => {
             this.setState({
@@ -169,18 +167,23 @@ class ParticipantNewApp extends Component {
     };
 
     handleInputChangeContactId = selectedOption => {
-        const selectedContactId = selectedOption ? selectedOption.id : 0;
-        const contact = this.state.contacts.find(contacts => contacts.id == selectedContactId);
+        const selectedContactId = selectedOption ? selectedOption.id : null;
+        if (selectedContactId) {
+            ContactDetailsAPI.getContactDetailsWithAddresses(selectedContactId).then(payload => {
+                let contact = payload;
 
-        this.setState({
-            ...this.state,
-            participation: {
-                ...this.state.participation,
-                contactId: selectedContactId,
-                addressId: contact ? contact.primaryAddressId : 0,
-            },
-            addresses: contact ? contact.addresses : [],
-        });
+                this.setState({
+                    ...this.state,
+                    selectedContact: contact,
+                    participation: {
+                        ...this.state.participation,
+                        contactId: contact.id,
+                        addressId: contact ? contact.primaryAddressId : 0,
+                    },
+                    addresses: contact ? contact.addresses : [],
+                });
+            });
+        }
     };
 
     handleInputChangeAddressId = selectedOption => {
@@ -314,7 +317,7 @@ class ParticipantNewApp extends Component {
                                         handleInputChange={this.handleInputChange}
                                         handleInputChangeDate={this.handleInputChangeDate}
                                         handleSubmit={this.handleSubmit}
-                                        contacts={this.state.contacts}
+                                        selectedContact={this.state.selectedContact}
                                         addresses={this.state.addresses}
                                         projects={this.state.projects}
                                         handleProjectChange={this.handleProjectChange}

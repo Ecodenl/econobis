@@ -11,7 +11,6 @@ import ContactsAPI from '../../../api/contact/ContactsAPI';
 function ParticipantNewForm(props) {
     const [searchTermContact, setSearchTermContact] = useState('');
     const [isLoadingContact, setLoadingContact] = useState(false);
-    const [valueSelectedContact, setValueSelectedContact] = useState([]);
 
     let {
         participation,
@@ -22,7 +21,7 @@ function ParticipantNewForm(props) {
         handleInputChangeAddressId,
         handleInputChangeProjectId,
         handleSubmit,
-        contacts,
+        selectedContact,
         addresses,
         projects,
         participantMutationStatuses,
@@ -58,17 +57,6 @@ function ParticipantNewForm(props) {
         participantMutationStatuses => participantMutationStatuses.id == statusId
     );
     const statusCodeRef = status ? status.codeRef : null;
-
-    useEffect(() => {
-        setValueSelectedContact(getSelectedContact());
-    }, [contactId]);
-
-    function getSelectedContact() {
-        let selectedContact = [];
-        let contact = contacts.find(contact => contact.id === Number(contactId));
-        selectedContact.push(contact);
-        return selectedContact;
-    }
 
     const getContactOptions = async () => {
         if (searchTermContact.length <= 1) return;
@@ -112,7 +100,7 @@ function ParticipantNewForm(props) {
                     id={'contactId'}
                     loadOptions={getContactOptions}
                     optionName={'fullName'}
-                    value={valueSelectedContact}
+                    value={selectedContact}
                     onChangeAction={handleInputChangeContactId}
                     required={'required'}
                     error={errors.contactId}

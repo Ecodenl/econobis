@@ -40,6 +40,7 @@ class FullCampaign extends JsonResource
             'relatedNotes' => GridTask::collection($this->whenLoaded('notes')),
             'documentCount' => $this->documents()->count(),
             'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
+            'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
         ];
     }
 }

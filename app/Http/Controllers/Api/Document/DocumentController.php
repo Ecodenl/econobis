@@ -52,7 +52,7 @@ class DocumentController extends Controller
     {
         $this->authorize('view', Document::class);
 
-        $document->load('task', 'order', 'contact', 'intake', 'contactGroup', 'sentBy', 'createdBy', 'template', 'opportunity.measureCategory', 'opportunity.status', 'project', 'participant.contact', 'participant.project');
+        $document->load('administration', 'task', 'order', 'contact', 'intake', 'contactGroup', 'sentBy', 'createdBy', 'template', 'opportunity.measureCategory', 'opportunity.status', 'project', 'participant.contact', 'participant.project');
 
         return FullDocument::make($document);
     }
@@ -63,6 +63,7 @@ class DocumentController extends Controller
 
         $data = $requestInput
             ->string('description')->next()
+            ->string('documentCreatedFrom')->alias('document_created_from')->next()
             ->string('documentType')->validate('required')->alias('document_type')->next()
             ->string('documentGroup')->validate('required')->alias('document_group')->next()
             ->string('filename')->next()
@@ -82,7 +83,10 @@ class DocumentController extends Controller
             ->integer('projectId')->validate('exists:projects,id')->onEmpty(null)->alias('project_id')->next()
             ->integer('participantId')->validate('exists:participation_project,id')->onEmpty(null)->alias('participation_project_id')->next()
             ->integer('orderId')->validate('exists:orders,id')->onEmpty(null)->alias('order_id')->next()
+            ->integer('administrationId')->validate('exists:administrations,id')->onEmpty(null)->alias('administration_id')->next()
             ->get();
+
+        $data['show_on_portal'] = (bool) $request->input('showOnPortal') && $request->input('showOnPortal') !== 'false';
 
         $document = new Document();
         $document->fill($data);
@@ -162,12 +166,13 @@ class DocumentController extends Controller
         return FullDocument::make($document->fresh());
     }
 
-    public function update(RequestInput $requestInput, Document $document) {
+    public function update(RequestInput $requestInput, Request $request, Document $document) {
 
         $this->authorize('create', Document::class);
 
         $data = $requestInput
             ->string('description')->next()
+            ->string('documentCreatedFrom')->alias('document_created_from')->next()
             ->string('documentType')->validate('required')->alias('document_type')->next()
             ->string('documentGroup')->validate('required')->alias('document_group')->next()
             ->string('freeText1')->alias('free_text_1')->next()
@@ -186,7 +191,10 @@ class DocumentController extends Controller
             ->integer('projectId')->validate('exists:projects,id')->onEmpty(null)->alias('project_id')->next()
             ->integer('participantId')->validate('exists:participation_project,id')->onEmpty(null)->alias('participation_project_id')->next()
             ->integer('orderId')->validate('exists:orders,id')->onEmpty(null)->alias('order_id')->next()
+            ->integer('administrationId')->validate('exists:administrations,id')->onEmpty(null)->alias('administration_id')->next()
             ->get();
+
+        $data['show_on_portal'] = (bool) $request->input('showOnPortal') && $request->input('showOnPortal') !== 'false';
 
         $document->fill($data);
         $document->save();

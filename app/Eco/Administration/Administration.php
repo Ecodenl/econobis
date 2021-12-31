@@ -3,6 +3,7 @@
 namespace App\Eco\Administration;
 
 use App\Eco\Country\Country;
+use App\Eco\Document\Document;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\Invoice\Invoice;
@@ -78,6 +79,11 @@ class Administration extends Model
         return $this->hasMany(Sepa::class)->orderBy('created_at', 'desc');
     }
 
+    public function documents()
+    {
+        return $this->belongsToMany(Document::class);
+    }
+
     public function projects()
     {
         return $this->hasMany(Project::class);
@@ -141,6 +147,15 @@ class Administration extends Model
     {
         return $this->belongsTo(PortalSettingsLayout::class);
     }
+
+    public function documentsNotOnPortal(){
+        return $this->hasMany(Document::class)->where('show_on_portal', false)->orderBy('documents.id', 'desc');
+    }
+
+    public function documentsOnPortal(){
+        return $this->hasMany(Document::class)->where('show_on_portal', true)->orderBy('documents.id', 'desc');
+    }
+
 
     //appended fields
     public function getPortalSettingsLayoutAssignedAttribute()

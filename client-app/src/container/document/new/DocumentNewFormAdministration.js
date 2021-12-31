@@ -1,6 +1,6 @@
 import React from 'react';
 
-import DocumentNewFormGeneral from './general/DocumentNewFormGeneral';
+import DocumentNewFormAdministrationGeneral from './general/DocumentNewFormAdministrationGeneral';
 import PanelFooter from '../../../components/panel/PanelFooter';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
@@ -8,21 +8,9 @@ import ButtonText from '../../../components/button/ButtonText';
 import DocumentNewFormCreateDocument from './create-document/DocumentNewFormCreateDocument';
 import DocumentNewFormUpload from './upload/DocumentNewFormUpload';
 
-const DocumentNewForm = ({
+const DocumentNewFormAdministration = ({
     document,
-    projects,
-    participants,
-    orders,
-    contacts,
-    contactGroups,
     templates,
-    intakes,
-    opportunities,
-    campaigns,
-    housingFiles,
-    quotationRequests,
-    measures,
-    tasks,
     errors,
     handleSubmit,
     handleInputChange,
@@ -36,20 +24,8 @@ const DocumentNewForm = ({
         <form className="form-horizontal" onSubmit={handleSubmit}>
             <Panel>
                 <PanelBody>
-                    <DocumentNewFormGeneral
-                        tasks={tasks}
-                        quotationRequests={quotationRequests}
-                        housingFiles={housingFiles}
+                    <DocumentNewFormAdministrationGeneral
                         document={document}
-                        contacts={contacts}
-                        contactGroups={contactGroups}
-                        intakes={intakes}
-                        opportunities={opportunities}
-                        projects={projects}
-                        participants={participants}
-                        orders={orders}
-                        measures={measures}
-                        campaigns={campaigns}
                         errors={errors}
                         handleInputChange={handleInputChange}
                     />
@@ -87,4 +63,4 @@ const DocumentNewForm = ({
     );
 };
 
-export default DocumentNewForm;
+export default DocumentNewFormAdministration;

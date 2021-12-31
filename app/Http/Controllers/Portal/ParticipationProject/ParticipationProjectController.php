@@ -209,6 +209,7 @@ class ParticipationProjectController extends Controller
         Auth::setUser(User::find($responsibleUserId));
 
         $document = new Document();
+        $document->document_created_from = 'participant';
         $document->document_type = 'internal';
         $document->document_group = 'registration';
         $document->contact_id = $contact->id;

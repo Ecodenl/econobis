@@ -62,6 +62,8 @@ class AdministrationController extends ApiController
             'emailTemplateFinancialOverview',
             'portalSettingsLayout',
             'sepas',
+            'documentsNotOnPortal',
+            'documentsOnPortal',
         ]);
 
         return FullAdministration::make($administration);

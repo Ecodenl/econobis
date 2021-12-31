@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Administration;
 
+use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\EmailTemplate\FullEmailTemplate;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
@@ -71,6 +72,11 @@ class FullAdministration extends JsonResource
                 'products' => FullProduct::collection($this->whenLoaded('products')),
 
                 'sepas' => FullSepa::collection($this->whenLoaded('sepas')),
+
+                'documentCountNotOnPortal' => $this->documentsNotOnPortal()->count(),
+                'documentCountOnPortal' => $this->documentsOnPortal()->count(),
+                'relatedDocumentsNotOnPortal' => FullDocument::collection($this->whenLoaded('documentsNotOnPortal')),
+                'relatedDocumentsOnPortal' => FullDocument::collection($this->whenLoaded('documentsOnPortal')),
 
                 'totalOrders' => $this->total_orders,
                 'totalOrdersConcepts' => $this->total_orders_concepts,

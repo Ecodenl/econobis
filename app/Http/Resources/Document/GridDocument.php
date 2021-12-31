@@ -22,6 +22,7 @@ class GridDocument extends JsonResource
             'createdAt' => $this->created_at,
             'filename' => $this->filename,
             'contact' => FullContact::make($this->whenLoaded('contact')),
+            'documentCreatedFrom' => $this->getDocumentCreatedFrom() ? $this->getDocumentCreatedFrom()->name : '',
             'documentType' => $this->getDocumentType()->name,
             'documentGroup' => $this->getDocumentGroup()->name,
         ];

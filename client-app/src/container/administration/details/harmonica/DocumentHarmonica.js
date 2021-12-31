@@ -45,7 +45,9 @@ const DocumentHarmonica = ({
                         </div>
                     )}
                 </div>
-                {showDocumentsList && <DocumentsList relatedDocuments={relatedDocuments} />}
+                <div className="col-sm-12">
+                    {showDocumentsList && <DocumentsList relatedDocuments={relatedDocuments} />}
+                </div>
             </PanelBody>
         </Panel>
     );

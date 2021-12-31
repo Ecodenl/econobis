@@ -240,6 +240,8 @@ class ParticipationProjectController extends ApiController
             'mutations.updatedBy',
             'obligationNumbers',
             'documents',
+            'documentsNotOnPortal',
+            'documentsOnPortal',
             'projectRevenues.type',
             'projectRevenues.category',
             'projectRevenues.createdBy',
@@ -819,6 +821,7 @@ class ParticipationProjectController extends ApiController
             $time = Carbon::now();
 
             $document = new Document();
+            $document->document_created_from = 'participant';
             $document->document_type = 'internal';
             $document->document_group = $documentTemplate->document_group;
             $document->contact_id = $contact->id;

@@ -58,6 +58,8 @@ class ProjectController extends ApiController
             'projectRevenues.createdBy',
             'tasks',
             'documents',
+            'documentsNotOnPortal',
+            'documentsOnPortal',
             'administration',
             'requiresContactGroups',
             'documentTemplateAgreement',

@@ -70,16 +70,16 @@ const DocumentNewFormCreateDocument = ({
                     </div>
                 </div>
             </div>
-            <div className="row">
-                <InputSelect
-                    label="Afzender"
-                    name={'sentById'}
-                    value={sentById}
-                    options={users}
-                    optionName={'fullName'}
-                    onChangeAction={handleInputChange}
-                />
-            </div>
+            {/*<div className="row">*/}
+            {/*    <InputSelect*/}
+            {/*        label="Afzender"*/}
+            {/*        name={'sentById'}*/}
+            {/*        value={sentById}*/}
+            {/*        options={users}*/}
+            {/*        optionName={'fullName'}*/}
+            {/*        onChangeAction={handleInputChange}*/}
+            {/*    />*/}
+            {/*</div>*/}
         </div>
     );
 };

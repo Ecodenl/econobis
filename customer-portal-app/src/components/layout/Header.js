@@ -225,7 +225,7 @@ function Header({ location, history }) {
                         </Row>
                         {location.pathname !== '/' && location.pathname !== '/dashboard' ? (
                             <div className="header-dashboard-button">
-                                <Button className={'w-button'} onClick={() => history.push('/dashboard')}>
+                                <Button className={'w-button btn-sm'} onClick={() => history.push('/dashboard')}>
                                     <FaHome />
                                     &nbsp;Dashboard
                                 </Button>

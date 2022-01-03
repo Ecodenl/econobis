@@ -70,11 +70,11 @@ class Project extends Model
     }
 
     public function documentsNotOnPortal(){
-        return $this->hasMany(Document::class)->where('show_on_portal', false)->orderBy('documents.id', 'desc');
+        return $this->hasMany(Document::class)->where('document_created_from', 'project')->where('show_on_portal', false)->orderBy('documents.id', 'desc');
     }
 
     public function documentsOnPortal(){
-        return $this->hasMany(Document::class)->where('show_on_portal', true)->orderBy('documents.id', 'desc');
+        return $this->hasMany(Document::class)->where('document_created_from', 'project')->where('show_on_portal', true)->orderBy('documents.id', 'desc');
     }
 
     public function emails()

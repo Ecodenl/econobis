@@ -110,7 +110,7 @@ class ParticipationProjectController extends Controller
             Auth::setUser(User::find($responsibleUserId));
 
             $documentController = new DocumentController();
-            $documentController->download($document);
+            return $documentController->download($document);
 
             // Voor zekerheid hierna weer even Auth user herstellen met portal user
             Auth::setUser($portalUser);

@@ -118,7 +118,7 @@ color: var(--main-primary-color);
 font-size: 20px;
 font-weight: 200;
 text-shadow: none;
-margin-bottom: 32px;
+margin-bottom: 15px;
 }
 
 .card-header_title {

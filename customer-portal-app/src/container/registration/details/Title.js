@@ -9,7 +9,7 @@ function RegistrationDetailsTitle({ contactName, projectName, administrationName
                 <h1 className="content-heading">
                     Deelname van {contactName} in de {projectName}
                 </h1>
-                <span className="content-subheading">Organisatie {administrationName}</span>
+                <div className="content-subheading">Organisatie {administrationName}</div>
             </Col>
         </Row>
     );

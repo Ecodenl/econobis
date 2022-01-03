@@ -23,6 +23,8 @@ Route::middleware(['auth:api', 'scopes:use-portal'])
         Route::post('/portal-user/change-email', 'PortalUser\PortalUserController@changeEmail');
         Route::post('/portal-user/change-password', 'PortalUser\PortalUserController@changePassword');
 
+        Route::get('/administration/{administration}/document/{document}/download', 'Administration\AdministrationController@documentDownload');
+
         Route::post('/contact/{contact}', 'Contact\ContactController@update');
         Route::get('/contact/{contact}/financial-overview-documents', 'Contact\ContactController@financialOverviewDocuments');
         Route::get('/contact/{contact}/related-administrations', 'Contact\ContactController@relatedAdministrations');
@@ -32,6 +34,7 @@ Route::middleware(['auth:api', 'scopes:use-portal'])
 
         Route::get('/project/participant/{participantProject}', 'ParticipationProject\ParticipationProjectController@show');
         Route::post('/project/participant/create', 'ParticipationProject\ParticipationProjectController@create');
+        Route::get('/project/participant/{participantProject}/document/{document}/download', 'ParticipationProject\ParticipationProjectController@documentDownload');
 
         Route::get('setting', '\\' . SettingController::class . '@get');
         Route::get('setting/multiple', '\\' . SettingController::class . '@multiple');

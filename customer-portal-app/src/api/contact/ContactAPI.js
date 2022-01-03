@@ -1,5 +1,4 @@
 import axiosInstance from '../default-setup/AxiosInstance';
-import moment from '../project/ProjectAPI';
 
 export default {
     fetchContact: function(id) {

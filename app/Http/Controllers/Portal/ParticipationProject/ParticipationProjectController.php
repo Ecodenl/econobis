@@ -29,6 +29,7 @@ use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ContactGroup\ContactGroupController;
+use App\Http\Controllers\Api\Document\DocumentController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ParticipantProject\Templates\ParticipantReportMail;
 use App\Http\Resources\Portal\ParticipantProject\ParticipantProjectResource;
@@ -77,12 +78,43 @@ class ParticipationProjectController extends Controller
             'mutationsForPortal.createdBy',
             'mutationsForPortal.updatedBy',
             'obligationNumbers',
-            'documents',
+            'documentsOnPortal',
             'createdBy',
             'updatedBy',
         ]);
 
         return ParticipantProjectResource::make($participantProject);
+    }
+
+    public function documentDownload(ParticipantProject $participantProject, Document $document)
+    {
+        $portalUser = Auth::user();
+        if (!Auth::isPortalUser() || !$portalUser->contact) {
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
+        $allowedContactOrganisationIds = $portalUser->contact->occupations->where('type_id', 'organisation')->where('primary', true)->pluck('primary_contact_id')->toArray();
+        $allowedContactPersonIds = $portalUser->contact->occupations->where('type_id', 'person')->where('occupation_for_portal', true)->pluck('primary_contact_id')->toArray();
+        $allowedContactIds = array_merge($allowedContactOrganisationIds, $allowedContactPersonIds);
+
+        $authorizedForContact = in_array($participantProject->contact_id, $allowedContactIds);
+        if ($portalUser->contact_id != $participantProject->contact_id && !$authorizedForContact) {
+            abort(403, 'Verboden');
+        }
+
+        if ($document->filename) {
+            // todo wellicht moeten we hier nog wat op anders verzinnen, voornu gebruiken we responisibleUserId from settings.json, verderop zetten we dat weer terug naar portal user
+            $responsibleUserId = PortalSettings::get('responsibleUserId');
+            if (!$responsibleUserId) {
+                abort(501, 'Er is helaas een fout opgetreden (5).');
+            }
+            Auth::setUser(User::find($responsibleUserId));
+
+            $documentController = new DocumentController();
+            $documentController->download($document);
+
+            // Voor zekerheid hierna weer even Auth user herstellen met portal user
+            Auth::setUser($portalUser);
+        }
     }
 
     public function create(Request $request)

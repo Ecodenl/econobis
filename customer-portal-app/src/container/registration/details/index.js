@@ -12,6 +12,7 @@ import Button from 'react-bootstrap/Button';
 import { ThemeSettingsContext } from '../../../context/ThemeSettingsContext';
 import { PortalUserContext } from '../../../context/PortalUserContext';
 import Col from 'react-bootstrap/Col';
+import RegistrationDetailsDocumentTable from './document-table';
 
 const INITIAL_STATE = {
     result: [],
@@ -92,6 +93,10 @@ function RegistrationDetails({ match: { params } }) {
                             <RegistrationDetailsProjectTable fields={state.result.fields} />
                             <RegistrationDetailsMutationTable
                                 participantMutations={state.result.participantMutations}
+                            />
+                            <RegistrationDetailsDocumentTable
+                                participantId={params.id}
+                                documents={state.result.documents}
                             />
                         </>
                     )}

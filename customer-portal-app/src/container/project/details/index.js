@@ -14,6 +14,8 @@ import PcrDetails from './PcrDetails';
 import { ThemeSettingsContext } from '../../../context/ThemeSettingsContext';
 import { PortalUserContext } from '../../../context/PortalUserContext';
 import { isEmpty } from 'lodash';
+import fileDownload from 'js-file-download';
+import { FaFileDownload } from 'react-icons/all';
 
 function ProjectDetails({ match }) {
     const { setCurrentThemeSettings } = useContext(ThemeSettingsContext);
@@ -38,6 +40,18 @@ function ProjectDetails({ match }) {
             })();
         }
     }, [match, currentSelectedContact]);
+
+    function downloadFile(e, id, filename) {
+        e.preventDefault();
+
+        ProjectAPI.documentDownload(project.id, id)
+            .then(payload => {
+                fileDownload(payload.data, filename);
+            })
+            .catch(() => {
+                alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+            });
+    }
 
     function renderDetails() {
         switch (project.projectType.codeRef) {
@@ -96,10 +110,30 @@ function ProjectDetails({ match }) {
                     <Row className={'mt-5'}>
                         <Col>
                             <p>
-                                Meer informatie over dit project vind je{' '}
-                                <a href={`${project.linkProjectInfo}`} target="_blank">
-                                    hier
-                                </a>
+                                {project.documentProjectInfo ? (
+                                    <>
+                                        {'Meer informatie over dit project kan je hier '}
+                                        <a
+                                            href="#"
+                                            onClick={e =>
+                                                downloadFile(
+                                                    e,
+                                                    project.documentProjectInfo.id,
+                                                    project.documentProjectInfo.filename
+                                                )
+                                            }
+                                        >
+                                            <FaFileDownload /> downloaden
+                                        </a>
+                                    </>
+                                ) : project.linkProjectInfo != null ? (
+                                    <>
+                                        {'Meer informatie over dit project vind je '}
+                                        <a href={`${project.linkProjectInfo}`} target="_blank">
+                                            hier
+                                        </a>
+                                    </>
+                                ) : null}
                             </p>
                             <p>Wil je inschrijven op dit project. Klik dan op "Ga naar inschrijven".</p>
                         </Col>

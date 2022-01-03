@@ -32,6 +32,8 @@ Route::middleware(['auth:api', 'scopes:use-portal'])
 
         Route::post('/contact/{contact}/{project}/preview-document', 'Contact\ContactController@previewDocument');
 
+        Route::get('/project/{project}/document/{document}/download', 'Project\ProjectController@documentDownload');
+
         Route::get('/project/participant/{participantProject}', 'ParticipationProject\ParticipationProjectController@show');
         Route::post('/project/participant/create', 'ParticipationProject\ParticipationProjectController@create');
         Route::get('/project/participant/{participantProject}/document/{document}/download', 'ParticipationProject\ParticipationProjectController@documentDownload');

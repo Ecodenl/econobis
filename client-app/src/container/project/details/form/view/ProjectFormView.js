@@ -70,6 +70,9 @@ const ProjectFormView = props => {
         linkAgreeTerms,
         linkUnderstandInfo,
         linkProjectInfo,
+        documentAgreeTerms,
+        documentUnderstandInfo,
+        documentProjectInfo,
         showQuestionAboutMembership,
         useTransactionCostsWithMembership,
         questionAboutMembershipGroup,
@@ -148,6 +151,9 @@ const ProjectFormView = props => {
                 linkAgreeTerms={linkAgreeTerms}
                 linkUnderstandInfo={linkUnderstandInfo}
                 linkProjectInfo={linkProjectInfo}
+                documentAgreeTerms={documentAgreeTerms}
+                documentUnderstandInfo={documentUnderstandInfo}
+                documentProjectInfo={documentProjectInfo}
                 showQuestionAboutMembership={showQuestionAboutMembership}
                 useTransactionCostsWithMembership={useTransactionCostsWithMembership}
                 questionAboutMembershipGroup={questionAboutMembershipGroup}

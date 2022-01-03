@@ -244,6 +244,8 @@ class ParticipationProjectController extends Controller
         $document->document_created_from = 'participant';
         $document->document_type = 'internal';
         $document->document_group = 'registration';
+        $document->show_on_portal = true;
+        $document->description = 'Inschrijfformulier project ' . $project->name;
         $document->contact_id = $contact->id;
         $document->project_id = $project->id;
         $document->participation_project_id = $participation->id;

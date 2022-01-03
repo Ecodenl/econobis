@@ -8,8 +8,6 @@ import moment from 'moment';
 import LoadingView from '../../../components/general/LoadingView';
 import ContactAPI from '../../../api/contact/ContactAPI';
 import { PortalUserConsumer } from '../../../context/PortalUserContext';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import Button from 'react-bootstrap/Button';
 import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 import rebaseContact from '../../../helpers/RebaseContact';

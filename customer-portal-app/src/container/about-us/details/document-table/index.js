@@ -7,10 +7,6 @@ import fileDownload from 'js-file-download';
 import AdministrationAPI from '../../../../api/administration/AdministrationAPI';
 
 function AboutUsDocumentTable({ administrationId, documents }) {
-    console.log('administrationId');
-    console.log(administrationId);
-    console.log('documents');
-    console.log(documents);
     function downloadFile(e, id, filename) {
         e.preventDefault();
 

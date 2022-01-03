@@ -7,10 +7,6 @@ import fileDownload from 'js-file-download';
 import ParticipantProjectAPI from '../../../../api/participant-project/ParticipantProjectAPI';
 
 function RegistrationDetailsDocumentTable({ participantId, documents }) {
-    console.log('participantId');
-    console.log(participantId);
-    console.log('documents');
-    console.log(documents);
     function downloadFile(e, id, filename) {
         e.preventDefault();
 

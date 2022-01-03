@@ -49,7 +49,6 @@ const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal, addWidget }
 
         PortalSettingsDashboardAPI.addDashboardWidget(data)
             .then(response => {
-                console.log(response.data);
                 addWidget(response.data);
                 toggleModal();
             })

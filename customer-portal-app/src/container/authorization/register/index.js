@@ -50,8 +50,8 @@ const Register = ({ location, match, login }) => {
                     });
             })
             .catch(error => {
-                console.log(error.response.status);
-                console.log(error.response.data.message);
+                // console.log(error.response.status);
+                // console.log(error.response.data.message);
                 toggleError(true);
                 if (
                     error.response &&

@@ -10,7 +10,7 @@ import moment from 'moment';
 class ContactsEditItem extends React.Component {
     constructor(props) {
         super(props);
-        console.log(props);
+
         this.state = {
             memberToGroupSince: props.memberToGroupSince,
         };

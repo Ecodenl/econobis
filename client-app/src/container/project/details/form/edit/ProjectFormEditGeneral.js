@@ -128,9 +128,10 @@ const ProjectFormEditGeneral = ({
         });
     }
 
-    const helpTextLinkAgreeTerms = 'Gebruik {voorwaarden_link} in tekst voor plaatsing van de voorwaarden link';
+    const helpTextLinkAgreeTerms =
+        'Gebruik {voorwaarden_link} in tekst voor plaatsing van de voorwaarden link. Download link voor voorwaarden document komt altijd na deze tekst.';
     const helpTextLinkUnderstandInfo =
-        'Gebruik {project_informatie_link} in tekst voor plaatsing van de project informatie link';
+        'Gebruik {project_informatie_link} in tekst voor plaatsing van de project informatie link. Download link voor project informatie document komt altijd na deze tekst.';
 
     let addressNumberSeriesFieldEnabled = postalcodeLink
         ? postalcodeLink.replace(/\D/g, '').length === 4 && postalcodeLink.replace(/[0-9]/g, '').trim().length === 2
@@ -923,15 +924,7 @@ const ProjectFormEditGeneral = ({
 
                     <div className={'row'}>
                         <InputTextLong
-                            label={
-                                <span>
-                                    Voorwaarden link tekst
-                                    <br />
-                                    <small style={{ color: '#ccc', fontWeight: 'normal' }}>
-                                        {helpTextLinkAgreeTerms}{' '}
-                                    </small>
-                                </span>
-                            }
+                            label="Voorwaarden tekst"
                             name={'textLinkAgreeTerms'}
                             value={textLinkAgreeTerms}
                             maxLength="191"
@@ -939,6 +932,7 @@ const ProjectFormEditGeneral = ({
                             required={'required'}
                             error={errors.textLinkAgreeTerms}
                             readOnly={!permissions.managePortalSettings}
+                            textToolTip={helpTextLinkAgreeTerms}
                         />
                     </div>
 
@@ -1011,15 +1005,7 @@ const ProjectFormEditGeneral = ({
 
                     <div className={'row'}>
                         <InputTextLong
-                            label={
-                                <span>
-                                    Project informatie link tekst
-                                    <br />
-                                    <small style={{ color: '#ccc', fontWeight: 'normal' }}>
-                                        {helpTextLinkUnderstandInfo}{' '}
-                                    </small>
-                                </span>
-                            }
+                            label="Project informatie tekst"
                             name={'textLinkUnderstandInfo'}
                             value={textLinkUnderstandInfo}
                             maxLength="191"
@@ -1027,6 +1013,7 @@ const ProjectFormEditGeneral = ({
                             required={'required'}
                             error={errors.textLinkUnderstandInfo}
                             readOnly={!permissions.managePortalSettings}
+                            textToolTip={helpTextLinkUnderstandInfo}
                         />
                     </div>
 

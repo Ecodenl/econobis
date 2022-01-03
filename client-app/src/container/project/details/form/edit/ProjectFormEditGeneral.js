@@ -44,7 +44,6 @@ const ProjectFormEditGeneral = ({
     dateEnd,
     dateEntry,
     disableBeforeEntryDate,
-    contactGroupIds,
     contactGroupIdsSelected,
     dateProduction,
     isMembershipRequired,
@@ -72,6 +71,16 @@ const ProjectFormEditGeneral = ({
     linkAgreeTerms,
     linkUnderstandInfo,
     linkProjectInfo,
+    documentIdAgreeTerms,
+    agreeTermsLinkOrDocument,
+    handleChangeAgreeTermsLinkOrDocument,
+    documentIdUnderstandInfo,
+    understandInfoLinkOrDocument,
+    handleChangeUnderstandInfoLinkOrDocument,
+    documentIdProjectInfo,
+    projectInfoLinkOrDocument,
+    handleChangeProjectInfoLinkOrDocument,
+    relatedDocumentsOnPortal,
     showQuestionAboutMembership,
     useTransactionCostsWithMembership,
     questionAboutMembershipGroupId,
@@ -467,13 +476,66 @@ const ProjectFormEditGeneral = ({
                         </label>
                     </div>
                     <div className="row">
+                        <div className="form-group col-sm-12">
+                            <div className="row">
+                                <div className="col-sm-3">
+                                    <label htmlFor="projectInfoLinkOrDocument" className="col-sm-12">
+                                        Informatie link of document
+                                    </label>
+                                </div>
+                                <div className="col-sm-3">
+                                    <div className={'row'}>
+                                        <div className={'col-xs-6'}>
+                                            <input
+                                                onChange={() => handleChangeProjectInfoLinkOrDocument('link')}
+                                                type="radio"
+                                                name="projectInfoLinkOrDocument"
+                                                value="link"
+                                                id="link"
+                                                defaultChecked={documentIdProjectInfo === null}
+                                                disabled={!permissions.managePortalSettings}
+                                            />
+                                            <label htmlFor="link">&nbsp;Link</label>
+                                        </div>
+                                        <div className={'col-xs-6'}>
+                                            <input
+                                                onChange={() => handleChangeProjectInfoLinkOrDocument('document')}
+                                                type="radio"
+                                                name="projectInfoLinkOrDocument"
+                                                value="document"
+                                                id="document"
+                                                defaultChecked={documentIdProjectInfo !== null}
+                                                disabled={!permissions.managePortalSettings}
+                                            />
+                                            <label htmlFor="document">&nbsp;Document</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
                         <InputTextLong
                             label="Informatie link"
                             name={'linkProjectInfo'}
                             value={linkProjectInfo}
                             onChangeAction={handleInputChange}
                             error={errors.linkProjectInfo}
-                            readOnly={!permissions.managePortalSettings}
+                            readOnly={!permissions.managePortalSettings || projectInfoLinkOrDocument !== 'link'}
+                        />
+                    </div>
+                    <div className="row">
+                        <InputReactSelectLong
+                            label="Informatie document"
+                            description
+                            name={'documentIdProjectInfo'}
+                            options={relatedDocumentsOnPortal}
+                            optionId={'id'}
+                            optionName={'description'}
+                            value={documentIdProjectInfo}
+                            onChangeAction={handleReactSelectChange}
+                            error={errors.documentIdProjectInfo}
+                            disabled={!permissions.managePortalSettings || projectInfoLinkOrDocument !== 'document'}
                         />
                     </div>
 
@@ -793,6 +855,47 @@ const ProjectFormEditGeneral = ({
                         </div>
                     </div>
                     <hr />
+
+                    <div className="row">
+                        <div className="form-group col-sm-12">
+                            <div className="row">
+                                <div className="col-sm-3">
+                                    <label htmlFor="agreeTermsLinkOrDocument" className="col-sm-12">
+                                        Voorwaarden link of document
+                                    </label>
+                                </div>
+                                <div className="col-sm-3">
+                                    <div className={'row'}>
+                                        <div className={'col-xs-6'}>
+                                            <input
+                                                onChange={() => handleChangeAgreeTermsLinkOrDocument('link')}
+                                                type="radio"
+                                                name="agreeTermsLinkOrDocument"
+                                                value="link"
+                                                id="link"
+                                                defaultChecked={documentIdAgreeTerms === null}
+                                                disabled={!permissions.managePortalSettings}
+                                            />
+                                            <label htmlFor="link">&nbsp;Link</label>
+                                        </div>
+                                        <div className={'col-xs-6'}>
+                                            <input
+                                                onChange={() => handleChangeAgreeTermsLinkOrDocument('document')}
+                                                type="radio"
+                                                name="agreeTermsLinkOrDocument"
+                                                value="document"
+                                                id="document"
+                                                defaultChecked={documentIdAgreeTerms !== null}
+                                                disabled={!permissions.managePortalSettings}
+                                            />
+                                            <label htmlFor="document">&nbsp;Document</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="row">
                         <InputTextLong
                             label="Voorwaarden link"
@@ -800,9 +903,24 @@ const ProjectFormEditGeneral = ({
                             value={linkAgreeTerms}
                             onChangeAction={handleInputChange}
                             error={errors.linkAgreeTerms}
-                            readOnly={!permissions.managePortalSettings}
+                            readOnly={!permissions.managePortalSettings || agreeTermsLinkOrDocument !== 'link'}
                         />
                     </div>
+                    <div className="row">
+                        <InputReactSelectLong
+                            label="Voorwaarden document"
+                            description
+                            name={'documentIdAgreeTerms'}
+                            options={relatedDocumentsOnPortal}
+                            optionId={'id'}
+                            optionName={'description'}
+                            value={documentIdAgreeTerms}
+                            onChangeAction={handleReactSelectChange}
+                            error={errors.documentIdAgreeTerms}
+                            disabled={!permissions.managePortalSettings || agreeTermsLinkOrDocument !== 'document'}
+                        />
+                    </div>
+
                     <div className={'row'}>
                         <InputTextLong
                             label={
@@ -825,6 +943,47 @@ const ProjectFormEditGeneral = ({
                     </div>
 
                     <hr />
+
+                    <div className="row">
+                        <div className="form-group col-sm-12">
+                            <div className="row">
+                                <div className="col-sm-3">
+                                    <label htmlFor="understandInfoLinkOrDocument" className="col-sm-12">
+                                        Voorwaarden link of document
+                                    </label>
+                                </div>
+                                <div className="col-sm-3">
+                                    <div className={'row'}>
+                                        <div className={'col-xs-6'}>
+                                            <input
+                                                onChange={() => handleChangeUnderstandInfoLinkOrDocument('link')}
+                                                type="radio"
+                                                name="understandInfoLinkOrDocument"
+                                                value="link"
+                                                id="link"
+                                                defaultChecked={documentIdUnderstandInfo === null}
+                                                disabled={!permissions.managePortalSettings}
+                                            />
+                                            <label htmlFor="link">&nbsp;Link</label>
+                                        </div>
+                                        <div className={'col-xs-6'}>
+                                            <input
+                                                onChange={() => handleChangeUnderstandInfoLinkOrDocument('document')}
+                                                type="radio"
+                                                name="understandInfoLinkOrDocument"
+                                                value="document"
+                                                id="document"
+                                                defaultChecked={documentIdUnderstandInfo !== null}
+                                                disabled={!permissions.managePortalSettings}
+                                            />
+                                            <label htmlFor="document">&nbsp;Document</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="row">
                         <InputTextLong
                             label="Project informatie link"
@@ -832,9 +991,24 @@ const ProjectFormEditGeneral = ({
                             value={linkUnderstandInfo}
                             onChangeAction={handleInputChange}
                             error={errors.linkUnderstandInfo}
-                            readOnly={!permissions.managePortalSettings}
+                            readOnly={!permissions.managePortalSettings || understandInfoLinkOrDocument !== 'link'}
                         />
                     </div>
+                    <div className="row">
+                        <InputReactSelectLong
+                            label="Project informatie document"
+                            description
+                            name={'documentIdUnderstandInfo'}
+                            options={relatedDocumentsOnPortal}
+                            optionId={'id'}
+                            optionName={'description'}
+                            value={documentIdUnderstandInfo}
+                            onChangeAction={handleReactSelectChange}
+                            error={errors.documentIdUnderstandInfo}
+                            disabled={!permissions.managePortalSettings || understandInfoLinkOrDocument !== 'document'}
+                        />
+                    </div>
+
                     <div className={'row'}>
                         <InputTextLong
                             label={

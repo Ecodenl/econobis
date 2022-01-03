@@ -9,12 +9,13 @@ import { updateDocument } from '../../../../actions/document/DocumentDetailsActi
 import DocumentDetailsAPI from '../../../../api/document/DocumentDetailsAPI';
 import InputToggle from '../../../../components/form/InputToggle';
 
-class DocumentDetailsFormProjectEdit extends Component {
+class DocumentDetailsFormAdministrationEdit extends Component {
     constructor(props) {
         super(props);
 
         const {
             id,
+            administration,
             documentType,
             description,
             freeText1,
@@ -27,6 +28,7 @@ class DocumentDetailsFormProjectEdit extends Component {
         this.state = {
             document: {
                 id: id,
+                // administration: administration && administration.id,
                 documentType: documentType && documentType.id,
                 description: description,
                 freeText1: freeText1,
@@ -93,9 +95,12 @@ class DocumentDetailsFormProjectEdit extends Component {
                 <div>
                     <div className="row">
                         <InputText
-                            label="Project"
-                            name={'project'}
-                            value={this.props.documentDetails.project && this.props.documentDetails.project.name}
+                            label="Administration"
+                            name={'administration'}
+                            value={
+                                this.props.documentDetails.administration &&
+                                this.props.documentDetails.administration.name
+                            }
                             readOnly={true}
                         />
                         <InputText
@@ -249,4 +254,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentDetailsFormProjectEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(DocumentDetailsFormAdministrationEdit);

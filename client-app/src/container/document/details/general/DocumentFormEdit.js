@@ -42,6 +42,7 @@ class DocumentDetailsFormEdit extends Component {
             measureId,
             taskId,
             documentType,
+            documentCreatedFrom,
             description,
             freeText1,
             freeText2,
@@ -81,6 +82,7 @@ class DocumentDetailsFormEdit extends Component {
                 participantId: participantId || '',
                 orderId: orderId || '',
                 documentType: documentType && documentType.id,
+                documentCreatedFrom: documentCreatedFrom && documentCreatedFrom.id,
                 description: description,
                 freeText1: freeText1,
                 freeText2: freeText2,
@@ -91,6 +93,7 @@ class DocumentDetailsFormEdit extends Component {
             errors: {
                 docLinkedAtAny: false,
                 documentGroup: false,
+                description: false,
             },
         };
 
@@ -182,6 +185,42 @@ class DocumentDetailsFormEdit extends Component {
         ) {
             errors.docLinkedAtAny = true;
             hasErrors = true;
+        }
+
+        if (
+            !validator.isEmpty(document.participantId + '') &&
+            !validator.isEmpty(document.projectId + '') &&
+            !validator.isEmpty(document.contactId + '') &&
+            validator.isEmpty(document.intakeId + '') &&
+            validator.isEmpty(document.campaignId + '') &&
+            validator.isEmpty(document.orderId + '') &&
+            validator.isEmpty(document.contactGroupId + '') &&
+            validator.isEmpty(document.administrationId + '')
+        ) {
+            document.documentCreatedFrom = 'participant';
+        } else if (
+            !validator.isEmpty(document.projectId + '') &&
+            validator.isEmpty(document.participantId + '') &&
+            validator.isEmpty(document.contactId + '') &&
+            validator.isEmpty(document.intakeId + '') &&
+            validator.isEmpty(document.campaignId + '') &&
+            validator.isEmpty(document.orderId + '') &&
+            validator.isEmpty(document.contactGroupId + '') &&
+            validator.isEmpty(document.administrationId + '') &&
+            document.documentGroup != 'revenue'
+        ) {
+            document.documentCreatedFrom = 'project';
+        } else if (
+            !validator.isEmpty(document.administrationId + '') &&
+            validator.isEmpty(document.projectId + '') &&
+            validator.isEmpty(document.participantId + '') &&
+            validator.isEmpty(document.contactId + '') &&
+            validator.isEmpty(document.intakeId + '') &&
+            validator.isEmpty(document.campaignId + '') &&
+            validator.isEmpty(document.orderId + '') &&
+            validator.isEmpty(document.contactGroupId + '')
+        ) {
+            document.documentCreatedFrom = 'administration';
         }
 
         this.setState({ ...this.state, errors: errors });

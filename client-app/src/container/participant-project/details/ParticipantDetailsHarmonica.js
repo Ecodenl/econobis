@@ -30,9 +30,14 @@ class ParticipantDetailsHarmonica extends Component {
         });
     }
 
-    newDocument = type => {
+    newDocumentNotOnPortal = type => {
         hashHistory.push(
-            `/document/nieuw/${type}/project/${this.props.participant.projectId}/deelnemer/${this.props.participant.id}/contact/${this.props.participant.contact.id}`
+            `/document/nieuw/${type}/eco/project/${this.props.participant.projectId}/deelnemer/${this.props.participant.id}/contact/${this.props.participant.contact.id}`
+        );
+    };
+    newDocumentOnPortal = type => {
+        hashHistory.push(
+            `/document/nieuw/${type}/portal/project/${this.props.participant.projectId}/deelnemer/${this.props.participant.id}/contact/${this.props.participant.contact.id}`
         );
     };
 
@@ -53,7 +58,7 @@ class ParticipantDetailsHarmonica extends Component {
                         title={'DOCUMENTEN ALLEEN IN ECONOBIS'}
                         toggleShowList={() => this.toggleShowList('documentsNotOnPortal')}
                         showDocumentsList={this.state.toggleShowList.documentsNotOnPortal}
-                        newDocument={this.newDocument}
+                        newDocument={this.newDocumentNotOnPortal}
                         documentCount={this.props.participant.documentCountNotOnPortal}
                         relatedDocuments={this.props.participant.relatedDocumentsNotOnPortal}
                     />
@@ -62,7 +67,7 @@ class ParticipantDetailsHarmonica extends Component {
                         title={'DOCUMENTEN PORTAL'}
                         toggleShowList={() => this.toggleShowList('documentsOnPortal')}
                         showDocumentsList={this.state.toggleShowList.documentsOnPortal}
-                        newDocument={this.newDocument}
+                        newDocument={this.newDocumentOnPortal}
                         documentCount={this.props.participant.documentCountOnPortal}
                         relatedDocuments={this.props.participant.relatedDocumentsOnPortal}
                     />

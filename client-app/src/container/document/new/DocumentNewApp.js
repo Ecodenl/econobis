@@ -107,7 +107,8 @@ class DocumentNewApp extends Component {
                 sentById: '',
                 attachment: '',
                 filename: 'temp',
-                showOnPortal: false,
+                showOnPortal:
+                    this.props.params.showOnPortal && this.props.params.showOnPortal === 'portal' ? true : false,
             },
             errors: {
                 docLinkedAtAny: false,

@@ -94,7 +94,7 @@ const ContactDetails = function(props) {
     }
 
     const editButtonGroup = (
-        <ButtonGroup aria-label="Steps" className={'float-right'}>
+        <ButtonGroup aria-label="contact-details" className={'float-right'}>
             <Button
                 className={'w-button'}
                 size="sm"

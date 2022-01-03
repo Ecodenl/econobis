@@ -75,7 +75,7 @@ function RegistrationDetails({ match: { params } }) {
             ) : (
                 <>
                     <Row>
-                        <ButtonGroup aria-label="Steps" className="w-button-group-left">
+                        <ButtonGroup aria-label="current-participations" className="w-button-group-left">
                             <Link to={`/inschrijvingen-projecten`}>
                                 <Button className={'w-button'} size="sm">
                                     Huidige deelnames

@@ -94,7 +94,7 @@ function OrganisationAddressEdit({ initialContact, handleSubmitContactAddressVal
 
                             <Row>
                                 <Col>
-                                    <ButtonGroup aria-label="Steps" className="float-right">
+                                    <ButtonGroup aria-label="address-organistation" className="float-right">
                                         <Link to={`/`}>
                                             <Button variant={'outline-dark'} size="sm">
                                                 Annuleren

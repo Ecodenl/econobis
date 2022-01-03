@@ -426,7 +426,7 @@ const ProjectFormViewGeneral = ({
                         )}
                     </div>
                     <div className="row">
-                        <ViewTextLong label={'Voorwaarden link tekst'} value={textLinkAgreeTerms} />
+                        <ViewTextLong label={'Voorwaarden tekst'} value={textLinkAgreeTerms} />
                     </div>
                     <hr />
                     <div className="row">
@@ -440,7 +440,7 @@ const ProjectFormViewGeneral = ({
                         )}
                     </div>
                     <div className="row">
-                        <ViewTextLong label={'Project informatie link tekst'} value={textLinkUnderstandInfo} />
+                        <ViewTextLong label={'Project informatie tekst'} value={textLinkUnderstandInfo} />
                     </div>
                     <hr />
                     <div className="row">

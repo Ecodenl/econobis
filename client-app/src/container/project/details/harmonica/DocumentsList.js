@@ -8,7 +8,7 @@ class DocumentsList extends Component {
     }
 
     openItem = id => {
-        hashHistory.push(`/document/${id}/project`);
+        hashHistory.push(`/document/${id}`);
     };
 
     render() {

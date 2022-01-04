@@ -380,9 +380,7 @@ class DocumentNewApp extends Component {
                     if (payload.data.data.filename.toLowerCase().endsWith('.pdf')) {
                         hashHistory.push(`/document/inzien/${payload.data.data.id}`);
                     } else {
-                        hashHistory.push(
-                            `/document/${payload.data.data.id}/${payload.data.data.documentCreatedFrom.id}`
-                        );
+                        hashHistory.push(`/document/${payload.data.data.id}`);
                     }
                 })
                 .catch(error => {

@@ -28,7 +28,7 @@ class DocumentDetailsForm extends Component {
             <div>{loadingText}</div>
         ) : (
             <div>
-                <DocumentFormGeneral documentCreatedFrom={this.props.documentDetails.documentCreatedFrom} />
+                <DocumentFormGeneral createdFrom={this.props.createdFrom} />
                 <DocumentDetailsFormConclusion />
             </div>
         );

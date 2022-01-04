@@ -9,7 +9,7 @@ import { updateDocument } from '../../../../actions/document/DocumentDetailsActi
 import DocumentDetailsAPI from '../../../../api/document/DocumentDetailsAPI';
 import InputToggle from '../../../../components/form/InputToggle';
 
-class DocumentDetailsFormProjectEdit extends Component {
+class DocumentDetailsFormParticipantEdit extends Component {
     constructor(props) {
         super(props);
 
@@ -93,9 +93,11 @@ class DocumentDetailsFormProjectEdit extends Component {
                 <div>
                     <div className="row">
                         <InputText
-                            label="Project"
-                            name={'project'}
-                            value={this.props.documentDetails.project && this.props.documentDetails.project.name}
+                            label="Deelnemer project"
+                            name={'participant'}
+                            value={
+                                this.props.documentDetails.participant && this.props.documentDetails.participant.name
+                            }
                             readOnly={true}
                         />
                         <InputText
@@ -104,6 +106,21 @@ class DocumentDetailsFormProjectEdit extends Component {
                             value={
                                 this.props.documentDetails.documentType && this.props.documentDetails.documentType.name
                             }
+                            readOnly={true}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputText
+                            label="Contact"
+                            name={'contact'}
+                            value={this.props.documentDetails.contact && this.props.documentDetails.contact.fullName}
+                            readOnly={true}
+                        />
+                        <InputText
+                            label="Project"
+                            name={'project'}
+                            value={this.props.documentDetails.project && this.props.documentDetails.project.name}
                             readOnly={true}
                         />
                     </div>
@@ -248,4 +265,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentDetailsFormProjectEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(DocumentDetailsFormParticipantEdit);

@@ -14,8 +14,11 @@ function AdministrationDetailsHarmonica({ administration }) {
         });
     }
 
-    function newDocument(type) {
-        hashHistory.push(`/document/nieuw/${type}/administratie/${administration.id}`);
+    function newDocumentNotOnPortal(type) {
+        hashHistory.push(`/document/nieuw/${type}/eco/administratie/${administration.id}`);
+    }
+    function newDocumentOnPortal(type) {
+        hashHistory.push(`/document/nieuw/${type}/portal/administratie/${administration.id}`);
     }
 
     return (
@@ -25,7 +28,7 @@ function AdministrationDetailsHarmonica({ administration }) {
                 toggleShowList={() => toggleShowList('documentsNotOnPortal')}
                 showDocumentsList={showList.documentsNotOnPortal}
                 documentCount={administration.documentCountNotOnPortal}
-                newDocument={newDocument}
+                newDocument={newDocumentNotOnPortal}
                 relatedDocuments={administration.relatedDocumentsNotOnPortal}
             />
 
@@ -34,7 +37,7 @@ function AdministrationDetailsHarmonica({ administration }) {
                 toggleShowList={() => toggleShowList('documentsOnPortal')}
                 showDocumentsList={showList.documentsOnPortal}
                 documentCount={administration.documentCountOnPortal}
-                newDocument={newDocument}
+                newDocument={newDocumentOnPortal}
                 relatedDocuments={administration.relatedDocumentsOnPortal}
             />
         </div>

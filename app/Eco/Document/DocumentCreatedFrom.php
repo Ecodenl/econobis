@@ -24,7 +24,7 @@ class DocumentCreatedFrom extends EnumWithIdAndName
     {
         return [
             new static('administration', 'Administratie'),
-            new static('campagne', 'Campagne'),
+            new static('campaign', 'Campagne'),
             new static('contact', 'Contact'),
             new static('contactgroup', 'Contactgroep'),
             new static('participant', 'Deelnemer'),

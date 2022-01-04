@@ -8,6 +8,10 @@ import DocumentDetailsFormEdit from './DocumentFormEdit';
 import DocumentDetailsFormView from './DocumentFormView';
 import DocumentDetailsFormProjectEdit from './DocumentFormProjectEdit';
 import DocumentDetailsFormProjectView from './DocumentFormProjectView';
+import DocumentDetailsFormParticipantEdit from './DocumentFormParticipantEdit';
+import DocumentDetailsFormAdministrationEdit from './DocumentFormAdministrationEdit';
+import DocumentDetailsFormParticipantView from './DocumentFormParticipantView';
+import DocumentDetailsFormAdministrationView from './DocumentFormAdministrationView';
 
 class DocumentDetailsFormGeneral extends Component {
     constructor(props) {
@@ -57,11 +61,19 @@ class DocumentDetailsFormGeneral extends Component {
                     {this.state.showEdit && this.props.permissions.createDocument ? (
                         this.props.documentCreatedFrom.id === 'project' ? (
                             <DocumentDetailsFormProjectEdit switchToView={this.switchToView} />
+                        ) : this.props.documentCreatedFrom.id === 'participant' ? (
+                            <DocumentDetailsFormParticipantEdit switchToView={this.switchToView} />
+                        ) : this.props.documentCreatedFrom.id === 'administration' ? (
+                            <DocumentDetailsFormAdministrationEdit switchToView={this.switchToView} />
                         ) : (
                             <DocumentDetailsFormEdit switchToView={this.switchToView} />
                         )
                     ) : this.props.documentCreatedFrom.id === 'project' ? (
                         <DocumentDetailsFormProjectView switchToEdit={this.switchToEdit} />
+                    ) : this.props.documentCreatedFrom.id === 'participant' ? (
+                        <DocumentDetailsFormParticipantView switchToEdit={this.switchToEdit} />
+                    ) : this.props.documentCreatedFrom.id === 'administration' ? (
+                        <DocumentDetailsFormAdministrationView switchToEdit={this.switchToEdit} />
                     ) : (
                         <DocumentDetailsFormView switchToEdit={this.switchToEdit} />
                     )}
@@ -74,6 +86,7 @@ class DocumentDetailsFormGeneral extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
+        documentCreatedFrom: state.documentDetails.documentCreatedFrom,
     };
 };
 

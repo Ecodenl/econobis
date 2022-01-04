@@ -261,8 +261,16 @@ const Routes = () => {
                     <Route path="cooperatie" component={CooperationDetailsApp} />
                     /* Documents */
                     <Route path="documenten" component={DocumentsListApp} />
-                    <Route path="document/nieuw/:type" component={DocumentNewApp} />
-                    <Route path="document/nieuw/:type/administratie/:administrationId" component={DocumentNewApp} />
+                    <Route path="document/nieuw/:type/document" component={DocumentNewApp} />
+                    <Route
+                        path="document/nieuw/:type/:showOnPortal/administratie/:administrationId"
+                        component={DocumentNewApp}
+                    />
+                    <Route path="document/nieuw/:type/:showOnPortal/project/:projectId" component={DocumentNewApp} />
+                    <Route
+                        path="document/nieuw/:type/:showOnPortal/project/:projectId/deelnemer/:participantId/contact/:contactId"
+                        component={DocumentNewApp}
+                    />
                     <Route path="document/nieuw/:type/email-bijlage/:emailAttachmentId" component={DocumentNewApp} />
                     <Route path="document/nieuw/:type/campagne/:campaignId" component={DocumentNewApp} />
                     <Route path="document/nieuw/:type/contact-groep/:contactGroupId" component={DocumentNewApp} />
@@ -271,22 +279,18 @@ const Routes = () => {
                     <Route path="document/nieuw/:type/woningdossier/:housingFileId" component={DocumentNewApp} />
                     <Route path="document/nieuw/:type/intake/:intakeId/contact/:contactId" component={DocumentNewApp} />
                     <Route path="document/nieuw/:type/maatregel/:measureId" component={DocumentNewApp} />
-                    <Route path="document/nieuw/:type/project/:projectId" component={DocumentNewApp} />
                     <Route path="document/nieuw/:type/offerteverzoek/:quotationRequestId" component={DocumentNewApp} />
                     <Route path="document/nieuw/:type/taak/:taskId" component={DocumentNewApp} />
                     <Route
                         path="document/nieuw/:type/kans/:opportunityId/intake/:intakeId/contact/:contactId"
                         component={DocumentNewApp}
                     />
-                    <Route
-                        path="document/nieuw/:type/project/:projectId/deelnemer/:participantId/contact/:contactId"
-                        component={DocumentNewApp}
-                    />
                     {/* todo WM: worden deze nog gebruikt? */}
                     {/*<Route path="document/nieuw/:type/kans/:opportunityId" component={DocumentNewApp} />*/}
                     {/*<Route path="document/nieuw/:type/intake/:intakeId" component={DocumentNewApp} />*/}
                     {/* todo WM: end */}
-                    <Route path="document/:id" component={DocumentDetailsApp} />
+                    {/*<Route path="document/:id" component={DocumentDetailsApp} />*/}
+                    <Route path="document/:id/:createdFrom" component={DocumentDetailsApp} />
                     <Route path="document/inzien/:id" component={DocumentViewApp} />
                     /* Document templates */
                     <Route path="document-templates" component={DocumentTemplatesListApp} />

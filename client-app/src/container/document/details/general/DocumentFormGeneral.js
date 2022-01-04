@@ -86,6 +86,7 @@ class DocumentDetailsFormGeneral extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
+        documentCreatedFrom: state.documentDetails.documentCreatedFrom,
     };
 };
 

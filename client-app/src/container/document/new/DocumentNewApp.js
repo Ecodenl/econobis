@@ -49,7 +49,7 @@ class DocumentNewApp extends Component {
         } else if (props.params.administrationId) {
             documentCreatedFrom = 'administration';
         } else if (props.params.campaignId) {
-            documentCreatedFrom = 'campagne';
+            documentCreatedFrom = 'campaign';
         } else if (props.params.taskId) {
             documentCreatedFrom = 'task';
         } else if (props.params.projectId) {
@@ -60,6 +60,8 @@ class DocumentNewApp extends Component {
             documentCreatedFrom = 'contactgroup';
         } else if (props.params.contactId) {
             documentCreatedFrom = 'contact';
+        } else if (props.params.emailAttachmentId) {
+            documentCreatedFrom = 'emailattachment';
         } else {
             documentCreatedFrom = 'document';
         }
@@ -189,7 +191,7 @@ class DocumentNewApp extends Component {
                         ...this.state.document,
                         attachment: file[0],
                         filename: payload.headers['x-filename'],
-                        contactId: payload.headers['x-contactid'],
+                        contactId: payload.headers['x-contactid'] ? payload.headers['x-contactid'] : '',
                     },
                 });
             });
@@ -378,7 +380,9 @@ class DocumentNewApp extends Component {
                     if (payload.data.data.filename.toLowerCase().endsWith('.pdf')) {
                         hashHistory.push(`/document/inzien/${payload.data.data.id}`);
                     } else {
-                        hashHistory.push(`/document/${payload.data.data.id}`);
+                        hashHistory.push(
+                            `/document/${payload.data.data.id}/${payload.data.data.documentCreatedFrom.id}`
+                        );
                     }
                 })
                 .catch(error => {

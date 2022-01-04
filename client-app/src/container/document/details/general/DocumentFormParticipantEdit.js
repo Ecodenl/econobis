@@ -137,7 +137,7 @@ class DocumentDetailsFormParticipantEdit extends Component {
                         <div className="form-group col-sm-12">
                             <div className="row">
                                 <div className="col-sm-3">
-                                    <label className="col-sm-12">Omschrijving</label>
+                                    <label className="col-sm-12 required">Omschrijving</label>
                                 </div>
                                 <div className="col-sm-6">
                                     <input
@@ -148,7 +148,6 @@ class DocumentDetailsFormParticipantEdit extends Component {
                                         name="description"
                                         value={description}
                                         onChange={this.handleInputChange}
-                                        required={'required'}
                                     />
                                 </div>
                             </div>

@@ -12,7 +12,7 @@ class DocumentsList extends Component {
     }
 
     openItem = id => {
-        hashHistory.push(`/document/${id}/order`);
+        hashHistory.push(`/document/${id}`);
     };
 
     render() {

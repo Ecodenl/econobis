@@ -31,7 +31,7 @@ class DocumentsListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`document/${id}/document`);
+        hashHistory.push(`document/${id}`);
     }
 
     download(id) {

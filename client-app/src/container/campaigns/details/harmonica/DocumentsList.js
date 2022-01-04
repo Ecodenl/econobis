@@ -4,7 +4,7 @@ import moment from 'moment';
 
 function DocumentsList({ relatedDocuments }) {
     function openItem(id) {
-        hashHistory.push(`/document/${id}/campaign`);
+        hashHistory.push(`/document/${id}`);
     }
 
     if (relatedDocuments.length === 0) return <div>Geen documenten gevonden.</div>;

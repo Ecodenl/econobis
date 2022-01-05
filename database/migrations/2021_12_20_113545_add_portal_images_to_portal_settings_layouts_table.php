@@ -77,8 +77,8 @@ class AddPortalImagesToPortalSettingsLayoutsTable extends Migration
             }
 
             $portalSettingsLayoutDefault->portal_logo_file_name_header = 'logo-header-' . $portalSettingsLayoutDefaultId . '.png';
-            $portalSettingsLayoutDefault->portal_image_bg_file_name_login = 'background-header-' . $portalSettingsLayoutDefaultId . '.png';
-            $portalSettingsLayoutDefault->portal_image_bg_file_name_header = 'background-login-' . $portalSettingsLayoutDefaultId . '.png';
+            $portalSettingsLayoutDefault->portal_image_bg_file_name_login = 'background-login-' . $portalSettingsLayoutDefaultId . '.png';
+            $portalSettingsLayoutDefault->portal_image_bg_file_name_header = 'background-header-' . $portalSettingsLayoutDefaultId . '.png';
             $portalSettingsLayoutDefault->save();
         }
 

@@ -668,7 +668,7 @@ white-space: nowrap;
 /* ----------------- LOGO STYLING -----------------*/
 header .header-logo {
 max-width: 450px;
-padding: 0 0;
+padding: 14px 0;
 }
 @media only screen and (max-width: 480px) {
 header .header-logo {

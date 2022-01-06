@@ -19,6 +19,7 @@ import Image from 'react-bootstrap/es/Image';
 import PortalLogoHeaderLayoutNew from './PortalLogoHeaderLayoutNew';
 import PortalImageBgLoginLayoutNew from './PortalImageBgLoginLayoutNew';
 import PortalImageBgHeaderLayoutNew from './PortalImageBgHeaderLayoutNew';
+// import PortalLogoLayoutNewCrop from './PortalLogoLayoutNewCrop';
 
 class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -348,6 +349,9 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         {this.state.newLogo && (
                             <PortalLogoLayoutNew toggleShowNewLogo={this.toggleNewLogo} addLogo={this.addLogo} />
                         )}
+                        {/*{this.state.showCrop && (*/}
+                        {/*    <PortalLogoLayoutNewCrop toggleShowCrop={this.toggleCrop} image={this.state.file} />*/}
+                        {/*)}*/}
                         <div className="row">
                             <InputText
                                 Men

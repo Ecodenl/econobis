@@ -54,6 +54,8 @@ export default (type, field) => {
                     return 'Kans maatregel specifiek';
                 case 'opportunityEvaluationRealised':
                     return 'Kans status evaluatie uitgevoerd';
+                case 'opportunityCampaign':
+                    return 'Kans campagne';
                 case 'portalUser':
                     return 'Portal gebruiker actief';
                 case 'product':

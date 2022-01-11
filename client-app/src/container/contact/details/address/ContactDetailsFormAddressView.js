@@ -4,7 +4,17 @@ import { connect } from 'react-redux';
 import GetNameByIdHelper from '../../../../helpers/GetNameByIdHelper';
 
 const ContactDetailFormAddressView = props => {
-    const { typeId, street, number, addition, postalCode, city, primary, country } = props.address;
+    const {
+        typeId,
+        street,
+        number,
+        addition,
+        postalCode,
+        city,
+        primary,
+        country,
+        primaryAddressEnergySupplier,
+    } = props.address;
 
     return (
         <div
@@ -16,11 +26,18 @@ const ContactDetailFormAddressView = props => {
                 <div className="col-sm-1">
                     <GetNameByIdHelper id={typeId} items={props.addressTypes} />
                 </div>
-                <div className="col-sm-2">{street + ' ' + number + (addition ? '-' + addition : '')}</div>
+                <div className="col-sm-3">{street + ' ' + number + (addition ? '-' + addition : '')}</div>
                 <div className="col-sm-2">{postalCode}</div>
-                <div className="col-sm-2">{city}</div>
-                <div className="col-sm-2">{country ? country.name : ''}</div>
-                <div className="col-sm-2">{primary ? <span className="pull-right">Primair</span> : ''}</div>
+                <div className="col-sm-2">
+                    {city} {country ? '(' + country.id + ')' : ''}
+                </div>
+                {/*<div className="col-sm-2">{country ? country.name : ''}</div>*/}
+                <div className="col-sm-2">
+                    {primaryAddressEnergySupplier && primaryAddressEnergySupplier.energySupplier
+                        ? primaryAddressEnergySupplier.energySupplier.name
+                        : ''}
+                </div>
+                <div className="col-sm-1">{primary ? <span className="pull-right">Primair</span> : ''}</div>
             </div>
             <div className="col-sm-1">
                 {props.showActionButtons ? (

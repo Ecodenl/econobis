@@ -126,7 +126,7 @@ class ExtraFilter extends RequestExtraFilter
         // Filtering hierop wordt in applyProductFilter of applyOpportunityMeasureCategoryFilter geregeld.
         if($filter['connectedTo']) return;
 
-        // Betreft geen uitzondering; standaar functie doorlopen:
+        // Betreft geen uitzondering; standaard functie doorlopen:
         $this->applySingle($query, $filter['field'], $filter['type'], $filter['data'], $filterType);
     }
 
@@ -376,6 +376,21 @@ class ExtraFilter extends RequestExtraFilter
             }
         }
 
+    }
+
+    protected function applyCreatedAtFilter($query, $type, $data)
+    {
+        if($type == 'eq'
+            || $type == 'neq'
+            || $type == 'lt'
+            || $type == 'lte'
+            || $type == 'gt'
+            || $type == 'gte'
+        ){
+            RequestFilter::applyFilterWhereRaw($query, 'cast(created_at as date)', $type, "'" . $data . "'");
+        } else {
+            RequestFilter::applyFilter($query, 'created_at', $type, $data);
+        }
     }
 
     protected function applyDateOfBirthFilter($query, $type, $data)

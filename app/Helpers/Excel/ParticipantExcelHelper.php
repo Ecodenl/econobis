@@ -317,7 +317,7 @@ class ParticipantExcelHelper
                 $rowData[44] = $participant->phonenumber_3;
                 $rowData[45] = $participant->energy_supplier_name;
                 $rowData[46] = $participant->energy_supplier_member_since;
-                $rowData[47] = $participant->address->primaryAddressEnergySupplier ? $participant->address->primaryAddressEnergySupplier->es_number : '';
+                $rowData[47] = $participant->address && $participant->address->primaryAddressEnergySupplier ? $participant->address->primaryAddressEnergySupplier->es_number : '';
                 $rowData[48] = $participant->address && !empty($participant->address->ean_electricity) ? 'EAN: ' . $participant->address->ean_electricity : '';
                 $rowData[49] = $participant->address && !empty($participant->address->ean_gas) ? 'EAN: ' . $participant->address->ean_gas : '';
                 $rowData[50] = $projectCode;

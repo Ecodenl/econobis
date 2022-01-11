@@ -22,7 +22,7 @@ class AddressEnergySupplierObserver
 
     public function saved(AddressEnergySupplier $addressEnergySupplier)
     {
-        if($addressEnergySupplier->isDirty('member_since') )
+        if($addressEnergySupplier->isDirty('member_since') || $addressEnergySupplier->isDirty('end_date'))
         {
             $addressEnergySupplierController = new AddressEnergySupplierController();
             $addressEnergySupplierController->determineIsCurrentSupplier($addressEnergySupplier);

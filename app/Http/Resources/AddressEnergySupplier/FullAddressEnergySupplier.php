@@ -19,7 +19,10 @@ class FullAddressEnergySupplier extends JsonResource
     public function toArray($request)
     {
         $addressEnergySupplierHelper = new AddressEnergySupplierHelper();
-        $isDoubleEsNumber = $addressEnergySupplierHelper->checkDoubleEsNumber($this->id, $this->energy_supplier_id, $this->es_number);
+        $addressEnergySuppliersWithDoubleEsNumber = false;
+        if(!empty($this->es_number)){
+            $addressEnergySuppliersWithDoubleEsNumber = $addressEnergySupplierHelper->addressEnergySuppliersWithDoubleEsNumber($this->id, $this->energy_supplier_id, $this->es_number);
+        }
 
         return [
             'id' => $this->id,
@@ -41,7 +44,7 @@ class FullAddressEnergySupplier extends JsonResource
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'esNumber' => $this->es_number,
-            'isDoubleEsNumber' => $isDoubleEsNumber,
+            'addressEnergySuppliersWithDoubleEsNumber' => $addressEnergySuppliersWithDoubleEsNumber,
         ];
     }
 }

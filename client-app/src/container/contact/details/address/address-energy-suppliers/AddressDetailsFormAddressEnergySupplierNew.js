@@ -122,7 +122,7 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
             AddressEnergySupplierAPI.newAddressEnergySupplier(addressEnergySupplier)
                 .then(payload => {
                     this.props.newStateAddressEnergySupplier(payload.data.data);
-                    if (this.state.showWarningEsNumber && payload.data.data.isDoubleEsNumber) {
+                    if (this.state.showWarningEsNumber && payload.data.data.addressEnergySuppliersWithDoubleEsNumber) {
                         this.props.setError(
                             412,
                             'Klantnummer leverancier ' +

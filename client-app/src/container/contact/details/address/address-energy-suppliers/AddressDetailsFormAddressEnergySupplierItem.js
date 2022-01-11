@@ -9,6 +9,7 @@ import AddressDetailsFormAddressEnergySupplierView from './AddressDetailsFormAdd
 import AddressDetailsFormAddressEnergySupplierEdit from './AddressDetailsFormAddressEnergySupplierEdit';
 import AddressDetailsFormAddressEnergySupplierDelete from './AddressDetailsFormAddressEnergySupplierDelete';
 import { isEqual } from 'lodash';
+import Modal from '../../../../../components/modal/Modal';
 
 class AddressDetailsFormAddressEnergySupplierItem extends Component {
     constructor(props) {
@@ -20,6 +21,10 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
             showEdit: false,
             showDelete: false,
             showWarningEsNumber: true,
+            showMessageDoubleEsNumber: false,
+            messageDoubleEsNumber: '',
+            messageDoubleEsName: '',
+            doubleEsNumberArray: [],
             addressEnergySupplier: {
                 ...props.addressEnergySupplier,
             },
@@ -120,6 +125,25 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
         });
     }
 
+    setShowMessageDoubleEsNumber(esNumber, energySupplierName, doubleEsNumberArray) {
+        this.setState({
+            ...this.state,
+            showMessageDoubleEsNumber: true,
+            messageDoubleEsNumber: esNumber,
+            messageDoubleEsName: energySupplierName,
+            doubleEsNumberArray: doubleEsNumberArray,
+        });
+    }
+    setHideMessageDoubleEsNumber = () => {
+        this.setState({
+            ...this.state,
+            showMessageDoubleEsNumber: false,
+            messageDoubleEsNumber: '',
+            messageDoubleEsName: '',
+            doubleEsNumberArray: [],
+        });
+    };
+
     handleSubmit = event => {
         event.preventDefault();
 
@@ -151,14 +175,11 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
             AddressEnergySupplierAPI.updateAddressEnergySupplier(addressEnergySupplier)
                 .then(payload => {
                     this.props.updateStateAddressEnergySupplier(payload.data.data);
-                    if (this.state.showWarningEsNumber && payload.data.data.isDoubleEsNumber) {
-                        this.props.setError(
-                            412,
-                            'Klantnummer leverancier ' +
-                                payload.data.data.esNumber +
-                                ' komt al voor bij een andere adres voor leverancier ' +
-                                payload.data.data.energySupplier.name +
-                                '. (N.B. dit kan ook bij een ander contact zijn). Gewijzigde gegevens van deze adres/energie leverancier zijn wel opgeslagen'
+                    if (this.state.showWarningEsNumber && payload.data.data.addressEnergySuppliersWithDoubleEsNumber) {
+                        this.setShowMessageDoubleEsNumber(
+                            payload.data.data.esNumber,
+                            payload.data.data.energySupplier.name,
+                            payload.data.data.addressEnergySuppliersWithDoubleEsNumber
                         );
                         this.toggleShowWarningEsNumber();
                     } else {
@@ -203,6 +224,31 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
                         address={this.state.address}
                         {...this.state.addressEnergySupplier}
                     />
+                )}
+                {this.state.showMessageDoubleEsNumber && (
+                    <Modal
+                        closeModal={this.setHideMessageDoubleEsNumber}
+                        // modalClassName="modal-lg"
+                        showConfirmAction={false}
+                        buttonCancelText="Ok"
+                    >
+                        {'Klantnummer leverancier '} <strong>{this.state.messageDoubleEsNumber}</strong>
+                        {' komt al voor bij een andere adres voor leverancier '}
+                        <strong>{this.state.messageDoubleEsName}</strong>
+                        {
+                            '. (N.B. dit kan ook bij een ander contact zijn). Gewijzigde gegevens van deze adres/energie leverancier zijn wel opgeslagen.'
+                        }
+                        <br /> <br />
+                        {'Contacten/adressen met dezelfde klantnummer leverancier zijn:'} <br />
+                        <ul>
+                            {this.state.doubleEsNumberArray.map(item => (
+                                <li>
+                                    Contact: {item.contactName} ({item.contactNumber}) met adres:{' '}
+                                    {item.addressStreetPostalCodeCity}
+                                </li>
+                            ))}
+                        </ul>
+                    </Modal>
                 )}
             </div>
         );

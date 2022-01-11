@@ -5,10 +5,10 @@ namespace App\Console\Commands;
 use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
 use App\Eco\EnergySupplier\AddressEnergySupplier;
+use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class conversionContactEnergySupplierToAddressEnergySuppliers extends Command
 {
@@ -43,6 +43,10 @@ class conversionContactEnergySupplierToAddressEnergySuppliers extends Command
      */
     public function handle()
     {
+        $dispatcher = AddressEnergySupplier::getEventDispatcher();
+        // Remove Dispatcher
+        AddressEnergySupplier::unsetEventDispatcher();
+
         $contactEnergySuppliers = DB::table('xxx_contact_energy_supplier')->get();
 
         foreach($contactEnergySuppliers as $contactEnergySupplier) {
@@ -83,6 +87,7 @@ class conversionContactEnergySupplierToAddressEnergySuppliers extends Command
                 'es_number' => $contactEnergySupplier->es_number,
                 'energy_supply_type_id' => $contactEnergySupplier->contact_energy_supply_type_id,
                 'member_since' => $contactEnergySupplier->member_since,
+                'switch_date' => $contactEnergySupplier->switch_date,
                 'energy_supply_status_id' => $contactEnergySupplier->contact_energy_supply_status_id,
                 'is_current_supplier' => $contactEnergySupplier->is_current_supplier,
             ]);
@@ -175,6 +180,13 @@ class conversionContactEnergySupplierToAddressEnergySuppliers extends Command
             }
         }
 
+        $addressEnergySupplierController = new AddressEnergySupplierController();
+        $addressEnergySuppliers = AddressEnergySupplier::all();
+        foreach($addressEnergySuppliers as $addressEnergySupplier) {
+            $addressEnergySupplierController->determineIsCurrentSupplier($addressEnergySupplier);
+        }
+
+
 // Onderstaand moet per type electra / gas !
 //        $addressEnergySuppliers = AddressEnergySupplier::where('is_current_supplier', false)->whereNull('end_date')->orderBy('member_since', 'asc')->orderBy('id', 'asc')->get();
 //        foreach($addressEnergySuppliers as $addressEnergySupplier) {
@@ -199,6 +211,9 @@ class conversionContactEnergySupplierToAddressEnergySuppliers extends Command
 ////                $addressEnergySupplier->save();
 //            }
 //        }
+
+        // Re-add Dispatcher
+        AddressEnergySupplier::setEventDispatcher($dispatcher);
 
     }
 }

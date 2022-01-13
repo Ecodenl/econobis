@@ -32,6 +32,7 @@ class ExtraFilter extends RequestExtraFilter
         'opportunityStatus',
         'opportunityMeasure',
         'opportunityEvaluationRealised',
+        'opportunityCampaign',
         'campaign',
         'product',
         'dateStart',
@@ -125,7 +126,7 @@ class ExtraFilter extends RequestExtraFilter
         // Filtering hierop wordt in applyProductFilter of applyOpportunityMeasureCategoryFilter geregeld.
         if($filter['connectedTo']) return;
 
-        // Betreft geen uitzondering; standaar functie doorlopen:
+        // Betreft geen uitzondering; standaard functie doorlopen:
         $this->applySingle($query, $filter['field'], $filter['type'], $filter['data'], $filterType);
     }
 
@@ -377,6 +378,21 @@ class ExtraFilter extends RequestExtraFilter
 
     }
 
+    protected function applyCreatedAtFilter($query, $type, $data)
+    {
+        if($type == 'eq'
+            || $type == 'neq'
+            || $type == 'lt'
+            || $type == 'lte'
+            || $type == 'gt'
+            || $type == 'gte'
+        ){
+            RequestFilter::applyFilterWhereRaw($query, 'cast(created_at as date)', $type, "'" . $data . "'");
+        } else {
+            RequestFilter::applyFilter($query, 'created_at', $type, $data);
+        }
+    }
+
     protected function applyDateOfBirthFilter($query, $type, $data)
     {
         $query->whereHas('person', function ($query) use ($type, $data) {
@@ -540,19 +556,26 @@ class ExtraFilter extends RequestExtraFilter
             return ($element['connectedTo'] == $connectName && $element['field'] == 'opportunityStatus');
         }));
         $opportunityStatusFilter = $opportunityStatusFilter ? $opportunityStatusFilter[0] : null;
+
         $opportunityMeasureFilter = array_values(array_filter($this->filters, function($element) use($connectName){
             return ($element['connectedTo'] == $connectName && $element['field'] == 'opportunityMeasure');
         }));
         $opportunityMeasureFilter = $opportunityMeasureFilter ? $opportunityMeasureFilter[0] : null;
+
         $opportunityEvaluationRealisedFilter = array_values(array_filter($this->filters, function($element) use($connectName){
             return ($element['connectedTo'] == $connectName && $element['field'] == 'opportunityEvaluationRealised');
         }));
         $opportunityEvaluationRealisedFilter = $opportunityEvaluationRealisedFilter ? $opportunityEvaluationRealisedFilter[0] : null;
 
+        $opportunityCampaignFilter = array_values(array_filter($this->filters, function($element) use($connectName){
+            return ($element['connectedTo'] == $connectName && $element['field'] == 'opportunityCampaign');
+        }));
+        $opportunityCampaignFilter = $opportunityCampaignFilter ? $opportunityCampaignFilter[0] : null;
+
         if(empty($data)){
             switch($type) {
                 case 'eq':
-                    $query->whereHas('opportunities', function ($query) use ($data, $opportunityStatusFilter, $opportunityMeasureFilter, $opportunityEvaluationRealisedFilter) {
+                    $query->whereHas('opportunities', function ($query) use ($data, $opportunityStatusFilter, $opportunityMeasureFilter, $opportunityEvaluationRealisedFilter, $opportunityCampaignFilter) {
                         // Eventueel extra filters toepassen
                         if($opportunityStatusFilter && ($opportunityStatusFilter['data'] || $opportunityStatusFilter['type'] == 'nl' || $opportunityStatusFilter['type'] == 'nnl') ){
                             static::applyFilter($query, 'opportunities.status_id', $opportunityStatusFilter['type'], $opportunityStatusFilter['data']);
@@ -567,7 +590,13 @@ class ExtraFilter extends RequestExtraFilter
                         if($opportunityStatusFilter && $opportunityEvaluationRealisedFilter['data']){
                             static::applyFilter($query, 'opportunities.evaluation_is_realised', $opportunityEvaluationRealisedFilter['type'], $opportunityEvaluationRealisedFilter['data']);
                         }
-
+                        if($opportunityStatusFilter && $opportunityCampaignFilter['data']) {
+                            $query->whereHas('intake', function ($query) use ($opportunityCampaignFilter) {
+                                $query->where('intakes.campaign_id', $opportunityCampaignFilter['data']);
+                            });
+                        }elseif($opportunityStatusFilter && $opportunityCampaignFilter['type'] == 'neq'){
+                            $query->whereDoesntHave('intake');
+                        }
                     });
                     break;
                 default:
@@ -588,7 +617,7 @@ class ExtraFilter extends RequestExtraFilter
                     });
                     break;
                 default:
-                    $query->whereHas('opportunities', function ($query) use ($data, $opportunityStatusFilter, $opportunityMeasureFilter, $opportunityEvaluationRealisedFilter) {
+                    $query->whereHas('opportunities', function ($query) use ($data, $opportunityStatusFilter, $opportunityMeasureFilter, $opportunityEvaluationRealisedFilter, $opportunityCampaignFilter) {
                         $query->where('measure_category_id', $data);
 
                         // Eventueel extra filters toepassen
@@ -602,6 +631,11 @@ class ExtraFilter extends RequestExtraFilter
                         }
                         if($opportunityStatusFilter && $opportunityEvaluationRealisedFilter['data']){
                             static::applyFilter($query, 'opportunities.evaluation_is_realised', $opportunityEvaluationRealisedFilter['type'], $opportunityEvaluationRealisedFilter['data']);
+                        }
+                        if($opportunityStatusFilter && $opportunityCampaignFilter['data'] ){
+                            $query->whereHas('intake', function($query) use ($opportunityCampaignFilter) {
+                                $query->where('intakes.campaign_id', $opportunityCampaignFilter['data']);
+                            });
                         }
                     });
                     break;

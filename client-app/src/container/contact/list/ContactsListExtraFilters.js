@@ -111,6 +111,13 @@ class ContactsListExtraFilters extends Component {
                 connectedTo: data + filterNumber,
             });
 
+            filters.splice(filterNumber + 4, 0, {
+                field: 'opportunityCampaign',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
+            });
+
             amountOfFilters = filters.length;
         } else {
             filters[filterNumber].field = data;
@@ -303,6 +310,11 @@ class ContactsListExtraFilters extends Component {
                 name: 'Kans status evaluatie uitgevoerd',
                 type: 'dropdownHas',
                 dropDownOptions: this.props.opportunityEvaluationStatuses,
+            },
+            opportunityCampaign: {
+                name: 'Kans campagne',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.campaigns,
             },
         };
 

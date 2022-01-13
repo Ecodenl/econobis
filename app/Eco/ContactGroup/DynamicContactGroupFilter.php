@@ -2,6 +2,7 @@
 
 namespace App\Eco\ContactGroup;
 
+use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureCategory;
@@ -65,6 +66,14 @@ class DynamicContactGroupFilter extends Model
                 if($this->data){
                     $opportunityEvaluationStatus = OpportunityEvaluationStatus::find($this->data);
                     return $opportunityEvaluationStatus ? $opportunityEvaluationStatus->name : ''   ;
+                }
+                return '';
+            }
+            // opportunityCampaign omzetten
+            if ($this->field == 'opportunityCampaign'){
+                if($this->data){
+                    $campaign = Campaign::find($this->data);
+                    return $campaign ? $campaign->name : ''   ;
                 }
                 return '';
             }

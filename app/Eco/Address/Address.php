@@ -78,6 +78,10 @@ class Address extends Model
     }
 
     public function getPostalCodeNumberAdditionAttribute(){
+        return str_replace(' ', '', $this->postal_code) . ' ' . $this->number . ($this->addition ? ('-' . $this->addition) : '');
+    }
+
+    public function getPostalCodeNumberAdditionForDoubleCheckAttribute(){
         return $this->postal_code . '-' . $this->number . '-' . $this->addition;
     }
 

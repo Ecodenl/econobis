@@ -464,6 +464,7 @@ class ExternalWebformController extends Controller
             $data['contact']['address_addition'] = $addressAddition ;
         }
 
+        $data['contact']['address_addition'] = str_replace(' ', '', $data['contact']['address_addition']);
         $data['contact']['address_addition'] = str_replace('-', '', $data['contact']['address_addition']);
 
         return $data;

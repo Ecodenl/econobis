@@ -549,6 +549,13 @@ const DefaultContactPersonalEdit = function({
                                             id="energy_supplier_id"
                                             placeholder={'Selecteer uw leverancier'}
                                             options={EnergySuppliers}
+                                            customOnChange={() => {
+                                                setFieldValue('primaryAddress.primaryAddressEnergySupplier.esNumber', '');
+                                                setFieldValue(
+                                                    'primaryAddress.primaryAddressEnergySupplier.memberSince',
+                                                    ''
+                                                );
+                                            }}
                                         />
                                     )}
                                 />

@@ -58,8 +58,26 @@ const ParticipantFormView = props => {
 
             {projectTypeCodeRef === 'postalcode_link_capital' ? (
                 <div className="row" onClick={props.switchToEdit}>
-                    <ViewText label={'Adres'} value={address ? address.streetPostalCodeCity : ''} />
-                    <ViewText label={'Adrestype'} value={address ? address.typeAndPrimary : ''} />
+                    <ViewText
+                        label={'Adres'}
+                        value={
+                            address
+                                ? address.streetPostalCodeCity
+                                : contact && contact.primaryAddress
+                                ? contact.primaryAddress.streetPostalCodeCity
+                                : ''
+                        }
+                    />
+                    <ViewText
+                        label={'Adrestype'}
+                        value={
+                            address
+                                ? address.typeAndPrimary
+                                : contact && contact.primaryAddress
+                                ? contact.primaryAddress.typeAndPrimary
+                                : ''
+                        }
+                    />
                 </div>
             ) : null}
 

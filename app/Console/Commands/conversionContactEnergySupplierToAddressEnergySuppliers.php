@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
 use App\Eco\EnergySupplier\AddressEnergySupplier;
+use App\Eco\ParticipantProject\ParticipantProject;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
@@ -186,6 +187,11 @@ class conversionContactEnergySupplierToAddressEnergySuppliers extends Command
             $addressEnergySupplierController->determineIsCurrentSupplier($addressEnergySupplier);
         }
 
+//        $participationsWithoutAddress = ParticipantProject::whereNull('address_id')->get();
+//        foreach ($participationsWithoutAddress as $participationToChange){
+//            $participationToChange->address_id = $participationToChange->contact->primaryAddress->id;
+//            $participationToChange->save();
+//        }
 
 // Onderstaand moet per type electra / gas !
 //        $addressEnergySuppliers = AddressEnergySupplier::where('is_current_supplier', false)->whereNull('end_date')->orderBy('member_since', 'asc')->orderBy('id', 'asc')->get();

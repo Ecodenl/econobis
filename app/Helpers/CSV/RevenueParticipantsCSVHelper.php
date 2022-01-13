@@ -50,7 +50,11 @@ class RevenueParticipantsCSVHelper
 
                 $participant->type = $participant->contact->getType()->name;
 
-                $address = $participant->address;
+                if($participant->address){
+                    $address = $participant->address;
+                }else{
+                    $address = $participant->contact->primaryAddress;
+                }
 
                 $participant->street = ($address ? $address->street : '');
                 $participant->street_number = ($address ? $address->number : '');

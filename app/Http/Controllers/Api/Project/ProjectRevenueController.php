@@ -245,7 +245,7 @@ class ProjectRevenueController extends ApiController
                         $lastProjectRevenueKhwSplit = $projectRevenuesKhwSplit->first();
                         if ($lastProjectRevenueKhwSplit && $lastProjectRevenueKhwSplit->date_end != $projectRevenue->date_end){
 
-                            $addressEnergySupplier = $lastProjectRevenueKhwSplit->participant->address->primaryAddressEnergySupplier;
+                            $addressEnergySupplier = $lastProjectRevenueKhwSplit->participant->address ? $lastProjectRevenueKhwSplit->participant->address->primaryAddressEnergySupplier : $lastProjectRevenueKhwSplit->participant->contact->primaryAddress->primaryAddressEnergySupplier;
                             $closingReveneuKhwSplit = new ProjectRevenue();
                             $closingReveneuKhwSplit->category_id = $lastProjectRevenueKhwSplit->category_id;
                             $closingReveneuKhwSplit->project_id = $lastProjectRevenueKhwSplit->project_id;
@@ -286,7 +286,7 @@ class ProjectRevenueController extends ApiController
                     $projectRevenueKhw = $projectRevenuesKhw->first();
                     if ($projectRevenueKhw && $projectRevenueKhw->date_end != $projectRevenue->date_end){
 
-                        $addressEnergySupplier = $projectRevenue->participant->address->primaryAddressEnergySupplier;
+                        $addressEnergySupplier = $projectRevenue->participant->address ? $projectRevenue->participant->address->primaryAddressEnergySupplier : $projectRevenue->participant->contact->primaryAddress->primaryAddressEnergySupplier;
                         $closingReveneuKhwSplit = new ProjectRevenue();
                         $closingReveneuKhwSplit->category_id = $projectRevenue->category_id;
                         $closingReveneuKhwSplit->project_id = $projectRevenue->project_id;

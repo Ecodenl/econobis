@@ -213,12 +213,24 @@ class ParticipantFormEdit extends Component {
                     <div className="row">
                         <ViewText
                             label={'Adres'}
-                            value={address ? address.streetPostalCodeCity : ''}
+                            value={
+                                address
+                                    ? address.streetPostalCodeCity
+                                    : contact && contact.primaryAddress
+                                    ? contact.primaryAddress.streetPostalCodeCity
+                                    : ''
+                            }
                             className={'col-sm-6 form-group'}
                         />
                         <ViewText
                             label={'Adrestype'}
-                            value={address ? address.typeAndPrimary : ''}
+                            value={
+                                address
+                                    ? address.streetPostalCodeCity
+                                    : contact && contact.primaryAddress
+                                    ? contact.primaryAddress.streetPostalCodeCity
+                                    : ''
+                            }
                             className={'col-sm-6 form-group'}
                         />
                     </div>

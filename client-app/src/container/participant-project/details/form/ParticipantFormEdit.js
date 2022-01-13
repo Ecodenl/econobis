@@ -226,9 +226,9 @@ class ParticipantFormEdit extends Component {
                             label={'Adrestype'}
                             value={
                                 address
-                                    ? address.streetPostalCodeCity
+                                    ? address.typeAndPrimary
                                     : contact && contact.primaryAddress
-                                    ? contact.primaryAddress.streetPostalCodeCity
+                                    ? contact.primaryAddress.typeAndPrimary
                                     : ''
                             }
                             className={'col-sm-6 form-group'}

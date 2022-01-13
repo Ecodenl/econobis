@@ -55,12 +55,12 @@ class AddressHelper
         $contactAddressesParticipants = [];
         foreach ($project->participantsProject as $participant){
             if($this->contact->id != $participant->contact->id){
-                $contactAddressesParticipants = array_unique(array_merge($contactAddressesParticipants, $participant->contact->addressesActive->pluck('id', 'postalCodeNumberAddition')->toArray()));
+                $contactAddressesParticipants = array_unique(array_merge($contactAddressesParticipants, $participant->contact->addressesActive->pluck('id', 'postalCodeNumberAdditionForDoubleCheck')->toArray()));
             }
         }
 
         $addressIsDouble = false;
-        if( array_key_exists($this->address->postalCodeNumberAddition, $contactAddressesParticipants) ){
+        if( array_key_exists($this->address->postalCodeNumberAdditionForDoubleCheck, $contactAddressesParticipants) ){
             $addressIsDouble = true;
         }
 

@@ -22,7 +22,7 @@ class RelatedParticipantProjectToContact extends JsonResource
                 'participationsDefinitive' => $this->participations_definitive,
                 'amountDefinitive' => $this->amount_definitive,
                 'projectTypeCodeRef' => $this->project->projectType->code_ref,
-                'participationPostalCodeNumberAddition' => $this->address->postalCodeNumberAddition,
+                'participationPostalCodeNumberAddition' => $this->address ? $this->address->postalCodeNumberAddition : ($this->contact->primaryAddress ? $this->contact->primaryAddress->postalCodeNumberAddition : ''),
                 'createdAt' => $this->created_at,
             ];
     }

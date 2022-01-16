@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Eco\EnergySupplier;
+namespace App\Eco\AddressEnergySupplier;
 
 use App\Eco\Address\Address;
 use App\Eco\User\User;

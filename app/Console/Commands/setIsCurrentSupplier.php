@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Eco\EnergySupplier\AddressEnergySupplier;
+use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;

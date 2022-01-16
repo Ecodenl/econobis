@@ -6,7 +6,7 @@
  * Time: 10:00
  */
 
-namespace App\Eco\EnergySupplier;
+namespace App\Eco\AddressEnergySupplier;
 
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use Illuminate\Support\Facades\Auth;

@@ -4,7 +4,7 @@ namespace App\Eco\Address;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Country\Country;
-use App\Eco\EnergySupplier\AddressEnergySupplier;
+use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Intake\Intake;
 use App\Eco\Measure\Measure;

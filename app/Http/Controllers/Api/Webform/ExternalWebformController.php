@@ -17,7 +17,7 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Country\Country;
 use App\Eco\EmailAddress\EmailAddress;
-use App\Eco\EnergySupplier\AddressEnergySupplier;
+use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplierStatus;
 use App\Eco\EnergySupplier\EnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;

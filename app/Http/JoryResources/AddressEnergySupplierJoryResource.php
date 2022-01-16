@@ -2,7 +2,7 @@
 
 namespace App\Http\JoryResources;
 
-use \App\Eco\EnergySupplier\AddressEnergySupplier;
+use \App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Http\JoryResources\Base\JoryResource;
 use Illuminate\Support\Facades\Auth;
 

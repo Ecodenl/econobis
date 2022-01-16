@@ -2,7 +2,7 @@
 
 namespace App\Helpers\AddressEnergySupplier;
 
-use App\Eco\EnergySupplier\AddressEnergySupplier;
+use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 
 class AddressEnergySupplierHelper
 {

@@ -9,7 +9,7 @@ use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\EmailAddress\EmailAddress;
-use App\Eco\EnergySupplier\AddressEnergySupplier;
+use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakeReason;
 use App\Eco\Occupation\OccupationContact;

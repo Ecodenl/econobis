@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
-use App\Eco\EnergySupplier\AddressEnergySupplier;
+use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use Illuminate\Console\Command;

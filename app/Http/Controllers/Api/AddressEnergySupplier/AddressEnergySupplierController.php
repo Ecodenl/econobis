@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\AddressEnergySupplier;
 
-use App\Eco\EnergySupplier\AddressEnergySupplier;
+use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\AddressEnergySupplier\FullAddressEnergySupplier;

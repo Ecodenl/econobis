@@ -11,6 +11,44 @@ use Carbon\Carbon;
 
 class AddressEnergySupplierController extends ApiController
 {
+    public function validatePeriodOverlapNew(RequestInput $requestInput)
+    {
+        $data = $requestInput
+            ->integer('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
+            ->integer('energySupplierId')->alias('energy_supplier_id')->next()
+            ->string('energySupplyTypeId')->validate('required|exists:energy_supply_types,id')->alias('energy_supply_type_id')->next()
+            ->date('memberSince')->whenMissing(null)->onEmpty(null)->alias('member_since')->next()
+            ->string('energySupplyStatusId')->validate('nullable|exists:energy_supply_statuses,id')->whenMissing(null)->onEmpty(null)->alias('energy_supply_status_id')->next()
+            ->date('switchDate')->whenMissing(null)->onEmpty(null)->alias('switch_date')->next()
+            ->date('endDate')->whenMissing(null)->onEmpty(null)->alias('end_date')->next()
+            ->string('esNumber')->alias('es_number')->next()
+            ->boolean('isCurrentSupplier')->alias('is_current_supplier')->next()
+            ->get();
+
+        $addressEnergySupplier = new AddressEnergySupplier();
+        $addressEnergySupplier->fill($data);
+
+        return $this->validateAddressEnergySupplier($addressEnergySupplier, false);
+    }
+
+    public function validatePeriodOverlap(RequestInput $requestInput, AddressEnergySupplier $addressEnergySupplier)
+    {
+        $data = $requestInput
+            ->integer('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
+            ->integer('energySupplierId')->alias('energy_supplier_id')->next()
+            ->string('energySupplyTypeId')->validate('required|exists:energy_supply_types,id')->alias('energy_supply_type_id')->next()
+            ->date('memberSince')->whenMissing(null)->onEmpty(null)->alias('member_since')->next()
+            ->string('energySupplyStatusId')->validate('nullable|exists:energy_supply_statuses,id')->whenMissing(null)->onEmpty(null)->alias('energy_supply_status_id')->next()
+            ->date('switchDate')->whenMissing(null)->onEmpty(null)->alias('switch_date')->next()
+            ->date('endDate')->whenMissing(null)->onEmpty(null)->alias('end_date')->next()
+            ->string('esNumber')->alias('es_number')->next()
+            ->boolean('isCurrentSupplier')->alias('is_current_supplier')->next()
+            ->get();
+
+        $addressEnergySupplier->fill($data);
+
+        return $this->validateAddressEnergySupplier($addressEnergySupplier, false);
+    }
 
     public function store(RequestInput $requestInput)
     {
@@ -30,7 +68,9 @@ class AddressEnergySupplierController extends ApiController
 
         $addressEnergySupplier->fill($data);
 
-        $this->validateAddressEnergySupplier($addressEnergySupplier, true);
+        if ($this->validateAddressEnergySupplier($addressEnergySupplier, false)) {
+            $this->setEndDateAddressEnergySupplier($addressEnergySupplier);
+        }
 
         $addressEnergySupplier->save();
 
@@ -66,7 +106,9 @@ class AddressEnergySupplierController extends ApiController
 
         $addressEnergySupplier->fill($data);
 
-        $this->validateAddressEnergySupplier($addressEnergySupplier, true);
+        if ($this->validateAddressEnergySupplier($addressEnergySupplier, false)) {
+            $this->setEndDateAddressEnergySupplier($addressEnergySupplier);
+        }
 
         $addressEnergySupplier->save();
 
@@ -98,8 +140,43 @@ class AddressEnergySupplierController extends ApiController
      */
     public function validateAddressEnergySupplier(AddressEnergySupplier $addressEnergySupplier, $withAbort = true)
     {
+        $otherAddressEnergySuppliers = $this->getOtherAddressEnergySuppliers($addressEnergySupplier);
+
+        if ($otherAddressEnergySuppliers->exists()) {
+            if($withAbort){
+                abort('422', "Periode 'Klant sinds' t/m 'Eind datum' overlapt met een andere periode voor hetzelfde adres en leverancierstype Electriciteit en/of Gas.");
+            }else{
+                return "Periode 'Klant sinds' t/m 'Eind datum' overlapt met een andere periode voor hetzelfde adres en leverancierstype Electriciteit en/of Gas.";
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param AddressEnergySupplier $addressEnergySupplier
+     */
+    private function setEndDateAddressEnergySupplier(AddressEnergySupplier $addressEnergySupplier)
+    {
+        $newEndDate = Carbon::parse($addressEnergySupplier->member_since)->subDay();
+
+        $otherAddressEnergySuppliers = $this->getOtherAddressEnergySuppliers($addressEnergySupplier);
+        foreach ($otherAddressEnergySuppliers->get() as $otherAddressEnergySupplier) {
+            if($otherAddressEnergySupplier->member_since <= $newEndDate){
+                $otherAddressEnergySupplier->end_date = $newEndDate;
+                $otherAddressEnergySupplier->save();
+            }
+        }
+    }
+
+    /**
+     * @param AddressEnergySupplier $addressEnergySupplier
+     * @return mixed
+     */
+    private function getOtherAddressEnergySuppliers(AddressEnergySupplier $addressEnergySupplier)
+    {
+        $currentId = $addressEnergySupplier ? $addressEnergySupplier->id : 0;
         $otherAddressEnergySuppliers = AddressEnergySupplier::where('address_id', '=', $addressEnergySupplier->address_id)
-            ->where('id', '!=', $addressEnergySupplier->id);
+            ->where('id', '!=', $currentId);
         if ($otherAddressEnergySuppliers->exists()) {
 
             // check periode member since till end date not overlapping for same energy supplier
@@ -136,7 +213,7 @@ class AddressEnergySupplierController extends ApiController
             if ($addressEnergySupplier->energy_supply_type_id == 1) {
                 // huidige type Gas, controleer op overlap met andere met typen Gas en Electriciteit en Gas
                 $types = [1, 3];
-            } else if($addressEnergySupplier->energy_supply_type_id == 2){
+            } else if ($addressEnergySupplier->energy_supply_type_id == 2) {
                 // huidige type Electriciteit, controleer op overlap met andere met typen Electriciteit en Electriciteit en Gas
                 $types = [2, 3];
             } else {
@@ -145,15 +222,7 @@ class AddressEnergySupplierController extends ApiController
             }
             $otherAddressEnergySuppliers->whereIn('energy_supply_type_id', $types);
         }
-
-        if ($otherAddressEnergySuppliers->exists()) {
-            if($withAbort){
-                abort('422', "Periode 'Klant sinds' t/m 'Eind datum' overlapt met een andere periode voor zelfde adres en leverancierstype Electriciteit en/of Gas");
-            }else{
-                return "Periode 'Klant sinds' t/m 'Eind datum' overlapt met een andere periode voor zelfde adres en leverancierstype Electriciteit en/of Gas";
-            }
-        }
-        return false;
+        return $otherAddressEnergySuppliers;
     }
 
     /**

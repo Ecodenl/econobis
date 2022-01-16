@@ -40,7 +40,15 @@ class AddressDetailsFormAddressEnergySupplier extends Component {
                     <div className="col-md-12 margin-10-top">
                         {this.state.showNew && (
                             <AddressDetailsFormAddressEnergySupplierNew
+                                contactId={this.props.address.contactId}
                                 addressId={this.props.address.id}
+                                memberSinceGasDisabledBefore={this.props.address.memberSinceGasDisabledBefore}
+                                memberSinceElectricityDisabledBefore={
+                                    this.props.address.memberSinceElectricityDisabledBefore
+                                }
+                                memberSinceGasAndElectricityDisabledBefore={
+                                    this.props.address.memberSinceGasAndElectricityDisabledBefore
+                                }
                                 toggleShowNew={this.toggleShowNew}
                             />
                         )}

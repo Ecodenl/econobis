@@ -128,6 +128,8 @@ Route::namespace('Api')
         Route::post('/address-energy-supplier', 'AddressEnergySupplier\AddressEnergySupplierController@store');
         Route::post('/address-energy-supplier/{addressEnergySupplier}', 'AddressEnergySupplier\AddressEnergySupplierController@update');
         Route::post('/address-energy-supplier/{addressEnergySupplier}/delete', 'AddressEnergySupplier\AddressEnergySupplierController@destroy');
+        Route::post('/address-energy-supplier-validate', 'AddressEnergySupplier\AddressEnergySupplierController@validatePeriodOverlapNew');
+        Route::post('/address-energy-supplier-validate/{addressEnergySupplier}', 'AddressEnergySupplier\AddressEnergySupplierController@validatePeriodOverlap');
 
         Route::get('contact-group/grid', 'ContactGroup\ContactGroupController@grid');
         Route::get('contact-group/peek', 'ContactGroup\ContactGroupController@peek');

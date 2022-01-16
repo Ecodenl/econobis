@@ -9,6 +9,7 @@ use App\Eco\HousingFile\HousingFile;
 use App\Eco\Intake\Intake;
 use App\Eco\Measure\Measure;
 use App\Eco\ParticipantProject\ParticipantProject;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laracasts\Presenter\PresentableTrait;
@@ -136,4 +137,41 @@ class Address extends Model
         }
         return $addressEnergySuppliers->first()->id;
     }
+
+    public function getMemberSinceGasDisabledBeforeAttribute()
+    {
+        $filterTypeIdArray = [1, 3];
+        return $this->determineMemberSinceDisabledBefore($filterTypeIdArray);
+    }
+
+    public function getMemberSinceElectricityDisabledBeforeAttribute()
+    {
+        $filterTypeIdArray = [2, 3];
+        return $this->determineMemberSinceDisabledBefore($filterTypeIdArray);
+    }
+
+    public function getMemberSinceGasAndElectricityDisabledBeforeAttribute()
+    {
+        $filterTypeIdArray = [1, 2, 3];
+        return $this->determineMemberSinceDisabledBefore($filterTypeIdArray);
+    }
+
+    /**
+     * @param array $filterTypeIdArray
+     * @return string
+     */
+    private function determineMemberSinceDisabledBefore(array $filterTypeIdArray): string
+    {
+        $latestAddressEnergySuppliers = AddressEnergySupplier::where('address_id', $this->id)
+            ->whereIn('energy_supply_type_id', $filterTypeIdArray)
+            ->orderBy('member_since', 'desc');
+        if ($latestAddressEnergySuppliers->exists()) {
+            $latestAddressEnergySupplier = $latestAddressEnergySuppliers->first();
+            $memberSinceDisabledBefore = Carbon::parse($latestAddressEnergySupplier->member_since)->format('Y-m-d');
+        } else {
+            $memberSinceDisabledBefore = Carbon::parse('1900-01-01')->format('Y-m-d');
+        }
+        return $memberSinceDisabledBefore;
+    }
+
 }

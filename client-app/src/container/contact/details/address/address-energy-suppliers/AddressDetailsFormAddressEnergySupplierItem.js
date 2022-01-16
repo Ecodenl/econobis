@@ -5,6 +5,7 @@ import validator from 'validator';
 import { setError } from '../../../../../actions/general/ErrorActions';
 import AddressEnergySupplierAPI from '../../../../../api/contact/AddressEnergySupplierAPI';
 import { updateStateAddressEnergySupplier } from '../../../../../actions/contact/ContactDetailsActions';
+import { fetchContactDetails } from '../../../../../actions/contact/ContactDetailsActions';
 import AddressDetailsFormAddressEnergySupplierView from './AddressDetailsFormAddressEnergySupplierView';
 import AddressDetailsFormAddressEnergySupplierEdit from './AddressDetailsFormAddressEnergySupplierEdit';
 import AddressDetailsFormAddressEnergySupplierDelete from './AddressDetailsFormAddressEnergySupplierDelete';
@@ -25,12 +26,14 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
             messageDoubleEsNumber: '',
             messageDoubleEsName: '',
             doubleEsNumberArray: [],
+            showConfirmValidatePeriodOverlap: false,
             addressEnergySupplier: {
                 ...props.addressEnergySupplier,
             },
             address: { ...props.address },
             errors: {
                 memberSince: false,
+                endDate: false,
             },
         };
 
@@ -144,6 +147,33 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
         });
     };
 
+    setShowConfirmValidatePeriodOverlap(message) {
+        this.setState({
+            ...this.state,
+            showConfirmValidatePeriodOverlap: true,
+            messageConfirmValidatePeriodOverlap: message,
+        });
+    }
+    closeValidatePeriodOverlap = () => {
+        this.setState({
+            ...this.state,
+            showConfirmValidatePeriodOverlap: false,
+            messageConfirmValidatePeriodOverlap: '',
+        });
+    };
+    confirmActionValidatePeriodOverlap = () => {
+        const { addressEnergySupplier } = this.state;
+
+        this.doUpdateAddressEnergySupplier(addressEnergySupplier);
+        this.props.fetchContactDetails(this.props.address.contactId);
+
+        this.setState({
+            ...this.state,
+            showConfirmValidatePeriodOverlap: false,
+            messageConfirmValidatePeriodOverlap: '',
+        });
+    };
+
     handleSubmit = event => {
         event.preventDefault();
 
@@ -154,6 +184,14 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
 
         if (!addressEnergySupplier.memberSince || validator.isEmpty(addressEnergySupplier.memberSince)) {
             errors.memberSince = true;
+            hasErrors = true;
+        }
+
+        if (
+            addressEnergySupplier.disabledAfter != '9999-12-31' &&
+            (!addressEnergySupplier.endDate || validator.isEmpty(addressEnergySupplier.endDate))
+        ) {
+            errors.endDate = true;
             hasErrors = true;
         }
 
@@ -171,28 +209,55 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
-        !hasErrors &&
-            AddressEnergySupplierAPI.updateAddressEnergySupplier(addressEnergySupplier)
-                .then(payload => {
-                    this.props.updateStateAddressEnergySupplier(payload.data.data);
-                    if (this.state.showWarningEsNumber && payload.data.data.addressEnergySuppliersWithDoubleEsNumber) {
-                        this.setShowMessageDoubleEsNumber(
-                            payload.data.data.esNumber,
-                            payload.data.data.energySupplier.name,
-                            payload.data.data.addressEnergySuppliersWithDoubleEsNumber
-                        );
-                        this.toggleShowWarningEsNumber();
-                    } else {
-                        this.closeEdit();
-                    }
-                })
-                .catch(error => {
-                    if (error.response) {
-                        this.props.setError(error.response.status, error.response.data.message);
-                    } else {
-                        console.log(error);
-                    }
-                });
+        if (!hasErrors) {
+            // If no errors send form
+            if (!hasErrors) {
+                AddressEnergySupplierAPI.validatePeriodOverlap(addressEnergySupplier)
+                    .then(payload => {
+                        // indien geen overlap dan direct verwerken
+                        if (!payload.data) {
+                            this.doUpdateAddressEnergySupplier(addressEnergySupplier);
+                        } else {
+                            // indien wel overlap dan eerst bevestigen
+                            this.setShowConfirmValidatePeriodOverlap(payload.data);
+                        }
+                    })
+                    .catch(error => {
+                        hasErrors = true;
+                        if (error.response) {
+                            this.props.setError(error.response.status, error.response.data.message);
+                        } else {
+                            // this.props.setError(error);
+                            console.log(error);
+                        }
+                    });
+            }
+        }
+    };
+
+    doUpdateAddressEnergySupplier = addressEnergySupplier => {
+        AddressEnergySupplierAPI.updateAddressEnergySupplier(addressEnergySupplier)
+            .then(payload => {
+                this.props.updateStateAddressEnergySupplier(payload.data.data);
+
+                if (this.state.showWarningEsNumber && payload.data.data.addressEnergySuppliersWithDoubleEsNumber) {
+                    this.setShowMessageDoubleEsNumber(
+                        payload.data.data.esNumber,
+                        payload.data.data.energySupplier.name,
+                        payload.data.data.addressEnergySuppliersWithDoubleEsNumber
+                    );
+                    this.toggleShowWarningEsNumber();
+                } else {
+                    this.closeEdit();
+                }
+            })
+            .catch(error => {
+                if (error.response) {
+                    this.props.setError(error.response.status, error.response.data.message);
+                } else {
+                    console.log(error);
+                }
+            });
     };
 
     render() {
@@ -250,6 +315,20 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
                         </ul>
                     </Modal>
                 )}
+                {this.state.showConfirmValidatePeriodOverlap && (
+                    <Modal
+                        buttonConfirmText="Bevestigen"
+                        buttonClassName={'btn-danger'}
+                        closeModal={this.closeValidatePeriodOverlap}
+                        confirmAction={() => this.confirmActionValidatePeriodOverlap()}
+                        title="Bevestig periode afsluiting"
+                    >
+                        {this.state.messageConfirmValidatePeriodOverlap}
+                        <br />
+                        <br />
+                        {'Deze periode afsluiten op dag voor nieuwe Klant sinds datum?'}
+                    </Modal>
+                )}
             </div>
         );
     }
@@ -264,6 +343,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
     updateStateAddressEnergySupplier: addressEnergySuppliers => {
         dispatch(updateStateAddressEnergySupplier(addressEnergySuppliers));
+    },
+    fetchContactDetails: id => {
+        dispatch(fetchContactDetails(id));
     },
     setError: (http_code, message) => {
         dispatch(setError(http_code, message));

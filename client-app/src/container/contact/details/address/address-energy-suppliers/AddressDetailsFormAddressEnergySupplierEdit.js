@@ -23,6 +23,8 @@ const AddressDetailsFormAddressEnergySupplierEdit = props => {
         isCurrentSupplier,
         createdAt,
         createdBy,
+        disabledBefore,
+        disabledAfter,
     } = props.addressEnergySupplier;
 
     return (
@@ -68,15 +70,20 @@ const AddressDetailsFormAddressEnergySupplierEdit = props => {
                                 label="Klant sinds"
                                 name="memberSince"
                                 value={memberSince ? memberSince : ''}
+                                disabledBefore={disabledBefore}
+                                disabledAfter={disabledAfter}
                                 onChangeAction={props.handleInputChangeDate}
-                                required={true}
+                                required={'required'}
                                 error={props.errors.memberSince}
                             />
                             <InputDate
-                                label={'Eind datum'}
+                                label="Eind datum"
                                 name="endDate"
                                 value={endDate ? endDate : ''}
+                                disabledBefore={disabledBefore}
+                                disabledAfter={disabledAfter}
                                 onChangeAction={props.handleInputChangeDate}
+                                required={disabledAfter != '9999-12-31' ? 'required' : ''}
                                 error={props.errors.endDate}
                             />
                         </div>

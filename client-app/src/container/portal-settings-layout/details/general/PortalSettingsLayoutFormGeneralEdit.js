@@ -19,6 +19,8 @@ import Image from 'react-bootstrap/es/Image';
 import PortalLogoHeaderLayoutNew from './PortalLogoHeaderLayoutNew';
 import PortalImageBgLoginLayoutNew from './PortalImageBgLoginLayoutNew';
 import PortalImageBgHeaderLayoutNew from './PortalImageBgHeaderLayoutNew';
+import PreviewPortalLoginPagePcModal from '../../preview/PreviewPortalLoginPagePcModal';
+import PreviewPortalLoginPageMobileModal from '../../preview/PreviewPortalLoginPageMobileModal';
 // import PortalLogoLayoutNewCrop from './PortalLogoLayoutNewCrop';
 
 class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
@@ -31,6 +33,8 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                 : false;
 
         this.state = {
+            showPreviewPortalLoginPagePc: false,
+            showPreviewPortalLoginPageMobile: false,
             portalSettingsLayout: {
                 ...props.portalSettingsLayout,
             },
@@ -69,6 +73,14 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
             },
         };
     }
+
+    togglePreviewPortalLoginPagePc = () => {
+        this.setState({ showPreviewPortalLoginPagePc: !this.state.showPreviewPortalLoginPagePc });
+    };
+
+    togglePreviewPortalLoginPageMobile = () => {
+        this.setState({ showPreviewPortalLoginPageMobile: !this.state.showPreviewPortalLoginPageMobile });
+    };
 
     toggleNewLogo = () => {
         if (this.manageTechnicalPortalSettings) {
@@ -293,6 +305,24 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
+                <Panel>
+                    <PanelBody>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <div className="btn-group btn-group-flex" role="group">
+                                    <ButtonText
+                                        buttonText="Preview login pagina PC"
+                                        onClickAction={this.togglePreviewPortalLoginPagePc}
+                                    />
+                                    <ButtonText
+                                        buttonText="Preview login pagina mobiel"
+                                        onClickAction={this.togglePreviewPortalLoginPageMobile}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </PanelBody>
+                </Panel>
                 <Panel>
                     <PanelBody>
                         <div className="row">
@@ -725,6 +755,24 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             <ButtonText buttonText={'Opslaan'} type={'submit'} value={'Submit'} />
                         </div>
                     </PanelBody>
+                    {this.state.showPreviewPortalLoginPagePc && (
+                        <PreviewPortalLoginPagePcModal
+                            closeModal={this.togglePreviewPortalLoginPagePc}
+                            attachmentLogo={this.state.attachmentLogo}
+                            logoUrl={logoUrl}
+                            attachmentImageBgLogin={this.state.attachmentImageBgLogin}
+                            imageBgLoginUrl={imageBgLoginUrl}
+                        />
+                    )}
+                    {this.state.showPreviewPortalLoginPageMobile && (
+                        <PreviewPortalLoginPageMobileModal
+                            closeModal={this.togglePreviewPortalLoginPageMobile}
+                            attachmentLogo={this.state.attachmentLogo}
+                            logoUrl={logoUrl}
+                            attachmentImageBgLogin={this.state.attachmentImageBgLogin}
+                            imageBgLoginUrl={imageBgLoginUrl}
+                        />
+                    )}
                 </Panel>
             </form>
         );

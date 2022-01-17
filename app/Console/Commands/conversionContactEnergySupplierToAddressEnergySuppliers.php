@@ -140,15 +140,8 @@ class conversionContactEnergySupplierToAddressEnergySuppliers extends Command
 
         }
 
-        $addressEnergySuppliers = AddressEnergySupplier::orderBy('member_since', 'desc')->get();
+        $addressEnergySuppliers = AddressEnergySupplier::whereNull('member_since')->get();
         foreach($addressEnergySuppliers as $addressEnergySupplier) {
-
-            if(!$addressEnergySupplier->is_current_supplier && $addressEnergySupplier->member_since==null && $addressEnergySupplier->end_date==null) {
-                $addressEnergySupplier->member_since = Carbon::parse('1900-01-01')->format('Y-m-d');
-                $addressEnergySupplier->end_date = Carbon::parse('1999-12-31')->format('Y-m-d');
-                $addressEnergySupplier->save();
-                continue;
-            }
 
             if($addressEnergySupplier->member_since == null){
                 if($addressEnergySupplier->is_current_supplier){

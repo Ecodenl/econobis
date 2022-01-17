@@ -3,6 +3,9 @@
 namespace App\Eco\AddressEnergySupplier;
 
 use App\Eco\Address\Address;
+use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\EnergySupplier\EnergySupplierStatus;
+use App\Eco\EnergySupplier\EnergySupplierType;
 use App\Eco\User\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;

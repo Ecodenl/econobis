@@ -514,7 +514,11 @@ const DefaultContactOrganisationEdit = function({
                                             id="energy_supplier_id"
                                             placeholder={'Selecteer uw leverancier'}
                                             options={EnergySuppliers}
-                                            customOnChange={() => {
+                                            customOnChange={e => {
+                                                setFieldValue(
+                                                    'visitAddress.primaryAddressEnergySupplier.energySupplierId',
+                                                    e.target.value
+                                                );
                                                 setFieldValue('visitAddress.primaryAddressEnergySupplier.esNumber', '');
                                                 setFieldValue(
                                                     'visitAddress.primaryAddressEnergySupplier.memberSince',

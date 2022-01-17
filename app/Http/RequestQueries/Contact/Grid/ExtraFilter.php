@@ -580,21 +580,21 @@ class ExtraFilter extends RequestExtraFilter
                         if($opportunityStatusFilter && ($opportunityStatusFilter['data'] || $opportunityStatusFilter['type'] == 'nl' || $opportunityStatusFilter['type'] == 'nnl') ){
                             static::applyFilter($query, 'opportunities.status_id', $opportunityStatusFilter['type'], $opportunityStatusFilter['data']);
                         }
-                        if($opportunityStatusFilter && $opportunityMeasureFilter['data']){
+                        if($opportunityMeasureFilter && $opportunityMeasureFilter['data']){
                             $query->whereHas('measures', function($query) use ($opportunityMeasureFilter) {
                                 $query->where('measure_opportunity.measure_id', $opportunityMeasureFilter['data']);
                             });
-                        }elseif($opportunityStatusFilter && $opportunityMeasureFilter['type'] == 'neq'){
+                        }elseif($opportunityMeasureFilter && $opportunityMeasureFilter['type'] == 'neq'){
                             $query->whereDoesntHave('measures');
                         }
-                        if($opportunityStatusFilter && $opportunityEvaluationRealisedFilter['data']){
+                        if($opportunityEvaluationRealisedFilter && $opportunityEvaluationRealisedFilter['data']){
                             static::applyFilter($query, 'opportunities.evaluation_is_realised', $opportunityEvaluationRealisedFilter['type'], $opportunityEvaluationRealisedFilter['data']);
                         }
-                        if($opportunityStatusFilter && $opportunityCampaignFilter['data']) {
+                        if($opportunityCampaignFilter && $opportunityCampaignFilter['data']) {
                             $query->whereHas('intake', function ($query) use ($opportunityCampaignFilter) {
                                 $query->where('intakes.campaign_id', $opportunityCampaignFilter['data']);
                             });
-                        }elseif($opportunityStatusFilter && $opportunityCampaignFilter['type'] == 'neq'){
+                        }elseif($opportunityCampaignFilter && $opportunityCampaignFilter['type'] == 'neq'){
                             $query->whereDoesntHave('intake');
                         }
                     });
@@ -624,15 +624,15 @@ class ExtraFilter extends RequestExtraFilter
                         if($opportunityStatusFilter && ($opportunityStatusFilter['data'] || $opportunityStatusFilter['type'] == 'nl' || $opportunityStatusFilter['type'] == 'nnl') ){
                             static::applyFilter($query, 'opportunities.status_id', $opportunityStatusFilter['type'], $opportunityStatusFilter['data']);
                         }
-                        if($opportunityStatusFilter && $opportunityMeasureFilter['data'] ){
+                        if($opportunityMeasureFilter && $opportunityMeasureFilter['data'] ){
                             $query->whereHas('measures', function($query) use ($opportunityMeasureFilter) {
                                 $query->where('measure_opportunity.measure_id', $opportunityMeasureFilter['data']);
                             });
                         }
-                        if($opportunityStatusFilter && $opportunityEvaluationRealisedFilter['data']){
+                        if($opportunityEvaluationRealisedFilter && $opportunityEvaluationRealisedFilter['data']){
                             static::applyFilter($query, 'opportunities.evaluation_is_realised', $opportunityEvaluationRealisedFilter['type'], $opportunityEvaluationRealisedFilter['data']);
                         }
-                        if($opportunityStatusFilter && $opportunityCampaignFilter['data'] ){
+                        if($opportunityCampaignFilter && $opportunityCampaignFilter['data'] ){
                             $query->whereHas('intake', function($query) use ($opportunityCampaignFilter) {
                                 $query->where('intakes.campaign_id', $opportunityCampaignFilter['data']);
                             });

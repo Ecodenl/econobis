@@ -77,6 +77,22 @@ class DynamicContactGroupFilter extends Model
                 }
                 return '';
             }
+            // intakeMeasureCategory omzetten
+            if ($this->field == 'intakeMeasureCategory'){
+                if($this->data){
+                    $measureCategory = MeasureCategory::find($this->data);
+                    return $measureCategory ? $measureCategory->name : ''   ;
+                }
+                return '';
+            }
+            // intakeStatus omzetten
+            if ($this->field == 'intakeStatus'){
+                if($this->data){
+                    $intakeStatus = IntakeStatus::find($this->data);
+                    return $intakeStatus ? $intakeStatus->name : ''   ;
+                }
+                return '';
+            }
 
             // orderStatus omzetten
             if ($this->field == 'orderStatus'){

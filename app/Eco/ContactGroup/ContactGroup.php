@@ -272,9 +272,6 @@ class ContactGroup extends Model
             return new Collection();
         }
 
-        foreach($contacts as $contact){
-
-        }
         return $contacts->unique('id')->values();
     }
 

@@ -50,13 +50,18 @@ class createHoomdossiersDeA extends Command
         if (!$cooperation || empty($cooperation->hoom_link)) {
             print_r("Kan geen Hoomdossier aanmaken want er is bij cooperatie geen hoomdossier link gevonden.\n");
         } else {
-            if($cooperation->name == 'deA'){
+            if($cooperation->name == 'test') {
+                $contactGroup397 = ContactGroup::find(397);
+                foreach ($contactGroup397->getAllContacts() as $contact) {
+                    $this->createHoomDossier($contact);
+                }
+            } elseif ($cooperation->name == 'deA'){
                 $contactGroup352 = ContactGroup::find(352);
                 foreach ($contactGroup352->getAllContacts() as $contact) {
                     $this->createHoomDossier($contact);
                 }
             } else {
-                print_r("Dit script uitsluitend nu voor cooperatie deA, NIET voor " . $cooperation->name . ".\n");
+                print_r("Dit script uitsluitend nu voor cooperatie test of deA, NIET voor " . $cooperation->name . ".\n");
             }
         }
 
@@ -80,14 +85,14 @@ class createHoomdossiersDeA extends Command
                 $contactController = new ContactController();
                 $contactController->makeHoomdossier($contact);
 
-                $note = "Hoomdossier aangemaakt voor contact " . $contact->full_name . " (" . $contact->number . ") via script.\n";
-                $this->addTaskCheckContact($contact, $note);
+//                $note = "Hoomdossier aangemaakt voor contact " . $contact->full_name . " (" . $contact->number . ") via script.\n";
+//                $this->addTaskCheckContact($contact, $note);
 
             } catch (\Exception $errorHoomDossier) {
                 print_r("Fout bij aanmaken hoomdossier contact " . $contact->full_name . " (" . $contact->number . ") via script.\n");
                 Log::error($errorHoomDossier);
 
-                $note = "Fout bij aanmaken hoomdossier voor contact " . $contact->full_name . " (" . $contact->number . ") via script.\n";
+                $note = "Fout bij aanmaken hoomdossier voor contact " . $contact->full_name . " (" . $contact->number . ") via script: \n";
                 $note .= "Controleer contactgegevens\n";
                 $this->addTaskCheckContact($contact, $note);
             }

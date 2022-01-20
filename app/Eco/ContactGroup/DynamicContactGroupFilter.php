@@ -4,6 +4,7 @@ namespace App\Eco\ContactGroup;
 
 use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
+use App\Eco\Intake\IntakeStatus;
 use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Occupation\Occupation;
@@ -74,6 +75,22 @@ class DynamicContactGroupFilter extends Model
                 if($this->data){
                     $campaign = Campaign::find($this->data);
                     return $campaign ? $campaign->name : ''   ;
+                }
+                return '';
+            }
+            // intakeMeasureCategory omzetten
+            if ($this->field == 'intakeMeasureCategory'){
+                if($this->data){
+                    $measureCategory = MeasureCategory::find($this->data);
+                    return $measureCategory ? $measureCategory->name : ''   ;
+                }
+                return '';
+            }
+            // intakeStatus omzetten
+            if ($this->field == 'intakeStatus'){
+                if($this->data){
+                    $intakeStatus = IntakeStatus::find($this->data);
+                    return $intakeStatus ? $intakeStatus->name : ''   ;
                 }
                 return '';
             }

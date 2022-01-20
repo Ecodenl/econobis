@@ -102,6 +102,15 @@ class PreviewPortalDashboardPageMobileModal extends Component {
                 paddingLeft: '15px',
                 paddingRight: '15px',
             },
+            contentHeading: {
+                color: 'var(--main-primary-color)',
+                fontSize: '24px',
+                fontWeight: '400',
+                textShadow: 'none',
+                marginTop: '0',
+                lineHeight: '44px',
+                marginBottom: '10px',
+            },
             wContainer: {
                 marginLeft: 'auto',
                 marginRight: 'auto',
@@ -293,7 +302,7 @@ class PreviewPortalDashboardPageMobileModal extends Component {
                             <div style={customStyles.wContainer}>
                                 <div style={customStyles.row}>
                                     <div style={customStyles.col}>
-                                        <h1 className="content-heading mt-0 text-center">
+                                        <h1 className="text-center" style={customStyles.contentHeading}>
                                             Welkom op jouw energie gemeenschap
                                         </h1>
                                     </div>

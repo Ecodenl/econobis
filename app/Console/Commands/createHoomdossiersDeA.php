@@ -51,13 +51,13 @@ class createHoomdossiersDeA extends Command
             print_r("Kan geen Hoomdossier aanmaken want er is bij cooperatie geen hoomdossier link gevonden.\n");
         } else {
             if($cooperation->name == 'test') {
-                $contactGroup397 = ContactGroup::find(397);
-                foreach ($contactGroup397->getAllContacts() as $contact) {
+                $contactGroup = ContactGroup::find(397);
+                foreach ($contactGroup->getAllContacts() as $contact) {
                     $this->createHoomDossier($contact);
                 }
             } elseif ($cooperation->name == 'deA'){
-                $contactGroup352 = ContactGroup::find(352);
-                foreach ($contactGroup352->getAllContacts() as $contact) {
+                $contactGroup = ContactGroup::find(366);
+                foreach ($contactGroup->getAllContacts() as $contact) {
                     $this->createHoomDossier($contact);
                 }
             } else {
@@ -82,6 +82,8 @@ class createHoomdossiersDeA extends Command
         } else {
             // aanmaken hoomdossier
             try {
+                sleep(2);
+
                 $contactController = new ContactController();
                 $contactController->makeHoomdossier($contact);
 

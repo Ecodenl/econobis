@@ -33,6 +33,10 @@ class ExtraFilter extends RequestExtraFilter
         'opportunityMeasure',
         'opportunityEvaluationRealised',
         'opportunityCampaign',
+        'intakeMeasureCategory',
+        'intakeDateStart',
+        'intakeDateFinish',
+        'intakeStatus',
         'campaign',
         'product',
         'dateStart',
@@ -121,9 +125,20 @@ class ExtraFilter extends RequestExtraFilter
             }
             return;
         }
+        // Ook Uitzondering voor intake filters, hier zitten extra argumenten bij. Aparte routine laten doorlopen
+        if($filter['field'] == 'intakeMeasureCategory' ){
+            if($filterType === 'or'){
+                $query->orWhere(function ($query) use ($filter) {
+                    $this->applyIntakeMeasureCategoryFilter($query, $filter['type'], $filter['data'], $filter['connectName']);
+                });
+            }else{
+                $this->applyIntakeMeasureCategoryFilter($query, $filter['type'], $filter['data'], $filter['connectName']);
+            }
+            return;
+        }
 
         // Als er een connectedTo waarde is, dan is het een subfilter van product of kans. Niet op standaard wijze filteren.
-        // Filtering hierop wordt in applyProductFilter of applyOpportunityMeasureCategoryFilter geregeld.
+        // Filtering hierop wordt in applyProductFilter, applyOpportunityMeasureCategoryFilter of applyIntakeMeasureCategoryFilter geregeld.
         if($filter['connectedTo']) return;
 
         // Betreft geen uitzondering; standaard functie doorlopen:
@@ -404,13 +419,19 @@ class ExtraFilter extends RequestExtraFilter
     {
         $dateStartFilter = array_values(array_filter($this->filters, function($element) use($connectName){
             return ($element['connectedTo'] == $connectName && $element['field'] == 'dateStart');
-        }))[0];
+        }));
+        $dateStartFilter = $dateStartFilter ? $dateStartFilter[0] : null;
+
         $dateFinishFilter = array_values(array_filter($this->filters, function($element) use($connectName){
             return ($element['connectedTo'] == $connectName && $element['field'] == 'dateFinish');
-        }))[0];
+        }));
+        $dateFinishFilter = $dateFinishFilter ? $dateFinishFilter[0] : null;
+
         $orderStatusFilter = array_values(array_filter($this->filters, function($element) use($connectName){
             return ($element['connectedTo'] == $connectName && $element['field'] == 'orderStatus');
-        }))[0];
+        }));
+        $orderStatusFilter = $orderStatusFilter ? $orderStatusFilter[0] : null;
+
         if(empty($data))
         {
             switch($type) {
@@ -614,6 +635,109 @@ class ExtraFilter extends RequestExtraFilter
                     break;
             }
         }
+    }
+
+    protected function applyIntakeMeasureCategoryFilter($query, $type, $data, $connectName)
+    {
+        $intakeDateStartFilter = array_values(array_filter($this->filters, function($element) use($connectName){
+            return ($element['connectedTo'] == $connectName && $element['field'] == 'intakeDateStart');
+        }));
+        $intakeDateStartFilter = $intakeDateStartFilter ? $intakeDateStartFilter[0] : null;
+
+        $intakeDateFinishFilter = array_values(array_filter($this->filters, function($element) use($connectName){
+            return ($element['connectedTo'] == $connectName && $element['field'] == 'intakeDateFinish');
+        }));
+        $intakeDateFinishFilter = $intakeDateFinishFilter ? $intakeDateFinishFilter[0] : null;
+
+        $intakeStatusFilter = array_values(array_filter($this->filters, function($element) use($connectName){
+            return ($element['connectedTo'] == $connectName && $element['field'] == 'intakeStatus');
+        }));
+        $intakeStatusFilter = $intakeStatusFilter ? $intakeStatusFilter[0] : null;
+
+        if(empty($data))
+        {
+            switch($type) {
+                case 'eq':
+                    $query->whereHas('intakes', function ($query) use ($data, $intakeDateStartFilter, $intakeDateFinishFilter, $intakeStatusFilter) {
+                        // Eventueel extra filters toepassen
+                        if($intakeDateStartFilter){
+                            if($intakeDateStartFilter['type'] == 'nl' || $intakeDateStartFilter['type'] == 'nnl'){
+                                static::applyFilter($query, 'created_at', $intakeDateStartFilter['type'], $intakeDateStartFilter['data']);
+                            } else {
+                                if($intakeDateStartFilter['data']) {
+                                    static::applyFilterWhereRaw($query, 'cast(created_at as date)', $intakeDateStartFilter['type'], "'" . $intakeDateStartFilter['data'] . "'");
+                                }
+                            }
+                        }
+                        if($intakeDateStartFilter) {
+                            if ($intakeDateFinishFilter['type'] == 'nl' || $intakeDateFinishFilter['type'] == 'nnl') {
+                                static::applyFilter($query, 'created_at', $intakeDateFinishFilter['type'], $intakeDateFinishFilter['data']);
+                            } else {
+                                if($intakeDateFinishFilter['data']){
+                                    static::applyFilterWhereRaw($query, 'cast(created_at as date)', $intakeDateFinishFilter['type'], "'" . $intakeDateFinishFilter['data'] . "'");
+                                }
+                            }
+                        }
+                        if($intakeStatusFilter && ($intakeStatusFilter['data'] || $intakeStatusFilter['type'] == 'nl' || $intakeStatusFilter['type'] == 'nnl') ){
+                            static::applyFilter($query, 'intakes.intake_status_id', $intakeStatusFilter['type'], $intakeStatusFilter['data']);
+                        }
+                    });
+                    break;
+                default:
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('intakes');
+                    });
+                    break;
+            }
+
+        }else{
+
+            switch($type) {
+
+                case 'neq':
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('intakes')
+                            ->orWhereDoesntHave('intakes', function ($query) use ($data) {
+                                $query->whereHas('measuresRequested', function($query) use ($data) {
+                                    $query->where('intake_measure_requested.measure_category_id', $data);
+                                });
+                            });
+                    });
+                    break;
+                default:
+                    $query->whereHas('intakes', function ($query) use ($data, $intakeDateStartFilter, $intakeDateFinishFilter, $intakeStatusFilter) {
+                        $query->whereHas('measuresRequested', function($query) use ($data) {
+                            $query->where('intake_measure_requested.measure_category_id', $data);
+                        });
+
+                        // Eventueel extra filters toepassen
+                        if($intakeDateStartFilter){
+                            if($intakeDateStartFilter['type'] == 'nl' || $intakeDateStartFilter['type'] == 'nnl'){
+                                static::applyFilter($query, 'created_at', $intakeDateStartFilter['type'], $intakeDateStartFilter['data']);
+                            } else {
+                                if($intakeDateStartFilter['data']) {
+                                    static::applyFilterWhereRaw($query, 'cast(created_at as date)', $intakeDateStartFilter['type'], "'" . $intakeDateStartFilter['data'] . "'");
+                                }
+                            }
+                        }
+                        if($intakeDateFinishFilter){
+                            if($intakeDateFinishFilter['type'] == 'nl' || $intakeDateFinishFilter['type'] == 'nnl'){
+                                static::applyFilter($query, 'created_at', $intakeDateFinishFilter['type'], $intakeDateFinishFilter['data']);
+                            } else {
+                                if($intakeDateFinishFilter['data']) {
+                                    static::applyFilterWhereRaw($query, 'cast(created_at as date)', $intakeDateFinishFilter['type'], "'" . $intakeDateFinishFilter['data'] . "'");
+                                }
+                            }
+                        }
+                        if($intakeStatusFilter && ($intakeStatusFilter['data'] || $intakeStatusFilter['type'] == 'nl' || $intakeStatusFilter['type'] == 'nnl') ){
+                            static::applyFilter($query, 'intakes.intake_status_id', $intakeStatusFilter['type'], $intakeStatusFilter['data']);
+                        }
+
+                    });
+                    break;
+            }
+        }
+
     }
 
 }

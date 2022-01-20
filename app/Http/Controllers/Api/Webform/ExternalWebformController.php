@@ -127,6 +127,8 @@ class ExternalWebformController extends Controller
 
     private $contactActie = null;
     private $newContactCreated = false;
+    private $contactIdToEmailNewContactToGroup = null;
+    private $processEmailNewContactToGroup = false;
 
     public function post(string $apiKey, Request $request)
     {
@@ -184,6 +186,11 @@ class ExternalWebformController extends Controller
         // evt nog Hoomdossier aanmaken indien van toepassing
         if ($createHoomDossier) {
             $this->createHoomDossier();
+        }
+
+        // evt nog ProcessEmailNewContactToGroup uitvoeren
+        if ($this->processEmailNewContactToGroup) {
+            $this->doProcessEmailNewContactToGroup($data['contact']);
         }
 
         $this->logInfo();
@@ -1094,14 +1101,6 @@ class ExternalWebformController extends Controller
             ]);
             $this->log('Organisatie met id ' . $organisation->id . ' aangemaakt.');
 
-            // Overige gegevens aan organisation hangen
-            $this->addAddressToContact($data, $contactOrganisation);
-            $this->addEmailToContact($data, $contactOrganisation);
-            $this->addPhoneNumberToContact($data, $contactOrganisation);
-            $this->addContactToGroup($data, $contactOrganisation, $ownerAndResponsibleUser);
-
-            // Validatie op title_id
-
             if ($data['first_name'] || $data['last_name']) {
                 $contactPerson = Contact::create([
                     'type_id' => 'person',
@@ -1132,6 +1131,12 @@ class ExternalWebformController extends Controller
                     . ' aangemaakt en gekoppeld aan organisatie als medewerker.');
 
             }
+
+            // Overige gegevens aan organisation hangen
+            $this->addAddressToContact($data, $contactOrganisation);
+            $this->addEmailToContact($data, $contactOrganisation);
+            $this->addPhoneNumberToContact($data, $contactOrganisation);
+            $this->addContactToGroup($data, $contactOrganisation, $ownerAndResponsibleUser);
 
             return $contactOrganisation;
         }
@@ -1712,11 +1717,8 @@ class ExternalWebformController extends Controller
                 }
 
                 if($contactGroup->send_email_new_contact_link){
-                    $contactGroupHelper = new ContactGroupHelper($contactGroup, $contact);
-                    $processed = $contactGroupHelper->processEmailNewContactToGroup();
-                    if($processed){
-                        $this->log('Email verzonden naar ' . $contact->id );
-                    }
+                    $this->contactIdToEmailNewContactToGroup = $contact->id;
+                    $this->processEmailNewContactToGroup = true;
                 }
             }
         }
@@ -1746,11 +1748,8 @@ class ExternalWebformController extends Controller
                             }
 
                             if ($contactGroup->send_email_new_contact_link) {
-                                $contactGroupHelper = new ContactGroupHelper($contactGroup, $contact);
-                                $processed = $contactGroupHelper->processEmailNewContactToGroup();
-                                if ($processed) {
-                                    $this->log('Email verzonden naar ' . $contact->id);
-                                }
+                                $this->contactIdToEmailNewContactToGroup = $contact->id;
+                                $this->processEmailNewContactToGroup = true;
                             }
                         }
                     }
@@ -1763,6 +1762,35 @@ class ExternalWebformController extends Controller
 
         if (!$data['group_name'] && !$data['contact_group_ids']) {
             $this->log('Er is geen contact groep meegegeven, geen groep koppelen.');
+        }
+    }
+
+    protected function doProcessEmailNewContactToGroup(array $data)
+    {
+        $contactToEmailNewContactGroup = Contact::find($this->contactIdToEmailNewContactToGroup);
+        if ($data['group_name']) {
+            $contactGroup = ContactGroup::where('name', $data['group_name'])->first();
+            if($contactGroup->send_email_new_contact_link){
+                $contactGroupHelper = new ContactGroupHelper($contactGroup, $contactToEmailNewContactGroup);
+                $processed = $contactGroupHelper->processEmailNewContactToGroup();
+                if($processed){
+                    $this->log('Email verzonden naar ' . $this->contactIdToEmailNewContactToGroup);
+                }
+            }
+        }
+
+        if($data['contact_group_ids']){
+            $contactGroups = ContactGroup::whereIn('id', explode(',', $data['contact_group_ids']))->get();
+            foreach ($contactGroups as $contactGroup)
+            {
+                if ($contactGroup->send_email_new_contact_link) {
+                    $contactGroupHelper = new ContactGroupHelper($contactGroup, $contactToEmailNewContactGroup);
+                    $processed = $contactGroupHelper->processEmailNewContactToGroup();
+                    if ($processed) {
+                        $this->log('Email verzonden naar ' . $this->contactIdToEmailNewContactToGroup);
+                    }
+                }
+            }
         }
     }
 

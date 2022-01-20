@@ -4,6 +4,7 @@ namespace App\Eco\ContactGroup;
 
 use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
+use App\Eco\Intake\IntakeStatus;
 use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Occupation\Occupation;

@@ -6,27 +6,68 @@ class PreviewPortalLoginPagePcModal extends Component {
     }
 
     componentDidMount() {
-        const url = this.props.attachmentImageBgLogin.preview
+        const imageBgLoginUrl = this.props.attachmentImageBgLogin.preview
             ? this.props.attachmentImageBgLogin.preview
             : this.props.imageBgLoginUrl;
+        document.documentElement.style.setProperty('--main-login-background-image-url', 'url(' + imageBgLoginUrl + ')');
 
-        document.documentElement.style.setProperty('--main-login-background-image-url', 'url(' + url + ')');
+        const imageBgHeaderUrl = this.props.attachmentImageBgLogin.preview
+            ? this.props.attachmentImageBgLogin.preview
+            : this.props.imageBgLoginUrl;
+        document.documentElement.style.setProperty(
+            '--main-header-background-image-url',
+            'url(' + imageBgHeaderUrl + ')'
+        );
+
+        document.documentElement.style.setProperty('--main-primary-color', this.props.portalBackgroundColor);
+        document.documentElement.style.setProperty('--main-primary-text-color', this.props.portalBackgroundTextColor);
+        document.documentElement.style.setProperty('--main-primary-rgba', this.props.loginHeaderBackgroundColor);
+        document.documentElement.style.setProperty(
+            '--main-primary-rgba-text-color',
+            this.props.loginHeaderBackgroundTextColor
+        );
+        document.documentElement.style.setProperty('--main-header-portal-icon-color', this.props.headerIconsColor);
+        document.documentElement.style.setProperty('--main-secondary-color', this.props.loginFieldBackgroundColor);
+        document.documentElement.style.setProperty(
+            '--main-secondary-text-color',
+            this.props.loginFieldBackgroundTextColor
+        );
+        document.documentElement.style.setProperty('--button-primary-color', this.props.buttonColor);
+        document.documentElement.style.setProperty('--button-primary-text-color', this.props.buttonTextColor);
     }
 
     render() {
+        const logoUrl = this.props.attachmentLogo.preview ? this.props.attachmentLogo.preview : this.props.logoUrl;
+
         const customStyles = {
-            closeModal: {
-                cursor: 'pointer',
-                float: 'right',
-                backgroundColor: '#fff',
-                padding: '5px 10px',
-                color: 'red',
-                marginTop: '10px',
+            modal: {
+                position: 'fixed',
+                top: '10vh',
+                right: '0',
+                bottom: '0',
+                left: '2vw',
+                zIndex: '1050',
+                display: 'inline',
+                overflow: 'hidden',
+                outline: '0',
             },
-            authorizationContainer: { height: '100vh', width: '80vw' },
-            justifyAlignRowCenter: {
+            authorizationContainer: {
+                position: 'initial',
+                height: '85vh',
+                width: '96vw',
+                border: '2px solid #000',
+                overflow: 'auto',
+            },
+            fullHeight: {
+                height: '100vh',
+            },
+            justifyContentCenter: {
                 justifyContent: 'center',
-                alignItems: 'center',
+            },
+            alignContentCenter: {
+                alignContent: 'center',
+            },
+            row: {
                 display: 'flex',
                 flexWrap: 'wrap',
                 marginRight: '-15px',
@@ -34,52 +75,61 @@ class PreviewPortalLoginPagePcModal extends Component {
             },
         };
 
+        const fullHeightJustifyAlignContentCenterRow = {
+            ...customStyles.fullHeight,
+            ...customStyles.justifyContentCenter,
+            ...customStyles.alignContentCenter,
+            ...customStyles.row,
+        };
+        const justifyContentCenterRow = {
+            ...customStyles.justifyContentCenter,
+            ...customStyles.row,
+        };
+
         return (
             <div
-                className="modal col-md-10 margin-50-top"
+                // className="modal col-md-10 margin-50-top"
+                style={customStyles.modal}
                 onClick={this.props.closeModal}
                 title={'Klik om preview te sluiten'}
             >
-                <div className="authorization-container container-fluid" style={customStyles.authorizationContainer}>
-                    <div className="full-height" style={customStyles.justifyAlignRowCenter}>
-                        <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
-                            <img
-                                src={
-                                    this.props.attachmentLogo.preview
-                                        ? this.props.attachmentLogo.preview
-                                        : this.props.logoUrl
-                                }
-                                alt=""
-                                className="image logo-container"
-                            />
-                            <form>
-                                <input
-                                    type="text"
-                                    className="text-input w-input   "
-                                    id="username"
-                                    name="username"
-                                    placeholder="E-mailadres"
-                                    value=""
-                                    readOnly={true}
-                                />
-                                <input
-                                    type="password"
-                                    className="text-input w-input   "
-                                    id="password"
-                                    name="password"
-                                    placeholder="Wachtwoord"
-                                    value=""
-                                    readOnly={true}
-                                />
-                                <button className="authorization-button btn btn-primary btn-sm">
-                                    <span>Log in</span>
-                                </button>
-                            </form>
-                            <div style={customStyles.justifyAlignRowCenter}>
-                                <a className="authorization-link">Wachtwoord vergeten?</a>
-                            </div>
-                            <div style={customStyles.justifyAlignRowCenter}>
-                                <a className="authorization-link">Nieuw bij ...</a>
+                <div id="root">
+                    <div
+                        className="authorization-container container-fluid"
+                        style={customStyles.authorizationContainer}
+                    >
+                        <div style={fullHeightJustifyAlignContentCenterRow}>
+                            <div>
+                                <img src={logoUrl} alt="" className="image logo-container" />
+                                <form>
+                                    <input
+                                        type="text"
+                                        className="text-input w-input   "
+                                        id="username"
+                                        name="username"
+                                        placeholder="E-mailadres"
+                                        value=""
+                                        readOnly={true}
+                                    />
+                                    <input
+                                        type="password"
+                                        className="text-input w-input   "
+                                        id="password"
+                                        name="password"
+                                        placeholder="Wachtwoord"
+                                        value=""
+                                        readOnly={true}
+                                    />
+                                    <button className="authorization-button btn btn-primary btn-sm">
+                                        <span>Log in</span>
+                                    </button>
+                                </form>
+                                <div style={justifyContentCenterRow}>
+                                    <a className="authorization-link">Wachtwoord vergeten?</a>
+                                </div>
+                                <div style={justifyContentCenterRow}>
+                                    <a className="authorization-link">Nieuw bij ...</a>
+                                </div>
                             </div>
                         </div>
                     </div>

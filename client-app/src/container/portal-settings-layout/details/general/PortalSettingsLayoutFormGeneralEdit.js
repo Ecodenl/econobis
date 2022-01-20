@@ -21,6 +21,8 @@ import PortalImageBgLoginLayoutNew from './PortalImageBgLoginLayoutNew';
 import PortalImageBgHeaderLayoutNew from './PortalImageBgHeaderLayoutNew';
 import PreviewPortalLoginPagePcModal from '../../preview/PreviewPortalLoginPagePcModal';
 import PreviewPortalLoginPageMobileModal from '../../preview/PreviewPortalLoginPageMobileModal';
+import PreviewPortalDashboardPagePcModal from '../../preview/PreviewPortalDashboardPagePcModal';
+import PreviewPortalDashboardPageMobileModal from '../../preview/PreviewPortalDashboardPageMobileModal';
 // import PortalLogoLayoutNewCrop from './PortalLogoLayoutNewCrop';
 
 class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
@@ -34,7 +36,9 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
 
         this.state = {
             showPreviewPortalLoginPagePc: false,
+            showPreviewPortalDashboardPagePc: false,
             showPreviewPortalLoginPageMobile: false,
+            showPreviewPortalDashboardPageMobile: false,
             portalSettingsLayout: {
                 ...props.portalSettingsLayout,
             },
@@ -78,8 +82,16 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
         this.setState({ showPreviewPortalLoginPagePc: !this.state.showPreviewPortalLoginPagePc });
     };
 
+    togglePreviewPortalDashboardPagePc = () => {
+        this.setState({ showPreviewPortalDashboardPagePc: !this.state.showPreviewPortalDashboardPagePc });
+    };
+
     togglePreviewPortalLoginPageMobile = () => {
         this.setState({ showPreviewPortalLoginPageMobile: !this.state.showPreviewPortalLoginPageMobile });
+    };
+
+    togglePreviewPortalDashboardPageMobile = () => {
+        this.setState({ showPreviewPortalDashboardPageMobile: !this.state.showPreviewPortalDashboardPageMobile });
     };
 
     toggleNewLogo = () => {
@@ -315,8 +327,16 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                         onClickAction={this.togglePreviewPortalLoginPagePc}
                                     />
                                     <ButtonText
+                                        buttonText="Preview dashboard pagina PC"
+                                        onClickAction={this.togglePreviewPortalDashboardPagePc}
+                                    />
+                                    <ButtonText
                                         buttonText="Preview login pagina mobiel"
                                         onClickAction={this.togglePreviewPortalLoginPageMobile}
+                                    />
+                                    <ButtonText
+                                        buttonText="Preview dashboard pagina mobiel"
+                                        onClickAction={this.togglePreviewPortalDashboardPageMobile}
                                     />
                                 </div>
                             </div>
@@ -760,8 +780,45 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             closeModal={this.togglePreviewPortalLoginPagePc}
                             attachmentLogo={this.state.attachmentLogo}
                             logoUrl={logoUrl}
+                            attachmentLogoHeader={this.state.attachmentLogoHeader}
+                            logoHeaderUrl={logoHeaderUrl}
                             attachmentImageBgLogin={this.state.attachmentImageBgLogin}
                             imageBgLoginUrl={imageBgLoginUrl}
+                            attachmentImageBgHeader={this.state.attachmentImageBgHeader}
+                            imageBgHeaderUrl={imageBgHeaderUrl}
+                            // portalFaviconFileName
+                            portalBackgroundColor={portalBackgroundColor}
+                            portalBackgroundTextColor={portalBackgroundTextColor}
+                            loginHeaderBackgroundColor={loginHeaderBackgroundColor}
+                            loginHeaderBackgroundTextColor={loginHeaderBackgroundTextColor}
+                            headerIconsColor={headerIconsColor}
+                            loginFieldBackgroundColor={loginFieldBackgroundColor}
+                            loginFieldBackgroundTextColor={loginFieldBackgroundTextColor}
+                            buttonColor={buttonColor}
+                            buttonTextColor={buttonTextColor}
+                        />
+                    )}
+                    {this.state.showPreviewPortalDashboardPagePc && (
+                        <PreviewPortalDashboardPagePcModal
+                            closeModal={this.togglePreviewPortalDashboardPagePc}
+                            attachmentLogo={this.state.attachmentLogo}
+                            logoUrl={logoUrl}
+                            attachmentLogoHeader={this.state.attachmentLogoHeader}
+                            logoHeaderUrl={logoHeaderUrl}
+                            attachmentImageBgLogin={this.state.attachmentImageBgLogin}
+                            imageBgLoginUrl={imageBgLoginUrl}
+                            attachmentImageBgHeader={this.state.attachmentImageBgHeader}
+                            imageBgHeaderUrl={imageBgHeaderUrl}
+                            // portalFaviconFileName
+                            portalBackgroundColor={portalBackgroundColor}
+                            portalBackgroundTextColor={portalBackgroundTextColor}
+                            loginHeaderBackgroundColor={loginHeaderBackgroundColor}
+                            loginHeaderBackgroundTextColor={loginHeaderBackgroundTextColor}
+                            headerIconsColor={headerIconsColor}
+                            loginFieldBackgroundColor={loginFieldBackgroundColor}
+                            loginFieldBackgroundTextColor={loginFieldBackgroundTextColor}
+                            buttonColor={buttonColor}
+                            buttonTextColor={buttonTextColor}
                         />
                     )}
                     {this.state.showPreviewPortalLoginPageMobile && (
@@ -769,8 +826,45 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             closeModal={this.togglePreviewPortalLoginPageMobile}
                             attachmentLogo={this.state.attachmentLogo}
                             logoUrl={logoUrl}
+                            attachmentLogoHeader={this.state.attachmentLogoHeader}
+                            logoHeaderUrl={logoHeaderUrl}
                             attachmentImageBgLogin={this.state.attachmentImageBgLogin}
                             imageBgLoginUrl={imageBgLoginUrl}
+                            attachmentImageBgHeader={this.state.attachmentImageBgHeader}
+                            imageBgHeaderUrl={imageBgHeaderUrl}
+                            // portalFaviconFileName
+                            portalBackgroundColor={portalBackgroundColor}
+                            portalBackgroundTextColor={portalBackgroundTextColor}
+                            loginHeaderBackgroundColor={loginHeaderBackgroundColor}
+                            loginHeaderBackgroundTextColor={loginHeaderBackgroundTextColor}
+                            headerIconsColor={headerIconsColor}
+                            loginFieldBackgroundColor={loginFieldBackgroundColor}
+                            loginFieldBackgroundTextColor={loginFieldBackgroundTextColor}
+                            buttonColor={buttonColor}
+                            buttonTextColor={buttonTextColor}
+                        />
+                    )}
+                    {this.state.showPreviewPortalDashboardPageMobile && (
+                        <PreviewPortalDashboardPageMobileModal
+                            closeModal={this.togglePreviewPortalDashboardPageMobile}
+                            attachmentLogo={this.state.attachmentLogo}
+                            logoUrl={logoUrl}
+                            attachmentLogoHeader={this.state.attachmentLogoHeader}
+                            logoHeaderUrl={logoHeaderUrl}
+                            attachmentImageBgLogin={this.state.attachmentImageBgLogin}
+                            imageBgLoginUrl={imageBgLoginUrl}
+                            attachmentImageBgHeader={this.state.attachmentImageBgHeader}
+                            imageBgHeaderUrl={imageBgHeaderUrl}
+                            // portalFaviconFileName
+                            portalBackgroundColor={portalBackgroundColor}
+                            portalBackgroundTextColor={portalBackgroundTextColor}
+                            loginHeaderBackgroundColor={loginHeaderBackgroundColor}
+                            loginHeaderBackgroundTextColor={loginHeaderBackgroundTextColor}
+                            headerIconsColor={headerIconsColor}
+                            loginFieldBackgroundColor={loginFieldBackgroundColor}
+                            loginFieldBackgroundTextColor={loginFieldBackgroundTextColor}
+                            buttonColor={buttonColor}
+                            buttonTextColor={buttonTextColor}
                         />
                     )}
                 </Panel>

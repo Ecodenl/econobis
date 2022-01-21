@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import '../../../../../public/portal/portal.css';
+import PreviewPortalLoginPage from './PreviewPortalLoginPage';
+
 class PreviewPortalLoginPagePcModal extends Component {
     constructor(props) {
         super(props);
@@ -73,6 +75,10 @@ class PreviewPortalLoginPagePcModal extends Component {
                 marginRight: '-15px',
                 marginLeft: '-15px',
             },
+            col: {
+                flex: '0 0 250px',
+                maxWidth: '250px',
+            },
         };
 
         const fullHeightJustifyAlignContentCenterRow = {
@@ -87,54 +93,13 @@ class PreviewPortalLoginPagePcModal extends Component {
         };
 
         return (
-            <div
-                // className="modal col-md-10 margin-50-top"
-                style={customStyles.modal}
-                onClick={this.props.closeModal}
-                title={'Klik om preview te sluiten'}
-            >
-                <div id="root">
-                    <div
-                        className="authorization-container container-fluid"
-                        style={customStyles.authorizationContainer}
-                    >
-                        <div style={fullHeightJustifyAlignContentCenterRow}>
-                            <div>
-                                <img src={logoUrl} alt="" className="image logo-container" />
-                                <form>
-                                    <input
-                                        type="text"
-                                        className="text-input w-input   "
-                                        id="username"
-                                        name="username"
-                                        placeholder="E-mailadres"
-                                        value=""
-                                        readOnly={true}
-                                    />
-                                    <input
-                                        type="password"
-                                        className="text-input w-input   "
-                                        id="password"
-                                        name="password"
-                                        placeholder="Wachtwoord"
-                                        value=""
-                                        readOnly={true}
-                                    />
-                                    <button className="authorization-button btn btn-primary btn-sm">
-                                        <span>Log in</span>
-                                    </button>
-                                </form>
-                                <div style={justifyContentCenterRow}>
-                                    <a className="authorization-link">Wachtwoord vergeten?</a>
-                                </div>
-                                <div style={justifyContentCenterRow}>
-                                    <a className="authorization-link">Nieuw bij ...</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <PreviewPortalLoginPage
+                closeModal={this.props.closeModal}
+                customStyles={customStyles}
+                fullHeightJustifyAlignContentCenterRow={fullHeightJustifyAlignContentCenterRow}
+                justifyContentCenterRow={justifyContentCenterRow}
+                logoUrl={logoUrl}
+            />
         );
     }
 }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../../../../../public/portal/portal.css';
-import { FaUser } from 'react-icons/fa';
+import PreviewPortalDashboardPage from './PreviewPortalDashboardPage';
 
 class PreviewPortalDashboardPageMobileModal extends Component {
     constructor(props) {
@@ -49,35 +49,56 @@ class PreviewPortalDashboardPageMobileModal extends Component {
                 top: '10vh',
                 right: '0',
                 bottom: '0',
-                left: '30vw',
+                left: '37%',
                 zIndex: '1050',
                 display: 'inline',
-                overflow: 'auto',
+                overflow: 'hidden',
                 outline: '0',
-                width: '408px',
-            },
-            root: {
+                width: '410px',
                 borderRadius: '25px',
                 border: '5px solid #000',
-                padding: '10px 10px',
+                maxHeight: '700px',
+            },
+            root: {
+                padding: '0',
                 backgroundColor: '#fff',
-                width: '390px',
+                width: '400px',
             },
             body_2: {
                 maxHeight: '700px',
-                // width: '370px',
-                width: '360px',
+                width: '425px',
                 overflow: 'auto',
-                // borderRadius: '25px',
-                // border: '5px solid #000',
-                // padding: '10px 10px',
                 backgroundColor: '#fff',
                 overflowWrap: 'initial',
                 fontFamily: 'Montserrat, sans-serif',
+                paddingBottom: '1%',
+            },
+            container: {
+                width: '100%',
+                paddingLeft: '15px',
+                paddingRight: '15px',
+                marginRight: 'auto',
+                marginLeft: 'auto',
             },
             col_6: {
                 flex: '0 0 50%',
+                maxWidth: '50%',
+                position: 'relative',
+                width: '100%',
+                paddingLeft: '15px',
+                paddingRight: '15px',
+            },
+            headerLogo: {
+                maxWidth: '100px',
+                padding: '14px 0',
+            },
+            logoContainer: {
+                maxHeight: '100px',
                 maxWidth: '100%',
+                verticalAlign: 'middle',
+                display: 'inline-block',
+            },
+            col_widget: {
                 position: 'relative',
                 width: '100%',
                 paddingLeft: '15px',
@@ -114,8 +135,7 @@ class PreviewPortalDashboardPageMobileModal extends Component {
             wContainer: {
                 marginLeft: 'auto',
                 marginRight: 'auto',
-                // maxWidth: '940px',
-                maxWidth: '300px',
+                maxWidth: '360px',
             },
             card: {
                 marginTop: '30px',
@@ -129,305 +149,41 @@ class PreviewPortalDashboardPageMobileModal extends Component {
                 border: '1px solid rgba(0,0,0,.125)',
                 borderRadius: '.25rem',
             },
+            cardImgTop: {
+                width: '100%',
+                borderTopLeftRadius: 'calc(.25rem - 1px)',
+                borderTopRightRadius: 'calc(.25rem - 1px)',
+                maxWidth: '100%',
+                verticalAlign: 'middle',
+                display: 'inline-block',
+                borderStyle: 'none',
+            },
             cardBody: {
                 flex: '1 1 auto',
                 padding: '1.25rem',
             },
+            cardTitle: {
+                marginBottom: '.75rem',
+                fontSize: '14px',
+                lineHeight: '20px',
+                marginTop: '10px',
+                fontWeight: 'bold',
+                color: '#333',
+            },
+            cardText: {
+                whiteSpace: 'break-spaces',
+                marginTop: '0',
+                marginBottom: '10px',
+                color: '#333',
+            },
         };
 
         return (
-            <div
-                // className="modal col-md-10 margin-50-top"
-                style={customStyles.modal}
-                onClick={this.props.closeModal}
-                title={'Klik om preview te sluiten'}
-            >
-                <div id="root" style={customStyles.root}>
-                    <div id="body-2" style={customStyles.body_2}>
-                        <header>
-                            <div className="header-portal">
-                                <div className="profile-pic">
-                                    <div className="dropdown">
-                                        Naam
-                                        <br />
-                                        Account
-                                    </div>
-                                </div>
-                                <div className="container">
-                                    <div style={customStyles.row}>
-                                        <div style={customStyles.col_6}>
-                                            <div className="header-logo">
-                                                <img src={logoHeaderUrl} alt="" className="image logo-container" />
-                                            </div>
-                                        </div>
-                                        <div style={customStyles.col_6}>
-                                            <div
-                                                className="d-flex justify-content-end"
-                                                style={customStyles.justifyContentEnd}
-                                            >
-                                                <div className="bm-burger-button text-center">
-                                                    <span>
-                                                        <span className="bm-burger-bars bm-burger-bar-1"></span>
-                                                        <span className="bm-burger-bars bm-burger-bar-2"></span>
-                                                        <span className="bm-burger-bars bm-burger-bar-3"></span>
-                                                    </span>
-                                                    <br />
-                                                    <small style={{ fontSize: '10px', marginLeft: '-3.5px' }}>
-                                                        MENU
-                                                    </small>
-                                                </div>
-                                                <div className="dropdown">
-                                                    <button
-                                                        aria-haspopup="true"
-                                                        aria-expanded="false"
-                                                        id="account-dropdown"
-                                                        style={{ padding: '0px', marginTop: '20px' }}
-                                                        type="button"
-                                                        className="dropdown-toggle btn btn-primary"
-                                                    >
-                                                        <FaUser />
-                                                        <br />
-                                                        <small style={{ fontSize: '10px' }}>ACCOUNT</small>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            {/*<div>*/}
-                            {/*    <div*/}
-                            {/*        className="bm-overlay"*/}
-                            {/*        style={{*/}
-                            {/*            position: 'fixed',*/}
-                            {/*            zIndex: '1000',*/}
-                            {/*            width: '100%',*/}
-                            {/*            height: '100%',*/}
-                            {/*            background: 'rgba(0, 0, 0, 0.3) none repeat scroll 0% 0%',*/}
-                            {/*            opacity: '0',*/}
-                            {/*            transform: 'translate3d(100%, 0px, 0px)',*/}
-                            {/*            transition: 'opacity 0.3s ease 0s, transform 0s ease 0.3s',*/}
-                            {/*        }}*/}
-                            {/*    ></div>*/}
-                            {/*    <div*/}
-                            {/*        id=""*/}
-                            {/*        className="bm-menu-wrap"*/}
-                            {/*        style={{*/}
-                            {/*            position: 'fixed',*/}
-                            {/*            right: '0px',*/}
-                            {/*            zIndex: '1100',*/}
-                            {/*            width: '300px',*/}
-                            {/*            height: '100%',*/}
-                            {/*            transform: 'translate3d(100%, 0px, 0px)',*/}
-                            {/*            transition: 'all 0.5s ease 0s',*/}
-                            {/*        }}*/}
-                            {/*    >*/}
-                            {/*        <div*/}
-                            {/*            className="bm-menu"*/}
-                            {/*            style={{ height: '100%', boxSizing: 'border-box', overflow: 'auto' }}*/}
-                            {/*        >*/}
-                            {/*            <nav className="bm-item-list" style={{ height: '100%' }}>*/}
-                            {/*                <div*/}
-                            {/*                    className="bm-item sidebar-menu"*/}
-                            {/*                    style={{ display: 'block' }}*/}
-                            {/*                    tabIndex="-1"*/}
-                            {/*                >*/}
-                            {/*                    <h6 className="heading in-menu">MENU</h6>*/}
-                            {/*                    <a className="nav-link w-nav-link w--nav-link-open ">*/}
-                            {/*                        Huidige deelnames*/}
-                            {/*                    </a>*/}
-                            {/*                    <a className="nav-link w-nav-link w--nav-link-open ">Gegevens</a>*/}
-                            {/*                    <a className="nav-link w-nav-link w--nav-link-open ">*/}
-                            {/*                        Inschrijven projecten*/}
-                            {/*                    </a>*/}
-                            {/*                    <a className="nav-link w-nav-link w--nav-link-open ">Over ons</a>*/}
-                            {/*                </div>*/}
-                            {/*            </nav>*/}
-                            {/*        </div>*/}
-                            {/*        <div>*/}
-                            {/*            <div*/}
-                            {/*                className="bm-cross-button"*/}
-                            {/*                style={{*/}
-                            {/*                    position: 'absolute',*/}
-                            {/*                    width: '24px',*/}
-                            {/*                    height: '24px',*/}
-                            {/*                    right: '8px',*/}
-                            {/*                    top: '8px',*/}
-                            {/*                }}*/}
-                            {/*            >*/}
-                            {/*                <span style={{ position: 'absolute', top: '6px', right: '14px' }}>*/}
-                            {/*                    <span*/}
-                            {/*                        className="bm-cross"*/}
-                            {/*                        style={{*/}
-                            {/*                            position: 'absolute',*/}
-                            {/*                            width: '3px',*/}
-                            {/*                            height: '14px',*/}
-                            {/*                            transform: 'rotate(45deg)',*/}
-                            {/*                        }}*/}
-                            {/*                    ></span>*/}
-                            {/*                    <span*/}
-                            {/*                        className="bm-cross"*/}
-                            {/*                        style={{*/}
-                            {/*                            position: 'absolute',*/}
-                            {/*                            width: '3px',*/}
-                            {/*                            height: '14px',*/}
-                            {/*                            transform: 'rotate(-45deg)',*/}
-                            {/*                        }}*/}
-                            {/*                    ></span>*/}
-                            {/*                </span>*/}
-                            {/*                <button*/}
-                            {/*                    style={{*/}
-                            {/*                        position: 'absolute',*/}
-                            {/*                        left: '0px',*/}
-                            {/*                        top: '0px',*/}
-                            {/*                        width: '100%',*/}
-                            {/*                        height: '100%',*/}
-                            {/*                        margin: '0px',*/}
-                            {/*                        padding: '0px',*/}
-                            {/*                        border: 'medium none',*/}
-                            {/*                        fontSize: '0px',*/}
-                            {/*                        background: 'transparent none repeat scroll 0% 0%',*/}
-                            {/*                        cursor: 'pointer',*/}
-                            {/*                    }}*/}
-                            {/*                    tabIndex="-1"*/}
-                            {/*                >*/}
-                            {/*                    Close Menu*/}
-                            {/*                </button>*/}
-                            {/*            </div>*/}
-                            {/*        </div>*/}
-                            {/*    </div>*/}
-                            {/*</div>*/}
-                        </header>
-                        <div className="content-section">
-                            <div style={customStyles.wContainer}>
-                                <div style={customStyles.row}>
-                                    <div style={customStyles.col}>
-                                        <h1 className="text-center" style={customStyles.contentHeading}>
-                                            Welkom op jouw energie gemeenschap
-                                        </h1>
-                                    </div>
-                                </div>
-                                <div style={customStyles.row}>
-                                    <div style={customStyles.col_6}>
-                                        <div id="widget-over-ons" style={customStyles.card}>
-                                            <img
-                                                className="card-img-top"
-                                                src={`${URL_API}/portal/images/over-ons.png`}
-                                            />
-                                            <div style={customStyles.cardBody}>
-                                                <h5 className="card-title">Over ons</h5>
-                                                <p className="card-text" style={{ whiteSpace: 'break-spaces' }}>
-                                                    Vind hier onze contact gegevens
-                                                </p>
-                                                <button className="w-button btn btn-primary btn-sm">Over Ons</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={customStyles.col_6}>
-                                        <div id="widget-project-schrijf-je-in" style={customStyles.card}>
-                                            <img
-                                                className="card-img-top"
-                                                src={`${URL_API}/portal/images/project-schrijf-je-in.png`}
-                                            />
-                                            <div style={customStyles.cardBody}>
-                                                <h5 className="card-title">Projecten</h5>
-                                                <p className="card-text" style={{ whiteSpace: 'break-spaces' }}>
-                                                    Doe mee met onze projecten en participeer
-                                                </p>
-                                                <button className="w-button btn btn-primary btn-sm">Projecten</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style={customStyles.col_6}>
-                                        <div id="widget-huidige-deelnames" style={customStyles.card}>
-                                            <img
-                                                className="card-img-top"
-                                                src={`${URL_API}/portal/images/huidige-deelnames.png`}
-                                            />
-                                            <div style={customStyles.cardBody}>
-                                                <h5 className="card-title">Huidige deelnames</h5>
-                                                <p className="card-text" style={{ whiteSpace: 'break-spaces' }}>
-                                                    Vind hier de projecten waar aan je deelneemt
-                                                </p>
-                                                <button className="w-button btn btn-primary btn-sm">
-                                                    Huidige deelnames
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style={customStyles.row}>
-                                    <div style={customStyles.col_6}>
-                                        <div id="widget-contact-details" style={customStyles.card}>
-                                            <div style={customStyles.cardBody}>
-                                                <h5 className="card-title">Naam Account</h5>
-                                                <div className="card-text">
-                                                    <div>
-                                                        <b>Bezoekadres</b>
-                                                        <br />
-                                                        Straat 1
-                                                        <br />
-                                                        1234 AB Plaats, Nederland
-                                                    </div>
-                                                    <div>
-                                                        <br />
-                                                        <b>Telefoon</b>
-                                                        <br />
-                                                        012-3456789
-                                                    </div>
-                                                    <div>
-                                                        <br />
-                                                        <b>E-mail</b>
-                                                        <br />
-                                                        email@adres.nl
-                                                    </div>
-                                                </div>
-                                                <br />
-                                                <button className="w-button btn btn-primary btn-sm">
-                                                    Gegevens beheren
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {/*<div style={customStyles.col_6}>*/}
-                                    {/*    <div id="widget-switch-contact" style={customStyles.card}>*/}
-                                    {/*        <div style={customStyles.cardBody}>*/}
-                                    {/*            <h5 className="card-title">Wissel van contact</h5>*/}
-                                    {/*            <div*/}
-                                    {/*                className="card-text"*/}
-                                    {/*                style={{*/}
-                                    {/*                    display: 'flex',*/}
-                                    {/*                    justifyContent: 'space-between',*/}
-                                    {/*                    overflowX: 'auto',*/}
-                                    {/*                }}*/}
-                                    {/*            >*/}
-                                    {/*                <button*/}
-                                    {/*                    id="user-1"*/}
-                                    {/*                    style={{ margin: '5px' }}*/}
-                                    {/*                    type="button"*/}
-                                    {/*                    className="w-button btn btn-primary btn-sm btn btn-primary"*/}
-                                    {/*                >*/}
-                                    {/*                    Naam account*/}
-                                    {/*                </button>*/}
-                                    {/*                <button*/}
-                                    {/*                    id="user-2"*/}
-                                    {/*                    disabled=""*/}
-                                    {/*                    style={{ margin: '5px' }}*/}
-                                    {/*                    type="button"*/}
-                                    {/*                    className="w-button btn btn-primary btn-sm btn btn-primary"*/}
-                                    {/*                >*/}
-                                    {/*                    Naam account*/}
-                                    {/*                </button>*/}
-                                    {/*            </div>*/}
-                                    {/*        </div>*/}
-                                    {/*    </div>*/}
-                                    {/*</div>*/}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <PreviewPortalDashboardPage
+                closeModal={this.props.closeModal}
+                customStyles={customStyles}
+                logoHeaderUrl={logoHeaderUrl}
+            />
         );
     }
 }

@@ -6,6 +6,7 @@ import InputText from '../../../components/form/InputText';
 import InputTextArea from '../../../components/form/InputTextarea';
 import PortalSettingsDashboardAPI from '../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
 import { Col } from 'react-bootstrap';
+import AddPortalSettingsDashboardWidgetImageCropModal from './AddPortalSettingsDashboardWidgetImageCropModal';
 const Dropzone = require('react-dropzone').default;
 
 const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal, addWidget }) => {
@@ -13,10 +14,12 @@ const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal, addWidget }
         title: '',
         text: '',
         image: '',
+        imageName: '',
         buttonText: '',
         buttonLink: '',
         active: true,
     });
+    const [showCropImageModal, setShowCropImageModal] = useState();
 
     function onDropAccepted(file) {
         setWidget({
@@ -24,14 +27,33 @@ const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal, addWidget }
             image: file[0],
             imageName: file[0].name,
         });
-
-        setTimeout(() => {
-            this.props.toggleShowNewLogo();
-        }, 500);
+        setShowCropImageModal(true);
     }
 
     function onDropRejected() {
         alert('Er is wat fout gegaan.');
+    }
+
+    const closeNewWidgetImage = () => {
+        setNewWidgetImage(false);
+    };
+
+    const closeShowCropWidgetImage = () => {
+        setWidget({
+            ...widget,
+            image: '',
+            imageName: '',
+        });
+        setShowCropImageModal(false);
+    };
+
+    function cropWidgetImage(file) {
+        setWidget({
+            ...widget,
+            image: file,
+            imageName: file.name,
+        });
+        setShowCropImageModal(false);
     }
 
     function addWidgetAction() {
@@ -49,7 +71,6 @@ const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal, addWidget }
 
         PortalSettingsDashboardAPI.addDashboardWidget(data)
             .then(response => {
-                console.log(response.data);
                 addWidget(response.data);
                 toggleModal();
             })
@@ -135,6 +156,13 @@ const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal, addWidget }
                     />
                 </Col>
             </div>
+            {showCropImageModal && (
+                <AddPortalSettingsDashboardWidgetImageCropModal
+                    closeShowCropWidgetImage={closeShowCropWidgetImage}
+                    image={widget.image}
+                    cropLogo={cropWidgetImage}
+                />
+            )}
         </Modal>
     );
 };

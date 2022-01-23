@@ -1,40 +1,15 @@
 import React, { Component } from 'react';
 import ReactCrop from 'react-image-crop';
-import Modal from '../../../../components/modal/Modal';
+import Modal from '../../../components/modal/Modal';
 import 'react-image-crop/dist/ReactCrop.css';
 
-class PortalLogoLayoutNewCrop extends Component {
+class AddPortalSettingsDashboardWidgetImageCropModal extends Component {
     constructor(props) {
         super(props);
 
-        switch (this.props.imageLayoutItemName) {
-            case 'logo-login':
-                this.aspect = 1 / 1;
-                this.aspectString = '1:1';
-                this.cropStyle = { width: '200px', margin: '25px', verticalAlign: 'top' };
-                break;
-            case 'logo-header':
-                this.aspect = 2 / 1;
-                this.aspectString = '2:1';
-                this.cropStyle = { height: '100px', margin: '25px', verticalAlign: 'top' };
-                break;
-            case 'image-bg-login':
-                this.aspect = 16 / 9;
-                this.aspectString = '16:9';
-                this.cropStyle = { width: '800px', margin: '25px', verticalAlign: 'top' };
-
-                break;
-            case 'image-bg-header':
-                this.aspect = 16 / 9;
-                this.aspectString = '16:9';
-                this.cropStyle = { height: '128px', margin: '25px', verticalAlign: 'top' };
-                break;
-            default:
-                this.aspect = 1 / 1;
-                this.aspectString = '1:1';
-                this.cropStyle = { width: '200px', margin: '25px', verticalAlign: 'top' };
-                break;
-        }
+        this.aspect = 16 / 9;
+        this.aspectString = '16:9';
+        this.cropStyle = { height: '225px', margin: '25px', verticalAlign: 'top' };
 
         this.state = {
             src: props.image.preview,
@@ -118,14 +93,13 @@ class PortalLogoLayoutNewCrop extends Component {
                 <Modal
                     modalClassName={'modal-portal-layout-crop'}
                     title={'Bijsnijden image (' + this.props.image.name + ') verhouding ' + this.aspectString}
-                    closeModal={this.props.toggleShowCrop}
+                    closeModal={this.props.closeShowCropWidgetImage}
                     confirmAction={() => this.props.cropLogo(croppedImage)}
                     buttonConfirmText={'Bevestig'}
                 >
                     {src && (
                         <ReactCrop
                             src={src}
-                            // style={{ maxHeight: '300px', margin: '25px', verticalAlign: 'top' }}
                             style={{ margin: '25px', verticalAlign: 'top' }}
                             crop={crop}
                             ruleOfThirds
@@ -141,4 +115,4 @@ class PortalLogoLayoutNewCrop extends Component {
     }
 }
 
-export default PortalLogoLayoutNewCrop;
+export default AddPortalSettingsDashboardWidgetImageCropModal;

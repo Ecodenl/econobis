@@ -14,6 +14,19 @@
   }
 }
 
+.portal-layout-crop div.modal{
+  display: inline;
+  top: 5vh;
+  height: 95vh;
+}
+.modal-portal-layout-crop{
+  width: 90vw;
+}
+.modal-portal-layout-crop div.modal-content{
+   height: 600px;
+   overflow: scroll;
+}
+
 .search-modal {
   top: 10%;
 }

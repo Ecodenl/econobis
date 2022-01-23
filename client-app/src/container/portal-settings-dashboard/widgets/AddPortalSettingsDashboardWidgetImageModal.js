@@ -16,7 +16,7 @@ class AddPortalSettingsDashboardWidgetImageModal extends Component {
     onDropAccepted(file) {
         this.props.addWidgetImage(file);
         setTimeout(() => {
-            this.props.toggleNewWidgetImage();
+            this.props.closeNewWidgetImage();
         }, 500);
     }
 
@@ -29,7 +29,7 @@ class AddPortalSettingsDashboardWidgetImageModal extends Component {
     render() {
         return (
             <Modal
-                closeModal={this.props.toggleNewWidgetImage}
+                closeModal={this.props.closeNewWidgetImage}
                 showConfirmAction={false}
                 title="Upload widget image bestand (PNG)"
             >

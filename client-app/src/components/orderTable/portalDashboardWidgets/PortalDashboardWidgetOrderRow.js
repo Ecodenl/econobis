@@ -3,6 +3,7 @@ import { useDrag, useDrop } from 'react-dnd';
 import { arrows_vertical } from 'react-icons-kit/ikons/arrows_vertical';
 import Icon from 'react-icons-kit';
 import AddPortalSettingsDashboardWidgetImageModal from '../../../container/portal-settings-dashboard/widgets/AddPortalSettingsDashboardWidgetImageModal';
+import AddPortalSettingsDashboardWidgetImageCropModal from '../../../container/portal-settings-dashboard/widgets/AddPortalSettingsDashboardWidgetImageCropModal';
 import PortalSettingsDashboardAPI from '../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
 import ButtonIcon from '../../button/ButtonIcon';
 import InputText from '../../form/InputText';
@@ -18,8 +19,9 @@ const DND_ITEM_TYPE = 'row';
 const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputChange, removeWidget }) => {
     const dropRef = useRef(null);
     const dragRef = useRef(null);
-    const [newWidgetImage, setNewWidgetImage] = useState();
-    const [widgetImage, setWidgetImage] = useState();
+    const [newWidgetImage, setNewWidgetImage] = useState(false);
+    const [showCropImageModal, setShowCropImageModal] = useState(false);
+    const [widgetImage, setWidgetImage] = useState('');
     const [showUploadSucces, setShowUploadSucces] = useState(false);
     const [uploadSuccesMessage, setUploadSuccesMessage] = useState('');
 
@@ -80,8 +82,17 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
     preview(drop(dropRef));
     drag(dragRef);
 
+    const closeNewWidgetImage = () => {
+        setNewWidgetImage(false);
+    };
+
     const toggleNewWidgetImage = () => {
         setNewWidgetImage(!newWidgetImage);
+    };
+
+    const closeShowCropWidgetImage = () => {
+        setWidgetImage('');
+        setShowCropImageModal(false);
     };
 
     const toggleShowUploadSucces = () => {
@@ -90,18 +101,25 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
 
     const addWidgetImage = file => {
         setWidgetImage(file[0]);
+        setShowCropImageModal(true);
+    };
+
+    const cropWidgetImage = file => {
+        setWidgetImage(file);
 
         const data = new FormData();
         data.append('id', row.id);
-        data.append('image', file[0]);
+        data.append('image', file);
 
         PortalSettingsDashboardAPI.updateDashboardWidget(data)
             .then(payload => {
+                setShowCropImageModal(false);
                 setShowUploadSucces(true);
                 setUploadSuccesMessage(payload.data.message);
                 // alert(payload.data.message);
             })
             .catch(error => {
+                setShowCropImageModal(false);
                 console.log(error);
                 alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
             });
@@ -258,10 +276,18 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
             </tr>
             {newWidgetImage && (
                 <AddPortalSettingsDashboardWidgetImageModal
-                    toggleNewWidgetImage={toggleNewWidgetImage}
+                    closeNewWidgetImage={closeNewWidgetImage}
                     addWidgetImage={addWidgetImage}
                 />
             )}
+            {showCropImageModal && (
+                <AddPortalSettingsDashboardWidgetImageCropModal
+                    closeShowCropWidgetImage={closeShowCropWidgetImage}
+                    image={widgetImage}
+                    cropLogo={cropWidgetImage}
+                />
+            )}
+
             {showUploadSucces && (
                 <Modal
                     title={'Succes'}

@@ -16,14 +16,11 @@ import InputToggle from '../../../../components/form/InputToggle';
 import PortalLogoLayoutNew from './PortalLogoLayoutNew';
 import PortalFaviconLayoutNew from './PortalFaviconLayoutNew';
 import Image from 'react-bootstrap/es/Image';
-import PortalLogoHeaderLayoutNew from './PortalLogoHeaderLayoutNew';
-import PortalImageBgLoginLayoutNew from './PortalImageBgLoginLayoutNew';
-import PortalImageBgHeaderLayoutNew from './PortalImageBgHeaderLayoutNew';
 import PreviewPortalLoginPagePcModal from '../../preview/PreviewPortalLoginPagePcModal';
 import PreviewPortalLoginPageMobileModal from '../../preview/PreviewPortalLoginPageMobileModal';
 import PreviewPortalDashboardPagePcModal from '../../preview/PreviewPortalDashboardPagePcModal';
 import PreviewPortalDashboardPageMobileModal from '../../preview/PreviewPortalDashboardPageMobileModal';
-// import PortalLogoLayoutNewCrop from './PortalLogoLayoutNewCrop';
+import PortalLogoLayoutNewCrop from './PortalLogoLayoutNewCrop';
 
 class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -42,9 +39,12 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
             portalSettingsLayout: {
                 ...props.portalSettingsLayout,
             },
+            image: '',
+            imageLayoutItemName: '',
             attachmentLogo: '',
             filenameLogo: '',
-            newLogo: false,
+            showModalNewLogo: false,
+            showModalCropLogo: false,
             attachmentLogoHeader: '',
             filenameLogoHeader: '',
             newLogoHeader: false,
@@ -94,33 +94,23 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
         this.setState({ showPreviewPortalDashboardPageMobile: !this.state.showPreviewPortalDashboardPageMobile });
     };
 
-    toggleNewLogo = () => {
+    closeNewLogo = () => {
+        this.setState({
+            showModalNewLogo: false,
+        });
+    };
+    toggleNewLogo = imageLayoutItemName => {
         if (this.manageTechnicalPortalSettings) {
             this.setState({
-                newLogo: !this.state.newLogo,
+                showModalNewLogo: !this.state.showModalNewLogo,
+                imageLayoutItemName: imageLayoutItemName,
             });
         }
     };
-    toggleNewLogoHeader = () => {
-        if (this.manageTechnicalPortalSettings) {
-            this.setState({
-                newLogoHeader: !this.state.newLogoHeader,
-            });
-        }
-    };
-    toggleNewImageBgLogin = () => {
-        if (this.manageTechnicalPortalSettings) {
-            this.setState({
-                newImageBgLogin: !this.state.newImageBgLogin,
-            });
-        }
-    };
-    toggleNewImageBgHeader = () => {
-        if (this.manageTechnicalPortalSettings) {
-            this.setState({
-                newImageBgHeader: !this.state.newImageBgHeader,
-            });
-        }
+    toggleCrop = () => {
+        this.setState({
+            showModalCropLogo: !this.state.showModalCropLogo,
+        });
     };
     toggleNewFavicon = () => {
         if (this.manageTechnicalPortalSettings) {
@@ -132,30 +122,45 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
     addLogo = file => {
         this.setState({
             ...this.state,
-            attachmentLogo: file[0],
-            filenameLogo: file[0].name,
+            image: file[0],
+            showModalCropLogo: true,
         });
     };
-    addLogoHeader = file => {
-        this.setState({
-            ...this.state,
-            attachmentLogoHeader: file[0],
-            filenameLogoHeader: file[0].name,
-        });
-    };
-    addImageBgLogin = file => {
-        this.setState({
-            ...this.state,
-            attachmentImageBgLogin: file[0],
-            filenameImageBgLogin: file[0].name,
-        });
-    };
-    addImageBgHeader = file => {
-        this.setState({
-            ...this.state,
-            attachmentImageBgHeader: file[0],
-            filenameImageBgHeader: file[0].name,
-        });
+    cropLogo = file => {
+        switch (this.state.imageLayoutItemName) {
+            case 'logo-login':
+                this.setState({
+                    ...this.state,
+                    attachmentLogo: file,
+                    filenameLogo: file.name,
+                    showModalCropLogo: false,
+                });
+                break;
+            case 'logo-header':
+                this.setState({
+                    ...this.state,
+                    attachmentLogoHeader: file,
+                    filenameLogoHeader: file.name,
+                    showModalCropLogo: false,
+                });
+                break;
+            case 'image-bg-login':
+                this.setState({
+                    ...this.state,
+                    attachmentImageBgLogin: file,
+                    filenameImageBgLogin: file.name,
+                    showModalCropLogo: false,
+                });
+                break;
+            case 'image-bg-header':
+                this.setState({
+                    ...this.state,
+                    attachmentImageBgHeader: file,
+                    filenameImageBgHeader: file.name,
+                    showModalCropLogo: false,
+                });
+                break;
+        }
     };
     addFavicon = file => {
         this.setState({
@@ -359,8 +364,8 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 label={'Standaard'}
                                 divSize={'col-sm-4'}
                                 name={'isDefault'}
-                                value={isDefault}
-                                disabled={isDefault}
+                                value={Boolean(isDefault)}
+                                disabled={Boolean(isDefault)}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>
@@ -372,7 +377,9 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 value={
                                     this.state.attachmentLogo.name ? this.state.attachmentLogo.name : portalLogoFileName
                                 }
-                                onClickAction={this.toggleNewLogo}
+                                onClickAction={() => {
+                                    this.toggleNewLogo('logo-login');
+                                }}
                                 onChangeaction={() => {}}
                                 readOnly={!this.manageTechnicalPortalSettings}
                                 required={'required'}
@@ -396,12 +403,6 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 }}
                             />
                         </div>
-                        {this.state.newLogo && (
-                            <PortalLogoLayoutNew toggleShowNewLogo={this.toggleNewLogo} addLogo={this.addLogo} />
-                        )}
-                        {/*{this.state.showCrop && (*/}
-                        {/*    <PortalLogoLayoutNewCrop toggleShowCrop={this.toggleCrop} image={this.state.file} />*/}
-                        {/*)}*/}
                         <div className="row">
                             <InputText
                                 Men
@@ -412,7 +413,9 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                         ? this.state.attachmentImageBgLogin.name
                                         : portalImageBgFileNameLogin
                                 }
-                                onClickAction={this.toggleNewImageBgLogin}
+                                onClickAction={() => {
+                                    this.toggleNewLogo('image-bg-login');
+                                }}
                                 onChangeaction={() => {}}
                                 readOnly={!this.manageTechnicalPortalSettings}
                                 required={'required'}
@@ -436,12 +439,6 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 }}
                             />
                         </div>
-                        {this.state.newImageBgLogin && (
-                            <PortalImageBgLoginLayoutNew
-                                toggleShowNewImageBgLogin={this.toggleNewImageBgLogin}
-                                addImageBgLogin={this.addImageBgLogin}
-                            />
-                        )}
                         <div className="row">
                             <InputText
                                 Men
@@ -452,7 +449,9 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                         ? this.state.attachmentLogoHeader.name
                                         : portalLogoFileNameHeader
                                 }
-                                onClickAction={this.toggleNewLogoHeader}
+                                onClickAction={() => {
+                                    this.toggleNewLogo('logo-header');
+                                }}
                                 onChangeaction={() => {}}
                                 readOnly={!this.manageTechnicalPortalSettings}
                                 required={'required'}
@@ -476,12 +475,6 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 }}
                             />
                         </div>
-                        {this.state.newLogoHeader && (
-                            <PortalLogoHeaderLayoutNew
-                                toggleShowNewLogoHeader={this.toggleNewLogoHeader}
-                                addLogoHeader={this.addLogoHeader}
-                            />
-                        )}
                         <div className="row">
                             <InputText
                                 Men
@@ -492,7 +485,9 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                         ? this.state.attachmentImageBgHeader.name
                                         : portalImageBgFileNameHeader
                                 }
-                                onClickAction={this.toggleNewImageBgHeader}
+                                onClickAction={() => {
+                                    this.toggleNewLogo('image-bg-header');
+                                }}
                                 onChangeaction={() => {}}
                                 readOnly={!this.manageTechnicalPortalSettings}
                                 required={'required'}
@@ -516,12 +511,6 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 }}
                             />
                         </div>
-                        {this.state.newImageBgHeader && (
-                            <PortalImageBgHeaderLayoutNew
-                                toggleShowNewImageBgHeader={this.toggleNewImageBgHeader}
-                                addImageBgHeader={this.addImageBgHeader}
-                            />
-                        )}
                         <div className="row">
                             <InputText
                                 label="Favicon (bestandstype ICO)"
@@ -763,6 +752,21 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 error={this.state.errors.buttonTextColor}
                             />
                         </div>
+                        {this.state.showModalNewLogo && (
+                            <PortalLogoLayoutNew
+                                closeNewLogo={this.closeNewLogo}
+                                addLogo={this.addLogo}
+                                imageLayoutItemName={this.state.imageLayoutItemName}
+                            />
+                        )}
+                        {this.state.showModalCropLogo && (
+                            <PortalLogoLayoutNewCrop
+                                toggleShowCrop={this.toggleCrop}
+                                image={this.state.image}
+                                imageLayoutItemName={this.state.imageLayoutItemName}
+                                cropLogo={this.cropLogo}
+                            />
+                        )}
                     </PanelBody>
 
                     <PanelBody>

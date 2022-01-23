@@ -3,11 +3,15 @@ import { connect } from 'react-redux';
 
 import PortalSettingsLayoutFormGeneralEdit from './PortalSettingsLayoutFormGeneralEdit';
 import PortalSettingsLayoutFormGeneralView from './PortalSettingsLayoutFormGeneralView';
-import PortalSettingsFormGeneralEdit from '../../../portal-settings/general/PortalSettingsFormGeneralEdit';
 
 class PortalSettingsLayoutFormGeneral extends Component {
     constructor(props) {
         super(props);
+
+        this.manageTechnicalPortalSettings =
+            this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'software@xaris.nl'
+                ? true
+                : false;
 
         this.state = {
             imageHash: Date.now(),
@@ -17,9 +21,11 @@ class PortalSettingsLayoutFormGeneral extends Component {
     }
 
     switchToEdit = () => {
-        this.setState({
-            showEdit: true,
-        });
+        if (this.manageTechnicalPortalSettings) {
+            this.setState({
+                showEdit: true,
+            });
+        }
     };
 
     switchToView = () => {

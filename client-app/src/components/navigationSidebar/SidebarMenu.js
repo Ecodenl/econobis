@@ -478,17 +478,17 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </Link>
                         </NavText>
                     </Nav>
-                    <Nav id="portalSettingsDashboard">
-                        <NavText>
-                            <Link className="sidebar-link" to="portal-instellingen-dashboard">
-                                Dashboard instellingen
-                            </Link>
-                        </NavText>
-                    </Nav>
                     <Nav id="portalSettingsLayouts">
                         <NavText>
                             <Link className="sidebar-link" to="portal-instellingen-layout">
                                 Layout instellingen
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="portalSettingsDashboard">
+                        <NavText>
+                            <Link className="sidebar-link" to="portal-instellingen-dashboard">
+                                Dashboard instellingen
                             </Link>
                         </NavText>
                     </Nav>

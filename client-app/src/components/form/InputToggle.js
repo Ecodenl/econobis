@@ -32,7 +32,7 @@ InputToggle.defaultProps = {
     divSize: 'col-sm-6',
     required: '',
     disabled: false,
-    value: '',
+    value: false,
 };
 
 InputToggle.propTypes = {

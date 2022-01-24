@@ -10,7 +10,7 @@ export const ContactDetailsDashboardWidget = function({ contact }) {
     const typeContact = contact.typeId ? contact.typeId : null;
 
     return (
-        <Card key={key} id={key}>
+        <Card key={key} id={key} style={{ marginTop: '30px' }}>
             <div className="card-body">
                 <h5 className="card-title">{contact.fullNameFnf}</h5>
                 <div className="card-text">
@@ -102,7 +102,7 @@ export const SwitchContactDashboardWidget = function({ user, currentSelectedCont
     const key = 'widget-' + 'switch-contact';
 
     return (
-        <Card key={key} id={key}>
+        <Card key={key} id={key} style={{ marginTop: '30px' }}>
             <div className="card-body">
                 <h5 className="card-title">Wissel van contact</h5>
                 <div

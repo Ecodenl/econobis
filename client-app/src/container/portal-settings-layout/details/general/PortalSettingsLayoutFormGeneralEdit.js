@@ -20,7 +20,7 @@ import PreviewPortalLoginPagePcModal from '../../preview/PreviewPortalLoginPageP
 import PreviewPortalLoginPageMobileModal from '../../preview/PreviewPortalLoginPageMobileModal';
 import PreviewPortalDashboardPagePcModal from '../../preview/PreviewPortalDashboardPagePcModal';
 import PreviewPortalDashboardPageMobileModal from '../../preview/PreviewPortalDashboardPageMobileModal';
-import PortalLogoLayoutNewCrop from './PortalLogoLayoutNewCrop';
+import PortalLogoLayoutNewCrop from '../../../../components/cropImage/portalLayout/PortalLogoLayoutNewCrop';
 
 class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -406,7 +406,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputText
                                 Men
-                                label="Background image login (bestandstype PNG)"
+                                label="Achtergrond afbeelding login (bestandstype PNG)"
                                 divSize={'col-sm-8'}
                                 value={
                                     this.state.attachmentImageBgLogin.name
@@ -478,7 +478,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputText
                                 Men
-                                label="Background image header (bestandstype PNG)"
+                                label="Achtergrond afbeelding header (bestandstype PNG)"
                                 divSize={'col-sm-8'}
                                 value={
                                     this.state.attachmentImageBgHeader.name
@@ -555,6 +555,12 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 divSize={'col-sm-8'}
                                 name={'loginHeaderBackgroundColor'}
                                 value={loginHeaderBackgroundColor}
+                                size={'col-sm-5'}
+                                textToolTip={`Achtergrond afbeelding werkt alleen als je hier RGBA kleurcode gebruiktkleur en daar (deels) transparantie op toepast: 0.0 (fully transparent) and 1.0 (fully opaque)<br />
+                                    Bijv:<br />
+                                    rgba(35, 150, 179, 0). Achtergrond kleur volledig transparant, dus zie je achtergrond afbeelding ook volledig.<br />
+                                    rgba(35, 150, 179, 1). Achtergrond kleur volledig NIET transparant, dus zie je achtergrond afbeelding helemaal niet.<br />
+                                    rgba(35, 150, 179, 0.5). Achtergrond kleur voor 50% transparant, dus zie je achtergrond afbeelding voor 50% door achtergrond kleur heen. Hiermee krijgt je een soort watermerk effect.`}
                                 readOnly={!this.manageTechnicalPortalSettings}
                                 required={'required'}
                                 onChangeAction={this.handleInputChange}
@@ -691,12 +697,30 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                     display: 'inline-block',
                                     padding: '2px',
                                     borderRadius: '2px',
-                                    width: '50px',
+                                    width: '150px',
                                     height: '30px',
                                     boxShadow: '0 0 0 2px #fff inset',
                                 }}
                             >
-                                Tekst
+                                Menutekst
+                            </span>
+                            <br />
+                            <span
+                                className="rc-color-picker-trigger"
+                                unselectable="unselectable"
+                                style={{
+                                    backgroundColor: '#fff',
+                                    color: portalBackgroundColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '2px',
+                                    borderRadius: '2px',
+                                    width: '150px',
+                                    height: '30px',
+                                    boxShadow: '0 0 0 2px #fff inset',
+                                }}
+                            >
+                                Pagina header tekst
                             </span>
                         </div>
                         <div className="row">

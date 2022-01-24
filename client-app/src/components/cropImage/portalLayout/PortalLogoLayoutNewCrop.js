@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import ReactCrop from 'react-image-crop';
-import Modal from '../../../../components/modal/Modal';
+import Modal from '../../modal/Modal';
 import 'react-image-crop/dist/ReactCrop.css';
 
 class PortalLogoLayoutNewCrop extends Component {
     constructor(props) {
         super(props);
+
+        this.imageRef = {};
 
         switch (this.props.imageLayoutItemName) {
             case 'logo-login':
@@ -70,10 +72,14 @@ class PortalLogoLayoutNewCrop extends Component {
 
     getCroppedImg(image, crop, fileName) {
         const canvas = document.createElement('canvas');
-        const pixelRatio = window.devicePixelRatio;
+        // const pixelRatio = window.devicePixelRatio;
+        const pixelRatio = 1;
         const scaleX = image.naturalWidth / image.width;
         const scaleY = image.naturalHeight / image.height;
         const ctx = canvas.getContext('2d');
+
+        canvas.width = crop.width * pixelRatio * scaleX;
+        canvas.height = crop.height * pixelRatio * scaleY;
 
         // todo cleanup later
         // console.log('image.naturalWidth: ' + image.naturalWidth);
@@ -82,13 +88,11 @@ class PortalLogoLayoutNewCrop extends Component {
         // console.log('image.naturalHeight: ' + image.naturalHeight);
         // console.log('image.height: ' + image.height);
         // console.log('scaleY: ' + scaleY);
-        //
         // console.log('pixelRatio: ' + pixelRatio);
         // console.log('crop.width: ' + crop.width);
         // console.log('crop.height: ' + crop.height);
-
-        canvas.width = crop.width * pixelRatio * scaleX;
-        canvas.height = crop.height * pixelRatio * scaleY;
+        // console.log('canvas.width: ' + canvas.width);
+        // console.log('canvas.height: ' + canvas.height);
 
         ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
         ctx.imageSmoothingQuality = 'high';
@@ -115,7 +119,7 @@ class PortalLogoLayoutNewCrop extends Component {
                     }
                     blob.name = fileName;
                     blob.preview = window.URL.createObjectURL(blob);
-                    resolve(blob);
+                    (blob.cropWidth = canvas.width), (blob.cropHeight = canvas.height), resolve(blob);
                 },
                 'image/png',
                 1
@@ -125,7 +129,6 @@ class PortalLogoLayoutNewCrop extends Component {
 
     render() {
         const { crop, croppedImage, src } = this.state;
-
         return (
             <div className={'portal-layout-crop'}>
                 <Modal
@@ -136,18 +139,40 @@ class PortalLogoLayoutNewCrop extends Component {
                     buttonConfirmText={'Bevestig'}
                 >
                     {src && (
-                        <ReactCrop
-                            src={src}
-                            style={{ margin: '10px' }}
-                            // imageStyle={{ verticalAlign: 'middle', display: 'inline-block' }}
-                            crop={crop}
-                            ruleOfThirds
-                            onImageLoaded={this.onImageLoaded}
-                            onComplete={this.onCropComplete}
-                            onChange={this.onCropChange}
-                        />
+                        <>
+                            <div>
+                                <strong>
+                                    {'Origineel ' +
+                                        (this.imageRef.width ? this.imageRef.width : '') +
+                                        ' x ' +
+                                        (this.imageRef.height ? this.imageRef.height : '')}
+                                </strong>
+                            </div>
+                            <ReactCrop
+                                src={src}
+                                style={{ margin: '10px' }}
+                                // imageStyle={{ verticalAlign: 'middle', display: 'inline-block' }}
+                                crop={crop}
+                                ruleOfThirds
+                                onImageLoaded={this.onImageLoaded}
+                                onComplete={this.onCropComplete}
+                                onChange={this.onCropChange}
+                            />
+                        </>
                     )}
-                    {croppedImage && <img alt="Crop" style={this.cropStyle} src={croppedImage.preview} />}
+                    {croppedImage && (
+                        <>
+                            <div>
+                                <strong>
+                                    {'Bijgewerkt ' +
+                                        (croppedImage.cropWidth ? croppedImage.cropWidth : '') +
+                                        ' x ' +
+                                        (croppedImage.cropHeight ? croppedImage.cropHeight : '')}
+                                </strong>
+                            </div>
+                            <img alt="Crop" style={this.cropStyle} src={croppedImage.preview} />
+                        </>
+                    )}
                 </Modal>
             </div>
         );

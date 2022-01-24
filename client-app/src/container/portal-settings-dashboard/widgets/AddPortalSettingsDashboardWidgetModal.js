@@ -6,7 +6,7 @@ import InputText from '../../../components/form/InputText';
 import InputTextArea from '../../../components/form/InputTextarea';
 import PortalSettingsDashboardAPI from '../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
 import { Col } from 'react-bootstrap';
-import PortalLogoLayoutNewCrop from '../../portal-settings-layout/details/general/PortalLogoLayoutNewCrop';
+import PortalLogoLayoutNewCrop from '../../../components/cropImage/portalLayout/PortalLogoLayoutNewCrop';
 const Dropzone = require('react-dropzone').default;
 
 const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal, addWidget }) => {

@@ -12,7 +12,7 @@ import { Image } from 'react-bootstrap';
 import Modal from '../../modal/Modal';
 import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
-import PortalLogoLayoutNewCrop from '../../../container/portal-settings-layout/details/general/PortalLogoLayoutNewCrop';
+import PortalLogoLayoutNewCrop from '../../cropImage/portalLayout/PortalLogoLayoutNewCrop';
 
 const DND_ITEM_TYPE = 'row';
 

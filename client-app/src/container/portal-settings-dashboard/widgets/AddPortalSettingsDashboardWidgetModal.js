@@ -6,7 +6,7 @@ import InputText from '../../../components/form/InputText';
 import InputTextArea from '../../../components/form/InputTextarea';
 import PortalSettingsDashboardAPI from '../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
 import { Col } from 'react-bootstrap';
-import AddPortalSettingsDashboardWidgetImageCropModal from './AddPortalSettingsDashboardWidgetImageCropModal';
+import PortalLogoLayoutNewCrop from '../../portal-settings-layout/details/general/PortalLogoLayoutNewCrop';
 const Dropzone = require('react-dropzone').default;
 
 const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal, addWidget }) => {
@@ -157,9 +157,10 @@ const AddPortalSettingsDashboardWidgetModal = ({ title, toggleModal, addWidget }
                 </Col>
             </div>
             {showCropImageModal && (
-                <AddPortalSettingsDashboardWidgetImageCropModal
-                    closeShowCropWidgetImage={closeShowCropWidgetImage}
+                <PortalLogoLayoutNewCrop
+                    closeShowCrop={closeShowCropWidgetImage}
                     image={widget.image}
+                    imageLayoutItemName={'image-widget'}
                     cropLogo={cropWidgetImage}
                 />
             )}

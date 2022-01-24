@@ -107,9 +107,9 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
             });
         }
     };
-    toggleCrop = () => {
+    closeShowCrop = () => {
         this.setState({
-            showModalCropLogo: !this.state.showModalCropLogo,
+            showModalCropLogo: false,
         });
     };
     toggleNewFavicon = () => {
@@ -761,7 +761,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         )}
                         {this.state.showModalCropLogo && (
                             <PortalLogoLayoutNewCrop
-                                toggleShowCrop={this.toggleCrop}
+                                closeShowCrop={this.closeShowCrop}
                                 image={this.state.image}
                                 imageLayoutItemName={this.state.imageLayoutItemName}
                                 cropLogo={this.cropLogo}

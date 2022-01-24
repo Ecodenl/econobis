@@ -9,40 +9,41 @@ class PortalLogoLayoutNewCrop extends Component {
 
         switch (this.props.imageLayoutItemName) {
             case 'logo-login':
-                this.aspect = 1 / 1;
                 this.aspectString = '1:1';
-                this.cropStyle = { width: '200px', margin: '25px', verticalAlign: 'top' };
+                this.crop = { unit: 'px', width: 200, aspect: 1 / 1 };
+                this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
                 break;
             case 'logo-header':
-                this.aspect = 2 / 1;
                 this.aspectString = '2:1';
-                this.cropStyle = { height: '100px', margin: '25px', verticalAlign: 'top' };
+                this.crop = { unit: 'px', height: 100, aspect: 2 / 1 };
+                this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
                 break;
             case 'image-bg-login':
-                this.aspect = 16 / 9;
                 this.aspectString = '16:9';
-                this.cropStyle = { width: '800px', margin: '25px', verticalAlign: 'top' };
+                this.crop = { unit: 'px', width: 800, aspect: 16 / 9 };
+                this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
 
                 break;
             case 'image-bg-header':
-                this.aspect = 16 / 9;
                 this.aspectString = '16:9';
-                this.cropStyle = { height: '128px', margin: '25px', verticalAlign: 'top' };
+                this.crop = { unit: 'px', height: 128, aspect: 16 / 9 };
+                this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
+                break;
+            case 'image-widget':
+                this.aspectString = '16:9';
+                this.crop = { unit: 'px', width: 453, aspect: 16 / 9 };
+                this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
                 break;
             default:
-                this.aspect = 1 / 1;
                 this.aspectString = '1:1';
-                this.cropStyle = { width: '200px', margin: '25px', verticalAlign: 'top' };
+                this.crop = { unit: '%', width: 100, aspect: 1 / 1 };
+                this.cropStyle = { width: '200px', margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
                 break;
         }
 
         this.state = {
             src: props.image.preview,
-            crop: {
-                unit: '%',
-                width: 100,
-                aspect: this.aspect,
-            },
+            crop: this.crop,
         };
     }
 
@@ -73,6 +74,18 @@ class PortalLogoLayoutNewCrop extends Component {
         const scaleX = image.naturalWidth / image.width;
         const scaleY = image.naturalHeight / image.height;
         const ctx = canvas.getContext('2d');
+
+        // todo cleanup later
+        // console.log('image.naturalWidth: ' + image.naturalWidth);
+        // console.log('image.width: ' + image.width);
+        // console.log('scaleX: ' + scaleX);
+        // console.log('image.naturalHeight: ' + image.naturalHeight);
+        // console.log('image.height: ' + image.height);
+        // console.log('scaleY: ' + scaleY);
+        //
+        // console.log('pixelRatio: ' + pixelRatio);
+        // console.log('crop.width: ' + crop.width);
+        // console.log('crop.height: ' + crop.height);
 
         canvas.width = crop.width * pixelRatio * scaleX;
         canvas.height = crop.height * pixelRatio * scaleY;
@@ -118,15 +131,15 @@ class PortalLogoLayoutNewCrop extends Component {
                 <Modal
                     modalClassName={'modal-portal-layout-crop'}
                     title={'Bijsnijden image (' + this.props.image.name + ') verhouding ' + this.aspectString}
-                    closeModal={this.props.toggleShowCrop}
+                    closeModal={this.props.closeShowCrop}
                     confirmAction={() => this.props.cropLogo(croppedImage)}
                     buttonConfirmText={'Bevestig'}
                 >
                     {src && (
                         <ReactCrop
                             src={src}
-                            // style={{ maxHeight: '300px', margin: '25px', verticalAlign: 'top' }}
-                            style={{ margin: '25px', verticalAlign: 'top' }}
+                            style={{ margin: '10px' }}
+                            // imageStyle={{ verticalAlign: 'middle', display: 'inline-block' }}
                             crop={crop}
                             ruleOfThirds
                             onImageLoaded={this.onImageLoaded}

@@ -3,7 +3,6 @@ import { useDrag, useDrop } from 'react-dnd';
 import { arrows_vertical } from 'react-icons-kit/ikons/arrows_vertical';
 import Icon from 'react-icons-kit';
 import AddPortalSettingsDashboardWidgetImageModal from '../../../container/portal-settings-dashboard/widgets/AddPortalSettingsDashboardWidgetImageModal';
-import AddPortalSettingsDashboardWidgetImageCropModal from '../../../container/portal-settings-dashboard/widgets/AddPortalSettingsDashboardWidgetImageCropModal';
 import PortalSettingsDashboardAPI from '../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
 import ButtonIcon from '../../button/ButtonIcon';
 import InputText from '../../form/InputText';
@@ -13,6 +12,7 @@ import { Image } from 'react-bootstrap';
 import Modal from '../../modal/Modal';
 import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
+import PortalLogoLayoutNewCrop from '../../../container/portal-settings-layout/details/general/PortalLogoLayoutNewCrop';
 
 const DND_ITEM_TYPE = 'row';
 
@@ -281,9 +281,10 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
                 />
             )}
             {showCropImageModal && (
-                <AddPortalSettingsDashboardWidgetImageCropModal
-                    closeShowCropWidgetImage={closeShowCropWidgetImage}
+                <PortalLogoLayoutNewCrop
+                    closeShowCrop={closeShowCropWidgetImage}
                     image={widgetImage}
+                    imageLayoutItemName={'image-widget'}
                     cropLogo={cropWidgetImage}
                 />
             )}

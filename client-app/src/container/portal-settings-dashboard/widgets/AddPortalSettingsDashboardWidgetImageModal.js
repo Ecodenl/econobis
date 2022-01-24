@@ -38,7 +38,7 @@ class AddPortalSettingsDashboardWidgetImageModal extends Component {
                     Breedte en hoogte zijn variabel en afhankelijk van window breedte/hoogte. Breedte/Hoogte verhouding
                     images blijft behouden en images zullen wel volledig getoond worden. Bij genoeg window breedte
                     worden widgets per 2 naast elkaar getoond, anders onder elkaar. Aanbevolen afmeting (in pixels):
-                    400x225 (16:9 verhouding).
+                    453x255 (16:9 verhouding).
                 </p>
                 <div className="upload-file-content">
                     <Dropzone

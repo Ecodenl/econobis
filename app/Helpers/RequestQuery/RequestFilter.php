@@ -234,6 +234,36 @@ abstract class RequestFilter
         }
     }
 
+    protected function applyFilterWhereRaw($query, $mappedField, $type, $data)
+    {
+        switch ($type) {
+            case 'eq':
+                $whereRaw = $mappedField . '=' . $data;
+                $query->whereRaw($whereRaw);
+                break;
+            case 'neq':
+                $whereRaw = $mappedField . '!=' . $data;
+                $query->whereRaw($whereRaw);
+                break;
+            case 'lt':
+                $whereRaw = $mappedField . '<' . $data;
+                $query->whereRaw($whereRaw);
+                break;
+            case 'lte':
+                $whereRaw = $mappedField . '<=' . $data;
+                $query->whereRaw($whereRaw);
+                break;
+            case 'gt':
+                $whereRaw = $mappedField . '>' . $data;
+                $query->whereRaw($whereRaw);
+                break;
+            case 'gte':
+                $whereRaw = $mappedField . '>=' . $data;
+                $query->whereRaw($whereRaw);
+                break;
+        }
+    }
+
     public static function applyHavingFilter($query, $mappedField, $type, $data)
     {
         switch ($type) {

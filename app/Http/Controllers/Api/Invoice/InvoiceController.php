@@ -390,7 +390,7 @@ class InvoiceController extends ApiController
                         }elseif($invoice->status_id === 'error-sending'){
                             InvoiceHelper::invoiceIsResending($invoice);
                         }else{
-                            abort(404, "Nota met ID " . $invoice->id . " heeft geen status Te verzenden of Opnieuw te verzenden");
+                            abort(404, "Nota met ID " . $invoice->id . " heeft geen status Te verzenden of Opnieuw te verzenden. Huidige status: " . $invoice->status_id);
                         }
                     }
                 }

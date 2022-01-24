@@ -62,12 +62,16 @@ class MailFetcherGmail
             $optParams['q'] = 'after:' . $dateLastFetched;
             $listMessages = $this->service->users_messages->listUsersMessages($this->user, $optParams);
 //            Log::info("Search since " . $dateLastFetched . ": " . implode(',', $mailIds));
+            $this->processMessages($listMessages);
         } catch (\Google\Service\Exception $ex) {
-            echo "Gmail connection failed: " . $ex;
-            die();
+            Log::error("Geen refresh token verkregen, mailbox " . $this->mailbox->id . " op invalid!");
+            Log::error("Gmail connection failed. Error: " . $ex->getMessage());
+            $this->mailbox->valid = false;
+            $this->mailbox->save();
+
+            return $ex->getMessage();
         }
 
-        $this->processMessages($listMessages);
     }
 
     private function processMessages(\Google_Service_Gmail_ListMessagesResponse $listMessages): void
@@ -120,17 +124,10 @@ class MailFetcherGmail
 
         $textHtml = '';
         try {
-            // TODO check if there is a need to lookup for html or txt/plain
-//            if ($emailData->textHtml) {
-                $textHtml = $this->getHtmlBody();
-//            } else {
-//                if ($emailData->textPlain) {
-//                    $textHtml = nl2br($this->getPlainTextBody());
-//                }
-//            }
+            $textHtml = $this->getHtmlBody();
         } catch (\Exception $ex) {
-            Log::error("Failed to retrieve textHtml or textPlain from email (" . $headers->message_id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage());
-            echo "Failed to retrieve textHtml or textPlain from email (" . $headers->message_id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage();
+            Log::error("Failed to retrieve HtmlBody from email (" . $headers->message_id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage());
+//            echo "Failed to retrieve :HtmlBody from email (" . $headers->message_id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage();
             return;
         }
         $textHtml = $textHtml ?: '';

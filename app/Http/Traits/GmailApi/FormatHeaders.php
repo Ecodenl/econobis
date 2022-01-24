@@ -25,7 +25,7 @@ trait FormatHeaders
                     $result[strtolower($header->name)] = $this->reformatEmailAddresses($header->value);
                     break;
                 case 'Date':
-                    $result['date'] = Carbon::parse($header->value);
+                    $result['date'] = Carbon::parse($header->value)->setTimezone(date_default_timezone_get());
                     break;
                 case 'Message-ID':
                     $result['message_id'] = $header->value;

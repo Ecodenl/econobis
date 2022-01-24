@@ -84,6 +84,12 @@ class DeleteEmailTemplate implements DeleteInterface
             array_push($this->errorMessage,'Ontkoppel template eerst in de volgende kans statusen: ' . implode(', ', $opportunityStatusNames));
         }
 
+        // Email template can not be deleted if it is used in portalsettings
+        $emailTemplateNewAccountId = PortalSettings::get('emailTemplateNewAccountId');
+        if($this->emailTemplate->id == $emailTemplateNewAccountId){
+            array_push($this->errorMessage, "Dit email template wordt nog gebruikt in algemene portal instellingen.");
+        }
+
     }
 
     /** Deletes models recursive

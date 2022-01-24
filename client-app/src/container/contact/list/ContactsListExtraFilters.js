@@ -46,7 +46,11 @@ class ContactsListExtraFilters extends Component {
         let filters = this.state.filters;
         let amountOfFilters = this.state.amountOfFilters;
 
-        if (filters[filterNumber].field === 'product' || filters[filterNumber].field === 'opportunityMeasureCategory') {
+        if (
+            filters[filterNumber].field === 'product' ||
+            filters[filterNumber].field === 'opportunityMeasureCategory' ||
+            filters[filterNumber].field === 'intakeMeasureCategory'
+        ) {
             filters = filters.filter(filter => filter.connectedTo !== filters[filterNumber].connectName);
             delete filters[filterNumber].connectName;
             amountOfFilters = filters.length;
@@ -111,6 +115,43 @@ class ContactsListExtraFilters extends Component {
                 connectedTo: data + filterNumber,
             });
 
+            filters.splice(filterNumber + 4, 0, {
+                field: 'opportunityCampaign',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
+            });
+
+            amountOfFilters = filters.length;
+        } else if (data === 'intakeMeasureCategory') {
+            filters[filterNumber] = {
+                field: 'intakeMeasureCategory',
+                type: 'eq',
+                data: '',
+                connectName: data + filterNumber,
+            };
+
+            filters.splice(filterNumber + 1, 0, {
+                field: 'intakeDateStart',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
+            });
+
+            filters.splice(filterNumber + 2, 0, {
+                field: 'intakeDateFinish',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
+            });
+
+            filters.splice(filterNumber + 3, 0, {
+                field: 'intakeStatus',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
+            });
+
             amountOfFilters = filters.length;
         } else {
             filters[filterNumber].field = data;
@@ -170,7 +211,8 @@ class ContactsListExtraFilters extends Component {
 
         if (
             newFilters[filterNumber].field === 'product' ||
-            newFilters[filterNumber].field === 'opportunityMeasureCategory'
+            newFilters[filterNumber].field === 'opportunityMeasureCategory' ||
+            newFilters[filterNumber].field === 'intakeMeasureCategory'
         ) {
             newFilters = newFilters.filter(filter => filter.connectedTo !== newFilters[filterNumber].connectName);
         }
@@ -244,6 +286,11 @@ class ContactsListExtraFilters extends Component {
                 type: 'dropdownHas',
                 dropDownOptions: this.props.measureCategories,
             },
+            intakeMeasureCategory: {
+                name: 'Intake interesse',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.measureCategories,
+            },
             product: {
                 name: 'Product',
                 type: 'dropdownHas',
@@ -303,6 +350,28 @@ class ContactsListExtraFilters extends Component {
                 name: 'Kans status evaluatie uitgevoerd',
                 type: 'dropdownHas',
                 dropDownOptions: this.props.opportunityEvaluationStatuses,
+            },
+            opportunityCampaign: {
+                name: 'Kans campagne',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.campaigns,
+            },
+        };
+
+        // Options only if kans is set
+        const customIntakeFields = {
+            intakeDateStart: {
+                name: 'Begin datum',
+                type: 'date',
+            },
+            intakeDateFinish: {
+                name: 'Eind datum',
+                type: 'date',
+            },
+            intakeStatus: {
+                name: 'Intake status',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.intakeStatuses,
             },
         };
 
@@ -364,7 +433,12 @@ class ContactsListExtraFilters extends Component {
                                         key={i}
                                         filter={filter}
                                         filterNumber={i}
-                                        fields={{ ...fields, ...customProductFields, ...customOpportunityFields }}
+                                        fields={{
+                                            ...fields,
+                                            ...customProductFields,
+                                            ...customOpportunityFields,
+                                            ...customIntakeFields,
+                                        }}
                                         handleFilterFieldChange={this.handleFilterFieldChange}
                                         deleteFilterRow={this.deleteFilterRow}
                                         handleFilterValueChange={this.handleFilterValueChange}
@@ -394,6 +468,7 @@ const mapStateToProps = state => {
         measures: state.systemData.measures,
         opportunityStatus: state.systemData.opportunityStatus,
         opportunityEvaluationStatuses: state.systemData.opportunityEvaluationStatuses,
+        intakeStatuses: state.systemData.intakeStatuses,
         campaigns: state.systemData.campaigns,
         products: state.systemData.products,
         energySuppliers: state.systemData.energySuppliers,

@@ -416,10 +416,11 @@ class ContactGroupController extends Controller
             //Van static groep maken
             if($contactGroup->type_id === 'static' ){
                 $contactGroupNew = $contactGroup;
-            }
-
-            //Van dynamic eerst een static groep maken
-            if($contactGroup->type_id === 'dynamic' ){
+            // via simulategroup maken
+            } else if($contactGroup->simulatedGroup){
+                $contactGroupNew = $contactGroup->simulatedGroup;
+                //Van dynamic eerst een static groep maken
+            } else if($contactGroup->type_id === 'dynamic' ){
                 $contactGroupNew = $contactGroup->replicate();
                 $contactGroupNew->type_id = 'simulated';
                 $contactGroupNew->composed_of = 'contacts';
@@ -428,11 +429,14 @@ class ContactGroupController extends Controller
 
                 $contactGroup->simulated_group_id = $contactGroupNew->id;
                 $contactGroup->save();
-                $contactGroupNew->contacts()->sync($contactGroup->dynamic_contacts->get()->pluck("contact_id"));
-            }
-
+                if($contactGroup->composed_of === 'contacts'){
+                    $contactGroupNew->contacts()->sync($contactGroup->dynamic_contacts->get()->pluck("id"));
+                }
+                else if($contactGroup->composed_of === 'participants'){
+                    $contactGroupNew->contacts()->sync($contactGroup->dynamic_contacts->get()->pluck("contact_id"));
+                }
             //Van composed eerst een static groep maken
-            if($contactGroup->type_id === 'composed' ){
+            } else if($contactGroup->type_id === 'composed' ){
                 $contactGroupNew = $contactGroup->replicate();
                 $contactGroupNew->type_id = 'simulated';
                 $contactGroupNew->composed_of = 'contacts';

@@ -7,6 +7,8 @@ import InputDate from '../../../components/form/InputDate';
 import InputText from '../../../components/form/InputText';
 import moment from 'moment';
 import ParticipantProjectDetailsAPI from '../../../api/participant-project/ParticipantProjectDetailsAPI';
+import InputToggle from '../../../components/form/InputToggle';
+import { hashHistory } from 'react-router';
 
 const ParticipantDetailsTerminate = ({
     participantProject,
@@ -14,9 +16,11 @@ const ParticipantDetailsTerminate = ({
     closeDeleteItemModal,
     projectTypeCodeRef,
     fetchParticipantProjectDetails,
+    projectRevenueCategories,
 }) => {
     const [dateTerminated, setDateTerminated] = useState(moment().format('Y-MM-DD'));
     const [payoutPercentageTerminated, setPayoutPercentageTerminated] = useState(0);
+    const [redirectRevenueSplit, setRedirectRevenueSplit] = useState(true);
 
     const onChangeDateTerminated = value => {
         setDateTerminated(value);
@@ -24,9 +28,17 @@ const ParticipantDetailsTerminate = ({
 
     const onChangePayoutPercentageTerminated = event => {
         const value = event.target.value;
-
         setPayoutPercentageTerminated(value);
     };
+
+    const onChangeRedirectRevenueSplit = event => {
+        const value = event.target.checked;
+        setRedirectRevenueSplit(value);
+    };
+
+    const revenueKwhSplitCategoryId = projectRevenueCategories.find(
+        projectRevenueCategory => projectRevenueCategory.codeRef === 'revenueKwhSplit'
+    ).id;
 
     const confirmAction = () => {
         if (dateTerminated) {
@@ -37,6 +49,11 @@ const ParticipantDetailsTerminate = ({
                 .then(payload => {
                     fetchParticipantProjectDetails(participantProject.id);
                     closeDeleteItemModal();
+                    if (projectTypeCodeRef === 'postalcode_link_capital' && redirectRevenueSplit) {
+                        hashHistory.push(
+                            `/project/deelnemer/opbrengst/nieuw/${participantProject.projectId}/${participantProject.id}/${revenueKwhSplitCategoryId}`
+                        );
+                    }
                 })
                 .catch(error => {
                     // let errorObject = JSON.parse(JSON.stringify(error));
@@ -94,6 +111,17 @@ const ParticipantDetailsTerminate = ({
                             />
                         ) : null}
                     </div>
+
+                    {projectTypeCodeRef === 'postalcode_link_capital' ? (
+                        <div className="row">
+                            <InputToggle
+                                label={'Na beëindigen maken eindafrekening voor teruggave EB'}
+                                name={'redirectRevenueSplit'}
+                                onChangeAction={onChangeRedirectRevenueSplit}
+                                value={redirectRevenueSplit}
+                            />
+                        </div>
+                    ) : null}
                 </Modal>
             )}
         </>
@@ -105,5 +133,10 @@ const mapDispatchToProps = dispatch => ({
         dispatch(fetchParticipantProjectDetails(participantProjectId));
     },
 });
+const mapStateToProps = state => {
+    return {
+        projectRevenueCategories: state.systemData.projectRevenueCategories,
+    };
+};
 
-export default connect(null, mapDispatchToProps)(ParticipantDetailsTerminate);
+export default connect(mapStateToProps, mapDispatchToProps)(ParticipantDetailsTerminate);

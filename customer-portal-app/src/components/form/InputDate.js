@@ -12,6 +12,8 @@ const InputDate = ({
     required,
     readOnly,
     name,
+    disabledBefore,
+    disabledAfter,
     onChangeAction,
     placeholder,
     showErrorMessage,
@@ -27,6 +29,9 @@ const InputDate = ({
     };
 
     const formattedDate = value ? moment(value).format('L') : '';
+    let disabledDays = {};
+    if (disabledBefore) disabledDays.before = new Date(disabledBefore);
+    if (disabledAfter) disabledDays.after = new Date(disabledAfter);
 
     return (
         <>
@@ -44,6 +49,7 @@ const InputDate = ({
                     locale: 'nl',
                     firstDayOfWeek: 1,
                     localeUtils: MomentLocaleUtils,
+                    disabledDays: disabledDays,
                 }}
                 inputProps={{
                     className: `text-input content w-input ${className} ${

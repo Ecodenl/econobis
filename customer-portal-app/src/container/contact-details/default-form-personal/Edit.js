@@ -24,6 +24,34 @@ const DefaultContactPersonalEdit = function({
     values,
     setFieldValue,
 }) {
+    // determine memberSince disabledBefore and after
+    let memberSinceDisabledBefore = '';
+    let memberSinceDisabledAfter = '';
+    if (initialContact.primaryAddress.primaryAddressEnergySupplier.energySupplierId) {
+        if (
+            initialContact.primaryAddress.primaryAddressEnergySupplier.memberSince &&
+            initialContact.primaryAddress.primaryAddressEnergySupplier.energySupplierId !==
+                values.primaryAddress.primaryAddressEnergySupplier.energySupplierId
+        ) {
+            memberSinceDisabledBefore = moment(initialContact.primaryAddress.primaryAddressEnergySupplier.memberSince)
+                .add(1, 'day')
+                .format('YYYY-MM-DD');
+        } else if (initialContact.primaryAddress.primaryAddressEnergySupplier.endDatePrevious) {
+            memberSinceDisabledBefore = moment(
+                initialContact.primaryAddress.primaryAddressEnergySupplier.endDatePrevious
+            )
+                .add(1, 'day')
+                .format('YYYY-MM-DD');
+        }
+        if (initialContact.primaryAddress.primaryAddressEnergySupplier.memberSinceNext) {
+            memberSinceDisabledAfter = moment(
+                initialContact.primaryAddress.primaryAddressEnergySupplier.memberSinceNext
+            )
+                .subtract(1, 'day')
+                .format('YYYY-MM-DD');
+        }
+    }
+
     // Handy to know: Edit person/organisation is done directly or in step 2 of register steps.
     // When Edit person/organisation directly (not in step 2 of register steps) then projectTypeCodeRef = undefined
     return (
@@ -612,6 +640,8 @@ const DefaultContactPersonalEdit = function({
                                                     errors={errors}
                                                     touched={touched}
                                                     onChangeAction={setFieldValue}
+                                                    disabledBefore={memberSinceDisabledBefore}
+                                                    disabledAfter={memberSinceDisabledAfter}
                                                     id="member_since"
                                                     placeholder={'Klant sinds'}
                                                 />

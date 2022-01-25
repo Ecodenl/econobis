@@ -259,6 +259,34 @@ class ContactController extends ApiController
         return response()->json($result);
     }
 
+    public function financialOverviewDocuments(Contact $contact)
+    {
+        $contact->load([
+            'financialOverviewContactsSend' => function($query){
+                $query->orderBy('date_sent');
+            },
+        ]);
+        return FinancialOverviewDocumentResource::collection($contact->financialOverviewContactsSend);
+    }
+
+    public function relatedAdministrations(Contact $contact)
+    {
+        $contactId = $contact->id;
+        $administrations = Administration::whereHas('projects', function($query) use($contactId){
+            $query->WhereHas('participantsProject', function($query2) use($contactId){
+                $query2->where('contact_id', $contactId);
+            });
+        })->orderBy('name')->get();
+        if($administrations->count() == 0){
+            $defaultAdministrationId = PortalSettings::get('defaultAdministrationId');
+            if(!empty($defaultAdministrationId)){
+                $administrations = Administration::whereId($defaultAdministrationId)->get();
+            }
+        }
+
+        return AdministrationResource::collection($administrations);
+    }
+
     protected function updatePerson($contact, Request $request)
     {
         $person = $contact->person;
@@ -605,29 +633,7 @@ class ContactController extends ApiController
             if($primaryAddressEnergySupplierData['energySupplierId'] == null) {
                 return;
             }
-
-            // new
-            if(!empty($address->ean_gas) )
-            {
-                $primaryAddressEnergySupplierData['energySupplyTypeId'] = 3;
-            }else{
-                $primaryAddressEnergySupplierData['energySupplyTypeId'] = 2;
-            }
-
-            Validator::make($primaryAddressEnergySupplierData, [
-                'energySupplyTypeId' => new EnumExists(EnergySupplierType::class),
-                'isCurrentSupplier' => 'boolean',
-            ]);
-
-            $primaryAddressEnergySupplierData = $this->sanitizeData($primaryAddressEnergySupplierData, [
-                'energySupplyTypeId' => 'nullable',
-                'isCurrentSupplier' => 'boolean',
-            ]);
-            $primaryAddressEnergySupplierNew = new AddressEnergySupplier($this->arrayKeysToSnakeCase($primaryAddressEnergySupplierData));
-
-            $addressEnergySupplierController = new AddressEnergySupplierController();
-            $addressEnergySupplierController->validateAddressEnergySupplier($primaryAddressEnergySupplierNew, true);
-
+            $primaryAddressEnergySupplierNew = $this->createNewAddressEnergySupplier($address, $primaryAddressEnergySupplierData);
             $primaryAddressEnergySupplierNew->save();
 
         } else {
@@ -636,14 +642,21 @@ class ContactController extends ApiController
                 // delete
                 $primaryAddressEnergySupplierOld->delete();
             }else{
+                if($primaryAddressEnergySupplierData['energySupplierId'] == $primaryAddressEnergySupplierOld->energy_supplier_id) {
+                    // update
+                    $primaryAddressEnergySupplierNew = $primaryAddressEnergySupplierOld;
+                    $primaryAddressEnergySupplierNew->member_since = $primaryAddressEnergySupplierData['memberSince'];
+                    $primaryAddressEnergySupplierNew->es_number = $primaryAddressEnergySupplierData['esNumber'];
 
-                // update
-                $primaryAddressEnergySupplierNew = $primaryAddressEnergySupplierOld;
-                $primaryAddressEnergySupplierNew->member_since = $primaryAddressEnergySupplierData['memberSince'];
-                $primaryAddressEnergySupplierNew->es_number = $primaryAddressEnergySupplierData['esNumber'];
+                    $addressEnergySupplierController = new AddressEnergySupplierController();
+                    $addressEnergySupplierController->validateAddressEnergySupplier($primaryAddressEnergySupplierNew, true);
 
-                $addressEnergySupplierController = new AddressEnergySupplierController();
-                $addressEnergySupplierController->validateAddressEnergySupplier($primaryAddressEnergySupplierNew, true);
+                    $primaryAddressEnergySupplierNew->save();
+                }else{
+                    // new
+                    $primaryAddressEnergySupplierNew = $this->createNewAddressEnergySupplier($address, $primaryAddressEnergySupplierData);
+                    $primaryAddressEnergySupplierNew->save();
+                }
 
                 $primaryAddressEnergySupplierNew->save();
             }
@@ -719,34 +732,6 @@ class ContactController extends ApiController
 
             $newTask->save();
         }
-    }
-
-    public function financialOverviewDocuments(Contact $contact)
-    {
-        $contact->load([
-            'financialOverviewContactsSend' => function($query){
-                $query->orderBy('date_sent');
-            },
-        ]);
-        return FinancialOverviewDocumentResource::collection($contact->financialOverviewContactsSend);
-    }
-
-    public function relatedAdministrations(Contact $contact)
-    {
-        $contactId = $contact->id;
-        $administrations = Administration::whereHas('projects', function($query) use($contactId){
-            $query->WhereHas('participantsProject', function($query2) use($contactId){
-                $query2->where('contact_id', $contactId);
-            });
-        })->orderBy('name')->get();
-        if($administrations->count() == 0){
-            $defaultAdministrationId = PortalSettings::get('defaultAdministrationId');
-            if(!empty($defaultAdministrationId)){
-                $administrations = Administration::whereId($defaultAdministrationId)->get();
-            }
-        }
-
-        return AdministrationResource::collection($administrations);
     }
 
     /**
@@ -887,6 +872,36 @@ class ContactController extends ApiController
             }
 
         }
+    }
+
+    /**
+     * @param Address $address
+     * @param $primaryAddressEnergySupplierData
+     * @return AddressEnergySupplier
+     */
+    protected function createNewAddressEnergySupplier(Address $address, $primaryAddressEnergySupplierData): AddressEnergySupplier
+    {
+        if (!empty($address->ean_gas)) {
+            $primaryAddressEnergySupplierData['energySupplyTypeId'] = 3;
+        } else {
+            $primaryAddressEnergySupplierData['energySupplyTypeId'] = 2;
+        }
+
+        Validator::make($primaryAddressEnergySupplierData, [
+            'energySupplyTypeId' => new EnumExists(EnergySupplierType::class),
+            'isCurrentSupplier' => 'boolean',
+        ]);
+        $primaryAddressEnergySupplierData = $this->sanitizeData($primaryAddressEnergySupplierData, [
+            'energySupplyTypeId' => 'nullable',
+            'isCurrentSupplier' => 'boolean',
+        ]);
+        $primaryAddressEnergySupplierNew = new AddressEnergySupplier($this->arrayKeysToSnakeCase($primaryAddressEnergySupplierData));
+
+        $addressEnergySupplierController = new AddressEnergySupplierController();
+        if ($addressEnergySupplierController->validateAddressEnergySupplier($primaryAddressEnergySupplierNew, false)) {
+            $addressEnergySupplierController->setEndDateAddressEnergySupplier($primaryAddressEnergySupplierNew);
+        }
+        return $primaryAddressEnergySupplierNew;
     }
 
 }

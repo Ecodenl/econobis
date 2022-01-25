@@ -23,6 +23,10 @@ class AddressEnergySupplierJoryResource extends JoryResource
         $this->field('member_since')->filterable()->sortable();
         $this->field('is_current_supplier')->filterable()->sortable();
 
+        // Attributes
+        $this->field('end_date_previous')->filterable()->sortable();
+        $this->field('member_since_next')->filterable()->sortable();
+
         // Relations
         $this->relation('energySupplier');
     }

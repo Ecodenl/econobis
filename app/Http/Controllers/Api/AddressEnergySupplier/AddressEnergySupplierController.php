@@ -155,7 +155,7 @@ class AddressEnergySupplierController extends ApiController
     /**
      * @param AddressEnergySupplier $addressEnergySupplier
      */
-    private function setEndDateAddressEnergySupplier(AddressEnergySupplier $addressEnergySupplier)
+    public function setEndDateAddressEnergySupplier(AddressEnergySupplier $addressEnergySupplier)
     {
         $newEndDate = Carbon::parse($addressEnergySupplier->member_since)->subDay();
 

@@ -35,7 +35,7 @@ class FullDocument extends JsonResource
             'id' => $this->id,
             'number' => $this->number,
             'name' => $this->name,
-            'description' => $this->description,
+            'description' => $this->description ? $this->description : $this->filename,
             'documentCreatedFrom' => FullEnumWithIdAndName::make($this->getDocumentCreatedFrom()),
             'documentType' => FullEnumWithIdAndName::make($this->getDocumentType()),
             'documentGroup' => FullEnumWithIdAndName::make($this->getDocumentGroup()),

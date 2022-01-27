@@ -126,6 +126,7 @@ class DocumentNewApp extends Component {
         this.onDropAccepted = this.onDropAccepted.bind(this);
         this.onDropRejected = this.onDropRejected.bind(this);
         this.handleDocumentGroupChange = this.handleDocumentGroupChange.bind(this);
+        this.handleProjectChange = this.handleProjectChange.bind(this);
     }
 
     componentDidMount() {
@@ -171,10 +172,6 @@ class DocumentNewApp extends Component {
 
         ProjectsAPI.peekProjects().then(payload => {
             this.setState({ projects: payload });
-        });
-
-        ParticipantsProjectAPI.peekParticipantsProjects().then(payload => {
-            this.setState({ participants: payload });
         });
 
         OrdersAPI.peekOrders().then(payload => {
@@ -226,6 +223,37 @@ class DocumentNewApp extends Component {
                 ...this.state.document,
                 [name]: value,
             },
+        });
+    }
+
+    handleProjectChange(event) {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            document: {
+                ...this.state.document,
+                [name]: value,
+            },
+        });
+        this.setParticipants(value);
+    }
+
+    setParticipants(value) {
+        ParticipantsProjectAPI.peekParticipantsProjects().then(payload => {
+            let participants = [];
+
+            payload.forEach(function(participant) {
+                if (participant.projectId == value) {
+                    participants.push({ id: participant.id, name: participant.name, projectId: participant.projectId });
+                }
+            });
+
+            this.setState({
+                participants: participants,
+            });
         });
     }
 
@@ -311,6 +339,11 @@ class DocumentNewApp extends Component {
         // Validation
         let errors = {};
         let hasErrors = false;
+
+        if (validator.isEmpty(description + '')) {
+            errors.description = true;
+            hasErrors = true;
+        }
 
         if (
             validator.isEmpty(administrationId + '') &&
@@ -437,6 +470,7 @@ class DocumentNewApp extends Component {
                                 handleSubmit={this.handleSubmit}
                                 handleDocumentGroupChange={this.handleDocumentGroupChange}
                                 handleInputChange={this.handleInputChange}
+                                handleProjectChange={this.handleProjectChange}
                                 onDropAccepted={this.onDropAccepted}
                                 onDropRejected={this.onDropRejected}
                             />
@@ -460,6 +494,7 @@ class DocumentNewApp extends Component {
                                 handleSubmit={this.handleSubmit}
                                 handleDocumentGroupChange={this.handleDocumentGroupChange}
                                 handleInputChange={this.handleInputChange}
+                                handleProjectChange={this.handleProjectChange}
                                 onDropAccepted={this.onDropAccepted}
                                 onDropRejected={this.onDropRejected}
                             />

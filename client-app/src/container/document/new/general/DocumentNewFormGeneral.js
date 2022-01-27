@@ -21,6 +21,7 @@ const DocumentNewFormGeneral = ({
     measures = [],
     campaigns = [],
     handleInputChange,
+    handleProjectChange,
     documentTypes,
     administrations,
 }) => {
@@ -140,7 +141,7 @@ const DocumentNewFormGeneral = ({
                     name={'projectId'}
                     value={projectId}
                     options={projects}
-                    onChangeAction={handleInputChange}
+                    onChangeAction={handleProjectChange}
                     required={oneOfFieldRequired && 'required'}
                     error={errors.docLinkedAtAny}
                 />
@@ -148,7 +149,8 @@ const DocumentNewFormGeneral = ({
                     label="Deelnemer project"
                     name={'participantId'}
                     value={participantId}
-                    options={participants}
+                    options={projectId ? participants : []}
+                    placeholder={projectId ? '' : 'Kies eerst een project'}
                     onChangeAction={handleInputChange}
                     required={oneOfFieldRequired && 'required'}
                     error={errors.docLinkedAtAny}
@@ -206,12 +208,12 @@ const DocumentNewFormGeneral = ({
                 <div className="form-group col-sm-12">
                     <div className="row">
                         <div className="col-sm-3">
-                            <label className="col-sm-12">Omschrijving</label>
+                            <label className="col-sm-12 required">Omschrijving</label>
                         </div>
                         <div className="col-sm-6">
                             <input
                                 type="text"
-                                className="form-control input-sm"
+                                className={'form-control input-sm ' + (errors && errors.description ? 'has-error' : '')}
                                 name="description"
                                 value={description}
                                 onChange={handleInputChange}

@@ -98,6 +98,7 @@ class DocumentDetailsFormEdit extends Component {
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleProjectChange = this.handleProjectChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -142,9 +143,7 @@ class DocumentDetailsFormEdit extends Component {
             this.setState({ projects: payload });
         });
 
-        ParticipantsProjectAPI.peekParticipantsProjects().then(payload => {
-            this.setState({ participants: payload });
-        });
+        this.setParticipants(this.props.documentDetails.projectId);
 
         OrdersAPI.peekOrders().then(payload => {
             this.setState({ orders: payload });
@@ -162,6 +161,37 @@ class DocumentDetailsFormEdit extends Component {
                 ...this.state.document,
                 [name]: value,
             },
+        });
+    }
+
+    handleProjectChange(event) {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            document: {
+                ...this.state.document,
+                [name]: value,
+            },
+        });
+        this.setParticipants(value);
+    }
+
+    setParticipants(value) {
+        ParticipantsProjectAPI.peekParticipantsProjects().then(payload => {
+            let participants = [];
+
+            payload.forEach(function(participant) {
+                if (participant.projectId == value) {
+                    participants.push({ id: participant.id, name: participant.name, projectId: participant.projectId });
+                }
+            });
+
+            this.setState({
+                participants: participants,
+            });
         });
     }
 
@@ -373,7 +403,7 @@ class DocumentDetailsFormEdit extends Component {
                             name={'projectId'}
                             value={projectId}
                             options={projects}
-                            onChangeAction={this.handleInputChange}
+                            onChangeAction={this.handleProjectChange}
                             required={oneOfFieldRequired && 'required'}
                             error={errors.docLinkedAtAny}
                         />
@@ -381,7 +411,8 @@ class DocumentDetailsFormEdit extends Component {
                             label="Deelnemer project"
                             name={'participantId'}
                             value={participantId}
-                            options={participants}
+                            options={projectId ? participants : []}
+                            placeholder={projectId ? '' : 'Kies eerst een project'}
                             onChangeAction={this.handleInputChange}
                             required={oneOfFieldRequired && 'required'}
                             error={errors.docLinkedAtAny}

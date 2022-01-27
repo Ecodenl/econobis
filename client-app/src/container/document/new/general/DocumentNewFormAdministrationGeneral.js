@@ -27,6 +27,7 @@ const DocumentNewFormAdministrationGeneral = ({
                     options={administrations}
                     onChangeAction={handleInputChange}
                     required={'required'}
+                    readOnly={true}
                     error={errors.docLinkedAtAny}
                 />
                 <InputText label="Type" name={'documentTypeName'} value={documentTypeName} readOnly={true} />
@@ -45,12 +46,12 @@ const DocumentNewFormAdministrationGeneral = ({
                 <div className="form-group col-sm-12">
                     <div className="row">
                         <div className="col-sm-3">
-                            <label className="col-sm-12">Omschrijving</label>
+                            <label className="col-sm-12 required">Omschrijving</label>
                         </div>
                         <div className="col-sm-6">
                             <input
                                 type="text"
-                                className="form-control input-sm"
+                                className={'form-control input-sm ' + (errors && errors.description ? 'has-error' : '')}
                                 name="description"
                                 value={description}
                                 onChange={handleInputChange}

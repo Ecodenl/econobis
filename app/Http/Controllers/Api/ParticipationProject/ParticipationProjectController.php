@@ -525,11 +525,12 @@ class ParticipationProjectController extends ApiController
 
     public function peek()
     {
-
-        $participants = ParticipantProject::all();
+        $participants = ParticipantProject::orderBy('project_id')->get();
         $participants->load(['contact', 'project']);
-
-        return ParticipantProjectPeek::collection($participants);
+        $sortedParticipants = $participants->sortBy(function($item) {
+            return $item->project_id.'-'.$item->contact->full_name;
+        }, SORT_NATURAL|SORT_FLAG_CASE)->values()->all();
+        return ParticipantProjectPeek::collection($sortedParticipants);
     }
 
     public function validatePostalCode(&$message, Project $project, Contact $contact)

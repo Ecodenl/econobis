@@ -7,7 +7,7 @@ import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const DocumentsListToolbar = props => {
     const newDocument = type => {
-        hashHistory.push(`document/nieuw/${type}`);
+        hashHistory.push(`document/nieuw/${type}/document`);
     };
 
     const { permissions = {} } = props;

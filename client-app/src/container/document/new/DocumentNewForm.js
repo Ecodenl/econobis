@@ -26,6 +26,7 @@ const DocumentNewForm = ({
     errors,
     handleSubmit,
     handleInputChange,
+    handleProjectChange,
     handleDocumentGroupChange,
     onDropAccepted,
     onDropRejected,
@@ -52,6 +53,7 @@ const DocumentNewForm = ({
                         campaigns={campaigns}
                         errors={errors}
                         handleInputChange={handleInputChange}
+                        handleProjectChange={handleProjectChange}
                     />
                     {document.documentType === 'internal' ? (
                         <DocumentNewFormCreateDocument

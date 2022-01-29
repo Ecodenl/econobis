@@ -16,7 +16,7 @@ class AddPortalSettingsDashboardWidgetImageModal extends Component {
     onDropAccepted(file) {
         this.props.addWidgetImage(file);
         setTimeout(() => {
-            this.props.toggleNewWidgetImage();
+            this.props.closeNewWidgetImage();
         }, 500);
     }
 
@@ -29,10 +29,17 @@ class AddPortalSettingsDashboardWidgetImageModal extends Component {
     render() {
         return (
             <Modal
-                closeModal={this.props.toggleNewWidgetImage}
+                closeModal={this.props.closeNewWidgetImage}
                 showConfirmAction={false}
-                title="Upload widget afbeelding bestand (PNG)"
+                title="Upload widget image bestand (PNG)"
             >
+                <p>Alleen image bestanden met bestandstype PNG kunnen gebruikt worden.</p>
+                <p>
+                    Breedte en hoogte zijn variabel en afhankelijk van window breedte/hoogte. Breedte/Hoogte verhouding
+                    images blijft behouden en images zullen wel volledig getoond worden. Bij genoeg window breedte
+                    worden widgets per 2 naast elkaar getoond, anders onder elkaar. Aanbevolen afmeting (in pixels):
+                    453x255 (16:9 verhouding).
+                </p>
                 <div className="upload-file-content">
                     <Dropzone
                         accept="image/png"

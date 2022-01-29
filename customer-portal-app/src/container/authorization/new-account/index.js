@@ -9,6 +9,8 @@ import NewAccountFormPersonal from './NewAccountFormPersonal';
 import NewAccountFormOrganisation from './NewAccountFormOrganisation';
 import { Redirect } from 'react-router-dom';
 import { Button, ButtonToolbar } from 'react-bootstrap';
+import ButtonText from '../../../components/button/ButtonText';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
 const NewAccount = props => {
     const { executeRecaptcha } = useGoogleReCaptcha();
@@ -16,6 +18,7 @@ const NewAccount = props => {
     const [showError, toggleError] = useState(false);
     const [showSuccessMessage, toggleSuccessMessage] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [redirectToReferrer, toggleRedirect] = useState(false);
 
     async function handleSubmit(values, actions) {
         if (!executeRecaptcha) {
@@ -48,84 +51,102 @@ const NewAccount = props => {
             });
     }
 
-    function redirect() {
-        return <Redirect to={'nieuw-account-succes'} />;
+    function redirect(from) {
+        return <Redirect to={from} />;
     }
 
     return (
-        <div className="authorization-container">
-            <Container fluid className="authorization-text">
-                <Row className="justify-content-center align-content-start align-content-lg-center full-height p-2">
-                    <Col xs="12" sm="6" md="4" lg="4" xl="4">
-                        <img src="images/logo.png" alt="" className="image logo-container-small" />
+        <>
+            {redirectToReferrer && !showSuccessMessage ? (
+                redirect('/dashboard')
+            ) : (
+                <div className="authorization-container">
+                    <Container fluid className="authorization-text">
+                        <Row className="justify-content-center align-content-start align-content-lg-center full-height p-2">
+                            <Col xs="12" sm="6" md="4" lg="4" xl="4">
+                                <img src="images/logo.png" alt="" className="image logo-container-small" />
 
-                        {showSuccessMessage ? (
-                            redirect()
-                        ) : (
-                            <>
-                                <Row className="justify-content-center">
-                                    <h3 className={'authorization-text'}>Nieuw account</h3>
-                                </Row>
-                                <Row className="justify-content-center">
-                                    <p className={'authorization-text'}>Maak binnen 2 minuten een account aan.</p>
-                                </Row>
-                                <br />
-                                <Row className="justify-content-center">
-                                    <ButtonToolbar toggle>
-                                        <Col>
-                                            <Button
-                                                className={'authorization-button'}
-                                                variant={
-                                                    contactType === 'person'
-                                                        ? 'primary fixed-height'
-                                                        : 'light fixed-height'
-                                                }
-                                                block
-                                                onClick={() => setContactType('person')}
-                                            >
-                                                Voor jezelf
-                                            </Button>
-                                        </Col>
-                                        <Col>
-                                            <Button
-                                                className={'authorization-button'}
-                                                variant={contactType === 'organisation' ? 'primary' : 'light'}
-                                                block
-                                                onClick={() => setContactType('organisation')}
-                                            >
-                                                Voor je organisatie
-                                            </Button>
-                                        </Col>
-                                    </ButtonToolbar>
-                                </Row>
-                                <br />
-
-                                {contactType === 'person' ? (
-                                    <NewAccountFormPersonal
-                                        handleSubmit={handleSubmit}
-                                        showSuccessMessage={showSuccessMessage}
-                                    />
+                                {showSuccessMessage ? (
+                                    redirect('nieuw-account-succes')
                                 ) : (
-                                    <NewAccountFormOrganisation
-                                        handleSubmit={handleSubmit}
-                                        showSuccessMessage={showSuccessMessage}
-                                    />
-                                )}
-                                <br />
+                                    <>
+                                        <Row className="justify-content-center">
+                                            <h3 className={'authorization-text'}>Nieuw account</h3>
+                                        </Row>
+                                        <Row className="justify-content-center">
+                                            <p className={'authorization-text'}>
+                                                Maak binnen 2 minuten een account aan.
+                                            </p>
+                                        </Row>
+                                        <br />
+                                        <Row className="justify-content-center">
+                                            <ButtonToolbar toggle>
+                                                <Col>
+                                                    <Button
+                                                        className={'authorization-button'}
+                                                        variant={
+                                                            contactType === 'person'
+                                                                ? 'primary fixed-height'
+                                                                : 'light fixed-height'
+                                                        }
+                                                        block
+                                                        onClick={() => setContactType('person')}
+                                                    >
+                                                        Voor jezelf
+                                                    </Button>
+                                                </Col>
+                                                <Col>
+                                                    <Button
+                                                        className={'authorization-button'}
+                                                        variant={contactType === 'organisation' ? 'primary' : 'light'}
+                                                        block
+                                                        onClick={() => setContactType('organisation')}
+                                                    >
+                                                        Voor je organisatie
+                                                    </Button>
+                                                </Col>
+                                            </ButtonToolbar>
+                                        </Row>
+                                        <br />
 
-                                {showError ? (
-                                    <Row>
-                                        <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
-                                            {errorMessage}
-                                        </Alert>
-                                    </Row>
-                                ) : null}
-                            </>
-                        )}
-                    </Col>
-                </Row>
-            </Container>
-        </div>
+                                        {contactType === 'person' ? (
+                                            <NewAccountFormPersonal
+                                                handleSubmit={handleSubmit}
+                                                showSuccessMessage={showSuccessMessage}
+                                            />
+                                        ) : (
+                                            <NewAccountFormOrganisation
+                                                handleSubmit={handleSubmit}
+                                                showSuccessMessage={showSuccessMessage}
+                                            />
+                                        )}
+                                        {showError ? (
+                                            <Row className="justify-content-center">
+                                                <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
+                                                    {errorMessage}
+                                                </Alert>
+                                            </Row>
+                                        ) : null}
+                                        <Row className="justify-content-center">
+                                            <ButtonGroup aria-label="redirect-to-login" className="w-button-group">
+                                                <Col>
+                                                    <ButtonText
+                                                        buttonText={'Heb je al een account ?'}
+                                                        onClickAction={toggleRedirect}
+                                                        buttonClassName={'authorization-button'}
+                                                        size="sm"
+                                                    />
+                                                </Col>
+                                            </ButtonGroup>
+                                        </Row>
+                                    </>
+                                )}
+                            </Col>
+                        </Row>
+                    </Container>
+                </div>
+            )}
+        </>
     );
 };
 

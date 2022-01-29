@@ -147,10 +147,25 @@ class Administration extends Model
     {
         if($this->portal_settings_layout_id)
         {
-            return PortalSettingsLayout::where('id', $this->portal_settings_layout_id)->first();
+            $portalSettingsLayout = PortalSettingsLayout::where('id', $this->portal_settings_layout_id)->first();
         }else{
-            return PortalSettingsLayout::where('is_default', true)->first();
+            $portalSettingsLayout = PortalSettingsLayout::where('is_default', true)->first();
         }
+
+        if(empty($portalSettingsLayout->portal_logo_file_name_header))
+        {
+            $portalSettingsLayout->portal_logo_file_name_header = $portalSettingsLayout->portal_logo_file_name;
+        }
+        if(empty($portalSettingsLayout->portal_image_bg_file_name_login))
+        {
+            $portalSettingsLayout->portal_image_bg_file_name_login = 'page-head5.jpg';
+        }
+        if(empty($portalSettingsLayout->portal_image_bg_file_name_header))
+        {
+            $portalSettingsLayout->portal_image_bg_file_name_header = $portalSettingsLayout->portal_image_bg_file_name_login;
+        }
+
+        return $portalSettingsLayout;
     }
 
     public function getTotalOrdersAttribute()

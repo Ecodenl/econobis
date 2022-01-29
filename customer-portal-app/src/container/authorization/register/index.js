@@ -19,7 +19,7 @@ const Register = ({ location, match, login }) => {
     const email = decodeURIComponent(match.params.email);
 
     const [redirectToReferrer, toggleRedirect] = useState(false);
-    let { from } = location.state || { from: { pathname: '/gegevens' } };
+    let { from } = location.state || { from: { pathname: '/dashboard' } };
 
     function handleSubmit(values, actions) {
         AuthAPI.register({

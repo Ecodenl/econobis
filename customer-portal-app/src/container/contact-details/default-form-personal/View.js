@@ -23,11 +23,6 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
     return (
         <Row>
             <Col xs={12} md={6}>
-                <FormLabel className={'field-label'}>Contactnummer</FormLabel>
-                <Row>
-                    <TextBlock className={'col-12 col-sm-8'}>{number}</TextBlock>
-                </Row>
-
                 <FormLabel className={'field-label'}>Naam</FormLabel>
                 <Row>
                     <TextBlock className={'col-12 col-sm-6'} placeholder={'Aanhef'}>
@@ -111,6 +106,11 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
                     <TextBlock className={'col-12 col-sm-8'} placeholder={'Land'}>
                         {primaryAddress.country ? primaryAddress.country.name : ''}
                     </TextBlock>
+                </Row>
+
+                <FormLabel className={'field-label'}>Contactnummer</FormLabel>
+                <Row>
+                    <TextBlock className={'col-12 col-sm-8'}>{number}</TextBlock>
                 </Row>
             </Col>
             <Col xs={12} md={6}>

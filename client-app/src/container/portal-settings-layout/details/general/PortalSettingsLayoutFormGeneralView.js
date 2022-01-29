@@ -10,6 +10,9 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
     description,
     isDefault,
     portalLogoFileName,
+    portalLogoFileNameHeader,
+    portalImageBgFileNameLogin,
+    portalImageBgFileNameHeader,
     portalFaviconFileName,
     portalBackgroundColor,
     portalBackgroundTextColor,
@@ -24,6 +27,9 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
     imageHash,
 }) => {
     const logoUrl = `${URL_API}/portal/images/${portalLogoFileName}?${imageHash}`;
+    const logoHeaderUrl = `${URL_API}/portal/images/${portalLogoFileNameHeader}?${imageHash}`;
+    const imageBgLoginUrl = `${URL_API}/portal/images/${portalImageBgFileNameLogin}?${imageHash}`;
+    const imageBgHeaderUrl = `${URL_API}/portal/images/${portalImageBgFileNameHeader}?${imageHash}`;
     const faviconUrl = `${URL_API}/portal/${portalFaviconFileName}?${imageHash}`;
 
     return (
@@ -46,13 +52,76 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Logo (bestandstype PNG)'}
+                            label={'Logo login (bestandstype PNG)'}
                             divSize={'col-sm-8'}
                             value={portalLogoFileName}
                             className={'col-sm-8 form-group'}
                         />
                         <Image
                             src={logoUrl}
+                            style={{
+                                backgroundColor: loginHeaderBackgroundColor,
+                                color: loginHeaderBackgroundTextColor,
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '1px',
+                                borderRadius: '1px',
+                                height: '50px',
+                                boxShadow: '0 0 0 1px #fff inset',
+                            }}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Achtergrond afbeelding login (bestandstype PNG)'}
+                            divSize={'col-sm-8'}
+                            value={portalImageBgFileNameLogin}
+                            className={'col-sm-8 form-group'}
+                        />
+                        <Image
+                            src={imageBgLoginUrl}
+                            style={{
+                                backgroundColor: loginHeaderBackgroundColor,
+                                color: loginHeaderBackgroundTextColor,
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '1px',
+                                borderRadius: '1px',
+                                height: '50px',
+                                boxShadow: '0 0 0 1px #fff inset',
+                            }}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Logo header (bestandstype PNG)'}
+                            divSize={'col-sm-8'}
+                            value={portalLogoFileNameHeader}
+                            className={'col-sm-8 form-group'}
+                        />
+                        <Image
+                            src={logoHeaderUrl}
+                            style={{
+                                backgroundColor: loginHeaderBackgroundColor,
+                                color: loginHeaderBackgroundTextColor,
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '1px',
+                                borderRadius: '1px',
+                                height: '50px',
+                                boxShadow: '0 0 0 1px #fff inset',
+                            }}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Achtergrond afbeelding header (bestandstype PNG)'}
+                            divSize={'col-sm-8'}
+                            value={portalImageBgFileNameHeader}
+                            className={'col-sm-8 form-group'}
+                        />
+                        <Image
+                            src={imageBgHeaderUrl}
                             style={{
                                 backgroundColor: loginHeaderBackgroundColor,
                                 color: loginHeaderBackgroundTextColor,
@@ -90,6 +159,11 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                             divSize={'col-sm-8'}
                             value={loginHeaderBackgroundColor}
                             className={'col-sm-8 form-group'}
+                            textToolTip={`Achtergrond afbeelding werkt alleen als je hier RGBA kleurcode gebruiktkleur en daar (deels) transparantie op toepast: 0.0 (fully transparent) and 1.0 (fully opaque)<br />
+                                Bijv:<br />
+                                rgba(35, 150, 179, 0). Achtergrond kleur volledig transparant, dus zie je achtergrond afbeelding ook volledig.<br />
+                                rgba(35, 150, 179, 1). Achtergrond kleur volledig NIET transparant, dus zie je achtergrond afbeelding helemaal niet.<br />
+                                rgba(35, 150, 179, 0.5). Achtergrond kleur voor 50% transparant, dus zie je achtergrond afbeelding voor 50% door achtergrond kleur heen. Hiermee krijgt je een soort watermerk effect.`}
                         />
                         <span
                             className="rc-color-picker-trigger"
@@ -186,7 +260,7 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'6. Achtergrond kleur'}
+                            label={'6. Menu achtergrond / pagina header tekst kleur'}
                             divSize={'col-sm-8'}
                             value={portalBackgroundColor}
                             className={'col-sm-8 form-group'}
@@ -201,12 +275,30 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                                 display: 'inline-block',
                                 padding: '2px',
                                 borderRadius: '2px',
-                                width: '50px',
+                                width: '150px',
                                 height: '30px',
                                 boxShadow: '0 0 0 2px #fff inset',
                             }}
                         >
-                            Tekst
+                            Menutekst
+                        </span>
+                        <br />
+                        <span
+                            className="rc-color-picker-trigger"
+                            unselectable="unselectable"
+                            style={{
+                                backgroundColor: '#fff',
+                                color: portalBackgroundColor,
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '2px',
+                                borderRadius: '2px',
+                                width: '150px',
+                                height: '30px',
+                                boxShadow: '0 0 0 2px #fff inset',
+                            }}
+                        >
+                            Pagina header tekst
                         </span>
                     </div>
                     <div className="row">

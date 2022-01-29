@@ -40,7 +40,7 @@ function AboutUsAdministration({ match }) {
             ) : (
                 <>
                     <Row>
-                        <ButtonGroup aria-label="Steps" className="float-left">
+                        <ButtonGroup aria-label="Steps" className="w-button-group-left">
                             <Link to={`/over-ons`}>
                                 <Button className={'w-button'} size="sm">
                                     Over ons

@@ -113,6 +113,8 @@ class PortalSettingsDashboardController extends Controller
 
                 if (Config::get('app.env') == "local") {
                     Storage::disk('public_portal_local')->putFileAs('images', $request->file('image'), $widgetImageFileName);
+                    Storage::disk('customer_portal_app_build_local')->putFileAs('images', $request->file('image'), $widgetImageFileName);
+                    Storage::disk('customer_portal_app_public_local')->putFileAs('images', $request->file('image'), $widgetImageFileName);
                 } else {
                     Storage::disk('public_portal')->putFileAs('images', $request->file('image'), $widgetImageFileName);
                 }
@@ -153,12 +155,15 @@ class PortalSettingsDashboardController extends Controller
 
             if (Config::get('app.env') == "local") {
                 Storage::disk('public_portal_local')->putFileAs('images', $request->file('image'), $widgetImageFileName);
+                Storage::disk('customer_portal_app_build_local')->putFileAs('images', $request->file('image'), $widgetImageFileName);
+                Storage::disk('customer_portal_app_public_local')->putFileAs('images', $request->file('image'), $widgetImageFileName);
             } else {
                 Storage::disk('public_portal')->putFileAs('images', $request->file('image'), $widgetImageFileName);
             }
 
         } catch (Exception $exception) {
             Log::error('Opslaan widget afbeelding mislukt : ' . $exception->getMessage());
+            abort('422', 'Opslaan widget afbeelding mislukt : ' . $exception->getMessage());
         }
 
         return response()->json(['message' => 'Bestand succesvol opgeslagen.']);
@@ -183,6 +188,8 @@ class PortalSettingsDashboardController extends Controller
         $this->getStore()->forget('widgets');
 
         Storage::disk('public_portal_local')->delete('images/' . $data['id'] . '.png');
+        Storage::disk('customer_portal_app_build_local')->delete('images/' . $data['id'] . '.png');
+        Storage::disk('customer_portal_app_public_local')->delete('images/' . $data['id'] . '.png');
 
         $widgets = Arr::where($widgets, function ($value, $key) use ($data) {
             return $value['id'] !== $data['id'];

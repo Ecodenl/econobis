@@ -31,6 +31,10 @@ const ThemeSettingsProvider = function(props) {
 
     function handleChangeCurrentThemeSettings() {
         document.documentElement.style.setProperty(
+            '--main-header-background-image-url',
+            'url(images/' + currentThemeSettings.portal_image_bg_file_name_header + ')'
+        );
+        document.documentElement.style.setProperty(
             '--main-primary-color',
             currentThemeSettings.portal_background_color
         );

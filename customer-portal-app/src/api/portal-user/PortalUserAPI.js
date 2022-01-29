@@ -10,7 +10,12 @@ export default {
                     fld: [
                         'id',
                         'number',
-                        'fullName',
+                        'fullNameFnf',
+                        'typeId',
+                        'firstName',
+                        'lastNamePrefix',
+                        'lastName',
+                        'hasFinancialOverviews',
                         'iban',
                         'ibanAttn',
                         'didAgreeAvg',
@@ -25,8 +30,20 @@ export default {
                                 occupation: {
                                     fld: ['id', 'primaryOccupation', 'secondaryOccupation', 'occupationForPortal'],
                                 },
-                                primaryContact: { fld: ['id', 'fullName', 'typeId'] },
-                                contact: { fld: ['id', 'fullName'] },
+                                primaryContact: {
+                                    fld: [
+                                        'id',
+                                        'typeId',
+                                        'fullNameFnf',
+                                        'firstName',
+                                        'lastNamePrefix',
+                                        'lastName',
+                                        'hasFinancialOverviews',
+                                    ],
+                                },
+                                contact: {
+                                    fld: ['id', 'typeId', 'fullNameFnf', 'firstName', 'lastNamePrefix', 'lastName'],
+                                },
                             },
                         },
                     },

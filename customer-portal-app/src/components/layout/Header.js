@@ -39,16 +39,16 @@ function Header({ location, history }) {
         updateStateMenu(!menuOpen);
     }
 
-    function formatProfilePicName(fullName) {
-        if (fullName) {
-            if (fullName.search(',') < 0) {
-                return fullName.replace(/\s(?=\S*$)/, '<br>');
-            } else {
-                const firstName = fullName.slice(fullName.search(',') + 2);
-                let lastName = fullName.slice(0, fullName.search(','));
-                lastName = lastName.replace(/\s(?=\S*$)/, '<br>');
-                return firstName + '<br>' + lastName;
-            }
+    function formatProfilePicName(currentSelectedContact) {
+        if (currentSelectedContact.typeId === 'person') {
+            return (
+                currentSelectedContact.firstName +
+                (currentSelectedContact.lastNamePrefix ? ' ' + currentSelectedContact.lastNamePrefix : '') +
+                (currentSelectedContact.firstName || currentSelectedContact.lastNamePrefix ? '<br>' : '') +
+                currentSelectedContact.lastName
+            );
+        } else if (currentSelectedContact.typeId === 'organisation') {
+            return currentSelectedContact.fullNameFnf.replace(/\s(?=\S*$)/, '<br>');
         } else {
             return '?';
         }
@@ -92,24 +92,24 @@ function Header({ location, history }) {
                         <PortalUserConsumer>
                             {({ user, currentSelectedContact, switchCurrentContact, resetCurrentUserToDefault }) => {
                                 if (!user.occupations || user.occupations.length < 1) {
-                                    return <>{ReactHtmlParser(formatProfilePicName(user.fullName))}</>;
+                                    return <>{ReactHtmlParser(formatProfilePicName(currentSelectedContact))}</>;
                                 }
 
                                 return (
                                     <Dropdown alignRight>
                                         <Dropdown.Toggle style={{ marginTop: '0' }}>
-                                            {ReactHtmlParser(formatProfilePicName(user.fullName))}
+                                            {ReactHtmlParser(formatProfilePicName(currentSelectedContact))}
                                         </Dropdown.Toggle>
                                         <Dropdown.Menu>
                                             <Dropdown.Header>Beheren van</Dropdown.Header>
                                             <Dropdown.Item
                                                 onClick={() => {
                                                     switchCurrentContact(user);
-                                                    redirect('gegevens');
+                                                    redirect('dashboard');
                                                 }}
                                                 active={currentSelectedContact.id === user.id ? true : false}
                                             >
-                                                {user.fullName}
+                                                {user.fullNameFnf}
                                             </Dropdown.Item>
                                             {user.occupations && user.occupations.length > 0
                                                 ? user.occupations.map(occupationContact =>
@@ -123,14 +123,14 @@ function Header({ location, history }) {
                                                                   switchCurrentContact(
                                                                       occupationContact.primaryContact
                                                                   );
-                                                                  redirect('gegevens');
+                                                                  redirect('dashboard');
                                                               }}
                                                               active={
                                                                   currentSelectedContact.id ===
                                                                   occupationContact.primaryContact.id
                                                               }
                                                           >
-                                                              {occupationContact.primaryContact.fullName}
+                                                              {occupationContact.primaryContact.fullNameFnf}
                                                           </Dropdown.Item>
                                                       ) : null
                                                   )
@@ -148,8 +148,10 @@ function Header({ location, history }) {
                                 <ThemeSettingsConsumer>
                                     {({ currentThemeSettings }) => (
                                         <div className="header-logo">
-                                            {currentThemeSettings.portal_logo_file_name !== undefined && (
-                                                <Image src={`images/${currentThemeSettings.portal_logo_file_name}`} />
+                                            {currentThemeSettings.portal_logo_file_name_header !== undefined && (
+                                                <Image
+                                                    src={`images/${currentThemeSettings.portal_logo_file_name_header}`}
+                                                />
                                             )}
                                         </div>
                                     )}
@@ -191,7 +193,7 @@ function Header({ location, history }) {
                                                                 <Dropdown.Menu>
                                                                     <Dropdown.Header>Ingelogd als</Dropdown.Header>
                                                                     <Dropdown.Item disabled>
-                                                                        {user.fullName}
+                                                                        {user.fullNameFnf}
                                                                     </Dropdown.Item>
                                                                     <Dropdown.Item>
                                                                         <Link
@@ -221,6 +223,14 @@ function Header({ location, history }) {
                                 </div>
                             </Col>
                         </Row>
+                        {location.pathname !== '/' && location.pathname !== '/dashboard' ? (
+                            <div className="header-dashboard-button">
+                                <Button className={'w-button'} onClick={() => history.push('/dashboard')}>
+                                    <FaHome />
+                                    &nbsp;Dashboard
+                                </Button>
+                            </div>
+                        ) : null}
                     </Container>
                 </div>
                 {/* Sidebar menu */}
@@ -253,16 +263,6 @@ function Header({ location, history }) {
                             >
                                 Gegevens
                             </Link>
-                            {/* later */}
-                            {/*<Link*/}
-                            {/*to={'/deelname-projecten'}*/}
-                            {/*className={`nav-link w-nav-link w--nav-link-open ${*/}
-                            {/*location.pathname === '/' ? 'w--current' : ''*/}
-                            {/*}`}*/}
-                            {/*onClick={closeMenu}*/}
-                            {/*>*/}
-                            {/*Deelnames*/}
-                            {/*</Link>*/}
                             <Link
                                 to={'/inschrijven-projecten'}
                                 className={`nav-link w-nav-link w--nav-link-open ${
@@ -272,15 +272,28 @@ function Header({ location, history }) {
                             >
                                 Inschrijven projecten
                             </Link>
-                            <Link
-                                to={'/waardestaat-documenten'}
-                                className={`nav-link w-nav-link w--nav-link-open ${
-                                    location.pathname === '/waardestaat-documenten' ? 'w--current' : ''
-                                }`}
-                                onClick={closeMenu}
-                            >
-                                Waardestaat documenten
-                            </Link>
+                            <PortalUserConsumer>
+                                {({
+                                    user,
+                                    currentSelectedContact,
+                                    switchCurrentContact,
+                                    resetCurrentUserToDefault,
+                                }) => {
+                                    if (currentSelectedContact && currentSelectedContact.hasFinancialOverviews) {
+                                        return (
+                                            <Link
+                                                to={'/waardestaat-documenten'}
+                                                className={`nav-link w-nav-link w--nav-link-open ${
+                                                    location.pathname === '/waardestaat-documenten' ? 'w--current' : ''
+                                                }`}
+                                                onClick={closeMenu}
+                                            >
+                                                Waardestaat
+                                            </Link>
+                                        );
+                                    }
+                                }}
+                            </PortalUserConsumer>
                             <Link
                                 to={'/over-ons'}
                                 className={`nav-link w-nav-link w--nav-link-open ${
@@ -294,12 +307,14 @@ function Header({ location, history }) {
                     </div>
                 </Menu>
             </header>
-            <div className={'floating-action-button'}>
-                <Button onClick={() => history.push('/dashboard')}>
-                    <FaHome />
-                    &nbsp;Dashboard
-                </Button>
-            </div>
+            {location.pathname !== '/' && location.pathname !== '/dashboard' ? (
+                <div className={'floating-action-button'}>
+                    <Button className={'w-button'} onClick={() => history.push('/dashboard')}>
+                        <FaHome />
+                        &nbsp;Dashboard
+                    </Button>
+                </div>
+            ) : null}
         </>
     );
 }

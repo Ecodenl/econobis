@@ -44,6 +44,8 @@ class GeneratePortalCss implements ShouldQueue
             if(Config::get('app.env') == "local")
             {
                 Storage::disk('public_portal_local')->put('portal.css', $html);
+                Storage::disk('customer_portal_app_build_local')->put('portal.css', $html);
+                Storage::disk('customer_portal_app_public_local')->put('portal.css', $html);
             }else{
                 Storage::disk('public_portal')->put('portal.css', $html);
             }

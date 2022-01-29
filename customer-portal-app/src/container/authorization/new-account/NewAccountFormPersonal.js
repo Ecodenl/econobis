@@ -3,12 +3,11 @@ import InputText from '../../../components/form/InputText';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import ButtonText from '../../../components/button/ButtonText';
 import Titles from '../../../data/Titles';
 import LastNamePrefixes from '../../../data/LastNamePrefixes';
 import Select from '../../../components/form/Select';
-import { Link } from 'react-router-dom';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
 const validationSchema = Yup.object().shape({
     email: Yup.string()
@@ -122,15 +121,17 @@ const NewAccountFormPersonal = ({ handleSubmit, showSuccessMessage }) => (
                     </Row>
 
                     <Row className="justify-content-center">
-                        <ButtonText
-                            buttonText={'Account aanmaken'}
-                            buttonClassName={'authorization-button'}
-                            size="sm"
-                            type={'submit'}
-                            loading={isSubmitting}
-                            loadingSpinnerColor={'#034b8c'}
-                            disabled={showSuccessMessage}
-                        />
+                        <ButtonGroup aria-label="create-account" className="w-button-group">
+                            <ButtonText
+                                buttonText={'Account aanmaken'}
+                                buttonClassName={'authorization-button'}
+                                size="sm"
+                                type={'submit'}
+                                loading={isSubmitting}
+                                loadingSpinnerColor={'#034b8c'}
+                                disabled={showSuccessMessage}
+                            />
+                        </ButtonGroup>
                     </Row>
                 </>
             </Form>

@@ -26,6 +26,7 @@ const InputText = props => {
         textToolTip,
         errorMessage,
         divSize,
+        labelSize,
         divClassName,
         autoComplete,
         disabled,
@@ -35,7 +36,7 @@ const InputText = props => {
     return (
         <div className={`form-group ${divSize} ${divClassName}`}>
             {!!label && (
-                <label htmlFor={id} className={`${divSize} ${required}`}>
+                <label htmlFor={id} className={`${labelSize} ${required}`}>
                     {label}
                 </label>
             )}
@@ -86,6 +87,7 @@ InputText.defaultProps = {
     className: '',
     size: 'col-sm-6',
     divSize: 'col-sm-6',
+    labelSize: 'col-sm-6',
     name: '',
     type: 'text',
     value: '',
@@ -112,6 +114,7 @@ InputText.propTypes = {
     divClassName: PropTypes.string,
     size: PropTypes.string,
     divSize: PropTypes.string,
+    labelSize: PropTypes.string,
     id: PropTypes.string,
     placeholder: PropTypes.string,
     name: PropTypes.string.isRequired,

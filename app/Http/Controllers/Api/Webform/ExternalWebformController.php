@@ -127,6 +127,8 @@ class ExternalWebformController extends Controller
 
     private $contactActie = null;
     private $newContactCreated = false;
+    private $contactIdToEmailNewContactToGroup = null;
+    private $processEmailNewContactToGroup = false;
 
     public function post(string $apiKey, Request $request)
     {
@@ -184,6 +186,11 @@ class ExternalWebformController extends Controller
         // evt nog Hoomdossier aanmaken indien van toepassing
         if ($createHoomDossier) {
             $this->createHoomDossier();
+        }
+
+        // evt nog ProcessEmailNewContactToGroup uitvoeren
+        if ($this->processEmailNewContactToGroup) {
+            $this->doProcessEmailNewContactToGroup($data['contact']);
         }
 
         $this->logInfo();
@@ -385,6 +392,7 @@ class ExternalWebformController extends Controller
                 'order_nota_frequentie_id' => 'collection_frequency_id',
                 'order_volgende_nota_datum' => 'date_next_invoice',
                 'order_begindatum' => 'date_start',
+                'order_eerste_notadatum_start_op' => 'date_period_start_first_invoice',
                 'order_aanvraagdatum' => 'date_requested',
                 'order_betreft' => 'subject',
                 'order_opmerking' => 'invoice_text',
@@ -441,6 +449,31 @@ class ExternalWebformController extends Controller
         // Sanitize
         $data['contact']['address_postal_code'] = strtoupper(str_replace(' ', '', $data['contact']['address_postal_code']));
 
+        // Validatie op addressNummer (numeriek), indien nodig herstellen door evt. toevoeging eruit te halen.
+        if(!isset($data['contact']['address_number']) || strlen($data['contact']['address_number']) == 0){
+            $data['contact']['address_number'] = 0;
+        }
+        if(!is_numeric($data['contact']['address_number'])){
+            $addressNumber = 0;
+            $addressAddition = '';
+            $teller = 1;
+            $length = strlen($data['contact']['address_number']);
+            while ($teller < $length) {
+
+                if (!is_numeric(substr($data['contact']['address_number'], $teller, 1))) {
+                    $addressNumber = substr($data['contact']['address_number'], 0, $teller);
+                    $addressAddition = substr($data['contact']['address_number'], $teller) . $data['contact']['address_addition'];
+                    break;
+                }
+                $teller++;
+            }
+            $data['contact']['address_number'] = $addressNumber;
+            $data['contact']['address_addition'] = $addressAddition ;
+        }
+
+        $data['contact']['address_addition'] = str_replace(' ', '', $data['contact']['address_addition']);
+        $data['contact']['address_addition'] = str_replace('-', '', $data['contact']['address_addition']);
+
         return $data;
     }
 
@@ -467,6 +500,9 @@ class ExternalWebformController extends Controller
 
         $contact = $this->getContactByAddressAndEmail($data);
         $this->log('Actie: ' . $this->contactActie);
+        if($contact){
+            $this->log('Actie bij contact: ' . $contact->id);
+        }
 
         if ($data['address_type_id'] != '') {
             try {
@@ -581,10 +617,11 @@ class ExternalWebformController extends Controller
             $contactTypeId = 'person';
         }
 
-//        $this->log('Data emailadres |' . $data['email_address'] . '|');
-//        $this->log('Data address_postal_code |' . $data['address_postal_code'] . '|');
-//        $this->log('Data address_number |' . $data['address_number'] . '|');
-//        $this->log('Data address_addition |' . $data['address_addition'] . '|');
+        //        $this->log('Data emailadres |' . $data['email_address'] . '|');
+        //        $this->log('Data address_postal_code |' . $data['address_postal_code'] . '|');
+        //        $this->log('Data address_number |' . $data['address_number'] . '|');
+        //        $this->log('Data address_addition |' . $data['address_addition'] . '|');
+
         // Kijken of er een persoon gematcht kan worden op basis van adres (postcode, huisnummer en huisnummer toevoeging)
         if($data['address_postal_code'] && $data['address_number'] && isset($data['address_addition'])) {
             $this->log('Er zijn adres gegevens meegegeven');
@@ -738,7 +775,7 @@ class ExternalWebformController extends Controller
                                 return $contactNameInitialsQuery->first();
                             } else {
                                 // Persoon Gevonden op adres en email, maar niet op naam.
-                                $this->log('Contact (persoon) gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) en emailadres maar niet op naam (initials)');
+                                $this->log('Contact (persoon) gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) en emailadres maar niet op naam met initials');
                                 // add contact + taak
                                 $this->contactActie = "NCT";
                                 $this->log('Nieuw contact maken + taak');
@@ -786,10 +823,10 @@ class ExternalWebformController extends Controller
         } else {
             // Kijken of er een persoon gematcht kan worden op basis van alleen email
             $person = Person::whereHas('contact', function ($query) use ($data) {
-                    $query->whereHas('emailAddresses', function ($query) use ($data) {
-                        $query->where('email', $data['email_address']);
-                    });
+                $query->whereHas('emailAddresses', function ($query) use ($data) {
+                    $query->where('email', $data['email_address']);
                 });
+            });
             $this->log('Contacten gevonden op emailadres ' . $data['email_address'] . ': ' . $person->count());
             // Gevonden op email contact.
             if ($person->count() > 0) {
@@ -835,45 +872,45 @@ class ExternalWebformController extends Controller
         return null;
     }
 
-//    protected function getContactByNameAndAddress(array $data)
-//    {
-//        // Kijken of er een persoon gematcht kan worden op basis van naam en adres
-//        $person = Person::where('first_name', $data['first_name'])
-//            ->where('last_name', $data['last_name'])
-//            ->whereHas('contact', function ($query) use ($data) {
-//                $query->whereHas('addresses', function ($query) use ($data) {
-//                    $query->where('number', $data['address_number'])
-//                        ->where('postal_code', $data['address_postal_code']);
-//                });
-//            })
-//            ->first();
-//
-//        if ($person) {
-//            $this->log('Persoon ' . $person->contact->full_name . ' gevonden op basis van naam en adres');
-//            return $person->contact;
-//        } else {
-//            $this->log('Geen persoon gevonden op basis van naam en adres');
-//        }
-//
-//        // Er is geen persoon gevonden op basis van naam en email, kijken of er een organisatie matcht
-//        $organisation = Organisation::where('name', $data['organisation_name'])
-//            ->whereHas('contact', function ($query) use ($data) {
-//                $query->whereHas('addresses', function ($query) use ($data) {
-//                    $query->where('number', $data['address_number'])
-//                        ->where('postal_code', $data['address_postal_code']);
-//                });
-//            })
-//            ->first();
-//
-//        if ($organisation) {
-//            $this->log('Organisatie ' . $organisation->contact->full_name . ' gevonden op basis van naam en adres');
-//            return $organisation->contact;
-//        } else {
-//            $this->log('Geen organisatie gevonden op basis van naam en adres');
-//        }
-//
-//        return null;
-//    }
+    //    protected function getContactByNameAndAddress(array $data)
+    //    {
+    //        // Kijken of er een persoon gematcht kan worden op basis van naam en adres
+    //        $person = Person::where('first_name', $data['first_name'])
+    //            ->where('last_name', $data['last_name'])
+    //            ->whereHas('contact', function ($query) use ($data) {
+    //                $query->whereHas('addresses', function ($query) use ($data) {
+    //                    $query->where('number', $data['address_number'])
+    //                        ->where('postal_code', $data['address_postal_code']);
+    //                });
+    //            })
+    //            ->first();
+    //
+    //        if ($person) {
+    //            $this->log('Persoon ' . $person->contact->full_name . ' gevonden op basis van naam en adres');
+    //            return $person->contact;
+    //        } else {
+    //            $this->log('Geen persoon gevonden op basis van naam en adres');
+    //        }
+    //
+    //        // Er is geen persoon gevonden op basis van naam en email, kijken of er een organisatie matcht
+    //        $organisation = Organisation::where('name', $data['organisation_name'])
+    //            ->whereHas('contact', function ($query) use ($data) {
+    //                $query->whereHas('addresses', function ($query) use ($data) {
+    //                    $query->where('number', $data['address_number'])
+    //                        ->where('postal_code', $data['address_postal_code']);
+    //                });
+    //            })
+    //            ->first();
+    //
+    //        if ($organisation) {
+    //            $this->log('Organisatie ' . $organisation->contact->full_name . ' gevonden op basis van naam en adres');
+    //            return $organisation->contact;
+    //        } else {
+    //            $this->log('Geen organisatie gevonden op basis van naam en adres');
+    //        }
+    //
+    //        return null;
+    //    }
 
     /**
      * @param array $data
@@ -911,7 +948,6 @@ class ExternalWebformController extends Controller
                     $this->log('Er is geen waarde voor adres type meegegeven, default naar "Post"');
                 }
 
-
                 // Validatie op countrycode
                 if ($data['address_country_id'] != '') {
                     $country = Country::find($data['address_country_id']);
@@ -926,10 +962,10 @@ class ExternalWebformController extends Controller
                     'type_id' => $addressTypeId,
                     'street' => $data['address_street'],
                     'number' => $data['address_number'],
+                    'addition' => $data['address_addition'],
                     'city' => $data['address_city'],
                     'postal_code' => $data['address_postal_code'],
                     'country_id' => $countryCode,
-                    'addition' => $data['address_addition'],
                 ]);
                 $this->log('Adres aangemaakt met id ' . $address->id);
             } else {
@@ -1065,14 +1101,6 @@ class ExternalWebformController extends Controller
             ]);
             $this->log('Organisatie met id ' . $organisation->id . ' aangemaakt.');
 
-            // Overige gegevens aan organisation hangen
-            $this->addAddressToContact($data, $contactOrganisation);
-            $this->addEmailToContact($data, $contactOrganisation);
-            $this->addPhoneNumberToContact($data, $contactOrganisation);
-            $this->addContactToGroup($data, $contactOrganisation, $ownerAndResponsibleUser);
-
-            // Validatie op title_id
-
             if ($data['first_name'] || $data['last_name']) {
                 $contactPerson = Contact::create([
                     'type_id' => 'person',
@@ -1103,6 +1131,12 @@ class ExternalWebformController extends Controller
                     . ' aangemaakt en gekoppeld aan organisatie als medewerker.');
 
             }
+
+            // Overige gegevens aan organisation hangen
+            $this->addAddressToContact($data, $contactOrganisation);
+            $this->addEmailToContact($data, $contactOrganisation);
+            $this->addPhoneNumberToContact($data, $contactOrganisation);
+            $this->addContactToGroup($data, $contactOrganisation, $ownerAndResponsibleUser);
 
             return $contactOrganisation;
         }
@@ -1172,8 +1206,8 @@ class ExternalWebformController extends Controller
                 $this->error('Ongeldige waarde voor energie leverancier type meegegeven.');
             }
 
-//            $contactEnergySupplierStatus = ContactEnergySupplierStatus::find($data['contact_energy_supply_status_id']);
-//            if (!$contactEnergySupplierStatus) $this->error('Ongeldige waarde voor energie leverancier status meegegeven.');
+            //            $contactEnergySupplierStatus = ContactEnergySupplierStatus::find($data['contact_energy_supply_status_id']);
+            //            if (!$contactEnergySupplierStatus) $this->error('Ongeldige waarde voor energie leverancier status meegegeven.');
             $contactEnergySupplierStatusId = null;
             if ($data['energy_supplier_id'] != '' && $data['contact_energy_supply_status_id'] != '') {
                 $contactEnergySupplierStatus
@@ -1683,15 +1717,13 @@ class ExternalWebformController extends Controller
                 }
 
                 if($contactGroup->send_email_new_contact_link){
-                    $contactGroupHelper = new ContactGroupHelper($contactGroup, $contact);
-                    $processed = $contactGroupHelper->processEmailNewContactToGroup();
-                    if($processed){
-                        $this->log('Email verzonden naar ' . $contact->id );
-                    }
+                    $this->contactIdToEmailNewContactToGroup = $contact->id;
+                    $this->processEmailNewContactToGroup = true;
                 }
             }
+        }
 
-        }elseif($data['contact_group_ids']){
+        if($data['contact_group_ids']){
             $contactGroups = ContactGroup::whereIn('id', explode(',', $data['contact_group_ids']))->get();
             if ($contactGroups->count() > 0) {
                 $this->log('Er is 1 of meerdere contactgroep meegegeven, groep(en) koppelen.');
@@ -1716,11 +1748,8 @@ class ExternalWebformController extends Controller
                             }
 
                             if ($contactGroup->send_email_new_contact_link) {
-                                $contactGroupHelper = new ContactGroupHelper($contactGroup, $contact);
-                                $processed = $contactGroupHelper->processEmailNewContactToGroup();
-                                if ($processed) {
-                                    $this->log('Email verzonden naar ' . $contact->id);
-                                }
+                                $this->contactIdToEmailNewContactToGroup = $contact->id;
+                                $this->processEmailNewContactToGroup = true;
                             }
                         }
                     }
@@ -1729,8 +1758,39 @@ class ExternalWebformController extends Controller
             } else {
                 $this->log('Er is geen contact groep meegegeven, geen groep koppelen.');
             }
-        } else {
+        }
+
+        if (!$data['group_name'] && !$data['contact_group_ids']) {
             $this->log('Er is geen contact groep meegegeven, geen groep koppelen.');
+        }
+    }
+
+    protected function doProcessEmailNewContactToGroup(array $data)
+    {
+        $contactToEmailNewContactGroup = Contact::find($this->contactIdToEmailNewContactToGroup);
+        if ($data['group_name']) {
+            $contactGroup = ContactGroup::where('name', $data['group_name'])->first();
+            if($contactGroup->send_email_new_contact_link){
+                $contactGroupHelper = new ContactGroupHelper($contactGroup, $contactToEmailNewContactGroup);
+                $processed = $contactGroupHelper->processEmailNewContactToGroup();
+                if($processed){
+                    $this->log('Email verzonden naar ' . $this->contactIdToEmailNewContactToGroup);
+                }
+            }
+        }
+
+        if($data['contact_group_ids']){
+            $contactGroups = ContactGroup::whereIn('id', explode(',', $data['contact_group_ids']))->get();
+            foreach ($contactGroups as $contactGroup)
+            {
+                if ($contactGroup->send_email_new_contact_link) {
+                    $contactGroupHelper = new ContactGroupHelper($contactGroup, $contactToEmailNewContactGroup);
+                    $processed = $contactGroupHelper->processEmailNewContactToGroup();
+                    if ($processed) {
+                        $this->log('Email verzonden naar ' . $this->contactIdToEmailNewContactToGroup);
+                    }
+                }
+            }
         }
     }
 
@@ -1955,7 +2015,7 @@ class ExternalWebformController extends Controller
                 $paymentTypeId = $product->payment_type_id;
             }
 
-            $iban = $this->checkIban($data['iban'], 'order.');
+//            $iban = $this->checkIban($data['iban'], 'order.');
 
             $dateNextInvoice = Carbon::make($data['date_next_invoice']);
             if (!$dateNextInvoice) {
@@ -1974,6 +2034,11 @@ class ExternalWebformController extends Controller
                 $this->log('Geen bekende startdatum meegegeven voor orderproduct, default naar datum van vandaag.');
                 $dateStart = new Carbon();
             }
+            $datePeriodStartFirstInvoice = Carbon::make($data['date_period_start_first_invoice']);
+            if (!$datePeriodStartFirstInvoice) {
+                $this->log('Geen bekende notadatum start op meegegeven voor orderproduct, default naar datum van vandaag.');
+                $datePeriodStartFirstInvoice = new Carbon();
+            }
 
             $order = Order::create([
                 'contact_id' => $contact->id,
@@ -1985,12 +2050,12 @@ class ExternalWebformController extends Controller
                 'email_template_id_collection' => $product->administration ? $product->administration->email_template_id_collection : null,
                 'email_template_reminder_id' => $product->administration ? $product->administration->email_template_reminder_id : null,
                 'email_template_exhortation_id' => $product->administration ? $product->administration->email_template_exhortation_id : null,
-                'IBAN' => $iban,
-                'iban_attn' => $data['iban_attn'],
                 'date_requested' => $dateRequested,
                 'date_next_invoice' => $dateNextInvoice,
                 'collection_frequency_id' => $collectionFrequencyId,
                 'invoice_text' => ( isset($data['invoice_text']) && !empty($data['invoice_text']) ) ? $data['invoice_text'] : null,
+                'IBAN' => '',
+                'iban_attn' => '',
             ]);
 
             $this->log('Order met id ' . $order->id . ' aangemaakt.');
@@ -2002,6 +2067,7 @@ class ExternalWebformController extends Controller
                 'order_id' => $order->id,
                 'amount' => $amount,
                 'date_start' => $dateStart,
+                'date_period_start_first_invoice' => $datePeriodStartFirstInvoice,
             ]);
 
             $this->log('Orderregel met id ' . $orderProduct->id . ' aangemaakt en gekoppeld aan order.');
@@ -2048,14 +2114,15 @@ class ExternalWebformController extends Controller
             $this->log($error);
             return '';
         }
-
-        if (!(new IBAN($iban))->validate()) {
+        $iban = preg_replace('/[^a-z0-9]+/i', '', trim(strtoupper($iban)));
+        $newIban = new IBAN($iban);
+        if (!$newIban->validate()) {
             $error = 'Ongeldige Iban ingelezen voor ' . $errorSubject;
             $this->log($error);
             $this->addTaskError($error);
         }
 
-        return strtoupper($iban);
+        return $iban;
     }
 
     protected function mailLog(array $data, bool $success, Webform $webform = null)

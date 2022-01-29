@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailFetcher;
+use App\Eco\Mailbox\MailFetcherGmail;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -43,7 +44,11 @@ class checkMailboxes extends Command
         $mailboxes = Mailbox::where('valid', 0)->where('is_active', 1)->where('login_tries', '<', 5)->get();
         foreach ($mailboxes as $mailbox) {
             //In construct wordt gelijk valid gekeken
-            new MailFetcher($mailbox);
+            if ($mailbox->incoming_server_type === 'gmail') {
+                new MailFetcherGmail($mailbox);
+            } else {
+                new MailFetcher($mailbox);
+            }
         }
         Log::info('Mailboxen gecheckt.');
     }

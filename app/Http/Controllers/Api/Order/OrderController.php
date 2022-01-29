@@ -391,12 +391,12 @@ class OrderController extends ApiController
     }
 
     public function downloadPreview(Order $order){
+        $invoiceNumberPrefix =  $order->administration->prefix_invoice_number ? $order->administration->prefix_invoice_number : 'F';
+
         $invoice = new Invoice();
         $invoice->order_id = $order->id;
         $invoice->administration_id = $order->administration_id;
-//        $invoice->invoice_number =  Invoice::where('administration_id', $invoice->administration_id)->count();
-//        $invoice->number = 'O' . Carbon::now()->year . '-' . $invoice->invoice_number;
-        $invoice->number = 'F' . Carbon::now()->year . '-new';
+        $invoice->number = $invoiceNumberPrefix . Carbon::now()->year . '-new';
         $invoice->payment_type_id = $order->payment_type_id;
         $invoice->collection_frequency_id = $order->collection_frequency_id;
         $invoice = InvoiceHelper::saveInvoiceProducts($invoice, $order, true);
@@ -457,12 +457,12 @@ class OrderController extends ApiController
 
     public function getEmailPreview(Order $order){
 
+        $invoiceNumberPrefix =  $order->administration->prefix_invoice_number ? $order->administration->prefix_invoice_number : 'F';
+
         $invoice = new Invoice();
         $invoice->order_id = $order->id;
         $invoice->administration_id = $order->administration_id;
-//        $invoice->invoice_number =  Invoice::where('administration_id', $invoice->administration_id)->count();
-//        $invoice->number = 'O' . Carbon::now()->year . '-' . $invoice->invoice_number;
-        $invoice->number = 'F' . Carbon::now()->year . '-new';
+        $invoice->number = $invoiceNumberPrefix . Carbon::now()->year . '-new';
         $invoice->payment_type_id = $order->payment_type_id;
         $invoice->collection_frequency_id = $order->collection_frequency_id;
 

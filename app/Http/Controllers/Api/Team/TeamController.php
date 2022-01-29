@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api\Team;
 
 use App\Eco\Team\Team;
 use App\Eco\User\User;
+use App\Helpers\Settings\PortalSettings;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Team\Grid\RequestQuery;
 
@@ -103,6 +104,12 @@ class TeamController extends ApiController
     public function destroy(Team $team)
     {
         $this->authorize('create', Team::class);
+
+        // Team can not be deleted if it is used in portalsettings
+        $checkContactTaskResponsibleTeamId = PortalSettings::get('checkContactTaskResponsibleTeamId');
+        if($team->id == $checkContactTaskResponsibleTeamId){
+            abort(412, 'Dit team wordt nog gebruikt in algemene portal instellingen.');
+        }
 
         //delete many to many relations
         $team->users()->detach();

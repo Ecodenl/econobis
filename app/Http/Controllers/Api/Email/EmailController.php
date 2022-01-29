@@ -102,6 +102,7 @@ class EmailController
         $email->cc = [];
         $email->bcc = [];
         $email->reply_type_id = 'reply';
+        $email->subject = 'Re: ' . $email->subject;
         $email->old_email_id = $email->id;
 
         $email->html_body = '<p></p><p>Oorspronkelijk bericht:</p> ' . $email->html_body;
@@ -155,6 +156,7 @@ class EmailController
         $email->cc = $ccMixed;
         $email->bcc = [];
         $email->reply_type_id = 'reply-all';
+        $email->subject = 'Re: ' . $email->subject;
         $email->old_email_id = $email->id;
 
         $email->html_body = '<p></p><p>Oorspronkelijk bericht:</p> ' . $email->html_body;
@@ -176,6 +178,7 @@ class EmailController
         $email->cc = [];
         $email->bcc = [];
         $email->reply_type_id = 'forward';
+        $email->subject = 'Fwd: ' . $email->subject;
         $email->intake_id = null;
         $email->task_id = null;
         $email->opportunity_id =null;

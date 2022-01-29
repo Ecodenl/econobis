@@ -122,6 +122,7 @@ class FullAdministration extends JsonResource
                 'twinfieldIsValid' => $this->twinfield_is_valid,
                 'dateSyncTwinfieldContacts' => $this->date_sync_twinfield_contacts,
                 'dateSyncTwinfieldPayments' => $this->date_sync_twinfield_payments,
+                'prefixInvoiceNumber' => $this->prefix_invoice_number,
 
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,

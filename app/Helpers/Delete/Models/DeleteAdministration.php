@@ -10,6 +10,7 @@ namespace App\Helpers\Delete\Models;
 
 
 use App\Helpers\Delete\DeleteInterface;
+use App\Helpers\Settings\PortalSettings;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -63,6 +64,12 @@ class DeleteAdministration implements DeleteInterface
         if($this->administration->paymentInvoices()->count() > 0){
             array_push($this->errorMessage, "Er zijn al uitkerings nota's.");
         }
+        // Administration can not be deleted if it is used in portalsettings
+        $defaultAdministrationId = PortalSettings::get('defaultAdministrationId');
+        if($this->administration->id == $defaultAdministrationId){
+            array_push($this->errorMessage, "Deze administratie wordt nog gebruikt in algemene portal instellingen.");
+        }
+
     }
 
     /** Deletes models recursive

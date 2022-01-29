@@ -31,10 +31,6 @@ class UpdateMemberToLaposta implements ShouldQueue
         $this->contactGroup = $contactGroup;
         $this->contact = $contact;
         $this->lapostaMemberId = $lapostaMemberId;
-//        $this->contactGroupsPivot = null;
-//        if($contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
-//            $this->contactGroupsPivot = $contactGroup->contacts()->where('contact_id', $contact->id)->first()->pivot;
-//        }
         $this->userId = $userId;
 
         $jobLog = new JobsLog();
@@ -46,11 +42,6 @@ class UpdateMemberToLaposta implements ShouldQueue
 
     public function handle()
     {
-//        $contactGroupsPivot = null;
-//        if($this->contactGroup->contacts()->where('contact_id', $this->contact->id)->exists()){
-//            $contactGroupsPivot = $this->contactGroup->contacts()->where('contact_id', $this->contact->id)->first()->pivot;
-//        }
-
         Laposta::setApiKey($this->lapostaKey);
 
         $member = new Laposta_Member($this->contactGroup->laposta_list_id ? $this->contactGroup->laposta_list_id : '');
@@ -71,12 +62,13 @@ class UpdateMemberToLaposta implements ShouldQueue
         }
 
         $memberData = [
+            'ip' => isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '0.0.0.0',
             'email' => $this->contact->primaryEmailAddress->email ? $this->contact->primaryEmailAddress->email : '',
             'custom_fields' => $memberFieldData,
         ];
 
         try {
-//            $lapostaResponse = $member->update($contactGroupsPivot->laposta_member_id, $memberData);
+            sleep(1);
             $lapostaResponse = $member->update($this->lapostaMemberId, $memberData);
 
             $lapostaMemberState = $lapostaResponse['member']['state'];
@@ -101,7 +93,6 @@ class UpdateMemberToLaposta implements ShouldQueue
                 $message = $message . 'Onbekend';
             }
             Log::error( $message . '. Contactgroup id: ' . $this->contactGroup->id . '. Http status: ' . ($e->getHttpStatus() ? $e->getHttpStatus() : '') . '.');
-//            Log::error( $message . '. Contactgroup id: ' . $this->contactGroup->id . '. Http status: ' . $e . '.');
             $value = $message;
             $jobLog = new JobsLog();
             $jobLog->value = $value;

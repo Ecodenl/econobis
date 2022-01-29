@@ -4,6 +4,9 @@ import { connect } from 'react-redux';
 import { fetchEmails, clearEmails } from '../../../actions/email/EmailsActions';
 import { setEmailsPagination } from '../../../actions/email/EmailsPaginationActions';
 import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
+import { clearFilterEmail } from '../../../actions/email/EmailFiltersActions';
+import { setFilterMe } from '../../../actions/email/EmailFiltersActions';
+import { setError } from '../../../actions/general/ErrorActions';
 import EmailsInList from './EmailsInList';
 import EmailsInListToolbar from './EmailsInListToolbar';
 import Panel from '../../../components/panel/Panel';
@@ -12,8 +15,6 @@ import { isEmpty } from 'lodash';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import filterHelper from '../../../helpers/FilterHelper';
 import { bindActionCreators } from 'redux';
-import { clearFilterEmail } from '../../../actions/email/EmailFiltersActions';
-import { setFilterMe } from '../../../actions/email/EmailFiltersActions';
 
 class EmailsInListApp extends Component {
     constructor(props) {
@@ -92,14 +93,20 @@ class EmailsInListApp extends Component {
 
     refreshData() {
         this.props.blockUI();
-        MailboxAPI.receiveMailFromMailboxesUser().then(payload => {
-            const pagination = { limit: 20, offset: 0 };
+        MailboxAPI.receiveMailFromMailboxesUser()
+            .then(payload => {
+                const pagination = { limit: 20, offset: 0 };
 
-            this.props.clearEmails();
-            this.resetEmailsFilters();
-            this.props.fetchEmails(this.props.params.folder, pagination);
-            this.props.unblockUI();
-        });
+                this.props.clearEmails();
+                this.resetEmailsFilters();
+                this.props.fetchEmails(this.props.params.folder, pagination);
+                this.props.unblockUI();
+            })
+            .catch(error => {
+                console.log(error);
+                this.props.setError(error.response.status, error.response.data.message);
+                this.props.unblockUI();
+            });
     }
 
     handlePageClick(data) {
@@ -160,7 +167,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
-        { fetchEmails, clearEmails, clearFilterEmail, setEmailsPagination, blockUI, unblockUI, setFilterMe },
+        { fetchEmails, clearEmails, clearFilterEmail, setEmailsPagination, blockUI, unblockUI, setFilterMe, setError },
         dispatch
     );
 };

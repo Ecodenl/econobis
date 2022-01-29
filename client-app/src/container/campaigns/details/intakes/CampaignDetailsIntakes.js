@@ -17,6 +17,7 @@ function CampaignDetailsIntakes({ campaignId }) {
 
     async function fetchCampaignIntakes() {
         try {
+            // page +1 (frontend pagination starts with 0, backend pagination starts with 1)
             const response = await CampaignDetailsAPI.fetchCampaignIntakes({ id: campaignId, page: page + 1 });
 
             setData(response.data);

@@ -678,7 +678,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="6. Achtergrond kleur"
+                                label="6. Menu achtergrond / pagina header tekst kleur"
                                 divSize={'col-sm-8'}
                                 name={'portalBackgroundColor'}
                                 value={portalBackgroundColor}
@@ -737,7 +737,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="8. Buttonknop kleur"
+                                label="8. Buttonknop / Profielcircel kleur"
                                 divSize={'col-sm-8'}
                                 name={'buttonColor'}
                                 value={buttonColor}
@@ -766,7 +766,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="9. Buttonknop tekst kleur"
+                                label="9. Buttonknop / Profielcircel tekst kleur"
                                 divSize={'col-sm-8'}
                                 name={'buttonTextColor'}
                                 value={buttonTextColor}

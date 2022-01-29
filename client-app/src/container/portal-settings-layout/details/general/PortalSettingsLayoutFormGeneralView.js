@@ -311,7 +311,7 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'8. Buttonknop kleur'}
+                            label={'8. Buttonknop / Profielcircel kleur'}
                             divSize={'col-sm-8'}
                             value={buttonColor}
                             className={'col-sm-8 form-group'}
@@ -336,7 +336,7 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'9. Buttonknop tekst kleur'}
+                            label={'9. Buttonknop / Profielcircel tekst kleur'}
                             divSize={'col-sm-8'}
                             value={buttonTextColor}
                             className={'col-sm-8 form-group'}

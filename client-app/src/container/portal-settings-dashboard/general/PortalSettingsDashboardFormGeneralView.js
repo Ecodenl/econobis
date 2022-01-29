@@ -5,7 +5,7 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import PortalSettingsDashboardWidgetList from '../widgets/PortalSettingsDashboardWidgetList';
 
-const PortalSettingsDashboardFormGeneralView = ({ welcomeTitle, welcomeMessage, widgets, switchToEdit }) => {
+const PortalSettingsDashboardFormGeneralView = ({ welcomeTitle, welcomeMessage, widgets, switchToEdit, imageHash }) => {
     return (
         <div onClick={switchToEdit}>
             <Panel>
@@ -31,7 +31,7 @@ const PortalSettingsDashboardFormGeneralView = ({ welcomeTitle, welcomeMessage, 
             <Panel>
                 <PanelBody>
                     <div className="row" style={{ margin: '0' }}>
-                        <PortalSettingsDashboardWidgetList widgets={widgets} edit={false} />
+                        <PortalSettingsDashboardWidgetList widgets={widgets} edit={false} imageHash={imageHash} />
                     </div>
                 </PanelBody>
             </Panel>

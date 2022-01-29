@@ -70,6 +70,7 @@ class PortalSettingsDashboardWidgetList extends Component {
                     edit={edit}
                     handleInputChange={this.props.handleWidgetInputChange}
                     removeWidget={this.props.removeWidget}
+                    imageHash={this.props.imageHash}
                 />
                 {this.state.addWidgetModal && (
                     <AddPortalSettingsDashboardWidgetModal

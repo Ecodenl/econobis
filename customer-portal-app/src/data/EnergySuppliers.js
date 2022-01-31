@@ -16,7 +16,7 @@ export default [
     { id: 45, name: 'Easyenergy' },
     { id: 4, name: 'Eneco' },
     { id: 19, name: 'Energie VanOns' },
-    { id: 49, name: 'Energie Zero' },
+    { id: 49, name: 'EnergyZero' },
     { id: 42, name: 'Energiebesteding' },
     { id: 5, name: 'Energiedirect' },
     { id: 21, name: 'Energieflex' },

@@ -268,13 +268,7 @@ class ParticipationProjectController extends ApiController
 
         $project = Project::find($participantProject->project_id);
         $contact = Contact::find($participantProject->contact_id);
-
-        if($project->projectType->code_ref === 'postalcode_link_capital'){
-            $address = Address::find($participantProject->address_id);
-        } else {
-            $address = $contact->addressForPostalCodeCheck;
-            $participantProject->address_id = $address ? $address->id : null;
-        }
+        $address = Address::find($participantProject->address_id);
 
         if($project->check_double_addresses){
             $errors = [];

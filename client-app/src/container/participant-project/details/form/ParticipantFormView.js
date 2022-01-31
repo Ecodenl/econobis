@@ -56,30 +56,28 @@ const ParticipantFormView = props => {
                 <ViewText label={'Administratie'} value={project.administration ? project.administration.name : ''} />
             </div>
 
-            {projectTypeCodeRef === 'postalcode_link_capital' ? (
-                <div className="row" onClick={props.switchToEdit}>
-                    <ViewText
-                        label={'Adres'}
-                        value={
-                            address
-                                ? address.streetPostalCodeCity
-                                : contact && contact.primaryAddress
-                                ? contact.primaryAddress.streetPostalCodeCity
-                                : ''
-                        }
-                    />
-                    <ViewText
-                        label={'Adrestype'}
-                        value={
-                            address
-                                ? address.typeAndPrimary
-                                : contact && contact.primaryAddress
-                                ? contact.primaryAddress.typeAndPrimary
-                                : ''
-                        }
-                    />
-                </div>
-            ) : null}
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText
+                    label={'Adres'}
+                    value={
+                        address
+                            ? address.streetPostalCodeCity
+                            : contact && contact.primaryAddress
+                            ? contact.primaryAddress.streetPostalCodeCity
+                            : ''
+                    }
+                />
+                <ViewText
+                    label={'Adrestype'}
+                    value={
+                        address
+                            ? address.typeAndPrimary
+                            : contact && contact.primaryAddress
+                            ? contact.primaryAddress.typeAndPrimary
+                            : ''
+                    }
+                />
+            </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText

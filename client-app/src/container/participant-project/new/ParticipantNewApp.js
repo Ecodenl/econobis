@@ -31,6 +31,7 @@ class ParticipantNewApp extends Component {
             projects: [],
             participationWorth: 0,
             projectTypeCodeRef: '',
+            isSceProject: false,
             disableClientSelection: !props.params.contactId ? false : true,
             disableProjectSelection: !props.params.projectId ? false : true,
             participation: {
@@ -101,6 +102,7 @@ class ParticipantNewApp extends Component {
                 this.setState({
                     ...this.state,
                     projectTypeCodeRef: project.typeCodeRef,
+                    isSceProject: project.isSceProject,
                     participation: {
                         ...this.state.participation,
                         dateEntry: project.dateEntry
@@ -205,6 +207,7 @@ class ParticipantNewApp extends Component {
         this.setState({
             ...this.state,
             projectTypeCodeRef: project.typeCodeRef,
+            isSceProject: project.isSceProject,
             participation: {
                 ...this.state.participation,
                 projectId: projectId,
@@ -322,6 +325,7 @@ class ParticipantNewApp extends Component {
                                         projects={this.state.projects}
                                         handleProjectChange={this.handleProjectChange}
                                         projectTypeCodeRef={this.state.projectTypeCodeRef}
+                                        isSceProject={this.state.isSceProject}
                                         disableProjectSelection={this.state.disableProjectSelection}
                                         disableClientSelection={this.state.disableClientSelection}
                                         projectDateEntry={this.state.projectDateEntry}

@@ -176,6 +176,10 @@ color: var(--main-primary-rgba-text-color);
 
 }
 
+.header-portal .profile-pic .dropdown-toggle{
+color: var(--button-primary-text-color) !important;
+}
+
 .header-portal .bm-burger-bars {
 background-color: var(--main-header-portal-icon-color) !important;
 }
@@ -632,11 +636,11 @@ bottom: -60px;
 min-width: 120px;
 height: 120px;
 border: 4px solid white;
-background-color: var(--main-primary-rgba);
+background-color: var(--button-primary-color);
 background-position: 50% 50%;
 background-size: contain;
 background-repeat: no-repeat;
-color: var(--main-primary-rgba-text-color);
+color: var(--button-primary-text-color);
 box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.1);
 -webkit-transform: translate(-50%, 0px);
 -ms-transform: translate(-50%, 0px);
@@ -655,7 +659,7 @@ margin-top: 10px;
 }
 
 .profile-pic .profile-title {
-color: var(--main-primary-rgba-text-color);
+color: var(--button-primary-text-color);
 font-weight: bold;
 white-space: nowrap;
 margin: 20px;

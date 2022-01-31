@@ -12,6 +12,7 @@ class PortalSettingsDashboardFormGeneral extends Component {
 
         this.state = {
             showEdit: false,
+            imageHash: Date.now(),
             activeDiv: '',
         };
     }
@@ -25,6 +26,7 @@ class PortalSettingsDashboardFormGeneral extends Component {
     switchToView = () => {
         this.setState({
             showEdit: false,
+            imageHash: Date.now(),
             activeDiv: '',
         });
     };
@@ -62,6 +64,7 @@ class PortalSettingsDashboardFormGeneral extends Component {
                         updateState={this.props.updateState}
                         meDetails={this.props.meDetails}
                         switchToView={this.switchToView}
+                        imageHash={this.state.imageHash}
                     />
                 ) : isEmpty(this.props.dashboardSettings) ? (
                     <p>Nog geen dashboard instellingen opgeslagen.</p>
@@ -69,6 +72,7 @@ class PortalSettingsDashboardFormGeneral extends Component {
                     <PortalSettingsDashboardFormGeneralView
                         {...this.props.dashboardSettings}
                         switchToEdit={this.switchToEdit}
+                        imageHash={this.state.imageHash}
                     />
                 )}
             </div>

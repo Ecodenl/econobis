@@ -181,7 +181,7 @@ const PreviewPortalDashboardPage = ({ closeModal, customStyles, logoHeaderUrl })
                                     <div id="widget-over-ons" style={customStyles.card}>
                                         <img
                                             style={customStyles.cardImgTop}
-                                            src={`${URL_API}/portal/images/over-ons.png`}
+                                            src={`${URL_API}/portal/images/over-ons.png?${imageHash}`}
                                         />
                                         <div style={customStyles.cardBody}>
                                             <h5 style={customStyles.cardTitle}>Over ons</h5>
@@ -196,7 +196,7 @@ const PreviewPortalDashboardPage = ({ closeModal, customStyles, logoHeaderUrl })
                                     <div id="widget-project-schrijf-je-in" style={customStyles.card}>
                                         <img
                                             style={customStyles.cardImgTop}
-                                            src={`${URL_API}/portal/images/project-schrijf-je-in.png`}
+                                            src={`${URL_API}/portal/images/project-schrijf-je-in.png?${imageHash}`}
                                         />
                                         <div style={customStyles.cardBody}>
                                             <h5 style={customStyles.cardTitle}>Projecten</h5>
@@ -211,7 +211,7 @@ const PreviewPortalDashboardPage = ({ closeModal, customStyles, logoHeaderUrl })
                                     <div id="widget-huidige-deelnames" style={customStyles.card}>
                                         <img
                                             style={customStyles.cardImgTop}
-                                            src={`${URL_API}/portal/images/huidige-deelnames.png`}
+                                            src={`${URL_API}/portal/images/huidige-deelnames.png?${imageHash}`}
                                         />
                                         <div style={customStyles.cardBody}>
                                             <h5 style={customStyles.cardTitle}>Huidige deelnames</h5>

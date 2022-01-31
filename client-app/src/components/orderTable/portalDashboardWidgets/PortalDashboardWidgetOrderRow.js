@@ -16,7 +16,7 @@ import PortalLogoLayoutNewCrop from '../../cropImage/portalLayout/PortalLogoLayo
 
 const DND_ITEM_TYPE = 'row';
 
-const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputChange, removeWidget }) => {
+const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputChange, removeWidget, imageHash }) => {
     const dropRef = useRef(null);
     const dragRef = useRef(null);
     const [newWidgetImage, setNewWidgetImage] = useState(false);
@@ -169,8 +169,9 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
                               case 'image':
                                   const logoUrl =
                                       cell.value && cell.value.includes('images/')
-                                          ? `${URL_API}/portal${cell.value}`
-                                          : `${URL_API}/portal/images/${cell.value}`;
+                                          ? `${URL_API}/portal${cell.value}?${imageHash}`
+                                          : `${URL_API}/portal/images/${cell.value}?${imageHash}`;
+
                                   return (
                                       <td key={cell.column.id}>
                                           <Image
@@ -239,8 +240,8 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
                               case 'image': {
                                   const logoUrl =
                                       cell.value && cell.value.includes('images/')
-                                          ? `${URL_API}/portal${cell.value}`
-                                          : `${URL_API}/portal/images/${cell.value}`;
+                                          ? `${URL_API}/portal${cell.value}?${imageHash}`
+                                          : `${URL_API}/portal/images/${cell.value}?${imageHash}`;
                                   return (
                                       <td key={cell.column.id}>
                                           <Image

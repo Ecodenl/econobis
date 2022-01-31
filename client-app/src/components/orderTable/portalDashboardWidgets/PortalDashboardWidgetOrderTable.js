@@ -5,7 +5,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import PortalDashboardWidgetOrderRow from './PortalDashboardWidgetOrderRow';
 import update from 'immutability-helper';
 
-const PortalDashboardWidgetOrderTable = ({ columns, data, edit, handleInputChange, removeWidget }) => {
+const PortalDashboardWidgetOrderTable = ({ columns, data, edit, handleInputChange, removeWidget, imageHash }) => {
     const [records, setRecords] = useState(data);
 
     useEffect(
@@ -72,6 +72,7 @@ const PortalDashboardWidgetOrderTable = ({ columns, data, edit, handleInputChang
                                     handleInputChange={handleInputChange}
                                     removeWidget={removeWidget}
                                     {...row.getRowProps()}
+                                    imageHash={imageHash}
                                 />
                             )
                     )}

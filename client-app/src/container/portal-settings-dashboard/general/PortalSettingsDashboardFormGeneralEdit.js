@@ -158,6 +158,7 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
                                 handleWidgetInputChange={this.handleWidgetInputChange}
                                 addWidget={this.addWidget}
                                 removeWidget={this.removeWidget}
+                                imageHash={this.props.imageHash}
                             />
                         </div>
                     </PanelBody>

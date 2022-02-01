@@ -1017,42 +1017,42 @@ class TemplateVariableHelper
                 }
                 break;
 
-            case 'bedrag_overdracht_interesse':
-                return 'deelname_bedrag_overdracht_interesse';
-                break;
-            case 'bedrag_overdracht_ingeschreven':
-                return 'deelname_bedrag_overdracht_ingeschreven';
-                break;
-            case 'bedrag_overdracht_toegekend':
-                return 'deelname_bedrag_overdracht_toegekend';
-                break;
-            case 'bedrag_overdracht_definitief':
-                return 'deelname_bedrag_overdracht_definitief';
-                break;
-            case 'bedrag_overdracht_inleg_mutatie_interesse':
-                return 'deelname_bedrag_overdracht_inleg_mutatie_interesse';
-                break;
-            case 'bedrag_overdracht_inleg_mutatie_ingeschreven':
-                return 'deelname_bedrag_overdracht_inleg_mutatie_ingeschreven';
-                break;
-            case 'bedrag_overdracht_inleg_mutatie_toegekend':
-                return 'deelname_bedrag_overdracht_inleg_mutatie_toegekend';
-                break;
-            case 'bedrag_overdracht_inleg_mutatie_definitief':
-                return 'deelname_bedrag_overdracht_inleg_mutatie_definitief';
-                break;
-            case 'bedrag_overdracht_opname_mutatie_definitief':
-                return 'deelname_bedrag_overdracht_opname_mutatie_definitief';
-                break;
-            case 'bedrag_overdracht_opname_mutatie_ingeschreven':
-                return 'deelname_bedrag_overdracht_opname_mutatie_ingeschreven';
-                break;
-            case 'bedrag_overdracht_opname_mutatie_interesse':
-                return 'deelname_bedrag_overdracht_opname_mutatie_interesse';
-                break;
-            case 'bedrag_overdracht_opname_mutatie_toegekend':
-                return 'deelname_bedrag_overdracht_opname_mutatie_toegekend';
-                break;
+//            case 'bedrag_overdracht_interesse':
+//                return 'deelname_bedrag_overdracht_interesse';
+//                break;
+//            case 'bedrag_overdracht_ingeschreven':
+//                return 'deelname_bedrag_overdracht_ingeschreven';
+//                break;
+//            case 'bedrag_overdracht_toegekend':
+//                return 'deelname_bedrag_overdracht_toegekend';
+//                break;
+//            case 'bedrag_overdracht_definitief':
+//                return 'deelname_bedrag_overdracht_definitief';
+//                break;
+//            case 'bedrag_overdracht_inleg_mutatie_interesse':
+//                return 'deelname_bedrag_overdracht_inleg_mutatie_interesse';
+//                break;
+//            case 'bedrag_overdracht_inleg_mutatie_ingeschreven':
+//                return 'deelname_bedrag_overdracht_inleg_mutatie_ingeschreven';
+//                break;
+//            case 'bedrag_overdracht_inleg_mutatie_toegekend':
+//                return 'deelname_bedrag_overdracht_inleg_mutatie_toegekend';
+//                break;
+//            case 'bedrag_overdracht_inleg_mutatie_definitief':
+//                return 'deelname_bedrag_overdracht_inleg_mutatie_definitief';
+//                break;
+//            case 'bedrag_overdracht_opname_mutatie_definitief':
+//                return 'deelname_bedrag_overdracht_opname_mutatie_definitief';
+//                break;
+//            case 'bedrag_overdracht_opname_mutatie_ingeschreven':
+//                return 'deelname_bedrag_overdracht_opname_mutatie_ingeschreven';
+//                break;
+//            case 'bedrag_overdracht_opname_mutatie_interesse':
+//                return 'deelname_bedrag_overdracht_opname_mutatie_interesse';
+//                break;
+//            case 'bedrag_overdracht_opname_mutatie_toegekend':
+//                return 'deelname_bedrag_overdracht_opname_mutatie_toegekend';
+//                break;
 
             case 'iban_uitkeren':
                 return $model->iban_payout ? $model->iban_payout : $model->contact->iban;

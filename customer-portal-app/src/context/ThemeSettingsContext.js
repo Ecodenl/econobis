@@ -10,6 +10,7 @@ const ThemeSettingsContext = createContext({
 const ThemeSettingsProvider = function(props) {
     const [defaultThemeSettings, setDefaultThemeSettings] = useState({});
     const [currentThemeSettings, setCurrentThemeSettings] = useState({});
+    const [imageHash, setImageHash] = useState(Date.now());
 
     useEffect(
         function() {
@@ -32,7 +33,7 @@ const ThemeSettingsProvider = function(props) {
     function handleChangeCurrentThemeSettings() {
         document.documentElement.style.setProperty(
             '--main-header-background-image-url',
-            'url(images/' + currentThemeSettings.portal_image_bg_file_name_header + ')'
+            'url(images/' + currentThemeSettings.portal_image_bg_file_name_header + '?' + imageHash + ')'
         );
         document.documentElement.style.setProperty(
             '--main-primary-color',

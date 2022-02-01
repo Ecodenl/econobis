@@ -20,6 +20,7 @@ export default props => {
     const [portalActive, setPortalActive] = useState(false);
     const [showNewAtCooperativeLink, setShowNewAtCooperativeLink] = useState(false);
     const [newAtCooperativeLinkText, setNewAtCooperativeLinkText] = useState('');
+    const [imageHash, setImageHash] = useState(Date.now());
 
     useEffect(() => {
         (function callFetchPortalActive() {
@@ -82,7 +83,7 @@ export default props => {
                         <Container fluid className="authorization-container">
                             <Row className="justify-content-center align-content-center full-height">
                                 <Col xs="12" sm="6" md="4" lg="3" xl="2">
-                                    <img src="images/logo.png" alt="" className="image logo-container" />
+                                    <img src={`images/logo.png?${imageHash}`} alt="" className="image logo-container" />
                                     {isLoading ? (
                                         <React.Fragment>
                                             <Row className="justify-content-center">

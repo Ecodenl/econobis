@@ -19,6 +19,7 @@ const NewAccount = props => {
     const [showSuccessMessage, toggleSuccessMessage] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [redirectToReferrer, toggleRedirect] = useState(false);
+    const [imageHash, setImageHash] = useState(Date.now());
 
     async function handleSubmit(values, actions) {
         if (!executeRecaptcha) {
@@ -64,7 +65,11 @@ const NewAccount = props => {
                     <Container fluid className="authorization-text">
                         <Row className="justify-content-center align-content-start align-content-lg-center full-height p-2">
                             <Col xs="12" sm="6" md="4" lg="4" xl="4">
-                                <img src="images/logo.png" alt="" className="image logo-container-small" />
+                                <img
+                                    src={`images/logo.png?${imageHash}`}
+                                    alt=""
+                                    className="image logo-container-small"
+                                />
 
                                 {showSuccessMessage ? (
                                     redirect('nieuw-account-succes')

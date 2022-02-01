@@ -15,6 +15,7 @@ import { Button } from 'react-bootstrap';
 
 function Header({ location, history }) {
     const [menuOpen, updateStateMenu] = useState(false);
+    const [imageHash, setImageHash] = useState(Date.now());
 
     // This keeps your state in sync with the opening/closing of the menu
     // via the default means, e.g. clicking the X, pressing the ESC key etc.
@@ -150,7 +151,7 @@ function Header({ location, history }) {
                                         <div className="header-logo">
                                             {currentThemeSettings.portal_logo_file_name_header !== undefined && (
                                                 <Image
-                                                    src={`images/${currentThemeSettings.portal_logo_file_name_header}`}
+                                                    src={`images/${currentThemeSettings.portal_logo_file_name_header}?${imageHash}`}
                                                 />
                                             )}
                                         </div>

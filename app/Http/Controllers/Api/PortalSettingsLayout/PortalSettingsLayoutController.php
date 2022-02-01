@@ -149,7 +149,7 @@ class PortalSettingsLayoutController extends Controller
                         Storage::disk('public_portal')->putFileAs('images', $request->file('attachmentLogo'), 'logo.png');
                     }
                 }
-            } catch (Exception $exception) {
+            } catch (\Exception $exception) {
                 Log::error('Opslaan gewijzigde logo.png mislukt : ' . $exception->getMessage());
             }
         }
@@ -184,7 +184,7 @@ class PortalSettingsLayoutController extends Controller
                         Storage::disk('public_portal')->putFileAs('images', $request->file('attachmentLogoHeader'), 'logo-header.png');
                     }
                 }
-            } catch (Exception $exception) {
+            } catch (\Exception $exception) {
                 Log::error('Opslaan gewijzigde logo-header.png mislukt : ' . $exception->getMessage());
             }
         }
@@ -226,7 +226,7 @@ class PortalSettingsLayoutController extends Controller
                         Storage::disk('public_portal')->putFileAs('images', $request->file('attachmentImageBgLogin'), 'background-login.png');
                     }
                 }
-            } catch (Exception $exception) {
+            } catch (\Exception $exception) {
                 Log::error('Opslaan gewijzigde background-login.png mislukt : ' . $exception->getMessage());
             }
         }
@@ -261,7 +261,7 @@ class PortalSettingsLayoutController extends Controller
                         Storage::disk('public_portal')->putFileAs('images', $request->file('attachmentImageBgHeader'), 'background-header.png');
                     }
                 }
-            } catch (Exception $exception) {
+            } catch (\Exception $exception) {
                 Log::error('Opslaan gewijzigde background-header.png mislukt : ' . $exception->getMessage());
             }
         }
@@ -302,7 +302,7 @@ class PortalSettingsLayoutController extends Controller
                         Storage::disk('public_portal')->putFileAs('/', $request->file('attachmentFavicon'), 'favicon.ico');
                     }
                 }
-            } catch (Exception $exception) {
+            } catch (\Exception $exception) {
                 Log::error('Opslaan gewijzigde favicon.ico mislukt : ' . $exception->getMessage());
             }
         }

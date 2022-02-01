@@ -182,6 +182,7 @@ class PreviewPortalDashboardPagePcModal extends Component {
                 closeModal={this.props.closeModal}
                 customStyles={customStyles}
                 logoHeaderUrl={logoHeaderUrl}
+                imageHash={this.props.imageHash}
             />
         );
     }

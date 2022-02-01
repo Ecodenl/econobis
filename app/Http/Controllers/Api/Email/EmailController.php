@@ -97,6 +97,19 @@ class EmailController
         $emailAddressesIds = EmailAddress::where('email', [$email->from])->pluck('id');
         $toMixed = array_merge($toMixed, $emailAddressesIds->count() > 0 ? $emailAddressesIds->toArray() : [$email->from]);
 
+        $stringTo = implode("; ", $email->to);
+        $stringCc = implode("; ", $email->cc);
+
+        $body = '<p></p><hr><p>
+                 <strong>Van: </strong>' . $email->from . '<br />
+                 <strong>Verzonden: </strong>' . Carbon::parse($email->date_sent)->formatLocalized('%A %e %B %Y %H:%M') . '<br />
+                 <strong>Aan: </strong>' . $stringTo . '<br />';
+        if($stringCc){
+            $body .= '<strong>Cc: </strong>' . $stringCc . '<br />';
+        }
+        $body .= '<strong>Onderwerp: </strong>' . $email->subject . '<br />
+        </p>' . $email->html_body;
+
         $email->to = $toMixed;
         $email->from = $email->mailbox->email;
         $email->cc = [];
@@ -105,7 +118,7 @@ class EmailController
         $email->subject = 'Re: ' . $email->subject;
         $email->old_email_id = $email->id;
 
-        $email->html_body = '<p></p><p>Oorspronkelijk bericht:</p> ' . $email->html_body;
+        $email->html_body = $body;
 
         return FullEmail::make($email);
     }
@@ -121,7 +134,6 @@ class EmailController
         //Bcc -> empty
 
         $to = $email->to;
-
         $index = array_search($email->mailbox->email, $email->to);
         if($index !== false) {
             unset($to[$index]);
@@ -130,14 +142,10 @@ class EmailController
         $to = array_values($to);
 
         $cc = $email->cc;
-
-
         $index = array_search($email->mailbox->email, $email->cc);
-
         if($index !== false) {
             unset($cc[array_search($email->mailbox->email, $email->cc)]);
         }
-
         $cc = array_values($cc);
 
         $toMixed = [];
@@ -151,6 +159,19 @@ class EmailController
             $ccMixed = array_merge($ccMixed, $emailAddressesIds->count() > 0 ? $emailAddressesIds->toArray() : [$ccEmailAddress]);
         }
 
+        $stringTo = implode("; ", $email->to);
+        $stringCc = implode("; ", $email->cc);
+
+        $body = '<p></p><hr><p>
+                 <strong>Van: </strong>' . $email->from . '<br />
+                 <strong>Verzonden: </strong>' . Carbon::parse($email->date_sent)->formatLocalized('%A %e %B %Y %H:%M') . '<br />
+                 <strong>Aan: </strong>' . $stringTo . '<br />';
+        if($stringCc){
+            $body .= '<strong>Cc: </strong>' . $stringCc . '<br />';
+        }
+        $body .= '<strong>Onderwerp: </strong>' . $email->subject . '<br />
+        </p>' . $email->html_body;
+
         $email->to = $toMixed;
         $email->from = $email->mailbox->email;
         $email->cc = $ccMixed;
@@ -159,7 +180,7 @@ class EmailController
         $email->subject = 'Re: ' . $email->subject;
         $email->old_email_id = $email->id;
 
-        $email->html_body = '<p></p><p>Oorspronkelijk bericht:</p> ' . $email->html_body;
+        $email->html_body = $body;
 
         return FullEmail::make($email);
     }
@@ -173,6 +194,19 @@ class EmailController
         //Cc -> empty
         //Bcc -> empty
 
+        $stringTo = implode("; ", $email->to);
+        $stringCc = implode("; ", $email->cc);
+
+        $body = '<p></p><hr><p>
+                 <strong>Van: </strong>' . $email->from . '<br />
+                 <strong>Verzonden: </strong>' . Carbon::parse($email->date_sent)->formatLocalized('%A %e %B %Y %H:%M') . '<br />
+                 <strong>Aan: </strong>' . $stringTo . '<br />';
+        if($stringCc){
+            $body .= '<strong>Cc: </strong>' . $stringCc . '<br />';
+        }
+        $body .= '<strong>Onderwerp: </strong>' . $email->subject . '<br />
+        </p>' . $email->html_body;
+
         $email->to = [];
         $email->from = $email->mailbox->email;
         $email->cc = [];
@@ -185,6 +219,7 @@ class EmailController
         $email->quotation_request_id =null;
         $email->contact_group_id = null;
 
+        $email->html_body = $body;
         $email->old_email_id = $email->id;
 
         return FullEmail::make($email);

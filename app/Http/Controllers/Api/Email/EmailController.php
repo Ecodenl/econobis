@@ -97,18 +97,7 @@ class EmailController
         $emailAddressesIds = EmailAddress::where('email', [$email->from])->pluck('id');
         $toMixed = array_merge($toMixed, $emailAddressesIds->count() > 0 ? $emailAddressesIds->toArray() : [$email->from]);
 
-        $stringTo = implode("; ", $email->to);
-        $stringCc = implode("; ", $email->cc);
-
-        $body = '<p></p><hr><p>
-                 <strong>Van: </strong>' . $email->from . '<br />
-                 <strong>Verzonden: </strong>' . Carbon::parse($email->date_sent)->formatLocalized('%A %e %B %Y %H:%M') . '<br />
-                 <strong>Aan: </strong>' . $stringTo . '<br />';
-        if($stringCc){
-            $body .= '<strong>Cc: </strong>' . $stringCc . '<br />';
-        }
-        $body .= '<strong>Onderwerp: </strong>' . $email->subject . '<br />
-        </p>' . $email->html_body;
+        $body = $this->addHeaderInfoOldEmail($email);
 
         $email->to = $toMixed;
         $email->from = $email->mailbox->email;
@@ -159,18 +148,7 @@ class EmailController
             $ccMixed = array_merge($ccMixed, $emailAddressesIds->count() > 0 ? $emailAddressesIds->toArray() : [$ccEmailAddress]);
         }
 
-        $stringTo = implode("; ", $email->to);
-        $stringCc = implode("; ", $email->cc);
-
-        $body = '<p></p><hr><p>
-                 <strong>Van: </strong>' . $email->from . '<br />
-                 <strong>Verzonden: </strong>' . Carbon::parse($email->date_sent)->formatLocalized('%A %e %B %Y %H:%M') . '<br />
-                 <strong>Aan: </strong>' . $stringTo . '<br />';
-        if($stringCc){
-            $body .= '<strong>Cc: </strong>' . $stringCc . '<br />';
-        }
-        $body .= '<strong>Onderwerp: </strong>' . $email->subject . '<br />
-        </p>' . $email->html_body;
+        $body = $this->addHeaderInfoOldEmail($email);
 
         $email->to = $toMixed;
         $email->from = $email->mailbox->email;
@@ -194,18 +172,7 @@ class EmailController
         //Cc -> empty
         //Bcc -> empty
 
-        $stringTo = implode("; ", $email->to);
-        $stringCc = implode("; ", $email->cc);
-
-        $body = '<p></p><hr><p>
-                 <strong>Van: </strong>' . $email->from . '<br />
-                 <strong>Verzonden: </strong>' . Carbon::parse($email->date_sent)->formatLocalized('%A %e %B %Y %H:%M') . '<br />
-                 <strong>Aan: </strong>' . $stringTo . '<br />';
-        if($stringCc){
-            $body .= '<strong>Cc: </strong>' . $stringCc . '<br />';
-        }
-        $body .= '<strong>Onderwerp: </strong>' . $email->subject . '<br />
-        </p>' . $email->html_body;
+        $body = $this->addHeaderInfoOldEmail($email);
 
         $email->to = [];
         $email->from = $email->mailbox->email;
@@ -791,5 +758,26 @@ class EmailController
         });
 
         return $query->count();
+    }
+
+    /**
+     * @param Email $email
+     * @return string
+     */
+    protected function addHeaderInfoOldEmail(Email $email): string
+    {
+        $stringTo = implode("; ", $email->to);
+        $stringCc = implode("; ", $email->cc);
+
+        $body = '<p></p><hr><p>
+                 <strong>Van: </strong>' . $email->from . '<br />
+                 <strong>Verzonden: </strong>' . Carbon::parse($email->date_sent)->formatLocalized('%A %e %B %Y %H:%M') . '<br />
+                 <strong>Aan: </strong>' . $stringTo . '<br />';
+        if ($stringCc) {
+            $body .= '<strong>Cc: </strong>' . $stringCc . '<br />';
+        }
+        $body .= '<strong>Onderwerp: </strong>' . $email->subject . '<br />
+        </p>' . $email->html_body;
+        return $body;
     }
 }

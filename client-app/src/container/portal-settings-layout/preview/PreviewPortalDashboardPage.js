@@ -2,7 +2,7 @@ import React from 'react';
 import '../../../../../public/portal/portal.css';
 import { FaUser } from 'react-icons/fa';
 
-const PreviewPortalDashboardPage = ({ closeModal, customStyles, logoHeaderUrl }) => {
+const PreviewPortalDashboardPage = ({ closeModal, customStyles, logoHeaderUrl, imageHash }) => {
     return (
         <div style={customStyles.modal} onClick={closeModal} title={'Klik om preview te sluiten'}>
             <div id="root" style={customStyles.root}>

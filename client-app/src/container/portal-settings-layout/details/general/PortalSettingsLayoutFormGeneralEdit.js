@@ -39,6 +39,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
             portalSettingsLayout: {
                 ...props.portalSettingsLayout,
             },
+            imageHash: Date.now(),
             image: '',
             imageLayoutItemName: '',
             attachmentLogo: '',
@@ -806,6 +807,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                     {this.state.showPreviewPortalLoginPagePc && (
                         <PreviewPortalLoginPagePcModal
                             closeModal={this.togglePreviewPortalLoginPagePc}
+                            imageHash={this.state.imageHash}
                             attachmentLogo={this.state.attachmentLogo}
                             logoUrl={logoUrl}
                             attachmentLogoHeader={this.state.attachmentLogoHeader}
@@ -829,6 +831,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                     {this.state.showPreviewPortalDashboardPagePc && (
                         <PreviewPortalDashboardPagePcModal
                             closeModal={this.togglePreviewPortalDashboardPagePc}
+                            imageHash={this.state.imageHash}
                             attachmentLogo={this.state.attachmentLogo}
                             logoUrl={logoUrl}
                             attachmentLogoHeader={this.state.attachmentLogoHeader}
@@ -852,6 +855,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                     {this.state.showPreviewPortalLoginPageMobile && (
                         <PreviewPortalLoginPageMobileModal
                             closeModal={this.togglePreviewPortalLoginPageMobile}
+                            imageHash={this.state.imageHash}
                             attachmentLogo={this.state.attachmentLogo}
                             logoUrl={logoUrl}
                             attachmentLogoHeader={this.state.attachmentLogoHeader}
@@ -875,6 +879,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                     {this.state.showPreviewPortalDashboardPageMobile && (
                         <PreviewPortalDashboardPageMobileModal
                             closeModal={this.togglePreviewPortalDashboardPageMobile}
+                            imageHash={this.state.imageHash}
                             attachmentLogo={this.state.attachmentLogo}
                             logoUrl={logoUrl}
                             attachmentLogoHeader={this.state.attachmentLogoHeader}

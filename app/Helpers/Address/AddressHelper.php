@@ -70,18 +70,21 @@ class AddressHelper
     public function checkAddress($projectId, $abort)
     {
         // Bij personen alleen checken indien primary address
-        if($this->contact->type_id === ContactType::PERSON && !$this->address->primary) {
-            return true;
-        }
+// ToDo WM: check gebruik addressForPostalCodeCheck overal
+//        if($this->contact->type_id === ContactType::PERSON && !$this->address->primary) {
+//            return true;
+//        }
         // Bij organisaties alleen checken indien eerste visit address
-        if($this->contact->type_id === ContactType::ORGANISATION) {
-            if($this->contact->addressForPostalCodeCheck && $this->contact->addressForPostalCodeCheck->id !== $this->address->id ) {
-                return true;
-            }
-            if(!$this->contact->addressForPostalCodeCheck && $this->address->type_id !== 'visit' ) {
-                return true;
-            }
-        }
+//        if($this->contact->type_id === ContactType::ORGANISATION) {
+////            if($this->contact->addressForPostalCodeCheck && $this->contact->addressForPostalCodeCheck->id !== $this->address->id ) {
+//            if($this->address && $this->address->id !== $this->address->id ) {
+//                return true;
+//            }
+////            if(!$this->contact->addressForPostalCodeCheck && $this->address->type_id !== 'visit' ) {
+//            if(!$this->address && $this->address->type_id !== 'visit' ) {
+//                return true;
+//            }
+//        }
 
         $messages = [];
 

@@ -1016,6 +1016,44 @@ class TemplateVariableHelper
                     return '';
                 }
                 break;
+
+//            case 'bedrag_overdracht_interesse':
+//                return 'deelname_bedrag_overdracht_interesse';
+//                break;
+//            case 'bedrag_overdracht_ingeschreven':
+//                return 'deelname_bedrag_overdracht_ingeschreven';
+//                break;
+//            case 'bedrag_overdracht_toegekend':
+//                return 'deelname_bedrag_overdracht_toegekend';
+//                break;
+//            case 'bedrag_overdracht_definitief':
+//                return 'deelname_bedrag_overdracht_definitief';
+//                break;
+//            case 'bedrag_overdracht_inleg_mutatie_interesse':
+//                return 'deelname_bedrag_overdracht_inleg_mutatie_interesse';
+//                break;
+//            case 'bedrag_overdracht_inleg_mutatie_ingeschreven':
+//                return 'deelname_bedrag_overdracht_inleg_mutatie_ingeschreven';
+//                break;
+//            case 'bedrag_overdracht_inleg_mutatie_toegekend':
+//                return 'deelname_bedrag_overdracht_inleg_mutatie_toegekend';
+//                break;
+//            case 'bedrag_overdracht_inleg_mutatie_definitief':
+//                return 'deelname_bedrag_overdracht_inleg_mutatie_definitief';
+//                break;
+//            case 'bedrag_overdracht_opname_mutatie_definitief':
+//                return 'deelname_bedrag_overdracht_opname_mutatie_definitief';
+//                break;
+//            case 'bedrag_overdracht_opname_mutatie_ingeschreven':
+//                return 'deelname_bedrag_overdracht_opname_mutatie_ingeschreven';
+//                break;
+//            case 'bedrag_overdracht_opname_mutatie_interesse':
+//                return 'deelname_bedrag_overdracht_opname_mutatie_interesse';
+//                break;
+//            case 'bedrag_overdracht_opname_mutatie_toegekend':
+//                return 'deelname_bedrag_overdracht_opname_mutatie_toegekend';
+//                break;
+
             case 'iban_uitkeren':
                 return $model->iban_payout ? $model->iban_payout : $model->contact->iban;
                 break;
@@ -1025,6 +1063,21 @@ class TemplateVariableHelper
             case 'uitkeren_op':
                 return $model->participantProjectPayoutType ? $model->participantProjectPayoutType->name : '';
                 break;
+            case 'iban_uitkeren_gedeeltelijk':
+                if($model->iban_payout && strlen($model->iban_payout)>13)
+                {
+                    $numberOfHiddenCharacters = strlen($model->iban_payout) - 11;
+                    $partialHiddenIban = substr($model->iban_payout, 0, 6);
+                    while($numberOfHiddenCharacters > 0) {
+                        $partialHiddenIban = $partialHiddenIban . '*';
+                        $numberOfHiddenCharacters--;
+                    }
+                    return $partialHiddenIban . substr($model->iban_payout, -4);
+                } else {
+                    return '';
+                }
+                break;
+
             case 'beeindigd_op':
                 return $model->date_terminated ? Carbon::parse($model->date_terminated)->format('d/m/Y') : null;
                 break;

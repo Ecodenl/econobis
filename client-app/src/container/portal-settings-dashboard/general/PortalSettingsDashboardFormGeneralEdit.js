@@ -7,7 +7,7 @@ moment.locale('nl');
 import ButtonText from '../../../components/button/ButtonText';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import { bindActionCreators } from 'redux';
+import { setError } from '../../../actions/general/ErrorActions';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import PortalSettingsDashboardAPI from '../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
 import InputTextArea from '../../../components/form/InputTextarea';
@@ -76,8 +76,12 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
                     this.props.switchToView();
                 })
                 .catch(error => {
+                    console.log(
+                        'error PortalSettingsDashboardFormGeneralEdit - handleSubmit - updateDashboardSettings'
+                    );
                     console.log(error);
-                    alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
+                    // alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
+                    this.props.setError(error.response.status, error.response.data.message);
                 });
     };
 
@@ -116,7 +120,10 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
                 });
             })
             .catch(error => {
+                console.log('error PortalSettingsDashboardFormGeneralEdit - removeWidget - removeDashboardWidget');
                 console.log(error);
+                // alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
+                this.props.setError(error.response.status, error.response.data.message);
             });
     };
 
@@ -179,6 +186,13 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
     }
 }
 
-const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
+const mapDispatchToProps = dispatch => ({
+    setError: (http_code, message) => {
+        dispatch(setError(http_code, message));
+    },
+    fetchSystemData: () => {
+        dispatch(fetchSystemData());
+    },
+});
 
 export default connect(null, mapDispatchToProps)(PortalSettingsDashboardFormGeneralEdit);

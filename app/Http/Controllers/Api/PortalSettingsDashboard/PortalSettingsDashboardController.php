@@ -120,8 +120,9 @@ class PortalSettingsDashboardController extends Controller
                 }
 
                 $widget->image = $widgetImageFileName;
-            } catch (Exception $exception) {
+            } catch (\Exception $exception) {
                 Log::error('Opslaan widget afbeelding mislukt : ' . $exception->getMessage());
+                abort('422', 'Opslaan widget afbeelding mislukt : ' . $exception->getMessage());
             }
         }
 
@@ -160,8 +161,7 @@ class PortalSettingsDashboardController extends Controller
             } else {
                 Storage::disk('public_portal')->putFileAs('images', $request->file('image'), $widgetImageFileName);
             }
-
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             Log::error('Opslaan widget afbeelding mislukt : ' . $exception->getMessage());
             abort('422', 'Opslaan widget afbeelding mislukt : ' . $exception->getMessage());
         }
@@ -169,28 +169,40 @@ class PortalSettingsDashboardController extends Controller
         return response()->json(['message' => 'Bestand succesvol opgeslagen.']);
     }
 
-    public function update(PortalSettingsDashboard $portalSettingsDashboard, RequestInput $input, Request $request)
-    {
-        $data = $input->string('welcomeTitle')->whenMissing('')->onEmpty('')->next()
-            ->string('welcomeMessage')->whenMissing('')->onEmpty('')->next()
-            ->get();
-
-        $portalSettingsDashboard->fill($data);
-        $portalSettingsDashboard->save();
-
-        return GenericResource::make($portalSettingsDashboard);
-    }
+//    public function update(PortalSettingsDashboard $portalSettingsDashboard, RequestInput $input, Request $request)
+//    {
+//        $data = $input->string('welcomeTitle')->whenMissing('')->onEmpty('')->next()
+//            ->string('welcomeMessage')->whenMissing('')->onEmpty('')->next()
+//            ->get();
+//
+//        $portalSettingsDashboard->fill($data);
+//        $portalSettingsDashboard->save();
+//
+//        return GenericResource::make($portalSettingsDashboard);
+//    }
 
     public function destroy(RequestInput $input, Request $request) {
         $data = $input->string('id')->whenMissing('')->onEmpty('')->next()->get();
 
+//        $widgets = $this->getStore()->get('widgets');
+//        $this->getStore()->forget('widgets');
+
+        try {
+            $widgetImageFileName = $data['id'] . '.png';
+
+            if (Config::get('app.env') == "local") {
+                Storage::disk('public_portal_local')->delete('images/' . $widgetImageFileName);
+                Storage::disk('customer_portal_app_build_local')->delete('images/' . $widgetImageFileName);
+                Storage::disk('customer_portal_app_public_local')->delete('images/' . $widgetImageFileName);
+            } else {
+                Storage::disk('public_portal')->delete('images/' . $widgetImageFileName);
+            }
+
+        } catch (\Exception $exception) {
+            Log::error('Verwijderen widget afbeelding mislukt : ' . $exception->getMessage());
+            abort('422', 'Verwijderen widget afbeelding mislukt : ' . $exception->getMessage());
+        }
         $widgets = $this->getStore()->get('widgets');
-        $this->getStore()->forget('widgets');
-
-        Storage::disk('public_portal_local')->delete('images/' . $data['id'] . '.png');
-        Storage::disk('customer_portal_app_build_local')->delete('images/' . $data['id'] . '.png');
-        Storage::disk('customer_portal_app_public_local')->delete('images/' . $data['id'] . '.png');
-
         $widgets = Arr::where($widgets, function ($value, $key) use ($data) {
             return $value['id'] !== $data['id'];
         });

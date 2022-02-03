@@ -8,34 +8,34 @@ class PreviewPortalDashboardPageMobileModal extends Component {
     }
 
     componentDidMount() {
-        const imageBgLoginUrl = this.props.attachmentImageBgLogin.preview
-            ? this.props.attachmentImageBgLogin.preview
-            : this.props.imageBgLoginUrl;
-        document.documentElement.style.setProperty('--main-login-background-image-url', 'url(' + imageBgLoginUrl + ')');
-
-        const imageBgHeaderUrl = this.props.attachmentImageBgLogin.preview
-            ? this.props.attachmentImageBgLogin.preview
-            : this.props.imageBgLoginUrl;
+        const imageBgHeaderUrl = this.props.attachmentImageBgHeader.preview
+            ? this.props.attachmentImageBgHeader.preview
+            : this.props.imageBgHeaderUrl;
         document.documentElement.style.setProperty(
             '--main-header-background-image-url',
             'url(' + imageBgHeaderUrl + ')'
         );
 
-        document.documentElement.style.setProperty('--main-primary-color', this.props.portalBackgroundColor);
-        document.documentElement.style.setProperty('--main-primary-text-color', this.props.portalBackgroundTextColor);
-        document.documentElement.style.setProperty('--main-primary-rgba', this.props.loginHeaderBackgroundColor);
-        document.documentElement.style.setProperty(
-            '--main-primary-rgba-text-color',
-            this.props.loginHeaderBackgroundTextColor
-        );
-        document.documentElement.style.setProperty('--main-header-portal-icon-color', this.props.headerIconsColor);
-        document.documentElement.style.setProperty('--main-secondary-color', this.props.loginFieldBackgroundColor);
-        document.documentElement.style.setProperty(
-            '--main-secondary-text-color',
-            this.props.loginFieldBackgroundTextColor
-        );
-        document.documentElement.style.setProperty('--button-primary-color', this.props.buttonColor);
-        document.documentElement.style.setProperty('--button-primary-text-color', this.props.buttonTextColor);
+        if (this.props.previewFromLayout) {
+            document.documentElement.style.setProperty('--main-primary-color', this.props.portalBackgroundColor);
+            document.documentElement.style.setProperty(
+                '--main-primary-text-color',
+                this.props.portalBackgroundTextColor
+            );
+            document.documentElement.style.setProperty('--main-primary-rgba', this.props.loginHeaderBackgroundColor);
+            document.documentElement.style.setProperty(
+                '--main-primary-rgba-text-color',
+                this.props.loginHeaderBackgroundTextColor
+            );
+            document.documentElement.style.setProperty('--main-header-portal-icon-color', this.props.headerIconsColor);
+            document.documentElement.style.setProperty('--main-secondary-color', this.props.loginFieldBackgroundColor);
+            document.documentElement.style.setProperty(
+                '--main-secondary-text-color',
+                this.props.loginFieldBackgroundTextColor
+            );
+            document.documentElement.style.setProperty('--button-primary-color', this.props.buttonColor);
+            document.documentElement.style.setProperty('--button-primary-text-color', this.props.buttonTextColor);
+        }
     }
 
     render() {

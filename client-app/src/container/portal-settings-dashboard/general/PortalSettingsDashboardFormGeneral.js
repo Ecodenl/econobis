@@ -70,7 +70,7 @@ class PortalSettingsDashboardFormGeneral extends Component {
                     <p>Nog geen dashboard instellingen opgeslagen.</p>
                 ) : (
                     <PortalSettingsDashboardFormGeneralView
-                        {...this.props.dashboardSettings}
+                        dashboardSettings={this.props.dashboardSettings}
                         switchToEdit={this.switchToEdit}
                         imageHash={this.state.imageHash}
                     />

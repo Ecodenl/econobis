@@ -12,12 +12,17 @@ import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import PortalSettingsDashboardAPI from '../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
 import InputTextArea from '../../../components/form/InputTextarea';
 import PortalSettingsDashboardWidgetList from '../widgets/PortalSettingsDashboardWidgetList';
+import PreviewPortalDashboardPagePcModal from '../../portal-settings-layout/preview/PreviewPortalDashboardPagePcModal';
+import PreviewPortalDashboardPageMobileModal from '../../portal-settings-layout/preview/PreviewPortalDashboardPageMobileModal';
 
 class PortalSettingsDashboardFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            showPreviewPortalDashboardPagePc: false,
+            showPreviewPortalDashboardPageMobile: false,
+            imageHash: Date.now(),
             dashboardSettings: {
                 ...props.dashboardSettings,
             },
@@ -41,6 +46,14 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
                 [name]: value,
             },
         });
+    };
+
+    togglePreviewPortalDashboardPagePc = () => {
+        this.setState({ showPreviewPortalDashboardPagePc: !this.state.showPreviewPortalDashboardPagePc });
+    };
+
+    togglePreviewPortalDashboardPageMobile = () => {
+        this.setState({ showPreviewPortalDashboardPageMobile: !this.state.showPreviewPortalDashboardPageMobile });
     };
 
     handleSubmit = event => {
@@ -131,8 +144,30 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
         const { welcomeTitle, welcomeMessage } = this.state.dashboardSettings;
         const { widgets } = this.state;
 
+        const logoHeaderUrl = `${URL_API}/portal/images/logo.png?${this.props.imageHash}`;
+        const imageBgHeaderUrl = `${URL_API}/portal/images/background-header.png?${this.props.imageHash}`;
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
+                {/*<Panel>*/}
+                {/*    <PanelBody>*/}
+                {/*        <div className="row">*/}
+                {/*            <div className="col-md-6">*/}
+                {/*                <div className="btn-group btn-group-flex" role="group">*/}
+                {/*                    <ButtonText*/}
+                {/*                        buttonText="Preview dashboard pagina PC"*/}
+                {/*                        onClickAction={this.togglePreviewPortalDashboardPagePc}*/}
+                {/*                    />*/}
+                {/*                    <ButtonText*/}
+                {/*                        buttonText="Preview dashboard pagina mobiel"*/}
+                {/*                        onClickAction={this.togglePreviewPortalDashboardPageMobile}*/}
+                {/*                    />*/}
+                {/*                </div>*/}
+                {/*            </div>*/}
+                {/*        </div>*/}
+                {/*    </PanelBody>*/}
+                {/*</Panel>*/}
+
                 <Panel>
                     <PanelBody>
                         <div className="row">
@@ -156,7 +191,8 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
                             />
                         </div>
                     </PanelBody>
-
+                </Panel>
+                <Panel>
                     <PanelBody>
                         <div className="row" style={{ margin: '0' }}>
                             <PortalSettingsDashboardWidgetList
@@ -180,6 +216,28 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
                             <ButtonText buttonText={'Opslaan'} type={'submit'} value={'Submit'} />
                         </div>
                     </PanelBody>
+                    {this.state.showPreviewPortalDashboardPagePc && (
+                        <PreviewPortalDashboardPagePcModal
+                            previewFromLayout={false}
+                            closeModal={this.togglePreviewPortalDashboardPagePc}
+                            imageHash={this.state.imageHash}
+                            attachmentLogoHeader={''}
+                            logoHeaderUrl={logoHeaderUrl}
+                            attachmentImageBgHeader={''}
+                            imageBgHeaderUrl={imageBgHeaderUrl}
+                        />
+                    )}
+                    {this.state.showPreviewPortalDashboardPageMobile && (
+                        <PreviewPortalDashboardPageMobileModal
+                            previewFromLayout={false}
+                            closeModal={this.togglePreviewPortalDashboardPageMobile}
+                            imageHash={this.state.imageHash}
+                            attachmentLogoHeader={''}
+                            logoHeaderUrl={logoHeaderUrl}
+                            attachmentImageBgHeader={''}
+                            imageBgHeaderUrl={imageBgHeaderUrl}
+                        />
+                    )}
                 </Panel>
             </form>
         );

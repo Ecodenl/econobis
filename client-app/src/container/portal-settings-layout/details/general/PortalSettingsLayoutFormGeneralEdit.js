@@ -806,17 +806,13 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                     </PanelBody>
                     {this.state.showPreviewPortalLoginPagePc && (
                         <PreviewPortalLoginPagePcModal
+                            previewFromLayout={true}
                             closeModal={this.togglePreviewPortalLoginPagePc}
                             imageHash={this.state.imageHash}
                             attachmentLogo={this.state.attachmentLogo}
                             logoUrl={logoUrl}
-                            attachmentLogoHeader={this.state.attachmentLogoHeader}
-                            logoHeaderUrl={logoHeaderUrl}
                             attachmentImageBgLogin={this.state.attachmentImageBgLogin}
                             imageBgLoginUrl={imageBgLoginUrl}
-                            attachmentImageBgHeader={this.state.attachmentImageBgHeader}
-                            imageBgHeaderUrl={imageBgHeaderUrl}
-                            // portalFaviconFileName
                             portalBackgroundColor={portalBackgroundColor}
                             portalBackgroundTextColor={portalBackgroundTextColor}
                             loginHeaderBackgroundColor={loginHeaderBackgroundColor}
@@ -830,17 +826,13 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                     )}
                     {this.state.showPreviewPortalDashboardPagePc && (
                         <PreviewPortalDashboardPagePcModal
+                            previewFromLayout={true}
                             closeModal={this.togglePreviewPortalDashboardPagePc}
                             imageHash={this.state.imageHash}
-                            attachmentLogo={this.state.attachmentLogo}
-                            logoUrl={logoUrl}
                             attachmentLogoHeader={this.state.attachmentLogoHeader}
                             logoHeaderUrl={logoHeaderUrl}
-                            attachmentImageBgLogin={this.state.attachmentImageBgLogin}
-                            imageBgLoginUrl={imageBgLoginUrl}
                             attachmentImageBgHeader={this.state.attachmentImageBgHeader}
                             imageBgHeaderUrl={imageBgHeaderUrl}
-                            // portalFaviconFileName
                             portalBackgroundColor={portalBackgroundColor}
                             portalBackgroundTextColor={portalBackgroundTextColor}
                             loginHeaderBackgroundColor={loginHeaderBackgroundColor}
@@ -854,17 +846,13 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                     )}
                     {this.state.showPreviewPortalLoginPageMobile && (
                         <PreviewPortalLoginPageMobileModal
+                            previewFromLayout={true}
                             closeModal={this.togglePreviewPortalLoginPageMobile}
                             imageHash={this.state.imageHash}
                             attachmentLogo={this.state.attachmentLogo}
                             logoUrl={logoUrl}
-                            attachmentLogoHeader={this.state.attachmentLogoHeader}
-                            logoHeaderUrl={logoHeaderUrl}
                             attachmentImageBgLogin={this.state.attachmentImageBgLogin}
                             imageBgLoginUrl={imageBgLoginUrl}
-                            attachmentImageBgHeader={this.state.attachmentImageBgHeader}
-                            imageBgHeaderUrl={imageBgHeaderUrl}
-                            // portalFaviconFileName
                             portalBackgroundColor={portalBackgroundColor}
                             portalBackgroundTextColor={portalBackgroundTextColor}
                             loginHeaderBackgroundColor={loginHeaderBackgroundColor}
@@ -878,17 +866,13 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                     )}
                     {this.state.showPreviewPortalDashboardPageMobile && (
                         <PreviewPortalDashboardPageMobileModal
+                            previewFromLayout={true}
                             closeModal={this.togglePreviewPortalDashboardPageMobile}
                             imageHash={this.state.imageHash}
-                            attachmentLogo={this.state.attachmentLogo}
-                            logoUrl={logoUrl}
                             attachmentLogoHeader={this.state.attachmentLogoHeader}
                             logoHeaderUrl={logoHeaderUrl}
-                            attachmentImageBgLogin={this.state.attachmentImageBgLogin}
-                            imageBgLoginUrl={imageBgLoginUrl}
                             attachmentImageBgHeader={this.state.attachmentImageBgHeader}
                             imageBgHeaderUrl={imageBgHeaderUrl}
-                            // portalFaviconFileName
                             portalBackgroundColor={portalBackgroundColor}
                             portalBackgroundTextColor={portalBackgroundTextColor}
                             loginHeaderBackgroundColor={loginHeaderBackgroundColor}

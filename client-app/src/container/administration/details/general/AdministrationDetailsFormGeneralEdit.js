@@ -761,14 +761,16 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 error={this.state.errors.prefixInvoiceNumber}
                             />
                         </div>
-
                         <div className="row">
-                            <InputText
-                                label="Nota's ook mailen in BCC naar"
-                                name={'emailBccNotas'}
-                                value={emailBccNotas}
+                            <InputSelect
+                                label={"Afzender van Rapportages en nota's is e-mail adres"}
+                                id="mailboxId"
+                                size={'col-sm-6'}
+                                name={'mailboxId'}
+                                options={this.state.mailboxAddresses}
+                                optionName={'email'}
+                                value={mailboxId}
                                 onChangeAction={this.handleInputChange}
-                                error={this.state.errors.emailBccNotas}
                             />
                             <div className="form-group col-sm-6">
                                 <label className="col-sm-6">Kies logo</label>

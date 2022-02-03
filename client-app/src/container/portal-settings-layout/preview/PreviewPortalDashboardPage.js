@@ -48,7 +48,12 @@ const PreviewPortalDashboardPage = ({ closeModal, customStyles, logoHeaderUrl, i
                                                 >
                                                     <FaUser />
                                                     <br />
-                                                    <small style={{ fontSize: '10px' }}>ACCOUNT</small>
+                                                    <small
+                                                        className="account-dropdown-text"
+                                                        style={{ fontSize: '10px' }}
+                                                    >
+                                                        ACCOUNT
+                                                    </small>
                                                 </button>
                                             </div>
                                         </div>

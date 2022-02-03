@@ -189,7 +189,12 @@ function Header({ location, history }) {
                                                                 >
                                                                     <FaUser />
                                                                     <br />
-                                                                    <small style={{ fontSize: '10px' }}>ACCOUNT</small>
+                                                                    <small
+                                                                        className={'account-dropdown-text'}
+                                                                        style={{ fontSize: '10px' }}
+                                                                    >
+                                                                        ACCOUNT
+                                                                    </small>
                                                                 </Dropdown.Toggle>
                                                                 <Dropdown.Menu>
                                                                     <Dropdown.Header>Ingelogd als</Dropdown.Header>

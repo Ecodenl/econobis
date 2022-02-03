@@ -188,6 +188,11 @@ background-color: var(--main-header-portal-icon-color) !important;
 color: var(--main-header-portal-icon-color) !important;
 }
 
+.header-portal .dropdown-toggle .account-dropdown-text{
+color: var(--main-primary-rgba-text-color) !important;
+}
+
+
 /* ----------------- INPUT STYLING -----------------*/
 .has-error {
 border: 1px solid var(--main-warning-color) !important;

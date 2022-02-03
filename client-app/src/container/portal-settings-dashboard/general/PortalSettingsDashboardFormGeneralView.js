@@ -34,80 +34,83 @@ class PortalSettingsDashboardFormGeneralView extends Component {
         const imageBgHeaderUrl = `${URL_API}/portal/images/background-header.png?${this.props.imageHash}`;
 
         return (
-            <div>
-                <Panel>
-                    <PanelBody>
-                        <div className="row">
-                            <div className="col-md-6">
-                                <div className="btn-group btn-group-flex" role="group">
-                                    <ButtonText
-                                        buttonText="Preview dashboard pagina PC"
-                                        onClickAction={this.togglePreviewPortalDashboardPagePc}
-                                    />
-                                    <ButtonText
-                                        buttonText="Preview dashboard pagina mobiel"
-                                        onClickAction={this.togglePreviewPortalDashboardPageMobile}
-                                    />
+            <>
+                <div>
+                    <Panel>
+                        <PanelBody>
+                            <div className="row">
+                                <div className="col-md-6">
+                                    <div className="btn-group btn-group-flex" role="group">
+                                        <ButtonText
+                                            buttonText="Preview dashboard pagina PC"
+                                            onClickAction={this.togglePreviewPortalDashboardPagePc}
+                                        />
+                                        <ButtonText
+                                            buttonText="Preview dashboard pagina mobiel"
+                                            onClickAction={this.togglePreviewPortalDashboardPageMobile}
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </PanelBody>
-                </Panel>
-
-                <Panel onClick={this.props.switchToEdit}>
-                    <PanelBody>
-                        <div className="row">
-                            <ViewText
-                                label={'Welkomsttitel'}
-                                divSize={'col-sm-8'}
-                                value={welcomeTitle}
-                                className={'col-sm-8 form-group'}
-                            />
-                        </div>
-                        <div className="row">
-                            <ViewText
-                                label={'Welkomstbericht'}
-                                divSize={'col-sm-8'}
-                                value={welcomeMessage}
-                                className={'col-sm-8 form-group'}
-                            />
-                        </div>
-                    </PanelBody>
-                </Panel>
-                <Panel onClick={this.props.switchToEdit}>
-                    <PanelBody>
-                        <div className="row" style={{ margin: '0' }}>
-                            <PortalSettingsDashboardWidgetList
-                                widgets={widgets}
-                                edit={false}
+                        </PanelBody>
+                    </Panel>
+                </div>
+                <div onClick={this.props.switchToEdit}>
+                    <Panel>
+                        <PanelBody>
+                            <div className="row">
+                                <ViewText
+                                    label={'Welkomsttitel'}
+                                    divSize={'col-sm-8'}
+                                    value={welcomeTitle}
+                                    className={'col-sm-8 form-group'}
+                                />
+                            </div>
+                            <div className="row">
+                                <ViewText
+                                    label={'Welkomstbericht'}
+                                    divSize={'col-sm-8'}
+                                    value={welcomeMessage}
+                                    className={'col-sm-8 form-group'}
+                                />
+                            </div>
+                        </PanelBody>
+                    </Panel>
+                    <Panel>
+                        <PanelBody>
+                            <div className="row" style={{ margin: '0' }}>
+                                <PortalSettingsDashboardWidgetList
+                                    widgets={widgets}
+                                    edit={false}
+                                    imageHash={this.state.imageHash}
+                                />
+                            </div>
+                        </PanelBody>
+                        {this.state.showPreviewPortalDashboardPagePc && (
+                            <PreviewPortalDashboardPagePcModal
+                                previewFromLayout={false}
+                                closeModal={this.togglePreviewPortalDashboardPagePc}
                                 imageHash={this.state.imageHash}
+                                attachmentLogoHeader={''}
+                                logoHeaderUrl={logoHeaderUrl}
+                                attachmentImageBgHeader={''}
+                                imageBgHeaderUrl={imageBgHeaderUrl}
                             />
-                        </div>
-                    </PanelBody>
-                    {this.state.showPreviewPortalDashboardPagePc && (
-                        <PreviewPortalDashboardPagePcModal
-                            previewFromLayout={false}
-                            closeModal={this.togglePreviewPortalDashboardPagePc}
-                            imageHash={this.state.imageHash}
-                            attachmentLogoHeader={''}
-                            logoHeaderUrl={logoHeaderUrl}
-                            attachmentImageBgHeader={''}
-                            imageBgHeaderUrl={imageBgHeaderUrl}
-                        />
-                    )}
-                    {this.state.showPreviewPortalDashboardPageMobile && (
-                        <PreviewPortalDashboardPageMobileModal
-                            previewFromLayout={false}
-                            closeModal={this.togglePreviewPortalDashboardPageMobile}
-                            imageHash={this.state.imageHash}
-                            attachmentLogoHeader={''}
-                            logoHeaderUrl={logoHeaderUrl}
-                            attachmentImageBgHeader={''}
-                            imageBgHeaderUrl={imageBgHeaderUrl}
-                        />
-                    )}
-                </Panel>
-            </div>
+                        )}
+                        {this.state.showPreviewPortalDashboardPageMobile && (
+                            <PreviewPortalDashboardPageMobileModal
+                                previewFromLayout={false}
+                                closeModal={this.togglePreviewPortalDashboardPageMobile}
+                                imageHash={this.state.imageHash}
+                                attachmentLogoHeader={''}
+                                logoHeaderUrl={logoHeaderUrl}
+                                attachmentImageBgHeader={''}
+                                imageBgHeaderUrl={imageBgHeaderUrl}
+                            />
+                        )}
+                    </Panel>
+                </div>
+            </>
         );
     }
 }

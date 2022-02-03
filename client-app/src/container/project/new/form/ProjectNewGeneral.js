@@ -177,6 +177,7 @@ const ProjectFormNewGeneral = ({
                             label={'Postcoderoosgebied'}
                             name={'postalcodeLink'}
                             value={postalcodeLink}
+                            maxLength="300"
                             onChangeAction={handleInputChange}
                             size={'col-sm-5'}
                             textToolTip={`Voor postcoderoosgebied geef de postcodes op gescheiden door een comma(,). Gebruik geen spaties. Voorbeeld: 1001,1002,1003AA,1003AB`}

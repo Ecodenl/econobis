@@ -1,9 +1,9 @@
 import * as Yup from 'yup';
 import * as ibantools from 'ibantools';
+import { isEmpty } from 'lodash';
 
 export default {
     validationSchemaBasic: Yup.object().shape({
-        // TODO set more correct values for validation, only important fields are set now
         didAgreeAvg: Yup.bool().test(
             'didAgreeAvg',
             'Je dient akkoord te gaan met privacybeleid!',
@@ -69,6 +69,14 @@ export default {
                 .trim()
                 .matches(/(\d.*){18}|^$/, 'Minimaal 18 cijfers nodig'),
         }),
+        iban: Yup.string()
+            .nullable()
+            .trim()
+            .test(
+                'iban',
+                'Ongeldige IBAN of gebruik geen spaties.',
+                value => ibantools.isValidIBAN(value) || isEmpty(value)
+            ),
     }),
 
     validationSchemaAdditional: Yup.object().shape({

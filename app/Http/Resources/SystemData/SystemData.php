@@ -214,7 +214,7 @@ class SystemData extends JsonResource
             'roles' => Role::select(['id', 'name'])->get()->toArray(),
             'roofTypes' => FullEnumWithIdAndName::collection(RoofType::all()),
             'taskProperties' => GenericResource::collection(TaskProperty::all()),
-            'taskTypes' => GenericResource::collection(TaskType::all()),
+            'taskTypes' => GenericResource::collection(TaskType::orderby('name')->get()),
             'teams' => FullTeam::collection(Team::orderBy('name', 'asc')->get()),
             'titles' => FullTitle::collection(Title::all()),
             'transactionCostsCodeRefs' => FullEnumWithIdAndName::collection(TransactionCostsCodeRef::collection()),

@@ -563,29 +563,12 @@ class ParticipationProjectController extends ApiController
     public function validatePostalCode(&$message, Project $project, Contact $contact, Address $address)
     {
         $checkText = 'Postcode check: ';
-//        $addressForPostalCodeCheck = $contact->addressForPostalCodeCheck;
-//        if($contact->type_id === ContactType::ORGANISATION) {
-//            $typeAddress ='bezoek adres';
-//        }else{
-//            $typeAddress ='primair adres';
-//        }
-//        if(!$addressForPostalCodeCheck){
-//            $message[] = $checkText . 'Deelnemer heeft geen ' . $typeAddress. '.';
-//            return false;
-//        }
         if(!$address){
-//            $message[] = $checkText . 'Deelnemer heeft geen ' . $typeAddress. '.';
             $message[] = $checkText . 'Deelnemer heeft geen (geldig) adres.';
             return false;
         }
-//        $postalCodeAreaContact = substr($addressForPostalCodeCheck->postal_code, 0 , 4);
-//        if(!($postalCodeAreaContact > 999 && $postalCodeAreaContact < 9999)){
-//            $message[] = $checkText . 'Deelnemer heeft geen geldige postcode op zijn ' . $typeAddress. '.';
-//            return false;
-//        }
         $postalCodeAreaContact = substr($address->postal_code, 0 , 4);
         if(!($postalCodeAreaContact > 999 && $postalCodeAreaContact < 9999)){
-//            $message[] = $checkText . 'Deelnemer heeft geen geldige postcode op zijn ' . $typeAddress. '.';
             $message[] = $checkText . 'Deelnemer heeft geen geldige postcode op zijn gekoppeld adres ' . $address->street_postal_code_city. '.';
             return false;
         }
@@ -595,7 +578,6 @@ class ParticipationProjectController extends ApiController
         }
 
         // Check address
-//        $addressHelper = new AddressHelper($contact, $addressForPostalCodeCheck);
         $addressHelper = new AddressHelper($contact, $address);
         $checkAddressOk = $addressHelper->checkAddress($project->id, false);
         if(!$checkAddressOk){

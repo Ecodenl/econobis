@@ -22,6 +22,7 @@ class ProjectPeek extends JsonResource
                 'participationWorth' => $this->participation_worth,
                 'typeId' => $this->project_type_id,
                 'typeCodeRef' => $this->projectType->code_ref,
+                'isSceProject' => $this->is_sce_project,
                 'dateEntry' => $this->date_entry,
                 'lastYearFinancialOverviewDefinitive' => $this->last_year_financial_overview_definitive,
             ];

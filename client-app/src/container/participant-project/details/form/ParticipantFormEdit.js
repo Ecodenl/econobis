@@ -209,32 +209,30 @@ class ParticipantFormEdit extends Component {
                         className={'col-sm-6 form-group'}
                     />
                 </div>
-                {projectTypeCodeRef === 'postalcode_link_capital' ? (
-                    <div className="row">
-                        <ViewText
-                            label={'Adres'}
-                            value={
-                                address
-                                    ? address.streetPostalCodeCity
-                                    : contact && contact.primaryAddress
-                                    ? contact.primaryAddress.streetPostalCodeCity
-                                    : ''
-                            }
-                            className={'col-sm-6 form-group'}
-                        />
-                        <ViewText
-                            label={'Adrestype'}
-                            value={
-                                address
-                                    ? address.typeAndPrimary
-                                    : contact && contact.primaryAddress
-                                    ? contact.primaryAddress.typeAndPrimary
-                                    : ''
-                            }
-                            className={'col-sm-6 form-group'}
-                        />
-                    </div>
-                ) : null}
+                <div className="row">
+                    <ViewText
+                        label={'Adres'}
+                        value={
+                            address
+                                ? address.streetPostalCodeCity
+                                : contact && contact.primaryAddress
+                                ? contact.primaryAddress.streetPostalCodeCity
+                                : ''
+                        }
+                        className={'col-sm-6 form-group'}
+                    />
+                    <ViewText
+                        label={'Adrestype'}
+                        value={
+                            address
+                                ? address.typeAndPrimary
+                                : contact && contact.primaryAddress
+                                ? contact.primaryAddress.typeAndPrimary
+                                : ''
+                        }
+                        className={'col-sm-6 form-group'}
+                    />
+                </div>
 
                 <div className="row">
                     {!didAcceptAgreement ? (

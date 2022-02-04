@@ -39,10 +39,18 @@ class AddressObserver
             if($oldPrimaryAddress){
                 $oldPrimaryAddress->primary = false;
                 $oldPrimaryAddress->save();
+
+                // indien particpation in een niet PCR project en niet SCE project, dan old primary address altijd omzetten naar nieuwe primary address
+                $participations = $oldPrimaryAddress->participations;
+                foreach($participations as $participation) {
+                    if ($participation->project->projectType->code_ref != 'postalcode_link_capital' && !$participation->project->is_sce_project ) {
+                        $participation->address_id = $address->id;
+                        $participation->save();
+                    }
+                }
             }
 
         }
-
         if( $address->primary
             && ($address->isDirty('primary')
                 || $address->isDirty('street')

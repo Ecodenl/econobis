@@ -26,13 +26,13 @@ function ParticipantNewForm(props) {
         projects,
         participantMutationStatuses,
         projectTypeCodeRef,
+        isSceProject,
         disableProjectSelection,
         disableClientSelection,
         isLoading,
     } = props;
 
     const {
-        contactId,
         addressId,
         statusId,
         projectId,
@@ -110,23 +110,20 @@ function ParticipantNewForm(props) {
                     multi={false}
                 />
             </div>
-
-            {projectTypeCodeRef === 'postalcode_link_capital' ? (
-                <div className="row">
-                    <InputReactSelectLong
-                        label={'Adres'}
-                        name={'addressId'}
-                        id={'addressId'}
-                        options={addresses}
-                        optionName={'streetPostalCodeCity'}
-                        value={Number(addressId)}
-                        onChangeAction={handleInputChangeAddressId}
-                        required={'required'}
-                        error={errors.addressId}
-                    />
-                </div>
-            ) : null}
-
+            <div className="row">
+                <InputReactSelectLong
+                    label={'Adres'}
+                    name={'addressId'}
+                    id={'addressId'}
+                    options={addresses}
+                    optionName={'streetPostalCodeCity'}
+                    value={Number(addressId)}
+                    onChangeAction={handleInputChangeAddressId}
+                    required={'required'}
+                    disabled={projectTypeCodeRef !== 'postalcode_link_capital' && !isSceProject}
+                    error={errors.addressId}
+                />
+            </div>
             <div className="row">
                 <InputSelect
                     label={'Status'}
@@ -139,7 +136,6 @@ function ParticipantNewForm(props) {
                     error={errors.statusId}
                 />
             </div>
-
             {statusCodeRef === 'interest' ? (
                 <div className="row">
                     {projectTypeCodeRef === 'loan' ? (
@@ -173,7 +169,6 @@ function ParticipantNewForm(props) {
                     />
                 </div>
             ) : null}
-
             {statusCodeRef === 'option' ? (
                 <div className="row">
                     {projectTypeCodeRef === 'loan' ? (
@@ -211,7 +206,6 @@ function ParticipantNewForm(props) {
                     />
                 </div>
             ) : null}
-
             {statusCodeRef === 'granted' ? (
                 <div className="row">
                     {projectTypeCodeRef === 'loan' ? (
@@ -249,7 +243,6 @@ function ParticipantNewForm(props) {
                     />
                 </div>
             ) : null}
-
             {statusCodeRef === 'final' ? (
                 <React.Fragment>
                     <div className="row">
@@ -321,7 +314,6 @@ function ParticipantNewForm(props) {
                     </div>
                 </React.Fragment>
             ) : null}
-
             <PanelFooter>
                 <div className="pull-right btn-group" role="group">
                     <ButtonText buttonText={'Opslaan'} type={'submit'} value={'Submit'} loading={isLoading} />

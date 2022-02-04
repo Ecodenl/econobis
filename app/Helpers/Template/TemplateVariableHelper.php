@@ -493,13 +493,13 @@ class TemplateVariableHelper
                 return $model->contact->full_name;
                 break;
             case 'contact_adres':
-                return optional($model->contact->primaryAddress)->street . ' ' . optional($model->contact->primaryAddress)->number . (optional($model->contact->primaryAddress)->addition ? ('-' . optional($model->contact->primaryAddress)->addition) : '');
+                return optional($model->address)->street . ' ' . optional($model->address)->number . (optional($model->address)->addition ? ('-' . optional($model->address)->addition) : '');
                 break;
             case 'contact_postcode':
-                return optional($model->contact->primaryAddress)->postal_code;
+                return optional($model->address)->postal_code;
                 break;
             case 'contact_plaats':
-                return optional($model->contact->primaryAddress)->city;
+                return optional($model->address)->city;
                 break;
             case 'contact_email':
                 return optional($model->contact->primaryEmailAddress)->email;
@@ -780,13 +780,13 @@ class TemplateVariableHelper
                 }
                 break;
             case 'contact_adres':
-                return optional($model->contact->primaryAddress)->street . ' ' . optional($model->contact->primaryAddress)->number . (optional($model->contact->primaryAddress)->addition ? ('-' . optional($model->contact->primaryAddress)->addition) : '');
+                return optional($model->address)->street . ' ' . optional($model->address)->number . (optional($model->address)->addition ? ('-' . optional($model->address)->addition) : '');
                 break;
             case 'contact_postcode':
-                return optional($model->contact->primaryAddress)->postal_code;
+                return optional($model->address)->postal_code;
                 break;
             case 'contact_plaats':
-                return optional($model->contact->primaryAddress)->city;
+                return optional($model->address)->city;
                 break;
             case 'contact_iban':
                 return $model->contact->iban;

@@ -2,7 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const InputTextArea = props => {
-    const { label, size, sizeLabel, sizeInput, id, name, value, onChangeAction, required, error, rows } = props;
+    const {
+        label,
+        size,
+        sizeLabel,
+        sizeInput,
+        id,
+        name,
+        value,
+        onChangeAction,
+        required,
+        error,
+        errorMessage,
+        rows,
+    } = props;
 
     return (
         <div className={`form-group ${size}`}>
@@ -25,6 +38,11 @@ const InputTextArea = props => {
                     />
                 </div>
             </div>
+            {error && (
+                <div className={sizeInput}>
+                    <span className="has-error-message"> {errorMessage}</span>
+                </div>
+            )}
         </div>
     );
 };

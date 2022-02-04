@@ -74,7 +74,7 @@ const InputText = props => {
                 </div>
             )}
             {error && (
-                <div className="col-sm-offset-6 col-sm-6">
+                <div className={`${size}`}>
                     <span className="has-error-message"> {errorMessage}</span>
                 </div>
             )}

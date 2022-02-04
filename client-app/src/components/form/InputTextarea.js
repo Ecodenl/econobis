@@ -54,6 +54,7 @@ InputTextArea.defaultProps = {
     value: '',
     required: '',
     error: false,
+    errorMessage: '',
     rows: '5',
 };
 
@@ -69,6 +70,7 @@ InputTextArea.propTypes = {
     onChangeAction: PropTypes.func,
     required: PropTypes.string,
     error: PropTypes.bool,
+    errorMessage: PropTypes.string,
 };
 
 export default InputTextArea;

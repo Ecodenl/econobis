@@ -54,6 +54,28 @@ class PortalSettingsDashboardFormGeneralView extends Component {
                             </div>
                         </PanelBody>
                     </Panel>
+                    {this.state.showPreviewPortalDashboardPagePc && (
+                        <PreviewPortalDashboardPagePcModal
+                            previewFromLayout={false}
+                            closeModal={this.togglePreviewPortalDashboardPagePc}
+                            imageHash={this.state.imageHash}
+                            attachmentLogoHeader={''}
+                            logoHeaderUrl={logoHeaderUrl}
+                            attachmentImageBgHeader={''}
+                            imageBgHeaderUrl={imageBgHeaderUrl}
+                        />
+                    )}
+                    {this.state.showPreviewPortalDashboardPageMobile && (
+                        <PreviewPortalDashboardPageMobileModal
+                            previewFromLayout={false}
+                            closeModal={this.togglePreviewPortalDashboardPageMobile}
+                            imageHash={this.state.imageHash}
+                            attachmentLogoHeader={''}
+                            logoHeaderUrl={logoHeaderUrl}
+                            attachmentImageBgHeader={''}
+                            imageBgHeaderUrl={imageBgHeaderUrl}
+                        />
+                    )}
                 </div>
                 <div onClick={this.props.switchToEdit}>
                     <Panel>
@@ -86,28 +108,6 @@ class PortalSettingsDashboardFormGeneralView extends Component {
                                 />
                             </div>
                         </PanelBody>
-                        {this.state.showPreviewPortalDashboardPagePc && (
-                            <PreviewPortalDashboardPagePcModal
-                                previewFromLayout={false}
-                                closeModal={this.togglePreviewPortalDashboardPagePc}
-                                imageHash={this.state.imageHash}
-                                attachmentLogoHeader={''}
-                                logoHeaderUrl={logoHeaderUrl}
-                                attachmentImageBgHeader={''}
-                                imageBgHeaderUrl={imageBgHeaderUrl}
-                            />
-                        )}
-                        {this.state.showPreviewPortalDashboardPageMobile && (
-                            <PreviewPortalDashboardPageMobileModal
-                                previewFromLayout={false}
-                                closeModal={this.togglePreviewPortalDashboardPageMobile}
-                                imageHash={this.state.imageHash}
-                                attachmentLogoHeader={''}
-                                logoHeaderUrl={logoHeaderUrl}
-                                attachmentImageBgHeader={''}
-                                imageBgHeaderUrl={imageBgHeaderUrl}
-                            />
-                        )}
                     </Panel>
                 </div>
             </>

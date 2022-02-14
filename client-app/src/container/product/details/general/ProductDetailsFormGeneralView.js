@@ -57,7 +57,7 @@ const ProductDetailsFormGeneralView = props => {
                     ) : null}
 
                     <div className="row">
-                        <ViewText label={'Gearchiveerd'} value={active ? 'Nee' : 'Ja'} />
+                        <ViewText label={'Actief'} value={active ? 'Ja' : 'Nee'} />
                     </div>
                 </PanelBody>
             </Panel>

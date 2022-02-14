@@ -41,6 +41,7 @@ class MailResetPasswordTokenFirstTime extends Notification
      */
     public function toMail($notifiable)
     {
+        $url = url('/#/wachtwoord-vergeten');
         return (new MailMessage)
             ->subject("Welkom bij Econobis")
             ->greeting("Hallo! Welkom bij Econobis")
@@ -54,7 +55,7 @@ class MailResetPasswordTokenFirstTime extends Notification
             ->line("Klik op de knop om je wachtwoord in te stellen.")
             ->action('Stel wachtwoord in', url('/#/wachtwoord-wijzig', [$this->token, $this->email]))
             ->line('Nadat je succesvol je wachtwoord hebt ingesteld, ontvang je van ons een e-mail ter bevestiging.')
-            ->line('De link om je wachtwoord opnieuw in te stellen is <strong>' . Config::get('auth.passwords.users.expire'). ' minuten geldig</strong> en kan maar één keer worden gebruikt. Als je link verlopen is, vraag dan een nieuwe aan. Als je meerdere keren een link hebt aangevraagd, gebruik dan de link in de meest recente e-mail.');
+            ->line('De link om je wachtwoord opnieuw in te stellen is <strong>' . Config::get('auth.passwords.users.expire'). ' minuten geldig</strong> en kan maar één keer worden gebruikt. Als je link verlopen is, ga dan naar <a href="' . $url . '">' . $url . '</a> vul daar je e-mail adres in en er wordt een nieuwe activatie link via mail toegestuurd. Als je meerdere keren een link hebt aangevraagd, gebruik dan de link in de meest recente e-mail.');
     }
 
 }

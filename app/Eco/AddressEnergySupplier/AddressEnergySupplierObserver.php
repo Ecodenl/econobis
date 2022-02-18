@@ -8,6 +8,7 @@
 
 namespace App\Eco\AddressEnergySupplier;
 
+use App\Helpers\Project\RevenuesKwhHelper;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,6 +19,16 @@ class AddressEnergySupplierObserver
     {
         $userId = Auth::id();
         $addressEnergySupplier->created_by_id = $userId;
+
+        $participations = $addressEnergySupplier->address->participations;
+
+        foreach ($participations as $participation) {
+            $projectType = $participation->project->projectType;
+            if ($projectType->code_ref === 'postalcode_link_capital') {
+                $revenuesKwhHelper = new RevenuesKwhHelper();
+                $revenuesKwhHelper->splitRevenuePartsKwh($participation, $addressEnergySupplier->member_since, $addressEnergySupplier);
+            }
+        }
     }
 
     public function saved(AddressEnergySupplier $addressEnergySupplier)
@@ -26,29 +37,40 @@ class AddressEnergySupplierObserver
         {
             $addressEnergySupplierController = new AddressEnergySupplierController();
             $addressEnergySupplierController->determineIsCurrentSupplier($addressEnergySupplier);
-        }
 
-        if($addressEnergySupplier->isDirty('es_number') || $addressEnergySupplier->isDirty('is_current_supplier') )
-        {
-            // Check if any linked project revenue distribution is present with status concept or confirmed
-            // If so, then change energy supplier data
             $participations = $addressEnergySupplier->address->participations;
 
             foreach($participations as $participation) {
-                $projectRevenueDistributions = $participation->projectRevenueDistributions->whereIn('status', ['concept', 'confirmed']);
-
-                foreach($projectRevenueDistributions as $projectRevenueDistribution) {
-                    if( $addressEnergySupplier->is_current_supplier == true){
-                        $projectRevenueDistribution->energy_supplier_name = $addressEnergySupplier->energySupplier->name;
-                        $projectRevenueDistribution->energy_supplier_number = $addressEnergySupplier->es_number;
-                        $projectRevenueDistribution->es_id = $addressEnergySupplier->energySupplier->id;
-                    }else{
-                        $projectRevenueDistribution->energy_supplier_name = "";
-                        $projectRevenueDistribution->energy_supplier_number = "";
-                        $projectRevenueDistribution->es_id = null;
+                $distributionsKwh = $participation->revenueDistributionKwh->whereIn('status', ['concept', 'confirmed']);
+                foreach($distributionsKwh as $distributionKwh) {
+                    $distributionPartsKwh = $distributionKwh->distributionPartsKwh->whereIn('status', ['concept', 'confirmed']);
+                    foreach($distributionPartsKwh as $distributionPartKwh) {
+                        if($distributionPartKwh->date_begin >= $addressEnergySupplier->member_since && $distributionPartKwh->date_begin >= $addressEnergySupplier->end_date){
+                            $distributionPartKwh->es_id = $addressEnergySupplier->energySupplier->id;
+                            $distributionPartKwh->energy_supplier_number = $addressEnergySupplier->es_number;
+                            $distributionPartKwh->energy_supplier_name = $addressEnergySupplier->energySupplier->name;
+                        }else{
+                            $distributionPartKwh->energy_supplier_name = "";
+                            $distributionPartKwh->energy_supplier_number = "";
+                            $distributionPartKwh->es_id = null;
+                        }
+                        $distributionPartKwh->save();
                     }
 
-                    $projectRevenueDistribution->save();
+                }
+            }
+        }
+
+        if($addressEnergySupplier->isDirty('es_number'))
+        {
+            // Check if any linked revenue distribution part is present with status concept or confirmed
+            // If so, then change energy supplier data
+            if($addressEnergySupplier->energySupplier->distributionPartsKwh){
+                $distributionPartsKwh = $addressEnergySupplier->energySupplier->distributionPartsKwh
+                    ->whereIn('status', ['concept', 'confirmed']);
+                foreach($distributionPartsKwh as $distributionPartKwh) {
+                    $distributionPartKwh->energy_supplier_number = $addressEnergySupplier->es_number;
+                    $distributionPartKwh->save();
                 }
             }
         }

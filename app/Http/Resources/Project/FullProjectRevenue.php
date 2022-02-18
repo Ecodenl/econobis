@@ -58,8 +58,6 @@ class FullProjectRevenue extends JsonResource
                 'distribution' => FullProjectRevenueDistribution::collection($this->whenLoaded('distribution')),
                 'payoutKwh' => $this->payout_kwh,
                 'participantInConfirmedRevenue' => $this->participant ? $this->participant->participantInConfirmedRevenue : false,
-                'participantKwhStartHighNextRevenue' => $this->participant ? $this->participant->nextRevenueKwhStartHigh : null,
-                'participantKwhStartLowNextRevenue' => $this->participant ? $this->participant->nextRevenueKwhStartLow : null,
             ];
     }
 }

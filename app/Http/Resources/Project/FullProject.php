@@ -82,6 +82,7 @@ class FullProject extends JsonResource
                 'valueCourses' => FullProjectValueCourse::collection($this->whenLoaded('projectValueCourses')),
                 'currentBookWorth' => $this->currentBookWorth(),
                 'revenues' => GridProjectRevenue::collection($this->whenLoaded('projectRevenues')),
+                'revenuesKwh' => GridRevenuesKwh::collection($this->whenLoaded('revenuesKwh')),
                 'participants' => FullParticipantProject::collection($this->whenLoaded('participantsProject')),
                 'typeId' => $this->project_type_id,
                 'amountOfParticipants' => $this->participantsProject()->count(),
@@ -101,7 +102,9 @@ class FullProject extends JsonResource
                 'usesMollie' => $this->uses_mollie,
                 'hasPaymentInvoices' => $this->getHasPaymentInvoices(),
                 'hasRevenueKwh' => $this->getHasRevenueKwh(),
-                'hasNotConfirmedRevenuesKwhSplit' => $this->getHasNotConfirmedRevenuesKwhSplit(),
+//todo WM: opschonen
+//
+//                'hasNotConfirmedRevenuesKwhSplit' => $this->getHasNotConfirmedRevenuesKwhSplit(),
                 'requiresContactGroups' => GenericResource::make($this->whenLoaded('requiresContactGroups')),
                 'amountOfLoanNeeded' => $this->amount_of_loan_needed,
                 'minAmountLoan' => $this->min_amount_loan,

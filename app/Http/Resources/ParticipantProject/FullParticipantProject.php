@@ -10,7 +10,7 @@ use App\Http\Resources\GenericResource;
 use App\Http\Resources\Order\FullOrder;
 use App\Http\Resources\ParticipantMutation\FullParticipantMutation;
 use App\Http\Resources\Project\FullProject;
-use App\Http\Resources\Project\GridProjectRevenue;
+//use App\Http\Resources\Project\GridProjectRevenue;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -72,13 +72,15 @@ class FullParticipantProject extends JsonResource
                 'participationsIndicationOfRestitutionEnergyTaxTotal' => $this->participationsIndicationOfRestitutionEnergyTaxTotal,
                 'dateTerminated' => $this->date_terminated,
                 'dateRegister' => $this->date_register,
-                'dateNextRevenueKwh' => $this->date_next_revenue_kwh,
-                'dateBeginNextRevenueKwh' => $this->date_begin_next_revenue_kwh,
-                'dateEndNextRevenueKwh' => $this->date_end_next_revenue_kwh,
-                'nextRevenueKwhStartHigh' => $this->next_revenue_kwh_start_high,
-                'nextRevenueKwhStartLow' => $this->next_revenue_kwh_start_low,
+//todo WM: opschonen
+//
+//                'dateNextRevenueKwh' => $this->date_next_revenue_kwh,
+//                'dateBeginNextRevenueKwh' => $this->date_begin_next_revenue_kwh,
+//                'dateEndNextRevenueKwh' => $this->date_end_next_revenue_kwh,
+//                'nextRevenueKwhStartHigh' => $this->next_revenue_kwh_start_high,
+//                'nextRevenueKwhStartLow' => $this->next_revenue_kwh_start_low,
                 'dateEntryFirstDeposit' => $this->dateEntryFirstDeposit,
-                'revenues' => GridProjectRevenue::collection($this->whenLoaded('projectRevenues')),
+//                'revenues' => GridProjectRevenue::collection($this->whenLoaded('projectRevenues')),
                 'participantInDefinitiveRevenue' => $this->participantInDefinitiveRevenue,
                 'participantInConfirmedRevenue' => $this->participantInConfirmedRevenue,
                 'hasNotConfirmedRevenuesKwh' => $this->getHasNotConfirmedRevenuesKwh(),

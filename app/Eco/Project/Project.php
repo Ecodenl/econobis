@@ -2,9 +2,7 @@
 
 namespace App\Eco\Project;
 
-use App\Eco\Address\Address;
 use App\Eco\Administration\Administration;
-use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Document\Document;
 use App\Eco\DocumentTemplate\DocumentTemplate;
@@ -12,18 +10,15 @@ use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverviewProject;
-use App\Eco\Measure\Measure;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\ParticipantProject\ParticipantProject;
-use App\Eco\Portal\PortalUser;
+use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Auth;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Project extends Model
@@ -93,7 +88,12 @@ class Project extends Model
     }
 
     public function projectRevenues(){
-        return $this->hasMany(ProjectRevenue::class)->whereNull('participation_id');
+        return $this->hasMany(ProjectRevenue::class)->whereNull('participation_id')->where('category_id', '!=', 1);
+    }
+
+    public function revenuesKwh()
+    {
+        return $this->hasMany(RevenuesKwh::class, 'project_id');
     }
 
     public function participantsProject(){
@@ -183,32 +183,38 @@ class Project extends Model
     public function getHasRevenueKwh(){
 
         if($this->projectType->code_ref == 'postalcode_link_capital') {
-            $projectRevenueKwhCategories = ProjectRevenueCategory::where('code_ref', 'revenueKwh')->orWhere('code_ref', 'revenueKwhSplit')->get()->pluck('id')->toArray();
-            if($projectRevenueKwhCategories){
-                foreach ($this->projectRevenues as $revenue) {
-                    if (in_array($revenue->category_id, $projectRevenueKwhCategories)) {
-                        return true;
-                    }
-                }
-            }
+//todo WM: opschonen
+//
+//            $projectRevenueKwhCategories = ProjectRevenueCategory::where('code_ref', 'revenueKwh')->orWhere('code_ref', 'revenueKwhSplit')->get()->pluck('id')->toArray();
+//            if($projectRevenueKwhCategories){
+//                foreach ($this->projectRevenues as $revenue) {
+//                    if (in_array($revenue->category_id, $projectRevenueKwhCategories)) {
+//                        return true;
+//                    }
+//                }
+//            }
+              if ($this->revenuesKwh()->count() > 0) {
+                  return true;
+              }
         }
         return false;
     }
-
-    public function getHasNotConfirmedRevenuesKwhSplit(){
-        if($this->projectType->code_ref == 'postalcode_link_capital') {
-            $participants = $this->participantsProject()->get();
-            foreach ($participants as $participant) {
-                foreach ($participant->projectRevenues as $revenue) {
-                    if (!$revenue->confirmed) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
+//todo WM: opschonen
+//
+//    public function getHasNotConfirmedRevenuesKwhSplit(){
+//        if($this->projectType->code_ref == 'postalcode_link_capital') {
+//            $participants = $this->participantsProject()->get();
+//            foreach ($participants as $participant) {
+//                foreach ($participant->projectRevenues as $revenue) {
+//                    if (!$revenue->confirmed) {
+//                        return true;
+//                    }
+//                }
+//            }
+//        }
+//
+//        return false;
+//    }
 
     public function participantMutations()
     {

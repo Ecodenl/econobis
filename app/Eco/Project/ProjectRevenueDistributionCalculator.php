@@ -32,85 +32,87 @@ class ProjectRevenueDistributionCalculator
         return $this->projectRevenueDistribution;
     }
 
-    public function runRevenueKwh()
-    {
-        // Revenue category REVENUE KWH
-        if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueKwh')->first())->id) {
-            $this->calculateDeliveredKwh();
-        }
-    }
-    protected function calculateDeliveredKwh()
-    {
-        $projectRevenue = $this->projectRevenueDistribution->revenue;
-
-        // Calculate total kwh
-        $totalKwh = $projectRevenue->kwh_end - $projectRevenue->kwh_start;
-
-        // Calculate total kwh end calendar year
-        $kwhEndCalendarYear = $projectRevenue->kwh_end_calendar_year_high + $projectRevenue->kwh_end_calendar_year_low;
-        $totalKwhEndCalendarYear = 0;
-        $totalKwhRest = 0;
-        if ($kwhEndCalendarYear > 0) {
-            $totalKwhEndCalendarYear = $kwhEndCalendarYear - $projectRevenue->kwh_start;
-            $totalKwhRest = $totalKwh - $totalKwhEndCalendarYear;
-        }
-
-        // Total sum of participations and days
-        $totalSumOfParticipationsAndDays = $projectRevenue->deliveredKwhPeriod->sum(function ($deliveredKwhPeriod) {
-            return $deliveredKwhPeriod['days_of_period'] * $deliveredKwhPeriod['participations_quantity'];
-        });
-
-        // Total sum of participations and days end calendar year
-        $totalSumOfParticipationsAndDaysEndCalendarYear = 0;
-        if ($kwhEndCalendarYear > 0) {
-            $totalSumOfParticipationsAndDaysEndCalendarYear = $projectRevenue->deliveredKwhPeriod->sum(function ($deliveredKwhPeriod) use ($kwhEndCalendarYear, $projectRevenue) {
-                if ($kwhEndCalendarYear > 0 != null && Carbon::parse($deliveredKwhPeriod->date_begin)->year == Carbon::parse($projectRevenue->date_begin)->year) {
-                    return $deliveredKwhPeriod['days_of_period'] * $deliveredKwhPeriod['participations_quantity'];
-                }
-                return 0;
-            });
-            $totalSumOfParticipationsAndDaysRest = $totalSumOfParticipationsAndDays - $totalSumOfParticipationsAndDaysEndCalendarYear;
-        }
-
-        $totalDeliveredKwh = 0;
-        $totalDeliveredKwhEndCalendarYear = 0;
-
-        foreach ($this->projectRevenueDistribution->deliveredKwhPeriod as $deliveredKwhPeriod) {
-            // Sum of participations times days, for each record in revenue delivered kwh period this is (days_of_period * participations_quantity)
-            // With this value we can calculate the amount of kwh returns on this deliverdKwhPeriod
-            $sumOfParticipationsTimesDays = $deliveredKwhPeriod['days_of_period'] * $deliveredKwhPeriod['participations_quantity'];
-
-            if ($kwhEndCalendarYear > 0) {
-                // Save returns per Kwh period
-                if( Carbon::parse($deliveredKwhPeriod->date_begin)->year == Carbon::parse($projectRevenue->date_begin)->year){
-                    $deliveredKwhPeriod->delivered_kwh = round(($totalKwhEndCalendarYear / $totalSumOfParticipationsAndDaysEndCalendarYear) * $sumOfParticipationsTimesDays, 2);
-                    $totalDeliveredKwhEndCalendarYear += $deliveredKwhPeriod->delivered_kwh;
-                    $totalDeliveredKwh += $deliveredKwhPeriod->delivered_kwh;
-                } else {
-                    $deliveredKwhPeriod->delivered_kwh = round(($totalKwhRest / $totalSumOfParticipationsAndDaysRest) * $sumOfParticipationsTimesDays, 2);
-                    $totalDeliveredKwh += $deliveredKwhPeriod->delivered_kwh;
-                }
-            } else {
-                $deliveredKwhPeriod->delivered_kwh = round(($totalKwh / $totalSumOfParticipationsAndDays) * $sumOfParticipationsTimesDays, 2);
-                $totalDeliveredKwh += $deliveredKwhPeriod->delivered_kwh;
-            }
-
-            $deliveredKwhPeriod->save();
-
-        }
-
-        // Return total delivered kwh for per distribution
-        $this->projectRevenueDistribution->delivered_total = $totalDeliveredKwh;
-        $this->projectRevenueDistribution->delivered_total_end_calendar_year = $totalDeliveredKwhEndCalendarYear;
-        $this->projectRevenueDistribution->payout_kwh = $projectRevenue->payout_kwh;
-        $lastDeliveredKwhPeriod = $this->projectRevenueDistribution->deliveredKwhPeriod()->orderBy('id', 'desc')->first();
-        $dateEndCalendarYear = Carbon::parse($projectRevenue->date_begin)->endOfYear()->format('Y-m-d');
-        $lastDeliveredKwhPeriodEndCalendarYear = $this->projectRevenueDistribution->deliveredKwhPeriod()->where('date_begin', '<=', $dateEndCalendarYear)->where('date_end', '>=', $dateEndCalendarYear)->orderBy('id', 'desc')->first();
-        $this->projectRevenueDistribution->participations_amount = $lastDeliveredKwhPeriod ? $lastDeliveredKwhPeriod->participations_quantity : 0;
-        $this->projectRevenueDistribution->participations_amount_end_calendar_year = $lastDeliveredKwhPeriodEndCalendarYear ? $lastDeliveredKwhPeriodEndCalendarYear->participations_quantity : 0;
-
-        return $this->projectRevenueDistribution;
-    }
+//todo WM: opschonen
+//
+//    public function runRevenueKwh()
+//    {
+//        // Revenue category REVENUE KWH
+//        if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueKwh')->first())->id) {
+//            $this->calculateDeliveredKwh();
+//        }
+//    }
+//    protected function calculateDeliveredKwh()
+//    {
+//        $projectRevenue = $this->projectRevenueDistribution->revenue;
+//
+//        // Calculate total kwh
+//        $totalKwh = $projectRevenue->kwh_end - $projectRevenue->kwh_start;
+//
+//        // Calculate total kwh end calendar year
+//        $kwhEndCalendarYear = $projectRevenue->kwh_end_calendar_year_high + $projectRevenue->kwh_end_calendar_year_low;
+//        $totalKwhEndCalendarYear = 0;
+//        $totalKwhRest = 0;
+//        if ($kwhEndCalendarYear > 0) {
+//            $totalKwhEndCalendarYear = $kwhEndCalendarYear - $projectRevenue->kwh_start;
+//            $totalKwhRest = $totalKwh - $totalKwhEndCalendarYear;
+//        }
+//
+//        // Total sum of participations and days
+//        $totalSumOfParticipationsAndDays = $projectRevenue->deliveredKwhPeriod->sum(function ($deliveredKwhPeriod) {
+//            return $deliveredKwhPeriod['days_of_period'] * $deliveredKwhPeriod['participations_quantity'];
+//        });
+//
+//        // Total sum of participations and days end calendar year
+//        $totalSumOfParticipationsAndDaysEndCalendarYear = 0;
+//        if ($kwhEndCalendarYear > 0) {
+//            $totalSumOfParticipationsAndDaysEndCalendarYear = $projectRevenue->deliveredKwhPeriod->sum(function ($deliveredKwhPeriod) use ($kwhEndCalendarYear, $projectRevenue) {
+//                if ($kwhEndCalendarYear > 0 != null && Carbon::parse($deliveredKwhPeriod->date_begin)->year == Carbon::parse($projectRevenue->date_begin)->year) {
+//                    return $deliveredKwhPeriod['days_of_period'] * $deliveredKwhPeriod['participations_quantity'];
+//                }
+//                return 0;
+//            });
+//            $totalSumOfParticipationsAndDaysRest = $totalSumOfParticipationsAndDays - $totalSumOfParticipationsAndDaysEndCalendarYear;
+//        }
+//
+//        $totalDeliveredKwh = 0;
+//        $totalDeliveredKwhEndCalendarYear = 0;
+//
+//        foreach ($this->projectRevenueDistribution->deliveredKwhPeriod as $deliveredKwhPeriod) {
+//            // Sum of participations times days, for each record in revenue delivered kwh period this is (days_of_period * participations_quantity)
+//            // With this value we can calculate the amount of kwh returns on this deliverdKwhPeriod
+//            $sumOfParticipationsTimesDays = $deliveredKwhPeriod['days_of_period'] * $deliveredKwhPeriod['participations_quantity'];
+//
+//            if ($kwhEndCalendarYear > 0) {
+//                // Save returns per Kwh period
+//                if( Carbon::parse($deliveredKwhPeriod->date_begin)->year == Carbon::parse($projectRevenue->date_begin)->year){
+//                    $deliveredKwhPeriod->delivered_kwh = round(($totalKwhEndCalendarYear / $totalSumOfParticipationsAndDaysEndCalendarYear) * $sumOfParticipationsTimesDays, 2);
+//                    $totalDeliveredKwhEndCalendarYear += $deliveredKwhPeriod->delivered_kwh;
+//                    $totalDeliveredKwh += $deliveredKwhPeriod->delivered_kwh;
+//                } else {
+//                    $deliveredKwhPeriod->delivered_kwh = round(($totalKwhRest / $totalSumOfParticipationsAndDaysRest) * $sumOfParticipationsTimesDays, 2);
+//                    $totalDeliveredKwh += $deliveredKwhPeriod->delivered_kwh;
+//                }
+//            } else {
+//                $deliveredKwhPeriod->delivered_kwh = round(($totalKwh / $totalSumOfParticipationsAndDays) * $sumOfParticipationsTimesDays, 2);
+//                $totalDeliveredKwh += $deliveredKwhPeriod->delivered_kwh;
+//            }
+//
+//            $deliveredKwhPeriod->save();
+//
+//        }
+//
+//        // Return total delivered kwh for per distribution
+//        $this->projectRevenueDistribution->delivered_total = $totalDeliveredKwh;
+//        $this->projectRevenueDistribution->delivered_total_end_calendar_year = $totalDeliveredKwhEndCalendarYear;
+//        $this->projectRevenueDistribution->payout_kwh = $projectRevenue->payout_kwh;
+//        $lastDeliveredKwhPeriod = $this->projectRevenueDistribution->deliveredKwhPeriod()->orderBy('id', 'desc')->first();
+//        $dateEndCalendarYear = Carbon::parse($projectRevenue->date_begin)->endOfYear()->format('Y-m-d');
+//        $lastDeliveredKwhPeriodEndCalendarYear = $this->projectRevenueDistribution->deliveredKwhPeriod()->where('date_begin', '<=', $dateEndCalendarYear)->where('date_end', '>=', $dateEndCalendarYear)->orderBy('id', 'desc')->first();
+//        $this->projectRevenueDistribution->participations_amount = $lastDeliveredKwhPeriod ? $lastDeliveredKwhPeriod->participations_quantity : 0;
+//        $this->projectRevenueDistribution->participations_amount_end_calendar_year = $lastDeliveredKwhPeriodEndCalendarYear ? $lastDeliveredKwhPeriodEndCalendarYear->participations_quantity : 0;
+//
+//        return $this->projectRevenueDistribution;
+//    }
 
     public function runRevenueCapitalResult()
     {

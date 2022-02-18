@@ -67,8 +67,8 @@ class AddressObserver
             $participations = $address->participations;
 
             foreach($participations as $participation) {
-                $projectRevenueDistributions = $participation->projectRevenueDistributions->whereIn('status', ['concept', 'confirmed']);
 
+                $projectRevenueDistributions = $participation->projectRevenueDistributions->whereIn('status', ['concept', 'confirmed']);
                 foreach($projectRevenueDistributions as $projectRevenueDistribution) {
                     $projectRevenueDistribution->street = $address->street;
                     $projectRevenueDistribution->street_number = $address->number;
@@ -81,6 +81,21 @@ class AddressObserver
                     $projectRevenueDistribution->energy_supplier_ean_electricity = $address->ean_electricity;
 
                     $projectRevenueDistribution->save();
+                }
+
+                $revenueDistributionsKwh = $participation->revenueDistributionKwh->whereIn('status', ['concept', 'confirmed']);
+                foreach($revenueDistributionsKwh as $revenueKwhDistribution) {
+                    $revenueKwhDistribution->street = $address->street;
+                    $revenueKwhDistribution->street_number = $address->number;
+                    $revenueKwhDistribution->street_number_addition = $address->addition;
+                    $revenueKwhDistribution->address = $address->present()
+                        ->streetAndNumber();
+                    $revenueKwhDistribution->postal_code = $address->postal_code;
+                    $revenueKwhDistribution->city = $address->city;
+                    $revenueKwhDistribution->country = $address->country_id ? $address->country->name : '';
+                    $revenueKwhDistribution->energy_supplier_ean_electricity = $address->ean_electricity;
+
+                    $revenueKwhDistribution->save();
                 }
             }
 

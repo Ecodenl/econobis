@@ -11,6 +11,7 @@ namespace App\Eco\ParticipantProject;
 use App\Eco\Contact\Contact;
 use App\Eco\Project\ProjectType;
 use App\Http\Controllers\Api\Project\ProjectRevenueController;
+use App\Http\Controllers\Api\Project\RevenuesKwhController;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -66,11 +67,12 @@ class ParticipantProjectObserver
             foreach($participantProject->project->projectRevenues as $projectRevenue) {
                 // If project revenue is already confirmed then continue
                 if($projectRevenue->confirmed) continue;
-                // If project revenue split then continue
-                if($projectRevenue->category->code_ref == 'revenueKwhSplit') continue;
+//todo WM: opschonen
+//
+//                // If project revenue split then continue
+//                if($projectRevenue->category->code_ref == 'revenueKwhSplit') continue;
 
                 $projectRevenueController = new ProjectRevenueController();
-
                 $projectRevenueController->saveDistribution($projectRevenue, $participantProject, false);
 
                 $projectTypeCodeRef = (ProjectType::where('id', $projectRevenue->project->project_type_id)->first())->code_ref;
@@ -81,12 +83,28 @@ class ParticipantProjectObserver
                         $distribution->save();
                     }
                 }
-                if($projectRevenue->category->code_ref == 'revenueKwh') {
-                    foreach($projectRevenue->distribution as $distribution) {
-                        $distribution->calculator()->runRevenueKwh();
-                        $distribution->save();
-                    }
-                }
+//todo WM: opschonen
+//
+//                if($projectRevenue->category->code_ref == 'revenueKwh') {
+//                    foreach($projectRevenue->distribution as $distribution) {
+//                        $distribution->calculator()->runRevenueKwh();
+//                        $distribution->save();
+//                    }
+//                }
+            }
+
+            $revenuesKwhController = new RevenuesKwhController();
+            foreach($participantProject->project->revenuesKwh as $revenuesKwh) {
+                // If project revenue is already confirmed then continue
+                if($revenuesKwh->confirmed) continue;
+
+                $revenuesKwhController->saveDistributionKwh($revenuesKwh, $participantProject);
+
+// todo WM: uitzoeken wat we hier nu moeten doen met nieuwe opzet tabeleln
+//                foreach($revenuesKwh->distributionKwh as $distributionKwh) {
+//                    $distributionKwh->calculator()->runRevenueKwh();
+//                    $distributionKwh->save();
+//                }
             }
         }
 

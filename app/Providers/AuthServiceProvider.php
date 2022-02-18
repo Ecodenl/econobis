@@ -72,6 +72,8 @@ use App\Eco\Project\Project;
 use App\Eco\Project\ProjectPolicy;
 use App\Eco\Project\ProjectRevenue;
 use App\Eco\Project\ProjectRevenuePolicy;
+use App\Eco\RevenuesKwh\RevenuesKwh;
+use App\Eco\RevenuesKwh\RevenuesKwhPolicy;
 use App\Eco\Project\ProjectValueCourse;
 use App\Eco\Project\ProjectValueCoursePolicy;
 use App\Eco\QuotationRequest\QuotationRequest;
@@ -128,6 +130,7 @@ class AuthServiceProvider extends ServiceProvider
         Team::class => TeamPolicy::class,
         Project::class => ProjectPolicy::class,
         ProjectRevenue::class => ProjectRevenuePolicy::class,
+        RevenuesKwh::class => RevenuesKwhPolicy::class,
         ProjectValueCourse::class => ProjectValueCoursePolicy::class,
         ParticipantProject::class => ParticipantProjectPolicy::class,
         ObligationNumber::class => ObligationNumberPolicy::class,

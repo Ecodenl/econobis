@@ -29,6 +29,7 @@ use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Excel\ParticipantExcelHelper;
 use App\Helpers\Excel\ParticipantExcelHelperHelper;
+use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
@@ -496,42 +497,47 @@ class ParticipationProjectController extends ApiController
                 // Remove distributions on active revenue(s)
                 $participantProject->projectRevenueDistributions()->where('status', 'concept')->forceDelete();
             }
-
-            if($participantProject->address && $participantProject->address->primaryAddressEnergySupplier){
-                $primaryAddressEnergySupplierOld = $participantProject->address->primaryAddressEnergySupplier;
-            }else if ($participantProject->contact && $participantProject->contact->primaryAddress && $participantProject->contact->primaryAddress->primaryAddressEnergySupplier) {
-                $primaryAddressEnergySupplierOld = $participantProject->contact->primaryAddress->primaryAddressEnergySupplier;
-            }else{
-                $primaryAddressEnergySupplierOld = null;
+            if($projectType->code_ref === 'postalcode_link_capital') {
+                $revenuesKwhHelper = new RevenuesKwhHelper();
+                $revenuesKwhHelper->splitRevenuePartsKwh($participantProject, $participantProject->date_terminated, null);
             }
 
-            if ($primaryAddressEnergySupplierOld){
-
-                $dateTerminated = $participantProject->date_terminated->format('Y-m-d');
-                $memberSinceOld = $primaryAddressEnergySupplierOld->member_since;
-                if($primaryAddressEnergySupplierOld->end_date){
-                    $endDateOld = $primaryAddressEnergySupplierOld->end_date;
-                } else {
-                    $endDateOld = Carbon::parse('9999-12-31')->format('Y-m-d');
-                }
-
-                if( $dateTerminated > $memberSinceOld
-                    && $dateTerminated < $endDateOld) {
-
-                    $primaryAddressEnergySupplierNew = $primaryAddressEnergySupplierOld->replicate();
-                    $memberSinceNew = clone $participantProject->date_terminated;
-                    $primaryAddressEnergySupplierNew->member_since = $memberSinceNew->addDay(1)->format('Y-m-d');
-                    Log::info($primaryAddressEnergySupplierNew);
-
-                    $addressEnergySupplierController = new AddressEnergySupplierController();
-                    if ($addressEnergySupplierController->validateAddressEnergySupplier($primaryAddressEnergySupplierNew, false)) {
-                        $addressEnergySupplierController->setEndDateAddressEnergySupplier($primaryAddressEnergySupplierNew);
-                    }
-                    $primaryAddressEnergySupplierNew->save();
-                }
-
-            }
-
+//
+//            if($participantProject->address && $participantProject->address->primaryAddressEnergySupplier){
+//                $primaryAddressEnergySupplierOld = $participantProject->address->primaryAddressEnergySupplier;
+//            }else if ($participantProject->contact && $participantProject->contact->primaryAddress && $participantProject->contact->primaryAddress->primaryAddressEnergySupplier) {
+//                $primaryAddressEnergySupplierOld = $participantProject->contact->primaryAddress->primaryAddressEnergySupplier;
+//            }else{
+//                $primaryAddressEnergySupplierOld = null;
+//            }
+//
+//            if ($primaryAddressEnergySupplierOld){
+//
+//                $dateTerminated = $participantProject->date_terminated->format('Y-m-d');
+//                $memberSinceOld = $primaryAddressEnergySupplierOld->member_since;
+//                if($primaryAddressEnergySupplierOld->end_date){
+//                    $endDateOld = $primaryAddressEnergySupplierOld->end_date;
+//                } else {
+//                    $endDateOld = Carbon::parse('9999-12-31')->format('Y-m-d');
+//                }
+//
+//                if( $dateTerminated > $memberSinceOld
+//                    && $dateTerminated < $endDateOld) {
+//
+//                    $primaryAddressEnergySupplierNew = $primaryAddressEnergySupplierOld->replicate();
+//                    $memberSinceNew = clone $participantProject->date_terminated;
+//                    $primaryAddressEnergySupplierNew->member_since = $memberSinceNew->addDay(1)->format('Y-m-d');
+//                    Log::info($primaryAddressEnergySupplierNew);
+//
+//                    $addressEnergySupplierController = new AddressEnergySupplierController();
+//                    if ($addressEnergySupplierController->validateAddressEnergySupplier($primaryAddressEnergySupplierNew, false)) {
+//                        $addressEnergySupplierController->setEndDateAddressEnergySupplier($primaryAddressEnergySupplierNew);
+//                    }
+//                    $primaryAddressEnergySupplierNew->save();
+//                }
+//
+//            }
+//
         });
     }
 

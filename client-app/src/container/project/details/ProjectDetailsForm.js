@@ -6,6 +6,7 @@ import ProjectFormGeneral from './form/ProjectFormGeneral';
 import ProjectDetailsFormConclusion from './conclusion/ProjectDetailsFormConclusion';
 import ProjectDetailsFormValueCourse from './value-course/ProjectDetailsFormValueCourse';
 import RevenuesListForm from './revenue/list/RevenuesListForm';
+import RevenuesKwhListForm from './revenueKwh/list/RevenuesKwhListForm';
 
 class ProjectDetailsForm extends Component {
     constructor(props) {
@@ -37,7 +38,13 @@ class ProjectDetailsForm extends Component {
                     <ProjectDetailsFormValueCourse />
                 ) : null}
                 {this.props.project.projectStatus.codeRef !== 'concept' && (
-                    <RevenuesListForm projectId={this.props.project.id} />
+                    <>
+                        <RevenuesListForm projectId={this.props.project.id} />
+                        {this.props.project.projectType &&
+                        this.props.project.projectType.codeRef === 'postalcode_link_capital' ? (
+                            <RevenuesKwhListForm projectId={this.props.project.id} />
+                        ) : null}
+                    </>
                 )}
                 <ProjectDetailsFormConclusion />
             </div>

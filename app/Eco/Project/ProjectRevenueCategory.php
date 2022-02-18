@@ -2,6 +2,7 @@
 
 namespace App\Eco\Project;
 
+use App\Eco\RevenuesKwh\RevenuesKwh;
 use Illuminate\Database\Eloquent\Model;
 
 class ProjectRevenueCategory extends Model
@@ -19,6 +20,10 @@ class ProjectRevenueCategory extends Model
 
     public function projectRevenue()
     {
-        return $this->hasMany(ProjectRevenue::class, 'id', 'type_id');
+        return $this->hasMany(ProjectRevenue::class, 'category_id');
+    }
+    public function revenuesKwh()
+    {
+        return $this->hasMany(RevenuesKwh::class, 'category_id');
     }
 }

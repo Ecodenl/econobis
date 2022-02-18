@@ -108,19 +108,6 @@ class Address extends Model
         return $postalCode;
     }
 
-    public function getIsInRevenueDistributionAttribute()
-    {
-        if($this->participations && $this->participations->count() > 0){
-            foreach ($this->participations as $participation){
-                if($participation->projectRevenueDistributions && $participation->projectRevenueDistributions->count() > 0){
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
     // previousAddressEnergySupplierId: only for Electricity ! (type 2 or 3)
     public function getPreviousAddressEnergySupplierIdAttribute()
     {

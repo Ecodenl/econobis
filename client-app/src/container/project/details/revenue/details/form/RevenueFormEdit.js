@@ -13,7 +13,7 @@ import PanelFooter from '../../../../../../components/panel/PanelFooter';
 
 import ProjectRevenueAPI from '../../../../../../api/project/ProjectRevenueAPI';
 
-import { fetchRevenue, getDistribution } from '../../../../../../actions/project/ProjectDetailsActions';
+import { fetchRevenuesKwh, getDistribution } from '../../../../../../actions/project/ProjectDetailsActions';
 import Modal from '../../../../../../components/modal/Modal';
 import styled from '@emotion/styled';
 import ViewText from '../../../../../../components/form/ViewText';
@@ -1006,9 +1006,9 @@ const mapDispatchToProps = dispatch => ({
     fetchRevenue: id => {
         dispatch(fetchRevenue(id));
     },
-    getParticipants: (id, page) => {
-        dispatch(getParticipants({ id, page }));
-    },
+    // getParticipants: (id, page) => {
+    //     dispatch(getParticipants({ id, page }));
+    // },
     getDistribution: (id, page) => {
         dispatch(getDistribution({ id, page }));
     },

@@ -101,6 +101,7 @@ class RevenueNewApp extends Component {
                 revenue.distributionTypeId = 'inPossessionOf';
             } else if (payload.projectType.codeRef !== 'loan') {
                 revenue.distributionTypeId = 'inPossessionOf';
+                // todo WM: hieronder kom je NOOIT in else if, gaat dit wel goed ?????
             } else if (payload.projectType.codeRef === 'obligation') {
                 const payoutTypeId = this.props.participantProjectPayoutTypes.find(
                     participantProjectPayoutType => participantProjectPayoutType.codeRef === 'account'

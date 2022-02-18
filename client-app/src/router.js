@@ -26,6 +26,12 @@ const ContactsInGroupListApp = React.lazy(() =>
 );
 const ContactsListApp = React.lazy(() => import('./container/contact/list/ContactsListApp'));
 const ContactImportApp = React.lazy(() => import('./container/contact/import/ContactImportApp'));
+const CreateRevenuesKwhReportApp = React.lazy(() =>
+    import('./container/project/details/revenueKwh/details/create/CreateRevenuesKwhReportApp')
+);
+const CreateRevenuePartsKwhReportApp = React.lazy(() =>
+    import('./container/project/details/revenueKwh/details/revenue-parts/details/create/CreateRevenuePartsKwhReportApp')
+);
 const DashboardDefaultApp = React.lazy(() => import('./container/dashboard/dashboards/default/DashboardDefaultApp'));
 const DashboardEnergySavingApp = React.lazy(() =>
     import('./container/dashboard/dashboards/energy-saving/DashboardEnergySavingApp')
@@ -55,10 +61,10 @@ const EmailTemplateDetailsApp = React.lazy(() => import('./container/email-templ
 const EmailTemplateNewApp = React.lazy(() => import('./container/email-templates/new/EmailTemplateNewApp'));
 const EmailAnswerApp = React.lazy(() => import('./container/email/answer/EmailAnswerApp'));
 const EnergySupplierReportNewApp = React.lazy(() =>
-    import('./container/project/details/revenue/energy-supplier-report/EnergySupplierReportNewApp')
+    import('./container/project/details/revenueKwh/energy-supplier-report/EnergySupplierReportNewApp')
 );
 const EnergySupplierExcelNewApp = React.lazy(() =>
-    import('./container/project/details/revenue/energy-supplier-excel/EnergySupplierExcelNewApp')
+    import('./container/project/details/revenueKwh/energy-supplier-excel/EnergySupplierExcelNewApp')
 );
 const Forgot = React.lazy(() => import('./container/auth/Forgot'));
 const HousingFileDetailsApp = React.lazy(() => import('./container/housing-file/details/HousingFileDetailsApp'));
@@ -82,6 +88,9 @@ const MailgunDomainNewApp = React.lazy(() => import('./container/mailgun-domain/
 const MailgunDomainDetailsApp = React.lazy(() => import('./container/mailgun-domain/details/MailgunDomainDetailsApp'));
 import Main from './container/global/Main';
 import LoadingPage from './container/global/LoadingPage';
+import RevenuesKwhNewApp from './container/project/details/revenueKwh/new/RevenuesKwhNewApp';
+import RevenuesKwhDetailsApp from './container/project/details/revenueKwh/details/RevenuesKwhDetailsApp';
+import RevenuePartsKwhDetailsApp from './container/project/details/revenueKwh/details/revenue-parts/details/RevenuePartsKwhDetailsApp';
 const MeasuresListApp = React.lazy(() => import('./container/measures/list/MeasuresListApp'));
 const MeasureDetailsApp = React.lazy(() => import('./container/measures/details/MeasureDetailsApp'));
 const MeasureCategoriesListApp = React.lazy(() =>
@@ -100,12 +109,12 @@ const InvoicePreviewApp = React.lazy(() => import('./container/financial/order/p
 const ParticipantNewApp = React.lazy(() => import('./container/participant-project/new/ParticipantNewApp'));
 const ParticipantListApp = React.lazy(() => import('./container/participant/list/ParticipantsListApp'));
 const ParticipantDetailsApp = React.lazy(() => import('./container/participant-project/details/ParticipantDetailsApp'));
-const ParticipantProjectRevenueDetailsApp = React.lazy(() =>
-    import('./container/participant-project/details/revenue/details/RevenueDetailsApp')
-);
-const ParticipantProjectRevenueNewApp = React.lazy(() =>
-    import('./container/participant-project/details/revenue/new/RevenueNewApp')
-);
+// const ParticipantProjectRevenueDetailsApp = React.lazy(() =>
+//     import('./container/participant-project/details/revenue/details/RevenueDetailsApp')
+// );
+// const ParticipantProjectRevenueNewApp = React.lazy(() =>
+//     import('./container/participant-project/details/revenue/new/RevenueNewApp')
+// );
 const ParticipationTransferApp = React.lazy(() =>
     import('./container/participant-project/details/transfer/ParticipationTransferApp')
 );
@@ -396,17 +405,36 @@ const Routes = () => {
                     /* Project */
                     <Route path="project/nieuw" component={ProjectNewApp} />
                     <Route path="project/opbrengst/nieuw/:projectId/:categoryId" component={ProjectRevenueNewApp} />
-                    <Route
-                        path="project/opbrengst/:revenueId/energieleverancier-rapport"
-                        component={EnergySupplierReportNewApp}
-                    />
-                    <Route
-                        path="project/opbrengst/:revenueId/energieleverancier-excel"
-                        component={EnergySupplierExcelNewApp}
-                    />
                     <Route path="project/details/:id" component={ProjectDetailsApp} />
                     <Route path="project/opbrengst/:id" component={ProjectRevenueDetailsApp} />
                     <Route path="project/opbrengst/:id/rapportage" component={PaymentInvoiceCreateApp} />
+                    <Route path="project/opbrengst-kwh/nieuw/:projectId/:categoryId" component={RevenuesKwhNewApp} />
+                    <Route path="project/opbrengst-kwh/:id" component={RevenuesKwhDetailsApp} />
+                    <Route path="project/opbrengst-kwh/:id/rapportage" component={CreateRevenuesKwhReportApp} />
+                    <Route
+                        path="project/opbrengst-kwh/:revenueId/energieleverancier-rapport"
+                        component={EnergySupplierReportNewApp}
+                    />
+                    <Route
+                        path="project/opbrengst-kwh/:revenueId/energieleverancier-excel"
+                        component={EnergySupplierExcelNewApp}
+                    />
+                    <Route
+                        path="project/opbrengst-kwh/:revenueId/deelperiode/:id"
+                        component={RevenuePartsKwhDetailsApp}
+                    />
+                    <Route
+                        path="project/opbrengst-deelperiode-kwh/:id/rapportage"
+                        component={CreateRevenuePartsKwhReportApp}
+                    />
+                    <Route
+                        path="project/opbrengst-deelperiode-kwh/:revenuePartsKwhId/energieleverancier-rapport"
+                        component={EnergySupplierReportNewApp}
+                    />
+                    <Route
+                        path="project/opbrengst-deelperiode-kwh/:revenuePartsKwhId/energieleverancier-excel"
+                        component={EnergySupplierExcelNewApp}
+                    />
                     <Route path="project/preview-rapportage" component={ParticipantReportCreateApp} />
                     <Route path="project/:id" component={ProjectGeneralApp} />
                     <Route path="projecten" component={ProjectsListApp} />
@@ -416,11 +444,11 @@ const Routes = () => {
                     <Route path="project/deelnemer/nieuw/:projectId" component={ParticipantNewApp} />
                     <Route path="project/deelnemer/nieuw/contact/:contactId" component={ParticipantNewApp} />
                     <Route path="project/deelnemer/:id" component={ParticipantDetailsApp} />
-                    <Route
-                        path="project/deelnemer/opbrengst/nieuw/:projectId/:participationId/:categoryId"
-                        component={ParticipantProjectRevenueNewApp}
-                    />
-                    <Route path="project/deelnemer/opbrengst/:id" component={ParticipantProjectRevenueDetailsApp} />
+                    {/*<Route*/}
+                    {/*    path="project/deelnemer/opbrengst/nieuw/:projectId/:participationId/:categoryId"*/}
+                    {/*    component={ParticipantProjectRevenueNewApp}*/}
+                    {/*/>*/}
+                    {/*<Route path="project/deelnemer/opbrengst/:id" component={ParticipantProjectRevenueDetailsApp} />*/}
                     /* Processes */
                     <route path="processen" component={ProcessesListApp} />
                     /* Task / notes */

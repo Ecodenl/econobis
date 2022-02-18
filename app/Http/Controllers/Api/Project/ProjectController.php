@@ -8,7 +8,6 @@
 
 namespace App\Http\Controllers\Api\Project;
 
-use App\Eco\Contact\ContactStatus;
 use App\Eco\Email\Email;
 use App\Eco\Project\Project;
 use App\Eco\Project\ProjectValueCourse;
@@ -21,7 +20,6 @@ use App\Http\Resources\Project\GridProject;
 use App\Http\Resources\Project\ProjectPeek;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -56,6 +54,7 @@ class ProjectController extends ApiController
             'projectRevenues.type',
             'projectRevenues.category',
             'projectRevenues.createdBy',
+            'revenuesKwh.createdBy',
             'tasks',
             'documents',
             'administration',

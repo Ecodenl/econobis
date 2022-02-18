@@ -66,7 +66,6 @@ class FullAddress extends JsonResource
             'addressEnergySuppliers' => FullAddressEnergySupplier::collection($this->whenLoaded('addressEnergySuppliers')),
             'previousAddressEnergySupplierId' => $this->previous_address_energy_supplier_id,
             'primaryAddressEnergySupplier' => FullAddressEnergySupplier::make($this->whenLoaded('primaryAddressEnergySupplier')),
-            'isInRevenueDistribution' => $this->is_in_revenue_distribution,
             'memberSinceGasDisabledBefore' => $memberSinceGasDisabledBefore,
             'memberSinceElectricityDisabledBefore' => $memberSinceElectricityDisabledBefore,
             'memberSinceGasAndElectricityDisabledBefore' => $memberSinceGasAndElectricityDisabledBefore,

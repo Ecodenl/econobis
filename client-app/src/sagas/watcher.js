@@ -68,15 +68,19 @@ import { fetchProjectsSaga } from './project/ProjectsSaga';
 import {
     deleteProjectSaga,
     deleteRevenueSaga,
+    deleteRevenuesKwhSaga,
+    deleteRevenuePartsKwhSaga,
     deleteValueCourseSaga,
     fetchProjectSaga,
 } from './project/ProjectDetailsSaga';
 import { fetchProjectRevenueDistributionSaga, fetchProjectRevenueSaga } from './project/ProjectRevenueDetailsSaga';
+import { fetchRevenueDistributionKwhSaga, fetchRevenuesKwhSaga } from './project/RevenuesKwhDetailsSaga';
+import { fetchRevenueDistributionPartsKwhSaga, fetchRevenuePartsKwhSaga } from './project/RevenuePartsKwhDetailsSaga';
 import { fetchParticipantsProjectSaga } from './participant-project/ParticipantsProjectSaga';
 import {
     deleteObligationNumberSaga,
     deleteParticipantProjectSaga,
-    deleteRevenueSplitSaga,
+    // deleteRevenueSplitSaga,
     fetchParticipantProjectDetailsSaga,
 } from './participant-project/ParticipantProjectDetailsSaga';
 import { deleteIntakeMeasureRequestedSaga, deleteIntakeSaga, fetchIntakeDetailsSaga } from './intake/IntakeDetailsSaga';
@@ -206,15 +210,21 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_PARTICIPANT_PROJECT_DETAILS', fetchParticipantProjectDetailsSaga);
     yield takeLatest('DELETE_PARTICIPANT_PROJECT', deleteParticipantProjectSaga);
     yield takeLatest('DELETE_OBLIGATION_NUMBER', deleteObligationNumberSaga);
-    yield takeLatest('DELETE_REVENUE_SPLIT', deleteRevenueSplitSaga);
+    // yield takeLatest('DELETE_REVENUE_SPLIT', deleteRevenueSplitSaga);
     // Project
     yield takeLatest('FETCH_PROJECTS', fetchProjectsSaga);
     yield takeLatest('FETCH_PROJECT', fetchProjectSaga);
     yield takeLatest('DELETE_PROJECT', deleteProjectSaga);
     yield takeLatest('FETCH_PROJECT_REVENUE', fetchProjectRevenueSaga);
+    yield takeLatest('FETCH_REVENUES_KWH', fetchRevenuesKwhSaga);
+    yield takeLatest('FETCH_REVENUES_KWH_PARTS', fetchRevenuePartsKwhSaga);
     yield takeLatest('PROJECT_REVENUE_GET_DISTRIBUTION', fetchProjectRevenueDistributionSaga);
+    yield takeLatest('REVENUES_KWH_GET_DISTRIBUTION', fetchRevenueDistributionKwhSaga);
+    yield takeLatest('REVENUES_KWH_GET_DISTRIBUTION_PARTS', fetchRevenueDistributionPartsKwhSaga);
     yield takeLatest('DELETE_VALUE_COURSE', deleteValueCourseSaga);
     yield takeLatest('DELETE_REVENUE', deleteRevenueSaga);
+    yield takeLatest('DELETE_REVENUES_KWH', deleteRevenuesKwhSaga);
+    yield takeLatest('DELETE_REVENUES_KWH_PARTS', deleteRevenuePartsKwhSaga);
     // Intake
     yield takeLatest('FETCH_INTAKES', fetchIntakesSaga);
     yield takeLatest('FETCH_INTAKE_DETAILS', fetchIntakeDetailsSaga);

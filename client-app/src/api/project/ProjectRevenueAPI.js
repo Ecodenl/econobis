@@ -51,11 +51,6 @@ export default {
             distributionIds: distributionIds,
             subject: subject,
         });
-        // todo cleanup
-        // .then(response => response)
-        // .catch(error => {
-        //     console.log(error);
-        // });
     },
 
     createPaymentInvoices: (datePayout, distributionIds) => {
@@ -65,38 +60,35 @@ export default {
             distributionIds: distributionIds,
             datePayout: datePayout,
         });
-        // todo cleanup
-        // .then(response => response)
-        // .catch(error => {
-        //     console.log(error);
-        // });
     },
 
-    createEnergySupplierReport: (revenueId, templateId, documentName) => {
-        const requestUrl = `${URL_REVENUE}/create-energy-supplier-report/${revenueId}/${templateId}`;
+    //todo WM: opschonen
+    //
+    // createEnergySupplierReport: (revenueId, templateId, documentName) => {
+    //     const requestUrl = `${URL_REVENUE}/create-energy-supplier-report/${revenueId}/${templateId}`;
+    //
+    //     return axiosInstance
+    //         .post(requestUrl, { documentName: documentName })
+    //         .then(response => response.data.data)
+    //         .catch(error => {
+    //             console.log(error);
+    //         });
+    // },
 
-        return axiosInstance
-            .post(requestUrl, { documentName: documentName })
-            .then(response => response.data.data)
-            .catch(error => {
-                console.log(error);
-            });
-    },
-
-    createEnergySupplierExcel: (revenueId, energySupplierId, documentName) => {
-        let requestUrl = '';
-        if (energySupplierId == 0) {
-            requestUrl = `${URL_REVENUE}/create-energy-supplier-excel/${revenueId}`;
-        } else {
-            requestUrl = `${URL_REVENUE}/create-energy-supplier-excel/${revenueId}/${energySupplierId}`;
-        }
-        return axiosInstance
-            .post(requestUrl, { documentName: documentName })
-            .then(response => response.data.data)
-            .catch(error => {
-                console.log(error);
-            });
-    },
+    // createEnergySupplierExcel: (revenueId, energySupplierId, documentName) => {
+    //     let requestUrl = '';
+    //     if (energySupplierId == 0) {
+    //         requestUrl = `${URL_REVENUE}/create-energy-supplier-excel/${revenueId}`;
+    //     } else {
+    //         requestUrl = `${URL_REVENUE}/create-energy-supplier-excel/${revenueId}/${energySupplierId}`;
+    //     }
+    //     return axiosInstance
+    //         .post(requestUrl, { documentName: documentName })
+    //         .then(response => response.data.data)
+    //         .catch(error => {
+    //             console.log(error);
+    //         });
+    // },
 
     downloadPreview: (id, subject, documentTemplateId, emailTemplateId) => {
         const requestUrl = `distribution/${id}/download-preview`;

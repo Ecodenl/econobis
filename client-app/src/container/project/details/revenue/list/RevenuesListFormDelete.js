@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Modal from '../../../../../components/modal/Modal';
 import { deleteRevenue } from '../../../../../actions/project/ProjectDetailsActions';
 
-const ProjectDetailsFormValueCourseDelete = props => {
+const RevenuesListFormDelete = props => {
     const confirmAction = () => {
         props.deleteRevenue(props.id);
         props.closeDeleteItemModal();
@@ -29,4 +29,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ProjectDetailsFormValueCourseDelete);
+export default connect(null, mapDispatchToProps)(RevenuesListFormDelete);

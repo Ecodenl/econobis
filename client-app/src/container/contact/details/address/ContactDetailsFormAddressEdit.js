@@ -23,7 +23,6 @@ const ContactDetailsFormAddressEdit = props => {
         countryId,
         eanElectricity,
         eanGas,
-        isInRevenueDistribution,
     } = props.address;
 
     return (
@@ -138,7 +137,6 @@ const ContactDetailsFormAddressEdit = props => {
                                 value={eanElectricity}
                                 onChangeAction={props.handleInputChange}
                                 error={props.eanElectricityError}
-                                // readOnly={isInRevenueDistribution}
                             />
                             <InputText
                                 label={'EAN gas'}

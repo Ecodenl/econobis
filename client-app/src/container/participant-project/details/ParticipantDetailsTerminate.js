@@ -20,7 +20,9 @@ const ParticipantDetailsTerminate = ({
 }) => {
     const [dateTerminated, setDateTerminated] = useState(moment().format('Y-MM-DD'));
     const [payoutPercentageTerminated, setPayoutPercentageTerminated] = useState(0);
-    const [redirectRevenueSplit, setRedirectRevenueSplit] = useState(true);
+    // todo WM: nog aanpassen naar nieuwe eindafrekening revenue kwh */
+    // const [redirectRevenueSplit, setRedirectRevenueSplit] = useState(true);
+    const [redirectRevenueSplit, setRedirectRevenueSplit] = useState(false);
 
     const onChangeDateTerminated = value => {
         setDateTerminated(value);
@@ -68,62 +70,62 @@ const ParticipantDetailsTerminate = ({
 
     return (
         <>
-            {participantProject.participantInConfirmedRevenue ? (
-                <Modal
-                    buttonConfirmText="Deelname beëindigen"
-                    buttonClassName={'btn-danger'}
-                    closeModal={closeDeleteItemModal}
-                    showConfirmAction={false}
-                    title="Beëindigen"
-                    modalClassName={'modal-lg'}
-                >
-                    <p>
-                        Deelname komt nog voor in niet verwerkte definitieve opbrengstverdeling. Beëindiging nog niet
-                        mogelijk.
-                    </p>
-                </Modal>
-            ) : (
-                <Modal
-                    buttonConfirmText="Deelname beëindigen"
-                    buttonClassName={'btn-danger'}
-                    closeModal={closeDeleteItemModal}
-                    confirmAction={() => confirmAction()}
-                    title="Beëindigen"
-                    modalClassName={'modal-lg'}
-                >
-                    <p>Weet u zeker dat u deze deelname wilt beëindigen?</p>
-                    <div className="row">
-                        <InputDate
-                            label={'Datum beëindigen'}
-                            name="dateTerminated"
-                            value={dateTerminated}
-                            onChangeAction={onChangeDateTerminated}
-                            disabledBefore={moment(participantProject.dateEntryFirstDeposit).format('Y-MM-DD')}
-                            disabledAfter={moment().format('Y-MM-DD')}
+            {/*{participantProject.participantInConfirmedRevenue ? (*/}
+            {/*    <Modal*/}
+            {/*        buttonConfirmText="Deelname beëindigen"*/}
+            {/*        buttonClassName={'btn-danger'}*/}
+            {/*        closeModal={closeDeleteItemModal}*/}
+            {/*        showConfirmAction={false}*/}
+            {/*        title="Beëindigen"*/}
+            {/*        modalClassName={'modal-lg'}*/}
+            {/*    >*/}
+            {/*        <p>*/}
+            {/*            Deelname komt nog voor in niet verwerkte definitieve opbrengstverdeling. Beëindiging nog niet*/}
+            {/*            mogelijk.*/}
+            {/*        </p>*/}
+            {/*    </Modal>*/}
+            {/*) : (*/}
+            <Modal
+                buttonConfirmText="Deelname beëindigen"
+                buttonClassName={'btn-danger'}
+                closeModal={closeDeleteItemModal}
+                confirmAction={() => confirmAction()}
+                title="Beëindigen"
+                modalClassName={'modal-lg'}
+            >
+                <p>Weet u zeker dat u deze deelname wilt beëindigen?</p>
+                <div className="row">
+                    <InputDate
+                        label={'Datum beëindigen'}
+                        name="dateTerminated"
+                        value={dateTerminated}
+                        onChangeAction={onChangeDateTerminated}
+                        disabledBefore={moment(participantProject.dateEntryFirstDeposit).format('Y-MM-DD')}
+                        disabledAfter={moment().format('Y-MM-DD')}
+                    />
+                    {projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation' ? (
+                        <InputText
+                            type={'number'}
+                            label={'Uitkeringspercentage'}
+                            name="payoutPercentageTerminated"
+                            value={payoutPercentageTerminated}
+                            onChangeAction={onChangePayoutPercentageTerminated}
                         />
-                        {projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation' ? (
-                            <InputText
-                                type={'number'}
-                                label={'Uitkeringspercentage'}
-                                name="payoutPercentageTerminated"
-                                value={payoutPercentageTerminated}
-                                onChangeAction={onChangePayoutPercentageTerminated}
-                            />
-                        ) : null}
-                    </div>
-
-                    {projectTypeCodeRef === 'postalcode_link_capital' ? (
-                        <div className="row">
-                            <InputToggle
-                                label={'Na beëindigen maken eindafrekening voor teruggave EB'}
-                                name={'redirectRevenueSplit'}
-                                onChangeAction={onChangeRedirectRevenueSplit}
-                                value={redirectRevenueSplit}
-                            />
-                        </div>
                     ) : null}
-                </Modal>
-            )}
+                </div>
+                {/*todo WM: nog aanpassen naar nieuwe eindafrekening revenue kwh */}
+                {/*                {projectTypeCodeRef === 'postalcode_link_capital' ? (*/}
+                {/*                    <div className="row">*/}
+                {/*                        <InputToggle*/}
+                {/*                            label={'Na beëindigen maken eindafrekening voor teruggave EB'}*/}
+                {/*                            name={'redirectRevenueSplit'}*/}
+                {/*                            onChangeAction={onChangeRedirectRevenueSplit}*/}
+                {/*                            value={redirectRevenueSplit}*/}
+                {/*                        />*/}
+                {/*                    </div>*/}
+                {/*                ) : null}*/}
+            </Modal>
+            {/*)}*/}
         </>
     );
 };

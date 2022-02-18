@@ -3,6 +3,8 @@ import ProjectDetailsAPI from '../../api/project/ProjectDetailsAPI';
 import ProjectValueCourseAPI from '../../api/project/ProjectValueCourseAPI';
 import ProjectRevenueAPI from '../../api/project/ProjectRevenueAPI';
 import { hashHistory } from 'react-router';
+import RevenuesKwhAPI from '../../api/project/RevenuesKwhAPI';
+import RevenuePartsKwhAPI from '../../api/project/RevenuePartsKwhAPI';
 
 export function* fetchProjectSaga({ id }) {
     try {
@@ -31,6 +33,22 @@ export function* deleteRevenueSaga({ id }) {
         yield put({ type: 'DELETE_REVENUE_SUCCESS', id });
     } catch (error) {
         yield put({ type: 'DELETE_REVENUE_ERROR', error });
+    }
+}
+export function* deleteRevenuesKwhSaga({ id }) {
+    try {
+        yield call(RevenuesKwhAPI.deleteRevenuesKwh, id);
+        yield put({ type: 'DELETE_REVENUES_KWH_SUCCESS', id });
+    } catch (error) {
+        yield put({ type: 'DELETE_REVENUES_KWH_ERROR', error });
+    }
+}
+export function* deleteRevenuePartsKwhSaga({ id }) {
+    try {
+        yield call(RevenuePartsKwhAPI.deleteRevenuePartsKwh, id);
+        yield put({ type: 'DELETE_REVENUES_KWH_PARTS_SUCCESS', id });
+    } catch (error) {
+        yield put({ type: 'DELETE_REVENUES_KWH_PARTS_ERROR', error });
     }
 }
 

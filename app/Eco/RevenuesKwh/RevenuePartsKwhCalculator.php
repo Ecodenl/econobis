@@ -15,10 +15,18 @@ class RevenuePartsKwhCalculator
         $this->revenuePartsKwh = $revenuePartKwh;
     }
 
-    public function runRevenueKwh()
+    public function runRevenueKwh($valuesKwhData)
     {
-        // Revenue category REVENUE KWH
-        $this->calculateDeliveredKwh();
+        if($this->revenuePartsKwh->status == 'concept') {
+            $this->revenuePartsKwh->conceptSimulatedValuesKwh()->delete();
+            $this->revenuePartsKwh->newOrConceptDistributionPartsKwh()->delete();
+            $this->revenuePartsKwh->newOrConceptDistributionValuesKwh()->delete();
+            $this->revenuePartsKwh->createOrUpdateRevenueValuesKwh($valuesKwhData, $this->revenuePartsKwh);
+            $this->revenuePartsKwh->createOrUpdateRevenueValuesKwhSimulate($this->revenuePartsKwh);
+            $this->revenuePartsKwh->saveParticipantsOfDistributionParts($this->revenuePartsKwh);
+            $this->calculateDeliveredKwh();
+        }
+
     }
     protected function calculateDeliveredKwh()
     {

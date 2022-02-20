@@ -56,10 +56,10 @@ class RevenuesKwhdetailsToolbar extends Component {
                                         iconName={'glyphicon-arrow-left'}
                                         onClickAction={browserHistory.goBack}
                                     />
-                                    {this.props.permissions.manageFinancial && !this.props.revenuesKwh.confirmed && (
+                                    {this.props.permissions.manageFinancial && !this.props.revenuesKwh.confirmed ? (
                                         <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
-                                    )}
-                                    {revenuesKwh.confirmed == 1 && (
+                                    ) : null}
+                                    {revenuesKwh.confirmed == 1 ? (
                                         <div className="nav navbar-nav btn-group" role="group">
                                             <button className="btn btn-success btn-sm" data-toggle="dropdown">
                                                 Rapportage Energie leverancier
@@ -73,7 +73,7 @@ class RevenuesKwhdetailsToolbar extends Component {
                                                 </li>
                                             </ul>
                                         </div>
-                                    )}
+                                    ) : null}
                                     <ButtonIcon iconName={'glyphicon-download-alt'} onClickAction={this.getCSV} />
                                 </div>
                             </div>

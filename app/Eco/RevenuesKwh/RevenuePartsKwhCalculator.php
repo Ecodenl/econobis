@@ -2,9 +2,9 @@
 
 namespace App\Eco\RevenuesKwh;
 
+use App\Helpers\Project\RevenuesKwhHelper;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
-use Illuminate\Support\Facades\Log;
 
 class RevenuePartsKwhCalculator
 {
@@ -21,11 +21,13 @@ class RevenuePartsKwhCalculator
             $this->revenuePartsKwh->conceptSimulatedValuesKwh()->delete();
             $this->revenuePartsKwh->newOrConceptDistributionPartsKwh()->delete();
             $this->revenuePartsKwh->newOrConceptDistributionValuesKwh()->delete();
-            $this->revenuePartsKwh->createOrUpdateRevenueValuesKwh($valuesKwhData, $this->revenuePartsKwh);
-            $this->revenuePartsKwh->createOrUpdateRevenueValuesKwhSimulate($this->revenuePartsKwh);
-            $this->revenuePartsKwh->saveParticipantsOfDistributionParts($this->revenuePartsKwh);
+            $revenuesKwhHelper = new RevenuesKwhHelper();
+            $revenuesKwhHelper->createOrUpdateRevenueValuesKwh($valuesKwhData, $this->revenuePartsKwh);
+            $revenuesKwhHelper->createOrUpdateRevenueValuesKwhSimulate($this->revenuePartsKwh);
+            $revenuesKwhHelper->saveParticipantsOfDistributionParts($this->revenuePartsKwh);
             $this->calculateDeliveredKwh();
         }
+        $this->countingsConceptConfirmedProcessed();
 
     }
     protected function calculateDeliveredKwh()
@@ -39,8 +41,6 @@ class RevenuePartsKwhCalculator
         foreach ($period as $date) {
 
             $dateRegistration = $date->format('Y-m-d');
-//            if($dateRegistration == '2020-02-01') {
-//                Log::info('Debug test ');
 
             $revenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenueId)->where('date_registration', $dateRegistration)->first();
             if ($revenueValuesKwh) {
@@ -69,8 +69,6 @@ class RevenuePartsKwhCalculator
                     }
                 }
             }
-
-//            }
         }
 
         foreach ($this->revenuePartsKwh->distributionPartsKwh as $distributionPartsKwh) {
@@ -78,7 +76,10 @@ class RevenuePartsKwhCalculator
             $distributionPartsKwh->delivered_kwh = $totalDeliveredKwh;
             $distributionPartsKwh->save();
         }
+    }
 
+    protected function countingsConceptConfirmedProcessed(): void
+    {
         foreach ($this->revenuePartsKwh->revenuesKwh->distributionKwh as $distributionKwh) {
             $distributionKwh->delivered_total_concept = $distributionKwh->distributionValuesKwh->where('status', '==', 'concept')->sum('delivered_kwh');
             $distributionKwh->delivered_total_confirmed = $distributionKwh->distributionValuesKwh->where('status', '==', 'confirmed')->sum('delivered_kwh');
@@ -95,9 +96,6 @@ class RevenuePartsKwhCalculator
         $this->revenuePartsKwh->revenuesKwh->delivered_total_confirmed = $this->revenuePartsKwh->revenuesKwh->distributionPartsKwh->where('status', '==', 'confirmed')->sum('delivered_kwh');
         $this->revenuePartsKwh->revenuesKwh->delivered_total_processed = $this->revenuePartsKwh->revenuesKwh->distributionPartsKwh->where('status', '==', 'processed')->sum('delivered_kwh');
         $this->revenuePartsKwh->revenuesKwh->save();
-
-
-
     }
 
 }

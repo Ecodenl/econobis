@@ -196,7 +196,7 @@ class RevenuesKwhFormEdit extends Component {
     render() {
         const { confirmed, status, dateBegin, dateEnd, dateConfirmed, payoutKwh } = this.state.revenuesKwh;
         const project = this.props.revenuesKwh.project;
-        const { category } = this.props.revenuesKwh;
+        const { hasNewPartsKwh } = this.props.revenuesKwh;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -249,7 +249,7 @@ class RevenuesKwhFormEdit extends Component {
                         label={'Datum definitief'}
                         name={'dateConfirmed'}
                         value={dateConfirmed}
-                        readOnly={status == 'new' || status == 'processed'}
+                        readOnly={status == 'new' || status == 'processed' || hasNewPartsKwh}
                         onChangeAction={this.handleInputChangeDateConfirmed}
                     />
                     <InputText

@@ -58,7 +58,13 @@ class RevenuesKwh extends Model
         return $this->hasMany(RevenueValuesKwh::class, 'revenue_id');
     }
 
+    public function newPartsKwh(){
+        return $this->hasMany(RevenuePartsKwh::class, 'revenue_id')->where('status', 'new');
+    }
     public function conceptPartsKwh(){
+        return $this->hasMany(RevenuePartsKwh::class, 'revenue_id')->where('status', 'concept');
+    }
+    public function newOrConceptPartsKwh(){
         return $this->hasMany(RevenuePartsKwh::class, 'revenue_id')->whereIn('status', ['new', 'concept']);
     }
     public function conceptDistributionKwh(){
@@ -107,6 +113,10 @@ class RevenuesKwh extends Model
     public function getDeliveredTotalStringAttribute()
     {
         return number_format( ($this->delivered_total_concept + $this->delivered_total_confirmed + $this->delivered_total_processed), '2',',', '.' );
+    }
+
+    public function getHasNewPartsKwh(){
+        return $this->newPartsKwh()->count() > 0;
     }
 
 }

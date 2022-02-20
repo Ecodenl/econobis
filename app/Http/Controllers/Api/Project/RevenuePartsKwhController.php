@@ -79,51 +79,39 @@ class RevenuePartsKwhController extends ApiController
         $revenuePartsKwh->fill($data);
 
         if($revenuePartsKwh->status == 'new'){
-            $checkDateForPreviousPart = Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d');
-            $previousRevenuePartsKwh = RevenuePartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_end', '<', $checkDateForPreviousPart)->orderBy('date_end', 'desc')->first();
-            if ($previousRevenuePartsKwh) {
-                $statusPreviousPart = $previousRevenuePartsKwh->status;
-            } else {
-                $statusPreviousPart = 'notfound';
-            }
-            // als voorgaande part gevonden en die heeft nog status concept, dan definitief maken (confirmed)
-            if ($statusPreviousPart == 'concept') {
-                $previousRevenuePartsKwh->confirmed = true;
-                $previousRevenuePartsKwh->status = 'confirmed';
-                $previousRevenuePartsKwh->date_confirmed = Carbon::now()->format('Y-m-d');
-                // todo WM: doortellen hier niet nodig, volgens mij, gebeurt opnieuw aan eind van calculate later in proecs.
-//                $previousRevenuePartsKwh->delivered_total_confirmed = $previousRevenuePartsKwh->delivered_total_concept;
-//                $previousRevenuePartsKwh->delivered_total_concept = 0;
-//                $previousRevenuePartsKwh->save();
-                foreach($previousRevenuePartsKwh->conceptDistributionPartsKwh as $distributionPreviousPartsKwh){
-                    $distributionPreviousPartsKwh->status = 'confirmed';
-                    $distributionPreviousPartsKwh->save();
-                }
-                foreach($previousRevenuePartsKwh->conceptDistributionValuesKwh as $distributionPreviousValuesKwh){
-                    $distributionPreviousValuesKwh->status = 'confirmed';
-                    $distributionPreviousValuesKwh->save();
-                }
-            }
             $revenuePartsKwh->status = 'concept';
         }
 
         if($revenuePartsKwh->confirmed) {
-            if($revenuePartsKwh->status == 'concept'){
-                $revenuePartsKwh->status = 'confirmed';
-                // todo WM: doortellen hier niet nodig, volgens mij, gebeurt opnieuw aan eind van calculate later in proecs.
-//                $revenuePartsKwh->delivered_total_confirmed = $revenuePartsKwh->delivered_total_concept;
-//                $revenuePartsKwh->delivered_total_concept = 0;
-                foreach($revenuePartsKwh->conceptDistributionPartsKwh as $distributionPartsKwh){
-                    $distributionPartsKwh->status = 'confirmed';
-                    $distributionPartsKwh->save();
+            // Alle voorgaande parts met status concept ook definitief maken (confirmed)
+            $checkDateForPreviousPart = Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d');
+            $previousRevenuePartsKwh = RevenuePartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_end', '<', $checkDateForPreviousPart)->where('status', 'concept')->orderBy('date_begin')->get();
+            foreach ($previousRevenuePartsKwh as $previousRevenuePartKwh){
+                $previousRevenuePartKwh->confirmed = true;
+                $previousRevenuePartKwh->status = 'confirmed';
+                $previousRevenuePartKwh->date_confirmed = $revenuePartsKwh->date_confirmed;
+                foreach($previousRevenuePartKwh->conceptDistributionPartsKwh as $distributionPreviousPartsKwh){
+                    $distributionPreviousPartsKwh->status = 'confirmed';
+                    $distributionPreviousPartsKwh->save();
                 }
-                foreach($revenuePartsKwh->conceptDistributionValuesKwh as $distributionValuesKwh){
-                    $distributionValuesKwh->status = 'confirmed';
-                    $distributionValuesKwh->save();
+                foreach($previousRevenuePartKwh->conceptDistributionValuesKwh as $distributionPreviousValuesKwh){
+                    $distributionPreviousValuesKwh->status = 'confirmed';
+                    $distributionPreviousValuesKwh->save();
                 }
-                $revenuePartsKwh->calculator()->runRevenueKwh(null);
+                $previousRevenuePartKwh->save();
+            }
+
+            $revenuePartsKwh->status = 'confirmed';
+            foreach($revenuePartsKwh->conceptDistributionPartsKwh as $distributionPartsKwh){
+                $distributionPartsKwh->status = 'confirmed';
+                $distributionPartsKwh->save();
+            }
+            foreach($revenuePartsKwh->conceptDistributionValuesKwh as $distributionValuesKwh){
+                $distributionValuesKwh->status = 'confirmed';
+                $distributionValuesKwh->save();
             }
         }
+
         $revenuePartsKwh->save();
 
         //todo WM: dit naar job queue (met status in-progress-calculate?

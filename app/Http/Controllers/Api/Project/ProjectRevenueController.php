@@ -46,8 +46,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use PhpOffice\PhpSpreadsheet\Writer\Xls;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ProjectRevenueController extends ApiController
 {
@@ -218,104 +216,6 @@ class ProjectRevenueController extends ApiController
 
         if($recalculateDistribution) $this->saveParticipantsOfDistribution($projectRevenue, false);
 
-//todo WM: opschonen
-//
-//        if($projectRevenueConfirmedIsDirty &&
-//            $projectRevenue->confirmed
-//        ) {
-//            if($projectRevenue->category->code_ref == 'revenueKwh'){
-//                $projectRevenueCategory = ProjectRevenueCategory::where('code_ref', 'revenueKwhSplit')->first();
-//                $listSplitedParticipationIds = ProjectRevenue::where('project_id', $projectRevenue->project_id)
-//                    ->whereNotNull('participation_id')
-//                    ->where('category_id', $projectRevenueCategory->id)
-//                    ->where('date_end', '>=', $projectRevenue->date_begin)
-//                    ->where('date_end', '<', $projectRevenue->date_end)
-//                    ->where('confirmed', true)
-//                    ->orderBy('date_end', 'desc')->get()->pluck('participation_id')->toArray();
-//
-//                foreach ($listSplitedParticipationIds as $participationId){
-//                    $projectRevenueCategory = ProjectRevenueCategory::where('code_ref', 'revenueKwhSplit')->first();
-//                    $projectRevenuesKwhSplit = ProjectRevenue::where('project_id', $projectRevenue->project_id)
-//                        ->where('participation_id', $participationId)
-//                        ->where('category_id', $projectRevenueCategory->id)
-//                        ->where('date_end', '>=', $projectRevenue->date_begin)
-//                        ->where('date_end', '<', $projectRevenue->date_end)
-//                        ->where('confirmed', true)
-//                        ->orderBy('date_end', 'desc');
-//                    // revenue kwh split present, then make closing revenue kwh splits
-//                    if ($projectRevenuesKwhSplit->exists()) {
-//                        $lastProjectRevenueKwhSplit = $projectRevenuesKwhSplit->first();
-//                        if ($lastProjectRevenueKwhSplit && $lastProjectRevenueKwhSplit->date_end != $projectRevenue->date_end){
-//
-//                            $addressEnergySupplier = $lastProjectRevenueKwhSplit->participant->address ? $lastProjectRevenueKwhSplit->participant->address->primaryAddressEnergySupplier : $lastProjectRevenueKwhSplit->participant->contact->primaryAddress->primaryAddressEnergySupplier;
-//                            $closingReveneuKwhSplit = new ProjectRevenue();
-//                            $closingReveneuKwhSplit->category_id = $lastProjectRevenueKwhSplit->category_id;
-//                            $closingReveneuKwhSplit->project_id = $lastProjectRevenueKwhSplit->project_id;
-//                            $closingReveneuKwhSplit->participation_id = $lastProjectRevenueKwhSplit->participation_id;
-//                            $closingReveneuKwhSplit->address_energy_supplier_id = $addressEnergySupplier->id;
-//                            $closingReveneuKwhSplit->distribution_type_id = $lastProjectRevenueKwhSplit->distribution_type_id;
-//                            $closingReveneuKwhSplit->confirmed = true;
-//                            $closingReveneuKwhSplit->date_begin = Carbon::parse($lastProjectRevenueKwhSplit->date_end)->addDay();
-//                            $closingReveneuKwhSplit->date_end = Carbon::parse($projectRevenue->date_end);
-//                            $closingReveneuKwhSplit->date_reference = Carbon::parse($projectRevenue->date_reference);
-//                            $closingReveneuKwhSplit->date_confirmed = Carbon::parse($projectRevenue->date_confirmed);
-//                            $closingReveneuKwhSplit->kwh_start = $lastProjectRevenueKwhSplit->kwh_end;
-//                            $closingReveneuKwhSplit->kwh_end = $projectRevenue->kwh_end;
-//                            $closingReveneuKwhSplit->kwh_start_high = $lastProjectRevenueKwhSplit->kwh_end_high;
-//                            $closingReveneuKwhSplit->kwh_end_high = $projectRevenue->kwh_end_high;
-//                            $closingReveneuKwhSplit->kwh_start_low = $lastProjectRevenueKwhSplit->kwh_end_low;
-//                            $closingReveneuKwhSplit->kwh_end_low = $projectRevenue->kwh_end_low;
-//                            $closingReveneuKwhSplit->payout_kwh = $projectRevenue->payout_kwh;
-//
-//                            $closingReveneuKwhSplit->save();
-//                            $this->saveParticipantsOfDistribution($closingReveneuKwhSplit, true);
-//                        }
-//                    }
-//                }
-//            }
-//            if($projectRevenue->category->code_ref == 'revenueKwhSplit'){
-//                $projectRevenueCategory = ProjectRevenueCategory::where('code_ref', 'revenueKwh')->first();
-//                $projectRevenuesKwh = ProjectRevenue::where('project_id', $projectRevenue->project_id)
-//                    ->whereNull('participation_id')
-//                    ->where('category_id', $projectRevenueCategory->id)
-//                    ->where('date_begin', '<=', $projectRevenue->date_begin)
-//                    ->where('date_end', '>', $projectRevenue->date_begin)
-//                    ->where('confirmed', true)
-//                    ->orderBy('date_end', 'desc');
-//
-//                // revenue kwh present, then make closing revenue kwh splits
-//                if ($projectRevenuesKwh->exists()) {
-//                    $projectRevenueKwh = $projectRevenuesKwh->first();
-//                    if ($projectRevenueKwh && $projectRevenueKwh->date_end != $projectRevenue->date_end){
-//
-//                        $addressEnergySupplier = $projectRevenue->participant->address ? $projectRevenue->participant->address->primaryAddressEnergySupplier : $projectRevenue->participant->contact->primaryAddress->primaryAddressEnergySupplier;
-//                        $closingReveneuKwhSplit = new ProjectRevenue();
-//                        $closingReveneuKwhSplit->category_id = $projectRevenue->category_id;
-//                        $closingReveneuKwhSplit->project_id = $projectRevenue->project_id;
-//                        $closingReveneuKwhSplit->participation_id = $projectRevenue->participation_id;
-//                        $closingReveneuKwhSplit->address_energy_supplier_id = $addressEnergySupplier->id;
-//                        $closingReveneuKwhSplit->distribution_type_id = $projectRevenue->distribution_type_id;
-//                        $closingReveneuKwhSplit->confirmed = true;
-//                        $closingReveneuKwhSplit->date_begin = Carbon::parse($projectRevenue->date_end)->addDay();
-//                        $closingReveneuKwhSplit->date_end = Carbon::parse($projectRevenueKwh->date_end);
-//                        $closingReveneuKwhSplit->date_reference = Carbon::parse($projectRevenue->date_reference);
-//                        $closingReveneuKwhSplit->date_confirmed = Carbon::parse($projectRevenue->date_confirmed);
-//                        $closingReveneuKwhSplit->kwh_start = $projectRevenue->kwh_end;
-//                        $closingReveneuKwhSplit->kwh_end = $projectRevenueKwh->kwh_end;
-//                        $closingReveneuKwhSplit->kwh_start_high = $projectRevenue->kwh_end_high;
-//                        $closingReveneuKwhSplit->kwh_end_high = $projectRevenueKwh->kwh_end_high;
-//                        $closingReveneuKwhSplit->kwh_start_low = $projectRevenue->kwh_end_low;
-//                        $closingReveneuKwhSplit->kwh_end_low = $projectRevenueKwh->kwh_end_low;
-//                        $closingReveneuKwhSplit->payout_kwh = $projectRevenue->payout_kwh;
-//
-//                        $closingReveneuKwhSplit->save();
-//                        $this->saveParticipantsOfDistribution($closingReveneuKwhSplit, true);
-//
-//                    }
-//                }
-//            }
-//        }
-
         return FullProjectRevenue::collection(ProjectRevenue::where('project_id',
             $projectRevenue->project_id)
             ->with('createdBy', 'project', 'type', 'distribution')
@@ -327,190 +227,10 @@ class ProjectRevenueController extends ApiController
         set_time_limit(300);
         $project = $projectRevenue->project;
 
-//todo WM: opschonen
-//
-//        if($projectRevenue->category->code_ref == 'revenueKwhSplit') {
-//
-//            $projectRevenueKwhCategoryId = ProjectRevenueCategory::where('code_ref', 'revenueKwh')->first()->id;
-//            $projectRevenueKwhSplitCategoryId = ProjectRevenueCategory::where('code_ref', 'revenueKwhSplit')->first()->id;
-//
-//            if(!$closing) {
-//                // Calculate total kwh
-//                $totalKwh = $projectRevenue->kwh_end - $projectRevenue->kwh_start;
-//
-//                // Calculate total kwh end calendar year
-//                $kwhEndCalendarYear = $projectRevenue->kwh_end_calendar_year_high + $projectRevenue->kwh_end_calendar_year_low;
-//                $totalKwhEndCalendarYear = 0;
-//                $totalKwhRest = 0;
-//                if ($kwhEndCalendarYear > 0) {
-//                    $totalKwhEndCalendarYear = $kwhEndCalendarYear - $projectRevenue->kwh_start;
-//                    $totalKwhRest = $totalKwh - $totalKwhEndCalendarYear;
-//                }
-//                $totalSumOfParticipationsAndDays = 0;
-//                $totalDeliveredKwhPeriodThisParticipant = 0;
-//                $quantityOfParticipationsThisParticipant = 0;
-//                $totalSumOfParticipationsAndDaysEndCalendarYear = 0;
-//                $totalDeliveredKwhPeriodThisParticipantEndCalendarYear = 0;
-//                $quantityOfParticipationsThisParticipantEndCalendarYear = 0;
-//                $totalDeliveredKwhPeriodThisParticipantRest = 0;
-//                $totalSumOfParticipationsAndDaysRest = 0;
-//
-//                foreach ($project->participantsProject as $participant) {
-//
-//                    $projectRevenuesKwh = ProjectRevenue::where('project_id', $projectRevenue->project_id)
-//                        ->whereNull('participation_id')
-//                        ->where('category_id', $projectRevenueKwhCategoryId)
-//                        ->where('date_begin', '<=', $projectRevenue->date_begin)
-//                        ->where('date_end', '>', $projectRevenue->date_begin)
-//                        ->where('confirmed', true)
-//                        ->orderBy('date_end', 'desc');
-//                    if ($projectRevenuesKwh->exists()) {
-//                        $projectRevenueKwh = $projectRevenuesKwh->first();
-//                        $participantInDistribution = ProjectRevenueDistribution::where('revenue_id', $projectRevenueKwh->id)
-//                            ->where('participation_id', $participant->id)
-//                            ->whereIn('status', ['confirmed'])
-//                            ->exists();
-//                        if (!$participantInDistribution) {
-//                            continue;
-//                        }
-//                    }
-//
-//                    $result = $this->determineTotalDistribution($projectRevenue, $participant);
-//                    $totalDeliveredKwhPeriod = $result['totalDeliveredKwhPeriod'];
-//                    $quantityOfParticipations = $result['quantityOfParticipations'];
-//                    if ($kwhEndCalendarYear > 0) {
-//                        $totalDeliveredKwhPeriodEndCalendarYear = $result['totalDeliveredKwhPeriodEndCalendarYear'];
-//                        $quantityOfParticipationsEndCalendarYear = $result['quantityOfParticipationsEndCalendarYear'];
-//                        $totalDeliveredKwhPeriodRest = $totalDeliveredKwhPeriod - $totalDeliveredKwhPeriodEndCalendarYear;
-//                    }
-//
-//                    if ($participant->id == $projectRevenue->participant->id) {
-//                        $totalDeliveredKwhPeriodThisParticipant = $totalDeliveredKwhPeriod;
-//                        $quantityOfParticipationsThisParticipant = $quantityOfParticipations;
-//                        if ($kwhEndCalendarYear > 0) {
-//                            $totalDeliveredKwhPeriodThisParticipantEndCalendarYear = $totalDeliveredKwhPeriodEndCalendarYear;
-//                            $quantityOfParticipationsThisParticipantEndCalendarYear = $quantityOfParticipationsEndCalendarYear;
-//                            $totalDeliveredKwhPeriodThisParticipantRest = $totalDeliveredKwhPeriodRest;
-//                        }
-//                    }
-//
-//                    $totalSumOfParticipationsAndDays = $totalSumOfParticipationsAndDays + $totalDeliveredKwhPeriod;
-//                    if ($kwhEndCalendarYear > 0) {
-//                        $totalSumOfParticipationsAndDaysEndCalendarYear = $totalSumOfParticipationsAndDaysEndCalendarYear + $totalDeliveredKwhPeriodEndCalendarYear;
-//                    }
-//                }
-//
-//                if ($kwhEndCalendarYear > 0) {
-//                    $totalSumOfParticipationsAndDaysRest = $totalSumOfParticipationsAndDays - $totalSumOfParticipationsAndDaysEndCalendarYear;
-//                }
-//
-//                // Save returns per Kwh period
-//                $deliveredKwh = 0;
-//                $deliveredKwhEndCalendarYear = 0;
-//                $deliveredKwhRest = 0;
-//
-//                if ($kwhEndCalendarYear > 0) {
-//                    // Save returns per Kwh period
-//                    if ($totalSumOfParticipationsAndDaysEndCalendarYear != 0) {
-//                        $deliveredKwhEndCalendarYear = round(($totalKwhEndCalendarYear / $totalSumOfParticipationsAndDaysEndCalendarYear) * $totalDeliveredKwhPeriodThisParticipantEndCalendarYear, 2);
-//                        if ($totalSumOfParticipationsAndDaysRest != 0) {
-//                            $deliveredKwhRest = round(($totalKwhRest / $totalSumOfParticipationsAndDaysRest) * $totalDeliveredKwhPeriodThisParticipantRest, 2);
-//                        }
-//                        $deliveredKwh = $deliveredKwhEndCalendarYear + $deliveredKwhRest;
-//                    }
-//                } else {
-//                    if ($totalSumOfParticipationsAndDays != 0) {
-//                        $deliveredKwh = round(($totalKwh / $totalSumOfParticipationsAndDays) * $totalDeliveredKwhPeriodThisParticipant, 2);
-//                    }
-//                }
-//
-//                $distribution = $this->saveDistribution($projectRevenue, $projectRevenue->participant, $closing);
-//            }
-//
-//            if($closing){
-//
-//                $projectRevenuesKwh = ProjectRevenue::where('project_id', $projectRevenue->project_id)
-//                    ->whereNull('participation_id')
-//                    ->where('category_id', $projectRevenueKwhCategoryId)
-//                    ->where('date_begin', '<=', $projectRevenue->date_begin)
-//                    ->where('date_end', '>', $projectRevenue->date_begin)
-//                    ->where('confirmed', true)
-//                    ->orderBy('date_end', 'desc');
-//                if ($projectRevenuesKwh->exists()) {
-//                    $projectRevenueKwh = $projectRevenuesKwh->first();
-//                    $projectRevenueKwhDateBegin = $projectRevenueKwh->date_begin;
-//                    $projectRevenueKwhDateEnd = $projectRevenueKwh->date_end;
-//
-//                    $distributionProjectRevenueKwh = ProjectRevenueDistribution::where('participation_id', $projectRevenue->participation_id)
-//                        ->where('revenue_id', $projectRevenueKwh->id)
-//                        ->first();
-//                    if($distributionProjectRevenueKwh){
-//                        $distributionProjectRevenueKwh->delivered_total_last_es = 0;
-//                        $distributionProjectRevenueKwh->delivered_total_last_es_end_calendar_year = 0;
-//                    }
-//
-//                    $distribution = $this->saveDistribution($projectRevenue, $projectRevenue->participant, $closing);
-//
-//                    $distributionsParticipation = ProjectRevenueDistribution::where('participation_id', $projectRevenue->participation_id)
-////                        ->where('id', '!=', $distribution->id)
-//                        ->whereHas('revenue', function ($q) use($projectRevenueKwhCategoryId, $projectRevenueKwhSplitCategoryId, $projectRevenueKwhDateBegin, $projectRevenueKwhDateEnd){
-//                            $q->whereIn('project_revenues.category_id', [$projectRevenueKwhCategoryId, $projectRevenueKwhSplitCategoryId ])
-//                                ->where('date_begin', '>=', $projectRevenueKwhDateBegin)
-//                                ->where('date_end', '<=', $projectRevenueKwhDateEnd)
-//                                ->where('confirmed', true)
-//                                ->orderBy('date_end', 'desc');
-//                        });
-//
-//                    foreach ($distributionsParticipation->get() as $distributionParticipation) {
-//                        if($distributionParticipation->revenue->participation_id == null){
-//                            $distribution->delivered_total += $distributionParticipation->delivered_total;
-//                            $distribution->delivered_total_end_calendar_year += $distributionParticipation->delivered_total_end_calendar_year;
-//                            $distribution->participations_amount = $distributionParticipation->participations_amount;
-//                            $distribution->participations_amount_end_calendar_year = $distributionParticipation->participations_amount_end_calendar_year;
-//                            if($distributionProjectRevenueKwh && $distributionProjectRevenueKwh->es_id == $distributionParticipation->es_id) {
-//                                $distributionProjectRevenueKwh->delivered_total_last_es += $distributionParticipation->delivered_total;
-//                            }
-//                        }else{
-//                            $distribution->delivered_total -= $distributionParticipation->delivered_total;
-//                            $distribution->delivered_total_end_calendar_year -= $distributionParticipation->delivered_total_end_calendar_year;
-//                            if($distributionProjectRevenueKwh && $distributionProjectRevenueKwh->es_id != $distributionParticipation->es_id) {
-//                                $distributionProjectRevenueKwh->delivered_total_last_es -= $distributionParticipation->delivered_total;
-//                            }
-//                        }
-//                    }
-//
-//                    if($distributionProjectRevenueKwh
-//                        && $distributionProjectRevenueKwh->delivered_total_last_es != 0
-//                        && $distributionProjectRevenueKwh->delivered_total != 0
-//                        && $distributionProjectRevenueKwh->delivered_total_end_calendar_year != 0
-//                        && $distributionProjectRevenueKwh->delivered_total != $distributionProjectRevenueKwh->delivered_total_end_calendar_year) {
-//                        $engerySupplierFactor = $distributionProjectRevenueKwh->delivered_total_last_es / $distributionProjectRevenueKwh->delivered_total;
-//                        $deliveredTotalLastEsEndCalendarYear = round($distributionProjectRevenueKwh->delivered_total_end_calendar_year * $engerySupplierFactor, 2);
-//
-//                        $distributionProjectRevenueKwh->delivered_total_last_es_end_calendar_year = $deliveredTotalLastEsEndCalendarYear;
-//                        $distributionProjectRevenueKwh->date_begin_last_es = $projectRevenue->date_begin;
-//                        $distributionProjectRevenueKwh->save();
-//                    }
-//                }
-//            }else{
-//                $distribution->delivered_total = $deliveredKwh;
-//                $distribution->delivered_total_end_calendar_year = $deliveredKwhEndCalendarYear;
-//                $distribution->participations_amount = $quantityOfParticipationsThisParticipant;
-//                $distribution->participations_amount_end_calendar_year = $quantityOfParticipationsThisParticipantEndCalendarYear;
-//            }
-//            $distribution->payout_kwh = $projectRevenue->payout_kwh;
-//            $distribution->save();
-//
-//        }else {
-//            if ($projectRevenue->category->code_ref == 'revenueKwh') {
-//                $participants = $project->participantsProject;
-//            } else {
-                $participants = $project->participantsProjectDefinitive;
-//            }
-            foreach ($participants as $participant) {
-                $this->saveDistribution($projectRevenue, $participant, $closing);
-            }
-//        }
+        $participants = $project->participantsProjectDefinitive;
+        foreach ($participants as $participant) {
+            $this->saveDistribution($projectRevenue, $participant, $closing);
+        }
 
         $projectTypeCodeRef = (ProjectType::where('id', $projectRevenue->project->project_type_id)->first())->code_ref;
         if($projectRevenue->category->code_ref == 'revenueEuro'
@@ -541,89 +261,7 @@ class ProjectRevenueController extends ApiController
             }
         }
 
-//todo WM: opschonen
-//
-//        if($projectRevenue->category->code_ref == 'revenueKwh' || $projectRevenue->category->code_ref == 'revenueKwhSplit') {
-//            foreach($projectRevenue->distribution as $distribution) {
-//                $distribution->calculator()->runRevenueKwh();
-//                $distribution->save();
-//            }
-//        }
-
     }
-
-//todo WM: opschonen
-//
-//    public function determineTotalDistribution(ProjectRevenue $projectRevenue, ParticipantProject $participant)
-//    {
-//        $dateBeginFromRevenue = Carbon::parse($projectRevenue->date_begin);
-//        $dateEndFromRevenue = Carbon::parse($projectRevenue->date_end);
-//        $dateEndCalendarYearFromRevenue = Carbon::parse($projectRevenue->date_begin)->endOfYear();
-//
-//        if (!$dateBeginFromRevenue || !$dateEndFromRevenue) return 0;
-//
-//        $quantityOfParticipations = 0;
-//        $totalDeliveredKwhPeriod = 0;
-//        $quantityOfParticipationsEndCalendarYear = 0;
-//        $totalDeliveredKwhPeriodEndCalendarYear = 0;
-//
-//        $mutations = $participant->mutationsDefinitiveForKwhPeriod;
-//        foreach ($mutations as $index => $mutation) {
-//            $dateBegin = $dateBeginFromRevenue;
-//            $dateEnd = $dateEndFromRevenue;
-//
-//            $nextMutation = $mutations->get(++$index);
-//
-//            if($nextMutation) {
-//                $dateEnd = Carbon::parse($nextMutation->date_entry)->subDay();
-//            }
-//
-//            if($dateEnd > $dateEndFromRevenue) {
-//                $dateEnd = clone $dateEndFromRevenue;
-//            }
-//
-//            $dateEntry = Carbon::parse($mutation->date_entry);
-//
-//            // If date entry is after date begin then date begin is equal to date entry
-//            if($dateEntry > $dateBegin) $dateBegin = $dateEntry;
-//
-//            $dateEndForPeriod = clone $dateEnd;
-//            $dateEndCalendarYearFromRevenueForPeriod = clone $dateEndCalendarYearFromRevenue;
-//
-//            if($dateBegin >= $dateBeginFromRevenue && $dateBegin <= $dateEndFromRevenue){
-//                $quantityOfParticipations += $mutation->quantity;
-//            }
-//
-//            if($dateEnd >= $dateBegin){
-//                $kwhEndCalendarYear = ($projectRevenue->kwh_end_calendar_year_high ? $projectRevenue->kwh_end_calendar_year_high : 0) + ($projectRevenue->kwh_end_calendar_year_low ? $projectRevenue->kwh_end_calendar_year_low : 0);
-//                $dateEndForCheck = clone $dateEnd;
-//                $dateEndForCheck->endOfDay();
-//                if( $kwhEndCalendarYear > 0
-//                    && $dateBegin < $dateEndCalendarYearFromRevenue
-//                    && $dateEndForCheck >= $dateEndCalendarYearFromRevenue ) {
-//                    $daysOfPeriod = $dateEndCalendarYearFromRevenueForPeriod->addDay()->diffInDays($dateBegin);
-//
-//                    $deliveredKwhPeriod = $daysOfPeriod * $quantityOfParticipations;
-//                    $totalDeliveredKwhPeriod += $deliveredKwhPeriod;
-//
-//                    $quantityOfParticipationsEndCalendarYear = $quantityOfParticipations;
-//                    $totalDeliveredKwhPeriodEndCalendarYear = $totalDeliveredKwhPeriod;
-//
-//                    $dateBegin = $dateEndCalendarYearFromRevenue->copy()->addDay();
-//
-//                }
-//                $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateBegin);
-//                $deliveredKwhPeriod = $daysOfPeriod * $quantityOfParticipations;
-//                $totalDeliveredKwhPeriod += $deliveredKwhPeriod;
-//            }
-//        }
-//
-//        $returnParm['quantityOfParticipations'] = $quantityOfParticipations;
-//        $returnParm['totalDeliveredKwhPeriod'] = $totalDeliveredKwhPeriod;
-//        $returnParm['quantityOfParticipationsEndCalendarYear'] = $quantityOfParticipationsEndCalendarYear;
-//        $returnParm['totalDeliveredKwhPeriodEndCalendarYear'] = $totalDeliveredKwhPeriodEndCalendarYear;
-//        return $returnParm;
-//    }
 
     public function saveDistribution(ProjectRevenue $projectRevenue, ParticipantProject $participant, $closing)
     {
@@ -633,14 +271,6 @@ class ProjectRevenueController extends ApiController
         }else{
             $participantAddress = $participant->contact->primaryAddress;
         }
-
-//todo WM: opschonen
-//
-//        if($projectRevenue->category->code_ref == 'revenueKwhSplit' && !$closing) {
-//            $addressEnergySupplier = AddressEnergySupplier::find($participantAddress->previous_address_energy_supplier_id);
-//        }else{
-            $addressEnergySupplier = $participantAddress->primaryAddressEnergySupplier;
-//        }
 
         // If participant already is added to project revenue distribution then update
         if(ProjectRevenueDistribution::where('revenue_id', $projectRevenue->id)->where('participation_id', $participant->id)->exists()) {
@@ -654,13 +284,7 @@ class ProjectRevenueController extends ApiController
         $distribution->contact_id = $contact->id;
 
         if($projectRevenue->confirmed) {
-//todo WM: opschonen
-//
-//            if($projectRevenue->category->code_ref == 'revenueKwhSplit') {
-//                $distribution->status = 'processed';
-//            } else {
-                $distribution->status = 'confirmed';
-//            }
+            $distribution->status = 'confirmed';
         } else {
             $distribution->status = 'concept';
         }
@@ -688,6 +312,7 @@ class ProjectRevenueController extends ApiController
             $distribution->payout_type = '';
         }
 
+        $addressEnergySupplier = $participantAddress->primaryAddressEnergySupplier;
         if ($addressEnergySupplier) {
             $distribution->energy_supplier_name
                 = $addressEnergySupplier->energySupplier->name;
@@ -705,281 +330,12 @@ class ProjectRevenueController extends ApiController
         $distribution->participation_id = $participant->id;
         $distribution->save();
 
-//todo WM: opschonen
-//
-//        if($projectRevenue->category->code_ref == 'revenueKwh') {
-//            $this->saveDeliveredKwhPeriod($distribution);
-//            return;
-//        }
-//        if($projectRevenue->category->code_ref == 'revenueKwhSplit') {
-//            return $distribution;
-//        }
-
         if($projectRevenue->category->code_ref == 'revenueEuro' || $projectRevenue->category->code_ref == 'redemptionEuro') {
             // Recalculate values of distribution after saving
             $distribution->calculator()->runRevenueEuro();
             $distribution->save();
         }
     }
-
-//todo WM: opschonen
-//
-//    public function saveDeliveredKwhPeriod(ProjectRevenueDistribution $distribution)
-//    {
-//        $distributionId = $distribution->id;
-//        $revenue = $distribution->revenue;
-//
-//        $dateBeginFromRevenue = Carbon::parse($revenue->date_begin);
-//        $dateEndFromRevenue = Carbon::parse($revenue->date_end);
-//        $dateEndCalendarYearFromRevenue = Carbon::parse($revenue->date_begin)->endOfYear();
-//
-//        if (!$dateBeginFromRevenue || !$dateEndFromRevenue) return 0;
-//
-//        $quantityOfParticipations = 0;
-//
-//        $mutations = $distribution->participation->mutationsDefinitiveForKwhPeriod;
-//        foreach ($mutations as $index => $mutation) {
-//            $dateBegin = $dateBeginFromRevenue;
-//            $dateEnd = $dateEndFromRevenue;
-//
-//            $nextMutation = $mutations->get(++$index);
-//
-//            if($nextMutation) {
-//                $dateEnd = Carbon::parse($nextMutation->date_entry)->subDay();
-//            }
-//
-//            if($dateEnd > $dateEndFromRevenue) {
-//                $dateEnd = clone $dateEndFromRevenue;
-//            }
-//
-//            $dateEntry = Carbon::parse($mutation->date_entry);
-//
-//            // If date entry is after date begin then date begin is equal to date entry
-//            if($dateEntry > $dateBegin) $dateBegin = $dateEntry;
-//
-//            $dateEndForPeriod = clone $dateEnd;
-//            $dateEndCalendarYearFromRevenueForPeriod = clone $dateEndCalendarYearFromRevenue;
-//            if($dateBegin >= $dateBeginFromRevenue && $dateBegin <= $dateEndFromRevenue){
-//                $quantityOfParticipations += $mutation->quantity;
-//            }
-//
-//            if($dateEnd >= $dateBegin) {
-//
-//                $kwhEndCalendarYear = ($revenue->kwh_end_calendar_year_high ? $revenue->kwh_end_calendar_year_high : 0) + ($revenue->kwh_end_calendar_year_low ? $revenue->kwh_end_calendar_year_low : 0);
-//                $dateEndForCheck = clone $dateEnd;
-//                $dateEndForCheck->endOfDay();
-//                if ( $kwhEndCalendarYear > 0
-//                    && $dateBegin < $dateEndCalendarYearFromRevenue
-//                    && $dateEndForCheck >= $dateEndCalendarYearFromRevenue ) {
-//                    $daysOfPeriod = $dateEndCalendarYearFromRevenueForPeriod->addDay()->diffInDays($dateBegin);
-//
-//                    $deliveredKwhPeriod = ProjectRevenueDeliveredKwhPeriod::updateOrCreate(
-//                        [
-//                            'distribution_id' => $distributionId,
-//                            'revenue_id' => $revenue->id,
-//                            'date_begin' => $dateBegin
-//                        ],
-//                        [
-//                            'date_end' => $dateEndCalendarYearFromRevenue,
-//                            'days_of_period' => $daysOfPeriod,
-//                            'participations_quantity' => $quantityOfParticipations
-//                        ]
-//                    );
-//                    $deliveredKwhPeriod->save();
-//
-//                    $dateBegin = $dateEndCalendarYearFromRevenue->copy()->addDay();
-//                }
-//
-//                $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateBegin);
-//
-//                $deliveredKwhPeriod = ProjectRevenueDeliveredKwhPeriod::updateOrCreate(
-//                    [
-//                        'distribution_id' => $distributionId,
-//                        'revenue_id' => $revenue->id,
-//                        'date_begin' => $dateBegin
-//                    ],
-//                    [
-//                        'date_end' => $dateEnd,
-//                        'days_of_period' => $daysOfPeriod,
-//                        'participations_quantity' => $quantityOfParticipations
-//                    ]
-//                );
-//                $deliveredKwhPeriod->save();
-//            }
-//        }
-//    }
-
-//todo WM: opschonen (verplaatst naar RevenuesKwhController en RevenuePartsKwhController
-//
-//    public function createEnergySupplierReport(
-//        Request $request,
-//        ProjectRevenue $projectRevenue,
-//        DocumentTemplate $documentTemplate
-//    )
-//    {
-//        $documentName = $request->input('documentName');
-//
-//        //get current logged in user
-//        $user = Auth::user();
-//
-//        //load template parts
-//        $documentTemplate->load('footer', 'baseTemplate', 'header');
-//
-//        $html = $documentTemplate->header ? $documentTemplate->header->html_body
-//            : '';
-//
-//        if ($documentTemplate->baseTemplate) {
-//            $html .= TemplateVariableHelper::replaceTemplateTagVariable($documentTemplate->baseTemplate->html_body,
-//                $documentTemplate->html_body, '', '');
-//        } else {
-//            $html .= TemplateVariableHelper::replaceTemplateFreeTextVariables($documentTemplate->html_body,
-//                '', '');
-//        }
-//
-//        $html .= $documentTemplate->footer
-//            ? $documentTemplate->footer->html_body : '';
-//
-//        $project = $projectRevenue->project;
-//
-//        $energySupplierHtml
-//            = TemplateVariableHelper::replaceTemplateVariables($html,
-//            'opbrengst', $projectRevenue);
-//        $energySupplierHtml
-//            = TemplateVariableHelper::replaceTemplateVariables($energySupplierHtml,
-//            'project', $project);
-//        $energySupplierHtml
-//            = TemplateVariableHelper::replaceTemplateVariables($energySupplierHtml,
-//            'ik', $user);
-//        $energySupplierHtml
-//            = TemplateVariableHelper::replaceTemplateVariables($energySupplierHtml,
-//            'administratie', $project->administration);
-//
-//        $energySupplierHtml
-//            = TemplateVariableHelper::stripRemainingVariableTags($energySupplierHtml);
-//
-//        $pdf = PDF::loadView('documents.generic', [
-//            'html' => $energySupplierHtml,
-//        ])->output();
-//
-//        $document = new Document();
-//        $document->document_type = 'internal';
-//        $document->document_group = 'revenue';
-//        $document->project_id = $projectRevenue->project->id;
-//
-//        $document->filename = $documentName . '.pdf';
-//
-//        $document->save();
-//
-//        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents/'
-//            . $document->filename));
-//        file_put_contents($filePath, $pdf);
-//
-//        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-//
-//        $alfrescoResponse = $alfrescoHelper->createFile($filePath,
-//            $document->filename, $document->getDocumentGroup()->name);
-//
-//        $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-//        $document->save();
-//
-//        //delete file on server, still saved on alfresco.
-//        Storage::disk('documents')->delete($document->filename);
-//    }
-
-//todo WM: opschonen (verplaatst naar RevenuesKwhController en RevenuePartsKwhController
-//
-//    public function createEnergySupplierAllExcel(
-//        Request $request,
-//        ProjectRevenue $projectRevenue
-//    )
-//    {
-//        $energySupplierIds = array_unique($projectRevenue->distribution()->whereNotNull('es_id')->pluck('es_id')->toArray());
-//        foreach ($energySupplierIds as $energySupplierId) {
-//            $energySupplier = EnergySupplier::find($energySupplierId);
-//            $this->createEnergySupplierExcel($request, $projectRevenue, $energySupplier, true);
-//        }
-//    }
-//
-//    public function createEnergySupplierOneExcel(
-//        Request $request,
-//        ProjectRevenue $projectRevenue,
-//        EnergySupplier $energySupplier
-//    )
-//    {
-//            $this->createEnergySupplierExcel($request, $projectRevenue, $energySupplier, false);
-//    }
-//
-//    protected function createEnergySupplierExcel(
-//        Request $request,
-//        ProjectRevenue $projectRevenue,
-//        EnergySupplier $energySupplier,
-//        $createAll
-//    )
-//    {
-//        switch ($energySupplier->file_format_id){
-//            case 1:
-//                $fileFormat = '.xls';
-//                break;
-//            default:
-//                $fileFormat = '.xlsx';
-//                break;
-//        }
-//
-//        $documentName = $request->input('documentName');
-//        $fileName = $createAll ? ($documentName . '-' . $energySupplier->abbreviation . $fileFormat) : $documentName . $fileFormat;
-//        $templateId = $energySupplier->excel_template_id;
-//
-//        if ($templateId) {
-//            set_time_limit(0);
-//            $excelHelper = new EnergySupplierExcelHelper($energySupplier,
-//                $projectRevenue, $templateId, $fileName);
-//            $excel = $excelHelper->getExcel();
-//        }else{
-//            abort(412, 'Geen geldige excel template gevonden.');
-//        }
-//
-//        $document = new Document();
-//        $document->document_type = 'internal';
-//        $document->document_group = 'revenue';
-//        $document->project_id = $projectRevenue->project->id;
-//
-//        $document->filename = $fileName;
-//
-//        $document->save();
-//
-//        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR
-//            . $document->filename));
-//
-//        switch ($energySupplier->file_format_id){
-//            case 1:
-//                $writer = new Xls($excel);
-//                break;
-//            default:
-//                $writer = new Xlsx($excel);
-//                break;
-//        }
-//        $writer->save($filePath);
-//
-////        die("stop hier maar even voor testdoeleinden Excel (behoud file.xlsx in storage/app/documents)");
-//
-//        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local')
-//        {
-//            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-//
-//            $alfrescoResponse = $alfrescoHelper->createFile($filePath,
-//                $document->filename, $document->getDocumentGroup()->name);
-//            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-//        }else{
-//            $alfrescoResponse = null;
-//        }
-//
-//        $document->save();
-//
-//        //delete file on server, still saved on alfresco.
-//        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-//            Storage::disk('documents')->delete($document->filename);
-//        }
-//    }
 
     public function destroy(ProjectRevenue $projectRevenue)
     {
@@ -1034,33 +390,25 @@ class ProjectRevenueController extends ApiController
             //status moet nog bevestigd (confirmed zijn)
             if ($distribution->status === 'confirmed')
             {
-//todo WM: opschonen (verplaatst naar RevenuesKwhController en RevenuePartsKwhController
-//
-                // indien Opbrengst Kwh, dan geen voorwaarden inzake adres of IBAN
-//                if ($distribution->revenue->category->code_ref === 'revenueKwh' || $distribution->revenue->category->code_ref === 'revenueKwhSplit') {
-//                    $distribution->status = 'in-progress';
-//                    $distribution->save();
-//                }else{
-                    // indien Opbrengst Euro, dan wel voorwaarden inzake adres of IBAN (afhankellijk van payout type)
-                    if ($distribution->payout_type_id === $payoutTypeAccountId
-                        && ($distribution->payout > 0)
-                        && !(empty($distribution->address)
-                            || empty($distribution->postal_code)
-                            || empty($distribution->city)
-                            || (empty($distribution->participation->iban_payout) && empty($distribution->contact->iban))
-                        )
+                // indien Opbrengst Euro, dan wel voorwaarden inzake adres of IBAN (afhankellijk van payout type)
+                if ($distribution->payout_type_id === $payoutTypeAccountId
+                    && ($distribution->payout > 0)
+                    && !(empty($distribution->address)
+                        || empty($distribution->postal_code)
+                        || empty($distribution->city)
+                        || (empty($distribution->participation->iban_payout) && empty($distribution->contact->iban))
                     )
-                    {
-                            $distribution->status = 'in-progress';
-                        $distribution->save();
-                    }
-                    if ($distribution->payout_type_id === $payoutTypeCreditId
-                        && ($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital' || $distribution->payout > 0)
-                    ) {
+                )
+                {
                         $distribution->status = 'in-progress';
-                        $distribution->save();
-                    }
-//                }
+                    $distribution->save();
+                }
+                if ($distribution->payout_type_id === $payoutTypeCreditId
+                    && ($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital' || $distribution->payout > 0)
+                ) {
+                    $distribution->status = 'in-progress';
+                    $distribution->save();
+                }
             }
         }
 
@@ -1069,85 +417,69 @@ class ProjectRevenueController extends ApiController
             //status moet nu onderhanden zijn (in-progress zijn)
             if ($distribution->status === 'in-progress')
             {
-//todo WM: opschonen (verplaatst naar RevenuesKwhController en RevenuePartsKwhController
-//
-                // indien Opbrengst Kwh, dan alleen mutation aanmaken en daarna status op Afgehandeld (processed).
-//                if ($distribution->revenue->category->code_ref === 'revenueKwh' || $distribution->revenue->category->code_ref === 'revenueKwhSplit') {
-//                    if($distribution->revenue->category->code_ref == 'revenueKwhSplit') {
-//                        $addressEnergySupplier = AddressEnergySupplier::find($distribution->participation->address->previous_address_energy_supplier_id);
-//                    }else{
-//                        $addressEnergySupplier = $distribution->participation->address->primaryAddressEnergySupplier;
-//                    }
-//                    if($distribution->revenue->category->code_ref !== 'revenueKwhSplit'){
-//                        $this->createParticipantMutationForRevenueKwh($distribution, $datePayout, $addressEnergySupplier);
-//                    }
-//                    $distribution->status = 'processed';
-//                    $distribution->save();
-//                }else{
-                    // indien Opbrengst Euro, dan gaan we of notas en sepa aanmaken of bijschrijven (afhankellijk van payout type)
-                    if ($distribution->payout_type_id === $payoutTypeAccountId)
-                    {
-                        $currentYear = Carbon::now()->year;
-                        // Haal laatst uitgedeelde uitkeringsnotanummer op (binnen aanmaakjaar)
-                        $lastPaymentInvoice = PaymentInvoice::where('administration_id',
-                            $distribution->revenue->project->administration_id)->where('invoice_number', '!=', 0)
-                            ->whereYear('created_at', '=', $currentYear)->orderBy('invoice_number', 'desc')->first();
+                // indien Opbrengst Euro, dan gaan we of notas en sepa aanmaken of bijschrijven (afhankellijk van payout type)
+                if ($distribution->payout_type_id === $payoutTypeAccountId)
+                {
+                    $currentYear = Carbon::now()->year;
+                    // Haal laatst uitgedeelde uitkeringsnotanummer op (binnen aanmaakjaar)
+                    $lastPaymentInvoice = PaymentInvoice::where('administration_id',
+                        $distribution->revenue->project->administration_id)->where('invoice_number', '!=', 0)
+                        ->whereYear('created_at', '=', $currentYear)->orderBy('invoice_number', 'desc')->first();
 
-                        $newInvoiceNumber = 1;
-                        if ($lastPaymentInvoice) {
-                            $newInvoiceNumber = ($lastPaymentInvoice->invoice_number + 1);
-                        }
-
-                        if (PaymentInvoice::where('administration_id',
-                            $distribution->revenue->project->administration_id)
-                            ->where('invoice_number', '=', $newInvoiceNumber)
-                            ->whereYear('created_at', '=', $currentYear)
-                            ->exists()
-                        ) {
-                            // voor abort status weer even terug zetten naar confirmed (anders blijft ie op "in-progress" hangen).
-                            $distribution->status = 'confirmed';
-                            $distribution->save();
-                            abort(404, "Voor uitkeringsnota met administratie ID "
-                                . $distribution->revenue->project->administration_id . " en revenue distribution ID "
-                                . $distribution->id . " kon geen nieuw nummer bepaald worden.");
-                        } else {
-                            $paymentInvoice = new PaymentInvoice();
-                            $paymentInvoice->revenue_distribution_id = $distribution->id;
-                            $paymentInvoice->administration_id
-                                = $distribution->revenue->project->administration_id;
-                            $paymentInvoice->invoice_number = $newInvoiceNumber;
-                            $paymentInvoice->number = 'U' . Carbon::now()->year . '-' . $newInvoiceNumber;
-                            $paymentInvoice->status_id = 'sent';
-                            $paymentInvoice->save();
-                        }
-                        array_push($createdInvoices, $paymentInvoice);
+                    $newInvoiceNumber = 1;
+                    if ($lastPaymentInvoice) {
+                        $newInvoiceNumber = ($lastPaymentInvoice->invoice_number + 1);
                     }
 
-                    if ($distribution->payout_type_id === $payoutTypeCreditId) {
-                        $participantMutation = new ParticipantMutation();
-                        $participantMutation->participation_id = $distribution->participation_id;
-                        $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'result')
-                            ->where('project_type_id', $distribution->participation->project->project_type_id)->value('id');
-                        $participantMutation->status_id = ParticipantMutationStatus::where('code_ref', 'final')
-                            ->value('id');
-                        $participantMutation->amount = $distribution->payout;
-                        $participantMutation->returns = $distribution->payout;
-                        $participantMutation->paid_on = 'Bijschrijven';
-                        $participantMutation->date_entry = $datePayout;
-                        $participantMutation->save();
-
-                        // Recalculate dependent data in participantProject
-                        $participantMutation->participation->calculator()->run()->save();
-
-                        // Recalculate dependent data in project
-                        $participantMutation->participation->project->calculator()->run()->save();
+                    if (PaymentInvoice::where('administration_id',
+                        $distribution->revenue->project->administration_id)
+                        ->where('invoice_number', '=', $newInvoiceNumber)
+                        ->whereYear('created_at', '=', $currentYear)
+                        ->exists()
+                    ) {
+                        // voor abort status weer even terug zetten naar confirmed (anders blijft ie op "in-progress" hangen).
+                        $distribution->status = 'confirmed';
+                        $distribution->save();
+                        abort(404, "Voor uitkeringsnota met administratie ID "
+                            . $distribution->revenue->project->administration_id . " en revenue distribution ID "
+                            . $distribution->id . " kon geen nieuw nummer bepaald worden.");
+                    } else {
+                        $paymentInvoice = new PaymentInvoice();
+                        $paymentInvoice->revenue_distribution_id = $distribution->id;
+                        $paymentInvoice->administration_id
+                            = $distribution->revenue->project->administration_id;
+                        $paymentInvoice->invoice_number = $newInvoiceNumber;
+                        $paymentInvoice->number = 'U' . Carbon::now()->year . '-' . $newInvoiceNumber;
+                        $paymentInvoice->status_id = 'sent';
+                        $paymentInvoice->save();
                     }
+                    array_push($createdInvoices, $paymentInvoice);
+                }
 
-                    // Nu kan status op Afgehandeld (processed).
-                    $distribution->status = 'processed';
-                    $distribution->date_payout = $datePayout;
-                    $distribution->save();
-//                }
+                if ($distribution->payout_type_id === $payoutTypeCreditId) {
+                    $participantMutation = new ParticipantMutation();
+                    $participantMutation->participation_id = $distribution->participation_id;
+                    $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'result')
+                        ->where('project_type_id', $distribution->participation->project->project_type_id)->value('id');
+                    $participantMutation->status_id = ParticipantMutationStatus::where('code_ref', 'final')
+                        ->value('id');
+                    $participantMutation->amount = $distribution->payout;
+                    $participantMutation->returns = $distribution->payout;
+                    $participantMutation->paid_on = 'Bijschrijven';
+                    $participantMutation->date_entry = $datePayout;
+                    $participantMutation->save();
+
+                    // Recalculate dependent data in participantProject
+                    $participantMutation->participation->calculator()->run()->save();
+
+                    // Recalculate dependent data in project
+                    $participantMutation->participation->project->calculator()->run()->save();
+                }
+
+                // Nu kan status op Afgehandeld (processed).
+                $distribution->status = 'processed';
+                $distribution->date_payout = $datePayout;
+                $distribution->save();
             }
         }
         return $createdInvoices;

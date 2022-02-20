@@ -96,8 +96,8 @@ class DeleteRevenuesKwh implements DeleteInterface
         foreach ($this->revenuesKwh->conceptValuesKwh as $conceptValueKwh){
             $conceptValueKwh->delete();
         }
-        foreach ($this->revenuesKwh->conceptPartsKwh as $conceptPartKwh){
-            $conceptPartKwh->delete();
+        foreach ($this->revenuesKwh->newOrConceptPartsKwh as $newOrConceptPartsKwh){
+            $newOrConceptPartsKwh->delete();
         }
     }
 

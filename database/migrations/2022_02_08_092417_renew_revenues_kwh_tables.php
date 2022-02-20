@@ -146,9 +146,6 @@ class RenewRevenuesKwhTables extends Migration
                 $table->double('kwh_end_low', 12, 6)->nullable();
                 $table->string('status')->nullable();
                 $table->double('delivered_kwh', 12, 6)->nullable();
-//                $table->double('delivered_total_concept', 12, 6)->nullable();
-//                $table->double('delivered_total_confirmed', 12, 6)->nullable();
-//                $table->double('delivered_total_processed', 12, 6)->nullable();
 
                 $table->timestamps();
             });
@@ -159,8 +156,6 @@ class RenewRevenuesKwhTables extends Migration
                 $table->increments('id');
 
                 $table->unsignedInteger('revenue_values_id');
-//                $table->foreign('revenue_values_id')
-//                    ->references('id')->on('revenue_values_kwh');
                 $table->unsignedInteger('distribution_id');
                 $table->foreign('distribution_id')
                     ->references('id')->on('revenue_distribution_kwh')
@@ -200,9 +195,6 @@ class RenewRevenuesKwhTables extends Migration
                 $table->string('status')->nullable();
                 $table->integer('participations_quantity')->nullable();
                 $table->double('delivered_kwh', 12, 6)->nullable();
-//                $table->double('delivered_total_concept', 12, 6)->nullable();
-//                $table->double('delivered_total_confirmed', 12, 6)->nullable();
-//                $table->double('delivered_total_processed', 12, 6)->nullable();
                 $table->unsignedInteger('es_id')->nullable();
                 $table->foreign('es_id')
                     ->references('id')->on('energy_suppliers')
@@ -235,7 +227,6 @@ class RenewRevenuesKwhTables extends Migration
             Schema::table('revenue_distribution_values_kwh', function (Blueprint $table) {
                 $table->dropForeign(['distribution_id']);
                 $table->dropForeign(['revenue_id']);
-//                $table->dropForeign(['revenue_values_id']);
             });
             Schema::dropIfExists('revenue_distribution_values_kwh');
         }

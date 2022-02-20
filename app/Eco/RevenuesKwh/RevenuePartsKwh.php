@@ -2,7 +2,9 @@
 
 namespace App\Eco\RevenuesKwh;
 
+use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Venturecraft\Revisionable\RevisionableTrait;

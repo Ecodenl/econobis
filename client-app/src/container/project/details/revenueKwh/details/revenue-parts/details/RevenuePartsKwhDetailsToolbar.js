@@ -68,7 +68,7 @@ class RevenuePartsKwhDetailsToolbar extends Component {
                                     {/*            onClickAction={this.toggleDelete}*/}
                                     {/*        />*/}
                                     {/*    )}*/}
-                                    {revenuePartsKwh.confirmed && (
+                                    {revenuePartsKwh.confirmed ? (
                                         <div className="nav navbar-nav btn-group" role="group">
                                             <button className="btn btn-success btn-sm" data-toggle="dropdown">
                                                 Rapportage Energie leverancier
@@ -82,7 +82,7 @@ class RevenuePartsKwhDetailsToolbar extends Component {
                                                 </li>
                                             </ul>
                                         </div>
-                                    )}
+                                    ) : null}
                                     <ButtonIcon iconName={'glyphicon-download-alt'} onClickAction={this.getCSV} />
                                 </div>
                             </div>

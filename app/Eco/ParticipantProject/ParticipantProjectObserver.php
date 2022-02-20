@@ -67,10 +67,6 @@ class ParticipantProjectObserver
             foreach($participantProject->project->projectRevenues as $projectRevenue) {
                 // If project revenue is already confirmed then continue
                 if($projectRevenue->confirmed) continue;
-//todo WM: opschonen
-//
-//                // If project revenue split then continue
-//                if($projectRevenue->category->code_ref == 'revenueKwhSplit') continue;
 
                 $projectRevenueController = new ProjectRevenueController();
                 $projectRevenueController->saveDistribution($projectRevenue, $participantProject, false);
@@ -83,14 +79,6 @@ class ParticipantProjectObserver
                         $distribution->save();
                     }
                 }
-//todo WM: opschonen
-//
-//                if($projectRevenue->category->code_ref == 'revenueKwh') {
-//                    foreach($projectRevenue->distribution as $distribution) {
-//                        $distribution->calculator()->runRevenueKwh();
-//                        $distribution->save();
-//                    }
-//                }
             }
 
             $revenuesKwhController = new RevenuesKwhController();
@@ -99,12 +87,11 @@ class ParticipantProjectObserver
                 if($revenuesKwh->confirmed) continue;
 
                 $revenuesKwhController->saveDistributionKwh($revenuesKwh, $participantProject);
-
-// todo WM: uitzoeken wat we hier nu moeten doen met nieuwe opzet tabeleln
-//                foreach($revenuesKwh->distributionKwh as $distributionKwh) {
-//                    $distributionKwh->calculator()->runRevenueKwh();
-//                    $distributionKwh->save();
-//                }
+                foreach($revenuesKwh->partsKwh as $revenuePartsKwh) {
+                    if($revenuePartsKwh->status == 'concept') {
+                        $revenuePartsKwh->calculator()->runRevenueKwh(null);
+                    }
+                }
             }
         }
 

@@ -8,6 +8,7 @@
 
 namespace App\Eco\ParticipantMutation;
 
+use App\Http\Controllers\Api\Project\RevenuesKwhController;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -55,6 +56,20 @@ class ParticipantMutationObserver
             $participantProject = $participantMutation->participation;
             $participantProject->date_register = $participantProject->dateEntryFirstDeposit;
             $participantProject->save();
+
+            $revenuesKwhController = new RevenuesKwhController();
+            foreach($participantProject->project->revenuesKwh as $revenuesKwh) {
+                // If project revenue is already confirmed then continue
+                if($revenuesKwh->confirmed) continue;
+
+                $revenuesKwhController->saveDistributionKwh($revenuesKwh, $participantProject);
+                foreach($revenuesKwh->partsKwh as $revenuePartsKwh) {
+                    if($revenuePartsKwh->status == 'concept') {
+                        $revenuePartsKwh->calculator()->runRevenueKwh(null);
+                    }
+                }
+            }
+
         }
     }
 

@@ -33,6 +33,10 @@ const RevenuesKwhListFormView = ({
                 return 'Definitief';
             case 'in-progress':
                 return 'Bezig...';
+            case 'in-progress-report':
+                return 'Bezig met rapportage...';
+            case 'in-progress-process':
+                return 'Bezig met verdelen...';
             case 'processed':
                 return 'Verwerkt';
         }

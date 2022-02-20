@@ -66,6 +66,10 @@ class RevenuesKwhFormEdit extends Component {
                 return 'Definitief';
             case 'in-progress':
                 return 'Bezig...';
+            case 'in-progress-report':
+                return 'Bezig met rapportage...';
+            case 'in-progress-process':
+                return 'Bezig met verwerken...';
             case 'processed':
                 return 'Verwerkt';
         }
@@ -192,7 +196,7 @@ class RevenuesKwhFormEdit extends Component {
     render() {
         const { confirmed, status, dateBegin, dateEnd, dateConfirmed, payoutKwh } = this.state.revenuesKwh;
         const project = this.props.revenuesKwh.project;
-        const { category } = this.props.revenuesKwh;
+        const { hasNewPartsKwh } = this.props.revenuesKwh;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -245,7 +249,7 @@ class RevenuesKwhFormEdit extends Component {
                         label={'Datum definitief'}
                         name={'dateConfirmed'}
                         value={dateConfirmed}
-                        readOnly={status == 'new' || status == 'processed'}
+                        readOnly={status == 'new' || status == 'processed' || hasNewPartsKwh}
                         onChangeAction={this.handleInputChangeDateConfirmed}
                     />
                     <InputText

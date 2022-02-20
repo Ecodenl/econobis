@@ -148,6 +148,22 @@ class RevenuesKwhController extends ApiController
 
         if($revenuesKwh->confirmed) {
             if ($revenuesKwh->status == 'concept') {
+                // Alle voorgaande parts met status concept ook definitief maken (confirmed)
+                foreach ($revenuesKwh->conceptPartsKwh as $conceptRevenuePartKwh){
+                    $conceptRevenuePartKwh->confirmed = true;
+                    $conceptRevenuePartKwh->status = 'confirmed';
+                    $conceptRevenuePartKwh->date_confirmed = $revenuesKwh->date_confirmed;
+                    foreach($conceptRevenuePartKwh->conceptDistributionPartsKwh as $distributionPreviousPartsKwh){
+                        $distributionPreviousPartsKwh->status = 'confirmed';
+                        $distributionPreviousPartsKwh->save();
+                    }
+                    foreach($conceptRevenuePartKwh->conceptDistributionValuesKwh as $distributionPreviousValuesKwh){
+                        $distributionPreviousValuesKwh->status = 'confirmed';
+                        $distributionPreviousValuesKwh->save();
+                    }
+                    $conceptRevenuePartKwh->save();
+                    $conceptRevenuePartKwh->calculator()->runRevenueKwh(null);
+                }
                 $revenuesKwh->status = 'confirmed';
             }
         }
@@ -213,36 +229,14 @@ class RevenuesKwhController extends ApiController
             $distributionKwh->energy_supplier_ean_electricity = $participantAddress->ean_electricity;
         }
         $distributionKwh->participations_quantity = $this->determineParticipationsQuantity($distributionKwh);
-
-//        todo WM: anders, doortellen vanuit parts?
-//        foreach($revenuesKwh->distributionKwh as $distributionKwh) {
-//            $distributionKwh->calculator()->runRevenueKwh();
-//            $distributionKwh->save();
-//        }
-//        foreach ($revenuesKwh->distributionKwh as $distributionKwh) {
-//            $distributionKwh->delivered_total_concept = $distributionKwh->distributionValuesKwh->where('status', '==', 'concept')->sum('delivered_kwh');
-//            $distributionKwh->delivered_total_confirmed = $distributionKwh->distributionValuesKwh->where('status', '==', 'confirmed')->sum('delivered_kwh');
-//            $distributionKwh->delivered_total_processed = $distributionKwh->distributionValuesKwh->where('status', '==', 'processed')->sum('delivered_kwh');
-//            $distributionKwh->save();
-//        }
-//        foreach ($revenuesKwh->partsKwh as $partsKwh) {
-//            $partsKwh->delivered_total_concept = $this->revenuePartsKwh->distributionPartsKwh->where('status', '==', 'concept')->sum('delivered_kwh');
-//            $partsKwh->delivered_total_confirmed = $this->revenuePartsKwh->distributionPartsKwh->where('status', '==', 'confirmed')->sum('delivered_kwh');
-//            $partsKwh->delivered_total_processed = $this->revenuePartsKwh->distributionPartsKwh->where('status', '==', 'processed')->sum('delivered_kwh');
-//            $partsKwh->save();
-//        }
-//        $revenuesKwh->delivered_total_concept = $revenuesKwh->distributionPartsKwh->where('status', '==', 'concept')->sum('delivered_kwh');
-//        $revenuesKwh->delivered_total_confirmed = $revenuesKwh->distributionPartsKwh->where('status', '==', 'confirmed')->sum('delivered_kwh');
-//        $revenuesKwh->delivered_total_processed = $revenuesKwh->distributionPartsKwh->where('status', '==', 'processed')->sum('delivered_kwh');
-//        $revenuesKwh->save();
+        $distributionKwh->save();
     }
 
     protected function determineParticipationsQuantity(RevenueDistributionKwh $distributionKwh)
     {
         $quantityOfParticipations = 0;
-        $dateBeginInitial = Carbon::parse($distributionKwh->revenuesKwh->date_begin);
+        $dateBeginInitial = Carbon::parse($distributionKwh->participation->date_register);
         $dateEndInitial = Carbon::parse($distributionKwh->revenuesKwh->date_end);
-
         $mutations = $distributionKwh->participation->mutationsDefinitiveForKwhPeriod;
         foreach ($mutations as $index => $mutation) {
             $dateEntry = Carbon::parse($mutation->date_entry);

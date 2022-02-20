@@ -213,6 +213,8 @@ class RevenuesKwhController extends ApiController
             $distributionKwh->energy_supplier_ean_electricity = $participantAddress->ean_electricity;
         }
         $distributionKwh->participations_quantity = $this->determineParticipationsQuantity($distributionKwh);
+        $distributionKwh->save();
+
 
 //        todo WM: anders, doortellen vanuit parts?
 //        foreach($revenuesKwh->distributionKwh as $distributionKwh) {
@@ -240,9 +242,8 @@ class RevenuesKwhController extends ApiController
     protected function determineParticipationsQuantity(RevenueDistributionKwh $distributionKwh)
     {
         $quantityOfParticipations = 0;
-        $dateBeginInitial = Carbon::parse($distributionKwh->revenuesKwh->date_begin);
+        $dateBeginInitial = Carbon::parse($distributionKwh->participation->date_register);
         $dateEndInitial = Carbon::parse($distributionKwh->revenuesKwh->date_end);
-
         $mutations = $distributionKwh->participation->mutationsDefinitiveForKwhPeriod;
         foreach ($mutations as $index => $mutation) {
             $dateEntry = Carbon::parse($mutation->date_entry);

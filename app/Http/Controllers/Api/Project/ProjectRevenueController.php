@@ -23,6 +23,7 @@ use App\Eco\Project\ProjectRevenueDeliveredKwhPeriod;
 use App\Eco\Project\ProjectType;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\RevenueDistributionCSVHelper;
+use App\Helpers\CSV\RevenueDistributionKwhCSVHelper;
 use App\Helpers\CSV\RevenueParticipantsCSVHelper;
 use App\Helpers\Delete\Models\DeleteRevenue;
 use App\Helpers\Email\EmailHelper;

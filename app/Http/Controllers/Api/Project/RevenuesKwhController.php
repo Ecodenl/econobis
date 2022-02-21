@@ -15,6 +15,7 @@ use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\RevenueDistributionCSVHelper;
+use App\Helpers\CSV\RevenueDistributionKwhCSVHelper;
 use App\Helpers\Delete\Models\DeleteRevenuesKwh;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Excel\EnergySupplierExcelHelper;
@@ -60,7 +61,7 @@ class RevenuesKwhController extends ApiController
     {
         set_time_limit(0);
 
-        $revenuesKwh = new RevenueDistributionCSVHelper($revenuesKwh->distributionKwh, $revenuesKwh->project->project_type_id);
+        $revenuesKwh = new RevenueDistributionKwhCSVHelper($revenuesKwh, $revenuesKwh->project->project_type_id);
 
         return $revenuesKwh->downloadCSV();
     }

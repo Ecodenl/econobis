@@ -60,6 +60,7 @@ class conversionProjectRevenuesKwh extends Command
         DB::statement('DELETE FROM revenue_parts_kwh;');
         DB::statement('DELETE FROM revenues_kwh;');
         DB::statement('DELETE FROM xxx_project_revenues;');
+        DB::statement('DELETE FROM xxx_conversion_revenues_kwh;');
         DB::statement('INSERT xxx_project_revenues SELECT * FROM old_project_revenues;');
         DB::statement('UPDATE xxx_project_revenues SET type_id = null;');
 
@@ -81,6 +82,7 @@ class conversionProjectRevenuesKwh extends Command
         $oldProjectRevenuesKwhSplit = DB::table('xxx_project_revenues')
             ->where('category_id', $this->projectRevenueKwhSplitCategoryId)
             ->orderBy('date_begin')->get();
+
         foreach($oldProjectRevenuesKwhSplit as $oldProjectSplitRevenue) {
             // Check of tussentijds periode reeds valt in een totale opbrengstverdeling.
             // tt 01-01-2022 t/m 30-06-2022
@@ -113,20 +115,59 @@ class conversionProjectRevenuesKwh extends Command
             }
         }
 
-        // Re-add Dispatcher
+        $xxxConversionRevenuesKwh = DB::table('xxx_conversion_revenues_kwh')->get();
+        foreach($xxxConversionRevenuesKwh as $conversionRevenuesKwh) {
+            // 1 de concept revenues zonder split.
+            if($conversionRevenuesKwh->participation_id == null && $conversionRevenuesKwh->old_confirmed == false && $conversionRevenuesKwh->hasSplitKwh == false){
+                $this->doConversion1($conversionRevenuesKwh);
+            }
+            // 2 de bevestigde revenues zonder split.
+            if($conversionRevenuesKwh->participation_id == null && $conversionRevenuesKwh->old_confirmed == true && $conversionRevenuesKwh->hasSplitKwh == false){
+
+            }
+            // 3 de concept revenues met split.
+            if($conversionRevenuesKwh->participation_id == null && $conversionRevenuesKwh->old_confirmed == true && $conversionRevenuesKwh->hasSplitKwh == true){
+
+            }
+            // 4 de bevestigde revenues met split.
+            if($conversionRevenuesKwh->participation_id == null && $conversionRevenuesKwh->old_confirmed == true && $conversionRevenuesKwh->hasSplitKwh == true){
+
+            }
+            // 5 de split revenues (zonder total revenue).
+            if($conversionRevenuesKwh->participation_id != null){
+
+            }
+
+        }
+
+
+            // Re-add Dispatcher
         ProjectRevenue::setEventDispatcher($dispatcherProjectRevenue);
         RevenuesKwh::setEventDispatcher($dispatcherRevenuesKwh);
         RevenuePartsKwh::setEventDispatcher($dispatcherRevenuePartsKwh);
 
     }
 
-    /**
-     * @param $oldProjectRevenue
-     * @param $projectRevenueKwhCategory
-     * @param $createFromSplit
-     */
     protected function createRevenuesKwh($oldProjectRevenue): void
     {
+        $hasSplitKwh = ProjectRevenue::where('project_id', $oldProjectRevenue->project_id)
+            ->whereNotNull('participation_id')
+            ->where('category_id', $this->projectRevenueKwhSplitCategoryId)
+            ->where('date_end', '>=', $oldProjectRevenue->date_begin)
+            ->where('date_end', '<', $oldProjectRevenue->date_end)
+            ->orderBy('date_end', 'desc')->exists();
+
+        $belongsToProjectRevenueId = null;
+//        if($oldProjectRevenue->category_id == $this->projectRevenueKwhSplitCategoryId){
+//            $belongsToProjectRevenue = ProjectRevenue::where('project_id', $oldProjectRevenue->project_id)
+//                ->whereNull('participation_id')
+//                ->where('category_id', $this->projectRevenueKwhCategoryId)
+//                ->where('date_begin', '<=', $oldProjectRevenue->date_begin)
+//                ->where('date_end', '>', $oldProjectRevenue->date_begin)
+//                ->orderBy('date_end', 'desc')->first();
+//            $belongsToProjectRevenueId = $belongsToProjectRevenue ? $belongsToProjectRevenue->id : null;
+//        }
+
         $revenuesKwh = RevenuesKwh::create([
             'category_id' => $this->projectRevenueKwhCategoryId,
             'project_id' => $oldProjectRevenue->project_id,
@@ -142,7 +183,7 @@ class conversionProjectRevenuesKwh extends Command
             'updated_at' => $oldProjectRevenue->updated_at,
         ]);
         $remarks = 'Nieuw gemaakt obv oude';
-        DB::insert('insert into xxx_conversion_revenues_kwh (new_revenue_id, old_revenue_id, remarks) values (?, ?, ?)', [$revenuesKwh->id, $oldProjectRevenue->id, $remarks]);
+        DB::insert('insert into xxx_conversion_revenues_kwh (new_revenue_id, old_revenue_id, old_confirmed, hasSplitKwh, participation_id, belongs_to_project_revenue_id, remarks) values (?, ?, ?, ?, ?, ?, ?)', [$revenuesKwh->id, $oldProjectRevenue->id, $oldProjectRevenue->confirmed, $hasSplitKwh, $oldProjectRevenue->participation_id, $belongsToProjectRevenueId, $remarks]);
 
         $valuesKwhData = [
             'valuesDateBegin' => $oldProjectRevenue->date_begin,
@@ -159,10 +200,15 @@ class conversionProjectRevenuesKwh extends Command
     }
 
     /**
-     * @param string $request
-     * @param $revenuesKwh
+     * @param $conversionRevenuesKwh
+     * de concept revenues zonder split
      */
-    public function createStartRevenueValuesKwh(array $valuesKwhData, RevenuesKwh $revenuesKwh): void
+    protected function doConversion1($conversionRevenuesKwh): void
+    {
+
+    }
+
+    protected function createStartRevenueValuesKwh(array $valuesKwhData, RevenuesKwh $revenuesKwh): void
     {
         RevenueValuesKwh::create([
             'revenue_id' => $revenuesKwh->id,
@@ -179,11 +225,7 @@ class conversionProjectRevenuesKwh extends Command
 
     }
 
-    /**
-     * @param string $request
-     * @param $revenuesKwh
-     */
-    public function createStartRevenuePartsKwh(RevenuesKwh $revenuesKwh): void
+    protected function createStartRevenuePartsKwh(RevenuesKwh $revenuesKwh): void
     {
         $splitDates = [];
         $dateBeginFromRevenue = Carbon::parse($revenuesKwh->date_begin)->format('Y-m-d');

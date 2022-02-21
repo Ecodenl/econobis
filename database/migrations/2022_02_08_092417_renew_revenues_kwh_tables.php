@@ -23,6 +23,10 @@ class RenewRevenuesKwhTables extends Migration
             $table->increments('id');
             $table->unsignedInteger('new_revenue_id');
             $table->unsignedInteger('old_revenue_id');
+            $table->boolean('old_confirmed')->default(false);
+            $table->boolean('hasSplitKwh')->default(false);
+            $table->unsignedInteger('participation_id')->nullable()->default(null);
+            $table->unsignedInteger('belongs_to_project_revenue_id')->nullable();
             $table->text('remarks');
             $table->timestamps();
         });

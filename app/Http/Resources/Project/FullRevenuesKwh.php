@@ -36,7 +36,7 @@ class FullRevenuesKwh extends JsonResource
                 'deliveredTotalConcept' => $this->delivered_total_concept_string,
                 'deliveredTotalConfirmed' => $this->delivered_total_confirmed_string,
                 'deliveredTotalProcessed' => $this->delivered_total_processed_string,
-                'partsKwh' => FullRevenuePartsKwh::collection(RevenuePartsKwh::orderBy('date_begin')->get()),
+                'partsKwh' => FullRevenuePartsKwh::collection(RevenuePartsKwh::where('revenue_id', $this->id)->orderBy('date_begin')->get()),
                 'distributionKwh' => FullRevenueDistributionKwh::collection($this->whenLoaded('distributionKwh')),
                 'payoutKwh' => $this->payout_kwh,
                 'participantInConfirmedRevenue' => $this->participant ? $this->participant->participantInConfirmedRevenue : false,

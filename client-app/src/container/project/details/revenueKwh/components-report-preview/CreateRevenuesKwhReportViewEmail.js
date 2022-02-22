@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import ProjectRevenueAPI from '../../../../../api/project/ProjectRevenueAPI';
 import ViewHtmlAsText from '../../../../../components/form/ViewHtmlAsText';
+import RevenuesKwhAPI from '../../../../../api/project/RevenuesKwhAPI';
 
 class CreateRevenuesKwhReportViewEmail extends Component {
     constructor(props) {
@@ -20,7 +20,7 @@ class CreateRevenuesKwhReportViewEmail extends Component {
     }
 
     downloadEmail(distributionId) {
-        ProjectRevenueAPI.previewEmail(
+        RevenuesKwhAPI.previewEmail(
             distributionId,
             this.props.subject,
             this.props.documentTemplateId,

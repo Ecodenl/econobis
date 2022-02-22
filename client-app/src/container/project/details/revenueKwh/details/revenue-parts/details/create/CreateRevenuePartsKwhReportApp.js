@@ -42,7 +42,7 @@ class CreateRevenuePartsKwhReportApp extends Component {
                 this.setState({ isLoading: false });
             });
 
-        ProjectsAPI.peekDistributionsKwhPartsByIds(this.props.reportPreview.distributionIds).then(payload => {
+        ProjectsAPI.peekDistributionsKwhPartsByIds(this.props.reportPreview.distributionPartsKwhIds).then(payload => {
             this.setState({
                 distributions: payload.data,
             });
@@ -68,7 +68,7 @@ class CreateRevenuePartsKwhReportApp extends Component {
             this.props.reportPreview.templateId,
             this.props.reportPreview.emailTemplateId,
             this.props.reportPreview.subject,
-            this.props.reportPreview.distributionIds
+            this.props.reportPreview.distributionPartsKwhIds
         ).then(payload => {
             document.body.style.cursor = 'default';
             if (!payload.data) {

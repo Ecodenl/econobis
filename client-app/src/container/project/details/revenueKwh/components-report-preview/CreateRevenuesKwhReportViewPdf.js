@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PdfViewer from '../../../../../components/pdf/PdfViewer';
-import ProjectRevenueAPI from '../../../../../api/project/ProjectRevenueAPI';
+import RevenuesKwhAPI from '../../../../../api/project/RevenuesKwhAPI';
 
 class CreateRevenuesKwhReportViewPdf extends Component {
     constructor(props) {
@@ -20,7 +20,7 @@ class CreateRevenuesKwhReportViewPdf extends Component {
     }
 
     downloadFile(distributionId, i = 0) {
-        ProjectRevenueAPI.downloadPreview(
+        RevenuesKwhAPI.downloadPreview(
             distributionId,
             this.props.subject,
             this.props.documentTemplateId,

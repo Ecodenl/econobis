@@ -178,7 +178,7 @@ class RevenuesKwhController extends ApiController
     }
 
     //todo WM: dit naar job verplaatsen ?!
-    protected function saveParticipantsOfDistribution(RevenuesKwh $revenuesKwh)
+    public function saveParticipantsOfDistribution(RevenuesKwh $revenuesKwh)
     {
         set_time_limit(300);
 
@@ -447,7 +447,7 @@ class RevenuesKwhController extends ApiController
 
         $ids = $request->input('ids') ? $request->input('ids') : [];
 
-        $distribution = RevenueDistributionKwh::whereIn('id', $ids)->with(['revenue'])->get();
+        $distribution = RevenueDistributionKwh::whereIn('id', $ids)->with(['revenuesKwh'])->get();
 
         return FullRevenueDistributionKwh::collection($distribution);
     }

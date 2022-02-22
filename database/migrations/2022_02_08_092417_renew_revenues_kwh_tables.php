@@ -29,6 +29,7 @@ class RenewRevenuesKwhTables extends Migration
             $table->unsignedInteger('belongs_to_project_revenue_id')->nullable();
             $table->text('remarks');
             $table->timestamps();
+            $table->boolean('done')->default(false);
         });
 
         if (!Schema::hasTable('old_project_revenues'))

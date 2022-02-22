@@ -108,8 +108,8 @@ class RevenuePartsKwh extends Model
             // geen voorgaande part meer, dan edit toegestaan (bij 1e part)
             if ($statusPreviousPart == 'notfound') {
                 $allowEditEnd = true;
-                // Anders als status part is new, dan mag voorgaand niet nog new zijn.
-            } elseif ($this->status == 'new' && $statusPreviousPart != 'new') {
+                // Anders edit toestaan als voorgaand niet ook nog new is.
+            } elseif ($statusPreviousPart != 'new') {
                 $allowEditEnd = true;
             }
         }

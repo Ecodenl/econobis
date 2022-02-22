@@ -20,7 +20,7 @@ class RevenuePartsKwhCalculator
     public function runRevenueKwh($valuesKwhData)
     {
         $now = DateTime::createFromFormat('U.u', microtime(true));
-        Log::info($now->format("m-d-Y H:i:s.u"));
+        Log::info("Start RevenuePartsKwhCalculator: " . $now->format("m-d-Y H:i:s.u"));
         if($this->revenuePartsKwh->status == 'concept') {
             $this->revenuePartsKwh->conceptSimulatedValuesKwh()->delete();
             $this->revenuePartsKwh->newOrConceptDistributionPartsKwh()->delete();
@@ -33,7 +33,7 @@ class RevenuePartsKwhCalculator
 //            Log::info($now->format("m-d-Y H:i:s.u"));
             $revenuesKwhHelper->createOrUpdateRevenueValuesKwhSimulate($this->revenuePartsKwh);
             $now = DateTime::createFromFormat('U.u', microtime(true));
-            Log::info($now->format("m-d-Y H:i:s.u"));
+            Log::info("RevenuePartsKwhCalculator na aanmaak simulate values: " . $now->format("m-d-Y H:i:s.u"));
             $revenuesKwhHelper->saveParticipantsOfDistributionParts($this->revenuePartsKwh);
 //            $now = DateTime::createFromFormat('U.u', microtime(true));
 //            Log::info($now->format("m-d-Y H:i:s.u"));
@@ -43,7 +43,7 @@ class RevenuePartsKwhCalculator
         }
         $this->countingsConceptConfirmedProcessed();
         $now = DateTime::createFromFormat('U.u', microtime(true));
-        Log::info($now->format("m-d-Y H:i:s.u"));
+        Log::info("Einde RevenuePartsKwhCalculator: " . $now->format("m-d-Y H:i:s.u"));
 
     }
     protected function calculateDeliveredKwh()
@@ -103,15 +103,16 @@ class RevenuePartsKwhCalculator
             $distributionKwh->delivered_total_processed = $distributionKwh->distributionValuesKwh->where('status', 'processed')->sum('delivered_kwh');
             $distributionKwh->save();
         }
-
-        $this->revenuePartsKwh->delivered_total_concept = $this->revenuePartsKwh->distributionPartsKwh->where('status', 'concept')->sum('delivered_kwh');
-        $this->revenuePartsKwh->delivered_total_confirmed = $this->revenuePartsKwh->distributionPartsKwh->where('status', 'confirmed')->sum('delivered_kwh');
-        $this->revenuePartsKwh->delivered_total_processed = $this->revenuePartsKwh->distributionPartsKwh->where('status', 'processed')->sum('delivered_kwh');
+        $distributionPartsKwh = RevenueDistributionPartsKwh::where('revenue_id', $this->revenuePartsKwh->revenue_id)->where('parts_id', $this->revenuePartsKwh->id)->get();
+        $this->revenuePartsKwh->delivered_total_concept = $distributionPartsKwh->where('status', 'concept')->sum('delivered_kwh');
+        $this->revenuePartsKwh->delivered_total_confirmed = $distributionPartsKwh->where('status', 'confirmed')->sum('delivered_kwh');
+        $this->revenuePartsKwh->delivered_total_processed = $distributionPartsKwh->where('status', 'processed')->sum('delivered_kwh');
         $this->revenuePartsKwh->save();
 
-        $this->revenuePartsKwh->revenuesKwh->delivered_total_concept = $this->revenuePartsKwh->revenuesKwh->distributionPartsKwh->where('status', 'concept')->sum('delivered_kwh');
-        $this->revenuePartsKwh->revenuesKwh->delivered_total_confirmed = $this->revenuePartsKwh->revenuesKwh->distributionPartsKwh->where('status', 'confirmed')->sum('delivered_kwh');
-        $this->revenuePartsKwh->revenuesKwh->delivered_total_processed = $this->revenuePartsKwh->revenuesKwh->distributionPartsKwh->where('status', 'processed')->sum('delivered_kwh');
+        $distributionAllPartsKwh = RevenueDistributionPartsKwh::where('revenue_id', $this->revenuePartsKwh->revenue_id)->get();
+        $this->revenuePartsKwh->revenuesKwh->delivered_total_concept = $distributionAllPartsKwh->where('status', 'concept')->sum('delivered_kwh');
+        $this->revenuePartsKwh->revenuesKwh->delivered_total_confirmed = $distributionAllPartsKwh->where('status', 'confirmed')->sum('delivered_kwh');
+        $this->revenuePartsKwh->revenuesKwh->delivered_total_processed = $distributionAllPartsKwh->where('status', 'processed')->sum('delivered_kwh');
         $this->revenuePartsKwh->revenuesKwh->save();
     }
 

@@ -64,9 +64,7 @@ class ParticipantMutationObserver
 
                 $revenuesKwhController->saveDistributionKwh($revenuesKwh, $participantProject);
                 foreach($revenuesKwh->partsKwh as $revenuePartsKwh) {
-                    if($revenuePartsKwh->status == 'concept') {
-                        $revenuePartsKwh->calculator()->runRevenueKwh(null);
-                    }
+                    $revenuePartsKwh->calculator()->runRevenueKwh(null);
                 }
             }
 

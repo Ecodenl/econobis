@@ -115,10 +115,8 @@ class RevenuePartsKwhController extends ApiController
         $revenuePartsKwh->save();
 
         //todo WM: dit naar job queue (met status in-progress-calculate?
-        if($revenuePartsKwh->status == 'concept') {
-            $valuesKwhData = $request->get("valuesKwh");
-            $revenuePartsKwh->calculator()->runRevenueKwh($valuesKwhData);
-        }
+        $valuesKwhData = $request->get("valuesKwh");
+        $revenuePartsKwh->calculator()->runRevenueKwh($valuesKwhData);
 
         return FullRevenuePartsKwh::collection(RevenuePartsKwh::where('revenue_id',
             $revenuePartsKwh->revenue_id)

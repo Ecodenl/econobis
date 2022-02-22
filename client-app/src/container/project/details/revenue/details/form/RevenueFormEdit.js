@@ -13,7 +13,7 @@ import PanelFooter from '../../../../../../components/panel/PanelFooter';
 
 import ProjectRevenueAPI from '../../../../../../api/project/ProjectRevenueAPI';
 
-import { fetchRevenuesKwh, getDistribution } from '../../../../../../actions/project/ProjectDetailsActions';
+import { fetchRevenue, getDistribution } from '../../../../../../actions/project/ProjectDetailsActions';
 import Modal from '../../../../../../components/modal/Modal';
 import styled from '@emotion/styled';
 import ViewText from '../../../../../../components/form/ViewText';

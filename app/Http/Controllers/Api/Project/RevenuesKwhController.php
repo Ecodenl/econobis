@@ -15,6 +15,7 @@ use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\RevenueDistributionCSVHelper;
+use App\Helpers\CSV\RevenueDistributionKwhCSVHelper;
 use App\Helpers\Delete\Models\DeleteRevenuesKwh;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Excel\EnergySupplierExcelHelper;
@@ -60,7 +61,7 @@ class RevenuesKwhController extends ApiController
     {
         set_time_limit(0);
 
-        $revenuesKwh = new RevenueDistributionCSVHelper($revenuesKwh->distributionKwh, $revenuesKwh->project->project_type_id);
+        $revenuesKwh = new RevenueDistributionKwhCSVHelper($revenuesKwh, $revenuesKwh->project->project_type_id);
 
         return $revenuesKwh->downloadCSV();
     }
@@ -178,7 +179,7 @@ class RevenuesKwhController extends ApiController
     }
 
     //todo WM: dit naar job verplaatsen ?!
-    protected function saveParticipantsOfDistribution(RevenuesKwh $revenuesKwh)
+    public function saveParticipantsOfDistribution(RevenuesKwh $revenuesKwh)
     {
         set_time_limit(300);
 
@@ -447,7 +448,7 @@ class RevenuesKwhController extends ApiController
 
         $ids = $request->input('ids') ? $request->input('ids') : [];
 
-        $distribution = RevenueDistributionKwh::whereIn('id', $ids)->with(['revenue'])->get();
+        $distribution = RevenueDistributionKwh::whereIn('id', $ids)->with(['revenuesKwh'])->get();
 
         return FullRevenueDistributionKwh::collection($distribution);
     }

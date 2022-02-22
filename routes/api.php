@@ -161,14 +161,14 @@ Route::namespace('Api')
         Route::post('distribution-kwh/create-revenues-kwh-report', 'Project\RevenuesKwhController@createRevenuesKwhReport');
         Route::post('distribution-kwh/process-revenues-kwh', 'Project\RevenuesKwhController@processRevenuesKwh');
         Route::post('distribution-kwh/peek-by-ids', 'Project\RevenuesKwhController@peekDistributionKwhByIds');
-        Route::post('distribution-kwh/{revenueDistributionKwh}/download-preview', 'Project\RevenuesKwhController@downloadPreview');
-        Route::post('distribution-kwh/{revenueDistributionKwh}/preview-email', 'Project\RevenuesKwhController@previewEmail');
+        Route::post('distribution-kwh/{distributionKwh}/download-preview', 'Project\RevenuesKwhController@downloadPreview');
+        Route::post('distribution-kwh/{distributionKwh}/preview-email', 'Project\RevenuesKwhController@previewEmail');
 
         Route::post('distribution-part-kwh/create-revenue-part-kwh-report', 'Project\RevenuePartsKwhController@createRevenuePartsKwhReport');
         Route::post('distribution-part-kwh/process-revenue-parts-kwh', 'Project\RevenuePartsKwhController@processRevenuePartsKwh');
         Route::post('distribution-part-kwh/peek-by-ids', 'Project\RevenuePartsKwhController@peekDistributionKwhPartsByIds');
-        Route::post('distribution-part-kwh/{revenueDistributionPartsKwh}/download-preview', 'Project\RevenuePartsKwhController@downloadPreview');
-        Route::post('distribution-part-kwh/{revenueDistributionPartsKwh}/preview-email', 'Project\RevenuePartsKwhController@previewEmail');
+        Route::post('distribution-part-kwh/{distributionPartsKwh}/download-preview', 'Project\RevenuePartsKwhController@downloadPreview');
+        Route::post('distribution-part-kwh/{distributionPartsKwh}/preview-email', 'Project\RevenuePartsKwhController@previewEmail');
 
         Route::get('opportunity/grid', 'Opportunity\OpportunityController@grid');
         Route::get('opportunity/peek', 'Opportunity\OpportunityController@peek');

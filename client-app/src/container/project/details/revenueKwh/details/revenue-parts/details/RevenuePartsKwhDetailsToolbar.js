@@ -68,21 +68,22 @@ class RevenuePartsKwhDetailsToolbar extends Component {
                                     {/*            onClickAction={this.toggleDelete}*/}
                                     {/*        />*/}
                                     {/*    )}*/}
-                                    {revenuePartsKwh.confirmed ? (
-                                        <div className="nav navbar-nav btn-group" role="group">
-                                            <button className="btn btn-success btn-sm" data-toggle="dropdown">
-                                                Rapportage Energie leverancier
-                                            </button>
-                                            <ul className="dropdown-menu">
-                                                <li>
-                                                    <Link to={pdfLink}>Ledenverklaring of productie specificatie</Link>
-                                                </li>
-                                                <li>
-                                                    <Link to={excelLink}>Deelopbrengstverdelingen deelnemers</Link>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    ) : null}
+                                    {/*todo WM: voorlopig alleen rapportage over hele periode */}
+                                    {/*{revenuePartsKwh.confirmed ? (*/}
+                                    {/*    <div className="nav navbar-nav btn-group" role="group">*/}
+                                    {/*        <button className="btn btn-success btn-sm" data-toggle="dropdown">*/}
+                                    {/*            Rapportage Energie leverancier*/}
+                                    {/*        </button>*/}
+                                    {/*        <ul className="dropdown-menu">*/}
+                                    {/*            <li>*/}
+                                    {/*                <Link to={pdfLink}>Ledenverklaring of productie specificatie</Link>*/}
+                                    {/*            </li>*/}
+                                    {/*            <li>*/}
+                                    {/*                <Link to={excelLink}>Deelopbrengstverdelingen deelnemers</Link>*/}
+                                    {/*            </li>*/}
+                                    {/*        </ul>*/}
+                                    {/*    </div>*/}
+                                    {/*) : null}*/}
                                     <ButtonIcon iconName={'glyphicon-download-alt'} onClickAction={this.getCSV} />
                                 </div>
                             </div>

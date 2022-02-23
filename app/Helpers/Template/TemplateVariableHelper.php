@@ -135,7 +135,7 @@ class TemplateVariableHelper
                 return TemplateVariableHelper::getProjectRevenueDistributionVar($model, $varname);
                 break;
             case 'RevenuesKwh':
-                return TemplateVariableHelper::getRevenuesVar($model, $varname);
+                return TemplateVariableHelper::getRevenuesKwhVar($model, $varname);
                 break;
             case 'RevenueDistributionKwh':
                 return TemplateVariableHelper::getRevenueDistributionKwhVar($model, $varname);
@@ -1887,7 +1887,7 @@ class TemplateVariableHelper
         }
     }
 
-    public static function getRevenuesKwhDistributionVar($model, $varname){
+    public static function getRevenueDistributionKwhVar($model, $varname){
         $projectTypeCodeRef = $model->revenue->project->projectType->code_ref;
         switch ($varname) {
             case 'adres':

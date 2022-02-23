@@ -1921,15 +1921,13 @@ class TemplateVariableHelper
                 return $model->participations_quantity;
                 break;
             case 'energieleverancier':
-                $esNames = implode(',', $model->distributionPartsKwh()
+                $esNames = implode(',', array_unique($model->distributionPartsKwh()
                     ->where(function ($query) {
                         $query->whereNotNull('energy_supplier_name')
                             ->orWhere('energy_supplier_name', '!=', '');
                     })
-                    ->pluck('energy_supplier_name')->toArray());
+                    ->pluck('energy_supplier_name')->toArray()));
                 return $esNames;
-                break;
-            return $model->energy_supplier_name;
                 break;
             case 'kwh':
                 return $model->delivered_total;
@@ -1941,12 +1939,12 @@ class TemplateVariableHelper
                 return $model->energy_supplier_ean_electricity;
                 break;
             case 'energieleverancier_nummer':
-                $esNumbers = implode(',', $model->distributionPartsKwh()
+                $esNumbers = implode(',', array_unique($model->distributionPartsKwh()
                     ->where(function ($query) {
                         $query->whereNotNull('energy_supplier_number')
                             ->orWhere('energy_supplier_number', '!=', '');
                     })
-                    ->pluck('energy_supplier_number')->toArray());
+                    ->pluck('energy_supplier_number')->toArray()));
                 return $esNumbers;
                 break;
             case 'opbrengst_kwh_euro':

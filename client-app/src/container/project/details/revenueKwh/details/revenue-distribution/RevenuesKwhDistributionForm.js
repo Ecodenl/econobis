@@ -305,9 +305,6 @@ class RevenuesKwhDistributionForm extends Component {
                         'De ' +
                         $variableDateText +
                         ' wordt de datum die bij de mutatie komt te staan in de deelname overzichten van de deelnemers.\n' +
-                        'In een eventueel te maken Sepa betaalbestand wordt dit de datum waarop het bedrag van jouw rekening wordt afgeschreven, als je het Sepa betaalbestand hebt aangeboden bij je bank. Als je dus een ' +
-                        $variableDateText +
-                        ' gebruikt, die voor of op de huidige datum ligt, dan kan je het Sepa bestand dus niet gebruiken.\n' +
                         '\n' +
                         'Weet je zeker dat je de goede ' +
                         $variableDateText +
@@ -338,7 +335,7 @@ class RevenuesKwhDistributionForm extends Component {
 
     processRevenuesKwh = () => {
         this.toggleModal();
-        let succesMessageText = `De mutaties van opbrengsten bij de deelnemers zijn aangemaakt. De status van de uitkeringen zijn veranderd van "Definitief" in Verwerkt.
+        let succesMessageText = `De mutaties van opbrengsten bij de deelnemers zijn aangemaakt. De status van de uitkeringen zijn veranderd van "Definitief" in "Verwerkt".
                 Mutaties die niet verwerkt konden worden, omdat er gegevens ontbreken bij het contact, zijn niet aangemaakt bij de deelnemers. Zij behouden de status "Definitief". Maak de gegevens compleet en maak vervolgens opnieuw een opbrengst verdeling van de uitkeringen met de status "Definitief".`;
 
         document.body.style.cursor = 'wait';

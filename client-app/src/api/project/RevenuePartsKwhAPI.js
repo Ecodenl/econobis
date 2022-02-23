@@ -53,10 +53,11 @@ export default {
         });
     },
 
-    processRevenuePartsKwh: (datePayout, distributionPartsKwhIds) => {
+    processRevenuePartsKwh: (partsId, datePayout, distributionPartsKwhIds) => {
         const requestUrl = `${URL_API}/api/distribution-part-kwh/process-revenue-parts-kwh`;
 
         return axiosInstance.post(requestUrl, {
+            partsId: partsId,
             distributionPartsKwhIds: distributionPartsKwhIds,
             datePayout: datePayout,
         });

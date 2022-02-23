@@ -1822,9 +1822,9 @@ class TemplateVariableHelper
     }
 
     public static function getRevenuesKwhVar($model, $varname){
-        $valuesStart = RevenueValuesKwh::where('revenue_id', $model->id)->where('date_registration', Carbon::parse('$model->date_begin')->format('Y-m-d'))->first();
+        $valuesStart = RevenueValuesKwh::where('revenue_id', $model->id)->where('date_registration', Carbon::parse($model->date_begin)->format('Y-m-d'))->first();
         $startKhw = $valuesStart ? $valuesStart->kwh_start : 0;
-        $valuesEnd = RevenueValuesKwh::where('revenue_id', $model->id)->where('date_registration', Carbon::parse('$model->date_end')->addDay()->format('Y-m-d'))->first();
+        $valuesEnd = RevenueValuesKwh::where('revenue_id', $model->id)->where('date_registration', Carbon::parse($model->date_end)->addDay()->format('Y-m-d'))->first();
         $endKhw = $valuesEnd ? $valuesEnd->kwh_start : 0;
 
         switch ($varname) {
@@ -1888,7 +1888,6 @@ class TemplateVariableHelper
     }
 
     public static function getRevenueDistributionKwhVar($model, $varname){
-        $projectTypeCodeRef = $model->revenue->project->projectType->code_ref;
         switch ($varname) {
             case 'adres':
                 return $model->address;

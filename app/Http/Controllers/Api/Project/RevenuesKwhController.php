@@ -328,7 +328,7 @@ class RevenuesKwhController extends ApiController
         RevenuesKwh $revenuesKwh
     )
     {
-        $energySupplierIds = array_unique($revenuesKwh->distributionKwh()->whereNotNull('es_id')->pluck('es_id')->toArray());
+        $energySupplierIds = array_unique($revenuesKwh->distributionPartsKwh()->whereNotNull('es_id')->pluck('es_id')->toArray());
         foreach ($energySupplierIds as $energySupplierId) {
             $energySupplier = EnergySupplier::find($energySupplierId);
             $this->createEnergySupplierExcel($request, $revenuesKwh, $energySupplier, true);

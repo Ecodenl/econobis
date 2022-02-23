@@ -10,6 +10,7 @@ namespace App\Jobs\RevenueKwh;
 
 use App\Eco\Jobs\JobsLog;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
+use App\Eco\RevenuesKwh\RevenuePartsKwh;
 use App\Eco\User\User;
 use App\Http\Controllers\Api\Project\RevenuesKwhController;
 use Illuminate\Bus\Queueable;
@@ -26,13 +27,45 @@ class ProcessRevenuesKwh implements ShouldQueue
 
     private $distributionIds;
     private $datePayout;
+    private $upToPartsKwhIds;
     private $userId;
 
-    public function __construct($distributionIds, $datePayout, $userId)
+    public function __construct($distributionIds, $datePayout, $upToPartsKwhIds, $userId)
     {
         $this->distributionIds = $distributionIds;
         $this->datePayout = $datePayout;
+        $this->upToPartsKwhIds = $upToPartsKwhIds;
         $this->userId = $userId;
+
+        $partsKwh = RevenuePartsKwh::whereIn('id', $upToPartsKwhIds)->get();
+        foreach ($partsKwh as $partKwh) {
+            if ($partKwh->status === 'confirmed') {
+                $partKwh->status = 'in-progress-process';
+                $partKwh->save();
+            }
+        }
+        $distributionsKwh = RevenueDistributionKwh::whereIn('id', $distributionIds)->get();
+        foreach ($distributionsKwh as $distributionKwh) {
+            if ($distributionKwh->status === 'confirmed') {
+                $distributionKwh->status = 'in-progress-process';
+                $distributionKwh->save();
+            }
+
+            $distributionsPartsKwh = $distributionKwh->distributionPartsKwh->whereIn('parts_id', $upToPartsKwhIds);
+            foreach($distributionsPartsKwh as $distributionPartsKwh) {
+                if ($distributionPartsKwh->status === 'confirmed') {
+                    $distributionPartsKwh->status = 'in-progress-process';
+                    $distributionPartsKwh->save();
+                }
+            }
+            $distributionsValuesKwh = $distributionKwh->distributionValuesKwh->whereIn('parts_id', $upToPartsKwhIds);
+            foreach($distributionsValuesKwh as $distributionValuesKwh) {
+                if ($distributionValuesKwh->status === 'confirmed') {
+                    $distributionValuesKwh->status = 'in-progress-process';
+                    $distributionValuesKwh->save();
+                }
+            }
+        }
 
         $jobLog = new JobsLog();
         $jobLog->value = "Start Opbrengst Kwh verdelen.";
@@ -48,7 +81,7 @@ class ProcessRevenuesKwh implements ShouldQueue
 
         $revenuesKwhController = new RevenuesKwhController();
         //process revenues kwh
-        $revenuesKwhController->processRevenuesKwhJob(RevenueDistributionKwh::whereIn('id', $this->distributionIds)->get(), $this->datePayout);
+        $revenuesKwhController->processRevenuesKwhJob(RevenueDistributionKwh::whereIn('id', $this->distributionIds)->get(), $this->datePayout, $this->upToPartsKwhIds);
 
         $jobLog = new JobsLog();
         $jobLog->value = "Opbrengst Kwh verdelen verwerkt.";
@@ -57,7 +90,7 @@ class ProcessRevenuesKwh implements ShouldQueue
         $jobLog->save();
     }
 
-    public function failed(\Exception $exception)
+    public function failed($exception)
     {
         $jobLog = new JobsLog();
         $jobLog->value = "Opbrengst Kwh verdelen mislukt.";

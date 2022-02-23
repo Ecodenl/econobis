@@ -10,7 +10,9 @@ namespace App\Eco\AddressEnergySupplier;
 
 use App\Helpers\Project\RevenuesKwhHelper;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AddressEnergySupplierObserver
 {
@@ -33,7 +35,11 @@ class AddressEnergySupplierObserver
 
     public function saved(AddressEnergySupplier $addressEnergySupplier)
     {
-        if($addressEnergySupplier->isDirty('member_since') || $addressEnergySupplier->isDirty('end_date'))
+        $aesMemberSince = $addressEnergySupplier->member_since ? Carbon::parse($addressEnergySupplier->member_since)->format('Y-m-d') : '1900-01-01';
+        $aesMemberSinceOriginal = $addressEnergySupplier->getOriginal('member_since') ? Carbon::parse($addressEnergySupplier->getOriginal('member_since'))->format('Y-m-d') : '1900-01-01';
+        $aesEndDate = $addressEnergySupplier->end_date ? Carbon::parse($addressEnergySupplier->end_date)->format('Y-m-d') : '9999-12-31';
+        $aesEndDateOriginal = $addressEnergySupplier->getOriginal('end_date') ? Carbon::parse($addressEnergySupplier->getOriginal('end_date'))->format('Y-m-d') : '9999-12-31';
+        if($aesMemberSince!=$aesMemberSinceOriginal || $aesEndDate!=$aesEndDateOriginal)
         {
             $addressEnergySupplierController = new AddressEnergySupplierController();
             $addressEnergySupplierController->determineIsCurrentSupplier($addressEnergySupplier);
@@ -45,18 +51,18 @@ class AddressEnergySupplierObserver
                 foreach($distributionsKwh as $distributionKwh) {
                     $distributionPartsKwh = $distributionKwh->distributionPartsKwh->whereIn('status', ['concept', 'confirmed']);
                     foreach($distributionPartsKwh as $distributionPartKwh) {
-                        if($distributionPartKwh->date_begin >= $addressEnergySupplier->member_since && $distributionPartKwh->date_begin >= $addressEnergySupplier->end_date){
+                        if ($distributionPartKwh->partsKwh->date_begin >= $aesMemberSince && $distributionPartKwh->partsKwh->date_begin <= $aesEndDate) {
                             $distributionPartKwh->es_id = $addressEnergySupplier->energySupplier->id;
                             $distributionPartKwh->energy_supplier_number = $addressEnergySupplier->es_number;
                             $distributionPartKwh->energy_supplier_name = $addressEnergySupplier->energySupplier->name;
-                        }else{
+                            $distributionPartKwh->save();
+                        } elseif ($distributionPartKwh->partsKwh->date_begin >= $aesMemberSinceOriginal && $distributionPartKwh->partsKwh->date_begin <= $aesEndDateOriginal) {
                             $distributionPartKwh->energy_supplier_name = "";
                             $distributionPartKwh->energy_supplier_number = "";
                             $distributionPartKwh->es_id = null;
+                            $distributionPartKwh->save();
                         }
-                        $distributionPartKwh->save();
                     }
-
                 }
             }
         }

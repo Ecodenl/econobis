@@ -18,11 +18,10 @@ use App\Http\Resources\Project\FullRevenueDistributionPartsKwh;
 use App\Http\Resources\Project\FullRevenuePartsKwh;
 use App\Jobs\RevenueKwh\CreateRevenuePartsKwhReport;
 use App\Jobs\RevenueKwh\ProcessRevenuePartsKwh;
+use App\Jobs\RevenueKwh\ProcessRevenuesKwh;
 use Carbon\Carbon;
-use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class RevenuePartsKwhController extends ApiController
 {
@@ -760,87 +759,25 @@ class RevenuePartsKwhController extends ApiController
     {
         set_time_limit(0);
         $distributionPartsKwhIds = $request->input('distributionPartsKwhIds');
+        $distributionsKwhIds = array_unique( RevenueDistributionPartsKwh::whereIn('id', $distributionPartsKwhIds)->pluck('distribution_id')->toArray() );
         $datePayout = $request->input('datePayout');
+        $revenueId = RevenueDistributionPartsKwh::where('id', $distributionPartsKwhIds[0])->first()->revenue_id;
+        $partsId = $request->input('partsId');
+        $tillPartsKwh = RevenuePartsKwh::find($partsId);
+        $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $revenueId)->where('date_begin', '<=', $tillPartsKwh->date_begin)->where('status', '!=', 'processed')->pluck('id')->toArray();
 
-        ProcessRevenuePartsKwh::dispatch($distributionPartsKwhIds, $datePayout, Auth::id());
+        ProcessRevenuesKwh::dispatch($distributionsKwhIds, $datePayout, $upToPartsKwhIds, Auth::id());
 
         return RevenueDistributionPartsKwh::find($distributionPartsKwhIds[0])->revenuesKwh->project->administration_id;
     }
-    public function processRevenuePartsKwhJob($distributionPartsKwh, $datePayout)
-    {
-        set_time_limit(300);
-
-        if (!($distributionPartsKwh->first())->revenuesKwh->project->administration_id) {
-            abort(400,
-                'Geen administratie gekoppeld aan dit productie project');
-        }else{
-            $lastYearFinancialOverviewDefinitive =  $distributionPartsKwh->first()->revenuesKwh->project->lastYearFinancialOverviewDefinitive;
-            if( !empty($lastYearFinancialOverviewDefinitive) && !empty($datePayout) && Carbon::parse($datePayout)->year <= $lastYearFinancialOverviewDefinitive)
-            {
-                abort(400,'De uitkeringsdatum valt in jaar ' . Carbon::parse($datePayout)->year . ' waar al een definitive waardestaat voor dit project aanwezig is.');
-            }
-        }
-
-        $revenuePartsKwh = $distributionPartsKwh->first()->partsKwh;
-        $revenuePartsKwh->status = 'in-progress-process';
-        $revenuePartsKwh->save();
-        foreach ($distributionPartsKwh as $distributionPartKwh) {
-            //status moet nog bevestigd (confirmed zijn)
-            if ($distributionPartKwh->status === 'confirmed')
-            {
-                $distributionPartKwh->status = 'in-progress-process';
-                $distributionPartKwh->save();
-            }
-        }
-        foreach ($revenuePartsKwh->distributionValuesKwh as $distributionValueKwh) {
-            //status moet nog bevestigd (confirmed zijn)
-            if ($distributionValueKwh->status === 'confirmed')
-            {
-                $distributionValueKwh->status = 'in-progress-process';
-                $distributionValueKwh->save();
-            }
-        }
-
-        foreach ($distributionPartsKwh as $distributionPartKwh) {
-            //status moet nu onderhanden zijn (in-progress-process zijn)
-            if ($distributionPartKwh->status === 'in-progress-process')
-            {
-                $this->createParticipantMutationForRevenueKwh($distributionPartKwh, $datePayout);
-
-                $distributionPartKwh->status = 'processed';
-                $distributionPartKwh->save();
-
-                $distributionPartKwh->status = 'processed';
-                $distributionPartKwh->save();
-            }
-        }
-        foreach ($revenuePartsKwh->distributionValuesKwh as $distributionValueKwh) {
-            //status moet nu onderhanden zijn (in-progress-process zijn)
-            if ($distributionValueKwh->status === 'in-progress-process')
-            {
-                $distributionValueKwh->status = 'processed';
-                $distributionValueKwh->save();
-            }
-        }
-
-        //status moet nu onderhanden zijn (in-progress-process zijn)
-        if ($revenuePartsKwh->status === 'in-progress-process') {
-            if($revenuePartsKwh->distributionPartsKwh->where('status', '!=', 'processed')->count() == 0){
-                $revenuePartsKwh->status = 'processed';
-            }else{
-                $revenuePartsKwh->status = 'confirmed';
-            }
-            $revenuePartsKwh->save();
-            $revenuePartsKwh->revenuesKwh->save();
-        }
-        $revenuePartsKwh->calculator()->runRevenueKwh();
-
-    }
 
     protected function createParticipantMutationForRevenueKwh(RevenueDistributionPartsKwh $distributionPartsKwh, $datePayout){
+        $pcrTypeId = ProjectType::where('code_ref', 'postalcode_link_capital')->value('id');
+        $participantMutationTypeId = ParticipantMutationType::where('code_ref', 'energyTaxRefund')->where('project_type_id', $pcrTypeId)->value('id');
+
         $participantMutation = new ParticipantMutation();
         $participantMutation->participation_id = $distributionPartsKwh->distributionKwh->participation_id;
-        $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'energyTaxRefund')->where('project_type_id', $distributionPartsKwh->distributionKwh->participation->project->project_type_id)->value('id');
+        $participantMutation->type_id = $participantMutationTypeId;
         $participantMutation->payout_kwh_price = $distributionPartsKwh->partsKwh->payout_kwh;
         $participantMutation->payout_kwh = $distributionPartsKwh->delivered_total;
         $participantMutation->indication_of_restitution_energy_tax = $distributionPartsKwh->kwh_return;

@@ -31,7 +31,7 @@ class FullRevenuePartsKwh extends JsonResource
                 'createdAt' => $this->created_at,
                 'valuesKwhStart' => $this->values_kwh_start,
                 'valuesKwhEnd' => $this->values_kwh_end,
-
+                'nextRevenuePartsKwh' => $this->next_revenue_parts_kwh,
             ];
     }
 }

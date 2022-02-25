@@ -425,7 +425,7 @@ class RevenuePartsKwhDistributionForm extends Component {
                                     />
                                     <ButtonText
                                         buttonText={'Selecteer preview opbrengst verdeling'}
-                                        onClickAction={() => this.toggleShowCheckboxList('createInvoices')}
+                                        onClickAction={() => this.toggleShowCheckboxList('processRevenues')}
                                         buttonClassName={'btn-primary'}
                                     />
                                 </React.Fragment>
@@ -487,7 +487,7 @@ class RevenuePartsKwhDistributionForm extends Component {
                             </PanelBody>
                         </Panel>
                     ) : null}
-                    {this.state.showCheckboxList && this.state.createType === 'createInvoices' ? (
+                    {this.state.showCheckboxList && this.state.createType === 'processRevenues' ? (
                         <Panel>
                             <PanelBody>
                                 <div className="row">

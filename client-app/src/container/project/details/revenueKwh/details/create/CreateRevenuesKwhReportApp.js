@@ -5,7 +5,7 @@ import Panel from '../../../../../../components/panel/Panel';
 import PanelBody from '../../../../../../components/panel/PanelBody';
 import ProjectsAPI from '../../../../../../api/project/ProjectsAPI';
 import { connect } from 'react-redux';
-import { clearPreviewReport } from '../../../../../../actions/project/ProjectDetailsActions';
+import { clearPreviewReportKwh } from '../../../../../../actions/project/ProjectDetailsActions';
 import Modal from '../../../../../../components/modal/Modal';
 import RevenuesKwhAPI from '../../../../../../api/project/RevenuesKwhAPI';
 import CreateRevenuesKwhReportToolbar from '../../components-report-preview/CreateRevenuesKwhReportToolbar';
@@ -50,7 +50,7 @@ class CreateRevenuesKwhReportApp extends Component {
     }
 
     componentWillUnmount() {
-        this.props.clearPreviewReport();
+        this.props.clearPreviewReportKwh();
     }
 
     changeDistribution = distributionId => {
@@ -216,8 +216,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    clearPreviewReport: () => {
-        dispatch(clearPreviewReport());
+    clearPreviewReportKwh: () => {
+        dispatch(clearPreviewReportKwh());
     },
 });
 

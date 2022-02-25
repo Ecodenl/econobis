@@ -13,7 +13,11 @@ import { hashHistory } from 'react-router';
 import ViewText from '../../../../../../components/form/ViewText';
 import EmailTemplateAPI from '../../../../../../api/email-template/EmailTemplateAPI';
 import InputText from '../../../../../../components/form/InputText';
-import { getDistributionKwh, previewReportKwh } from '../../../../../../actions/project/ProjectDetailsActions';
+import {
+    getDistributionKwh,
+    previewReportKwh,
+    energySupplierExcelReportKwh,
+} from '../../../../../../actions/project/ProjectDetailsActions';
 import { setError } from '../../../../../../actions/general/ErrorActions';
 import moment from 'moment-business-days';
 import InputDate from '../../../../../../components/form/InputDate';
@@ -256,7 +260,7 @@ class RevenuesKwhDistributionForm extends Component {
         }
     };
 
-    checkDistributionKwhRevenueInvoices = () => {
+    checkDistributionKwhProcessRevenue = () => {
         let lastYearFinancialOverviewDefinitive = 0;
         if (this.props.revenuesKwh.project && this.props.revenuesKwh.project.lastYearFinancialOverviewDefinitive) {
             lastYearFinancialOverviewDefinitive = this.props.revenuesKwh.project.lastYearFinancialOverviewDefinitive;
@@ -364,6 +368,13 @@ class RevenuesKwhDistributionForm extends Component {
         this.setState({ showErrorModal: false, modalErrorMessage: '' });
     };
 
+    checkDistributionKwhEnergySupplierExcelReport = () => {
+        this.props.energySupplierExcelReportKwh({
+            distributionKwhIds: this.state.distributionKwhIds,
+        });
+        hashHistory.push(`/project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-excel`);
+    };
+
     render() {
         let administrationIds = [];
         this.props.administrations.forEach(function(administration) {
@@ -401,7 +412,14 @@ class RevenuesKwhDistributionForm extends Component {
                                     />
                                     <ButtonText
                                         buttonText={'Selecteer preview opbrengst verdeling'}
-                                        onClickAction={() => this.toggleShowCheckboxList('createInvoices')}
+                                        onClickAction={() => this.toggleShowCheckboxList('processRevenues')}
+                                        buttonClassName={'btn-primary'}
+                                    />
+                                    <ButtonText
+                                        buttonText={'Selecteer Rapportage Energie leverancier'}
+                                        onClickAction={() =>
+                                            this.toggleShowCheckboxList('createEnergySupplierExcelReport')
+                                        }
                                         buttonClassName={'btn-primary'}
                                     />
                                 </React.Fragment>
@@ -463,7 +481,7 @@ class RevenuesKwhDistributionForm extends Component {
                             </PanelBody>
                         </Panel>
                     ) : null}
-                    {this.state.showCheckboxList && this.state.createType === 'createInvoices' ? (
+                    {this.state.showCheckboxList && this.state.createType === 'processRevenues' ? (
                         <Panel>
                             <PanelBody>
                                 <div className="row">
@@ -486,6 +504,8 @@ class RevenuesKwhDistributionForm extends Component {
                                         />
                                     </div>
                                     <div className="col-md-12">
+                                        <ViewText label="Geselecteerde deelnemers" value={numberSelectedNumberTotal} />
+
                                         <div className="margin-10-top pull-right btn-group" role="group">
                                             <ButtonText
                                                 buttonClassName={'btn-default'}
@@ -494,7 +514,32 @@ class RevenuesKwhDistributionForm extends Component {
                                             />
                                             <ButtonText
                                                 buttonText={'Opbrengst verdelen'}
-                                                onClickAction={this.checkDistributionKwhRevenueInvoices}
+                                                onClickAction={this.checkDistributionKwhProcessRevenue}
+                                                type={'submit'}
+                                                value={'Submit'}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </PanelBody>
+                        </Panel>
+                    ) : null}
+                    {this.state.showCheckboxList && this.state.createType === 'createEnergySupplierExcelReport' ? (
+                        <Panel>
+                            <PanelBody>
+                                <div className="row">
+                                    <div className="col-md-12">
+                                        <ViewText label="Geselecteerde deelnemers" value={numberSelectedNumberTotal} />
+
+                                        <div className="margin-10-top pull-right btn-group" role="group">
+                                            <ButtonText
+                                                buttonClassName={'btn-default'}
+                                                buttonText={'Annuleren'}
+                                                onClickAction={this.toggleShowCheckboxList}
+                                            />
+                                            <ButtonText
+                                                buttonText={'Rapportage Energie leverancier'}
+                                                onClickAction={this.checkDistributionKwhEnergySupplierExcelReport}
                                                 type={'submit'}
                                                 value={'Submit'}
                                             />
@@ -562,6 +607,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
     previewReportKwh: id => {
         dispatch(previewReportKwh(id));
+    },
+    energySupplierExcelReportKwh: id => {
+        dispatch(energySupplierExcelReportKwh(id));
     },
     getDistributionKwh: (id, page) => {
         dispatch(getDistributionKwh({ id, page }));

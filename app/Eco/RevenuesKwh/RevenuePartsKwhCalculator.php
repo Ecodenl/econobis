@@ -19,31 +19,24 @@ class RevenuePartsKwhCalculator
 
     public function runRevenueKwh($valuesKwhData)
     {
-        $now = DateTime::createFromFormat('U.u', microtime(true));
-        Log::info("Start RevenuePartsKwhCalculator: " . $now->format("m-d-Y H:i:s.u"));
+        Log::info("Start RevenuePartsKwhCalculator voor revenuePartKwh id " . $this->revenuePartsKwh->id . " : " . Carbon::now()->format("m-d-Y H:i:s.u"));
         if($this->revenuePartsKwh->status == 'concept') {
             $this->revenuePartsKwh->conceptSimulatedValuesKwh()->delete();
             $this->revenuePartsKwh->newOrConceptDistributionPartsKwh()->delete();
             $this->revenuePartsKwh->newOrConceptDistributionValuesKwh()->delete();
-//            $now = DateTime::createFromFormat('U.u', microtime(true));
-//            Log::info($now->format("m-d-Y H:i:s.u"));
+//            Log::info(Carbon::now()->format("m-d-Y H:i:s.u"));
             $revenuesKwhHelper = new RevenuesKwhHelper();
             $revenuesKwhHelper->createOrUpdateRevenueValuesKwh($valuesKwhData, $this->revenuePartsKwh);
-//            $now = DateTime::createFromFormat('U.u', microtime(true));
-//            Log::info($now->format("m-d-Y H:i:s.u"));
+//            Log::info(Carbon::now()->format("m-d-Y H:i:s.u"));
             $revenuesKwhHelper->createOrUpdateRevenueValuesKwhSimulate($this->revenuePartsKwh);
-            $now = DateTime::createFromFormat('U.u', microtime(true));
-            Log::info("RevenuePartsKwhCalculator na aanmaak simulate values: " . $now->format("m-d-Y H:i:s.u"));
+            Log::info("RevenuePartsKwhCalculator na aanmaak simulate values voor revenuePartKwh id " . $this->revenuePartsKwh->id . " : " . Carbon::now()->format("m-d-Y H:i:s.u"));
             $revenuesKwhHelper->saveParticipantsOfDistributionParts($this->revenuePartsKwh);
-//            $now = DateTime::createFromFormat('U.u', microtime(true));
-//            Log::info($now->format("m-d-Y H:i:s.u"));
+//            Log::info(Carbon::now()->format("m-d-Y H:i:s.u"));
             $this->calculateDeliveredKwh();
-//            $now = DateTime::createFromFormat('U.u', microtime(true));
-//            Log::info($now->format("m-d-Y H:i:s.u"));
+//            Log::info(Carbon::now()->format("m-d-Y H:i:s.u"));
         }
         $this->countingsConceptConfirmedProcessed();
-        $now = DateTime::createFromFormat('U.u', microtime(true));
-        Log::info("Einde RevenuePartsKwhCalculator: " . $now->format("m-d-Y H:i:s.u"));
+        Log::info("Einde RevenuePartsKwhCalculator voor revenuePartKwh id " . $this->revenuePartsKwh->id . " : " . Carbon::now()->format("m-d-Y H:i:s.u"));
 
     }
     protected function calculateDeliveredKwh()
@@ -54,7 +47,6 @@ class RevenuePartsKwhCalculator
         $partDateEnd = Carbon::parse($this->revenuePartsKwh->date_end)->format('Y-m-d');
 
         $distributionIds = $this->revenuePartsKwh->distributionPartsKwh->pluck('distribution_id')->toArray();
-//        Log::info($distributionIds);
         // Iterate over the period
         $period = CarbonPeriod::create(Carbon::parse($partDateBegin)->format('Y-m-d'), Carbon::parse($partDateEnd)->format('Y-m-d'));
         foreach ($period as $date) {

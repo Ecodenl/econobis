@@ -252,11 +252,11 @@ class conversionProjectRevenuesKwh extends Command
             'revenue_id' => $newRevenuesKwh->id,
             'date_registration' => $dateBeginFromRevenue,
             'is_simulated' => false,
-            'kwh_start' => $oldProjectRevenuesKwh->kwh_start,
+            'kwh_start' => $oldProjectRevenuesKwh->kwh_start ? $oldProjectRevenuesKwh->kwh_start : 0,
             'kwh_end' => 0,
-            'kwh_start_high' => $oldProjectRevenuesKwh->kwh_start_high,
+            'kwh_start_high' => $oldProjectRevenuesKwh->kwh_start_high ? $oldProjectRevenuesKwh->kwh_start_high : 0,
             'kwh_end_high' => 0,
-            'kwh_start_low' => $oldProjectRevenuesKwh->kwh_start_low,
+            'kwh_start_low' => $oldProjectRevenuesKwh->kwh_start_low ? $oldProjectRevenuesKwh->kwh_start_low : 0,
             'kwh_end_low' => 0,
             'status' => 'concept',
         ]);
@@ -287,11 +287,11 @@ class conversionProjectRevenuesKwh extends Command
                     'revenue_id' => $newRevenuesKwh->id,
                     'date_registration' => $beginDateFromOldEndCalendarYear,
                     'is_simulated' => false,
-                    'kwh_start' => $kwhEndCalendarYear,
+                    'kwh_start' => $kwhEndCalendarYear ? $kwhEndCalendarYear : 0,
                     'kwh_end' => 0,
-                    'kwh_start_high' => $oldProjectRevenuesKwh->kwh_end_calendar_year_high,
+                    'kwh_start_high' => $oldProjectRevenuesKwh->kwh_end_calendar_year_high ? $oldProjectRevenuesKwh->kwh_end_calendar_year_high : 0,
                     'kwh_end_high' => 0,
-                    'kwh_start_low' => $oldProjectRevenuesKwh->kwh_end_calendar_year_low,
+                    'kwh_start_low' => $oldProjectRevenuesKwh->kwh_end_calendar_year_low ? $oldProjectRevenuesKwh->kwh_end_calendar_year_low : 0,
                     'kwh_end_low' => 0,
                     'status' => 'concept',
                 ]);
@@ -303,9 +303,9 @@ class conversionProjectRevenuesKwh extends Command
             if ($revenueValuesKwh->kwh_start != $oldProjectRevenuesKwh->kwh_end
                 || $revenueValuesKwh->kwh_start_high != $oldProjectRevenuesKwh->kwh_end_high
                 || $revenueValuesKwh->kwh_start_low != $oldProjectRevenuesKwh->kwh_end_low) {
-                $revenueValuesKwh->kwh_start = $oldProjectRevenuesKwh->kwh_end;
-                $revenueValuesKwh->kwh_start_high = $oldProjectRevenuesKwh->kwh_end_high;
-                $revenueValuesKwh->kwh_start_low = $oldProjectRevenuesKwh->kwh_end_low;
+                $revenueValuesKwh->kwh_start = $oldProjectRevenuesKwh->kwh_end ? $oldProjectRevenuesKwh->kwh_end : 0;
+                $revenueValuesKwh->kwh_start_high = $oldProjectRevenuesKwh->kwh_end_high ? $oldProjectRevenuesKwh->kwh_end_high : 0;
+                $revenueValuesKwh->kwh_start_low = $oldProjectRevenuesKwh->kwh_end_low ? $oldProjectRevenuesKwh->kwh_end_low : 0;
                 $revenueValuesKwh->save();
                 Log::error('Revenue kwh id: ' . $newRevenuesKwh->id . '. Verschillende beginstanden op ' . Carbon::parse($oldProjectRevenuesKwh->date_end)->addDay()->format('d-m-Y') . '!!!!');
             }
@@ -314,11 +314,11 @@ class conversionProjectRevenuesKwh extends Command
                 'revenue_id' => $newRevenuesKwh->id,
                 'date_registration' => $beginDateFromOldEndDate,
                 'is_simulated' => false,
-                'kwh_start' => $oldProjectRevenuesKwh->kwh_end,
+                'kwh_start' => $oldProjectRevenuesKwh->kwh_end ? $oldProjectRevenuesKwh->kwh_end : 0,
                 'kwh_end' => 0,
-                'kwh_start_high' => $oldProjectRevenuesKwh->kwh_end_high,
+                'kwh_start_high' => $oldProjectRevenuesKwh->kwh_end_high ? $oldProjectRevenuesKwh->kwh_end_high : 0,
                 'kwh_end_high' => 0,
-                'kwh_start_low' => $oldProjectRevenuesKwh->kwh_end_low,
+                'kwh_start_low' => $oldProjectRevenuesKwh->kwh_end_low ? $oldProjectRevenuesKwh->kwh_end_low : 0,
                 'kwh_end_low' => 0,
                 'status' => 'concept',
             ]);

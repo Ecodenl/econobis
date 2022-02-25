@@ -109,7 +109,7 @@ class conversionProjectRevenuesKwh extends Command
                 // tt 01-01-2022 t/m 30-06-2022 01-01-2022 <= 01-01-2022 true 30-06-2022 > 01-01-2022 true
                 // tt 01-07-2022 t/m 31-12-2022
                 //    01-01-2022 t/m 31-12-2022 01-01-2022 <= 01-07-2022 true 31-12-2022 > 01-07-2022 true
-                $projectRevenuesKwh = DB::table('revenues_kwh')->where('project_id', $oldProjectSplitRevenue->project_id)
+                $projectRevenuesKwh = RevenuesKwh::where('project_id', $oldProjectSplitRevenue->project_id)
                     ->where('category_id', $this->projectRevenueKwhCategoryId)
                     ->where('date_begin', '<=', $oldProjectSplitRevenue->date_begin)
                     ->where('date_end', '>', $oldProjectSplitRevenue->date_begin)
@@ -118,7 +118,7 @@ class conversionProjectRevenuesKwh extends Command
                 // Zo niet, dan controleren of er al een nieuwe revenueKwh is gemaakt van een vorige revenueKwhSplit.
                 if (!$projectRevenuesKwh->exists()) {
                     $checkDate = Carbon::parse($oldProjectSplitRevenue->date_begin)->subDay()->format('Y-m-d');
-                    $projectRevenuesKwhNew = DB::table('revenues_kwh')->where('project_id', $oldProjectSplitRevenue->project_id)
+                    $projectRevenuesKwhNew = RevenuesKwh::where('project_id', $oldProjectSplitRevenue->project_id)
                         ->where('category_id', $this->projectRevenueKwhCategoryId)
                         ->where('date_end', '=', $checkDate)
                         ->where('confirmed', true)

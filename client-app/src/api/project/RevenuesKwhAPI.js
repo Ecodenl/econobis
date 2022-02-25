@@ -73,7 +73,7 @@ export default {
             });
     },
 
-    createEnergySupplierExcel: (revenueId, energySupplierId, documentName) => {
+    createEnergySupplierExcel: (revenueId, energySupplierId, documentName, distributionKwhIds) => {
         let requestUrl = '';
         if (energySupplierId == 0) {
             requestUrl = `${URL_REVENUES_KWH}/create-energy-supplier-excel/${revenueId}`;
@@ -81,7 +81,7 @@ export default {
             requestUrl = `${URL_REVENUES_KWH}/create-energy-supplier-excel/${revenueId}/${energySupplierId}`;
         }
         return axiosInstance
-            .post(requestUrl, { documentName: documentName })
+            .post(requestUrl, { documentName: documentName, distributionKwhIds: distributionKwhIds })
             .then(response => response.data.data)
             .catch(error => {
                 console.log(error);

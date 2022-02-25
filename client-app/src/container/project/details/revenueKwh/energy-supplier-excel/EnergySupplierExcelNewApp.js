@@ -8,6 +8,8 @@ import EnergySupplierExcelNew from './EnergySupplierExcelNew';
 import RevenuesKwhAPI from '../../../../../api/project/RevenuesKwhAPI';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
+import { connect } from 'react-redux';
+import { clearEnergySupplierExcelReportKwh } from '../../../../../actions/project/ProjectDetailsActions';
 
 class EnergySupplierExcelNewApp extends Component {
     constructor(props) {
@@ -18,12 +20,19 @@ class EnergySupplierExcelNewApp extends Component {
                 revenueId: props.params.revenueId,
                 energySupplierId: 0,
                 documentName: '',
+                distributionKwhIds: props.reportEnergySupplierExcel
+                    ? props.reportEnergySupplierExcel.distributionKwhIds
+                    : [],
             },
             errors: {
                 energySupplierId: false,
                 documentName: false,
             },
         };
+    }
+
+    componentWillUnmount() {
+        this.props.clearEnergySupplierExcelReportKwh();
     }
 
     handleInputChange = event => {
@@ -61,11 +70,14 @@ class EnergySupplierExcelNewApp extends Component {
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-            RevenuesKwhAPI.createEnergySupplierExcel(excel.revenueId, excel.energySupplierId, excel.documentName).then(
-                payload => {
-                    hashHistory.push(`/documenten`);
-                }
-            );
+            RevenuesKwhAPI.createEnergySupplierExcel(
+                excel.revenueId,
+                excel.energySupplierId,
+                excel.documentName,
+                excel.distributionKwhIds
+            ).then(payload => {
+                hashHistory.push(`/documenten`);
+            });
     };
 
     render() {
@@ -97,4 +109,16 @@ class EnergySupplierExcelNewApp extends Component {
     }
 }
 
-export default EnergySupplierExcelNewApp;
+const mapStateToProps = state => {
+    return {
+        reportEnergySupplierExcel: state.revenuesKwhReportEnergySupplierExcel,
+    };
+};
+
+const mapDispatchToProps = dispatch => ({
+    clearEnergySupplierExcelReportKwh: () => {
+        dispatch(clearEnergySupplierExcelReportKwh());
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EnergySupplierExcelNewApp);

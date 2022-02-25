@@ -74,6 +74,13 @@ export const previewReportKwh = data => {
     };
 };
 
+export const energySupplierExcelReportKwh = data => {
+    return {
+        type: 'REVENUES_KWH_ENERGY_SUPPLIER_EXCEL_REPORT',
+        data,
+    };
+};
+
 export const previewReportPartsKwh = data => {
     return {
         type: 'REVENUES_KWH_PREVIEW_REPORT_PARTS',
@@ -111,6 +118,12 @@ export const clearPreviewReport = () => {
 export const clearPreviewReportKwh = () => {
     return {
         type: 'CLEAR_REVENUES_KWH_PREVIEW_REPORT',
+    };
+};
+
+export const clearEnergySupplierExcelReportKwh = () => {
+    return {
+        type: 'CLEAR_REVENUES_KWH_ENERGY_SUPPLIER_EXCEL_REPORT',
     };
 };
 

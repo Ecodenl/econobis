@@ -125,8 +125,9 @@ class conversionProjectRevenuesKwh extends Command
                         ->orderBy('date_end', 'desc');
                     if ($projectRevenuesKwhNew->exists()) {
                         // Zo ja, dan gebruiken we die reeds aangemaakt revenueKwh waarvan we de looptijd verder uitbreiden
-                        $projectRevenuesKwhNew->first()->date_end = $oldProjectSplitRevenue->date_end;
-                        $projectRevenuesKwhNew->save();
+                        $revenuesKwhNew = $projectRevenuesKwhNew->first();
+                        $revenuesKwhNew->date_end = $oldProjectSplitRevenue->date_end;
+                        $revenuesKwhNew->save();
                     } else {
                         // Zo niet, dan maken met nieuwe revenueKwh obv revenueKwhSplit en revenueKwhSplit verwerken in distribution parts
                         $this->createRevenuesKwh($oldProjectSplitRevenue);

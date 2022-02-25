@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers\Api\Project;
 
-use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
-use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
-use App\Eco\RevenuesKwh\RevenueDistributionValuesKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
-use App\Eco\RevenuesKwh\RevenueValuesKwh;
 use App\Eco\RevenuesKwh\RevenuePartsKwh;
 use App\Helpers\Delete\Models\DeleteRevenuePartsKwh;
 use App\Helpers\RequestInput\RequestInput;
@@ -17,7 +13,6 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\Project\FullRevenueDistributionPartsKwh;
 use App\Http\Resources\Project\FullRevenuePartsKwh;
 use App\Jobs\RevenueKwh\CreateRevenuePartsKwhReport;
-use App\Jobs\RevenueKwh\ProcessRevenuePartsKwh;
 use App\Jobs\RevenueKwh\ProcessRevenuesKwh;
 use Carbon\Carbon;
 use Illuminate\Http\Request;

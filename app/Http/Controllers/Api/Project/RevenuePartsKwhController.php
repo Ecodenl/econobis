@@ -7,6 +7,7 @@ use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\RevenuesKwh\RevenuePartsKwh;
+use App\Eco\RevenuesKwh\RevenueValuesKwh;
 use App\Helpers\Delete\Models\DeleteRevenuePartsKwh;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
@@ -106,11 +107,30 @@ class RevenuePartsKwhController extends ApiController
             }
         }
 
+        $valuesKwhData = $request->get("valuesKwh");
+        $recalculateNextPart = false;
+
+        if($revenuePartsKwh->status == 'concept' && $revenuePartsKwh->next_revenue_parts_kwh){
+            $dateRegistrationDayAfterEnd = Carbon::parse($revenuePartsKwh->date_end)->addDay()->format('Y-m-d');
+            $revenueValuesKwhEnd = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
+            if ($revenueValuesKwhEnd->kwh_start != $valuesKwhData['kwhEnd']
+                || $revenueValuesKwhEnd->kwh_start_high != $valuesKwhData['kwhEndHigh']
+                || $revenueValuesKwhEnd->kwh_start_low != $valuesKwhData['kwhEndLow']
+            ) {
+                $recalculateNextPart = true;
+            }
+        }
+
         $revenuePartsKwh->save();
 
-        //todo WM: dit naar job queue (met status in-progress-calculate?
-        $valuesKwhData = $request->get("valuesKwh");
+        //todo WM: dit naar job queue (met status in-progress-update)?
         $revenuePartsKwh->calculator()->runRevenueKwh($valuesKwhData);
+
+        if($recalculateNextPart){
+            $revenuePartsKwh->next_revenue_parts_kwh->calculator()->runRevenueKwh(null);
+        }
+
+
 
         return FullRevenuePartsKwh::collection(RevenuePartsKwh::where('revenue_id',
             $revenuePartsKwh->revenue_id)

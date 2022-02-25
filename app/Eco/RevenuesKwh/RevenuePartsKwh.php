@@ -133,6 +133,13 @@ class RevenuePartsKwh extends Model
             'kwhEndHighEstimated' => $valuesKwhEndEstimated, 'kwhEndHighEstimated' => $valuesKwhEndHighEstimated, 'kwhEndLowEstimated' => $valuesKwhEndLowEstimated];
     }
 
+    public function getNextRevenuePartsKwhAttribute()
+    {
+        $dateRegistrationDayAfterEnd = Carbon::parse($this->date_end)->addDay()->format('Y-m-d');
+        return RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_begin', $dateRegistrationDayAfterEnd)->first();
+
+    }
+
     public function calculator()
     {
         return new RevenuePartsKwhCalculator($this);

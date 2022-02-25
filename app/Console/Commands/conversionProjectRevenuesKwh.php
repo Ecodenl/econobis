@@ -231,11 +231,19 @@ class conversionProjectRevenuesKwh extends Command
             'remarks' => $remarks,
         ]);
 
+        $kwhEndCalendarYearHigh = $oldProjectRevenue->kwh_end_calendar_year_high ? $oldProjectRevenue->kwh_end_calendar_year_high : 0;
+        $kwhEndCalendarYearLow = $oldProjectRevenue->kwh_end_calendar_year_low ? $oldProjectRevenue->kwh_end_calendar_year_low : 0;
+        $kwhEndCalendarYear = $kwhEndCalendarYearHigh + $kwhEndCalendarYearLow;
+        $hasKwhEndCalendarYear = false;
+        if ($kwhEndCalendarYear > 0) {
+            $hasKwhEndCalendarYear = true;
+        }
+
         if($oldProjectRevenue->confirmed == false && $hasSplitKwh == true) {
             Log::info("komen we hier ???");
-            $this->createStartRevenuePartsKwhNotConfirmedAndWithSplit($newRevenuesKwh);
+            $this->createStartRevenuePartsKwhNotConfirmedAndWithSplit($newRevenuesKwh, $hasKwhEndCalendarYear);
         }else{
-            $this->createStartRevenuePartsKwhIfConfirmedOrWithoutSplit($newRevenuesKwh);
+            $this->createStartRevenuePartsKwhIfConfirmedOrWithoutSplit($newRevenuesKwh, $hasKwhEndCalendarYear);
         }
         $this->saveParticipantsOfDistribution($newRevenuesKwh, $oldProjectRevenue);
 
@@ -325,7 +333,7 @@ class conversionProjectRevenuesKwh extends Command
         }
     }
 
-    protected function createStartRevenuePartsKwhNotConfirmedAndWithSplit(RevenuesKwh $revenuesKwh): void
+    protected function createStartRevenuePartsKwhNotConfirmedAndWithSplit(RevenuesKwh $revenuesKwh, $hasKwhEndCalendarYear): void
     {
         $splitDates = [];
         $dateBeginFromRevenue = Carbon::parse($revenuesKwh->date_begin)->format('Y-m-d');
@@ -334,9 +342,12 @@ class conversionProjectRevenuesKwh extends Command
         $dateEndFromRevenue = Carbon::parse($revenuesKwh->date_end)->format('Y-m-d');
 
         $participations = $revenuesKwh->project->participantsProject;
-        $dateStartNextCalendarYear = Carbon::parse($revenuesKwh->date_end)->startOfYear()->format('Y-m-d');
-        if($dateBeginFromRevenue < $dateStartNextCalendarYear) {
-            $splitDates[] = $dateStartNextCalendarYear;
+
+        if($hasKwhEndCalendarYear){
+            $dateStartNextCalendarYear = Carbon::parse($revenuesKwh->date_end)->startOfYear()->format('Y-m-d');
+            if($dateBeginFromRevenue < $dateStartNextCalendarYear) {
+                $splitDates[] = $dateStartNextCalendarYear;
+            }
         }
 
         foreach ($participations as $participation){
@@ -372,7 +383,7 @@ class conversionProjectRevenuesKwh extends Command
         $this->createPeriodParts($splitDates, $dateEndFromRevenue, $revenuesKwh);
     }
 
-    protected function createStartRevenuePartsKwhIfConfirmedOrWithoutSplit(RevenuesKwh $revenuesKwh): void
+    protected function createStartRevenuePartsKwhIfConfirmedOrWithoutSplit(RevenuesKwh $revenuesKwh, $hasKwhEndCalendarYear): void
     {
         $splitDates = [];
         $dateBeginFromRevenue = Carbon::parse($revenuesKwh->date_begin)->format('Y-m-d');
@@ -380,9 +391,11 @@ class conversionProjectRevenuesKwh extends Command
 
         $dateEndFromRevenue = Carbon::parse($revenuesKwh->date_end)->format('Y-m-d');
 
-        $dateStartNextCalendarYear = Carbon::parse($revenuesKwh->date_end)->startOfYear()->format('Y-m-d');
-        if($dateBeginFromRevenue < $dateStartNextCalendarYear) {
-            $splitDates[] = $dateStartNextCalendarYear;
+        if($hasKwhEndCalendarYear) {
+            $dateStartNextCalendarYear = Carbon::parse($revenuesKwh->date_end)->startOfYear()->format('Y-m-d');
+            if ($dateBeginFromRevenue < $dateStartNextCalendarYear) {
+                $splitDates[] = $dateStartNextCalendarYear;
+            }
         }
 
         $this->createPeriodParts($splitDates, $dateEndFromRevenue, $revenuesKwh);

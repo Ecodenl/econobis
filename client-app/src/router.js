@@ -29,9 +29,11 @@ const ContactImportApp = React.lazy(() => import('./container/contact/import/Con
 const CreateRevenuesKwhReportApp = React.lazy(() =>
     import('./container/project/details/revenueKwh/details/create/CreateRevenuesKwhReportApp')
 );
-const CreateRevenuePartsKwhReportApp = React.lazy(() =>
-    import('./container/project/details/revenueKwh/details/revenue-parts/details/create/CreateRevenuePartsKwhReportApp')
-);
+// todo WM: opschonen
+//
+// const CreateRevenuePartsKwhReportApp = React.lazy(() =>
+//     import('./container/project/details/revenueKwh/details/revenue-parts/details/create/CreateRevenuePartsKwhReportApp')
+// );
 const DashboardDefaultApp = React.lazy(() => import('./container/dashboard/dashboards/default/DashboardDefaultApp'));
 const DashboardEnergySavingApp = React.lazy(() =>
     import('./container/dashboard/dashboards/energy-saving/DashboardEnergySavingApp')
@@ -423,10 +425,12 @@ const Routes = () => {
                         path="project/opbrengst-kwh/:revenueId/deelperiode/:id"
                         component={RevenuePartsKwhDetailsApp}
                     />
-                    <Route
-                        path="project/opbrengst-deelperiode-kwh/:id/rapportage"
-                        component={CreateRevenuePartsKwhReportApp}
-                    />
+                    {/*// todo WM: opschonen*/}
+                    {/*//*/}
+                    {/*<Route*/}
+                    {/*    path="project/opbrengst-deelperiode-kwh/:id/rapportage"*/}
+                    {/*    component={CreateRevenuePartsKwhReportApp}*/}
+                    {/*/>*/}
                     <Route
                         path="project/opbrengst-deelperiode-kwh/:revenuePartsKwhId/energieleverancier-rapport"
                         component={EnergySupplierReportNewApp}

@@ -2,26 +2,19 @@
 
 namespace App\Helpers\CSV;
 
-use App\Eco\EnergySupplier\EnergySupplier;
-use App\Eco\Project\ProjectRevenue;
-use App\Eco\Project\ProjectType;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 use League\Csv\Reader;
 
 class RevenueDistributionKwhCSVHelper
 {
     private $csvExporter;
     private $revenuesKwh;
-    private $distribution;
-    private $projectTypeCodeRef;
 
-    public function __construct($revenuesKwh, $projectTypeId)
+    public function __construct($revenuesKwh)
     {
         $this->csvExporter = new Export();
         $this->csvExporter->getCsv()->setDelimiter(';');
         $this->revenuesKwh = $revenuesKwh;
-        $this->projectTypeCodeRef = (ProjectType::where('id', $projectTypeId)->first())->code_ref;
     }
 
     public function downloadCSV(){
@@ -102,7 +95,7 @@ class RevenueDistributionKwhCSVHelper
         }
         if (empty($csv)) abort(422, 'Geen gegevens om te downloaden');
 
-        Log::debug($csv->getCsv());
+//        Log::debug($csv->getCsv());
 
         return Reader::BOM_UTF8 . $csv->getCsv();
     }

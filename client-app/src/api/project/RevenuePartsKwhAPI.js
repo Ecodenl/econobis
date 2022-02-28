@@ -63,51 +63,52 @@ export default {
         });
     },
 
-    createEnergySupplierReport: (partsKwhId, templateId, documentName) => {
-        const requestUrl = `${URL_REVENUE_PARTS_KWH}/create-energy-supplier-report/${partsKwhId}/${templateId}`;
-
-        return axiosInstance
-            .post(requestUrl, { documentName: documentName })
-            .then(response => response.data.data)
-            .catch(error => {
-                console.log(error);
-            });
-    },
-
-    createEnergySupplierExcel: (partsKwhId, energySupplierId, documentName) => {
-        let requestUrl = '';
-        if (energySupplierId == 0) {
-            requestUrl = `${URL_REVENUE_PARTS_KWH}/create-energy-supplier-excel/${partsKwhId}`;
-        } else {
-            requestUrl = `${URL_REVENUE_PARTS_KWH}/create-energy-supplier-excel/${partsKwhId}/${energySupplierId}`;
-        }
-        return axiosInstance
-            .post(requestUrl, { documentName: documentName })
-            .then(response => response.data.data)
-            .catch(error => {
-                console.log(error);
-            });
-    },
-
-    downloadPreview: (id, subject, documentTemplateId, emailTemplateId) => {
-        const requestUrl = `distribution-part-kwh/${id}/download-preview`;
-
-        return axiosInstance.post(
-            requestUrl,
-            { subject: subject, documentTemplateId: documentTemplateId, emailTemplateId: emailTemplateId },
-            { responseType: 'blob' }
-        );
-    },
-
-    previewEmail: (id, subject, documentTemplateId, emailTemplateId) => {
-        const requestUrl = `distribution-part-kwh/${id}/preview-email`;
-
-        return axiosInstance.post(requestUrl, {
-            subject: subject,
-            documentTemplateId: documentTemplateId,
-            emailTemplateId: emailTemplateId,
-        });
-    },
+    // todo WM: opschonen
+    // createEnergySupplierReport: (partsKwhId, templateId, documentName) => {
+    //     const requestUrl = `${URL_REVENUE_PARTS_KWH}/create-energy-supplier-report/${partsKwhId}/${templateId}`;
+    //
+    //     return axiosInstance
+    //         .post(requestUrl, { documentName: documentName })
+    //         .then(response => response.data.data)
+    //         .catch(error => {
+    //             console.log(error);
+    //         });
+    // },
+    //
+    // createEnergySupplierExcel: (partsKwhId, energySupplierId, documentName) => {
+    //     let requestUrl = '';
+    //     if (energySupplierId == 0) {
+    //         requestUrl = `${URL_REVENUE_PARTS_KWH}/create-energy-supplier-excel/${partsKwhId}`;
+    //     } else {
+    //         requestUrl = `${URL_REVENUE_PARTS_KWH}/create-energy-supplier-excel/${partsKwhId}/${energySupplierId}`;
+    //     }
+    //     return axiosInstance
+    //         .post(requestUrl, { documentName: documentName })
+    //         .then(response => response.data.data)
+    //         .catch(error => {
+    //             console.log(error);
+    //         });
+    // },
+    //
+    // downloadPreview: (id, subject, documentTemplateId, emailTemplateId) => {
+    //     const requestUrl = `distribution-part-kwh/${id}/download-preview`;
+    //
+    //     return axiosInstance.post(
+    //         requestUrl,
+    //         { subject: subject, documentTemplateId: documentTemplateId, emailTemplateId: emailTemplateId },
+    //         { responseType: 'blob' }
+    //     );
+    // },
+    //
+    // previewEmail: (id, subject, documentTemplateId, emailTemplateId) => {
+    //     const requestUrl = `distribution-part-kwh/${id}/preview-email`;
+    //
+    //     return axiosInstance.post(requestUrl, {
+    //         subject: subject,
+    //         documentTemplateId: documentTemplateId,
+    //         emailTemplateId: emailTemplateId,
+    //     });
+    // },
 
     fetchRevenueDistributionPartsKwh: (id, page) => {
         const requestUrl = `${URL_REVENUE_PARTS_KWH}/${id}/distribution-parts-kwh`;

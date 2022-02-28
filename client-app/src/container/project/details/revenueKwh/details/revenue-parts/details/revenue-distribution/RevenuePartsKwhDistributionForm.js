@@ -86,7 +86,7 @@ class RevenuePartsKwhDistributionForm extends Component {
     }
 
     reloadDistributions = () => {
-        this.props.fetchRevenuePartsKwh(this.state.revenuePartsKwh.id);
+        this.props.fetchRevenuePartsKwh(this.props.revenuePartsKwh.id);
         this.props.getDistributionPartsKwh(this.props.revenuePartsKwh.id, 0);
     };
 

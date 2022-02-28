@@ -52,6 +52,7 @@ class RevenuePartsKwhDistributionForm extends Component {
             showSuccessMessage: false,
             modalText: '',
             modalText2: '',
+            modalText3: '',
             modalAction: this.toggleModal,
             buttonConfirmText: '',
             readyForCreation: false,
@@ -321,12 +322,9 @@ class RevenuePartsKwhDistributionForm extends Component {
                     modalText:
                         'De ' +
                         $variableDateText +
-                        ' wordt de datum die bij de mutatie komt te staan in de deelname overzichten van de deelnemers.\n' +
-                        '\n' +
-                        'Weet je zeker dat je de goede ' +
-                        $variableDateText +
-                        ' hebt gekozen ?',
-                    modalText2:
+                        ' wordt de datum die bij de mutatie komt te staan in de deelname overzichten van de deelnemers.',
+                    modalText2: 'Weet je zeker dat je de goede ' + $variableDateText + ' hebt gekozen ?',
+                    modalText3:
                         moment(this.state.datePayout).format('YYYY-MM-DD') <
                         moment()
                             .nextBusinessDay()
@@ -552,9 +550,20 @@ class RevenuePartsKwhDistributionForm extends Component {
                         confirmAction={this.state.modalAction}
                     >
                         {this.state.modalText}
-                        <br />
-                        <br />
-                        {this.state.modalText2}
+                        {this.state.modalText2 ? (
+                            <>
+                                <br />
+                                <br />
+                                {this.state.modalText2}
+                            </>
+                        ) : null}
+                        {this.state.modalText3 ? (
+                            <>
+                                <br />
+                                <br />
+                                {this.state.modalText3}
+                            </>
+                        ) : null}
                     </Modal>
                 )}
                 {this.state.showSuccessMessage && (

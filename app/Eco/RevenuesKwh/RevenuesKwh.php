@@ -6,6 +6,7 @@ use App\Eco\Project\Project;
 use App\Eco\Project\ProjectRevenueCategory;
 use App\Eco\Project\ProjectRevenueDistributionType;
 use App\Eco\User\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
@@ -85,9 +86,6 @@ class RevenuesKwh extends Model
     public function conceptValuesKwh(){
         return $this->hasMany(RevenueValuesKwh::class, 'revenue_id')->where('status', 'çoncept');
     }
-//    public function simulatedValuesKwh(){
-//        return $this->hasMany(RevenueValuesKwh::class, 'revenue_id')->where('is_simulated', true);
-//    }
 
     //Appended fields
 
@@ -113,6 +111,21 @@ class RevenuesKwh extends Model
     public function getDeliveredTotalStringAttribute()
     {
         return number_format( ($this->delivered_total_concept + $this->delivered_total_confirmed + $this->delivered_total_processed), '2',',', '.' );
+    }
+
+    public function getKwhEndHighAttribute()
+    {
+        $dateRegistrationDayAfterEnd = Carbon::parse($this->date_end)->addDay()->format('Y-m-d');
+        $revenueValuesKwhDateEnd = RevenueValuesKwh::where('revenue_id', $this->id)->where('date_registration', $dateRegistrationDayAfterEnd)->where('is_simulated', false)->first();
+
+        return $revenueValuesKwhDateEnd ? $revenueValuesKwhDateEnd->kwh_start_high : 0;
+    }
+    public function getKwhEndLowAttribute()
+    {
+        $dateRegistrationDayAfterEnd = Carbon::parse($this->date_end)->addDay()->format('Y-m-d');
+        $revenueValuesKwhDateEnd = RevenueValuesKwh::where('revenue_id', $this->id)->where('date_registration', $dateRegistrationDayAfterEnd)->where('is_simulated', false)->first();
+
+        return $revenueValuesKwhDateEnd ? $revenueValuesKwhDateEnd->kwh_start_low : 0;
     }
 
     public function getHasNewPartsKwh(){

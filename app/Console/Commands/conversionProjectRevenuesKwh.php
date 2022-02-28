@@ -170,10 +170,9 @@ class conversionProjectRevenuesKwh extends Command
             // 5 de split revenues (zonder total revenue).
             if($conversionRevenuesKwh->participation_id != null){
                 $this->doConversion5($conversionRevenuesKwh);
-                // todo WM: split verwerken gaat nog fout, niet op done zodat we hem nog eens opnieuw kunnen doen.
-//                DB::table('xxx_conversion_revenues_kwh')
-//                    ->where('id', $conversionRevenuesKwh->id)
-//                    ->update(['done' => true]);
+                DB::table('xxx_conversion_revenues_kwh')
+                    ->where('id', $conversionRevenuesKwh->id)
+                    ->update(['done' => true]);
             }
         }
 

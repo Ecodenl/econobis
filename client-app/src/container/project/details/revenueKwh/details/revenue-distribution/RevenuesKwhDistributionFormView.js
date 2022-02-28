@@ -78,12 +78,14 @@ const RevenuesKwhDistributionFormView = props => {
         >
             {props.showCheckboxList ? (
                 <div className="col-sm-1">
-                    <input
-                        type="checkbox"
-                        name={id}
-                        onChange={props.toggleDistributionCheck}
-                        checked={props.distributionKwhIds.includes(id)}
-                    />
+                    {props.createType !== 'processRevenues' || status == 'confirmed' ? (
+                        <input
+                            type="checkbox"
+                            name={id}
+                            onChange={props.toggleDistributionCheck}
+                            checked={props.distributionKwhIds.includes(id)}
+                        />
+                    ) : null}
                 </div>
             ) : null}
 

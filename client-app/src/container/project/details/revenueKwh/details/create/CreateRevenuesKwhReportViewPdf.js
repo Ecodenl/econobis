@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import PdfViewer from '../../../../../components/pdf/PdfViewer';
-import RevenuesKwhAPI from '../../../../../api/project/RevenuesKwhAPI';
+import PdfViewer from '../../../../../../components/pdf/PdfViewer';
+import RevenuesKwhAPI from '../../../../../../api/project/RevenuesKwhAPI';
 
 class CreateRevenuesKwhReportViewPdf extends Component {
     constructor(props) {

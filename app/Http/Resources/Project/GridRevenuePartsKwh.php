@@ -4,7 +4,7 @@ namespace App\Http\Resources\Project;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullRevenuePartsKwh extends JsonResource
+class GridRevenuePartsKwh extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -28,12 +28,6 @@ class FullRevenuePartsKwh extends JsonResource
                 'deliveredTotalConfirmed' => $this->delivered_total_confirmed_string,
                 'deliveredTotalProcessed' => $this->delivered_total_processed_string,
                 'payoutKwh' => $this->payout_kwh,
-                'createdAt' => $this->created_at,
-                'valuesKwhStart' => $this->values_kwh_start,
-                'valuesKwhEnd' => $this->values_kwh_end,
-                'isLastRevenuePartsKwh' => $this->is_last_revenue_parts_kwh,
-                'dateBeginRevenuesKwh' => $this->revenuesKwh->date_begin,
-                'nextRevenuePartsKwh' => FullRevenuePartsKwh::make($this->next_revenue_parts_kwh),
             ];
     }
 }

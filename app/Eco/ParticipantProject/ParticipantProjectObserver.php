@@ -88,7 +88,10 @@ class ParticipantProjectObserver
 
                 $revenuesKwhController->saveDistributionKwh($revenuesKwh, $participantProject);
                 foreach($revenuesKwh->partsKwh as $revenuePartsKwh) {
-                    $revenuePartsKwh->calculator()->runRevenueKwh(null);
+                    //todo WM: anders
+                    if($revenuePartsKwh->status == 'concept'){
+                        $revenuePartsKwh->calculator()->runRevenuePartsKwh(null, null);
+                    }
                 }
             }
         }

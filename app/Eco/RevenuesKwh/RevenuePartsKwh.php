@@ -2,11 +2,8 @@
 
 namespace App\Eco\RevenuesKwh;
 
-use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use Carbon\Carbon;
-use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class RevenuePartsKwh extends Model
@@ -43,17 +40,27 @@ class RevenuePartsKwh extends Model
     public function conceptDistributionValuesKwh(){
         return $this->hasMany(RevenueDistributionValuesKwh::class, 'parts_id')->where('status', 'concept');
     }
+    public function inProgressUpdateDistributionPartsKwh(){
+        return $this->hasMany(RevenueDistributionPartsKwh::class, 'parts_id')->where('status', 'in-progress-update');
+    }
     public function newOrConceptDistributionPartsKwh(){
         return $this->hasMany(RevenueDistributionPartsKwh::class, 'parts_id')->whereIn('status', ['new', 'concept']);
     }
     public function newOrConceptDistributionValuesKwh(){
         return $this->hasMany(RevenueDistributionValuesKwh::class, 'parts_id')->whereIn('status', ['new', 'concept']);
     }
-    public function conceptSimulatedValuesKwh(){
-        return $this->hasMany(RevenueValuesKwh::class, 'revenue_id')->where('is_simulated', true)->where('status', 'concept');
-    }
-
     //Appended fields
+
+    public function conceptSimulatedValuesKwh($oldDateEnd){
+        $partDateBegin =  Carbon::parse($this->date_begin)->format('Y-m-d');
+        if($oldDateEnd != null){
+            $partDateEnd =  Carbon::parse($oldDateEnd)->format('Y-m-d');
+        } else {
+            $partDateEnd =  Carbon::parse($this->date_end)->format('Y-m-d');
+        }
+
+        return RevenueValuesKwh::where('revenue_id', $this->revenue_id)->whereBetween('date_registration', [$partDateBegin, $partDateEnd])->where('is_simulated', true)->where('status', 'concept');
+    }
 
     public function getDeliveredTotalConceptStringAttribute()
     {
@@ -131,6 +138,17 @@ class RevenuePartsKwh extends Model
 
         return ['allowEditEnd' => $allowEditEnd, 'kwhEnd' =>  $kwhEnd, 'kwhEndHigh' => $kwhEndHigh, 'kwhEndLow' => $kwhEndLow,
             'kwhEndHighEstimated' => $valuesKwhEndEstimated, 'kwhEndHighEstimated' => $valuesKwhEndHighEstimated, 'kwhEndLowEstimated' => $valuesKwhEndLowEstimated];
+    }
+
+    public function getIsFirstRevenuePartsKwhAttribute()
+    {
+        return $this->date_begin == $this->revenuesKwh->date_begin;
+
+    }
+    public function getIsLastRevenuePartsKwhAttribute()
+    {
+        return $this->date_end == $this->revenuesKwh->date_end;
+
     }
 
     public function getNextRevenuePartsKwhAttribute()

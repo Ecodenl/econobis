@@ -14,6 +14,7 @@ import ViewText from '../../../../../../components/form/ViewText';
 import EmailTemplateAPI from '../../../../../../api/email-template/EmailTemplateAPI';
 import InputText from '../../../../../../components/form/InputText';
 import {
+    fetchRevenuesKwh,
     getDistributionKwh,
     previewReportKwh,
     energySupplierExcelReportKwh,
@@ -50,6 +51,7 @@ class RevenuesKwhDistributionForm extends Component {
             showSuccessMessage: false,
             modalText: '',
             modalText2: '',
+            modalText3: '',
             modalAction: this.toggleModal,
             buttonConfirmText: '',
             readyForCreation: false,
@@ -84,6 +86,7 @@ class RevenuesKwhDistributionForm extends Component {
     }
 
     reloadDistributions = () => {
+        this.props.fetchRevenuesKwh(this.props.revenuesKwh.id);
         this.props.getDistributionKwh(this.props.revenuesKwh.id, 0);
     };
 
@@ -308,12 +311,9 @@ class RevenuesKwhDistributionForm extends Component {
                     modalText:
                         'De ' +
                         $variableDateText +
-                        ' wordt de datum die bij de mutatie komt te staan in de deelname overzichten van de deelnemers.\n' +
-                        '\n' +
-                        'Weet je zeker dat je de goede ' +
-                        $variableDateText +
-                        ' hebt gekozen ?',
-                    modalText2:
+                        ' wordt de datum die bij de mutatie komt te staan in de deelname overzichten van de deelnemers.',
+                    modalText2: 'Weet je zeker dat je de goede ' + $variableDateText + ' hebt gekozen ?',
+                    modalText3:
                         moment(this.state.datePayout).format('YYYY-MM-DD') <
                         moment()
                             .nextBusinessDay()
@@ -403,27 +403,27 @@ class RevenuesKwhDistributionForm extends Component {
                     <div className="btn-group pull-right">
                         <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={this.reloadDistributions} />
                         {this.props.revenuesKwh.confirmed == 1 &&
-                            administrationIds.includes(this.props.revenuesKwh.project.administrationId) &&
-                            (this.state.createType === '' ? (
-                                <React.Fragment>
-                                    <ButtonText
-                                        buttonText={'Selecteer preview rapportage'}
-                                        onClickAction={() => this.toggleShowCheckboxList('createReport')}
-                                    />
+                        administrationIds.includes(this.props.revenuesKwh.project.administrationId) &&
+                        this.state.createType === '' ? (
+                            <React.Fragment>
+                                <ButtonText
+                                    buttonText={'Selecteer preview rapportage'}
+                                    onClickAction={() => this.toggleShowCheckboxList('createReport')}
+                                />
+                                {this.props.revenuesKwh.status == 'confirmed' ? (
                                     <ButtonText
                                         buttonText={'Selecteer preview opbrengst verdeling'}
                                         onClickAction={() => this.toggleShowCheckboxList('processRevenues')}
                                         buttonClassName={'btn-primary'}
                                     />
-                                    <ButtonText
-                                        buttonText={'Selecteer Rapportage Energie leverancier'}
-                                        onClickAction={() =>
-                                            this.toggleShowCheckboxList('createEnergySupplierExcelReport')
-                                        }
-                                        buttonClassName={'btn-primary'}
-                                    />
-                                </React.Fragment>
-                            ) : null)}
+                                ) : null}
+                                <ButtonText
+                                    buttonText={'Selecteer Rapportage Energie leverancier'}
+                                    onClickAction={() => this.toggleShowCheckboxList('createEnergySupplierExcelReport')}
+                                    buttonClassName={'btn-primary'}
+                                />
+                            </React.Fragment>
+                        ) : null}
                     </div>
                 </PanelHeader>
                 <PanelBody>
@@ -569,9 +569,20 @@ class RevenuesKwhDistributionForm extends Component {
                         confirmAction={this.state.modalAction}
                     >
                         {this.state.modalText}
-                        <br />
-                        <br />
-                        {this.state.modalText2}
+                        {this.state.modalText2 ? (
+                            <>
+                                <br />
+                                <br />
+                                {this.state.modalText2}
+                            </>
+                        ) : null}
+                        {this.state.modalText3 ? (
+                            <>
+                                <br />
+                                <br />
+                                {this.state.modalText3}
+                            </>
+                        ) : null}
                     </Modal>
                 )}
                 {this.state.showSuccessMessage && (
@@ -610,6 +621,9 @@ const mapDispatchToProps = dispatch => ({
     },
     energySupplierExcelReportKwh: id => {
         dispatch(energySupplierExcelReportKwh(id));
+    },
+    fetchRevenuesKwh: id => {
+        dispatch(fetchRevenuesKwh(id));
     },
     getDistributionKwh: (id, page) => {
         dispatch(getDistributionKwh({ id, page }));

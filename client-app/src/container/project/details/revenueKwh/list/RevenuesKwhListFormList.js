@@ -10,9 +10,9 @@ const RevenuesKwhListFormList = ({ revenuesKwh }) => {
                 <div className="col-sm-2">Begin periode</div>
                 <div className="col-sm-2">Eind periode</div>
                 <div className="col-sm-1">Status</div>
-                <div className="col-sm-2">kWh concepted</div>
-                <div className="col-sm-2">kWh confirmed</div>
-                <div className="col-sm-2">kWh processed</div>
+                <div className="col-sm-2">kWh concept</div>
+                <div className="col-sm-2">kWh definitief</div>
+                <div className="col-sm-2">kWh verwerkt</div>
                 <div className="col-sm-1" />
             </div>
             {revenuesKwh.length > 0 ? (

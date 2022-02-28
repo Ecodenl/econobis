@@ -1,6 +1,8 @@
 import React from 'react';
 import moment from 'moment/moment';
 import validator from 'validator';
+import { FaInfoCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 moment.locale('nl');
 
 const RevenuePartsKwhDistributionFormView = props => {
@@ -17,6 +19,7 @@ const RevenuePartsKwhDistributionFormView = props => {
         participationsQuantity,
         kwhReturn,
         status,
+        remark,
     } = props.participation;
 
     const missingEmail =
@@ -74,12 +77,14 @@ const RevenuePartsKwhDistributionFormView = props => {
         >
             {props.showCheckboxList ? (
                 <div className="col-sm-1">
-                    <input
-                        type="checkbox"
-                        name={id}
-                        onChange={props.toggleDistributionCheck}
-                        checked={props.distributionPartsKwhIds.includes(id)}
-                    />
+                    {props.createType !== 'processRevenues' || status == 'confirmed' ? (
+                        <input
+                            type="checkbox"
+                            name={id}
+                            onChange={props.toggleDistributionCheck}
+                            checked={props.distributionPartsKwhIds.includes(id)}
+                        />
+                    ) : null}
                 </div>
             ) : null}
 
@@ -94,6 +99,20 @@ const RevenuePartsKwhDistributionFormView = props => {
                     : ''}
             </div>
             <div className="col-sm-2">{statusText}</div>
+            <div className="col-sm-1">
+                {remark ? (
+                    <>
+                        <FaInfoCircle color={'blue'} size={'15px'} data-tip={remark} data-for={`tooltip-remark`} />
+                        <ReactTooltip
+                            id={`tooltip-remark`}
+                            effect="float"
+                            place="right"
+                            multiline={true}
+                            aria-haspopup="true"
+                        />
+                    </>
+                ) : null}
+            </div>
         </div>
     );
 };

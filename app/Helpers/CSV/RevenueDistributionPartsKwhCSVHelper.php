@@ -5,16 +5,16 @@ namespace App\Helpers\CSV;
 use Carbon\Carbon;
 use League\Csv\Reader;
 
-class RevenueDistributionKwhCSVHelper
+class RevenueDistributionPartsKwhCSVHelper
 {
     private $csvExporter;
-    private $revenuesKwh;
+    private $revenuePartsKwh;
 
-    public function __construct($revenuesKwh)
+    public function __construct($revenuePartsKwh)
     {
         $this->csvExporter = new Export();
         $this->csvExporter->getCsv()->setDelimiter(';');
-        $this->revenuesKwh = $revenuesKwh;
+        $this->revenuePartsKwh = $revenuePartsKwh;
     }
 
     public function downloadCSV(){
@@ -22,7 +22,7 @@ class RevenueDistributionKwhCSVHelper
         $csv = '';
         $headers = true;
 
-        foreach ($this->revenuesKwh->distributionPartsKwh->chunk(500) as $chunk) {
+        foreach ($this->revenuePartsKwh->distributionPartsKwh->chunk(500) as $chunk) {
             $chunk->load([
                 'distributionKwh.contact.person.title',
                 'distributionKwh.contact.primaryAddress',

@@ -14,6 +14,7 @@ import ViewText from '../../../../../../../../components/form/ViewText';
 import EmailTemplateAPI from '../../../../../../../../api/email-template/EmailTemplateAPI';
 import InputText from '../../../../../../../../components/form/InputText';
 import {
+    fetchRevenuePartsKwh,
     getDistributionPartsKwh,
     previewReportPartsKwh,
 } from '../../../../../../../../actions/project/ProjectDetailsActions';
@@ -31,6 +32,7 @@ class RevenuePartsKwhDistributionForm extends Component {
 
         this.state = {
             partsId: this.props.revenuePartsKwh.id,
+            partsStatus: this.props.revenuePartsKwh.status,
             distributionPartsKwhIds: [],
             templateId: '',
             templateIdError: false,
@@ -84,6 +86,7 @@ class RevenuePartsKwhDistributionForm extends Component {
     }
 
     reloadDistributions = () => {
+        this.props.fetchRevenuePartsKwh(this.state.revenuePartsKwh.id);
         this.props.getDistributionPartsKwh(this.props.revenuePartsKwh.id, 0);
     };
 
@@ -349,8 +352,8 @@ class RevenuePartsKwhDistributionForm extends Component {
 
     processRevenuePartsKwh = () => {
         this.toggleModal();
-        let succesMessageText = `De mutaties van opbrengsten bij de deelnemers zijn aangemaakt. De status van de uitkeringen zijn veranderd van "Definitief" in "Verwerkt".
-                Mutaties die niet verwerkt konden worden, omdat er gegevens ontbreken bij het contact, zijn niet aangemaakt bij de deelnemers. Zij behouden de status "Definitief". Maak de gegevens compleet en maak vervolgens opnieuw een opbrengst verdeling van de uitkeringen met de status "Definitief".`;
+        let succesMessageText = `De mutaties van opbrengsten bij de geselecteerde deelnemers worden aangemaakt. De status van de uitkeringen worden veranderd van "Definitief" in "Verwerkt".
+                Mutaties die niet verwerkt konden worden, omdat er gegevens ontbreken bij het contact, worden niet aangemaakt bij de deelnemers. Zij behouden de status "Definitief". Maak de gegevens compleet en maak vervolgens opnieuw een opbrengst verdeling van de uitkeringen met de status "Definitief".`;
 
         document.body.style.cursor = 'wait';
         RevenuePartsKwhAPI.processRevenuePartsKwh(
@@ -402,7 +405,6 @@ class RevenuePartsKwhDistributionForm extends Component {
         } else {
             numberSelectedNumberTotal = this.state.distributionPartsKwhIds.length;
         }
-
         return (
             <Panel>
                 <PanelHeader>
@@ -410,83 +412,85 @@ class RevenuePartsKwhDistributionForm extends Component {
                     <div className="btn-group pull-right">
                         <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={this.reloadDistributions} />
                         {this.props.revenuePartsKwh &&
-                            this.props.revenuePartsKwh.confirmed == 1 &&
-                            administrationIds.includes(
-                                this.props &&
-                                    this.props.revenuesKwh &&
-                                    this.props.revenuesKwh.project &&
-                                    this.props.revenuesKwh.project.administrationId
-                            ) &&
-                            (this.state.createType === '' ? (
-                                <React.Fragment>
-                                    <ButtonText
-                                        buttonText={'Selecteer preview rapportage'}
-                                        onClickAction={() => this.toggleShowCheckboxList('createReport')}
-                                    />
+                        this.props.revenuePartsKwh.confirmed == 1 &&
+                        administrationIds.includes(
+                            this.props &&
+                                this.props.revenuesKwh &&
+                                this.props.revenuesKwh.project &&
+                                this.props.revenuesKwh.project.administrationId
+                        ) &&
+                        this.state.createType === '' ? (
+                            <React.Fragment>
+                                {/*<ButtonText*/}
+                                {/*    buttonText={'Selecteer preview rapportage'}*/}
+                                {/*    onClickAction={() => this.toggleShowCheckboxList('createReport')}*/}
+                                {/*/>*/}
+                                {this.props.revenuePartsKwh.status == 'confirmed' ? (
                                     <ButtonText
                                         buttonText={'Selecteer preview opbrengst verdeling'}
                                         onClickAction={() => this.toggleShowCheckboxList('processRevenues')}
                                         buttonClassName={'btn-primary'}
                                     />
-                                </React.Fragment>
-                            ) : null)}
+                                ) : null}
+                            </React.Fragment>
+                        ) : null}
                     </div>
                 </PanelHeader>
                 <PanelBody>
-                    {this.state.showCheckboxList && this.state.createType === 'createReport' ? (
-                        <Panel>
-                            <PanelBody>
-                                <div className="row">
-                                    <div className="col-md-12">
-                                        <ViewText label="Documentgroep" value={'Opbrengst'} />
-                                        <InputSelect
-                                            label="Document template"
-                                            name={'templateId'}
-                                            value={this.state.templateId}
-                                            options={this.state.templates}
-                                            onChangeAction={this.handleInputChange}
-                                            required={'required'}
-                                            error={this.state.templateIdError}
-                                        />
-                                    </div>
-                                    <div className="col-md-12">
-                                        <InputSelect
-                                            label="E-mail template"
-                                            name={'emailTemplateId'}
-                                            value={this.state.emailTemplateId}
-                                            options={this.state.emailTemplates}
-                                            onChangeAction={this.handleEmailTemplateChange}
-                                            required={'required'}
-                                            error={this.state.emailTemplateIdError}
-                                        />
-                                        <InputText
-                                            label={'E-mail onderwerp'}
-                                            name={'subject'}
-                                            value={this.state.subject}
-                                            onChangeAction={this.handleSubjectChange}
-                                        />
-                                    </div>
-                                    <div className="col-md-12">
-                                        <ViewText label="Geselecteerde deelnemers" value={numberSelectedNumberTotal} />
+                    {/*{this.state.showCheckboxList && this.state.createType === 'createReport' ? (*/}
+                    {/*    <Panel>*/}
+                    {/*        <PanelBody>*/}
+                    {/*            <div className="row">*/}
+                    {/*                <div className="col-md-12">*/}
+                    {/*                    <ViewText label="Documentgroep" value={'Opbrengst'} />*/}
+                    {/*                    <InputSelect*/}
+                    {/*                        label="Document template"*/}
+                    {/*                        name={'templateId'}*/}
+                    {/*                        value={this.state.templateId}*/}
+                    {/*                        options={this.state.templates}*/}
+                    {/*                        onChangeAction={this.handleInputChange}*/}
+                    {/*                        required={'required'}*/}
+                    {/*                        error={this.state.templateIdError}*/}
+                    {/*                    />*/}
+                    {/*                </div>*/}
+                    {/*                <div className="col-md-12">*/}
+                    {/*                    <InputSelect*/}
+                    {/*                        label="E-mail template"*/}
+                    {/*                        name={'emailTemplateId'}*/}
+                    {/*                        value={this.state.emailTemplateId}*/}
+                    {/*                        options={this.state.emailTemplates}*/}
+                    {/*                        onChangeAction={this.handleEmailTemplateChange}*/}
+                    {/*                        required={'required'}*/}
+                    {/*                        error={this.state.emailTemplateIdError}*/}
+                    {/*                    />*/}
+                    {/*                    <InputText*/}
+                    {/*                        label={'E-mail onderwerp'}*/}
+                    {/*                        name={'subject'}*/}
+                    {/*                        value={this.state.subject}*/}
+                    {/*                        onChangeAction={this.handleSubjectChange}*/}
+                    {/*                    />*/}
+                    {/*                </div>*/}
+                    {/*                <div className="col-md-12">*/}
+                    {/*                    <ViewText label="Geselecteerde deelnemers" value={numberSelectedNumberTotal} />*/}
 
-                                        <div className="margin-10-top pull-right btn-group" role="group">
-                                            <ButtonText
-                                                buttonClassName={'btn-default'}
-                                                buttonText={'Annuleren'}
-                                                onClickAction={this.toggleShowCheckboxList}
-                                            />
-                                            <ButtonText
-                                                buttonText={'Preview rapportage'}
-                                                onClickAction={this.checkDistributionPartsKwhRevenueReport}
-                                                type={'submit'}
-                                                value={'Submit'}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </PanelBody>
-                        </Panel>
-                    ) : null}
+                    {/*                    <div className="margin-10-top pull-right btn-group" role="group">*/}
+                    {/*                        <ButtonText*/}
+                    {/*                            buttonClassName={'btn-default'}*/}
+                    {/*                            buttonText={'Annuleren'}*/}
+                    {/*                            onClickAction={this.toggleShowCheckboxList}*/}
+                    {/*                        />*/}
+                    {/*                        <ButtonText*/}
+                    {/*                            buttonText={'Preview rapportage'}*/}
+                    {/*                            onClickAction={this.checkDistributionPartsKwhRevenueReport}*/}
+                    {/*                            type={'submit'}*/}
+                    {/*                            value={'Submit'}*/}
+                    {/*                        />*/}
+                    {/*                    </div>*/}
+                    {/*                </div>*/}
+                    {/*            </div>*/}
+                    {/*        </PanelBody>*/}
+                    {/*    </Panel>*/}
+                    {/*) : null}*/}
                     {this.state.showCheckboxList && this.state.createType === 'processRevenues' ? (
                         <Panel>
                             <PanelBody>
@@ -587,6 +591,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
     previewReportPartsKwh: id => {
         dispatch(previewReportPartsKwh(id));
+    },
+    fetchRevenuePartsKwh: id => {
+        dispatch(fetchRevenuePartsKwh(id));
     },
     getDistributionPartsKwh: (id, page) => {
         dispatch(getDistributionPartsKwh({ id, page }));

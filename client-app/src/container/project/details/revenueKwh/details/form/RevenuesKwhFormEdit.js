@@ -70,6 +70,8 @@ class RevenuesKwhFormEdit extends Component {
                 return 'Bezig met bijwerken...';
             case 'in-progress-report':
                 return 'Bezig met rapportage...';
+            case 'in-progress-process-concept':
+                return 'Bezig met verwerken...';
             case 'in-progress-process':
                 return 'Bezig met verwerken...';
             case 'processed':

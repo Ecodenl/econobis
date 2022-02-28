@@ -219,8 +219,10 @@ class RevenuesKwhHelper
                     $revenueValuesKwh->delivered_kwh = $deliveredTotalPerDay;
                     $revenueValuesKwh->save();
                 } else {
-                    // bestaande anders dan begindatum?
-                    Log::error('Bestaande revenue value kwh (' . $revenueValuesKwh->id . '), niet begindatum? date_registration: ' . $revenueValuesKwh->date_registration );
+// todo WM: opschonen
+//
+//                    bestaande anders dan begindatum?
+//                    Log::error('Bestaande revenue value kwh (' . $revenueValuesKwh->id . '), niet begindatum. Date_registration: ' . $revenueValuesKwh->date_registration );
                 }
             } else {
                 // Als we einddatum bereikt hebben, dan afrondingsverschil op laatste simulatie verwerken.
@@ -243,7 +245,7 @@ class RevenuesKwhHelper
                     'kwh_end_high' => $kwhEndHigh,
                     'kwh_start_low' => $kwhStartLow,
                     'kwh_end_low' => $kwhEndLow,
-                    'status' => $revenuePartsKwh->status,
+                    'status' => 'concept',
                     'delivered_kwh' => $deliveredTotal,
                 ]);
             }
@@ -261,7 +263,7 @@ class RevenuesKwhHelper
     protected function saveDistributionValues(RevenuePartsKwh $revenuePartsKwh, RevenueValuesKwh $revenueValuesKwh): void
     {
 //        $distributionsKwh = RevenueDistributionKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->get();
-        $distributionsKwh = $revenuePartsKwh->revenuesKwh->distributionKwh->where('status', 'concept');
+        $distributionsKwh = $revenuePartsKwh->revenuesKwh->distributionKwh->whereIn('status', ['concept', 'in-progress-update']);
         foreach ($distributionsKwh as $distributionKwh) {
             $participationsQuantity = $this->determineParticipationsQuantity($distributionKwh, $revenueValuesKwh->date_registration);
             RevenueDistributionValuesKwh::create([
@@ -270,7 +272,7 @@ class RevenuesKwhHelper
                 'distribution_id' => $distributionKwh->id,
                 'revenue_id' => $revenuePartsKwh->revenuesKwh->id,
                 'parts_id' => $revenuePartsKwh->id,
-                'status' => $revenuePartsKwh->status,
+                'status' => 'concept',
                 'participations_quantity' => $participationsQuantity,
                 'delivered_kwh' => 0,
             ]);
@@ -379,8 +381,8 @@ class RevenuesKwhHelper
             ->where('date_end', '>=', $splitDateString)
             ->whereHas('revenuesKwh', function ($query) use($participant) {
                 $query->whereHas('distributionKwh', function ($query) use($participant) {
-                    $query->where('participation_id', $participant->id);
-//                        ->where('status', '!=', 'processed');
+                    $query->where('participation_id', $participant->id)
+                        ->where('status', '!=', 'processed');
                 });
             })->first();
 
@@ -502,7 +504,7 @@ class RevenuesKwhHelper
             return;
         }
         if($revenuePartsKwh->status == 'concept'){
-            $revenuePartsKwh->calculator()->runRevenueKwh(null);
+            $revenuePartsKwh->calculator()->runRevenuePartsKwh(null, null);
 
             $revenueValuesKwhOnEndDateOriginal = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)
                 ->where('date_registration', $oldEndDateOriginalPartsKwh)
@@ -515,7 +517,7 @@ class RevenuesKwhHelper
                 'kwhEndHigh' => $revenueValuesKwhOnEndDateOriginal->kwhEndHigh,
                 'kwhEndLow' => $revenueValuesKwhOnEndDateOriginal->kwhEndLow,
             ];
-            $newRevenuePartsKwh->calculator()->runRevenueKwh($valuesKwhData);
+            $newRevenuePartsKwh->calculator()->runRevenuePartsKwh($valuesKwhData, null);
         }
         if($revenuePartsKwh->status != 'new') {
             foreach ($newRevenuePartsKwh->revenuesKwh->partsKwh as $revenuePartsKwhForUpdateDeliverdKwh) {

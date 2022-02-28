@@ -46,6 +46,10 @@ class ProcessRevenuesKwh implements ShouldQueue
         }
         $distributionsKwh = RevenueDistributionKwh::whereIn('id', $distributionIds)->get();
         foreach ($distributionsKwh as $distributionKwh) {
+            if ($distributionKwh->status === 'concept') {
+                $distributionKwh->status = 'in-progress-process-concept';
+                $distributionKwh->save();
+            }
             if ($distributionKwh->status === 'confirmed') {
                 $distributionKwh->status = 'in-progress-process';
                 $distributionKwh->save();

@@ -21,20 +21,36 @@ import RevenuePartsKwhAPI from '../../../../../../../../api/project/RevenueParts
 class RevenuePartsKwhFormEdit extends Component {
     constructor(props) {
         super(props);
-        const { id, confirmed, status, dateBegin, dateEnd, dateConfirmed, payoutKwh } = props.revenuePartsKwh;
+        const {
+            id,
+            revenueId,
+            confirmed,
+            status,
+            dateBegin,
+            dateEnd,
+            dateConfirmed,
+            payoutKwh,
+            isLastRevenuePartsKwh,
+            dateBeginRevenuesKwh,
+            nextRevenuePartsKwh,
+        } = props.revenuePartsKwh;
         const { allowEditStart, kwhStart, kwhStartHigh, kwhStartLow } = props.revenuePartsKwh.valuesKwhStart;
         const { allowEditEnd, kwhEnd, kwhEndHigh, kwhEndLow } = props.revenuePartsKwh.valuesKwhEnd;
 
         this.state = {
-            showModal: false,
+            showModalUpdate: false,
+            showModalDefinitive: false,
             revenuePartsKwh: {
                 id,
+                revenueId: revenueId,
                 confirmed: !!confirmed,
                 status: status,
                 dateBegin: dateBegin ? moment(dateBegin).format('Y-MM-DD') : '',
                 dateEnd: dateEnd ? moment(dateEnd).format('Y-MM-DD') : '',
                 dateConfirmed: dateConfirmed ? moment(dateConfirmed).format('Y-MM-DD') : '',
                 payoutKwh: payoutKwh ? parseFloat(payoutKwh).toFixed(5) : '',
+                isLastRevenuePartsKwh: !!isLastRevenuePartsKwh,
+                dateBeginRevenuesKwh: dateBeginRevenuesKwh ? moment(dateBeginRevenuesKwh).format('Y-MM-DD') : '',
                 valuesKwh: {
                     allowEditStart: allowEditStart,
                     kwhStart: kwhStart,
@@ -46,12 +62,15 @@ class RevenuePartsKwhFormEdit extends Component {
                     kwhEndLow: kwhEndLow,
                 },
             },
+            nextRevenuePartsKwh: nextRevenuePartsKwh,
             errors: {
+                dateEnd: false,
                 payoutKwh: false,
                 kwhEndHigh: false,
                 kwhEndLow: false,
             },
             errorMessage: {
+                dateEnd: '',
                 payoutKwh: '',
                 kwhEndHigh: '',
                 kwhEndLow: '',
@@ -82,24 +101,36 @@ class RevenuePartsKwhFormEdit extends Component {
         return '';
     };
 
-    toggleShowModal = () => {
+    toggleShowModalUpdate = () => {
         this.setState({
-            showModal: !this.state.showModal,
+            showModalUpdate: !this.state.showModalUpdate,
+        });
+    };
+
+    toggleShowModalDefinitive = () => {
+        this.setState({
+            showModalDefinitive: !this.state.showModalDefinitive,
         });
     };
 
     cancelSetDate = () => {
         this.setState({
             ...this.state,
-            revenuesKwh: {
-                ...this.state.revenuesKwh,
+            revenuePartsKwh: {
+                ...this.state.revenuePartsKwh,
                 dateConfirmed: '',
                 confirmed: false,
             },
         });
 
         this.setState({
-            showModal: !this.state.showModal,
+            showModalDefinitive: false,
+        });
+    };
+
+    cancelUpdate = () => {
+        this.setState({
+            showModalUpdate: false,
         });
     };
 
@@ -165,6 +196,18 @@ class RevenuePartsKwhFormEdit extends Component {
         }, 200);
     };
 
+    handleInputChangeDate = (value, name) => {
+        if (value) {
+            this.setState({
+                ...this.state,
+                revenuePartsKwh: {
+                    ...this.state.revenuePartsKwh,
+                    [name]: value,
+                },
+            });
+        }
+    };
+
     handleInputChangeDateConfirmed = (value, name) => {
         if (value) {
             this.setState({
@@ -178,7 +221,7 @@ class RevenuePartsKwhFormEdit extends Component {
                     confirmed: true,
                 },
             });
-            this.toggleShowModal();
+            this.toggleShowModalDefinitive();
         } else {
             this.setState({
                 ...this.state,
@@ -194,10 +237,11 @@ class RevenuePartsKwhFormEdit extends Component {
         }
     };
 
-    handleSubmit = event => {
+    confirmUpdate = event => {
         event.preventDefault();
 
         const { revenuePartsKwh } = this.state;
+        const { nextRevenuePartsKwh } = this.state;
 
         let errors = {};
         let errorMessage = {};
@@ -208,22 +252,18 @@ class RevenuePartsKwhFormEdit extends Component {
         //     errorMessage.dateBegin = 'Verplicht';
         //     hasErrors = true;
         // }
-        // if (validator.isEmpty(revenuePartsKwh.dateEnd + '')) {
-        //     errors.dateEnd = true;
-        //     errorMessage.dateEnd = 'Verplicht';
-        //     hasErrors = true;
-        // }
-        // if (!revenuePartsKwh.payoutKwh) {
-        //     errors.payoutKwh = true;
-        //     errorMessage.payoutKwh = 'Verplicht';
-        //     hasErrors = true;
-        // }
-        //
-        // if (!hasErrors && revenuePartsKwh.dateEnd < revenuePartsKwh.dateBegin) {
-        //     errors.dateEnd = true;
-        //     errorMessage.dateEnd = 'Eind periode mag niet voor Begin periode liggen.';
-        //     hasErrors = true;
-        // }
+        if (revenuePartsKwh.isLastRevenuePartsKwh) {
+            if (validator.isEmpty(revenuePartsKwh.dateEnd + '')) {
+                errors.dateEnd = true;
+                errorMessage.dateEnd = 'Verplicht';
+                hasErrors = true;
+            }
+            if (!hasErrors && revenuePartsKwh.dateEnd < revenuePartsKwh.dateBegin) {
+                errors.dateEnd = true;
+                errorMessage.dateEnd = 'Eind periode mag niet voor Begin periode liggen.';
+                hasErrors = true;
+            }
+        }
 
         if (
             (revenuePartsKwh.valuesKwh.kwhEndHigh ? parseFloat(revenuePartsKwh.valuesKwh.kwhEndHigh) : 0) <
@@ -242,6 +282,31 @@ class RevenuePartsKwhFormEdit extends Component {
             hasErrors = true;
         }
 
+        if (nextRevenuePartsKwh) {
+            if (
+                (revenuePartsKwh.valuesKwh.kwhEndHigh ? parseFloat(revenuePartsKwh.valuesKwh.kwhEndHigh) : 0) >
+                (nextRevenuePartsKwh.valuesKwhEnd.kwhEndHigh
+                    ? parseFloat(nextRevenuePartsKwh.valuesKwhEnd.kwhEndHigh)
+                    : 0)
+            ) {
+                errors.kwhEndHigh = true;
+                errorMessage.kwhEndHigh =
+                    'Eindstand kWh hoog mag niet hoger zijn dan Eindstand kWh hoog volgende periode.';
+                hasErrors = true;
+            }
+            if (
+                (revenuePartsKwh.valuesKwh.kwhEndLow ? parseFloat(revenuePartsKwh.valuesKwh.kwhEndLow) : 0) >
+                (nextRevenuePartsKwh.valuesKwhEnd.kwhEndLow
+                    ? parseFloat(nextRevenuePartsKwh.valuesKwhEnd.kwhEndLow)
+                    : 0)
+            ) {
+                errors.kwhEndLow = true;
+                errorMessage.kwhEndLow =
+                    'Eindstand kWh laag mag niet lager zijn dan Eindstand kWh laag volgende periode.';
+                hasErrors = true;
+            }
+        }
+
         if (!revenuePartsKwh.payoutKwh) {
             errors.payoutKwh = true;
             errorMessage.payoutKwh = 'Verplicht';
@@ -253,21 +318,42 @@ class RevenuePartsKwhFormEdit extends Component {
         this.setState({ ...this.state, errors: errors, errorMessage: errorMessage });
 
         if (!hasErrors) {
-            this.setState({ isSaving: true });
-            RevenuePartsKwhAPI.updateRevenuePartsKwh(revenuePartsKwh.id, revenuePartsKwh).then(payload => {
-                this.props.fetchRevenuePartsKwh(revenuePartsKwh.id);
-
-                setTimeout(() => {
-                    this.props.getDistributionPartsKwh(revenuePartsKwh.id, 0);
-                }, 250);
-                this.setState({ isSaving: true });
-                this.props.switchToView();
-            });
+            this.toggleShowModalUpdate();
         }
     };
 
+    handleSubmit = event => {
+        event.preventDefault();
+
+        this.setState({
+            ...this.state,
+            showModalUpdate: false,
+        });
+
+        const { revenuePartsKwh } = this.state;
+        this.setState({ isSaving: true });
+        RevenuePartsKwhAPI.updateRevenuePartsKwh(revenuePartsKwh.id, revenuePartsKwh).then(payload => {
+            this.props.fetchRevenuePartsKwh(revenuePartsKwh.id);
+
+            setTimeout(() => {
+                this.props.getDistributionPartsKwh(revenuePartsKwh.id, 0, '');
+            }, 250);
+            // this.setState({ isSaving: true });
+            this.props.switchToView();
+        });
+    };
+
     render() {
-        const { confirmed, status, dateBegin, dateEnd, dateConfirmed, payoutKwh } = this.state.revenuePartsKwh;
+        const {
+            confirmed,
+            status,
+            dateBegin,
+            dateEnd,
+            dateConfirmed,
+            payoutKwh,
+            isLastRevenuePartsKwh,
+            dateBeginRevenuesKwh,
+        } = this.state.revenuePartsKwh;
         const {
             allowEditStart,
             kwhStart,
@@ -297,7 +383,22 @@ class RevenuePartsKwhFormEdit extends Component {
                 </div>
                 <div className="row">
                     <InputDate label={'Begin periode'} name={'dateBegin'} value={dateBegin} readOnly={true} />
-                    <InputDate label={'Eind periode'} name={'dateEnd'} value={dateEnd} readOnly={true} />
+                    <InputDate
+                        label={'Eind periode'}
+                        name={'dateEnd'}
+                        value={dateEnd}
+                        readOnly={!isLastRevenuePartsKwh}
+                        onChangeAction={this.handleInputChangeDate}
+                        required={'required'}
+                        error={this.state.errors.dateEnd}
+                        errorMessage={this.state.errorMessage.dateEnd}
+                        disabledBefore={dateBegin}
+                        disabledAfter={moment(dateBeginRevenuesKwh)
+                            .add(1, 'year')
+                            .add(6, 'month')
+                            .add(-1, 'day')
+                            .format('Y-MM-DD')}
+                    />
                 </div>
                 <div className="row">
                     <InputDate
@@ -406,7 +507,7 @@ class RevenuePartsKwhFormEdit extends Component {
                         {allowEditStart || allowEditEnd || status == 'concept' ? (
                             <ButtonText
                                 buttonText={'Opslaan'}
-                                onClickAction={this.handleSubmit}
+                                onClickAction={this.confirmUpdate}
                                 type={'submit'}
                                 value={'Submit'}
                                 loading={this.state.isSaving}
@@ -414,17 +515,43 @@ class RevenuePartsKwhFormEdit extends Component {
                         ) : null}
                     </div>
                 </PanelFooter>
-                {this.state.showModal && (
+                {this.state.showModalUpdate && (
                     <Modal
                         buttonConfirmText="Bevestigen"
-                        closeModal={this.cancelSetDate}
-                        confirmAction={this.toggleShowModal}
+                        closeModal={this.cancelUpdate}
+                        confirmAction={this.handleSubmit}
                         title="Bevestigen"
                     >
                         <p>
-                            Als je deze datum invult, zal de opbrengst kwh standen definitief worden gemaakt. Je kunt
-                            deze hierna niet meer aanpassen
+                            Het bijwerken van de opbrengst periode verdeling kan enige tijd duren, vooral bij veel
+                            deelnemers. Dit proces gebeurd daarom op de achtergrond. Zolang deze opbrengst periode
+                            verdeling wordt bijgewerkt kunnen er verder geen wijzigingen of acties op uitgevoerd worden
+                            op deze opbrengst periode verdeling.
+                            <br />
+                            Als er eindstanden zijn gewijzigd en er is een volgende periode aanwezig, dan zal deze ook
+                            direct bijgewerkt worden. De eindstanden van deze opbrengst periode verdeling zijn namelijk
+                            de beginstanden van de volgende opbrengst periode verdeling.
+                            <br />
                         </p>
+                    </Modal>
+                )}
+                {this.state.showModalDefinitive && (
+                    <Modal
+                        buttonConfirmText="Bevestigen"
+                        closeModal={this.cancelSetDate}
+                        confirmAction={this.toggleShowModalDefinitive}
+                        title="Bevestigen"
+                    >
+                        <p>
+                            Als je deze datum invult zullen deze opbrengst kwh standen en van alle voorgaande perioden
+                            definitief worden gemaakt. Je kunt deze hierna niet meer aanpassen.
+                        </p>
+                        {isLastRevenuePartsKwh && (
+                            <p>
+                                Dit is de laatste deelperiode. Met het definitief maken van deze periode zal de totale
+                                opbrengst verdeling definitief worden gemaakt.
+                            </p>
+                        )}
                     </Modal>
                 )}
             </form>

@@ -966,7 +966,9 @@ class RevenuesKwhController extends ApiController
         $partsKwh = RevenuePartsKwh::whereIn('id', $upToPartsKwhIds)->get();
         foreach ($partsKwh as $partKwh) {
             if ($partKwh->status === 'in-progress-process') {
-                if($partKwh->distributionPartsKwh->where('status', '!=', 'processed')->count() == 0){
+                if($partKwh->distributionPartsKwh->where('status', '!=', 'processed')->count() == 0
+                && $partKwh->distributionPartsKwh->where('status', '==', 'processed')->count() > 0
+                ){
                     $partKwh->status = 'processed';
                 }else{
                     $partKwh->status = 'confirmed';
@@ -976,15 +978,17 @@ class RevenuesKwhController extends ApiController
             }
         }
 
-// todo WM: opschonen
-//
-//        $revenuesKwh = $distributionsKwh->first()->revenuesKwh;
-//        if($revenuesKwh->distributionKwh->where('status', '!=', 'processed')->count() == 0 && $revenuesKwh->partsKwh->where('status', '!=', 'processed')->count() == 0){
-//            $revenuesKwh->status = 'processed';
-//        }else{
-//            $revenuesKwh->status = 'confirmed';
-//        }
-//        $revenuesKwh->save();
+        $revenuesKwh = $distributionsKwh->first()->revenuesKwh;
+        if($revenuesKwh->distributionKwh->where('status', '!=', 'processed')->count() == 0
+            && $revenuesKwh->distributionKwh->where('status', '==', 'processed')->count() > 0
+            && $revenuesKwh->partsKwh->where('status', '!=', 'processed')->count() == 0
+            && $revenuesKwh->partsKwh->where('status', '==', 'processed')->count() > 0
+        ){
+            $revenuesKwh->status = 'processed';
+        }else{
+            $revenuesKwh->status = 'confirmed';
+        }
+        $revenuesKwh->save();
     }
 
     protected function createParticipantMutationForRevenueKwh(RevenueDistributionKwh $distributionKwh, $datePayout, $mutationEnergyTaxRefund){

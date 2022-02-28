@@ -282,7 +282,7 @@ class RevenuePartsKwhFormEdit extends Component {
             hasErrors = true;
         }
 
-        if (nextRevenuePartsKwh) {
+        if (nextRevenuePartsKwh && nextRevenuePartsKwh.status != 'new') {
             if (
                 (revenuePartsKwh.valuesKwh.kwhEndHigh ? parseFloat(revenuePartsKwh.valuesKwh.kwhEndHigh) : 0) >
                 (nextRevenuePartsKwh.valuesKwhEnd.kwhEndHigh

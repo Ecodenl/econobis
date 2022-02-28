@@ -2,9 +2,10 @@
 
 namespace App\Eco\RevenuesKwh;
 
+use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplier;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class RevenueDistributionPartsKwh extends Model
@@ -46,6 +47,17 @@ class RevenueDistributionPartsKwh extends Model
     public function getDeliveredTotalStringAttribute()
     {
         return number_format( $this->delivered_kwh, '2',',', '.' );
+    }
+    public function getRemarkAttribute()
+    {
+        $remarks = [];
+        if($this->distributionKwh->participation->date_terminated == $this->partsKwh->date_end){
+            $remarks[] = "Deze deelname is beeindigd op " . Carbon::parse($this->distributionKwh->participation->date_terminated)->format('d-m-Y');
+        }
+        if(AddressEnergySupplier::where('address_id', $this->distributionKwh->participation->address_id)->where('energy_supplier_id', $this->es_id)->where('end_date', $this->partsKwh->date_end)->exists()){
+            $remarks[] =  "Deze energie leverancier bij deze deelname is beeinidigd op " . Carbon::parse($this->partsKwh->date_end)->format('d-m-Y');
+        }
+        return implode('<br/>', $remarks);
     }
 
     public function getKwhReturnAttribute(){

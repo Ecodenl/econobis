@@ -20,6 +20,7 @@ const RevenuePartsKwhDistributionFormList = props => {
                 <div className="col-sm-1">Geleverd totaal</div>
                 <div className="col-sm-2">Teruggave energiebelasting</div>
                 <div className="col-sm-2">Status</div>
+                <div className="col-sm-1"></div>
             </div>
             {props.revenuePartsKwh.distributionPartsKwh &&
             props.revenuePartsKwh.distributionPartsKwh.data.length > 0 ? (

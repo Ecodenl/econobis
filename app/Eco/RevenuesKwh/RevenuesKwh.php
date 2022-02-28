@@ -118,14 +118,14 @@ class RevenuesKwh extends Model
         $dateRegistrationDayAfterEnd = Carbon::parse($this->date_end)->addDay()->format('Y-m-d');
         $revenueValuesKwhDateEnd = RevenueValuesKwh::where('revenue_id', $this->id)->where('date_registration', $dateRegistrationDayAfterEnd)->where('is_simulated', false)->first();
 
-        return $revenueValuesKwhDateEnd ? $revenueValuesKwhDateEnd->kwh_end_high : 0;
+        return $revenueValuesKwhDateEnd ? $revenueValuesKwhDateEnd->kwh_start_high : 0;
     }
     public function getKwhEndLowAttribute()
     {
         $dateRegistrationDayAfterEnd = Carbon::parse($this->date_end)->addDay()->format('Y-m-d');
         $revenueValuesKwhDateEnd = RevenueValuesKwh::where('revenue_id', $this->id)->where('date_registration', $dateRegistrationDayAfterEnd)->where('is_simulated', false)->first();
 
-        return $revenueValuesKwhDateEnd ? $revenueValuesKwhDateEnd->kwh_end_low : 0;
+        return $revenueValuesKwhDateEnd ? $revenueValuesKwhDateEnd->kwh_start_low : 0;
     }
 
     public function getHasNewPartsKwh(){

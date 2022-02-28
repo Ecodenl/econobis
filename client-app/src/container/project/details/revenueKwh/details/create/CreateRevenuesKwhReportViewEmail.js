@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import ViewHtmlAsText from '../../../../../components/form/ViewHtmlAsText';
-import RevenuesKwhAPI from '../../../../../api/project/RevenuesKwhAPI';
+import ViewHtmlAsText from '../../../../../../components/form/ViewHtmlAsText';
+import RevenuesKwhAPI from '../../../../../../api/project/RevenuesKwhAPI';
 
 class CreateRevenuesKwhReportViewEmail extends Component {
     constructor(props) {

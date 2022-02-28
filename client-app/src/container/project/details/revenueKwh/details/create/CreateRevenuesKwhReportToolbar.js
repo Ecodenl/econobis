@@ -1,8 +1,8 @@
 import React from 'react';
 import { browserHistory } from 'react-router';
 
-import ButtonIcon from '../../../../../components/button/ButtonIcon';
-import ButtonText from '../../../../../components/button/ButtonText';
+import ButtonIcon from '../../../../../../components/button/ButtonIcon';
+import ButtonText from '../../../../../../components/button/ButtonText';
 
 const CreateRevenuesKwhReportToolbar = ({ amountOfDistributions, createRevenueReport }) => (
     <div className="row">

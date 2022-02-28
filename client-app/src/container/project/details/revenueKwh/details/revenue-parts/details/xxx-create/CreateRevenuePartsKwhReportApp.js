@@ -8,10 +8,10 @@ import { connect } from 'react-redux';
 import { clearPreviewReport } from '../../../../../../../../actions/project/ProjectDetailsActions';
 import Modal from '../../../../../../../../components/modal/Modal';
 import RevenuePartsKwhAPI from '../../../../../../../../api/project/RevenuePartsKwhAPI';
-import CreateRevenuesKwhReportToolbar from '../../../../components-report-preview/CreateRevenuesKwhReportToolbar';
-import CreateRevenuesKwhReportList from '../../../../components-report-preview/CreateRevenuesKwhReportList';
-import CreateRevenuesKwhReportViewPdf from '../../../../components-report-preview/CreateRevenuesKwhReportViewPdf';
-import CreateRevenuesKwhReportViewEmail from '../../../../components-report-preview/CreateRevenuesKwhReportViewEmail';
+import CreateRevenuesKwhReportToolbar from './CreateRevenuesKwhReportToolbar';
+import CreateRevenuesKwhReportList from './CreateRevenuesKwhReportList';
+import CreateRevenuesKwhReportViewPdf from './CreateRevenuesKwhReportViewPdf';
+import CreateRevenuesKwhReportViewEmail from './CreateRevenuesKwhReportViewEmail';
 
 class CreateRevenuePartsKwhReportApp extends Component {
     constructor(props) {

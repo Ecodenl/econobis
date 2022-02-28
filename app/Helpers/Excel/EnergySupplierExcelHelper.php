@@ -323,18 +323,6 @@ class EnergySupplierExcelHelper
                         $query->whereYear('date_begin', '>', $dateBeginYear);
                     })
                     ->sum('delivered_kwh');
-//                $participationsNextYear = $partsUpToEndOfYear->first() ? $partsUpToEndOfYear->first()->participations_quantity : 0;
-
-//                $deliveredTotalEs = $distribution->distributionPartsKwh()
-//                    ->where('es_id', $this->energySupplier->id)
-//                    ->sum('delivered_kwh');
-//                Log::info( 'Distribution id: ' . $distribution->id);
-//                Log::info( 'ES id: ' . $this->energySupplier->id);
-//                Log::info( 'sql voor deliveredTotalEsEndOfYear: ');
-//                Log::info( $partsUpToEndOfYear->toSql());
-//                Log::info( 'Totaal ES tot 31-12 begin jaar: ' . $deliveredTotalEsEndOfYear);
-//                Log::info( 'Totaal ES volgend jaar: ' . $deliveredTotalEsNextYear);
-
                 if(Carbon::parse($this->revenuesKwh->date_begin)->year == Carbon::parse($this->revenuesKwh->date_end)->year) {
                     $rowData = [];
                     $rowData[] = $distribution->participation_id;

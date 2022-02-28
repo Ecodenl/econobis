@@ -63,6 +63,8 @@ class RevenuePartsKwhController extends ApiController
 
     public function update(RequestInput $requestInput, Request $request, RevenuePartsKwh $revenuePartsKwh)
     {
+        set_time_limit(60);
+
         $this->authorize('manage', RevenuesKwh::class);
 
         $data = $requestInput
@@ -117,7 +119,7 @@ class RevenuePartsKwhController extends ApiController
         $valuesKwhData = $request->get("valuesKwh");
         $recalculateNextPart = false;
 
-        if($revenuePartsKwh->status == 'concept' && $revenuePartsKwh->next_revenue_parts_kwh){
+        if($revenuePartsKwh->status == 'concept' && $revenuePartsKwh->next_revenue_parts_kwh && $revenuePartsKwh->next_revenue_parts_kwh->status != 'new'){
             $dateRegistrationDayAfterEnd = Carbon::parse($revenuePartsKwh->date_end)->addDay()->format('Y-m-d');
             $revenueValuesKwhEnd = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
             if ($revenueValuesKwhEnd->kwh_start != $valuesKwhData['kwhEnd']

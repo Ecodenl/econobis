@@ -14,6 +14,7 @@ use App\Eco\EnergySupplier\ContactEnergySupplier;
 use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Intake\Intake;
+use App\Eco\Intake\IntakeStatus;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Opportunity\Opportunity;
@@ -35,6 +36,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Laracasts\Presenter\PresentableTrait;
 use Venturecraft\Revisionable\RevisionableTrait;
 
@@ -521,6 +523,24 @@ class Contact extends Model
             }
         }
         return false;
+    }
+
+    public function getBlockChangeAddressAttribute()
+    {
+        $hasOpenIntakeOnPortalCheckAddress = false;
+        $hasHousingFileOnPortalCheckAddress = false;
+        if($this->addressForPostalCodeCheck){
+            $statusIdOpen = IntakeStatus::where('name', 'Open')->first()->id;
+            $hasOpenIntakeOnPortalCheckAddress = $this->intakes()
+                ->where('address_id', $this->addressForPostalCodeCheck->id)
+                ->where('intake_status_id', $statusIdOpen)
+                ->exists();
+            $hasHousingFileOnPortalCheckAddress = $this->housingFiles()
+                ->where('address_id', $this->addressForPostalCodeCheck->id)
+                ->exists();
+        }
+
+        return $hasOpenIntakeOnPortalCheckAddress || $hasHousingFileOnPortalCheckAddress;
     }
 
     public function getBlockChangeAddressNumberAttribute()

@@ -549,11 +549,11 @@ class conversionProjectRevenuesKwh extends Command
                     })
                     ->orWhereNull('member_since');
             })
-            ->where(function ($addressEnergySupplier) use ($partDateEnd) {
+            ->where(function ($addressEnergySupplier) use ($partDateBegin) {
                 $addressEnergySupplier
-                    ->where(function ($addressEnergySupplier) use ($partDateEnd) {
+                    ->where(function ($addressEnergySupplier) use ($partDateBegin) {
                         $addressEnergySupplier->whereNotNull('end_date')
-                            ->where('end_date', '>=', $partDateEnd);
+                            ->where('end_date', '>=', $partDateBegin);
                     })
                     ->orWhereNull('end_date');
             })->first();
@@ -989,11 +989,11 @@ class conversionProjectRevenuesKwh extends Command
                                 })
                                 ->orWhereNull('member_since');
                         })
-                        ->where(function ($addressEnergySupplier) use ($oldEndDateOriginalPartsKwh) {
+                        ->where(function ($addressEnergySupplier) use ($splitDateString) {
                             $addressEnergySupplier
-                                ->where(function ($addressEnergySupplier) use ($oldEndDateOriginalPartsKwh) {
+                                ->where(function ($addressEnergySupplier) use ($splitDateString) {
                                     $addressEnergySupplier->whereNotNull('end_date')
-                                        ->where('end_date', '>=', $oldEndDateOriginalPartsKwh);
+                                        ->where('end_date', '>=', $splitDateString);
                                 })
                                 ->orWhereNull('end_date');
                         })->first();

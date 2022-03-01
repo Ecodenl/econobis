@@ -65,6 +65,7 @@ class RevenuesKwhHelper
                 }
             }
             $addressEnergySuppliers = AddressEnergySupplier::where('address_id', '=', $participation->address_id)
+                ->whereIn('energy_supply_type_id', [2, 3] )
                 ->where(function ($addressEnergySupplier) use ($dateBeginFromRevenue) {
                     $addressEnergySupplier
                         ->where(function ($addressEnergySupplier) use ($dateBeginFromRevenue) {
@@ -207,7 +208,7 @@ class RevenuesKwhHelper
         $kwhStartLow = $beginRevenueValuesKwh->kwh_start_low;
         $kwhEndLow = $beginRevenueValuesKwh->kwh_start_low + $deliveredLowPerDay;
         // Iterate over the period
-        $period = CarbonPeriod::create(Carbon::parse($partDateBegin)->format('Y-m-d'), Carbon::parse($partDateEnd)->format('Y-m-d'));
+        $period = CarbonPeriod::create($partDateBegin, $partDateEnd);
         foreach ($period as $date) {
             $dateRegistration = $date->format('Y-m-d');
             $revenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistration)->first();
@@ -218,11 +219,6 @@ class RevenuesKwhHelper
                     $revenueValuesKwh->kwh_end_low = $kwhEndLow;
                     $revenueValuesKwh->delivered_kwh = $deliveredTotalPerDay;
                     $revenueValuesKwh->save();
-                } else {
-// todo WM: opschonen
-//
-//                    bestaande anders dan begindatum?
-//                    Log::error('Bestaande revenue value kwh (' . $revenueValuesKwh->id . '), niet begindatum. Date_registration: ' . $revenueValuesKwh->date_registration );
                 }
             } else {
                 // Als we einddatum bereikt hebben, dan afrondingsverschil op laatste simulatie verwerken.
@@ -263,7 +259,8 @@ class RevenuesKwhHelper
     protected function saveDistributionValues(RevenuePartsKwh $revenuePartsKwh, RevenueValuesKwh $revenueValuesKwh): void
     {
 //        $distributionsKwh = RevenueDistributionKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->get();
-        $distributionsKwh = $revenuePartsKwh->revenuesKwh->distributionKwh->whereIn('status', ['concept', 'in-progress-update']);
+//        $distributionsKwh = $revenuePartsKwh->revenuesKwh->distributionKwh->whereIn('status', ['concept', 'in-progress-update']);
+        $distributionsKwh = $revenuePartsKwh->revenuesKwh->distributionKwh->where('status', 'concept');
         foreach ($distributionsKwh as $distributionKwh) {
             $participationsQuantity = $this->determineParticipationsQuantity($distributionKwh, $revenueValuesKwh->date_registration);
             RevenueDistributionValuesKwh::create([
@@ -296,6 +293,7 @@ class RevenuesKwhHelper
         $partDateBegin = Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d');
         $partDateEnd = Carbon::parse($revenuePartsKwh->date_end)->format('Y-m-d');
         $addressEnergySupplier = AddressEnergySupplier::where('address_id', '=', $distributionKwh->participation->address_id)
+            ->whereIn('energy_supply_type_id', [2, 3] )
             ->where(function ($addressEnergySupplier) use ($partDateBegin) {
                 $addressEnergySupplier
                     ->where(function ($addressEnergySupplier) use ($partDateBegin) {
@@ -304,15 +302,14 @@ class RevenuesKwhHelper
                     })
                     ->orWhereNull('member_since');
             })
-            ->where(function ($addressEnergySupplier) use ($partDateEnd) {
+            ->where(function ($addressEnergySupplier) use ($partDateBegin) {
                 $addressEnergySupplier
-                    ->where(function ($addressEnergySupplier) use ($partDateEnd) {
+                    ->where(function ($addressEnergySupplier) use ($partDateBegin) {
                         $addressEnergySupplier->whereNotNull('end_date')
-                            ->where('end_date', '>=', $partDateEnd);
+                            ->where('end_date', '>=', $partDateBegin);
                     })
                     ->orWhereNull('end_date');
             })->first();
-
         // If RevenueDistributionPartsKwh already is added to project revenue distribution then update
         if(RevenueDistributionPartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('parts_id', $revenuePartsKwh->id)->where('distribution_id', $distributionKwh->id)->exists()) {
             $distributionPartsKwh = RevenueDistributionPartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('parts_id', $revenuePartsKwh->id)->where('distribution_id', $distributionKwh->id)->first();
@@ -504,7 +501,10 @@ class RevenuesKwhHelper
             return;
         }
         if($revenuePartsKwh->status == 'concept'){
-            $revenuePartsKwh->calculator()->runRevenuePartsKwh(null, null);
+// todo WM: check
+//            $revenuePartsKwh->calculator()->runRevenuePartsKwh(null, null);
+            $revenuePartsKwh->status = 'concept-to-update';
+            $revenuePartsKwh->save();
 
             $revenueValuesKwhOnEndDateOriginal = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)
                 ->where('date_registration', $oldEndDateOriginalPartsKwh)
@@ -517,28 +517,31 @@ class RevenuesKwhHelper
                 'kwhEndHigh' => $revenueValuesKwhOnEndDateOriginal->kwhEndHigh,
                 'kwhEndLow' => $revenueValuesKwhOnEndDateOriginal->kwhEndLow,
             ];
-            $newRevenuePartsKwh->calculator()->runRevenuePartsKwh($valuesKwhData, null);
+// todo WM: check
+//
+//            $newRevenuePartsKwh->calculator()->runRevenuePartsKwh($valuesKwhData, null);
+            $newRevenuePartsKwh->status = 'concept-to-update';
+            $newRevenuePartsKwh->save();
         }
-        if($revenuePartsKwh->status != 'new') {
-            foreach ($newRevenuePartsKwh->revenuesKwh->partsKwh as $revenuePartsKwhForUpdateDeliverdKwh) {
-                foreach ($revenuePartsKwhForUpdateDeliverdKwh->distributionPartsKwh as $distributionPartsKwh) {
+// todo WM: check
+//
+        if($revenuePartsKwh->status == 'confirmed') {
+            foreach ($newRevenuePartsKwh->revenuesKwh->partsKwh as $revenuePartsKwhForUpdateDeliveredKwh) {
+                foreach ($revenuePartsKwhForUpdateDeliveredKwh->distributionPartsKwh as $distributionPartsKwh) {
                     $distributionPartsDeliveredKwh = RevenueDistributionValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)
                         ->where('distribution_id', $distributionPartsKwh->distribution_id)
                         ->where('parts_id', $distributionPartsKwh->parts_id)->sum('delivered_kwh');
-//                Log::info('parts_id: ' . $distributionPartsKwh->parts_id);
-//                Log::info('distribution_id: ' . $distributionPartsKwh->distribution_id);
-//                Log::info('distributionPartsDeliveredKwh: ' . $distributionPartsDeliveredKwh);
                     $distributionPartsKwh->delivered_kwh = $distributionPartsDeliveredKwh;
                     $distributionPartsKwh->save();
                 }
-                $revenuePartsKwhForUpdateDeliverdKwh->delivered_total_concept = $revenuePartsKwhForUpdateDeliverdKwh->distributionPartsKwh->where('status', 'concept')->sum('delivered_kwh');
-                $revenuePartsKwhForUpdateDeliverdKwh->delivered_total_confirmed = $revenuePartsKwhForUpdateDeliverdKwh->distributionPartsKwh->where('status', 'confirmed')->sum('delivered_kwh');
-                $revenuePartsKwhForUpdateDeliverdKwh->delivered_total_processed = $revenuePartsKwhForUpdateDeliverdKwh->distributionPartsKwh->where('status', 'processed')->sum('delivered_kwh');
-                $revenuePartsKwhForUpdateDeliverdKwh->save();
+                $revenuePartsKwhForUpdateDeliveredKwh->delivered_total_concept = $revenuePartsKwhForUpdateDeliveredKwh->distributionPartsKwh->where('status', 'concept')->sum('delivered_kwh');
+                $revenuePartsKwhForUpdateDeliveredKwh->delivered_total_confirmed = $revenuePartsKwhForUpdateDeliveredKwh->distributionPartsKwh->where('status', 'confirmed')->sum('delivered_kwh');
+                $revenuePartsKwhForUpdateDeliveredKwh->delivered_total_processed = $revenuePartsKwhForUpdateDeliveredKwh->distributionPartsKwh->where('status', 'processed')->sum('delivered_kwh');
+                $revenuePartsKwhForUpdateDeliveredKwh->save();
 
-                $newRevenuePartsKwh->revenuesKwh->delivered_total_concept = $revenuePartsKwhForUpdateDeliverdKwh->revenuesKwh->distributionPartsKwh->where('status', 'concept')->sum('delivered_kwh');
-                $newRevenuePartsKwh->revenuesKwh->delivered_total_confirmed = $revenuePartsKwhForUpdateDeliverdKwh->revenuesKwh->distributionPartsKwh->where('status', 'confirmed')->sum('delivered_kwh');
-                $newRevenuePartsKwh->revenuesKwh->delivered_total_processed = $revenuePartsKwhForUpdateDeliverdKwh->revenuesKwh->distributionPartsKwh->where('status', 'processed')->sum('delivered_kwh');
+                $newRevenuePartsKwh->revenuesKwh->delivered_total_concept = $revenuePartsKwhForUpdateDeliveredKwh->revenuesKwh->distributionPartsKwh->where('status', 'concept')->sum('delivered_kwh');
+                $newRevenuePartsKwh->revenuesKwh->delivered_total_confirmed = $revenuePartsKwhForUpdateDeliveredKwh->revenuesKwh->distributionPartsKwh->where('status', 'confirmed')->sum('delivered_kwh');
+                $newRevenuePartsKwh->revenuesKwh->delivered_total_processed = $revenuePartsKwhForUpdateDeliveredKwh->revenuesKwh->distributionPartsKwh->where('status', 'processed')->sum('delivered_kwh');
                 $newRevenuePartsKwh->revenuesKwh->save();
             }
         }

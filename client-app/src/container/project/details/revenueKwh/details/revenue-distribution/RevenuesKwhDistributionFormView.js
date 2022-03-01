@@ -49,6 +49,9 @@ const RevenuesKwhDistributionFormView = props => {
         case 'concept':
             statusText = 'Concept';
             break;
+        case 'concept-to-update':
+            statusText = 'Concept (bijwerken noodzakelijk)';
+            break;
         case 'confirmed':
             statusText = 'Definitief';
             break;

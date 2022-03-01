@@ -15,6 +15,8 @@ const RevenuesKwhFormView = props => {
                 return 'Nieuw';
             case 'concept':
                 return 'Concept';
+            case 'concept-to-update':
+                return 'Concept (bijwerken noodzakelijk)';
             case 'confirmed':
                 return 'Definitief';
             case 'in-progress':

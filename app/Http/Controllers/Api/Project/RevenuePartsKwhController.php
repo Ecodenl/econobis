@@ -82,7 +82,7 @@ class RevenuePartsKwhController extends ApiController
 
         $revenuePartsKwh->fill($data);
 
-        if($revenuePartsKwh->status == 'new'){
+        if($revenuePartsKwh->status == 'new' || $revenuePartsKwh->status == 'concept-to-update'){
             $revenuePartsKwh->status = 'concept';
         }
 
@@ -163,8 +163,6 @@ class RevenuePartsKwhController extends ApiController
             $revenuePartsKwh->revenuesKwh->confirmed = true;
             $revenuePartsKwh->revenuesKwh->save();
         }
-
-
 
         return FullRevenuePartsKwh::collection(RevenuePartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)
             ->with('distributionPartsKwh')

@@ -85,6 +85,8 @@ class RevenuePartsKwhFormEdit extends Component {
                 return 'Nieuw';
             case 'concept':
                 return 'Concept';
+            case 'concept-to-update':
+                return 'Concept (bijwerken noodzakelijk)';
             case 'confirmed':
                 return 'Definitief';
             case 'in-progress':
@@ -504,7 +506,7 @@ class RevenuePartsKwhFormEdit extends Component {
                             buttonText={'Annuleren'}
                             onClickAction={this.props.switchToView}
                         />
-                        {allowEditStart || allowEditEnd || status == 'concept' ? (
+                        {allowEditStart || allowEditEnd || status == 'concept' || status == 'concept-to-update' ? (
                             <ButtonText
                                 buttonText={'Opslaan'}
                                 onClickAction={this.confirmUpdate}

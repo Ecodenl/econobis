@@ -13,23 +13,23 @@ use App\Helpers\Delete\DeleteInterface;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class DeleteRevenueDistribution
+ * Class DeleteRevenuePartsKwh
  *
  * @package App\Helpers\Delete\Models
  */
-class DeleteRevenueDistributionKwh implements DeleteInterface
+class DeleteRevenuePartsKwh implements DeleteInterface
 {
 
     private $errorMessage = [];
-    private $revenueDistributionKwh;
+    private $revenuePartsKwh;
 
     /** Sets the model to delete
      *
-     * @param Model $revenueDistributionKwh the model to delete
+     * @param Model $revenuePartsKwh the model to delete
      */
-    public function __construct(Model $revenueDistributionKwh)
+    public function __construct(Model $revenuePartsKwh)
     {
-        $this->revenueDistributionKwh = $revenueDistributionKwh;
+        $this->revenuePartsKwh = $revenuePartsKwh;
     }
 
     /** Main method for deleting this model and all it's relations
@@ -46,7 +46,7 @@ class DeleteRevenueDistributionKwh implements DeleteInterface
         $this->customDeleteActions();
         if( !sizeof($this->errorMessage)>0 )
         {
-            $this->revenueDistributionKwh->forceDelete();
+            $this->revenuePartsKwh->forceDelete();
         }
 
         return $this->errorMessage;
@@ -56,8 +56,8 @@ class DeleteRevenueDistributionKwh implements DeleteInterface
      */
     public function canDelete()
     {
-        if(!in_array($this->revenueDistributionKwh->status, ['new', 'concept'])){
-            array_push($this->errorMessage, "Er is al minimaal 1 definitieve deelname verdeling");
+        if($this->revenuePartsKwh->confirmed){
+            array_push($this->errorMessage, "Er is al minimaal 1 definitieve deelperiode");
         }
     }
 
@@ -85,8 +85,7 @@ class DeleteRevenueDistributionKwh implements DeleteInterface
      */
     public function customDeleteActions()
     {
-        $this->revenueDistributionKwh->newOrConceptDistributionValuesKwh()->delete();
-        $this->revenueDistributionKwh->newOrConceptDistributionPartsKwh()->delete();
+        $this->revenuePartsKwh->newOrConceptDistributionPartsKwh()->delete();
     }
 
 

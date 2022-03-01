@@ -59,25 +59,19 @@ class DeleteRevenuesKwh implements DeleteInterface
             array_push($this->errorMessage, "Opbrengstverdeling Kwh is al definitief.");
             return;
         }
-        if($this->revenuesKwh->partsKwh->whereNotIn('status', ['new', 'concept'])->count() > 0){
-            array_push($this->errorMessage, "Er is al minimaal 1 definitieve deelperiode");
-        }
-        if($this->revenuesKwh->distributionKwh->whereNotIn('status', ['concept'])->count() > 0){
-            array_push($this->errorMessage, "Er is al minimaal 1 definitieve deelname verdeling");
-        }
-        if($this->revenuesKwh->valuesKwh->whereNotIn('status', ['concept'])->count() > 0){
-            array_push($this->errorMessage, "Er is al minimaal 1 definitieve kwh productie stand");
-        }
-
     }
 
     /** Deletes models recursive
      */
     public function deleteModels()
     {
-        foreach($this->revenuesKwh->distributionKwh as $distribution) {
-                $deleteRevenueDistributionKwh = new DeleteRevenueDistributionKwh($distribution);
+        foreach($this->revenuesKwh->distributionKwh as $distributionKwh) {
+                $deleteRevenueDistributionKwh = new DeleteRevenueDistributionKwh($distributionKwh);
                 $this->errorMessage = array_merge($this->errorMessage, $deleteRevenueDistributionKwh->delete());
+        }
+        foreach($this->revenuesKwh->partsKwh as $partsKwh) {
+                $deleteRevenuePartsKwh = new DeleteRevenuePartsKwh($partsKwh);
+                $this->errorMessage = array_merge($this->errorMessage, $deleteRevenuePartsKwh->delete());
         }
     }
 
@@ -93,18 +87,13 @@ class DeleteRevenuesKwh implements DeleteInterface
      */
     public function deleteRelations()
     {
-        foreach ($this->revenuesKwh->conceptValuesKwh as $conceptValueKwh){
-            $conceptValueKwh->delete();
-        }
-        foreach ($this->revenuesKwh->newOrConceptPartsKwh as $newOrConceptPartsKwh){
-            $newOrConceptPartsKwh->delete();
-        }
     }
 
     /** Model specific delete actions e.g. delete files from server
      */
     public function customDeleteActions()
     {
+        $this->revenuesKwh->conceptValuesKwh()->delete();
     }
 
 

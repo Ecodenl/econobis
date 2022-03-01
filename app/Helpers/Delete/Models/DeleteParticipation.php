@@ -71,6 +71,10 @@ class DeleteParticipation implements DeleteInterface
             $deleteRevenueDistribution = new DeleteRevenueDistribution($revenueDistribution);
             $this->errorMessage = array_merge($this->errorMessage, $deleteRevenueDistribution->delete());
         }
+        foreach ($this->participation->revenueDistributionKwh as $revenueDistributionKwh){
+            $deleteRevenueDistributionKwh = new DeleteRevenueDistributionKwh($revenueDistributionKwh);
+            $this->errorMessage = array_merge($this->errorMessage, $deleteRevenueDistributionKwh->delete());
+        }
 
         foreach ($this->participation->tasks as $task){
             $deleteTask = new DeleteTask($task);

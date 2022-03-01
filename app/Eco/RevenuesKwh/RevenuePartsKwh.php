@@ -40,9 +40,11 @@ class RevenuePartsKwh extends Model
     public function conceptDistributionValuesKwh(){
         return $this->hasMany(RevenueDistributionValuesKwh::class, 'parts_id')->where('status', 'concept');
     }
-    public function inProgressUpdateDistributionPartsKwh(){
-        return $this->hasMany(RevenueDistributionPartsKwh::class, 'parts_id')->where('status', 'in-progress-update');
-    }
+// todo WM: cleanup
+//
+//    public function inProgressUpdateDistributionPartsKwh(){
+//        return $this->hasMany(RevenueDistributionPartsKwh::class, 'parts_id')->where('status', 'in-progress-update');
+//    }
     public function newOrConceptDistributionPartsKwh(){
         return $this->hasMany(RevenueDistributionPartsKwh::class, 'parts_id')->whereIn('status', ['new', 'concept']);
     }

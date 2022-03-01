@@ -24,7 +24,10 @@ class RevenuePartsKwhCalculator
         if($this->revenuePartsKwh->status == 'in-progress-update') {
             Log::info("Start RevenuePartsKwhCalculator|runRevenuePartsKwh voor revenuePartKwh id " . $this->revenuePartsKwh->id . " : " . Carbon::now()->format("m-d-Y H:i:s.u"));
             $this->revenuePartsKwh->conceptSimulatedValuesKwh($oldDateEnd)->delete();
-            $this->revenuePartsKwh->inProgressUpdateDistributionPartsKwh()->delete();
+// todo WM: cleanup
+//
+//            $this->revenuePartsKwh->inProgressUpdateDistributionPartsKwh()->delete();
+            $this->revenuePartsKwh->newOrConceptDistributionPartsKwh()->delete();
             $this->revenuePartsKwh->newOrConceptDistributionValuesKwh()->delete();
             $revenuesKwhHelper = new RevenuesKwhHelper();
             $revenuesKwhHelper->createOrUpdateRevenueValuesKwh($valuesKwhData, $this->revenuePartsKwh);
@@ -33,17 +36,19 @@ class RevenuePartsKwhCalculator
             $revenuesKwhHelper->saveParticipantsOfDistributionParts($this->revenuePartsKwh);
             $this->calculateDeliveredKwh();
 
-            $distributionsPartsKwh = $this->revenuePartsKwh->distributionPartsKwh;
-            foreach($distributionsPartsKwh as $distributionPartsKwh) {
-                if ($distributionPartsKwh->status === 'in-progress-update') {
-                    $distributionPartsKwh->status = 'concept';
-                    $distributionPartsKwh->save();
-                }
-                if ($distributionPartsKwh->distributionKwh->status === 'in-progress-update') {
-                    $distributionPartsKwh->distributionKwh->status = 'concept';
-                    $distributionPartsKwh->distributionKwh->save();
-                }
-            }
+// todo WM: cleanup
+//
+//            $distributionsPartsKwh = $this->revenuePartsKwh->distributionPartsKwh;
+//            foreach($distributionsPartsKwh as $distributionPartsKwh) {
+//                if ($distributionPartsKwh->status === 'in-progress-update') {
+//                    $distributionPartsKwh->status = 'concept';
+//                    $distributionPartsKwh->save();
+//                }
+//                if ($distributionPartsKwh->distributionKwh->status === 'in-progress-update') {
+//                    $distributionPartsKwh->distributionKwh->status = 'concept';
+//                    $distributionPartsKwh->distributionKwh->save();
+//                }
+//            }
             if ($this->revenuePartsKwh->status === 'in-progress-update') {
                 $this->revenuePartsKwh->status = 'concept';
                 $this->revenuePartsKwh->save();

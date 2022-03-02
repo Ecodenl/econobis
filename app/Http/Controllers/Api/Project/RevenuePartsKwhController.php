@@ -132,16 +132,19 @@ class RevenuePartsKwhController extends ApiController
 
         $revenuePartsKwh->save();
 
-        // einddatum gewijzigd, dan bij oude datum values verwijderen en einddatum bij revenuesKwh ook bijwerken.
-        if($revenuePartsKwh->status == 'concept' && $isLastRevenuePartsKwh && $oldDateEnd != $revenuePartsKwh->date_end) {
-            $dateRegistrationDayAfterOldEnd = Carbon::parse($oldDateEnd)->addDay()->format('Y-m-d');
-            $revenueValuesKwhEnd = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistrationDayAfterOldEnd)->first();
-            if ($revenueValuesKwhEnd) {
-                $revenueValuesKwhEnd->delete();
-            }
-            $revenuePartsKwh->revenuesKwh->date_end = $revenuePartsKwh->date_end;
-            $revenuePartsKwh->revenuesKwh->save();
-        }
+// todo WM: cleanup
+//
+// verplaatst naar calculator / helper.
+//        // einddatum gewijzigd, dan bij oude datum values verwijderen en einddatum bij revenuesKwh ook bijwerken.
+//        if($revenuePartsKwh->status == 'concept' && $isLastRevenuePartsKwh && $oldDateEnd != $revenuePartsKwh->date_end) {
+//            $dateRegistrationDayAfterOldEnd = Carbon::parse($oldDateEnd)->addDay()->format('Y-m-d');
+//            $revenueValuesKwhEnd = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistrationDayAfterOldEnd)->first();
+//            if ($revenueValuesKwhEnd) {
+//                $revenueValuesKwhEnd->delete();
+//            }
+//            $revenuePartsKwh->revenuesKwh->date_end = $revenuePartsKwh->date_end;
+//            $revenuePartsKwh->revenuesKwh->save();
+//        }
 
         if($revenuePartsKwh->status == 'concept') {
             UpdateRevenuePartsKwh::dispatch($revenuePartsKwh, $valuesKwhData, $oldDateEnd, Auth::id());

@@ -125,10 +125,12 @@ class ParticipantProject extends Model
         $mutationTypeWithDrawal = ParticipantMutationType::where('code_ref', 'withDrawal')->where('project_type_id',  $this->project->projectType->id)->first();
         $mutationTypes = [];
         if($mutationTypeFirstDesposit) {
-            array_push($mutationTypes, $mutationTypeFirstDesposit->id);
+//            array_push($mutationTypes, $mutationTypeFirstDesposit->id);
+            $mutationTypes[] = $mutationTypeFirstDesposit->id;
         }
         if($mutationTypeWithDrawal) {
-            array_push($mutationTypes, $mutationTypeWithDrawal->id);
+//            array_push($mutationTypes, $mutationTypeWithDrawal->id);
+            $mutationTypes[] = $mutationTypeWithDrawal->id;
         }
 
         return $this->hasMany(ParticipantMutation::class, 'participation_id')->where('status_id', $mutationStatusFinal)->whereIn('type_id', $mutationTypes)->orderBy('date_entry', 'asc');

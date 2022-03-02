@@ -849,6 +849,7 @@ class conversionProjectRevenuesKwh extends Command
                     $deliveredPartPerDay = 0;
                 }
 
+                //todo WM: moet anders, date_registration en revenue_values_id is niet meer, distribution values niet meer dag nl.
                 $participationsQuantity = $this->determineParticipationsQuantity($distributionKwh, $revenueValuesKwh->date_registration);
                 RevenueDistributionValuesKwh::create([
                     'revenue_values_id' => $revenueValuesKwh->id,

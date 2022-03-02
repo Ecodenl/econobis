@@ -63,6 +63,18 @@ class RevenuePartsKwh extends Model
 
         return RevenueValuesKwh::where('revenue_id', $this->revenue_id)->whereBetween('date_registration', [$partDateBegin, $partDateEnd])->where('is_simulated', true)->where('status', 'concept');
     }
+    public function conceptValuesKwh(){
+        $partDateBegin =  Carbon::parse($this->date_begin)->format('Y-m-d');
+        $partDateEnd =  Carbon::parse($this->date_end)->format('Y-m-d');
+
+        return RevenueValuesKwh::where('revenue_id', $this->revenue_id)->whereBetween('date_registration', [$partDateBegin, $partDateEnd])->where('status', 'concept');
+    }
+    public function confirmedValuesKwh(){
+        $partDateBegin =  Carbon::parse($this->date_begin)->format('Y-m-d');
+        $partDateEnd =  Carbon::parse($this->date_end)->format('Y-m-d');
+
+        return RevenueValuesKwh::where('revenue_id', $this->revenue_id)->whereBetween('date_registration', [$partDateBegin, $partDateEnd])->where('status', 'confirmed');
+    }
 
     public function getDeliveredTotalConceptStringAttribute()
     {

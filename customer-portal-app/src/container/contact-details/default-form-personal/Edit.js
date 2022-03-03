@@ -264,7 +264,7 @@ const DefaultContactPersonalEdit = function({
                             <FaInfoCircle
                                 color={'blue'}
                                 size={'15px'}
-                                data-tip={`Wijziging adres is (tijdelijk) geblokkeerd`}
+                                data-tip={`Adres kan momenteel niet worden aangepast. Geef jouw adreswijziging per e-mail aan ons door.`}
                                 data-for={`participant-${initialContact.id}`}
                             />
                             <ReactTooltip

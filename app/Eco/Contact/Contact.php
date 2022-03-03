@@ -527,20 +527,18 @@ class Contact extends Model
 
     public function getBlockChangeAddressAttribute()
     {
-        $hasOpenIntakeOnPortalCheckAddress = false;
+        $hasIntakeOnPortalCheckAddress = false;
         $hasHousingFileOnPortalCheckAddress = false;
         if($this->addressForPostalCodeCheck){
-            $statusIdOpen = IntakeStatus::where('name', 'Open')->first()->id;
-            $hasOpenIntakeOnPortalCheckAddress = $this->intakes()
+            $hasIntakeOnPortalCheckAddress = $this->intakes()
                 ->where('address_id', $this->addressForPostalCodeCheck->id)
-                ->where('intake_status_id', $statusIdOpen)
                 ->exists();
             $hasHousingFileOnPortalCheckAddress = $this->housingFiles()
                 ->where('address_id', $this->addressForPostalCodeCheck->id)
                 ->exists();
         }
 
-        return $hasOpenIntakeOnPortalCheckAddress || $hasHousingFileOnPortalCheckAddress;
+        return $hasIntakeOnPortalCheckAddress || $hasHousingFileOnPortalCheckAddress;
     }
 
     public function getBlockChangeAddressNumberAttribute()

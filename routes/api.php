@@ -166,11 +166,10 @@ Route::namespace('Api')
 
         Route::post('distribution-part-kwh/process-revenue-parts-kwh', 'Project\RevenuePartsKwhController@processRevenuePartsKwh');
         Route::post('distribution-part-kwh/peek-by-ids', 'Project\RevenuePartsKwhController@peekDistributionKwhPartsByIds');
-// todo WM: opschonen
-//
-//        Route::post('distribution-part-kwh/create-revenue-part-kwh-report', 'Project\RevenuePartsKwhController@createRevenuePartsKwhReport');
-//        Route::post('distribution-part-kwh/{distributionPartsKwh}/download-preview', 'Project\RevenuePartsKwhController@downloadPreview');
-//        Route::post('distribution-part-kwh/{distributionPartsKwh}/preview-email', 'Project\RevenuePartsKwhController@previewEmail');
+
+        Route::post('distribution-part-kwh/create-revenue-part-kwh-report', 'Project\RevenuePartsKwhController@createRevenuePartsKwhReport');
+        Route::post('distribution-part-kwh/{distributionPartsKwh}/download-preview', 'Project\RevenuePartsKwhController@downloadPreview');
+        Route::post('distribution-part-kwh/{distributionPartsKwh}/preview-email', 'Project\RevenuePartsKwhController@previewEmail');
 
         Route::get('opportunity/grid', 'Opportunity\OpportunityController@grid');
         Route::get('opportunity/peek', 'Opportunity\OpportunityController@peek');
@@ -324,11 +323,6 @@ Route::namespace('Api')
         Route::get('project/revenue/{projectRevenue}', 'Project\ProjectRevenueController@show');
         Route::get('project/revenue/{projectRevenue}/csv', 'Project\ProjectRevenueController@csv');
         Route::post('project/revenue/{projectRevenue}/distribution', 'Project\ProjectRevenueController@getRevenueDistribution');
-// todo WM: opschonen
-//
-//        Route::post('project/revenue/create-energy-supplier-report/{projectRevenue}/{documentTemplate}', 'Project\ProjectRevenueController@createEnergySupplierReport');
-//        Route::post('project/revenue/create-energy-supplier-excel/{projectRevenue}', 'Project\ProjectRevenueController@createEnergySupplierAllExcel');
-//        Route::post('project/revenue/create-energy-supplier-excel/{projectRevenue}/{energySupplier}', 'Project\ProjectRevenueController@createEnergySupplierOneExcel');
         Route::post('project/revenue', 'Project\ProjectRevenueController@store');
         Route::post('project/revenue/{projectRevenue}', 'Project\ProjectRevenueController@update');
         Route::post('project/revenue/{projectRevenue}/delete', 'Project\ProjectRevenueController@destroy');
@@ -346,11 +340,10 @@ Route::namespace('Api')
         Route::get('project/revenue-parts-kwh/{revenuePartsKwh}', 'Project\RevenuePartsKwhController@show');
         Route::get('project/revenue-parts-kwh/{revenuePartsKwh}/csv', 'Project\RevenuePartsKwhController@csv');
         Route::post('project/revenue-parts-kwh/{revenuePartsKwh}/distribution-parts-kwh', 'Project\RevenuePartsKwhController@getRevenueDistributionParts');
-// todo WM: opschonen
-//
+
 //        Route::post('project/revenue-parts-kwh/create-energy-supplier-report/{revenuePartsKwh}/{documentTemplate}', 'Project\RevenuePartsKwhController@createEnergySupplierReport');
-//        Route::post('project/revenue-parts-kwh/create-energy-supplier-excel/{revenuePartsKwh}', 'Project\RevenuePartsKwhController@createEnergySupplierAllExcel');
-//        Route::post('project/revenue-parts-kwh/create-energy-supplier-excel/{revenuePartsKwh}/{energySupplier}', 'Project\RevenuePartsKwhController@createEnergySupplierOneExcel');
+        Route::post('project/revenue-parts-kwh/create-energy-supplier-excel/{revenuePartsKwh}', 'Project\RevenuePartsKwhController@createEnergySupplierAllExcel');
+        Route::post('project/revenue-parts-kwh/create-energy-supplier-excel/{revenuePartsKwh}/{energySupplier}', 'Project\RevenuePartsKwhController@createEnergySupplierOneExcel');
         Route::post('project/revenue-parts-kwh/{revenuePartsKwh}', 'Project\RevenuePartsKwhController@update');
         Route::post('project/revenue-parts-kwh/{revenuePartsKwh}/delete', 'Project\RevenuePartsKwhController@destroy');
 

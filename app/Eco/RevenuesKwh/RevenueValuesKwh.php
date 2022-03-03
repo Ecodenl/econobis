@@ -25,11 +25,4 @@ class RevenueValuesKwh extends Model
         return $this->belongsTo(RevenuesKwh::class, 'revenue_id');
     }
 
-//todo WM: cleanup.
-//
-//    public function distributionValuesKwh()
-//    {
-//        return $this->belongsTo(RevenueDistributionValuesKwh::class,'revenue_values_id');
-//    }
-
 }

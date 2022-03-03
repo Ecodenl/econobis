@@ -183,38 +183,12 @@ class Project extends Model
     public function getHasRevenueKwh(){
 
         if($this->projectType->code_ref == 'postalcode_link_capital') {
-//todo WM: opschonen
-//
-//            $projectRevenueKwhCategories = ProjectRevenueCategory::where('code_ref', 'revenueKwh')->orWhere('code_ref', 'revenueKwhSplit')->get()->pluck('id')->toArray();
-//            if($projectRevenueKwhCategories){
-//                foreach ($this->projectRevenues as $revenue) {
-//                    if (in_array($revenue->category_id, $projectRevenueKwhCategories)) {
-//                        return true;
-//                    }
-//                }
-//            }
               if ($this->revenuesKwh()->count() > 0) {
                   return true;
               }
         }
         return false;
     }
-//todo WM: opschonen
-//
-//    public function getHasNotConfirmedRevenuesKwhSplit(){
-//        if($this->projectType->code_ref == 'postalcode_link_capital') {
-//            $participants = $this->participantsProject()->get();
-//            foreach ($participants as $participant) {
-//                foreach ($participant->projectRevenues as $revenue) {
-//                    if (!$revenue->confirmed) {
-//                        return true;
-//                    }
-//                }
-//            }
-//        }
-//
-//        return false;
-//    }
 
     public function participantMutations()
     {

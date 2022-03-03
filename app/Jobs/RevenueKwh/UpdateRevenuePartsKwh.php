@@ -46,19 +46,6 @@ class UpdateRevenuePartsKwh implements ShouldQueue
             $revenuePartsKwh->status = 'in-progress-update';
             $revenuePartsKwh->save();
         }
-// todo WM: cleanup
-//
-//        $distributionsPartsKwh = $revenuePartsKwh->distributionPartsKwh;
-//        foreach($distributionsPartsKwh as $distributionPartsKwh) {
-//            if ($distributionPartsKwh->status === 'concept') {
-//                $distributionPartsKwh->status = 'in-progress-update';
-//                $distributionPartsKwh->save();
-//            }
-//            if ($distributionPartsKwh->distributionKwh->status === 'concept') {
-//                $distributionPartsKwh->distributionKwh->status = 'in-progress-update';
-//                $distributionPartsKwh->distributionKwh->save();
-//            }
-//        }
 
         $jobLog = new JobsLog();
         $jobLog->value = "Start Opbrengst Kwh bijwerken voor project " . $this->projectName. " periode " . $this->period . ".";

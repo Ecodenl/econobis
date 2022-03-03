@@ -231,43 +231,24 @@ class RevenuesKwhController extends ApiController
         list($quantityOfParticipationsAtStart, $quantityOfParticipations) = $this->determineParticipationsQuantity($distributionKwh);
         $distributionKwh->participations_quantity_at_start = $quantityOfParticipationsAtStart;
         $distributionKwh->participations_quantity = $quantityOfParticipations;
-// todo WM: cleanup
-//        $distributionKwh->participations_quantity = $this->xxx_determineParticipationsQuantity($distributionKwh);
         $distributionKwh->save();
     }
-// todo WM: cleanup
-//
-//    protected function xxx_determineParticipationsQuantity(RevenueDistributionKwh $distributionKwh)
-//    {
-//        $quantityOfParticipations = 0;
-//        $dateBeginInitial = Carbon::parse($distributionKwh->participation->date_register);
-//        $dateEndInitial = Carbon::parse($distributionKwh->revenuesKwh->date_end);
-//        $mutations = $distributionKwh->participation->mutationsDefinitiveForKwhPeriod;
-//        foreach ($mutations as $index => $mutation) {
-//            $dateEntry = Carbon::parse($mutation->date_entry);
-//            if($dateEntry >= $dateBeginInitial && $dateEntry <= $dateEndInitial){
-//                $quantityOfParticipations += $mutation->quantity;
-//            }
-//        }
-//
-//        return $quantityOfParticipations;
-//    }
+
     /**
      * @param RevenueDistributionKwh $distributionKwh
      * @return int[]
      */
     protected function determineParticipationsQuantity(RevenueDistributionKwh $distributionKwh): array
     {
+        //todo WM: a la determineParticipationsQuantityPart doen ?
         $quantityOfParticipationsAtStart = 0;
         $quantityOfParticipations = 0;
         $dateBeginFromRegister = Carbon::parse($distributionKwh->participation->date_register)->format('Y-m-d');
         $dateBeginRevenuesKwh = Carbon::parse($distributionKwh->revenuesKwh->date_begin)->format('Y-m-d');
         $dateEndRevenuesKwh = Carbon::parse($distributionKwh->revenuesKwh->date_end)->format('Y-m-d');
         $mutations = $distributionKwh->participation->mutationsDefinitiveForKwhPeriod;
+
         foreach ($mutations as $mutation) {
-// todo WM: cleanup
-//
-//            $dateEntry = Carbon::parse($mutation->date_entry);
             if ($mutation->date_entry >= $dateBeginFromRegister && $mutation->date_entry <= $dateBeginRevenuesKwh) {
                 $quantityOfParticipationsAtStart += $mutation->quantity;
             }

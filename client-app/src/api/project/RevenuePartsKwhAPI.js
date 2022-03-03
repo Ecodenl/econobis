@@ -63,7 +63,7 @@ export default {
         });
     },
 
-    // todo WM: opschonen
+    // todo WM: nog doen
     // createEnergySupplierReport: (partsKwhId, templateId, documentName) => {
     //     const requestUrl = `${URL_REVENUE_PARTS_KWH}/create-energy-supplier-report/${partsKwhId}/${templateId}`;
     //

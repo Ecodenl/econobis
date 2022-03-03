@@ -66,12 +66,3 @@ export const deleteObligationNumber = id => {
         id,
     };
 };
-
-//todo WM: opschonen
-//
-// export const deleteRevenueSplit = id => {
-//     return {
-//         type: 'DELETE_REVENUE_SPLIT',
-//         id,
-//     };
-// };

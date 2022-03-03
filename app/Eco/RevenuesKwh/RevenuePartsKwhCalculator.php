@@ -23,10 +23,6 @@ class RevenuePartsKwhCalculator
     {
         if($this->revenuePartsKwh->status == 'in-progress-update') {
             Log::info("Start RevenuePartsKwhCalculator|runRevenuePartsKwh voor revenuePartKwh id " . $this->revenuePartsKwh->id . " : " . Carbon::now()->format("m-d-Y H:i:s.u"));
-// todo WM: cleanup
-//
-//            $this->revenuePartsKwh->newOrConceptDistributionPartsKwh()->delete();
-//            $this->revenuePartsKwh->newOrConceptDistributionValuesKwh()->delete();
             $revenuesKwhHelper = new RevenuesKwhHelper();
             $revenuesKwhHelper->createOrUpdateRevenueValuesKwh($valuesKwhData, $this->revenuePartsKwh, $oldDateEnd);
             Log::info("RevenuePartsKwhCalculator na aanmaak simulate values voor revenuePartKwh id " . $this->revenuePartsKwh->id . " : " . Carbon::now()->format("m-d-Y H:i:s.u"));

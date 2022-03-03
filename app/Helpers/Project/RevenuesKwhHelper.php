@@ -220,12 +220,6 @@ class RevenuesKwhHelper
      */
     public function createOrUpdateRevenueValuesKwhSimulate(RevenuePartsKwh $revenuePartsKwh, $partDateBegin, $partDateEnd, $dateRegistrationDayAfterEnd): void
     {
-// todo WM: cleanup
-//
-//        $partDateBegin =  Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d');
-//        $partDateEnd =  Carbon::parse($revenuePartsKwh->date_end)->format('Y-m-d');
-//        $dateRegistrationDayAfterEnd = Carbon::parse($revenuePartsKwh->date_end)->addDay()->format('Y-m-d');
-
         $daysOfPeriod = Carbon::parse($dateRegistrationDayAfterEnd)->diffInDays(Carbon::parse($partDateBegin));
         $beginRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $partDateBegin)->first();
         $endRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
@@ -247,22 +241,12 @@ class RevenuesKwhHelper
             $revenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistration)->first();
             if($revenueValuesKwh) {
                 if($revenueValuesKwh->date_registration == $partDateBegin){
-// todo WM: cleanup
-//
-//                    $revenueValuesKwh->kwh_end = $kwhEnd;
-//                    $revenueValuesKwh->kwh_end_high = $kwhEndHigh;
-//                    $revenueValuesKwh->kwh_end_low = $kwhEndLow;
                     $revenueValuesKwh->delivered_kwh = $deliveredTotalPerDay;
                     $revenueValuesKwh->save();
                 }
             } else {
                 // Als we einddatum bereikt hebben, dan afrondingsverschil op laatste simulatie verwerken.
                 if($dateRegistration == $partDateEnd){
-// todo WM: cleanup
-//
-//                    $kwhEnd = $endRevenueValuesKwh->kwh_start;
-//                    $kwhEndHigh = $endRevenueValuesKwh->kwh_start_high;
-//                    $kwhEndLow = $endRevenueValuesKwh->kwh_start_low;
                     $deliveredTotal = $kwhEnd - $kwhStart;
                 } else {
                     $deliveredTotal = $deliveredTotalPerDay;
@@ -273,13 +257,8 @@ class RevenuesKwhHelper
                     'date_registration' => $dateRegistration,
                     'is_simulated' => true,
                     'kwh_start' => $kwhStart,
-// todo WM: cleanup
-//
-//                    'kwh_end' => $kwhEnd,
                     'kwh_start_high' => $kwhStartHigh,
-//                    'kwh_end_high' => $kwhEndHigh,
                     'kwh_start_low' => $kwhStartLow,
-//                    'kwh_end_low' => $kwhEndLow,
                     'status' => 'concept',
                     'delivered_kwh' => $deliveredTotal,
                 ]);
@@ -290,32 +269,8 @@ class RevenuesKwhHelper
             $kwhEndHigh = $kwhStartHigh + $deliveredHighPerDay;
             $kwhStartLow = $kwhEndLow;
             $kwhEndLow = $kwhStartLow + $deliveredLowPerDay;
-
-// todo WM: cleanup
-//
-//            $this->saveDistributionValues($revenuePartsKwh, $revenueValuesKwh);
         }
     }
-
-// todo WM: cleanup
-//
-//    protected function saveDistributionValues(RevenuePartsKwh $revenuePartsKwh, RevenueValuesKwh $revenueValuesKwh): void
-//    {
-//        $distributionsKwh = $revenuePartsKwh->revenuesKwh->distributionKwh->where('status', 'concept');
-//        foreach ($distributionsKwh as $distributionKwh) {
-//            $participationsQuantity = $this->xxx_determineParticipationsQuantity($distributionKwh, $revenueValuesKwh->date_registration);
-//            RevenueDistributionValuesKwh::create([
-//                'revenue_values_id' => $revenueValuesKwh->id,
-//                'date_registration' => $revenueValuesKwh->date_registration,
-//                'distribution_id' => $distributionKwh->id,
-//                'revenue_id' => $revenuePartsKwh->revenuesKwh->id,
-//                'parts_id' => $revenuePartsKwh->id,
-//                'status' => 'concept',
-//                'participations_quantity' => $participationsQuantity,
-//                'delivered_kwh' => 0,
-//            ]);
-//        }
-//    }
 
     public function saveParticipantsOfDistributionParts(RevenuePartsKwh $revenuePartsKwh)
     {
@@ -324,9 +279,6 @@ class RevenuesKwhHelper
         $revenuesKwh = $revenuePartsKwh->revenuesKwh;
         foreach ($revenuesKwh->distributionKwh as $distributionKwh) {
             $this->saveDistributionPartsKwh($revenuePartsKwh, $distributionKwh);
-// todo WM: cleanup
-//
-//            $this->saveDistributionValuesKwh($revenuePartsKwh, $distributionKwh);
         }
     }
 
@@ -392,40 +344,16 @@ class RevenuesKwhHelper
         $quantityOfParticipationsAtStart = $distributionPartsKwh->distributionKwh->participations_quantity_at_start;
         $quantityOfParticipations = $distributionPartsKwh->distributionKwh->participations_quantity_at_start;
 
-// todo WM: cleanup
-//
-//        Log::info('Debug determineParticipationsQuantityPart');
-//        Log::info('participation id: ' . $distributionPartsKwh->distributionKwh->participation_id);
-//        Log::info('dateBeginRevenues: ' . $dateBeginRevenues);
-//        Log::info('partDateBegin: ' . $partDateBegin);
-//        Log::info('Vooraf quantityOfParticipationsAtStart: ' . $quantityOfParticipationsAtStart);
-//        Log::info('Vooraf quantityOfParticipations: ' . $quantityOfParticipations);
-
-
         $mutations = $distributionPartsKwh->distributionKwh->participation->mutationsDefinitiveForKwhPeriod->whereBetween('date_entry', [$dateBeginRevenues, $partDateEnd]);
 
         foreach ($mutations as $mutation) {
-// todo WM: cleanup
-//
-//            Log::info('Mutatie datum: ' . $mutation->date_entry );
-//            Log::info('Mutatie aantal: ' . $mutation->quantity);
-
             if ($mutation->date_entry >= $dateBeginRevenues && $mutation->date_entry <= $partDateBegin) {
                 $quantityOfParticipationsAtStart += $mutation->quantity;
             }
             if ($mutation->date_entry >= $dateBeginRevenues && $mutation->date_entry <= $partDateEnd) {
                 $quantityOfParticipations += $mutation->quantity;
             }
-// todo WM: cleanup
-//
-//            Log::info('Opgeteld bij quantityOfParticipationsAtStart: ' . $quantityOfParticipationsAtStart);
-//            Log::info('Opgeteld bij quantityOfParticipations: ' . $quantityOfParticipations);
         }
-
-// todo WM: cleanup
-//
-//        Log::info('Na quantityOfParticipationsAtStart: ' . $quantityOfParticipationsAtStart);
-//        Log::info('Na quantityOfParticipations: ' . $quantityOfParticipations);
 
         return array($quantityOfParticipationsAtStart, $quantityOfParticipations);
     }
@@ -440,10 +368,6 @@ class RevenuesKwhHelper
         $dateEnd = Carbon::parse($partDateEnd);      // dateEnd   = 10-06-2024
         foreach ($mutations as $mutation) {
             $dateEndMutation = Carbon::parse($mutation->date_entry)->subDay(); // dateEnd   = 05-06-2024
-// todo WM: cleanup
-//
-//            Log::info('dateBegin mutatie: ' . $dateBegin);
-//            Log::info('dateEnd   mutatie: ' . $dateEndMutation);
 
             $dateEndForPeriod = clone $dateEndMutation;
             $dateEndForPeriod->endOfDay();
@@ -465,10 +389,6 @@ class RevenuesKwhHelper
             $participationsQuantity += $mutation->quantity;
             $dateBegin = Carbon::parse($mutation->date_entry); // dateBegin = 06-06-2024
         }
-// todo WM: cleanup
-//
-//        Log::info('dateBegin laatste: ' . $dateBegin);
-//        Log::info('dateEnd   laatste: ' . $dateEnd);
 
         $dateEndForPeriod = clone $dateEnd;
         $dateEndForPeriod->endOfDay();

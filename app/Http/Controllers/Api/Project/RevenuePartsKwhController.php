@@ -132,20 +132,6 @@ class RevenuePartsKwhController extends ApiController
 
         $revenuePartsKwh->save();
 
-// todo WM: cleanup
-//
-// verplaatst naar calculator / helper.
-//        // einddatum gewijzigd, dan bij oude datum values verwijderen en einddatum bij revenuesKwh ook bijwerken.
-//        if($revenuePartsKwh->status == 'concept' && $isLastRevenuePartsKwh && $oldDateEnd != $revenuePartsKwh->date_end) {
-//            $dateRegistrationDayAfterOldEnd = Carbon::parse($oldDateEnd)->addDay()->format('Y-m-d');
-//            $revenueValuesKwhEnd = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistrationDayAfterOldEnd)->first();
-//            if ($revenueValuesKwhEnd) {
-//                $revenueValuesKwhEnd->delete();
-//            }
-//            $revenuePartsKwh->revenuesKwh->date_end = $revenuePartsKwh->date_end;
-//            $revenuePartsKwh->revenuesKwh->save();
-//        }
-
         if($revenuePartsKwh->status == 'concept') {
             UpdateRevenuePartsKwh::dispatch($revenuePartsKwh, $valuesKwhData, $oldDateEnd, Auth::id());
         }else{
@@ -172,7 +158,7 @@ class RevenuePartsKwhController extends ApiController
             ->orderBy('date_begin')->get());
     }
 
-// todo WM: opschonen
+// todo WM: nog doen?
 //
 //    public function createEnergySupplierReport(
 //        Request $request,
@@ -283,7 +269,7 @@ class RevenuePartsKwhController extends ApiController
         return FullRevenueDistributionPartsKwh::collection($distributionPartsKwh);
     }
 
-// todo WM: opschonen
+// todo WM: nog doen?
 //
 //    public function downloadPreview(Request $request, RevenueDistributionPartsKwh $distributionPartsKwh)
 //    {
@@ -491,7 +477,7 @@ class RevenuePartsKwhController extends ApiController
         return null;
     }
 
-// todo WM: opschonen
+// todo WM: nog doen?
 //
 //    public function createParticipantRevenueReport($subject, $distributionPartsKwhId, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate)
 //    {
@@ -747,7 +733,7 @@ class RevenuePartsKwhController extends ApiController
         $participantMutation->date_payment = $datePayout;
         $participantMutation->save();
     }
-// todo WM: opschonen
+// todo WM: nog doen?
 //
 //    protected function setMailConfigByDistribution(RevenueDistributionPartsKwh $distributionPartsKwh)
 //    {

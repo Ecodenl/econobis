@@ -243,9 +243,6 @@ class ParticipationProjectController extends ApiController
             'mutations.updatedBy',
             'obligationNumbers',
             'documents',
-            'projectRevenues.type',
-            'projectRevenues.category',
-            'projectRevenues.createdBy',
             'createdBy',
             'updatedBy',
         ]);

@@ -19,7 +19,7 @@ const RevenuePartsKwhDistributionFormView = props => {
         participationsQuantity,
         kwhReturn,
         status,
-        remark,
+        remarks,
     } = props.participation;
 
     const missingEmail =
@@ -103,9 +103,9 @@ const RevenuePartsKwhDistributionFormView = props => {
             </div>
             <div className="col-sm-2">{statusText}</div>
             <div className="col-sm-1">
-                {remark ? (
+                {remarks ? (
                     <>
-                        <FaInfoCircle color={'blue'} size={'15px'} data-tip={remark} data-for={`tooltip-remark`} />
+                        <FaInfoCircle color={'blue'} size={'15px'} data-tip={remarks} data-for={`tooltip-remark`} />
                         <ReactTooltip
                             id={`tooltip-remark`}
                             effect="float"

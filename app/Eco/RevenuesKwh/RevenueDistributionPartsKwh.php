@@ -48,14 +48,17 @@ class RevenueDistributionPartsKwh extends Model
     {
         return number_format( $this->delivered_kwh, '2',',', '.' );
     }
-    public function getRemarkAttribute()
+    public function getRemarksAttribute()
     {
         $remarks = [];
         if($this->distributionKwh->participation->date_terminated == $this->partsKwh->date_end){
             $remarks[] = "Deze deelname is beeindigd op " . Carbon::parse($this->distributionKwh->participation->date_terminated)->format('d-m-Y');
         }
         if(AddressEnergySupplier::where('address_id', $this->distributionKwh->participation->address_id)->where('energy_supplier_id', $this->es_id)->where('end_date', $this->partsKwh->date_end)->exists()){
-            $remarks[] =  "Deze energie leverancier bij deze deelname is beeinidigd op " . Carbon::parse($this->partsKwh->date_end)->format('d-m-Y');
+            $remarks[] = "Deze energie leverancier bij deze deelname is beeinidigd op " . Carbon::parse($this->partsKwh->date_end)->format('d-m-Y');
+        }
+        if( $this->partsKwh->date_end && Carbon::parse($this->partsKwh->date_end)->day == 31 && Carbon::parse($this->partsKwh->date_end)->month == 12 ){
+            $remarks[] = "Einde jaar";
         }
         return implode('<br/>', $remarks);
     }

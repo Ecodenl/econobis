@@ -151,7 +151,12 @@ class RevenuesKwhController extends ApiController
 
         if($revenuesKwh->confirmed) {
             if ($revenuesKwh->status == 'concept') {
-                // Alle voorgaande parts met status concept ook definitief maken (confirmed)
+                // Alle values met status concept ook definitief maken (confirmed)
+                foreach ($revenuesKwh->conceptValuesKwh as $conceptValueKwh){
+                    $conceptValueKwh->status = 'confirmed';
+                    $conceptValueKwh->save();
+                }
+                // Alle parts met status concept ook definitief maken (confirmed)
                 foreach ($revenuesKwh->conceptPartsKwh as $conceptRevenuePartKwh){
                     $conceptRevenuePartKwh->confirmed = true;
                     $conceptRevenuePartKwh->status = 'confirmed';
@@ -159,6 +164,10 @@ class RevenuesKwhController extends ApiController
                     foreach($conceptRevenuePartKwh->conceptDistributionPartsKwh as $distributionPreviousPartsKwh){
                         $distributionPreviousPartsKwh->status = 'confirmed';
                         $distributionPreviousPartsKwh->save();
+                    }
+                    foreach($conceptRevenuePartKwh->conceptDistributionValuesKwh as $distributionPreviousValuesKwh){
+                        $distributionPreviousValuesKwh->status = 'confirmed';
+                        $distributionPreviousValuesKwh->save();
                     }
                     foreach($conceptRevenuePartKwh->conceptDistributionValuesKwh as $distributionPreviousValuesKwh){
                         $distributionPreviousValuesKwh->status = 'confirmed';
@@ -340,14 +349,10 @@ class RevenuesKwhController extends ApiController
     )
     {
         $distributionKwhIds = $request->input('distributionKwhIds');
-        if($distributionKwhIds){
-            $energySupplierIds = array_unique($revenuesKwh->distributionPartsKwh()->whereIn('distribution_id', $distributionKwhIds)->whereNotNull('es_id')->pluck('es_id')->toArray());
-        }else{
-            $energySupplierIds = array_unique($revenuesKwh->distributionPartsKwh()->whereNotNull('es_id')->pluck('es_id')->toArray());
-        }
+        $energySupplierIds = array_unique($revenuesKwh->distributionPartsKwh()->whereNotNull('es_id')->pluck('es_id')->toArray());
         foreach ($energySupplierIds as $energySupplierId) {
             $energySupplier = EnergySupplier::find($energySupplierId);
-            $this->createEnergySupplierExcel($request, $revenuesKwh, $energySupplier, true);
+            $this->createEnergySupplierExcel($request, $revenuesKwh, $energySupplier, $distributionKwhIds, true);
         }
     }
 
@@ -357,13 +362,15 @@ class RevenuesKwhController extends ApiController
         EnergySupplier $energySupplier
     )
     {
-            $this->createEnergySupplierExcel($request, $revenuesKwh, $energySupplier, false);
+        $distributionKwhIds = $request->input('distributionKwhIds');
+        $this->createEnergySupplierExcel($request, $revenuesKwh, $energySupplier, $distributionKwhIds, false);
     }
 
     protected function createEnergySupplierExcel(
         Request $request,
         RevenuesKwh $revenuesKwh,
         EnergySupplier $energySupplier,
+        $distributionKwhIds,
         $createAll
     )
     {
@@ -385,7 +392,7 @@ class RevenuesKwhController extends ApiController
         if ($templateId) {
             set_time_limit(0);
             $excelHelper = new EnergySupplierExcelHelper($energySupplier,
-                $revenuesKwh, $templateId, $fileName);
+                $revenuesKwh, $distributionKwhIds, $templateId, $fileName);
             $excel = $excelHelper->getExcel();
         }else{
             abort(412, 'Geen geldige excel template gevonden.');

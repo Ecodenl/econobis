@@ -55,9 +55,9 @@ class RevenuePartsKwhCalculator
         $revenueId = $this->revenuePartsKwh->revenue_id;
         $partsId = $this->revenuePartsKwh->id;
 
-        $totalSumOfParticipationsAndDaysConcept = $this->revenuePartsKwh->conceptDistributionValuesKwh()->get()->sum('quantity_multiply_by_days');
-        $totalDeliveredKwhConfirmed = $this->revenuePartsKwh->confirmedValuesKwh()->get()->sum('delivered_kwh');
-        $totalDeliveredKwhConcept = $this->revenuePartsKwh->conceptValuesKwh()->get()->sum('delivered_kwh');
+        $totalSumOfParticipationsAndDaysConcept = $this->revenuePartsKwh->conceptDistributionValuesKwh()->sum('quantity_multiply_by_days');
+        $totalDeliveredKwhConfirmed = $this->revenuePartsKwh->confirmedValuesKwh()->sum('delivered_kwh');
+        $totalDeliveredKwhConcept = $this->revenuePartsKwh->conceptValuesKwh()->sum('delivered_kwh');
         $totalDeliveredKwhToDivide = $totalDeliveredKwhConcept - $totalDeliveredKwhConfirmed;
 
         foreach ($this->revenuePartsKwh->conceptDistributionValuesKwh as $conceptDistributionValuesKwh) {
@@ -82,14 +82,12 @@ class RevenuePartsKwhCalculator
 
     protected function countingsConceptConfirmedProcessed(): void
     {
-//todo WM: @@nog doen of anders?!
-//
-//        foreach ($this->revenuePartsKwh->revenuesKwh->distributionKwh as $distributionKwh) {
-//            $distributionKwh->delivered_total_concept = $distributionKwh->distributionValuesKwh->where('status', 'concept')->sum('delivered_kwh');
-//            $distributionKwh->delivered_total_confirmed = $distributionKwh->distributionValuesKwh->where('status', 'confirmed')->sum('delivered_kwh');
-//            $distributionKwh->delivered_total_processed = $distributionKwh->distributionValuesKwh->where('status', 'processed')->sum('delivered_kwh');
-//            $distributionKwh->save();
-//        }
+        foreach ($this->revenuePartsKwh->revenuesKwh->distributionKwh as $distributionKwh) {
+            $distributionKwh->delivered_total_concept = $distributionKwh->distributionValuesKwh->where('status', 'concept')->sum('delivered_kwh');
+            $distributionKwh->delivered_total_confirmed = $distributionKwh->distributionValuesKwh->where('status', 'confirmed')->sum('delivered_kwh');
+            $distributionKwh->delivered_total_processed = $distributionKwh->distributionValuesKwh->where('status', 'processed')->sum('delivered_kwh');
+            $distributionKwh->save();
+        }
         $distributionPartsKwh = RevenueDistributionPartsKwh::where('revenue_id', $this->revenuePartsKwh->revenue_id)->where('parts_id', $this->revenuePartsKwh->id)->get();
         $this->revenuePartsKwh->delivered_total_concept = $distributionPartsKwh->where('status', 'concept')->sum('delivered_kwh');
         $this->revenuePartsKwh->delivered_total_confirmed = $distributionPartsKwh->where('status', 'confirmed')->sum('delivered_kwh');
@@ -97,7 +95,7 @@ class RevenuePartsKwhCalculator
         $this->revenuePartsKwh->save();
 
         $distributionAllPartsKwh = RevenueDistributionPartsKwh::where('revenue_id', $this->revenuePartsKwh->revenue_id)->get();
-        $this->revenuePartsKwh->revenuesKwh->delivered_total_concept = $distributionAllPartsKwh->where('status', 'concept')->sum('delivered_kwh');
+        $this->revenuesKwh->delivered_total_concept = $distributionAllPartsKwh->where('status', 'concept')->sum('delivered_kwh');
         $this->revenuePartsKwh->revenuesKwh->delivered_total_confirmed = $distributionAllPartsKwh->where('status', 'confirmed')->sum('delivered_kwh');
         $this->revenuePartsKwh->revenuesKwh->delivered_total_processed = $distributionAllPartsKwh->where('status', 'processed')->sum('delivered_kwh');
         $this->revenuePartsKwh->revenuesKwh->save();

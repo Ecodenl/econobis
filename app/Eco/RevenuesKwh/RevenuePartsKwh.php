@@ -60,13 +60,13 @@ class RevenuePartsKwh extends Model
     }
     public function conceptValuesKwh(){
         $partDateBegin =  Carbon::parse($this->date_begin)->format('Y-m-d');
-        $partDateEnd =  Carbon::parse($this->date_end)->format('Y-m-d');
+        $partDateEnd = Carbon::parse($this->date_end)->format('Y-m-d');
 
-        return RevenueValuesKwh::where('revenue_id', $this->revenue_id)->whereBetween('date_registration', [$partDateBegin, $partDateEnd])->where('status', 'concept');
+        return RevenueValuesKwh::where('revenue_id', $this->revenue_id)->whereBetween('date_registration', [$partDateBegin, $partDateEnd])->where('status', 'concept')->get();
     }
     public function confirmedValuesKwh(){
         $partDateBegin =  Carbon::parse($this->date_begin)->format('Y-m-d');
-        $partDateEnd =  Carbon::parse($this->date_end)->format('Y-m-d');
+        $partDateEnd = Carbon::parse($this->date_end)->format('Y-m-d');
 
         return RevenueValuesKwh::where('revenue_id', $this->revenue_id)->whereBetween('date_registration', [$partDateBegin, $partDateEnd])->where('status', 'confirmed');
     }
@@ -89,7 +89,7 @@ class RevenuePartsKwh extends Model
     }
     public function getValuesKwhStartAttribute()
     {
-        $valuesKwhStart = RevenueValuesKwh::where('revenue_id', $this->revenue_id)->where('date_registration', $this->date_begin)->where('is_simulated', false)->first();
+        $valuesKwhStart = RevenueValuesKwh::where('revenue_id', $this->revenue_id)->where('date_registration', $this->date_begin)->first();
         // voorlopig nooit edit start toestaan. Beginstanden 1e part wordt vastgelegd bij 1e keer aanmaak. Bij volgende parts zijn Beginstanden altijd gelijk aan Eindstanden voorgaande peridoe,
         // als die gewijzigd worden (als allowEditEnd mag dus), dan wijzigen deze beginstanden ook meteen mee (is 1 en dezelfde value !)
         if(!$valuesKwhStart){
@@ -101,7 +101,7 @@ class RevenuePartsKwh extends Model
     public function getValuesKwhEndAttribute()
     {
         $dayAfterEnd = Carbon::parse($this->date_end)->addDay()->format('Y-m-d');
-        $valuesKwhEnd = RevenueValuesKwh::where('revenue_id', $this->revenue_id)->where('date_registration', $dayAfterEnd)->where('is_simulated', false)->first();
+        $valuesKwhEnd = RevenueValuesKwh::where('revenue_id', $this->revenue_id)->where('date_registration', $dayAfterEnd)->first();
 
         $kwhEnd = 0;
         $kwhEndHigh = 0;

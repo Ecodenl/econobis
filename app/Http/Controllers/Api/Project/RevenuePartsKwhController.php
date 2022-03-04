@@ -91,9 +91,18 @@ class RevenuePartsKwhController extends ApiController
             $checkDateForPreviousPart = Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d');
             $previousRevenuePartsKwh = RevenuePartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_end', '<', $checkDateForPreviousPart)->where('status', 'concept')->orderBy('date_begin')->get();
             foreach ($previousRevenuePartsKwh as $previousRevenuePartKwh){
+
                 $previousRevenuePartKwh->confirmed = true;
                 $previousRevenuePartKwh->status = 'confirmed';
                 $previousRevenuePartKwh->date_confirmed = $revenuePartsKwh->date_confirmed;
+
+                // todo WM: check of we day after end date revenue ook niet al op confirmed moeten zetten?
+                // vooralsnog denk ik niet. Hier staan dan wel eindstanden vermeld voor deze periode wat beginstanden zijn voor volgende periode
+                // maar die kan je niet vanuit die volgende periode wijzigen. Verder is delivered_kwh die daar staat voor volgende periode.
+                foreach ($previousRevenuePartKwh->conceptValuesKwh() as $conceptValueKwh){
+                    $conceptValueKwh->status = 'confirmed';
+                    $conceptValueKwh->save();
+                }
                 foreach($previousRevenuePartKwh->conceptDistributionPartsKwh as $distributionPreviousPartsKwh){
                     $distributionPreviousPartsKwh->status = 'confirmed';
                     $distributionPreviousPartsKwh->save();
@@ -106,6 +115,13 @@ class RevenuePartsKwhController extends ApiController
             }
 
             $revenuePartsKwh->status = 'confirmed';
+            // todo WM: check of we day after end date revenue ook niet al op confirmed moeten zetten?
+            // vooralsnog denk ik niet. Hier staan dan wel eindstanden vermeld voor deze periode wat beginstanden zijn voor volgende periode
+            // maar die kan je niet vanuit die volgende periode wijzigen. Verder is delivered_kwh die daar staat voor volgende periode.
+            foreach($revenuePartsKwh->conceptValuesKwh() as $conceptValueKwh){
+                $conceptValueKwh->status = 'confirmed';
+                $conceptValueKwh->save();
+            }
             foreach($revenuePartsKwh->conceptDistributionPartsKwh as $distributionPartsKwh){
                 $distributionPartsKwh->status = 'confirmed';
                 $distributionPartsKwh->save();

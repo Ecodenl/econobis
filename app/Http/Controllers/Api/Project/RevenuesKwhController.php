@@ -174,7 +174,7 @@ class RevenuesKwhController extends ApiController
                         $distributionPreviousValuesKwh->save();
                     }
                     $conceptRevenuePartKwh->save();
-                    $conceptRevenuePartKwh->calculator()->runRevenuePartsKwh(null, null);
+                    $conceptRevenuePartKwh->calculator()->runRevenuePartsKwh(null, null, null);
                 }
                 $revenuesKwh->status = 'confirmed';
             }

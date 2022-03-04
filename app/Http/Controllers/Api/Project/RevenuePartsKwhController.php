@@ -48,9 +48,9 @@ class RevenuePartsKwhController extends ApiController
         $limit = 100;
         $offset = $request->input('page') ? $request->input('page') * $limit : 0;
 
-        $distributionPartsKwh = $revenuePartsKwh->distributionPartsKwh()->limit($limit)->offset($offset)->orderBy('status')->get();
-        $distributionPartsKwhIdsTotal = $revenuePartsKwh->distributionPartsKwh()->pluck('id')->toArray();
-        $total = $revenuePartsKwh->distributionPartsKwh()->count();
+        $distributionPartsKwh = $revenuePartsKwh->distributionPartsKwhVisible()->limit($limit)->offset($offset)->orderBy('status')->get();
+        $distributionPartsKwhIdsTotal = $revenuePartsKwh->distributionPartsKwhVisible()->pluck('id')->toArray();
+        $total = $revenuePartsKwh->distributionPartsKwhVisible()->count();
 
         return FullRevenueDistributionPartsKwh::collection($distributionPartsKwh)
             ->additional(['meta' => [
@@ -135,12 +135,13 @@ class RevenuePartsKwhController extends ApiController
         $valuesKwhData = $request->get("valuesKwh");
         $recalculateNextPart = false;
 
-        if($revenuePartsKwh->status == 'concept' && $revenuePartsKwh->next_revenue_parts_kwh && $revenuePartsKwh->next_revenue_parts_kwh->status != 'new'){
+        if($revenuePartsKwh->status == 'concept' && $revenuePartsKwh->next_revenue_parts_kwh){
             $dateRegistrationDayAfterEnd = Carbon::parse($revenuePartsKwh->date_end)->addDay()->format('Y-m-d');
             $revenueValuesKwhEnd = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
-            if ($revenueValuesKwhEnd->kwh_start != $valuesKwhData['kwhEnd']
+            if ($revenueValuesKwhEnd
+                && ($revenueValuesKwhEnd->kwh_start != $valuesKwhData['kwhEnd']
                 || $revenueValuesKwhEnd->kwh_start_high != $valuesKwhData['kwhEndHigh']
-                || $revenueValuesKwhEnd->kwh_start_low != $valuesKwhData['kwhEndLow']
+                || $revenueValuesKwhEnd->kwh_start_low != $valuesKwhData['kwhEndLow'])
             ) {
                 $recalculateNextPart = true;
             }
@@ -149,13 +150,21 @@ class RevenuePartsKwhController extends ApiController
         $revenuePartsKwh->save();
 
         if($revenuePartsKwh->status == 'concept') {
-            UpdateRevenuePartsKwh::dispatch($revenuePartsKwh, $valuesKwhData, $oldDateEnd, Auth::id());
+            UpdateRevenuePartsKwh::dispatch($revenuePartsKwh, $valuesKwhData, $oldDateEnd, Auth::id(), false);
         }else{
             $revenuePartsKwh->calculator()->runCountingsRevenuesKwh();
         }
 
         if($recalculateNextPart){
-            UpdateRevenuePartsKwh::dispatch($revenuePartsKwh->next_revenue_parts_kwh, null, null, Auth::id());
+            $valuesKwhDataNext = [
+                'kwhStart' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_start['kwhStart'],
+                'kwhStartHigh' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_start['kwhStartHigh'],
+                'kwhStartLow' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_start['kwhStartLow'],
+                'kwhEnd' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_end['kwhEnd'],
+                'kwhEndHigh' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_end['kwhEndHigh'],
+                'kwhEndLow' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_end['kwhEndLow'],
+            ];
+            UpdateRevenuePartsKwh::dispatch($revenuePartsKwh->next_revenue_parts_kwh, $valuesKwhDataNext, null, Auth::id(), true);
         }
         // laatste part op confirmed, dan ook revenueDistributionKwh en revenuesKwh op confirmed.
         if($revenuePartsKwh->status == 'confirmed' && $isLastRevenuePartsKwh && $oldStatus != $revenuePartsKwh->status) {

@@ -563,7 +563,6 @@ class conversionProjectRevenuesKwh extends Command
             $distributionPartsKwh->distribution_id = $distributionKwh->id;
             $distributionPartsKwh->status = $distributionKwh->status;
         }
-
         $distributionPartsKwh->save();
 
         $dateBeginRevenues = Carbon::parse($revenuePartsKwh->revenuesKwh->date_begin)->format('Y-m-d');
@@ -571,7 +570,6 @@ class conversionProjectRevenuesKwh extends Command
         $distributionPartsKwh->participations_quantity_at_start = $quantityOfParticipationsAtStart;
         $distributionPartsKwh->participations_quantity = $quantityOfParticipations;
 
-//        $distributionPartsKwh->distributionKwh->newOrConceptDistributionValuesKwh()->where('parts_id', $revenuePartsKwh->id)->delete();
         $this->saveDistributionValuesKwh($partDateBegin, $partDateEnd, $distributionPartsKwh, $oldProjectRevenueDistribution);
 
         $totalDeliveredKwh = RevenueDistributionValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('distribution_id', $distributionPartsKwh->distribution_id)->where('parts_id', $revenuePartsKwh->id)->sum('delivered_kwh');
@@ -589,23 +587,19 @@ class conversionProjectRevenuesKwh extends Command
             $distributionPartsKwh->energy_supplier_number = $addressEnergySupplier ? $addressEnergySupplier->es_number: null;
         }
 
-//        $distributionPartsKwh->save();
-
         $dateEndFromRevenue = Carbon::parse($distributionKwh->revenuesKwh->date_end)->format('Y-m-d');
         $dateEndCalendarYearFromRevenue = Carbon::parse($distributionKwh->revenuesKwh->date_begin)->endOfYear()->format('Y-m-d');
         if($dateEndFromRevenue > $dateEndCalendarYearFromRevenue && $oldProjectRevenueDistribution->delivered_total_end_calendar_year > 0){
             if($dateEndCalendarYearFromRevenue == $partDateEnd){
-//                $distributionPartsKwh->participations_quantity = $oldProjectRevenueDistribution->participations_amount_end_calendar_year;
                 $distributionPartsKwh->delivered_kwh = $oldProjectRevenueDistribution->delivered_total_end_calendar_year;
             } else {
-//                $distributionPartsKwh->participations_quantity = $oldProjectRevenueDistribution ? $oldProjectRevenueDistribution->participations_amount : 0;
                 $distributionPartsKwh->delivered_kwh = $oldProjectRevenueDistribution ? ($oldProjectRevenueDistribution->delivered_total - $oldProjectRevenueDistribution->delivered_total_end_calendar_year) : 0;
             }
         } else {
-//            $distributionPartsKwh->participations_quantity = $oldProjectRevenueDistribution ? $oldProjectRevenueDistribution->participations_amount : 0;
             $distributionPartsKwh->delivered_kwh = $oldProjectRevenueDistribution ? $oldProjectRevenueDistribution->delivered_total : 0;
         }
 
+        $distributionPartsKwh->is_visible = empty($distributionPartsKwh->remarks) ? false : true;
         $distributionPartsKwh->save();
 
         $revenuePartsKwhForRecalculate = RevenuePartsKwh::find($revenuePartsKwh->id);
@@ -857,108 +851,6 @@ class conversionProjectRevenuesKwh extends Command
 
     }
 
-    /**
-     * @param $revenueDistributionPartsKwh
-     */
-//    public function createOrUpdateRevenueValuesKwhSimulate(RevenuePartsKwh $revenuePartsKwh): void
-//    {
-//        $partDateBegin =  Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d');
-//        $partDateEnd =  Carbon::parse($revenuePartsKwh->date_end)->format('Y-m-d');
-//        $dateRegistrationDayAfterEnd = Carbon::parse($revenuePartsKwh->date_end)->addDay()->format('Y-m-d');
-//
-//        $daysOfPeriod = Carbon::parse($dateRegistrationDayAfterEnd)->diffInDays(Carbon::parse($partDateBegin));
-//        $beginRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $partDateBegin)->first();
-//        $beginRevenueValuesKwh_kwh_start_high = $beginRevenueValuesKwh ? $beginRevenueValuesKwh->kwh_start_high : 0;
-//        $beginRevenueValuesKwh_kwh_start_low = $beginRevenueValuesKwh ? $beginRevenueValuesKwh->kwh_start_low : 0;
-//        $beginRevenueValuesKwh_kwh_start = $beginRevenueValuesKwh ? $beginRevenueValuesKwh->kwh_start : 0;
-//        $endRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
-//        $endRevenueValuesKwh_kwh_start_high = $endRevenueValuesKwh ? $endRevenueValuesKwh->kwh_start_high : 0;
-//        $endRevenueValuesKwh_kwh_start_low = $endRevenueValuesKwh ? $endRevenueValuesKwh->kwh_start_low : 0;
-//        $endRevenueValuesKwh_kwh_start = $endRevenueValuesKwh ? $endRevenueValuesKwh->kwh_start : 0;
-//        $deliveredHighPerDay = round((($endRevenueValuesKwh_kwh_start_high - $beginRevenueValuesKwh_kwh_start_high) / $daysOfPeriod), 6);
-//        $deliveredLowPerDay = round((($endRevenueValuesKwh_kwh_start_low - $beginRevenueValuesKwh_kwh_start_low) / $daysOfPeriod), 6);
-//        $deliveredTotalPerDay = round((($endRevenueValuesKwh_kwh_start - $beginRevenueValuesKwh_kwh_start) / $daysOfPeriod), 6);
-//
-//        RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('status', 'concept')->whereBetween('date_registration', [$partDateBegin, $partDateEnd])->where('is_simulated', true)->delete();
-//
-//        $kwhStart = $beginRevenueValuesKwh_kwh_start;
-//        $kwhEnd = $beginRevenueValuesKwh_kwh_start + $deliveredTotalPerDay;
-//        $kwhStartHigh = $beginRevenueValuesKwh_kwh_start_high;
-//        $kwhEndHigh = $beginRevenueValuesKwh_kwh_start_high + $deliveredHighPerDay;
-//        $kwhStartLow = $beginRevenueValuesKwh_kwh_start_low;
-//        $kwhEndLow = $beginRevenueValuesKwh_kwh_start_low + $deliveredLowPerDay;
-//        // Iterate over the period
-//        $period = CarbonPeriod::create(Carbon::parse($partDateBegin)->format('Y-m-d'), Carbon::parse($partDateEnd)->format('Y-m-d'));
-//        foreach ($period as $date) {
-//            $dateRegistration = $date->format('Y-m-d');
-//            $revenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistration)->first();
-//            if($revenueValuesKwh) {
-//                if($revenueValuesKwh->date_registration == $partDateBegin){
-//                    $revenueValuesKwh->kwh_end = $kwhEnd;
-//                    $revenueValuesKwh->kwh_end_high = $kwhEndHigh;
-//                    $revenueValuesKwh->kwh_end_low = $kwhEndLow;
-//                    $revenueValuesKwh->delivered_kwh = $deliveredTotalPerDay;
-//                    $revenueValuesKwh->save();
-//                } else {
-//                    // bestaande anders dan begindatum?
-//                    Log::error('Bestaande revenue value kwh (' . $revenueValuesKwh->id . '), niet begindatum? date_registration: ' . $revenueValuesKwh->date_registration );
-//                }
-//            } else {
-//                // Als we einddatum bereikt hebben, dan afrondingsverschil op laatste simulatie verwerken.
-//                if($dateRegistration == $partDateEnd){
-//                    $kwhEnd = $endRevenueValuesKwh_kwh_start;
-//                    $kwhEndHigh = $endRevenueValuesKwh_kwh_start_high;
-//                    $kwhEndLow = $endRevenueValuesKwh_kwh_start_low;
-//                    $deliveredTotal = $kwhEnd - $kwhStart;
-//                } else {
-//                    $deliveredTotal = $deliveredTotalPerDay;
-//                }
-//
-//                $revenueValuesKwh = RevenueValuesKwh::create([
-//                    'revenue_id' => $revenuePartsKwh->revenuesKwh->id,
-//                    'date_registration' => $dateRegistration,
-//                    'is_simulated' => true,
-//                    'kwh_start' => $kwhStart,
-//                    'kwh_end' => $kwhEnd,
-//                    'kwh_start_high' => $kwhStartHigh,
-//                    'kwh_end_high' => $kwhEndHigh,
-//                    'kwh_start_low' => $kwhStartLow,
-//                    'kwh_end_low' => $kwhEndLow,
-//                    'status' => 'concept',
-//                    'delivered_kwh' => $deliveredTotal,
-//                ]);
-//            }
-//            $kwhStart = $kwhEnd;
-//            $kwhEnd = $kwhStart + $deliveredTotalPerDay;
-//            $kwhStartHigh = $kwhEndHigh;
-//            $kwhEndHigh = $kwhStartHigh + $deliveredHighPerDay;
-//            $kwhStartLow = $kwhEndLow;
-//            $kwhEndLow = $kwhStartLow + $deliveredLowPerDay;
-//
-//            $distributionsKwh = $revenuePartsKwh->revenuesKwh->distributionKwh;
-//            foreach ($distributionsKwh as $distributionKwh) {
-//                $distributionPartsKwh = RevenueDistributionPartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('parts_id', $revenuePartsKwh->id)->where('distribution_id', $distributionKwh->id)->first();
-//                if($distributionPartsKwh){
-//                    $deliveredPartPerDay = round((($distributionPartsKwh->delivered_kwh / $daysOfPeriod)), 6);
-//                }else{
-//                    $deliveredPartPerDay = 0;
-//                }
-//
-//                //todo WM: moet anders, date_registration en revenue_values_id is niet meer, distribution values niet meer dag nl.
-//                $participationsQuantity = $this->determineParticipationsQuantity($distributionKwh, $revenueValuesKwh->date_registration);
-//                RevenueDistributionValuesKwh::create([
-//                    'revenue_values_id' => $revenueValuesKwh->id,
-//                    'date_registration' => $revenueValuesKwh->date_registration,
-//                    'distribution_id' => $distributionKwh->id,
-//                    'revenue_id' => $revenuePartsKwh->revenuesKwh->id,
-//                    'parts_id' => $revenuePartsKwh->id,
-//                    'status' => $distributionKwh->status,
-//                    'participations_quantity' => $participationsQuantity,
-//                    'delivered_kwh' => $deliveredPartPerDay,
-//                ]);
-//            }
-//        }
-//    }
     public function createOrUpdateRevenueValuesKwhSimulate($revenueId, $partDateBegin, $partDateEnd, $dateRegistrationDayAfterEnd, $status): void
     {
         $daysOfPeriod = Carbon::parse($dateRegistrationDayAfterEnd)->diffInDays(Carbon::parse($partDateBegin));
@@ -1096,11 +988,8 @@ class conversionProjectRevenuesKwh extends Command
                     'date_registration' => $splitDateString,
                     'is_simulated' => false,
                     'kwh_start' => $splitRevenue->kwh_end,
-                    'kwh_end' => 0,
                     'kwh_start_high' => $splitRevenue->kwh_end_high,
-                    'kwh_end_high' => 0,
                     'kwh_start_low' => $splitRevenue->kwh_end_low,
-                    'kwh_end_low' => 0,
                     'status' => 'concept',
                 ]);
             }
@@ -1212,6 +1101,7 @@ class conversionProjectRevenuesKwh extends Command
                     //                Log::info('distribution_id: ' . $distributionPartsKwh->distribution_id);
                     //                Log::info('distributionPartsDeliveredKwh: ' . $distributionPartsDeliveredKwh);
                     $distributionPartsKwh->delivered_kwh = $distributionPartsDeliveredKwh;
+                    $distributionPartsKwh->is_visible = empty($distributionPartsKwh->remarks) ? false : true;
                     $distributionPartsKwh->save();
                 }
                 $revenuePartsKwhForUpdateDeliverdKwh->delivered_total_concept = $revenuePartsKwhForUpdateDeliverdKwh->distributionPartsKwh->where('status', 'concept')->sum('delivered_kwh');

@@ -60,6 +60,9 @@ class RevenueDistributionPartsKwh extends Model
         if( $this->partsKwh->date_end && Carbon::parse($this->partsKwh->date_end)->day == 31 && Carbon::parse($this->partsKwh->date_end)->month == 12 ){
             $remarks[] = "Einde jaar";
         }
+//        if( $this->partsKwh->date_end && $this->partsKwh->date_end == $this->partsKwh->revenuesKwh->date_end ){
+//            $remarks[] = "Einde laatste periode ";
+//        }
         return implode('<br/>', $remarks);
     }
 

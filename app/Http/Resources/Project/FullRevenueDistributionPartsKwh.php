@@ -35,6 +35,7 @@ class FullRevenueDistributionPartsKwh extends JsonResource
                 'deliveredTotalString' => $this->delivered_total_string,
                 'kwhReturn' => $this->kwh_return,
                 'remarks' => $this->remarks,
+                'is_visible' => $this->is_visible,
 
             ];
     }

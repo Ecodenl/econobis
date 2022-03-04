@@ -145,11 +145,8 @@ class RenewRevenuesKwhTables extends Migration
                 $table->date('date_registration')->nullable();
                 $table->boolean('is_simulated')->default(false);
                 $table->double('kwh_start', 12, 6)->nullable();
-//                $table->double('kwh_end', 12, 6)->nullable();
                 $table->double('kwh_start_high', 12, 6)->nullable();
-//                $table->double('kwh_end_high', 12, 6)->nullable();
                 $table->double('kwh_start_low', 12, 6)->nullable();
-//                $table->double('kwh_end_low', 12, 6)->nullable();
                 $table->string('status')->nullable();
                 $table->double('delivered_kwh', 12, 6)->nullable();
 

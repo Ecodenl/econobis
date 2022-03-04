@@ -68,7 +68,6 @@ class ParticipantMutationObserver
                     if($revenuePartsKwh->status == 'concept'){
                         $revenuePartsKwh->status = 'concept-to-update';
                         $revenuePartsKwh->save();
-
                     }
                 }
             }

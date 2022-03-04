@@ -31,6 +31,9 @@ class RevenuePartsKwh extends Model
     public function distributionPartsKwh(){
         return $this->hasMany(RevenueDistributionPartsKwh::class, 'parts_id');
     }
+    public function distributionPartsKwhVisible(){
+        return $this->hasMany(RevenueDistributionPartsKwh::class, 'parts_id')->where('is_visible', true);
+    }
     public function distributionValuesKwh(){
         return $this->hasMany(RevenueDistributionValuesKwh::class, 'parts_id');
     }
@@ -106,9 +109,7 @@ class RevenuePartsKwh extends Model
         $kwhEnd = 0;
         $kwhEndHigh = 0;
         $kwhEndLow = 0;
-        $valuesKwhEndEstimated = null;
-        $valuesKwhEndHighEstimated = null;
-        $valuesKwhEndLowEstimated = null;
+        $isSimulated = null;
 
         $allowEditEnd = false;
 
@@ -130,23 +131,15 @@ class RevenuePartsKwh extends Model
             }
         }
 
-        // Nog geen eindstand bekend check of er wel een simulate value is, die als estimated meegeven.
-        if(!$valuesKwhEnd){
-            $valuesKwhEndSimulated = RevenueValuesKwh::where('revenue_id', $this->revenue_id)->where('date_registration', $dayAfterEnd)->where('is_simulated', true)->first();
-            if($valuesKwhEndSimulated){
-                $valuesKwhEndEstimated = $valuesKwhEndSimulated->kwh_start;
-                $valuesKwhEndHighEstimated = $valuesKwhEndSimulated->kwh_start_high;
-                $valuesKwhEndLowEstimated = $valuesKwhEndSimulated->kwh_start_low;
-            }
-        // Anders huidige standen meesturen.
-        } else {
+        if($valuesKwhEnd){
             $kwhEnd = $valuesKwhEnd->kwh_start;
             $kwhEndHigh = $valuesKwhEnd->kwh_start_high;
             $kwhEndLow = $valuesKwhEnd->kwh_start_low;
+            $isSimulated = $valuesKwhEnd->is_simulated;
         }
 
         return ['allowEditEnd' => $allowEditEnd, 'kwhEnd' =>  $kwhEnd, 'kwhEndHigh' => $kwhEndHigh, 'kwhEndLow' => $kwhEndLow,
-            'kwhEndHighEstimated' => $valuesKwhEndEstimated, 'kwhEndHighEstimated' => $valuesKwhEndHighEstimated, 'kwhEndLowEstimated' => $valuesKwhEndLowEstimated];
+            'isSimulated' => $isSimulated];
     }
 
     public function getIsFirstRevenuePartsKwhAttribute()

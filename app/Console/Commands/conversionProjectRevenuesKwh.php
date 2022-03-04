@@ -765,39 +765,42 @@ class conversionProjectRevenuesKwh extends Command
      */
     protected function doConversion2($conversionRevenuesKwh): void
     {
-        // eert maar eens a la conversion1 proberen
-        $this->doConversion1($conversionRevenuesKwh);
+        $newRevenuesKwh = RevenuesKwh::find($conversionRevenuesKwh->new_revenue_id);
+        $oldProjectRevenuesKwh = DB::table('xxx_project_revenues')->where('id', $conversionRevenuesKwh->old_revenue_id)->first();
 
-//        $newRevenuesKwh = RevenuesKwh::find($conversionRevenuesKwh->new_revenue_id);
-//        $oldProjectRevenuesKwh = DB::table('xxx_project_revenues')->where('id', $conversionRevenuesKwh->old_revenue_id)->first();
-//
-//        $newRevenuesKwh->confirmed = 1;
-//        $newRevenuesKwh->date_confirmed = $oldProjectRevenuesKwh->date_confirmed;
-//
-//        if($newRevenuesKwh->distributionKwh->where('status', 'confirmed')->count() > 0)
-//        {
-//            $newRevenuesKwhStatus = 'confirmed';
-//        } elseif($newRevenuesKwh->distributionKwh->where('status', 'processed')->count() > 0) {
-//            $newRevenuesKwhStatus = 'processed';
-//        } else {
-//            $newRevenuesKwhStatus = '??????????';
-//        }
-//        $newRevenuesKwh->status = $newRevenuesKwhStatus;
-//
-//        $newRevenuesKwh->save();
-//        $remarks = $conversionRevenuesKwh->remarks . '; status op ' . $newRevenuesKwhStatus;
-//        DB::table('xxx_conversion_revenues_kwh')
-//            ->where('id', $conversionRevenuesKwh->id)
-//            ->update(['remarks' => $remarks]);
-//
-//        foreach ($newRevenuesKwh->partsKwh as $partsKwh) {
-//            $partsKwh->status = $newRevenuesKwhStatus;
-//            $partsKwh->save();
-//        }
+        $newRevenuesKwh->confirmed = 1;
+        $newRevenuesKwh->date_confirmed = $oldProjectRevenuesKwh->date_confirmed;
+        if($newRevenuesKwh->distributionKwh->where('status', 'confirmed')->count() > 0)
+        {
+            $newRevenuesKwhStatus = 'confirmed';
+        } elseif($newRevenuesKwh->distributionKwh->where('status', 'processed')->count() > 0) {
+            $newRevenuesKwhStatus = 'processed';
+        } else {
+            $newRevenuesKwhStatus = '?????????';
+        }
+        $newRevenuesKwh->status = $newRevenuesKwhStatus;
+
+        $newRevenuesKwh->save();
+        $remarks = $conversionRevenuesKwh->remarks . '; status op ' . $newRevenuesKwh->status;
+        DB::table('xxx_conversion_revenues_kwh')
+            ->where('id', $conversionRevenuesKwh->id)
+            ->update(['remarks' => $remarks]);
+
+        foreach ($newRevenuesKwh->partsKwh as $partsKwh) {
+            $partsKwh->status = $newRevenuesKwh->status;
+            $partsKwh->save();
+            $partDateBegin = Carbon::parse($partsKwh->date_begin)->format('Y-m-d');
+            $partDateEnd =  Carbon::parse($partsKwh->date_end)->format('Y-m-d');
+            $dateRegistrationDayAfterEnd = Carbon::parse($partsKwh->date_end)->addDay()->format('Y-m-d');
+            $status = $partsKwh->confirmed ? 'confirmed' : 'concept';
+            $this->createOrUpdateRevenueValuesKwhSimulate($partsKwh->revenue_id, $partDateBegin, $partDateEnd, $dateRegistrationDayAfterEnd, $status);
+            $this->countingsConceptConfirmedProcessed($partsKwh);
+        }
+
     }
     /**
      * @param $conversionRevenuesKwh
-     * de confirmed revenues zonder split
+     * de concept revenues met split
      */
     protected function doConversion3($conversionRevenuesKwh): void
     {
@@ -810,37 +813,8 @@ class conversionProjectRevenuesKwh extends Command
      */
     protected function doConversion4($conversionRevenuesKwh): void
     {
-        // eert maar eens a la conversion1 proberen
-        $this->doConversion1($conversionRevenuesKwh);
-
-//        $newRevenuesKwh = RevenuesKwh::find($conversionRevenuesKwh->new_revenue_id);
-//        $oldProjectRevenuesKwh = DB::table('xxx_project_revenues')->where('id', $conversionRevenuesKwh->old_revenue_id)->first();
-//
-//        $newRevenuesKwh->confirmed = 1;
-//        $newRevenuesKwh->date_confirmed = $oldProjectRevenuesKwh->date_confirmed;
-//
-//        if($newRevenuesKwh->distributionKwh->where('status', 'confirmed')->count() > 0)
-//        {
-//            $newRevenuesKwhStatus = 'confirmed';
-//        } elseif($newRevenuesKwh->distributionKwh->where('status', 'processed')->count() > 0) {
-//            $newRevenuesKwhStatus = 'processed';
-//        } else {
-//            $newRevenuesKwhStatus = '??????????';
-//        }
-//        $newRevenuesKwh->status = $newRevenuesKwhStatus;
-//
-//        $newRevenuesKwh->save();
-//        $remarks = $conversionRevenuesKwh->remarks . '; status op ' . $newRevenuesKwhStatus;
-//        DB::table('xxx_conversion_revenues_kwh')
-//            ->where('id', $conversionRevenuesKwh->id)
-//            ->update(['remarks' => $remarks]);
-//
-//        $this->addRevenueSplitPartsKwh($oldProjectRevenuesKwh, $newRevenuesKwh);
-//
-//        foreach ($newRevenuesKwh->partsKwh as $partsKwh) {
-//            $partsKwh->status = $newRevenuesKwhStatus;
-//            $partsKwh->save();
-//        }
+        // eert maar eens a la conversion2 proberen
+        $this->doConversion2($conversionRevenuesKwh);
     }
     /**
      * @param $conversionRevenuesKwh

@@ -209,7 +209,7 @@ class RevenuesKwhHelper
                 }
 
                 // Opnieuw aanmaken simulated values kwh tussen begin en eind datum.
-                $this->createOrUpdateRevenueValuesKwhSimulate($revenuePartsKwh, $partDateBegin, $partDateEnd, $dateRegistrationDayAfterEnd);
+                $this->createOrUpdateRevenueValuesKwhSimulate($revenuePartsKwh->revenue_id, $partDateBegin, $partDateEnd, $dateRegistrationDayAfterEnd);
 
             }
         }
@@ -218,11 +218,11 @@ class RevenuesKwhHelper
     /**
      * @param $revenueDistributionPartsKwh
      */
-    public function createOrUpdateRevenueValuesKwhSimulate(RevenuePartsKwh $revenuePartsKwh, $partDateBegin, $partDateEnd, $dateRegistrationDayAfterEnd): void
+    public function createOrUpdateRevenueValuesKwhSimulate($revenueId, $partDateBegin, $partDateEnd, $dateRegistrationDayAfterEnd): void
     {
         $daysOfPeriod = Carbon::parse($dateRegistrationDayAfterEnd)->diffInDays(Carbon::parse($partDateBegin));
-        $beginRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $partDateBegin)->first();
-        $endRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
+        $beginRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenueId)->where('date_registration', $partDateBegin)->first();
+        $endRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenueId)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
 
         $deliveredHighPerDay = round((($endRevenueValuesKwh->kwh_start_high - $beginRevenueValuesKwh->kwh_start_high) / $daysOfPeriod), 6);
         $deliveredLowPerDay = round((($endRevenueValuesKwh->kwh_start_low - $beginRevenueValuesKwh->kwh_start_low) / $daysOfPeriod), 6);
@@ -239,7 +239,7 @@ class RevenuesKwhHelper
         $period = CarbonPeriod::create($partDateBegin, $partDateEnd);
         foreach ($period as $date) {
             $dateRegistration = $date->format('Y-m-d');
-            $revenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistration)->first();
+            $revenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenueId)->where('date_registration', $dateRegistration)->first();
             if($revenueValuesKwh) {
                 if($revenueValuesKwh->date_registration == $partDateBegin){
                     $revenueValuesKwh->delivered_kwh = $deliveredTotalPerDay;
@@ -253,8 +253,8 @@ class RevenuesKwhHelper
                     $deliveredTotal = $deliveredTotalPerDay;
                 }
 
-                $revenueValuesKwh = RevenueValuesKwh::create([
-                    'revenue_id' => $revenuePartsKwh->revenuesKwh->id,
+                RevenueValuesKwh::create([
+                    'revenue_id' => $revenueId,
                     'date_registration' => $dateRegistration,
                     'is_simulated' => true,
                     'kwh_start' => $kwhStart,

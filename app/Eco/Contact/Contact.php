@@ -69,6 +69,11 @@ class Contact extends Model
         return $this->hasMany(Address::class)->orderByDesc('primary')->orderByDesc('id');
     }
 
+    public function addressesWithoutOld()
+    {
+        return $this->hasMany(Address::class)->where('type_id', '!=',  'old')->orderByDesc('primary')->orderByDesc('id');
+    }
+
     public function addressesActive()
     {
         return $this->addresses()->where('type_id', '!=', 'old')->orWhere('end_date', '>=', Carbon::parse('now')->format('Y-m-d'));

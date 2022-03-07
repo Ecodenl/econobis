@@ -139,7 +139,7 @@ class ContactController extends Controller
 
     public function getContactWithAddresses(Contact $contact, Request $request)
     {
-        $contact->load(['addresses']);
+        $contact->load(['addressesWithoutOld']);
         $contact->select('id', 'full_name', 'number')->orderBy('full_name')->first();
 
         return new ContactWithAddressPeek($contact);

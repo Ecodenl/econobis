@@ -798,8 +798,10 @@ class conversionProjectRevenuesKwh extends Command
      */
     protected function doConversion3($conversionRevenuesKwh): void
     {
-        // eert maar eens a la conversion1 proberen
+        // eert doen we conversion1
         $this->doConversion1($conversionRevenuesKwh);
+        // daarna de tussentijdse verdelingen hierin verwerken.
+
     }
     /**
      * @param $conversionRevenuesKwh
@@ -807,8 +809,9 @@ class conversionProjectRevenuesKwh extends Command
      */
     protected function doConversion4($conversionRevenuesKwh): void
     {
-        // eert maar eens a la conversion2 proberen
+        // eert doen we conversion2
         $this->doConversion2($conversionRevenuesKwh);
+        // daarna de tussentijdse verdelingen hierin verwerken.
     }
     /**
      * @param $conversionRevenuesKwh

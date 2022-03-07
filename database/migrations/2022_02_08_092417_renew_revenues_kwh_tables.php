@@ -207,7 +207,7 @@ class RenewRevenuesKwhTables extends Migration
                     ->onDelete('restrict');
                 $table->string('energy_supplier_name')->nullable();
                 $table->string('energy_supplier_number')->nullable();
-//                $table->boolean('is_estimated')->default(false);
+                $table->boolean('is_visible')->default(false);
                 $table->timestamps();
             });
         }

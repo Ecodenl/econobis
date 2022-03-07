@@ -124,6 +124,12 @@ class RevenuesKwhController extends ApiController
     public function update(RequestInput $requestInput, RevenuesKwh $revenuesKwh)
     {
         $this->authorize('manage', RevenuesKwh::class);
+
+        $oldConfirmed = $revenuesKwh->confirmed;
+        $oldDateBegin = $revenuesKwh->date_begin;
+        $oldDateEnd = $revenuesKwh->date_end;
+        $oldPayoutKwh = $revenuesKwh->payout_kwh;
+
         $data = $requestInput
             ->string('distributionTypeId')->onEmpty(null)->alias('distribution_type_id')->next()
             ->boolean('confirmed')->next()
@@ -136,22 +142,30 @@ class RevenuesKwhController extends ApiController
 
         $revenuesKwh->fill($data);
 
-        $revenuesKwhConfirmedIsDirty = false;
-        if($revenuesKwh->isDirty('confirmed')){
-            $revenuesKwhConfirmedIsDirty = true;
+        $recalculateDistribution = false;
+        if((boolean) $revenuesKwh->confirmed != (boolean) $oldConfirmed ||
+            Carbon::parse($revenuesKwh->date_begin) != Carbon::parse($oldDateBegin) ||
+            Carbon::parse($revenuesKwh->date_end) != Carbon::parse($oldDateEnd) ||
+            floatval($revenuesKwh->payout_kwh) != floatval($oldPayoutKwh)) {
+            $recalculateDistribution = true;
         }
 
-        $recalculateDistribution = false;
-        if($revenuesKwh->isDirty('date_begin') ||
-            $revenuesKwh->isDirty('date_end') ||
-            $revenuesKwh->isDirty('payout_kwh') ||
-            $revenuesKwhConfirmedIsDirty) {
-            $recalculateDistribution = true;
+        if(floatval($revenuesKwh->payout_kwh) != floatval($oldPayoutKwh)) {
+            // Alle parts met status new of concept ook definitief maken (confirmed)
+            foreach ($revenuesKwh->newOrConceptPartsKwh as $newOrConceptPartsKwh) {
+                $newOrConceptPartsKwh->payout_kwh = $revenuesKwh->payout_kwh;
+                $newOrConceptPartsKwh->save();
+            }
         }
 
         if($revenuesKwh->confirmed) {
             if ($revenuesKwh->status == 'concept') {
-                // Alle voorgaande parts met status concept ook definitief maken (confirmed)
+                // Alle values met status concept ook definitief maken (confirmed)
+                foreach ($revenuesKwh->conceptValuesKwh as $conceptValueKwh){
+                    $conceptValueKwh->status = 'confirmed';
+                    $conceptValueKwh->save();
+                }
+                // Alle parts met status concept ook definitief maken (confirmed)
                 foreach ($revenuesKwh->conceptPartsKwh as $conceptRevenuePartKwh){
                     $conceptRevenuePartKwh->confirmed = true;
                     $conceptRevenuePartKwh->status = 'confirmed';
@@ -164,15 +178,26 @@ class RevenuesKwhController extends ApiController
                         $distributionPreviousValuesKwh->status = 'confirmed';
                         $distributionPreviousValuesKwh->save();
                     }
+                    foreach($conceptRevenuePartKwh->conceptDistributionValuesKwh as $distributionPreviousValuesKwh){
+                        $distributionPreviousValuesKwh->status = 'confirmed';
+                        $distributionPreviousValuesKwh->save();
+                    }
                     $conceptRevenuePartKwh->save();
-                    $conceptRevenuePartKwh->calculator()->runRevenuePartsKwh(null, null);
+                    $conceptRevenuePartKwh->calculator()->countingsConceptConfirmedProcessed();
                 }
                 $revenuesKwh->status = 'confirmed';
             }
         }
         $revenuesKwh->save();
 
-        if($recalculateDistribution)  $this->saveParticipantsOfDistribution($revenuesKwh);
+        if($recalculateDistribution){
+            if(Carbon::parse($revenuesKwh->date_end)->format('Y-m-d') > Carbon::parse($oldDateEnd)->format('Y-m-d')) {
+                $revenuesKwhHelper = new RevenuesKwhHelper();
+                $revenuesKwhHelper->createNewLastRevenuePartsKwh($revenuesKwh);
+            }
+            $this->saveParticipantsOfDistribution($revenuesKwh);
+
+        }
 
         return FullRevenuesKwh::collection(RevenuesKwh::where('project_id',
             $revenuesKwh->project_id)
@@ -227,24 +252,36 @@ class RevenuesKwhController extends ApiController
             $distributionKwh->country = $participantAddress->country_id ? $participantAddress->country->name : '';
             $distributionKwh->energy_supplier_ean_electricity = $participantAddress->ean_electricity;
         }
-        $distributionKwh->participations_quantity = $this->determineParticipationsQuantity($distributionKwh);
+
+        list($quantityOfParticipationsAtStart, $quantityOfParticipations) = $this->determineParticipationsQuantity($distributionKwh);
+        $distributionKwh->participations_quantity_at_start = $quantityOfParticipationsAtStart;
+        $distributionKwh->participations_quantity = $quantityOfParticipations;
         $distributionKwh->save();
     }
 
-    protected function determineParticipationsQuantity(RevenueDistributionKwh $distributionKwh)
+    /**
+     * @param RevenueDistributionKwh $distributionKwh
+     * @return int[]
+     */
+    protected function determineParticipationsQuantity(RevenueDistributionKwh $distributionKwh): array
     {
+        //todo WM: a la determineParticipationsQuantityPart doen ?
+        $quantityOfParticipationsAtStart = 0;
         $quantityOfParticipations = 0;
-        $dateBeginInitial = Carbon::parse($distributionKwh->participation->date_register);
-        $dateEndInitial = Carbon::parse($distributionKwh->revenuesKwh->date_end);
+        $dateBeginFromRegister = Carbon::parse($distributionKwh->participation->date_register)->format('Y-m-d');
+        $dateBeginRevenuesKwh = Carbon::parse($distributionKwh->revenuesKwh->date_begin)->format('Y-m-d');
+        $dateEndRevenuesKwh = Carbon::parse($distributionKwh->revenuesKwh->date_end)->format('Y-m-d');
         $mutations = $distributionKwh->participation->mutationsDefinitiveForKwhPeriod;
-        foreach ($mutations as $index => $mutation) {
-            $dateEntry = Carbon::parse($mutation->date_entry);
-            if($dateEntry >= $dateBeginInitial && $dateEntry <= $dateEndInitial){
+
+        foreach ($mutations as $mutation) {
+            if ($mutation->date_entry >= $dateBeginFromRegister && $mutation->date_entry <= $dateBeginRevenuesKwh) {
+                $quantityOfParticipationsAtStart += $mutation->quantity;
+            }
+            if ($mutation->date_entry >= $dateBeginFromRegister && $mutation->date_entry <= $dateEndRevenuesKwh) {
                 $quantityOfParticipations += $mutation->quantity;
             }
         }
-
-        return $quantityOfParticipations;
+        return array($quantityOfParticipationsAtStart, $quantityOfParticipations);
     }
 
     public function createEnergySupplierReport(
@@ -328,14 +365,10 @@ class RevenuesKwhController extends ApiController
     )
     {
         $distributionKwhIds = $request->input('distributionKwhIds');
-        if($distributionKwhIds){
-            $energySupplierIds = array_unique($revenuesKwh->distributionPartsKwh()->whereIn('distribution_id', $distributionKwhIds)->whereNotNull('es_id')->pluck('es_id')->toArray());
-        }else{
-            $energySupplierIds = array_unique($revenuesKwh->distributionPartsKwh()->whereNotNull('es_id')->pluck('es_id')->toArray());
-        }
+        $energySupplierIds = array_unique($revenuesKwh->distributionPartsKwh()->whereNotNull('es_id')->pluck('es_id')->toArray());
         foreach ($energySupplierIds as $energySupplierId) {
             $energySupplier = EnergySupplier::find($energySupplierId);
-            $this->createEnergySupplierExcel($request, $revenuesKwh, $energySupplier, true);
+            $this->createEnergySupplierExcel($request, $revenuesKwh, $energySupplier, $distributionKwhIds, true);
         }
     }
 
@@ -345,13 +378,15 @@ class RevenuesKwhController extends ApiController
         EnergySupplier $energySupplier
     )
     {
-            $this->createEnergySupplierExcel($request, $revenuesKwh, $energySupplier, false);
+        $distributionKwhIds = $request->input('distributionKwhIds');
+        $this->createEnergySupplierExcel($request, $revenuesKwh, $energySupplier, $distributionKwhIds, false);
     }
 
     protected function createEnergySupplierExcel(
         Request $request,
         RevenuesKwh $revenuesKwh,
         EnergySupplier $energySupplier,
+        $distributionKwhIds,
         $createAll
     )
     {
@@ -373,7 +408,7 @@ class RevenuesKwhController extends ApiController
         if ($templateId) {
             set_time_limit(0);
             $excelHelper = new EnergySupplierExcelHelper($energySupplier,
-                $revenuesKwh, $templateId, $fileName);
+                $revenuesKwh, $distributionKwhIds, $templateId, $fileName);
             $excel = $excelHelper->getExcel();
         }else{
             abort(412, 'Geen geldige excel template gevonden.');

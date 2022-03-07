@@ -217,14 +217,14 @@ export default function* watchSagas() {
     yield takeLatest('DELETE_PROJECT', deleteProjectSaga);
     yield takeLatest('FETCH_PROJECT_REVENUE', fetchProjectRevenueSaga);
     yield takeLatest('FETCH_REVENUES_KWH', fetchRevenuesKwhSaga);
-    yield takeLatest('FETCH_REVENUES_KWH_PARTS', fetchRevenuePartsKwhSaga);
+    yield takeLatest('FETCH_REVENUE_PARTS_KWH', fetchRevenuePartsKwhSaga);
     yield takeLatest('PROJECT_REVENUE_GET_DISTRIBUTION', fetchProjectRevenueDistributionSaga);
     yield takeLatest('REVENUES_KWH_GET_DISTRIBUTION', fetchRevenueDistributionKwhSaga);
     yield takeLatest('REVENUES_KWH_GET_DISTRIBUTION_PARTS', fetchRevenueDistributionPartsKwhSaga);
     yield takeLatest('DELETE_VALUE_COURSE', deleteValueCourseSaga);
     yield takeLatest('DELETE_REVENUE', deleteRevenueSaga);
     yield takeLatest('DELETE_REVENUES_KWH', deleteRevenuesKwhSaga);
-    yield takeLatest('DELETE_REVENUES_KWH_PARTS', deleteRevenuePartsKwhSaga);
+    yield takeLatest('DELETE_REVENUE_PARTS_KWH', deleteRevenuePartsKwhSaga);
     // Intake
     yield takeLatest('FETCH_INTAKES', fetchIntakesSaga);
     yield takeLatest('FETCH_INTAKE_DETAILS', fetchIntakeDetailsSaga);

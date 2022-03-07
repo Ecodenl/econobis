@@ -19,31 +19,18 @@ class RevenuePartsKwhCalculator
         $this->revenuesKwh = $revenuePartKwh->revenuesKwh;
     }
 
-    public function runRevenuePartsKwh($valuesKwhData, $oldDateEnd)
+    public function runRevenuePartsKwh($valuesKwhData, $alwaysRecalculate)
     {
         if($this->revenuePartsKwh->status == 'in-progress-update') {
             Log::info("Start RevenuePartsKwhCalculator|runRevenuePartsKwh voor revenuePartKwh id " . $this->revenuePartsKwh->id . " : " . Carbon::now()->format("m-d-Y H:i:s.u"));
-            $this->revenuePartsKwh->conceptSimulatedValuesKwh($oldDateEnd)->delete();
-            $this->revenuePartsKwh->inProgressUpdateDistributionPartsKwh()->delete();
-            $this->revenuePartsKwh->newOrConceptDistributionValuesKwh()->delete();
             $revenuesKwhHelper = new RevenuesKwhHelper();
-            $revenuesKwhHelper->createOrUpdateRevenueValuesKwh($valuesKwhData, $this->revenuePartsKwh);
-            $revenuesKwhHelper->createOrUpdateRevenueValuesKwhSimulate($this->revenuePartsKwh);
-            Log::info("RevenuePartsKwhCalculator na aanmaak simulate values voor revenuePartKwh id " . $this->revenuePartsKwh->id . " : " . Carbon::now()->format("m-d-Y H:i:s.u"));
+            $revenuesKwhHelper->createOrUpdateRevenueValuesKwh($valuesKwhData, $this->revenuePartsKwh, $alwaysRecalculate);
+            Log::info("RevenuePartsKwhCalculator na createOrUpdateRevenueValuesKwh voor revenuePartKwh id " . $this->revenuePartsKwh->id . " : " . Carbon::now()->format("m-d-Y H:i:s.u"));
             $revenuesKwhHelper->saveParticipantsOfDistributionParts($this->revenuePartsKwh);
+            Log::info("RevenuePartsKwhCalculator na saveParticipantsOfDistributionParts " . $this->revenuePartsKwh->id . " : " . Carbon::now()->format("m-d-Y H:i:s.u"));
             $this->calculateDeliveredKwh();
+            Log::info("RevenuePartsKwhCalculator na calculateDeliveredKwh " . $this->revenuePartsKwh->id . " : " . Carbon::now()->format("m-d-Y H:i:s.u"));
 
-            $distributionsPartsKwh = $this->revenuePartsKwh->distributionPartsKwh;
-            foreach($distributionsPartsKwh as $distributionPartsKwh) {
-                if ($distributionPartsKwh->status === 'in-progress-update') {
-                    $distributionPartsKwh->status = 'concept';
-                    $distributionPartsKwh->save();
-                }
-                if ($distributionPartsKwh->distributionKwh->status === 'in-progress-update') {
-                    $distributionPartsKwh->distributionKwh->status = 'concept';
-                    $distributionPartsKwh->distributionKwh->save();
-                }
-            }
             if ($this->revenuePartsKwh->status === 'in-progress-update') {
                 $this->revenuePartsKwh->status = 'concept';
                 $this->revenuePartsKwh->save();
@@ -69,40 +56,22 @@ class RevenuePartsKwhCalculator
     {
         $revenueId = $this->revenuePartsKwh->revenue_id;
         $partsId = $this->revenuePartsKwh->id;
-        $partDateBegin = Carbon::parse($this->revenuePartsKwh->date_begin)->format('Y-m-d');
-        $partDateEnd = Carbon::parse($this->revenuePartsKwh->date_end)->format('Y-m-d');
 
-        $distributionIds = $this->revenuePartsKwh->distributionPartsKwh->pluck('distribution_id')->toArray();
-        // Iterate over the period
-        $period = CarbonPeriod::create(Carbon::parse($partDateBegin)->format('Y-m-d'), Carbon::parse($partDateEnd)->format('Y-m-d'));
-        foreach ($period as $date) {
+        $totalSumOfParticipationsAndDaysConcept = $this->revenuePartsKwh->conceptDistributionValuesKwh()->sum('quantity_multiply_by_days');
+        $totalDeliveredKwhConfirmed = $this->revenuePartsKwh->confirmedValuesKwh()->sum('delivered_kwh');
+        $totalDeliveredKwhConcept = $this->revenuePartsKwh->conceptValuesKwh()->sum('delivered_kwh');
+        $totalDeliveredKwhToDivide = $totalDeliveredKwhConcept - $totalDeliveredKwhConfirmed;
 
-            $dateRegistration = $date->format('Y-m-d');
+        foreach ($this->revenuePartsKwh->conceptDistributionValuesKwh as $conceptDistributionValuesKwh) {
 
-            $revenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenueId)->where('date_registration', $dateRegistration)->first();
-            if ($revenueValuesKwh) {
-                $totalSumOfParticipationsConcept = RevenueDistributionValuesKwh::where('revenue_id', $revenueId)->where('parts_id', $partsId)->where('revenue_values_id', $revenueValuesKwh->id)->where('status', 'concept')->sum('participations_quantity');
-
-                foreach ($distributionIds as $distributionId) {
-
-                    $totalDeliveredKwhConfirmed = RevenueDistributionValuesKwh::where('revenue_id', $revenueId)->where('distribution_id', $distributionId)->where('revenue_values_id', $revenueValuesKwh->id)->whereIn('status', ['confirmed', 'processed'])->sum('delivered_kwh');
-                    $totalDeliveredValuesKwh = $revenueValuesKwh->delivered_kwh - $totalDeliveredKwhConfirmed;
-
-                    $distributionValuesKwhConcept = RevenueDistributionValuesKwh::where('revenue_id', $revenueId)->where('distribution_id', $distributionId)->where('revenue_values_id', $revenueValuesKwh->id)->where('status', 'concept')->get();
-                    foreach ($distributionValuesKwhConcept as $distributionValueKwhConcept) {
-                        //totaal deliverd * (participations_quantity / $totalSumOfParticipations)
-                        if ($totalSumOfParticipationsConcept != 0) {
-                            $delivered_kwh = round($totalDeliveredValuesKwh * ($distributionValueKwhConcept->participations_quantity / $totalSumOfParticipationsConcept), 6);
-                        } else {
-                            $delivered_kwh = 0;
-                        }
-                        if($distributionValueKwhConcept->delivered_kwh != $delivered_kwh){
-                            $distributionValueKwhConcept->delivered_kwh = $delivered_kwh;
-                            $distributionValueKwhConcept->save();
-                        }
-                    }
-                }
+            // delivered_kwh = (totaal delivered to divide / $totalSumOfParticipationsAndDaysConcept) * quantity_multiply_by_days
+            if ($totalSumOfParticipationsAndDaysConcept != 0) {
+                $delivered_kwh = round(($totalDeliveredKwhToDivide / $totalSumOfParticipationsAndDaysConcept) * $conceptDistributionValuesKwh->quantity_multiply_by_days, 6);
+            } else {
+                $delivered_kwh = 0;
             }
+            $conceptDistributionValuesKwh->delivered_kwh = $delivered_kwh;
+            $conceptDistributionValuesKwh->save();
         }
 
         $distributionPartsKwh = RevenueDistributionPartsKwh::where('revenue_id', $revenueId)->where('parts_id', $partsId)->get();
@@ -128,7 +97,7 @@ class RevenuePartsKwhCalculator
         $this->revenuePartsKwh->save();
 
         $distributionAllPartsKwh = RevenueDistributionPartsKwh::where('revenue_id', $this->revenuePartsKwh->revenue_id)->get();
-        $this->revenuePartsKwh->revenuesKwh->delivered_total_concept = $distributionAllPartsKwh->where('status', 'concept')->sum('delivered_kwh');
+        $this->revenuesKwh->delivered_total_concept = $distributionAllPartsKwh->where('status', 'concept')->sum('delivered_kwh');
         $this->revenuePartsKwh->revenuesKwh->delivered_total_confirmed = $distributionAllPartsKwh->where('status', 'confirmed')->sum('delivered_kwh');
         $this->revenuePartsKwh->revenuesKwh->delivered_total_processed = $distributionAllPartsKwh->where('status', 'processed')->sum('delivered_kwh');
         $this->revenuePartsKwh->revenuesKwh->save();

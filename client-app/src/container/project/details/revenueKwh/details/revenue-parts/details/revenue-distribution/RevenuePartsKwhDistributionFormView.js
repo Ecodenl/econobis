@@ -19,7 +19,7 @@ const RevenuePartsKwhDistributionFormView = props => {
         participationsQuantity,
         kwhReturn,
         status,
-        remark,
+        remarks,
     } = props.participation;
 
     const missingEmail =
@@ -48,6 +48,9 @@ const RevenuePartsKwhDistributionFormView = props => {
         case 'concept':
             statusText = 'Concept';
             break;
+        case 'concept-to-update':
+            statusText = 'Concept (bijwerken noodzakelijk)';
+            break;
         case 'confirmed':
             statusText = 'Definitief';
             break;
@@ -75,20 +78,23 @@ const RevenuePartsKwhDistributionFormView = props => {
                 missingDataClass ? missingDataClass : ''
             }`}
         >
-            {props.showCheckboxList ? (
-                <div className="col-sm-1">
-                    {props.createType !== 'processRevenues' || status == 'confirmed' ? (
+            <div className="col-sm-1">
+                {props.showCheckboxList && (props.createType !== 'processRevenues' || status == 'confirmed') ? (
+                    <>
                         <input
                             type="checkbox"
                             name={id}
                             onChange={props.toggleDistributionCheck}
                             checked={props.distributionPartsKwhIds.includes(id)}
                         />
-                    ) : null}
-                </div>
-            ) : null}
-
-            <div className="col-sm-1">{contactType ? contactType.name : ''}</div>
+                        {/*{contactType ? ' ' + contactType.name.substring(0, 1) : ''}*/}
+                    </>
+                ) : contactType ? (
+                    contactType.name
+                ) : (
+                    ''
+                )}
+            </div>
             <div className="col-sm-2">{contactName}</div>
             <div className="col-sm-1">{participationsQuantity}</div>
             <div className="col-sm-2">{energySupplierName && energySupplierName}</div>
@@ -100,9 +106,9 @@ const RevenuePartsKwhDistributionFormView = props => {
             </div>
             <div className="col-sm-2">{statusText}</div>
             <div className="col-sm-1">
-                {remark ? (
+                {remarks ? (
                     <>
-                        <FaInfoCircle color={'blue'} size={'15px'} data-tip={remark} data-for={`tooltip-remark`} />
+                        <FaInfoCircle color={'blue'} size={'15px'} data-tip={remarks} data-for={`tooltip-remark`} />
                         <ReactTooltip
                             id={`tooltip-remark`}
                             effect="float"

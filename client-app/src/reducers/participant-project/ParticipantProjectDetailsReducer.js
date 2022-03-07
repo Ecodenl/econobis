@@ -58,13 +58,6 @@ export default function(state = {}, action) {
                     participantMutation => participantMutation.id !== action.id
                 ),
             };
-        //todo WM: opschonen
-        //
-        // case 'DELETE_REVENUE_SPLIT_SUCCESS':
-        //     return {
-        //         ...state,
-        //         revenues: state.revenues.filter(revenue => revenue.id !== action.id),
-        //     };
         default:
             return state;
     }

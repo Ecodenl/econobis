@@ -45,7 +45,6 @@ class AddressEnergySupplierObserver
             $addressEnergySupplierController->determineIsCurrentSupplier($addressEnergySupplier);
 
             $participations = $addressEnergySupplier->address->participations;
-
             foreach($participations as $participation) {
                 $distributionsKwh = $participation->revenueDistributionKwh->whereIn('status', ['concept', 'confirmed']);
                 foreach($distributionsKwh as $distributionKwh) {
@@ -63,6 +62,17 @@ class AddressEnergySupplierObserver
                             $distributionPartKwh->save();
                         }
                     }
+                }
+            }
+        }
+
+        if($aesMemberSince!=$aesMemberSinceOriginal) {
+            $participations = $addressEnergySupplier->address->participations;
+            foreach ($participations as $participation) {
+                $projectType = $participation->project->projectType;
+                if ($projectType->code_ref === 'postalcode_link_capital') {
+                    $revenuesKwhHelper = new RevenuesKwhHelper();
+                    $revenuesKwhHelper->splitRevenuePartsKwh($participation, $addressEnergySupplier->member_since, $addressEnergySupplier);
                 }
             }
         }

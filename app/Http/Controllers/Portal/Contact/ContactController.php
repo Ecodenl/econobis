@@ -570,7 +570,7 @@ class ContactController extends ApiController
                 $address->save();
             }
         }
-        // todo WM-es: ean nummers verschoven naar adres. Deze info nog verschuiven naar update adres ?
+
         $noteAddress = '';
         if($addressOld != null && $addressOld->ean_electricity != $address->ean_electricity){
             $noteAddress = $noteAddress . "Oude EAN electriciteit: " . $addressOld->ean_electricity . "\n";

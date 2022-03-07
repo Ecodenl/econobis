@@ -9,7 +9,7 @@ import ViewText from '../../../../../../../../components/form/ViewText';
 const RevenuePartsKwhFormView = props => {
     const { confirmed, status, dateBegin, dateEnd, dateConfirmed, payoutKwh } = props.revenuePartsKwh;
     const { kwhStart, kwhStartHigh, kwhStartLow } = props.revenuePartsKwh.valuesKwhStart;
-    const { kwhEnd, kwhEndHigh, kwhEndLow } = props.revenuePartsKwh.valuesKwhEnd;
+    const { kwhEnd, kwhEndHigh, kwhEndLow, isSimulated } = props.revenuePartsKwh.valuesKwhEnd;
     const kwhTotal = kwhEnd - kwhStart;
 
     const statusText = status => {
@@ -18,6 +18,8 @@ const RevenuePartsKwhFormView = props => {
                 return 'Nieuw';
             case 'concept':
                 return 'Concept';
+            case 'concept-to-update':
+                return 'Concept (bijwerken noodzakelijk)';
             case 'confirmed':
                 return 'Definitief';
             case 'in-progress':
@@ -63,18 +65,27 @@ const RevenuePartsKwhFormView = props => {
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Beginstand kWh hoog'} value={kwhStartHigh && kwhStartHigh} />
-                <ViewText label={'Eindstand kWh hoog'} value={kwhEndHigh && kwhEndHigh} />
+                <ViewText label={'Beginstand kWh hoog'} value={kwhStartHigh && parseFloat(kwhStartHigh).toFixed(0)} />
+                <ViewText
+                    label={<span className={isSimulated ? 'text-danger' : ''}>Eindstand kWh hoog</span>}
+                    value={kwhEndHigh && parseFloat(kwhEndHigh).toFixed(0)}
+                />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Beginstand kWh laag'} value={kwhStartLow && kwhStartLow} />
-                <ViewText label={'Eindstand kWh laag'} value={kwhEndLow && kwhEndLow} />
+                <ViewText label={'Beginstand kWh laag'} value={kwhStartLow && parseFloat(kwhStartLow).toFixed(0)} />
+                <ViewText
+                    label={<span className={isSimulated ? 'text-danger' : ''}>Eindstand kWh laag</span>}
+                    value={kwhEndLow && parseFloat(kwhEndLow).toFixed(0)}
+                />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Beginstand kWh'} value={kwhStart && kwhStart} />
-                <ViewText label={'Eindstand kWh'} value={kwhEnd && kwhEnd} />
+                <ViewText label={'Beginstand kWh'} value={kwhStart && parseFloat(kwhStart).toFixed(0)} />
+                <ViewText
+                    label={<span className={isSimulated ? 'text-danger' : ''}>Eindstand kWh</span>}
+                    value={kwhEnd && parseFloat(kwhEnd).toFixed(0)}
+                />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
@@ -88,7 +99,7 @@ const RevenuePartsKwhFormView = props => {
                         })
                     }
                 />
-                <ViewText label={'Totaal productie kWh'} value={kwhTotal && kwhTotal} />
+                <ViewText label={'Totaal productie kWh'} value={kwhTotal && parseFloat(kwhTotal).toFixed(0)} />
             </div>
         </div>
     );

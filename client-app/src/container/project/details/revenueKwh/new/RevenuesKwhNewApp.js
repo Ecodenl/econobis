@@ -85,9 +85,7 @@ class RevenuesKwhNewApp extends Component {
                       .endOf('year')
                       .format('Y-MM-DD')
                 : '';
-            // todo WM: dit moet nog anders
             valuesKwh.valuesDateBegin = revenuesKwh.dateBegin;
-            // valuesKwh.valuesDateEnd = revenuesKwh.dateEnd;
             valuesKwh.kwhStartHigh = payload.kwhStartHighNextRevenue;
             valuesKwh.kwhStartLow = payload.kwhStartLowNextRevenue;
 

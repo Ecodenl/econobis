@@ -39,6 +39,7 @@ class RevenuesKwhFormEdit extends Component {
                 status: status,
                 dateBegin: dateBegin ? moment(dateBegin).format('Y-MM-DD') : '',
                 dateEnd: dateEnd ? moment(dateEnd).format('Y-MM-DD') : '',
+                originalDateEnd: dateEnd ? moment(dateEnd).format('Y-MM-DD') : '',
                 dateConfirmed: dateConfirmed ? moment(dateConfirmed).format('Y-MM-DD') : '',
                 payoutKwh: payoutKwh ? parseFloat(payoutKwh).toFixed(5) : '',
             },
@@ -62,6 +63,8 @@ class RevenuesKwhFormEdit extends Component {
                 return 'Nieuw';
             case 'concept':
                 return 'Concept';
+            case 'concept-to-update':
+                return 'Concept (bijwerken noodzakelijk)';
             case 'confirmed':
                 return 'Definitief';
             case 'in-progress':
@@ -198,7 +201,15 @@ class RevenuesKwhFormEdit extends Component {
     };
 
     render() {
-        const { confirmed, status, dateBegin, dateEnd, dateConfirmed, payoutKwh } = this.state.revenuesKwh;
+        const {
+            confirmed,
+            status,
+            dateBegin,
+            dateEnd,
+            originalDateEnd,
+            dateConfirmed,
+            payoutKwh,
+        } = this.state.revenuesKwh;
         const project = this.props.revenuesKwh.project;
         const { hasNewPartsKwh } = this.props.revenuesKwh;
 
@@ -234,18 +245,17 @@ class RevenuesKwhFormEdit extends Component {
                         label={'Eind periode'}
                         name={'dateEnd'}
                         value={dateEnd}
-                        // todo WM: voorlopig even niet wijzigbaar.
-                        readOnly={true}
-                        // onChangeAction={this.handleInputChangeDate}
-                        // required={'required'}
-                        // error={this.state.errors.dateEnd}
-                        // errorMessage={this.state.errorMessage.dateEnd}
-                        // disabledBefore={dateBegin}
-                        // disabledAfter={moment(dateBegin)
-                        //     .add(1, 'year')
-                        //     .add(6, 'month')
-                        //     .add(-1, 'day')
-                        //     .format('Y-MM-DD')}
+                        readOnly={confirmed}
+                        onChangeAction={this.handleInputChangeDate}
+                        required={'required'}
+                        error={this.state.errors.dateEnd}
+                        errorMessage={this.state.errorMessage.dateEnd}
+                        disabledBefore={originalDateEnd}
+                        disabledAfter={moment(dateBegin)
+                            .add(1, 'year')
+                            .add(6, 'month')
+                            .add(-1, 'day')
+                            .format('Y-MM-DD')}
                     />
                 </div>
                 <div className="row">

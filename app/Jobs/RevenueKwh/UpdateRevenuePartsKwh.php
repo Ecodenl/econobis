@@ -26,17 +26,17 @@ class UpdateRevenuePartsKwh implements ShouldQueue
 
     private $revenuePartsKwh;
     private $valuesKwhData;
-    private $oldDateEnd;
     private $userId;
     private $projectName;
     private $period;
+    private $alwaysRecalculate;
 
-    public function __construct(RevenuePartsKwh $revenuePartsKwh, $valuesKwhData, $oldDateEnd, $userId)
+    public function __construct(RevenuePartsKwh $revenuePartsKwh, $valuesKwhData, $userId, $alwaysRecalculate)
     {
         $this->revenuePartsKwh = $revenuePartsKwh;
         $this->valuesKwhData = $valuesKwhData;
-        $this->oldDateEnd = $oldDateEnd;
         $this->userId = $userId;
+        $this->alwaysRecalculate = $alwaysRecalculate;
 
         $project = $this->revenuePartsKwh->revenuesKwh->project;
         $this->projectName = $project ? $project->name : '???';
@@ -45,18 +45,6 @@ class UpdateRevenuePartsKwh implements ShouldQueue
         if ($revenuePartsKwh->status === 'concept') {
             $revenuePartsKwh->status = 'in-progress-update';
             $revenuePartsKwh->save();
-        }
-
-        $distributionsPartsKwh = $revenuePartsKwh->distributionPartsKwh;
-        foreach($distributionsPartsKwh as $distributionPartsKwh) {
-            if ($distributionPartsKwh->status === 'concept') {
-                $distributionPartsKwh->status = 'in-progress-update';
-                $distributionPartsKwh->save();
-            }
-            if ($distributionPartsKwh->distributionKwh->status === 'concept') {
-                $distributionPartsKwh->distributionKwh->status = 'in-progress-update';
-                $distributionPartsKwh->distributionKwh->save();
-            }
         }
 
         $jobLog = new JobsLog();
@@ -71,7 +59,7 @@ class UpdateRevenuePartsKwh implements ShouldQueue
         //user voor observer
         Auth::setUser(User::find($this->userId));
 
-        $this->revenuePartsKwh->calculator()->runRevenuePartsKwh($this->valuesKwhData, $this->oldDateEnd);
+        $this->revenuePartsKwh->calculator()->runRevenuePartsKwh($this->valuesKwhData, $this->alwaysRecalculate);
 
         $jobLog = new JobsLog();
         $jobLog->value = "Opbrengst Kwh bijgewerkt voor project " . $this->projectName. " periode " . $this->period . ".";

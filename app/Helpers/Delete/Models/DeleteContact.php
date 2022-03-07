@@ -112,9 +112,13 @@ class DeleteContact implements DeleteInterface
             $this->errorMessage = array_merge($this->errorMessage, $deleteOrganisation->delete());
         }
 
-        foreach ($this->contact->projectRevenueDistributions as $revenue){
-            $deleteRevenue = new DeleteRevenueDistribution($revenue);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteRevenue->delete());
+        foreach ($this->contact->projectRevenueDistributions as $revenueDistribution){
+            $deleteRevenueDistribution = new DeleteRevenueDistribution($revenueDistribution);
+            $this->errorMessage = array_merge($this->errorMessage, $deleteRevenueDistribution->delete());
+        }
+        foreach ($this->contact->revenueDistributionKwh as $revenueDistributionKwh){
+            $deleteRevenueDistributionKwh = new DeleteRevenueDistributionKwh($revenueDistributionKwh);
+            $this->errorMessage = array_merge($this->errorMessage, $deleteRevenueDistributionKwh->delete());
         }
 
         foreach ($this->contact->orders as $order){

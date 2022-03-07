@@ -55,7 +55,7 @@ export const fetchRevenuesKwh = id => {
 
 export const fetchRevenuePartsKwh = id => {
     return {
-        type: 'FETCH_REVENUES_KWH_PARTS',
+        type: 'FETCH_REVENUE_PARTS_KWH',
         id,
     };
 };
@@ -83,7 +83,7 @@ export const energySupplierExcelReportKwh = data => {
 
 export const previewReportPartsKwh = data => {
     return {
-        type: 'REVENUES_KWH_PREVIEW_REPORT_PARTS',
+        type: 'REVENUE_PARTS_KWH_PREVIEW_REPORT',
         data,
     };
 };
@@ -129,7 +129,7 @@ export const clearEnergySupplierExcelReportKwh = () => {
 
 export const clearPreviewReportPartsKwh = () => {
     return {
-        type: 'CLEAR_REVENUES_KWH_PREVIEW_REPORT_PARTS',
+        type: 'CLEAR_REVENUE_PARTS_KWH_PREVIEW_REPORT',
     };
 };
 
@@ -158,7 +158,7 @@ export const clearRevenuesKwh = () => {
 };
 export const clearRevenuePartsKwh = () => {
     return {
-        type: 'CLEAR_REVENUES_KWH_PARTS',
+        type: 'CLEAR_REVENUE_PARTS_KWH',
     };
 };
 
@@ -176,7 +176,7 @@ export const deleteRevenuesKwh = id => {
 };
 export const deleteRevenuePartsKwh = id => {
     return {
-        type: 'DELETE_REVENUES_KWH_PARTS',
+        type: 'DELETE_REVENUE_PARTS_KWH',
         id,
     };
 };

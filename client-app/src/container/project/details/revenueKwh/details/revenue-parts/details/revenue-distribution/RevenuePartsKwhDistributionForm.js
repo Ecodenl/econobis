@@ -17,6 +17,7 @@ import {
     fetchRevenuePartsKwh,
     getDistributionPartsKwh,
     previewReportPartsKwh,
+    energySupplierExcelReportKwh,
 } from '../../../../../../../../actions/project/ProjectDetailsActions';
 import { setError } from '../../../../../../../../actions/general/ErrorActions';
 import moment from 'moment-business-days';
@@ -267,7 +268,7 @@ class RevenuePartsKwhDistributionForm extends Component {
         }
     };
 
-    checkDistributionPartsKwhRevenueInvoices = () => {
+    checkDistributionPartsKwhProcessRevenue = () => {
         let lastYearFinancialOverviewDefinitive = 0;
         if (
             this.props &&
@@ -383,6 +384,13 @@ class RevenuePartsKwhDistributionForm extends Component {
         this.setState({ showErrorModal: false, modalErrorMessage: '' });
     };
 
+    checkDistributionPartsKwhEnergySupplierExcelReport = () => {
+        this.props.energySupplierExcelReportKwh({
+            distributionPartsKwhIds: this.state.distributionPartsKwhIds,
+        });
+        hashHistory.push(`/project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-excel`);
+    };
+
     render() {
         let administrationIds = [];
         this.props.administrations.forEach(function(administration) {
@@ -419,10 +427,10 @@ class RevenuePartsKwhDistributionForm extends Component {
                         ) &&
                         this.state.createType === '' ? (
                             <React.Fragment>
-                                {/*<ButtonText*/}
-                                {/*    buttonText={'Selecteer preview rapportage'}*/}
-                                {/*    onClickAction={() => this.toggleShowCheckboxList('createReport')}*/}
-                                {/*/>*/}
+                                <ButtonText
+                                    buttonText={'Selecteer preview rapportage'}
+                                    onClickAction={() => this.toggleShowCheckboxList('createReport')}
+                                />
                                 {this.props.revenuePartsKwh.status == 'confirmed' ? (
                                     <ButtonText
                                         buttonText={'Selecteer preview opbrengst verdeling'}
@@ -430,65 +438,70 @@ class RevenuePartsKwhDistributionForm extends Component {
                                         buttonClassName={'btn-primary'}
                                     />
                                 ) : null}
+                                <ButtonText
+                                    buttonText={'Selecteer Rapportage Energie leverancier'}
+                                    onClickAction={() => this.toggleShowCheckboxList('createEnergySupplierExcelReport')}
+                                    buttonClassName={'btn-primary'}
+                                />
                             </React.Fragment>
                         ) : null}
                     </div>
                 </PanelHeader>
                 <PanelBody>
-                    {/*{this.state.showCheckboxList && this.state.createType === 'createReport' ? (*/}
-                    {/*    <Panel>*/}
-                    {/*        <PanelBody>*/}
-                    {/*            <div className="row">*/}
-                    {/*                <div className="col-md-12">*/}
-                    {/*                    <ViewText label="Documentgroep" value={'Opbrengst'} />*/}
-                    {/*                    <InputSelect*/}
-                    {/*                        label="Document template"*/}
-                    {/*                        name={'templateId'}*/}
-                    {/*                        value={this.state.templateId}*/}
-                    {/*                        options={this.state.templates}*/}
-                    {/*                        onChangeAction={this.handleInputChange}*/}
-                    {/*                        required={'required'}*/}
-                    {/*                        error={this.state.templateIdError}*/}
-                    {/*                    />*/}
-                    {/*                </div>*/}
-                    {/*                <div className="col-md-12">*/}
-                    {/*                    <InputSelect*/}
-                    {/*                        label="E-mail template"*/}
-                    {/*                        name={'emailTemplateId'}*/}
-                    {/*                        value={this.state.emailTemplateId}*/}
-                    {/*                        options={this.state.emailTemplates}*/}
-                    {/*                        onChangeAction={this.handleEmailTemplateChange}*/}
-                    {/*                        required={'required'}*/}
-                    {/*                        error={this.state.emailTemplateIdError}*/}
-                    {/*                    />*/}
-                    {/*                    <InputText*/}
-                    {/*                        label={'E-mail onderwerp'}*/}
-                    {/*                        name={'subject'}*/}
-                    {/*                        value={this.state.subject}*/}
-                    {/*                        onChangeAction={this.handleSubjectChange}*/}
-                    {/*                    />*/}
-                    {/*                </div>*/}
-                    {/*                <div className="col-md-12">*/}
-                    {/*                    <ViewText label="Geselecteerde deelnemers" value={numberSelectedNumberTotal} />*/}
+                    {this.state.showCheckboxList && this.state.createType === 'createReport' ? (
+                        <Panel>
+                            <PanelBody>
+                                <div className="row">
+                                    <div className="col-md-12">
+                                        <ViewText label="Documentgroep" value={'Opbrengst'} />
+                                        <InputSelect
+                                            label="Document template"
+                                            name={'templateId'}
+                                            value={this.state.templateId}
+                                            options={this.state.templates}
+                                            onChangeAction={this.handleInputChange}
+                                            required={'required'}
+                                            error={this.state.templateIdError}
+                                        />
+                                    </div>
+                                    <div className="col-md-12">
+                                        <InputSelect
+                                            label="E-mail template"
+                                            name={'emailTemplateId'}
+                                            value={this.state.emailTemplateId}
+                                            options={this.state.emailTemplates}
+                                            onChangeAction={this.handleEmailTemplateChange}
+                                            required={'required'}
+                                            error={this.state.emailTemplateIdError}
+                                        />
+                                        <InputText
+                                            label={'E-mail onderwerp'}
+                                            name={'subject'}
+                                            value={this.state.subject}
+                                            onChangeAction={this.handleSubjectChange}
+                                        />
+                                    </div>
+                                    <div className="col-md-12">
+                                        <ViewText label="Geselecteerde deelnemers" value={numberSelectedNumberTotal} />
 
-                    {/*                    <div className="margin-10-top pull-right btn-group" role="group">*/}
-                    {/*                        <ButtonText*/}
-                    {/*                            buttonClassName={'btn-default'}*/}
-                    {/*                            buttonText={'Annuleren'}*/}
-                    {/*                            onClickAction={this.toggleShowCheckboxList}*/}
-                    {/*                        />*/}
-                    {/*                        <ButtonText*/}
-                    {/*                            buttonText={'Preview rapportage'}*/}
-                    {/*                            onClickAction={this.checkDistributionPartsKwhRevenueReport}*/}
-                    {/*                            type={'submit'}*/}
-                    {/*                            value={'Submit'}*/}
-                    {/*                        />*/}
-                    {/*                    </div>*/}
-                    {/*                </div>*/}
-                    {/*            </div>*/}
-                    {/*        </PanelBody>*/}
-                    {/*    </Panel>*/}
-                    {/*) : null}*/}
+                                        <div className="margin-10-top pull-right btn-group" role="group">
+                                            <ButtonText
+                                                buttonClassName={'btn-default'}
+                                                buttonText={'Annuleren'}
+                                                onClickAction={this.toggleShowCheckboxList}
+                                            />
+                                            <ButtonText
+                                                buttonText={'Preview rapportage'}
+                                                onClickAction={this.checkDistributionPartsKwhRevenueReport}
+                                                type={'submit'}
+                                                value={'Submit'}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </PanelBody>
+                        </Panel>
+                    ) : null}
                     {this.state.showCheckboxList && this.state.createType === 'processRevenues' ? (
                         <Panel>
                             <PanelBody>
@@ -512,6 +525,8 @@ class RevenuePartsKwhDistributionForm extends Component {
                                         />
                                     </div>
                                     <div className="col-md-12">
+                                        <ViewText label="Geselecteerde deelnemers" value={numberSelectedNumberTotal} />
+
                                         <div className="margin-10-top pull-right btn-group" role="group">
                                             <ButtonText
                                                 buttonClassName={'btn-default'}
@@ -520,7 +535,32 @@ class RevenuePartsKwhDistributionForm extends Component {
                                             />
                                             <ButtonText
                                                 buttonText={'Opbrengst verdelen'}
-                                                onClickAction={this.checkDistributionPartsKwhRevenueInvoices}
+                                                onClickAction={this.checkDistributionPartsKwhProcessRevenue}
+                                                type={'submit'}
+                                                value={'Submit'}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </PanelBody>
+                        </Panel>
+                    ) : null}
+                    {this.state.showCheckboxList && this.state.createType === 'createEnergySupplierExcelReport' ? (
+                        <Panel>
+                            <PanelBody>
+                                <div className="row">
+                                    <div className="col-md-12">
+                                        <ViewText label="Geselecteerde deelnemers" value={numberSelectedNumberTotal} />
+
+                                        <div className="margin-10-top pull-right btn-group" role="group">
+                                            <ButtonText
+                                                buttonClassName={'btn-default'}
+                                                buttonText={'Annuleren'}
+                                                onClickAction={this.toggleShowCheckboxList}
+                                            />
+                                            <ButtonText
+                                                buttonText={'Rapportage Energie leverancier'}
+                                                onClickAction={this.checkDistributionPartsKwhEnergySupplierExcelReport}
                                                 type={'submit'}
                                                 value={'Submit'}
                                             />
@@ -600,6 +640,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
     previewReportPartsKwh: id => {
         dispatch(previewReportPartsKwh(id));
+    },
+    energySupplierExcelReportKwh: id => {
+        dispatch(energySupplierExcelReportKwh(id));
     },
     fetchRevenuePartsKwh: id => {
         dispatch(fetchRevenuePartsKwh(id));

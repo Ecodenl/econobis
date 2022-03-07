@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Renew2RevenuesKwhTables extends Migration
+class AddIsVisibleToRevenueDistributionPartsKwhTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class Renew2RevenuesKwhTables extends Migration
      */
     public function up()
     {
-        Schema::table('revenue_distribution_values_kwh', function (Blueprint $table) {
-            $table->date('date_registration')->nullable()->after('revenue_values_id');
+        Schema::table('revenue_distribution_parts_kwh', function (Blueprint $table) {
+            $table->boolean('is_visible')->default(false);
         });
     }
 
@@ -25,8 +25,8 @@ class Renew2RevenuesKwhTables extends Migration
      */
     public function down()
     {
-        Schema::table('revenue_distribution_values_kwh', function (Blueprint $table) {
-            $table->dropColumn('date_registration');
+        Schema::table('revenue_distribution_parts_kwh', function (Blueprint $table) {
+            $table->dropColumn('is_visible');
         });
     }
 }

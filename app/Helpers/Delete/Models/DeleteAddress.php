@@ -58,10 +58,10 @@ class DeleteAddress implements DeleteInterface
      */
     public function canDelete()
     {
-        // todo WM-es: wellicht alleen bij PCR projecten?
         if($this->address->participations()->count() > 0){
             array_push($this->errorMessage, "Er zijn nog deelnames.");
         }
+        // todo WM-es: wellicht alleen bij PCR projecten?
         if($this->address->addressEnergySuppliers()->count() > 0){
             array_push($this->errorMessage, "Er zijn nog energie leveranciers.");
         }

@@ -1,11 +1,11 @@
 export default function(state = { distributionPartsKwh: { data: [] } }, action) {
     switch (action.type) {
-        case 'FETCH_REVENUES_KWH_PARTS_SUCCESS':
+        case 'FETCH_REVENUE_PARTS_KWH_SUCCESS':
             return {
                 ...state,
                 ...action.revenuePartsKwh,
             };
-        case 'CLEAR_REVENUES_KWH_PARTS':
+        case 'CLEAR_REVENUE_PARTS_KWH':
             return (state.revenuePartsKwh = []);
         case 'REVENUES_KWH_GET_DISTRIBUTION_PARTS_SUCCESS':
             return {

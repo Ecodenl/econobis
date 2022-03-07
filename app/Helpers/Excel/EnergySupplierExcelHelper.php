@@ -22,13 +22,19 @@ class EnergySupplierExcelHelper
     public function __construct(
         EnergySupplier $energySupplier,
         RevenuesKwh $revenuesKwh,
-        $templateId, $fileName
+        $distributionKwhIds,
+        $templateId,
+        $fileName
     ) {
         $this->energySupplier = $energySupplier;
         $this->revenuesKwh = $revenuesKwh;
         $this->templateId = $templateId;
         $this->fileName = $fileName;
-        $distributionPartsKwh = $revenuesKwh->distributionPartsKwh()->where('es_id', $energySupplier->id)->pluck('distribution_id')->toArray();
+        if($distributionKwhIds){
+            $distributionPartsKwh = $revenuesKwh->distributionPartsKwh()->whereIn('distribution_id', $distributionKwhIds)->where('es_id', $energySupplier->id)->pluck('distribution_id')->toArray();
+        }else{
+            $distributionPartsKwh = $revenuesKwh->distributionPartsKwh()->where('es_id', $energySupplier->id)->pluck('distribution_id')->toArray();
+        }
         $this->distributions = $revenuesKwh->distributionKwh()->whereIn('id', $distributionPartsKwh)->get();
     }
 

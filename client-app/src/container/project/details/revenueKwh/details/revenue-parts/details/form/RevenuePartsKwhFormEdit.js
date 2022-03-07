@@ -85,6 +85,8 @@ class RevenuePartsKwhFormEdit extends Component {
                 return 'Nieuw';
             case 'concept':
                 return 'Concept';
+            case 'concept-to-update':
+                return 'Concept (bijwerken noodzakelijk)';
             case 'confirmed':
                 return 'Definitief';
             case 'in-progress':
@@ -387,17 +389,18 @@ class RevenuePartsKwhFormEdit extends Component {
                         label={'Eind periode'}
                         name={'dateEnd'}
                         value={dateEnd}
-                        readOnly={!isLastRevenuePartsKwh}
-                        onChangeAction={this.handleInputChangeDate}
-                        required={'required'}
-                        error={this.state.errors.dateEnd}
-                        errorMessage={this.state.errorMessage.dateEnd}
-                        disabledBefore={dateBegin}
-                        disabledAfter={moment(dateBeginRevenuesKwh)
-                            .add(1, 'year')
-                            .add(6, 'month')
-                            .add(-1, 'day')
-                            .format('Y-MM-DD')}
+                        readOnly={true}
+                        // readOnly={!isLastRevenuePartsKwh}
+                        // onChangeAction={this.handleInputChangeDate}
+                        // required={'required'}
+                        // error={this.state.errors.dateEnd}
+                        // errorMessage={this.state.errorMessage.dateEnd}
+                        // disabledBefore={dateBegin}
+                        // disabledAfter={moment(dateBeginRevenuesKwh)
+                        //     .add(1, 'year')
+                        //     .add(6, 'month')
+                        //     .add(-1, 'day')
+                        //     .format('Y-MM-DD')}
                     />
                 </div>
                 <div className="row">
@@ -504,7 +507,7 @@ class RevenuePartsKwhFormEdit extends Component {
                             buttonText={'Annuleren'}
                             onClickAction={this.props.switchToView}
                         />
-                        {allowEditStart || allowEditEnd || status == 'concept' ? (
+                        {allowEditStart || allowEditEnd || status == 'concept' || status == 'concept-to-update' ? (
                             <ButtonText
                                 buttonText={'Opslaan'}
                                 onClickAction={this.confirmUpdate}

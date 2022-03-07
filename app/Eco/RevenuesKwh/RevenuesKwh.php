@@ -128,6 +128,11 @@ class RevenuesKwh extends Model
         return $revenueValuesKwhDateEnd ? $revenueValuesKwhDateEnd->kwh_start_low : 0;
     }
 
+    public function getLastPartsKwhAttribute()
+    {
+        return $this->partsKwh()->orderByDesc('date_end')->first();
+    }
+
     public function getHasNewPartsKwh(){
         return $this->newPartsKwh()->count() > 0;
     }

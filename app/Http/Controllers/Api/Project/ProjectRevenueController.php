@@ -941,20 +941,6 @@ class ProjectRevenueController extends ApiController
         return ProjectRevenueDistribution::find($distributionIds[0])->revenue->project->administration_id;
     }
 
-//todo WM: opschonen (verplaatst naar RevenuesKwhController en RevenuePartsKwhController
-//
-//    protected function createParticipantMutationForRevenueKwh(ProjectRevenueDistribution $distribution, $datePayout, $addressEnergySupplier){
-//        $participantMutation = new ParticipantMutation();
-//        $participantMutation->participation_id = $distribution->participation_id;
-//        $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'energyTaxRefund')->where('project_type_id', $distribution->participation->project->project_type_id)->value('id');
-//        $participantMutation->payout_kwh_price = $distribution->payout_kwh;
-//        $participantMutation->payout_kwh = $distribution->delivered_total;
-//        $participantMutation->indication_of_restitution_energy_tax = $distribution->KwhReturn;
-//        $participantMutation->paid_on = $addressEnergySupplier ? $addressEnergySupplier->energySupplier->name : '';
-//        $participantMutation->date_payment = $datePayout;
-//        $participantMutation->save();
-//    }
-
     protected function setMailConfigByDistribution(ProjectRevenueDistribution $distribution)
     {
         // Standaard vanuit primaire mailbox mailen

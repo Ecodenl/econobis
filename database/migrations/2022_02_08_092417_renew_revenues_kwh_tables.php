@@ -116,6 +116,7 @@ class RenewRevenuesKwhTables extends Migration
                     ->references('id')->on('contacts')
                     ->onDelete('restrict');
                 $table->string('status')->nullable();
+                $table->integer('participations_quantity_at_start')->nullable();
                 $table->integer('participations_quantity')->nullable();
                 $table->double('delivered_total_concept', 12, 6)->nullable();
                 $table->double('delivered_total_confirmed', 12, 6)->nullable();
@@ -144,11 +145,8 @@ class RenewRevenuesKwhTables extends Migration
                 $table->date('date_registration')->nullable();
                 $table->boolean('is_simulated')->default(false);
                 $table->double('kwh_start', 12, 6)->nullable();
-                $table->double('kwh_end', 12, 6)->nullable();
                 $table->double('kwh_start_high', 12, 6)->nullable();
-                $table->double('kwh_end_high', 12, 6)->nullable();
                 $table->double('kwh_start_low', 12, 6)->nullable();
-                $table->double('kwh_end_low', 12, 6)->nullable();
                 $table->string('status')->nullable();
                 $table->double('delivered_kwh', 12, 6)->nullable();
 
@@ -159,8 +157,8 @@ class RenewRevenuesKwhTables extends Migration
         {
             Schema::create('revenue_distribution_values_kwh', function (Blueprint $table) {
                 $table->increments('id');
-
-                $table->unsignedInteger('revenue_values_id');
+                $table->date('date_begin')->nullable();
+                $table->date('date_end')->nullable();
                 $table->unsignedInteger('distribution_id');
                 $table->foreign('distribution_id')
                     ->references('id')->on('revenue_distribution_kwh')
@@ -174,7 +172,9 @@ class RenewRevenuesKwhTables extends Migration
                     ->references('id')->on('revenue_parts_kwh')
                     ->onDelete('restrict');
                 $table->string('status')->nullable();
+                $table->integer('days_of_period')->nullable();
                 $table->integer('participations_quantity')->nullable();
+                $table->integer('quantity_multiply_by_days')->nullable();
                 $table->double('delivered_kwh', 12, 6)->nullable();
 
                 $table->timestamps();
@@ -198,6 +198,7 @@ class RenewRevenuesKwhTables extends Migration
                     ->references('id')->on('revenues_kwh')
                     ->onDelete('restrict');
                 $table->string('status')->nullable();
+                $table->integer('participations_quantity_at_start')->nullable();
                 $table->integer('participations_quantity')->nullable();
                 $table->double('delivered_kwh', 12, 6)->nullable();
                 $table->unsignedInteger('es_id')->nullable();
@@ -206,7 +207,7 @@ class RenewRevenuesKwhTables extends Migration
                     ->onDelete('restrict');
                 $table->string('energy_supplier_name')->nullable();
                 $table->string('energy_supplier_number')->nullable();
-
+//                $table->boolean('is_estimated')->default(false);
                 $table->timestamps();
             });
         }

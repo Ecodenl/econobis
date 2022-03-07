@@ -32,6 +32,7 @@ class FullRevenueDistributionKwh extends JsonResource
                 'city' => $this->city,
                 'energySupplierNames' => $this->energy_supplier_names,
                 'status' => $this->status,
+                'participationsQuantityAtStart' => $this->participations_quantity_at_start,
                 'participationsQuantity' => $this->participations_quantity,
                 'deliveredTotalConcept' => $this->delivered_total_concept_string,
                 'deliveredTotalConfirmed' => $this->delivered_total_confirmed_string,

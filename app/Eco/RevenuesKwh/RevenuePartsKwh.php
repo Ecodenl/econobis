@@ -31,6 +31,9 @@ class RevenuePartsKwh extends Model
     public function distributionPartsKwh(){
         return $this->hasMany(RevenueDistributionPartsKwh::class, 'parts_id');
     }
+    public function distributionPartsKwhVisible(){
+        return $this->hasMany(RevenueDistributionPartsKwh::class, 'parts_id')->where('is_visible', true);
+    }
     public function distributionValuesKwh(){
         return $this->hasMany(RevenueDistributionValuesKwh::class, 'parts_id');
     }
@@ -40,9 +43,6 @@ class RevenuePartsKwh extends Model
     public function conceptDistributionValuesKwh(){
         return $this->hasMany(RevenueDistributionValuesKwh::class, 'parts_id')->where('status', 'concept');
     }
-    public function inProgressUpdateDistributionPartsKwh(){
-        return $this->hasMany(RevenueDistributionPartsKwh::class, 'parts_id')->where('status', 'in-progress-update');
-    }
     public function newOrConceptDistributionPartsKwh(){
         return $this->hasMany(RevenueDistributionPartsKwh::class, 'parts_id')->whereIn('status', ['new', 'concept']);
     }
@@ -51,15 +51,23 @@ class RevenuePartsKwh extends Model
     }
     //Appended fields
 
-    public function conceptSimulatedValuesKwh($oldDateEnd){
+    public function conceptSimulatedValuesKwh(){
         $partDateBegin =  Carbon::parse($this->date_begin)->format('Y-m-d');
-        if($oldDateEnd != null){
-            $partDateEnd =  Carbon::parse($oldDateEnd)->format('Y-m-d');
-        } else {
-            $partDateEnd =  Carbon::parse($this->date_end)->format('Y-m-d');
-        }
+        $partDateEnd =  Carbon::parse($this->date_end)->format('Y-m-d');
 
         return RevenueValuesKwh::where('revenue_id', $this->revenue_id)->whereBetween('date_registration', [$partDateBegin, $partDateEnd])->where('is_simulated', true)->where('status', 'concept');
+    }
+    public function conceptValuesKwh(){
+        $partDateBegin =  Carbon::parse($this->date_begin)->format('Y-m-d');
+        $partDateEnd = Carbon::parse($this->date_end)->format('Y-m-d');
+
+        return RevenueValuesKwh::where('revenue_id', $this->revenue_id)->whereBetween('date_registration', [$partDateBegin, $partDateEnd])->where('status', 'concept')->get();
+    }
+    public function confirmedValuesKwh(){
+        $partDateBegin =  Carbon::parse($this->date_begin)->format('Y-m-d');
+        $partDateEnd = Carbon::parse($this->date_end)->format('Y-m-d');
+
+        return RevenueValuesKwh::where('revenue_id', $this->revenue_id)->whereBetween('date_registration', [$partDateBegin, $partDateEnd])->where('status', 'confirmed');
     }
 
     public function getDeliveredTotalConceptStringAttribute()
@@ -80,7 +88,7 @@ class RevenuePartsKwh extends Model
     }
     public function getValuesKwhStartAttribute()
     {
-        $valuesKwhStart = RevenueValuesKwh::where('revenue_id', $this->revenue_id)->where('date_registration', $this->date_begin)->where('is_simulated', false)->first();
+        $valuesKwhStart = RevenueValuesKwh::where('revenue_id', $this->revenue_id)->where('date_registration', $this->date_begin)->first();
         // voorlopig nooit edit start toestaan. Beginstanden 1e part wordt vastgelegd bij 1e keer aanmaak. Bij volgende parts zijn Beginstanden altijd gelijk aan Eindstanden voorgaande peridoe,
         // als die gewijzigd worden (als allowEditEnd mag dus), dan wijzigen deze beginstanden ook meteen mee (is 1 en dezelfde value !)
         if(!$valuesKwhStart){
@@ -92,14 +100,12 @@ class RevenuePartsKwh extends Model
     public function getValuesKwhEndAttribute()
     {
         $dayAfterEnd = Carbon::parse($this->date_end)->addDay()->format('Y-m-d');
-        $valuesKwhEnd = RevenueValuesKwh::where('revenue_id', $this->revenue_id)->where('date_registration', $dayAfterEnd)->where('is_simulated', false)->first();
+        $valuesKwhEnd = RevenueValuesKwh::where('revenue_id', $this->revenue_id)->where('date_registration', $dayAfterEnd)->first();
 
         $kwhEnd = 0;
         $kwhEndHigh = 0;
         $kwhEndLow = 0;
-        $valuesKwhEndEstimated = null;
-        $valuesKwhEndHighEstimated = null;
-        $valuesKwhEndLowEstimated = null;
+        $isSimulated = null;
 
         $allowEditEnd = false;
 
@@ -121,23 +127,15 @@ class RevenuePartsKwh extends Model
             }
         }
 
-        // Nog geen eindstand bekend check of er wel een simulate value is, die als estimated meegeven.
-        if(!$valuesKwhEnd){
-            $valuesKwhEndSimulated = RevenueValuesKwh::where('revenue_id', $this->revenue_id)->where('date_registration', $dayAfterEnd)->where('is_simulated', true)->first();
-            if($valuesKwhEndSimulated){
-                $valuesKwhEndEstimated = $valuesKwhEndSimulated->kwh_start;
-                $valuesKwhEndHighEstimated = $valuesKwhEndSimulated->kwh_start_high;
-                $valuesKwhEndLowEstimated = $valuesKwhEndSimulated->kwh_start_low;
-            }
-        // Anders huidige standen meesturen.
-        } else {
+        if($valuesKwhEnd){
             $kwhEnd = $valuesKwhEnd->kwh_start;
             $kwhEndHigh = $valuesKwhEnd->kwh_start_high;
             $kwhEndLow = $valuesKwhEnd->kwh_start_low;
+            $isSimulated = $valuesKwhEnd->is_simulated;
         }
 
         return ['allowEditEnd' => $allowEditEnd, 'kwhEnd' =>  $kwhEnd, 'kwhEndHigh' => $kwhEndHigh, 'kwhEndLow' => $kwhEndLow,
-            'kwhEndHighEstimated' => $valuesKwhEndEstimated, 'kwhEndHighEstimated' => $valuesKwhEndHighEstimated, 'kwhEndLowEstimated' => $valuesKwhEndLowEstimated];
+            'isSimulated' => $isSimulated];
     }
 
     public function getIsFirstRevenuePartsKwhAttribute()

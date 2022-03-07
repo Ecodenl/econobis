@@ -648,12 +648,12 @@ class conversionProjectRevenuesKwh extends Command
 //            Log::info("Begindatum period: " . $oldProjectRevenueDeliveredKwhPeriod->date_begin);
 //            Log::info("Einddatum period : " . $oldProjectRevenueDeliveredKwhPeriod->date_end);
             if($oldProjectRevenueDeliveredKwhPeriod->date_end > $partDateEnd){
-                Log::error("Einddatum period NA Einddatum nieuwe part !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
+                Log::error("Einddatum period NA Einddatum nieuwe part ! OldProjectRevenueId: " . $oldProjectRevenueDistribution->revenue_id . " | OldProjectRevenueDeliveredKwhPeriodId: " . $oldProjectRevenueDeliveredKwhPeriod->id);
             }
             RevenueDistributionValuesKwh::create(
                 [
                     'date_begin' => $oldProjectRevenueDeliveredKwhPeriod->date_begin,
-                    'date_end' =>  $oldProjectRevenueDeliveredKwhPeriod->date_end,
+                    'date_end' =>  $oldProjectRevenueDeliveredKwhPeriod->date_end > $partDateEnd ? $partDateEnd : $oldProjectRevenueDeliveredKwhPeriod->date_end,
                     'distribution_id' => $distributionPartsKwh->distribution_id,
                     'revenue_id' => $distributionPartsKwh->revenue_id,
                     'parts_id' => $distributionPartsKwh->parts_id,

@@ -8,6 +8,9 @@
 
 namespace App\Eco\Address;
 
+use App\Helpers\Address\AddressHelper;
+use Illuminate\Support\Facades\Auth;
+
 class AddressObserver
 {
 
@@ -29,6 +32,13 @@ class AddressObserver
 
     public function saved(Address $address)
     {
+        if($address->isDirty('type_id') && $address->type_id == 'old') {
+            if ($address->used_in_active_participation) {
+                $addressHelper = new AddressHelper( $address->contact, $address);
+                $addressHelper->addTaskAddressChangeParticipation(Auth::id());
+            }
+        }
+
         if($address->isDirty('primary') && $address->primary == true){
             // Als er een oud primary adres is dan deze niet meer primary maken
             $oldPrimaryAddress = $address->contact->addresses()

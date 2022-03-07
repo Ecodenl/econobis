@@ -108,22 +108,11 @@ class Address extends Model
         return $postalCode;
     }
 
-    // previousAddressEnergySupplierId: only for Electricity ! (type 2 or 3)
-    public function getPreviousAddressEnergySupplierIdAttribute()
+    public function getUsedInActiveParticipationAttribute()
     {
-        if(!$this->primaryAddressEnergySupplier) {
-            return 0;
-        }
-        $addressEnergySuppliers = $this->addressEnergySuppliers
-            ->whereNotNull('member_since')
-            ->whereIn('energy_supply_type_id', [2, 3] )
-            ->where('member_since', '<', $this->primaryAddressEnergySupplier->member_since)
-            ->sortByDesc('member_since');
-        if(count($addressEnergySuppliers) == 0){
-            return 0;
-        }
-        return $addressEnergySuppliers->first()->id;
+        return $this->participations->whereNull('date_terminated')->count() > 0;
     }
+
 
     public function getMemberSinceGasDisabledBeforeAttribute()
     {

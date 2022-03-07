@@ -9,12 +9,15 @@ import ContactDetailsFormAddressView from './ContactDetailsFormAddressView';
 import ContactDetailsFormAddressEdit from './ContactDetailsFormAddressEdit';
 import ContactDetailsFormAddressDelete from './ContactDetailsFormAddressDelete';
 import { isEqual } from 'lodash';
+import Modal from '../../../../components/modal/Modal';
 
 class ContactDetailFormAddressItem extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            showModal: false,
+            modalText: '',
             showActionButtons: false,
             highlightLine: '',
             showEdit: false,
@@ -92,6 +95,14 @@ class ContactDetailFormAddressItem extends Component {
                 [name]: value,
             },
         });
+
+        if (name == 'typeId' && value == 'old' && this.state.address.usedInActiveParticipation) {
+            this.setState({
+                showModal: true,
+                modalText:
+                    'Er is een deelname in een project op dit adres. Deze deelname moet worden beëindigd en er moet een nieuwe deelname op het nieuwe adres worden aangemaakt. Er zal een taak aangemaakt worden.',
+            });
+        }
     };
 
     handleInputChangeDate = (value, name) => {
@@ -102,6 +113,10 @@ class ContactDetailFormAddressItem extends Component {
                 [name]: value,
             },
         });
+    };
+
+    closeModal = () => {
+        this.setState({ showModal: false });
     };
 
     handleSubmit = event => {
@@ -206,6 +221,16 @@ class ContactDetailFormAddressItem extends Component {
                         numberOfAddresses={this.props.numberOfAddresses}
                         {...this.props.address}
                     />
+                )}
+                {this.state.showModal && (
+                    <Modal
+                        title={'Waarschuwing'}
+                        closeModal={this.closeModal}
+                        showConfirmAction={false}
+                        buttonCancelText="Ok"
+                    >
+                        {this.state.modalText}
+                    </Modal>
                 )}
             </div>
         );

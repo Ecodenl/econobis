@@ -12,12 +12,18 @@ const RevenuePartsKwhDistributionFormList = props => {
             ) : (
                 <>
                     <div className="row border header">
-                        {props.revenuePartsKwh.status == 'confirmed' && props.showCheckboxList ? (
-                            <div className="col-sm-1">
+                        {/*{props.revenuePartsKwh.status == 'confirmed' && props.showCheckboxList ? (*/}
+                        {/*    <div className="col-sm-1">*/}
+                        {/*        <input type="checkbox" onChange={props.toggleCheckedAll} checked={props.checkedAll} />*/}
+                        {/*    </div>*/}
+                        {/*) : null}*/}
+                        <div className="col-sm-1">
+                            {props.revenuePartsKwh.status == 'confirmed' && props.showCheckboxList ? (
                                 <input type="checkbox" onChange={props.toggleCheckedAll} checked={props.checkedAll} />
-                            </div>
-                        ) : null}
-                        <div className="col-sm-1">Type</div>
+                            ) : (
+                                'Type'
+                            )}
+                        </div>
                         <div className="col-sm-2">Naam</div>
                         <div className="col-sm-1">Deelnames</div>
                         <div className="col-sm-2">Energieleverancier</div>

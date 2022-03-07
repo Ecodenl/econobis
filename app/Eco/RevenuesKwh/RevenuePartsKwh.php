@@ -51,13 +51,9 @@ class RevenuePartsKwh extends Model
     }
     //Appended fields
 
-    public function conceptSimulatedValuesKwh($oldDateEnd){
+    public function conceptSimulatedValuesKwh(){
         $partDateBegin =  Carbon::parse($this->date_begin)->format('Y-m-d');
-        if($oldDateEnd != null){
-            $partDateEnd =  Carbon::parse($oldDateEnd)->format('Y-m-d');
-        } else {
-            $partDateEnd =  Carbon::parse($this->date_end)->format('Y-m-d');
-        }
+        $partDateEnd =  Carbon::parse($this->date_end)->format('Y-m-d');
 
         return RevenueValuesKwh::where('revenue_id', $this->revenue_id)->whereBetween('date_registration', [$partDateBegin, $partDateEnd])->where('is_simulated', true)->where('status', 'concept');
     }

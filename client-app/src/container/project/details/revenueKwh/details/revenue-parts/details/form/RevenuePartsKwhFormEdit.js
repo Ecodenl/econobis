@@ -389,17 +389,18 @@ class RevenuePartsKwhFormEdit extends Component {
                         label={'Eind periode'}
                         name={'dateEnd'}
                         value={dateEnd}
-                        readOnly={!isLastRevenuePartsKwh}
-                        onChangeAction={this.handleInputChangeDate}
-                        required={'required'}
-                        error={this.state.errors.dateEnd}
-                        errorMessage={this.state.errorMessage.dateEnd}
-                        disabledBefore={dateBegin}
-                        disabledAfter={moment(dateBeginRevenuesKwh)
-                            .add(1, 'year')
-                            .add(6, 'month')
-                            .add(-1, 'day')
-                            .format('Y-MM-DD')}
+                        readOnly={true}
+                        // readOnly={!isLastRevenuePartsKwh}
+                        // onChangeAction={this.handleInputChangeDate}
+                        // required={'required'}
+                        // error={this.state.errors.dateEnd}
+                        // errorMessage={this.state.errorMessage.dateEnd}
+                        // disabledBefore={dateBegin}
+                        // disabledAfter={moment(dateBeginRevenuesKwh)
+                        //     .add(1, 'year')
+                        //     .add(6, 'month')
+                        //     .add(-1, 'day')
+                        //     .format('Y-MM-DD')}
                     />
                 </div>
                 <div className="row">

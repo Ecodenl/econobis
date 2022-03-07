@@ -5,9 +5,9 @@ export function* fetchRevenuePartsKwhSaga({ id }) {
     try {
         const revenuePartsKwh = yield call(RevenuePartsKwhAPI.fetchRevenuePartsKwh, id);
 
-        yield put({ type: 'FETCH_REVENUES_KWH_PARTS_SUCCESS', revenuePartsKwh });
+        yield put({ type: 'FETCH_REVENUE_PARTS_KWH_SUCCESS', revenuePartsKwh });
     } catch (error) {
-        yield put({ type: 'FETCH_REVENUES_KWH_PARTS_ERROR', error });
+        yield put({ type: 'FETCH_REVENUE_PARTS_KWH_ERROR', error });
     }
 }
 

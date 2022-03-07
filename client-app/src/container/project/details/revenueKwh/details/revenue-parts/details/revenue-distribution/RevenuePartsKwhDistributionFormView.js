@@ -78,20 +78,23 @@ const RevenuePartsKwhDistributionFormView = props => {
                 missingDataClass ? missingDataClass : ''
             }`}
         >
-            {props.showCheckboxList ? (
-                <div className="col-sm-1">
-                    {props.createType !== 'processRevenues' || status == 'confirmed' ? (
+            <div className="col-sm-1">
+                {props.showCheckboxList && (props.createType !== 'processRevenues' || status == 'confirmed') ? (
+                    <>
                         <input
                             type="checkbox"
                             name={id}
                             onChange={props.toggleDistributionCheck}
                             checked={props.distributionPartsKwhIds.includes(id)}
                         />
-                    ) : null}
-                </div>
-            ) : null}
-
-            <div className="col-sm-1">{contactType ? contactType.name : ''}</div>
+                        {/*{contactType ? ' ' + contactType.name.substring(0, 1) : ''}*/}
+                    </>
+                ) : contactType ? (
+                    contactType.name
+                ) : (
+                    ''
+                )}
+            </div>
             <div className="col-sm-2">{contactName}</div>
             <div className="col-sm-1">{participationsQuantity}</div>
             <div className="col-sm-2">{energySupplierName && energySupplierName}</div>

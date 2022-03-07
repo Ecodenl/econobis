@@ -124,6 +124,12 @@ class RevenuesKwhController extends ApiController
     public function update(RequestInput $requestInput, RevenuesKwh $revenuesKwh)
     {
         $this->authorize('manage', RevenuesKwh::class);
+
+        $oldConfirmed = $revenuesKwh->confirmed;
+        $oldDateBegin = $revenuesKwh->date_begin;
+        $oldDateEnd = $revenuesKwh->date_end;
+        $oldPayoutKwh = $revenuesKwh->payout_kwh;
+
         $data = $requestInput
             ->string('distributionTypeId')->onEmpty(null)->alias('distribution_type_id')->next()
             ->boolean('confirmed')->next()
@@ -136,17 +142,20 @@ class RevenuesKwhController extends ApiController
 
         $revenuesKwh->fill($data);
 
-        $revenuesKwhConfirmedIsDirty = false;
-        if($revenuesKwh->isDirty('confirmed')){
-            $revenuesKwhConfirmedIsDirty = true;
+        $recalculateDistribution = false;
+        if((boolean) $revenuesKwh->confirmed != (boolean) $oldConfirmed ||
+            Carbon::parse($revenuesKwh->date_begin) != Carbon::parse($oldDateBegin) ||
+            Carbon::parse($revenuesKwh->date_end) != Carbon::parse($oldDateEnd) ||
+            floatval($revenuesKwh->payout_kwh) != floatval($oldPayoutKwh)) {
+            $recalculateDistribution = true;
         }
 
-        $recalculateDistribution = false;
-        if($revenuesKwh->isDirty('date_begin') ||
-            $revenuesKwh->isDirty('date_end') ||
-            $revenuesKwh->isDirty('payout_kwh') ||
-            $revenuesKwhConfirmedIsDirty) {
-            $recalculateDistribution = true;
+        if(floatval($revenuesKwh->payout_kwh) != floatval($oldPayoutKwh)) {
+            // Alle parts met status new of concept ook definitief maken (confirmed)
+            foreach ($revenuesKwh->newOrConceptPartsKwh as $newOrConceptPartsKwh) {
+                $newOrConceptPartsKwh->payout_kwh = $revenuesKwh->payout_kwh;
+                $newOrConceptPartsKwh->save();
+            }
         }
 
         if($revenuesKwh->confirmed) {
@@ -174,14 +183,21 @@ class RevenuesKwhController extends ApiController
                         $distributionPreviousValuesKwh->save();
                     }
                     $conceptRevenuePartKwh->save();
-                    $conceptRevenuePartKwh->calculator()->runRevenuePartsKwh(null, null, null);
+                    $conceptRevenuePartKwh->calculator()->countingsConceptConfirmedProcessed();
                 }
                 $revenuesKwh->status = 'confirmed';
             }
         }
         $revenuesKwh->save();
 
-        if($recalculateDistribution)  $this->saveParticipantsOfDistribution($revenuesKwh);
+        if($recalculateDistribution){
+            if(Carbon::parse($revenuesKwh->date_end)->format('Y-m-d') > Carbon::parse($oldDateEnd)->format('Y-m-d')) {
+                $revenuesKwhHelper = new RevenuesKwhHelper();
+                $revenuesKwhHelper->createNewLastRevenuePartsKwh($revenuesKwh);
+            }
+            $this->saveParticipantsOfDistribution($revenuesKwh);
+
+        }
 
         return FullRevenuesKwh::collection(RevenuesKwh::where('project_id',
             $revenuesKwh->project_id)

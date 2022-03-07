@@ -46,9 +46,9 @@ export function* deleteRevenuesKwhSaga({ id }) {
 export function* deleteRevenuePartsKwhSaga({ id }) {
     try {
         yield call(RevenuePartsKwhAPI.deleteRevenuePartsKwh, id);
-        yield put({ type: 'DELETE_REVENUES_KWH_PARTS_SUCCESS', id });
+        yield put({ type: 'DELETE_REVENUE_PARTS_KWH_SUCCESS', id });
     } catch (error) {
-        yield put({ type: 'DELETE_REVENUES_KWH_PARTS_ERROR', error });
+        yield put({ type: 'DELETE_REVENUE_PARTS_KWH_ERROR', error });
     }
 }
 

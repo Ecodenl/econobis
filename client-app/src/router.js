@@ -427,14 +427,6 @@ const Routes = () => {
                         path="project/opbrengst-deelperiode-kwh/:id/rapportage"
                         component={CreateRevenuePartsKwhReportApp}
                     />
-                    <Route
-                        path="project/opbrengst-deelperiode-kwh/:revenuePartsKwhId/energieleverancier-rapport"
-                        component={EnergySupplierReportNewApp}
-                    />
-                    <Route
-                        path="project/opbrengst-deelperiode-kwh/:revenuePartsKwhId/energieleverancier-excel"
-                        component={EnergySupplierExcelNewApp}
-                    />
                     <Route path="project/preview-rapportage" component={ParticipantReportCreateApp} />
                     <Route path="project/:id" component={ProjectGeneralApp} />
                     <Route path="projecten" component={ProjectsListApp} />

@@ -299,19 +299,21 @@ class RevenuesKwhHelper
             $dateEndForPeriod = clone $dateEndMutation;
             $dateEndForPeriod->endOfDay();
             $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateBegin);
-            RevenueDistributionValuesKwh::updateOrCreate(
-                [
-                    'date_begin' => $dateBegin->format('Y-m-d'),
-                    'date_end' => $dateEndMutation->format('Y-m-d'),
-                    'distribution_id' => $distributionPartsKwh->distribution_id,
-                    'revenue_id' => $distributionPartsKwh->revenue_id,
-                    'parts_id' => $distributionPartsKwh->parts_id,
-                    'status' => 'concept',
-                    'days_of_period' => $daysOfPeriod,
-                    'participations_quantity' => $participationsQuantity,
-                    'quantity_multiply_by_days' => $participationsQuantity * $daysOfPeriod,
-                    'delivered_kwh' => 0
-                ]);
+            if($dateBegin->format('Y-m-d') <= $dateEndMutation->format('Y-m-d')) {
+                RevenueDistributionValuesKwh::updateOrCreate(
+                    [
+                        'date_begin' => $dateBegin->format('Y-m-d'),
+                        'date_end' => $dateEndMutation->format('Y-m-d'),
+                        'distribution_id' => $distributionPartsKwh->distribution_id,
+                        'revenue_id' => $distributionPartsKwh->revenue_id,
+                        'parts_id' => $distributionPartsKwh->parts_id,
+                        'status' => 'concept',
+                        'days_of_period' => $daysOfPeriod,
+                        'participations_quantity' => $participationsQuantity,
+                        'quantity_multiply_by_days' => $participationsQuantity * $daysOfPeriod,
+                        'delivered_kwh' => 0
+                    ]);
+            }
 
             $participationsQuantity += $mutation->quantity;
             $dateBegin = Carbon::parse($mutation->date_entry); // dateBegin = 06-06-2024

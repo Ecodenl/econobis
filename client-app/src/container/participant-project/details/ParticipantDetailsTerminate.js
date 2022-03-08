@@ -49,11 +49,12 @@ const ParticipantDetailsTerminate = ({
                 payoutPercentageTerminated,
             })
                 .then(payload => {
+                    console.log(payload);
                     fetchParticipantProjectDetails(participantProject.id);
                     closeDeleteItemModal();
                     if (projectTypeCodeRef === 'postalcode_link_capital' && redirectRevenueSplit) {
                         hashHistory.push(
-                            `/project/deelnemer/opbrengst/nieuw/${participantProject.projectId}/${participantProject.id}/${revenueKwhSplitCategoryId}`
+                            `/project/opbrengst-kwh/${payload.revenuesId}/deelperiode/${payload.revenuePartsId}`
                         );
                     }
                 })

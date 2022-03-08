@@ -26,6 +26,7 @@ use App\Console\Commands\rebuildPortalCss;
 use App\Console\Commands\recoveryJobsLog;
 use App\Console\Commands\setDaysLastReminderInvoice;
 use App\Console\Commands\setDaysToExpireInvoice;
+use App\Console\Commands\setIsCurrentSupplier;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -44,6 +45,7 @@ class Kernel extends ConsoleKernel
         deleteEmailDefinitive::class,
 //        deleteFloatingAttachmentFiles::class,
         getAllEmail::class,
+        setIsCurrentSupplier::class,
         setDaysLastReminderInvoice::class,
         setDaysToExpireInvoice::class,
         processPaidInvoices::class,
@@ -77,6 +79,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('email:checkMailboxes')->dailyAt('11:58');
         $schedule->command('email:checkMailboxes')->dailyAt('14:58');
         $schedule->command('email:checkMailboxes')->dailyAt('17:58');
+        $schedule->command('addressEnergySupplier:setIsCurrentSupplier')->dailyAt('01:00');
         $schedule->command('invoice:setDaysLastReminder')->dailyAt('01:05');
         $schedule->command('invoice:setDaysToExpire')->dailyAt('02:05');
         $schedule->command('email:deleteEmailDefinitive')->dailyAt('03:05');

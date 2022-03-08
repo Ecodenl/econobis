@@ -14,7 +14,7 @@ class setIsCurrentSupplier extends Command
      *
      * @var string
      */
-    protected $signature = 'contact:setIsCurrentSupplier';
+    protected $signature = 'addressEnergySupplier:setIsCurrentSupplier';
 
     /**
      * The console command description.

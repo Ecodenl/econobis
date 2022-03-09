@@ -149,11 +149,15 @@ class RevenuePartsKwh extends Model
 
     }
 
+    public function getPreviousRevenuePartsKwhAttribute()
+    {
+        $dateRegistrationDayBeforeBegin = Carbon::parse($this->date_begin)->subDay()->format('Y-m-d');
+        return RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_end', $dateRegistrationDayBeforeBegin)->first();
+    }
     public function getNextRevenuePartsKwhAttribute()
     {
         $dateRegistrationDayAfterEnd = Carbon::parse($this->date_end)->addDay()->format('Y-m-d');
         return RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_begin', $dateRegistrationDayAfterEnd)->first();
-
     }
 
     public function calculator()

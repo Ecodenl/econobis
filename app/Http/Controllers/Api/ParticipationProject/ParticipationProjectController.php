@@ -475,7 +475,7 @@ class ParticipationProjectController extends ApiController
 
         $projectType = $participantProject->project->projectType;
         DB::transaction(function () use ($participantProject, $payoutPercentageTerminated, $projectType) {
-            $participantProject->save();
+//            $participantProject->save();
 
             $mutationStatusFinalId = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
 
@@ -498,8 +498,23 @@ class ParticipationProjectController extends ApiController
 
         if($projectType->code_ref === 'postalcode_link_capital') {
             $revenuesKwhHelper = new RevenuesKwhHelper();
-            $revenuesKwhPart = $revenuesKwhHelper->splitRevenuePartsKwh($participantProject, $participantProject->date_terminated, null);
-            return $revenuesKwhPart;
+            $revenuesKwhPart = $revenuesKwhHelper->checkRevenuePartsKwh($participantProject, Carbon::parse($participantProject->date_terminated)->addDay(), null);
+
+            if($revenuesKwhPart){
+                $revenuePartsKwhRedirect = null;
+                if($revenuesKwhPart['success'] && $revenuesKwhPart['newRevenue'] ){
+                    $revenuePartsKwhRedirect = 'project/opbrengst-kwh/nieuw/' . $revenuesKwhPart['projectId']  . '/1';
+                }
+                if($revenuesKwhPart['success'] && !$revenuesKwhPart['newRevenue'] ){
+                    $revenuePartsKwhRedirect = '/project/opbrengst-kwh/' . $revenuesKwhPart['revenuesId']  . '/deelperiode/' . $revenuesKwhPart['revenuePartsId'];
+                }
+                $responseParticipations = ['hasParticipations' => true, 'revenuePartsKwhRedirect' => $revenuePartsKwhRedirect,  'projectsArray' => $revenuesKwhPart];
+            }else{
+                $responseParticipations = ['hasParticipations' => false, null, 'projectsArray' => []];
+            }
+
+            return $responseParticipations;
+//            return $revenuesKwhPart;
         }
 
     }

@@ -16,23 +16,6 @@ use Illuminate\Support\Facades\Log;
 
 class AddressEnergySupplierObserver
 {
-
-    public function creating(AddressEnergySupplier $addressEnergySupplier)
-    {
-        $userId = Auth::id();
-        $addressEnergySupplier->created_by_id = $userId;
-
-        $participations = $addressEnergySupplier->address->participations;
-
-        foreach ($participations as $participation) {
-            $projectType = $participation->project->projectType;
-            if ($projectType->code_ref === 'postalcode_link_capital') {
-                $revenuesKwhHelper = new RevenuesKwhHelper();
-                $revenuesKwhHelper->splitRevenuePartsKwh($participation, $addressEnergySupplier->member_since, $addressEnergySupplier);
-            }
-        }
-    }
-
     public function saved(AddressEnergySupplier $addressEnergySupplier)
     {
         $aesMemberSince = $addressEnergySupplier->member_since ? Carbon::parse($addressEnergySupplier->member_since)->format('Y-m-d') : '1900-01-01';
@@ -62,17 +45,6 @@ class AddressEnergySupplierObserver
                             $distributionPartKwh->save();
                         }
                     }
-                }
-            }
-        }
-
-        if($aesMemberSince!=$aesMemberSinceOriginal) {
-            $participations = $addressEnergySupplier->address->participations;
-            foreach ($participations as $participation) {
-                $projectType = $participation->project->projectType;
-                if ($projectType->code_ref === 'postalcode_link_capital') {
-                    $revenuesKwhHelper = new RevenuesKwhHelper();
-                    $revenuesKwhHelper->splitRevenuePartsKwh($participation, $addressEnergySupplier->member_since, $addressEnergySupplier);
                 }
             }
         }

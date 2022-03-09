@@ -17,6 +17,11 @@ class ContactDetailFormAddressItem extends Component {
 
         this.state = {
             showModal: false,
+            modalTitle: '',
+            modalButtonCancelText: '',
+            modalShowConfirmAction: false,
+            modalConfirmAction: {},
+            modalButtonConfirmText: '',
             modalText: '',
             showActionButtons: false,
             highlightLine: '',
@@ -99,6 +104,11 @@ class ContactDetailFormAddressItem extends Component {
         if (name == 'typeId' && value == 'old' && this.state.address.usedInActiveParticipation) {
             this.setState({
                 showModal: true,
+                modalTitle: 'Waarschuwing',
+                modalButtonCancelText: 'Ok',
+                modalShowConfirmAction: false,
+                modalConfirmAction: {},
+                modalButtonConfirmText: '',
                 modalText:
                     'Er is een deelname in een project op dit adres. Deze deelname moet worden beëindigd en er moet een nieuwe deelname op het nieuwe adres worden aangemaakt. Er zal een taak aangemaakt worden.',
             });
@@ -224,10 +234,12 @@ class ContactDetailFormAddressItem extends Component {
                 )}
                 {this.state.showModal && (
                     <Modal
-                        title={'Waarschuwing'}
+                        title={this.state.modalTitle}
                         closeModal={this.closeModal}
-                        showConfirmAction={false}
-                        buttonCancelText="Ok"
+                        showConfirmAction={this.state.modalShowConfirmAction}
+                        confirmAction={this.state.modalConfirmAction}
+                        buttonCancelText={this.state.modalButtonCancelText}
+                        buttonConfirmText={this.state.modalButtonConfirmText}
                     >
                         {this.state.modalText}
                     </Modal>

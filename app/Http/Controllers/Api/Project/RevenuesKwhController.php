@@ -149,6 +149,10 @@ class RevenuesKwhController extends ApiController
             floatval($revenuesKwh->payout_kwh) != floatval($oldPayoutKwh)) {
             $recalculateDistribution = true;
         }
+        // todo WM: tijdelijk, nog opschonen !!!!!!!!!!!
+//        if(!(boolean) $revenuesKwh->confirmed){
+//            $recalculateDistribution = true;
+//        }
 
         if(floatval($revenuesKwh->payout_kwh) != floatval($oldPayoutKwh)) {
             // Alle parts met status new of concept ook definitief maken (confirmed)
@@ -265,7 +269,6 @@ class RevenuesKwhController extends ApiController
      */
     protected function determineParticipationsQuantity(RevenueDistributionKwh $distributionKwh): array
     {
-        //todo WM: a la determineParticipationsQuantityPart doen ?
         $quantityOfParticipationsAtStart = 0;
         $quantityOfParticipations = 0;
         $dateBeginFromRegister = Carbon::parse($distributionKwh->participation->date_register)->format('Y-m-d');
@@ -274,7 +277,7 @@ class RevenuesKwhController extends ApiController
         $mutations = $distributionKwh->participation->mutationsDefinitiveForKwhPeriod;
 
         foreach ($mutations as $mutation) {
-            if ($mutation->date_entry >= $dateBeginFromRegister && $mutation->date_entry <= $dateBeginRevenuesKwh) {
+            if ($mutation->date_entry >= $dateBeginFromRegister && $mutation->date_entry < $dateBeginRevenuesKwh) {
                 $quantityOfParticipationsAtStart += $mutation->quantity;
             }
             if ($mutation->date_entry >= $dateBeginFromRegister && $mutation->date_entry <= $dateEndRevenuesKwh) {

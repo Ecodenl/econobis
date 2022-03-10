@@ -25,18 +25,14 @@ class UpdateRevenuePartsKwh implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $revenuePartsKwh;
-    private $valuesKwhData;
     private $userId;
     private $projectName;
     private $period;
-    private $alwaysRecalculate;
 
-    public function __construct(RevenuePartsKwh $revenuePartsKwh, $valuesKwhData, $userId, $alwaysRecalculate)
+    public function __construct(RevenuePartsKwh $revenuePartsKwh, $userId)
     {
         $this->revenuePartsKwh = $revenuePartsKwh;
-        $this->valuesKwhData = $valuesKwhData;
         $this->userId = $userId;
-        $this->alwaysRecalculate = $alwaysRecalculate;
 
         $project = $this->revenuePartsKwh->revenuesKwh->project;
         $this->projectName = $project ? $project->name : '???';
@@ -59,7 +55,7 @@ class UpdateRevenuePartsKwh implements ShouldQueue
         //user voor observer
         Auth::setUser(User::find($this->userId));
 
-        $this->revenuePartsKwh->calculator()->runRevenuePartsKwh($this->valuesKwhData, $this->alwaysRecalculate);
+        $this->revenuePartsKwh->calculator()->runRevenuePartsKwh();
 
         $jobLog = new JobsLog();
         $jobLog->value = "Opbrengst Kwh bijgewerkt voor project " . $this->projectName. " periode " . $this->period . ".";

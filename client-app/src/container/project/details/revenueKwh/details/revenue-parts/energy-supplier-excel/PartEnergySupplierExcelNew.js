@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 
 moment.locale('nl');
-import InputSelect from '../../../../../components/form/InputSelect';
-import ButtonText from '../../../../../components/button/ButtonText';
-import PanelFooter from '../../../../../components/panel/PanelFooter';
-import InputText from '../../../../../components/form/InputText';
-import ViewText from '../../../../../components/form/ViewText';
+import InputSelect from '../../../../../../../components/form/InputSelect';
+import ButtonText from '../../../../../../../components/button/ButtonText';
+import PanelFooter from '../../../../../../../components/panel/PanelFooter';
+import InputText from '../../../../../../../components/form/InputText';
+import ViewText from '../../../../../../../components/form/ViewText';
 
-const EnergySupplierExcelNew = props => {
+const PartEnergySupplierExcelNew = props => {
     const { energySupplierId, documentName, distributions } = props.excel;
 
     let energySupplierOptions = [];
@@ -93,4 +93,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(EnergySupplierExcelNew);
+export default connect(mapStateToProps)(PartEnergySupplierExcelNew);

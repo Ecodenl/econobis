@@ -19,12 +19,12 @@ class RevenuePartsKwhCalculator
         $this->revenuesKwh = $revenuePartKwh->revenuesKwh;
     }
 
-    public function runRevenuePartsKwh($valuesKwhData, $alwaysRecalculate)
+    public function runRevenuePartsKwh()
     {
         if($this->revenuePartsKwh->status == 'in-progress-update') {
             Log::info("Start RevenuePartsKwhCalculator|runRevenuePartsKwh voor revenuePartKwh id " . $this->revenuePartsKwh->id . " : " . Carbon::now()->format("m-d-Y H:i:s.u"));
             $revenuesKwhHelper = new RevenuesKwhHelper();
-            $revenuesKwhHelper->createOrUpdateRevenueValuesKwh($valuesKwhData, $this->revenuePartsKwh, $alwaysRecalculate);
+//            $revenuesKwhHelper->createOrUpdateRevenueValuesKwh($valuesKwhData, $this->revenuePartsKwh, $alwaysRecalculate);
             Log::info("RevenuePartsKwhCalculator na createOrUpdateRevenueValuesKwh voor revenuePartKwh id " . $this->revenuePartsKwh->id . " : " . Carbon::now()->format("m-d-Y H:i:s.u"));
             $revenuesKwhHelper->saveParticipantsOfDistributionParts($this->revenuePartsKwh);
             Log::info("RevenuePartsKwhCalculator na saveParticipantsOfDistributionParts " . $this->revenuePartsKwh->id . " : " . Carbon::now()->format("m-d-Y H:i:s.u"));

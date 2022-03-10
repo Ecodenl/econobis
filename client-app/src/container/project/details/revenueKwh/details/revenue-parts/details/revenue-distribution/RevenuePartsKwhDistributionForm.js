@@ -388,7 +388,9 @@ class RevenuePartsKwhDistributionForm extends Component {
         this.props.energySupplierExcelReportKwh({
             distributionPartsKwhIds: this.state.distributionPartsKwhIds,
         });
-        hashHistory.push(`/project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-excel`);
+        hashHistory.push(
+            `/project/opbrengst-deelperiode-kwh/${this.props.revenuePartsKwh.id}/energieleverancier-excel`
+        );
     };
 
     render() {

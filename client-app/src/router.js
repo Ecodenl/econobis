@@ -66,6 +66,11 @@ const EnergySupplierReportNewApp = React.lazy(() =>
 const EnergySupplierExcelNewApp = React.lazy(() =>
     import('./container/project/details/revenueKwh/energy-supplier-excel/EnergySupplierExcelNewApp')
 );
+const PartEnergySupplierExcelNewApp = React.lazy(() =>
+    import(
+        './container/project/details/revenueKwh/details/revenue-parts/energy-supplier-excel/PartEnergySupplierExcelNewApp'
+    )
+);
 const Forgot = React.lazy(() => import('./container/auth/Forgot'));
 const HousingFileDetailsApp = React.lazy(() => import('./container/housing-file/details/HousingFileDetailsApp'));
 const HousingFileNewApp = React.lazy(() => import('./container/housing-file/new/HousingFileNewApp'));
@@ -418,6 +423,10 @@ const Routes = () => {
                     <Route
                         path="project/opbrengst-kwh/:revenueId/energieleverancier-excel"
                         component={EnergySupplierExcelNewApp}
+                    />
+                    <Route
+                        path="project/opbrengst-deelperiode-kwh/:revenuePartId/energieleverancier-excel"
+                        component={PartEnergySupplierExcelNewApp}
                     />
                     <Route
                         path="project/opbrengst-kwh/:revenueId/deelperiode/:id"

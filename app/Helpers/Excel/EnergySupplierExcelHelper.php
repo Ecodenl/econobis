@@ -3,11 +3,9 @@
 namespace App\Helpers\Excel;
 
 use App\Eco\EnergySupplier\EnergySupplier;
-use App\Eco\RevenuesKwh\RevenuesKwh;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
@@ -15,34 +13,55 @@ class EnergySupplierExcelHelper
 {
     private $energySupplier;
     private $revenuesKwh;
+    private $revenuePartsKwh;
     private $distributions;
     private $counter;
     private $fileName;
 
     public function __construct(
         EnergySupplier $energySupplier,
-        RevenuesKwh $revenuesKwh,
+        $revenuesKwh,
         $distributionKwhIds,
+        $revenuePartsKwh,
+        $distributionPartsKwhIds,
         $templateId,
         $fileName
     ) {
         $this->energySupplier = $energySupplier;
         $this->revenuesKwh = $revenuesKwh;
+        $this->revenuePartsKwh = $revenuePartsKwh;
         $this->templateId = $templateId;
         $this->fileName = $fileName;
-        if($distributionKwhIds){
-            $distributionPartsKwh = $revenuesKwh->distributionPartsKwh()->whereIn('distribution_id', $distributionKwhIds)->where('es_id', $energySupplier->id)->pluck('distribution_id')->toArray();
-        }else{
-            $distributionPartsKwh = $revenuesKwh->distributionPartsKwh()->where('es_id', $energySupplier->id)->pluck('distribution_id')->toArray();
+
+        if($revenuesKwh != null){
+            $distributionsIds = [];
+            foreach ($revenuesKwh->partsKwh as $partItem){
+                $distributionsIds = array_merge($partItem->distributionPartsKwh()->where('es_id', $energySupplier->id)->pluck('distribution_id')->toArray(), $distributionsIds);
+            }
+            $distributionsIds = array_unique($distributionsIds);
+
+            if($distributionKwhIds){
+                $this->distributions = $revenuesKwh->distributionKwh()->whereIn('id', $distributionsIds)->whereIn('id', $distributionKwhIds)->get();
+            }else{
+                $this->distributions = $revenuesKwh->distributionKwh()->whereIn('id', $distributionsIds)->get();
+            }
         }
-        $this->distributions = $revenuesKwh->distributionKwh()->whereIn('id', $distributionPartsKwh)->get();
+        if($revenuePartsKwh != null){
+            if($distributionPartsKwhIds){
+                $this->revenuesKwh = $revenuePartsKwh->revenuesKwh;
+                $distributionsIds = $revenuePartsKwh->distributionPartsKwh()->whereIn('id', $distributionPartsKwhIds)->where('es_id', $energySupplier->id)->pluck('distribution_id')->toArray();
+                $this->distributions = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $distributionsIds)->get();
+            }else{
+                $this->distributions = null;
+            }
+        }
     }
 
     public function getExcel()
     {
-
-        if($this->distributions->count() === 0){
-            abort(403, 'Geen verdeling voor deze energiemaatschappij');
+        if($this->distributions == null || $this->distributions->count() === 0){
+            return false;
+//            abort(403, 'Geen verdeling voor deze energiemaatschappij');
         }
 
         switch ($this->templateId) {

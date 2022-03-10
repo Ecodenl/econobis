@@ -149,13 +149,14 @@ class EnergySupplierExcelHelper
                     ? 'EAN: ' . $distribution->ean_electricity
                     : ( $participationAddress && !empty($participationAddress->ean_electricity)
                         ? 'EAN: ' . $participationAddress->ean_electricity : '' );
-                $esNumbers = implode(',', $distribution->distributionPartsKwh()
+                $esNumbersArray = $distribution->distributionPartsKwh()
                     ->where('es_id', $this->energySupplier->id)
                     ->where(function ($query) {
                         $query->whereNotNull('energy_supplier_number')
                             ->orWhere('energy_supplier_number', '!=', '');
                     })
-                    ->pluck('energy_supplier_number')->toArray());
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbers = implode(',', array_unique($esNumbersArray));
                 $deliveredTotalEs = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)->sum('delivered_kwh');
                 $dateBeginYear = Carbon::parse($this->revenuesKwh->date_begin)->year;
                 $deliveredTotalEsEndOfYear = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
@@ -294,7 +295,7 @@ class EnergySupplierExcelHelper
                     });
                 $totalNextYear = $partsNextYearForTotal->get()->sum('delivered_kwh');
 
-                $esNumbersEndOfYear = implode(',', $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
+                $esNumbersEndOfYearArray = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
                     ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
                         $query->whereYear('date_end', $dateBeginYear);
                     })
@@ -302,8 +303,9 @@ class EnergySupplierExcelHelper
                         $query->whereNotNull('energy_supplier_number')
                             ->orWhere('energy_supplier_number', '!=', '');
                     })
-                    ->pluck('energy_supplier_number')->toArray());
-//                $esNamesEndOfYear = implode(',', $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersEndOfYear = implode(',', array_unique($esNumbersEndOfYearArray));
+//                $esNamesEndOfYearArray = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
 //                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
 //                        $query->whereYear('date_end', $dateBeginYear);
 //                    })
@@ -311,7 +313,8 @@ class EnergySupplierExcelHelper
 //                        $query->whereNotNull('energy_supplier_name')
 //                            ->orWhere('energy_supplier_name', '!=', '');
 //                    })
-//                    ->pluck('energy_supplier_name')->toArray());
+//                    ->pluck('energy_supplier_name')->toArray();
+//                $esNamesEndOfYear = implode(',', array_unique($esNamesEndOfYearArray));
                 $deliveredTotalEsEndOfYear = $distribution->distributionPartsKwh()
                     ->join('revenue_parts_kwh', 'revenue_distribution_parts_kwh.parts_id', '=', 'revenue_parts_kwh.id')
                     ->where('revenue_distribution_parts_kwh.es_id', $this->energySupplier->id)
@@ -325,7 +328,7 @@ class EnergySupplierExcelHelper
                     ->first();
                 $participationsQuantityEndOfYear = $partsEndOfYear ? $partsEndOfYear->participations_quantity : 0;
 
-                $esNumbersNextYear = implode(',', $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
+                $esNumbersNextYearArray = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
                     ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
                         $query->whereYear('date_begin', '>', $dateBeginYear);
                     })
@@ -333,8 +336,9 @@ class EnergySupplierExcelHelper
                         $query->whereNotNull('energy_supplier_number')
                             ->orWhere('energy_supplier_number', '!=', '');
                     })
-                    ->pluck('energy_supplier_number')->toArray());
-//                $esNamesNextYear = implode(',', $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersNextYear = implode(',', array_unique($esNumbersNextYearArray));
+//                $esNamesNextYearArray = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
 //                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
 //                        $query->whereYear('date_begin', '>', $dateBeginYear);
 //                    })
@@ -342,7 +346,9 @@ class EnergySupplierExcelHelper
 //                        $query->whereNotNull('energy_supplier_name')
 //                            ->orWhere('energy_supplier_name', '!=', '');
 //                    })
-//                    ->pluck('energy_supplier_name')->toArray());
+//                    ->pluck('energy_supplier_name')->toArray();
+//                $esNamesNextYear = implode(',', array_unique($esNamesNextYearArray));
+
                 $deliveredTotalEsNextYear = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
                     ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
                         $query->whereYear('date_begin', '>', $dateBeginYear);
@@ -490,7 +496,7 @@ class EnergySupplierExcelHelper
 //                    });
 //                $totalNextYear = $partsNextYearForTotal->get()->sum('delivered_kwh');
 
-                $esNumbersEndOfYear = implode(',', $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
+                $esNumbersEndOfYearArray = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
                     ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
                         $query->whereYear('date_end', $dateBeginYear);
                     })
@@ -498,7 +504,8 @@ class EnergySupplierExcelHelper
                         $query->whereNotNull('energy_supplier_number')
                             ->orWhere('energy_supplier_number', '!=', '');
                     })
-                    ->pluck('energy_supplier_number')->toArray());
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersEndOfYear = implode(',', array_unique($esNumbersEndOfYearArray));
                 $deliveredTotalEsEndOfYear = $distribution->distributionPartsKwh()
                     ->join('revenue_parts_kwh', 'revenue_distribution_parts_kwh.parts_id', '=', 'revenue_parts_kwh.id')
                     ->where('revenue_distribution_parts_kwh.es_id', $this->energySupplier->id)
@@ -512,7 +519,7 @@ class EnergySupplierExcelHelper
 //                    ->first();
 //                $participationsQuantityEndOfYear = $partsEndOfYear ? $partsEndOfYear->participations_quantity : 0;
 
-                $esNumbersNextYear = implode(',', $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
+                $esNumbersNextYearArray = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
                     ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
                         $query->whereYear('date_begin', '>', $dateBeginYear);
                     })
@@ -520,7 +527,8 @@ class EnergySupplierExcelHelper
                         $query->whereNotNull('energy_supplier_number')
                             ->orWhere('energy_supplier_number', '!=', '');
                     })
-                    ->pluck('energy_supplier_number')->toArray());
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersNextYear = implode(',', array_unique($esNumbersNextYearArray));
                 $deliveredTotalEsNextYear = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
                     ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
                         $query->whereYear('date_begin', '>', $dateBeginYear);
@@ -661,7 +669,7 @@ class EnergySupplierExcelHelper
 //                    });
 //                $totalNextYear = $partsNextYearForTotal->get()->sum('delivered_kwh');
 
-                $esNumbersEndOfYear = implode(',', $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
+                $esNumbersEndOfYearArray = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
                     ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
                         $query->whereYear('date_end', $dateBeginYear);
                     })
@@ -669,8 +677,9 @@ class EnergySupplierExcelHelper
                         $query->whereNotNull('energy_supplier_number')
                             ->orWhere('energy_supplier_number', '!=', '');
                     })
-                    ->pluck('energy_supplier_number')->toArray());
-                $esNamesEndOfYear = implode(',', $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersEndOfYear = implode(',', array_unique($esNumbersEndOfYearArray));
+                $esNamesEndOfYearArray = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
                     ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
                         $query->whereYear('date_end', $dateBeginYear);
                     })
@@ -678,7 +687,8 @@ class EnergySupplierExcelHelper
                         $query->whereNotNull('energy_supplier_name')
                             ->orWhere('energy_supplier_name', '!=', '');
                     })
-                    ->pluck('energy_supplier_name')->toArray());
+                    ->pluck('energy_supplier_name')->toArray();
+                $esNamesEndOfYear = implode(',', array_unique($esNamesEndOfYearArray));
                 $deliveredTotalEsEndOfYear = $distribution->distributionPartsKwh()
                     ->join('revenue_parts_kwh', 'revenue_distribution_parts_kwh.parts_id', '=', 'revenue_parts_kwh.id')
                     ->where('revenue_distribution_parts_kwh.es_id', $this->energySupplier->id)
@@ -692,7 +702,7 @@ class EnergySupplierExcelHelper
                     ->first();
                 $participationsQuantityEndOfYear = $partsEndOfYear ? $partsEndOfYear->participations_quantity : 0;
 
-                $esNumbersNextYear = implode(',', $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
+                $esNumbersNextYearArray = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
                     ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
                         $query->whereYear('date_begin', '>', $dateBeginYear);
                     })
@@ -700,8 +710,9 @@ class EnergySupplierExcelHelper
                         $query->whereNotNull('energy_supplier_number')
                             ->orWhere('energy_supplier_number', '!=', '');
                     })
-                    ->pluck('energy_supplier_number')->toArray());
-                $esNamesNextYear = implode(',', $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersNextYear = implode(',', array_unique($esNumbersNextYearArray));
+                $esNamesNextYearArray = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
                     ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
                         $query->whereYear('date_begin', '>', $dateBeginYear);
                     })
@@ -709,7 +720,8 @@ class EnergySupplierExcelHelper
                         $query->whereNotNull('energy_supplier_name')
                             ->orWhere('energy_supplier_name', '!=', '');
                     })
-                    ->pluck('energy_supplier_name')->toArray());
+                    ->pluck('energy_supplier_name')->toArray();
+                $esNamesNextYear = implode(',', array_unique($esNamesNextYearArray));
                 $deliveredTotalEsNextYear = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
                     ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
                         $query->whereYear('date_begin', '>', $dateBeginYear);
@@ -878,7 +890,7 @@ class EnergySupplierExcelHelper
 //                    });
 //                $totalNextYear = $partsNextYearForTotal->get()->sum('delivered_kwh');
 
-                $esNumbersEndOfYear = implode(',', $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
+                $esNumbersEndOfYearArray = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
                     ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
                         $query->whereYear('date_end', $dateBeginYear);
                     })
@@ -886,8 +898,9 @@ class EnergySupplierExcelHelper
                         $query->whereNotNull('energy_supplier_number')
                             ->orWhere('energy_supplier_number', '!=', '');
                     })
-                    ->pluck('energy_supplier_number')->toArray());
-                $esNamesEndOfYear = implode(',', $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersEndOfYear = implode(',', array_unique($esNumbersEndOfYearArray));
+                $esNamesEndOfYearArray = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
                     ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
                         $query->whereYear('date_end', $dateBeginYear);
                     })
@@ -895,7 +908,8 @@ class EnergySupplierExcelHelper
                         $query->whereNotNull('energy_supplier_name')
                             ->orWhere('energy_supplier_name', '!=', '');
                     })
-                    ->pluck('energy_supplier_name')->toArray());
+                    ->pluck('energy_supplier_name')->toArray();
+                $esNamesEndOfYear = implode(',', array_unique($esNamesEndOfYearArray));
                 $deliveredTotalEsEndOfYear = $distribution->distributionPartsKwh()
                     ->join('revenue_parts_kwh', 'revenue_distribution_parts_kwh.parts_id', '=', 'revenue_parts_kwh.id')
                     ->where('revenue_distribution_parts_kwh.es_id', $this->energySupplier->id)
@@ -909,7 +923,7 @@ class EnergySupplierExcelHelper
                     ->first();
                 $participationsQuantityEndOfYear = $partsEndOfYear ? $partsEndOfYear->participations_quantity : 0;
 
-                $esNumbersNextYear = implode(',', $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
+                $esNumbersNextYearArray = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
                     ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
                         $query->whereYear('date_begin', '>', $dateBeginYear);
                     })
@@ -917,8 +931,9 @@ class EnergySupplierExcelHelper
                         $query->whereNotNull('energy_supplier_number')
                             ->orWhere('energy_supplier_number', '!=', '');
                     })
-                    ->pluck('energy_supplier_number')->toArray());
-                $esNamesNextYear = implode(',', $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersNextYear = implode(',', array_unique($esNumbersNextYearArray));
+                $esNamesNextYearArray = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
                     ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
                         $query->whereYear('date_begin', '>', $dateBeginYear);
                     })
@@ -926,7 +941,8 @@ class EnergySupplierExcelHelper
                         $query->whereNotNull('energy_supplier_name')
                             ->orWhere('energy_supplier_name', '!=', '');
                     })
-                    ->pluck('energy_supplier_name')->toArray());
+                    ->pluck('energy_supplier_name')->toArray();
+                $esNamesNextYear = implode(',', array_unique($esNamesNextYearArray));
                 $deliveredTotalEsNextYear = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
                     ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
                         $query->whereYear('date_begin', '>', $dateBeginYear);
@@ -1108,7 +1124,7 @@ class EnergySupplierExcelHelper
                     });
                 $totalNextYear = $partsNextYearForTotal->get()->sum('delivered_kwh');
 
-                $esNumbersEndOfYear = implode(',', $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
+                $esNumbersEndOfYearArray = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
                     ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
                         $query->whereYear('date_end', $dateBeginYear);
                     })
@@ -1116,7 +1132,8 @@ class EnergySupplierExcelHelper
                         $query->whereNotNull('energy_supplier_number')
                             ->orWhere('energy_supplier_number', '!=', '');
                     })
-                    ->pluck('energy_supplier_number')->toArray());
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersEndOfYear = implode(',', array_unique($esNumbersEndOfYearArray));
                 $deliveredTotalEsEndOfYear = $distribution->distributionPartsKwh()
                     ->join('revenue_parts_kwh', 'revenue_distribution_parts_kwh.parts_id', '=', 'revenue_parts_kwh.id')
                     ->where('revenue_distribution_parts_kwh.es_id', $this->energySupplier->id)
@@ -1130,7 +1147,7 @@ class EnergySupplierExcelHelper
                     ->first();
                 $participationsQuantityEndOfYear = $partsEndOfYear ? $partsEndOfYear->participations_quantity : 0;
 
-                $esNumbersNextYear = implode(',', $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
+                $esNumbersNextYearArray = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
                     ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
                         $query->whereYear('date_begin', '>', $dateBeginYear);
                     })
@@ -1138,7 +1155,8 @@ class EnergySupplierExcelHelper
                         $query->whereNotNull('energy_supplier_number')
                             ->orWhere('energy_supplier_number', '!=', '');
                     })
-                    ->pluck('energy_supplier_number')->toArray());
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersNextYear = implode(',', array_unique($esNumbersNextYearArray));
                 $deliveredTotalEsNextYear = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
                     ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
                         $query->whereYear('date_begin', '>', $dateBeginYear);
@@ -1424,7 +1442,7 @@ class EnergySupplierExcelHelper
                     });
                 $totalNextYear = $partsNextYearForTotal->get()->sum('delivered_kwh');
 
-                $esNumbersEndOfYear = implode(',', $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
+                $esNumbersEndOfYearArray = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
                     ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
                         $query->whereYear('date_end', $dateBeginYear);
                     })
@@ -1432,7 +1450,8 @@ class EnergySupplierExcelHelper
                         $query->whereNotNull('energy_supplier_number')
                             ->orWhere('energy_supplier_number', '!=', '');
                     })
-                    ->pluck('energy_supplier_number')->toArray());
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersEndOfYear = implode(',', array_unique($esNumbersEndOfYearArray));
                 $deliveredTotalEsEndOfYear = $distribution->distributionPartsKwh()
                     ->join('revenue_parts_kwh', 'revenue_distribution_parts_kwh.parts_id', '=', 'revenue_parts_kwh.id')
                     ->where('revenue_distribution_parts_kwh.es_id', $this->energySupplier->id)
@@ -1446,7 +1465,7 @@ class EnergySupplierExcelHelper
                     ->first();
                 $participationsQuantityEndOfYear = $partsEndOfYear ? $partsEndOfYear->participations_quantity : 0;
 
-                $esNumbersNextYear = implode(',', $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
+                $esNumbersNextYearArray = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
                     ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
                         $query->whereYear('date_begin', '>', $dateBeginYear);
                     })
@@ -1454,7 +1473,8 @@ class EnergySupplierExcelHelper
                         $query->whereNotNull('energy_supplier_number')
                             ->orWhere('energy_supplier_number', '!=', '');
                     })
-                    ->pluck('energy_supplier_number')->toArray());
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersNextYear = implode(',', array_unique($esNumbersNextYearArray));
                 $deliveredTotalEsNextYear = $distribution->distributionPartsKwh()->where('es_id', $this->energySupplier->id)
                     ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
                         $query->whereYear('date_begin', '>', $dateBeginYear);

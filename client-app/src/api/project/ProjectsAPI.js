@@ -56,7 +56,7 @@ export default {
             });
     },
 
-    peekDistributionsKwhPartsByIds: distributionIds => {
+    peekDistributionsKwhPartsById: distributionIds => {
         const requestUrl = `distribution-part-kwh/peek-by-ids`;
 
         return axiosInstance

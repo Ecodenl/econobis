@@ -63,6 +63,21 @@ export default {
         });
     },
 
+    createEnergySupplierExcel: (revenuePartId, energySupplierId, documentName, distributionPartsKwhIds) => {
+        let requestUrl = '';
+        if (energySupplierId == 0) {
+            requestUrl = `${URL_REVENUE_PARTS_KWH}/create-energy-supplier-excel/${revenuePartId}`;
+        } else {
+            requestUrl = `${URL_REVENUE_PARTS_KWH}/create-energy-supplier-excel/${revenuePartId}/${energySupplierId}`;
+        }
+        return axiosInstance
+            .post(requestUrl, { documentName: documentName, distributionPartsKwhIds: distributionPartsKwhIds })
+            .then(response => response.data.data)
+            .catch(error => {
+                console.log(error);
+            });
+    },
+
     downloadPreview: (id, subject, documentTemplateId, emailTemplateId) => {
         const requestUrl = `distribution-part-kwh/${id}/download-preview`;
 

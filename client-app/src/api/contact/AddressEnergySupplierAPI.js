@@ -4,7 +4,7 @@ import axiosInstance from '../default-setup/AxiosInstance';
 const URL_ADDRESS_ENERGY_SUPPLIER = `${URL_API}/api/address-energy-supplier`;
 
 export default {
-    validatePeriodOverlap: addressEnergySupplier => {
+    validateAddressEnergySupplierForm: addressEnergySupplier => {
         let requestUrl = '';
         if (addressEnergySupplier.id) {
             requestUrl = `${URL_ADDRESS_ENERGY_SUPPLIER}-validate/${addressEnergySupplier.id}`;

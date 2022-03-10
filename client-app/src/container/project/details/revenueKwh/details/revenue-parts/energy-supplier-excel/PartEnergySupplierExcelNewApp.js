@@ -2,28 +2,28 @@ import React, { Component } from 'react';
 import validator from 'validator';
 import { hashHistory } from 'react-router';
 
-import EnergySupplierExcelNewToolbar from './EnergySupplierExcelNewToolbar';
-import EnergySupplierExcelNew from './EnergySupplierExcelNew';
+import PartEnergySupplierExcelNewToolbar from './PartEnergySupplierExcelNewToolbar';
+import PartEnergySupplierExcelNew from './PartEnergySupplierExcelNew';
 
-import RevenuesKwhAPI from '../../../../../api/project/RevenuesKwhAPI';
-import Panel from '../../../../../components/panel/Panel';
-import PanelBody from '../../../../../components/panel/PanelBody';
+import Panel from '../../../../../../../components/panel/Panel';
+import PanelBody from '../../../../../../../components/panel/PanelBody';
 import { connect } from 'react-redux';
-import { clearEnergySupplierExcelReportKwh } from '../../../../../actions/project/ProjectDetailsActions';
-import ProjectsAPI from '../../../../../api/project/ProjectsAPI';
+import { clearEnergySupplierExcelReportKwh } from '../../../../../../../actions/project/ProjectDetailsActions';
+import ProjectsAPI from '../../../../../../../api/project/ProjectsAPI';
+import RevenuePartsKwhAPI from '../../../../../../../api/project/RevenuePartsKwhAPI';
 
-class EnergySupplierExcelNewApp extends Component {
+class PartEnergySupplierExcelNewApp extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             excel: {
-                revenueId: props.params.revenueId,
+                revenuePartId: props.params.revenuePartId,
                 energySupplierId: 0,
                 documentName: '',
                 distributions: [],
-                distributionKwhIds: props.reportEnergySupplierExcel
-                    ? props.reportEnergySupplierExcel.distributionKwhIds
+                distributionPartsKwhIds: props.reportEnergySupplierExcel
+                    ? props.reportEnergySupplierExcel.distributionPartsKwhIds
                     : [],
             },
             isLoading: false,
@@ -36,15 +36,17 @@ class EnergySupplierExcelNewApp extends Component {
 
     componentDidMount() {
         this.setState({ isLoading: true });
-        ProjectsAPI.peekDistributionsKwhById(this.props.reportEnergySupplierExcel.distributionKwhIds).then(payload => {
-            this.setState({
-                ...this.state,
-                excel: {
-                    ...this.state.excel,
-                    distributions: payload.data,
-                },
-            });
-        });
+        ProjectsAPI.peekDistributionsKwhPartsById(this.props.reportEnergySupplierExcel.distributionPartsKwhIds).then(
+            payload => {
+                this.setState({
+                    ...this.state,
+                    excel: {
+                        ...this.state.excel,
+                        distributions: payload.data,
+                    },
+                });
+            }
+        );
     }
 
     componentWillUnmount() {
@@ -86,11 +88,11 @@ class EnergySupplierExcelNewApp extends Component {
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-            RevenuesKwhAPI.createEnergySupplierExcel(
-                excel.revenueId,
+            RevenuePartsKwhAPI.createEnergySupplierExcel(
+                excel.revenuePartId,
                 excel.energySupplierId,
                 excel.documentName,
-                excel.distributionKwhIds
+                excel.distributionPartsKwhIds
             ).then(payload => {
                 hashHistory.push(`/documenten`);
             });
@@ -101,14 +103,14 @@ class EnergySupplierExcelNewApp extends Component {
             <div className="row">
                 <div className="col-md-9">
                     <div className="col-md-12">
-                        <EnergySupplierExcelNewToolbar />
+                        <PartEnergySupplierExcelNewToolbar />
                     </div>
 
                     <div className="col-md-12">
                         <Panel>
                             <PanelBody>
                                 <div className="col-md-12">
-                                    <EnergySupplierExcelNew
+                                    <PartEnergySupplierExcelNew
                                         excel={this.state.excel}
                                         errors={this.state.errors}
                                         handleInputChange={this.handleInputChange}
@@ -137,4 +139,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(EnergySupplierExcelNewApp);
+export default connect(mapStateToProps, mapDispatchToProps)(PartEnergySupplierExcelNewApp);

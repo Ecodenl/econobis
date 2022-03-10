@@ -18,6 +18,7 @@ const AddressDetailsFormAddressEnergySupplierDelete = props => {
     const confirmAction = () => {
         props.deleteAddressEnergySupplier(props.id);
         props.closeDeleteItemModal();
+        props.reloadContact();
     };
 
     return (

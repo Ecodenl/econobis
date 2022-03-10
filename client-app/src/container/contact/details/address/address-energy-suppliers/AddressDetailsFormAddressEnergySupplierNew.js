@@ -13,18 +13,23 @@ import PanelBody from '../../../../../components/panel/PanelBody';
 import validator from 'validator';
 import InputDate from '../../../../../components/form/InputDate';
 import Modal from '../../../../../components/modal/Modal';
+import { hashHistory } from 'react-router';
 
 class AddressDetailsFormAddressEnergySupplierNew extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            showWarningEsNumber: true,
+            showConfirmValidatePeriodOverlap: false,
             showMessageDoubleEsNumber: false,
             messageDoubleEsNumber: '',
             messageDoubleEsName: '',
-            doubleEsNumberArray: [],
-            showConfirmValidatePeriodOverlap: false,
+            messageDoubleEsNumberArray: [],
+            showMessageHasParticipations: false,
+            messageHasParticipations: false,
+            messageHasParticipationsRedirect: '',
+            messageHasParticipationsProjectsArray: [],
+
             addressEnergySupplier: {
                 addressId: this.props.addressId,
                 energySupplierId: '',
@@ -70,15 +75,6 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
                 },
                 memberSinceDisabledBefore: memberSinceDisabledBefore,
             });
-        } else if (name == 'esNumber') {
-            this.setState({
-                ...this.state,
-                addressEnergySupplier: {
-                    ...this.state.addressEnergySupplier,
-                    [name]: value,
-                },
-                showWarningEsNumber: true,
-            });
         } else {
             this.setState({
                 ...this.state,
@@ -100,20 +96,18 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
         });
     }
 
-    toggleShowWarningEsNumber() {
+    setMessageDoubleEsNumber(esNumber, energySupplierName, messageDoubleEsNumberArray) {
         this.setState({
             ...this.state,
-            showWarningEsNumber: !this.state.showWarningEsNumber,
+            messageDoubleEsNumber: esNumber,
+            messageDoubleEsName: energySupplierName,
+            messageDoubleEsNumberArray: messageDoubleEsNumberArray,
         });
     }
-
-    setShowMessageDoubleEsNumber(esNumber, energySupplierName, doubleEsNumberArray) {
+    setShowMessageDoubleEsNumber() {
         this.setState({
             ...this.state,
             showMessageDoubleEsNumber: true,
-            messageDoubleEsNumber: esNumber,
-            messageDoubleEsName: energySupplierName,
-            doubleEsNumberArray: doubleEsNumberArray,
         });
     }
     setHideMessageDoubleEsNumber = () => {
@@ -122,8 +116,40 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
             showMessageDoubleEsNumber: false,
             messageDoubleEsNumber: '',
             messageDoubleEsName: '',
-            doubleEsNumberArray: [],
+            messageDoubleEsNumberArray: [],
         });
+        if (this.state.messageHasParticipations) {
+            this.setShowMessageHasParticipations();
+        } else {
+            this.props.toggleShowNew();
+            this.props.fetchContactDetails(this.props.contactId);
+        }
+    };
+
+    setMessageHasParticipations(messageHasParticipations, messageHasParticipationsRedirect, projectsArray) {
+        this.setState({
+            ...this.state,
+            messageHasParticipations: messageHasParticipations,
+            messageHasParticipationsRedirect: messageHasParticipationsRedirect,
+            messageHasParticipationsProjectsArray: projectsArray,
+        });
+    }
+    setShowMessageHasParticipations() {
+        this.setState({
+            ...this.state,
+            showMessageHasParticipations: true,
+        });
+    }
+    setHideMessageHasParticipations = () => {
+        this.setState({
+            ...this.state,
+            showMessageHasParticipations: false,
+            messageHasParticipations: false,
+            messageHasParticipationsRedirect: '',
+            messageHasParticipationsProjectsArray: [],
+        });
+        this.props.toggleShowNew();
+        this.props.fetchContactDetails(this.props.contactId);
     };
 
     setShowConfirmValidatePeriodOverlap(message) {
@@ -143,7 +169,7 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
     confirmActionValidatePeriodOverlap = () => {
         const { addressEnergySupplier } = this.state;
 
-        this.doNewAddressEnergySupplier(addressEnergySupplier, true);
+        this.doNewAddressEnergySupplier(addressEnergySupplier);
 
         this.setState({
             ...this.state,
@@ -200,49 +226,60 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
 
         // If no errors send form
         if (!hasErrors) {
-            // If no errors send form
-            if (!hasErrors) {
-                AddressEnergySupplierAPI.validatePeriodOverlap(addressEnergySupplier)
-                    .then(payload => {
-                        // indien geen overlap dan direct verwerken
-                        if (!payload.data) {
-                            this.doNewAddressEnergySupplier(addressEnergySupplier, false);
-                        } else {
-                            // indien wel overlap dan eerst bevestigen
-                            this.setShowConfirmValidatePeriodOverlap(payload.data);
-                            // this.props.setError(412, payload.data);
-                        }
-                    })
-                    .catch(error => {
-                        hasErrors = true;
-                        if (error.response) {
-                            this.props.setError(error.response.status, error.response.data.message);
-                        } else {
-                            // this.props.setError(error);
-                            console.log(error);
-                        }
-                    });
-            }
+            AddressEnergySupplierAPI.validateAddressEnergySupplierForm(addressEnergySupplier)
+                .then(payload => {
+                    // indien geen overlap dan direct verwerken
+                    if (!payload.data.responseOverlap.hasOverlap) {
+                        this.doNewAddressEnergySupplier(addressEnergySupplier);
+                    } else {
+                        // indien wel overlap dan eerst bevestigen
+                        this.setShowConfirmValidatePeriodOverlap(payload.data.responseOverlap.message);
+                        // this.props.setError(412, payload.data);
+                    }
+                })
+                .catch(error => {
+                    hasErrors = true;
+                    if (error.response) {
+                        this.props.setError(error.response.status, error.response.data.message);
+                    } else {
+                        // this.props.setError(error);
+                        console.log(error);
+                    }
+                });
         }
     };
 
-    doNewAddressEnergySupplier = (addressEnergySupplier, doFetchContact) => {
+    doNewAddressEnergySupplier = addressEnergySupplier => {
         AddressEnergySupplierAPI.newAddressEnergySupplier(addressEnergySupplier)
             .then(payload => {
-                this.props.newStateAddressEnergySupplier(payload.data.data);
-                if (doFetchContact) {
-                    this.props.fetchContactDetails(this.props.contactId);
-                }
+                this.props.newStateAddressEnergySupplier(payload.data.addressEnergySupplier);
+                // todo WM: dit (fetchContactDetails) moet anders, want anders zie je show meldingen bepaald
+                //  in doNewAddressEnergySupplier hieronder niet.
+                // if (doFetchContact) {
+                //     this.props.fetchContactDetails(this.props.contactId);
+                // }
 
-                if (this.state.showWarningEsNumber && payload.data.data.addressEnergySuppliersWithDoubleEsNumber) {
-                    this.setShowMessageDoubleEsNumber(
-                        payload.data.data.esNumber,
-                        payload.data.data.energySupplier.name,
-                        payload.data.data.addressEnergySuppliersWithDoubleEsNumber
+                if (payload.data.responseParticipations.hasParticipations) {
+                    this.setMessageHasParticipations(
+                        payload.data.responseParticipations.hasParticipations,
+                        payload.data.responseParticipations.revenuePartsKwhRedirect,
+                        payload.data.responseParticipations.projectsArray
                     );
-                    this.toggleShowWarningEsNumber();
+                }
+                if (payload.data.addressEnergySupplier.addressEnergySuppliersWithDoubleEsNumber) {
+                    this.setMessageDoubleEsNumber(
+                        payload.data.addressEnergySupplier.esNumber,
+                        payload.data.addressEnergySupplier.energySupplier.name,
+                        payload.data.addressEnergySupplier.addressEnergySuppliersWithDoubleEsNumber
+                    );
+                }
+                if (payload.data.addressEnergySupplier.addressEnergySuppliersWithDoubleEsNumber) {
+                    this.setShowMessageDoubleEsNumber();
+                } else if (payload.data.responseParticipations.hasParticipations) {
+                    this.setShowMessageHasParticipations();
                 } else {
                     this.props.toggleShowNew();
+                    this.props.fetchContactDetails(this.props.contactId);
                 }
             })
             .catch(error => {
@@ -352,6 +389,20 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
                                 value={'Submit'}
                             />
                         </div>
+                        {this.state.showConfirmValidatePeriodOverlap && (
+                            <Modal
+                                buttonConfirmText="Bevestigen"
+                                buttonClassName={'btn-danger'}
+                                closeModal={this.closeValidatePeriodOverlap}
+                                confirmAction={() => this.confirmActionValidatePeriodOverlap()}
+                                title="Bevestig periode afsluiting"
+                            >
+                                {this.state.messageConfirmValidatePeriodOverlap}
+                                <br />
+                                <br />
+                                {'Deze periode afsluiten op dag voor nieuwe Klant sinds datum?'}
+                            </Modal>
+                        )}
                         {this.state.showMessageDoubleEsNumber && (
                             <Modal
                                 closeModal={this.setHideMessageDoubleEsNumber}
@@ -377,18 +428,40 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
                                 </ul>
                             </Modal>
                         )}
-                        {this.state.showConfirmValidatePeriodOverlap && (
+                        {this.state.showMessageHasParticipations && (
                             <Modal
-                                buttonConfirmText="Bevestigen"
-                                buttonClassName={'btn-danger'}
-                                closeModal={this.closeValidatePeriodOverlap}
-                                confirmAction={() => this.confirmActionValidatePeriodOverlap()}
-                                title="Bevestig periode afsluiting"
+                                closeModal={this.setHideMessageHasParticipations}
+                                // modalClassName="modal-lg"
+                                buttonCancelText="Ok"
+                                showConfirmAction={
+                                    this.state.messageHasParticipationsProjectsArray.length == 1 &&
+                                    this.state.messageHasParticipationsRedirect
+                                        ? true
+                                        : false
+                                }
+                                buttonConfirmText={
+                                    this.state.messageHasParticipationsProjectsArray.length == 1 &&
+                                    this.state.messageHasParticipationsRedirect
+                                        ? 'Naar eindafrekening'
+                                        : ''
+                                }
+                                confirmAction={
+                                    this.state.messageHasParticipationsProjectsArray.length == 1 &&
+                                    this.state.messageHasParticipationsRedirect
+                                        ? () => hashHistory.push(`${this.state.messageHasParticipationsRedirect}`)
+                                        : {}
+                                }
                             >
-                                {this.state.messageConfirmValidatePeriodOverlap}
+                                Beeindigde adres/Energyleverancier komt voor bij deelnames in volgende projecten: <br />
+                                <ul>
+                                    {this.state.messageHasParticipationsProjectsArray.map(item => (
+                                        <li>{item.projectMessage}</li>
+                                    ))}
+                                </ul>
                                 <br />
-                                <br />
-                                {'Deze periode afsluiten op dag voor nieuwe Klant sinds datum?'}
+                                {this.state.messageHasParticipationsProjectsArray.length == 1
+                                    ? 'Hiervoor kan nu eindafrekening voor teruggave EB gemaakt worden'
+                                    : 'Hiervoor kunnen nu eindafrekeningen voor teruggave EB gemaakt worden'}
                             </Modal>
                         )}
                     </PanelBody>

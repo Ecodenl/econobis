@@ -473,10 +473,10 @@ class ParticipationProjectController extends ApiController
         $participantProject->date_terminated = $data['date_terminated'];
         $payoutPercentageTerminated = $data['payout_percentage_terminated'];
 
-        DB::transaction(function () use ($participantProject, $payoutPercentageTerminated) {
-            $participantProject->save();
+        $projectType = $participantProject->project->projectType;
+        DB::transaction(function () use ($participantProject, $payoutPercentageTerminated, $projectType) {
+//            $participantProject->save();
 
-            $projectType = $participantProject->project->projectType;
             $mutationStatusFinalId = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
 
             // If Payout percentage is filled then make a result mutation (not when capital or postalcode_link_capital)
@@ -494,48 +494,29 @@ class ParticipationProjectController extends ApiController
                 // Remove distributions on active revenue(s)
                 $participantProject->projectRevenueDistributions()->where('status', 'concept')->forceDelete();
             }
-            if($projectType->code_ref === 'postalcode_link_capital') {
-                $revenuesKwhHelper = new RevenuesKwhHelper();
-                $revenuesKwhHelper->splitRevenuePartsKwh($participantProject, $participantProject->date_terminated, null);
+        });
+
+        if($projectType->code_ref === 'postalcode_link_capital') {
+            $revenuesKwhHelper = new RevenuesKwhHelper();
+            $revenuesKwhPart = $revenuesKwhHelper->checkRevenuePartsKwh($participantProject, Carbon::parse($participantProject->date_terminated)->addDay(), null);
+
+            if($revenuesKwhPart){
+                $revenuePartsKwhRedirect = null;
+                if($revenuesKwhPart['success'] && $revenuesKwhPart['newRevenue'] ){
+                    $revenuePartsKwhRedirect = 'project/opbrengst-kwh/nieuw/' . $revenuesKwhPart['projectId']  . '/1';
+                }
+                if($revenuesKwhPart['success'] && !$revenuesKwhPart['newRevenue'] ){
+                    $revenuePartsKwhRedirect = '/project/opbrengst-kwh/' . $revenuesKwhPart['revenuesId']  . '/deelperiode/' . $revenuesKwhPart['revenuePartsId'];
+                }
+                $responseParticipations = ['hasParticipations' => true, 'revenuePartsKwhRedirect' => $revenuePartsKwhRedirect,  'projectsArray' => $revenuesKwhPart];
+            }else{
+                $responseParticipations = ['hasParticipations' => false, null, 'projectsArray' => []];
             }
 
-//
-//            if($participantProject->address && $participantProject->address->primaryAddressEnergySupplier){
-//                $primaryAddressEnergySupplierOld = $participantProject->address->primaryAddressEnergySupplier;
-//            }else if ($participantProject->contact && $participantProject->contact->primaryAddress && $participantProject->contact->primaryAddress->primaryAddressEnergySupplier) {
-//                $primaryAddressEnergySupplierOld = $participantProject->contact->primaryAddress->primaryAddressEnergySupplier;
-//            }else{
-//                $primaryAddressEnergySupplierOld = null;
-//            }
-//
-//            if ($primaryAddressEnergySupplierOld){
-//
-//                $dateTerminated = $participantProject->date_terminated->format('Y-m-d');
-//                $memberSinceOld = $primaryAddressEnergySupplierOld->member_since;
-//                if($primaryAddressEnergySupplierOld->end_date){
-//                    $endDateOld = $primaryAddressEnergySupplierOld->end_date;
-//                } else {
-//                    $endDateOld = Carbon::parse('9999-12-31')->format('Y-m-d');
-//                }
-//
-//                if( $dateTerminated > $memberSinceOld
-//                    && $dateTerminated < $endDateOld) {
-//
-//                    $primaryAddressEnergySupplierNew = $primaryAddressEnergySupplierOld->replicate();
-//                    $memberSinceNew = clone $participantProject->date_terminated;
-//                    $primaryAddressEnergySupplierNew->member_since = $memberSinceNew->addDay(1)->format('Y-m-d');
-//                    Log::info($primaryAddressEnergySupplierNew);
-//
-//                    $addressEnergySupplierController = new AddressEnergySupplierController();
-//                    if ($addressEnergySupplierController->validateAddressEnergySupplier($primaryAddressEnergySupplierNew, false)) {
-//                        $addressEnergySupplierController->setEndDateAddressEnergySupplier($primaryAddressEnergySupplierNew);
-//                    }
-//                    $primaryAddressEnergySupplierNew->save();
-//                }
-//
-//            }
-//
-        });
+            return $responseParticipations;
+//            return $revenuesKwhPart;
+        }
+
     }
 
     public function undoTerminate(ParticipantProject $participantProject, RequestInput $requestInput)

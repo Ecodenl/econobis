@@ -5,8 +5,10 @@ namespace App\Helpers\Address;
 use App\Eco\Address\Address;
 use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
-use App\Eco\Contact\ContactType;
 use App\Eco\Project\Project;
+use App\Eco\Task\Task;
+use App\Eco\Task\TaskType;
+use Carbon\Carbon;
 
 class AddressHelper
 {
@@ -200,4 +202,30 @@ class AddressHelper
         }
         return $messages;
     }
+
+    public function addTaskAddressChangeParticipation($user)
+    {
+        $taskType = TaskType::where('name', 'Adres wijziging deelnemer')->first();
+        $note = $taskType->name . ".\n\n";
+        $note .= "Adres wijziging voor contact " . $this->contact->full_name . " (" . $this->contact->number . ").\n";
+        $note .= "Adres op type \"Oud\" gezet: " . $this->address->StreetPostalCodeCity . ".\n";
+        $note .= "Er is een deelname in een project op dit adres.\n";
+        $note .= "Deze deelname moet worden beëindigd en er moet een nieuwe deelname op het nieuwe adres worden aangemaakt.\n";
+        Task::create([
+            'note' => $note,
+            'type_id' => $taskType->id,
+            'contact_id' => $this->contact->id,
+            'contact_group_id' => null,
+            'finished' => false,
+            'date_planned_start' => (new Carbon())->startOfDay(),
+            'date_planned_finish' => null,
+            'responsible_user_id' => $user,
+            'responsible_team_id' => null,
+            'intake_id' => null,
+            'project_id' => null,
+            'participation_project_id' => null,
+            'order_id' => null,
+        ]);
+    }
+
 }

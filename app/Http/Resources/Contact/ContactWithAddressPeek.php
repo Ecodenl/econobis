@@ -20,8 +20,7 @@ class ContactWithAddressPeek extends JsonResource
             'id' => $this->id,
             'fullName' => $this->full_name . ' (' . $this->number . ')',
             'primaryAddressId' => $this->primary_address_id,
-            'addresses' => AddressForContactPeek::collection($this->whenLoaded('addresses')),
-
+            'addresses' => AddressForContactPeek::collection($this->whenLoaded('addressesWithoutOld')),
         ];
     }
 }

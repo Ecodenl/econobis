@@ -3,15 +3,16 @@
 namespace App\Http\Controllers\Api\AddressEnergySupplier;
 
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
+use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\AddressEnergySupplier\FullAddressEnergySupplier;
 use Carbon\Carbon;
-//use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Log;
 
 class AddressEnergySupplierController extends ApiController
 {
-    public function validatePeriodOverlapNew(RequestInput $requestInput)
+    public function validateAddressEnergySupplierFormNew(RequestInput $requestInput)
     {
         $data = $requestInput
             ->integer('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
@@ -28,10 +29,16 @@ class AddressEnergySupplierController extends ApiController
         $addressEnergySupplier = new AddressEnergySupplier();
         $addressEnergySupplier->fill($data);
 
-        return $this->validateAddressEnergySupplier($addressEnergySupplier, false);
+        $hasOverlapPeriode = $this->validateOverlapPeriode($addressEnergySupplier, false);
+        if($hasOverlapPeriode){
+            $responseOverlap = ['hasOverlap' => true, 'message' => $hasOverlapPeriode];
+        }else{
+            $responseOverlap = ['hasOverlap' => false, 'message' => ''];
+        }
+        return ['responseOverlap' => $responseOverlap];
     }
 
-    public function validatePeriodOverlap(RequestInput $requestInput, AddressEnergySupplier $addressEnergySupplier)
+    public function validateAddressEnergySupplierForm(RequestInput $requestInput, AddressEnergySupplier $addressEnergySupplier)
     {
         $data = $requestInput
             ->integer('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
@@ -47,7 +54,14 @@ class AddressEnergySupplierController extends ApiController
 
         $addressEnergySupplier->fill($data);
 
-        return $this->validateAddressEnergySupplier($addressEnergySupplier, false);
+        $hasOverlapPeriode = $this->validateOverlapPeriode($addressEnergySupplier, false);
+        if($hasOverlapPeriode){
+            $responseOverlap = ['hasOverlap' => true, 'message' => $hasOverlapPeriode];
+        }else{
+            $responseOverlap = ['hasOverlap' => false, 'message' => ''];
+        }
+
+        return ['responseOverlap' => $responseOverlap];
     }
 
     public function store(RequestInput $requestInput)
@@ -68,12 +82,24 @@ class AddressEnergySupplierController extends ApiController
 
         $addressEnergySupplier->fill($data);
 
-        if ($this->validateAddressEnergySupplier($addressEnergySupplier, false)) {
+        if ($this->validateOverlapPeriode($addressEnergySupplier, false)) {
             $this->setEndDateAddressEnergySupplier($addressEnergySupplier);
         }
 
         $addressEnergySupplier->save();
 
+        $revenuePartsKwhArray = [];
+        $participations = $addressEnergySupplier->address->participations;
+        foreach ($participations as $participation) {
+            $projectType = $participation->project->projectType;
+            if ($projectType->code_ref === 'postalcode_link_capital') {
+                $revenuesKwhHelper = new RevenuesKwhHelper();
+                $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkRevenuePartsKwh($participation, $addressEnergySupplier->member_since, $addressEnergySupplier);
+                if($splitRevenuePartsKwhResponse){
+                    $revenuePartsKwhArray [] = $splitRevenuePartsKwhResponse;
+                }
+            }
+        }
         // LETOP: Laravel 7 uses a new date serialization format when using the toArray or toJson method on Eloquent models.
         // To format dates for serialization, the framework now uses Carbon's toJSON method, which produces an ISO-8601 compatible
         // date including timezone information and fractional seconds. In addition, this change provides better support and
@@ -84,12 +110,28 @@ class AddressEnergySupplierController extends ApiController
         // We halen hierom voor teruggeven AddressEnergySupplier even opnieuw op, anders geven we verkeerde datum terug (nl. 2019-11-29 in
         // bovenstaand voorbeeld).
         $addressEnergySupplier = AddressEnergySupplier::find($addressEnergySupplier->id);
-
-        // determine is current_supplier (verplaatst naar AddressEnergySupplierObserver, als member_since wijzigt).
-//        $this->determineIsCurrentSupplier($addressEnergySupplier);
-
         $addressEnergySupplier->load('energySupplier', 'energySupplyStatus', 'createdBy', 'address', 'energySupplyType');
-        return FullAddressEnergySupplier::make($addressEnergySupplier);
+
+        if(count($revenuePartsKwhArray) > 0){
+            $projectsArray = [];
+            foreach ($revenuePartsKwhArray as $revenuePartsKwhItem){
+                $projectsArray[] = ['projectMessage' => $revenuePartsKwhItem['projectMessage']];
+            }
+            $revenuePartsKwhRedirect = null;
+            if(count($revenuePartsKwhArray) == 1){
+                if($revenuePartsKwhArray[0]['success'] && $revenuePartsKwhArray[0]['newRevenue'] ){
+                    $revenuePartsKwhRedirect = 'project/opbrengst-kwh/nieuw/' . $revenuePartsKwhArray[0]['projectId']  . '/1';
+                }
+                if($revenuePartsKwhArray[0]['success'] && !$revenuePartsKwhArray[0]['newRevenue'] ){
+                    $revenuePartsKwhRedirect = '/project/opbrengst-kwh/' . $revenuePartsKwhArray[0]['revenuesId']  . '/deelperiode/' . $revenuePartsKwhArray[0]['revenuePartsId'];
+                }
+            }
+
+            $responseParticipations = ['hasParticipations' => true, 'revenuePartsKwhRedirect' => $revenuePartsKwhRedirect,  'projectsArray' => $projectsArray];
+        }else{
+            $responseParticipations = ['hasParticipations' => false, null, 'projectsArray' => []];
+        }
+        return ['addressEnergySupplier' => FullAddressEnergySupplier::make($addressEnergySupplier), 'responseParticipations' => $responseParticipations];
     }
 
     public function update(RequestInput $requestInput, AddressEnergySupplier $addressEnergySupplier)
@@ -106,11 +148,29 @@ class AddressEnergySupplierController extends ApiController
 
         $addressEnergySupplier->fill($data);
 
-        if ($this->validateAddressEnergySupplier($addressEnergySupplier, false)) {
+        if ($this->validateOverlapPeriode($addressEnergySupplier, false)) {
             $this->setEndDateAddressEnergySupplier($addressEnergySupplier);
         }
 
+        $aesMemberSince = $addressEnergySupplier->member_since ? Carbon::parse($addressEnergySupplier->member_since)->format('Y-m-d') : '1900-01-01';
+        $aesMemberSinceOriginal = $addressEnergySupplier->getOriginal('member_since') ? Carbon::parse($addressEnergySupplier->getOriginal('member_since'))->format('Y-m-d') : '1900-01-01';
+
         $addressEnergySupplier->save();
+
+        $revenuePartsKwhArray = [];
+        if($aesMemberSince!=$aesMemberSinceOriginal) {
+            $participations = $addressEnergySupplier->address->participations;
+            foreach ($participations as $participation) {
+                $projectType = $participation->project->projectType;
+                if ($projectType->code_ref === 'postalcode_link_capital') {
+                    $revenuesKwhHelper = new RevenuesKwhHelper();
+                    $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkRevenuePartsKwh($participation, $addressEnergySupplier->member_since, $addressEnergySupplier);
+                    if($splitRevenuePartsKwhResponse){
+                        $revenuePartsKwhArray [] = $splitRevenuePartsKwhResponse;
+                    }
+                }
+            }
+        }
 
         // LETOP: Laravel 7 uses a new date serialization format when using the toArray or toJson method on Eloquent models.
         // To format dates for serialization, the framework now uses Carbon's toJSON method, which produces an ISO-8601 compatible
@@ -122,12 +182,28 @@ class AddressEnergySupplierController extends ApiController
         // We halen hierom voor teruggeven AddressEnergySupplier even opnieuw op, anders geven we verkeerde datum terug (nl. 2019-11-29 in
         // bovenstaand voorbeeld).
         $addressEnergySupplier = AddressEnergySupplier::find($addressEnergySupplier->id);
-
-        // determine is current_supplier (verplaatst naar AddressEnergySupplierObserver, als member_since wijzigt)
-//        $this->determineIsCurrentSupplier($addressEnergySupplier);
-
         $addressEnergySupplier->load('energySupplier', 'energySupplyStatus', 'createdBy', 'address', 'energySupplyType');
-        return FullAddressEnergySupplier::make($addressEnergySupplier);
+
+        if(count($revenuePartsKwhArray) > 0){
+            $projectsArray = [];
+            foreach ($revenuePartsKwhArray as $revenuePartsKwhItem){
+                $projectsArray[] = ['projectMessage' => $revenuePartsKwhItem['projectMessage']];
+            }
+            $revenuePartsKwhRedirect = null;
+            if(count($revenuePartsKwhArray) == 1){
+                if($revenuePartsKwhArray[0]['success'] && $revenuePartsKwhArray[0]['newRevenue'] ){
+                    $revenuePartsKwhRedirect = 'project/opbrengst-kwh/nieuw/' . $revenuePartsKwhArray[0]['projectId']  . '/1';
+                }
+                if($revenuePartsKwhArray[0]['success'] && !$revenuePartsKwhArray[0]['newRevenue'] ){
+                    $revenuePartsKwhRedirect = '/project/opbrengst-kwh/' . $revenuePartsKwhArray[0]['revenuesId']  . '/deelperiode/' . $revenuePartsKwhArray[0]['revenuePartsId'];
+                }
+            }
+
+            $responseParticipations = ['hasParticipations' => true, 'revenuePartsKwhRedirect' => $revenuePartsKwhRedirect,  'projectsArray' => $projectsArray];
+        }else{
+            $responseParticipations = ['hasParticipations' => false, null, 'projectsArray' => []];
+        }
+        return ['addressEnergySupplier' => FullAddressEnergySupplier::make($addressEnergySupplier), 'responseParticipations' => $responseParticipations];
     }
 
     public function destroy(AddressEnergySupplier $addressEnergySupplier)
@@ -140,7 +216,16 @@ class AddressEnergySupplierController extends ApiController
      */
     public function validateAddressEnergySupplier(AddressEnergySupplier $addressEnergySupplier, $withAbort = true)
     {
-        $otherAddressEnergySuppliers = $this->getOtherAddressEnergySuppliers($addressEnergySupplier);
+        return $this->validateOverlapPeriode($addressEnergySupplier, $withAbort);
+    }
+
+    /**
+     * @param AddressEnergySupplier $addressEnergySupplier
+     * @param boolean $withAbort
+     */
+    protected function validateOverlapPeriode(AddressEnergySupplier $addressEnergySupplier, $withAbort = true)
+    {
+        $otherAddressEnergySuppliers = $this->getOtherAddressEnergySuppliersWithOverlap($addressEnergySupplier);
 
         if ($otherAddressEnergySuppliers->exists()) {
             if($withAbort){
@@ -159,7 +244,7 @@ class AddressEnergySupplierController extends ApiController
     {
         $newEndDate = Carbon::parse($addressEnergySupplier->member_since)->subDay();
 
-        $otherAddressEnergySuppliers = $this->getOtherAddressEnergySuppliers($addressEnergySupplier);
+        $otherAddressEnergySuppliers = $this->getOtherAddressEnergySuppliersWithOverlap($addressEnergySupplier);
         foreach ($otherAddressEnergySuppliers->get() as $otherAddressEnergySupplier) {
             if($otherAddressEnergySupplier->member_since <= $newEndDate){
                 $otherAddressEnergySupplier->end_date = $newEndDate;
@@ -172,7 +257,7 @@ class AddressEnergySupplierController extends ApiController
      * @param AddressEnergySupplier $addressEnergySupplier
      * @return mixed
      */
-    private function getOtherAddressEnergySuppliers(AddressEnergySupplier $addressEnergySupplier)
+    private function getOtherAddressEnergySuppliersWithOverlap(AddressEnergySupplier $addressEnergySupplier)
     {
         $currentId = $addressEnergySupplier ? $addressEnergySupplier->id : 0;
         $otherAddressEnergySuppliers = AddressEnergySupplier::where('address_id', '=', $addressEnergySupplier->address_id)

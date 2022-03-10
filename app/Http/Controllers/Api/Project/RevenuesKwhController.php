@@ -408,7 +408,7 @@ class RevenuesKwhController extends ApiController
         if ($templateId) {
             set_time_limit(0);
             $excelHelper = new EnergySupplierExcelHelper($energySupplier,
-                $revenuesKwh, $distributionKwhIds, $templateId, $fileName);
+                $revenuesKwh, $distributionKwhIds, null, null, $templateId, $fileName);
             $excel = $excelHelper->getExcel();
         }else{
             abort(412, 'Geen geldige excel template gevonden.');

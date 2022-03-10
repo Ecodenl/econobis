@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Api\Project;
 
+use App\Eco\Document\Document;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\ParticipantMutation\ParticipantMutation;
@@ -12,9 +14,12 @@ use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\RevenuesKwh\RevenuePartsKwh;
 use App\Eco\RevenuesKwh\RevenueValuesKwh;
+use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\RevenueDistributionPartsKwhCSVHelper;
 use App\Helpers\Delete\Models\DeleteRevenuePartsKwh;
 use App\Helpers\Email\EmailHelper;
+use App\Helpers\Excel\EnergySupplierExcelHelper;
+use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
@@ -23,7 +28,6 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Resources\Project\FullRevenueDistributionPartsKwh;
 use App\Http\Resources\Project\FullRevenuePartsKwh;
-use App\Jobs\RevenueKwh\CreateRevenuePartsKwhReport;
 use App\Jobs\RevenueKwh\ProcessRevenuesKwh;
 use App\Jobs\RevenueKwh\UpdateRevenuePartsKwh;
 use Barryvdh\DomPDF\Facade as PDF;
@@ -32,6 +36,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class RevenuePartsKwhController extends ApiController
 {
@@ -46,7 +53,6 @@ class RevenuePartsKwhController extends ApiController
 
     public function csv(RevenuePartsKwh $revenuePartsKwh)
     {
-        Log::error("RevenuePartsKwhController - csv => NOG DOEN !!!!!!!!!!!" );
         set_time_limit(0);
 
         $revenuePartsKwh = new RevenueDistributionPartsKwhCSVHelper($revenuePartsKwh);
@@ -88,7 +94,6 @@ class RevenuePartsKwhController extends ApiController
             ->get();
 
         $isLastRevenuePartsKwh = $revenuePartsKwh->is_last_revenue_parts_kwh;
-        $oldDateEnd = $revenuePartsKwh->date_end;
         $oldStatus = $revenuePartsKwh->status;
 
         $revenuePartsKwh->fill($data);
@@ -161,7 +166,9 @@ class RevenuePartsKwhController extends ApiController
         $revenuePartsKwh->save();
 
         if($revenuePartsKwh->status == 'concept') {
-            UpdateRevenuePartsKwh::dispatch($revenuePartsKwh, $valuesKwhData, Auth::id(), false);
+            $revenuesKwhHelper = new RevenuesKwhHelper();
+            $revenuesKwhHelper->createOrUpdateRevenueValuesKwh($valuesKwhData, $revenuePartsKwh, false);
+            UpdateRevenuePartsKwh::dispatch($revenuePartsKwh, Auth::id());
         }else{
             $revenuePartsKwh->calculator()->runCountingsRevenuesKwh();
         }
@@ -175,7 +182,9 @@ class RevenuePartsKwhController extends ApiController
                 'kwhEndHigh' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_end['kwhEndHigh'],
                 'kwhEndLow' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_end['kwhEndLow'],
             ];
-            UpdateRevenuePartsKwh::dispatch($revenuePartsKwh->next_revenue_parts_kwh, $valuesKwhDataNext, Auth::id(), true);
+            $revenuesKwhHelper = new RevenuesKwhHelper();
+            $revenuesKwhHelper->createOrUpdateRevenueValuesKwh($valuesKwhData, $revenuePartsKwh, true);
+            UpdateRevenuePartsKwh::dispatch($revenuePartsKwh->next_revenue_parts_kwh, Auth::id());
         }
         // laatste part op confirmed, dan ook revenueDistributionKwh en revenuesKwh op confirmed.
         if($revenuePartsKwh->status == 'confirmed' && $isLastRevenuePartsKwh && $oldStatus != $revenuePartsKwh->status) {
@@ -194,106 +203,113 @@ class RevenuePartsKwhController extends ApiController
             ->orderBy('date_begin')->get());
     }
 
-// todo WM: nog doen?
-//
-//    public function createEnergySupplierReport(
-//        Request $request,
-//        RevenuePartsKwh $revenuePartsKwh,
-//        DocumentTemplate $documentTemplate
-//    )
-//    {
-//        $documentName = $request->input('documentName');
-//
-//        //get current logged in user
-//        $user = Auth::user();
-//
-//        //load template parts
-//        $documentTemplate->load('footer', 'baseTemplate', 'header');
-//
-//        $html = $documentTemplate->header ? $documentTemplate->header->html_body
-//            : '';
-//
-//        if ($documentTemplate->baseTemplate) {
-//            $html .= TemplateVariableHelper::replaceTemplateTagVariable($documentTemplate->baseTemplate->html_body,
-//                $documentTemplate->html_body, '', '');
-//        } else {
-//            $html .= TemplateVariableHelper::replaceTemplateFreeTextVariables($documentTemplate->html_body,
-//                '', '');
-//        }
-//
-//        $html .= $documentTemplate->footer
-//            ? $documentTemplate->footer->html_body : '';
-//
-//        $project = $revenuePartsKwh->revenuesKwh->project;
-//
-//        $energySupplierHtml
-//            = TemplateVariableHelper::replaceTemplateVariables($html,
-//            'opbrengst', $revenuePartsKwh);
-//        $energySupplierHtml
-//            = TemplateVariableHelper::replaceTemplateVariables($energySupplierHtml,
-//            'project', $project);
-//        $energySupplierHtml
-//            = TemplateVariableHelper::replaceTemplateVariables($energySupplierHtml,
-//            'ik', $user);
-//        $energySupplierHtml
-//            = TemplateVariableHelper::replaceTemplateVariables($energySupplierHtml,
-//            'administratie', $project->administration);
-//
-//        $energySupplierHtml
-//            = TemplateVariableHelper::stripRemainingVariableTags($energySupplierHtml);
-//
-//        $pdf = PDF::loadView('documents.generic', [
-//            'html' => $energySupplierHtml,
-//        ])->output();
-//
-//        $document = new Document();
-//        $document->document_type = 'internal';
-//        $document->document_group = 'revenue';
-//        $document->project_id = $revenuePartsKwh->revenuesKwh->id;
-//
-//        $document->filename = $documentName . '.pdf';
-//
-//        $document->save();
-//
-//        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents/'
-//            . $document->filename));
-//        file_put_contents($filePath, $pdf);
-//
-//        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-//
-//        $alfrescoResponse = $alfrescoHelper->createFile($filePath,
-//            $document->filename, $document->getDocumentGroup()->name);
-//
-//        $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-//        $document->save();
-//
-//        //delete file on server, still saved on alfresco.
-//        Storage::disk('documents')->delete($document->filename);
-//    }
+    public function createEnergySupplierAllExcel(
+        Request $request,
+        RevenuePartsKwh $revenuePartsKwh
+    )
+    {
+        $distributionPartsKwhIds = $request->input('distributionPartsKwhIds');
+        $upToRevenuePartsKwh = RevenuePartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_end', '<=', $revenuePartsKwh->date_end)->get();
 
-//    public function destroy(RevenuePartsKwh $revenuePartsKwh)
-//    {
-//        $this->authorize('manage', RevenuesKwh::class);
-//
-//        try {
-//            DB::beginTransaction();
-//
-//            $deleteRevenuePartsKwh = new DeleteRevenuePartsKwh($revenuePartsKwh);
-//            $result = $deleteRevenuePartsKwh->delete();
-//
-//            if(count($result) > 0){
-//                DB::rollBack();
-//                abort(412, implode(";", array_unique($result)));
-//            }
-//
-//            DB::commit();
-//        } catch (\PDOException $e) {
-//            DB::rollBack();
-//            Log::error($e->getMessage());
-//            abort(501, 'Er is helaas een fout opgetreden.');
-//        }
-//    }
-//
+        $energySupplierIds = [];
+        foreach ($upToRevenuePartsKwh as $partItem){
+            $partItemEnergySupplierIds = $partItem->distributionPartsKwh()->whereNotNull('es_id')->pluck('es_id')->toArray();
+            $energySupplierIds = array_merge($partItemEnergySupplierIds, $energySupplierIds);
+        }
+        $energySupplierIds = array_unique($energySupplierIds);
+        foreach ($energySupplierIds as $energySupplierId) {
+            $energySupplier = EnergySupplier::find($energySupplierId);
+            $this->createEnergySupplierExcel($request, $revenuePartsKwh, $energySupplier, $distributionPartsKwhIds, true);
+        }
+    }
+
+    public function createEnergySupplierOneExcel(
+        Request $request,
+        RevenuePartsKwh $revenuePartsKwh,
+        EnergySupplier $energySupplier
+    )
+    {
+        $distributionPartsKwhIds = $request->input('distributionPartsKwhIds');
+        $this->createEnergySupplierExcel($request, $revenuePartsKwh, $energySupplier, $distributionPartsKwhIds, false);
+    }
+
+    protected function createEnergySupplierExcel(
+        Request $request,
+        RevenuePartsKwh $revenuePartsKwh,
+        EnergySupplier $energySupplier,
+        $distributionPartsKwhIds,
+        $createAll
+    )
+    {
+        $project = $revenuePartsKwh->revenuesKwh->project;
+
+        switch ($energySupplier->file_format_id){
+            case 1:
+                $fileFormat = '.xls';
+                break;
+            default:
+                $fileFormat = '.xlsx';
+                break;
+        }
+
+        $documentName = $request->input('documentName');
+        $fileName = $createAll ? ($documentName . '-' . $energySupplier->abbreviation . $fileFormat) : $documentName . $fileFormat;
+        $templateId = $energySupplier->excel_template_id;
+
+        if ($templateId) {
+            set_time_limit(0);
+            $excelHelper = new EnergySupplierExcelHelper($energySupplier, null, null,
+                $revenuePartsKwh, $distributionPartsKwhIds, $templateId, $fileName);
+            $excel = $excelHelper->getExcel();
+            if(!$excel) return;
+        }else{
+            abort(412, 'Geen geldige excel template gevonden.');
+        }
+
+        $document = new Document();
+        $document->document_type = 'internal';
+        $document->document_group = 'revenue';
+        $document->project_id = $project->id;
+
+        $document->filename = $fileName;
+
+        $document->save();
+
+        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR
+            . $document->filename));
+
+        switch ($energySupplier->file_format_id){
+            case 1:
+                $writer = new Xls($excel);
+                break;
+            default:
+                $writer = new Xlsx($excel);
+                break;
+        }
+        $writer->save($filePath);
+
+//        die("stop hier maar even voor testdoeleinden Excel (behoud file.xlsx in storage/app/documents)");
+
+        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local')
+        {
+            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+
+            $alfrescoResponse = $alfrescoHelper->createFile($filePath,
+                $document->filename, $document->getDocumentGroup()->name);
+            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+        }else{
+            $alfrescoResponse = null;
+        }
+
+        $document->save();
+
+        //delete file on server, still saved on alfresco.
+        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+            Storage::disk('documents')->delete($document->filename);
+        }
+    }
+
+
     public function peekDistributionKwhPartsByIds(Request $request)
     {
         $this->authorize('manage', RevenuesKwh::class);

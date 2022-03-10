@@ -41,9 +41,7 @@ class CreateRevenuePartsKwhReportApp extends Component {
             .catch(error => {
                 this.setState({ isLoading: false });
             });
-        console.log('test');
-        console.log(this.props.reportPreview.distributionPartsKwhIds);
-        ProjectsAPI.peekDistributionsKwhPartsByIds(this.props.reportPreview.distributionPartsKwhIds).then(payload => {
+        ProjectsAPI.peekDistributionsKwhPartsById(this.props.reportPreview.distributionPartsKwhIds).then(payload => {
             this.setState({
                 distributions: payload.data,
             });

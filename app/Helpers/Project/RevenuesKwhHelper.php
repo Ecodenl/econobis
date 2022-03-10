@@ -296,7 +296,7 @@ class RevenuesKwhHelper
         $mutations = $distributionPartsKwh->distributionKwh->participation->mutationsDefinitiveForKwhPeriod->whereBetween('date_entry', [$dateBeginRevenues, $partDateEnd]);
 
         foreach ($mutations as $mutation) {
-            if ($mutation->date_entry >= $dateBeginRevenues && $mutation->date_entry <= $partDateBegin) {
+            if ($mutation->date_entry >= $dateBeginRevenues && $mutation->date_entry < $partDateBegin) {
                 $quantityOfParticipationsAtStart += $mutation->quantity;
             }
             if ($mutation->date_entry >= $dateBeginRevenues && $mutation->date_entry <= $partDateEnd) {

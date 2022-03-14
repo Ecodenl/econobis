@@ -7,7 +7,7 @@ moment.locale('nl');
 import ViewText from '../../../../../../components/form/ViewText';
 
 const RevenuesKwhFormView = props => {
-    const { category, confirmed, status, dateBegin, dateEnd, dateConfirmed, payoutKwh } = props.revenuesKwh;
+    const { category, confirmed, status, dateBegin, dateEnd, dateConfirmed, datePayout, payoutKwh } = props.revenuesKwh;
 
     const statusText = status => {
         switch (status) {
@@ -48,8 +48,17 @@ const RevenuesKwhFormView = props => {
                 <ViewText label={'Eind periode'} value={dateEnd ? moment(dateEnd).format('L') : ''} />
             </div>
 
+            {confirmed == 1 ? (
+                <div className="row" onClick={props.switchToEdit}>
+                    <ViewText
+                        label={'Datum definitief'}
+                        value={dateConfirmed ? moment(dateConfirmed).format('L') : ''}
+                    />
+                    <ViewText label={'Uitkeringsdatum'} value={datePayout ? moment(datePayout).format('L') : ''} />
+                </div>
+            ) : null}
+
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Datum definitief'} value={dateConfirmed ? moment(dateConfirmed).format('L') : ''} />
                 <ViewText
                     label={'Opbrengst kWh €'}
                     value={

@@ -36,7 +36,7 @@ class FullRevenueDistributionPartsKwh extends JsonResource
                 'kwhReturn' => $this->kwh_return,
                 'remarks' => $this->remarks,
                 'is_visible' => $this->is_visible,
-
+                'dateEnergySupplierReport' => $this->date_energy_supplier_report,
             ];
     }
 }

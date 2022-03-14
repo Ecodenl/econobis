@@ -89,6 +89,7 @@ class RenewRevenuesKwhTables extends Migration
                 $table->date('date_end')->nullable();
                 $table->boolean('confirmed')->default(false);
                 $table->date('date_confirmed')->nullable();
+                $table->date('date_payout')->nullable();
                 $table->string('status')->nullable();
                 $table->double('payout_kwh')->nullable();
                 $table->double('delivered_total_concept', 12, 6)->nullable();
@@ -208,6 +209,7 @@ class RenewRevenuesKwhTables extends Migration
                 $table->string('energy_supplier_name')->nullable();
                 $table->string('energy_supplier_number')->nullable();
                 $table->boolean('is_visible')->default(false);
+                $table->date('date_energy_supplier_report')->nullable();
                 $table->timestamps();
             });
         }

@@ -827,8 +827,11 @@ class RevenuesKwhHelper
                         ->orWhereNull('member_since');
                 })->get();
 
+            // Alleen splitDates voor member_since dates die voor date terminated liggen (of gelijk)
             foreach ($addressEnergySuppliers as $addressEnergySupplier) {
-                $splitDates[] = $addressEnergySupplier->member_since;
+                if($participation->date_terminated == null || Carbon::parse($addressEnergySupplier->member_since)->format('Y-m-d') <= $participationDateTerminated){
+                    $splitDates[] = $addressEnergySupplier->member_since;
+                }
             }
         }
 

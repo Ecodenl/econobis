@@ -140,13 +140,11 @@ class RevenuePartsKwh extends Model
 
     public function getIsFirstRevenuePartsKwhAttribute()
     {
-        return $this->date_begin == $this->revenuesKwh->date_begin;
-
+        return Carbon::parse($this->date_begin)->format('Y-m-d') == Carbon::parse($this->revenuesKwh->date_begin)->format('Y-m-d');
     }
     public function getIsLastRevenuePartsKwhAttribute()
     {
-        return $this->date_end == $this->revenuesKwh->date_end;
-
+        return Carbon::parse($this->date_end)->format('Y-m-d') == Carbon::parse($this->revenuesKwh->date_end)->format('Y-m-d');
     }
 
     public function getPreviousRevenuePartsKwhAttribute()

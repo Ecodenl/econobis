@@ -803,8 +803,9 @@ class RevenuesKwhHelper
         foreach ($participations as $participation) {
             if ($participation->date_terminated) {
                 $participationDateTerminated = Carbon::parse($participation->date_terminated)->format('Y-m-d');
-                if ($participationDateTerminated >= $fromDate && $participationDateTerminated <= $toDate) {
-                    $splitDates[] = Carbon::parse($participationDateTerminated)->addDay()->format('Y-m-d');
+                $participationDateTerminatedNextDay = Carbon::parse($participationDateTerminated)->addDay()->format('Y-m-d');
+                if ($participationDateTerminatedNextDay >= $fromDate && $participationDateTerminatedNextDay <= $toDate) {
+                    $splitDates[] = $participationDateTerminatedNextDay;
                 }
             }
             $addressEnergySuppliers = AddressEnergySupplier::where('address_id', '=', $participation->address_id)
@@ -855,6 +856,8 @@ class RevenuesKwhHelper
                 'confirmed' => false,
                 'status' => 'new',
                 'dateConfirmed' => null,
+// todo WM: weer herstellen ,
+//                'datePayout' => null,
                 'payout_kwh' => $revenuesKwh->payout_kwh,
                 'delivered_total_concept' => 0,
                 'delivered_total_confirmed' => 0,

@@ -99,6 +99,7 @@ class RevenuesKwhController extends ApiController
             ->date('dateBegin')->validate('nullable|date')->alias('date_begin')->next()
             ->date('dateEnd')->validate('nullable|date')->alias('date_end')->next()
             ->date('dateConfirmed')->validate('nullable|date')->onEmpty(null)->alias('date_confirmed')->next()
+            ->date('datePayout')->validate('nullable|date')->onEmpty(null)->alias('date_payout')->next()
             ->double('payoutKwh')->alias('payout_kwh')->onEmpty(null)->whenMissing(null)->next()
             ->get();
 
@@ -137,6 +138,7 @@ class RevenuesKwhController extends ApiController
             ->date('dateBegin')->validate('nullable|date')->alias('date_begin')->next()
             ->date('dateEnd')->validate('nullable|date')->alias('date_end')->next()
             ->date('dateConfirmed')->validate('nullable|date')->onEmpty(null)->alias('date_confirmed')->next()
+            ->date('datePayout')->validate('nullable|date')->onEmpty(null)->alias('date_payout')->next()
             ->double('payoutKwh')->alias('payout_kwh')->onEmpty(null)->whenMissing(null)->next()
             ->get();
 
@@ -986,14 +988,17 @@ class RevenuesKwhController extends ApiController
                 }
                 $this->createParticipantMutationForRevenueKwh($distributionKwh, $datePayout, $mutationEnergyTaxRefund);
 
-                if ($distributionKwh->status === 'in-progress-process-concept') {
-                    $distributionKwh->status = 'concept';
-                }
-                if ($distributionKwh->status === 'in-progress-process') {
-                    if ($distributionKwh->distributionPartsKwh->where('status', '!=', 'processed')->count() == 0) {
-                        $distributionKwh->status = 'processed';
-                    } else {
+                if($distributionKwh->distributionValuesKwh->where('status', '!=', 'processed')->count() == 0
+                    && $distributionKwh->distributionValuesKwh->where('status', '==', 'processed')->count() > 0
+                ){
+                    $distributionKwh->status = 'processed';
+                } else {
+                    if($distributionKwh->distributionValuesKwh->where('status', '!=', 'confirmed')->count() == 0
+                        && $distributionKwh->distributionValuesKwh->where('status', '==', 'confirmed')->count() > 0
+                    ){
                         $distributionKwh->status = 'confirmed';
+                    } else {
+                        $distributionKwh->status = 'concept';
                     }
                 }
                 $distributionKwh->save();
@@ -1004,6 +1009,7 @@ class RevenuesKwhController extends ApiController
         $partsKwh = RevenuePartsKwh::whereIn('id', $upToPartsKwhIds)->get();
         foreach ($partsKwh as $partKwh) {
             if ($partKwh->status === 'in-progress-process') {
+
                 if($partKwh->distributionPartsKwh->where('status', '!=', 'processed')->count() == 0
                 && $partKwh->distributionPartsKwh->where('status', '==', 'processed')->count() > 0
                 ){
@@ -1017,6 +1023,7 @@ class RevenuesKwhController extends ApiController
         }
 
         $revenuesKwh = $distributionsKwh->first()->revenuesKwh;
+
         if($revenuesKwh->distributionKwh->where('status', '!=', 'processed')->count() == 0
             && $revenuesKwh->distributionKwh->where('status', '==', 'processed')->count() > 0
             && $revenuesKwh->partsKwh->where('status', '!=', 'processed')->count() == 0

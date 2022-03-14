@@ -90,11 +90,9 @@ class RevenuePartsKwhController extends ApiController
             ->date('dateBegin')->validate('nullable|date')->alias('date_begin')->next()
             ->date('dateEnd')->validate('nullable|date')->alias('date_end')->next()
             ->date('dateConfirmed')->validate('nullable|date')->onEmpty(null)->alias('date_confirmed')->next()
+            ->date('datePayout')->validate('nullable|date')->onEmpty(null)->alias('date_payout')->next()
             ->double('payoutKwh')->alias('payout_kwh')->onEmpty(null)->whenMissing(null)->next()
             ->get();
-
-        $isLastRevenuePartsKwh = $revenuePartsKwh->is_last_revenue_parts_kwh;
-        $oldStatus = $revenuePartsKwh->status;
 
         $revenuePartsKwh->fill($data);
 
@@ -103,100 +101,48 @@ class RevenuePartsKwhController extends ApiController
         }
 
         if($revenuePartsKwh->confirmed) {
-            // Alle voorgaande parts met status concept ook definitief maken (confirmed)
-            $checkDateForPreviousPart = Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d');
-            $previousRevenuePartsKwh = RevenuePartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_end', '<', $checkDateForPreviousPart)->where('status', 'concept')->orderBy('date_begin')->get();
-            foreach ($previousRevenuePartsKwh as $previousRevenuePartKwh){
-
-                $previousRevenuePartKwh->confirmed = true;
-                $previousRevenuePartKwh->status = 'confirmed';
-                $previousRevenuePartKwh->date_confirmed = $revenuePartsKwh->date_confirmed;
-
-                // todo WM: check of we day after end date revenue ook niet al op confirmed moeten zetten?
-                // vooralsnog denk ik niet. Hier staan dan wel eindstanden vermeld voor deze periode wat beginstanden zijn voor volgende periode
-                // maar die kan je niet vanuit die volgende periode wijzigen. Verder is delivered_kwh die daar staat voor volgende periode.
-                foreach ($previousRevenuePartKwh->conceptValuesKwh() as $conceptValueKwh){
-                    $conceptValueKwh->status = 'confirmed';
-                    $conceptValueKwh->save();
-                }
-                foreach($previousRevenuePartKwh->conceptDistributionPartsKwh as $distributionPreviousPartsKwh){
-                    $distributionPreviousPartsKwh->status = 'confirmed';
-                    $distributionPreviousPartsKwh->save();
-                }
-                foreach($previousRevenuePartKwh->conceptDistributionValuesKwh as $distributionPreviousValuesKwh){
-                    $distributionPreviousValuesKwh->status = 'confirmed';
-                    $distributionPreviousValuesKwh->save();
-                }
-                $previousRevenuePartKwh->save();
-            }
-
             $revenuePartsKwh->status = 'confirmed';
-            // todo WM: check of we day after end date revenue ook niet al op confirmed moeten zetten?
-            // vooralsnog denk ik niet. Hier staan dan wel eindstanden vermeld voor deze periode wat beginstanden zijn voor volgende periode
-            // maar die kan je niet vanuit die volgende periode wijzigen. Verder is delivered_kwh die daar staat voor volgende periode.
-            foreach($revenuePartsKwh->conceptValuesKwh() as $conceptValueKwh){
-                $conceptValueKwh->status = 'confirmed';
-                $conceptValueKwh->save();
-            }
-            foreach($revenuePartsKwh->conceptDistributionPartsKwh as $distributionPartsKwh){
-                $distributionPartsKwh->status = 'confirmed';
-                $distributionPartsKwh->save();
-            }
-            foreach($revenuePartsKwh->conceptDistributionValuesKwh as $distributionValuesKwh){
-                $distributionValuesKwh->status = 'confirmed';
-                $distributionValuesKwh->save();
-            }
         }
-
-        $valuesKwhData = $request->get("valuesKwh");
-        $recalculateNextPart = false;
-
-        if($revenuePartsKwh->status == 'concept' && $revenuePartsKwh->next_revenue_parts_kwh){
-            $dateRegistrationDayAfterEnd = Carbon::parse($revenuePartsKwh->date_end)->addDay()->format('Y-m-d');
-            $revenueValuesKwhEnd = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
-            if ($revenueValuesKwhEnd
-                && ($revenueValuesKwhEnd->kwh_start != $valuesKwhData['kwhEnd']
-                || $revenueValuesKwhEnd->kwh_start_high != $valuesKwhData['kwhEndHigh']
-                || $revenueValuesKwhEnd->kwh_start_low != $valuesKwhData['kwhEndLow'])
-            ) {
-                $recalculateNextPart = true;
-            }
-        }
-
         $revenuePartsKwh->save();
 
         if($revenuePartsKwh->status == 'concept') {
+            $valuesKwhData = $request->get("valuesKwh");
+            $recalculateNextPart = false;
+
+            if ($revenuePartsKwh->next_revenue_parts_kwh) {
+                $dateRegistrationDayAfterEnd = Carbon::parse($revenuePartsKwh->date_end)->addDay()->format('Y-m-d');
+                $revenueValuesKwhEnd = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
+                if ($revenueValuesKwhEnd
+                    && ($revenueValuesKwhEnd->kwh_start != $valuesKwhData['kwhEnd']
+                        || $revenueValuesKwhEnd->kwh_start_high != $valuesKwhData['kwhEndHigh']
+                        || $revenueValuesKwhEnd->kwh_start_low != $valuesKwhData['kwhEndLow'])
+                ) {
+                    $recalculateNextPart = true;
+                }
+            }
             $revenuesKwhHelper = new RevenuesKwhHelper();
             $revenuesKwhHelper->createOrUpdateRevenueValuesKwh($valuesKwhData, $revenuePartsKwh, false);
             UpdateRevenuePartsKwh::dispatch($revenuePartsKwh, Auth::id());
-        }else{
-            $revenuePartsKwh->calculator()->runCountingsRevenuesKwh();
+            if ($recalculateNextPart) {
+                $valuesKwhDataNext = [
+                    'kwhStart' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_start['kwhStart'],
+                    'kwhStartHigh' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_start['kwhStartHigh'],
+                    'kwhStartLow' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_start['kwhStartLow'],
+                    'kwhEnd' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_end['kwhEnd'],
+                    'kwhEndHigh' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_end['kwhEndHigh'],
+                    'kwhEndLow' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_end['kwhEndLow'],
+                ];
+                $revenuesKwhHelper = new RevenuesKwhHelper();
+                $revenuesKwhHelper->createOrUpdateRevenueValuesKwh($valuesKwhDataNext, $revenuePartsKwh->next_revenue_parts_kwh, true);
+                UpdateRevenuePartsKwh::dispatch($revenuePartsKwh->next_revenue_parts_kwh, Auth::id());
+            }
         }
 
-        if($recalculateNextPart){
-            $valuesKwhDataNext = [
-                'kwhStart' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_start['kwhStart'],
-                'kwhStartHigh' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_start['kwhStartHigh'],
-                'kwhStartLow' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_start['kwhStartLow'],
-                'kwhEnd' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_end['kwhEnd'],
-                'kwhEndHigh' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_end['kwhEndHigh'],
-                'kwhEndLow' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_end['kwhEndLow'],
-            ];
-            $revenuesKwhHelper = new RevenuesKwhHelper();
-            $revenuesKwhHelper->createOrUpdateRevenueValuesKwh($valuesKwhData, $revenuePartsKwh, true);
-            UpdateRevenuePartsKwh::dispatch($revenuePartsKwh->next_revenue_parts_kwh, Auth::id());
+        if($revenuePartsKwh->confirmed) {
+            $this->setRevenuePartsKwhDefinitive($revenuePartsKwh);
         }
-        // laatste part op confirmed, dan ook revenueDistributionKwh en revenuesKwh op confirmed.
-        if($revenuePartsKwh->status == 'confirmed' && $isLastRevenuePartsKwh && $oldStatus != $revenuePartsKwh->status) {
-            foreach ($revenuePartsKwh->revenuesKwh->distributionKwh as $distributionKwh){
-                $distributionKwh->status = 'confirmed';
-                $distributionKwh->save();
-            }
-            $revenuePartsKwh->revenuesKwh->status = 'confirmed';
-            $revenuePartsKwh->revenuesKwh->date_confirmed = $revenuePartsKwh->date_confirmed;
-            $revenuePartsKwh->revenuesKwh->confirmed = true;
-            $revenuePartsKwh->revenuesKwh->save();
-        }
+
+        $revenuePartsKwh->calculator()->runCountingsRevenuesKwh();
 
         return FullRevenuePartsKwh::collection(RevenuePartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)
             ->with('distributionPartsKwh')
@@ -511,6 +457,76 @@ class RevenuePartsKwhController extends ApiController
             'subject' => 'Geen e-mail bekend.',
             'htmlBody' => 'Geen e-mail bekend.'
         ];
+    }
+
+    public function setRevenuePartsKwhDefinitive(RevenuePartsKwh $revenuePartsKwh)
+    {
+        set_time_limit(0);
+
+        if($revenuePartsKwh->confirmed) {
+            // Alle voorgaande parts met status concept ook definitief maken (confirmed)
+            $checkDateForPreviousPart = Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d');
+            $previousRevenuePartsKwh = RevenuePartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_end', '<', $checkDateForPreviousPart)->where('status', 'concept')->orderBy('date_begin')->get();
+            foreach ($previousRevenuePartsKwh as $previousRevenuePartKwh){
+
+                $previousRevenuePartKwh->confirmed = true;
+                $previousRevenuePartKwh->status = 'confirmed';
+                $previousRevenuePartKwh->date_confirmed = $revenuePartsKwh->date_confirmed;
+
+                // todo WM: check of we day after end date revenue ook niet al op confirmed moeten zetten?
+                // vooralsnog denk ik niet. Hier staan dan wel eindstanden vermeld voor deze periode wat beginstanden zijn voor volgende periode
+                // maar die kan je niet vanuit die volgende periode wijzigen. Verder is delivered_kwh die daar staat voor volgende periode.
+                foreach ($previousRevenuePartKwh->conceptValuesKwh() as $conceptValueKwh){
+                    $conceptValueKwh->status = 'confirmed';
+                    $conceptValueKwh->save();
+                }
+                foreach($previousRevenuePartKwh->conceptDistributionPartsKwh as $distributionPreviousPartsKwh){
+                    $distributionPreviousPartsKwh->status = 'confirmed';
+                    $distributionPreviousPartsKwh->save();
+                }
+                foreach($previousRevenuePartKwh->conceptDistributionValuesKwh as $distributionPreviousValuesKwh){
+                    $distributionPreviousValuesKwh->status = 'confirmed';
+                    $distributionPreviousValuesKwh->save();
+                }
+                $previousRevenuePartKwh->save();
+            }
+
+            $revenuePartsKwh->status = 'confirmed';
+            // todo WM: check of we day after end date revenue ook niet al op confirmed moeten zetten?
+            // vooralsnog denk ik niet. Hier staan dan wel eindstanden vermeld voor deze periode wat beginstanden zijn voor volgende periode
+            // maar die kan je niet vanuit die volgende periode wijzigen. Verder is delivered_kwh die daar staat voor volgende periode.
+            foreach($revenuePartsKwh->conceptValuesKwh() as $conceptValueKwh){
+                $conceptValueKwh->status = 'confirmed';
+                $conceptValueKwh->save();
+            }
+            foreach($revenuePartsKwh->conceptDistributionPartsKwh as $distributionPartsKwh){
+                $distributionPartsKwh->status = 'confirmed';
+                $distributionPartsKwh->save();
+            }
+            foreach($revenuePartsKwh->conceptDistributionValuesKwh as $distributionValuesKwh){
+                $distributionValuesKwh->status = 'confirmed';
+                $distributionValuesKwh->save();
+            }
+        }
+
+        // laatste part op confirmed, dan ook revenueDistributionKwh en revenuesKwh op confirmed.
+        if($revenuePartsKwh->status == 'confirmed' && $revenuePartsKwh->is_last_revenue_parts_kwh && $revenuePartsKwh->revenuesKwh->status == 'concept') {
+            foreach ($revenuePartsKwh->revenuesKwh->distributionKwh as $distributionKwh){
+                $distributionKwh->status = 'confirmed';
+                $distributionKwh->save();
+            }
+            $revenuePartsKwh->revenuesKwh->status = 'confirmed';
+            $revenuePartsKwh->revenuesKwh->date_confirmed = $revenuePartsKwh->date_confirmed;
+            $revenuePartsKwh->revenuesKwh->confirmed = true;
+            $revenuePartsKwh->revenuesKwh->save();
+        }
+
+        $distributionsKwhIds = array_unique( $revenuePartsKwh->distributionPartsKwh->pluck('distribution_id')->toArray() );
+        $datePayout = $revenuePartsKwh->date_payout;
+        $revenueId = $revenuePartsKwh->revenue_id;
+        $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $revenueId)->where('date_begin', '<=', $revenuePartsKwh->date_begin)->where('status', '!=', 'processed')->pluck('id')->toArray();
+
+        ProcessRevenuesKwh::dispatch($distributionsKwhIds, $datePayout, $upToPartsKwhIds, Auth::id());
     }
 
     public function processRevenuePartsKwh(Request $request)

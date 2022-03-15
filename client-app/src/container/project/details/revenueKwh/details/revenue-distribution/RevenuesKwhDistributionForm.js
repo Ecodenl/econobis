@@ -17,7 +17,6 @@ import {
     fetchRevenuesKwh,
     getDistributionKwh,
     previewReportKwh,
-    energySupplierExcelReportKwh,
 } from '../../../../../../actions/project/ProjectDetailsActions';
 import { setError } from '../../../../../../actions/general/ErrorActions';
 import moment from 'moment-business-days';
@@ -368,13 +367,6 @@ class RevenuesKwhDistributionForm extends Component {
         this.setState({ showErrorModal: false, modalErrorMessage: '' });
     };
 
-    checkDistributionKwhEnergySupplierExcelReport = () => {
-        this.props.energySupplierExcelReportKwh({
-            distributionKwhIds: this.state.distributionKwhIds,
-        });
-        hashHistory.push(`/project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-excel`);
-    };
-
     render() {
         let administrationIds = [];
         this.props.administrations.forEach(function(administration) {
@@ -417,11 +409,6 @@ class RevenuesKwhDistributionForm extends Component {
                                         buttonClassName={'btn-primary'}
                                     />
                                 ) : null}
-                                <ButtonText
-                                    buttonText={'Selecteer Rapportage Energie leverancier'}
-                                    onClickAction={() => this.toggleShowCheckboxList('createEnergySupplierExcelReport')}
-                                    buttonClassName={'btn-primary'}
-                                />
                             </React.Fragment>
                         ) : null}
                     </div>
@@ -524,31 +511,6 @@ class RevenuesKwhDistributionForm extends Component {
                             </PanelBody>
                         </Panel>
                     ) : null}
-                    {this.state.showCheckboxList && this.state.createType === 'createEnergySupplierExcelReport' ? (
-                        <Panel>
-                            <PanelBody>
-                                <div className="row">
-                                    <div className="col-md-12">
-                                        <ViewText label="Geselecteerde deelnemers" value={numberSelectedNumberTotal} />
-
-                                        <div className="margin-10-top pull-right btn-group" role="group">
-                                            <ButtonText
-                                                buttonClassName={'btn-default'}
-                                                buttonText={'Annuleren'}
-                                                onClickAction={this.toggleShowCheckboxList}
-                                            />
-                                            <ButtonText
-                                                buttonText={'Rapportage Energie leverancier'}
-                                                onClickAction={this.checkDistributionKwhEnergySupplierExcelReport}
-                                                type={'submit'}
-                                                value={'Submit'}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </PanelBody>
-                        </Panel>
-                    ) : null}
                     <div className="col-md-12">
                         <RevenuesKwhDistributionFormList
                             changePage={this.changePage}
@@ -618,9 +580,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
     previewReportKwh: id => {
         dispatch(previewReportKwh(id));
-    },
-    energySupplierExcelReportKwh: id => {
-        dispatch(energySupplierExcelReportKwh(id));
     },
     fetchRevenuesKwh: id => {
         dispatch(fetchRevenuesKwh(id));

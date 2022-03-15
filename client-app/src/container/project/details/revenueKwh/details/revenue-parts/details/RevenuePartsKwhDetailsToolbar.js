@@ -57,30 +57,6 @@ class RevenuePartsKwhDetailsToolbar extends Component {
                                         iconName={'glyphicon-arrow-left'}
                                         onClickAction={browserHistory.goBack}
                                     />
-                                    {/*todo WM: voorlopig niet deelperiodes afzonderlijk verwijderen */}
-                                    {/*{this.props.permissions.manageFinancial &&*/}
-                                    {/*    !revenuePartsKwh.status != 'confirmed' &&*/}
-                                    {/*    !revenuePartsKwh.status != 'processed' && (*/}
-                                    {/*        <ButtonIcon*/}
-                                    {/*            iconName={'glyphicon-trash'}*/}
-                                    {/*            onClickAction={this.toggleDelete}*/}
-                                    {/*        />*/}
-                                    {/*    )}*/}
-                                    {/*{revenuePartsKwh.confirmed == 1 ? (*/}
-                                    {/*    <div className="nav navbar-nav btn-group" role="group">*/}
-                                    {/*        <button className="btn btn-success btn-sm" data-toggle="dropdown">*/}
-                                    {/*            Rapportage Energie leverancier*/}
-                                    {/*        </button>*/}
-                                    {/*        <ul className="dropdown-menu">*/}
-                                    {/*            <li>*/}
-                                    {/*                <Link to={pdfLink}>Ledenverklaring of productie specificatie</Link>*/}
-                                    {/*            </li>*/}
-                                    {/*            <li>*/}
-                                    {/*                <Link to={excelLink}>Opbrengstverdelingen deelnemers</Link>*/}
-                                    {/*            </li>*/}
-                                    {/*        </ul>*/}
-                                    {/*    </div>*/}
-                                    {/*) : null}*/}
                                     <ButtonIcon iconName={'glyphicon-download-alt'} onClickAction={this.getCSV} />
                                 </div>
                             </div>

@@ -23,6 +23,7 @@ class GridRevenuePartsKwh extends JsonResource
                 'dateEnd' => $this->date_end,
                 'confirmed' => $this->confirmed,
                 'dateConfirmed' => $this->date_confirmed,
+                'datePayout' => $this->date_payout,
                 'status' => $this->status,
                 'deliveredTotalConcept' => $this->delivered_total_concept_string,
                 'deliveredTotalConfirmed' => $this->delivered_total_confirmed_string,

@@ -27,6 +27,7 @@ class RevenuesKwhFormEdit extends Component {
             dateBegin,
             dateEnd,
             dateConfirmed,
+            datePayout,
             payoutKwh,
         } = props.revenuesKwh;
 
@@ -41,6 +42,7 @@ class RevenuesKwhFormEdit extends Component {
                 dateEnd: dateEnd ? moment(dateEnd).format('Y-MM-DD') : '',
                 originalDateEnd: dateEnd ? moment(dateEnd).format('Y-MM-DD') : '',
                 dateConfirmed: dateConfirmed ? moment(dateConfirmed).format('Y-MM-DD') : '',
+                datePayout: datePayout ? moment(datePayout).format('Y-MM-DD') : '',
                 payoutKwh: payoutKwh ? parseFloat(payoutKwh).toFixed(5) : '',
             },
             errors: {
@@ -95,6 +97,7 @@ class RevenuesKwhFormEdit extends Component {
             revenuesKwh: {
                 ...this.state.revenuesKwh,
                 dateConfirmed: '',
+                datePayout: '',
                 confirmed: false,
             },
         });
@@ -208,6 +211,7 @@ class RevenuesKwhFormEdit extends Component {
             dateEnd,
             originalDateEnd,
             dateConfirmed,
+            datePayout,
             payoutKwh,
         } = this.state.revenuesKwh;
         const project = this.props.revenuesKwh.project;
@@ -266,6 +270,15 @@ class RevenuesKwhFormEdit extends Component {
                         readOnly={status == 'new' || status == 'processed' || hasNewPartsKwh}
                         onChangeAction={this.handleInputChangeDateConfirmed}
                     />
+                    <InputDate
+                        label={'Uitkeringsdatum'}
+                        name={'datePayout'}
+                        value={datePayout}
+                        readOnly={status == 'new' || status == 'processed' || hasNewPartsKwh}
+                        onChangeAction={this.handleInputChangeDate}
+                    />
+                </div>
+                <div className="row">
                     <InputText
                         type={'number'}
                         label={'Opbrengst kWh €'}

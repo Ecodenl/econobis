@@ -33,6 +33,7 @@ class FullRevenuesKwh extends JsonResource
                 'confirmed' => $this->confirmed,
                 'status' => $this->status,
                 'dateConfirmed' => $this->date_confirmed,
+                'datePayout' => $this->date_payout,
                 'deliveredTotalConcept' => $this->delivered_total_concept_string,
                 'deliveredTotalConfirmed' => $this->delivered_total_confirmed_string,
                 'deliveredTotalProcessed' => $this->delivered_total_processed_string,

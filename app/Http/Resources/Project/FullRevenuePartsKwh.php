@@ -23,6 +23,7 @@ class FullRevenuePartsKwh extends JsonResource
                 'dateEnd' => $this->date_end,
                 'confirmed' => $this->confirmed,
                 'dateConfirmed' => $this->date_confirmed,
+                'datePayout' => $this->date_payout,
                 'status' => $this->status,
                 'deliveredTotalConcept' => $this->delivered_total_concept_string,
                 'deliveredTotalConfirmed' => $this->delivered_total_confirmed_string,
@@ -32,8 +33,10 @@ class FullRevenuePartsKwh extends JsonResource
                 'valuesKwhStart' => $this->values_kwh_start,
                 'valuesKwhEnd' => $this->values_kwh_end,
                 'isLastRevenuePartsKwh' => $this->is_last_revenue_parts_kwh,
+                'isEndOfYearRevenuePartsKwh' => $this->is_end_of_year_revenue_parts_kwh,
                 'dateBeginRevenuesKwh' => $this->revenuesKwh->date_begin,
                 'nextRevenuePartsKwh' => FullRevenuePartsKwh::make($this->next_revenue_parts_kwh),
+                'distributionKwhForReportEnergySupplier' => $this->distribution_kwh_for_report_energy_supplier,
             ];
     }
 }

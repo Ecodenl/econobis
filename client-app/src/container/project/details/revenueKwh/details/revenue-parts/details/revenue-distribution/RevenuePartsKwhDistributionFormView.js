@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment/moment';
 import validator from 'validator';
-import { FaInfoCircle } from 'react-icons/fa';
+import { FaCheckCircle, FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 moment.locale('nl');
 
@@ -20,6 +20,7 @@ const RevenuePartsKwhDistributionFormView = props => {
         kwhReturn,
         status,
         remarks,
+        dateEnergySupplierReport,
     } = props.participation;
 
     const missingEmail =
@@ -109,6 +110,27 @@ const RevenuePartsKwhDistributionFormView = props => {
                 {remarks ? (
                     <>
                         <FaInfoCircle color={'blue'} size={'15px'} data-tip={remarks} data-for={`tooltip-remark`} />
+                        <ReactTooltip
+                            id={`tooltip-remark`}
+                            effect="float"
+                            place="right"
+                            multiline={true}
+                            aria-haspopup="true"
+                        />
+                    </>
+                ) : null}
+                {dateEnergySupplierReport ? (
+                    <>
+                        {' '}
+                        <FaCheckCircle
+                            color={'green'}
+                            size={'15px'}
+                            data-tip={
+                                'Rapport Energie leverancier gemaakt op: ' +
+                                moment(dateEnergySupplierReport).format('L')
+                            }
+                            data-for={`tooltip-remark`}
+                        />
                         <ReactTooltip
                             id={`tooltip-remark`}
                             effect="float"

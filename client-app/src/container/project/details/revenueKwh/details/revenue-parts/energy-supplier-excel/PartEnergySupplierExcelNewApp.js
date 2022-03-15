@@ -8,7 +8,10 @@ import PartEnergySupplierExcelNew from './PartEnergySupplierExcelNew';
 import Panel from '../../../../../../../components/panel/Panel';
 import PanelBody from '../../../../../../../components/panel/PanelBody';
 import { connect } from 'react-redux';
-import { clearEnergySupplierExcelReportKwh } from '../../../../../../../actions/project/ProjectDetailsActions';
+import {
+    clearEnergySupplierExcelReportKwh,
+    fetchRevenuePartsKwh,
+} from '../../../../../../../actions/project/ProjectDetailsActions';
 import ProjectsAPI from '../../../../../../../api/project/ProjectsAPI';
 import RevenuePartsKwhAPI from '../../../../../../../api/project/RevenuePartsKwhAPI';
 
@@ -22,9 +25,6 @@ class PartEnergySupplierExcelNewApp extends Component {
                 energySupplierId: 0,
                 documentName: '',
                 distributions: [],
-                distributionPartsKwhIds: props.reportEnergySupplierExcel
-                    ? props.reportEnergySupplierExcel.distributionPartsKwhIds
-                    : [],
             },
             isLoading: false,
             errors: {
@@ -36,17 +36,24 @@ class PartEnergySupplierExcelNewApp extends Component {
 
     componentDidMount() {
         this.setState({ isLoading: true });
-        ProjectsAPI.peekDistributionsKwhPartsById(this.props.reportEnergySupplierExcel.distributionPartsKwhIds).then(
-            payload => {
+
+        this.props.fetchRevenuePartsKwh(this.props.params.revenuePartId);
+
+        setTimeout(() => {
+            ProjectsAPI.peekDistributionsKwhById(
+                this.props.revenuePartsKwh.distributionKwhForReportEnergySupplier
+            ).then(payload => {
                 this.setState({
                     ...this.state,
                     excel: {
                         ...this.state.excel,
+                        isLastRevenuePartsKwh: this.props.revenuePartsKwh.isLastRevenuePartsKwh,
+                        isEndOfYearRevenuePartsKwh: this.props.revenuePartsKwh.isEndOfYearRevenuePartsKwh,
                         distributions: payload.data,
                     },
                 });
-            }
-        );
+            });
+        }, 1000);
     }
 
     componentWillUnmount() {
@@ -65,6 +72,12 @@ class PartEnergySupplierExcelNewApp extends Component {
                 [name]: value,
             },
         });
+    };
+    cancel = event => {
+        event.preventDefault();
+        hashHistory.push(
+            `project/opbrengst-kwh/${this.props.revenuePartsKwh.revenueId}/deelperiode/${this.props.params.revenuePartId}`
+        );
     };
 
     handleSubmit = event => {
@@ -91,8 +104,7 @@ class PartEnergySupplierExcelNewApp extends Component {
             RevenuePartsKwhAPI.createEnergySupplierExcel(
                 excel.revenuePartId,
                 excel.energySupplierId,
-                excel.documentName,
-                excel.distributionPartsKwhIds
+                excel.documentName
             ).then(payload => {
                 hashHistory.push(`/documenten`);
             });
@@ -115,6 +127,7 @@ class PartEnergySupplierExcelNewApp extends Component {
                                         errors={this.state.errors}
                                         handleInputChange={this.handleInputChange}
                                         handleSubmit={this.handleSubmit}
+                                        cancel={this.cancel}
                                     />
                                 </div>
                             </PanelBody>
@@ -129,11 +142,15 @@ class PartEnergySupplierExcelNewApp extends Component {
 
 const mapStateToProps = state => {
     return {
+        revenuePartsKwh: state.revenuePartsKwh,
         reportEnergySupplierExcel: state.revenuesKwhReportEnergySupplierExcel,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
+    fetchRevenuePartsKwh: id => {
+        dispatch(fetchRevenuePartsKwh(id));
+    },
     clearEnergySupplierExcelReportKwh: () => {
         dispatch(clearEnergySupplierExcelReportKwh());
     },

@@ -23,6 +23,7 @@ class RevenuesKwhNewApp extends Component {
                 dateBegin: '',
                 dateEnd: '',
                 dateConfirmed: '',
+                datePayout: '',
                 payoutKwh: '',
                 deliveredTotalConcept: 0,
                 deliveredTotalConfirmed: 0,

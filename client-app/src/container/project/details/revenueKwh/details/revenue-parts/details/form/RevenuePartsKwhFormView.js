@@ -7,7 +7,7 @@ moment.locale('nl');
 import ViewText from '../../../../../../../../components/form/ViewText';
 
 const RevenuePartsKwhFormView = props => {
-    const { confirmed, status, dateBegin, dateEnd, dateConfirmed, payoutKwh } = props.revenuePartsKwh;
+    const { confirmed, status, dateBegin, dateEnd, dateConfirmed, datePayout, payoutKwh } = props.revenuePartsKwh;
     const { kwhStart, kwhStartHigh, kwhStartLow } = props.revenuePartsKwh.valuesKwhStart;
     const { kwhEnd, kwhEndHigh, kwhEndLow, isSimulated } = props.revenuePartsKwh.valuesKwhEnd;
     const kwhTotal = kwhEnd - kwhStart;
@@ -51,9 +51,15 @@ const RevenuePartsKwhFormView = props => {
                 <ViewText label={'Eind periode'} value={dateEnd ? moment(dateEnd).format('L') : ''} />
             </div>
 
-            <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Datum definitief'} value={dateConfirmed ? moment(dateConfirmed).format('L') : ''} />
-            </div>
+            {confirmed == 1 ? (
+                <div className="row" onClick={props.switchToEdit}>
+                    <ViewText
+                        label={'Datum definitief'}
+                        value={dateConfirmed ? moment(dateConfirmed).format('L') : ''}
+                    />
+                    <ViewText label={'Uitkeringsdatum'} value={datePayout ? moment(datePayout).format('L') : ''} />
+                </div>
+            ) : null}
 
             <div className={'panel-part panel-heading'} onClick={props.switchToEdit}>
                 <span className={'h5 text-bold'}>Opbrengst kWh</span>

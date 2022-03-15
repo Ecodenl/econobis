@@ -10,7 +10,13 @@ import InputText from '../../../../../../../components/form/InputText';
 import ViewText from '../../../../../../../components/form/ViewText';
 
 const PartEnergySupplierExcelNew = props => {
-    const { energySupplierId, documentName, distributions } = props.excel;
+    const {
+        energySupplierId,
+        documentName,
+        distributions,
+        isLastRevenuePartsKwh,
+        isEndOfYearRevenuePartsKwh,
+    } = props.excel;
 
     let energySupplierOptions = [];
     energySupplierOptions.push({ id: 0, name: '** Alle energie leveranciers **' });
@@ -50,7 +56,15 @@ const PartEnergySupplierExcelNew = props => {
             </div>
 
             <div className="row">
-                {distributions.length > 0 ? (
+                {isLastRevenuePartsKwh || isEndOfYearRevenuePartsKwh ? (
+                    <>
+                        <ViewText
+                            className={'form-group col-sm-6'}
+                            label={'Rapportage voor deelnames'}
+                            value={'Alle (aantal: ' + distributions.length + ')'}
+                        />
+                    </>
+                ) : distributions.length > 0 ? (
                     <>
                         <ViewText
                             className={'form-group col-sm-6'}
@@ -65,16 +79,20 @@ const PartEnergySupplierExcelNew = props => {
                             })}
                         />
                     </>
-                ) : null}
+                ) : (
+                    <>
+                        <ViewText
+                            className={'form-group col-sm-6'}
+                            label={'Rapportage voor deelnames'}
+                            value={'Geen'}
+                        />
+                    </>
+                )}
             </div>
 
             <PanelFooter>
                 <div className="pull-right btn-group" role="group">
-                    <ButtonText
-                        buttonClassName={'btn-default'}
-                        buttonText={'Annuleren'}
-                        onClickAction={props.switchToView}
-                    />
+                    <ButtonText buttonClassName={'btn-default'} buttonText={'Annuleren'} onClickAction={props.cancel} />
                     <ButtonText
                         buttonText={'Opslaan'}
                         onClickAction={props.handleSubmit}

@@ -421,6 +421,8 @@ class RevenuePartsKwhDistributionForm extends Component {
                         <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={this.reloadDistributions} />
                         {this.props.revenuePartsKwh &&
                         this.props.revenuePartsKwh.confirmed == 1 &&
+                        (this.props.revenuePartsKwh.status == 'confirmed' ||
+                            this.props.revenuePartsKwh.status == 'processed') &&
                         administrationIds.includes(
                             this.props &&
                                 this.props.revenuesKwh &&
@@ -441,9 +443,10 @@ class RevenuePartsKwhDistributionForm extends Component {
                                     />
                                 ) : null}
                                 <ButtonText
-                                    buttonText={'Selecteer Rapportage Energie leverancier'}
-                                    onClickAction={() => this.toggleShowCheckboxList('createEnergySupplierExcelReport')}
-                                    buttonClassName={'btn-primary'}
+                                    buttonText={'Rapportage Energie leverancier'}
+                                    onClickAction={this.checkDistributionPartsKwhEnergySupplierExcelReport}
+                                    type={'submit'}
+                                    value={'Submit'}
                                 />
                             </React.Fragment>
                         ) : null}
@@ -538,31 +541,6 @@ class RevenuePartsKwhDistributionForm extends Component {
                                             <ButtonText
                                                 buttonText={'Opbrengst verdelen'}
                                                 onClickAction={this.checkDistributionPartsKwhProcessRevenue}
-                                                type={'submit'}
-                                                value={'Submit'}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </PanelBody>
-                        </Panel>
-                    ) : null}
-                    {this.state.showCheckboxList && this.state.createType === 'createEnergySupplierExcelReport' ? (
-                        <Panel>
-                            <PanelBody>
-                                <div className="row">
-                                    <div className="col-md-12">
-                                        <ViewText label="Geselecteerde deelnemers" value={numberSelectedNumberTotal} />
-
-                                        <div className="margin-10-top pull-right btn-group" role="group">
-                                            <ButtonText
-                                                buttonClassName={'btn-default'}
-                                                buttonText={'Annuleren'}
-                                                onClickAction={this.toggleShowCheckboxList}
-                                            />
-                                            <ButtonText
-                                                buttonText={'Rapportage Energie leverancier'}
-                                                onClickAction={this.checkDistributionPartsKwhEnergySupplierExcelReport}
                                                 type={'submit'}
                                                 value={'Submit'}
                                             />

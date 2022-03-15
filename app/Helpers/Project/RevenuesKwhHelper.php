@@ -525,12 +525,24 @@ class RevenuesKwhHelper
 // todo WM: cleanup
 //
 //                        Log::info('split date ' . Carbon::parse($splitDate)->format('Y-m-d'));
-//                        Log::info('check date ' . Carbon::parse($lastRevenuePartsKwh->date_end)->addDay());
-                        if(Carbon::parse($endDateBeforeSplitDate)->format('Y-m-d') < Carbon::parse($lastRevenuePartsKwh->revenuesKwh->date_end)->addDay()) {
+//                        Log::info('enddate before split date ' . Carbon::parse($endDateBeforeSplitDate)->format('Y-m-d'));
+//                        Log::info('check date ' . Carbon::parse($lastRevenuePartsKwh->date_end)->addDay()->format('Y-m-d'));
+                        if(Carbon::parse($splitDate)->format('Y-m-d') < Carbon::parse($lastRevenuePartsKwh->revenuesKwh->date_end)->addDay()->format('Y-m-d')) {
 // todo WM: cleanup
 //
-//                            Log::info('date check niet ok ');
+//                            Log::error('date check niet ok ');
                             return false;
+                        } else if(Carbon::parse($splitDate)->format('Y-m-d') == Carbon::parse($lastRevenuePartsKwh->revenuesKwh->date_end)->addDay()->format('Y-m-d')) {
+
+                            $message = 'Periode ' . Carbon::parse($lastRevenuePartsKwh->date_begin)->format('d-m-Y') . ' t/m ' . Carbon::parse($lastRevenuePartsKwh->date_end)->format('d-m-Y');
+                            return [
+                                'success' => true,
+                                'newRevenue' => false,
+                                'revenuesId' => $lastRevenuePartsKwh->revenuesKwh->id,
+                                'revenuePartsId' => $lastRevenuePartsKwh->revenuesKwh->last_parts_kwh->id,
+                                'projectId' => $projectId,
+                                'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
+                            ];
                         } else {
 // todo WM: cleanup
 //

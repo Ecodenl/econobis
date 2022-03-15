@@ -475,7 +475,7 @@ class ParticipationProjectController extends ApiController
 
         $projectType = $participantProject->project->projectType;
         DB::transaction(function () use ($participantProject, $payoutPercentageTerminated, $projectType) {
-//            $participantProject->save();
+            $participantProject->save();
 
             $mutationStatusFinalId = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
 
@@ -514,7 +514,6 @@ class ParticipationProjectController extends ApiController
             }
 
             return $responseParticipations;
-//            return $revenuesKwhPart;
         }
 
     }
@@ -1070,7 +1069,8 @@ class ParticipationProjectController extends ApiController
             $participantMutation->participation_id = $participantProject->id;
             $participantMutation->type_id = $mutationTypeWithDrawalId;
             $participantMutation->status_id = $mutationStatusFinalId;
-            $participantMutation->date_entry = $participantProject['date_terminated'];
+            // date_entry is 1 day after date terminated
+            $participantMutation->date_entry = Carbon::parse($participantProject['date_terminated'])->addDay()->format('Y-m-d');
 
 
             if ($projectType->code_ref == 'loan') {
@@ -1122,13 +1122,17 @@ class ParticipationProjectController extends ApiController
         }
         $participantMutation->returns = $result;
         if ($projectType->code_ref == 'loan') {
-            $participantMutation->date_entry = $participantProject->date_terminated;
+            // date_entry is 1 day after date terminated
+            $participantMutation->date_entry = Carbon::parse($participantProject->date_terminated)->addDay()->format('Y-m-d');
         } else {
-            $participantMutation->date_payment = $participantProject->date_terminated;
+            // date_payment is 1 day after date terminated
+            $participantMutation->date_payment = Carbon::parse($participantProject->date_terminated)->addDay()->format('Y-m-d');
         }
         $participantMutation->paid_on = 'Bijschrijven';
 
-        $dateEntryYear = \Carbon\Carbon::parse($participantProject->date_terminated)->year;
+        // we controleren in jaar van beeindigsdatum + 1 dag
+        // (dit laatste omdat beeindiging op 31-12 nog wel mag, ook als hij in beeindigingsjaar dus in def. ws zat.
+        $dateEntryYear = \Carbon\Carbon::parse($participantProject->date_terminated)->addDay(1)->year;
         $result = $this->checkMutationAllowed($participantMutation, $dateEntryYear);
 
         $participantMutation->save();

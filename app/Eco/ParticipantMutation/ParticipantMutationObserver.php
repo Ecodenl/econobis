@@ -52,7 +52,11 @@ class ParticipantMutationObserver
 
         }
         // If date_entry is changed, than determine date_register (is earliest first deposit date entry) by participant again.
-        if($participantMutation->isDirty('date_entry')) {
+
+        $dateEntry = Carbon::parse($participantMutation->date_entry)->format('Y-m-d');
+        $dateEntryOriginal = Carbon::parse($participantMutation->getOriginal('date_entry'))->format('Y-m-d');
+        if($dateEntry!=$dateEntryOriginal)
+        {
             $participantProject = $participantMutation->participation;
             $participantProject->date_register = $participantProject->dateEntryFirstDeposit;
             $participantProject->save();
@@ -63,15 +67,15 @@ class ParticipantMutationObserver
                 if($revenuesKwh->confirmed) continue;
 
                 $revenuesKwhController->saveDistributionKwh($revenuesKwh, $participantProject);
-                foreach($revenuesKwh->partsKwh as $revenuePartsKwh) {
-                    //todo WM: of kan dit wel direct?
+                $partsUpFromDate = $dateEntry < $dateEntryOriginal ? $dateEntry : $dateEntryOriginal;
+                $parts = $revenuesKwh->partsKwh->where('date_begin', '>=', $partsUpFromDate);
+                foreach($parts as $revenuePartsKwh) {
                     if($revenuePartsKwh->status == 'concept'){
                         $revenuePartsKwh->status = 'concept-to-update';
                         $revenuePartsKwh->save();
                     }
                 }
             }
-
         }
     }
 

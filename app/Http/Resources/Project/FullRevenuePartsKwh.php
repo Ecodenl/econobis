@@ -33,8 +33,10 @@ class FullRevenuePartsKwh extends JsonResource
                 'valuesKwhStart' => $this->values_kwh_start,
                 'valuesKwhEnd' => $this->values_kwh_end,
                 'isLastRevenuePartsKwh' => $this->is_last_revenue_parts_kwh,
+                'isEndOfYearRevenuePartsKwh' => $this->is_end_of_year_revenue_parts_kwh,
                 'dateBeginRevenuesKwh' => $this->revenuesKwh->date_begin,
                 'nextRevenuePartsKwh' => FullRevenuePartsKwh::make($this->next_revenue_parts_kwh),
+                'distributionKwhForReportEnergySupplier' => $this->distribution_kwh_for_report_energy_supplier,
             ];
     }
 }

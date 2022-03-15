@@ -146,6 +146,10 @@ class RevenuePartsKwh extends Model
     {
         return Carbon::parse($this->date_end)->format('Y-m-d') == Carbon::parse($this->revenuesKwh->date_end)->format('Y-m-d');
     }
+    public function getIsEndOfYearRevenuePartsKwhAttribute()
+    {
+        return Carbon::parse($this->date_end)->month == 12 && Carbon::parse($this->date_end)->day == 31;
+    }
 
     public function getPreviousRevenuePartsKwhAttribute()
     {
@@ -156,6 +160,13 @@ class RevenuePartsKwh extends Model
     {
         $dateRegistrationDayAfterEnd = Carbon::parse($this->date_end)->addDay()->format('Y-m-d');
         return RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_begin', $dateRegistrationDayAfterEnd)->first();
+    }
+
+    public function getDistributionKwhForReportEnergySupplierAttribute()
+    {
+        $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_end', '<=', $this->date_end)->pluck('id')->toArray();
+        $distributionKwhIds = RevenueDistributionPartsKwh::whereIn('parts_id', $upToPartsKwhIds)->where('is_visible', 1)->whereNull('date_energy_supplier_report')->whereNotNull('es_id')->where('delivered_kwh', '!=', 0)->pluck('distribution_id')->toArray();
+        return array_unique($distributionKwhIds);
     }
 
     public function calculator()

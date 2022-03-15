@@ -68,9 +68,6 @@ class RevenuesKwhdetailsToolbar extends Component {
                                                 <li>
                                                     <Link to={pdfLink}>Ledenverklaring of productie specificatie</Link>
                                                 </li>
-                                                <li>
-                                                    <Link to={excelLink}>Opbrengstverdelingen deelnemers</Link>
-                                                </li>
                                             </ul>
                                         </div>
                                     ) : null}

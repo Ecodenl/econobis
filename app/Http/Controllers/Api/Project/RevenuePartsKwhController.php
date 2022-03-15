@@ -154,18 +154,17 @@ class RevenuePartsKwhController extends ApiController
         RevenuePartsKwh $revenuePartsKwh
     )
     {
-        $distributionPartsKwhIds = $request->input('distributionPartsKwhIds');
         $upToRevenuePartsKwh = RevenuePartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_end', '<=', $revenuePartsKwh->date_end)->get();
 
         $energySupplierIds = [];
         foreach ($upToRevenuePartsKwh as $partItem){
-            $partItemEnergySupplierIds = $partItem->distributionPartsKwh()->whereNotNull('es_id')->pluck('es_id')->toArray();
+            $partItemEnergySupplierIds = $partItem->distributionPartsKwh()->whereNull('date_energy_supplier_report')->where('is_visible', 1)->whereNotNull('es_id')->where('delivered_kwh', '!=', 0)->pluck('es_id')->toArray();
             $energySupplierIds = array_merge($partItemEnergySupplierIds, $energySupplierIds);
         }
         $energySupplierIds = array_unique($energySupplierIds);
         foreach ($energySupplierIds as $energySupplierId) {
             $energySupplier = EnergySupplier::find($energySupplierId);
-            $this->createEnergySupplierExcel($request, $revenuePartsKwh, $energySupplier, $distributionPartsKwhIds, true);
+            $this->createEnergySupplierExcel($request, $revenuePartsKwh, $energySupplier, true);
         }
     }
 
@@ -175,15 +174,13 @@ class RevenuePartsKwhController extends ApiController
         EnergySupplier $energySupplier
     )
     {
-        $distributionPartsKwhIds = $request->input('distributionPartsKwhIds');
-        $this->createEnergySupplierExcel($request, $revenuePartsKwh, $energySupplier, $distributionPartsKwhIds, false);
+        $this->createEnergySupplierExcel($request, $revenuePartsKwh, $energySupplier, false);
     }
 
     protected function createEnergySupplierExcel(
         Request $request,
         RevenuePartsKwh $revenuePartsKwh,
         EnergySupplier $energySupplier,
-        $distributionPartsKwhIds,
         $createAll
     )
     {
@@ -204,8 +201,7 @@ class RevenuePartsKwhController extends ApiController
 
         if ($templateId) {
             set_time_limit(0);
-            $excelHelper = new EnergySupplierExcelHelper($energySupplier, null, null,
-                $revenuePartsKwh, $distributionPartsKwhIds, $templateId, $fileName);
+            $excelHelper = new EnergySupplierExcelHelper($energySupplier, $revenuePartsKwh, $templateId, $fileName);
             $excel = $excelHelper->getExcel();
             if(!$excel) return;
         }else{

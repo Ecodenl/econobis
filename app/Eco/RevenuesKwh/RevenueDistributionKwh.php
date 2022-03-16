@@ -77,7 +77,7 @@ class RevenueDistributionKwh extends Model
     }
     public function getDeliveredTotalConfirmedStringAttribute()
     {
-        return number_format( $this->delivered_total_confirmed, '2',',', '.' );
+        return number_format( ($this->delivered_total_confirmed + $this->delivered_total_processed), '2',',', '.' );
     }
     public function getDeliveredTotalProcessedStringAttribute()
     {

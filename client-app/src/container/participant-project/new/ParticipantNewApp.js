@@ -136,6 +136,16 @@ class ParticipantNewApp extends Component {
                 ? moment(moment().year(lastYearFinancialOverviewDefinitive + 1)).format('YYYY-01-01')
                 : '';
 
+        if (project && project.typeCodeRef === 'postalcode_link_capital') {
+            if (
+                project.dateInterestBearingKwh &&
+                (!disableBeforeEntryDate ||
+                    moment(project.dateInterestBearingKwh).format('YYYY-MM-DD') < disableBeforeEntryDate)
+            ) {
+                disableBeforeEntryDate = moment(project.dateInterestBearingKwh).format('YYYY-MM-DD');
+            }
+        }
+
         return disableBeforeEntryDate;
     }
 

@@ -370,6 +370,24 @@ const DefaultContactOrganisationEdit = function({
                         ''
                     )}
                 </FormLabel>
+                {((!isNaN(values.visitAddress.number) && values.visitAddress.number == 0) ||
+                    (isNaN(values.visitAddress.number) && values.visitAddress.number.trim() == '') ||
+                    values.visitAddress.postalCode.trim() == '') &&
+                (values.visitAddress.street.trim() != '' ||
+                    values.visitAddress.number.trim() != '' ||
+                    values.visitAddress.addition.trim() != '' ||
+                    values.visitAddress.postalCode.trim() != '' ||
+                    values.visitAddress.city.trim() != '') ? (
+                    <Row>
+                        <Col xs={12} sm={12}>
+                            <small className={'text-danger'}>
+                                Adres wordt alleen opgeslagen als minimaal nummer en postcode zijn ingevuld.
+                            </small>
+                        </Col>
+                    </Row>
+                ) : (
+                    ''
+                )}
                 <Row>
                     <Col xs={12} sm={12}>
                         <Field
@@ -476,6 +494,22 @@ const DefaultContactOrganisationEdit = function({
                 >
                     EAN nummer electriciteit
                 </FormLabel>
+                {((!isNaN(values.visitAddress.number) && values.visitAddress.number == 0) ||
+                    (isNaN(values.visitAddress.number) && values.visitAddress.number.trim() == '') ||
+                    values.visitAddress.postalCode.trim() == '') &&
+                values.visitAddress.eanElectricity != null &&
+                values.visitAddress.eanElectricity.trim() != '' ? (
+                    <Row>
+                        <Col xs={12} sm={12}>
+                            <small className={'text-danger'}>
+                                EAN nummer electriciteit wordt alleen opgeslagen als minimaal nummer en postcode zijn
+                                ingevuld bij bezoekadres.
+                            </small>
+                        </Col>
+                    </Row>
+                ) : (
+                    ''
+                )}
                 <Row>
                     <Col xs={12} sm={12} md={8}>
                         <Field
@@ -496,6 +530,22 @@ const DefaultContactOrganisationEdit = function({
                 <FormLabel htmlFor="ean_gas" className={'field-label'}>
                     EAN nummer gas
                 </FormLabel>
+                {((!isNaN(values.visitAddress.number) && values.visitAddress.number == 0) ||
+                    (isNaN(values.visitAddress.number) && values.visitAddress.number.trim() == '') ||
+                    values.visitAddress.postalCode.trim() == '') &&
+                values.visitAddress.eanGas != null &&
+                values.visitAddress.eanGas.trim() != '' ? (
+                    <Row>
+                        <Col xs={12} sm={12}>
+                            <small className={'text-danger'}>
+                                EAN nummer gas wordt alleen opgeslagen als minimaal nummer en postcode zijn ingevuld bij
+                                bezoekadres.
+                            </small>
+                        </Col>
+                    </Row>
+                ) : (
+                    ''
+                )}
                 <Row>
                     <Col xs={12} sm={12} md={8}>
                         <Field
@@ -526,6 +576,43 @@ const DefaultContactOrganisationEdit = function({
                         >
                             Huidige energie leverancier
                         </FormLabel>
+                        {((!isNaN(values.visitAddress.number) && values.visitAddress.number == 0) ||
+                            (isNaN(values.visitAddress.number) && values.visitAddress.number.trim() == '') ||
+                            values.visitAddress.postalCode.trim() == '') &&
+                        (values.visitAddress.primaryAddressEnergySupplier.energySupplierId != null ||
+                            (values.visitAddress.primaryAddressEnergySupplier.esNumber &&
+                                values.visitAddress.primaryAddressEnergySupplier.esNumber.trim() != '') ||
+                            (values.visitAddress.primaryAddressEnergySupplier.memberSince &&
+                                values.visitAddress.primaryAddressEnergySupplier.memberSince.trim() != '')) ? (
+                            <Row>
+                                <Col xs={12} sm={12}>
+                                    <small className={'text-danger'}>
+                                        Huidige energie leverancier gegevens wordt alleen opgeslagen als minimaal nummer
+                                        en postcode zijn ingevuld bij bezoekadres.
+                                    </small>
+                                </Col>
+                            </Row>
+                        ) : (
+                            ''
+                        )}
+                        {(!values.visitAddress.primaryAddressEnergySupplier.memberSince ||
+                            values.visitAddress.primaryAddressEnergySupplier.memberSince.trim() == '') &&
+                        (values.visitAddress.primaryAddressEnergySupplier.energySupplierId != null ||
+                            (values.visitAddress.primaryAddressEnergySupplier.esNumber &&
+                                values.visitAddress.primaryAddressEnergySupplier.esNumber.trim() != '') ||
+                            (values.visitAddress.primaryAddressEnergySupplier.memberSince &&
+                                values.visitAddress.primaryAddressEnergySupplier.memberSince.trim() != '')) ? (
+                            <Row>
+                                <Col xs={12} sm={12}>
+                                    <small className={'text-danger'}>
+                                        Huidige energie leverancier gegevens wordt alleen opgeslagen Klant bij
+                                        leverancier sinds is ingevuld.
+                                    </small>
+                                </Col>
+                            </Row>
+                        ) : (
+                            ''
+                        )}
                         <Row>
                             <Col xs={12} sm={12} md={8}>
                                 <Field
@@ -617,6 +704,24 @@ const DefaultContactOrganisationEdit = function({
                 <FormLabel htmlFor="street" className="field-label">
                     Postadres
                 </FormLabel>
+                {((!isNaN(values.postalAddress.number) && values.postalAddress.number == 0) ||
+                    (isNaN(values.postalAddress.number) && values.postalAddress.number.trim() == '') ||
+                    values.postalAddress.postalCode.trim() == '') &&
+                (values.postalAddress.street.trim() != '' ||
+                    values.postalAddress.number.trim() != '' ||
+                    values.postalAddress.addition.trim() != '' ||
+                    values.postalAddress.postalCode.trim() != '' ||
+                    values.postalAddress.city.trim() != '') ? (
+                    <Row>
+                        <Col xs={12} sm={12}>
+                            <small className={'text-danger'}>
+                                Adres wordt alleen opgeslagen als minimaal nummer en postcode zijn ingevuld.
+                            </small>
+                        </Col>
+                    </Row>
+                ) : (
+                    ''
+                )}
                 <Row>
                     <Col xs={12} sm={12}>
                         <Field
@@ -713,6 +818,24 @@ const DefaultContactOrganisationEdit = function({
                 <FormLabel htmlFor="street" className="field-label">
                     Nota adres
                 </FormLabel>
+                {((!isNaN(values.invoiceAddress.number) && values.invoiceAddress.number == 0) ||
+                    (isNaN(values.invoiceAddress.number) && values.invoiceAddress.number.trim() == '') ||
+                    values.invoiceAddress.postalCode.trim() == '') &&
+                (values.invoiceAddress.street.trim() != '' ||
+                    values.invoiceAddress.number.trim() != '' ||
+                    values.invoiceAddress.addition.trim() != '' ||
+                    values.invoiceAddress.postalCode.trim() != '' ||
+                    values.invoiceAddress.city.trim() != '') ? (
+                    <Row>
+                        <Col xs={12} sm={12}>
+                            <small className={'text-danger'}>
+                                Adres wordt alleen opgeslagen als minimaal nummer en postcode zijn ingevuld.
+                            </small>
+                        </Col>
+                    </Row>
+                ) : (
+                    ''
+                )}
                 <Row>
                     <Col xs={12} sm={12}>
                         <Field

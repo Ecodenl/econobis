@@ -25,6 +25,7 @@ class ProjectPeek extends JsonResource
                 'isSceProject' => $this->is_sce_project,
                 'dateEntry' => $this->date_entry,
                 'lastYearFinancialOverviewDefinitive' => $this->last_year_financial_overview_definitive,
+                'dateInterestBearingKwh' => $this->date_interest_bearing_kwh,
             ];
     }
 }

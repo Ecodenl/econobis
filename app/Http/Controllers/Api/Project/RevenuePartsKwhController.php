@@ -338,6 +338,12 @@ class RevenuePartsKwhController extends ApiController
             ])->output();
 
             return $pdf;
+        } else {
+            $pdf = PDF::loadView('documents.generic', [
+                'html' => '',
+            ])->output();
+
+            return $pdf;
         }
         return null;
     }

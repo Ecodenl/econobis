@@ -452,7 +452,7 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
                                         : {}
                                 }
                             >
-                                Beeindigde adres/Energyleverancier komt voor bij deelnames in volgende projecten: <br />
+                                Beëindigde adres/Energyleverancier komt voor bij deelnames in volgende projecten: <br />
                                 <ul>
                                     {this.state.messageHasParticipationsProjectsArray.map(item => (
                                         <li>{item.projectMessage}</li>

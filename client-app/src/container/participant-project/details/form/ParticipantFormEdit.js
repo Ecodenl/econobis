@@ -367,7 +367,7 @@ class ParticipantFormEdit extends Component {
                     />
                     {dateTerminated ? (
                         <ViewText
-                            label={'Datum beeindiging deelname'}
+                            label={'Datum beëindiging deelname'}
                             value={dateTerminated ? moment(dateTerminated).format('DD-MM-Y') : ''}
                         />
                     ) : null}

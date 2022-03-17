@@ -8,7 +8,7 @@ const RevenuePartsKwhDistributionFormList = props => {
     return (
         <div>
             {props.revenuePartsKwh.status == 'in-progress-update' ? (
-                <p>Wordt bijgewerkt ...</p>
+                <p>Wordt bijgewerkt ... (gebruik refresh knop rechts om scherm te refreshen)</p>
             ) : (
                 <>
                     <div className="row border header">

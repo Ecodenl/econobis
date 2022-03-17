@@ -597,7 +597,8 @@ const DefaultContactOrganisationEdit = function({
                         )}
                         {(!values.visitAddress.primaryAddressEnergySupplier.memberSince ||
                             values.visitAddress.primaryAddressEnergySupplier.memberSince.trim() == '') &&
-                        (values.visitAddress.primaryAddressEnergySupplier.energySupplierId != null ||
+                        ((values.visitAddress.primaryAddressEnergySupplier.energySupplierId != null &&
+                            values.visitAddress.primaryAddressEnergySupplier.energySupplierId.trim() != '') ||
                             (values.visitAddress.primaryAddressEnergySupplier.esNumber &&
                                 values.visitAddress.primaryAddressEnergySupplier.esNumber.trim() != '') ||
                             (values.visitAddress.primaryAddressEnergySupplier.memberSince &&
@@ -687,6 +688,7 @@ const DefaultContactOrganisationEdit = function({
                                                     onChangeAction={setFieldValue}
                                                     disabledBefore={memberSinceDisabledBefore}
                                                     disabledAfter={memberSinceDisabledAfter}
+                                                    manualInput={false}
                                                     id="member_since"
                                                     placeholder={'Klant sinds'}
                                                 />

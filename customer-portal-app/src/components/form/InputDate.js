@@ -11,6 +11,7 @@ const InputDate = ({
     value,
     required,
     readOnly,
+    manualInput,
     name,
     disabledBefore,
     disabledAfter,
@@ -35,8 +36,12 @@ const InputDate = ({
 
     return (
         <>
-            {get(errors, name, '') && get(touched, name, '') && showErrorMessage ? (
-                <small className={`${classNameErrorMessage}`}>{get(errors, name, '')}</small>
+            {/*{get(errors, name, '') && get(touched, name, '') && showErrorMessage ? (*/}
+            {get(errors, name, '') && showErrorMessage ? (
+                <>
+                    <small className={`${classNameErrorMessage}`}>{get(errors, name, '')}</small>
+                    <br />
+                </>
             ) : null}
             <DayPickerInput
                 id={id}
@@ -52,12 +57,15 @@ const InputDate = ({
                     disabledDays: disabledDays,
                 }}
                 inputProps={{
-                    className: `text-input content w-input ${className} ${
-                        Boolean(get(errors, name, '') && get(touched, name, '')) ? 'has-error mb-0' : ''
-                    } `,
+                    className: `text-input content ${className}
+                     ${Boolean(manualInput) ? ' w-input' : ' w-input-date'}
+                     ${
+                         // Boolean(get(errors, name, '') && get(touched, name, '')) ? 'has-error mb-0' : ''
+                         Boolean(get(errors, name, '')) ? ' has-error mb-0' : ''
+                     } `,
                     name: name,
                     autoComplete: 'off',
-                    readOnly: readOnly,
+                    readOnly: Boolean(manualInput) ? readOnly : true,
                     disabled: readOnly,
                     placeholder: placeholder,
                 }}
@@ -73,6 +81,7 @@ InputDate.defaultProps = {
     className: '',
     required: '',
     readOnly: false,
+    manualInput: true,
     value: null,
     placeholder: '',
     showErrorMessage: true,

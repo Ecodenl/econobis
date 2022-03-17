@@ -267,14 +267,16 @@ class RevenuesKwhFormEdit extends Component {
                         label={'Datum definitief'}
                         name={'dateConfirmed'}
                         value={dateConfirmed}
-                        readOnly={status == 'new' || status == 'processed' || hasNewPartsKwh}
+                        // readOnly={status == 'new' || status == 'processed' || hasNewPartsKwh}
+                        readOnly={true}
                         onChangeAction={this.handleInputChangeDateConfirmed}
                     />
                     <InputDate
                         label={'Uitkeringsdatum'}
                         name={'datePayout'}
                         value={datePayout}
-                        readOnly={status == 'new' || status == 'processed' || hasNewPartsKwh}
+                        // readOnly={status == 'new' || status == 'processed' || hasNewPartsKwh}
+                        readOnly={true}
                         onChangeAction={this.handleInputChangeDate}
                     />
                 </div>

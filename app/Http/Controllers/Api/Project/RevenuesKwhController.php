@@ -126,7 +126,6 @@ class RevenuesKwhController extends ApiController
     {
         $this->authorize('manage', RevenuesKwh::class);
 
-        $oldConfirmed = $revenuesKwh->confirmed;
         $oldDateBegin = $revenuesKwh->date_begin;
         $oldDateEnd = $revenuesKwh->date_end;
         $oldPayoutKwh = $revenuesKwh->payout_kwh;
@@ -145,16 +144,13 @@ class RevenuesKwhController extends ApiController
         $revenuesKwh->fill($data);
 
         $recalculateDistribution = false;
-        if((boolean) $revenuesKwh->confirmed != (boolean) $oldConfirmed ||
+        if(
             Carbon::parse($revenuesKwh->date_begin) != Carbon::parse($oldDateBegin) ||
             Carbon::parse($revenuesKwh->date_end) != Carbon::parse($oldDateEnd) ||
             floatval($revenuesKwh->payout_kwh) != floatval($oldPayoutKwh)) {
             $recalculateDistribution = true;
         }
-        // todo WM: tijdelijk, nog opschonen !!!!!!!!!!!
-//        if(!(boolean) $revenuesKwh->confirmed){
-//            $recalculateDistribution = true;
-//        }
+        $revenuesKwh->save();
 
         if(floatval($revenuesKwh->payout_kwh) != floatval($oldPayoutKwh)) {
             // Alle parts met status new of concept ook definitief maken (confirmed)
@@ -163,38 +159,6 @@ class RevenuesKwhController extends ApiController
                 $newOrConceptPartsKwh->save();
             }
         }
-
-        if($revenuesKwh->confirmed) {
-            if ($revenuesKwh->status == 'concept') {
-                // Alle values met status concept ook definitief maken (confirmed)
-                foreach ($revenuesKwh->conceptValuesKwh as $conceptValueKwh){
-                    $conceptValueKwh->status = 'confirmed';
-                    $conceptValueKwh->save();
-                }
-                // Alle parts met status concept ook definitief maken (confirmed)
-                foreach ($revenuesKwh->conceptPartsKwh as $conceptRevenuePartKwh){
-                    $conceptRevenuePartKwh->confirmed = true;
-                    $conceptRevenuePartKwh->status = 'confirmed';
-                    $conceptRevenuePartKwh->date_confirmed = $revenuesKwh->date_confirmed;
-                    foreach($conceptRevenuePartKwh->conceptDistributionPartsKwh as $distributionPreviousPartsKwh){
-                        $distributionPreviousPartsKwh->status = 'confirmed';
-                        $distributionPreviousPartsKwh->save();
-                    }
-                    foreach($conceptRevenuePartKwh->conceptDistributionValuesKwh as $distributionPreviousValuesKwh){
-                        $distributionPreviousValuesKwh->status = 'confirmed';
-                        $distributionPreviousValuesKwh->save();
-                    }
-                    foreach($conceptRevenuePartKwh->conceptDistributionValuesKwh as $distributionPreviousValuesKwh){
-                        $distributionPreviousValuesKwh->status = 'confirmed';
-                        $distributionPreviousValuesKwh->save();
-                    }
-                    $conceptRevenuePartKwh->save();
-                    $conceptRevenuePartKwh->calculator()->countingsConceptConfirmedProcessed();
-                }
-                $revenuesKwh->status = 'confirmed';
-            }
-        }
-        $revenuesKwh->save();
 
         if($recalculateDistribution){
             if(Carbon::parse($revenuesKwh->date_end)->format('Y-m-d') > Carbon::parse($oldDateEnd)->format('Y-m-d')) {
@@ -994,17 +958,21 @@ class RevenuesKwhController extends ApiController
                 }
                 $this->createParticipantMutationForRevenueKwh($distributionKwh, $datePayout, $mutationEnergyTaxRefund);
 
-                if($distributionKwh->distributionValuesKwh->where('status', '!=', 'processed')->count() == 0
-                    && $distributionKwh->distributionValuesKwh->where('status', '==', 'processed')->count() > 0
-                ){
-                    $distributionKwh->status = 'processed';
+                if($distributionKwh->revenuesKwh->partsKwh->where('status', '==', 'new')->count() > 0){
+                    $distributionKwh->status = 'concept';
                 } else {
-                    if($distributionKwh->distributionValuesKwh->where('status', '!=', 'confirmed')->count() == 0
-                        && $distributionKwh->distributionValuesKwh->where('status', '==', 'confirmed')->count() > 0
+                    if($distributionKwh->distributionValuesKwh->where('status', '!=', 'processed')->count() == 0
+                        && $distributionKwh->distributionValuesKwh->where('status', '==', 'processed')->count() > 0
                     ){
-                        $distributionKwh->status = 'confirmed';
+                        $distributionKwh->status = 'processed';
                     } else {
-                        $distributionKwh->status = 'concept';
+                        if($distributionKwh->distributionValuesKwh->where('status', '!=', 'confirmed')->count() == 0
+                            && $distributionKwh->distributionValuesKwh->where('status', '==', 'confirmed')->count() > 0
+                        ){
+                            $distributionKwh->status = 'confirmed';
+                        } else {
+                            $distributionKwh->status = 'concept';
+                        }
                     }
                 }
                 $distributionKwh->save();
@@ -1028,7 +996,8 @@ class RevenuesKwhController extends ApiController
             }
         }
 
-        $revenuesKwh = $distributionsKwh->first()->revenuesKwh;
+        // Reload revenuesKwh
+        $revenuesKwh = RevenuesKwh::find($distributionsKwh->first()->revenue_id);
 
         if($revenuesKwh->distributionKwh->where('status', '!=', 'processed')->count() == 0
             && $revenuesKwh->distributionKwh->where('status', '==', 'processed')->count() > 0
@@ -1036,10 +1005,9 @@ class RevenuesKwhController extends ApiController
             && $revenuesKwh->partsKwh->where('status', '==', 'processed')->count() > 0
         ){
             $revenuesKwh->status = 'processed';
-        }else{
-            $revenuesKwh->status = 'confirmed';
+            $revenuesKwh->save();
         }
-        $revenuesKwh->save();
+
     }
 
     protected function createParticipantMutationForRevenueKwh(RevenueDistributionKwh $distributionKwh, $datePayout, $mutationEnergyTaxRefund){

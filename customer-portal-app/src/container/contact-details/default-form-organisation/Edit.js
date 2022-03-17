@@ -606,7 +606,7 @@ const DefaultContactOrganisationEdit = function({
                             <Row>
                                 <Col xs={12} sm={12}>
                                     <small className={'text-danger'}>
-                                        Huidige energie leverancier gegevens wordt alleen opgeslagen Klant bij
+                                        Huidige energie leverancier gegevens wordt alleen opgeslagen als Klant bij
                                         leverancier sinds is ingevuld.
                                     </small>
                                 </Col>

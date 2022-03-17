@@ -716,6 +716,7 @@ color: var(--black-color);
 
 /* ----------------- INPUT STYLING -----------------*/
 .w-input,
+.w-input-date,
 .w-select {
 display: block;
 width: 100%;
@@ -730,24 +731,29 @@ background-color: white;
 border: 1px solid #cccccc;
 }
 .w-input:focus,
+.w-input-date:focus,
 .w-select:focus {
 {{--border-color: var(--main-secondary-color);--}}
 outline: 0;
 }
 .w-input:-moz-placeholder,
+.w-input-date:-moz-placeholder,
 .w-select:-moz-placeholder {
 {{--color: var(--main-secondary-text-color);--}}
 }
 .w-input::-moz-placeholder,
+.w-input-date::-moz-placeholder,
 .w-select::-moz-placeholder {
 {{--color: var(--main-secondary-text-color);--}}
 opacity: 1;
 }
 .w-input:-ms-input-placeholder,
+.w-input-date:-ms-input-placeholder,
 .w-select:-ms-input-placeholder {
 {{--color: var(--main-secondary-text-color);--}}
 }
 .w-input::-webkit-input-placeholder,
+.w-input-date::-webkit-input-placeholder,
 .w-select::-webkit-input-placeholder {
 {{--color: var(--main-secondary-text-color);--}}
 }
@@ -790,15 +796,18 @@ border: 1px none #000;
 
 
 .w-input[disabled],
+.w-input-date[disabled],
 .w-select[disabled],
 .w-input[readonly],
 .w-select[readonly],
 fieldset[disabled] .w-input,
+fieldset[disabled] .w-input-date,
 fieldset[disabled] .w-select {
 cursor: not-allowed;
 background-color: #eeeeee;
 }
 textarea.w-input,
+textarea.w-input-date,
 textarea.w-select {
 height: auto;
 }

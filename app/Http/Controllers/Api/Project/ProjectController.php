@@ -353,7 +353,7 @@ class ProjectController extends ApiController
 
     public function peek()
     {
-        $projects = Project::orderBy('id')->get();
+        $projects = Project::orderBy('name')->orderBy('id')->get();
 
         $projects->load(['projectType']);
 

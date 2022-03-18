@@ -5,10 +5,14 @@ import RevenuePartsKwhDistributionFormView from './RevenuePartsKwhDistributionFo
 import DataTablePagination from '../../../../../../../../components/dataTable/DataTablePagination';
 
 const RevenuePartsKwhDistributionFormList = props => {
+    console.log(props);
     return (
         <div>
             {props.revenuePartsKwh.status == 'in-progress-update' ? (
-                <p>Wordt bijgewerkt ... (gebruik refresh knop rechts om scherm te refreshen)</p>
+                <p>
+                    Wordt bijgewerkt ... (Gebruik blauwe refresh/vernieuwen knop of F5 (Command + R op Mac) om
+                    deelnemers te verversen.)
+                </p>
             ) : (
                 <>
                     <div className="row border header">
@@ -32,8 +36,15 @@ const RevenuePartsKwhDistributionFormList = props => {
                         <div className="col-sm-2">Status</div>
                         <div className="col-sm-1"></div>
                     </div>
-                    {props.revenuePartsKwh.distributionPartsKwh &&
-                    props.revenuePartsKwh.distributionPartsKwh.data.length > 0 ? (
+                    {props.revenuePartsKwh && props.revenuePartsKwh.status == 'new' ? (
+                        <div>
+                            Deelnemers worden pas getoond na het invoeren en opslaan van de meterstanden bij deze
+                            periode.
+                            <br />
+                            <br />
+                        </div>
+                    ) : props.revenuePartsKwh.distributionPartsKwh &&
+                      props.revenuePartsKwh.distributionPartsKwh.data.length > 0 ? (
                         props.revenuePartsKwh.distributionPartsKwh.data.map(participation => {
                             return (
                                 <RevenuePartsKwhDistributionFormView
@@ -47,7 +58,11 @@ const RevenuePartsKwhDistributionFormList = props => {
                             );
                         })
                     ) : (
-                        <div>Geen deelnemers bekend.</div>
+                        <div>
+                            Geen deelnemers bekend.
+                            <br />
+                            <br />
+                        </div>
                     )}
                     {/* todo origineel 100: voor testen op 4*/}
                     <DataTablePagination

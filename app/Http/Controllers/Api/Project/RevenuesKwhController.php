@@ -899,19 +899,35 @@ class RevenuesKwhController extends ApiController
     public function processRevenuesKwh(Request $request)
     {
         set_time_limit(0);
-        $distributionKwhIds = $request->input('distributionKwhIds');
+        $distributionsKwhIds = $request->input('distributionKwhIds');
         $datePayout = $request->input('datePayout');
+        $revenueskwh = RevenueDistributionKwh::find($distributionsKwhIds[0])->revenuesKwh;
+        $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $revenueskwh->id)->where('status', '!=', 'processed')->pluck('id')->toArray();
 
-        $revenueId = RevenueDistributionKwh::find($distributionKwhIds[0])->revenue_id;
-        $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $revenueId)->where('status', '!=', 'processed')->pluck('id')->toArray();
+        ProcessRevenuesKwh::dispatch($distributionsKwhIds, $revenueskwh->date_confirmed, $datePayout, $upToPartsKwhIds, Auth::id());
 
-        ProcessRevenuesKwh::dispatch($distributionKwhIds, $datePayout, $upToPartsKwhIds, Auth::id());
-
-        return RevenueDistributionKwh::find($distributionKwhIds[0])->revenuesKwh->project->administration_id;
+        return $revenueskwh->project->administration_id;
     }
 
-    public function processRevenuesKwhJob($distributionsKwh, $datePayout, $upToPartsKwhIds)
+    public function processRevenuesKwhJob($distributionsKwh, $dateConfirmed, $datePayout, $upToPartsKwhIds)
     {
+        $partsKwh = RevenuePartsKwh::whereIn('id', $upToPartsKwhIds)->get();
+        foreach ($partsKwh as $partKwh) {
+            if ($partKwh->status === 'in-progress-process') {
+                // Part (en alle voorgaande parts) met status in-progress-process ook definitief maken (confirmed true)
+                $partKwh->confirmed = true;
+                $partKwh->date_confirmed = $dateConfirmed;
+                $partKwh->date_payout = $datePayout;
+                $partKwh->save();
+
+                // Values van part (en alle voorgaande parts) met status in-progress-process ook definitief maken (status confirmed)
+                foreach ($partKwh->conceptValuesKwh() as $conceptValueKwh) {
+                    $conceptValueKwh->status = 'confirmed';
+                    $conceptValueKwh->save();
+                }
+            }
+        }
+
         if (!($distributionsKwh->first())->revenuesKwh->project->administration_id) {
             abort(400,
                 'Geen administratie gekoppeld aan dit productie project');
@@ -1005,7 +1021,20 @@ class RevenuesKwhController extends ApiController
             && $revenuesKwh->partsKwh->where('status', '==', 'processed')->count() > 0
         ){
             $revenuesKwh->status = 'processed';
+            $revenuesKwh->confirmed = true;
+            $revenuesKwh->date_confirmed = $dateConfirmed;
             $revenuesKwh->save();
+        } else {
+            if($revenuesKwh->distributionKwh->where('status', '!=', 'confirmed')->count() == 0
+                && $revenuesKwh->distributionKwh->where('status', '==', 'confirmed')->count() > 0
+                && $revenuesKwh->partsKwh->where('status', '!=', 'confirmed')->count() == 0
+                && $revenuesKwh->partsKwh->where('status', '==', 'confirmed')->count() > 0
+            ){
+                $revenuesKwh->status = 'confirmed';
+                $revenuesKwh->confirmed = true;
+                $revenuesKwh->date_confirmed = $dateConfirmed;
+                $revenuesKwh->save();
+            }
         }
 
     }

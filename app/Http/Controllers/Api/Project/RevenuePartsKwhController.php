@@ -100,12 +100,9 @@ class RevenuePartsKwhController extends ApiController
             $revenuePartsKwh->status = 'concept';
         }
 
-        if($revenuePartsKwh->confirmed) {
-            $revenuePartsKwh->status = 'confirmed';
-        }
         $revenuePartsKwh->save();
 
-        if($revenuePartsKwh->status == 'concept') {
+        if(!$revenuePartsKwh->confirmed && $revenuePartsKwh->status == 'concept') {
             $valuesKwhData = $request->get("valuesKwh");
             $recalculateNextPart = false;
 
@@ -138,7 +135,7 @@ class RevenuePartsKwhController extends ApiController
             }
         }
 
-        if($revenuePartsKwh->confirmed) {
+        if($revenuePartsKwh->confirmed && $revenuePartsKwh->status == 'concept') {
             $this->setRevenuePartsKwhDefinitive($revenuePartsKwh);
         }
 
@@ -465,86 +462,33 @@ class RevenuePartsKwhController extends ApiController
     {
         set_time_limit(0);
 
-        if($revenuePartsKwh->confirmed) {
-            // Alle voorgaande parts met status concept ook definitief maken (confirmed)
-            $checkDateForPreviousPart = Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d');
-            $previousRevenuePartsKwh = RevenuePartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_end', '<', $checkDateForPreviousPart)->where('status', 'concept')->orderBy('date_begin')->get();
-            foreach ($previousRevenuePartsKwh as $previousRevenuePartKwh){
-
-                $previousRevenuePartKwh->confirmed = true;
-                $previousRevenuePartKwh->status = 'confirmed';
-                $previousRevenuePartKwh->date_confirmed = $revenuePartsKwh->date_confirmed;
-
-                // todo WM: check of we day after end date revenue ook niet al op confirmed moeten zetten?
-                // vooralsnog denk ik niet. Hier staan dan wel eindstanden vermeld voor deze periode wat beginstanden zijn voor volgende periode
-                // maar die kan je niet vanuit die volgende periode wijzigen. Verder is delivered_kwh die daar staat voor volgende periode.
-                foreach ($previousRevenuePartKwh->conceptValuesKwh() as $conceptValueKwh){
-                    $conceptValueKwh->status = 'confirmed';
-                    $conceptValueKwh->save();
-                }
-                foreach($previousRevenuePartKwh->conceptDistributionPartsKwh as $distributionPreviousPartsKwh){
-                    $distributionPreviousPartsKwh->status = 'confirmed';
-                    $distributionPreviousPartsKwh->save();
-                }
-                foreach($previousRevenuePartKwh->conceptDistributionValuesKwh as $distributionPreviousValuesKwh){
-                    $distributionPreviousValuesKwh->status = 'confirmed';
-                    $distributionPreviousValuesKwh->save();
-                }
-                $previousRevenuePartKwh->save();
-            }
-
-            $revenuePartsKwh->status = 'confirmed';
-            // todo WM: check of we day after end date revenue ook niet al op confirmed moeten zetten?
-            // vooralsnog denk ik niet. Hier staan dan wel eindstanden vermeld voor deze periode wat beginstanden zijn voor volgende periode
-            // maar die kan je niet vanuit die volgende periode wijzigen. Verder is delivered_kwh die daar staat voor volgende periode.
-            foreach($revenuePartsKwh->conceptValuesKwh() as $conceptValueKwh){
-                $conceptValueKwh->status = 'confirmed';
-                $conceptValueKwh->save();
-            }
-            foreach($revenuePartsKwh->conceptDistributionPartsKwh as $distributionPartsKwh){
-                $distributionPartsKwh->status = 'confirmed';
-                $distributionPartsKwh->save();
-            }
-            foreach($revenuePartsKwh->conceptDistributionValuesKwh as $distributionValuesKwh){
-                $distributionValuesKwh->status = 'confirmed';
-                $distributionValuesKwh->save();
-            }
-        }
-
-        // laatste part op confirmed, dan ook revenueDistributionKwh en revenuesKwh op confirmed.
-        if($revenuePartsKwh->status == 'confirmed' && $revenuePartsKwh->is_last_revenue_parts_kwh && $revenuePartsKwh->revenuesKwh->status == 'concept') {
-            foreach ($revenuePartsKwh->revenuesKwh->distributionKwh as $distributionKwh){
-                $distributionKwh->status = 'confirmed';
-                $distributionKwh->save();
-            }
-            $revenuePartsKwh->revenuesKwh->status = 'confirmed';
-            $revenuePartsKwh->revenuesKwh->date_confirmed = $revenuePartsKwh->date_confirmed;
-            $revenuePartsKwh->revenuesKwh->confirmed = true;
-            $revenuePartsKwh->revenuesKwh->save();
-        }
-
         $distributionsKwhIds = array_unique( $revenuePartsKwh->distributionPartsKwh->pluck('distribution_id')->toArray() );
+        $dateConfirmed = $revenuePartsKwh->date_confirmed;
         $datePayout = $revenuePartsKwh->date_payout;
         $revenueId = $revenuePartsKwh->revenue_id;
         $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $revenueId)->where('date_begin', '<=', $revenuePartsKwh->date_begin)->where('status', '!=', 'processed')->pluck('id')->toArray();
 
-        ProcessRevenuesKwh::dispatch($distributionsKwhIds, $datePayout, $upToPartsKwhIds, Auth::id());
+        ProcessRevenuesKwh::dispatch($distributionsKwhIds, $dateConfirmed, $datePayout, $upToPartsKwhIds, Auth::id());
     }
 
+//todo WM: opschonen
+//
     public function processRevenuePartsKwh(Request $request)
     {
-        set_time_limit(0);
-        $distributionPartsKwhIds = $request->input('distributionPartsKwhIds');
-        $distributionsKwhIds = array_unique( RevenueDistributionPartsKwh::whereIn('id', $distributionPartsKwhIds)->pluck('distribution_id')->toArray() );
-        $datePayout = $request->input('datePayout');
-        $revenueId = RevenueDistributionPartsKwh::where('id', $distributionPartsKwhIds[0])->first()->revenue_id;
-        $partsId = $request->input('partsId');
-        $tillPartsKwh = RevenuePartsKwh::find($partsId);
-        $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $revenueId)->where('date_begin', '<=', $tillPartsKwh->date_begin)->where('status', '!=', 'processed')->pluck('id')->toArray();
-
-        ProcessRevenuesKwh::dispatch($distributionsKwhIds, $datePayout, $upToPartsKwhIds, Auth::id());
-
-        return RevenueDistributionPartsKwh::find($distributionPartsKwhIds[0])->revenuesKwh->project->administration_id;
+        // todo WM: testen of we hier alleen langskomen vanuit bestaande revenue die na conversie nog op confirmed staat, maar niet processed!
+        Log::error("ProcessRevenuePartsKwh vanuit RevenuePartsKwhController !!");
+//        set_time_limit(0);
+//        $distributionPartsKwhIds = $request->input('distributionPartsKwhIds');
+//        $distributionsKwhIds = array_unique( RevenueDistributionPartsKwh::whereIn('id', $distributionPartsKwhIds)->pluck('distribution_id')->toArray() );
+//        $datePayout = $request->input('datePayout');
+//        $revenueId = RevenueDistributionPartsKwh::where('id', $distributionPartsKwhIds[0])->first()->revenue_id;
+//        $partsId = $request->input('partsId');
+//        $tillPartsKwh = RevenuePartsKwh::find($partsId);
+//        $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $revenueId)->where('date_begin', '<=', $tillPartsKwh->date_begin)->where('status', '!=', 'processed')->pluck('id')->toArray();
+//
+//        ProcessRevenuesKwh::dispatch($distributionsKwhIds, $tillPartsKwh->date_confirmed, $datePayout, $upToPartsKwhIds, Auth::id());
+//
+//        return RevenueDistributionPartsKwh::find($distributionPartsKwhIds[0])->revenuesKwh->project->administration_id;
     }
 
     protected function createParticipantMutationForRevenueKwh(RevenueDistributionPartsKwh $distributionPartsKwh, $datePayout){

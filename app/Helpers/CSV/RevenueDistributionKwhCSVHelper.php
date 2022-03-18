@@ -55,8 +55,8 @@ class RevenueDistributionKwhCSVHelper
                     $distributionPartsKwh->last_name = $distributionPartsKwh->distributionKwh->contact->person->last_name;
                 }
 
-                $distributionPartsKwh->participations_quantity = $distributionPartsKwh->participations_quantity;
-                $distributionPartsKwh->date_payout = $this->formatDate($distributionPartsKwh->partsKwh->date_confirmed);
+//                $distributionPartsKwh->participations_quantity = $distributionPartsKwh->participations_quantity;
+                $distributionPartsKwh->date_payout = $distributionPartsKwh->partsKwh->date_payout ? $this->formatDate($distributionPartsKwh->partsKwh->date_payout) : $this->formatDate($distributionPartsKwh->partsKwh->date_confirmed);
                 $distributionPartsKwh->delivered_kwh_formatted = $this->formatFinancial($distributionPartsKwh->delivered_kwh, 2);
                 $distributionPartsKwh->kwh_return_formatted = $this->formatFinancial($distributionPartsKwh->kwh_return, 2);
             });

@@ -1865,6 +1865,9 @@ class TemplateVariableHelper
             case 'datum_definitief':
                 return $model->date_confirmed ? Carbon::parse($model->date_confirmed)->format('d/m/Y') : null;
                 break;
+            case 'datum_uitkeren':
+                return optional($model->last_parts_kwh)->date_payout ? Carbon::parse($model->last_parts_kwh->date_payout)->format('d/m/Y') : null;
+                break;
             case 'kwh_start':
                 return $startKhw;
                 break;
@@ -1924,6 +1927,9 @@ class TemplateVariableHelper
                 break;
             case 'datum_definitief':
                 return $model->date_confirmed ? Carbon::parse($model->date_confirmed)->format('d/m/Y') : null;
+                break;
+            case 'datum_uitkeren':
+                return $model->date_payout ? Carbon::parse($model->date_payout)->format('d/m/Y') : null;
                 break;
             case 'kwh_start':
                 return $startKhw;

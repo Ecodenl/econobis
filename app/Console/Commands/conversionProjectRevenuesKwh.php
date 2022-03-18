@@ -427,6 +427,7 @@ class conversionProjectRevenuesKwh extends Command
                 'confirmed' => $revenuesKwh->confirmed,
                 'status' => $revenuesKwh->status,
                 'date_confirmed' => $revenuesKwh->date_confirmed,
+                'date_payout' => $revenuesKwh->date_confirmed,
                 'payout_kwh' => $revenuesKwh->payout_kwh,
                 'delivered_total_concept' => 0,
                 'delivered_total_confirmed' => 0,

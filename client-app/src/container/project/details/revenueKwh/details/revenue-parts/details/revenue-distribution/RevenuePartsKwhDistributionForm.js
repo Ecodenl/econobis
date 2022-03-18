@@ -269,8 +269,8 @@ class RevenuePartsKwhDistributionForm extends Component {
         }
     };
 
-// todo WM: opschonen
-//
+    // todo WM: opschonen
+    //
     // checkDistributionPartsKwhProcessRevenue = () => {
     //     let lastYearFinancialOverviewDefinitive = 0;
     //     if (
@@ -352,8 +352,8 @@ class RevenuePartsKwhDistributionForm extends Component {
     //     }
     // };
 
-// todo WM: opschonen
-//
+    // todo WM: opschonen
+    //
     // processRevenuePartsKwh = () => {
     //     this.toggleModal();
     //     let succesMessageText = `De mutaties van opbrengsten bij de geselecteerde deelnemers worden aangemaakt. De status van de uitkeringen worden veranderd van "Definitief" in "Verwerkt".

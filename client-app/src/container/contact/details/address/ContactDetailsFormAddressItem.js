@@ -10,6 +10,7 @@ import ContactDetailsFormAddressEdit from './ContactDetailsFormAddressEdit';
 import ContactDetailsFormAddressDelete from './ContactDetailsFormAddressDelete';
 import { isEqual } from 'lodash';
 import Modal from '../../../../components/modal/Modal';
+import AddressDetailsFormAddressEnergySupplier from './address-energy-suppliers/AddressDetailsFormAddressEnergySupplier';
 
 class ContactDetailFormAddressItem extends Component {
     constructor(props) {
@@ -26,6 +27,7 @@ class ContactDetailFormAddressItem extends Component {
             showActionButtons: false,
             highlightLine: '',
             showEdit: false,
+            showAddressEnergySupplier: false,
             showDelete: false,
             address: {
                 ...props.address,
@@ -69,10 +71,22 @@ class ContactDetailFormAddressItem extends Component {
 
     openEdit = () => {
         this.setState({ showEdit: true });
+        this.props.setAddressEnergySupplierNewOrEditOpen(true);
     };
 
     closeEdit = () => {
         this.setState({ showEdit: false });
+        this.props.setAddressEnergySupplierNewOrEditOpen(false);
+    };
+
+    openAddressEnergySupplier = () => {
+        console.log('openAddressEnergySupplier ');
+        this.setState({ showAddressEnergySupplier: true });
+    };
+
+    closeAddressEnergySupplier = () => {
+        this.setState({ showAddressEnergySupplier: false });
+        this.props.setAddressEnergySupplierNewOrEditOpen(false);
     };
 
     cancelEdit = () => {
@@ -206,8 +220,11 @@ class ContactDetailFormAddressItem extends Component {
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
                     openEdit={this.openEdit}
+                    showEdit={this.state.showEdit}
+                    openAddressEnergySupplier={this.openAddressEnergySupplier}
                     toggleDelete={this.toggleDelete}
                     address={this.state.address}
+                    addressEnergySupplierNewOrEditOpen={this.props.addressEnergySupplierNewOrEditOpen}
                 />
                 {this.state.showEdit && (
                     <ContactDetailsFormAddressEdit
@@ -225,6 +242,15 @@ class ContactDetailFormAddressItem extends Component {
                         cancelEdit={this.cancelEdit}
                     />
                 )}
+                {this.state.showAddressEnergySupplier && (
+                    <AddressDetailsFormAddressEnergySupplier
+                        address={this.state.address}
+                        setAddressEnergySupplierNewOrEditOpen={this.props.setAddressEnergySupplierNewOrEditOpen}
+                        closeAddressEnergySupplier={this.closeAddressEnergySupplier}
+                        addressEnergySupplierNewOrEditOpen={this.props.addressEnergySupplierNewOrEditOpen}
+                    />
+                )}
+
                 {this.state.showDelete && (
                     <ContactDetailsFormAddressDelete
                         closeDeleteItemModal={this.toggleDelete}

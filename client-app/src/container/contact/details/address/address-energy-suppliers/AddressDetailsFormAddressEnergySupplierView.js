@@ -32,17 +32,17 @@ const AddressDetailsFormAddressEnergySupplierView = props => {
                 <div className="col-sm-1">{isCurrentSupplier ? 'Ja' : ''}</div>
             </div>
             <div className="col-sm-1">
-                {props.showActionButtons && (props.permissions.updatePerson || props.permissions.updateOrganisation) ? (
-                    <a role="button" onClick={props.openEdit}>
-                        <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
-                    </a>
-                ) : (
-                    ''
-                )}
-                {props.showActionButtons && (props.permissions.updatePerson || props.permissions.updateOrganisation) ? (
-                    <a role="button" onClick={props.toggleDelete}>
-                        <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
-                    </a>
+                {props.showActionButtons &&
+                props.addressEnergySupplierNewOrEditOpen == false &&
+                (props.permissions.updatePerson || props.permissions.updateOrganisation) ? (
+                    <>
+                        <a role="button" onClick={props.openEdit} title="Wijzigen Leveranciergegevens">
+                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                        </a>
+                        <a role="button" onClick={props.toggleDelete} title="Verwijderen Leveranciergegevens">
+                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                        </a>
+                    </>
                 ) : (
                     ''
                 )}

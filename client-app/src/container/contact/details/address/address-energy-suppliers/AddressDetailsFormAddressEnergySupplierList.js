@@ -24,6 +24,8 @@ const AddressDetailsFormAddressEnergySupplierList = props => {
                             key={addressEnergySupplier.id}
                             addressEnergySupplier={addressEnergySupplier}
                             address={props.address}
+                            setAddressEnergySupplierNewOrEditOpen={props.setAddressEnergySupplierNewOrEditOpen}
+                            addressEnergySupplierNewOrEditOpen={props.addressEnergySupplierNewOrEditOpen}
                         />
                     );
                 })

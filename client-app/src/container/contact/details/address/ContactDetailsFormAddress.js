@@ -12,12 +12,21 @@ class ContactDetailsFormAddress extends Component {
 
         this.state = {
             showNew: false,
+            addressEnergySupplierNewOrEditOpen: false,
         };
     }
 
     toggleShowNew = () => {
+        const currentShowNew = this.state.showNew;
         this.setState({
-            showNew: !this.state.showNew,
+            showNew: !currentShowNew,
+        });
+        this.setAddressEnergySupplierNewOrEditOpen(!currentShowNew);
+    };
+
+    setAddressEnergySupplierNewOrEditOpen = falseTrue => {
+        this.setState({
+            addressEnergySupplierNewOrEditOpen: falseTrue,
         });
     };
 
@@ -32,7 +41,10 @@ class ContactDetailsFormAddress extends Component {
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        <ContactDetailsFormAddressList />
+                        <ContactDetailsFormAddressList
+                            setAddressEnergySupplierNewOrEditOpen={this.setAddressEnergySupplierNewOrEditOpen}
+                            addressEnergySupplierNewOrEditOpen={this.state.addressEnergySupplierNewOrEditOpen}
+                        />
                     </div>
                     <div className="col-md-12 margin-10-top">
                         {this.state.showNew && <ContactDetailsFormAddressNew toggleShowNew={this.toggleShowNew} />}

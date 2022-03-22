@@ -25,6 +25,8 @@ const ContactDetailsFormAddressList = props => {
                             key={address.id}
                             address={address}
                             numberOfAddresses={props.addresses.length}
+                            setAddressEnergySupplierNewOrEditOpen={props.setAddressEnergySupplierNewOrEditOpen}
+                            addressEnergySupplierNewOrEditOpen={props.addressEnergySupplierNewOrEditOpen}
                         />
                     );
                 })

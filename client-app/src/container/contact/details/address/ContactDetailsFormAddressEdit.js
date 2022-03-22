@@ -162,9 +162,6 @@ const ContactDetailsFormAddressEdit = props => {
                             />
                         </div>
                     </PanelBody>
-                    <PanelBody>
-                        <AddressDetailsFormAddressEnergySupplier address={props.address} />
-                    </PanelBody>
                 </Panel>
             </form>
         </div>

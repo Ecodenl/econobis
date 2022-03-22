@@ -72,10 +72,12 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
 
     openEdit = () => {
         this.setState({ showEdit: true });
+        this.props.setAddressEnergySupplierNewOrEditOpen(true);
     };
 
     closeEdit = () => {
         this.setState({ showEdit: false });
+        this.props.setAddressEnergySupplierNewOrEditOpen(false);
     };
 
     cancelEdit = () => {
@@ -306,6 +308,7 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
                     openEdit={this.openEdit}
                     toggleDelete={this.toggleDelete}
                     addressEnergySupplier={this.state.addressEnergySupplier}
+                    addressEnergySupplierNewOrEditOpen={this.props.addressEnergySupplierNewOrEditOpen}
                 />
                 {this.state.showEdit &&
                     (this.props.permissions.updatePerson || this.props.permissions.updateOrganisation) && (
@@ -371,7 +374,7 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
                         title={'Waarschuwing'}
                         closeModal={this.setHideMessageHasParticipations}
                         // modalClassName="modal-lg"
-                        buttonCancelText="Ok"
+                        // buttonCancelText="Ok"
                         showConfirmAction={
                             this.state.messageHasParticipationsProjectsArray.length == 1 &&
                             this.state.messageHasParticipationsRedirect

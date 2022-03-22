@@ -41,16 +41,24 @@ const ContactDetailFormAddressView = props => {
             </div>
             <div className="col-sm-1">
                 {props.showActionButtons ? (
-                    <a role="button" onClick={props.openEdit}>
-                        <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
-                    </a>
-                ) : (
-                    ''
-                )}
-                {props.showActionButtons ? (
-                    <a role="button" onClick={props.toggleDelete}>
-                        <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
-                    </a>
+                    <>
+                        {props.addressEnergySupplierNewOrEditOpen == false && (
+                            <>
+                                <a role="button" onClick={props.openEdit}>
+                                    <span
+                                        className="glyphicon glyphicon-pencil mybtn-success"
+                                        title="Wijzigen adresgegevens"
+                                    />{' '}
+                                </a>
+                                <a role="button" onClick={props.openAddressEnergySupplier} title="Leveranciergegevens">
+                                    <span className="glyphicon glyphicon-cog mybtn-success" />{' '}
+                                </a>
+                                <a role="button" onClick={props.toggleDelete} title="Verwijderen adres">
+                                    <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                                </a>
+                            </>
+                        )}
+                    </>
                 ) : (
                     ''
                 )}

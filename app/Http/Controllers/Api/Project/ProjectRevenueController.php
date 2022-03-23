@@ -1485,7 +1485,7 @@ class ProjectRevenueController extends ApiController
             catch (\Exception $e) {
                 Log::error('Fout bij maken rapport document voor ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
                 Log::error($e->getMessage());
-                array_push($messages, 'Fout bij maken rapport document voor ' . $primaryEmailAddress->email . ' (' . $contact->full_name . ')' );
+                array_push($messages, 'Fout bij maken rapport document voor ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
             }
 
             //send email
@@ -1572,10 +1572,12 @@ class ProjectRevenueController extends ApiController
         }
         if(count($messages) > 0)
         {
+            Log::error( 'Fouten (' . count($messages) . ') bij rapportage opbrengstverdeling' );
             return ['messages' => $messages];
         }
         else
         {
+            Log::info( 'Geen fouten bij rapportage opbrengstverdeling' );
             return null;
         }
     }

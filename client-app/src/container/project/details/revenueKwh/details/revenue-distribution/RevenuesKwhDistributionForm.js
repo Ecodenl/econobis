@@ -262,107 +262,6 @@ class RevenuesKwhDistributionForm extends Component {
         }
     };
 
-    checkDistributionKwhProcessRevenue = () => {
-        let lastYearFinancialOverviewDefinitive = 0;
-        if (this.props.revenuesKwh.project && this.props.revenuesKwh.project.lastYearFinancialOverviewDefinitive) {
-            lastYearFinancialOverviewDefinitive = this.props.revenuesKwh.project.lastYearFinancialOverviewDefinitive;
-        } else if (
-            this.props.revenuesKwh.project.administration &&
-            this.props.revenuesKwh.project.administration.lastYearFinancialOverviewDefinitive
-        ) {
-            lastYearFinancialOverviewDefinitive = this.props.revenuesKwh.project.administration
-                .lastYearFinancialOverviewDefinitive;
-        }
-        let disableBeforeEntryDate =
-            lastYearFinancialOverviewDefinitive > 0
-                ? moment(moment().year(lastYearFinancialOverviewDefinitive + 1)).format('YYYY-01-01')
-                : '';
-        const $variableDateText = 'uitkeringsdatum';
-
-        if (
-            !validator.isEmpty(disableBeforeEntryDate) &&
-            moment(this.state.datePayout).format('YYYY-MM-DD') < disableBeforeEntryDate
-        ) {
-            this.props.setError(
-                412,
-                'De ' +
-                    $variableDateText +
-                    ' valt in jaar waar al een definitive waardestaat voor dit project aanwezig is.'
-            );
-            this.setState({
-                showModal: false,
-            });
-            return;
-        }
-        if (this.state.distributionKwhIds.length) {
-            if (!this.props.revenuesKwh.project.administration.canCreatePaymentInvoices['can']) {
-                this.props.setError(
-                    412,
-                    this.props.revenuesKwh.project.administration.canCreatePaymentInvoices['message']
-                );
-                this.setState({
-                    showModal: false,
-                });
-                return;
-            } else {
-                this.setState({
-                    showModal: true,
-                    modalText:
-                        'De ' +
-                        $variableDateText +
-                        ' wordt de datum die bij de mutatie komt te staan in de deelname overzichten van de deelnemers.',
-                    modalText2: 'Weet je zeker dat je de goede ' + $variableDateText + ' hebt gekozen ?',
-                    modalText3:
-                        moment(this.state.datePayout).format('YYYY-MM-DD') <
-                        moment()
-                            .nextBusinessDay()
-                            .format('YYYY-MM-DD')
-                            ? 'Gekozen ' +
-                              $variableDateText +
-                              ' (' +
-                              moment(this.state.datePayout).format('L') +
-                              ') ligt voor volgende werkdag!'
-                            : '',
-                    modalAction: this.processRevenuesKwh,
-                    buttonConfirmText: 'Ga verder',
-                });
-            }
-        } else {
-            this.setState({
-                showModal: true,
-                modalText: 'Er zijn geen deelnemers geselecteerd.',
-                buttonConfirmText: 'Voeg deelnemers toe',
-            });
-        }
-    };
-
-    processRevenuesKwh = () => {
-        this.toggleModal();
-        let succesMessageText = `De mutaties van opbrengsten bij de deelnemers zijn aangemaakt. De status van de uitkeringen zijn veranderd van "Definitief" in "Verwerkt".
-                Mutaties die niet verwerkt konden worden, omdat er gegevens ontbreken bij het contact, zijn niet aangemaakt bij de deelnemers. Zij behouden de status "Definitief". Maak de gegevens compleet en maak vervolgens opnieuw een opbrengst verdeling van de uitkeringen met de status "Definitief".`;
-
-        document.body.style.cursor = 'wait';
-        RevenuesKwhAPI.processRevenuesKwh(this.state.datePayout, this.state.distributionKwhIds)
-            .then(payload => {
-                document.body.style.cursor = 'default';
-                this.setState({
-                    showSuccessMessage: true,
-                    successMessage: succesMessageText,
-                });
-            })
-            .catch(error => {
-                let errorObject = JSON.parse(JSON.stringify(error));
-                let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
-                if (errorObject.response.status !== 500) {
-                    errorMessage = errorObject.response.data.message;
-                }
-                this.setState({
-                    showErrorModal: true,
-                    modalErrorMessage: errorMessage,
-                });
-            });
-    };
-
     closeErrorModal = () => {
         this.setState({ showErrorModal: false, modalErrorMessage: '' });
     };
@@ -402,13 +301,6 @@ class RevenuesKwhDistributionForm extends Component {
                                     buttonText={'Selecteer preview rapportage'}
                                     onClickAction={() => this.toggleShowCheckboxList('createReport')}
                                 />
-                                {this.props.revenuesKwh.status == 'confirmed' ? (
-                                    <ButtonText
-                                        buttonText={'Selecteer preview opbrengst verdeling'}
-                                        onClickAction={() => this.toggleShowCheckboxList('processRevenues')}
-                                        buttonClassName={'btn-primary'}
-                                    />
-                                ) : null}
                             </React.Fragment>
                         ) : null}
                     </div>
@@ -459,49 +351,6 @@ class RevenuesKwhDistributionForm extends Component {
                                             <ButtonText
                                                 buttonText={'Preview rapportage'}
                                                 onClickAction={this.checkDistributionKwhRevenueReport}
-                                                type={'submit'}
-                                                value={'Submit'}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </PanelBody>
-                        </Panel>
-                    ) : null}
-                    {this.state.showCheckboxList && this.state.createType === 'processRevenues' ? (
-                        <Panel>
-                            <PanelBody>
-                                <div className="row">
-                                    <div className="col-md-12">
-                                        <InputDate
-                                            label={'Uitkeringsdatum'}
-                                            name="datePayout"
-                                            value={this.state.datePayout}
-                                            onChangeAction={this.handleInputChangeDate}
-                                            required={'required'}
-                                            // Ze willen ook datum in verleden kunnen opgeven
-                                            // disabledBefore={moment()
-                                            //     .nextBusinessDay()
-                                            //     .format('YYYY-MM-DD')}
-                                            // todo In testfase niet handig, wellicht na in gebruik name wel ?
-                                            // disabledAfter={moment()
-                                            //     .add(1, 'year')
-                                            //     .format('YYYY-MM-DD')}
-                                            error={this.state.datePayoutError}
-                                        />
-                                    </div>
-                                    <div className="col-md-12">
-                                        <ViewText label="Geselecteerde deelnemers" value={numberSelectedNumberTotal} />
-
-                                        <div className="margin-10-top pull-right btn-group" role="group">
-                                            <ButtonText
-                                                buttonClassName={'btn-default'}
-                                                buttonText={'Annuleren'}
-                                                onClickAction={this.toggleShowCheckboxList}
-                                            />
-                                            <ButtonText
-                                                buttonText={'Opbrengst verdelen'}
-                                                onClickAction={this.checkDistributionKwhProcessRevenue}
                                                 type={'submit'}
                                                 value={'Submit'}
                                             />

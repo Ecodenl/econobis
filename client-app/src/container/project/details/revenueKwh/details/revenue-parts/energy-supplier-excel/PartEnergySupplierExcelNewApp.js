@@ -22,9 +22,7 @@ class PartEnergySupplierExcelNewApp extends Component {
         this.state = {
             excel: {
                 revenuePartId: props.params.revenuePartId,
-                energySupplierId: 0,
                 documentName: '',
-                distributions: [],
             },
             isLoading: false,
             errors: {
@@ -36,24 +34,7 @@ class PartEnergySupplierExcelNewApp extends Component {
 
     componentDidMount() {
         this.setState({ isLoading: true });
-
         this.props.fetchRevenuePartsKwh(this.props.params.revenuePartId);
-
-        setTimeout(() => {
-            ProjectsAPI.peekDistributionsKwhById(
-                this.props.revenuePartsKwh.distributionKwhForReportEnergySupplier
-            ).then(payload => {
-                this.setState({
-                    ...this.state,
-                    excel: {
-                        ...this.state.excel,
-                        isLastRevenuePartsKwh: this.props.revenuePartsKwh.isLastRevenuePartsKwh,
-                        isEndOfYearRevenuePartsKwh: this.props.revenuePartsKwh.isEndOfYearRevenuePartsKwh,
-                        distributions: payload.data,
-                    },
-                });
-            });
-        }, 1000);
     }
 
     componentWillUnmount() {
@@ -88,11 +69,6 @@ class PartEnergySupplierExcelNewApp extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(excel.energySupplierId + '')) {
-            errors.energySupplierId = true;
-            hasErrors = true;
-        }
-
         if (validator.isEmpty(excel.documentName + '')) {
             errors.documentName = true;
             hasErrors = true;
@@ -101,11 +77,7 @@ class PartEnergySupplierExcelNewApp extends Component {
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-            RevenuePartsKwhAPI.createEnergySupplierExcel(
-                excel.revenuePartId,
-                excel.energySupplierId,
-                excel.documentName
-            ).then(payload => {
+            RevenuePartsKwhAPI.createEnergySupplierExcel(excel.revenuePartId, excel.documentName).then(payload => {
                 hashHistory.push(`/documenten`);
             });
     };
@@ -123,7 +95,7 @@ class PartEnergySupplierExcelNewApp extends Component {
                             <PanelBody>
                                 <div className="col-md-12">
                                     <PartEnergySupplierExcelNew
-                                        excel={this.state.excel}
+                                        documentName={this.state.excel.documentName}
                                         errors={this.state.errors}
                                         handleInputChange={this.handleInputChange}
                                         handleSubmit={this.handleSubmit}

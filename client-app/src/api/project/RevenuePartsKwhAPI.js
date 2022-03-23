@@ -63,15 +63,10 @@ export default {
         });
     },
 
-    createEnergySupplierExcel: (revenuePartId, energySupplierId, documentName, distributionPartsKwhIds) => {
-        let requestUrl = '';
-        if (energySupplierId == 0) {
-            requestUrl = `${URL_REVENUE_PARTS_KWH}/create-energy-supplier-excel/${revenuePartId}`;
-        } else {
-            requestUrl = `${URL_REVENUE_PARTS_KWH}/create-energy-supplier-excel/${revenuePartId}/${energySupplierId}`;
-        }
+    createEnergySupplierExcel: (revenuePartId, documentName) => {
+        const requestUrl = `${URL_REVENUE_PARTS_KWH}/create-energy-supplier-excel/${revenuePartId}`;
         return axiosInstance
-            .post(requestUrl, { documentName: documentName, distributionPartsKwhIds: distributionPartsKwhIds })
+            .post(requestUrl, { documentName: documentName })
             .then(response => response.data.data)
             .catch(error => {
                 console.log(error);

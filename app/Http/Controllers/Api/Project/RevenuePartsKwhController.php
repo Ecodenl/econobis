@@ -10,13 +10,13 @@ use App\Eco\Mailbox\Mailbox;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
+use App\Eco\Project\ProjectType;
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\RevenuesKwh\RevenuePartsKwh;
 use App\Eco\RevenuesKwh\RevenueValuesKwh;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\RevenueDistributionPartsKwhCSVHelper;
-use App\Helpers\Delete\Models\DeleteRevenuePartsKwh;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Excel\EnergySupplierExcelHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
@@ -29,6 +29,7 @@ use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Resources\Project\FullRevenueDistributionPartsKwh;
 use App\Http\Resources\Project\FullRevenuePartsKwh;
 use App\Jobs\RevenueKwh\ProcessRevenuesKwh;
+use App\Jobs\RevenueKwh\ReportEnergySupplierExcel;
 use App\Jobs\RevenueKwh\UpdateRevenuePartsKwh;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
@@ -146,42 +147,39 @@ class RevenuePartsKwhController extends ApiController
             ->orderBy('date_begin')->get());
     }
 
-    public function createEnergySupplierAllExcel(
+    public function reportEnergySupplier(
         Request $request,
         RevenuePartsKwh $revenuePartsKwh
-    )
-    {
-        $upToRevenuePartsKwh = RevenuePartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_end', '<=', $revenuePartsKwh->date_end)->get();
+    ){
+        $documentName = $request->input('documentName');
+        ReportEnergySupplierExcel::dispatch($documentName, $revenuePartsKwh, Auth::id());
 
-        $energySupplierIds = [];
-        foreach ($upToRevenuePartsKwh as $partItem){
-            $partItemEnergySupplierIds = $partItem->distributionPartsKwh()->whereNull('date_energy_supplier_report')->where('is_visible', 1)->whereNotNull('es_id')->where('delivered_kwh', '!=', 0)->pluck('es_id')->toArray();
-            $energySupplierIds = array_merge($partItemEnergySupplierIds, $energySupplierIds);
-        }
-        $energySupplierIds = array_unique($energySupplierIds);
-        foreach ($energySupplierIds as $energySupplierId) {
-            $energySupplier = EnergySupplier::find($energySupplierId);
-            $this->createEnergySupplierExcel($request, $revenuePartsKwh, $energySupplier, true);
-        }
     }
 
-    public function createEnergySupplierOneExcel(
-        Request $request,
-        RevenuePartsKwh $revenuePartsKwh,
-        EnergySupplier $energySupplier
-    )
-    {
-        $this->createEnergySupplierExcel($request, $revenuePartsKwh, $energySupplier, false);
-    }
-
-    protected function createEnergySupplierExcel(
-        Request $request,
+    public function reportEnergySupplierJob(
+        $documentName,
         RevenuePartsKwh $revenuePartsKwh,
         EnergySupplier $energySupplier,
-        $createAll
+        $upToPartsKwhIds
     )
     {
-        $project = $revenuePartsKwh->revenuesKwh->project;
+        $distributionsKwh = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $revenuePartsKwh->distribution_kwh_for_report_energy_supplier)->get();
+        foreach ($distributionsKwh as $distributionKwh) {
+            $distributionsPartsKwh = $distributionKwh->distributionPartsKwh->whereIn('parts_id', $upToPartsKwhIds)->where('es_id', $energySupplier->id);
+            foreach ($distributionsPartsKwh as $distributionPartsKwh) {
+                if ($distributionPartsKwh->status === 'confirmed') {
+                    $distributionPartsKwh->status = 'in-progress-report';
+                    $distributionPartsKwh->save();
+                }
+                $distributionsValuesKwh = $distributionKwh->distributionValuesKwh->where('parts_id', $distributionPartsKwh->partsKwh->id)->where('distribution_id', $distributionKwh->id);
+                foreach ($distributionsValuesKwh as $distributionValuesKwh) {
+                    if ($distributionValuesKwh->status === 'confirmed') {
+                        $distributionValuesKwh->status = 'in-progress-report';
+                        $distributionValuesKwh->save();
+                    }
+                }
+            }
+        }
 
         switch ($energySupplier->file_format_id){
             case 1:
@@ -192,8 +190,7 @@ class RevenuePartsKwhController extends ApiController
                 break;
         }
 
-        $documentName = $request->input('documentName');
-        $fileName = $createAll ? ($documentName . '-' . $energySupplier->abbreviation . $fileFormat) : $documentName . $fileFormat;
+        $fileName = $documentName . '-' . $energySupplier->abbreviation . $fileFormat;
         $templateId = $energySupplier->excel_template_id;
 
         if ($templateId) {
@@ -208,7 +205,7 @@ class RevenuePartsKwhController extends ApiController
         $document = new Document();
         $document->document_type = 'internal';
         $document->document_group = 'revenue';
-        $document->project_id = $project->id;
+        $document->project_id = $revenuePartsKwh->revenuesKwh->project->id;
 
         $document->filename = $fileName;
 
@@ -234,7 +231,7 @@ class RevenuePartsKwhController extends ApiController
             $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
             $alfrescoResponse = $alfrescoHelper->createFile($filePath,
-                $document->filename, $document->getDocumentGroup()->name);
+            $document->filename, $document->getDocumentGroup()->name);
             $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
         }else{
             $alfrescoResponse = null;
@@ -246,8 +243,44 @@ class RevenuePartsKwhController extends ApiController
         if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
             Storage::disk('documents')->delete($document->filename);
         }
-    }
 
+        foreach ($distributionsKwh as $distributionKwh) {
+            //status moet nu onderhanden zijn (in-progress-report zijn)
+            if ($distributionKwh->status === 'in-progress-report-concept' || $distributionKwh->status === 'in-progress-report')
+            {
+                $deliveredTotal = 0;
+                $kwhReturn = 0;
+                $energySupplierName = EnergySupplier::find($energySupplier->id)->name;
+
+                $distributionsPartsKwh = $distributionKwh->distributionPartsKwh->whereIn('parts_id', $upToPartsKwhIds)->where('es_id', $energySupplier->id);
+
+                foreach($distributionsPartsKwh as $distributionPartsKwh) {
+                    if ($distributionPartsKwh->status === 'in-progress-report') {
+                        $deliveredTotal = $deliveredTotal + $distributionPartsKwh->delivered_kwh;
+                        $kwhReturn = $kwhReturn + $distributionPartsKwh->kwh_return_this_part;
+                        $distributionPartsKwh->date_energy_supplier_report = Carbon::now()->format('Y-m-d');
+                        $distributionPartsKwh->status = 'processed';
+                        $distributionPartsKwh->save();
+                    }
+
+                    $distributionsValuesKwh = $distributionKwh->distributionValuesKwh->where('parts_id', $distributionPartsKwh->partsKwh->id)->where('distribution_id', $distributionKwh->id);
+                    foreach($distributionsValuesKwh as $distributionValuesKwh) {
+                        if ($distributionValuesKwh->status === 'in-progress-report') {
+                            $distributionValuesKwh->status = 'processed';
+                            $distributionValuesKwh->save();
+                        }
+                    }
+                }
+
+                if($kwhReturn != 0){
+                    $this->createParticipantMutationForRevenueKwh($distributionKwh->participation_id, $revenuePartsKwh->payout_kwh, $revenuePartsKwh->date_payout, $deliveredTotal, $kwhReturn, $energySupplierName);
+                }
+
+            }
+
+        }
+
+    }
 
     public function peekDistributionKwhPartsByIds(Request $request)
     {
@@ -471,37 +504,124 @@ class RevenuePartsKwhController extends ApiController
         ProcessRevenuesKwh::dispatch($distributionsKwhIds, $dateConfirmed, $datePayout, $upToPartsKwhIds, Auth::id());
     }
 
+    public function processRevenuesKwhJob($distributionsKwh, $dateConfirmed, $datePayout, $upToPartsKwhIds)
+    {
+        $partsKwh = RevenuePartsKwh::whereIn('id', $upToPartsKwhIds)->get();
+        foreach ($partsKwh as $partKwh) {
+            if ($partKwh->status === 'in-progress-process') {
+                // Part (en alle voorgaande parts) met status in-progress-process ook definitief maken (confirmed true)
+                $partKwh->confirmed = true;
+                $partKwh->date_confirmed = $dateConfirmed;
+                $partKwh->date_payout = $datePayout;
+                $partKwh->save();
+
+                // Values van part (en alle voorgaande parts) met status in-progress-process ook definitief maken (status confirmed)
+                foreach ($partKwh->conceptValuesKwh() as $conceptValueKwh) {
+                    $conceptValueKwh->status = 'confirmed';
+                    $conceptValueKwh->save();
+                }
+            }
+        }
+
+        if (!($distributionsKwh->first())->revenuesKwh->project->administration_id) {
+            abort(400,
+                'Geen administratie gekoppeld aan dit productie project');
+        }else{
+            $lastYearFinancialOverviewDefinitive =  $distributionsKwh->first()->revenuesKwh->project->lastYearFinancialOverviewDefinitive;
+            if( !empty($lastYearFinancialOverviewDefinitive) && !empty($datePayout) && Carbon::parse($datePayout)->year <= $lastYearFinancialOverviewDefinitive)
+            {
+                abort(400,'De uitkeringsdatum valt in jaar ' . Carbon::parse($datePayout)->year . ' waar al een definitive waardestaat voor dit project aanwezig is.');
+            }
+        }
+
+        foreach ($distributionsKwh as $distributionKwh) {
+            //status moet nu onderhanden zijn (in-progress-process zijn)
+            if ($distributionKwh->status === 'in-progress-process-concept' || $distributionKwh->status === 'in-progress-process')
+            {
 //todo WM: opschonen
 //
-    public function processRevenuePartsKwh(Request $request)
-    {
-        // todo WM: testen of we hier alleen langskomen vanuit bestaande revenue die na conversie nog op confirmed staat, maar niet processed!
-        Log::error("ProcessRevenuePartsKwh vanuit RevenuePartsKwhController !!");
-//        set_time_limit(0);
-//        $distributionPartsKwhIds = $request->input('distributionPartsKwhIds');
-//        $distributionsKwhIds = array_unique( RevenueDistributionPartsKwh::whereIn('id', $distributionPartsKwhIds)->pluck('distribution_id')->toArray() );
-//        $datePayout = $request->input('datePayout');
-//        $revenueId = RevenueDistributionPartsKwh::where('id', $distributionPartsKwhIds[0])->first()->revenue_id;
-//        $partsId = $request->input('partsId');
-//        $tillPartsKwh = RevenuePartsKwh::find($partsId);
-//        $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $revenueId)->where('date_begin', '<=', $tillPartsKwh->date_begin)->where('status', '!=', 'processed')->pluck('id')->toArray();
+//                $mutationEnergyTaxRefund = [];
+                $distributionsPartsKwh = $distributionKwh->distributionPartsKwh->whereIn('parts_id', $upToPartsKwhIds);
+                foreach($distributionsPartsKwh as $distributionPartsKwh) {
+                    if ($distributionPartsKwh->status === 'in-progress-process') {
+//todo WM: opschonen
 //
-//        ProcessRevenuesKwh::dispatch($distributionsKwhIds, $tillPartsKwh->date_confirmed, $datePayout, $upToPartsKwhIds, Auth::id());
-//
-//        return RevenueDistributionPartsKwh::find($distributionPartsKwhIds[0])->revenuesKwh->project->administration_id;
+//                        if(array_key_exists($distributionPartsKwh->es_id, $mutationEnergyTaxRefund)) {
+//                            $deliveredTotal = $mutationEnergyTaxRefund[$distributionPartsKwh->es_id]['deliveredTotal'] + $distributionPartsKwh->delivered_kwh;
+//                            $kwhReturn = $mutationEnergyTaxRefund[$distributionPartsKwh->es_id]['kwhReturn'] + $distributionPartsKwh->kwh_return_this_part;
+//                            $energySupplierName = $mutationEnergyTaxRefund[$distributionPartsKwh->es_id]['energySupplierName'];
+//                        } else {
+//                            $deliveredTotal = $distributionPartsKwh->delivered_kwh;
+//                            $kwhReturn =  $distributionPartsKwh->kwh_return_this_part;
+//                            $energySupplierName =  $distributionPartsKwh->energy_supplier_name;
+//                        }
+//                        $mutationEnergyTaxRefund[$distributionPartsKwh->es_id] = [
+//                            'deliveredTotal' => $deliveredTotal,
+//                            'kwhReturn' => $kwhReturn,
+//                            'energySupplierName' => $energySupplierName,
+//                        ];
+                        $distributionPartsKwh->status = 'confirmed';
+                        $distributionPartsKwh->save();
+                    }
+                }
+                $distributionsValuesKwh = $distributionKwh->distributionValuesKwh->whereIn('parts_id', $upToPartsKwhIds);
+                foreach($distributionsValuesKwh as $distributionValuesKwh) {
+                    if ($distributionValuesKwh->status === 'in-progress-process') {
+                        $distributionValuesKwh->status = 'confirmed';
+                        $distributionValuesKwh->save();
+                    }
+                }
+                if($distributionKwh->revenuesKwh->partsKwh->where('status', '==', 'new')->count() > 0){
+                    $distributionKwh->status = 'concept';
+                } else {
+                    if($distributionKwh->distributionValuesKwh->whereNotIn('status', ['confirmed', 'processed'])->count() == 0
+                        && $distributionKwh->distributionValuesKwh->where('status', '==', 'confirmed')->count() > 0
+                    ){
+                        $distributionKwh->status = 'confirmed';
+                    } else {
+                        $distributionKwh->status = 'concept';
+                    }
+                }
+                $distributionKwh->save();
+            }
+
+        }
+
+        $partsKwh = RevenuePartsKwh::whereIn('id', $upToPartsKwhIds)->get();
+        foreach ($partsKwh as $partKwh) {
+            if ($partKwh->status === 'in-progress-process') {
+                $partKwh->status = 'confirmed';
+                $partKwh->save();
+                $partKwh->calculator()->runCountingsRevenuesKwh();
+            }
+        }
+
+        // Reload revenuesKwh
+        $revenuesKwh = RevenuesKwh::find($distributionsKwh->first()->revenue_id);
+        if($revenuesKwh->distributionKwh->where('status', '!=', 'confirmed')->count() == 0
+            && $revenuesKwh->distributionKwh->where('status', '==', 'confirmed')->count() > 0
+            && $revenuesKwh->partsKwh->where('status', '!=', 'confirmed')->count() == 0
+            && $revenuesKwh->partsKwh->where('status', '==', 'confirmed')->count() > 0
+        ){
+            $revenuesKwh->status = 'confirmed';
+            $revenuesKwh->confirmed = true;
+            $revenuesKwh->date_confirmed = $dateConfirmed;
+            $revenuesKwh->save();
+        }
+
     }
 
-    protected function createParticipantMutationForRevenueKwh(RevenueDistributionPartsKwh $distributionPartsKwh, $datePayout){
+    protected function createParticipantMutationForRevenueKwh($participationId, $payoutKwh, $datePayout, $deliveredTotal, $kwhReturn, $energySupplierName){
         $pcrTypeId = ProjectType::where('code_ref', 'postalcode_link_capital')->value('id');
         $participantMutationTypeId = ParticipantMutationType::where('code_ref', 'energyTaxRefund')->where('project_type_id', $pcrTypeId)->value('id');
 
         $participantMutation = new ParticipantMutation();
-        $participantMutation->participation_id = $distributionPartsKwh->distributionKwh->participation_id;
+        $participantMutation->participation_id = $participationId;
         $participantMutation->type_id = $participantMutationTypeId;
-        $participantMutation->payout_kwh_price = $distributionPartsKwh->partsKwh->payout_kwh;
-        $participantMutation->payout_kwh = $distributionPartsKwh->delivered_total;
-        $participantMutation->indication_of_restitution_energy_tax = $distributionPartsKwh->kwh_return;
-        $participantMutation->paid_on = $distributionPartsKwh->energySupplier ? $distributionPartsKwh->energySupplier->name : '';
+        $participantMutation->payout_kwh_price = $payoutKwh;
+        $participantMutation->payout_kwh = round($deliveredTotal, 2);
+        $participantMutation->indication_of_restitution_energy_tax = round($kwhReturn,2);
+        $participantMutation->paid_on = $energySupplierName;
         $participantMutation->date_payment = $datePayout;
         $participantMutation->save();
     }
@@ -529,6 +649,5 @@ class RevenuePartsKwhController extends ApiController
 
         return $field;
     }
-
 
 }

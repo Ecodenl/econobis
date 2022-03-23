@@ -63,9 +63,6 @@ const EmailAnswerApp = React.lazy(() => import('./container/email/answer/EmailAn
 const EnergySupplierReportNewApp = React.lazy(() =>
     import('./container/project/details/revenueKwh/energy-supplier-report/EnergySupplierReportNewApp')
 );
-const EnergySupplierExcelNewApp = React.lazy(() =>
-    import('./container/project/details/revenueKwh/energy-supplier-excel/EnergySupplierExcelNewApp')
-);
 const PartEnergySupplierExcelNewApp = React.lazy(() =>
     import(
         './container/project/details/revenueKwh/details/revenue-parts/energy-supplier-excel/PartEnergySupplierExcelNewApp'
@@ -419,10 +416,6 @@ const Routes = () => {
                     <Route
                         path="project/opbrengst-kwh/:revenueId/energieleverancier-rapport"
                         component={EnergySupplierReportNewApp}
-                    />
-                    <Route
-                        path="project/opbrengst-kwh/:revenueId/energieleverancier-excel"
-                        component={EnergySupplierExcelNewApp}
                     />
                     <Route
                         path="project/opbrengst-deelperiode-kwh/:revenuePartId/energieleverancier-excel"

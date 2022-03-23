@@ -12,7 +12,7 @@ use App\Eco\Jobs\JobsLog;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\RevenuesKwh\RevenuePartsKwh;
 use App\Eco\User\User;
-use App\Http\Controllers\Api\Project\RevenuesKwhController;
+use App\Http\Controllers\Api\Project\RevenuePartsKwhController;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -74,7 +74,7 @@ class ProcessRevenuesKwh implements ShouldQueue
         }
 
         $jobLog = new JobsLog();
-        $jobLog->value = "Start Opbrengst Kwh verdelen.";
+        $jobLog->value = "Start Opbrengst Kwh definitief maken.";
         $jobLog->job_category_id = 'process-revenues-kwh';
         $jobLog->user_id = $userId;
         $jobLog->save();
@@ -85,12 +85,12 @@ class ProcessRevenuesKwh implements ShouldQueue
         //user voor observer
         Auth::setUser(User::find($this->userId));
 
-        $revenuesKwhController = new RevenuesKwhController();
+        $revenuesKwhController = new RevenuePartsKwhController();
         //process revenues kwh
         $revenuesKwhController->processRevenuesKwhJob(RevenueDistributionKwh::whereIn('id', $this->distributionIds)->get(), $this->dateConfirmed, $this->datePayout, $this->upToPartsKwhIds);
 
         $jobLog = new JobsLog();
-        $jobLog->value = "Opbrengst Kwh verdelen verwerkt.";
+        $jobLog->value = "Opbrengst Kwh definitief gemaakt.";
         $jobLog->job_category_id = 'process-revenues-kwh';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
@@ -99,11 +99,11 @@ class ProcessRevenuesKwh implements ShouldQueue
     public function failed($exception)
     {
         $jobLog = new JobsLog();
-        $jobLog->value = "Opbrengst Kwh verdelen mislukt.";
+        $jobLog->value = "Opbrengst Kwh definitief maken mislukt.";
         $jobLog->job_category_id = 'process-revenues-kwh';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
 
-        Log::error("Opbrengst Kwh verdelen mislukt:" . $exception->getMessage());
+        Log::error("Opbrengst Kwh definitief maken mislukt:" . $exception->getMessage());
     }
 }

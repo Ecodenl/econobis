@@ -46,8 +46,28 @@ class RevenueDistributionPartsKwh extends Model
 
     public function getDeliveredTotalStringAttribute()
     {
+        $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_end', '<=', Carbon::parse($this->partsKwh->date_end)->format('Y-m-d'))->pluck('id')->toArray();
+        $deliveredTotal = RevenueDistributionPartsKwh::where('revenue_id', $this->revenue_id)->where('distribution_id', $this->distribution_id)->whereIn('parts_id', $upToPartsKwhIds)->sum('delivered_kwh');
+
+        return number_format( $deliveredTotal, '2',',', '.' );
+    }
+    public function getDeliveredTotalThisPartStringAttribute()
+    {
         return number_format( $this->delivered_kwh, '2',',', '.' );
     }
+    public function getKwhReturnAttribute(){
+        $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_end', '<=', Carbon::parse($this->partsKwh->date_end)->format('Y-m-d'))->pluck('id')->toArray();
+        $deliveredTotal = RevenueDistributionPartsKwh::where('revenue_id', $this->revenue_id)->where('distribution_id', $this->distribution_id)->whereIn('parts_id', $upToPartsKwhIds)->sum('delivered_kwh');
+
+        $payoutKwh = $this->partsKwh->payout_kwh ? $this->partsKwh->payout_kwh : 0;
+        return $deliveredTotal * $payoutKwh;
+    }
+    public function getKwhReturnThisPartAttribute(){
+        $deliveredTotal = $this->delivered_kwh ? $this->delivered_kwh : 0;
+        $payoutKwh = $this->partsKwh->payout_kwh ? $this->partsKwh->payout_kwh : 0;
+        return $deliveredTotal * $payoutKwh;
+    }
+
     public function getRemarksAttribute()
     {
         $remarks = [];
@@ -64,12 +84,6 @@ class RevenueDistributionPartsKwh extends Model
             $remarks[] = "Einde laatste periode ";
         }
         return implode('<br/>', $remarks);
-    }
-
-    public function getKwhReturnAttribute(){
-        $deliveredTotal = $this->delivered_kwh ? $this->delivered_kwh : 0;
-        $payoutKwh = $this->partsKwh->payout_kwh ? $this->partsKwh->payout_kwh : 0;
-        return $deliveredTotal * $payoutKwh;
     }
 
 }

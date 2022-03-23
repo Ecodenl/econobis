@@ -35,18 +35,27 @@ class PaymentInvoiceCreateApp extends Component {
             .then(payload => {
                 this.setState({
                     distribution: payload,
-                    isLoading: false,
+                    // isLoading: false,
                 });
             })
             .catch(error => {
                 this.setState({ isLoading: false });
             });
 
-        ProjectsAPI.peekDistributionsById(this.props.reportPreview.distributionIds).then(payload => {
-            this.setState({
-                distributions: payload.data,
-            });
-        });
+        setTimeout(() => {
+            if (this.props.reportPreview) {
+                ProjectsAPI.peekDistributionsById(this.props.reportPreview.distributionIds)
+                    .then(payload => {
+                        this.setState({
+                            distributions: payload.data,
+                            isLoading: false,
+                        });
+                    })
+                    .catch(error => {
+                        this.setState({ isLoading: false });
+                    });
+            }
+        }, 1000);
     }
 
     componentWillUnmount() {

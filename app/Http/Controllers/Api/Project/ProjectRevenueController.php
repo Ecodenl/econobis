@@ -37,6 +37,7 @@ use App\Http\Resources\ParticipantProject\FullRevenueParticipantProject;
 use App\Http\Resources\ParticipantProject\Templates\ParticipantReportMail;
 use App\Http\Resources\Project\FullProjectRevenue;
 use App\Http\Resources\Project\FullProjectRevenueDistribution;
+use App\Http\Resources\Project\ProjectRevenueDistributionPeek;
 use App\Jobs\Revenue\CreatePaymentInvoices;
 use App\Jobs\Revenue\CreateRevenueReport;
 use Barryvdh\DomPDF\Facade as PDF;
@@ -1142,10 +1143,15 @@ class ProjectRevenueController extends ApiController
 
         $ids = $request->input('ids') ? $request->input('ids') : [];
 
-        $distribution = ProjectRevenueDistribution::whereIn('id',
-            $ids)->with(['revenue'])->get();
-
-        return FullProjectRevenueDistribution::collection($distribution);
+        if(count($ids) > 999){
+            $distribution = ProjectRevenueDistribution::whereIn('id', array_slice($ids, 0, 999))
+                ->orWhereIn('id', array_slice($ids, 999))
+                ->get();
+        } else {
+            $distribution = ProjectRevenueDistribution::
+            whereIn('id', $ids)->get();
+        }
+        return ProjectRevenueDistributionPeek::collection($distribution);
     }
 
     public function downloadPreview(Request $request, ProjectRevenueDistribution $distribution)

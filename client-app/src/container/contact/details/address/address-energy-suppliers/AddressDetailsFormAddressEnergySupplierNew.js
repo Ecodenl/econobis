@@ -432,7 +432,7 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
                             <Modal
                                 closeModal={this.setHideMessageHasParticipations}
                                 // modalClassName="modal-lg"
-                                buttonCancelText="Ok"
+                                // buttonCancelText="Ok"
                                 showConfirmAction={
                                     this.state.messageHasParticipationsProjectsArray.length == 1 &&
                                     this.state.messageHasParticipationsRedirect

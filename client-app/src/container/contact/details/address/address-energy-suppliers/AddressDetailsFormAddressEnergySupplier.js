@@ -6,6 +6,7 @@ import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../../components/panel/PanelHeader';
 import { connect } from 'react-redux';
+import ButtonText from '../../../../../components/button/ButtonText';
 
 class AddressDetailsFormAddressEnergySupplier extends Component {
     constructor(props) {
@@ -17,9 +18,11 @@ class AddressDetailsFormAddressEnergySupplier extends Component {
     }
 
     toggleShowNew = () => {
+        const currentShowNew = this.state.showNew;
         this.setState({
-            showNew: !this.state.showNew,
+            showNew: !currentShowNew,
         });
+        this.props.setAddressEnergySupplierNewOrEditOpen(!currentShowNew);
     };
 
     render() {
@@ -35,7 +38,11 @@ class AddressDetailsFormAddressEnergySupplier extends Component {
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        <AddressDetailsFormAddressEnergySupplierList address={this.props.address} />
+                        <AddressDetailsFormAddressEnergySupplierList
+                            address={this.props.address}
+                            setAddressEnergySupplierNewOrEditOpen={this.props.setAddressEnergySupplierNewOrEditOpen}
+                            addressEnergySupplierNewOrEditOpen={this.props.addressEnergySupplierNewOrEditOpen}
+                        />
                     </div>
                     <div className="col-md-12 margin-10-top">
                         {this.state.showNew && (
@@ -52,6 +59,13 @@ class AddressDetailsFormAddressEnergySupplier extends Component {
                                 toggleShowNew={this.toggleShowNew}
                             />
                         )}
+                    </div>
+                    <div className="pull-right btn-group" role="group">
+                        <ButtonText
+                            buttonClassName={'btn-default'}
+                            buttonText={'Annuleren'}
+                            onClickAction={this.props.closeAddressEnergySupplier}
+                        />
                     </div>
                 </PanelBody>
             </Panel>

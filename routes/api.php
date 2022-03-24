@@ -331,8 +331,6 @@ Route::namespace('Api')
         Route::get('project/revenues-kwh/{revenuesKwh}/csv', 'Project\RevenuesKwhController@csv');
         Route::post('project/revenues-kwh/{revenuesKwh}/distribution-kwh', 'Project\RevenuesKwhController@getRevenueDistribution');
         Route::post('project/revenues-kwh/create-energy-supplier-report/{revenuesKwh}/{documentTemplate}', 'Project\RevenuesKwhController@createEnergySupplierReport');
-        Route::post('project/revenues-kwh/create-energy-supplier-excel/{revenuesKwh}', 'Project\RevenuesKwhController@createEnergySupplierAllExcel');
-        Route::post('project/revenues-kwh/create-energy-supplier-excel/{revenuesKwh}/{energySupplier}', 'Project\RevenuesKwhController@createEnergySupplierOneExcel');
         Route::post('project/revenues-kwh', 'Project\RevenuesKwhController@store');
         Route::post('project/revenues-kwh/{revenuesKwh}', 'Project\RevenuesKwhController@update');
         Route::post('project/revenues-kwh/{revenuesKwh}/delete', 'Project\RevenuesKwhController@destroy');
@@ -341,9 +339,7 @@ Route::namespace('Api')
         Route::get('project/revenue-parts-kwh/{revenuePartsKwh}/csv', 'Project\RevenuePartsKwhController@csv');
         Route::post('project/revenue-parts-kwh/{revenuePartsKwh}/distribution-parts-kwh', 'Project\RevenuePartsKwhController@getRevenueDistributionParts');
 
-//        Route::post('project/revenue-parts-kwh/create-energy-supplier-report/{revenuePartsKwh}/{documentTemplate}', 'Project\RevenuePartsKwhController@createEnergySupplierReport');
-        Route::post('project/revenue-parts-kwh/create-energy-supplier-excel/{revenuePartsKwh}', 'Project\RevenuePartsKwhController@createEnergySupplierAllExcel');
-        Route::post('project/revenue-parts-kwh/create-energy-supplier-excel/{revenuePartsKwh}/{energySupplier}', 'Project\RevenuePartsKwhController@createEnergySupplierOneExcel');
+        Route::post('project/revenue-parts-kwh/create-energy-supplier-excel/{revenuePartsKwh}', 'Project\RevenuePartsKwhController@reportEnergySupplier');
         Route::post('project/revenue-parts-kwh/{revenuePartsKwh}', 'Project\RevenuePartsKwhController@update');
         Route::post('project/revenue-parts-kwh/{revenuePartsKwh}/delete', 'Project\RevenuePartsKwhController@destroy');
 

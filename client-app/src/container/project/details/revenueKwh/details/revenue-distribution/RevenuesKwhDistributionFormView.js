@@ -61,6 +61,9 @@ const RevenuesKwhDistributionFormView = props => {
         case 'in-progress-update':
             statusText = 'Bezig met bijwerken...';
             break;
+        case 'in-progress-report-concept':
+            statusText = 'Bezig met rapportage...';
+            break;
         case 'in-progress-report':
             statusText = 'Bezig met rapportage...';
             break;

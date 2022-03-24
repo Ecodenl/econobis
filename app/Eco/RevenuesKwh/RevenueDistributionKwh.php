@@ -66,7 +66,7 @@ class RevenueDistributionKwh extends Model
     public function getKwhReturnAttribute(){
         $kwhReturnTotal = 0;
         foreach ($this->distributionPartsKwh->whereIn('status', ['confirmed', 'processed']) as $distributionPartsKwh) {
-            $kwhReturnTotal += $distributionPartsKwh->kwh_return;
+            $kwhReturnTotal += $distributionPartsKwh->kwh_return_this_part;
         }
         return $kwhReturnTotal;
     }

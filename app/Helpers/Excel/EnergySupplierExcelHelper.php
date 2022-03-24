@@ -194,10 +194,6 @@ class EnergySupplierExcelHelper
                     $rowData[] = '';
                     $completeData[] = $rowData;
                 }
-                foreach ($distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)->get() as $distributionPart){
-                    $distributionPart->date_energy_supplier_report = Carbon::now()->format('Y-m-d');
-                    $distributionPart->save();
-                }
             }
         }
 
@@ -413,10 +409,6 @@ class EnergySupplierExcelHelper
                         $completeData[] = $rowData;
                     }
                 }
-                foreach ($distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)->get() as $distributionPart){
-                    $distributionPart->date_energy_supplier_report = Carbon::now()->format('Y-m-d');
-                    $distributionPart->save();
-                }
             }
         }
 
@@ -588,10 +580,6 @@ class EnergySupplierExcelHelper
                         $rowData[] = round($deliveredTotalEsNextYear, 2);
                         $completeData[] = $rowData;
                     }
-                }
-                foreach ($distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)->get() as $distributionPart){
-                    $distributionPart->date_energy_supplier_report = Carbon::now()->format('Y-m-d');
-                    $distributionPart->save();
                 }
             }
         }
@@ -822,10 +810,6 @@ class EnergySupplierExcelHelper
                         $completeData[] = $rowData;
                     }
                 }
-                foreach ($distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)->get() as $distributionPart){
-                    $distributionPart->date_energy_supplier_report = Carbon::now()->format('Y-m-d');
-                    $distributionPart->save();
-                }
             }
         }
 
@@ -1046,10 +1030,6 @@ class EnergySupplierExcelHelper
                         $rowData[] = round($deliveredTotalEsNextYear, 2);
                         $completeData[] = $rowData;
                     }
-                }
-                foreach ($distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)->get() as $distributionPart){
-                    $distributionPart->date_energy_supplier_report = Carbon::now()->format('Y-m-d');
-                    $distributionPart->save();
                 }
             }
         }
@@ -1369,10 +1349,6 @@ class EnergySupplierExcelHelper
                         $completeData[] = $rowData;
                     }
                 }
-                foreach ($distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)->get() as $distributionPart){
-                    $distributionPart->date_energy_supplier_report = Carbon::now()->format('Y-m-d');
-                    $distributionPart->save();
-                }
             }
         }
 
@@ -1580,10 +1556,6 @@ class EnergySupplierExcelHelper
                             ? 'EAN: ' . $this->revenuesKwh->project->ean : '';
                         $completeData[] = $rowData;
                     }
-                }
-                foreach ($distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)->get() as $distributionPart){
-                    $distributionPart->date_energy_supplier_report = Carbon::now()->format('Y-m-d');
-                    $distributionPart->save();
                 }
             }
         }

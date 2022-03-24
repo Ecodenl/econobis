@@ -5,7 +5,6 @@ import RevenuePartsKwhDistributionFormView from './RevenuePartsKwhDistributionFo
 import DataTablePagination from '../../../../../../../../components/dataTable/DataTablePagination';
 
 const RevenuePartsKwhDistributionFormList = props => {
-    console.log(props);
     return (
         <div>
             {props.revenuePartsKwh.status == 'in-progress-update' ? (

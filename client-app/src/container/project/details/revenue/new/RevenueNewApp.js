@@ -260,7 +260,7 @@ class RevenueNewApp extends Component {
             hasErrors = true;
         }
         if (
-            category.codeRef !== 'redemptionEuro' &&
+            category.codeRef === 'revenueKwh' &&
             !revenue.kwhEndCalendarYearHigh &&
             this.isPeriodExceedingYear(revenue.dateBegin, revenue.dateEnd)
         ) {
@@ -269,7 +269,7 @@ class RevenueNewApp extends Component {
             hasErrors = true;
         }
         if (
-            category.codeRef !== 'redemptionEuro' &&
+            category.codeRef === 'revenueKwh' &&
             !revenue.kwhEndHigh &&
             this.isPeriodExceedingYear(revenue.dateBegin, revenue.dateEnd)
         ) {

@@ -4,6 +4,8 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import PortalDashboardWidgetOrderRow from './PortalDashboardWidgetOrderRow';
 import update from 'immutability-helper';
+import {FaInfoCircle} from "react-icons/fa";
+import ReactTooltip from "react-tooltip";
 
 const PortalDashboardWidgetOrderTable = ({ columns, data, edit, handleInputChange, removeWidget, imageHash }) => {
     const [records, setRecords] = useState(data);
@@ -54,7 +56,25 @@ const PortalDashboardWidgetOrderTable = ({ columns, data, edit, handleInputChang
                         <tr {...headerGroup.getHeaderGroupProps()} className={'thead-title'}>
                             {edit && <th />}
                             {headerGroup.headers.map(column => (
-                                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                                <th {...column.getHeaderProps()}>{column.render('Header')}
+                                    {column.textToolTip && (
+                                        <span>{' '}
+                                            <FaInfoCircle
+                                                color={'white'}
+                                                size={'15px'}
+                                                data-tip={column.render('textToolTip')}
+                                                data-for={`tooltip-${column.render('accessor')}`}
+                                            />
+                                            <ReactTooltip
+                                                id={`tooltip-${column.render('accessor')}`}
+                                                effect="float"
+                                                place="right"
+                                                multiline={true}
+                                                aria-haspopup="true"
+                                            />
+                                        </span>
+                                    )}
+                                </th>
                             ))}
                             {edit && <th />}
                         </tr>

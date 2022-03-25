@@ -32,7 +32,7 @@ export default {
 
     peekDistributionsById: distributionIds => {
         const requestUrl = `distribution/peek-by-ids`;
-        URL_API;
+
         return axiosInstance
             .post(requestUrl, { ids: distributionIds })
             .then(function(response) {

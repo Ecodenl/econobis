@@ -35,6 +35,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Laracasts\Presenter\PresentableTrait;
 use Venturecraft\Revisionable\RevisionableTrait;
 
@@ -525,6 +526,22 @@ class Contact extends Model
     public function getPrimaryAddressIdAttribute()
     {
         return($this->primaryAddress ? $this->primaryAddress->id : 0);
+    }
+
+    public function getBlockChangeAddressAttribute()
+    {
+        $hasIntakeOnPortalCheckAddress = false;
+        $hasHousingFileOnPortalCheckAddress = false;
+        if($this->addressForPostalCodeCheck){
+            $hasIntakeOnPortalCheckAddress = $this->intakes()
+                ->where('address_id', $this->addressForPostalCodeCheck->id)
+                ->exists();
+            $hasHousingFileOnPortalCheckAddress = $this->housingFiles()
+                ->where('address_id', $this->addressForPostalCodeCheck->id)
+                ->exists();
+        }
+
+        return $hasIntakeOnPortalCheckAddress || $hasHousingFileOnPortalCheckAddress;
     }
 
     public function getBlockChangeAddressNumberAttribute()

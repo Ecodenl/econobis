@@ -1143,15 +1143,11 @@ class ProjectRevenueController extends ApiController
 
         $ids = $request->input('ids') ? $request->input('ids') : [];
 
-        if(count($ids) > 999){
-            $distribution = ProjectRevenueDistribution::whereIn('id', array_slice($ids, 0, 999))
-                ->orWhereIn('id', array_slice($ids, 999))
-                ->get();
-        } else {
-            $distribution = ProjectRevenueDistribution::
-            whereIn('id', $ids)->get();
+        $distributions = new ProjectRevenueDistribution();
+        foreach(array_chunk($ids,900) as $chunk){
+            $distributions = $distributions->orWhereIn('id', $chunk);
         }
-        return ProjectRevenueDistributionPeek::collection($distribution);
+        return ProjectRevenueDistributionPeek::collection($distributions->get());
     }
 
     public function downloadPreview(Request $request, ProjectRevenueDistribution $distribution)

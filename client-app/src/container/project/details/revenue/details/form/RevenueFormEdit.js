@@ -244,7 +244,7 @@ class RevenueFormEdit extends Component {
             hasErrors = true;
         }
         if (
-            this.props.revenue.category.codeRef !== 'redemptionEuro' &&
+            this.props.revenue.category.codeRef === 'revenueKwh' &&
             validator.isEmpty(revenue.kwhEndCalendarYearHigh + '') &&
             this.isPeriodExceedingYear(revenue.dateBegin, revenue.dateEnd)
         ) {
@@ -253,7 +253,7 @@ class RevenueFormEdit extends Component {
             hasErrors = true;
         }
         if (
-            this.props.revenue.category.codeRef !== 'redemptionEuro' &&
+            this.props.revenue.category.codeRef === 'revenueKwh' &&
             validator.isEmpty(revenue.kwhEndHigh + '') &&
             this.isPeriodExceedingYear(revenue.dateBegin, revenue.dateEnd)
         ) {

@@ -278,7 +278,7 @@ class RevenueNewApp extends Component {
             hasErrors = true;
         }
         if (
-            category.codeRef !== 'redemptionEuro' &&
+            category.codeRef === 'revenueKwh' &&
             !revenue.payoutKwh &&
             this.isPeriodExceedingYear(revenue.dateBegin, revenue.dateEnd)
         ) {

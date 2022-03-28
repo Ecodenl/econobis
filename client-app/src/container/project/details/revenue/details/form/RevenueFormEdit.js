@@ -261,6 +261,16 @@ class RevenueFormEdit extends Component {
             errorMessage.kwhEndHigh = 'Verplicht';
             hasErrors = true;
         }
+        if (
+            this.props.revenue.category.codeRef === 'revenueKwh' &&
+            !revenue.payoutKwh &&
+            this.isPeriodExceedingYear(revenue.dateBegin, revenue.dateEnd)
+        ) {
+            errors.payoutKwh = true;
+            errorMessage.payoutKwh = 'Verplicht';
+            hasErrors = true;
+        }
+
         if (this.props.revenue.category.codeRef === 'redemptionEuro' && !revenue.dateBegin && revenue.dateEnd) {
             errors.dateBegin = true;
             errorMessage.dateBegin = 'Begin periode moet ook ingevuld worden als Eind periode ingevuld is.';
@@ -820,10 +830,19 @@ class RevenueFormEdit extends Component {
                                 type={'number'}
                                 label={'Opbrengst kWh €'}
                                 name={'payoutKwh'}
-                                value={payoutKwh}
+                                value={
+                                    payoutKwh &&
+                                    payoutKwh.toLocaleString('nl', {
+                                        minimumFractionDigits: 3,
+                                        maximumFractionDigits: 5,
+                                    })
+                                }
                                 onChangeAction={this.handleInputChange}
+                                error={this.state.errors.payoutKwh}
+                                errorMessage={this.state.errorMessage.payoutKwh}
                                 required={'required'}
                             />
+
                             <InputText
                                 type={'number'}
                                 label={'Totaal productie kWh'}

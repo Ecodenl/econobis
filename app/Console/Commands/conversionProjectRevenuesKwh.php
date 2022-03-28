@@ -453,6 +453,7 @@ class conversionProjectRevenuesKwh extends Command
 
     public function saveDistributionKwh(RevenuesKwh $revenuesKwh, $oldProjectRevenue, $oldDistribution):void
     {
+//        Log::info('Start saveDistributionKwh');
         $participant = ParticipantProject::find($oldDistribution->participation_id);
         if(!$participant){
             Log::error("Geen participant? id: "  . $oldDistribution->id);
@@ -505,6 +506,7 @@ class conversionProjectRevenuesKwh extends Command
         foreach ($revenuesKwh->partsKwh as $partsKwh) {
             $this->saveDistributionPartsKwhWithOld($partsKwh, $distributionKwh, $oldDistribution);
         }
+//        Log::info('Einde saveDistributionKwh');
     }
 
     /**
@@ -534,6 +536,8 @@ class conversionProjectRevenuesKwh extends Command
 
     protected function saveDistributionPartsKwhWithOld(RevenuePartsKwh $revenuePartsKwh, RevenueDistributionKwh $distributionKwh, $oldProjectRevenueDistribution):void
     {
+//        Log::info('Start saveDistributionPartsKwhWithOld');
+
         // Bepalen energiesupplier
         $partDateBegin = Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d');
         $partDateEnd = Carbon::parse($revenuePartsKwh->date_end)->format('Y-m-d');
@@ -607,6 +611,7 @@ class conversionProjectRevenuesKwh extends Command
         $revenuePartsKwhForRecalculate = RevenuePartsKwh::find($revenuePartsKwh->id);
         $revenuePartsKwhForRecalculate->calculator()->runCountingsRevenuesKwh();
 
+//        Log::info('Einde saveDistributionPartsKwhWithOld');
     }
 
     /**
@@ -766,13 +771,11 @@ class conversionProjectRevenuesKwh extends Command
 
         $newRevenuesKwh->confirmed = 1;
         $newRevenuesKwh->date_confirmed = $oldProjectRevenuesKwh->date_confirmed;
-        if($newRevenuesKwh->distributionKwh->where('status', 'confirmed')->count() > 0)
+        $newRevenuesKwhStatus = 'confirmed';
+        if($newRevenuesKwh->distributionKwh->where('status', 'processed')->count() > 0
+        && $newRevenuesKwh->distributionKwh->where('status', '!=', 'processed')->count() == 0)
         {
-            $newRevenuesKwhStatus = 'confirmed';
-        } elseif($newRevenuesKwh->distributionKwh->where('status', 'processed')->count() > 0) {
             $newRevenuesKwhStatus = 'processed';
-        } else {
-            $newRevenuesKwhStatus = '?????????';
         }
         $newRevenuesKwh->status = $newRevenuesKwhStatus;
 

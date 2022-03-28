@@ -166,15 +166,9 @@ const RevenueNew = props => {
                                   .add(6, 'month')
                                   .add(-1, 'day')
                                   .format('Y-MM-DD')
-                            : category.codeRef === 'redemptionEuro' ||
-                              (category.codeRef === 'revenueEuro' &&
-                                  (projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation'))
-                            ? moment(dateBegin)
+                            : moment(dateBegin)
                                   .add(1, 'year')
                                   .add(-1, 'day')
-                                  .format('Y-MM-DD')
-                            : moment(dateBegin)
-                                  .endOf('year')
                                   .format('Y-MM-DD')
                     }
                 />

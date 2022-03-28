@@ -287,20 +287,21 @@ class RevenueFormEdit extends Component {
             errorMessage.dateEnd = 'Eind periode mag niet voor Begin periode liggen.';
             hasErrors = true;
         }
-        if (
-            !hasErrors &&
-            this.props.revenue.category.codeRef !== 'revenueKwh' &&
-            this.props.revenue.category.codeRef !== 'redemptionEuro' &&
-            (this.props.revenue.project.projectType.codeRef === 'capital' ||
-                this.props.revenue.project.projectType.codeRef === 'postalcode_link_capital') &&
-            moment(revenue.dateBegin).year() !== moment(revenue.dateEnd).year()
-        ) {
-            errors.dateBegin = true;
-            errorMessage.dateBegin = 'Jaaroverschrijdende perioden niet toegestaan.';
-            errors.dateEnd = true;
-            errorMessage.dateEnd = 'Jaaroverschrijdende perioden niet toegestaan.';
-            hasErrors = true;
-        }
+        // todo WM: cleanup Jaaroverschrijdend ook toestaan voor kapitoaal
+        // if (
+        //     !hasErrors &&
+        //     this.props.revenue.category.codeRef !== 'revenueKwh' &&
+        //     this.props.revenue.category.codeRef !== 'redemptionEuro' &&
+        //     (this.props.revenue.project.projectType.codeRef === 'capital' ||
+        //         this.props.revenue.project.projectType.codeRef === 'postalcode_link_capital') &&
+        //     moment(revenue.dateBegin).year() !== moment(revenue.dateEnd).year()
+        // ) {
+        //     errors.dateBegin = true;
+        //     errorMessage.dateBegin = 'Jaaroverschrijdende perioden niet toegestaan.';
+        //     errors.dateEnd = true;
+        //     errorMessage.dateEnd = 'Jaaroverschrijdende perioden niet toegestaan.';
+        //     hasErrors = true;
+        // }
         if (
             !hasErrors &&
             this.props.revenue.category.codeRef === 'redemptionEuro' &&
@@ -319,8 +320,9 @@ class RevenueFormEdit extends Component {
         if (
             !hasErrors &&
             this.props.revenue.category.codeRef === 'revenueEuro' &&
-            (this.props.revenue.project.projectType.codeRef === 'loan' ||
-                this.props.revenue.project.projectType.codeRef === 'obligation') &&
+            // todo WM: cleanup Jaaroverschrijdend ook toestaan voor kapitoaal
+            // (this.props.revenue.project.projectType.codeRef === 'loan' ||
+            //     this.props.revenue.project.projectType.codeRef === 'obligation') &&
             moment(revenue.dateBegin).format('Y-MM-DD') <
                 moment(revenue.dateEnd)
                     .add(-1, 'year')
@@ -620,15 +622,9 @@ class RevenueFormEdit extends Component {
                                       .add(6, 'month')
                                       .add(-1, 'day')
                                       .format('Y-MM-DD')
-                                : category.codeRef === 'redemptionEuro' ||
-                                  (category.codeRef === 'revenueEuro' &&
-                                      (projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation'))
-                                ? moment(dateBegin)
+                                : moment(dateBegin)
                                       .add(1, 'year')
                                       .add(-1, 'day')
-                                      .format('Y-MM-DD')
-                                : moment(dateBegin)
-                                      .endOf('year')
                                       .format('Y-MM-DD')
                         }
                     />

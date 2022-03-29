@@ -527,6 +527,22 @@ class Contact extends Model
         return($this->primaryAddress ? $this->primaryAddress->id : 0);
     }
 
+    public function getBlockChangeAddressAttribute()
+    {
+        $hasIntakeOnPortalCheckAddress = false;
+        $hasHousingFileOnPortalCheckAddress = false;
+        if($this->addressForPostalCodeCheck){
+            $hasIntakeOnPortalCheckAddress = $this->intakes()
+                ->where('address_id', $this->addressForPostalCodeCheck->id)
+                ->exists();
+            $hasHousingFileOnPortalCheckAddress = $this->housingFiles()
+                ->where('address_id', $this->addressForPostalCodeCheck->id)
+                ->exists();
+        }
+
+        return $hasIntakeOnPortalCheckAddress || $hasHousingFileOnPortalCheckAddress;
+    }
+
     public function getBlockChangeAddressNumberAttribute()
     {
         foreach($this->participations as $participation)

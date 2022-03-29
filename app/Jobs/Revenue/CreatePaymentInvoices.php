@@ -49,8 +49,12 @@ class CreatePaymentInvoices implements ShouldQueue
 
         $projectRevenueController = new ProjectRevenueController();
         //create invoices
-        $createdInvoices = $projectRevenueController->createInvoices(ProjectRevenueDistribution::whereIn('id',
-            $this->distributionIds)->get(), $this->datePayout);
+        $distributions = new ProjectRevenueDistribution();
+        foreach(array_chunk($this->distributionIds,900) as $chunk){
+            $distributions = $distributions->orWhereIn('id', $chunk);
+        }
+
+        $createdInvoices = $projectRevenueController->createInvoices($distributions->get(), $this->datePayout);
 
         if ($createdInvoices) {
             $paymentInvoiceController = new PaymentInvoiceController();

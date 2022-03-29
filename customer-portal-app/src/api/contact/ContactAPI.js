@@ -23,6 +23,7 @@ export default {
                         'noAddressesFound',
                         'isParticipantPcrProject',
                         'isParticipantSceProject',
+                        'blockChangeAddress',
                         'blockChangeAddressNumber',
                     ],
                     rlt: {

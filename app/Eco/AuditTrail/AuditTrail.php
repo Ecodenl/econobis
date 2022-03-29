@@ -25,26 +25,26 @@ class AuditTrail extends Model
 
     public function getOldValueAttribute($value)
     {
-        try {
-            if($value) {
-                $value = Crypt::decrypt($value);
-                return $value;
-            }
-        } catch (DecryptException $e) {
+//        try {
+//            if($value) {
+//                $value = Crypt::decrypt($value);
+//                return $value;
+//            }
+//        } catch (DecryptException $e) {
             return $value;
-        }
+//        }
     }
 
     public function getNewValueAttribute($value)
     {
-        try {
-            if($value) {
-                $value = Crypt::decrypt($value);
-                return $value;
-            }
-        } catch (DecryptException $e) {
+//        try {
+//            if($value) {
+//                $value = Crypt::decrypt($value);
+//                return $value;
+//            }
+//        } catch (DecryptException $e) {
             return $value;
-        }
+//        }
     }
 
 }

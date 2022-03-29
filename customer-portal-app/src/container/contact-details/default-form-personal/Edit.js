@@ -253,7 +253,24 @@ const DefaultContactPersonalEdit = function({
                     className={initialContact.isParticipant ? 'field-label required' : 'field-label'}
                 >
                     Adres
-                    {initialContact.blockChangeAddressNumber ? (
+                    {initialContact.blockChangeAddress ? (
+                        <>
+                            {' '}
+                            <FaInfoCircle
+                                color={'blue'}
+                                size={'15px'}
+                                data-tip={`Adres kan momenteel niet worden aangepast. Geef jouw adreswijziging per e-mail aan ons door.`}
+                                data-for={`participant-${initialContact.id}`}
+                            />
+                            <ReactTooltip
+                                id={`participant-${initialContact.id}`}
+                                effect="float"
+                                place="bottom"
+                                multiline={true}
+                                aria-haspopup="true"
+                            />
+                        </>
+                    ) : initialContact.blockChangeAddressNumber ? (
                         <>
                             {' '}
                             <FaInfoCircle
@@ -302,6 +319,7 @@ const DefaultContactPersonalEdit = function({
                                     touched={touched}
                                     id="street"
                                     placeholder={'Straat'}
+                                    disabled={initialContact.blockChangeAddress}
                                 />
                             )}
                         />
@@ -318,7 +336,9 @@ const DefaultContactPersonalEdit = function({
                                     touched={touched}
                                     id="street_number"
                                     placeholder={'Nummer'}
-                                    disabled={initialContact.blockChangeAddressNumber}
+                                    disabled={
+                                        initialContact.blockChangeAddress || initialContact.blockChangeAddressNumber
+                                    }
                                 />
                             )}
                         />
@@ -333,7 +353,9 @@ const DefaultContactPersonalEdit = function({
                                     touched={touched}
                                     id="addition"
                                     placeholder={'Toevoeging'}
-                                    disabled={initialContact.blockChangeAddressNumber}
+                                    disabled={
+                                        initialContact.blockChangeAddress || initialContact.blockChangeAddressNumber
+                                    }
                                 />
                             )}
                         />
@@ -351,7 +373,9 @@ const DefaultContactPersonalEdit = function({
                                     id="postal_code"
                                     placeholder={'Postcode'}
                                     disabled={
-                                        initialContact.isParticipantSceProject || initialContact.isParticipantPcrProject
+                                        initialContact.blockChangeAddress ||
+                                        initialContact.isParticipantSceProject ||
+                                        initialContact.isParticipantPcrProject
                                     }
                                 />
                             )}
@@ -367,6 +391,7 @@ const DefaultContactPersonalEdit = function({
                                     touched={touched}
                                     id="city"
                                     placeholder={'Plaats'}
+                                    disabled={initialContact.blockChangeAddress}
                                 />
                             )}
                         />
@@ -384,6 +409,7 @@ const DefaultContactPersonalEdit = function({
                                     id="country_id"
                                     placeholder={'Selecteer uw land'}
                                     options={Countries}
+                                    disabled={initialContact.blockChangeAddress}
                                 />
                             )}
                         />

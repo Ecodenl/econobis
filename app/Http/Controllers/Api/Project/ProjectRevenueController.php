@@ -37,6 +37,7 @@ use App\Http\Resources\ParticipantProject\FullRevenueParticipantProject;
 use App\Http\Resources\ParticipantProject\Templates\ParticipantReportMail;
 use App\Http\Resources\Project\FullProjectRevenue;
 use App\Http\Resources\Project\FullProjectRevenueDistribution;
+use App\Http\Resources\Project\ProjectRevenueDistributionPeek;
 use App\Jobs\Revenue\CreatePaymentInvoices;
 use App\Jobs\Revenue\CreateRevenueReport;
 use Barryvdh\DomPDF\Facade as PDF;
@@ -1142,10 +1143,11 @@ class ProjectRevenueController extends ApiController
 
         $ids = $request->input('ids') ? $request->input('ids') : [];
 
-        $distribution = ProjectRevenueDistribution::whereIn('id',
-            $ids)->with(['revenue'])->get();
-
-        return FullProjectRevenueDistribution::collection($distribution);
+        $distributions = new ProjectRevenueDistribution();
+        foreach(array_chunk($ids,900) as $chunk){
+            $distributions = $distributions->orWhereIn('id', $chunk);
+        }
+        return ProjectRevenueDistributionPeek::collection($distributions->get());
     }
 
     public function downloadPreview(Request $request, ProjectRevenueDistribution $distribution)
@@ -1485,7 +1487,7 @@ class ProjectRevenueController extends ApiController
             catch (\Exception $e) {
                 Log::error('Fout bij maken rapport document voor ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
                 Log::error($e->getMessage());
-                array_push($messages, 'Fout bij maken rapport document voor ' . $primaryEmailAddress->email . ' (' . $contact->full_name . ')' );
+                array_push($messages, 'Fout bij maken rapport document voor ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
             }
 
             //send email
@@ -1572,10 +1574,12 @@ class ProjectRevenueController extends ApiController
         }
         if(count($messages) > 0)
         {
+            Log::error( 'Fouten (' . count($messages) . ') bij rapportage opbrengstverdeling' );
             return ['messages' => $messages];
         }
         else
         {
+            Log::info( 'Geen fouten bij rapportage opbrengstverdeling' );
             return null;
         }
     }

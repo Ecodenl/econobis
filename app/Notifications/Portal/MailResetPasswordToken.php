@@ -41,12 +41,13 @@ class MailResetPasswordToken extends Notification
      */
     public function toMail($notifiable)
     {
+        $url = 'https://' . PortalSettings::get("portalUrl") . '/#/wachtwoord-vergeten';
         return (new MailMessage)
             ->subject("Wijzig je wachtwoord")
             ->line("Wil je je wachtwoord wijzigen? Klik dan op de knop Wijzig wachtwoord.")
             ->action('Wijzig wachtwoord', 'https://' . PortalSettings::get("portalUrl") . '/#/wachtwoord-wijzigen/' . $this->token . '/' . $this->email)
             ->line('Als je je wachtwoord niet wilt wijzigen, dan hoef je geen actie te ondernemen.')
-            ->line('De link om je wachtwoord opnieuw in te stellen is <strong>' . Config::get('auth.passwords.portal.expire'). ' minuten geldig</strong> en kan maar één keer worden gebruikt. Als je link verlopen is, vraag dan een nieuwe aan. Als je meerdere keren een link hebt aangevraagd, gebruik dan de link in de meest recente e-mail.');
+            ->line('De link om je wachtwoord opnieuw in te stellen is <strong>' . Config::get('auth.passwords.portal.expire'). ' minuten geldig</strong> en kan maar één keer worden gebruikt. Als je link verlopen is, ga dan naar <a href="' . $url . '">' . $url . '</a> vul daar je e-mail adres in en er wordt een nieuwe activatie link via mail toegestuurd. Als je meerdere keren een link hebt aangevraagd, gebruik dan de link in de meest recente e-mail.');
 
     }
 

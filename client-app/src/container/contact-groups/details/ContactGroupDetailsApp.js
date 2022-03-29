@@ -20,6 +20,7 @@ function ContactGroupDetailsApp(props) {
     }, [props.params.id]);
 
     function callFetchContactGroupDetails(id) {
+        props.clearContactGroupDetails();
         props.fetchContactGroupDetails(id);
     }
 

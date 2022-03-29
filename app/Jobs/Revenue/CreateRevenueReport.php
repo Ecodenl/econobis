@@ -67,7 +67,7 @@ class CreateRevenueReport implements ShouldQueue
             DocumentTemplate::find($this->documentTemplateId),
             EmailTemplate::find($this->emailTemplateId));
 
-        if($result && $result['messages'])
+        if($result && isset($result['messages']))
         {
             foreach ($result['messages'] as $message) {
                 $value = 'Fout bij rapportage deelnemer '.$this->distributionFullName.' ('.$this->distributionId.'): '.$message;

@@ -57,8 +57,13 @@ class RevenueDistributionPartsKwhCSVHelper
 
 //                $distributionPartsKwh->participations_quantity = $distributionPartsKwh->participations_quantity;
                 $distributionPartsKwh->date_payout = $distributionPartsKwh->partsKwh->date_payout ? $this->formatDate($distributionPartsKwh->partsKwh->date_payout) : $this->formatDate($distributionPartsKwh->partsKwh->date_confirmed);
-                $distributionPartsKwh->delivered_kwh_formatted = $this->formatFinancial($distributionPartsKwh->delivered_kwh, 2);
-                $distributionPartsKwh->kwh_return_formatted = $this->formatFinancial($distributionPartsKwh->kwh_return, 2);
+                $distributionPartsKwh->delivered_kwh_this_part = $this->formatFinancial($distributionPartsKwh->delivered_kwh, 2);
+                $distributionPartsKwh->kwh_return_this_part = $this->formatFinancial($distributionPartsKwh->kwh_return_this_part, 2);
+
+                $distributionPartsKwh->period_start_from_till_visible = $this->formatDate($distributionPartsKwh->date_begin_from_till_visible);
+                $distributionPartsKwh->period_end_from_till_visible = $this->formatDate($distributionPartsKwh->partsKwh->date_end);
+                $distributionPartsKwh->delivered_kwh_from_till_visible = $this->formatFinancial($distributionPartsKwh->delivered_kwh_from_till_visible, 2);
+                $distributionPartsKwh->kwh_return_from_till_visible = $this->formatFinancial($distributionPartsKwh->kwh_return, 2);
             });
 
 
@@ -72,8 +77,8 @@ class RevenueDistributionPartsKwhCSVHelper
                 'payout_type' => 'Uitkeren op',
                 'date_payout' => 'Datum uitkering',
                 'energy_supplier_name' => 'Energieleverancier',
-                'delivered_kwh_formatted' => 'Geleverd totaal',
-                'kwh_return_formatted' => 'Teruggave energiebelasting',
+                'delivered_kwh_this_part' => 'Geleverd deze periode',
+                'kwh_return_this_part' => 'Teruggave EB deze periode',
                 'title.name' => 'Persoon titel',
                 'initials' => 'Persoon initialen',
                 'first_name' => 'Persoon voornaam',
@@ -89,6 +94,10 @@ class RevenueDistributionPartsKwhCSVHelper
                 'period_end' => 'Eind periode',
                 'updated_at_date' => 'Laatste update op',
                 'created_at_date' => 'Gemaakt op',
+                'period_start_from_till_visible' => 'Begin periode EL rapport',
+                'period_end_from_till_visible' => 'Eind periode EL rapport',
+                'delivered_kwh_from_till_visible' => 'Geleverd totaal EL rapport',
+                'kwh_return_from_till_visible' => 'Teruggave EB rapport',
             ], $headers);
             $headers = false;
         }

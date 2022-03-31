@@ -2,6 +2,8 @@
 
 namespace App\Eco\RevenuesKwh;
 
+use App\Eco\Project\ProjectRevenueDistribution;
+use App\Http\Resources\Project\ProjectRevenueDistributionPeek;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;

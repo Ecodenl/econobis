@@ -270,7 +270,6 @@ class RevenueFormEdit extends Component {
             errorMessage.payoutKwh = 'Verplicht';
             hasErrors = true;
         }
-
         if (this.props.revenue.category.codeRef === 'redemptionEuro' && !revenue.dateBegin && revenue.dateEnd) {
             errors.dateBegin = true;
             errorMessage.dateBegin = 'Begin periode moet ook ingevuld worden als Eind periode ingevuld is.';

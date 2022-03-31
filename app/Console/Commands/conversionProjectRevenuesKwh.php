@@ -453,6 +453,7 @@ class conversionProjectRevenuesKwh extends Command
 
     public function saveDistributionKwh(RevenuesKwh $revenuesKwh, $oldProjectRevenue, $oldDistribution):void
     {
+//        Log::info('Start saveDistributionKwh');
         $participant = ParticipantProject::find($oldDistribution->participation_id);
         if(!$participant){
             Log::error("Geen participant? id: "  . $oldDistribution->id);
@@ -505,6 +506,7 @@ class conversionProjectRevenuesKwh extends Command
         foreach ($revenuesKwh->partsKwh as $partsKwh) {
             $this->saveDistributionPartsKwhWithOld($partsKwh, $distributionKwh, $oldDistribution);
         }
+//        Log::info('Einde saveDistributionKwh');
     }
 
     /**
@@ -534,6 +536,8 @@ class conversionProjectRevenuesKwh extends Command
 
     protected function saveDistributionPartsKwhWithOld(RevenuePartsKwh $revenuePartsKwh, RevenueDistributionKwh $distributionKwh, $oldProjectRevenueDistribution):void
     {
+//        Log::info('Start saveDistributionPartsKwhWithOld');
+
         // Bepalen energiesupplier
         $partDateBegin = Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d');
         $partDateEnd = Carbon::parse($revenuePartsKwh->date_end)->format('Y-m-d');
@@ -607,6 +611,7 @@ class conversionProjectRevenuesKwh extends Command
         $revenuePartsKwhForRecalculate = RevenuePartsKwh::find($revenuePartsKwh->id);
         $revenuePartsKwhForRecalculate->calculator()->runCountingsRevenuesKwh();
 
+//        Log::info('Einde saveDistributionPartsKwhWithOld');
     }
 
     /**
@@ -766,13 +771,11 @@ class conversionProjectRevenuesKwh extends Command
 
         $newRevenuesKwh->confirmed = 1;
         $newRevenuesKwh->date_confirmed = $oldProjectRevenuesKwh->date_confirmed;
-        if($newRevenuesKwh->distributionKwh->where('status', 'confirmed')->count() > 0)
+        $newRevenuesKwhStatus = 'confirmed';
+        if($newRevenuesKwh->distributionKwh->where('status', 'processed')->count() > 0
+        && $newRevenuesKwh->distributionKwh->where('status', '!=', 'processed')->count() == 0)
         {
-            $newRevenuesKwhStatus = 'confirmed';
-        } elseif($newRevenuesKwh->distributionKwh->where('status', 'processed')->count() > 0) {
             $newRevenuesKwhStatus = 'processed';
-        } else {
-            $newRevenuesKwhStatus = '?????????';
         }
         $newRevenuesKwh->status = $newRevenuesKwhStatus;
 
@@ -792,7 +795,6 @@ class conversionProjectRevenuesKwh extends Command
             $this->createOrUpdateRevenueValuesKwhSimulate($partsKwh->revenue_id, $partDateBegin, $partDateEnd, $dateRegistrationDayAfterEnd, $status);
             $this->countingsConceptConfirmedProcessed($partsKwh);
         }
-
     }
     /**
      * @param $conversionRevenuesKwh
@@ -869,10 +871,17 @@ class conversionProjectRevenuesKwh extends Command
 
     public function createOrUpdateRevenueValuesKwhSimulate($revenueId, $partDateBegin, $partDateEnd, $dateRegistrationDayAfterEnd, $status): void
     {
+//        Log::info('test: ' . $revenueId);
+//        Log::info('partDateBegin: ' . $partDateBegin);
+//        Log::info('partDateEnd: ' . $partDateEnd);
+//        Log::info('dateRegistrationDayAfterEnd: ' . $dateRegistrationDayAfterEnd);
+
         $daysOfPeriod = Carbon::parse($dateRegistrationDayAfterEnd)->diffInDays(Carbon::parse($partDateBegin));
         $beginRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenueId)->where('date_registration', $partDateBegin)->first();
         $endRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenueId)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
 
+//        Log::info($beginRevenueValuesKwh);
+//        Log::info($endRevenueValuesKwh);
         $deliveredHighPerDay = round((($endRevenueValuesKwh->kwh_start_high - $beginRevenueValuesKwh->kwh_start_high) / $daysOfPeriod), 6);
         $deliveredLowPerDay = round((($endRevenueValuesKwh->kwh_start_low - $beginRevenueValuesKwh->kwh_start_low) / $daysOfPeriod), 6);
         $deliveredTotalPerDay = round((($endRevenueValuesKwh->kwh_start - $beginRevenueValuesKwh->kwh_start) / $daysOfPeriod), 6);
@@ -1186,6 +1195,12 @@ class conversionProjectRevenuesKwh extends Command
                     $revenueValuesKwhOnSplitDate->kwh_start_high != $oldProjectSplitRevenue->kwh_end_high ||
                     $revenueValuesKwhOnSplitDate->kwh_start_low != $oldProjectSplitRevenue->kwh_end_low) {
                     Log::error('Revenue kwh id: ' . $partToSplit->revenue_id . '. Verschillende beginstanden op ' . Carbon::parse($oldProjectSplitRevenue->date_end)->addDay()->format('d-m-Y') . '!!!!');
+                    Log::error('oud kwh_end : ' . $oldProjectSplitRevenue->kwh_end );
+                    Log::error('new kwh_end : ' . $revenueValuesKwhOnSplitDate->kwh_start );
+                    Log::error('oud kwh_end_high : ' . $oldProjectSplitRevenue->kwh_end_high );
+                    Log::error('new kwh_end_high : ' . $revenueValuesKwhOnSplitDate->kwh_start_high );
+                    Log::error('oud kwh_end_low : ' . $oldProjectSplitRevenue->kwh_end_low );
+                    Log::error('new kwh_end_low : ' . $revenueValuesKwhOnSplitDate->kwh_start_low );
                     if($revenueValuesKwhOnSplitDate->status == 'concept'){
                         $revenueValuesKwhOnSplitDate->kwh_start = $oldProjectSplitRevenue->kwh_end;
                         $revenueValuesKwhOnSplitDate->kwh_start_high = $oldProjectSplitRevenue->kwh_end_calendar_year_high;
@@ -1219,12 +1234,15 @@ class conversionProjectRevenuesKwh extends Command
             }
             $newRevenuePartsKwh->save();
 
-//            Log::error('Gesimuleerde waarden opnieuw bepalen voor periode ' . $splitDateString . ' t/m ' . $oldEndDateOriginalPartsKwh );
-            $simulatedValuesPartToSplit = RevenueValuesKwh::where('revenue_id', $partToSplit->revenue_id)->where('is_simulated', true)->whereBetween('date_registration', [$partDateBegin, $partDateEnd])->delete();
+//            Log::error('Gesimuleerde waarden opnieuw bepalen voor periode ' . $partDateBegin . ' t/m ' . $oldEndDateOriginalPartsKwh );
+//            Log::info('delete periode: ' . $partDateBegin . ' t/m ' . $oldEndDateOriginalPartsKwh );
+            $simulatedValuesPartToSplit = RevenueValuesKwh::where('revenue_id', $partToSplit->revenue_id)->where('is_simulated', true)->whereBetween('date_registration', [$partDateBegin, $oldEndDateOriginalPartsKwh])->where('status', 'concept')->delete();
             $status = $partToSplit->confirmed ? 'confirmed' : 'concept';
 
-            $this->createOrUpdateRevenueValuesKwhSimulate($partToSplit->revenue_id, $partDateBegin, Carbon::parse($newEndDateOriginalPartsKwh)->format('Y-m-d'), Carbon::parse($newEndDateOriginalPartsKwh)->addDay()->format('Y-m-d'), $status);
-            $this->createOrUpdateRevenueValuesKwhSimulate($newRevenuePartsKwh->revenue_id, Carbon::parse($splitDateString)->format('Y-m-d'), Carbon::parse($oldEndDateOriginalPartsKwh)->format('Y-m-d'), Carbon::parse($oldEndDateOriginalPartsKwh)->addDay()->format('Y-m-d'), $status);
+//            Log::info('create periode: ' . $partDateBegin . ' t/m ' . $oldEndDateOriginalPartsKwh );
+            $this->createOrUpdateRevenueValuesKwhSimulate($partToSplit->revenue_id, $partDateBegin, $newEndDateOriginalPartsKwh, Carbon::parse($newEndDateOriginalPartsKwh)->addDay()->format('Y-m-d'), $status);
+//            Log::info('create periode: ' . $partDateBegin . ' t/m ' . $oldEndDateOriginalPartsKwh );
+            $this->createOrUpdateRevenueValuesKwhSimulate($newRevenuePartsKwh->revenue_id, Carbon::parse($splitDateString)->format('Y-m-d'), $oldEndDateOriginalPartsKwh, Carbon::parse($oldEndDateOriginalPartsKwh)->addDay()->format('Y-m-d'), $status);
 
             //  Stappen 4, 4b en 5 hoeven niet als revenuePartsKwh status new heeft.
             if($partToSplit->status != 'new') {
@@ -1341,10 +1359,10 @@ class conversionProjectRevenuesKwh extends Command
                 $totalDeliveredKwhConfirmed = $partToSplit->confirmedValuesKwh()->sum('delivered_kwh');
                 $totalDeliveredKwhConcept = $partToSplit->conceptValuesKwh()->sum('delivered_kwh');
                 $totalDeliveredKwhToDivide = $totalDeliveredKwhConcept - $totalDeliveredKwhConfirmed;
-                Log::info('totalSumOfParticipationsAndDaysConcept: ' . $totalSumOfParticipationsAndDaysConcept);
-                Log::info('totalDeliveredKwhConfirmed: ' . $totalDeliveredKwhConfirmed);
-                Log::info('totalDeliveredKwhConcept: ' . $totalDeliveredKwhConcept);
-                Log::info('totalDeliveredKwhToDivide: ' . $totalDeliveredKwhToDivide);
+//                Log::info('totalSumOfParticipationsAndDaysConcept: ' . $totalSumOfParticipationsAndDaysConcept);
+//                Log::info('totalDeliveredKwhConfirmed: ' . $totalDeliveredKwhConfirmed);
+//                Log::info('totalDeliveredKwhConcept: ' . $totalDeliveredKwhConcept);
+//                Log::info('totalDeliveredKwhToDivide: ' . $totalDeliveredKwhToDivide);
                 foreach ($partToSplit->conceptDistributionValuesKwh as $conceptDistributionValuesKwh) {
 
                     // delivered_kwh = (totaal delivered to divide / $totalSumOfParticipationsAndDaysConcept) * quantity_multiply_by_days
@@ -1369,10 +1387,10 @@ class conversionProjectRevenuesKwh extends Command
                 $totalDeliveredKwhConfirmedNew = $newRevenuePartsKwh->confirmedValuesKwh()->sum('delivered_kwh');
                 $totalDeliveredKwhConceptNew = $newRevenuePartsKwh->conceptValuesKwh()->sum('delivered_kwh');
                 $totalDeliveredKwhToDivideNew = $totalDeliveredKwhConceptNew - $totalDeliveredKwhConfirmedNew;
-                Log::info('totalSumOfParticipationsAndDaysConceptNew: ' . $totalSumOfParticipationsAndDaysConceptNew);
-                Log::info('totalDeliveredKwhConfirmedNew: ' . $totalDeliveredKwhConfirmedNew);
-                Log::info('totalDeliveredKwhConceptNew: ' . $totalDeliveredKwhConceptNew);
-                Log::info('totalDeliveredKwhToDivideNew: ' . $totalDeliveredKwhToDivideNew);
+//                Log::info('totalSumOfParticipationsAndDaysConceptNew: ' . $totalSumOfParticipationsAndDaysConceptNew);
+//                Log::info('totalDeliveredKwhConfirmedNew: ' . $totalDeliveredKwhConfirmedNew);
+//                Log::info('totalDeliveredKwhConceptNew: ' . $totalDeliveredKwhConceptNew);
+//                Log::info('totalDeliveredKwhToDivideNew: ' . $totalDeliveredKwhToDivideNew);
 
                 foreach ($newRevenuePartsKwh->conceptDistributionValuesKwh as $conceptDistributionValuesKwhNew) {
 

@@ -163,7 +163,7 @@ class RevenuePartsKwhController extends ApiController
         $upToPartsKwhIds
     )
     {
-        $distributionsKwh = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $revenuePartsKwh->distribution_kwh_for_report_energy_supplier)->get();
+        $distributionsKwh = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $revenuePartsKwh->distribution_kwh_for_report_energy_supplier_ids)->get();
         foreach ($distributionsKwh as $distributionKwh) {
             $distributionsPartsKwh = $distributionKwh->distributionPartsKwh->whereIn('parts_id', $upToPartsKwhIds)->where('es_id', $energySupplier->id);
             foreach ($distributionsPartsKwh as $distributionPartsKwh) {

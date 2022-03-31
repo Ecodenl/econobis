@@ -22,17 +22,19 @@ class RevenueDistributionKwhCSVHelper
         $csv = '';
         $headers = true;
 
-        foreach ($this->revenuesKwh->distributionPartsKwh->chunk(500) as $chunk) {
+        $distributionPartsKwh = $this->revenuesKwh->distributionPartsKwh->where('is_visible', true)->sortBy('distribution_id');
+
+        foreach ($distributionPartsKwh->chunk(500) as $chunk) {
             $chunk->load([
                 'distributionKwh.contact.person.title',
                 'distributionKwh.contact.primaryAddress',
             ]);
 
             $this->csvExporter->beforeEach(function ($distributionPartsKwh) {
-                $distributionPartsKwh->created_at_date = $distributionPartsKwh->distributionKwh->created_at->format('d-m-Y');
-                $distributionPartsKwh->updated_at_date = $distributionPartsKwh->distributionKwh->updated_at->format('d-m-Y');
+//                $distributionPartsKwh->created_at_date = $distributionPartsKwh->distributionKwh->created_at->format('d-m-Y');
+//                $distributionPartsKwh->updated_at_date = $distributionPartsKwh->distributionKwh->updated_at->format('d-m-Y');
 
-                $distributionPartsKwh->period_start = $this->formatDate($distributionPartsKwh->partsKwh->date_begin);
+                $distributionPartsKwh->period_start = $this->formatDate($distributionPartsKwh->date_begin_from_till_visible);
                 $distributionPartsKwh->period_end = $this->formatDate($distributionPartsKwh->partsKwh->date_end);
 
                 $distributionPartsKwh->type = $distributionPartsKwh->distributionKwh->contact->getType()->name;
@@ -55,9 +57,8 @@ class RevenueDistributionKwhCSVHelper
                     $distributionPartsKwh->last_name = $distributionPartsKwh->distributionKwh->contact->person->last_name;
                 }
 
-//                $distributionPartsKwh->participations_quantity = $distributionPartsKwh->participations_quantity;
                 $distributionPartsKwh->date_payout = $distributionPartsKwh->partsKwh->date_payout ? $this->formatDate($distributionPartsKwh->partsKwh->date_payout) : $this->formatDate($distributionPartsKwh->partsKwh->date_confirmed);
-                $distributionPartsKwh->delivered_kwh_formatted = $this->formatFinancial($distributionPartsKwh->delivered_kwh, 2);
+                $distributionPartsKwh->delivered_kwh_formatted = $this->formatFinancial($distributionPartsKwh->delivered_kwh_from_till_visible, 2);
                 $distributionPartsKwh->kwh_return_formatted = $this->formatFinancial($distributionPartsKwh->kwh_return, 2);
             });
 
@@ -87,8 +88,8 @@ class RevenueDistributionKwhCSVHelper
                 'country' => 'Land',
                 'period_start' => 'Begin periode',
                 'period_end' => 'Eind periode',
-                'updated_at_date' => 'Laatste update op',
-                'created_at_date' => 'Gemaakt op',
+//                'updated_at_date' => 'Laatste update op',
+//                'created_at_date' => 'Gemaakt op',
             ], $headers);
             $headers = false;
         }

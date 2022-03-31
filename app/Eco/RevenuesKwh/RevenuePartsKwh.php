@@ -2,8 +2,7 @@
 
 namespace App\Eco\RevenuesKwh;
 
-use App\Eco\Project\ProjectRevenueDistribution;
-use App\Http\Resources\Project\ProjectRevenueDistributionPeek;
+use App\Http\Resources\Project\RevenueDistributionKwhPeek;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -168,12 +167,11 @@ class RevenuePartsKwh extends Model
     {
         $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_end', '<=', $this->date_end)->pluck('id')->toArray();
         $distributionKwhIds = RevenueDistributionPartsKwh::whereIn('parts_id', $upToPartsKwhIds)->where('is_visible', 1)->whereNull('date_energy_supplier_report')->whereNotNull('es_id')->where('delivered_kwh', '!=', 0)->pluck('distribution_id')->toArray();
-
-        $distributions = new ProjectRevenueDistribution();
+        $distributions = new RevenueDistributionKwh();
         foreach(array_chunk($distributionKwhIds,900) as $chunk){
             $distributions = $distributions->orWhereIn('id', $chunk);
         }
-        return ProjectRevenueDistributionPeek::collection($distributions->get());
+        return RevenueDistributionKwhPeek::collection($distributions->get());
     }
 
     public function calculator()

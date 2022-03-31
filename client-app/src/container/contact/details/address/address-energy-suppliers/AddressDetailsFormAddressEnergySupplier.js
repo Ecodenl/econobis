@@ -30,11 +30,12 @@ class AddressDetailsFormAddressEnergySupplier extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Energieleverancier gegevens</span>
-                    {(this.props.permissions.updatePerson || this.props.permissions.updateOrganisation) && (
-                        <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                            <span className="glyphicon glyphicon-plus" />
-                        </a>
-                    )}
+                    {(this.props.permissions.updatePerson || this.props.permissions.updateOrganisation) &&
+                        this.props.addressEnergySupplierNewOrEditOpen == false && (
+                            <a role="button" className="pull-right" onClick={this.toggleShowNew}>
+                                <span className="glyphicon glyphicon-plus" />
+                            </a>
+                        )}
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">

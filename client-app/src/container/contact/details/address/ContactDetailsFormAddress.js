@@ -35,9 +35,11 @@ class ContactDetailsFormAddress extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Adres / Energieleverancier gegevens</span>
-                    <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                        <span className="glyphicon glyphicon-plus" />
-                    </a>
+                    {this.state.addressEnergySupplierNewOrEditOpen == false && (
+                        <a role="button" className="pull-right" onClick={this.toggleShowNew}>
+                            <span className="glyphicon glyphicon-plus" />
+                        </a>
+                    )}
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">

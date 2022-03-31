@@ -163,6 +163,12 @@ class RevenuePartsKwh extends Model
         return RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_begin', $dateRegistrationDayAfterEnd)->first();
     }
 
+    public function getDistributionKwhForReportEnergySupplierIdsAttribute()
+    {
+        $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_end', '<=', $this->date_end)->pluck('id')->toArray();
+        $distributionKwhIds = RevenueDistributionPartsKwh::whereIn('parts_id', $upToPartsKwhIds)->where('is_visible', 1)->whereNull('date_energy_supplier_report')->whereNotNull('es_id')->where('delivered_kwh', '!=', 0)->pluck('distribution_id')->toArray();
+        return $distributionKwhIds;
+    }
     public function getDistributionKwhForReportEnergySupplierAttribute()
     {
         $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_end', '<=', $this->date_end)->pluck('id')->toArray();

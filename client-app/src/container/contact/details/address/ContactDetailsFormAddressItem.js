@@ -228,6 +228,7 @@ class ContactDetailFormAddressItem extends Component {
                 />
                 {this.state.showEdit && (
                     <ContactDetailsFormAddressEdit
+                        numberOfAddresses={this.props.numberOfAddresses}
                         address={this.state.address}
                         handleInputChange={this.handleInputChange}
                         handleInputChangeDate={this.handleInputChangeDate}

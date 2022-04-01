@@ -32,8 +32,8 @@ class PortalLogoLayoutNewCrop extends Component {
                 this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
                 break;
             case 'image-widget':
-                this.aspectString = '16:9';
-                this.crop = { unit: 'px', width: 453, aspect: 16 / 9 };
+                this.aspectString = '3:1';
+                this.crop = { unit: 'px', width: 453, aspect: 3 / 1 };
                 this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
                 break;
             default:

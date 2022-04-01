@@ -92,12 +92,6 @@ class ProductController extends ApiController
             ->string('costCenterId')->validate('exists:cost_centers,id,deleted_at,NULL')->whenMissing(null)->onEmpty(null)->alias('cost_center_id')->next()
             ->get();
 
-        /**
-         * Frontend uses a reversed display of the boolean
-         * (represented as 'archived' instead of 'active').
-         */
-        $data['active'] = !$data['active'];
-
         $product = $product->fill($data);
 
         $product->save();

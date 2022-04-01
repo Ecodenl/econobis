@@ -92,7 +92,7 @@ class Filter extends RequestFilter
 
         if ($data === 'paid') {
             $query->where(function ($query){
-                $query->where('status_id', 'paid')
+                $query->where('invoices.status_id', 'paid')
                     ->orWhere(function ($query) {
                         $query->whereHas('molliePayments', function ($q) {
                             $q->whereNotNull('date_paid');
@@ -105,7 +105,7 @@ class Filter extends RequestFilter
 
         if (in_array($data, $extra_statusses)) {
             if($data === 'payed-by-mollie'){
-                $query->whereIn('status_id', ['exported', 'sent'])
+                $query->whereIn('invoices.status_id', ['exported', 'sent'])
                     ->whereHas('molliePayments', function ($q) {
                     $q->whereNotNull('date_paid');
                 });

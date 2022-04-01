@@ -426,9 +426,9 @@ class ProductDetailsFormGeneralEdit extends Component {
 
                         <div className={'row'}>
                             <InputToggle
-                                label={'Archief'}
+                                label={'Actief'}
                                 name={'active'}
-                                value={!!!active}
+                                value={active}
                                 onChangeAction={event => {
                                     event.persist();
                                     this.handleInputChange(event);

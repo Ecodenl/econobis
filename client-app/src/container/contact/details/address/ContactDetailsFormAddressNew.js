@@ -152,6 +152,11 @@ class ContactDetailsFormAddressNew extends Component {
             hasErrors = true;
         }
 
+        if (address.typeId === 'old' && address.primary) {
+            errors.typeId = true;
+            hasErrors = true;
+        }
+
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form

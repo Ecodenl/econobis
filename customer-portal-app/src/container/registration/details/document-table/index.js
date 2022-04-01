@@ -21,7 +21,9 @@ function RegistrationDetailsDocumentTable({ participantId, documents }) {
 
     if (
         (documents && documents.relatedDocumentsOnPortal && documents.relatedDocumentsOnPortal.length !== 0) ||
-        (documents && documents.relatedDocumentsOnPortal && documents.relatedDocumentsOnPortal.length !== 0)
+        (documents &&
+            documents.relatedDocumentsProjectOnPortal &&
+            documents.relatedDocumentsProjectOnPortal.length !== 0)
     ) {
         return (
             <>

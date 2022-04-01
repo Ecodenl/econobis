@@ -27,26 +27,37 @@ class PortalSettingsDashboardWidgetList extends Component {
         const columns = [
             {
                 Header: 'Titel',
+                textToolTip: '',
                 accessor: 'title',
             },
             {
                 Header: 'Tekst',
+                textToolTip: '',
                 accessor: 'text',
             },
             {
                 Header: 'Afbeelding',
+                textToolTip: '',
                 accessor: 'image',
             },
             {
                 Header: 'Knoptekst',
+                textToolTip: '',
                 accessor: 'buttonText',
             },
             {
                 Header: 'Knoplink',
+                textToolTip: `Knoplinks zonder HTTPS:// verwijzen naar pagina binnen xxxxxx.mijnenergiesamen.nl (de gebruikers portaal pagina) 
+                     <br /> bijvoorbeeld inschrijven-projecten verwijst naar: <br />
+                     https://xxxxxx.mijnenergiesamen.nl/#/inschrijven-projecten <br />
+                     Knoplinks met HTTPS:// (Externe links) verwijzen naar een pagina buiten de gebruikersportaal <br />
+                     bijvoorbeeld https://www.google.com/
+                     zal na aanklikken de website in een nieuw tabblad(nieuw scherm) openen.`,
                 accessor: 'buttonLink',
             },
             {
                 Header: 'Actief',
+                textToolTip: '',
                 accessor: 'active',
             },
         ];

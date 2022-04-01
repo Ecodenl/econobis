@@ -371,9 +371,12 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             />
                         </div>
                         <div className="row">
+                            <h4 className={'col-sm-12'}>Afbeeldingen</h4>
+                        </div>
+                        <div className="row">
                             <InputText
                                 Men
-                                label="Logo login (bestandstype PNG)"
+                                label="A. Logo op login pagina (bestandstype PNG)"
                                 divSize={'col-sm-8'}
                                 value={
                                     this.state.attachmentLogo.name ? this.state.attachmentLogo.name : portalLogoFileName
@@ -407,7 +410,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputText
                                 Men
-                                label="Achtergrond afbeelding login (bestandstype PNG)"
+                                label="B. Achtergrond afbeelding login pagina (bestandstype PNG)"
                                 divSize={'col-sm-8'}
                                 value={
                                     this.state.attachmentImageBgLogin.name
@@ -418,6 +421,8 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                     this.toggleNewLogo('image-bg-login');
                                 }}
                                 onChangeaction={() => {}}
+                                size={'col-sm-5'}
+                                textToolTip={`Om afbeelding zichtbaar te maken moet de achtergrond deels transparant zijn, zie 1. Login pagina / Header kleur voor meer informatie.`}
                                 readOnly={!this.manageTechnicalPortalSettings}
                                 required={'required'}
                                 error={this.state.errors.portalImageBgFileNameLogin}
@@ -443,7 +448,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputText
                                 Men
-                                label="Logo header (bestandstype PNG)"
+                                label="C. Logo in de header (bestandstype PNG)"
                                 divSize={'col-sm-8'}
                                 value={
                                     this.state.attachmentLogoHeader.name
@@ -479,7 +484,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputText
                                 Men
-                                label="Achtergrond afbeelding header (bestandstype PNG)"
+                                label="D. Achtergrond afbeelding in de header (bestandstype PNG)"
                                 divSize={'col-sm-8'}
                                 value={
                                     this.state.attachmentImageBgHeader.name
@@ -490,6 +495,8 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                     this.toggleNewLogo('image-bg-header');
                                 }}
                                 onChangeaction={() => {}}
+                                size={'col-md-5'}
+                                textToolTip={`Om afbeelding zichtbaar te maken moet de achtergrond deels transparant zijn, zie 1. Login pagina / Header kleur voor meer informatie.`}
                                 readOnly={!this.manageTechnicalPortalSettings}
                                 required={'required'}
                                 error={this.state.errors.portalImageBgFileNameHeader}
@@ -514,7 +521,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="Favicon (bestandstype ICO)"
+                                label="E. Favicon in tabblad browser (bestandstype ICO)"
                                 divSize={'col-sm-8'}
                                 value={
                                     this.state.attachmentFavicon.name
@@ -523,6 +530,8 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 }
                                 onClickAction={this.toggleNewFavicon}
                                 onChangeaction={() => {}}
+                                size={'col-sm-5'}
+                                textToolTip={`Een favicon is het icoontje dat je ziet in de tabbladen van je browser. Vaak is de favicon het logo van het bedrijf waarvan je de website bezoekt.`}
                                 readOnly={!this.manageTechnicalPortalSettings}
                                 required={'required'}
                                 error={this.state.errors.portalFaviconFileName}
@@ -549,10 +558,12 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 addFavicon={this.addFavicon}
                             />
                         )}
-
+                        <div className="row">
+                            <h4 className={'col-md-12'}>Kleur</h4>
+                        </div>
                         <div className="row">
                             <InputText
-                                label="1. Login/Header - achtergrond afbeelding kleur"
+                                label="1. Login pagina/ header kleur"
                                 divSize={'col-sm-8'}
                                 name={'loginHeaderBackgroundColor'}
                                 value={loginHeaderBackgroundColor}
@@ -587,7 +598,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="2. Login/Header - achtergrond afbeelding tekst kleur"
+                                label="2. Login pagina/ header tekst kleur"
                                 divSize={'col-sm-8'}
                                 name={'loginHeaderBackgroundTextColor'}
                                 value={loginHeaderBackgroundTextColor}
@@ -629,7 +640,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="4. Login - veld achtergrond kleur"
+                                label="4. Login pagina tekstveld achtergrond kleur"
                                 divSize={'col-sm-8'}
                                 name={'loginFieldBackgroundColor'}
                                 value={loginFieldBackgroundColor}
@@ -667,7 +678,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="5. Login - veld tekst kleur"
+                                label="5. Login pagina tekstveld tekst kleur"
                                 divSize={'col-sm-8'}
                                 name={'loginFieldBackgroundTextColor'}
                                 value={loginFieldBackgroundTextColor}
@@ -679,7 +690,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="6. Menu achtergrond / pagina header tekst kleur"
+                                label="6. Menu achtergrond kleur / welkomsttitel tekst kleur"
                                 divSize={'col-sm-8'}
                                 name={'portalBackgroundColor'}
                                 value={portalBackgroundColor}
@@ -726,7 +737,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="7. Achtergrond tekst kleur"
+                                label="7. Menu achtergrond tekst kleur"
                                 divSize={'col-sm-8'}
                                 name={'portalBackgroundTextColor'}
                                 value={portalBackgroundTextColor}

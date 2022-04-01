@@ -129,6 +129,11 @@ font-size: 18px;
 font-weight: 400;
 }
 
+h5.card-title {
+line-height: 0px;
+margin-top: 0px;
+}
+
 .text-block {
 padding-top: .375rem;
 padding-bottom: .375rem;

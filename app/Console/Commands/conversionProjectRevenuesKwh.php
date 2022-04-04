@@ -482,7 +482,11 @@ class conversionProjectRevenuesKwh extends Command
             $distributionKwh->street = $oldDistribution->street;
             $distributionKwh->street_number = $oldDistribution->street_number;
             $distributionKwh->street_number_addition = $oldDistribution->street_number_addition;
-            $distributionKwh->address = $oldDistribution->street . ' ' . ( $oldDistribution->street_number_addition ? $oldDistribution->street_number . '-' . $oldDistribution->street_number_addition : $oldDistribution->street_number );
+            if($oldDistribution->address != ''){
+                $distributionKwh->address = $oldDistribution->address;
+            }else{
+                $distributionKwh->address = $oldDistribution->street . ' ' . ( $oldDistribution->street_number_addition ? $oldDistribution->street_number . '-' . $oldDistribution->street_number_addition : $oldDistribution->street_number );
+            }
             $distributionKwh->postal_code = $oldDistribution->postal_code;
             $distributionKwh->city = $oldDistribution->city;
             $distributionKwh->country = $oldDistribution->country ? $oldDistribution->country : '';

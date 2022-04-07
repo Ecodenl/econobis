@@ -201,18 +201,18 @@ class conversionProjectRevenuesKwh extends Command
             $newRevenuesKwh = RevenuesKwh::find($conversionRevenuesKwh->new_revenue_id);
 
             foreach ($newRevenuesKwh->partsKwh as $partsKwh) {
-                Log::info('verwerk countings part: ' . $partsKwh->id);
-                $revenuePartsKwhForRecalculate = RevenuePartsKwh::find($partsKwh->id);
-                $revenuePartsKwhForRecalculate->calculator()->runCountingsRevenuesKwh();
+//                $revenuePartsKwhForRecalculate = RevenuePartsKwh::find($partsKwh->id);
+//                $revenuePartsKwhForRecalculate->calculator()->runCountingsRevenuesKwh();
+                $this->countingsConceptConfirmedProcessed($partsKwh);
             }
 
             $newParticipationsQuantity = 0;
             $newDeliveredTotalConcept = 0;
             $newDeliveredTotalConfirmed = 0;
             $newDeliveredTotalProcessed = 0;
-            Log::info('aantal new distributionKwh: ' . $newRevenuesKwh->distributionKwh->count());
+//            Log::info('aantal new distributionKwh: ' . $newRevenuesKwh->distributionKwh->count());
             foreach ($newRevenuesKwh->distributionKwh as $distributionKwh){
-                    Log::info('delivered_total_concept' . $distributionKwh->delivered_total_concept);
+//                    Log::info('delivered_total_concept' . $distributionKwh->delivered_total_concept);
                 $newParticipationsQuantity += $distributionKwh->participations_quantity;
                 $newDeliveredTotalConcept += $distributionKwh->delivered_total_concept;
                 $newDeliveredTotalConfirmed += $distributionKwh->delivered_total_confirmed;
@@ -658,8 +658,9 @@ class conversionProjectRevenuesKwh extends Command
         $distributionPartsKwh->is_visible = empty($distributionPartsKwh->remarks) ? false : true;
         $distributionPartsKwh->save();
 
-        $revenuePartsKwhForRecalculate = RevenuePartsKwh::find($revenuePartsKwh->id);
-        $revenuePartsKwhForRecalculate->calculator()->runCountingsRevenuesKwh();
+//        Log::info('Verwerk countings part (2): ' . $revenuePartsKwh->id);
+//        $revenuePartsKwhForRecalculate = RevenuePartsKwh::find($revenuePartsKwh->id);
+//        $revenuePartsKwhForRecalculate->calculator()->runCountingsRevenuesKwh();
 
 //        Log::info('Einde saveDistributionPartsKwhWithOld');
     }
@@ -858,6 +859,13 @@ class conversionProjectRevenuesKwh extends Command
 
     protected function countingsConceptConfirmedProcessed(RevenuePartsKwh $revenuePartsKwh): void
     {
+        foreach ($revenuePartsKwh->revenuesKwh->distributionKwh as $distributionKwh) {
+            $distributionKwh->delivered_total_concept = $distributionKwh->distributionValuesKwh->where('status', 'concept')->sum('delivered_kwh');
+            $distributionKwh->delivered_total_confirmed = $distributionKwh->distributionValuesKwh->where('status', 'confirmed')->sum('delivered_kwh');
+            $distributionKwh->delivered_total_processed = $distributionKwh->distributionValuesKwh->where('status', 'processed')->sum('delivered_kwh');
+            $distributionKwh->save();
+        }
+
         if($revenuePartsKwh->confirmed){
             if($revenuePartsKwh->confirmed
                 && $revenuePartsKwh->distributionPartsKwh->where('status', 'processed')->count() > 0
@@ -1170,11 +1178,13 @@ class conversionProjectRevenuesKwh extends Command
                 }
 
                 $partToSplitForRecalculate = RevenuePartsKwh::find($partToSplit->id);
-                $partToSplitForRecalculate->calculator()->runCountingsRevenuesKwh();
+//                $partToSplitForRecalculate->calculator()->runCountingsRevenuesKwh();
+                $this->countingsConceptConfirmedProcessed($partToSplitForRecalculate);
                 $partToSplitForRecalculate->status = 'in-progress';
                 $partToSplitForRecalculate->save();
                 $newRevenuePartsKwhForRecalculate = RevenuePartsKwh::find($newRevenuePartsKwh->id);
-                $newRevenuePartsKwhForRecalculate->calculator()->runCountingsRevenuesKwh();
+//                $newRevenuePartsKwhForRecalculate->calculator()->runCountingsRevenuesKwh();
+                $this->countingsConceptConfirmedProcessed($newRevenuePartsKwhForRecalculate);
                 $newRevenuePartsKwhForRecalculate->status = 'in-progress';
                 $newRevenuePartsKwhForRecalculate->save();
             }

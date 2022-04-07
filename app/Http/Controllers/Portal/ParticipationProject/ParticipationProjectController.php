@@ -129,6 +129,8 @@ class ParticipationProjectController extends Controller
             }
         }
 
+        $address = $contact->addressForPostalCodeCheck;
+
         DB::transaction(function () use ($contact, $address, $project, $request, $portalUser, $responsibleUserId) {
             /**
              * Als er eerder op dit project is ingeschreven dan kan de

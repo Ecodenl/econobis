@@ -34,7 +34,7 @@ class EmailAttachmentsNew extends Component {
                         className="dropzone"
                         onDropAccepted={this.onDropAccepted.bind(this)}
                         onDropRejected={this.onDropRejected.bind(this)}
-                        maxSize={6000000}
+                        maxSize={21495808}
                     >
                         <p>Klik hier voor het uploaden van een bestand</p>
                         <p>
@@ -46,7 +46,7 @@ class EmailAttachmentsNew extends Component {
                     <p className="has-error-message">Uploaden mislukt. Probeer nogmaals een bestand te uploaden.</p>
                 )}
                 {this.state.errorMaxSize && (
-                    <p className="has-error-message">Uploaden mislukt. Het bestand mag maximaal 6MB groot zijn.</p>
+                    <p className="has-error-message">Uploaden mislukt. Het bestand mag maximaal 20MB groot zijn.</p>
                 )}
             </Modal>
         );

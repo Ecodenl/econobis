@@ -26,7 +26,7 @@ function CooperationUploadLogo({ addAttachment, toggleShowUploadLogo }) {
                     className="dropzone"
                     onDropAccepted={onDropAccepted}
                     onDropRejected={onDropRejected}
-                    maxSize={6000000}
+                    maxSize={6291456}
                 >
                     <p>Klik hier voor het uploaden van een bestand</p>
                     <p>

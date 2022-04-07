@@ -212,7 +212,7 @@ class conversionProjectRevenuesKwh extends Command
             $newDeliveredTotalProcessed = 0;
             Log::info('aantal new distributionKwh: ' . $newRevenuesKwh->distributionKwh->count());
             foreach ($newRevenuesKwh->distributionKwh as $distributionKwh){
-                    Log::info('delivered_total_concept' . $distributionKwh->delivered_total_concept);
+//                    Log::info('delivered_total_concept' . $distributionKwh->delivered_total_concept);
                 $newParticipationsQuantity += $distributionKwh->participations_quantity;
                 $newDeliveredTotalConcept += $distributionKwh->delivered_total_concept;
                 $newDeliveredTotalConfirmed += $distributionKwh->delivered_total_confirmed;

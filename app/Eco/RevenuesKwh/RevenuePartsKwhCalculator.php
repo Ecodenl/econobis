@@ -85,6 +85,8 @@ class RevenuePartsKwhCalculator
 
     protected function countingsConceptConfirmedProcessed(): void
     {
+//        todo WM: opschonen
+//        Log::info("RevenuePartsKwhCalculator - countingsConceptConfirmedProcessed");
         foreach ($this->revenuePartsKwh->revenuesKwh->distributionKwh as $distributionKwh) {
             $distributionKwh->delivered_total_concept = $distributionKwh->distributionValuesKwh->where('status', 'concept')->sum('delivered_kwh');
             $distributionKwh->delivered_total_confirmed = $distributionKwh->distributionValuesKwh->where('status', 'confirmed')->sum('delivered_kwh');

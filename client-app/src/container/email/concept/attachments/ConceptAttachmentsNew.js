@@ -32,7 +32,7 @@ class ConceptAttachmentsNew extends Component {
                         className="dropzone"
                         onDropAccepted={this.onDropAccepted.bind(this)}
                         onDropRejected={this.onDropRejected.bind(this)}
-                        maxSize={20000000}
+                        maxSize={21495808}
                     >
                         <p>Klik hier voor het uploaden van een bestand</p>
                         <p>

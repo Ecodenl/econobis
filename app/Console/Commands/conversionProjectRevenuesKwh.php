@@ -201,7 +201,7 @@ class conversionProjectRevenuesKwh extends Command
             $newRevenuesKwh = RevenuesKwh::find($conversionRevenuesKwh->new_revenue_id);
 
             foreach ($newRevenuesKwh->partsKwh as $partsKwh) {
-                Log::info('verwerk countings part: ' . $partsKwh->id);
+//                Log::info('verwerk countings part: ' . $partsKwh->id);
                 $revenuePartsKwhForRecalculate = RevenuePartsKwh::find($partsKwh->id);
                 $revenuePartsKwhForRecalculate->calculator()->runCountingsRevenuesKwh();
             }
@@ -210,9 +210,9 @@ class conversionProjectRevenuesKwh extends Command
             $newDeliveredTotalConcept = 0;
             $newDeliveredTotalConfirmed = 0;
             $newDeliveredTotalProcessed = 0;
-            Log::info('aantal new distributionKwh: ' . $newRevenuesKwh->distributionKwh->count());
+//            Log::info('aantal new distributionKwh: ' . $newRevenuesKwh->distributionKwh->count());
             foreach ($newRevenuesKwh->distributionKwh as $distributionKwh){
-                    Log::info('delivered_total_concept' . $distributionKwh->delivered_total_concept);
+//                    Log::info('delivered_total_concept' . $distributionKwh->delivered_total_concept);
                 $newParticipationsQuantity += $distributionKwh->participations_quantity;
                 $newDeliveredTotalConcept += $distributionKwh->delivered_total_concept;
                 $newDeliveredTotalConfirmed += $distributionKwh->delivered_total_confirmed;

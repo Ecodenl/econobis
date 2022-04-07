@@ -18,6 +18,11 @@ class RenewRevenuesKwhTables extends Migration
             DB::statement('CREATE TABLE xxx_project_revenues LIKE project_revenues;');
         }
 
+        if (!Schema::hasTable('xxx_project_revenue_delivered_kwh_period'))
+        {
+            DB::statement('CREATE TABLE xxx_project_revenue_delivered_kwh_period LIKE project_revenue_delivered_kwh_period;');
+        }
+
         if (!Schema::hasTable('xxx_conversion_revenues_kwh'))
         Schema::create('xxx_conversion_revenues_kwh', function (Blueprint $table) {
             $table->increments('id');
@@ -26,10 +31,21 @@ class RenewRevenuesKwhTables extends Migration
             $table->boolean('old_confirmed')->default(false);
             $table->boolean('hasSplitKwh')->default(false);
             $table->unsignedInteger('participation_id')->nullable()->default(null);
-            $table->unsignedInteger('belongs_to_project_revenue_id')->nullable();
             $table->text('remarks');
             $table->timestamps();
             $table->boolean('done')->default(false);
+            $table->integer('old_number_of_participations')->nullable();
+            $table->integer('old_participations_quantity')->nullable();
+            $table->double('old_delivered_total', 12, 6)->nullable();
+            $table->double('old_delivered_total_concept', 12, 6)->nullable();
+            $table->double('old_delivered_total_confirmed', 12, 6)->nullable();
+            $table->double('old_delivered_total_processed', 12, 6)->nullable();
+            $table->integer('new_number_of_participations')->nullable();
+            $table->integer('new_participations_quantity')->nullable();
+            $table->double('new_delivered_total', 12, 6)->nullable();
+            $table->double('new_delivered_total_concept', 12, 6)->nullable();
+            $table->double('new_delivered_total_confirmed', 12, 6)->nullable();
+            $table->double('new_delivered_total_processed', 12, 6)->nullable();
         });
 
         if (!Schema::hasTable('old_project_revenues'))
@@ -270,6 +286,7 @@ class RenewRevenuesKwhTables extends Migration
 //        Schema::dropIfExists('old_project_revenue_distribution');
 //        Schema::dropIfExists('old_project_revenues');
         Schema::dropIfExists('xxx_conversion_revenues_kwh');
+        Schema::dropIfExists('xxx_project_revenue_delivered_kwh_period');
         Schema::dropIfExists('xxx_project_revenues');
     }
 }

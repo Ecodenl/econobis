@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import GetNameByIdHelper from '../../../../helpers/GetNameByIdHelper';
+import { FaRegLightbulb } from 'react-icons/fa';
 
 const ContactDetailFormAddressView = props => {
     const {
@@ -51,7 +52,8 @@ const ContactDetailFormAddressView = props => {
                                     />{' '}
                                 </a>
                                 <a role="button" onClick={props.openAddressEnergySupplier} title="Leveranciergegevens">
-                                    <span className="glyphicon glyphicon-cog mybtn-success" />{' '}
+                                    {/*<span className="glyphicon glyphicon-cog mybtn-success" />*/}
+                                    <FaRegLightbulb className="mybtn-success" size={'15px'} />
                                 </a>
                                 <a role="button" onClick={props.toggleDelete} title="Verwijderen adres">
                                     <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}

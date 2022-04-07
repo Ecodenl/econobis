@@ -73,12 +73,11 @@ class conversionProjectRevenuesKwh extends Command
         if($conversionRevenuesKwh->count() == 0) {
             DB::statement('DELETE FROM xxx_project_revenues;');
             DB::statement('INSERT xxx_project_revenues SELECT * FROM old_project_revenues;');
-            DB::statement('UPDATE xxx_project_revenues SET type_id = null;');
         }
 
         $conversionRevenuesKwhToDo = DB::table('xxx_conversion_revenues_kwh')->where('done', false)->get();
         foreach($conversionRevenuesKwhToDo as $conversionRevenuesKwh) {
-            DB::statement('DELETE FROM xxx_project_revenue_delivered_kwh_period where revenue_id = ' . $conversionRevenuesKwh->new_revenue_id . ';');
+            DB::statement('DELETE FROM xxx_project_revenue_delivered_kwh_period where revenue_id = ' . $conversionRevenuesKwh->old_revenue_id . ';');
             DB::statement('DELETE FROM revenue_values_kwh where revenue_id = ' . $conversionRevenuesKwh->new_revenue_id . ';');
             DB::statement('DELETE FROM revenue_distribution_parts_kwh where revenue_id = ' . $conversionRevenuesKwh->new_revenue_id . ';');
             DB::statement('DELETE FROM revenue_distribution_values_kwh where revenue_id = ' . $conversionRevenuesKwh->new_revenue_id . ';');
@@ -88,15 +87,9 @@ class conversionProjectRevenuesKwh extends Command
         }
         DB::statement('DELETE FROM xxx_conversion_revenues_kwh where done = false;');
 
-
         // eerst de totale opbrengstverdelingen
         $oldProjectRevenuesKwh = DB::table('xxx_project_revenues')->where('category_id', $this->projectRevenueKwhCategoryId)->get();
         foreach($oldProjectRevenuesKwh as $oldProjectRevenue) {
-            $xxxConversionRevenuesKwh = DB::table('xxx_conversion_revenues_kwh')->where('old_revenue_id', $oldProjectRevenue->id)->first();
-            if(!$xxxConversionRevenuesKwh || $xxxConversionRevenuesKwh->done == false){
-                $this->createRevenuesKwh($oldProjectRevenue);
-            }
-
             // DeliveredKwhPeriod zijn niet altijd correct meer. Deze voor conversie opnieuw maken.
             $oldProjectRevenueDistribution = DB::table('old_project_revenue_distribution')
                 ->where('revenue_id', $oldProjectRevenue->id)->get();
@@ -104,6 +97,12 @@ class conversionProjectRevenuesKwh extends Command
                 $oldDistributionEloquent = ProjectRevenueDistribution::find($oldDistribution->id);
                 $this->saveDeliveredKwhPeriod($oldDistributionEloquent);
             }
+
+            $xxxConversionRevenuesKwh = DB::table('xxx_conversion_revenues_kwh')->where('old_revenue_id', $oldProjectRevenue->id)->first();
+            if(!$xxxConversionRevenuesKwh || $xxxConversionRevenuesKwh->done == false){
+                $this->createRevenuesKwh($oldProjectRevenue);
+            }
+
         }
 
         // Nu de tussentijdse opbrengstverdelingen zonder totale opbrengstverdeling
@@ -691,6 +690,13 @@ class conversionProjectRevenuesKwh extends Command
 
     protected function saveDistributionValuesKwh($partDateBegin, $partDateEnd, RevenueDistributionPartsKwh $distributionPartsKwh, $oldProjectRevenueDistribution): void
     {
+//        if($oldProjectRevenueDistribution->participation_id == 156) {
+//            Log::info("saveDistributionValuesKwh - distributionpartskwh id: " . $distributionPartsKwh->id);
+//            Log::info("oldProjectRevenueDistribution - id: " . $oldProjectRevenueDistribution->id);
+//            Log::info("oldProjectRevenueDistribution - revenue_id: " . $oldProjectRevenueDistribution->revenue_id);
+//            Log::info("Begindatum period: " . $partDateBegin);
+//            Log::info("Einddatum period : " . $partDateEnd);
+//        }
 //        if($oldProjectRevenueDistribution->id == 174){
 //            Log::info("New revenue id: " . $distributionPartsKwh->revenue_id);
 //            Log::info("New part id: " . $distributionPartsKwh->parts_id);
@@ -710,12 +716,11 @@ class conversionProjectRevenuesKwh extends Command
             ->where('revenue_id', $oldProjectRevenueDistribution->revenue_id)
             ->whereBetween('date_begin', [$partDateBegin, $partDateEnd])->get();
 
+//        if($oldProjectRevenueDistribution->participation_id == 156) {
+//            Log::info("oldProjectRevenueDeliveredKwhPeriods aantal: " . $oldProjectRevenueDeliveredKwhPeriods->count());
+//        }
+
         foreach ($oldProjectRevenueDeliveredKwhPeriods as $oldProjectRevenueDeliveredKwhPeriod){
-//            if($oldProjectRevenueDistribution->id == 174) {
-//                Log::info("Oud projectRevenueDeliveredKwhPeriod id: " . $oldProjectRevenueDeliveredKwhPeriod->id);
-//                Log::info("Begindatum period: " . $oldProjectRevenueDeliveredKwhPeriod->date_begin);
-//                Log::info("Einddatum period : " . $oldProjectRevenueDeliveredKwhPeriod->date_end);
-//            }
             if($oldProjectRevenueDeliveredKwhPeriod->date_end > $partDateEnd){
                 Log::error("Einddatum period NA Einddatum nieuwe part ! OldProjectRevenueId: " . $oldProjectRevenueDistribution->revenue_id . " | OldProjectRevenueDeliveredKwhPeriodId: " . $oldProjectRevenueDeliveredKwhPeriod->id);
             }
@@ -859,7 +864,17 @@ class conversionProjectRevenuesKwh extends Command
 
     protected function countingsConceptConfirmedProcessed(RevenuePartsKwh $revenuePartsKwh): void
     {
+//        Log::info("Conversion - countingsConceptConfirmedProcessed");
+//        Log::info($revenuePartsKwh->id);
+
         foreach ($revenuePartsKwh->revenuesKwh->distributionKwh as $distributionKwh) {
+//            if($distributionKwh->participation_id == 156){
+//                Log::info($distributionKwh->participation_id);
+//                Log::info($distributionKwh->id);
+//                Log::info($distributionKwh->delivered_total_concept);
+//                Log::info($distributionKwh->delivered_total_confirmed);
+//                Log::info($distributionKwh->delivered_total_processed);
+//            }
             $distributionKwh->delivered_total_concept = $distributionKwh->distributionValuesKwh->where('status', 'concept')->sum('delivered_kwh');
             $distributionKwh->delivered_total_confirmed = $distributionKwh->distributionValuesKwh->where('status', 'confirmed')->sum('delivered_kwh');
             $distributionKwh->delivered_total_processed = $distributionKwh->distributionValuesKwh->where('status', 'processed')->sum('delivered_kwh');
@@ -1249,7 +1264,7 @@ class conversionProjectRevenuesKwh extends Command
 
     public function saveDeliveredKwhPeriod(ProjectRevenueDistribution $oldDistribution)
     {
-        $distributionId = $oldDistribution->id;
+        $oldDistributionId = $oldDistribution->id;
         $oldProjectRevenue = $oldDistribution->revenue;
 
         $dateBeginFromRevenue = Carbon::parse($oldProjectRevenue->date_begin);
@@ -1302,7 +1317,7 @@ class conversionProjectRevenuesKwh extends Command
 
                     $deliveredKwhPeriod = ProjectRevenueDeliveredKwhPeriod::updateOrCreate(
                         [
-                            'distribution_id' => $distributionId,
+                            'distribution_id' => $oldDistributionId,
                             'revenue_id' => $oldProjectRevenue->id,
                             'date_begin' => $dateBegin
                         ],
@@ -1320,14 +1335,14 @@ class conversionProjectRevenuesKwh extends Command
                 $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateBegin);
 
                 $xxxProjectRevenueDeliveredKwhPeriod = DB::table('xxx_project_revenue_delivered_kwh_period')
-                    ->where('distribution_id', $distributionId)
+                    ->where('distribution_id', $oldDistributionId)
                     ->where('revenue_id', $oldProjectRevenue->id)
                     ->where('date_begin', $dateBegin)
                     ->first();
 
                 if($xxxProjectRevenueDeliveredKwhPeriod){
                     DB::table('xxx_project_revenue_delivered_kwh_period')
-                        ->where('distribution_id', $distributionId)
+                        ->where('distribution_id', $oldDistributionId)
                         ->where('revenue_id', $oldProjectRevenue->id)
                         ->where('date_begin', $dateBegin)
                         ->update([
@@ -1337,7 +1352,7 @@ class conversionProjectRevenuesKwh extends Command
                         ]);
                 }else{
                     DB::table('xxx_project_revenue_delivered_kwh_period')->insert([
-                        'distribution_id' => $distributionId,
+                        'distribution_id' => $oldDistributionId,
                         'revenue_id' => $oldProjectRevenue->id,
                         'date_begin' => $dateBegin,
                         'date_end' => $dateEnd,

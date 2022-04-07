@@ -22,7 +22,7 @@ const UploadModal = ({ title, errors, multiple, maxSize, toggleModal, onDropAcce
                     maxSize={maxSize}
                     multiple={multiple}
                 >
-                    <p>Klik hier voor het uploaden van een file (max. {maxSize / 1000000}MB)</p>
+                    <p>Klik hier voor het uploaden van een file (max. {maxSize / 1048576}MB)</p>
                     <p>
                         <strong>of</strong> sleep het bestand hierheen
                     </p>
@@ -33,7 +33,7 @@ const UploadModal = ({ title, errors, multiple, maxSize, toggleModal, onDropAcce
             )}
             {errors.uploadMaxSize && (
                 <p className="has-error-message">
-                    Uploaden mislukt. Het bestand mag maximaal {maxSize / 1000000}MB groot zijn.
+                    Uploaden mislukt. Het bestand mag maximaal {maxSize / 1048576}MB groot zijn.
                 </p>
             )}
         </Modal>
@@ -42,7 +42,7 @@ const UploadModal = ({ title, errors, multiple, maxSize, toggleModal, onDropAcce
 
 UploadModal.defaultProps = {
     errors: {},
-    maxSize: 20000000,
+    maxSize: 21495808,
     multiple: true,
     title: 'Upload bestand',
 };

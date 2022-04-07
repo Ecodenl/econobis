@@ -40,7 +40,7 @@ class PortalLogoNew extends Component {
                         className="dropzone"
                         onDropAccepted={this.onDropAccepted.bind(this)}
                         onDropRejected={this.onDropRejected.bind(this)}
-                        maxSize={6000000}
+                        maxSize={6291456}
                     >
                         <p>Klik hier voor het uploaden van een bestand</p>
                         <p>

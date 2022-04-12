@@ -14,6 +14,7 @@ use App\Eco\Address\AddressType;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\ContactNote\ContactNote;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Country\Country;
 use App\Eco\EmailAddress\EmailAddress;
@@ -336,6 +337,8 @@ class ExternalWebformController extends Controller
                 'energieleverancier_ean_code_elektra' => 'ean_electricity',
                 // PhoneNumber
                 'telefoonnummer' => 'phone_number',
+                // ContactNotes
+                'contact_opmerkingen' => 'contact_notes',
                 // ContactEmail
                 'emailadres' => 'email_address',
                 // Iban en Iban tnv
@@ -538,11 +541,13 @@ class ExternalWebformController extends Controller
                         $this->address = $address;
                     }
                     $this->addPhoneNumberToContact($data, $contact);
+                    $this->addContactNotesToContact($data, $contact);
                     $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
                     break;
                 case 'NAT' :
                     $this->addAddressToContact($data, $contact);
                     $this->addPhoneNumberToContact($data, $contact);
+                    $this->addContactNotesToContact($data, $contact);
                     $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw adres toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
@@ -561,6 +566,7 @@ class ExternalWebformController extends Controller
                 case 'NET' :
                     $this->addEmailToContact($data, $contact);
                     $this->addPhoneNumberToContact($data, $contact);
+                    $this->addContactNotesToContact($data, $contact);
                     $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw e-mailadres  " . $data['email_address'] . " toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
@@ -1035,6 +1041,21 @@ class ExternalWebformController extends Controller
         }
     }
 
+    /**
+     * @param array $data
+     * @param $contact
+     */
+    protected function addContactNotesToContact(array $data, $contact)
+    {
+        if ($data['contact_notes']) {
+            $contactNote = ContactNote::create([
+                'contact_id' => $contact->id,
+                'note' => $data['contact_notes'],
+            ]);
+            $this->log('Contactopmerking aangemaakt met id ' . $contactNote->id . ' voor contact ' . $contact->full_name . '(' . $contact->id . ')');
+        }
+    }
+
     protected function log(string $text)
     {
         $this->logs[] = $text;
@@ -1140,6 +1161,7 @@ class ExternalWebformController extends Controller
             $this->addAddressToContact($data, $contactOrganisation);
             $this->addEmailToContact($data, $contactOrganisation);
             $this->addPhoneNumberToContact($data, $contactOrganisation);
+            $this->addContactNotesToContact($data, $contactOrganisation);
             $this->addContactToGroup($data, $contactOrganisation, $ownerAndResponsibleUser);
 
             return $contactOrganisation;
@@ -1190,6 +1212,7 @@ class ExternalWebformController extends Controller
         $this->addAddressToContact($data, $contact);
         $this->addEmailToContact($data, $contact);
         $this->addPhoneNumberToContact($data, $contact);
+        $this->addContactNotesToContact($data, $contact);
         $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
 
         return $contact;

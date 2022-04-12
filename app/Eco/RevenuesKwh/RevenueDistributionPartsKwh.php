@@ -55,7 +55,7 @@ class RevenueDistributionPartsKwh extends Model
             if($deliveredDistributionPart && ($deliveredDistributionPart->id == $this->id || $deliveredDistributionPart->is_visible == false)){
                 $dateBegin = $part->date_begin;
             }
-            if($deliveredDistributionPart->id != $this->id && $deliveredDistributionPart->is_visible == true){
+            if($deliveredDistributionPart && $deliveredDistributionPart->id != $this->id && $deliveredDistributionPart->is_visible == true){
                 break;
             }
         }
@@ -71,7 +71,7 @@ class RevenueDistributionPartsKwh extends Model
             if($deliveredDistributionPart && ($deliveredDistributionPart->id == $this->id || $deliveredDistributionPart->is_visible == false)){
                 $deliveredTotal +=  $deliveredDistributionPart->delivered_kwh;
             }
-            if($deliveredDistributionPart->id != $this->id && $deliveredDistributionPart->is_visible == true){
+            if($deliveredDistributionPart && $deliveredDistributionPart->id != $this->id && $deliveredDistributionPart->is_visible == true){
                 break;
             }
         }

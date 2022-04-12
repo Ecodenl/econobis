@@ -91,11 +91,16 @@ class conversionProjectRevenuesKwh extends Command
         $oldProjectRevenuesKwh = DB::table('xxx_project_revenues')->where('category_id', $this->projectRevenueKwhCategoryId)->get();
         foreach($oldProjectRevenuesKwh as $oldProjectRevenue) {
             // DeliveredKwhPeriod zijn niet altijd correct meer. Deze voor conversie opnieuw maken.
+            // todo WM: herzien voor ozon cooperaties, check of dit voor overige nog steeds goed gaat??
             $oldProjectRevenueDistribution = DB::table('old_project_revenue_distribution')
                 ->where('revenue_id', $oldProjectRevenue->id)->get();
             foreach ($oldProjectRevenueDistribution as $oldDistribution) {
                 $oldDistributionEloquent = ProjectRevenueDistribution::find($oldDistribution->id);
                 $this->saveDeliveredKwhPeriod($oldDistributionEloquent);
+            }
+            foreach ($oldProjectRevenueDistribution as $oldDistribution) {
+                $oldDistributionEloquent = ProjectRevenueDistribution::find($oldDistribution->id);
+                $this->calculateDeliveredKwh($oldDistributionEloquent);
             }
 
             $xxxConversionRevenuesKwh = DB::table('xxx_conversion_revenues_kwh')->where('old_revenue_id', $oldProjectRevenue->id)->first();
@@ -499,10 +504,18 @@ class conversionProjectRevenuesKwh extends Command
     public function saveDistributionKwh(RevenuesKwh $revenuesKwh, $oldProjectRevenue, $oldDistribution):void
     {
 //        Log::info('Start saveDistributionKwh');
+
         $participant = ParticipantProject::find($oldDistribution->participation_id);
         if(!$participant){
             Log::error("Geen participant? id: "  . $oldDistribution->id);
+//            return;
         }
+
+//        if($oldDistribution->participation_id == 87) {
+//            Log::info('oldDistribution id: ' . $oldDistribution->id);
+//            Log::info('oldDistribution delivered_total: ' . $oldDistribution->delivered_total);
+//            Log::info('oldDistribution participations_amount: ' . $oldDistribution->participations_amount);
+//        }
 
         $contact = Contact::find($participant->contact_id);
         if($participant->address){
@@ -512,14 +525,14 @@ class conversionProjectRevenuesKwh extends Command
         }
 
         // If participant already is added to project revenue distribution then update
-        if(RevenueDistributionKwh::where('revenue_id', $revenuesKwh->id)->where('participation_id', $participant->id)->exists()) {
-            $distributionKwh = RevenueDistributionKwh::where('revenue_id', $revenuesKwh->id)->where('participation_id', $participant->id)->first();
-        } else {
+//        if(RevenueDistributionKwh::where('revenue_id', $revenuesKwh->id)->where('participation_id', $participant->id)->exists()) {
+//            $distributionKwh = RevenueDistributionKwh::where('revenue_id', $revenuesKwh->id)->where('participation_id', $participant->id)->first();
+//        } else {
             $distributionKwh = new RevenueDistributionKwh();
             $distributionKwh->revenue_id = $revenuesKwh->id;
             $distributionKwh->participation_id = $participant->id;
             $distributionKwh->contact_id = $contact->id;
-        }
+//        }
 
         $distributionKwh->status = $oldDistribution->status;
 
@@ -585,7 +598,13 @@ class conversionProjectRevenuesKwh extends Command
 
     protected function saveDistributionPartsKwhWithOld(RevenuePartsKwh $revenuePartsKwh, RevenueDistributionKwh $distributionKwh, $oldProjectRevenueDistribution):void
     {
-//        Log::info('Start saveDistributionPartsKwhWithOld');
+//        if($oldProjectRevenueDistribution->participation_id == 87) {
+//            Log::info('Start saveDistributionPartsKwhWithOld');
+//            Log::info('distributionKwh id: ' . $distributionKwh->id);
+//            Log::info('oldProjectRevenueDistribution id: ' . $oldProjectRevenueDistribution->id);
+//            Log::info('oldProjectRevenueDistribution delivered_total: ' . $oldProjectRevenueDistribution->delivered_total);
+//            Log::info('oldProjectRevenueDistribution participations_amount: ' . $oldProjectRevenueDistribution->participations_amount);
+//        }
 
         // Bepalen energiesupplier
         $partDateBegin = Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d');
@@ -617,6 +636,13 @@ class conversionProjectRevenuesKwh extends Command
             $distributionPartsKwh->parts_id = $revenuePartsKwh->id;
             $distributionPartsKwh->distribution_id = $distributionKwh->id;
             $distributionPartsKwh->status = $distributionKwh->status;
+            if($distributionKwh->status=='processed'){
+                if($revenuePartsKwh->revenuesKwh->date_confirmed){
+                    $distributionPartsKwh->date_energy_supplier_report = $revenuePartsKwh->revenuesKwh->date_confirmed;
+                } else {
+                    $distributionPartsKwh->date_energy_supplier_report = Carbon::now()->format('Y-m-d');
+                }
+            }
         }
         $distributionPartsKwh->save();
 
@@ -690,14 +716,13 @@ class conversionProjectRevenuesKwh extends Command
 
     protected function saveDistributionValuesKwh($partDateBegin, $partDateEnd, RevenueDistributionPartsKwh $distributionPartsKwh, $oldProjectRevenueDistribution): void
     {
-//        if($oldProjectRevenueDistribution->participation_id == 156) {
+//        if($oldProjectRevenueDistribution->participation_id == 87) {
 //            Log::info("saveDistributionValuesKwh - distributionpartskwh id: " . $distributionPartsKwh->id);
 //            Log::info("oldProjectRevenueDistribution - id: " . $oldProjectRevenueDistribution->id);
 //            Log::info("oldProjectRevenueDistribution - revenue_id: " . $oldProjectRevenueDistribution->revenue_id);
 //            Log::info("Begindatum period: " . $partDateBegin);
 //            Log::info("Einddatum period : " . $partDateEnd);
-//        }
-//        if($oldProjectRevenueDistribution->id == 174){
+//
 //            Log::info("New revenue id: " . $distributionPartsKwh->revenue_id);
 //            Log::info("New part id: " . $distributionPartsKwh->parts_id);
 //            Log::info("New distribution id: " . $distributionPartsKwh->distribution_id);
@@ -716,11 +741,17 @@ class conversionProjectRevenuesKwh extends Command
             ->where('revenue_id', $oldProjectRevenueDistribution->revenue_id)
             ->whereBetween('date_begin', [$partDateBegin, $partDateEnd])->get();
 
-//        if($oldProjectRevenueDistribution->participation_id == 156) {
+//        if($oldProjectRevenueDistribution->participation_id == 87) {
 //            Log::info("oldProjectRevenueDeliveredKwhPeriods aantal: " . $oldProjectRevenueDeliveredKwhPeriods->count());
 //        }
 
         foreach ($oldProjectRevenueDeliveredKwhPeriods as $oldProjectRevenueDeliveredKwhPeriod){
+//            if($oldProjectRevenueDistribution->participation_id == 87) {
+//                Log::info("Do oldProjectRevenueDeliveredKwhPeriod: " . $oldProjectRevenueDeliveredKwhPeriod->id);
+//                Log::info("oldProjectRevenueDeliveredKwhPeriod date_end: " . $oldProjectRevenueDeliveredKwhPeriod->date_end);
+//                Log::info("oldProjectRevenueDeliveredKwhPeriod delivered_kwh: " . $oldProjectRevenueDeliveredKwhPeriod->delivered_kwh);
+//                Log::info("partDateEnd: " . $partDateEnd);
+//            }
             if($oldProjectRevenueDeliveredKwhPeriod->date_end > $partDateEnd){
                 Log::error("Einddatum period NA Einddatum nieuwe part ! OldProjectRevenueId: " . $oldProjectRevenueDistribution->revenue_id . " | OldProjectRevenueDeliveredKwhPeriodId: " . $oldProjectRevenueDeliveredKwhPeriod->id);
             }
@@ -867,17 +898,18 @@ class conversionProjectRevenuesKwh extends Command
 //        Log::info("Conversion - countingsConceptConfirmedProcessed");
 //        Log::info($revenuePartsKwh->id);
 
+        // todo WM: herzien voor ozon cooperaties, check of dit voor overige nog steeds goed gaat??
         foreach ($revenuePartsKwh->revenuesKwh->distributionKwh as $distributionKwh) {
-//            if($distributionKwh->participation_id == 156){
-//                Log::info($distributionKwh->participation_id);
-//                Log::info($distributionKwh->id);
-//                Log::info($distributionKwh->delivered_total_concept);
-//                Log::info($distributionKwh->delivered_total_confirmed);
-//                Log::info($distributionKwh->delivered_total_processed);
-//            }
-            $distributionKwh->delivered_total_concept = $distributionKwh->distributionValuesKwh->where('status', 'concept')->sum('delivered_kwh');
-            $distributionKwh->delivered_total_confirmed = $distributionKwh->distributionValuesKwh->where('status', 'confirmed')->sum('delivered_kwh');
-            $distributionKwh->delivered_total_processed = $distributionKwh->distributionValuesKwh->where('status', 'processed')->sum('delivered_kwh');
+            if($distributionKwh->status == 'processed'){
+//                Log::info('doortelling bij processed');
+                $distributionKwh->delivered_total_concept = $distributionKwh->distributionPartsKwh->where('status', 'concept')->where('parts_id', $revenuePartsKwh->id)->sum('delivered_kwh');
+                $distributionKwh->delivered_total_confirmed = $distributionKwh->distributionPartsKwh->where('status', 'confirmed')->where('parts_id', $revenuePartsKwh->id)->sum('delivered_kwh');
+                $distributionKwh->delivered_total_processed = $distributionKwh->distributionPartsKwh->where('status', 'processed')->where('parts_id', $revenuePartsKwh->id)->sum('delivered_kwh');
+            } else {
+                $distributionKwh->delivered_total_concept = $distributionKwh->distributionValuesKwh->where('status', 'concept')->sum('delivered_kwh');
+                $distributionKwh->delivered_total_confirmed = $distributionKwh->distributionValuesKwh->where('status', 'confirmed')->sum('delivered_kwh');
+                $distributionKwh->delivered_total_processed = $distributionKwh->distributionValuesKwh->where('status', 'processed')->sum('delivered_kwh');
+            }
             $distributionKwh->save();
         }
 
@@ -1262,22 +1294,32 @@ class conversionProjectRevenuesKwh extends Command
 
     }
 
-    public function saveDeliveredKwhPeriod(ProjectRevenueDistribution $oldDistribution)
+    public function saveDeliveredKwhPeriod(ProjectRevenueDistribution $oldProjectRevenueDistribution)
     {
-        $oldDistributionId = $oldDistribution->id;
-        $oldProjectRevenue = $oldDistribution->revenue;
+//        if(!$oldProjectRevenueDistribution->participation) return;
+
+        $oldDistributionId = $oldProjectRevenueDistribution->id;
+        $oldProjectRevenue = $oldProjectRevenueDistribution->revenue;
+
+//        Log::info('oldDistributionId  :' . $oldDistributionId);
 
         $dateBeginFromRevenue = Carbon::parse($oldProjectRevenue->date_begin);
         $dateEndFromRevenue = Carbon::parse($oldProjectRevenue->date_end);
         $dateEndCalendarYearFromRevenue = Carbon::parse($oldProjectRevenue->date_begin)->endOfYear();
 
+//        Log::info('dateBeginFromRevenue  :' . $dateBeginFromRevenue);
+//        Log::info('dateEndFromRevenue  :' . $dateEndFromRevenue);
+//        Log::info('dateEndCalendarYearFromRevenue  :' . $dateEndCalendarYearFromRevenue);
+
         if (!$dateBeginFromRevenue || !$dateEndFromRevenue) return 0;
 
         $quantityOfParticipations = 0;
 
-//        $mutations = $oldDistribution->participation->mutationsDefinitiveForKhwPeriod;
-        $mutations = $oldDistribution->participation->mutationsDefinitiveForKwhPeriod;
-//        Log::info('Participation: ' . $oldDistribution->participation->id);
+//        $mutations = $oldProjectRevenueDistribution->participation->mutationsDefinitiveForKhwPeriod;
+        $mutations = $oldProjectRevenueDistribution->participation->mutationsDefinitiveForKwhPeriod;
+//        Log::info('Participation: ' . $oldProjectRevenueDistribution->participation->id);
+//        Log::info('participantId  :' . $oldProjectRevenueDistribution->participation->id);
+//        Log::info('aantal mutations participant  :' . $mutations->count());
 //        Log::info($mutations);
 
         foreach ($mutations as $index => $mutation) {
@@ -1363,11 +1405,18 @@ class conversionProjectRevenuesKwh extends Command
 
             }
         }
-        $this->calculateDeliveredKwh($oldProjectRevenue, $oldDistribution);
+//        Log::info('do calculateDeliveredKwh');
+//        $this->calculateDeliveredKwh($oldProjectRevenue, $oldProjectRevenueDistribution);
     }
 
-    protected function calculateDeliveredKwh($oldProjectRevenue, $oldProjectRevenueDistribution)
+    protected function calculateDeliveredKwh($oldProjectRevenueDistribution)
     {
+        $oldProjectRevenue = $oldProjectRevenueDistribution->revenue;
+
+//        if($oldProjectRevenueDistribution->participation_id == 87) {
+//            Log::info("oldProjectRevenueDistribution - id: " . $oldProjectRevenueDistribution->id);
+//        }
+
         // Calculate total kwh
         $totalKwh = $oldProjectRevenue->kwh_end - $oldProjectRevenue->kwh_start;
 
@@ -1380,32 +1429,46 @@ class conversionProjectRevenuesKwh extends Command
             $totalKwhRest = $totalKwh - $totalKwhEndCalendarYear;
         }
 
+        $xxxProjectRevenueDeliveredKwhPeriodsRevenue = DB::table('xxx_project_revenue_delivered_kwh_period')
+            ->where('revenue_id', $oldProjectRevenue->id)
+            ->get();
+
         // Total sum of participations and days
-        $totalSumOfParticipationsAndDays = $oldProjectRevenue->deliveredKwhPeriod->sum(function ($deliveredKwhPeriod) {
-            return $deliveredKwhPeriod['days_of_period'] * $deliveredKwhPeriod['participations_quantity'];
+        $totalSumOfParticipationsAndDays = $xxxProjectRevenueDeliveredKwhPeriodsRevenue->sum(function ($deliveredKwhPeriod) use($oldProjectRevenueDistribution) {
+//            if($oldProjectRevenueDistribution->participation_id == 87) {
+//                Log::info("deliveredKwhPeriod - id: " . $deliveredKwhPeriod->id);
+//                Log::info("deliveredKwhPeriod - days_of_period: " . $deliveredKwhPeriod->days_of_period);
+//                Log::info("deliveredKwhPeriod - participations_quantity: " . $deliveredKwhPeriod->participations_quantity);
+//            }
+            return $deliveredKwhPeriod->days_of_period * $deliveredKwhPeriod->participations_quantity;
         });
 
         // Total sum of participations and days end calendar year
         $totalSumOfParticipationsAndDaysEndCalendarYear = 0;
         if ($kwhEndCalendarYear > 0) {
-            $totalSumOfParticipationsAndDaysEndCalendarYear = $oldProjectRevenue->deliveredKwhPeriod->sum(function ($deliveredKwhPeriod) use ($kwhEndCalendarYear, $oldProjectRevenue) {
+            $totalSumOfParticipationsAndDaysEndCalendarYear = $xxxProjectRevenueDeliveredKwhPeriodsRevenue->sum(function ($deliveredKwhPeriod) use ($kwhEndCalendarYear, $oldProjectRevenue) {
                 if ($kwhEndCalendarYear > 0 != null && Carbon::parse($deliveredKwhPeriod->date_begin)->year == Carbon::parse($oldProjectRevenue->date_begin)->year) {
-                    return $deliveredKwhPeriod['days_of_period'] * $deliveredKwhPeriod['participations_quantity'];
+                    return $deliveredKwhPeriod->days_of_period * $deliveredKwhPeriod->participations_quantity;
                 }
                 return 0;
             });
             $totalSumOfParticipationsAndDaysRest = $totalSumOfParticipationsAndDays - $totalSumOfParticipationsAndDaysEndCalendarYear;
         }
 
-        $totalDeliveredKwh = 0;
-        $totalDeliveredKwhEndCalendarYear = 0;
+//        $totalDeliveredKwh = 0;
+//        $totalDeliveredKwhEndCalendarYear = 0;
 
-        $xxxProjectRevenueDeliveredKwhPeriods = DB::table('xxx_project_revenue_delivered_kwh_period')
+        $xxxProjectRevenueDeliveredKwhPeriodsDistribution = DB::table('xxx_project_revenue_delivered_kwh_period')
             ->where('distribution_id', $oldProjectRevenueDistribution->id)
             ->where('revenue_id', $oldProjectRevenue->id)
             ->get();
 
-        foreach ($xxxProjectRevenueDeliveredKwhPeriods as $oldDeliveredKwhPeriod) {
+//        if($oldProjectRevenueDistribution->participation_id == 87) {
+//            Log::info('distribution_id  :' . $oldProjectRevenueDistribution->id);
+//            Log::info('totalSumOfParticipationsAndDays  :' . $totalSumOfParticipationsAndDays);
+//        }
+
+        foreach ($xxxProjectRevenueDeliveredKwhPeriodsDistribution as $oldDeliveredKwhPeriod) {
             // Sum of participations times days, for each record in revenue delivered kwh period this is (days_of_period * participations_quantity)
             // With this value we can calculate the amount of kwh returns on this deliverdKwhPeriod
 //            Log::info($oldDeliveredKwhPeriod);
@@ -1414,17 +1477,31 @@ class conversionProjectRevenuesKwh extends Command
             if ($kwhEndCalendarYear > 0) {
                 // Save returns per Kwh period
                 if( Carbon::parse($oldDeliveredKwhPeriod->date_begin)->year == Carbon::parse($oldProjectRevenue->date_begin)->year){
-                    $oldDeliveredKwhPeriod->delivered_kwh = round(($totalKwhEndCalendarYear / $totalSumOfParticipationsAndDaysEndCalendarYear) * $sumOfParticipationsTimesDays, 2);
-                    $totalDeliveredKwhEndCalendarYear += $oldDeliveredKwhPeriod->delivered_kwh;
-                    $totalDeliveredKwh += $oldDeliveredKwhPeriod->delivered_kwh;
+                    if($totalSumOfParticipationsAndDaysEndCalendarYear != 0){
+                        $oldDeliveredKwhPeriod->delivered_kwh = round(($totalKwhEndCalendarYear / $totalSumOfParticipationsAndDaysEndCalendarYear) * $sumOfParticipationsTimesDays, 2);
+//                    $totalDeliveredKwhEndCalendarYear += $oldDeliveredKwhPeriod->delivered_kwh;
+//                    $totalDeliveredKwh += $oldDeliveredKwhPeriod->delivered_kwh;
+                    }
                 } else {
-                    $oldDeliveredKwhPeriod->delivered_kwh = round(($totalKwhRest / $totalSumOfParticipationsAndDaysRest) * $sumOfParticipationsTimesDays, 2);
-                    $totalDeliveredKwh += $oldDeliveredKwhPeriod->delivered_kwh;
+                    if($totalSumOfParticipationsAndDaysRest != 0) {
+                        $oldDeliveredKwhPeriod->delivered_kwh = round(($totalKwhRest / $totalSumOfParticipationsAndDaysRest) * $sumOfParticipationsTimesDays, 2);
+//                    $totalDeliveredKwh += $oldDeliveredKwhPeriod->delivered_kwh;
+                    }
                 }
             } else {
-                $oldDeliveredKwhPeriod->delivered_kwh = round(($totalKwh / $totalSumOfParticipationsAndDays) * $sumOfParticipationsTimesDays, 2);
-                $totalDeliveredKwh += $oldDeliveredKwhPeriod->delivered_kwh;
+                if($totalSumOfParticipationsAndDays != 0){
+                    $oldDeliveredKwhPeriod->delivered_kwh = round(($totalKwh / $totalSumOfParticipationsAndDays) * $sumOfParticipationsTimesDays, 2);
+//                $totalDeliveredKwh += $oldDeliveredKwhPeriod->delivered_kwh;
+                }
             }
+
+//            if($oldDeliveredKwhPeriod->distribution_id == 11765){
+//                Log::info('totalSumOfParticipationsAndDays  :' . $totalSumOfParticipationsAndDays);
+//                Log::info('totalKwh  :' . $totalKwh);
+//                Log::info('sumOfParticipationsTimesDays  :' . $sumOfParticipationsTimesDays);
+//                Log::info('date_begin  :' . $oldDeliveredKwhPeriod->date_begin);
+//                Log::info('delivered_kwh  :' . $oldDeliveredKwhPeriod->delivered_kwh);
+//            }
 
             DB::table('xxx_project_revenue_delivered_kwh_period')
                 ->where('distribution_id', $oldDeliveredKwhPeriod->distribution_id)

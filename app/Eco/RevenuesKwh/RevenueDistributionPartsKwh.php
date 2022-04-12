@@ -52,7 +52,7 @@ class RevenueDistributionPartsKwh extends Model
         $dateBegin = $this->partsKwh->date_begin;
         foreach ($upToPartsKwhIds as $part){
             $deliveredDistributionPart = RevenueDistributionPartsKwh::where('revenue_id', $this->revenue_id)->where('distribution_id', $this->distribution_id)->where('parts_id', $part->id)->first();
-            if($deliveredDistributionPart->id == $this->id || $deliveredDistributionPart->is_visible == false){
+            if($deliveredDistributionPart && ($deliveredDistributionPart->id == $this->id || $deliveredDistributionPart->is_visible == false)){
                 $dateBegin = $part->date_begin;
             }
             if($deliveredDistributionPart->id != $this->id && $deliveredDistributionPart->is_visible == true){
@@ -68,7 +68,7 @@ class RevenueDistributionPartsKwh extends Model
         $deliveredTotal = 0;
         foreach ($upToPartsKwhIds as $part){
             $deliveredDistributionPart = RevenueDistributionPartsKwh::where('revenue_id', $this->revenue_id)->where('distribution_id', $this->distribution_id)->where('parts_id', $part->id)->first();
-            if($deliveredDistributionPart->id == $this->id || $deliveredDistributionPart->is_visible == false){
+            if($deliveredDistributionPart && ($deliveredDistributionPart->id == $this->id || $deliveredDistributionPart->is_visible == false)){
                 $deliveredTotal +=  $deliveredDistributionPart->delivered_kwh;
             }
             if($deliveredDistributionPart->id != $this->id && $deliveredDistributionPart->is_visible == true){

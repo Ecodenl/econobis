@@ -94,7 +94,7 @@ export default class ModelDetailsPerson {
 
         //contact note
         this.newContactNote = Selector('span')
-            .withExactText('Parkeerplaats')
+            .withExactText('Opmerkingen')
             .parent()
             .child('a');
         this.textarea = Selector('textarea');

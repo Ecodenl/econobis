@@ -25,7 +25,7 @@ class ContactDetailsFormNote extends Component {
         return (
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Parkeerplaats</span>
+                    <span className="h5 text-bold">Opmerkingen</span>
                     <a role="button" className="pull-right" onClick={this.toggleShowNew}>
                         <span className="glyphicon glyphicon-plus" />
                     </a>

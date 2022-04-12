@@ -293,7 +293,7 @@ class ContactCSVHelper
                 'es_number' => 'Klantnummer',
                 'energy_member_since' => 'Klant sinds',
                 'ean_electricity' => 'EAN electriciteit',
-                'latest_contactNotes' => 'Parkeerplaats',
+                'latest_contactNotes' => 'Opmerkingen',
                 'created_at_date' => 'Datum gemaakt op',
                 'updated_at_date' => 'Datum laatste update',
                 'occupationPrimary' => 'Primair',

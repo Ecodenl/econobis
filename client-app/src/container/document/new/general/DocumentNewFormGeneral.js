@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import InputSelect from '../../../../components/form/InputSelect';
 import InputText from '../../../../components/form/InputText';
+import InputToggle from '../../../../components/form/InputToggle';
 
 const DocumentNewFormGeneral = ({
     document,
@@ -17,10 +18,15 @@ const DocumentNewFormGeneral = ({
     projects = [],
     participants = [],
     orders = [],
+    measures = [],
+    campaigns = [],
     handleInputChange,
+    handleProjectChange,
     documentTypes,
+    administrations,
 }) => {
     const {
+        administrationId,
         contactId,
         contactGroupId,
         intakeId,
@@ -33,11 +39,15 @@ const DocumentNewFormGeneral = ({
         projectId,
         participantId,
         orderId,
+        measureId,
+        campaignId,
+        showOnPortal,
     } = document;
     const documentTypeName = documentTypes.find(item => {
         return item.id == documentType;
     }).name;
     const oneOfFieldRequired =
+        administrationId === '' &&
         contactId === '' &&
         contactGroupId === '' &&
         intakeId === '' &&
@@ -131,7 +141,7 @@ const DocumentNewFormGeneral = ({
                     name={'projectId'}
                     value={projectId}
                     options={projects}
-                    onChangeAction={handleInputChange}
+                    onChangeAction={handleProjectChange}
                     required={oneOfFieldRequired && 'required'}
                     error={errors.docLinkedAtAny}
                 />
@@ -139,7 +149,8 @@ const DocumentNewFormGeneral = ({
                     label="Deelnemer project"
                     name={'participantId'}
                     value={participantId}
-                    options={participants}
+                    options={projectId ? participants : []}
+                    placeholder={projectId ? '' : 'Kies eerst een project'}
                     onChangeAction={handleInputChange}
                     required={oneOfFieldRequired && 'required'}
                     error={errors.docLinkedAtAny}
@@ -156,18 +167,53 @@ const DocumentNewFormGeneral = ({
                     required={oneOfFieldRequired && 'required'}
                     error={errors.docLinkedAtAny}
                 />
+                <InputSelect
+                    label="Administratie"
+                    name={'administrationId'}
+                    value={administrationId}
+                    options={administrations}
+                    onChangeAction={handleInputChange}
+                    required={oneOfFieldRequired && 'required'}
+                    error={errors.docLinkedAtAny}
+                />
+            </div>
+
+            <div className="row">
+                <InputSelect
+                    label="Maatregel"
+                    name={'measureId'}
+                    value={measureId}
+                    options={measures}
+                    onChangeAction={handleInputChange}
+                />
+                <InputSelect
+                    label="Campagne"
+                    name={'campaignId'}
+                    value={campaignId}
+                    options={campaigns}
+                    onChangeAction={handleInputChange}
+                />
+            </div>
+
+            <div className="row">
+                <InputToggle
+                    label="Tonen op portal"
+                    name={'showOnPortal'}
+                    value={showOnPortal}
+                    onChangeAction={handleInputChange}
+                />
             </div>
 
             <div className="row">
                 <div className="form-group col-sm-12">
                     <div className="row">
                         <div className="col-sm-3">
-                            <label className="col-sm-12">Omschrijving</label>
+                            <label className="col-sm-12 required">Omschrijving</label>
                         </div>
                         <div className="col-sm-6">
                             <input
                                 type="text"
-                                className="form-control input-sm"
+                                className={'form-control input-sm ' + (errors && errors.description ? 'has-error' : '')}
                                 name="description"
                                 value={description}
                                 onChange={handleInputChange}
@@ -183,6 +229,7 @@ const DocumentNewFormGeneral = ({
 const mapStateToProps = state => {
     return {
         documentTypes: state.systemData.documentTypes,
+        administrations: state.meDetails.administrations,
     };
 };
 

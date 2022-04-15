@@ -16,6 +16,11 @@ import InputToggle from '../../../../components/form/InputToggle';
 import PortalLogoLayoutNew from './PortalLogoLayoutNew';
 import PortalFaviconLayoutNew from './PortalFaviconLayoutNew';
 import Image from 'react-bootstrap/es/Image';
+import PreviewPortalLoginPagePcModal from '../../preview/PreviewPortalLoginPagePcModal';
+import PreviewPortalLoginPageMobileModal from '../../preview/PreviewPortalLoginPageMobileModal';
+import PreviewPortalDashboardPagePcModal from '../../preview/PreviewPortalDashboardPagePcModal';
+import PreviewPortalDashboardPageMobileModal from '../../preview/PreviewPortalDashboardPageMobileModal';
+import PortalLogoLayoutNewCrop from '../../../../components/cropImage/portalLayout/PortalLogoLayoutNewCrop';
 
 class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -27,12 +32,29 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                 : false;
 
         this.state = {
+            showPreviewPortalLoginPagePc: false,
+            showPreviewPortalDashboardPagePc: false,
+            showPreviewPortalLoginPageMobile: false,
+            showPreviewPortalDashboardPageMobile: false,
             portalSettingsLayout: {
                 ...props.portalSettingsLayout,
             },
+            imageHash: Date.now(),
+            image: '',
+            imageLayoutItemName: '',
             attachmentLogo: '',
             filenameLogo: '',
-            newLogo: false,
+            showModalNewLogo: false,
+            showModalCropLogo: false,
+            attachmentLogoHeader: '',
+            filenameLogoHeader: '',
+            newLogoHeader: false,
+            attachmentImageBgLogin: '',
+            filenameImageBgLogin: '',
+            newImageBgLogin: false,
+            attachmentImageBgHeader: '',
+            filenameImageBgHeader: '',
+            newImageBgHeader: false,
             attachmentFavicon: '',
             filenameFavicon: '',
             newFavicon: false,
@@ -40,6 +62,9 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
             errors: {
                 description: false,
                 portalLogoFileName: false,
+                portalLogoFileNameHeader: false,
+                portalImageBgFileNameLogin: false,
+                portalImageBgFileNameHeader: false,
                 portalFaviconFileName: false,
                 portalBackgroundColor: false,
                 portalBackgroundTextColor: false,
@@ -54,12 +79,39 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
         };
     }
 
-    toggleNewLogo = () => {
+    togglePreviewPortalLoginPagePc = () => {
+        this.setState({ showPreviewPortalLoginPagePc: !this.state.showPreviewPortalLoginPagePc });
+    };
+
+    togglePreviewPortalDashboardPagePc = () => {
+        this.setState({ showPreviewPortalDashboardPagePc: !this.state.showPreviewPortalDashboardPagePc });
+    };
+
+    togglePreviewPortalLoginPageMobile = () => {
+        this.setState({ showPreviewPortalLoginPageMobile: !this.state.showPreviewPortalLoginPageMobile });
+    };
+
+    togglePreviewPortalDashboardPageMobile = () => {
+        this.setState({ showPreviewPortalDashboardPageMobile: !this.state.showPreviewPortalDashboardPageMobile });
+    };
+
+    closeNewLogo = () => {
+        this.setState({
+            showModalNewLogo: false,
+        });
+    };
+    toggleNewLogo = imageLayoutItemName => {
         if (this.manageTechnicalPortalSettings) {
             this.setState({
-                newLogo: !this.state.newLogo,
+                showModalNewLogo: !this.state.showModalNewLogo,
+                imageLayoutItemName: imageLayoutItemName,
             });
         }
+    };
+    closeShowCrop = () => {
+        this.setState({
+            showModalCropLogo: false,
+        });
     };
     toggleNewFavicon = () => {
         if (this.manageTechnicalPortalSettings) {
@@ -71,9 +123,45 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
     addLogo = file => {
         this.setState({
             ...this.state,
-            attachmentLogo: file[0],
-            filenameLogo: file[0].name,
+            image: file[0],
+            showModalCropLogo: true,
         });
+    };
+    cropLogo = file => {
+        switch (this.state.imageLayoutItemName) {
+            case 'logo-login':
+                this.setState({
+                    ...this.state,
+                    attachmentLogo: file,
+                    filenameLogo: file.name,
+                    showModalCropLogo: false,
+                });
+                break;
+            case 'logo-header':
+                this.setState({
+                    ...this.state,
+                    attachmentLogoHeader: file,
+                    filenameLogoHeader: file.name,
+                    showModalCropLogo: false,
+                });
+                break;
+            case 'image-bg-login':
+                this.setState({
+                    ...this.state,
+                    attachmentImageBgLogin: file,
+                    filenameImageBgLogin: file.name,
+                    showModalCropLogo: false,
+                });
+                break;
+            case 'image-bg-header':
+                this.setState({
+                    ...this.state,
+                    attachmentImageBgHeader: file,
+                    filenameImageBgHeader: file.name,
+                    showModalCropLogo: false,
+                });
+                break;
+        }
     };
     addFavicon = file => {
         this.setState({
@@ -100,7 +188,14 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { portalSettingsLayout, attachmentLogo, attachmentFavicon } = this.state;
+        const {
+            portalSettingsLayout,
+            attachmentLogo,
+            attachmentLogoHeader,
+            attachmentImageBgLogin,
+            attachmentImageBgHeader,
+            attachmentFavicon,
+        } = this.state;
 
         // Validation
         let errors = {};
@@ -162,6 +257,9 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
         data.append('description', portalSettingsLayout.description);
         data.append('isDefault', portalSettingsLayout.isDefault);
         data.append('portalLogoFileName', portalSettingsLayout.portalLogoFileName);
+        data.append('portalLogoFileNameHeader', portalSettingsLayout.portalLogoFileNameHeader);
+        data.append('portalImageBgFileNameLogin', portalSettingsLayout.portalImageBgFileNameLogin);
+        data.append('portalImageBgFileNameHeader', portalSettingsLayout.portalImageBgFileNameHeader);
         data.append('portalFaviconFileName', portalSettingsLayout.portalFaviconFileName);
         data.append('description', portalSettingsLayout.description);
         data.append('portalBackgroundColor', portalSettingsLayout.portalBackgroundColor);
@@ -175,6 +273,9 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
         data.append('buttonTextColor', portalSettingsLayout.buttonTextColor);
 
         data.append('attachmentLogo', attachmentLogo);
+        data.append('attachmentLogoHeader', attachmentLogoHeader);
+        data.append('attachmentImageBgLogin', attachmentImageBgLogin);
+        data.append('attachmentImageBgHeader', attachmentImageBgHeader);
         data.append('attachmentFavicon', attachmentFavicon);
 
         this.setState({ ...this.state, errors: errors });
@@ -199,6 +300,9 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
             description,
             isDefault,
             portalLogoFileName,
+            portalLogoFileNameHeader,
+            portalImageBgFileNameLogin,
+            portalImageBgFileNameHeader,
             portalFaviconFileName,
             portalBackgroundColor,
             portalBackgroundTextColor,
@@ -212,10 +316,39 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
         } = this.state.portalSettingsLayout;
 
         const logoUrl = `${URL_API}/portal/images/${portalLogoFileName}?${this.props.imageHash}`;
+        const logoHeaderUrl = `${URL_API}/portal/images/${portalLogoFileNameHeader}?${this.props.imageHash}`;
+        const imageBgLoginUrl = `${URL_API}/portal/images/${portalImageBgFileNameLogin}?${this.props.imageHash}`;
+        const imageBgHeaderUrl = `${URL_API}/portal/images/${portalImageBgFileNameHeader}?${this.props.imageHash}`;
         const faviconUrl = `${URL_API}/portal/${portalFaviconFileName}?${this.props.imageHash}`;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
+                <Panel>
+                    <PanelBody>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <div className="btn-group btn-group-flex" role="group">
+                                    <ButtonText
+                                        buttonText="Preview login pagina PC"
+                                        onClickAction={this.togglePreviewPortalLoginPagePc}
+                                    />
+                                    <ButtonText
+                                        buttonText="Preview dashboard pagina PC"
+                                        onClickAction={this.togglePreviewPortalDashboardPagePc}
+                                    />
+                                    <ButtonText
+                                        buttonText="Preview login pagina mobiel"
+                                        onClickAction={this.togglePreviewPortalLoginPageMobile}
+                                    />
+                                    <ButtonText
+                                        buttonText="Preview dashboard pagina mobiel"
+                                        onClickAction={this.togglePreviewPortalDashboardPageMobile}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </PanelBody>
+                </Panel>
                 <Panel>
                     <PanelBody>
                         <div className="row">
@@ -232,20 +365,25 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 label={'Standaard'}
                                 divSize={'col-sm-4'}
                                 name={'isDefault'}
-                                value={isDefault}
-                                disabled={isDefault}
+                                value={Boolean(isDefault)}
+                                disabled={Boolean(isDefault)}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>
                         <div className="row">
+                            <h4 className={'col-sm-12'}>Afbeeldingen</h4>
+                        </div>
+                        <div className="row">
                             <InputText
                                 Men
-                                label="Logo (bestandstype PNG)"
+                                label="A. Logo op login pagina (bestandstype PNG)"
                                 divSize={'col-sm-8'}
                                 value={
                                     this.state.attachmentLogo.name ? this.state.attachmentLogo.name : portalLogoFileName
                                 }
-                                onClickAction={this.toggleNewLogo}
+                                onClickAction={() => {
+                                    this.toggleNewLogo('logo-login');
+                                }}
                                 onChangeaction={() => {}}
                                 readOnly={!this.manageTechnicalPortalSettings}
                                 required={'required'}
@@ -269,12 +407,121 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 }}
                             />
                         </div>
-                        {this.state.newLogo && (
-                            <PortalLogoLayoutNew toggleShowNewLogo={this.toggleNewLogo} addLogo={this.addLogo} />
-                        )}
                         <div className="row">
                             <InputText
-                                label="Favicon (bestandstype ICO)"
+                                Men
+                                label="B. Achtergrond afbeelding login pagina (bestandstype PNG)"
+                                divSize={'col-sm-8'}
+                                value={
+                                    this.state.attachmentImageBgLogin.name
+                                        ? this.state.attachmentImageBgLogin.name
+                                        : portalImageBgFileNameLogin
+                                }
+                                onClickAction={() => {
+                                    this.toggleNewLogo('image-bg-login');
+                                }}
+                                onChangeaction={() => {}}
+                                size={'col-sm-5'}
+                                textToolTip={`Om afbeelding zichtbaar te maken moet de achtergrond deels transparant zijn, zie 1. Login pagina / Header kleur voor meer informatie.`}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
+                                error={this.state.errors.portalImageBgFileNameLogin}
+                            />
+                            <Image
+                                src={
+                                    this.state.attachmentImageBgLogin && this.state.attachmentImageBgLogin.preview
+                                        ? this.state.attachmentImageBgLogin.preview
+                                        : imageBgLoginUrl
+                                }
+                                style={{
+                                    backgroundColor: loginHeaderBackgroundColor,
+                                    color: loginHeaderBackgroundTextColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '1px',
+                                    borderRadius: '1px',
+                                    height: '50px',
+                                    boxShadow: '0 0 0 1px #fff inset',
+                                }}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                Men
+                                label="C. Logo in de header (bestandstype PNG)"
+                                divSize={'col-sm-8'}
+                                value={
+                                    this.state.attachmentLogoHeader.name
+                                        ? this.state.attachmentLogoHeader.name
+                                        : portalLogoFileNameHeader
+                                }
+                                onClickAction={() => {
+                                    this.toggleNewLogo('logo-header');
+                                }}
+                                onChangeaction={() => {}}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
+                                error={this.state.errors.portalLogoFileNameHeader}
+                            />
+                            <Image
+                                src={
+                                    this.state.attachmentLogoHeader && this.state.attachmentLogoHeader.preview
+                                        ? this.state.attachmentLogoHeader.preview
+                                        : logoHeaderUrl
+                                }
+                                style={{
+                                    backgroundColor: loginHeaderBackgroundColor,
+                                    color: loginHeaderBackgroundTextColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '1px',
+                                    borderRadius: '1px',
+                                    height: '50px',
+                                    boxShadow: '0 0 0 1px #fff inset',
+                                }}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                Men
+                                label="D. Achtergrond afbeelding in de header (bestandstype PNG)"
+                                divSize={'col-sm-8'}
+                                value={
+                                    this.state.attachmentImageBgHeader.name
+                                        ? this.state.attachmentImageBgHeader.name
+                                        : portalImageBgFileNameHeader
+                                }
+                                onClickAction={() => {
+                                    this.toggleNewLogo('image-bg-header');
+                                }}
+                                onChangeaction={() => {}}
+                                size={'col-md-5'}
+                                textToolTip={`Om afbeelding zichtbaar te maken moet de achtergrond deels transparant zijn, zie 1. Login pagina / Header kleur voor meer informatie.`}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
+                                error={this.state.errors.portalImageBgFileNameHeader}
+                            />
+                            <Image
+                                src={
+                                    this.state.attachmentImageBgHeader && this.state.attachmentImageBgHeader.preview
+                                        ? this.state.attachmentImageBgHeader.preview
+                                        : imageBgHeaderUrl
+                                }
+                                style={{
+                                    backgroundColor: loginHeaderBackgroundColor,
+                                    color: loginHeaderBackgroundTextColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '1px',
+                                    borderRadius: '1px',
+                                    height: '50px',
+                                    boxShadow: '0 0 0 1px #fff inset',
+                                }}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="E. Favicon in tabblad browser (bestandstype ICO)"
                                 divSize={'col-sm-8'}
                                 value={
                                     this.state.attachmentFavicon.name
@@ -283,6 +530,8 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 }
                                 onClickAction={this.toggleNewFavicon}
                                 onChangeaction={() => {}}
+                                size={'col-sm-5'}
+                                textToolTip={`Een favicon is het icoontje dat je ziet in de tabbladen van je browser. Vaak is de favicon het logo van het bedrijf waarvan je de website bezoekt.`}
                                 readOnly={!this.manageTechnicalPortalSettings}
                                 required={'required'}
                                 error={this.state.errors.portalFaviconFileName}
@@ -309,13 +558,21 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 addFavicon={this.addFavicon}
                             />
                         )}
-
+                        <div className="row">
+                            <h4 className={'col-md-12'}>Kleur</h4>
+                        </div>
                         <div className="row">
                             <InputText
-                                label="1. Login/Header - achtergrond afbeelding kleur"
+                                label="1. Login pagina/ header kleur"
                                 divSize={'col-sm-8'}
                                 name={'loginHeaderBackgroundColor'}
                                 value={loginHeaderBackgroundColor}
+                                size={'col-sm-5'}
+                                textToolTip={`Achtergrond afbeelding werkt alleen als je hier RGBA kleurcode gebruiktkleur en daar (deels) transparantie op toepast: 0.0 (fully transparent) and 1.0 (fully opaque)<br />
+                                    Bijv:<br />
+                                    rgba(35, 150, 179, 0). Achtergrond kleur volledig transparant, dus zie je achtergrond afbeelding ook volledig.<br />
+                                    rgba(35, 150, 179, 1). Achtergrond kleur volledig NIET transparant, dus zie je achtergrond afbeelding helemaal niet.<br />
+                                    rgba(35, 150, 179, 0.5). Achtergrond kleur voor 50% transparant, dus zie je achtergrond afbeelding voor 50% door achtergrond kleur heen. Hiermee krijgt je een soort watermerk effect.`}
                                 readOnly={!this.manageTechnicalPortalSettings}
                                 required={'required'}
                                 onChangeAction={this.handleInputChange}
@@ -341,7 +598,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="2. Login/Header - achtergrond afbeelding tekst kleur"
+                                label="2. Login pagina/ header tekst kleur"
                                 divSize={'col-sm-8'}
                                 name={'loginHeaderBackgroundTextColor'}
                                 value={loginHeaderBackgroundTextColor}
@@ -383,7 +640,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="4. Login - veld achtergrond kleur"
+                                label="4. Login pagina tekstveld achtergrond kleur"
                                 divSize={'col-sm-8'}
                                 name={'loginFieldBackgroundColor'}
                                 value={loginFieldBackgroundColor}
@@ -421,7 +678,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="5. Login - veld tekst kleur"
+                                label="5. Login pagina tekstveld tekst kleur"
                                 divSize={'col-sm-8'}
                                 name={'loginFieldBackgroundTextColor'}
                                 value={loginFieldBackgroundTextColor}
@@ -433,7 +690,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="6. Achtergrond kleur"
+                                label="6. Menu achtergrond kleur / welkomsttitel tekst kleur"
                                 divSize={'col-sm-8'}
                                 name={'portalBackgroundColor'}
                                 value={portalBackgroundColor}
@@ -452,17 +709,35 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                     display: 'inline-block',
                                     padding: '2px',
                                     borderRadius: '2px',
-                                    width: '50px',
+                                    width: '150px',
                                     height: '30px',
                                     boxShadow: '0 0 0 2px #fff inset',
                                 }}
                             >
-                                Tekst
+                                Menutekst
+                            </span>
+                            <br />
+                            <span
+                                className="rc-color-picker-trigger"
+                                unselectable="unselectable"
+                                style={{
+                                    backgroundColor: '#fff',
+                                    color: portalBackgroundColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '2px',
+                                    borderRadius: '2px',
+                                    width: '150px',
+                                    height: '30px',
+                                    boxShadow: '0 0 0 2px #fff inset',
+                                }}
+                            >
+                                Pagina header tekst
                             </span>
                         </div>
                         <div className="row">
                             <InputText
-                                label="7. Achtergrond tekst kleur"
+                                label="7. Menu achtergrond tekst kleur"
                                 divSize={'col-sm-8'}
                                 name={'portalBackgroundTextColor'}
                                 value={portalBackgroundTextColor}
@@ -474,7 +749,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="8. Buttonknop kleur"
+                                label="8. Buttonknop / Profielcircel kleur"
                                 divSize={'col-sm-8'}
                                 name={'buttonColor'}
                                 value={buttonColor}
@@ -503,7 +778,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="9. Buttonknop tekst kleur"
+                                label="9. Buttonknop / Profielcircel tekst kleur"
                                 divSize={'col-sm-8'}
                                 name={'buttonTextColor'}
                                 value={buttonTextColor}
@@ -513,6 +788,21 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 error={this.state.errors.buttonTextColor}
                             />
                         </div>
+                        {this.state.showModalNewLogo && (
+                            <PortalLogoLayoutNew
+                                closeNewLogo={this.closeNewLogo}
+                                addLogo={this.addLogo}
+                                imageLayoutItemName={this.state.imageLayoutItemName}
+                            />
+                        )}
+                        {this.state.showModalCropLogo && (
+                            <PortalLogoLayoutNewCrop
+                                closeShowCrop={this.closeShowCrop}
+                                image={this.state.image}
+                                imageLayoutItemName={this.state.imageLayoutItemName}
+                                cropLogo={this.cropLogo}
+                            />
+                        )}
                     </PanelBody>
 
                     <PanelBody>
@@ -525,6 +815,86 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             <ButtonText buttonText={'Opslaan'} type={'submit'} value={'Submit'} />
                         </div>
                     </PanelBody>
+                    {this.state.showPreviewPortalLoginPagePc && (
+                        <PreviewPortalLoginPagePcModal
+                            previewFromLayout={true}
+                            closeModal={this.togglePreviewPortalLoginPagePc}
+                            imageHash={this.state.imageHash}
+                            attachmentLogo={this.state.attachmentLogo}
+                            logoUrl={logoUrl}
+                            attachmentImageBgLogin={this.state.attachmentImageBgLogin}
+                            imageBgLoginUrl={imageBgLoginUrl}
+                            portalBackgroundColor={portalBackgroundColor}
+                            portalBackgroundTextColor={portalBackgroundTextColor}
+                            loginHeaderBackgroundColor={loginHeaderBackgroundColor}
+                            loginHeaderBackgroundTextColor={loginHeaderBackgroundTextColor}
+                            headerIconsColor={headerIconsColor}
+                            loginFieldBackgroundColor={loginFieldBackgroundColor}
+                            loginFieldBackgroundTextColor={loginFieldBackgroundTextColor}
+                            buttonColor={buttonColor}
+                            buttonTextColor={buttonTextColor}
+                        />
+                    )}
+                    {this.state.showPreviewPortalDashboardPagePc && (
+                        <PreviewPortalDashboardPagePcModal
+                            previewFromLayout={true}
+                            closeModal={this.togglePreviewPortalDashboardPagePc}
+                            imageHash={this.state.imageHash}
+                            attachmentLogoHeader={this.state.attachmentLogoHeader}
+                            logoHeaderUrl={logoHeaderUrl}
+                            attachmentImageBgHeader={this.state.attachmentImageBgHeader}
+                            imageBgHeaderUrl={imageBgHeaderUrl}
+                            portalBackgroundColor={portalBackgroundColor}
+                            portalBackgroundTextColor={portalBackgroundTextColor}
+                            loginHeaderBackgroundColor={loginHeaderBackgroundColor}
+                            loginHeaderBackgroundTextColor={loginHeaderBackgroundTextColor}
+                            headerIconsColor={headerIconsColor}
+                            loginFieldBackgroundColor={loginFieldBackgroundColor}
+                            loginFieldBackgroundTextColor={loginFieldBackgroundTextColor}
+                            buttonColor={buttonColor}
+                            buttonTextColor={buttonTextColor}
+                        />
+                    )}
+                    {this.state.showPreviewPortalLoginPageMobile && (
+                        <PreviewPortalLoginPageMobileModal
+                            previewFromLayout={true}
+                            closeModal={this.togglePreviewPortalLoginPageMobile}
+                            imageHash={this.state.imageHash}
+                            attachmentLogo={this.state.attachmentLogo}
+                            logoUrl={logoUrl}
+                            attachmentImageBgLogin={this.state.attachmentImageBgLogin}
+                            imageBgLoginUrl={imageBgLoginUrl}
+                            portalBackgroundColor={portalBackgroundColor}
+                            portalBackgroundTextColor={portalBackgroundTextColor}
+                            loginHeaderBackgroundColor={loginHeaderBackgroundColor}
+                            loginHeaderBackgroundTextColor={loginHeaderBackgroundTextColor}
+                            headerIconsColor={headerIconsColor}
+                            loginFieldBackgroundColor={loginFieldBackgroundColor}
+                            loginFieldBackgroundTextColor={loginFieldBackgroundTextColor}
+                            buttonColor={buttonColor}
+                            buttonTextColor={buttonTextColor}
+                        />
+                    )}
+                    {this.state.showPreviewPortalDashboardPageMobile && (
+                        <PreviewPortalDashboardPageMobileModal
+                            previewFromLayout={true}
+                            closeModal={this.togglePreviewPortalDashboardPageMobile}
+                            imageHash={this.state.imageHash}
+                            attachmentLogoHeader={this.state.attachmentLogoHeader}
+                            logoHeaderUrl={logoHeaderUrl}
+                            attachmentImageBgHeader={this.state.attachmentImageBgHeader}
+                            imageBgHeaderUrl={imageBgHeaderUrl}
+                            portalBackgroundColor={portalBackgroundColor}
+                            portalBackgroundTextColor={portalBackgroundTextColor}
+                            loginHeaderBackgroundColor={loginHeaderBackgroundColor}
+                            loginHeaderBackgroundTextColor={loginHeaderBackgroundTextColor}
+                            headerIconsColor={headerIconsColor}
+                            loginFieldBackgroundColor={loginFieldBackgroundColor}
+                            loginFieldBackgroundTextColor={loginFieldBackgroundTextColor}
+                            buttonColor={buttonColor}
+                            buttonTextColor={buttonTextColor}
+                        />
+                    )}
                 </Panel>
             </form>
         );

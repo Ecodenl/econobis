@@ -499,7 +499,12 @@ Route::namespace('Api')
 
         Route::get('setting', 'Setting\SettingController@get');
         Route::get('setting/multiple', 'Setting\SettingController@multiple');
+        Route::get('setting-dashboard', 'PortalSettingsDashboard\PortalSettingsDashboardController@get');
+        Route::get('setting-dashboard/multiple', 'PortalSettingsDashboard\PortalSettingsDashboardController@multiple');
+
         Route::post('setting', 'Setting\SettingController@store');
+        Route::post('setting-dashboard', 'PortalSettingsDashboard\PortalSettingsDashboardController@put');
+        Route::post('setting-dashboard/widget', 'PortalSettingsDashboard\PortalSettingsDashboardController@updateWidget');
 
         Route::get('financial-overview/jory', 'FinancialOverview\FinancialOverviewController@jory');
         Route::post('financial-overview', 'FinancialOverview\FinancialOverviewController@store');
@@ -527,6 +532,10 @@ Route::namespace('Api')
         Route::get('financial-overview-post/grid', 'FinancialOverview\FinancialOverviewPostController@grid');
         Route::get('financial-overview-post/{financialOverviewPost}/download', 'FinancialOverview\FinancialOverviewPostController@downloadFinancialOverviewPost');
         Route::post('financial-overview-post/{financialOverviewPost}/delete', 'FinancialOverview\FinancialOverviewPostController@deleteFinancialOverviewPost');
+
+        Route::get('portal-settings-dashboard/jory', 'PortalSettingsDashboard\PortalSettingsDashboardController@jory');
+        Route::post('portal-settings-dashboard', 'PortalSettingsDashboard\PortalSettingsDashboardController@store');
+        Route::post('portal-settings-dashboard/delete', 'PortalSettingsDashboard\PortalSettingsDashboardController@destroy');
 
         Route::get('portal-settings-layout/jory', 'PortalSettingsLayout\PortalSettingsLayoutController@jory');
         Route::post('portal-settings-layout', 'PortalSettingsLayout\PortalSettingsLayoutController@store');

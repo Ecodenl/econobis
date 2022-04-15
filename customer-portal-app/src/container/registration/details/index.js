@@ -11,6 +11,8 @@ import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import { ThemeSettingsContext } from '../../../context/ThemeSettingsContext';
 import { PortalUserContext } from '../../../context/PortalUserContext';
+import Col from 'react-bootstrap/Col';
+import RegistrationDetailsDocumentTable from './document-table';
 
 const INITIAL_STATE = {
     result: [],
@@ -73,7 +75,7 @@ function RegistrationDetails({ match: { params } }) {
             ) : (
                 <>
                     <Row>
-                        <ButtonGroup aria-label="Steps" className="float-left">
+                        <ButtonGroup aria-label="current-participations" className="w-button-group-left">
                             <Link to={`/inschrijvingen-projecten`}>
                                 <Button className={'w-button'} size="sm">
                                     Huidige deelnames
@@ -82,8 +84,22 @@ function RegistrationDetails({ match: { params } }) {
                         </ButtonGroup>
                     </Row>
                     <RegistrationDetailsTitle {...state.result.basicInformation} />
-                    <RegistrationDetailsProjectTable fields={state.result.fields} />
-                    <RegistrationDetailsMutationTable participantMutations={state.result.participantMutations} />
+                    {state.result.length === 0 ? (
+                        <Row>
+                            <Col>Geen huidige deelname aanwezig.</Col>
+                        </Row>
+                    ) : (
+                        <>
+                            <RegistrationDetailsProjectTable fields={state.result.fields} />
+                            <RegistrationDetailsMutationTable
+                                participantMutations={state.result.participantMutations}
+                            />
+                            <RegistrationDetailsDocumentTable
+                                participantId={params.id}
+                                documents={state.result.documents}
+                            />
+                        </>
+                    )}
                 </>
             )}
         </Container>

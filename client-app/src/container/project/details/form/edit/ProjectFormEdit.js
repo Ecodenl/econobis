@@ -36,6 +36,9 @@ class ProjectFormEdit extends Component {
             documentTemplates: [],
             disableBeforeEntryDate: '',
             hasLastYearFinancialOverviewDefinitive: false,
+            projectInfoLinkOrDocument: props.project.documentIdProjectInfo !== null ? 'document' : 'link',
+            agreeTermsLinkOrDocument: props.project.documentIdAgreeTerms !== null ? 'document' : 'link',
+            understandInfoLinkOrDocument: props.project.documentIdUnderstandInfo !== null ? 'document' : 'link',
             project: {
                 ...props.project,
                 showQuestionAboutMembership: Boolean(props.project.showQuestionAboutMembership),
@@ -278,6 +281,19 @@ class ProjectFormEdit extends Component {
         if (validator.isEmpty('' + project.administrationId)) {
             errors.administrationId = true;
             hasErrors = true;
+        }
+
+        if (this.state.projectInfoLinkOrDocument === 'link' || validator.isEmpty('' + project.documentIdProjectInfo)) {
+            project.documentIdProjectInfo = null;
+        }
+        if (this.state.agreeTermsLinkOrDocument === 'link' || validator.isEmpty('' + project.documentIdAgreeTerms)) {
+            project.documentIdAgreeTerms = null;
+        }
+        if (
+            this.state.understandInfoLinkOrDocument === 'link' ||
+            validator.isEmpty('' + project.documentIdUnderstandInfo)
+        ) {
+            project.documentIdUnderstandInfo = null;
         }
 
         if (validator.isEmpty('' + project.textTransactionCosts)) {
@@ -695,6 +711,25 @@ class ProjectFormEdit extends Component {
         });
     };
 
+    handleChangeProjectInfoLinkOrDocument = value => {
+        this.setState({
+            ...this.state,
+            projectInfoLinkOrDocument: value,
+        });
+    };
+    handleChangeAgreeTermsLinkOrDocument = value => {
+        this.setState({
+            ...this.state,
+            agreeTermsLinkOrDocument: value,
+        });
+    };
+    handleChangeUnderstandInfoLinkOrDocument = value => {
+        this.setState({
+            ...this.state,
+            understandInfoLinkOrDocument: value,
+        });
+    };
+
     render() {
         const {
             name,
@@ -745,12 +780,13 @@ class ProjectFormEdit extends Component {
             postalcodeLink,
             addressNumberSeries,
             documentTemplateAgreementId,
-            documentTemplates,
             emailTemplateAgreementId,
-            emailTemplates,
             linkAgreeTerms,
             linkUnderstandInfo,
             linkProjectInfo,
+            documentIdAgreeTerms,
+            documentIdUnderstandInfo,
+            documentIdProjectInfo,
             showQuestionAboutMembership,
             useTransactionCostsWithMembership,
             questionAboutMembershipGroupId,
@@ -790,6 +826,7 @@ class ProjectFormEdit extends Component {
             hasPaymentInvoices,
             valueCourses,
             amountOfParticipants,
+            relatedDocumentsOnPortal,
         } = this.props.project;
 
         const requiredParticipants = RequiredParticipantsHelper(baseProjectCodeRef, powerKwAvailable);
@@ -859,6 +896,16 @@ class ProjectFormEdit extends Component {
                     linkAgreeTerms={linkAgreeTerms}
                     linkUnderstandInfo={linkUnderstandInfo}
                     linkProjectInfo={linkProjectInfo}
+                    documentIdAgreeTerms={documentIdAgreeTerms}
+                    agreeTermsLinkOrDocument={this.state.agreeTermsLinkOrDocument}
+                    handleChangeAgreeTermsLinkOrDocument={this.handleChangeAgreeTermsLinkOrDocument}
+                    documentIdUnderstandInfo={documentIdUnderstandInfo}
+                    understandInfoLinkOrDocument={this.state.understandInfoLinkOrDocument}
+                    handleChangeUnderstandInfoLinkOrDocument={this.handleChangeUnderstandInfoLinkOrDocument}
+                    documentIdProjectInfo={documentIdProjectInfo}
+                    projectInfoLinkOrDocument={this.state.projectInfoLinkOrDocument}
+                    handleChangeProjectInfoLinkOrDocument={this.handleChangeProjectInfoLinkOrDocument}
+                    relatedDocumentsOnPortal={relatedDocumentsOnPortal}
                     showQuestionAboutMembership={showQuestionAboutMembership}
                     useTransactionCostsWithMembership={useTransactionCostsWithMembership}
                     questionAboutMembershipGroupId={questionAboutMembershipGroupId}

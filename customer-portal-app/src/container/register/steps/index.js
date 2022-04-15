@@ -9,6 +9,8 @@ import StepFour from './StepFour';
 import StepFive from './StepFive';
 import { isEmpty } from 'lodash';
 import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 function Steps({
     portalSettings,
@@ -26,9 +28,11 @@ function Steps({
     if (isEmpty(project)) {
         return (
             <Container className={'content-section'}>
-                <>
-                    <p>Fout bij ophalen project. Inschrijving niet (meer) mogelijk op dit moment.</p>
-                </>
+                <Row>
+                    <Col>
+                        <p>Fout bij ophalen project. Inschrijving niet (meer) mogelijk op dit moment.</p>
+                    </Col>
+                </Row>
             </Container>
         );
     }

@@ -243,6 +243,8 @@ class ParticipationProjectController extends ApiController
             'mutations.updatedBy',
             'obligationNumbers',
             'documents',
+            'documentsNotOnPortal',
+            'documentsOnPortal',
             'createdBy',
             'updatedBy',
         ]);
@@ -536,11 +538,12 @@ class ParticipationProjectController extends ApiController
 
     public function peek()
     {
-
-        $participants = ParticipantProject::all();
+        $participants = ParticipantProject::orderBy('project_id')->get();
         $participants->load(['contact', 'project']);
-
-        return ParticipantProjectPeek::collection($participants);
+        $sortedParticipants = $participants->sortBy(function($item) {
+            return $item->project_id.'-'.$item->contact->full_name;
+        }, SORT_NATURAL|SORT_FLAG_CASE)->values()->all();
+        return ParticipantProjectPeek::collection($sortedParticipants);
     }
 
     public function validatePostalCode(&$message, Project $project, Contact $contact, Address $address)
@@ -826,6 +829,7 @@ class ParticipationProjectController extends ApiController
             $time = Carbon::now();
 
             $document = new Document();
+            $document->document_created_from = 'participant';
             $document->document_type = 'internal';
             $document->document_group = $documentTemplate->document_group;
             $document->contact_id = $contact->id;

@@ -424,6 +424,51 @@ class Contact extends Model
 
     }
 
+    // Contact fullname, firstname first.
+    public function getFullNameFnfAttribute()
+    {
+        if ($this->type_id == 'person') {
+            $firstName = $this->person->first_name ? $this->person->first_name . ' ' : ($this->person->initials ? $this->person->initials . ' ' : "");
+            $prefix = $this->person->last_name_prefix ? $this->person->last_name_prefix . ' ' : '';
+            $fullNameFnf = ( $firstName . $prefix . $this->person->last_name );
+        } else {
+            $fullNameFnf = $this->full_name;
+        }
+        return $fullNameFnf;
+    }
+    // Has contact financialoverview documents ?.
+    public function getHasFinancialOverviewsAttribute()
+    {
+        return $this->financialOverviewContactsSend()->exists();
+    }
+    // Contact firstname (only if person).
+    public function getFirstNameAttribute()
+    {
+        if ($this->type_id == 'person') {
+            return $this->person->first_name;
+        } else {
+            return '';
+        }
+    }
+    // Contact lastname prefix (only if person).
+    public function getLastNamePrefixAttribute()
+    {
+        if ($this->type_id == 'person') {
+            return $this->person->last_name_prefix;
+        } else {
+            return '';
+        }
+    }
+    // Contact lastname (only if person).
+    public function getLastNameAttribute()
+    {
+        if ($this->type_id == 'person') {
+            return $this->person->last_name;
+        } else {
+            return '';
+        }
+    }
+
     public function getAddressLinesAttribute(){
         if(Address::where('contact_id', $this->id)->where('primary', true)->where('type_id', 'invoice')->exists()){
             $address = Address::where('contact_id', $this->id)->where('primary', true)->where('type_id', 'invoice')->first();

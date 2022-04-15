@@ -2,6 +2,7 @@
 
 namespace App\Eco\Document;
 
+use App\Eco\Administration\Administration;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
@@ -41,6 +42,11 @@ class Document extends Model
         return $this->belongsTo(Order::class);
     }
 
+    public function administration()
+    {
+        return $this->belongsTo(Administration::class);
+    }
+
     public function contactGroup()
     {
         return $this->belongsTo(ContactGroup::class);
@@ -66,6 +72,13 @@ class Document extends Model
         if(!$this->document_group) return null;
 
         return DocumentGroup::get($this->document_group);
+    }
+
+    public function getDocumentCreatedFrom()
+    {
+        if(!$this->document_created_from) return null;
+
+        return DocumentCreatedFrom::get($this->document_created_from);
     }
 
     public function getDocumentType()

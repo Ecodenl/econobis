@@ -9,6 +9,7 @@ import AdministrationAPI from '../../../api/administration/AdministrationAPI';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
+import AboutUsDocumentTable from './document-table';
 
 function AboutUsAdministration({ match }) {
     const { currentSelectedContact } = useContext(PortalUserContext);
@@ -40,7 +41,7 @@ function AboutUsAdministration({ match }) {
             ) : (
                 <>
                     <Row>
-                        <ButtonGroup aria-label="Steps" className="float-left">
+                        <ButtonGroup aria-label="about-us" className="w-button-group-left">
                             <Link to={`/over-ons`}>
                                 <Button className={'w-button'} size="sm">
                                     Over ons
@@ -113,6 +114,11 @@ function AboutUsAdministration({ match }) {
                             </Card>
                         </Col>
                     </Row>
+
+                    <AboutUsDocumentTable
+                        administrationId={match.params.id}
+                        documents={administration.documentsOnPortal}
+                    />
                 </>
             )}
         </Container>

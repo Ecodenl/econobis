@@ -36,6 +36,7 @@ class AdministrationJoryResource extends JoryResource
 
         // Relations
         $this->relation('country');
+        $this->relation('documentsOnPortal');
 
     }
 }

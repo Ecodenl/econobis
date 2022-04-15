@@ -5,13 +5,21 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import DocumentsList from './DocumentsList';
 
-const DocumentHarmonica = ({ toggleShowList, showDocumentsList, newDocument, documentCount, permissions }) => {
+const DocumentHarmonica = ({
+    title,
+    toggleShowList,
+    showDocumentsList,
+    newDocument,
+    documentCount,
+    permissions,
+    relatedDocuments,
+}) => {
     return (
         <Panel className={'harmonica-button'}>
             <PanelBody>
                 <div className="col-sm-10" onClick={toggleShowList} role="button">
                     <span>
-                        DOCUMENTEN <span className="badge">{documentCount}</span>
+                        {title} <span className="badge">{documentCount}</span>
                     </span>
                 </div>
                 <div className={'col-sm-2'}>
@@ -37,7 +45,7 @@ const DocumentHarmonica = ({ toggleShowList, showDocumentsList, newDocument, doc
                         </div>
                     )}
                 </div>
-                <div className="col-sm-12">{showDocumentsList && <DocumentsList />}</div>
+                {showDocumentsList && <DocumentsList relatedDocuments={relatedDocuments} />}
             </PanelBody>
         </Panel>
     );

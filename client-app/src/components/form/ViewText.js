@@ -69,6 +69,7 @@ const ViewText = props => {
 };
 
 ViewText.defaultProps = {
+    label: '',
     className: 'col-sm-6',
     value: '',
     name: '',

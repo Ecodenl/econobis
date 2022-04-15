@@ -31,6 +31,9 @@ class PortalSettingsLayoutController extends Controller
         $data = $input->string('description')->whenMissing('')->onEmpty('')->next()
             ->boolean('isDefault')->onEmpty(false)->whenMissing(false)->alias('is_default')->next()
             ->string('portalLogoFileName')->whenMissing('')->onEmpty('')->alias('portal_logo_file_name')->next()
+            ->string('portalLogoFileNameHeader')->whenMissing('')->onEmpty('')->alias('portal_logo_file_name_header')->next()
+            ->string('portalImageBgFileNameLogin')->whenMissing('')->onEmpty('')->alias('portal_image_bg_file_name_login')->next()
+            ->string('portalImageBgFileNameHeader')->whenMissing('')->onEmpty('')->alias('portal_image_bg_file_name_header')->next()
             ->string('portalFaviconFileName')->whenMissing('')->onEmpty('')->alias('portal_favicon_file_name')->next()
             ->string('portalBackgroundColor')->whenMissing('#034b8c')->onEmpty('#034b8c')->alias('portal_background_color')->next()
             ->string('portalBackgroundTextColor')->whenMissing('#fff')->onEmpty('#fff')->alias('portal_background_text_color')->next()
@@ -56,6 +59,9 @@ class PortalSettingsLayoutController extends Controller
         $data = $input->string('description')->whenMissing('')->onEmpty('')->next()
             ->boolean('isDefault')->onEmpty(false)->whenMissing(false)->alias('is_default')->next()
             ->string('portalLogoFileName')->whenMissing('logo.png')->onEmpty('logo.png')->alias('portal_logo_file_name')->next()
+            ->string('portalLogoFileNameHeader')->whenMissing('')->onEmpty('')->alias('portal_logo_file_name_header')->next()
+            ->string('portalImageBgFileNameLogin')->whenMissing('')->onEmpty('')->alias('portal_image_bg_file_name_login')->next()
+            ->string('portalImageBgFileNameHeader')->whenMissing('')->onEmpty('')->alias('portal_image_bg_file_name_header')->next()
             ->string('portalFaviconFileName')->whenMissing('favicon.ico')->onEmpty('favicon.ico')->alias('portal_favicon_file_name')->next()
             ->string('portalBackgroundColor')->whenMissing('#034b8c')->onEmpty('#034b8c')->alias('portal_background_color')->next()
             ->string('portalBackgroundTextColor')->whenMissing('#fff')->onEmpty('#fff')->alias('portal_background_text_color')->next()
@@ -76,7 +82,9 @@ class PortalSettingsLayoutController extends Controller
             GeneratePortalCss::dispatch();
         }
 
-        $this->storeLogoAndFavicon($request, $portalSettingsLayout);
+        $this->storeLogo($request, $portalSettingsLayout);
+        $this->storeImageBg($request, $portalSettingsLayout);
+        $this->storeFavicon($request, $portalSettingsLayout);
 
         return GenericResource::make($portalSettingsLayout);
     }
@@ -108,8 +116,9 @@ class PortalSettingsLayoutController extends Controller
      * @param Request $request
      * @param PortalSettingsLayout $portalSettingsLayout
      */
-    protected function storeLogoAndFavicon(Request $request, PortalSettingsLayout $portalSettingsLayout)
+    protected function storeLogo(Request $request, PortalSettingsLayout $portalSettingsLayout)
     {
+        //get logo
         $logo = $request->file('attachmentLogo')
             ? $request->file('attachmentLogo') : false;
 
@@ -123,10 +132,14 @@ class PortalSettingsLayoutController extends Controller
                 $layoutLogoName = 'logo-' . $portalSettingsLayout->id . '.png';
                 if (Config::get('app.env') == "local") {
                     Storage::disk('public_portal_local')->putFileAs('images', $request->file('attachmentLogo'), $layoutLogoName);
+                    Storage::disk('customer_portal_app_build_local')->putFileAs('images', $request->file('attachmentLogo'), $layoutLogoName);
+                    Storage::disk('customer_portal_app_public_local')->putFileAs('images', $request->file('attachmentLogo'), $layoutLogoName);
                     $portalSettingsLayout->portal_logo_file_name = $layoutLogoName;
                     $portalSettingsLayout->save();
                     if ($portalSettingsLayout->is_default) {
                         Storage::disk('public_portal_local')->putFileAs('images', $request->file('attachmentLogo'), 'logo.png');
+                        Storage::disk('customer_portal_app_build_local')->putFileAs('images', $request->file('attachmentLogo'), 'logo.png');
+                        Storage::disk('customer_portal_app_public_local')->putFileAs('images', $request->file('attachmentLogo'), 'logo.png');
                     }
                 } else {
                     Storage::disk('public_portal')->putFileAs('images', $request->file('attachmentLogo'), $layoutLogoName);
@@ -136,12 +149,129 @@ class PortalSettingsLayoutController extends Controller
                         Storage::disk('public_portal')->putFileAs('images', $request->file('attachmentLogo'), 'logo.png');
                     }
                 }
-            } catch (Exception $exception) {
+            } catch (\Exception $exception) {
                 Log::error('Opslaan gewijzigde logo.png mislukt : ' . $exception->getMessage());
             }
-
         }
+        //get logo header
+        $logoHeader = $request->file('attachmentLogoHeader')
+            ? $request->file('attachmentLogoHeader') : false;
 
+        if ($logoHeader) {
+            //store logo-header
+            if (!$logoHeader->isValid()) {
+                abort('422', 'Error uploading file logo-header');
+            }
+
+            try {
+                $layoutLogoHeaderName = 'logo-header-' . $portalSettingsLayout->id . '.png';
+                if (Config::get('app.env') == "local") {
+                    Storage::disk('public_portal_local')->putFileAs('images', $request->file('attachmentLogoHeader'), $layoutLogoHeaderName);
+                    Storage::disk('customer_portal_app_build_local')->putFileAs('images', $request->file('attachmentLogoHeader'), $layoutLogoHeaderName);
+                    Storage::disk('customer_portal_app_public_local')->putFileAs('images', $request->file('attachmentLogoHeader'), $layoutLogoHeaderName);
+                    $portalSettingsLayout->portal_logo_file_name_header = $layoutLogoHeaderName;
+                    $portalSettingsLayout->save();
+                    if ($portalSettingsLayout->is_default) {
+                        Storage::disk('public_portal_local')->putFileAs('images', $request->file('attachmentLogoHeader'), 'logo-header.png');
+                        Storage::disk('customer_portal_app_build_local')->putFileAs('images', $request->file('attachmentLogoHeader'), 'logo-header.png');
+                        Storage::disk('customer_portal_app_public_local')->putFileAs('images', $request->file('attachmentLogoHeader'), 'logo-header.png');
+                    }
+                } else {
+                    Storage::disk('public_portal')->putFileAs('images', $request->file('attachmentLogoHeader'), $layoutLogoHeaderName);
+                    $portalSettingsLayout->portal_logo_file_name_header = $layoutLogoHeaderName;
+                    $portalSettingsLayout->save();
+                    if ($portalSettingsLayout->is_default) {
+                        Storage::disk('public_portal')->putFileAs('images', $request->file('attachmentLogoHeader'), 'logo-header.png');
+                    }
+                }
+            } catch (\Exception $exception) {
+                Log::error('Opslaan gewijzigde logo-header.png mislukt : ' . $exception->getMessage());
+            }
+        }
+    }
+    /**
+     * @param Request $request
+     * @param PortalSettingsLayout $portalSettingsLayout
+     */
+    protected function storeImageBg(Request $request, PortalSettingsLayout $portalSettingsLayout)
+    {
+        //get background login
+        $imageBgLogin = $request->file('attachmentImageBgLogin')
+            ? $request->file('attachmentImageBgLogin') : false;
+
+        if ($imageBgLogin) {
+            //store background-login
+            if (!$imageBgLogin->isValid()) {
+                abort('422', 'Error uploading file background-login');
+            }
+
+            try {
+                $layoutImageBgLoginName = 'background-login-' . $portalSettingsLayout->id . '.png';
+                if (Config::get('app.env') == "local") {
+                    Storage::disk('public_portal_local')->putFileAs('images', $request->file('attachmentImageBgLogin'), $layoutImageBgLoginName);
+                    Storage::disk('customer_portal_app_build_local')->putFileAs('images', $request->file('attachmentImageBgLogin'), $layoutImageBgLoginName);
+                    Storage::disk('customer_portal_app_public_local')->putFileAs('images', $request->file('attachmentImageBgLogin'), $layoutImageBgLoginName);
+                    $portalSettingsLayout->portal_image_bg_file_name_login = $layoutImageBgLoginName;
+                    $portalSettingsLayout->save();
+                    if ($portalSettingsLayout->is_default) {
+                        Storage::disk('public_portal_local')->putFileAs('images', $request->file('attachmentImageBgLogin'), 'background-login.png');
+                        Storage::disk('customer_portal_app_build_local')->putFileAs('images', $request->file('attachmentImageBgLogin'), 'background-login.png');
+                        Storage::disk('customer_portal_app_public_local')->putFileAs('images', $request->file('attachmentImageBgLogin'), 'background-login.png');
+                    }
+                } else {
+                    Storage::disk('public_portal')->putFileAs('images', $request->file('attachmentImageBgLogin'), $layoutImageBgLoginName);
+                    $portalSettingsLayout->portal_image_bg_file_name_login = $layoutImageBgLoginName;
+                    $portalSettingsLayout->save();
+                    if ($portalSettingsLayout->is_default) {
+                        Storage::disk('public_portal')->putFileAs('images', $request->file('attachmentImageBgLogin'), 'background-login.png');
+                    }
+                }
+            } catch (\Exception $exception) {
+                Log::error('Opslaan gewijzigde background-login.png mislukt : ' . $exception->getMessage());
+            }
+        }
+        //get background header
+        $imageBgHeader = $request->file('attachmentImageBgHeader')
+            ? $request->file('attachmentImageBgHeader') : false;
+
+        if ($imageBgHeader) {
+            //store background-header
+            if (!$imageBgHeader->isValid()) {
+                abort('422', 'Error uploading file background-header');
+            }
+
+            try {
+                $layoutImageBgHeaderName = 'background-header-' . $portalSettingsLayout->id . '.png';
+                if (Config::get('app.env') == "local") {
+                    Storage::disk('public_portal_local')->putFileAs('images', $request->file('attachmentImageBgHeader'), $layoutImageBgHeaderName);
+                    Storage::disk('customer_portal_app_build_local')->putFileAs('images', $request->file('attachmentImageBgHeader'), $layoutImageBgHeaderName);
+                    Storage::disk('customer_portal_app_public_local')->putFileAs('images', $request->file('attachmentImageBgHeader'), $layoutImageBgHeaderName);
+                    $portalSettingsLayout->portal_image_bg_file_name_header = $layoutImageBgHeaderName;
+                    $portalSettingsLayout->save();
+                    if ($portalSettingsLayout->is_default) {
+                        Storage::disk('public_portal_local')->putFileAs('images', $request->file('attachmentImageBgHeader'), 'background-header.png');
+                        Storage::disk('customer_portal_app_build_local')->putFileAs('images', $request->file('attachmentImageBgHeader'), 'background-header.png');
+                        Storage::disk('customer_portal_app_public_local')->putFileAs('images', $request->file('attachmentImageBgHeader'), 'background-header.png');
+                    }
+                } else {
+                    Storage::disk('public_portal')->putFileAs('images', $request->file('attachmentImageBgHeader'), $layoutImageBgHeaderName);
+                    $portalSettingsLayout->portal_image_bg_file_name_header = $layoutImageBgHeaderName;
+                    $portalSettingsLayout->save();
+                    if ($portalSettingsLayout->is_default) {
+                        Storage::disk('public_portal')->putFileAs('images', $request->file('attachmentImageBgHeader'), 'background-header.png');
+                    }
+                }
+            } catch (\Exception $exception) {
+                Log::error('Opslaan gewijzigde background-header.png mislukt : ' . $exception->getMessage());
+            }
+        }
+    }
+    /**
+     * @param Request $request
+     * @param PortalSettingsLayout $portalSettingsLayout
+     */
+    protected function storeFavicon(Request $request, PortalSettingsLayout $portalSettingsLayout)
+    {
         //get favicon
         $favicon = $request->file('attachmentFavicon')
             ? $request->file('attachmentFavicon') : false;
@@ -155,10 +285,14 @@ class PortalSettingsLayoutController extends Controller
                 $layoutFaviconName = 'favicon-' . $portalSettingsLayout->id . '.ico';
                 if (Config::get('app.env') == "local") {
                     Storage::disk('public_portal_local')->putFileAs(DIRECTORY_SEPARATOR, $request->file('attachmentFavicon'), $layoutFaviconName);
+                    Storage::disk('customer_portal_app_build_local')->putFileAs(DIRECTORY_SEPARATOR, $request->file('attachmentFavicon'), $layoutFaviconName);
+                    Storage::disk('customer_portal_app_public_local')->putFileAs(DIRECTORY_SEPARATOR, $request->file('attachmentFavicon'), $layoutFaviconName);
                     $portalSettingsLayout->portal_favicon_file_name = $layoutFaviconName;
                     $portalSettingsLayout->save();
                     if ($portalSettingsLayout->is_default) {
                         Storage::disk('public_portal_local')->putFileAs(DIRECTORY_SEPARATOR, $request->file('attachmentFavicon'), 'favicon.ico');
+                        Storage::disk('customer_portal_app_build_local')->putFileAs(DIRECTORY_SEPARATOR, $request->file('attachmentFavicon'), 'favicon.ico');
+                        Storage::disk('customer_portal_app_public_local')->putFileAs(DIRECTORY_SEPARATOR, $request->file('attachmentFavicon'), 'favicon.ico');
                     }
                 } else {
                     Storage::disk('public_portal')->putFileAs('/', $request->file('attachmentFavicon'), $layoutFaviconName);
@@ -168,10 +302,9 @@ class PortalSettingsLayoutController extends Controller
                         Storage::disk('public_portal')->putFileAs('/', $request->file('attachmentFavicon'), 'favicon.ico');
                     }
                 }
-            } catch (Exception $exception) {
+            } catch (\Exception $exception) {
                 Log::error('Opslaan gewijzigde favicon.ico mislukt : ' . $exception->getMessage());
             }
-
         }
     }
 

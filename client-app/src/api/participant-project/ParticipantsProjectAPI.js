@@ -68,11 +68,6 @@ export default {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/create-participant-report/${templateId}/${emailTemplateId}`;
 
         return axiosInstance.post(requestUrl, { participantIds: participantIds, subject: subject });
-        // todo cleanup
-        // .then(response => response.data.data)
-        // .catch(error => {
-        //     console.log(error);
-        // });
     },
 
     previewPDF: (templateId, emailTemplateId, participantIds) => {

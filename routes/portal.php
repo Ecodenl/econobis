@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\PortalSettingsDashboard\PortalSettingsDashboardController;
 use App\Http\Controllers\Api\Setting\SettingController;
 use App\Http\Controllers\Portal\ParticipationProject\ParticipantMutationMolliePaymentController;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
@@ -22,6 +23,8 @@ Route::middleware(['auth:api', 'scopes:use-portal'])
         Route::post('/portal-user/change-email', 'PortalUser\PortalUserController@changeEmail');
         Route::post('/portal-user/change-password', 'PortalUser\PortalUserController@changePassword');
 
+        Route::get('/administration/{administration}/document/{document}/download', 'Administration\AdministrationController@documentDownload');
+
         Route::post('/contact/{contact}', 'Contact\ContactController@update');
         Route::get('/contact/{contact}/financial-overview-documents', 'Contact\ContactController@financialOverviewDocuments');
         Route::get('/contact/{contact}/related-administrations', 'Contact\ContactController@relatedAdministrations');
@@ -29,11 +32,17 @@ Route::middleware(['auth:api', 'scopes:use-portal'])
 
         Route::post('/contact/{contact}/{project}/preview-document', 'Contact\ContactController@previewDocument');
 
+        Route::get('/project/{project}/document/{document}/download', 'Project\ProjectController@documentDownload');
+
         Route::get('/project/participant/{participantProject}', 'ParticipationProject\ParticipationProjectController@show');
         Route::post('/project/participant/create', 'ParticipationProject\ParticipationProjectController@create');
+        Route::get('/project/participant/{participantProject}/document/{document}/download', 'ParticipationProject\ParticipationProjectController@documentDownload');
 
         Route::get('setting', '\\' . SettingController::class . '@get');
         Route::get('setting/multiple', '\\' . SettingController::class . '@multiple');
+
+        Route::get('setting-dashboard', '\\' . PortalSettingsDashboardController::class . '@get');
+        Route::get('setting-dashboard/multiple', '\\' . PortalSettingsDashboardController::class . '@multiple');
 
         Route::get('/contact/{contact}/contact-projects', 'Contact\ContactController@getContactProjects');
         Route::get('/contact/{contact}/{project}/contact-project-data', 'Contact\ContactController@getContactProjectData');

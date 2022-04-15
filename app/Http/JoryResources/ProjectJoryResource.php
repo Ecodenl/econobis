@@ -112,5 +112,8 @@ class ProjectJoryResource extends JoryResource
         // Relations
         $this->relation('administration');
         $this->relation('projectType');
+        $this->relation('documentAgreeTerms');
+        $this->relation('documentUnderstandInfo');
+        $this->relation('documentProjectInfo');
     }
 }

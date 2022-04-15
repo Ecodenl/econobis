@@ -12,7 +12,6 @@ import ContactGroupAPI from '../../../../api/contact-group/ContactGroupAPI';
 import IntakesAPI from '../../../../api/intake/IntakesAPI';
 import OpportunitiesAPI from '../../../../api/opportunity/OpportunitiesAPI';
 import ContactsAPI from '../../../../api/contact/ContactsAPI';
-import ViewText from '../../../../components/form/ViewText';
 import TasksAPI from '../../../../api/task/TasksAPI';
 import HousingFileAPI from '../../../../api/housing-file/HousingFilesAPI';
 import MeasureAPI from '../../../../api/measure/MeasureAPI';
@@ -21,13 +20,15 @@ import QuotationRequestsAPI from '../../../../api/quotation-request/QuotationReq
 import ParticipantsProjectAPI from '../../../../api/participant-project/ParticipantsProjectAPI';
 import ProjectsAPI from '../../../../api/project/ProjectsAPI';
 import OrdersAPI from '../../../../api/order/OrdersAPI';
+import InputToggle from '../../../../components/form/InputToggle';
 
-class DocumentFormEdit extends Component {
+class DocumentDetailsFormEdit extends Component {
     constructor(props) {
         super(props);
 
         const {
             id,
+            administrationId,
             orderId,
             projectId,
             participantId,
@@ -41,9 +42,14 @@ class DocumentFormEdit extends Component {
             measureId,
             taskId,
             documentType,
+            documentCreatedFrom,
             description,
+            freeText1,
+            freeText2,
             documentGroup,
+            template,
             filename,
+            showOnPortal,
         } = props.documentDetails;
 
         this.state = {
@@ -59,8 +65,10 @@ class DocumentFormEdit extends Component {
             participants: [],
             projects: [],
             orders: [],
+            administrations: [],
             document: {
                 id: id,
+                administrationId: administrationId || '',
                 contactId: contactId || '',
                 contactGroupId: contactGroupId || '',
                 intakeId: intakeId || '',
@@ -74,16 +82,23 @@ class DocumentFormEdit extends Component {
                 participantId: participantId || '',
                 orderId: orderId || '',
                 documentType: documentType && documentType.id,
+                documentCreatedFrom: documentCreatedFrom && documentCreatedFrom.id,
                 description: description,
+                freeText1: freeText1,
+                freeText2: freeText2,
                 documentGroup: documentGroup && documentGroup.id,
+                template: template && template.id,
+                showOnPortal: showOnPortal,
             },
             errors: {
                 docLinkedAtAny: false,
                 documentGroup: false,
+                description: false,
             },
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleProjectChange = this.handleProjectChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -128,9 +143,7 @@ class DocumentFormEdit extends Component {
             this.setState({ projects: payload });
         });
 
-        ParticipantsProjectAPI.peekParticipantsProjects().then(payload => {
-            this.setState({ participants: payload });
-        });
+        this.setParticipants(this.props.documentDetails.projectId);
 
         OrdersAPI.peekOrders().then(payload => {
             this.setState({ orders: payload });
@@ -151,6 +164,37 @@ class DocumentFormEdit extends Component {
         });
     }
 
+    handleProjectChange(event) {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            document: {
+                ...this.state.document,
+                [name]: value,
+            },
+        });
+        this.setParticipants(value);
+    }
+
+    setParticipants(value) {
+        ParticipantsProjectAPI.peekParticipantsProjects().then(payload => {
+            let participants = [];
+
+            payload.forEach(function(participant) {
+                if (participant.projectId == value) {
+                    participants.push({ id: participant.id, name: participant.name, projectId: participant.projectId });
+                }
+            });
+
+            this.setState({
+                participants: participants,
+            });
+        });
+    }
+
     handleSubmit = event => {
         event.preventDefault();
 
@@ -160,6 +204,7 @@ class DocumentFormEdit extends Component {
         let hasErrors = false;
 
         if (
+            validator.isEmpty(document.administrationId + '') &&
             validator.isEmpty(document.contactId + '') &&
             validator.isEmpty(document.contactGroupId + '') &&
             validator.isEmpty(document.intakeId + '') &&
@@ -170,6 +215,42 @@ class DocumentFormEdit extends Component {
         ) {
             errors.docLinkedAtAny = true;
             hasErrors = true;
+        }
+
+        if (
+            !validator.isEmpty(document.participantId + '') &&
+            !validator.isEmpty(document.projectId + '') &&
+            !validator.isEmpty(document.contactId + '') &&
+            validator.isEmpty(document.intakeId + '') &&
+            validator.isEmpty(document.campaignId + '') &&
+            validator.isEmpty(document.orderId + '') &&
+            validator.isEmpty(document.contactGroupId + '') &&
+            validator.isEmpty(document.administrationId + '')
+        ) {
+            document.documentCreatedFrom = 'participant';
+        } else if (
+            !validator.isEmpty(document.projectId + '') &&
+            validator.isEmpty(document.participantId + '') &&
+            validator.isEmpty(document.contactId + '') &&
+            validator.isEmpty(document.intakeId + '') &&
+            validator.isEmpty(document.campaignId + '') &&
+            validator.isEmpty(document.orderId + '') &&
+            validator.isEmpty(document.contactGroupId + '') &&
+            validator.isEmpty(document.administrationId + '') &&
+            document.documentGroup != 'revenue'
+        ) {
+            document.documentCreatedFrom = 'project';
+        } else if (
+            !validator.isEmpty(document.administrationId + '') &&
+            validator.isEmpty(document.projectId + '') &&
+            validator.isEmpty(document.participantId + '') &&
+            validator.isEmpty(document.contactId + '') &&
+            validator.isEmpty(document.intakeId + '') &&
+            validator.isEmpty(document.campaignId + '') &&
+            validator.isEmpty(document.orderId + '') &&
+            validator.isEmpty(document.contactGroupId + '')
+        ) {
+            document.documentCreatedFrom = 'administration';
         }
 
         this.setState({ ...this.state, errors: errors });
@@ -200,6 +281,7 @@ class DocumentFormEdit extends Component {
             participants,
         } = this.state;
         const {
+            administrationId,
             orderId,
             contactId,
             contactGroupId,
@@ -212,10 +294,14 @@ class DocumentFormEdit extends Component {
             taskId,
             documentType,
             description,
+            freeText1,
+            freeText2,
             participantId,
             projectId,
+            showOnPortal,
         } = document;
         const oneOfFieldRequired =
+            administrationId === '' &&
             contactId === '' &&
             orderId === '' &&
             contactGroupId === '' &&
@@ -317,7 +403,7 @@ class DocumentFormEdit extends Component {
                             name={'projectId'}
                             value={projectId}
                             options={projects}
-                            onChangeAction={this.handleInputChange}
+                            onChangeAction={this.handleProjectChange}
                             required={oneOfFieldRequired && 'required'}
                             error={errors.docLinkedAtAny}
                         />
@@ -325,7 +411,8 @@ class DocumentFormEdit extends Component {
                             label="Deelnemer project"
                             name={'participantId'}
                             value={participantId}
-                            options={participants}
+                            options={projectId ? participants : []}
+                            placeholder={projectId ? '' : 'Kies eerst een project'}
                             onChangeAction={this.handleInputChange}
                             required={oneOfFieldRequired && 'required'}
                             error={errors.docLinkedAtAny}
@@ -342,32 +429,41 @@ class DocumentFormEdit extends Component {
                             required={oneOfFieldRequired && 'required'}
                             error={errors.docLinkedAtAny}
                         />
+                        <InputSelect
+                            label="Administratie"
+                            name={'administrationId'}
+                            value={administrationId}
+                            options={this.props.administrations}
+                            onChangeAction={this.handleInputChange}
+                            required={oneOfFieldRequired && 'required'}
+                            error={errors.docLinkedAtAny}
+                        />
                     </div>
 
-                    {documentType === 'upload' && (
-                        <div className="row">
-                            <InputSelect
-                                label="Maatregel"
-                                name={'measureId'}
-                                value={measureId}
-                                options={measures}
-                                onChangeAction={this.handleInputChange}
-                            />
-                            <InputSelect
-                                label="Campagne"
-                                name={'campaignId'}
-                                value={campaignId}
-                                options={campaigns}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
-                    )}
                     <div className="row">
-                        <ViewText
-                            label={'Template'}
-                            value={
-                                this.props.documentDetails.template ? this.props.documentDetails.template.name : 'Geen'
-                            }
+                        <InputSelect
+                            label="Maatregel"
+                            name={'measureId'}
+                            value={measureId}
+                            options={measures}
+                            onChangeAction={this.handleInputChange}
+                        />
+                        <InputSelect
+                            label="Campagne"
+                            name={'campaignId'}
+                            value={campaignId}
+                            options={campaigns}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputToggle
+                            label="Tonen op portal"
+                            name={'showOnPortal'}
+                            value={showOnPortal}
+                            onChangeAction={this.handleInputChange}
+                            disabled={true}
                         />
                     </div>
                     <div className="row">
@@ -389,23 +485,83 @@ class DocumentFormEdit extends Component {
                         </div>
                     </div>
 
-                    <div className="row margin-30-top">
-                        <InputText
-                            label="Documentgroep"
-                            name={'documentGroup'}
-                            value={
-                                this.props.documentDetails.documentGroup &&
-                                this.props.documentDetails.documentGroup.name
-                            }
-                            readOnly={true}
-                        />
-                        <InputText
-                            label="Bestandsnaam"
-                            name={'filename'}
-                            value={this.props.documentDetails.filename}
-                            readOnly={true}
-                        />
-                    </div>
+                    {documentType === 'upload' ? (
+                        <div className="row margin-30-top">
+                            <InputText
+                                label="Documentgroep"
+                                name={'documentGroup'}
+                                value={
+                                    this.props.documentDetails.documentGroup &&
+                                    this.props.documentDetails.documentGroup.name
+                                }
+                                readOnly={true}
+                            />
+                            <InputText
+                                label="Bestandsnaam"
+                                name={'filename'}
+                                value={this.props.documentDetails.filename}
+                                readOnly={true}
+                            />
+                        </div>
+                    ) : (
+                        <>
+                            <div className="row margin-30-top">
+                                <InputText
+                                    label="Documentgroep"
+                                    name={'documentGroup'}
+                                    value={
+                                        this.props.documentDetails.documentGroup &&
+                                        this.props.documentDetails.documentGroup.name
+                                    }
+                                    readOnly={true}
+                                />
+                                <InputText
+                                    label="Template"
+                                    name={'template'}
+                                    value={
+                                        this.props.documentDetails.template && this.props.documentDetails.template.name
+                                    }
+                                    readOnly={true}
+                                />
+                            </div>
+                            <div className="row">
+                                <div className="form-group col-sm-12">
+                                    <div className="row">
+                                        <div className="col-sm-3">
+                                            <label className="col-sm-12">Tekst veld 1</label>
+                                        </div>
+                                        <div className="col-sm-9">
+                                            <input
+                                                type="text"
+                                                className="form-control input-sm"
+                                                name="freeText1"
+                                                value={freeText1}
+                                                onChange={this.handleInputChange}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="form-group col-sm-12">
+                                    <div className="row">
+                                        <div className="col-sm-3">
+                                            <label className="col-sm-12">Tekst veld 2</label>
+                                        </div>
+                                        <div className="col-sm-9">
+                                            <input
+                                                type="text"
+                                                className="form-control input-sm"
+                                                name="freeText2"
+                                                value={freeText2}
+                                                onChange={this.handleInputChange}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 <PanelFooter>
@@ -437,7 +593,8 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => {
     return {
         documentDetails: state.documentDetails,
+        administrations: state.meDetails.administrations,
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentFormEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(DocumentDetailsFormEdit);

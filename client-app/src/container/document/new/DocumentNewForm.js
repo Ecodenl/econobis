@@ -26,6 +26,7 @@ const DocumentNewForm = ({
     errors,
     handleSubmit,
     handleInputChange,
+    handleProjectChange,
     handleDocumentGroupChange,
     onDropAccepted,
     onDropRejected,
@@ -48,8 +49,11 @@ const DocumentNewForm = ({
                         projects={projects}
                         participants={participants}
                         orders={orders}
+                        measures={measures}
+                        campaigns={campaigns}
                         errors={errors}
                         handleInputChange={handleInputChange}
+                        handleProjectChange={handleProjectChange}
                     />
                     {document.documentType === 'internal' ? (
                         <DocumentNewFormCreateDocument
@@ -61,8 +65,6 @@ const DocumentNewForm = ({
                         />
                     ) : (
                         <DocumentNewFormUpload
-                            measures={measures}
-                            campaigns={campaigns}
                             document={document}
                             errors={errors}
                             handleInputChange={handleInputChange}

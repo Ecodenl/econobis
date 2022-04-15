@@ -27,6 +27,7 @@ class DocumentDetailsApp extends Component {
     }
 
     render() {
+        const createdFrom = this.props.params.createdFrom ? this.props.params.createdFrom : 'document';
         return (
             <div className="row">
                 <div className="col-md-9">
@@ -39,7 +40,7 @@ class DocumentDetailsApp extends Component {
                     </div>
 
                     <div className="col-md-12 margin-10-top">
-                        <DocumentDetailsForm />
+                        <DocumentDetailsForm createdFrom={createdFrom} />
                     </div>
                 </div>
                 <div className="col-md-3" />

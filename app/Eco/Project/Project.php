@@ -64,6 +64,14 @@ class Project extends Model
         return $this->hasMany(Document::class)->orderBy('documents.id', 'desc');
     }
 
+    public function documentsNotOnPortal(){
+        return $this->hasMany(Document::class)->where('document_created_from', 'project')->where('show_on_portal', false)->orderBy('documents.id', 'desc');
+    }
+
+    public function documentsOnPortal(){
+        return $this->hasMany(Document::class)->where('document_created_from', 'project')->where('show_on_portal', true)->orderBy('documents.id', 'desc');
+    }
+
     public function emails()
     {
         return $this->hasMany(Email::class)->orderBy('emails.id', 'desc');
@@ -119,6 +127,18 @@ class Project extends Model
 
     public function requiresContactGroups(){
         return $this->belongsToMany(ContactGroup::class, 'contact_group_participation', 'project_id', 'group_id');
+    }
+
+    public function documentAgreeTerms(){
+        return $this->belongsTo(Document::class, 'document_id_agree_terms');
+    }
+
+    public function documentUnderstandInfo(){
+        return $this->belongsTo(Document::class, 'document_id_understand_info');
+    }
+
+    public function documentProjectInfo(){
+        return $this->belongsTo(Document::class, 'document_id_project_info');
     }
 
     public function documentTemplateAgreement(){

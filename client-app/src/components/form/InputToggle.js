@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Toggle from 'react-toggle';
 
 const InputToggle = props => {
-    const { label, size, id, name, value, onChangeAction, required, divSize, className, disabled } = props;
+    const { label, size, id, name, value, onChangeAction, required, divSize, className, disabled, itemId } = props;
 
     return (
         <div className={`form-group ${divSize} ${className}`}>
@@ -13,7 +13,14 @@ const InputToggle = props => {
                 </label>
             </div>
             <div className={`${size}`}>
-                <Toggle id={id} name={name} onChange={onChangeAction} defaultChecked={value} disabled={disabled} />
+                <Toggle
+                    id={id}
+                    name={name}
+                    onChange={onChangeAction}
+                    defaultChecked={value}
+                    disabled={disabled}
+                    data-item-id={itemId ?? ''}
+                />
             </div>
         </div>
     );
@@ -25,7 +32,7 @@ InputToggle.defaultProps = {
     divSize: 'col-sm-6',
     required: '',
     disabled: false,
-    value: '',
+    value: false,
 };
 
 InputToggle.propTypes = {

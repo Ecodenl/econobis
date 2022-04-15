@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FaInfoCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 
 const InputTextLong = props => {
     const {
@@ -20,6 +22,7 @@ const InputTextLong = props => {
         min,
         max,
         step,
+        textToolTip,
         errorMessage,
         divClassName,
         autoComplete,
@@ -51,7 +54,24 @@ const InputTextLong = props => {
                         autoComplete={autoComplete}
                         step={step}
                     />
-                </div>
+                </div>{' '}
+                {textToolTip && (
+                    <div className="col-sm-1">
+                        <FaInfoCircle
+                            color={'blue'}
+                            size={'15px'}
+                            data-tip={textToolTip}
+                            data-for={`tooltip-${name}`}
+                        />
+                        <ReactTooltip
+                            id={`tooltip-${name}`}
+                            effect="float"
+                            place="right"
+                            multiline={true}
+                            aria-haspopup="true"
+                        />
+                    </div>
+                )}
             </div>
             {error && (
                 <div className="col-sm-offset-6 col-sm-6">

@@ -25,10 +25,51 @@ import ParticipantsProjectAPI from '../../../api/participant-project/Participant
 import OrdersAPI from '../../../api/order/OrdersAPI';
 import EmailDetailsAPI from '../../../api/email/EmailAPI';
 import QuotationRequestDetailsAPI from '../../../api/quotation-request/QuotationRequestDetailsAPI';
+import DocumentNewFormProject from './DocumentNewFormProject';
+import DocumentNewFormAdministration from './DocumentNewFormAdministration';
+import DocumentNewFormParticipant from './DocumentNewFormParticipant';
 
 class DocumentNewApp extends Component {
     constructor(props) {
         super(props);
+
+        let documentCreatedFrom = '';
+        if (props.params.participantId) {
+            documentCreatedFrom = 'participant';
+        } else if (props.params.opportunityId) {
+            documentCreatedFrom = 'opportunity';
+        } else if (props.params.quotationRequestId) {
+            documentCreatedFrom = 'quotationreguest';
+        } else if (props.params.housingFileId) {
+            documentCreatedFrom = 'housingfile';
+        } else if (props.params.intakeId) {
+            documentCreatedFrom = 'intake';
+        } else if (props.params.measureId) {
+            documentCreatedFrom = 'measure';
+        } else if (props.params.administrationId) {
+            documentCreatedFrom = 'administration';
+        } else if (props.params.campaignId) {
+            documentCreatedFrom = 'campaign';
+        } else if (props.params.taskId) {
+            documentCreatedFrom = 'task';
+        } else if (props.params.projectId) {
+            documentCreatedFrom = 'project';
+        } else if (props.params.orderId) {
+            documentCreatedFrom = 'order';
+        } else if (props.params.contactGroupId) {
+            documentCreatedFrom = 'contactgroup';
+        } else if (props.params.contactId) {
+            documentCreatedFrom = 'contact';
+        } else if (props.params.emailAttachmentId) {
+            documentCreatedFrom = 'emailattachment';
+        } else {
+            documentCreatedFrom = 'document';
+        }
+
+        const documentCreatedFromName = this.props.documentCreatedFroms.find(item => {
+            return item.id == documentCreatedFrom;
+        }).name;
+
         this.state = {
             contacts: [],
             contactsGroups: [],
@@ -44,6 +85,7 @@ class DocumentNewApp extends Component {
             participants: [],
             orders: [],
             document: {
+                administrationId: this.props.params.administrationId || '',
                 contactId: this.props.params.contactId || '',
                 contactGroupId: this.props.params.contactGroupId || '',
                 intakeId: this.props.params.intakeId || '',
@@ -56,6 +98,8 @@ class DocumentNewApp extends Component {
                 projectId: this.props.params.projectId || '',
                 participantId: this.props.params.participantId || '',
                 orderId: this.props.params.orderId || '',
+                documentCreatedFrom: documentCreatedFrom,
+                documentCreatedFromName: documentCreatedFromName,
                 documentType: this.props.params.type,
                 description: '',
                 documentGroup: '',
@@ -65,6 +109,8 @@ class DocumentNewApp extends Component {
                 sentById: '',
                 attachment: '',
                 filename: 'temp',
+                showOnPortal:
+                    this.props.params.showOnPortal && this.props.params.showOnPortal === 'portal' ? true : false,
             },
             errors: {
                 docLinkedAtAny: false,
@@ -80,6 +126,7 @@ class DocumentNewApp extends Component {
         this.onDropAccepted = this.onDropAccepted.bind(this);
         this.onDropRejected = this.onDropRejected.bind(this);
         this.handleDocumentGroupChange = this.handleDocumentGroupChange.bind(this);
+        this.handleProjectChange = this.handleProjectChange.bind(this);
     }
 
     componentDidMount() {
@@ -127,10 +174,6 @@ class DocumentNewApp extends Component {
             this.setState({ projects: payload });
         });
 
-        ParticipantsProjectAPI.peekParticipantsProjects().then(payload => {
-            this.setState({ participants: payload });
-        });
-
         OrdersAPI.peekOrders().then(payload => {
             this.setState({ orders: payload });
         });
@@ -145,7 +188,7 @@ class DocumentNewApp extends Component {
                         ...this.state.document,
                         attachment: file[0],
                         filename: payload.headers['x-filename'],
-                        contactId: payload.headers['x-contactid'],
+                        contactId: payload.headers['x-contactid'] ? payload.headers['x-contactid'] : '',
                     },
                 });
             });
@@ -180,6 +223,37 @@ class DocumentNewApp extends Component {
                 ...this.state.document,
                 [name]: value,
             },
+        });
+    }
+
+    handleProjectChange(event) {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            document: {
+                ...this.state.document,
+                [name]: value,
+            },
+        });
+        this.setParticipants(value);
+    }
+
+    setParticipants(value) {
+        ParticipantsProjectAPI.peekParticipantsProjects().then(payload => {
+            let participants = [];
+
+            payload.forEach(function(participant) {
+                if (participant.projectId == value) {
+                    participants.push({ id: participant.id, name: participant.name, projectId: participant.projectId });
+                }
+            });
+
+            this.setState({
+                participants: participants,
+            });
         });
     }
 
@@ -236,10 +310,12 @@ class DocumentNewApp extends Component {
         event.preventDefault();
 
         const {
+            administrationId,
             contactId,
             contactGroupId,
             intakeId,
             opportunityId,
+            documentCreatedFrom,
             documentType,
             description,
             documentGroup,
@@ -257,13 +333,20 @@ class DocumentNewApp extends Component {
             participantId,
             orderId,
             attachment,
+            showOnPortal,
         } = this.state.document;
 
         // Validation
         let errors = {};
         let hasErrors = false;
 
+        if (validator.isEmpty(description + '')) {
+            errors.description = true;
+            hasErrors = true;
+        }
+
         if (
+            validator.isEmpty(administrationId + '') &&
             validator.isEmpty(contactId + '') &&
             validator.isEmpty(contactGroupId + '') &&
             validator.isEmpty(intakeId + '') &&
@@ -300,10 +383,12 @@ class DocumentNewApp extends Component {
         if (!hasErrors) {
             const data = new FormData();
 
+            data.append('administrationId', administrationId);
             data.append('contactId', contactId);
             data.append('contactGroupId', contactGroupId);
             data.append('intakeId', intakeId);
             data.append('opportunityId', opportunityId);
+            data.append('documentCreatedFrom', documentCreatedFrom);
             data.append('documentType', documentType);
             data.append('description', description);
             data.append('documentGroup', documentGroup);
@@ -321,6 +406,7 @@ class DocumentNewApp extends Component {
             data.append('participantId', participantId);
             data.append('orderId', orderId);
             data.append('attachment', attachment);
+            data.append('showOnPortal', showOnPortal);
 
             DocumentDetailsAPI.newDocument(data)
                 .then(payload => {
@@ -343,33 +429,76 @@ class DocumentNewApp extends Component {
                     <div className="col-md-12">
                         <Panel>
                             <PanelBody className="panel-small">
-                                <DocumentNewToolbar handleSubmit={this.handleSubmit} />
+                                <DocumentNewToolbar
+                                    handleSubmit={this.handleSubmit}
+                                    documentCreatedFromName={this.state.document.documentCreatedFromName}
+                                />
                             </PanelBody>
                         </Panel>
                     </div>
                     <div className="col-md-12">
-                        <DocumentNewForm
-                            document={this.state.document}
-                            contacts={this.state.contacts}
-                            contactGroups={this.state.contactGroups}
-                            intakes={this.state.intakes}
-                            opportunities={this.state.opportunities}
-                            templates={this.state.templates}
-                            tasks={this.state.tasks}
-                            measures={this.state.measures}
-                            quotationRequests={this.state.quotationRequests}
-                            housingFiles={this.state.housingFiles}
-                            campaigns={this.state.campaigns}
-                            projects={this.state.projects}
-                            participants={this.state.participants}
-                            orders={this.state.orders}
-                            errors={this.state.errors}
-                            handleSubmit={this.handleSubmit}
-                            handleDocumentGroupChange={this.handleDocumentGroupChange}
-                            handleInputChange={this.handleInputChange}
-                            onDropAccepted={this.onDropAccepted}
-                            onDropRejected={this.onDropRejected}
-                        />
+                        {this.state.document.documentCreatedFrom === 'project' ? (
+                            <DocumentNewFormProject
+                                document={this.state.document}
+                                templates={this.state.templates}
+                                projects={this.state.projects}
+                                errors={this.state.errors}
+                                handleSubmit={this.handleSubmit}
+                                handleDocumentGroupChange={this.handleDocumentGroupChange}
+                                handleInputChange={this.handleInputChange}
+                                onDropAccepted={this.onDropAccepted}
+                                onDropRejected={this.onDropRejected}
+                            />
+                        ) : this.state.document.documentCreatedFrom === 'administration' ? (
+                            <DocumentNewFormAdministration
+                                document={this.state.document}
+                                templates={this.state.templates}
+                                errors={this.state.errors}
+                                handleSubmit={this.handleSubmit}
+                                handleDocumentGroupChange={this.handleDocumentGroupChange}
+                                handleInputChange={this.handleInputChange}
+                                onDropAccepted={this.onDropAccepted}
+                                onDropRejected={this.onDropRejected}
+                            />
+                        ) : this.state.document.documentCreatedFrom === 'participant' ? (
+                            <DocumentNewFormParticipant
+                                document={this.state.document}
+                                templates={this.state.templates}
+                                projects={this.state.projects}
+                                participants={this.state.participants}
+                                errors={this.state.errors}
+                                handleSubmit={this.handleSubmit}
+                                handleDocumentGroupChange={this.handleDocumentGroupChange}
+                                handleInputChange={this.handleInputChange}
+                                handleProjectChange={this.handleProjectChange}
+                                onDropAccepted={this.onDropAccepted}
+                                onDropRejected={this.onDropRejected}
+                            />
+                        ) : (
+                            <DocumentNewForm
+                                document={this.state.document}
+                                contacts={this.state.contacts}
+                                contactGroups={this.state.contactGroups}
+                                intakes={this.state.intakes}
+                                opportunities={this.state.opportunities}
+                                templates={this.state.templates}
+                                tasks={this.state.tasks}
+                                measures={this.state.measures}
+                                quotationRequests={this.state.quotationRequests}
+                                housingFiles={this.state.housingFiles}
+                                campaigns={this.state.campaigns}
+                                projects={this.state.projects}
+                                participants={this.state.participants}
+                                orders={this.state.orders}
+                                errors={this.state.errors}
+                                handleSubmit={this.handleSubmit}
+                                handleDocumentGroupChange={this.handleDocumentGroupChange}
+                                handleInputChange={this.handleInputChange}
+                                handleProjectChange={this.handleProjectChange}
+                                onDropAccepted={this.onDropAccepted}
+                                onDropRejected={this.onDropRejected}
+                            />
+                        )}
                     </div>
                 </div>
                 <div className="col-md-3" />
@@ -384,4 +513,10 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(DocumentNewApp);
+const mapStateToProps = state => {
+    return {
+        documentCreatedFroms: state.systemData.documentCreatedFroms,
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DocumentNewApp);

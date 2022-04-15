@@ -81,8 +81,6 @@ return [
 //            'driver' => 'local',
 //            'root' => public_path('portal'),
 //        ],
-        // lokaal is public_path iets in trant van '/home/vagrant/code/econobis/public/'
-        // afhankelijk van hoe je vagrant/homestead hebt ingericht.
         'public_portal_local' => [
             'driver' => 'local',
             'root' => '/home/vagrant/code/econobis/public/portal',

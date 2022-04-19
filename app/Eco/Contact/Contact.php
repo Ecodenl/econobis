@@ -26,6 +26,7 @@ use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Portal\PortalUser;
+use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\Task\Task;
 use App\Eco\Twinfield\TwinfieldCustomerNumber;
 use App\Eco\User\User;
@@ -204,6 +205,10 @@ class Contact extends Model
     public function projectRevenueDistributions()
     {
         return $this->hasMany(ProjectRevenueDistribution::class);
+    }
+    public function revenueDistributionKwh()
+    {
+        return $this->hasMany(RevenueDistributionKwh::class);
     }
 
     public function housingFiles()

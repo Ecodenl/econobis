@@ -33,12 +33,12 @@ class Joiner extends RequestJoiner
 
     protected function applyEnergySuppliersJoin($query)
     {
-        $query->leftJoin('address_energy_supplier', function($join)
+        $query->leftJoin('address_energy_suppliers', function($join)
         {
-            $join->on('participation_project.contact_id', '=', 'address_energy_supplier.contact_id');
-            $join->on('address_energy_supplier.is_current_supplier','=', DB::raw('1'));
+            $join->on('participation_project.address_id', '=', 'address_energy_suppliers.address_id');
+            $join->on('address_energy_suppliers.is_current_supplier','=', DB::raw('1'));
         });
-        $query->leftJoin('energy_suppliers', 'address_energy_supplier.energy_supplier_id', '=', 'energy_suppliers.id');
+        $query->leftJoin('energy_suppliers', 'address_energy_suppliers.energy_supplier_id', '=', 'energy_suppliers.id');
     }
 
     protected function applyParticipantMutationsJoin($query)

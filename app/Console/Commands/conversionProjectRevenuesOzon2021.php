@@ -112,17 +112,22 @@ class conversionProjectRevenuesOzon2021 extends Command
                 $revenuepart2021Kwh->status = 'in-progress-to-processed';
                 $revenuepart2021Kwh->save();
 
-                $this->newRevenueTotalProcessed = $conversion2021OzonToDo->levering_totaal - $revenuepart2021Kwh->values_kwh_start['kwhStart'];
-//                Log::info("conversion2021OzonToDo->levering_totaal " . $conversion2021OzonToDo->levering_totaal);
-//                Log::info("revenuepart2021Kwh->values_kwh_start['kwhStart'] " . $revenuepart2021Kwh->values_kwh_start['kwhStart']);
-//                Log::info("newRevenueTotalProcessed " . $this->newRevenueTotalProcessed);
+//                $this->newRevenueTotalProcessed = $conversion2021OzonToDo->levering_totaal - $revenuepart2021Kwh->values_kwh_start['kwhStart'];
+                $this->newRevenueTotalProcessed = $conversion2021OzonToDo->levering_totaal - $conversion2021OzonToDo->levering_totaal_end_2020;
                 $this->oldRevenueTotalProcessed = $revenuesKwh->delivered_total_processed;
-//                Log::info("oldRevenueTotalProcessed " . $this->oldRevenueTotalProcessed);
 
+//                $valuesKwhData = [
+//                    'kwhStart' => $revenuepart2021Kwh->values_kwh_start['kwhStart'],
+//                    'kwhStartHigh' => $revenuepart2021Kwh->values_kwh_start['kwhStartHigh'],
+//                    'kwhStartLow' => $revenuepart2021Kwh->values_kwh_start['kwhStartLow'],
+//                    'kwhEnd' => $conversion2021OzonToDo->levering_totaal,
+//                    'kwhEndHigh' => $conversion2021OzonToDo->levering_hoog,
+//                    'kwhEndLow' => $conversion2021OzonToDo->levering_laag,
+//                ];
                 $valuesKwhData = [
-                    'kwhStart' => $revenuepart2021Kwh->values_kwh_start['kwhStart'],
-                    'kwhStartHigh' => $revenuepart2021Kwh->values_kwh_start['kwhStartHigh'],
-                    'kwhStartLow' => $revenuepart2021Kwh->values_kwh_start['kwhStartLow'],
+                    'kwhStart' => $conversion2021OzonToDo->levering_totaal_end_2020,
+                    'kwhStartHigh' => $conversion2021OzonToDo->levering_hoog_end_2020,
+                    'kwhStartLow' => $conversion2021OzonToDo->levering_laag_end_2020,
                     'kwhEnd' => $conversion2021OzonToDo->levering_totaal,
                     'kwhEndHigh' => $conversion2021OzonToDo->levering_hoog,
                     'kwhEndLow' => $conversion2021OzonToDo->levering_laag,
@@ -181,6 +186,13 @@ class conversionProjectRevenuesOzon2021 extends Command
             $revenueValuesKwh =  RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->whereBetween('date_registration', [$partDateBegin, $partDateEnd])->where('is_simulated', true);
             $revenueValuesKwh->delete();
 
+            // Bijwerken of aanmaken start values kwh.
+            if ($beginRevenueValuesKwh) {
+                $beginRevenueValuesKwh->kwh_start = $valuesKwhData['kwhStart'];
+                $beginRevenueValuesKwh->kwh_start_high = $valuesKwhData['kwhStartHigh'];
+                $beginRevenueValuesKwh->kwh_start_low = $valuesKwhData['kwhStartLow'];
+                $beginRevenueValuesKwh->save();
+            }
             // Bijwerken of aanmaken end values kwh (deze plaatsen we in start values kwh 1 dag na einddatum.
             if ($endRevenueValuesKwh) {
                 $endRevenueValuesKwh->kwh_start = $valuesKwhData['kwhEnd'];
@@ -497,14 +509,9 @@ class conversionProjectRevenuesOzon2021 extends Command
         $partsId = $revenuePartKwh->id;
 
         $totalSumOfParticipationsAndDaysToDo = $revenuePartKwh->distributionValuesKwh()->where('status', 'in-progress-to-processed')->sum('quantity_multiply_by_days');
-//        $this->newRevenueTotalProcessed = $conversion2021OzonToDo->levering_totaal;
-//        $this->oldRevenueTotalProcessed = $revenuesKwh->delivered_total_processed;
         $totalDeliveredKwhOld = $this->oldRevenueTotalProcessed;
         $totalDeliveredKwhNew = $this->newRevenueTotalProcessed;
         $totalDeliveredKwhToDivide = $totalDeliveredKwhNew - $totalDeliveredKwhOld;
-//        Log::info("totalDeliveredKwhOld : " . $totalDeliveredKwhOld);
-//        Log::info("totalDeliveredKwhNew : " . $totalDeliveredKwhNew);
-//        Log::info("totalDeliveredKwhToDivide : " . $totalDeliveredKwhToDivide);
 
         $distributionValuesKwh = $revenuePartKwh->distributionValuesKwh->where('status', 'in-progress-to-processed');
         foreach ($distributionValuesKwh as $distributionValuesKwhToDo) {

@@ -49,8 +49,6 @@ class conversionProjectRevenuesKwh extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->projectRevenueKwhSplitCategoryId = ProjectRevenueCategory::where('code_ref', 'revenueKwhSplit')->first()->id;
-        $this->projectRevenueKwhCategoryId = ProjectRevenueCategory::where('code_ref', 'revenueKwh')->first()->id;
 
     }
 
@@ -68,6 +66,9 @@ class conversionProjectRevenuesKwh extends Command
         ProjectRevenue::unsetEventDispatcher();
         RevenuesKwh::unsetEventDispatcher();
         RevenuePartsKwh::unsetEventDispatcher();
+
+        $this->projectRevenueKwhSplitCategoryId = ProjectRevenueCategory::where('code_ref', 'revenueKwhSplit')->first()->id;
+        $this->projectRevenueKwhCategoryId = ProjectRevenueCategory::where('code_ref', 'revenueKwh')->first()->id;
 
         $conversionRevenuesKwh = DB::table('xxx_conversion_revenues_kwh')->get();
         if($conversionRevenuesKwh->count() == 0) {

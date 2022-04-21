@@ -6,12 +6,15 @@ use App\Eco\Address\Address;
 use App\Eco\Address\AddressType;
 use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
+use App\Eco\Task\Task;
+use App\Eco\Task\TaskType;
 use App\Helpers\Address\AddressHelper;
 use App\Helpers\Delete\Models\DeleteAddress;
 use App\Helpers\Twinfield\TwinfieldCustomerHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\Address\FullAddress;
 use App\Rules\EnumExists;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -32,6 +35,8 @@ class AddressController extends ApiController
             'city' => '',
             'postalCode' => '',
             'primary' => 'boolean',
+            'eanElectricity' => '',
+            'eanGas' => '',
         ]);
 
         $data = $this->sanitizeData($data, [
@@ -57,7 +62,7 @@ class AddressController extends ApiController
 
         $address->save();
 
-        return new FullAddress($address->fresh()->load('country'));
+        return new FullAddress($address->fresh()->load('addressEnergySuppliers.energySupplier', 'addressEnergySuppliers.energySupplyType', 'addressEnergySuppliers.energySupplyStatus', 'country'));
     }
 
     public function update(Request $request, Address $address)
@@ -75,6 +80,8 @@ class AddressController extends ApiController
             'city' => '',
             'postalCode' => '',
             'primary' => 'boolean',
+            'eanElectricity' => '',
+            'eanGas' => '',
         ]);
 
         $data = $this->sanitizeData($data, [
@@ -117,7 +124,7 @@ class AddressController extends ApiController
                 abort(412, implode(';', $messages));
             }
         }
-        return new FullAddress($address->fresh()->load('country'));
+        return new FullAddress($address->fresh()->load('addressEnergySuppliers.energySupplier', 'addressEnergySuppliers.energySupplyType', 'addressEnergySuppliers.energySupplyStatus', 'country'));
     }
 
     public function destroy(Address $address)
@@ -170,6 +177,29 @@ class AddressController extends ApiController
 
         return ['street' => $street, 'city' => $city];
 
+    }
+
+    public function createTaskEndDateAddress(Address $address)
+    {
+        //Make task note of changes
+        $note = "Einddatum oud adres is bereikt voor adres:\n";
+        $note = $note . "Contact  : " . $address->contact->full_name . "\n";
+        $note = $note . "Adres  : " . $address->street . ' ' . $address->number . ($address->addition ? ('-' . $address->addition) : '') . "\n";
+        $note = $note . "Postcode  : " . $address->postal_code . "\n";
+        $note = $note . "Plaats  : " . $address->city . "\n";
+
+        // todo WM: vooralsnog maar een default portal tasktype.
+        $taskTypeForPortal = TaskType::where('default_portal_task_type', true)->first();
+
+        $newTask = new Task();
+        $newTask->note = $note;
+        $newTask->type_id = $taskTypeForPortal->id;
+        $newTask->contact_id = $address->contact_id;
+        $newTask->responsible_user_id = $address->contact->owner_id;
+        $newTask->responsible_team_id = null;
+        $newTask->date_planned_start = Carbon::today();
+
+        $newTask->save();
     }
 
 }

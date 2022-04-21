@@ -18,6 +18,7 @@ import ErrorModal from '../../../../../components/modal/ErrorModal';
 class MutationFormNew extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             participationMutation: {
                 participationId: this.props.id,
@@ -225,6 +226,7 @@ class MutationFormNew extends Component {
                                     handleInputChange={this.handleInputChange}
                                     handleInputChangeDate={this.handleInputChangeDate}
                                     projectTypeCodeRef={this.props.projectTypeCodeRef}
+                                    projectDateInterestBearingKwh={this.props.projectDateInterestBearingKwh}
                                 />
                             ) : null}
 
@@ -237,6 +239,7 @@ class MutationFormNew extends Component {
                                     handleInputChange={this.handleInputChange}
                                     handleInputChangeDate={this.handleInputChangeDate}
                                     projectTypeCodeRef={this.props.projectTypeCodeRef}
+                                    projectDateInterestBearingKwh={this.props.projectDateInterestBearingKwh}
                                 />
                             ) : null}
 
@@ -287,6 +290,7 @@ const mapStateToProps = state => {
         id: state.participantProjectDetails.id,
         projectTypeCodeRef: state.participantProjectDetails.project.projectType.codeRef,
         projectDateEntry: state.participantProjectDetails.project.dateEntry,
+        projectDateInterestBearingKwh: state.participantProjectDetails.project.dateInterestBearingKwh,
     };
 };
 

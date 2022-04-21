@@ -25,6 +25,8 @@ function MutationFormEditWithDrawal({
     errors,
     errorMessage,
     buttonText,
+    participantProjectDateRegister,
+    participantInDefinitiveRevenue,
 }) {
     return (
         <PanelBody>
@@ -108,6 +110,8 @@ function MutationFormEditWithDrawal({
                     errors={errors}
                     errorMessage={errorMessage}
                     projectTypeCodeRef={projectTypeCodeRef}
+                    participantProjectDateRegister={participantProjectDateRegister}
+                    participantInDefinitiveRevenue={participantInDefinitiveRevenue}
                 />
             )}
 

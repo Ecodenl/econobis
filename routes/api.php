@@ -37,6 +37,8 @@ Route::namespace('Api')
         Route::get('/contact/csv', 'Contact\GridController@csv');
         Route::get('/contact/save-as-group', 'Contact\GridController@saveAsGroup');
         Route::get('/contact/peek', 'Contact\ContactController@peek');
+        Route::get('/contact/search', 'Contact\ContactController@search');
+        Route::get('/contact/address/peek', 'Contact\ContactController@peekWithAddress');
         Route::get('/contact/chart-data', 'Contact\ContactController@chartData');
         Route::get('/contact/get-primary-email-addresses-id', 'Contact\ContactController@getPrimaryEmailAddressesId');
         Route::post('/contacts/delete', 'Contact\ContactController@destroyContacts');
@@ -44,6 +46,7 @@ Route::namespace('Api')
         Route::post('/contact/import', 'Contact\ContactController@import');
         Route::post('contact/{contact}/owner/{user}/associate', 'Contact\ContactController@associateOwner');
         Route::get('/contact/{contact}', 'Contact\ContactController@show');
+        Route::get('/contact/{contact}/addresses', 'Contact\ContactController@getContactWithAddresses');
         Route::get('/contact/{contact}/intakes', 'Contact\ContactController@intakes');
         Route::get('/contact/{contact}/housing-files', 'Contact\ContactController@housingFiles');
         Route::get('/contact/{contact}/groups', 'Contact\ContactController@groups');
@@ -122,9 +125,11 @@ Route::namespace('Api')
         Route::post('/contact-portal-user/{portalUser}', 'PortalUser\PortalUserController@update');
         Route::post('/contact-portal-user/{portalUser}/delete', 'PortalUser\PortalUserController@destroy');
 
-        Route::post('/contact-energy-supplier', 'ContactEnergySupplier\ContactEnergySupplierController@store');
-        Route::post('/contact-energy-supplier/{contactEnergySupplier}', 'ContactEnergySupplier\ContactEnergySupplierController@update');
-        Route::post('/contact-energy-supplier/{contactEnergySupplier}/delete', 'ContactEnergySupplier\ContactEnergySupplierController@destroy');
+        Route::post('/address-energy-supplier', 'AddressEnergySupplier\AddressEnergySupplierController@store');
+        Route::post('/address-energy-supplier/{addressEnergySupplier}', 'AddressEnergySupplier\AddressEnergySupplierController@update');
+        Route::post('/address-energy-supplier/{addressEnergySupplier}/delete', 'AddressEnergySupplier\AddressEnergySupplierController@destroy');
+        Route::post('/address-energy-supplier-validate', 'AddressEnergySupplier\AddressEnergySupplierController@validateAddressEnergySupplierFormNew');
+        Route::post('/address-energy-supplier-validate/{addressEnergySupplier}', 'AddressEnergySupplier\AddressEnergySupplierController@validateAddressEnergySupplierForm');
 
         Route::get('contact-group/grid', 'ContactGroup\ContactGroupController@grid');
         Route::get('contact-group/peek', 'ContactGroup\ContactGroupController@peek');
@@ -153,6 +158,18 @@ Route::namespace('Api')
         Route::post('distribution/{distribution}/download-preview', 'Project\ProjectRevenueController@downloadPreview');
         Route::post('distribution/{distribution}/preview-email', 'Project\ProjectRevenueController@previewEmail');
 
+        Route::post('distribution-kwh/create-revenues-kwh-report', 'Project\RevenuesKwhController@createRevenuesKwhReport');
+        Route::post('distribution-kwh/process-revenues-kwh', 'Project\RevenuesKwhController@processRevenuesKwh');
+        Route::post('distribution-kwh/peek-by-ids', 'Project\RevenuesKwhController@peekDistributionKwhByIds');
+        Route::post('distribution-kwh/{distributionKwh}/download-preview', 'Project\RevenuesKwhController@downloadPreview');
+        Route::post('distribution-kwh/{distributionKwh}/preview-email', 'Project\RevenuesKwhController@previewEmail');
+
+        Route::post('distribution-part-kwh/process-revenue-parts-kwh', 'Project\RevenuePartsKwhController@processRevenuePartsKwh');
+        Route::post('distribution-part-kwh/peek-by-ids', 'Project\RevenuePartsKwhController@peekDistributionKwhPartsByIds');
+
+        Route::post('distribution-part-kwh/create-revenue-part-kwh-report', 'Project\RevenuePartsKwhController@createRevenuePartsKwhReport');
+        Route::post('distribution-part-kwh/{distributionPartsKwh}/download-preview', 'Project\RevenuePartsKwhController@downloadPreview');
+        Route::post('distribution-part-kwh/{distributionPartsKwh}/preview-email', 'Project\RevenuePartsKwhController@previewEmail');
 
         Route::get('opportunity/grid', 'Opportunity\OpportunityController@grid');
         Route::get('opportunity/peek', 'Opportunity\OpportunityController@peek');
@@ -306,12 +323,25 @@ Route::namespace('Api')
         Route::get('project/revenue/{projectRevenue}', 'Project\ProjectRevenueController@show');
         Route::get('project/revenue/{projectRevenue}/csv', 'Project\ProjectRevenueController@csv');
         Route::post('project/revenue/{projectRevenue}/distribution', 'Project\ProjectRevenueController@getRevenueDistribution');
-        Route::post('project/revenue/create-energy-supplier-report/{projectRevenue}/{documentTemplate}', 'Project\ProjectRevenueController@createEnergySupplierReport');
-        Route::post('project/revenue/create-energy-supplier-excel/{projectRevenue}', 'Project\ProjectRevenueController@createEnergySupplierAllExcel');
-        Route::post('project/revenue/create-energy-supplier-excel/{projectRevenue}/{energySupplier}', 'Project\ProjectRevenueController@createEnergySupplierOneExcel');
         Route::post('project/revenue', 'Project\ProjectRevenueController@store');
         Route::post('project/revenue/{projectRevenue}', 'Project\ProjectRevenueController@update');
         Route::post('project/revenue/{projectRevenue}/delete', 'Project\ProjectRevenueController@destroy');
+
+        Route::get('project/revenues-kwh/{revenuesKwh}', 'Project\RevenuesKwhController@show');
+        Route::get('project/revenues-kwh/{revenuesKwh}/csv', 'Project\RevenuesKwhController@csv');
+        Route::post('project/revenues-kwh/{revenuesKwh}/distribution-kwh', 'Project\RevenuesKwhController@getRevenueDistribution');
+        Route::post('project/revenues-kwh/create-energy-supplier-report/{revenuesKwh}/{documentTemplate}', 'Project\RevenuesKwhController@createEnergySupplierReport');
+        Route::post('project/revenues-kwh', 'Project\RevenuesKwhController@store');
+        Route::post('project/revenues-kwh/{revenuesKwh}', 'Project\RevenuesKwhController@update');
+        Route::post('project/revenues-kwh/{revenuesKwh}/delete', 'Project\RevenuesKwhController@destroy');
+
+        Route::get('project/revenue-parts-kwh/{revenuePartsKwh}', 'Project\RevenuePartsKwhController@show');
+        Route::get('project/revenue-parts-kwh/{revenuePartsKwh}/csv', 'Project\RevenuePartsKwhController@csv');
+        Route::post('project/revenue-parts-kwh/{revenuePartsKwh}/distribution-parts-kwh', 'Project\RevenuePartsKwhController@getRevenueDistributionParts');
+
+        Route::post('project/revenue-parts-kwh/create-energy-supplier-excel/{revenuePartsKwh}', 'Project\RevenuePartsKwhController@reportEnergySupplier');
+        Route::post('project/revenue-parts-kwh/{revenuePartsKwh}', 'Project\RevenuePartsKwhController@update');
+        Route::post('project/revenue-parts-kwh/{revenuePartsKwh}/delete', 'Project\RevenuePartsKwhController@destroy');
 
         Route::get('project/participant/grid', 'ParticipationProject\ParticipationProjectController@grid');
         Route::get('project/participant/excel', 'ParticipationProject\ParticipationProjectController@excel');

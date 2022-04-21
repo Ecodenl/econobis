@@ -40,7 +40,7 @@ class PortalFaviconNew extends Component {
                         className="dropzone"
                         onDropAccepted={this.onDropAccepted.bind(this)}
                         onDropRejected={this.onDropRejected.bind(this)}
-                        maxSize={1000000}
+                        maxSize={1048576}
                     >
                         <p>Klik hier voor het uploaden van een bestand</p>
                         <p>

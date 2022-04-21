@@ -60,21 +60,6 @@ class RevenueDetailsToolbar extends Component {
                                     {this.props.permissions.manageFinancial && !this.props.revenue.confirmed && (
                                         <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
                                     )}
-                                    {revenue.confirmed == 1 && categoryCodeRef === 'revenueKwh' && (
-                                        <div className="nav navbar-nav btn-group" role="group">
-                                            <button className="btn btn-success btn-sm" data-toggle="dropdown">
-                                                Rapportage Energie leverancier
-                                            </button>
-                                            <ul className="dropdown-menu">
-                                                <li>
-                                                    <Link to={pdfLink}>Ledenverklaring of productie specificatie</Link>
-                                                </li>
-                                                <li>
-                                                    <Link to={excelLink}>Opbrengstverdelingen deelnemers</Link>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    )}
                                     <ButtonIcon iconName={'glyphicon-download-alt'} onClickAction={this.getCSV} />
                                 </div>
                             </div>

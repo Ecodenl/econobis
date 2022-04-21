@@ -181,7 +181,7 @@ class ParticipantDetailsToolbar extends Component {
                 )}
                 {this.state.showUndoTerminate && (
                     <ParticipantDetailsUndoTerminate
-                        participantProjectId={participantProject.id}
+                        participantProject={participantProject}
                         setErrorModal={this.setErrorModal}
                         closeDeleteItemModal={this.toggleUndoTerminate}
                         projectTypeCodeRef={participantProject.project.projectType.codeRef}

@@ -164,7 +164,7 @@ class ParticipantMutationController extends ApiController
                 abort(409, 'Deelnemer komt al voor in een definitieve verdeling, definitieve mutaties kunnen niet meer verwijderd worden.');
             }
             if ($participantProject->date_terminated != null) {
-                abort(409, 'Deelnemer is beeindigd, definitieve mutaties kunnen niet meer verwijderd worden.');
+                abort(409, 'Deelnemer is beëindigd, definitieve mutaties kunnen niet meer verwijderd worden.');
             }
             if ($participantMutation->financialOverviewDefinitive) {
                 abort(409, 'Mutatie komt al voor in een definitieve waardestaat.');

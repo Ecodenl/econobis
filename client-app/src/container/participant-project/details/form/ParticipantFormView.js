@@ -11,6 +11,7 @@ import ParticipantFormViewPostalcodeLinkCapital from './view/ParticipantFormView
 const ParticipantFormView = props => {
     const {
         contact,
+        address,
         uniqueMutationStatuses,
         project,
         participationsDefinitive,
@@ -39,20 +40,43 @@ const ParticipantFormView = props => {
         <div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={'Contact'}
-                    value={contact ? contact.fullName : ''}
-                    link={contact ? 'contact/' + contact.id : ''}
+                    label={'Project'}
+                    value={project ? project.name : ''}
+                    link={project ? 'project/' + project.id : ''}
                 />
                 <ViewText label={'Status'} value={uniqueMutationStatuses.map(item => item.name).join(', ')} />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={'Project'}
-                    value={project ? project.name : ''}
-                    link={project ? 'project/' + project.id : ''}
+                    label={'Contact'}
+                    value={contact ? contact.fullName : ''}
+                    link={contact ? 'contact/' + contact.id : ''}
                 />
                 <ViewText label={'Administratie'} value={project.administration ? project.administration.name : ''} />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText
+                    label={'Adres'}
+                    value={
+                        address
+                            ? address.streetPostalCodeCity
+                            : contact && contact.primaryAddress
+                            ? contact.primaryAddress.streetPostalCodeCity
+                            : ''
+                    }
+                />
+                <ViewText
+                    label={'Adrestype'}
+                    value={
+                        address
+                            ? address.typeAndPrimary
+                            : contact && contact.primaryAddress
+                            ? contact.primaryAddress.typeAndPrimary
+                            : ''
+                    }
+                />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
@@ -112,7 +136,7 @@ const ParticipantFormView = props => {
                 />
                 {dateTerminated ? (
                     <ViewText
-                        label={'Datum beeindiging deelname'}
+                        label={'Datum beëindiging deelname'}
                         value={dateTerminated ? moment(dateTerminated).format('DD-MM-Y') : ''}
                     />
                 ) : null}

@@ -32,7 +32,33 @@ export default {
 
     peekDistributionsById: distributionIds => {
         const requestUrl = `distribution/peek-by-ids`;
-        URL_API;
+
+        return axiosInstance
+            .post(requestUrl, { ids: distributionIds })
+            .then(function(response) {
+                return response.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    },
+
+    peekDistributionsKwhById: distributionIds => {
+        const requestUrl = `distribution-kwh/peek-by-ids`;
+
+        return axiosInstance
+            .post(requestUrl, { ids: distributionIds })
+            .then(function(response) {
+                return response.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    },
+
+    peekDistributionsKwhPartsById: distributionIds => {
+        const requestUrl = `distribution-part-kwh/peek-by-ids`;
+
         return axiosInstance
             .post(requestUrl, { ids: distributionIds })
             .then(function(response) {

@@ -3,38 +3,45 @@
 namespace App\Helpers\Excel;
 
 use App\Eco\EnergySupplier\EnergySupplier;
-use App\Eco\Project\ProjectRevenue;
+use App\Eco\RevenuesKwh\RevenuePartsKwh;
 use Carbon\Carbon;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class EnergySupplierExcelHelper
 {
     private $energySupplier;
-    private $projectRevenue;
+    private $revenuesKwh;
+    private $revenuePartsKwh;
+    private $upToPartsKwhIds;
     private $distributions;
-    private $counter;
+    private $templateId;
     private $fileName;
+    private $counter;
 
     public function __construct(
         EnergySupplier $energySupplier,
-        ProjectRevenue $projectRevenue,
-        $templateId, $fileName
+        $revenuePartsKwh,
+        $templateId,
+        $fileName
     ) {
         $this->energySupplier = $energySupplier;
-        $this->projectRevenue = $projectRevenue;
+        $this->revenuesKwh = $revenuePartsKwh->revenuesKwh;
+        $this->revenuePartsKwh = $revenuePartsKwh;
         $this->templateId = $templateId;
         $this->fileName = $fileName;
-        $this->distributions = $projectRevenue->distribution()->where('es_id', $energySupplier->id)->get();
+        $this->upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_end', '<=', $revenuePartsKwh->date_end)->pluck('id')->toArray();
+
+        $this->revenuesKwh = $revenuePartsKwh->revenuesKwh;
+        $this->distributions = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $revenuePartsKwh->distribution_kwh_for_report_energy_supplier_ids)->get();
     }
 
     public function getExcel()
     {
-
-        if($this->distributions->count() === 0){
-            abort(403, 'Geen verdeling voor deze energiemaatschappij');
+        if($this->distributions == null || $this->distributions->count() === 0){
+            return false;
         }
 
         switch ($this->templateId) {
@@ -105,13 +112,44 @@ class EnergySupplierExcelHelper
                 'contact.person',
                 'contact.primaryEmailAddress',
                 'contact.primaryphoneNumber',
-                'revenue',
-                'contact.primaryContactEnergySupplier',
+                'revenuesKwh',
+                'distributionPartsKwh',
+                'contact.primaryAddress',
+                'participation.address',
             ]);
 
             foreach ($chunk as $distribution) {
 
-                if(Carbon::parse($this->projectRevenue->date_begin)->year == Carbon::parse($this->projectRevenue->date_end)->year) {
+                if($distribution->participation && $distribution->participation->address){
+                    $participationAddress = $distribution->participation->address;
+                }else{
+                    $participationAddress = $distribution->contact->primaryAddress;
+                }
+                $eanElectricity = $distribution->ean_electricity && !empty($distribution->ean_electricity)
+                    ? 'EAN: ' . $distribution->ean_electricity
+                    : ( $participationAddress && !empty($participationAddress->ean_electricity)
+                        ? 'EAN: ' . $participationAddress->ean_electricity : '' );
+                $esNumbersArray = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+                    ->where('es_id', $this->energySupplier->id)
+                    ->where(function ($query) {
+                        $query->whereNotNull('energy_supplier_number')
+                            ->orWhere('energy_supplier_number', '!=', '');
+                    })
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbers = implode(',', array_unique($esNumbersArray));
+                $deliveredTotalEs = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)->sum('delivered_kwh');
+                $partsThisDistribution = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)->pluck('parts_id')->toArray();
+                $dateBeginFirst = RevenuePartsKwh::where('revenue_id', $this->revenuePartsKwh->revenue_id)->whereIn('id', $partsThisDistribution)->orderBy('date_begin')->first();
+                $dateBegin = $dateBeginFirst ? $dateBeginFirst->date_begin : $this->revenuesKwh->begin_date;
+                $dateBeginYear = Carbon::parse($dateBegin)->year;
+                $deliveredTotalEsEndOfYear = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_end', $dateBeginYear);
+                    })->sum('delivered_kwh');
+
+                if($deliveredTotalEs != 0
+                    || $deliveredTotalEsEndOfYear != 0
+                ){
                     $rowData = [];
                     $rowData[] = $distribution->contact->full_name;
                     $rowData[] = $distribution->contact->person ? $distribution->contact->person->initials : '';
@@ -135,112 +173,18 @@ class EnergySupplierExcelHelper
                                 : '');
                     }
                     $rowData[] = $distribution->city;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $eanElectricity;
                     $rowData[] = $distribution->contact->primaryEmailAddress
                         ? $distribution->contact->primaryEmailAddress->email : '';
                     $rowData[] = $distribution->contact->primaryphoneNumber
                         ? $distribution->contact->primaryphoneNumber->number : '';
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_begin);
+                    $rowData[] = $this->formatDate($dateBegin);
+                    $rowData[] = round($deliveredTotalEsEndOfYear, 2);
+                    $rowData[] = $this->formatDate($this->revenuePartsKwh->date_end);
+                    $rowData[] = $distribution->participations_quantity;
+                    $rowData[] = $esNumbers;
                     $rowData[] = '';
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_end);
-                    $rowData[] = $distribution->participations_amount;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = '';
-                    $rowData[] = $distribution->delivered_total;
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $completeData[] = $rowData;
-                }else {
-                    $rowData = [];
-                    $rowData[] = $distribution->contact->full_name;
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->initials : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
-                    $rowData[] = $distribution->street ? $distribution->street : $distribution->address;
-                    $rowData[] = ($distribution->street && $distribution->street_number) ? $distribution->street_number : '';
-                    $rowData[] = ($distribution->street && $distribution->street_number_addition) ? $distribution->street_number_addition : '';
-
-                    if($distribution->country != '' && $distribution->country != 'Nederland')
-                    {
-                        $rowData[] = $distribution->postal_code_numbers = $distribution->postal_code;
-                        $rowData[] = $distribution->postal_code_letters = '';
-                    }else{
-                        $rowData[] = $distribution->postal_code_numbers = strlen($distribution->postal_code) > 3
-                            ? substr($distribution->postal_code, 0, 4) : '';
-                        $rowData[] = $distribution->postal_code_letters
-                            = strlen($distribution->postal_code) == 6
-                            ? substr($distribution->postal_code, 4)
-                            : (strlen($distribution->postal_code) == 7
-                                ? substr($distribution->postal_code, 5)
-                                : '');
-                    }
-                    $rowData[] = $distribution->city;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = $distribution->contact->primaryEmailAddress
-                        ? $distribution->contact->primaryEmailAddress->email : '';
-                    $rowData[] = $distribution->contact->primaryphoneNumber
-                        ? $distribution->contact->primaryphoneNumber->number : '';
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_begin);
-                    $rowData[] = '';
-                    $rowData[] = $this->formatDate(Carbon::parse($this->projectRevenue->date_begin)->endOfYear());
-                    $rowData[] = $distribution->participations_amount_end_calendar_year;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = '';
-                    $rowData[] = $distribution->delivered_total_last_es_end_calendar_year ?  $distribution->delivered_total_last_es_end_calendar_year : $distribution->delivered_total_end_calendar_year;
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $completeData[] = $rowData;
-
-                    $rowData = [];
-                    $rowData[] = $distribution->contact->full_name;
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->initials : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
-                    $rowData[] = $distribution->street ? $distribution->street : $distribution->address;
-                    $rowData[] = ($distribution->street && $distribution->street_number) ? $distribution->street_number : '';
-                    $rowData[] = ($distribution->street && $distribution->street_number_addition) ? $distribution->street_number_addition : '';
-
-                    if($distribution->country != '' && $distribution->country != 'Nederland')
-                    {
-                        $rowData[] = $distribution->postal_code_numbers = $distribution->postal_code;
-                        $rowData[] = $distribution->postal_code_letters = '';
-                    }else{
-                        $rowData[] = $distribution->postal_code_numbers = strlen($distribution->postal_code) > 3
-                            ? substr($distribution->postal_code, 0, 4) : '';
-                        $rowData[] = $distribution->postal_code_letters
-                            = strlen($distribution->postal_code) == 6
-                            ? substr($distribution->postal_code, 4)
-                            : (strlen($distribution->postal_code) == 7
-                                ? substr($distribution->postal_code, 5)
-                                : '');
-                    }
-                    $rowData[] = $distribution->city;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = $distribution->contact->primaryEmailAddress
-                        ? $distribution->contact->primaryEmailAddress->email : '';
-                    $rowData[] = $distribution->contact->primaryphoneNumber
-                        ? $distribution->contact->primaryphoneNumber->number : '';
-                    $rowData[] = $this->formatDate(Carbon::parse($this->projectRevenue->date_end)->startOfYear());
-                    $rowData[] = '';
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_end);
-                    $rowData[] = $distribution->participations_amount;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = '';
-                    $rowData[] = $distribution->delivered_total_last_es ?  ($distribution->delivered_total_last_es - $distribution->delivered_total_last_es_end_calendar_year) : ($distribution->delivered_total - $distribution->delivered_total_end_calendar_year);
+                    $rowData[] = round($deliveredTotalEs, 2);
                     $rowData[] = '';
                     $rowData[] = '';
                     $rowData[] = '';
@@ -305,85 +249,165 @@ class EnergySupplierExcelHelper
 
         foreach ($this->distributions->chunk(500) as $chunk) {
             $chunk->load([
-                'revenue',
-                'contact.primaryContactEnergySupplier',
+                'contact.person',
+                'contact.primaryEmailAddress',
+                'contact.primaryphoneNumber',
+                'revenuesKwh',
+                'distributionPartsKwh',
+                'contact.primaryAddress',
+                'participation.address',
             ]);
 
             foreach ($chunk as $distribution) {
 
-                if(Carbon::parse($this->projectRevenue->date_begin)->year == Carbon::parse($this->projectRevenue->date_end)->year) {
-                    $totalProduction = ($this->projectRevenue->kwh_end ? $this->projectRevenue->kwh_end : 0) - ($this->projectRevenue->kwh_start ? $this->projectRevenue->kwh_start : 0);
-
-                    $rowData = [];
-                    $rowData[] = $distribution->participation_id;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = str_replace(' ', '', $distribution->postal_code);
-                    $rowData[] = $distribution->street_number;
-                    $rowData[] = $distribution->street_number_addition;
-                    $rowData[] = $this->formatDate(new Carbon('now'));
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_begin);
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_end);
-                    $rowData[] = $this->fileName;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = $distribution->contact->full_name;
-                    $rowData[] = $this->projectRevenue->project->administration ? $this->projectRevenue->project->administration->name : '';
-                    $rowData[] = $this->projectRevenue->project->name;
-                    $rowData[] = $this->projectRevenue->project->participations_definitive;
-                    $rowData[] = $totalProduction;
-                    $rowData[] = $distribution->participations_amount;
-                    $rowData[] = $distribution->delivered_total;
-                    $completeData[] = $rowData;
+                if($distribution->participation && $distribution->participation->address){
+                    $participationAddress = $distribution->participation->address;
                 }else{
-                    $kwhEndCalendarYear = ($this->projectRevenue->kwh_end_calendar_year_high ? $this->projectRevenue->kwh_end_calendar_year_high : 0) +
-                        ($this->projectRevenue->kwh_end_calendar_year_low ? $this->projectRevenue->kwh_end_calendar_year_low : 0);
-                    $totalProductionEndCalendarYear = $kwhEndCalendarYear - ($this->projectRevenue->kwh_start ? $this->projectRevenue->kwh_start : 0);
-                    $totalProductionNextYear = ($this->projectRevenue->kwh_end ? $this->projectRevenue->kwh_end : 0) - $kwhEndCalendarYear;
+                    $participationAddress = $distribution->contact->primaryAddress;
+                }
+                $eanElectricity = $distribution->ean_electricity && !empty($distribution->ean_electricity)
+                    ? 'EAN: ' . $distribution->ean_electricity
+                    : ( $participationAddress && !empty($participationAddress->ean_electricity)
+                        ? 'EAN: ' . $participationAddress->ean_electricity : '' );
+                $partsThisDistribution = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)->pluck('parts_id')->toArray();
+                $dateBeginFirst = RevenuePartsKwh::where('revenue_id', $this->revenuePartsKwh->revenue_id)->whereIn('id', $partsThisDistribution)->orderBy('date_begin')->first();
+                $dateBegin = $dateBeginFirst ? $dateBeginFirst->date_begin : $this->revenuesKwh->begin_date;
+                $dateBeginYear = Carbon::parse($dateBegin)->year;
+                $partsUpToEndOfYearForTotal = $distribution->revenuesKwh->distributionPartsKwh()
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_end', $dateBeginYear);
+                    });
+                $totalEndOfYear = $partsUpToEndOfYearForTotal->get()->sum('delivered_kwh');
+                $partsNextYearForTotal = $distribution->revenuesKwh->distributionPartsKwh()
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_begin', '>', $dateBeginYear);
+                    });
+                $totalNextYear = $partsNextYearForTotal->get()->sum('delivered_kwh');
 
-                    $rowData = [];
-                    $rowData[] = $distribution->participation_id;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = str_replace(' ', '', $distribution->postal_code);
-                    $rowData[] = $distribution->street_number;
-                    $rowData[] = $distribution->street_number_addition;
-                    $rowData[] = $this->formatDate(new Carbon('now'));
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_begin);
-                    $rowData[] = $this->formatDate(Carbon::parse($this->projectRevenue->date_begin)->endOfYear());
-                    $rowData[] = $this->fileName;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = $distribution->contact->full_name;
-                    $rowData[] = $this->projectRevenue->project->administration ? $this->projectRevenue->project->administration->name : '';
-                    $rowData[] = $this->projectRevenue->project->name;
-                    $rowData[] = $this->projectRevenue->project->participations_definitive;
-                    $rowData[] = $totalProductionEndCalendarYear;
-                    $rowData[] = $distribution->participations_amount_end_calendar_year;
-                    $rowData[] = $distribution->delivered_total_last_es_end_calendar_year ?  $distribution->delivered_total_last_es_end_calendar_year : $distribution->delivered_total_end_calendar_year;
-                    $completeData[] = $rowData;
+                $esNumbersEndOfYearArray = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_end', $dateBeginYear);
+                    })
+                    ->where(function ($query) {
+                        $query->whereNotNull('energy_supplier_number')
+                            ->orWhere('energy_supplier_number', '!=', '');
+                    })
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersEndOfYear = implode(',', array_unique($esNumbersEndOfYearArray));
+//                $esNamesEndOfYearArray = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+//                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+//                        $query->whereYear('date_end', $dateBeginYear);
+//                    })
+//                    ->where(function ($query) {
+//                        $query->whereNotNull('energy_supplier_name')
+//                            ->orWhere('energy_supplier_name', '!=', '');
+//                    })
+//                    ->pluck('energy_supplier_name')->toArray();
+//                $esNamesEndOfYear = implode(',', array_unique($esNamesEndOfYearArray));
+                $deliveredTotalEsEndOfYear = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+                    ->join('revenue_parts_kwh', 'revenue_distribution_parts_kwh.parts_id', '=', 'revenue_parts_kwh.id')
+                    ->where('revenue_distribution_parts_kwh.es_id', $this->energySupplier->id)
+                    ->whereYear('revenue_parts_kwh.date_end', $dateBeginYear)
+                    ->sum('revenue_distribution_parts_kwh.delivered_kwh');
+                $partsEndOfYear = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+                    ->join('revenue_parts_kwh', 'revenue_distribution_parts_kwh.parts_id', '=', 'revenue_parts_kwh.id')
+                    ->where('revenue_distribution_parts_kwh.es_id', $this->energySupplier->id)
+                    ->whereYear('revenue_parts_kwh.date_end', $dateBeginYear)
+                    ->orderBy('revenue_parts_kwh.date_end', 'desc')
+                    ->first();
+                $participationsQuantityEndOfYear = $partsEndOfYear ? $partsEndOfYear->participations_quantity : 0;
 
-                    $rowData = [];
-                    $rowData[] = $distribution->participation_id;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = str_replace(' ', '', $distribution->postal_code);
-                    $rowData[] = $distribution->street_number;
-                    $rowData[] = $distribution->street_number_addition;
-                    $rowData[] = $this->formatDate(new Carbon('now'));
-                    $rowData[] = $this->formatDate(Carbon::parse($this->projectRevenue->date_end)->startOfYear());
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_end);
-                    $rowData[] = $this->fileName;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = $distribution->contact->full_name;
-                    $rowData[] = $this->projectRevenue->project->administration ? $this->projectRevenue->project->administration->name : '';
-                    $rowData[] = $this->projectRevenue->project->name;
-                    $rowData[] = $this->projectRevenue->project->participations_definitive;
-                    $rowData[] = $totalProductionNextYear;
-                    $rowData[] = $distribution->participations_amount;
-                    $rowData[] = $distribution->delivered_total_last_es ?  ($distribution->delivered_total_last_es - $distribution->delivered_total_last_es_end_calendar_year) : ($distribution->delivered_total - $distribution->delivered_total_end_calendar_year);
-                    $completeData[] = $rowData;
+                $esNumbersNextYearArray = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_begin', '>', $dateBeginYear);
+                    })
+                    ->where(function ($query) {
+                        $query->whereNotNull('energy_supplier_number')
+                            ->orWhere('energy_supplier_number', '!=', '');
+                    })
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersNextYear = implode(',', array_unique($esNumbersNextYearArray));
+//                $esNamesNextYearArray = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+//                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+//                        $query->whereYear('date_begin', '>', $dateBeginYear);
+//                    })
+//                    ->where(function ($query) {
+//                        $query->whereNotNull('energy_supplier_name')
+//                            ->orWhere('energy_supplier_name', '!=', '');
+//                    })
+//                    ->pluck('energy_supplier_name')->toArray();
+//                $esNamesNextYear = implode(',', array_unique($esNamesNextYearArray));
+
+                $deliveredTotalEsNextYear = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_begin', '>', $dateBeginYear);
+                    })
+                    ->sum('delivered_kwh');
+
+                if($deliveredTotalEsEndOfYear != 0
+                    || $deliveredTotalEsNextYear != 0
+                ) {
+                    if (Carbon::parse($dateBegin)->year == Carbon::parse($this->revenuePartsKwh->date_end)->year) {
+                        $rowData = [];
+                        $rowData[] = $distribution->participation_id;
+                        $rowData[] = $eanElectricity;
+                        $rowData[] = str_replace(' ', '', $distribution->postal_code);
+                        $rowData[] = $distribution->street_number;
+                        $rowData[] = $distribution->street_number_addition;
+                        $rowData[] = $this->formatDate(new Carbon('now'));
+                        $rowData[] = $this->formatDate($dateBegin);
+                        $rowData[] = $this->formatDate($this->revenuePartsKwh->date_end);
+                        $rowData[] = $this->fileName;
+                        $rowData[] = $esNumbersEndOfYear;
+                        $rowData[] = $distribution->contact->full_name;
+                        $rowData[] = $this->revenuesKwh->project->administration ? $this->revenuesKwh->project->administration->name : '';
+                        $rowData[] = $this->revenuesKwh->project->name;
+                        $rowData[] = $this->revenuesKwh->project->participations_definitive;
+                        $rowData[] = round($totalEndOfYear, 2);
+                        $rowData[] = $distribution->participations_quantity;
+                        $rowData[] = round($deliveredTotalEsEndOfYear, 2);
+                        $completeData[] = $rowData;
+                    } else {
+                        $rowData = [];
+                        $rowData[] = $distribution->participation_id;
+                        $rowData[] = $eanElectricity;
+                        $rowData[] = str_replace(' ', '', $distribution->postal_code);
+                        $rowData[] = $distribution->street_number;
+                        $rowData[] = $distribution->street_number_addition;
+                        $rowData[] = $this->formatDate(new Carbon('now'));
+                        $rowData[] = $this->formatDate($dateBegin);
+                        $rowData[] = $this->formatDate(Carbon::parse($dateBegin)->endOfYear());
+                        $rowData[] = $this->fileName;
+                        $rowData[] = $esNumbersEndOfYear;
+                        $rowData[] = $distribution->contact->full_name;
+                        $rowData[] = $this->revenuesKwh->project->administration ? $this->revenuesKwh->project->administration->name : '';
+                        $rowData[] = $this->revenuesKwh->project->name;
+                        $rowData[] = $this->revenuesKwh->project->participations_definitive;
+                        $rowData[] = round($totalEndOfYear, 2);
+                        $rowData[] = $participationsQuantityEndOfYear;
+                        $rowData[] = round($deliveredTotalEsEndOfYear, 2);
+                        $completeData[] = $rowData;
+
+                        $rowData = [];
+                        $rowData[] = $distribution->participation_id;
+                        $rowData[] = $eanElectricity;
+                        $rowData[] = str_replace(' ', '', $distribution->postal_code);
+                        $rowData[] = $distribution->street_number;
+                        $rowData[] = $distribution->street_number_addition;
+                        $rowData[] = $this->formatDate(new Carbon('now'));
+                        $rowData[] = $this->formatDate(Carbon::parse($this->revenuePartsKwh->date_end)->startOfYear());
+                        $rowData[] = $this->formatDate($this->revenuePartsKwh->date_end);
+                        $rowData[] = $this->fileName;
+                        $rowData[] = $esNumbersNextYear;
+                        $rowData[] = $distribution->contact->full_name;
+                        $rowData[] = $this->revenuesKwh->project->administration ? $this->revenuesKwh->project->administration->name : '';
+                        $rowData[] = $this->revenuesKwh->project->name;
+                        $rowData[] = $this->revenuesKwh->project->participations_definitive;
+                        $rowData[] = round($totalNextYear, 2);
+                        $rowData[] = $distribution->participations_quantity;
+                        $rowData[] = round($deliveredTotalEsNextYear, 2);
+                        $completeData[] = $rowData;
+                    }
                 }
             }
         }
@@ -433,63 +457,129 @@ class EnergySupplierExcelHelper
 
         foreach ($this->distributions->chunk(500) as $chunk) {
             $chunk->load([
-                'revenue',
-                'contact.primaryContactEnergySupplier',
+                'contact.person',
+                'contact.primaryEmailAddress',
+                'contact.primaryphoneNumber',
+                'revenuesKwh',
+                'distributionPartsKwh',
+                'contact.primaryAddress',
+                'participation.address',
             ]);
 
             foreach ($chunk as $distribution) {
 
-                if(Carbon::parse($this->projectRevenue->date_begin)->year == Carbon::parse($this->projectRevenue->date_end)->year) {
-                    $rowData = [];
-                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean)
-                        ? 'EAN: ' . $this->projectRevenue->project->ean : '';
-                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean_manager)
-                        ? 'EAN: ' . $this->projectRevenue->project->ean_manager : '';
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_begin);
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_end);
-                    $rowData[] = $distribution->contact->full_name;
-                    $rowData[] = $distribution->tax_referral;
-                    $rowData[] = $distribution->postal_code;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = $distribution->delivered_total;
-                    $completeData[] = $rowData;
+                if($distribution->participation && $distribution->participation->address){
+                    $participationAddress = $distribution->participation->address;
                 }else{
-                    $rowData = [];
-                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean)
-                        ? 'EAN: ' . $this->projectRevenue->project->ean : '';
-                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean_manager)
-                        ? 'EAN: ' . $this->projectRevenue->project->ean_manager : '';
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_begin);
-                    $rowData[] = $this->formatDate(Carbon::parse($this->projectRevenue->date_begin)->endOfYear());
-                    $rowData[] = $distribution->contact->full_name;
-                    $rowData[] = $distribution->tax_referral;
-                    $rowData[] = $distribution->postal_code;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = $distribution->delivered_total_last_es_end_calendar_year ?  $distribution->delivered_total_last_es_end_calendar_year : $distribution->delivered_total_end_calendar_year;
-                    $completeData[] = $rowData;
+                    $participationAddress = $distribution->contact->primaryAddress;
+                }
+                $eanElectricity = $distribution->ean_electricity && !empty($distribution->ean_electricity)
+                    ? 'EAN: ' . $distribution->ean_electricity
+                    : ( $participationAddress && !empty($participationAddress->ean_electricity)
+                        ? 'EAN: ' . $participationAddress->ean_electricity : '' );
+                $partsThisDistribution = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)->pluck('parts_id')->toArray();
+                $dateBeginFirst = RevenuePartsKwh::where('revenue_id', $this->revenuePartsKwh->revenue_id)->whereIn('id', $partsThisDistribution)->orderBy('date_begin')->first();
+                $dateBegin = $dateBeginFirst ? $dateBeginFirst->date_begin : $this->revenuesKwh->begin_date;
+                $dateBeginYear = Carbon::parse($dateBegin)->year;
+//                $partsUpToEndOfYearForTotal = $distribution->revenuesKwh->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+//                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+//                        $query->whereYear('date_end', $dateBeginYear);
+//                    });
+//                $totalEndOfYear = $partsUpToEndOfYearForTotal->get()->sum('delivered_kwh');
+//                $partsNextYearForTotal = $distribution->revenuesKwh->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+//                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+//                        $query->whereYear('date_begin', '>', $dateBeginYear);
+//                    });
+//                $totalNextYear = $partsNextYearForTotal->get()->sum('delivered_kwh');
 
-                    $rowData = [];
-                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean)
-                        ? 'EAN: ' . $this->projectRevenue->project->ean : '';
-                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean_manager)
-                        ? 'EAN: ' . $this->projectRevenue->project->ean_manager : '';
-                    $rowData[] = $this->formatDate(Carbon::parse($this->projectRevenue->date_end)->startOfYear());
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_end);
-                    $rowData[] = $distribution->contact->full_name;
-                    $rowData[] = $distribution->tax_referral;
-                    $rowData[] = $distribution->postal_code;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = $distribution->delivered_total_last_es ?  ($distribution->delivered_total_last_es - $distribution->delivered_total_last_es_end_calendar_year) : ($distribution->delivered_total - $distribution->delivered_total_end_calendar_year);
-                    $completeData[] = $rowData;
+                $esNumbersEndOfYearArray = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_end', $dateBeginYear);
+                    })
+                    ->where(function ($query) {
+                        $query->whereNotNull('energy_supplier_number')
+                            ->orWhere('energy_supplier_number', '!=', '');
+                    })
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersEndOfYear = implode(',', array_unique($esNumbersEndOfYearArray));
+                $deliveredTotalEsEndOfYear = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+                    ->join('revenue_parts_kwh', 'revenue_distribution_parts_kwh.parts_id', '=', 'revenue_parts_kwh.id')
+                    ->where('revenue_distribution_parts_kwh.es_id', $this->energySupplier->id)
+                    ->whereYear('revenue_parts_kwh.date_end', $dateBeginYear)
+                    ->sum('revenue_distribution_parts_kwh.delivered_kwh');
+//                $partsEndOfYear = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+//                    ->join('revenue_parts_kwh', 'revenue_distribution_parts_kwh.parts_id', '=', 'revenue_parts_kwh.id')
+//                    ->where('revenue_distribution_parts_kwh.es_id', $this->energySupplier->id)
+//                    ->whereYear('revenue_parts_kwh.date_end', $dateBeginYear)
+//                    ->orderBy('revenue_parts_kwh.date_end', 'desc')
+//                    ->first();
+//                $participationsQuantityEndOfYear = $partsEndOfYear ? $partsEndOfYear->participations_quantity : 0;
+
+                $esNumbersNextYearArray = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_begin', '>', $dateBeginYear);
+                    })
+                    ->where(function ($query) {
+                        $query->whereNotNull('energy_supplier_number')
+                            ->orWhere('energy_supplier_number', '!=', '');
+                    })
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersNextYear = implode(',', array_unique($esNumbersNextYearArray));
+                $deliveredTotalEsNextYear = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_begin', '>', $dateBeginYear);
+                    })
+                    ->sum('delivered_kwh');
+
+                if($deliveredTotalEsEndOfYear != 0
+                    || $deliveredTotalEsNextYear != 0
+                ) {
+                    if (Carbon::parse($dateBegin)->year == Carbon::parse($this->revenuePartsKwh->date_end)->year) {
+                        $rowData = [];
+                        $rowData[] = $this->revenuesKwh->project && !empty($this->revenuesKwh->project->ean)
+                            ? 'EAN: ' . $this->revenuesKwh->project->ean : '';
+                        $rowData[] = $this->revenuesKwh->project && !empty($this->revenuesKwh->project->ean_manager)
+                            ? 'EAN: ' . $this->revenuesKwh->project->ean_manager : '';
+                        $rowData[] = $this->formatDate($dateBegin);
+                        $rowData[] = $this->formatDate($this->revenuePartsKwh->date_end);
+                        $rowData[] = $distribution->contact->full_name;
+                        $rowData[] = $distribution->tax_referral;
+                        $rowData[] = $distribution->postal_code;
+                        $rowData[] = $eanElectricity;
+                        $rowData[] = $esNumbersEndOfYear;
+                        $rowData[] = round($deliveredTotalEsEndOfYear, 2);
+                        $completeData[] = $rowData;
+                    } else {
+                        $rowData = [];
+                        $rowData[] = $this->revenuesKwh->project && !empty($this->revenuesKwh->project->ean)
+                            ? 'EAN: ' . $this->revenuesKwh->project->ean : '';
+                        $rowData[] = $this->revenuesKwh->project && !empty($this->revenuesKwh->project->ean_manager)
+                            ? 'EAN: ' . $this->revenuesKwh->project->ean_manager : '';
+                        $rowData[] = $this->formatDate($dateBegin);
+                        $rowData[] = $this->formatDate(Carbon::parse($dateBegin)->endOfYear());
+                        $rowData[] = $distribution->contact->full_name;
+                        $rowData[] = $distribution->tax_referral;
+                        $rowData[] = $distribution->postal_code;
+                        $rowData[] = $eanElectricity;
+                        $rowData[] = $esNumbersEndOfYear;
+                        $rowData[] = round($deliveredTotalEsEndOfYear, 2);
+                        $completeData[] = $rowData;
+
+                        $rowData = [];
+                        $rowData[] = $this->revenuesKwh->project && !empty($this->revenuesKwh->project->ean)
+                            ? 'EAN: ' . $this->revenuesKwh->project->ean : '';
+                        $rowData[] = $this->revenuesKwh->project && !empty($this->revenuesKwh->project->ean_manager)
+                            ? 'EAN: ' . $this->revenuesKwh->project->ean_manager : '';
+                        $rowData[] = $this->formatDate(Carbon::parse($this->revenuePartsKwh->date_end)->startOfYear());
+                        $rowData[] = $this->formatDate($this->revenuePartsKwh->date_end);
+                        $rowData[] = $distribution->contact->full_name;
+                        $rowData[] = $distribution->tax_referral;
+                        $rowData[] = $distribution->postal_code;
+                        $rowData[] = $eanElectricity;
+                        $rowData[] = $esNumbersNextYear;
+                        $rowData[] = round($deliveredTotalEsNextYear, 2);
+                        $completeData[] = $rowData;
+                    }
                 }
             }
         }
@@ -549,93 +639,176 @@ class EnergySupplierExcelHelper
                 'contact.person',
                 'contact.primaryEmailAddress',
                 'contact.primaryphoneNumber',
-                'revenue',
-                'contact.primaryContactEnergySupplier',
+                'revenuesKwh',
+                'distributionPartsKwh',
+                'contact.primaryAddress',
+                'participation.address',
             ]);
 
             foreach ($chunk as $distribution) {
 
-                if(Carbon::parse($this->projectRevenue->date_begin)->year == Carbon::parse($this->projectRevenue->date_end)->year) {
-                    $rowData = [];
-                    $rowData[] = $distribution->contact->number;
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->title ? $distribution->contact->person->title->name
-                        : '' : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
-                    if($distribution->contact->type_id == 'organisation'){
-                        $rowData[] = $distribution->contact->full_name;
-                    }else{
-                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
-                    }
-                    $rowData[] = $distribution->address;
-                    $rowData[] = $distribution->postal_code;
-                    $rowData[] = $distribution->city;
-                    $rowData[] = $distribution->energy_supplier_name;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = $distribution->contact->iban;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = $distribution->participations_amount;
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_begin);
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_end);
-                    $rowData[] = $distribution->delivered_total;
-                    $rowData[] = '';
-                    $completeData[] = $rowData;
-                }else {
-                    $rowData = [];
-                    $rowData[] = $distribution->contact->number;
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->title ? $distribution->contact->person->title->name
-                        : '' : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
-                    if($distribution->contact->type_id == 'organisation'){
-                        $rowData[] = $distribution->contact->full_name;
-                    }else{
-                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
-                    }
-                    $rowData[] = $distribution->address;
-                    $rowData[] = $distribution->postal_code;
-                    $rowData[] = $distribution->city;
-                    $rowData[] = $distribution->energy_supplier_name;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = $distribution->contact->iban;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = $distribution->participations_amount_end_calendar_year;
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_begin);
-                    $rowData[] = $this->formatDate(Carbon::parse($this->projectRevenue->date_begin)->endOfYear());
-                    $rowData[] = $distribution->delivered_total_last_es_end_calendar_year ?  $distribution->delivered_total_last_es_end_calendar_year : $distribution->delivered_total_end_calendar_year;
-                    $rowData[] = '';
-                    $completeData[] = $rowData;
+                if($distribution->participation && $distribution->participation->address){
+                    $participationAddress = $distribution->participation->address;
+                }else{
+                    $participationAddress = $distribution->contact->primaryAddress;
+                }
+                $eanElectricity = $distribution->ean_electricity && !empty($distribution->ean_electricity)
+                    ? 'EAN: ' . $distribution->ean_electricity
+                    : ( $participationAddress && !empty($participationAddress->ean_electricity)
+                        ? 'EAN: ' . $participationAddress->ean_electricity : '' );
+                $partsThisDistribution = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)->pluck('parts_id')->toArray();
+                $dateBeginFirst = RevenuePartsKwh::where('revenue_id', $this->revenuePartsKwh->revenue_id)->whereIn('id', $partsThisDistribution)->orderBy('date_begin')->first();
+                $dateBegin = $dateBeginFirst ? $dateBeginFirst->date_begin : $this->revenuesKwh->begin_date;
+                $dateBeginYear = Carbon::parse($dateBegin)->year;
+//                $partsUpToEndOfYearForTotal = $distribution->revenuesKwh->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+//                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+//                        $query->whereYear('date_end', $dateBeginYear);
+//                    });
+//                $totalEndOfYear = $partsUpToEndOfYearForTotal->get()->sum('delivered_kwh');
+//                $partsNextYearForTotal = $distribution->revenuesKwh->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+//                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+//                        $query->whereYear('date_begin', '>', $dateBeginYear);
+//                    });
+//                $totalNextYear = $partsNextYearForTotal->get()->sum('delivered_kwh');
 
-                    $rowData = [];
-                    $rowData[] = $distribution->contact->number;
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->title ? $distribution->contact->person->title->name
-                        : '' : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
-                    if($distribution->contact->type_id == 'organisation'){
-                        $rowData[] = $distribution->contact->full_name;
-                    }else{
-                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
+                $esNumbersEndOfYearArray = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_end', $dateBeginYear);
+                    })
+                    ->where(function ($query) {
+                        $query->whereNotNull('energy_supplier_number')
+                            ->orWhere('energy_supplier_number', '!=', '');
+                    })
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersEndOfYear = implode(',', array_unique($esNumbersEndOfYearArray));
+                $esNamesEndOfYearArray = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_end', $dateBeginYear);
+                    })
+                    ->where(function ($query) {
+                        $query->whereNotNull('energy_supplier_name')
+                            ->orWhere('energy_supplier_name', '!=', '');
+                    })
+                    ->pluck('energy_supplier_name')->toArray();
+                $esNamesEndOfYear = implode(',', array_unique($esNamesEndOfYearArray));
+                $deliveredTotalEsEndOfYear = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+                    ->join('revenue_parts_kwh', 'revenue_distribution_parts_kwh.parts_id', '=', 'revenue_parts_kwh.id')
+                    ->where('revenue_distribution_parts_kwh.es_id', $this->energySupplier->id)
+                    ->whereYear('revenue_parts_kwh.date_end', $dateBeginYear)
+                    ->sum('revenue_distribution_parts_kwh.delivered_kwh');
+                $partsEndOfYear = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+                    ->join('revenue_parts_kwh', 'revenue_distribution_parts_kwh.parts_id', '=', 'revenue_parts_kwh.id')
+                    ->where('revenue_distribution_parts_kwh.es_id', $this->energySupplier->id)
+                    ->whereYear('revenue_parts_kwh.date_end', $dateBeginYear)
+                    ->orderBy('revenue_parts_kwh.date_end', 'desc')
+                    ->first();
+                $participationsQuantityEndOfYear = $partsEndOfYear ? $partsEndOfYear->participations_quantity : 0;
+
+                $esNumbersNextYearArray = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_begin', '>', $dateBeginYear);
+                    })
+                    ->where(function ($query) {
+                        $query->whereNotNull('energy_supplier_number')
+                            ->orWhere('energy_supplier_number', '!=', '');
+                    })
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersNextYear = implode(',', array_unique($esNumbersNextYearArray));
+                $esNamesNextYearArray = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_begin', '>', $dateBeginYear);
+                    })
+                    ->where(function ($query) {
+                        $query->whereNotNull('energy_supplier_name')
+                            ->orWhere('energy_supplier_name', '!=', '');
+                    })
+                    ->pluck('energy_supplier_name')->toArray();
+                $esNamesNextYear = implode(',', array_unique($esNamesNextYearArray));
+                $deliveredTotalEsNextYear = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_begin', '>', $dateBeginYear);
+                    })
+                    ->sum('delivered_kwh');
+
+                if($deliveredTotalEsEndOfYear != 0
+                    || $deliveredTotalEsNextYear != 0
+                ) {
+                    if (Carbon::parse($dateBegin)->year == Carbon::parse($this->revenuePartsKwh->date_end)->year) {
+                        $rowData = [];
+                        $rowData[] = $distribution->contact->number;
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->title ? $distribution->contact->person->title->name
+                            : '' : '';
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
+                        if ($distribution->contact->type_id == 'organisation') {
+                            $rowData[] = $distribution->contact->full_name;
+                        } else {
+                            $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
+                        }
+                        $rowData[] = $distribution->address;
+                        $rowData[] = $distribution->postal_code;
+                        $rowData[] = $distribution->city;
+                        $rowData[] = $esNamesEndOfYear;
+                        $rowData[] = $esNumbersEndOfYear;
+                        $rowData[] = $distribution->contact->iban;
+                        $rowData[] = $eanElectricity;
+                        $rowData[] = $participationsQuantityEndOfYear;
+                        $rowData[] = $this->formatDate($dateBegin);
+                        $rowData[] = $this->formatDate($this->revenuePartsKwh->date_end);
+                        $rowData[] = round($deliveredTotalEsEndOfYear, 2);
+                        $rowData[] = '';
+                        $completeData[] = $rowData;
+                    } else {
+                        $rowData = [];
+                        $rowData[] = $distribution->contact->number;
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->title ? $distribution->contact->person->title->name
+                            : '' : '';
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
+                        if ($distribution->contact->type_id == 'organisation') {
+                            $rowData[] = $distribution->contact->full_name;
+                        } else {
+                            $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
+                        }
+                        $rowData[] = $distribution->address;
+                        $rowData[] = $distribution->postal_code;
+                        $rowData[] = $distribution->city;
+                        $rowData[] = $esNamesEndOfYear;
+                        $rowData[] = $esNumbersEndOfYear;
+                        $rowData[] = $distribution->contact->iban;
+                        $rowData[] = $eanElectricity;
+                        $rowData[] = $participationsQuantityEndOfYear;
+                        $rowData[] = $this->formatDate($dateBegin);
+                        $rowData[] = $this->formatDate(Carbon::parse($dateBegin)->endOfYear());
+                        $rowData[] = round($deliveredTotalEsEndOfYear, 2);
+                        $rowData[] = '';
+                        $completeData[] = $rowData;
+
+                        $rowData = [];
+                        $rowData[] = $distribution->contact->number;
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->title ? $distribution->contact->person->title->name
+                            : '' : '';
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
+                        if ($distribution->contact->type_id == 'organisation') {
+                            $rowData[] = $distribution->contact->full_name;
+                        } else {
+                            $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
+                        }
+                        $rowData[] = $distribution->address;
+                        $rowData[] = $distribution->postal_code;
+                        $rowData[] = $distribution->city;
+                        $rowData[] = $esNamesNextYear;
+                        $rowData[] = $esNumbersNextYear;
+                        $rowData[] = $distribution->contact->iban;
+                        $rowData[] = $eanElectricity;
+                        $rowData[] = $distribution->participations_quantity;
+                        $rowData[] = $this->formatDate(Carbon::parse($this->revenuePartsKwh->date_end)->startOfYear());
+                        $rowData[] = $this->formatDate($this->revenuePartsKwh->date_end);
+                        $rowData[] = round($deliveredTotalEsNextYear, 2);
+                        $rowData[] = '';
+                        $completeData[] = $rowData;
                     }
-                    $rowData[] = $distribution->address;
-                    $rowData[] = $distribution->postal_code;
-                    $rowData[] = $distribution->city;
-                    $rowData[] = $distribution->energy_supplier_name;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = $distribution->contact->iban;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = $distribution->participations_amount;
-                    $rowData[] = $this->formatDate(Carbon::parse($this->projectRevenue->date_end)->startOfYear());
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_end);
-                    $rowData[] = $distribution->delivered_total_last_es ?  ($distribution->delivered_total_last_es - $distribution->delivered_total_last_es_end_calendar_year) : ($distribution->delivered_total - $distribution->delivered_total_end_calendar_year);
-                    $rowData[] = '';
-                    $completeData[] = $rowData;
                 }
             }
         }
@@ -693,87 +866,170 @@ class EnergySupplierExcelHelper
                 'contact.person',
                 'contact.primaryEmailAddress',
                 'contact.primaryphoneNumber',
-                'revenue',
-                'contact.primaryContactEnergySupplier',
+                'revenuesKwh',
+                'distributionPartsKwh',
+                'contact.primaryAddress',
+                'participation.address',
             ]);
 
             foreach ($chunk as $distribution) {
 
-                if(Carbon::parse($this->projectRevenue->date_begin)->year == Carbon::parse($this->projectRevenue->date_end)->year) {
-                    $rowData = [];
-                    $rowData[] = $distribution->contact->number;
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->title ? $distribution->contact->person->title->name
-                        : '' : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
-                    if($distribution->contact->type_id == 'organisation'){
-                        $rowData[] = $distribution->contact->full_name;
-                    }else{
-                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
-                    }
-                    $rowData[] = $distribution->energy_supplier_name;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = $distribution->postal_code;
-                    $rowData[] = $distribution->street_number_addition ? $distribution->street_number . '-' . $distribution->street_number_addition : $distribution->street_number;
-                    $rowData[] = $distribution->city;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = $this->projectRevenue->project->name;
-                    $rowData[] = $distribution->participations_amount;
-                    $rowData[] = $distribution->delivered_total;
-                    $rowData[] = $distribution->delivered_total;
-                    $completeData[] = $rowData;
-                }else {
-                    $rowData = [];
-                    $rowData[] = $distribution->contact->number;
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->title ? $distribution->contact->person->title->name
-                        : '' : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
-                    if($distribution->contact->type_id == 'organisation'){
-                        $rowData[] = $distribution->contact->full_name;
-                    }else{
-                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
-                    }
-                    $rowData[] = $distribution->energy_supplier_name;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = $distribution->postal_code;
-                    $rowData[] = $distribution->street_number_addition ? $distribution->street_number . '-' . $distribution->street_number_addition : $distribution->street_number;
-                    $rowData[] = $distribution->city;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = $this->projectRevenue->project->name;
-                    $rowData[] = $distribution->participations_amount_end_calendar_year;
-                    $rowData[] = $distribution->delivered_total_last_es_end_calendar_year ?  $distribution->delivered_total_last_es_end_calendar_year : $distribution->delivered_total_end_calendar_year;
-                    $rowData[] = $distribution->delivered_total_last_es_end_calendar_year ?  $distribution->delivered_total_last_es_end_calendar_year : $distribution->delivered_total_end_calendar_year;
-                    $completeData[] = $rowData;
+                if($distribution->participation && $distribution->participation->address){
+                    $participationAddress = $distribution->participation->address;
+                }else{
+                    $participationAddress = $distribution->contact->primaryAddress;
+                }
+                $eanElectricity = $distribution->ean_electricity && !empty($distribution->ean_electricity)
+                    ? 'EAN: ' . $distribution->ean_electricity
+                    : ( $participationAddress && !empty($participationAddress->ean_electricity)
+                        ? 'EAN: ' . $participationAddress->ean_electricity : '' );
+                $partsThisDistribution = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)->pluck('parts_id')->toArray();
+                $dateBeginFirst = RevenuePartsKwh::where('revenue_id', $this->revenuePartsKwh->revenue_id)->whereIn('id', $partsThisDistribution)->orderBy('date_begin')->first();
+                $dateBegin = $dateBeginFirst ? $dateBeginFirst->date_begin : $this->revenuesKwh->begin_date;
+                $dateBeginYear = Carbon::parse($dateBegin)->year;
+//                $partsUpToEndOfYearForTotal = $distribution->revenuesKwh->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+//                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+//                        $query->whereYear('date_end', $dateBeginYear);
+//                    });
+//                $totalEndOfYear = $partsUpToEndOfYearForTotal->get()->sum('delivered_kwh');
+//                $partsNextYearForTotal = $distribution->revenuesKwh->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+//                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+//                        $query->whereYear('date_begin', '>', $dateBeginYear);
+//                    });
+//                $totalNextYear = $partsNextYearForTotal->get()->sum('delivered_kwh');
 
-                    $rowData = [];
-                    $rowData[] = $distribution->contact->number;
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->title ? $distribution->contact->person->title->name
-                        : '' : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
-                    if($distribution->contact->type_id == 'organisation'){
-                        $rowData[] = $distribution->contact->full_name;
-                    }else{
-                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
+                $esNumbersEndOfYearArray = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_end', $dateBeginYear);
+                    })
+                    ->where(function ($query) {
+                        $query->whereNotNull('energy_supplier_number')
+                            ->orWhere('energy_supplier_number', '!=', '');
+                    })
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersEndOfYear = implode(',', array_unique($esNumbersEndOfYearArray));
+                $esNamesEndOfYearArray = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_end', $dateBeginYear);
+                    })
+                    ->where(function ($query) {
+                        $query->whereNotNull('energy_supplier_name')
+                            ->orWhere('energy_supplier_name', '!=', '');
+                    })
+                    ->pluck('energy_supplier_name')->toArray();
+                $esNamesEndOfYear = implode(',', array_unique($esNamesEndOfYearArray));
+                $deliveredTotalEsEndOfYear = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+                    ->join('revenue_parts_kwh', 'revenue_distribution_parts_kwh.parts_id', '=', 'revenue_parts_kwh.id')
+                    ->where('revenue_distribution_parts_kwh.es_id', $this->energySupplier->id)
+                    ->whereYear('revenue_parts_kwh.date_end', $dateBeginYear)
+                    ->sum('revenue_distribution_parts_kwh.delivered_kwh');
+                $partsEndOfYear = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+                    ->join('revenue_parts_kwh', 'revenue_distribution_parts_kwh.parts_id', '=', 'revenue_parts_kwh.id')
+                    ->where('revenue_distribution_parts_kwh.es_id', $this->energySupplier->id)
+                    ->whereYear('revenue_parts_kwh.date_end', $dateBeginYear)
+                    ->orderBy('revenue_parts_kwh.date_end', 'desc')
+                    ->first();
+                $participationsQuantityEndOfYear = $partsEndOfYear ? $partsEndOfYear->participations_quantity : 0;
+
+                $esNumbersNextYearArray = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_begin', '>', $dateBeginYear);
+                    })
+                    ->where(function ($query) {
+                        $query->whereNotNull('energy_supplier_number')
+                            ->orWhere('energy_supplier_number', '!=', '');
+                    })
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersNextYear = implode(',', array_unique($esNumbersNextYearArray));
+                $esNamesNextYearArray = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_begin', '>', $dateBeginYear);
+                    })
+                    ->where(function ($query) {
+                        $query->whereNotNull('energy_supplier_name')
+                            ->orWhere('energy_supplier_name', '!=', '');
+                    })
+                    ->pluck('energy_supplier_name')->toArray();
+                $esNamesNextYear = implode(',', array_unique($esNamesNextYearArray));
+                $deliveredTotalEsNextYear = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_begin', '>', $dateBeginYear);
+                    })
+                    ->sum('delivered_kwh');
+
+                if($deliveredTotalEsEndOfYear != 0
+                    || $deliveredTotalEsNextYear != 0
+                ) {
+                    if (Carbon::parse($dateBegin)->year == Carbon::parse($this->revenuePartsKwh->date_end)->year) {
+                        $rowData = [];
+                        $rowData[] = $distribution->contact->number;
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->title ? $distribution->contact->person->title->name
+                            : '' : '';
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
+                        if ($distribution->contact->type_id == 'organisation') {
+                            $rowData[] = $distribution->contact->full_name;
+                        } else {
+                            $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
+                        }
+                        $rowData[] = $esNamesEndOfYear;
+                        $rowData[] = $esNumbersEndOfYear;
+                        $rowData[] = $distribution->postal_code;
+                        $rowData[] = $distribution->street_number_addition ? $distribution->street_number . '-' . $distribution->street_number_addition : $distribution->street_number;
+                        $rowData[] = $distribution->city;
+                        $rowData[] = $eanElectricity;
+                        $rowData[] = $this->revenuesKwh->project->name;
+                        $rowData[] = $participationsQuantityEndOfYear;
+                        $rowData[] = round($deliveredTotalEsEndOfYear, 2);
+                        $rowData[] = round($deliveredTotalEsEndOfYear, 2);
+                        $completeData[] = $rowData;
+                    } else {
+                        $rowData = [];
+                        $rowData[] = $distribution->contact->number;
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->title ? $distribution->contact->person->title->name
+                            : '' : '';
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
+                        if ($distribution->contact->type_id == 'organisation') {
+                            $rowData[] = $distribution->contact->full_name;
+                        } else {
+                            $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
+                        }
+                        $rowData[] = $esNamesEndOfYear;
+                        $rowData[] = $esNumbersEndOfYear;
+                        $rowData[] = $distribution->postal_code;
+                        $rowData[] = $distribution->street_number_addition ? $distribution->street_number . '-' . $distribution->street_number_addition : $distribution->street_number;
+                        $rowData[] = $distribution->city;
+                        $rowData[] = $eanElectricity;
+                        $rowData[] = $this->revenuesKwh->project->name;
+                        $rowData[] = $participationsQuantityEndOfYear;
+                        $rowData[] = round($deliveredTotalEsEndOfYear, 2);
+                        $rowData[] = round($deliveredTotalEsEndOfYear, 2);
+                        $completeData[] = $rowData;
+
+                        $rowData = [];
+                        $rowData[] = $distribution->contact->number;
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->title ? $distribution->contact->person->title->name
+                            : '' : '';
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
+                        if ($distribution->contact->type_id == 'organisation') {
+                            $rowData[] = $distribution->contact->full_name;
+                        } else {
+                            $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
+                        }
+                        $rowData[] = $esNamesNextYear;
+                        $rowData[] = $esNumbersNextYear;
+                        $rowData[] = $distribution->postal_code;
+                        $rowData[] = $distribution->street_number_addition ? $distribution->street_number . '-' . $distribution->street_number_addition : $distribution->street_number;
+                        $rowData[] = $distribution->city;
+                        $rowData[] = $eanElectricity;
+                        $rowData[] = $this->revenuesKwh->project->name;
+                        $rowData[] = $distribution->participations_quantity;
+                        $rowData[] = round($deliveredTotalEsNextYear, 2);
+                        $rowData[] = round($deliveredTotalEsNextYear, 2);
+                        $completeData[] = $rowData;
                     }
-                    $rowData[] = $distribution->energy_supplier_name;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = $distribution->postal_code;
-                    $rowData[] = $distribution->street_number_addition ? $distribution->street_number . '-' . $distribution->street_number_addition : $distribution->street_number;
-                    $rowData[] = $distribution->city;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = $this->projectRevenue->project->name;
-                    $rowData[] = $distribution->participations_amount;
-                    $rowData[] = $distribution->delivered_total_last_es ?  ($distribution->delivered_total_last_es - $distribution->delivered_total_last_es_end_calendar_year) : ($distribution->delivered_total - $distribution->delivered_total_end_calendar_year);
-                    $rowData[] = $distribution->delivered_total_last_es ?  ($distribution->delivered_total_last_es - $distribution->delivered_total_last_es_end_calendar_year) : ($distribution->delivered_total - $distribution->delivered_total_end_calendar_year);
-                    $completeData[] = $rowData;
                 }
             }
         }
@@ -850,190 +1106,248 @@ class EnergySupplierExcelHelper
                 'contact.person',
                 'contact.primaryEmailAddress',
                 'contact.primaryphoneNumber',
-                'revenue',
-                'contact.primaryContactEnergySupplier',
+                'revenuesKwh',
+                'distributionPartsKwh',
+                'contact.primaryAddress',
+                'participation.address',
             ]);
 
             foreach ($chunk as $distribution) {
 
-                if(Carbon::parse($this->projectRevenue->date_begin)->year == Carbon::parse($this->projectRevenue->date_end)->year) {
-                    $totalProduction = ($this->projectRevenue->kwh_end ? $this->projectRevenue->kwh_end : 0) - ($this->projectRevenue->kwh_start ? $this->projectRevenue->kwh_start : 0);
+                if($distribution->participation && $distribution->participation->address){
+                    $participationAddress = $distribution->participation->address;
+                }else{
+                    $participationAddress = $distribution->contact->primaryAddress;
+                }
+                $eanElectricity = $distribution->ean_electricity && !empty($distribution->ean_electricity)
+                    ? 'EAN: ' . $distribution->ean_electricity
+                    : ( $participationAddress && !empty($participationAddress->ean_electricity)
+                        ? 'EAN: ' . $participationAddress->ean_electricity : '' );
+                $partsThisDistribution = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)->pluck('parts_id')->toArray();
+                $dateBeginFirst = RevenuePartsKwh::where('revenue_id', $this->revenuePartsKwh->revenue_id)->whereIn('id', $partsThisDistribution)->orderBy('date_begin')->first();
+                $dateBegin = $dateBeginFirst ? $dateBeginFirst->date_begin : $this->revenuesKwh->begin_date;
+                $dateBeginYear = Carbon::parse($dateBegin)->year;
+                $partsUpToEndOfYearForTotal = $distribution->revenuesKwh->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_end', $dateBeginYear);
+                    });
+                $totalEndOfYear = $partsUpToEndOfYearForTotal->get()->sum('delivered_kwh');
+                $partsNextYearForTotal = $distribution->revenuesKwh->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_begin', '>', $dateBeginYear);
+                    });
+                $totalNextYear = $partsNextYearForTotal->get()->sum('delivered_kwh');
 
-                    $rowData = [];
-                    $rowData[] = $distribution->contact->full_name;
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->initials : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
-                    $rowData[] = $distribution->street;
-                    $rowData[] = $distribution->street_number_addition ? $distribution->street_number . '-' . $distribution->street_number_addition : $distribution->street_number;
-                    $rowData[] = $distribution->address;
-                    $rowData[] = $distribution->postal_code;
-                    if($distribution->country != '' && $distribution->country != 'Nederland')
-                    {
-                        $rowData[] = '';
-                        $rowData[] = '';
-                    }else {
-                        $rowData[] = $distribution->postal_code_numbers = strlen($distribution->postal_code) > 3
-                            ? substr($distribution->postal_code, 0, 4) : '';
-                        $rowData[] = $distribution->postal_code_letters
-                            = strlen($distribution->postal_code) == 6
-                            ? substr($distribution->postal_code, 4)
-                            : (strlen($distribution->postal_code) == 7
-                                ? substr($distribution->postal_code, 5)
-                                : '');
-                    }
-                    $rowData[] = $distribution->city;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = $distribution->contact->primaryEmailAddress
-                        ? $distribution->contact->primaryEmailAddress->email : '';
-                    $rowData[] = $distribution->contact->primaryphoneNumber
-                        ? $distribution->contact->primaryphoneNumber->number : '';
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_begin);
-                    $rowData[] = '';
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_end);
-                    $rowData[] = $distribution->participations_amount;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = $distribution->contact->number;
-                    $rowData[] = $distribution->delivered_total;
-                    $rowData[] = \Config::get('app.name');
-                    $rowData[] = $this->projectRevenue->project->name;
-                    $rowData[] = $totalProduction;
-                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean)
-                        ? 'EAN: ' . $this->projectRevenue->project->ean : '';
-                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean_manager)
-                        ? 'EAN: ' . $this->projectRevenue->project->ean_manager : '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $completeData[] = $rowData;
-                }else {
-                    $kwhEndCalendarYear = ($this->projectRevenue->kwh_end_calendar_year_high ? $this->projectRevenue->kwh_end_calendar_year_high : 0) +
-                        ($this->projectRevenue->kwh_end_calendar_year_low ? $this->projectRevenue->kwh_end_calendar_year_low : 0);
-                    $totalProductionEndCalendarYear = $kwhEndCalendarYear - ($this->projectRevenue->kwh_start ? $this->projectRevenue->kwh_start : 0);
-                    $totalProductionNextYear = ($this->projectRevenue->kwh_end ? $this->projectRevenue->kwh_end : 0) - $kwhEndCalendarYear;
+                $esNumbersEndOfYearArray = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_end', $dateBeginYear);
+                    })
+                    ->where(function ($query) {
+                        $query->whereNotNull('energy_supplier_number')
+                            ->orWhere('energy_supplier_number', '!=', '');
+                    })
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersEndOfYear = implode(',', array_unique($esNumbersEndOfYearArray));
+                $deliveredTotalEsEndOfYear = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+                    ->join('revenue_parts_kwh', 'revenue_distribution_parts_kwh.parts_id', '=', 'revenue_parts_kwh.id')
+                    ->where('revenue_distribution_parts_kwh.es_id', $this->energySupplier->id)
+                    ->whereYear('revenue_parts_kwh.date_end', $dateBeginYear)
+                    ->sum('revenue_distribution_parts_kwh.delivered_kwh');
+                $partsEndOfYear = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+                    ->join('revenue_parts_kwh', 'revenue_distribution_parts_kwh.parts_id', '=', 'revenue_parts_kwh.id')
+                    ->where('revenue_distribution_parts_kwh.es_id', $this->energySupplier->id)
+                    ->whereYear('revenue_parts_kwh.date_end', $dateBeginYear)
+                    ->orderBy('revenue_parts_kwh.date_end', 'desc')
+                    ->first();
+                $participationsQuantityEndOfYear = $partsEndOfYear ? $partsEndOfYear->participations_quantity : 0;
 
-                    $rowData = [];
-                    $rowData[] = $distribution->contact->full_name;
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->initials : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
-                    $rowData[] = $distribution->street;
-                    $rowData[] = $distribution->street_number_addition ? $distribution->street_number . '-' . $distribution->street_number_addition : $distribution->street_number;
-                    $rowData[] = $distribution->address;
-                    $rowData[] = $distribution->postal_code;
-                    if($distribution->country != '' && $distribution->country != 'Nederland')
-                    {
-                        $rowData[] = '';
-                        $rowData[] = '';
-                    }else {
-                        $rowData[] = $distribution->postal_code_numbers = strlen($distribution->postal_code) > 3
-                            ? substr($distribution->postal_code, 0, 4) : '';
-                        $rowData[] = $distribution->postal_code_letters
-                            = strlen($distribution->postal_code) == 6
-                            ? substr($distribution->postal_code, 4)
-                            : (strlen($distribution->postal_code) == 7
-                                ? substr($distribution->postal_code, 5)
-                                : '');
-                    }
-                    $rowData[] = $distribution->city;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = $distribution->contact->primaryEmailAddress
-                        ? $distribution->contact->primaryEmailAddress->email : '';
-                    $rowData[] = $distribution->contact->primaryphoneNumber
-                        ? $distribution->contact->primaryphoneNumber->number : '';
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_begin);
-                    $rowData[] = '';
-                    $rowData[] = $this->formatDate(Carbon::parse($this->projectRevenue->date_begin)->endOfYear());
-                    $rowData[] = $distribution->participations_amount_end_calendar_year;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = $distribution->contact->number;
-                    $rowData[] = $distribution->delivered_total_last_es_end_calendar_year ?  $distribution->delivered_total_last_es_end_calendar_year : $distribution->delivered_total_end_calendar_year;
-                    $rowData[] = \Config::get('app.name');
-                    $rowData[] = $this->projectRevenue->project->name;
-                    $rowData[] = $totalProductionEndCalendarYear;
-                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean)
-                        ? 'EAN: ' . $this->projectRevenue->project->ean : '';
-                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean_manager)
-                        ? 'EAN: ' . $this->projectRevenue->project->ean_manager : '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $completeData[] = $rowData;
+                $esNumbersNextYearArray = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_begin', '>', $dateBeginYear);
+                    })
+                    ->where(function ($query) {
+                        $query->whereNotNull('energy_supplier_number')
+                            ->orWhere('energy_supplier_number', '!=', '');
+                    })
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersNextYear = implode(',', array_unique($esNumbersNextYearArray));
+                $deliveredTotalEsNextYear = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_begin', '>', $dateBeginYear);
+                    })
+                    ->sum('delivered_kwh');
 
-                    $rowData = [];
-                    $rowData[] = $distribution->contact->full_name;
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->initials : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
-                    $rowData[] = $distribution->street;
-                    $rowData[] = $distribution->street_number_addition ? $distribution->street_number . '-' . $distribution->street_number_addition : $distribution->street_number;
-                    $rowData[] = $distribution->address;
-                    $rowData[] = $distribution->postal_code;
-                    if($distribution->country != '' && $distribution->country != 'Nederland')
-                    {
+                if($deliveredTotalEsEndOfYear != 0
+                    || $deliveredTotalEsNextYear != 0
+                ) {
+                    if (Carbon::parse($dateBegin)->year == Carbon::parse($this->revenuePartsKwh->date_end)->year) {
+                        $rowData = [];
+                        $rowData[] = $distribution->contact->full_name;
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->initials : '';
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
+                        $rowData[] = $distribution->street;
+                        $rowData[] = $distribution->street_number_addition ? $distribution->street_number . '-' . $distribution->street_number_addition : $distribution->street_number;
+                        $rowData[] = $distribution->address;
+                        $rowData[] = $distribution->postal_code;
+                        if ($distribution->country != '' && $distribution->country != 'Nederland') {
+                            $rowData[] = '';
+                            $rowData[] = '';
+                        } else {
+                            $rowData[] = $distribution->postal_code_numbers = strlen($distribution->postal_code) > 3
+                                ? substr($distribution->postal_code, 0, 4) : '';
+                            $rowData[] = $distribution->postal_code_letters
+                                = strlen($distribution->postal_code) == 6
+                                ? substr($distribution->postal_code, 4)
+                                : (strlen($distribution->postal_code) == 7
+                                    ? substr($distribution->postal_code, 5)
+                                    : '');
+                        }
+                        $rowData[] = $distribution->city;
+                        $rowData[] = $eanElectricity;
+                        $rowData[] = $distribution->contact->primaryEmailAddress
+                            ? $distribution->contact->primaryEmailAddress->email : '';
+                        $rowData[] = $distribution->contact->primaryphoneNumber
+                            ? $distribution->contact->primaryphoneNumber->number : '';
+                        $rowData[] = $this->formatDate($dateBegin);
+                        $rowData[] = '';
+                        $rowData[] = $this->formatDate($this->revenuePartsKwh->date_end);
+                        $rowData[] = $participationsQuantityEndOfYear;
+                        $rowData[] = $esNumbersEndOfYear;
+                        $rowData[] = $distribution->contact->number;
+                        $rowData[] = round($deliveredTotalEsEndOfYear, 2);
+                        $rowData[] = \Config::get('app.name');
+                        $rowData[] = $this->revenuesKwh->project->name;
+                        $rowData[] = round($totalEndOfYear, 2);
+                        $rowData[] = $this->revenuesKwh->project && !empty($this->revenuesKwh->project->ean)
+                            ? 'EAN: ' . $this->revenuesKwh->project->ean : '';
+                        $rowData[] = $this->revenuesKwh->project && !empty($this->revenuesKwh->project->ean_manager)
+                            ? 'EAN: ' . $this->revenuesKwh->project->ean_manager : '';
                         $rowData[] = '';
                         $rowData[] = '';
-                    }else {
-                        $rowData[] = $distribution->postal_code_numbers = strlen($distribution->postal_code) > 3
-                            ? substr($distribution->postal_code, 0, 4) : '';
-                        $rowData[] = $distribution->postal_code_letters
-                            = strlen($distribution->postal_code) == 6
-                            ? substr($distribution->postal_code, 4)
-                            : (strlen($distribution->postal_code) == 7
-                                ? substr($distribution->postal_code, 5)
-                                : '');
+                        $rowData[] = '';
+                        $rowData[] = '';
+                        $rowData[] = '';
+                        $rowData[] = '';
+                        $rowData[] = '';
+                        $rowData[] = '';
+                        $rowData[] = '';
+                        $completeData[] = $rowData;
+                    } else {
+                        $kwhEndCalendarYear = ($this->revenuesKwh->kwh_end_calendar_year_high ? $this->revenuesKwh->kwh_end_calendar_year_high : 0) +
+                            ($this->revenuesKwh->kwh_end_calendar_year_low ? $this->revenuesKwh->kwh_end_calendar_year_low : 0);
+                        $totalProductionEndCalendarYear = $kwhEndCalendarYear - ($this->revenuesKwh->kwh_start ? $this->revenuesKwh->kwh_start : 0);
+                        $totalProductionNextYear = ($this->revenuesKwh->kwh_end ? $this->revenuesKwh->kwh_end : 0) - $kwhEndCalendarYear;
+
+                        $rowData = [];
+                        $rowData[] = $distribution->contact->full_name;
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->initials : '';
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
+                        $rowData[] = $distribution->street;
+                        $rowData[] = $distribution->street_number_addition ? $distribution->street_number . '-' . $distribution->street_number_addition : $distribution->street_number;
+                        $rowData[] = $distribution->address;
+                        $rowData[] = $distribution->postal_code;
+                        if ($distribution->country != '' && $distribution->country != 'Nederland') {
+                            $rowData[] = '';
+                            $rowData[] = '';
+                        } else {
+                            $rowData[] = $distribution->postal_code_numbers = strlen($distribution->postal_code) > 3
+                                ? substr($distribution->postal_code, 0, 4) : '';
+                            $rowData[] = $distribution->postal_code_letters
+                                = strlen($distribution->postal_code) == 6
+                                ? substr($distribution->postal_code, 4)
+                                : (strlen($distribution->postal_code) == 7
+                                    ? substr($distribution->postal_code, 5)
+                                    : '');
+                        }
+                        $rowData[] = $distribution->city;
+                        $rowData[] = $eanElectricity;
+                        $rowData[] = $distribution->contact->primaryEmailAddress
+                            ? $distribution->contact->primaryEmailAddress->email : '';
+                        $rowData[] = $distribution->contact->primaryphoneNumber
+                            ? $distribution->contact->primaryphoneNumber->number : '';
+                        $rowData[] = $this->formatDate($dateBegin);
+                        $rowData[] = '';
+                        $rowData[] = $this->formatDate(Carbon::parse($dateBegin)->endOfYear());
+                        $rowData[] = $participationsQuantityEndOfYear;
+                        $rowData[] = $esNumbersEndOfYear;
+                        $rowData[] = $distribution->contact->number;
+                        $rowData[] = round($deliveredTotalEsEndOfYear, 2);
+                        $rowData[] = \Config::get('app.name');
+                        $rowData[] = $this->revenuesKwh->project->name;
+                        $rowData[] = round($totalEndOfYear, 2);
+                        $rowData[] = $this->revenuesKwh->project && !empty($this->revenuesKwh->project->ean)
+                            ? 'EAN: ' . $this->revenuesKwh->project->ean : '';
+                        $rowData[] = $this->revenuesKwh->project && !empty($this->revenuesKwh->project->ean_manager)
+                            ? 'EAN: ' . $this->revenuesKwh->project->ean_manager : '';
+                        $rowData[] = '';
+                        $rowData[] = '';
+                        $rowData[] = '';
+                        $rowData[] = '';
+                        $rowData[] = '';
+                        $rowData[] = '';
+                        $rowData[] = '';
+                        $rowData[] = '';
+                        $rowData[] = '';
+                        $completeData[] = $rowData;
+
+                        $rowData = [];
+                        $rowData[] = $distribution->contact->full_name;
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->initials : '';
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
+                        $rowData[] = $distribution->street;
+                        $rowData[] = $distribution->street_number_addition ? $distribution->street_number . '-' . $distribution->street_number_addition : $distribution->street_number;
+                        $rowData[] = $distribution->address;
+                        $rowData[] = $distribution->postal_code;
+                        if ($distribution->country != '' && $distribution->country != 'Nederland') {
+                            $rowData[] = '';
+                            $rowData[] = '';
+                        } else {
+                            $rowData[] = $distribution->postal_code_numbers = strlen($distribution->postal_code) > 3
+                                ? substr($distribution->postal_code, 0, 4) : '';
+                            $rowData[] = $distribution->postal_code_letters
+                                = strlen($distribution->postal_code) == 6
+                                ? substr($distribution->postal_code, 4)
+                                : (strlen($distribution->postal_code) == 7
+                                    ? substr($distribution->postal_code, 5)
+                                    : '');
+                        }
+                        $rowData[] = $distribution->city;
+                        $rowData[] = $eanElectricity;
+                        $rowData[] = $distribution->contact->primaryEmailAddress
+                            ? $distribution->contact->primaryEmailAddress->email : '';
+                        $rowData[] = $distribution->contact->primaryphoneNumber
+                            ? $distribution->contact->primaryphoneNumber->number : '';
+                        $rowData[] = $this->formatDate(Carbon::parse($this->revenuePartsKwh->date_end)->startOfYear());
+                        $rowData[] = '';
+                        $rowData[] = $this->formatDate($this->revenuePartsKwh->date_end);
+                        $rowData[] = $distribution->participations_quantity;
+                        $rowData[] = $esNumbersNextYear;
+                        $rowData[] = $distribution->contact->number;
+                        $rowData[] = round($deliveredTotalEsNextYear, 2);
+                        $rowData[] = \Config::get('app.name');
+                        $rowData[] = $this->revenuesKwh->project->name;
+                        $rowData[] = round($totalNextYear, 2);
+                        $rowData[] = $this->revenuesKwh->project && !empty($this->revenuesKwh->project->ean)
+                            ? 'EAN: ' . $this->revenuesKwh->project->ean : '';
+                        $rowData[] = $this->revenuesKwh->project && !empty($this->revenuesKwh->project->ean_manager)
+                            ? 'EAN: ' . $this->revenuesKwh->project->ean_manager : '';
+                        $rowData[] = '';
+                        $rowData[] = '';
+                        $rowData[] = '';
+                        $rowData[] = '';
+                        $rowData[] = '';
+                        $rowData[] = '';
+                        $rowData[] = '';
+                        $rowData[] = '';
+                        $rowData[] = '';
+                        $completeData[] = $rowData;
                     }
-                    $rowData[] = $distribution->city;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = $distribution->contact->primaryEmailAddress
-                        ? $distribution->contact->primaryEmailAddress->email : '';
-                    $rowData[] = $distribution->contact->primaryphoneNumber
-                        ? $distribution->contact->primaryphoneNumber->number : '';
-                    $rowData[] = $this->formatDate(Carbon::parse($this->projectRevenue->date_end)->startOfYear());
-                    $rowData[] = '';
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_end);
-                    $rowData[] = $distribution->participations_amount;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = $distribution->contact->number;
-                    $rowData[] = $distribution->delivered_total_last_es ?  ($distribution->delivered_total_last_es - $distribution->delivered_total_last_es_end_calendar_year) : ($distribution->delivered_total - $distribution->delivered_total_end_calendar_year);
-                    $rowData[] = \Config::get('app.name');
-                    $rowData[] = $this->projectRevenue->project->name;
-                    $rowData[] = $totalProductionNextYear;
-                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean)
-                        ? 'EAN: ' . $this->projectRevenue->project->ean : '';
-                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean_manager)
-                        ? 'EAN: ' . $this->projectRevenue->project->ean_manager : '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $rowData[] = '';
-                    $completeData[] = $rowData;
                 }
             }
         }
@@ -1110,71 +1424,138 @@ class EnergySupplierExcelHelper
 
         foreach ($this->distributions->chunk(500) as $chunk) {
             $chunk->load([
-                'revenue',
-                'contact.primaryContactEnergySupplier',
+                'contact.person',
+                'contact.primaryEmailAddress',
+                'contact.primaryphoneNumber',
+                'revenuesKwh',
+                'distributionPartsKwh',
+                'contact.primaryAddress',
+                'participation.address',
             ]);
 
             foreach ($chunk as $distribution) {
-                if(Carbon::parse($this->projectRevenue->date_begin)->year == Carbon::parse($this->projectRevenue->date_end)->year) {
-                    $rowData = [];
-                    ++$this->counter;
-                    $rowData[] = $this->counter;
-                    $rowData[] = $distribution->contact->full_name;
-                    $rowData[] = str_replace(' ', '', $distribution->postal_code);
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = $this->formatDate(new Carbon('now'));
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_begin);
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_end);
-                    $rowData[] = $distribution->participations_amount;
-                    $rowData[] = '';
-                    $rowData[] = $distribution->delivered_total_last_es ?  $distribution->delivered_total_last_es : $distribution->delivered_total;
-                    $rowData[] = $this->fileName;
-                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean)
-                        ? 'EAN: ' . $this->projectRevenue->project->ean : '';
-                    $completeData[] = $rowData;
-                } else {
-                    $rowData = [];
-                    ++$this->counter;
-                    $rowData[] = $this->counter;
-                    $rowData[] = $distribution->contact->full_name;
-                    $rowData[] = str_replace(' ', '', $distribution->postal_code);
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = $this->formatDate(new Carbon('now'));
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_begin);
-                    $rowData[] = $this->formatDate(Carbon::parse($this->projectRevenue->date_begin)->endOfYear());
-                    $rowData[] = $distribution->participations_amount_end_calendar_year;
-                    $rowData[] = '';
-                    $rowData[] = $distribution->delivered_total_last_es_end_calendar_year ?  $distribution->delivered_total_last_es_end_calendar_year : $distribution->delivered_total_end_calendar_year;
-                    $rowData[] = $this->fileName;
-                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean)
-                        ? 'EAN: ' . $this->projectRevenue->project->ean : '';
-                    $completeData[] = $rowData;
 
-                    $rowData = [];
-                    ++$this->counter;
-                    $rowData[] = $this->counter;
-                    $rowData[] = $distribution->contact->full_name;
-                    $rowData[] = str_replace(' ', '', $distribution->postal_code);
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = $this->formatDate(new Carbon('now'));
-                    $rowData[] = $this->formatDate(Carbon::parse($this->projectRevenue->date_end)->startOfYear());
-                    $rowData[] = $this->formatDate($this->projectRevenue->date_end);
-                    $rowData[] = $distribution->participations_amount;
-                    $rowData[] = '';
-                    $rowData[] = $distribution->delivered_total_last_es ?  ($distribution->delivered_total_last_es - $distribution->delivered_total_last_es_end_calendar_year) : ($distribution->delivered_total - $distribution->delivered_total_end_calendar_year);
-                    $rowData[] = $this->fileName;
-                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean)
-                        ? 'EAN: ' . $this->projectRevenue->project->ean : '';
-                    $completeData[] = $rowData;
+                if($distribution->participation && $distribution->participation->address){
+                    $participationAddress = $distribution->participation->address;
+                }else{
+                    $participationAddress = $distribution->contact->primaryAddress;
+                }
+                $eanElectricity = $distribution->ean_electricity && !empty($distribution->ean_electricity)
+                    ? 'EAN: ' . $distribution->ean_electricity
+                    : ( $participationAddress && !empty($participationAddress->ean_electricity)
+                        ? 'EAN: ' . $participationAddress->ean_electricity : '' );
+                $partsThisDistribution = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)->pluck('parts_id')->toArray();
+                $dateBeginFirst = RevenuePartsKwh::where('revenue_id', $this->revenuePartsKwh->revenue_id)->whereIn('id', $partsThisDistribution)->orderBy('date_begin')->first();
+                $dateBegin = $dateBeginFirst ? $dateBeginFirst->date_begin : $this->revenuesKwh->begin_date;
+                $dateBeginYear = Carbon::parse($dateBegin)->year;
+                $partsUpToEndOfYearForTotal = $distribution->revenuesKwh->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_end', $dateBeginYear);
+                    });
+                $totalEndOfYear = $partsUpToEndOfYearForTotal->get()->sum('delivered_kwh');
+                $partsNextYearForTotal = $distribution->revenuesKwh->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_begin', '>', $dateBeginYear);
+                    });
+                $totalNextYear = $partsNextYearForTotal->get()->sum('delivered_kwh');
+
+                $esNumbersEndOfYearArray = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_end', $dateBeginYear);
+                    })
+                    ->where(function ($query) {
+                        $query->whereNotNull('energy_supplier_number')
+                            ->orWhere('energy_supplier_number', '!=', '');
+                    })
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersEndOfYear = implode(',', array_unique($esNumbersEndOfYearArray));
+                $deliveredTotalEsEndOfYear = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+                    ->join('revenue_parts_kwh', 'revenue_distribution_parts_kwh.parts_id', '=', 'revenue_parts_kwh.id')
+                    ->where('revenue_distribution_parts_kwh.es_id', $this->energySupplier->id)
+                    ->whereYear('revenue_parts_kwh.date_end', $dateBeginYear)
+                    ->sum('revenue_distribution_parts_kwh.delivered_kwh');
+                $partsEndOfYear = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+                    ->join('revenue_parts_kwh', 'revenue_distribution_parts_kwh.parts_id', '=', 'revenue_parts_kwh.id')
+                    ->where('revenue_distribution_parts_kwh.es_id', $this->energySupplier->id)
+                    ->whereYear('revenue_parts_kwh.date_end', $dateBeginYear)
+                    ->orderBy('revenue_parts_kwh.date_end', 'desc')
+                    ->first();
+                $participationsQuantityEndOfYear = $partsEndOfYear ? $partsEndOfYear->participations_quantity : 0;
+
+                $esNumbersNextYearArray = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_begin', '>', $dateBeginYear);
+                    })
+                    ->where(function ($query) {
+                        $query->whereNotNull('energy_supplier_number')
+                            ->orWhere('energy_supplier_number', '!=', '');
+                    })
+                    ->pluck('energy_supplier_number')->toArray();
+                $esNumbersNextYear = implode(',', array_unique($esNumbersNextYearArray));
+                $deliveredTotalEsNextYear = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')->where('es_id', $this->energySupplier->id)
+                    ->whereHas('partsKwh', function ($query) use($dateBeginYear) {
+                        $query->whereYear('date_begin', '>', $dateBeginYear);
+                    })
+                    ->sum('delivered_kwh');
+
+                if($deliveredTotalEsEndOfYear != 0
+                    || $deliveredTotalEsNextYear != 0
+                ) {
+                    if (Carbon::parse($dateBegin)->year == Carbon::parse($this->revenuePartsKwh->date_end)->year) {
+                        $rowData = [];
+                        ++$this->counter;
+                        $rowData[] = $this->counter;
+                        $rowData[] = $distribution->contact->full_name;
+                        $rowData[] = str_replace(' ', '', $distribution->postal_code);
+                        $rowData[] = $esNumbersEndOfYear;
+                        $rowData[] = $eanElectricity;
+                        $rowData[] = $this->formatDate(new Carbon('now'));
+                        $rowData[] = $this->formatDate($dateBegin);
+                        $rowData[] = $this->formatDate($this->revenuePartsKwh->date_end);
+                        $rowData[] = $participationsQuantityEndOfYear;
+                        $rowData[] = '';
+                        $rowData[] = round($deliveredTotalEsEndOfYear, 2);
+                        $rowData[] = $this->fileName;
+                        $rowData[] = $this->revenuesKwh->project && !empty($this->revenuesKwh->project->ean)
+                            ? 'EAN: ' . $this->revenuesKwh->project->ean : '';
+                        $completeData[] = $rowData;
+                    } else {
+                        $rowData = [];
+                        ++$this->counter;
+                        $rowData[] = $this->counter;
+                        $rowData[] = $distribution->contact->full_name;
+                        $rowData[] = str_replace(' ', '', $distribution->postal_code);
+                        $rowData[] = $esNumbersEndOfYear;
+                        $rowData[] = $eanElectricity;
+                        $rowData[] = $this->formatDate(new Carbon('now'));
+                        $rowData[] = $this->formatDate($dateBegin);
+                        $rowData[] = $this->formatDate(Carbon::parse($dateBegin)->endOfYear());
+                        $rowData[] = $participationsQuantityEndOfYear;
+                        $rowData[] = '';
+                        $rowData[] = round($deliveredTotalEsEndOfYear, 2);
+                        $rowData[] = $this->fileName;
+                        $rowData[] = $this->revenuesKwh->project && !empty($this->revenuesKwh->project->ean)
+                            ? 'EAN: ' . $this->revenuesKwh->project->ean : '';
+                        $completeData[] = $rowData;
+
+                        $rowData = [];
+                        ++$this->counter;
+                        $rowData[] = $this->counter;
+                        $rowData[] = $distribution->contact->full_name;
+                        $rowData[] = str_replace(' ', '', $distribution->postal_code);
+                        $rowData[] = $esNumbersNextYear;
+                        $rowData[] = $eanElectricity;
+                        $rowData[] = $this->formatDate(new Carbon('now'));
+                        $rowData[] = $this->formatDate(Carbon::parse($this->revenuePartsKwh->date_end)->startOfYear());
+                        $rowData[] = $this->formatDate($this->revenuePartsKwh->date_end);
+                        $rowData[] = $distribution->participations_quantity;
+                        $rowData[] = '';
+                        $rowData[] = round($deliveredTotalEsNextYear, 2);
+                        $rowData[] = $this->fileName;
+                        $rowData[] = $this->revenuesKwh->project && !empty($this->revenuesKwh->project->ean)
+                            ? 'EAN: ' . $this->revenuesKwh->project->ean : '';
+                        $completeData[] = $rowData;
+                    }
                 }
             }
         }

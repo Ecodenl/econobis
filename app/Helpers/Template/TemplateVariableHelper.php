@@ -10,6 +10,8 @@ namespace App\Helpers\Template;
 
 
 use App\Eco\Document\Document;
+use App\Eco\Project\ProjectRevenueDistributionType;
+use App\Eco\RevenuesKwh\RevenueValuesKwh;
 use App\Helpers\Settings\PortalSettings;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
@@ -132,6 +134,18 @@ class TemplateVariableHelper
             case 'ProjectRevenueDistribution':
                 return TemplateVariableHelper::getProjectRevenueDistributionVar($model, $varname);
                 break;
+            case 'RevenuesKwh':
+                return TemplateVariableHelper::getRevenuesKwhVar($model, $varname);
+                break;
+            case 'RevenuePartsKwh':
+                return TemplateVariableHelper::getRevenuePartsKwhVar($model, $varname);
+                break;
+            case 'RevenueDistributionKwh':
+                return TemplateVariableHelper::getRevenueDistributionKwhVar($model, $varname);
+                break;
+            case 'RevenueDistributionPartsKwh':
+                return TemplateVariableHelper::getRevenueDistributionPartsKwhVar($model, $varname);
+                break;
             case 'Campaign':
                 return TemplateVariableHelper::getCampaignVar($model, $varname);
                 break;
@@ -248,19 +262,22 @@ class TemplateVariableHelper
                 return optional($model->primaryEmailAddress)->email;
                 break;
             case 'energieleverancier':
-                return optional(optional($model->primaryContactEnergySupplier)->energySupplier)->name;
+                return optional(optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->energySupplier)->name;
                 break;
             case 'energieleverancier_klantnummer':
-                return optional($model->primaryContactEnergySupplier)->es_number;
+                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->es_number;
                 break;
             case 'energieleverancier_ean_elektra':
-                return optional($model->primaryContactEnergySupplier)->ean_electricity;
+                return optional($model->primaryAddress)->ean_electricity;
                 break;
             case 'energieleverancier_klant_sinds':
-                return optional($model->primaryContactEnergySupplier)->member_since ? Carbon::parse(optional($model->primaryContactEnergySupplier)->member_since)->format('d/m/Y') : null;;
+                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->member_since ? Carbon::parse(optional($model->primaryAddressEnergySupplier)->member_since)->format('d/m/Y') : null;;
+                break;
+            case 'energieleverancier_klant_einddatum':
+                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->end_date ? Carbon::parse(optional($model->primaryAddressEnergySupplier)->end_date)->format('d/m/Y') : null;;
                 break;
             case 'energieleverancier_mogelijke_overstap':
-                return optional($model->primaryContactEnergySupplier)->switch_date ? Carbon::parse(optional($model->primaryContactEnergySupplier)->switch_date)->format('d/m/Y') : null;;
+                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->switch_date ? Carbon::parse(optional($model->primaryAddressEnergySupplier)->switch_date)->format('d/m/Y') : null;;
                 break;
             case 'kvk':
                 if($model->type_id == 'organisation'){
@@ -490,13 +507,13 @@ class TemplateVariableHelper
                 return $model->contact->full_name;
                 break;
             case 'contact_adres':
-                return optional($model->contact->primaryAddress)->street . ' ' . optional($model->contact->primaryAddress)->number . (optional($model->contact->primaryAddress)->addition ? ('-' . optional($model->contact->primaryAddress)->addition) : '');
+                return optional($model->address)->street . ' ' . optional($model->address)->number . (optional($model->address)->addition ? ('-' . optional($model->address)->addition) : '');
                 break;
             case 'contact_postcode':
-                return optional($model->contact->primaryAddress)->postal_code;
+                return optional($model->address)->postal_code;
                 break;
             case 'contact_plaats':
-                return optional($model->contact->primaryAddress)->city;
+                return optional($model->address)->city;
                 break;
             case 'contact_email':
                 return optional($model->contact->primaryEmailAddress)->email;
@@ -777,13 +794,13 @@ class TemplateVariableHelper
                 }
                 break;
             case 'contact_adres':
-                return optional($model->contact->primaryAddress)->street . ' ' . optional($model->contact->primaryAddress)->number . (optional($model->contact->primaryAddress)->addition ? ('-' . optional($model->contact->primaryAddress)->addition) : '');
+                return optional($model->address)->street . ' ' . optional($model->address)->number . (optional($model->address)->addition ? ('-' . optional($model->address)->addition) : '');
                 break;
             case 'contact_postcode':
-                return optional($model->contact->primaryAddress)->postal_code;
+                return optional($model->address)->postal_code;
                 break;
             case 'contact_plaats':
-                return optional($model->contact->primaryAddress)->city;
+                return optional($model->address)->city;
                 break;
             case 'contact_iban':
                 return $model->contact->iban;
@@ -814,13 +831,13 @@ class TemplateVariableHelper
                 return optional(optional($model->contact)->primaryEmailAddress)->email;
                 break;
             case 'contact_energieleverancier':
-                return optional(optional(optional($model->contact)->primaryContactEnergySupplier)->energySupplier)->name;
+                return optional(optional(optional($model->address)->primaryAddressEnergySupplier)->energySupplier)->name;
                 break;
             case 'contact_energieleverancier_klantnummer':
-                return optional(optional($model->contact)->primaryContactEnergySupplier)->es_number;
+                return optional(optional($model->address)->primaryAddressEnergySupplier)->es_number;
                 break;
             case 'contact_energieleverancier_ean_elektra':
-                return optional(optional($model->contact)->primaryContactEnergySupplier)->ean_electricity;
+                return optional($model->address)->ean_electricity;
                 break;
             case 'statussen':
                 return implode(', ', array_map(function ($status) {
@@ -1803,6 +1820,255 @@ class TemplateVariableHelper
                 break;
             case 'opbrengst_kwh_euro':
                 return $model->payout_kwh;
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
+
+    public static function getRevenuesKwhVar($model, $varname){
+        $valuesStart = RevenueValuesKwh::where('revenue_id', $model->id)->where('date_registration', Carbon::parse($model->date_begin)->format('Y-m-d'))->first();
+        $startKhw = $valuesStart ? $valuesStart->kwh_start : 0;
+        $valuesEnd = RevenueValuesKwh::where('revenue_id', $model->id)->where('date_registration', Carbon::parse($model->date_end)->addDay()->format('Y-m-d'))->first();
+        $endKhw = $valuesEnd ? $valuesEnd->kwh_start : 0;
+
+        switch ($varname) {
+            case 'status':
+                switch ($model->status) {
+                    case 'new':
+                        return 'Nieuw';
+                        break;
+                    case 'concept':
+                        return 'Concept';
+                        break;
+                    case 'confirmed':
+                        return 'Definitief';
+                        break;
+                    case 'processed':
+                        return 'Verwerkt';
+                        break;
+                    default:
+                        return '**onbepaald**';
+                        break;
+                }
+                break;
+            case 'categorie':
+                return $model->category->name;
+                break;
+            case 'project':
+                return $model->project->name;
+                break;
+            case 'type_verdeling':
+                return ProjectRevenueDistributionType::get('inPossessionOf') ? ProjectRevenueDistributionType::get('inPossessionOf')->name : '';
+                break;
+            case 'datum_definitief':
+                return $model->date_confirmed ? Carbon::parse($model->date_confirmed)->format('d/m/Y') : null;
+                break;
+            case 'datum_uitkeren':
+                return optional($model->last_parts_kwh)->date_payout ? Carbon::parse($model->last_parts_kwh->date_payout)->format('d/m/Y') : null;
+                break;
+            case 'kwh_start':
+                return $startKhw;
+                break;
+            case 'kwh_eind':
+                return $endKhw;
+                break;
+            case 'kwh_totaal':
+                return $endKhw - $startKhw;
+                break;
+            case 'beginperiode':
+                return $model->date_begin ? Carbon::parse($model->date_begin)->format('d/m/Y') : null;
+                break;
+            case 'eindperiode':
+                return $model->date_end ? Carbon::parse($model->date_end)->format('d/m/Y') : null;
+                break;
+            case 'teruggave':
+                $payoutKwh = $model->payout_kwh ? $model->payout_kwh : 0;
+                return number_format(($endKhw - $startKhw) * $payoutKwh, 2, ',', '');
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
+
+    public static function getRevenuePartsKwhVar($model, $varname){
+        $valuesStart = RevenueValuesKwh::where('revenue_id', $model->revenue_id)->where('date_registration', Carbon::parse($model->date_begin)->format('Y-m-d'))->first();
+        $startKhw = $valuesStart ? $valuesStart->kwh_start : 0;
+        $valuesEnd = RevenueValuesKwh::where('revenue_id', $model->revenue_id)->where('date_registration', Carbon::parse($model->date_end)->addDay()->format('Y-m-d'))->first();
+        $endKhw = $valuesEnd ? $valuesEnd->kwh_start : 0;
+
+        switch ($varname) {
+            case 'status':
+                switch ($model->status) {
+                    case 'new':
+                        return 'Nieuw';
+                        break;
+                    case 'concept':
+                        return 'Concept';
+                        break;
+                    case 'confirmed':
+                        return 'Definitief';
+                        break;
+                    case 'processed':
+                        return 'Verwerkt';
+                        break;
+                    default:
+                        return '**onbepaald**';
+                        break;
+                }
+                break;
+            case 'project':
+                return $model->revenuesKwh->project->name;
+                break;
+            case 'type_verdeling':
+                return ProjectRevenueDistributionType::get('inPossessionOf') ? ProjectRevenueDistributionType::get('inPossessionOf')->name : '';
+                break;
+            case 'datum_definitief':
+                return $model->date_confirmed ? Carbon::parse($model->date_confirmed)->format('d/m/Y') : null;
+                break;
+            case 'datum_uitkeren':
+                return $model->date_payout ? Carbon::parse($model->date_payout)->format('d/m/Y') : null;
+                break;
+            case 'kwh_start':
+                return $startKhw;
+                break;
+            case 'kwh_eind':
+                return $endKhw;
+                break;
+            case 'kwh_totaal':
+                return $endKhw - $startKhw;
+                break;
+            case 'beginperiode':
+                return $model->date_begin ? Carbon::parse($model->date_begin)->format('d/m/Y') : null;
+                break;
+            case 'eindperiode':
+                return $model->date_end ? Carbon::parse($model->date_end)->format('d/m/Y') : null;
+                break;
+            case 'teruggave':
+                $payoutKwh = $model->payout_kwh ? $model->payout_kwh : 0;
+                return number_format(($endKhw - $startKhw) * $payoutKwh, 2, ',', '');
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
+
+    public static function getRevenueDistributionKwhVar($model, $varname){
+        switch ($varname) {
+            case 'adres':
+                return $model->address;
+                break;
+            case 'postcode':
+                return $model->postal_code;
+                break;
+            case 'woonplaats':
+                return $model->city;
+                break;
+            case 'status':
+                switch ($model->status) {
+                    case 'new':
+                        return 'Nieuw';
+                        break;
+                    case 'concept':
+                        return 'Concept';
+                        break;
+                    case 'confirmed':
+                        return 'Definitief';
+                        break;
+                    case 'processed':
+                        return 'Verwerkt';
+                        break;
+                    default:
+                        return '**onbepaald**';
+                        break;
+                }
+                break;
+            case 'participaties':
+                return $model->participations_quantity;
+                break;
+            case 'energieleverancier':
+                $esNames = implode(',', array_unique($model->distributionPartsKwh()
+                    ->where(function ($query) {
+                        $query->whereNotNull('energy_supplier_name')
+                            ->orWhere('energy_supplier_name', '!=', '');
+                    })
+                    ->pluck('energy_supplier_name')->toArray()));
+                return $esNames;
+                break;
+            case 'kwh':
+                return $model->delivered_total_string;
+                break;
+            case 'teruggave_energiebelasting':
+                return number_format($model->kwh_return, 2, ',', '');
+                break;
+            case 'energieleverancier_ean_elektra':
+                return $model->energy_supplier_ean_electricity;
+                break;
+            case 'energieleverancier_nummer':
+                $esNumbers = implode(',', array_unique($model->distributionPartsKwh()
+                    ->where(function ($query) {
+                        $query->whereNotNull('energy_supplier_number')
+                            ->orWhere('energy_supplier_number', '!=', '');
+                    })
+                    ->pluck('energy_supplier_number')->toArray()));
+                return $esNumbers;
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
+
+    public static function getRevenueDistributionPartsKwhVar($model, $varname){
+        switch ($varname) {
+            case 'adres':
+                return $model->distributionKwh->address;
+                break;
+            case 'postcode':
+                return $model->distributionKwh->postal_code;
+                break;
+            case 'woonplaats':
+                return $model->distributionKwh->city;
+                break;
+            case 'status':
+                switch ($model->status) {
+                    case 'new':
+                        return 'Nieuw';
+                        break;
+                    case 'concept':
+                        return 'Concept';
+                        break;
+                    case 'confirmed':
+                        return 'Definitief';
+                        break;
+                    case 'processed':
+                        return 'Verwerkt';
+                        break;
+                    default:
+                        return '**onbepaald**';
+                        break;
+                }
+                break;
+            case 'participaties':
+                return $model->participations_quantity;
+                break;
+            case 'energieleverancier':
+                return optional($model->energySupplier)->name;
+                break;
+            case 'kwh':
+                return $model->delivered_total_string;
+                break;
+            case 'teruggave_energiebelasting':
+                return number_format($model->kwh_return, 2, ',', '');
+                break;
+            case 'energieleverancier_ean_elektra':
+                return $model->distributionKwh->energy_supplier_ean_electricity;
+                break;
+            case 'energieleverancier_nummer':
+                return $model->energy_supplier_number;
                 break;
             default:
                 return '';

@@ -8,7 +8,6 @@
 
 namespace App\Http\Controllers\Api\Project;
 
-use App\Eco\Contact\ContactStatus;
 use App\Eco\Email\Email;
 use App\Eco\Project\Project;
 use App\Eco\Project\ProjectValueCourse;
@@ -21,7 +20,6 @@ use App\Http\Resources\Project\GridProject;
 use App\Http\Resources\Project\ProjectPeek;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -56,6 +54,7 @@ class ProjectController extends ApiController
             'projectRevenues.type',
             'projectRevenues.category',
             'projectRevenues.createdBy',
+            'revenuesKwh.createdBy',
             'tasks',
             'documents',
             'administration',
@@ -203,6 +202,7 @@ class ProjectController extends ApiController
             ->date('dateEnd')->validate('nullable|date')->onEmpty(null)->alias('date_end')->next()
             ->date('dateEntry')->validate('nullable|date')->onEmpty(null)->alias('date_entry')->next()
             ->date('dateProduction')->validate('nullable|date')->onEmpty(null)->alias('date_production')->next()
+            ->date('dateInterestBearingKwh')->validate('nullable|date')->onEmpty(null)->alias('date_interest_bearing_kwh')->next()
             ->date('dateStartRegistrations')->validate('nullable|date')->onEmpty(null)->alias('date_start_registrations')->next()
             ->date('dateEndRegistrations')->validate('nullable|date')->onEmpty(null)->alias('date_end_registrations')->next()
             ->integer('projectTypeId')->validate('required|exists:project_type,id')->onEmpty(null)->alias('project_type_id')->next()
@@ -353,7 +353,7 @@ class ProjectController extends ApiController
 
     public function peek()
     {
-        $projects = Project::orderBy('id')->get();
+        $projects = Project::orderBy('name')->orderBy('id')->get();
 
         $projects->load(['projectType']);
 

@@ -29,8 +29,10 @@ use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Excel\ParticipantExcelHelper;
 use App\Helpers\Excel\ParticipantExcelHelperHelper;
+use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
+use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewParticipantProjectController;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\ContactGroup\FullContactGroup;
@@ -62,7 +64,7 @@ class ParticipationProjectController extends ApiController
     {
         $participantProject = $requestQuery->get();
         $participantProject->load([
-            'contact.primaryContactEnergySupplier.energySupplier',
+            'address.primaryAddressEnergySupplier.energySupplier',
             'contact.primaryAddress',
             'contact.primaryEmailAddress',
             'project',
@@ -175,7 +177,7 @@ class ParticipationProjectController extends ApiController
             'contact.primaryEmailAddress',
             'contact.primaryphoneNumber',
             'contact.primaryAddress.country',
-            'contact.primaryContactEnergySupplier.energySupplier',
+            'address.primaryAddressEnergySupplier.energySupplier',
             'giftedByContact',
             'legalRepContact',
             'project',
@@ -225,7 +227,8 @@ class ParticipationProjectController extends ApiController
         ]);
         $participantProject->load([
             'contact',
-            'contact.primaryContactEnergySupplier',
+            'contact.primaryAddress',
+            'address.primaryAddressEnergySupplier',
             'project.projectType',
             'project.administration',
             'project.projectValueCourses',
@@ -240,9 +243,6 @@ class ParticipationProjectController extends ApiController
             'mutations.updatedBy',
             'obligationNumbers',
             'documents',
-            'projectRevenues.type',
-            'projectRevenues.category',
-            'projectRevenues.createdBy',
             'createdBy',
             'updatedBy',
         ]);
@@ -256,6 +256,7 @@ class ParticipationProjectController extends ApiController
         // TODO clean up store inputs
         $data = $requestInput
             ->integer('contactId')->validate('required|exists:contacts,id')->alias('contact_id')->next()
+            ->integer('addressId')->validate('nullable|exists:addresses,id')->alias('address_id')->next()
             ->integer('projectId')->validate('required|exists:projects,id')->alias('project_id')->next()
             ->get();
 
@@ -265,19 +266,10 @@ class ParticipationProjectController extends ApiController
 
         $project = Project::find($participantProject->project_id);
         $contact = Contact::find($participantProject->contact_id);
+        $address = Address::find($participantProject->address_id);
 
         if($project->check_double_addresses){
             $errors = [];
-
-            $address = null;
-            // PERSON
-            if ($contact->type_id == ContactType::PERSON) {
-                $address = $contact->primaryAddress;
-            }
-            // ORGANISATION, use visit address
-            if ($contact->type_id == ContactType::ORGANISATION) {
-                $address = Address::where('contact_id', $contact->id)->where('type_id', 'visit')->first();
-            }
 
             $addressHelper = new AddressHelper($contact, $address);
             $addressIsDouble = $addressHelper->checkDoubleAddress($project);
@@ -330,13 +322,13 @@ class ParticipationProjectController extends ApiController
         }
 
         if($project->projectType->code_ref === 'postalcode_link_capital'){
-            $this->validatePostalCode($message, $project, $contact);
+            $this->validatePostalCode($message, $project, $contact, $address);
             $this->validateUsage($message, $project, $participantProject);
-            $this->validateEnergySupplier($message, $contact);
+            $this->validateEnergySupplier($message, $address);
             return ['id' => $participantProject->id, 'message' => $message];
         }
         if($project->check_postalcode_link && $project->is_sce_project){
-            $this->validatePostalCode($message, $project, $contact);
+            $this->validatePostalCode($message, $project, $contact, $address);
             return ['id' => $participantProject->id, 'message' => $message];
         }
 
@@ -481,10 +473,10 @@ class ParticipationProjectController extends ApiController
         $participantProject->date_terminated = $data['date_terminated'];
         $payoutPercentageTerminated = $data['payout_percentage_terminated'];
 
-        DB::transaction(function () use ($participantProject, $payoutPercentageTerminated) {
+        $projectType = $participantProject->project->projectType;
+        DB::transaction(function () use ($participantProject, $payoutPercentageTerminated, $projectType) {
             $participantProject->save();
 
-            $projectType = $participantProject->project->projectType;
             $mutationStatusFinalId = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
 
             // If Payout percentage is filled then make a result mutation (not when capital or postalcode_link_capital)
@@ -503,6 +495,27 @@ class ParticipationProjectController extends ApiController
                 $participantProject->projectRevenueDistributions()->where('status', 'concept')->forceDelete();
             }
         });
+
+        if($projectType->code_ref === 'postalcode_link_capital') {
+            $revenuesKwhHelper = new RevenuesKwhHelper();
+            $revenuesKwhPart = $revenuesKwhHelper->checkRevenuePartsKwh($participantProject, Carbon::parse($participantProject->date_terminated)->addDay(), null);
+
+            if($revenuesKwhPart){
+                $revenuePartsKwhRedirect = null;
+                if($revenuesKwhPart['success'] && $revenuesKwhPart['newRevenue'] ){
+                    $revenuePartsKwhRedirect = 'project/opbrengst-kwh/nieuw/' . $revenuesKwhPart['projectId']  . '/1';
+                }
+                if($revenuesKwhPart['success'] && !$revenuesKwhPart['newRevenue'] ){
+                    $revenuePartsKwhRedirect = '/project/opbrengst-kwh/' . $revenuesKwhPart['revenuesId']  . '/deelperiode/' . $revenuesKwhPart['revenuePartsId'];
+                }
+                $responseParticipations = ['hasParticipations' => true, 'revenuePartsKwhRedirect' => $revenuePartsKwhRedirect,  'projectsArray' => $revenuesKwhPart];
+            }else{
+                $responseParticipations = ['hasParticipations' => false, null, 'projectsArray' => []];
+            }
+
+            return $responseParticipations;
+        }
+
     }
 
     public function undoTerminate(ParticipantProject $participantProject, RequestInput $requestInput)
@@ -530,22 +543,16 @@ class ParticipationProjectController extends ApiController
         return ParticipantProjectPeek::collection($participants);
     }
 
-    public function validatePostalCode(&$message, Project $project, Contact $contact)
+    public function validatePostalCode(&$message, Project $project, Contact $contact, Address $address)
     {
         $checkText = 'Postcode check: ';
-        $addressForPostalCodeCheck = $contact->addressForPostalCodeCheck;
-        if($contact->type_id === ContactType::ORGANISATION) {
-            $typeAddress ='bezoek adres';
-        }else{
-            $typeAddress ='primair adres';
-        }
-        if(!$addressForPostalCodeCheck){
-            $message[] = $checkText . 'Deelnemer heeft geen ' . $typeAddress. '.';
+        if(!$address){
+            $message[] = $checkText . 'Deelnemer heeft geen (geldig) adres.';
             return false;
         }
-        $postalCodeAreaContact = substr($addressForPostalCodeCheck->postal_code, 0 , 4);
+        $postalCodeAreaContact = substr($address->postal_code, 0 , 4);
         if(!($postalCodeAreaContact > 999 && $postalCodeAreaContact < 9999)){
-            $message[] = $checkText . 'Deelnemer heeft geen geldige postcode op zijn ' . $typeAddress. '.';
+            $message[] = $checkText . 'Deelnemer heeft geen geldige postcode op zijn gekoppeld adres ' . $address->street_postal_code_city. '.';
             return false;
         }
         if(!$project->postalcode_link){
@@ -554,7 +561,7 @@ class ParticipationProjectController extends ApiController
         }
 
         // Check address
-        $addressHelper = new AddressHelper($contact, $addressForPostalCodeCheck);
+        $addressHelper = new AddressHelper($contact, $address);
         $checkAddressOk = $addressHelper->checkAddress($project->id, false);
         if(!$checkAddressOk){
             $message[] = $checkText . implode(';', $addressHelper->messages);
@@ -594,18 +601,18 @@ class ParticipationProjectController extends ApiController
         }
     }
 
-    public function validateEnergySupplier(&$message, Contact $contact)
+    public function validateEnergySupplier(&$message, Address $address)
     {
         $checkText = 'Energieleverancier check: ';
 
-        $primaryContactEnergySupplier = $contact->primaryContactEnergySupplier;
+        $primaryAddressEnergySupplier = $address ? $address->primaryAddressEnergySupplier : null;
 
-        if(!$primaryContactEnergySupplier){
+        if(!$primaryAddressEnergySupplier){
             $message[] = $checkText . 'Contact heeft nog geen energieleverancier.';
             return false;
         }
 
-        $energySupplier = $primaryContactEnergySupplier->energySupplier;
+        $energySupplier = $primaryAddressEnergySupplier->energySupplier;
 
         if(!$energySupplier->does_postal_code_links){
             $message[] = $checkText . 'Energieleverancier van contact doet niet mee aan postcoderoos.';
@@ -1062,7 +1069,8 @@ class ParticipationProjectController extends ApiController
             $participantMutation->participation_id = $participantProject->id;
             $participantMutation->type_id = $mutationTypeWithDrawalId;
             $participantMutation->status_id = $mutationStatusFinalId;
-            $participantMutation->date_entry = $participantProject['date_terminated'];
+            // date_entry is 1 day after date terminated
+            $participantMutation->date_entry = Carbon::parse($participantProject['date_terminated'])->addDay()->format('Y-m-d');
 
 
             if ($projectType->code_ref == 'loan') {
@@ -1114,13 +1122,17 @@ class ParticipationProjectController extends ApiController
         }
         $participantMutation->returns = $result;
         if ($projectType->code_ref == 'loan') {
-            $participantMutation->date_entry = $participantProject->date_terminated;
+            // date_entry is 1 day after date terminated
+            $participantMutation->date_entry = Carbon::parse($participantProject->date_terminated)->addDay()->format('Y-m-d');
         } else {
-            $participantMutation->date_payment = $participantProject->date_terminated;
+            // date_payment is 1 day after date terminated
+            $participantMutation->date_payment = Carbon::parse($participantProject->date_terminated)->addDay()->format('Y-m-d');
         }
         $participantMutation->paid_on = 'Bijschrijven';
 
-        $dateEntryYear = \Carbon\Carbon::parse($participantProject->date_terminated)->year;
+        // we controleren in jaar van beeindigsdatum + 1 dag
+        // (dit laatste omdat beeindiging op 31-12 nog wel mag, ook als hij in beeindigingsjaar dus in def. ws zat.
+        $dateEntryYear = \Carbon\Carbon::parse($participantProject->date_terminated)->addDay(1)->year;
         $result = $this->checkMutationAllowed($participantMutation, $dateEntryYear);
 
         $participantMutation->save();

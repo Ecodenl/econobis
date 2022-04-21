@@ -5,10 +5,8 @@ namespace Tests\Feature;
 use App\Eco\Address\Address;
 use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
-use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
-use App\Eco\EnergySupplier\ContactEnergySupplier;
-use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Intake\Intake;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Opportunity\Opportunity;
@@ -235,15 +233,15 @@ class TemplateMergeFieldsTest extends TestCase
         $email->email = 'klaasV@xaris.nl';
         $email->save();
 
-        $contactEnergySupplier = new ContactEnergySupplier();
-        $contactEnergySupplier->contact_id = 1;
-        $contactEnergySupplier->energy_supplier_id = 1;
-        $contactEnergySupplier->created_by_id = 1;
-        $contactEnergySupplier->is_current_supplier = true;
-        $contactEnergySupplier->contact_energy_supply_type_id = 1;
-        $contactEnergySupplier->es_number = 333;
-        $contactEnergySupplier->ean_electricity = 444;
-        $contactEnergySupplier->save();
+        $addressEnergySupplier = new AddressEnergySupplier();
+        $addressEnergySupplier->contact_id = 1;
+        $addressEnergySupplier->energy_supplier_id = 1;
+        $addressEnergySupplier->created_by_id = 1;
+        $addressEnergySupplier->is_current_supplier = true;
+        $addressEnergySupplier->energy_supply_type_id = 1;
+        $addressEnergySupplier->es_number = 333;
+        $addressEnergySupplier->ean_electricity = 444;
+        $addressEnergySupplier->save();
     }
 
     public function insertUser(){

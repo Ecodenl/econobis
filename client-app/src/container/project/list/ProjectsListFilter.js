@@ -20,6 +20,10 @@ const ProjectsListFilter = props => {
 
     const onTypeProjectChange = e => {
         props.setTypeProjectFilter(e.target.value);
+
+        setTimeout(() => {
+            props.onSubmitFilter();
+        }, 100);
     };
 
     return (

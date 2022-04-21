@@ -8,6 +8,9 @@
 
 namespace App\Eco\Address;
 
+use App\Helpers\Address\AddressHelper;
+use Illuminate\Support\Facades\Auth;
+
 class AddressObserver
 {
 
@@ -29,6 +32,13 @@ class AddressObserver
 
     public function saved(Address $address)
     {
+        if($address->isDirty('type_id') && $address->type_id == 'old') {
+            if ($address->used_in_active_participation) {
+                $addressHelper = new AddressHelper( $address->contact, $address);
+                $addressHelper->addTaskAddressChangeParticipation(Auth::id());
+            }
+        }
+
         if($address->isDirty('primary') && $address->primary == true){
             // Als er een oud primary adres is dan deze niet meer primary maken
             $oldPrimaryAddress = $address->contact->addresses()
@@ -39,10 +49,18 @@ class AddressObserver
             if($oldPrimaryAddress){
                 $oldPrimaryAddress->primary = false;
                 $oldPrimaryAddress->save();
+
+                // indien particpation in een niet PCR project en niet SCE project, dan old primary address altijd omzetten naar nieuwe primary address
+                $participations = $oldPrimaryAddress->participations;
+                foreach($participations as $participation) {
+                    if ($participation->project->projectType->code_ref != 'postalcode_link_capital' && !$participation->project->is_sce_project ) {
+                        $participation->address_id = $address->id;
+                        $participation->save();
+                    }
+                }
             }
 
         }
-
         if( $address->primary
             && ($address->isDirty('primary')
                 || $address->isDirty('street')
@@ -50,24 +68,45 @@ class AddressObserver
                 || $address->isDirty('addition')
                 || $address->isDirty('postal_code')
                 || $address->isDirty('city')
-                || $address->isDirty('country_id') )
+                || $address->isDirty('country_id')
+                || $address->isDirty('ean_electricity') )
         )
         {
-            // Check if any project revenue distribution is present with status concept
-            // If so, then change address
-            $projectRevenueDistributions = $address->contact->projectRevenueDistributions->whereIn('status', ['concept', 'confirmed']);
+            // Check if any linked project revenue distribution is present with status concept or confirmed
+            // If so, then change address data
+            $participations = $address->participations;
 
-            foreach($projectRevenueDistributions as $projectRevenueDistribution) {
-                $projectRevenueDistribution->street = $address->street;
-                $projectRevenueDistribution->street_number = $address->number;
-                $projectRevenueDistribution->street_number_addition = $address->addition;
-                $projectRevenueDistribution->address = $address->present()
-                    ->streetAndNumber();
-                $projectRevenueDistribution->postal_code = $address->postal_code;
-                $projectRevenueDistribution->city = $address->city;
-                $projectRevenueDistribution->country = $address->country_id ? $address->country->name : '';
+            foreach($participations as $participation) {
 
-                $projectRevenueDistribution->save();
+                $projectRevenueDistributions = $participation->projectRevenueDistributions->whereIn('status', ['concept', 'confirmed']);
+                foreach($projectRevenueDistributions as $projectRevenueDistribution) {
+                    $projectRevenueDistribution->street = $address->street;
+                    $projectRevenueDistribution->street_number = $address->number;
+                    $projectRevenueDistribution->street_number_addition = $address->addition;
+                    $projectRevenueDistribution->address = $address->present()
+                        ->streetAndNumber();
+                    $projectRevenueDistribution->postal_code = $address->postal_code;
+                    $projectRevenueDistribution->city = $address->city;
+                    $projectRevenueDistribution->country = $address->country_id ? $address->country->name : '';
+                    $projectRevenueDistribution->energy_supplier_ean_electricity = $address->ean_electricity;
+
+                    $projectRevenueDistribution->save();
+                }
+
+                $revenueDistributionsKwh = $participation->revenueDistributionKwh->whereIn('status', ['concept', 'confirmed']);
+                foreach($revenueDistributionsKwh as $revenueKwhDistribution) {
+                    $revenueKwhDistribution->street = $address->street;
+                    $revenueKwhDistribution->street_number = $address->number;
+                    $revenueKwhDistribution->street_number_addition = $address->addition;
+                    $revenueKwhDistribution->address = $address->present()
+                        ->streetAndNumber();
+                    $revenueKwhDistribution->postal_code = $address->postal_code;
+                    $revenueKwhDistribution->city = $address->city;
+                    $revenueKwhDistribution->country = $address->country_id ? $address->country->name : '';
+                    $revenueKwhDistribution->energy_supplier_ean_electricity = $address->ean_electricity;
+
+                    $revenueKwhDistribution->save();
+                }
             }
 
         }

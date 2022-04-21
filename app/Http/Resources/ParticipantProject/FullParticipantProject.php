@@ -3,13 +3,14 @@
 namespace App\Http\Resources\ParticipantProject;
 
 use App\Eco\Order\Order;
+use App\Http\Resources\Address\FullAddress;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Order\FullOrder;
 use App\Http\Resources\ParticipantMutation\FullParticipantMutation;
 use App\Http\Resources\Project\FullProject;
-use App\Http\Resources\Project\GridProjectRevenue;
+//use App\Http\Resources\Project\GridProjectRevenue;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -30,6 +31,7 @@ class FullParticipantProject extends JsonResource
                 'name' => $this->contact->full_name . ' ' . $this->project->name,
                 'contactId' => $this->contact_id,
                 'contact' => FullContact::make($this->whenLoaded('contact')),
+                'address' => FullAddress::make($this->whenLoaded('address')),
                 'projectId' => $this->project_id,
                 'project' => FullProject::make($this->whenLoaded('project')),
                 'relatedOrders' => FullOrder::collection(Order::where('participation_id', $this->id)->get()),
@@ -70,13 +72,7 @@ class FullParticipantProject extends JsonResource
                 'participationsIndicationOfRestitutionEnergyTaxTotal' => $this->participationsIndicationOfRestitutionEnergyTaxTotal,
                 'dateTerminated' => $this->date_terminated,
                 'dateRegister' => $this->date_register,
-                'dateNextRevenueKwh' => $this->date_next_revenue_kwh,
-                'dateBeginNextRevenueKwh' => $this->date_begin_next_revenue_kwh,
-                'dateEndNextRevenueKwh' => $this->date_end_next_revenue_kwh,
-                'nextRevenueKwhStartHigh' => $this->next_revenue_kwh_start_high,
-                'nextRevenueKwhStartLow' => $this->next_revenue_kwh_start_low,
                 'dateEntryFirstDeposit' => $this->dateEntryFirstDeposit,
-                'revenues' => GridProjectRevenue::collection($this->whenLoaded('projectRevenues')),
                 'participantInDefinitiveRevenue' => $this->participantInDefinitiveRevenue,
                 'participantInConfirmedRevenue' => $this->participantInConfirmedRevenue,
                 'hasNotConfirmedRevenuesKwh' => $this->getHasNotConfirmedRevenuesKwh(),

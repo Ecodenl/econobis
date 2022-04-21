@@ -12,12 +12,21 @@ class ContactDetailsFormAddress extends Component {
 
         this.state = {
             showNew: false,
+            addressEnergySupplierNewOrEditOpen: false,
         };
     }
 
     toggleShowNew = () => {
+        const currentShowNew = this.state.showNew;
         this.setState({
-            showNew: !this.state.showNew,
+            showNew: !currentShowNew,
+        });
+        this.setAddressEnergySupplierNewOrEditOpen(!currentShowNew);
+    };
+
+    setAddressEnergySupplierNewOrEditOpen = falseTrue => {
+        this.setState({
+            addressEnergySupplierNewOrEditOpen: falseTrue,
         });
     };
 
@@ -25,14 +34,19 @@ class ContactDetailsFormAddress extends Component {
         return (
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Adres gegevens</span>
-                    <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                        <span className="glyphicon glyphicon-plus" />
-                    </a>
+                    <span className="h5 text-bold">Adres / Energieleverancier gegevens</span>
+                    {this.state.addressEnergySupplierNewOrEditOpen == false && (
+                        <a role="button" className="pull-right" onClick={this.toggleShowNew}>
+                            <span className="glyphicon glyphicon-plus" />
+                        </a>
+                    )}
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        <ContactDetailsFormAddressList />
+                        <ContactDetailsFormAddressList
+                            setAddressEnergySupplierNewOrEditOpen={this.setAddressEnergySupplierNewOrEditOpen}
+                            addressEnergySupplierNewOrEditOpen={this.state.addressEnergySupplierNewOrEditOpen}
+                        />
                     </div>
                     <div className="col-md-12 margin-10-top">
                         {this.state.showNew && <ContactDetailsFormAddressNew toggleShowNew={this.toggleShowNew} />}

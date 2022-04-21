@@ -4,9 +4,12 @@ namespace App\Eco\Address;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Country\Country;
+use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Intake\Intake;
 use App\Eco\Measure\Measure;
+use App\Eco\ParticipantProject\ParticipantProject;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laracasts\Presenter\PresentableTrait;
@@ -23,9 +26,25 @@ class Address extends Model
         'primary' => 'boolean',
     ];
 
+    public function addressEnergySuppliers()
+    {
+        return $this->hasMany(AddressEnergySupplier::class)->orderByDesc('member_since')->orderByDesc('id');
+    }
+
+    // primaryAddressEnergySupplier: only for Electricity ! (type 2 or 3)
+    public function primaryAddressEnergySupplier()
+    {
+        return $this->hasOne(AddressEnergySupplier::class)->where('is_current_supplier', true)->whereIn('energy_supply_type_id', [2, 3] );
+    }
+
     public function contact()
     {
         return $this->belongsTo(Contact::class);
+    }
+
+    public function participations()
+    {
+        return $this->hasMany(ParticipantProject::class);
     }
 
     public function housingFile()
@@ -60,8 +79,26 @@ class Address extends Model
     }
 
     public function getPostalCodeNumberAdditionAttribute(){
+        return str_replace(' ', '', $this->postal_code) . ' ' . $this->number . ($this->addition ? ('-' . $this->addition) : '');
+    }
+
+    public function getPostalCodeNumberAdditionForDoubleCheckAttribute(){
         return $this->postal_code . '-' . $this->number . '-' . $this->addition;
     }
+
+    public function getStreetPostalCodeCityAttribute(){
+        $streetPostalCodeCity = $this->street . ' ' . $this->number;
+        $streetPostalCodeCity .= $this->addition ? '-' . $this->addition : '';
+        $streetPostalCodeCity .= $this->postal_code ? ', ' . $this->postal_code : '';
+        $streetPostalCodeCity .= $this->city ? ', ' . $this->city : '';
+        return $streetPostalCodeCity;
+    }
+    public function getTypeAndPrimaryAttribute(){
+        $typeAndPrimary = $this->getType() ? $this->getType()->name : '';
+        $typeAndPrimary .= $this->primary ? ($this->getType() ? ' - ' : '') . 'primair' : '';
+        return $typeAndPrimary;
+    }
+
 
     public function getPostalCodeAttribute($postalCode){
         if(preg_match('/^\d{4}[A-Za-z]{2}$/', $postalCode)){
@@ -69,6 +106,48 @@ class Address extends Model
         }
 
         return $postalCode;
+    }
+
+    public function getUsedInActiveParticipationAttribute()
+    {
+        return $this->participations->whereNull('date_terminated')->count() > 0;
+    }
+
+
+    public function getMemberSinceGasDisabledBeforeAttribute()
+    {
+        $filterTypeIdArray = [1, 3];
+        return $this->determineMemberSinceDisabledBefore($filterTypeIdArray);
+    }
+
+    public function getMemberSinceElectricityDisabledBeforeAttribute()
+    {
+        $filterTypeIdArray = [2, 3];
+        return $this->determineMemberSinceDisabledBefore($filterTypeIdArray);
+    }
+
+    public function getMemberSinceGasAndElectricityDisabledBeforeAttribute()
+    {
+        $filterTypeIdArray = [1, 2, 3];
+        return $this->determineMemberSinceDisabledBefore($filterTypeIdArray);
+    }
+
+    /**
+     * @param array $filterTypeIdArray
+     * @return string
+     */
+    private function determineMemberSinceDisabledBefore(array $filterTypeIdArray): string
+    {
+        $latestAddressEnergySuppliers = AddressEnergySupplier::where('address_id', $this->id)
+            ->whereIn('energy_supply_type_id', $filterTypeIdArray)
+            ->orderBy('member_since', 'desc');
+        if ($latestAddressEnergySuppliers->exists()) {
+            $latestAddressEnergySupplier = $latestAddressEnergySuppliers->first();
+            $memberSinceDisabledBefore = Carbon::parse($latestAddressEnergySupplier->member_since)->format('Y-m-d');
+        } else {
+            $memberSinceDisabledBefore = Carbon::parse('1900-01-01')->format('Y-m-d');
+        }
+        return $memberSinceDisabledBefore;
     }
 
 }

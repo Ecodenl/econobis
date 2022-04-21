@@ -10,7 +10,25 @@ import InputToggle from '../../../../components/form/InputToggle';
 import InputDate from '../../../../components/form/InputDate';
 
 const ContactDetailsFormAddressEdit = props => {
-    const { street, number, addition, postalCode, city, typeId, endDate, primary, countryId } = props.address;
+    const {
+        street,
+        number,
+        addition,
+        postalCode,
+        city,
+        typeId,
+        endDate,
+        primary,
+        countryId,
+        eanElectricity,
+        eanGas,
+    } = props.address;
+
+    // if primairy address and more then 1 addresses, then don't allow set to type old.
+    let addressTypesToSelect = props.addressTypes;
+    if (primary && props.numberOfAddresses > 1) {
+        addressTypesToSelect = addressTypesToSelect.filter(filter => filter.id !== 'old');
+    }
 
     return (
         <div>
@@ -75,11 +93,26 @@ const ContactDetailsFormAddressEdit = props => {
 
                         <div className="row">
                             <InputSelect
-                                label={'Type'}
+                                label={
+                                    <span>
+                                        Type
+                                        {typeId === 'old' && primary && props.numberOfAddresses === 1 ? (
+                                            <React.Fragment>
+                                                <br />
+                                                <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                                    <strong>Let op!</strong> Dit is een primair adres en enige adres bij
+                                                    contact.
+                                                </small>
+                                            </React.Fragment>
+                                        ) : (
+                                            ''
+                                        )}
+                                    </span>
+                                }
                                 id="type"
                                 size={'col-sm-6'}
                                 name={'typeId'}
-                                options={props.addressTypes}
+                                options={addressTypesToSelect}
                                 value={typeId}
                                 onChangeAction={props.handleInputChange}
                                 required={'required'}
@@ -113,7 +146,25 @@ const ContactDetailsFormAddressEdit = props => {
                                 name={'primary'}
                                 value={primary}
                                 onChangeAction={props.handleInputChange}
-                                disabled={primary}
+                                disabled={primary || typeId === 'old'}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label={'EAN electriciteit'}
+                                id={'eanElectricity'}
+                                name={'eanElectricity'}
+                                value={eanElectricity}
+                                onChangeAction={props.handleInputChange}
+                                error={props.eanElectricityError}
+                            />
+                            <InputText
+                                label={'EAN gas'}
+                                id={'eanGas'}
+                                name={'eanGas'}
+                                value={eanGas}
+                                onChangeAction={props.handleInputChange}
+                                error={props.eanGasError}
                             />
                         </div>
 

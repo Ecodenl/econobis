@@ -7,6 +7,8 @@ import InputDate from '../../../components/form/InputDate';
 import InputText from '../../../components/form/InputText';
 import moment from 'moment';
 import ParticipantProjectDetailsAPI from '../../../api/participant-project/ParticipantProjectDetailsAPI';
+import InputToggle from '../../../components/form/InputToggle';
+import { hashHistory } from 'react-router';
 
 const ParticipantDetailsTerminate = ({
     participantProject,
@@ -14,9 +16,11 @@ const ParticipantDetailsTerminate = ({
     closeDeleteItemModal,
     projectTypeCodeRef,
     fetchParticipantProjectDetails,
+    projectRevenueCategories,
 }) => {
     const [dateTerminated, setDateTerminated] = useState(moment().format('Y-MM-DD'));
     const [payoutPercentageTerminated, setPayoutPercentageTerminated] = useState(0);
+    const [redirectRevenueSplit, setRedirectRevenueSplit] = useState(true);
 
     const onChangeDateTerminated = value => {
         setDateTerminated(value);
@@ -24,9 +28,17 @@ const ParticipantDetailsTerminate = ({
 
     const onChangePayoutPercentageTerminated = event => {
         const value = event.target.value;
-
         setPayoutPercentageTerminated(value);
     };
+
+    const onChangeRedirectRevenueSplit = event => {
+        const value = event.target.checked;
+        setRedirectRevenueSplit(value);
+    };
+
+    const revenueKwhSplitCategoryId = projectRevenueCategories.find(
+        projectRevenueCategory => projectRevenueCategory.codeRef === 'revenueKwhSplit'
+    ).id;
 
     const confirmAction = () => {
         if (dateTerminated) {
@@ -35,8 +47,16 @@ const ParticipantDetailsTerminate = ({
                 payoutPercentageTerminated,
             })
                 .then(payload => {
+                    console.log(payload);
                     fetchParticipantProjectDetails(participantProject.id);
                     closeDeleteItemModal();
+                    if (projectTypeCodeRef === 'postalcode_link_capital' && redirectRevenueSplit) {
+                        if (payload.data.projectsArray.success) {
+                            hashHistory.push(`${payload.data.revenuePartsKwhRedirect}`);
+                        } else {
+                            setErrorModal(payload.data.projectsArray.errorMessage);
+                        }
+                    }
                 })
                 .catch(error => {
                     // let errorObject = JSON.parse(JSON.stringify(error));
@@ -51,51 +71,60 @@ const ParticipantDetailsTerminate = ({
 
     return (
         <>
-            {participantProject.participantInConfirmedRevenue ? (
-                <Modal
-                    buttonConfirmText="Deelname beëindigen"
-                    buttonClassName={'btn-danger'}
-                    closeModal={closeDeleteItemModal}
-                    showConfirmAction={false}
-                    title="Beëindigen"
-                    modalClassName={'modal-lg'}
-                >
-                    <p>
-                        Deelname komt nog voor in niet verwerkte definitieve opbrengstverdeling. Beëindiging nog niet
-                        mogelijk.
-                    </p>
-                </Modal>
-            ) : (
-                <Modal
-                    buttonConfirmText="Deelname beëindigen"
-                    buttonClassName={'btn-danger'}
-                    closeModal={closeDeleteItemModal}
-                    confirmAction={() => confirmAction()}
-                    title="Beëindigen"
-                    modalClassName={'modal-lg'}
-                >
-                    <p>Weet u zeker dat u deze deelname wilt beëindigen?</p>
-                    <div className="row">
-                        <InputDate
-                            label={'Datum beëindigen'}
-                            name="dateTerminated"
-                            value={dateTerminated}
-                            onChangeAction={onChangeDateTerminated}
-                            disabledBefore={moment(participantProject.dateEntryFirstDeposit).format('Y-MM-DD')}
-                            disabledAfter={moment().format('Y-MM-DD')}
+            {/*{participantProject.participantInConfirmedRevenue ? (*/}
+            {/*    <Modal*/}
+            {/*        buttonConfirmText="Deelname beëindigen"*/}
+            {/*        buttonClassName={'btn-danger'}*/}
+            {/*        closeModal={closeDeleteItemModal}*/}
+            {/*        showConfirmAction={false}*/}
+            {/*        title="Beëindigen"*/}
+            {/*        modalClassName={'modal-lg'}*/}
+            {/*    >*/}
+            {/*        <p>*/}
+            {/*            Deelname komt nog voor in niet verwerkte definitieve opbrengstverdeling. Beëindiging nog niet*/}
+            {/*            mogelijk.*/}
+            {/*        </p>*/}
+            {/*    </Modal>*/}
+            {/*) : (*/}
+            <Modal
+                buttonConfirmText="Deelname beëindigen"
+                buttonClassName={'btn-danger'}
+                closeModal={closeDeleteItemModal}
+                confirmAction={() => confirmAction()}
+                title="Beëindigen"
+                modalClassName={'modal-lg'}
+            >
+                <p>Weet u zeker dat u deze deelname wilt beëindigen?</p>
+                <div className="row">
+                    <InputDate
+                        label={'Datum beëindigen'}
+                        name="dateTerminated"
+                        value={dateTerminated}
+                        onChangeAction={onChangeDateTerminated}
+                        disabledBefore={moment(participantProject.dateEntryFirstDeposit).format('Y-MM-DD')}
+                        disabledAfter={moment().format('Y-MM-DD')}
+                    />
+                    {projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation' ? (
+                        <InputText
+                            type={'number'}
+                            label={'Uitkeringspercentage'}
+                            name="payoutPercentageTerminated"
+                            value={payoutPercentageTerminated}
+                            onChangeAction={onChangePayoutPercentageTerminated}
                         />
-                        {projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation' ? (
-                            <InputText
-                                type={'number'}
-                                label={'Uitkeringspercentage'}
-                                name="payoutPercentageTerminated"
-                                value={payoutPercentageTerminated}
-                                onChangeAction={onChangePayoutPercentageTerminated}
-                            />
-                        ) : null}
+                    ) : null}
+                </div>
+                {projectTypeCodeRef === 'postalcode_link_capital' ? (
+                    <div className="row">
+                        <InputToggle
+                            label={'Na beëindigen maken eindafrekening voor teruggave EB'}
+                            name={'redirectRevenueSplit'}
+                            onChangeAction={onChangeRedirectRevenueSplit}
+                            value={redirectRevenueSplit}
+                        />
                     </div>
-                </Modal>
-            )}
+                ) : null}
+            </Modal>
         </>
     );
 };
@@ -105,5 +134,10 @@ const mapDispatchToProps = dispatch => ({
         dispatch(fetchParticipantProjectDetails(participantProjectId));
     },
 });
+const mapStateToProps = state => {
+    return {
+        projectRevenueCategories: state.systemData.projectRevenueCategories,
+    };
+};
 
-export default connect(null, mapDispatchToProps)(ParticipantDetailsTerminate);
+export default connect(mapStateToProps, mapDispatchToProps)(ParticipantDetailsTerminate);

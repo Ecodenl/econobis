@@ -1,26 +1,39 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import InputSelect from '../../../components/form/InputSelect';
 import ButtonText from '../../../components/button/ButtonText';
 import PanelFooter from '../../../components/panel/PanelFooter';
 import InputText from '../../../components/form/InputText';
 import InputDate from '../../../components/form/InputDate';
 import InputReactSelectLong from '../../../components/form/InputReactSelectLong';
+import AsyncSelectSet from '../../../components/form/AsyncSelectSet';
+import ContactsAPI from '../../../api/contact/ContactsAPI';
 
-const ParticipantNewForm = ({
-    participation,
-    errors,
-    handleInputChange,
-    handleInputChangeDate,
-    handleInputChangeContactId,
-    handleSubmit,
-    contacts,
-    projects,
-    participantMutationStatuses,
-    projectTypeCodeRef,
-    isLoading,
-}) => {
+function ParticipantNewForm(props) {
+    const [searchTermContact, setSearchTermContact] = useState('');
+    const [isLoadingContact, setLoadingContact] = useState(false);
+
+    let {
+        participation,
+        errors,
+        handleInputChange,
+        handleInputChangeDate,
+        handleInputChangeContactId,
+        handleInputChangeAddressId,
+        handleInputChangeProjectId,
+        handleSubmit,
+        selectedContact,
+        addresses,
+        projects,
+        participantMutationStatuses,
+        projectTypeCodeRef,
+        isSceProject,
+        disableProjectSelection,
+        disableClientSelection,
+        isLoading,
+    } = props;
+
     const {
-        contactId,
+        addressId,
         statusId,
         projectId,
         quantityInterest,
@@ -45,20 +58,73 @@ const ParticipantNewForm = ({
     );
     const statusCodeRef = status ? status.codeRef : null;
 
+    const getContactOptions = async () => {
+        if (searchTermContact.length <= 1) return;
+
+        setLoadingContact(true);
+
+        try {
+            const results = await ContactsAPI.fetchContactSearch(searchTermContact);
+            setLoadingContact(false);
+            return results.data.data;
+        } catch (error) {
+            setLoadingContact(false);
+            // console.log(error);
+        }
+    };
+
+    function handleInputSearchChange(value) {
+        setSearchTermContact(value);
+    }
+
     return (
         <form className="form-horizontal col-md-12" onSubmit={handleSubmit}>
             <div className="row">
                 <InputReactSelectLong
+                    label={'Project'}
+                    name={'projectId'}
+                    id={'projectId'}
+                    options={projects}
+                    value={Number(projectId)}
+                    onChangeAction={handleInputChangeProjectId}
+                    required={'required'}
+                    error={errors.projectId}
+                    disabled={disableProjectSelection}
+                />
+            </div>
+
+            <div className="row">
+                <AsyncSelectSet
                     label={'Contact'}
                     name={'contactId'}
                     id={'contactId'}
-                    options={contacts}
+                    loadOptions={getContactOptions}
                     optionName={'fullName'}
-                    value={Number(contactId)}
+                    value={selectedContact}
                     onChangeAction={handleInputChangeContactId}
                     required={'required'}
                     error={errors.contactId}
+                    disabled={disableClientSelection}
+                    isLoading={isLoadingContact}
+                    handleInputChange={handleInputSearchChange}
+                    multi={false}
                 />
+            </div>
+            <div className="row">
+                <InputReactSelectLong
+                    label={'Adres'}
+                    name={'addressId'}
+                    id={'addressId'}
+                    options={addresses}
+                    optionName={'streetPostalCodeCity'}
+                    value={Number(addressId)}
+                    onChangeAction={handleInputChangeAddressId}
+                    required={'required'}
+                    disabled={projectTypeCodeRef !== 'postalcode_link_capital' && !isSceProject}
+                    error={errors.addressId}
+                />
+            </div>
+            <div className="row">
                 <InputSelect
                     label={'Status'}
                     name={'statusId'}
@@ -70,20 +136,6 @@ const ParticipantNewForm = ({
                     error={errors.statusId}
                 />
             </div>
-
-            <div className="row">
-                <InputSelect
-                    label={'Project'}
-                    name={'projectId'}
-                    id={'projectId'}
-                    options={projects}
-                    value={projectId}
-                    onChangeAction={handleInputChange}
-                    required={'required'}
-                    error={errors.projectId}
-                />
-            </div>
-
             {statusCodeRef === 'interest' ? (
                 <div className="row">
                     {projectTypeCodeRef === 'loan' ? (
@@ -117,7 +169,6 @@ const ParticipantNewForm = ({
                     />
                 </div>
             ) : null}
-
             {statusCodeRef === 'option' ? (
                 <div className="row">
                     {projectTypeCodeRef === 'loan' ? (
@@ -155,7 +206,6 @@ const ParticipantNewForm = ({
                     />
                 </div>
             ) : null}
-
             {statusCodeRef === 'granted' ? (
                 <div className="row">
                     {projectTypeCodeRef === 'loan' ? (
@@ -193,7 +243,6 @@ const ParticipantNewForm = ({
                     />
                 </div>
             ) : null}
-
             {statusCodeRef === 'final' ? (
                 <React.Fragment>
                     <div className="row">
@@ -265,7 +314,6 @@ const ParticipantNewForm = ({
                     </div>
                 </React.Fragment>
             ) : null}
-
             <PanelFooter>
                 <div className="pull-right btn-group" role="group">
                     <ButtonText buttonText={'Opslaan'} type={'submit'} value={'Submit'} loading={isLoading} />
@@ -273,6 +321,6 @@ const ParticipantNewForm = ({
             </PanelFooter>
         </form>
     );
-};
+}
 
 export default ParticipantNewForm;

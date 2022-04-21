@@ -44,7 +44,7 @@ class ContactCSVHelper
                 'primaryphoneNumber',
                 'phoneNumbers',
                 'primaryAddress',
-                'primaryContactEnergySupplier.energySupplier',
+                'primaryAddress.primaryAddressEnergySupplier.energySupplier',
                 'contactNotes',
                 'occupations.occupation',
                 'occupations.primaryContact.person.title',
@@ -111,7 +111,6 @@ class ContactCSVHelper
                 $first = true;
                 if ($contact->occupations) {
                     foreach ($contact->occupations as $occupation) {
-//                    dd($occupation);
                         if($first) {
                             $contact['occupationPrimary'] = ($occupation->primary ? 'Ja' : 'Nee');
                             $contact['occupationPrimaryOrSecundary'] = 'onder';
@@ -155,7 +154,6 @@ class ContactCSVHelper
 
                 // Primary Occupations
                 if ($contact->primaryOccupations) {
-//                dd($contact->primaryOccupations);
                     foreach ($contact->primaryOccupations as $primaryOccupation) {
                         if($first) {
                             $contact['occupationPrimary'] = ($primaryOccupation->primary ? 'Ja' : 'Nee');
@@ -212,12 +210,15 @@ class ContactCSVHelper
                 }
 
                 // Reformat energy supplier fields
-                if ($contact->primaryContactEnergySupplier) {
-                    // Reformat when supplier starts with equal sign (example '=om')
-                    $contact->energy_supplier_name = $contact->primaryContactEnergySupplier->energySupplier->name;
-                    // Member since date format
+                if ($contact->primaryAddress && $contact->primaryAddress->primaryAddressEnergySupplier) {
+                    $contact->energy_supplier_name = $contact->primaryAddress->primaryAddressEnergySupplier->energySupplier->name;
+                    $contact->es_number = $contact->primaryAddress->primaryAddressEnergySupplier->es_number;
                     $contact->energy_member_since
-                        = $this->formatDate($contact->primaryContactEnergySupplier->member_since);
+                        = $this->formatDate($contact->primaryAddress->primaryAddressEnergySupplier->member_since);
+                }
+                // Reformat primary address fields
+                if ($contact->primaryAddress) {
+                    $contact->ean_electricity = $contact->primaryAddress->ean_electricity;
                 }
 
                 $contact->did_agree_avg = ($contact->did_agree_avg ? 'Ja' : 'Nee');
@@ -289,10 +290,10 @@ class ContactCSVHelper
                 'phonenumber_2' => 'Telefoonnummer 2',
                 'phonenumber_3' => 'Telefoonnummer 3',
                 'energy_supplier_name' => 'Energieleverancier',
-                'primaryContactEnergySupplier.es_number' => 'Klantnummer',
+                'es_number' => 'Klantnummer',
                 'energy_member_since' => 'Klant sinds',
-                'primaryContactEnergySupplier.ean_electricity' => 'EAN electriciteit',
-                'latest_contactNotes' => 'Parkeerplaats',
+                'ean_electricity' => 'EAN electriciteit',
+                'latest_contactNotes' => 'Opmerkingen',
                 'created_at_date' => 'Datum gemaakt op',
                 'updated_at_date' => 'Datum laatste update',
                 'occupationPrimary' => 'Primair',

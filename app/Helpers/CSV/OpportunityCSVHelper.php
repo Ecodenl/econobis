@@ -74,6 +74,8 @@ class OpportunityCSVHelper
                 $opportunity->city = ($address ? $address->city : '');
                 $opportunity->country = (($address && $address->country) ? $address->country->name : '');
 
+                $opportunity->contact_number = $opportunity->intake->contact->number;
+
                 // person/organisation fields
                 if ($opportunity->intake->contact->type_id === 'person') {
                     $opportunity->title = $opportunity->intake->contact->person->title;
@@ -92,6 +94,7 @@ class OpportunityCSVHelper
 
             $csv = $this->csvExporter->build($chunk, [
                 'number' => '#',
+                'contact_number' => 'Contactnummer',
                 'intake.contact.full_name' => 'Contact',
                 'title.name' => 'Persoon titel',
                 'initials' => 'Persoon initialen',

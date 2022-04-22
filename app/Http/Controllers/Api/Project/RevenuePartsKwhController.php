@@ -203,6 +203,7 @@ class RevenuePartsKwhController extends ApiController
         }
 
         $document = new Document();
+        $document->document_created_from = 'project';
         $document->document_type = 'internal';
         $document->document_group = 'revenue';
         $document->project_id = $revenuePartsKwh->revenuesKwh->project->id;

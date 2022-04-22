@@ -302,6 +302,7 @@ class RevenuesKwhController extends ApiController
         ])->output();
 
         $document = new Document();
+        $document->document_created_from = 'project';
         $document->document_type = 'internal';
         $document->document_group = 'revenue';
         $document->project_id = $project->id;
@@ -661,6 +662,7 @@ class RevenuesKwhController extends ApiController
                 $time = Carbon::now();
 
                 $document = new Document();
+                $document->document_created_from = 'participant';
                 $document->document_type = 'internal';
                 $document->document_group = 'revenue';
                 $document->contact_id = $contact->id;

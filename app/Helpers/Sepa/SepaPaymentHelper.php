@@ -18,7 +18,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Class SepaHelper
+ * Class SepaPaymentHelper
  *
  * @package App\Helpers\Sepa
  */
@@ -34,7 +34,7 @@ class SepaPaymentHelper
     private $invoices = [];
 
     /**
-     * SepaHelper constructor.
+     * SepaPaymentHelper constructor.
      *
      * @param Administration $administration
      * @param                $invoices

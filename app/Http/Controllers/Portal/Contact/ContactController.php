@@ -630,15 +630,14 @@ class ContactController extends ApiController
         $primaryAddressEnergySupplierNew = null;
 
         if ($primaryAddressEnergySupplierOld == null){
-            if($primaryAddressEnergySupplierData['energySupplierId'] == null) {
+            if($primaryAddressEnergySupplierData['energySupplierId'] == null || $primaryAddressEnergySupplierData['memberSince'] == null) {
                 return;
             }
             $primaryAddressEnergySupplierNew = $this->createNewAddressEnergySupplier($address, $primaryAddressEnergySupplierData);
             $primaryAddressEnergySupplierNew->save();
 
         } else {
-            if($primaryAddressEnergySupplierData['energySupplierId'] == null) {
-
+            if($primaryAddressEnergySupplierData['energySupplierId'] == null || $primaryAddressEnergySupplierData['memberSince'] == null) {
                 // delete
                 $primaryAddressEnergySupplierOld->delete();
             }else{

@@ -93,6 +93,11 @@ class ParticipantProject extends Model
         return $this->hasMany(ParticipantMutation::class, 'participation_id')->orderBy('id', 'desc');
     }
 
+    public function mutationsAsc()
+    {
+        return $this->hasMany(ParticipantMutation::class, 'participation_id')->orderBy('id', 'asc');
+    }
+
     public function mutationsForPortal()
     {
         return $this->hasMany(ParticipantMutation::class, 'participation_id');

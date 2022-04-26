@@ -637,10 +637,13 @@ class ContactController extends ApiController
             $primaryAddressEnergySupplierNew->save();
 
         } else {
-            if($primaryAddressEnergySupplierData['energySupplierId'] == null || $primaryAddressEnergySupplierData['memberSince'] == null) {
+            if($primaryAddressEnergySupplierData['energySupplierId'] == null) {
                 // delete
                 $primaryAddressEnergySupplierOld->delete();
             }else{
+                if($primaryAddressEnergySupplierData['memberSince'] == null) {
+                    return;
+                }
                 if($primaryAddressEnergySupplierData['energySupplierId'] == $primaryAddressEnergySupplierOld->energy_supplier_id) {
                     // update
                     $primaryAddressEnergySupplierNew = clone $primaryAddressEnergySupplierOld;

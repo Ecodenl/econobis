@@ -139,7 +139,7 @@ class ParticipationProjectController extends Controller
              * 2) De betaling nog niet is gedaan.
              */
             $previousParticipantProject = $contact->participations()->where('project_id', $project->id)->first();
-            $previousMutation = optional(optional($previousParticipantProject)->mutations())->first(); // Pakken de eerste mutatie, er zou er altijd maar een moeten zijn op dit moment.
+            $previousMutation = optional(optional($previousParticipantProject)->mutationsAsc())->first(); // Pakken de eerste mutatie, er zou er altijd maar een moeten zijn op dit moment.
             if($project->uses_mollie && $previousMutation && !$previousMutation->is_paid_by_mollie){
                 $this->deleteParticipantProject($previousMutation, $previousParticipantProject);
             }

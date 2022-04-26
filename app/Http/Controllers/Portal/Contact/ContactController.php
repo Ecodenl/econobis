@@ -767,13 +767,13 @@ class ContactController extends ApiController
             $project->participationsOptioned = $previousParticipantProject->participations_optioned;
             $project->amountOptioned = $previousParticipantProject->amount_optioned;
             $project->powerKwhConsumption = $previousParticipantProject->power_kwh_consumption;
-            $previousMutation = optional(optional($previousParticipantProject)->mutations())->first(); // Pakken de eerste mutatie, er zou er altijd maar een moeten zijn op dit moment.
+            $previousMutation = optional(optional($previousParticipantProject)->mutationsAsc())->first(); // Pakken de eerste mutatie.
 
             /* If mollie is used and there was a first mutation with status option and isn't paid by mollie yet, then:
                - allow change of option participation
                - allow to pay for mollie (still open)
                - return also the econobisPaymentLink to pay with mollie */
-            if ($project->uses_mollie && $previousMutation && !$previousMutation->is_paid_by_mollie && $previousMutation->status->code_ref === 'option') {
+            if ($project->uses_mollie && $previousMutation && !$previousMutation->is_paid_by_mollie && $previousMutation->status && $previousMutation->status->code_ref === 'option') {
                 $project->allowChangeParticipation = true;
                 $project->allowPayMollie = true;
                 $project->econobisPaymentLink = $previousMutation->econobis_payment_link;

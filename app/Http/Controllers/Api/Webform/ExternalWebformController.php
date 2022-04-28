@@ -1267,7 +1267,7 @@ class ExternalWebformController extends Controller
                 'energy_supplier_id' => $energySupplier->id,
                 'es_number' => $data['es_number'],
                 'energy_supply_type_id' => $energySupplierType->id,
-                'member_since' => $data['member_since'] ?: null,
+                'member_since' => $data['member_since'] ?: '2000-01-01',
                 'energy_supply_status_id' => $energySupplierStatusId,
             ];
             $addressEnergySupplier = new AddressEnergySupplier();

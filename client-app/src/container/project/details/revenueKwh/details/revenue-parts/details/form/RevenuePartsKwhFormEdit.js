@@ -606,9 +606,9 @@ class RevenuePartsKwhFormEdit extends Component {
                             alle voorgaande perioden definitief worden gemaakt. Je kunt deze hierna niet meer aanpassen.
                         </p>
                         <p>
-                            Verder zullen er mutaties "Teruggave EB" aangemaakt worden voor deelnemers. Uitkeringsdatum
-                            wordt de datum die bij deze mutatie komt te staan in de deelname overzichten van de
-                            deelnemers.
+                            Mutaties "Teruggave EB" voor de deelnemers zullen worden aangemaakt bij het maken van
+                            "Rapport energie leverancier". Uitkeringsdatum wordt de datum die bij deze mutatie komt te
+                            staan in de deelname overzichten van de deelnemers.
                         </p>
                         {isLastRevenuePartsKwh && (
                             <p className={'text-danger'}>

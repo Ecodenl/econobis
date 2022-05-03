@@ -933,10 +933,11 @@ class conversionProjectRevenuesKwh extends Command
         // eert doen we conversion1
         $this->doConversion1($conversionRevenuesKwh);
         // daarna de tussentijdse verdelingen hierin verwerken.
-        $newRevenuesKwh = RevenuesKwh::find($conversionRevenuesKwh->new_revenue_id);
-        $oldProjectRevenuesKwh = DB::table('xxx_project_revenues')->where('id', $conversionRevenuesKwh->old_revenue_id)->first();
-
-        $this->addRevenueSplitPartsKwh($oldProjectRevenuesKwh, $newRevenuesKwh);
+        // wordt een zooitje
+//        $newRevenuesKwh = RevenuesKwh::find($conversionRevenuesKwh->new_revenue_id);
+//        $oldProjectRevenuesKwh = DB::table('xxx_project_revenues')->where('id', $conversionRevenuesKwh->old_revenue_id)->first();
+//
+//        $this->addRevenueSplitPartsKwh($oldProjectRevenuesKwh, $newRevenuesKwh);
     }
     /**
      * @param $conversionRevenuesKwh
@@ -947,10 +948,11 @@ class conversionProjectRevenuesKwh extends Command
         // eert doen we conversion2
         $this->doConversion2($conversionRevenuesKwh);
         // daarna de tussentijdse verdelingen hierin verwerken.
-        $newRevenuesKwh = RevenuesKwh::find($conversionRevenuesKwh->new_revenue_id);
-        $oldProjectRevenuesKwh = DB::table('xxx_project_revenues')->where('id', $conversionRevenuesKwh->old_revenue_id)->first();
-
-        $this->addRevenueSplitPartsKwh($oldProjectRevenuesKwh, $newRevenuesKwh);
+        // wordt een zooitje
+//        $newRevenuesKwh = RevenuesKwh::find($conversionRevenuesKwh->new_revenue_id);
+//        $oldProjectRevenuesKwh = DB::table('xxx_project_revenues')->where('id', $conversionRevenuesKwh->old_revenue_id)->first();
+//
+//        $this->addRevenueSplitPartsKwh($oldProjectRevenuesKwh, $newRevenuesKwh);
     }
     /**
      * @param $conversionRevenuesKwh

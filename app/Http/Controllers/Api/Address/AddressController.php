@@ -11,6 +11,7 @@ use App\Eco\Task\TaskType;
 use App\Helpers\Address\AddressHelper;
 use App\Helpers\Delete\Models\DeleteAddress;
 use App\Helpers\Twinfield\TwinfieldCustomerHelper;
+use App\Helpers\Workflow\TaskWorkflowHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\Address\FullAddress;
 use App\Rules\EnumExists;
@@ -200,6 +201,16 @@ class AddressController extends ApiController
         $newTask->date_planned_start = Carbon::today();
 
         $newTask->save();
+
+        if ($newTask->type && $newTask->type->uses_wf_new_task) {
+            $taskWorkflowHelper = new TaskWorkflowHelper($newTask);
+            $processed = $taskWorkflowHelper->processWorkflowEmailNewTask();
+            if($processed)
+            {
+                $newTask->date_sent_wf_new_task =  Carbon::now();
+                $newTask->save();
+            }
+        }
     }
 
 }

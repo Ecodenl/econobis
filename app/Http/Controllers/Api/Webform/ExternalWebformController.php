@@ -63,6 +63,7 @@ use App\Helpers\Address\AddressHelper;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Workflow\IntakeWorkflowHelper;
+use App\Helpers\Workflow\TaskWorkflowHelper;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Controllers\Controller;
@@ -132,11 +133,16 @@ class ExternalWebformController extends Controller
     private $contactIdToEmailNewContactToGroup = null;
     private $processEmailNewContactToGroup = false;
 
+    private $newTaskToEmail = [];
+    private $processWorkflowEmailNewTask = false;
+
     public function post(string $apiKey, Request $request)
     {
         $data = $this->getDataFromRequest($request);
         $createHoomDossier = (bool)$data['contact']['create_hoom_dossier'];
         $this->responsibleIds = $data['responsible_ids'];
+        $this->newTaskToEmail = [];
+        $this->processWorkflowEmailNewTask = false;
 
         try {
             \DB::transaction(function () use ($request, $apiKey, $data ) {
@@ -194,6 +200,27 @@ class ExternalWebformController extends Controller
         if ($this->processEmailNewContactToGroup) {
             $this->doProcessEmailNewContactToGroup($data['contact']);
         }
+
+        // evt nog processWorkflowEmailNewTask uitvoeren
+        if ($this->processWorkflowEmailNewTask) {
+            foreach ($this->newTaskToEmail as $newTaskId){
+                $newTask = Task::find($newTaskId);
+                if ($newTask && $newTask->type && $newTask->type->uses_wf_new_task) {
+                    $taskWorkflowHelper = new TaskWorkflowHelper($newTask);
+                    $processed = $taskWorkflowHelper->processWorkflowEmailNewTask();
+                    if($processed)
+                    {
+                        $this->log('Nieuwe taak (id: ' . $newTask->id . ') gemaild aan verantwoordelijke.');
+                        $newTask->date_sent_wf_new_task =  Carbon::now();
+                        $newTask->save();
+                    } else {
+                        $this->log('Nieuwe taak (id: ' . $newTask->id . ') NIET gemaild aan verantwoordelijke.');
+                    }
+                }
+
+            }
+        }
+
 
         $this->logInfo();
         return Response::json($this->logs);
@@ -1973,6 +2000,19 @@ class ExternalWebformController extends Controller
             'order_id' => $order ? $order->id : null,
         ]);
 
+        if ($task->type && $task->type->uses_wf_new_task) {
+            $taskWorkflowHelper = new TaskWorkflowHelper($task);
+            $processed = $taskWorkflowHelper->processWorkflowEmailNewTask();
+            if($processed)
+            {
+                $this->log('Nieuwe taak gemaild aan verantwoordelijke.');
+                $task->date_sent_wf_new_task =  Carbon::now();
+                $task->save();
+            } else {
+                $this->log('Nieuwe taak NIET gemaild aan verantwoordelijke.');
+            }
+        }
+
         if($task->finished){
             $task->date_finished = Carbon::today();
             $finished_by_user = User::find($responsibleIds['responsible_user_id'] ? $responsibleIds['responsible_user_id'] : $webform->responsible_user_id );
@@ -2027,6 +2067,11 @@ class ExternalWebformController extends Controller
             'participation_project_id' => null,
             'order_id' => null,
         ]);
+
+        if ($task->type && $task->type->uses_wf_new_task) {
+            $this->newTaskToEmail [] = $task->id;
+            $this->processWorkflowEmailNewTask = true;
+        }
 
         $this->log('Taak met id ' . $task->id . ' aangemaakt.');
     }

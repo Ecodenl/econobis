@@ -8,7 +8,6 @@ use App\Eco\Contact\Contact;
 use App\Eco\Project\Project;
 use App\Eco\Task\Task;
 use App\Eco\Task\TaskType;
-use App\Helpers\Workflow\TaskWorkflowHelper;
 use Carbon\Carbon;
 
 class AddressHelper
@@ -212,7 +211,7 @@ class AddressHelper
         $note .= "Adres op type \"Oud\" gezet: " . $this->address->StreetPostalCodeCity . ".\n";
         $note .= "Er is een deelname in een project op dit adres.\n";
         $note .= "Deze deelname moet worden beëindigd en er moet een nieuwe deelname op het nieuwe adres worden aangemaakt.\n";
-        $task = Task::create([
+        Task::create([
             'note' => $note,
             'type_id' => $taskType->id,
             'contact_id' => $this->contact->id,
@@ -227,15 +226,6 @@ class AddressHelper
             'participation_project_id' => null,
             'order_id' => null,
         ]);
-        if ($task->type && $task->type->uses_wf_new_task) {
-            $taskWorkflowHelper = new TaskWorkflowHelper($task);
-            $processed = $taskWorkflowHelper->processWorkflowEmailNewTask();
-            if($processed)
-            {
-                $task->date_sent_wf_new_task =  Carbon::now();
-                $task->save();
-            }
-        }
     }
 
 }

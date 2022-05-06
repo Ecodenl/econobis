@@ -10,6 +10,7 @@ use App\Eco\Task\Task;
 use App\Eco\Task\TaskType;
 use App\Eco\User\User;
 use App\Helpers\Settings\PortalSettings;
+use App\Helpers\Workflow\TaskWorkflowHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\ContactGroup\ContactGroupController;
 use App\Http\Controllers\Api\ParticipantMutation\ParticipantMutationController;
@@ -195,6 +196,16 @@ class ParticipantMutationMolliePaymentController extends ApiController
             $newTask->date_planned_start = Carbon::today();
 
             $newTask->save();
+
+            if ($newTask->type && $newTask->type->uses_wf_new_task) {
+                $taskWorkflowHelper = new TaskWorkflowHelper($newTask);
+                $processed = $taskWorkflowHelper->processWorkflowEmailNewTask();
+                if($processed)
+                {
+                    $newTask->date_sent_wf_new_task =  Carbon::now();
+                    $newTask->save();
+                }
+            }
         }
     }
 }

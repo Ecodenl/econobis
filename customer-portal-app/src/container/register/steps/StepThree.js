@@ -61,7 +61,6 @@ function StepThree({ project, contactProjectData, previous, next, initialRegiste
                                                 ),
                                             }}
                                         />
-                                        XX
                                     </p>
                                 </Col>
                             </Row>

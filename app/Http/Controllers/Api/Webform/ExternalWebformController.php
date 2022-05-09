@@ -669,7 +669,7 @@ class ExternalWebformController extends Controller
             } else {
 
                 $checkContactForWG = $contactAddressQuery->first();
-                if($checkContactForWG && $checkContactForWG->full_name == 'bewoner van de WG-buurt' ){
+                if($checkContactForWG && $checkContactForWG->person->last_name == 'bewoner van de WG-buurt' ){
                     $this->contactActie = "WGC";
                     $this->log('Contact "bewoner van de WG-buurt" gevonden op basis van adres, naam en email bijwerken');
                     return $checkContactForWG;

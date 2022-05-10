@@ -202,7 +202,7 @@ class DocumentController extends Controller
 
         //delete file in Alfresco(to trashbin)
         $user = Auth::user();
-        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local' && $document->alfresco_node_id) {
             $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
             $alfrescoHelper->deleteFile($document->alfresco_node_id);

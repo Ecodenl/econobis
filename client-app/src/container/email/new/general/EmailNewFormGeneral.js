@@ -145,7 +145,7 @@ function EmailNewFormGeneral(props) {
         } catch (error) {
             setLoadingContact(false);
 
-            console.log(error);
+            // console.log(error);
         }
     };
 

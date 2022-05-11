@@ -31,7 +31,7 @@ class ProjectGeneralApp extends Component {
                     </div>
 
                     <div className="col-md-12">
-                        <ProjectGeneralForm />
+                        <ProjectGeneralForm filterProjectId={this.props.params.id} />
                     </div>
                 </div>
                 <Panel className="col-md-3 harmonica">

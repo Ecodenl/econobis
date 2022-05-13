@@ -7,15 +7,33 @@ import AdministrationDetailsForm from './AdministrationDetailsForm';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import AdministrationDetailsHarmonica from './AdministrationDetailsHarmonica';
+import AdministrationDetailsAPI from '../../../api/administration/AdministrationDetailsAPI';
 
 class AdministrationDetailsApp extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            administrationLogoDetails: [],
+        };
     }
 
     componentDidMount() {
         this.props.fetchAdministrationDetails(this.props.params.id);
+        this.fetchAdministrationLogoDetails(this.props.params.id);
     }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.params.id !== prevProps.params.id) {
+            this.props.fetchAdministrationDetails(this.props.params.id);
+            this.fetchAdministrationLogoDetails(this.props.params.id);
+        }
+    }
+
+    fetchAdministrationLogoDetails = administrationId => {
+        AdministrationDetailsAPI.fetchAdministrationLogoDetails(administrationId).then(payload => {
+            this.setState({ administrationLogoDetails: payload });
+        });
+    };
 
     render() {
         return (
@@ -30,7 +48,7 @@ class AdministrationDetailsApp extends Component {
                     </div>
 
                     <div className="col-md-12 margin-10-top">
-                        <AdministrationDetailsForm />
+                        <AdministrationDetailsForm administrationLogoDetails={this.state.administrationLogoDetails} />
                     </div>
                 </div>
                 <Panel className="col-md-3 harmonica">

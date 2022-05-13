@@ -11,6 +11,7 @@ class AdministrationDetailsFormGeneral extends Component {
         this.state = {
             showEdit: false,
             activeDiv: '',
+            imageHash: Date.now(),
         };
     }
 
@@ -24,6 +25,7 @@ class AdministrationDetailsFormGeneral extends Component {
         this.setState({
             showEdit: false,
             activeDiv: '',
+            imageHash: Date.now(),
         });
     };
 
@@ -54,9 +56,14 @@ class AdministrationDetailsFormGeneral extends Component {
                     <AdministrationDetailsFormGeneralEdit
                         switchToView={this.switchToView}
                         meDetails={this.props.meDetails}
+                        imageHash={this.state.imageHash}
                     />
                 ) : (
-                    <AdministrationDetailsFormGeneralView switchToEdit={this.switchToEdit} />
+                    <AdministrationDetailsFormGeneralView
+                        switchToEdit={this.switchToEdit}
+                        administrationLogoDetails={this.props.administrationLogoDetails}
+                        imageHash={this.state.imageHash}
+                    />
                 )}
             </div>
         );

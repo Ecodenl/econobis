@@ -398,6 +398,19 @@ class AdministrationController extends ApiController
         return $twinfieldInvoiceHelper->processPaidInvoices();
     }
 
+    public function getLogoDetails(Administration $administration)
+    {
+        if ($administration->logo_filename) {
+            $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $administration->logo_filename);
+            $logo = file_get_contents($path);
+            $logoFilenameSrc = 'data:' . mime_content_type($path)
+                . ';charset=binary;base64,' . base64_encode($logo);
+            $logoFilenameSrc = str_replace(" ", "", $logoFilenameSrc);
+        }
+
+        return ['logoFilenameSrc' => $logoFilenameSrc];
+    }
+
     public function getTotalsInfoAdministration(Administration $administration)
     {
         $totalsInfo = [

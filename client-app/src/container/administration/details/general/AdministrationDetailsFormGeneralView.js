@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import ViewText from '../../../../components/form/ViewText';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+import Image from 'react-bootstrap/es/Image';
 import moment from 'moment';
 
 const AdministrationDetailsFormGeneralView = props => {
@@ -52,6 +53,7 @@ const AdministrationDetailsFormGeneralView = props => {
         usesMollie,
         mollieApiKey,
     } = props.administrationDetails;
+    const { logoFilenameSrc } = props.administrationLogoDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -140,7 +142,25 @@ const AdministrationDetailsFormGeneralView = props => {
                     </div>
                     <div className="row">
                         <ViewText label={"Afzender van Rapportages en nota's is e-mail adres"} value={mailboxEmail} />
-                        <ViewText label={'Logo'} value={logoName} />
+                        {/*<ViewText label={'Logo'} value={logoName} />*/}
+                        <div className="col-sm-6">
+                            <label className="col-sm-6">Logo</label>
+                            <div className="col-sm-6">
+                                <Image
+                                    src={logoFilenameSrc}
+                                    style={{
+                                        // backgroundColor: loginHeaderBackgroundColor,
+                                        // color: loginHeaderBackgroundTextColor,
+                                        border: '1px solid #999',
+                                        display: 'inline-block',
+                                        padding: '1px',
+                                        borderRadius: '1px',
+                                        height: '50px',
+                                        boxShadow: '0 0 0 1px #fff inset',
+                                    }}
+                                />
+                            </div>
+                        </div>
                     </div>
 
                     <div className="row">

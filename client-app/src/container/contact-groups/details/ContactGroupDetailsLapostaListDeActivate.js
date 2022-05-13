@@ -2,29 +2,29 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import Modal from '../../../components/modal/Modal';
 import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
-import { updateContactGroupLapostaList } from '../../../actions/contact-group/ContactGroupDetailsActions';
+import { deActivateContactGroupLapostaList } from '../../../actions/contact-group/ContactGroupDetailsActions';
 
-function ContactGroupDetailsLapostaList({ closeModal, id, lapostaListId }) {
+function ContactGroupDetailsLapostaListDeActivate({ closeModal, id, lapostaListId }) {
     const [message, setMessage] = useState('Aanmaken laposta lijst gestart');
     const [errors, setErrors] = useState([]);
 
     useEffect(function() {
-        ContactGroupAPI.syncLapostaList(id)
+        ContactGroupAPI.deActivateLapostaList(id)
             .then(payload => {
-                setMessage('Laposta lijst is succesvol aangemaakt');
-                updateContactGroupLapostaList(lapostaListId);
+                setMessage('Laposta lijst is succesvol uitgezet');
+                deActivateContactGroupLapostaList(lapostaListId);
                 setTimeout(closeModal, 2000);
             })
             .catch(error => {
                 if (error.response && error.response.status === 422) {
                     if (error.response.data && error.response.data.errors) {
                         if (error.response.data.errors.econobis && error.response.data.errors.econobis.length) {
-                            setMessage('De volgende fouten gevonden tijdens synchronisatie:');
+                            setMessage('De volgende fouten gevonden tijdens uitzetten:');
                             setErrors(error.response.data.errors.econobis);
                         }
                     } else if (error.response.data && error.response.data.message) {
                         setMessage(
-                            'Er is iets misgegaan bij het synchroniseren met Laposta (' + error.response.status + ').'
+                            'Er is iets misgegaan bij het uitzetten van Laposta (' + error.response.status + ').'
                         );
                         let messageErrors = [];
                         for (const [key, value] of Object.entries(JSON.parse(error.response.data.message))) {
@@ -35,7 +35,7 @@ function ContactGroupDetailsLapostaList({ closeModal, id, lapostaListId }) {
                     }
                 } else {
                     setMessage(
-                        'Er is iets misgegaan bij het synchroniseren met Laposta (' +
+                        'Er is iets misgegaan bij het uitzetten van Laposta (' +
                             (error.response && error.response.status) +
                             ').'
                     );
@@ -49,7 +49,7 @@ function ContactGroupDetailsLapostaList({ closeModal, id, lapostaListId }) {
             closeModal={closeModal}
             buttonCancelText={'Sluiten'}
             showConfirmAction={false}
-            title="Synchroniseren met Laposta"
+            title="Uitzetten van Laposta"
         >
             <p>{message}</p>
             {errors.length ? (
@@ -71,9 +71,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    updateContactGroupLapostaList: lapostaListId => {
-        dispatch(updateContactGroupLapostaList(lapostaListId));
+    deActivatedContactGroupLapostaList: lapostaListId => {
+        dispatch(deActivatedContactGroupLapostaList(lapostaListId));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactGroupDetailsLapostaList);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactGroupDetailsLapostaListDeActivate);

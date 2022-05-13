@@ -20,9 +20,9 @@ class PortalLogoLayoutNew extends Component {
                 this.title = 'Upload logo bestand (PNG) tbv de portaal header';
                 this.descriptionImage =
                     'Maximale hoogte van image zal 100px zijn.' +
-                    ' Maximale breedte van image zal 450px zijn als window breedte &gt; 480px is en 150px als window breedte &lt; 480px.' +
+                    ' Maximale breedte van image zal 200px zijn als window breedte > 480px is en 150px als window breedte < 480px.' +
                     ' Breedte/Hoogte verhouding logo blijft behouden.' +
-                    ' Aanbevolen afmeting (in pixels): tussen de 450x100 voor maximale benutting op een PC of 100x100 voor best view op een mobiel.';
+                    ' Aanbevolen afmeting (in pixels): tussen de 200x100 voor maximale benutting op een PC of 100x100 voor best view op een mobiel.';
                 break;
             case 'image-bg-login':
                 this.title = 'Upload background image bestand (PNG) tbv login pagina';

@@ -19,8 +19,6 @@ import InputToggle from '../../../../components/form/InputToggle';
 import ViewText from '../../../../components/form/ViewText';
 import InputDate from '../../../../components/form/InputDate';
 import moment from 'moment';
-import { Link } from 'react-router';
-import PortalSettingsLayoutAPI from '../../../../api/portal-settings-layout/PortalSettingsLayoutAPI';
 import AdministrationsAPI from '../../../../api/administration/AdministrationsAPI';
 
 class AdministrationDetailsFormGeneralEdit extends Component {

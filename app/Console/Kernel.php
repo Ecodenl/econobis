@@ -77,12 +77,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+// Time is CET. So when scheduled for 06:00 it is run at 04:00 Amsterdam time.
         $schedule->command('email:getAllEmail')->everyTenMinutes()->between('06:00', '23:30');
         $schedule->command('email:checkMailboxes')->dailyAt('05:58');
         $schedule->command('email:checkMailboxes')->dailyAt('08:58');
         $schedule->command('email:checkMailboxes')->dailyAt('11:58');
         $schedule->command('email:checkMailboxes')->dailyAt('14:58');
         $schedule->command('email:checkMailboxes')->dailyAt('17:58');
+        $schedule->command('laposta:processStateAllMembersLaposta')->dailyAt('22:30');
         $schedule->command('address:createTaskAtEndDateAddress')->dailyAt('00:30');
         $schedule->command('addressEnergySupplier:setIsCurrentSupplier')->dailyAt('01:00');
         $schedule->command('invoice:setDaysLastReminder')->dailyAt('01:05');
@@ -94,7 +96,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('workflow:processWorkflowEmailExpiredTask')->dailyAt('05:05');
         $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->dailyAt('05:10');
         $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->dailyAt('05:15');
-        $schedule->command('laposta:processStateAllMembersLaposta')->dailyAt('06:00');
     }
 
     /**

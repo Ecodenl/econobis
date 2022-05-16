@@ -92,6 +92,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('workflow:processWorkflowEmailExpiredTask')->dailyAt('05:05');
         $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->dailyAt('05:10');
         $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->dailyAt('05:15');
+        $schedule->command('laposta:processStateAllMembersLaposta')->dailyAt('06:00');
     }
 
     /**

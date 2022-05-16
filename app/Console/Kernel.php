@@ -18,6 +18,7 @@ use App\Console\Commands\deleteEmailDefinitive;
 //use App\Console\Commands\deleteFloatingAttachmentFiles;
 use App\Console\Commands\getAllEmail;
 use App\Console\Commands\processPaidInvoices;
+use App\Console\Commands\processStateAllMembersLaposta;
 use App\Console\Commands\processWorkflowEmailCompleteTask;
 use App\Console\Commands\processWorkflowEmailExpiredTask;
 use App\Console\Commands\processWorkflowEmailOpportunityStatus;
@@ -51,6 +52,7 @@ class Kernel extends ConsoleKernel
         setDaysLastReminderInvoice::class,
         setDaysToExpireInvoice::class,
         processPaidInvoices::class,
+        processStateAllMembersLaposta::class,
         checkMailboxes::class,
         processWorkflowEmailCompleteTask::class,
         processWorkflowEmailExpiredTask::class,

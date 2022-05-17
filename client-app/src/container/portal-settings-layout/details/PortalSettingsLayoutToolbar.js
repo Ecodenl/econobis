@@ -8,8 +8,6 @@ import PortalSettingsLayoutDeleteItem from './PortalSettingsLayoutDeleteItem';
 class PortalSettingsLayoutDetailsToolbar extends Component {
     constructor(props) {
         super(props);
-        console.log('then');
-        console.log(props);
         this.state = {
             showDelete: false,
         };

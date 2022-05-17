@@ -55,8 +55,6 @@ class PortalSettingsLayoutDetailsApp extends Component {
     };
 
     render() {
-        console.log('first');
-        console.log(this.props.permissions);
         return (
             <div className="row">
                 <div className="col-md-9">

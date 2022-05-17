@@ -72,7 +72,7 @@ const RevenueNew = props => {
 
             {category.codeRef === 'revenueEuro' ? (
                 <div className="row">
-                    {projectTypeCodeRef === 'obligation' ? (
+                    {projectTypeCodeRef !== 'loan' ? (
                         <InputSelect
                             label={'Type opbrengst verdeling'}
                             name={'distributionTypeId'}

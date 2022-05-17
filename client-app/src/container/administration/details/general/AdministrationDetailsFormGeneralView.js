@@ -153,8 +153,6 @@ const AdministrationDetailsFormGeneralView = props => {
                                 <Image
                                     src={logoFilenameSrc}
                                     style={{
-                                        // backgroundColor: loginHeaderBackgroundColor,
-                                        // color: loginHeaderBackgroundTextColor,
                                         border: '1px solid #999',
                                         display: 'inline-block',
                                         padding: '1px',

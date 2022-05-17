@@ -44,7 +44,7 @@ class AdministrationDetailsForm extends Component {
                             </PanelHeader>
                         </Panel>
                     )}
-                <AdministrationDetailsFormGeneral administrationLogoDetails={this.props.administrationLogoDetails} />
+                <AdministrationDetailsFormGeneral />
                 <AdministrationDetailsUsers />
                 <AdministrationDetailsSepas />
                 <AdministrationDetailsFormConclusion />

@@ -82,12 +82,10 @@ class AdministrationDetailsFormGeneralEdit extends Component {
 
         this.state = {
             showPreviewInvoice: false,
-            imageHash: Date.now(),
             image: '',
             imageLayoutItemName: '',
             showModalNewLogo: false,
             showModalCropLogo: false,
-            newLogo: false,
             emailTemplates: [],
             mailboxAddresses: [],
             twinfieldInfoAdministrations: [],
@@ -226,6 +224,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 ...this.state.administration,
                 attachment: file,
                 filename: file.name,
+                logoName: file.name,
+                src: file.name,
             },
             showModalCropLogo: false,
         });
@@ -499,6 +499,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             data.append('usesVat', administration.usesVat);
             data.append('emailBccNotas', administration.emailBccNotas);
             data.append('portalSettingsLayoutId', administration.portalSettingsLayoutId);
+            data.append('logoName', administration.logoName);
             data.append('usesMollie', administration.usesMollie);
             data.append('mollieApiKey', administration.mollieApiKey);
 
@@ -787,6 +788,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 error={this.state.errors.prefixInvoiceNumber}
                             />
                         </div>
+
                         <div className="row">
                             <InputSelect
                                 label={"Afzender van Rapportages en nota's is e-mail adres"}
@@ -808,8 +810,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 }}
                                 onChangeaction={() => {}}
                             />
-                            {/*</div>*/}
-                            {/*</div>*/}
                         </div>
 
                         <div className="row">
@@ -824,14 +824,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 <label className="col-sm-6"></label>
                                 <div className="col-sm-6">
                                     <Image
-                                        src={
-                                            this.state.attachment && this.state.attachment.preview
-                                                ? this.state.attachment.preview
-                                                : logoFilenameSrc
-                                        }
+                                        src={attachment && attachment.preview ? attachment.preview : logoFilenameSrc}
                                         style={{
-                                            // backgroundColor: loginHeaderBackgroundColor,
-                                            // color: loginHeaderBackgroundTextColor,
                                             border: '1px solid #999',
                                             display: 'inline-block',
                                             padding: '1px',
@@ -861,13 +855,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 hidden={true}
                             />
                         </div>
-
-                        {this.state.newLogo && (
-                            <AdministrationLogoNew
-                                toggleShowNew={this.toggleNewLogo}
-                                addAttachment={this.addAttachment}
-                            />
-                        )}
 
                         {(this.props.meDetails.email === 'support@econobis.nl' ||
                             this.props.meDetails.email === 'software@xaris.nl') && (

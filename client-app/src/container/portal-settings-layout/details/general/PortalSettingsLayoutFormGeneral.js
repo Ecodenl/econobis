@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import PortalSettingsLayoutFormGeneralEdit from './PortalSettingsLayoutFormGeneralEdit';
 import PortalSettingsLayoutFormGeneralView from './PortalSettingsLayoutFormGeneralView';
+import ErrorUnauthorized from '../../../global/ErrorUnauthorized';
 
 class PortalSettingsLayoutFormGeneral extends Component {
     constructor(props) {
@@ -16,17 +17,15 @@ class PortalSettingsLayoutFormGeneral extends Component {
     }
 
     switchToEdit = () => {
-        if (this.props.meDetails.permissions.managePortalSettings) {
-            this.setState({
-                showEdit: true,
-            });
-        }
+        this.setState({
+            showEdit: true,
+        });
     };
 
     switchToView = () => {
         this.setState({
-            imageHash: Date.now(),
             showEdit: false,
+            imageHash: Date.now(),
             activeDiv: '',
         });
     };
@@ -47,6 +46,9 @@ class PortalSettingsLayoutFormGeneral extends Component {
 
     render() {
         const { permissions = {} } = this.props.meDetails;
+        if (!permissions.managePortalSettings) {
+            return <ErrorUnauthorized />;
+        }
 
         return (
             <div
@@ -77,8 +79,8 @@ class PortalSettingsLayoutFormGeneral extends Component {
 
 const mapStateToProps = state => {
     return {
-        meDetails: state.meDetails,
         // permissions: state.meDetails.permissions,
+        meDetails: state.meDetails,
         portalSettingsLayouts: state.systemData.portalSettingsLayouts,
     };
 };

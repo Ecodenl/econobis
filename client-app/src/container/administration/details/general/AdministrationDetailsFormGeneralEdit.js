@@ -20,6 +20,8 @@ import ViewText from '../../../../components/form/ViewText';
 import InputDate from '../../../../components/form/InputDate';
 import moment from 'moment';
 import AdministrationsAPI from '../../../../api/administration/AdministrationsAPI';
+import Image from 'react-bootstrap/lib/Image';
+import PortalLogoLayoutNewCrop from '../../../../components/cropImage/portalLayout/PortalLogoLayoutNewCrop';
 
 class AdministrationDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -79,6 +81,12 @@ class AdministrationDetailsFormGeneralEdit extends Component {
         } = props.administrationDetails;
 
         this.state = {
+            showPreviewInvoice: false,
+            imageHash: Date.now(),
+            image: '',
+            imageLayoutItemName: '',
+            showModalNewLogo: false,
+            showModalCropLogo: false,
             newLogo: false,
             emailTemplates: [],
             mailboxAddresses: [],
@@ -186,20 +194,40 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             );
     }
 
-    toggleNewLogo = () => {
+    closeNewLogo = () => {
         this.setState({
-            newLogo: !this.state.newLogo,
+            showModalNewLogo: false,
+        });
+    };
+    toggleNewLogo = imageLayoutItemName => {
+        this.setState({
+            showModalNewLogo: !this.state.showModalNewLogo,
+            imageLayoutItemName: imageLayoutItemName,
         });
     };
 
-    addAttachment = file => {
+    closeShowCrop = () => {
+        this.setState({
+            showModalCropLogo: false,
+        });
+    };
+
+    addLogo = file => {
+        this.setState({
+            ...this.state,
+            image: file[0],
+            showModalCropLogo: true,
+        });
+    };
+    cropLogo = file => {
         this.setState({
             ...this.state,
             administration: {
                 ...this.state.administration,
-                attachment: file[0],
-                filename: file[0].name,
+                attachment: file,
+                filename: file.name,
             },
+            showModalCropLogo: false,
         });
     };
 
@@ -387,7 +415,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             if (administrationCodeNotUnique) {
                 errors.administrationCode = true;
                 hasErrors = true;
-                console.log('fout 2');
             }
 
             let twinFieldOfficeAndOrganizationCodeNotUnique = false;
@@ -527,6 +554,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             usesMollie,
             mollieApiKey,
         } = this.state.administration;
+        const { logoFilenameSrc } = this.props.administrationLogoDetails;
 
         let disableBeforeDateSyncTwinfieldContacts = null;
         if (dateSyncTwinfieldContacts) {
@@ -770,18 +798,18 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 value={mailboxId}
                                 onChangeAction={this.handleInputChange}
                             />
-                            <div className="form-group col-sm-6">
-                                <label className="col-sm-6">Kies logo</label>
-                                <div className="col-sm-6">
-                                    <input
-                                        type="text"
-                                        className="form-control input-sm col-sm-6"
-                                        value={attachment ? attachment.name : logoName}
-                                        onClick={this.toggleNewLogo}
-                                        onChange={() => {}}
-                                    />
-                                </div>
-                            </div>
+                            <InputText
+                                Men
+                                label="Logo"
+                                divSize={'col-sm-6'}
+                                value={attachment ? attachment.name : logoName}
+                                onClickAction={() => {
+                                    this.toggleNewLogo('logo-administration');
+                                }}
+                                onChangeaction={() => {}}
+                            />
+                            {/*</div>*/}
+                            {/*</div>*/}
                         </div>
 
                         <div className="row">
@@ -792,12 +820,28 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.emailBccNotas}
                             />
-                            <ViewText
-                                label={'Gebruikt BTW'}
-                                value={usesVat ? 'Ja' : 'Nee'}
-                                className={'col-sm-6 form-group'}
-                                hidden={true}
-                            />
+                            <div className="col-sm-6">
+                                <label className="col-sm-6"></label>
+                                <div className="col-sm-6">
+                                    <Image
+                                        src={
+                                            this.state.attachment && this.state.attachment.preview
+                                                ? this.state.attachment.preview
+                                                : logoFilenameSrc
+                                        }
+                                        style={{
+                                            // backgroundColor: loginHeaderBackgroundColor,
+                                            // color: loginHeaderBackgroundTextColor,
+                                            border: '1px solid #999',
+                                            display: 'inline-block',
+                                            padding: '1px',
+                                            borderRadius: '1px',
+                                            height: '50px',
+                                            boxShadow: '0 0 0 1px #fff inset',
+                                        }}
+                                    />
+                                </div>
+                            </div>
                         </div>
 
                         <div className="row">
@@ -809,6 +853,12 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 value={portalSettingsLayoutId}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.portalSettingsLayouts}
+                            />
+                            <ViewText
+                                label={'Gebruikt BTW'}
+                                value={usesVat ? 'Ja' : 'Nee'}
+                                className={'col-sm-6 form-group'}
+                                hidden={true}
                             />
                         </div>
 
@@ -1014,10 +1064,19 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                             </React.Fragment>
                         )}
 
-                        {this.state.newLogo && (
+                        {this.state.showModalNewLogo && (
                             <AdministrationLogoNew
-                                toggleShowNew={this.toggleNewLogo}
-                                addAttachment={this.addAttachment}
+                                closeNewLogo={this.closeNewLogo}
+                                addAttachment={this.addLogo}
+                                imageLayoutItemName={this.state.imageLayoutItemName}
+                            />
+                        )}
+                        {this.state.showModalCropLogo && (
+                            <PortalLogoLayoutNewCrop
+                                closeShowCrop={this.closeShowCrop}
+                                image={this.state.image}
+                                imageLayoutItemName={this.state.imageLayoutItemName}
+                                cropLogo={this.cropLogo}
                             />
                         )}
                     </PanelBody>

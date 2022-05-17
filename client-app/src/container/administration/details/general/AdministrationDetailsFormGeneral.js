@@ -55,6 +55,7 @@ class AdministrationDetailsFormGeneral extends Component {
                 {this.state.showEdit && permissions.manageFinancial ? (
                     <AdministrationDetailsFormGeneralEdit
                         switchToView={this.switchToView}
+                        administrationLogoDetails={this.props.administrationLogoDetails}
                         meDetails={this.props.meDetails}
                         imageHash={this.state.imageHash}
                     />

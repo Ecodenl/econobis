@@ -142,9 +142,13 @@ const AdministrationDetailsFormGeneralView = props => {
                     </div>
                     <div className="row">
                         <ViewText label={"Afzender van Rapportages en nota's is e-mail adres"} value={mailboxEmail} />
-                        {/*<ViewText label={'Logo'} value={logoName} />*/}
+                        <ViewText label={'Logo'} value={logoName} />
+                    </div>
+
+                    <div className="row">
+                        <ViewText label={"Nota's ook mailen in BCC naar"} value={emailBccNotas ? emailBccNotas : ''} />
                         <div className="col-sm-6">
-                            <label className="col-sm-6">Logo</label>
+                            <label className="col-sm-6"></label>
                             <div className="col-sm-6">
                                 <Image
                                     src={logoFilenameSrc}
@@ -164,15 +168,11 @@ const AdministrationDetailsFormGeneralView = props => {
                     </div>
 
                     <div className="row">
-                        <ViewText label={"Nota's ook mailen in BCC naar"} value={emailBccNotas ? emailBccNotas : ''} />
-                        <ViewText label={'Gebruikt BTW'} value={usesVat ? 'Ja' : 'Nee'} hidden={true} />
-                    </div>
-
-                    <div className="row">
                         <ViewText
                             label={'Portal instellingen layout'}
                             value={portalSettingsLayout ? portalSettingsLayout.description : 'gebruikt standaard'}
                         />
+                        <ViewText label={'Gebruikt BTW'} value={usesVat ? 'Ja' : 'Nee'} hidden={true} />
                     </div>
 
                     <div className="row">

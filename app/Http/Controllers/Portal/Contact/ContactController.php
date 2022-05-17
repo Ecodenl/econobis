@@ -28,6 +28,7 @@ use App\Helpers\Address\AddressHelper;
 use App\Helpers\Document\DocumentHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
+use App\Helpers\Workflow\TaskWorkflowHelper;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\Portal\Administration\AdministrationResource;
@@ -598,6 +599,17 @@ class ContactController extends ApiController
                 $newTask->responsible_team_id = !empty($checkContactTaskResponsibleTeamId) ? $checkContactTaskResponsibleTeamId : null;
                 $newTask->date_planned_start = Carbon::today();
                 $newTask->save();
+
+                if ($newTask->type && $newTask->type->uses_wf_new_task) {
+                    $taskWorkflowHelper = new TaskWorkflowHelper($newTask);
+                    $processed = $taskWorkflowHelper->processWorkflowEmailNewTask();
+                    if($processed)
+                    {
+                        $newTask->date_sent_wf_new_task =  Carbon::now();
+                        $newTask->save();
+                    }
+                }
+
             }
         }
 
@@ -707,6 +719,16 @@ class ContactController extends ApiController
                 $newTask->responsible_team_id = !empty($checkContactTaskResponsibleTeamId) ? $checkContactTaskResponsibleTeamId : null;
                 $newTask->date_planned_start = Carbon::today();
                 $newTask->save();
+
+                if ($newTask->type && $newTask->type->uses_wf_new_task) {
+                    $taskWorkflowHelper = new TaskWorkflowHelper($newTask);
+                    $processed = $taskWorkflowHelper->processWorkflowEmailNewTask();
+                    if($processed)
+                    {
+                        $newTask->date_sent_wf_new_task =  Carbon::now();
+                        $newTask->save();
+                    }
+                }
             }
         }
 
@@ -741,6 +763,16 @@ class ContactController extends ApiController
             $newTask->date_planned_start = Carbon::today();
 
             $newTask->save();
+
+            if ($newTask->type && $newTask->type->uses_wf_new_task) {
+                $taskWorkflowHelper = new TaskWorkflowHelper($newTask);
+                $processed = $taskWorkflowHelper->processWorkflowEmailNewTask();
+                if($processed)
+                {
+                    $newTask->date_sent_wf_new_task =  Carbon::now();
+                    $newTask->save();
+                }
+            }
         }
     }
 

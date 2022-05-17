@@ -3,6 +3,7 @@
 namespace App\Eco\Project;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class ProjectRevenueDistributionCalculator
 {
@@ -18,6 +19,7 @@ class ProjectRevenueDistributionCalculator
 
     public function runRevenueEuro()
     {
+        Log::info('Test runRevenueEuro');
         // Revenue category REVENUE EURO of REDEMPTION EURO
         if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueEuro')->first())->id
         || $this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'redemptionEuro')->first())->id) {
@@ -35,23 +37,64 @@ class ProjectRevenueDistributionCalculator
     public function runRevenueCapitalResult()
     {
         // Revenue category REVENUE EUR
-        if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueEuro')->first())->id) {
-            return $this->projectRevenueDistribution->payout = $this->calculateCapitalResult();
-        }
+        $this->projectRevenueDistribution->participations_amount = $this->calculateParticipationsCount();
+        $this->projectRevenueDistribution->save();
+
+        return $this->projectRevenueDistribution->payout = $this->calculateCapitalResult();
     }
 
     protected function calculateCapitalResult()
     {
+
         $projectRevenue = $this->projectRevenueDistribution->revenue;
         $totalResult = $projectRevenue->revenue;
 
-        $participationsAmount = $this->projectRevenueDistribution->participations_amount;
         $totalParticipations = $this->projectRevenueDistribution->where('revenue_id', $projectRevenue->id)->sum('participations_amount');
 
         if(!$totalParticipations) return 0;
 
-        // If key amount first percentage is filled and is greater participationValue, then split calculation with the two percentages
-        $payout = $totalResult / $totalParticipations * $participationsAmount;
+        // --- IN POSSESSION OF --- //
+        if ($this->projectRevenueDistribution->revenue->distribution_type_id == 'inPossessionOf') {
+            $participationsAmount = $this->projectRevenueDistribution->participations_amount;
+            $payout = $totalResult / $totalParticipations * $participationsAmount;
+        }
+        // --- HOW LONG IN POSSESSION --- //
+        if ($this->projectRevenueDistribution->revenue->distribution_type_id == 'howLongInPossession') {
+
+            $dateBegin = Carbon::parse($this->projectRevenueDistribution->revenue->date_begin);
+            $dateEnd = Carbon::parse($this->projectRevenueDistribution->revenue->date_end)->addDay();
+
+            $totalParticipations = 0;
+            $totalParticipationsDays = 0;
+            foreach ($this->projectRevenueDistribution->where('revenue_id', $projectRevenue->id)->get() as $distribution){
+                $totalParticipations += $distribution->participations_amount;
+
+                $mutations = $distribution->participation->mutationsDefinitive;
+                foreach ($mutations as $mutation) {
+                    $dateEntry = $mutation->date_entry;
+
+                    // If date entry is before date begin then date entry is equal to date begin
+                    if($dateEntry < $dateBegin) $dateEntry = $dateBegin;
+
+                    $daysOfPeriod = $dateEnd->diffInDays($dateEntry);
+                    $totalParticipationsDays = $totalParticipationsDays + ($daysOfPeriod * $mutation->quantity);
+                }
+            }
+
+            $distributionParticipationsDays = 0;
+            $mutations = $this->projectRevenueDistribution->participation->mutationsDefinitive;
+            foreach ($mutations as $mutation) {
+                $dateEntry = $mutation->date_entry;
+
+                // If date entry is before date begin then date entry is equal to date begin
+                if($dateEntry < $dateBegin) $dateEntry = $dateBegin;
+
+                $daysOfPeriod = $dateEnd->diffInDays($dateEntry);
+                $distributionParticipationsDays = $distributionParticipationsDays + ($daysOfPeriod * $mutation->quantity);
+            }
+            $distributionFactor = $distributionParticipationsDays / $totalParticipationsDays;
+            $payout = $totalResult * $distributionFactor;
+        }
 
         // Return total delivered kwh for per distribution
         return number_format($payout, 2, '.', '');

@@ -55,6 +55,8 @@ class PortalSettingsLayoutDetailsApp extends Component {
     };
 
     render() {
+        console.log('first');
+        console.log(this.props.permissions);
         return (
             <div className="row">
                 <div className="col-md-9">
@@ -66,6 +68,7 @@ class PortalSettingsLayoutDetailsApp extends Component {
                                     id={this.state.portalSettingsLayout.id}
                                     isDefault={this.state.portalSettingsLayout.isDefault}
                                     deletePortalSettingsLayout={this.deletePortalSettingsLayout}
+                                    permissions={this.props.permissions}
                                 />
                             </PanelBody>
                         </Panel>
@@ -86,10 +89,16 @@ class PortalSettingsLayoutDetailsApp extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        permissions: state.meDetails.permissions,
+    };
+};
+
 const mapDispatchToProps = dispatch => ({
     setError: (http_code, message) => {
         dispatch(setError(http_code, message));
     },
 });
 
-export default connect(null, mapDispatchToProps)(PortalSettingsLayoutDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(PortalSettingsLayoutDetailsApp);

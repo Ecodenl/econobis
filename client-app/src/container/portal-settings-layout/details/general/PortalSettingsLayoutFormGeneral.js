@@ -8,11 +8,6 @@ class PortalSettingsLayoutFormGeneral extends Component {
     constructor(props) {
         super(props);
 
-        this.manageTechnicalPortalSettings =
-            this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'software@xaris.nl'
-                ? true
-                : false;
-
         this.state = {
             imageHash: Date.now(),
             showEdit: false,
@@ -21,7 +16,7 @@ class PortalSettingsLayoutFormGeneral extends Component {
     }
 
     switchToEdit = () => {
-        if (this.manageTechnicalPortalSettings) {
+        if (this.props.meDetails.permissions.managePortalSettings) {
             this.setState({
                 showEdit: true,
             });
@@ -59,7 +54,7 @@ class PortalSettingsLayoutFormGeneral extends Component {
                 onMouseEnter={() => this.onDivEnter()}
                 onMouseLeave={() => this.onDivLeave()}
             >
-                {this.state.showEdit && permissions.manageFinancial ? (
+                {this.state.showEdit && permissions.managePortalSettings ? (
                     <PortalSettingsLayoutFormGeneralEdit
                         portalSettingsLayout={this.props.portalSettingsLayout}
                         portalSettingsLayouts={this.props.portalSettingsLayouts}
@@ -83,7 +78,7 @@ class PortalSettingsLayoutFormGeneral extends Component {
 const mapStateToProps = state => {
     return {
         meDetails: state.meDetails,
-        permissions: state.meDetails.permissions,
+        // permissions: state.meDetails.permissions,
         portalSettingsLayouts: state.systemData.portalSettingsLayouts,
     };
 };

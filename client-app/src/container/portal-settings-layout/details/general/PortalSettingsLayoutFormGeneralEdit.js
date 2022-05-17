@@ -26,11 +26,6 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        this.manageTechnicalPortalSettings =
-            this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'software@xaris.nl'
-                ? true
-                : false;
-
         this.state = {
             showPreviewPortalLoginPagePc: false,
             showPreviewPortalDashboardPagePc: false,
@@ -101,7 +96,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
         });
     };
     toggleNewLogo = imageLayoutItemName => {
-        if (this.manageTechnicalPortalSettings) {
+        if (this.props.permissions.managePortalSettings) {
             this.setState({
                 showModalNewLogo: !this.state.showModalNewLogo,
                 imageLayoutItemName: imageLayoutItemName,
@@ -114,7 +109,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
         });
     };
     toggleNewFavicon = () => {
-        if (this.manageTechnicalPortalSettings) {
+        if (this.props.permissions.managePortalSettings) {
             this.setState({
                 newFavicon: !this.state.newFavicon,
             });
@@ -321,6 +316,8 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
         const imageBgHeaderUrl = `${URL_API}/portal/images/${portalImageBgFileNameHeader}?${this.props.imageHash}`;
         const faviconUrl = `${URL_API}/portal/${portalFaviconFileName}?${this.props.imageHash}`;
 
+        const { managePortalSettings = {} } = this.props.permissions;
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel>
@@ -385,7 +382,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                     this.toggleNewLogo('logo-login');
                                 }}
                                 onChangeaction={() => {}}
-                                readOnly={!this.manageTechnicalPortalSettings}
+                                readOnly={!managePortalSettings}
                                 required={'required'}
                                 error={this.state.errors.portalLogoFileName}
                             />
@@ -423,7 +420,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 onChangeaction={() => {}}
                                 size={'col-sm-5'}
                                 textToolTip={`Om afbeelding zichtbaar te maken moet de achtergrond deels transparant zijn, zie 1. Login pagina / Header kleur voor meer informatie.`}
-                                readOnly={!this.manageTechnicalPortalSettings}
+                                readOnly={!managePortalSettings}
                                 required={'required'}
                                 error={this.state.errors.portalImageBgFileNameLogin}
                             />
@@ -459,7 +456,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                     this.toggleNewLogo('logo-header');
                                 }}
                                 onChangeaction={() => {}}
-                                readOnly={!this.manageTechnicalPortalSettings}
+                                readOnly={!managePortalSettings}
                                 required={'required'}
                                 error={this.state.errors.portalLogoFileNameHeader}
                             />
@@ -497,7 +494,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 onChangeaction={() => {}}
                                 size={'col-md-5'}
                                 textToolTip={`Om afbeelding zichtbaar te maken moet de achtergrond deels transparant zijn, zie 1. Login pagina / Header kleur voor meer informatie.`}
-                                readOnly={!this.manageTechnicalPortalSettings}
+                                readOnly={!managePortalSettings}
                                 required={'required'}
                                 error={this.state.errors.portalImageBgFileNameHeader}
                             />
@@ -532,7 +529,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 onChangeaction={() => {}}
                                 size={'col-sm-5'}
                                 textToolTip={`Een favicon is het icoontje dat je ziet in de tabbladen van je browser. Vaak is de favicon het logo van het bedrijf waarvan je de website bezoekt.`}
-                                readOnly={!this.manageTechnicalPortalSettings}
+                                readOnly={!managePortalSettings}
                                 required={'required'}
                                 error={this.state.errors.portalFaviconFileName}
                             />
@@ -573,7 +570,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                     rgba(35, 150, 179, 0). Achtergrond kleur volledig transparant, dus zie je achtergrond afbeelding ook volledig.<br />
                                     rgba(35, 150, 179, 1). Achtergrond kleur volledig NIET transparant, dus zie je achtergrond afbeelding helemaal niet.<br />
                                     rgba(35, 150, 179, 0.5). Achtergrond kleur voor 50% transparant, dus zie je achtergrond afbeelding voor 50% door achtergrond kleur heen. Hiermee krijgt je een soort watermerk effect.`}
-                                readOnly={!this.manageTechnicalPortalSettings}
+                                readOnly={!managePortalSettings}
                                 required={'required'}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.loginHeaderBackgroundColor}
@@ -603,7 +600,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 name={'loginHeaderBackgroundTextColor'}
                                 value={loginHeaderBackgroundTextColor}
                                 onChangeAction={this.handleInputChange}
-                                readOnly={!this.manageTechnicalPortalSettings}
+                                readOnly={!managePortalSettings}
                                 required={'required'}
                                 error={this.state.errors.loginHeaderBackgroundTextColor}
                             />
@@ -615,7 +612,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 name={'headerIconsColor'}
                                 value={headerIconsColor}
                                 onChangeAction={this.handleInputChange}
-                                readOnly={!this.manageTechnicalPortalSettings}
+                                readOnly={!managePortalSettings}
                                 required={'required'}
                                 error={this.state.errors.headerIconsColor}
                             />
@@ -645,7 +642,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 name={'loginFieldBackgroundColor'}
                                 value={loginFieldBackgroundColor}
                                 onChangeAction={this.handleInputChange}
-                                readOnly={!this.manageTechnicalPortalSettings}
+                                readOnly={!managePortalSettings}
                                 required={'required'}
                                 error={this.state.errors.loginFieldBackgroundColor}
                             />
@@ -683,7 +680,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 name={'loginFieldBackgroundTextColor'}
                                 value={loginFieldBackgroundTextColor}
                                 onChangeAction={this.handleInputChange}
-                                readOnly={!this.manageTechnicalPortalSettings}
+                                readOnly={!managePortalSettings}
                                 required={'required'}
                                 error={this.state.errors.loginFieldBackgroundTextColor}
                             />
@@ -695,7 +692,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 name={'portalBackgroundColor'}
                                 value={portalBackgroundColor}
                                 onChangeAction={this.handleInputChange}
-                                readOnly={!this.manageTechnicalPortalSettings}
+                                readOnly={!managePortalSettings}
                                 required={'required'}
                                 error={this.state.errors.portalBackgroundColor}
                             />
@@ -742,7 +739,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 name={'portalBackgroundTextColor'}
                                 value={portalBackgroundTextColor}
                                 onChangeAction={this.handleInputChange}
-                                readOnly={!this.manageTechnicalPortalSettings}
+                                readOnly={!managePortalSettings}
                                 required={'required'}
                                 error={this.state.errors.portalBackgroundTextColor}
                             />
@@ -754,7 +751,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 name={'buttonColor'}
                                 value={buttonColor}
                                 onChangeAction={this.handleInputChange}
-                                readOnly={!this.manageTechnicalPortalSettings}
+                                readOnly={!managePortalSettings}
                                 required={'required'}
                                 error={this.state.errors.buttonColor}
                             />
@@ -783,7 +780,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 name={'buttonTextColor'}
                                 value={buttonTextColor}
                                 onChangeAction={this.handleInputChange}
-                                readOnly={!this.manageTechnicalPortalSettings}
+                                readOnly={!managePortalSettings}
                                 required={'required'}
                                 error={this.state.errors.buttonTextColor}
                             />
@@ -903,4 +900,9 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(null, mapDispatchToProps)(PortalSettingsLayoutDetailsFormGeneralEdit);
+const mapStateToProps = state => {
+    return {
+        permissions: state.meDetails.permissions,
+    };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(PortalSettingsLayoutDetailsFormGeneralEdit);

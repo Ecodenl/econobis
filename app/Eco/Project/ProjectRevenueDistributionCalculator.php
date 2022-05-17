@@ -3,7 +3,6 @@
 namespace App\Eco\Project;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class ProjectRevenueDistributionCalculator
 {
@@ -19,7 +18,6 @@ class ProjectRevenueDistributionCalculator
 
     public function runRevenueEuro()
     {
-        Log::info('Test runRevenueEuro');
         // Revenue category REVENUE EURO of REDEMPTION EURO
         if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueEuro')->first())->id
         || $this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'redemptionEuro')->first())->id) {

@@ -8,6 +8,7 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 
 import { fetchProject, clearProject } from '../../../actions/project/ProjectDetailsActions';
+import { setParticipantsProjectPagination } from '../../../actions/participants-project/ParticipantsProjectPaginationActions';
 
 class ProjectGeneralApp extends Component {
     constructor(props) {
@@ -22,6 +23,10 @@ class ProjectGeneralApp extends Component {
         this.props.clearProject();
     }
 
+    componentDidUpdate(prevProps) {
+        this.props.setParticipantsProjectPagination({ page: 0, offset: 0 });
+    }
+
     render() {
         return (
             <div className="row">
@@ -31,7 +36,7 @@ class ProjectGeneralApp extends Component {
                     </div>
 
                     <div className="col-md-12">
-                        <ProjectGeneralForm />
+                        <ProjectGeneralForm filterProjectId={this.props.params.id} />
                     </div>
                 </div>
                 <Panel className="col-md-3 harmonica">
@@ -50,6 +55,9 @@ const mapDispatchToProps = dispatch => ({
     },
     clearProject: () => {
         dispatch(clearProject());
+    },
+    setParticipantsProjectPagination: pagination => {
+        dispatch(setParticipantsProjectPagination(pagination));
     },
 });
 

@@ -53,7 +53,7 @@ const RevenueFormView = props => {
 
             {category.codeRef === 'revenueEuro' || category.codeRef === 'redemptionEuro' ? (
                 <div className="row" onClick={props.switchToEdit}>
-                    {project.projectType.codeRef === 'obligation' ? (
+                    {project.projectType.codeRef !== 'loan' ? (
                         <ViewText
                             label={'Type opbrengst verdeling'}
                             value={distributionType ? distributionType.name : ''}

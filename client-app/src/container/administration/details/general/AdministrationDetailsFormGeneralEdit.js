@@ -830,6 +830,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                             display: 'inline-block',
                                             padding: '1px',
                                             borderRadius: '1px',
+                                            minWidth: '50px',
                                             height: '50px',
                                             boxShadow: '0 0 0 1px #fff inset',
                                         }}

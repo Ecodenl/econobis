@@ -401,6 +401,7 @@ class AdministrationController extends ApiController
 
     public function getLogoDetails(Administration $administration)
     {
+        $logoFilenameSrc = '';
         if ($administration->logo_filename) {
             $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $administration->logo_filename);
             $logo = file_get_contents($path);

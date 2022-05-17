@@ -51,7 +51,7 @@ class ParticipantsListApp extends Component {
             showExtraFilters: false,
             filterType: 'and',
             amountOfFilters: 1,
-            extraFilters: [{ field: 'projectId', type: 'eq', data: props.projectId + '', readOnly: true }],
+            extraFilters: [{ field: 'projectId', type: 'eq', data: props.filterProjectId + '', readOnly: true }],
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);

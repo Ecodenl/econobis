@@ -63,6 +63,7 @@ use App\Helpers\Address\AddressHelper;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Workflow\IntakeWorkflowHelper;
+use App\Helpers\Workflow\TaskWorkflowHelper;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Controllers\Controller;
@@ -132,11 +133,16 @@ class ExternalWebformController extends Controller
     private $contactIdToEmailNewContactToGroup = null;
     private $processEmailNewContactToGroup = false;
 
+    private $newTaskToEmail = [];
+    private $processWorkflowEmailNewTask = false;
+
     public function post(string $apiKey, Request $request)
     {
         $data = $this->getDataFromRequest($request);
         $createHoomDossier = (bool)$data['contact']['create_hoom_dossier'];
         $this->responsibleIds = $data['responsible_ids'];
+        $this->newTaskToEmail = [];
+        $this->processWorkflowEmailNewTask = false;
 
         try {
             \DB::transaction(function () use ($request, $apiKey, $data ) {
@@ -194,6 +200,27 @@ class ExternalWebformController extends Controller
         if ($this->processEmailNewContactToGroup) {
             $this->doProcessEmailNewContactToGroup($data['contact']);
         }
+
+        // evt nog processWorkflowEmailNewTask uitvoeren
+        if ($this->processWorkflowEmailNewTask) {
+            foreach ($this->newTaskToEmail as $newTaskId){
+                $newTask = Task::find($newTaskId);
+                if ($newTask && $newTask->type && $newTask->type->uses_wf_new_task) {
+                    $taskWorkflowHelper = new TaskWorkflowHelper($newTask);
+                    $processed = $taskWorkflowHelper->processWorkflowEmailNewTask();
+                    if($processed)
+                    {
+                        $this->log('Nieuwe taak (id: ' . $newTask->id . ') gemaild aan verantwoordelijke.');
+                        $newTask->date_sent_wf_new_task =  Carbon::now();
+                        $newTask->save();
+                    } else {
+                        $this->log('Nieuwe taak (id: ' . $newTask->id . ') NIET gemaild aan verantwoordelijke.');
+                    }
+                }
+
+            }
+        }
+
 
         $this->logInfo();
         return Response::json($this->logs);
@@ -529,6 +556,7 @@ class ExternalWebformController extends Controller
             // contactActie = "GEEN" ->geen acties op contact naw of email
             // contactActie = "NAT" -> Nieuw adres + taak
             // contactActie = "NET" -> Nieuw emailadres + taak
+            // contactActie = "WGC" -> WG contact bijwerken + taak
             // contactActie = "CCT" -> Controle contact taak
             switch($this->contactActie){
                 case 'GEEN' :
@@ -570,6 +598,13 @@ class ExternalWebformController extends Controller
                     $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw e-mailadres  " . $data['email_address'] . " toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
+                    $note .= "Controleer contactgegevens\n";
+                    $this->addTaskCheckContact($responsibleIds, $contact, $webform, $note);
+                    break;
+                case 'WGC' :
+                    $contact = $this->updateContact($contact, $data, $ownerAndResponsibleUser);
+                    $note = "Webformulier " . $webform->name . ".\n\n";
+                    $note .= "Contact WG-buurt " . $contact->full_name . " (".$contact->number.") bijgewerkt op adres WG-buurt.\n";
                     $note .= "Controleer contactgegevens\n";
                     $this->addTaskCheckContact($responsibleIds, $contact, $webform, $note);
                     break;
@@ -626,11 +661,6 @@ class ExternalWebformController extends Controller
             $contactTypeId = 'person';
         }
 
-        //        $this->log('Data emailadres |' . $data['email_address'] . '|');
-        //        $this->log('Data address_postal_code |' . $data['address_postal_code'] . '|');
-        //        $this->log('Data address_number |' . $data['address_number'] . '|');
-        //        $this->log('Data address_addition |' . $data['address_addition'] . '|');
-
         // Kijken of er een persoon gematcht kan worden op basis van adres (postcode, huisnummer en huisnummer toevoeging)
         if($data['address_postal_code'] && $data['address_number'] && isset($data['address_addition'])) {
             $this->log('Er zijn adres gegevens meegegeven');
@@ -662,8 +692,16 @@ class ExternalWebformController extends Controller
                     $this->log('Nieuw contact maken ');
                     return null;
                 }
-                // Gevonden op adres, check op email
+            // Gevonden op adres, check op specifiek contact of anders op email
             } else {
+
+                $checkContactForWG = $contactAddressQuery->first();
+                if($checkContactForWG && $checkContactForWG->person->last_name == 'bewoner van de WG-buurt' ){
+                    $this->contactActie = "WGC";
+                    $this->log('Contact "bewoner van de WG-buurt" gevonden op basis van adres, naam en email bijwerken');
+                    return $checkContactForWG;
+                }
+
                 $this->log($contactAddressQuery->count() . ' contacten gevonden op adres: ' . $data['address_postal_code']
                     . ', '
                     . $data['address_number'] . $data['address_addition'] );
@@ -1218,7 +1256,151 @@ class ExternalWebformController extends Controller
         return $contact;
     }
 
-    protected function addEnergySupplierToAddress(Address $address, $data)
+protected function updateContact(Contact $contact, array $data, User $ownerAndResponsibleUser)
+{
+    $ownerAndResponsibleUser->occupation = '@webform-update@';
+    Auth::setUser($ownerAndResponsibleUser);
+    $this->log('Contact verantwoordelijke gebruiker (zelfde als eigenaar) : ' . $ownerAndResponsibleUser->id);
+
+    // Functie voor afvangen ongeldige waarden in title_id
+    $titleValidator = function ($titleId) {
+        if ($titleId != '') {
+            $title = Title::find($titleId);
+            if (!$title) $this->error('Ongeldige waarde in titel_id');
+            return $title->id;
+        }
+        return null;
+    };
+
+    $isCollectMandate = (bool)$data['is_collect_mandate'];
+    if($isCollectMandate){
+        if($data['collect_mandate_code'] == '') {
+            $data['collect_mandate_code'] = '';
+        }
+        if($data['collect_mandate_signature_date'] == '') {
+            $data['collect_mandate_signature_date'] = Carbon::now();
+        }
+        if($data['collect_mandate_first_run_date'] == '') {
+            $data['collect_mandate_first_run_date'] = Carbon::now()->addMonth(1)->startOfMonth();
+        }
+        if($data['collect_mandate_collection_schema'] == '') {
+            $data['collect_mandate_collection_schema'] = 'core';
+        }
+    }
+
+    if ($data['organisation_name']) {
+//        $this->log('Er is een organisatienaam meegegeven; organisatie bijwerken.');
+//
+//        $iban = $this->checkIban($data['iban'], 'organisatie.');
+//        $contact->update([
+//            'type_id' => 'organisation',
+//            'updated_with' => 'webform',
+//            'iban' => $iban,
+//            'iban_attn' => $data['iban_attn'],
+//            'did_agree_avg' => (bool)$data['did_agree_avg'],
+//            'date_did_agree_avg' => $data['date_did_agree_avg'] ? Carbon::make($data['date_did_agree_avg']): null,
+//            'is_collect_mandate' => $isCollectMandate,
+//            'collect_mandate_code' => $isCollectMandate ? $data['collect_mandate_code'] : '',
+//            'collect_mandate_signature_date' => $isCollectMandate ? Carbon::make($data['collect_mandate_signature_date']): null,
+//            'collect_mandate_first_run_date' => $isCollectMandate ? Carbon::make($data['collect_mandate_first_run_date']): null,
+//            'collect_mandate_collection_schema' => $isCollectMandate ? 'core' : '',
+//        ]);
+//
+//        $contact->organisation->update([
+//            'name' => $data['organisation_name'],
+//            'website' => $data['website'],
+//            'chamber_of_commerce_number' => $data['chamber_of_commerce_number'],
+//            'vat_number' => $data['vat_number'],
+//        ]);
+//        $this->log('Organisatie met id ' . $organisation->id . ' bijgewerkt.');
+//
+//        if ($data['first_name'] || $data['last_name']) {
+//            $contactPerson = Contact::create([
+//                'type_id' => 'person',
+//                'status_id' => 'webform',
+//                'created_with' => 'webform',
+//                'owner_id' => $ownerAndResponsibleUser->id,
+//            ]);
+//
+//            $person = Person::create([
+//                'contact_id' => $contactPerson->id,
+//                'title_id' => $titleValidator($data['title_id']),
+//                'initials' => $data['initials'],
+//                'first_name' => $data['first_name'],
+//                'last_name' => $data['last_name'],
+//                'last_name_prefix' => $data['last_name_prefix'],
+//                'organisation_id' => $organisation->id,
+//                'date_of_birth' => $data['date_of_birth'] ?: null,
+//            ]);
+//
+//            OccupationContact::create([
+//                'occupation_id' => 14, // Relatie type "medewerker"
+//                'primary_contact_id' => $organisation->contact_id,
+//                'contact_id' => $person->contact_id,
+//                'primary' => true,
+//            ]);
+//
+//            $this->log('Persoon met id ' . $person->id
+//                . ' aangemaakt en gekoppeld aan organisatie als medewerker.');
+//
+//        }
+//
+//        // Overige gegevens aan organisation hangen
+//        $this->addEmailToContact($data, $contactOrganisation);
+//        $this->addPhoneNumberToContact($data, $contactOrganisation);
+//        $this->addContactNotesToContact($data, $contactOrganisation);
+//        $this->addContactToGroup($data, $contactOrganisation, $ownerAndResponsibleUser);
+//
+//        return $contactOrganisation;
+        return null;
+    }
+
+    // Als we hier komen is er geen bedrijfsnaam meegegeven, dan maken we alleen een persoon aan
+    $this->log('Er is geen organisatienaam meegegeven; persoon bijwerken.');
+
+    $iban = $this->checkIban($data['iban'], 'persoon.');
+    $contact->update([
+        'updated_with' => 'webform',
+        'iban' => $iban,
+        'iban_attn' => $data['iban_attn'],
+        'did_agree_avg' => (bool)$data['did_agree_avg'],
+        'date_did_agree_avg' => $data['date_did_agree_avg'] ? Carbon::make($data['date_did_agree_avg']): null,
+        'is_collect_mandate' => (bool)$data['is_collect_mandate'],
+        'collect_mandate_code' => $data['is_collect_mandate'] ? $data['collect_mandate_code'] : '',
+        'collect_mandate_signature_date' => $data['is_collect_mandate'] ? Carbon::make($data['collect_mandate_signature_date']): null,
+        'collect_mandate_first_run_date' => $data['is_collect_mandate'] ? Carbon::make($data['collect_mandate_first_run_date']): null,
+        'collect_mandate_collection_schema' => $data['is_collect_mandate'] ? 'core' : '',
+    ]);
+
+    $lastName = $data['last_name'];
+    if (!$lastName) {
+        $emailParts = explode('@', $data['email_address']);
+        $lastName = $emailParts[0];
+        if ($lastName) $this->log('Geen achternaam meegegeven, achternaam ' . $lastName . ' uit emailadres gehaald.');
+        else $this->log('Geen achternaam meegegeven, ook geen achternaam uit emailadres kunnen halen.');
+    }
+    $contact->person->update([
+        'title_id' => $titleValidator($data['title_id']),
+        'initials' => $data['initials'],
+        'first_name' => $data['first_name'],
+        'last_name' => $lastName,
+        'last_name_prefix' => $data['last_name_prefix'],
+        'date_of_birth' => $data['date_of_birth'] ?: null,
+    ]);
+
+    // contact opnieuw ophalen tbv contactwijzigingen via PersonObserver
+    $contact = Contact::find($contact->id);
+
+    // Overige gegevens aan persoon hangen
+    $this->addEmailToContact($data, $contact);
+    $this->addPhoneNumberToContact($data, $contact);
+    $this->addContactNotesToContact($data, $contact);
+    $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
+
+    return $contact;
+}
+
+protected function addEnergySupplierToAddress(Address $address, $data)
     {
         if ($data['energy_supplier_id'] != '') {
             $this->log('Er is een energie leverancier meegegeven');
@@ -1973,6 +2155,19 @@ class ExternalWebformController extends Controller
             'order_id' => $order ? $order->id : null,
         ]);
 
+        if ($task->type && $task->type->uses_wf_new_task) {
+            $taskWorkflowHelper = new TaskWorkflowHelper($task);
+            $processed = $taskWorkflowHelper->processWorkflowEmailNewTask();
+            if($processed)
+            {
+                $this->log('Nieuwe taak gemaild aan verantwoordelijke.');
+                $task->date_sent_wf_new_task =  Carbon::now();
+                $task->save();
+            } else {
+                $this->log('Nieuwe taak NIET gemaild aan verantwoordelijke.');
+            }
+        }
+
         if($task->finished){
             $task->date_finished = Carbon::today();
             $finished_by_user = User::find($responsibleIds['responsible_user_id'] ? $responsibleIds['responsible_user_id'] : $webform->responsible_user_id );
@@ -2027,6 +2222,11 @@ class ExternalWebformController extends Controller
             'participation_project_id' => null,
             'order_id' => null,
         ]);
+
+        if ($task->type && $task->type->uses_wf_new_task) {
+            $this->newTaskToEmail [] = $task->id;
+            $this->processWorkflowEmailNewTask = true;
+        }
 
         $this->log('Taak met id ' . $task->id . ' aangemaakt.');
     }

@@ -210,7 +210,7 @@ class DocumentController extends Controller
 
         //delete file in Alfresco(to trashbin)
         $user = Auth::user();
-        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local' && $document->alfresco_node_id) {
             $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
             $alfrescoHelper->deleteFile($document->alfresco_node_id);
@@ -271,6 +271,7 @@ class DocumentController extends Controller
 
     protected function translateToValidCharacterSet($field){
 
+        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
         $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 

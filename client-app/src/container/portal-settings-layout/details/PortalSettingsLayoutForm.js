@@ -7,8 +7,6 @@ import * as PropTypes from 'prop-types';
 class PortalSettingsLayoutDetailsForm extends Component {
     constructor(props) {
         super(props);
-        console.log('xxx');
-        console.log(props.dashboardSettings);
     }
     render() {
         let { portalSettingsLayout, dashboardSettings, hasError, isLoading, updateState } = this.props;

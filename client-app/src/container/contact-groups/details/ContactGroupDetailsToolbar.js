@@ -97,11 +97,12 @@ function ContactGroupDetailsToolbar({
                                                     : 'btn-success'
                                             }
                                         />
-                                        <ButtonText
-                                            onClickAction={showModalDeActivateLapostaListConfirm}
-                                            buttonText={`LaPosta lijst uitzetten`}
-                                            disabled={Boolean(!contactGroup.isUsedInLaposta)}
-                                        />
+                                        {Boolean(contactGroup.isUsedInLaposta) && (
+                                            <ButtonText
+                                                onClickAction={showModalDeActivateLapostaListConfirm}
+                                                buttonText={`LaPosta lijst uitzetten`}
+                                            />
+                                        )}
                                     </>
                                 )}
                             </div>

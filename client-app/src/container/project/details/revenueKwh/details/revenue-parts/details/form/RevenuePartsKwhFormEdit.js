@@ -356,6 +356,8 @@ class RevenuePartsKwhFormEdit extends Component {
         this.setState({
             ...this.state,
             showModalUpdate: false,
+            showMakeDefinitive: false,
+            showModalDefinitive: false,
         });
 
         const { revenuePartsKwh } = this.state;
@@ -366,7 +368,7 @@ class RevenuePartsKwhFormEdit extends Component {
             setTimeout(() => {
                 this.props.getDistributionPartsKwh(revenuePartsKwh.id, 0, '');
             }, 250);
-            // this.setState({ isSaving: true });
+            this.setState({ isSaving: false });
             this.props.switchToView();
         });
     };
@@ -396,229 +398,251 @@ class RevenuePartsKwhFormEdit extends Component {
         const kwhTotal = kwhEnd - kwhStart;
 
         return (
-            <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
-                <div className="row">
-                    <div className={'panel-heading'}>
-                        <span className={'h5 text-bold'}>Algemene informatie</span>
-                    </div>
-                </div>
-                <div className="row">
-                    <ViewText
-                        label={'Status'}
-                        value={status ? this.statusText(status) : ''}
-                        className={'form-group col-sm-6'}
-                    />
-                    <ViewText label={'Definitief'} value={confirmed ? 'Ja' : 'Nee'} className={'form-group col-sm-6'} />
-                </div>
-                <div className="row">
-                    <InputDate label={'Begin periode'} name={'dateBegin'} value={dateBegin} readOnly={true} />
-                    <InputDate label={'Eind periode'} name={'dateEnd'} value={dateEnd} readOnly={true} />
-                </div>
-                {status == 'concept' && !this.state.showMakeDefinitive ? (
+            <>
+                <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                     <div className="row">
-                        <div className="form-group col-sm-6">
-                            <div className="col-sm-6">
-                                <ButtonText
-                                    loading={false}
-                                    loadText={'laden'}
-                                    buttonText={'Definitief maken'}
-                                    onClickAction={this.toggleShowMakeDefinitive}
-                                />
-                            </div>
+                        <div className={'panel-heading'}>
+                            <span className={'h5 text-bold'}>Algemene informatie</span>
                         </div>
                     </div>
-                ) : null}
-
-                {this.state.showMakeDefinitive ? (
                     <div className="row">
-                        <InputDate
-                            label={'Datum definitief'}
-                            name={'dateConfirmed'}
-                            value={dateConfirmed}
-                            onChangeAction={this.handleInputChangeDate}
-                            required={'required'}
-                            error={this.state.errors.dateConfirmed}
-                            errorMessage={this.state.errorMessage.dateConfirmed}
+                        <ViewText
+                            label={'Status'}
+                            value={status ? this.statusText(status) : ''}
+                            className={'form-group col-sm-6'}
                         />
-                        <InputDate
-                            label={'Uitkeringsdatum'}
-                            name={'datePayout'}
-                            value={datePayout}
-                            onChangeAction={this.handleInputChangeDate}
-                            required={'required'}
-                            error={this.state.errors.datePayout}
-                            errorMessage={this.state.errorMessage.datePayout}
+                        <ViewText
+                            label={'Definitief'}
+                            value={confirmed ? 'Ja' : 'Nee'}
+                            className={'form-group col-sm-6'}
                         />
                     </div>
-                ) : (
-                    <>
-                        <div className="row">
-                            <div className={'panel-part panel-heading'}>
-                                <span className={'h5 text-bold'}>Opbrengst kWh</span>
-                            </div>
-                        </div>
+                    <div className="row">
+                        <InputDate label={'Begin periode'} name={'dateBegin'} value={dateBegin} readOnly={true} />
+                        <InputDate label={'Eind periode'} name={'dateEnd'} value={dateEnd} readOnly={true} />
+                    </div>
+                    {this.state.isSaving ? (
+                        <div>Bezig met verwerken...</div>
+                    ) : (
+                        <>
+                            {status == 'concept' && !this.state.showMakeDefinitive ? (
+                                <div className="row">
+                                    <div className="form-group col-sm-6">
+                                        <div className="col-sm-6">
+                                            <ButtonText
+                                                loading={false}
+                                                loadText={'laden'}
+                                                buttonText={'Definitief maken'}
+                                                onClickAction={this.toggleShowMakeDefinitive}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : null}
 
-                        <div className="row">
-                            <InputDate
-                                label={'Datum beginstanden'}
-                                name={'dateBegin'}
-                                value={dateBegin}
-                                readOnly={true}
-                            />
-                            <InputDate label={'Datum eindstanden'} name={'dateEnd'} value={dateEnd} readOnly={true} />
-                        </div>
-
-                        <div className="row">
-                            <InputText
-                                type={'number'}
-                                label={'Beginstand kWh hoog'}
-                                name={'kwhStartHigh'}
-                                value={kwhStartHigh}
-                                readOnly={!allowEditStart}
-                                onChangeAction={this.handleInputChangeValuesKwh}
-                            />
-                            <InputText
-                                type={'number'}
-                                label={'Eindstand kWh hoog'}
-                                name={'kwhEndHigh'}
-                                value={kwhEndHigh}
-                                readOnly={!allowEditEnd}
-                                onChangeAction={this.handleInputChangeValuesKwh}
-                                error={this.state.errors.kwhEndHigh}
-                                errorMessage={this.state.errorMessage.kwhEndHigh}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputText
-                                type={'number'}
-                                label={'Beginstand kWh laag'}
-                                name={'kwhStartLow'}
-                                value={kwhStartLow}
-                                readOnly={!allowEditStart}
-                                onChangeAction={this.handleInputChangeValuesKwh}
-                            />
-                            <InputText
-                                type={'number'}
-                                label={'Eindstand kWh laag'}
-                                name={'kwhEndLow'}
-                                value={kwhEndLow}
-                                readOnly={!allowEditEnd}
-                                onChangeAction={this.handleInputChangeValuesKwh}
-                                error={this.state.errors.kwhEndLow}
-                                errorMessage={this.state.errorMessage.kwhEndLow}
-                            />
-                        </div>
-
-                        <div className="row">
-                            <InputText
-                                type={'number'}
-                                label={'Beginstand kWh'}
-                                name={'kwhStart'}
-                                value={kwhStart}
-                                readOnly={true}
-                            />
-                            <InputText
-                                type={'number'}
-                                label={'Eindstand kWh'}
-                                name={'kwhEnd'}
-                                value={kwhEnd}
-                                readOnly={true}
-                            />
-                        </div>
-
-                        <div className="row">
-                            <InputText
-                                type={'number'}
-                                label={'Opbrengst kWh €'}
-                                name={'payoutKwh'}
-                                value={
-                                    payoutKwh &&
-                                    payoutKwh.toLocaleString('nl', {
-                                        minimumFractionDigits: 3,
-                                        maximumFractionDigits: 5,
-                                    })
-                                }
-                                readOnly={!allowEditEnd}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.payoutKwh}
-                                errorMessage={this.state.errorMessage.payoutKwh}
-                                required={'required'}
-                            />
-                            <InputText
-                                type={'number'}
-                                label={'Totaal productie kWh'}
-                                name={'kwhTotal'}
-                                value={kwhTotal}
-                                readOnly={true}
-                            />
-                        </div>
-                    </>
-                )}
-
-                <PanelFooter>
-                    <div className="pull-right btn-group" role="group">
-                        <ButtonText
-                            buttonClassName={'btn-default'}
-                            buttonText={'Annuleren'}
-                            onClickAction={this.props.switchToView}
-                        />
-                        {allowEditStart || allowEditEnd || status == 'concept' || status == 'concept-to-update' ? (
-                            this.state.showMakeDefinitive ? (
-                                <ButtonText
-                                    buttonText={'Bevestigen definitief maken'}
-                                    onClickAction={this.confirmMakeDefinitive}
-                                />
+                            {this.state.showMakeDefinitive ? (
+                                <div className="row">
+                                    <InputDate
+                                        label={'Datum definitief'}
+                                        name={'dateConfirmed'}
+                                        value={dateConfirmed}
+                                        onChangeAction={this.handleInputChangeDate}
+                                        required={'required'}
+                                        error={this.state.errors.dateConfirmed}
+                                        errorMessage={this.state.errorMessage.dateConfirmed}
+                                    />
+                                    <InputDate
+                                        label={'Uitkeringsdatum'}
+                                        name={'datePayout'}
+                                        value={datePayout}
+                                        onChangeAction={this.handleInputChangeDate}
+                                        required={'required'}
+                                        error={this.state.errors.datePayout}
+                                        errorMessage={this.state.errorMessage.datePayout}
+                                    />
+                                </div>
                             ) : (
-                                <ButtonText buttonText={'Opslaan'} onClickAction={this.confirmUpdate} />
-                            )
-                        ) : null}
-                    </div>
-                </PanelFooter>
-                {this.state.showModalUpdate && (
-                    <Modal
-                        buttonConfirmText="Bevestigen"
-                        closeModal={this.cancelUpdate}
-                        confirmAction={this.handleSubmit}
-                        title="Bevestigen"
-                    >
-                        <p>
-                            Het bijwerken van de opbrengst periode verdeling kan enige tijd duren, vooral bij veel
-                            deelnemers. Dit proces gebeurd daarom op de achtergrond. Zolang deze opbrengst periode
-                            verdeling wordt bijgewerkt kunnen er verder geen wijzigingen of acties op uitgevoerd worden
-                            op deze opbrengst periode verdeling.
-                            <br />
-                            Als er eindstanden zijn gewijzigd en er is een volgende periode aanwezig, dan zal deze ook
-                            direct bijgewerkt worden. De eindstanden van deze opbrengst periode verdeling zijn namelijk
-                            de beginstanden van de volgende opbrengst periode verdeling.
-                            <br />
-                        </p>
-                    </Modal>
-                )}
-                {this.state.showModalDefinitive && (
-                    <Modal
-                        buttonConfirmText="Bevestigen"
-                        closeModal={this.cancelSetDate}
-                        confirmAction={this.handleSubmit}
-                        title="Bevestigen"
-                    >
-                        <p>
-                            Als je deze periode definitief maakt zullen de opbrengst kwh standen van deze periode en van
-                            alle voorgaande perioden definitief worden gemaakt. Je kunt deze hierna niet meer aanpassen.
-                        </p>
-                        <p>
-                            Mutaties "Teruggave EB" voor de deelnemers zullen worden aangemaakt bij het maken van
-                            "Rapport energie leverancier". Uitkeringsdatum wordt de datum die bij deze mutatie komt te
-                            staan in de deelname overzichten van de deelnemers.
-                        </p>
-                        {isLastRevenuePartsKwh && (
-                            <p className={'text-danger'}>
-                                Dit is de laatste deelperiode. Met het definitief maken van deze periode zal de totale
-                                opbrengst verdeling definitief worden gemaakt.
-                            </p>
-                        )}
-                    </Modal>
-                )}
-            </form>
+                                <>
+                                    <div className="row">
+                                        <div className={'panel-part panel-heading'}>
+                                            <span className={'h5 text-bold'}>Opbrengst kWh</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="row">
+                                        <InputDate
+                                            label={'Datum beginstanden'}
+                                            name={'dateBegin'}
+                                            value={dateBegin}
+                                            readOnly={true}
+                                        />
+                                        <InputDate
+                                            label={'Datum eindstanden'}
+                                            name={'dateEnd'}
+                                            value={dateEnd}
+                                            readOnly={true}
+                                        />
+                                    </div>
+
+                                    <div className="row">
+                                        <InputText
+                                            type={'number'}
+                                            label={'Beginstand kWh hoog'}
+                                            name={'kwhStartHigh'}
+                                            value={kwhStartHigh}
+                                            readOnly={!allowEditStart}
+                                            onChangeAction={this.handleInputChangeValuesKwh}
+                                        />
+                                        <InputText
+                                            type={'number'}
+                                            label={'Eindstand kWh hoog'}
+                                            name={'kwhEndHigh'}
+                                            value={kwhEndHigh}
+                                            readOnly={!allowEditEnd}
+                                            onChangeAction={this.handleInputChangeValuesKwh}
+                                            error={this.state.errors.kwhEndHigh}
+                                            errorMessage={this.state.errorMessage.kwhEndHigh}
+                                        />
+                                    </div>
+                                    <div className="row">
+                                        <InputText
+                                            type={'number'}
+                                            label={'Beginstand kWh laag'}
+                                            name={'kwhStartLow'}
+                                            value={kwhStartLow}
+                                            readOnly={!allowEditStart}
+                                            onChangeAction={this.handleInputChangeValuesKwh}
+                                        />
+                                        <InputText
+                                            type={'number'}
+                                            label={'Eindstand kWh laag'}
+                                            name={'kwhEndLow'}
+                                            value={kwhEndLow}
+                                            readOnly={!allowEditEnd}
+                                            onChangeAction={this.handleInputChangeValuesKwh}
+                                            error={this.state.errors.kwhEndLow}
+                                            errorMessage={this.state.errorMessage.kwhEndLow}
+                                        />
+                                    </div>
+
+                                    <div className="row">
+                                        <InputText
+                                            type={'number'}
+                                            label={'Beginstand kWh'}
+                                            name={'kwhStart'}
+                                            value={kwhStart}
+                                            readOnly={true}
+                                        />
+                                        <InputText
+                                            type={'number'}
+                                            label={'Eindstand kWh'}
+                                            name={'kwhEnd'}
+                                            value={kwhEnd}
+                                            readOnly={true}
+                                        />
+                                    </div>
+
+                                    <div className="row">
+                                        <InputText
+                                            type={'number'}
+                                            label={'Opbrengst kWh €'}
+                                            name={'payoutKwh'}
+                                            value={
+                                                payoutKwh &&
+                                                payoutKwh.toLocaleString('nl', {
+                                                    minimumFractionDigits: 3,
+                                                    maximumFractionDigits: 5,
+                                                })
+                                            }
+                                            readOnly={!allowEditEnd}
+                                            onChangeAction={this.handleInputChange}
+                                            error={this.state.errors.payoutKwh}
+                                            errorMessage={this.state.errorMessage.payoutKwh}
+                                            required={'required'}
+                                        />
+                                        <InputText
+                                            type={'number'}
+                                            label={'Totaal productie kWh'}
+                                            name={'kwhTotal'}
+                                            value={kwhTotal}
+                                            readOnly={true}
+                                        />
+                                    </div>
+                                </>
+                            )}
+
+                            <PanelFooter>
+                                <div className="pull-right btn-group" role="group">
+                                    <ButtonText
+                                        buttonClassName={'btn-default'}
+                                        buttonText={'Annuleren'}
+                                        onClickAction={this.props.switchToView}
+                                    />
+                                    {allowEditStart ||
+                                    allowEditEnd ||
+                                    status == 'concept' ||
+                                    status == 'concept-to-update' ? (
+                                        this.state.showMakeDefinitive ? (
+                                            <ButtonText
+                                                buttonText={'Bevestigen definitief maken'}
+                                                onClickAction={this.confirmMakeDefinitive}
+                                            />
+                                        ) : (
+                                            <ButtonText buttonText={'Opslaan'} onClickAction={this.confirmUpdate} />
+                                        )
+                                    ) : null}
+                                </div>
+                            </PanelFooter>
+                            {this.state.showModalUpdate && (
+                                <Modal
+                                    buttonConfirmText="Bevestigen"
+                                    closeModal={this.cancelUpdate}
+                                    confirmAction={this.handleSubmit}
+                                    title="Bevestigen"
+                                >
+                                    <p>
+                                        Het bijwerken van de opbrengst periode verdeling kan enige tijd duren, vooral
+                                        bij veel deelnemers. Dit proces gebeurd daarom op de achtergrond. Zolang deze
+                                        opbrengst periode verdeling wordt bijgewerkt kunnen er verder geen wijzigingen
+                                        of acties op uitgevoerd worden op deze opbrengst periode verdeling.
+                                        <br />
+                                        Als er eindstanden zijn gewijzigd en er is een volgende periode aanwezig, dan
+                                        zal deze ook direct bijgewerkt worden. De eindstanden van deze opbrengst periode
+                                        verdeling zijn namelijk de beginstanden van de volgende opbrengst periode
+                                        verdeling.
+                                        <br />
+                                    </p>
+                                </Modal>
+                            )}
+                            {this.state.showModalDefinitive && (
+                                <Modal
+                                    buttonConfirmText="Bevestigen"
+                                    closeModal={this.cancelSetDate}
+                                    confirmAction={this.handleSubmit}
+                                    title="Bevestigen"
+                                >
+                                    <p>
+                                        Als je deze periode definitief maakt zullen de opbrengst kwh standen van deze
+                                        periode en van alle voorgaande perioden definitief worden gemaakt. Je kunt deze
+                                        hierna niet meer aanpassen.
+                                    </p>
+                                    <p>
+                                        Mutaties "Teruggave EB" voor de deelnemers zullen worden aangemaakt bij het
+                                        maken van "Rapport energie leverancier". Uitkeringsdatum wordt de datum die bij
+                                        deze mutatie komt te staan in de deelname overzichten van de deelnemers.
+                                    </p>
+                                    {isLastRevenuePartsKwh && (
+                                        <p className={'text-danger'}>
+                                            Dit is de laatste deelperiode. Met het definitief maken van deze periode zal
+                                            de totale opbrengst verdeling definitief worden gemaakt.
+                                        </p>
+                                    )}
+                                </Modal>
+                            )}
+                        </>
+                    )}
+                </form>
+            </>
         );
     }
 }

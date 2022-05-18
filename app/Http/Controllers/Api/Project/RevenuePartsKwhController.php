@@ -537,30 +537,15 @@ class RevenuePartsKwhController extends ApiController
 
         foreach ($distributionsKwh as $distributionKwh) {
             //status moet nu onderhanden zijn (in-progress-process zijn)
-            if ($distributionKwh->status === 'in-progress-process-concept' || $distributionKwh->status === 'in-progress-process')
-            {
 //todo WM: opschonen
-//
-//                $mutationEnergyTaxRefund = [];
+// Indien status confirmed, dan hoeven we niets meer te doen voor betreffende partKwh
+// Onderscheid tussen confirmed en concept voor in-progress-process dan ook niet meer nodig
+//            if ($distributionKwh->status === 'in-progress-process-concept' || $distributionKwh->status === 'in-progress-process')
+            if ($distributionKwh->status === 'in-progress-process')
+            {
                 $distributionsPartsKwh = $distributionKwh->distributionPartsKwh->whereIn('parts_id', $upToPartsKwhIds);
                 foreach($distributionsPartsKwh as $distributionPartsKwh) {
                     if ($distributionPartsKwh->status === 'in-progress-process') {
-//todo WM: opschonen
-//
-//                        if(array_key_exists($distributionPartsKwh->es_id, $mutationEnergyTaxRefund)) {
-//                            $deliveredTotal = $mutationEnergyTaxRefund[$distributionPartsKwh->es_id]['deliveredTotal'] + $distributionPartsKwh->delivered_kwh;
-//                            $kwhReturn = $mutationEnergyTaxRefund[$distributionPartsKwh->es_id]['kwhReturn'] + $distributionPartsKwh->kwh_return_this_part;
-//                            $energySupplierName = $mutationEnergyTaxRefund[$distributionPartsKwh->es_id]['energySupplierName'];
-//                        } else {
-//                            $deliveredTotal = $distributionPartsKwh->delivered_kwh;
-//                            $kwhReturn =  $distributionPartsKwh->kwh_return_this_part;
-//                            $energySupplierName =  $distributionPartsKwh->energy_supplier_name;
-//                        }
-//                        $mutationEnergyTaxRefund[$distributionPartsKwh->es_id] = [
-//                            'deliveredTotal' => $deliveredTotal,
-//                            'kwhReturn' => $kwhReturn,
-//                            'energySupplierName' => $energySupplierName,
-//                        ];
                         $distributionPartsKwh->status = 'confirmed';
                         $distributionPartsKwh->save();
                     }

@@ -41,7 +41,10 @@ class ProcessRevenuesKwh implements ShouldQueue
 
         $partsKwh = RevenuePartsKwh::whereIn('id', $upToPartsKwhIds)->get();
         foreach ($partsKwh as $partKwh) {
-            if ($partKwh->status === 'concept' || $partKwh->status === 'confirmed') {
+//todo WM: opschonen
+// Indien status confirmed, dan hoeven we niets meer te doen voor deze partKwh
+//            if ($partKwh->status === 'concept' || $partKwh->status === 'confirmed') {
+            if ($partKwh->status === 'concept') {
                 $partKwh->status = 'in-progress-process';
                 $partKwh->save();
             }
@@ -49,24 +52,36 @@ class ProcessRevenuesKwh implements ShouldQueue
         $distributionsKwh = RevenueDistributionKwh::whereIn('id', $distributionIds)->get();
         foreach ($distributionsKwh as $distributionKwh) {
             if ($distributionKwh->status === 'concept') {
-                $distributionKwh->status = 'in-progress-process-concept';
-                $distributionKwh->save();
-            }
-            if ($distributionKwh->status === 'confirmed') {
+//todo WM: opschonen
+// Indien status confirmed, dan hoeven we niets meer te doen voor betreffende partKwh
+// Onderscheid tussen confirmed en concept voor in-progress-process dan ook niet meer nodig
+//                $distributionKwh->status = 'in-progress-process-concept';
                 $distributionKwh->status = 'in-progress-process';
                 $distributionKwh->save();
             }
+//todo WM: opschonen
+// Indien status confirmed, dan hoeven we niets meer te doen voor deze partKwh
+//            if ($distributionKwh->status === 'confirmed') {
+//                $distributionKwh->status = 'in-progress-process';
+//                $distributionKwh->save();
+//            }
 
             $distributionsPartsKwh = $distributionKwh->distributionPartsKwh->whereIn('parts_id', $upToPartsKwhIds);
             foreach($distributionsPartsKwh as $distributionPartsKwh) {
-                if ($distributionPartsKwh->status === 'concept' || $distributionPartsKwh->status === 'confirmed') {
+//todo WM: opschonen
+// Indien status confirmed, dan hoeven we niets meer te doen voor betreffende partKwh
+//                if ($distributionPartsKwh->status === 'concept' || $distributionPartsKwh->status === 'confirmed') {
+                if ($distributionPartsKwh->status === 'concept') {
                     $distributionPartsKwh->status = 'in-progress-process';
                     $distributionPartsKwh->save();
                 }
             }
             $distributionsValuesKwh = $distributionKwh->distributionValuesKwh->whereIn('parts_id', $upToPartsKwhIds);
             foreach($distributionsValuesKwh as $distributionValuesKwh) {
-                if ($distributionValuesKwh->status === 'concept' || $distributionValuesKwh->status === 'confirmed') {
+//todo WM: opschonen
+// Indien status confirmed, dan hoeven we niets meer te doen voor betreffende partKwh
+//                if ($distributionValuesKwh->status === 'concept' || $distributionValuesKwh->status === 'confirmed') {
+                if ($distributionValuesKwh->status === 'concept') {
                     $distributionValuesKwh->status = 'in-progress-process';
                     $distributionValuesKwh->save();
                 }

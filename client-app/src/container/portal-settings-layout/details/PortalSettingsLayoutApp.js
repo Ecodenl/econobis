@@ -9,6 +9,7 @@ import { setError } from '../../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import PortalSettingsDashboardAPI from '../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
+import axios from 'axios';
 
 class PortalSettingsLayoutDetailsApp extends Component {
     constructor(props) {
@@ -24,37 +25,25 @@ class PortalSettingsLayoutDetailsApp extends Component {
 
     componentDidMount() {
         this.callFetchPortalSettingsLayoutDetails();
-        this.callFetchDashboardSettings();
     }
 
     callFetchPortalSettingsLayoutDetails = () => {
         this.setState({ isLoading: true, hasError: false });
-        PortalSettingsLayoutDetailsAPI.fetchPortalSettingsLayoutDetails(this.props.params.id)
-            .then(payload => {
-                this.setState({
-                    isLoading: false,
-                    portalSettingsLayout: payload.data.data,
-                });
-            })
-            .catch(error => {
-                this.setState({ isLoading: false, hasError: true });
-            });
-    };
-    callFetchDashboardSettings = () => {
-        this.setState({ isLoading: true, hasError: false });
         const keys = '?keys[]=welcomeTitle&keys[]=welcomeMessage&keys[]=widgets';
-        PortalSettingsDashboardAPI.fetchDashboardSettings(keys)
-            .then(payload => {
-                console.log('zzz');
-                console.log(payload);
-
-                this.setState({
-                    isLoading: false,
-                    dashboardSettings: {
-                        ...payload.data,
-                    },
-                });
-            })
+        axios
+            .all([
+                PortalSettingsLayoutDetailsAPI.fetchPortalSettingsLayoutDetails(this.props.params.id),
+                PortalSettingsDashboardAPI.fetchDashboardSettings(keys),
+            ])
+            .then(
+                axios.spread((portalSettingsLayout, dashboardSettings) => {
+                    this.setState({
+                        isLoading: false,
+                        portalSettingsLayout: portalSettingsLayout.data.data,
+                        dashboardSettings: dashboardSettings.data,
+                    });
+                })
+            )
             .catch(error => {
                 this.setState({ isLoading: false, hasError: true });
             });
@@ -77,9 +66,6 @@ class PortalSettingsLayoutDetailsApp extends Component {
     };
 
     render() {
-        console.log('yyy');
-        console.log(this.state.dashboardSettings);
-
         return (
             <div className="row">
                 <div className="col-md-9">

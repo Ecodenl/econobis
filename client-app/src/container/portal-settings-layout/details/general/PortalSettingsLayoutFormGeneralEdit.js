@@ -830,6 +830,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             loginFieldBackgroundTextColor={loginFieldBackgroundTextColor}
                             buttonColor={buttonColor}
                             buttonTextColor={buttonTextColor}
+                            dashboardSettings={this.props.dashboardSettings}
                         />
                     )}
                     {this.state.showPreviewPortalDashboardPagePc && (
@@ -850,6 +851,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             loginFieldBackgroundTextColor={loginFieldBackgroundTextColor}
                             buttonColor={buttonColor}
                             buttonTextColor={buttonTextColor}
+                            dashboardSettings={this.props.dashboardSettings}
                         />
                     )}
                     {this.state.showPreviewPortalLoginPageMobile && (
@@ -870,6 +872,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             loginFieldBackgroundTextColor={loginFieldBackgroundTextColor}
                             buttonColor={buttonColor}
                             buttonTextColor={buttonTextColor}
+                            dashboardSettings={this.props.dashboardSettings}
                         />
                     )}
                     {this.state.showPreviewPortalDashboardPageMobile && (
@@ -890,6 +893,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             loginFieldBackgroundTextColor={loginFieldBackgroundTextColor}
                             buttonColor={buttonColor}
                             buttonTextColor={buttonTextColor}
+                            dashboardSettings={this.props.dashboardSettings}
                         />
                     )}
                 </Panel>

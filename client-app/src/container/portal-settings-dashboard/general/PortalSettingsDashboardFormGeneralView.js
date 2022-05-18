@@ -63,6 +63,7 @@ class PortalSettingsDashboardFormGeneralView extends Component {
                             logoHeaderUrl={logoHeaderUrl}
                             attachmentImageBgHeader={''}
                             imageBgHeaderUrl={imageBgHeaderUrl}
+                            dashboardSettings={this.props.dashboardSettings}
                         />
                     )}
                     {this.state.showPreviewPortalDashboardPageMobile && (
@@ -74,6 +75,7 @@ class PortalSettingsDashboardFormGeneralView extends Component {
                             logoHeaderUrl={logoHeaderUrl}
                             attachmentImageBgHeader={''}
                             imageBgHeaderUrl={imageBgHeaderUrl}
+                            dashboardSettings={this.props.dashboardSettings}
                         />
                     )}
                 </div>

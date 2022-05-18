@@ -59,6 +59,7 @@ class PortalSettingsLayoutFormGeneral extends Component {
                 {this.state.showEdit && permissions.managePortalSettings ? (
                     <PortalSettingsLayoutFormGeneralEdit
                         portalSettingsLayout={this.props.portalSettingsLayout}
+                        dashboardSettings={this.props.dashboardSettings}
                         portalSettingsLayouts={this.props.portalSettingsLayouts}
                         switchToView={this.switchToView}
                         updateState={this.props.updateState}

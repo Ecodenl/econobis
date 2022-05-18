@@ -2,7 +2,9 @@ import React from 'react';
 import '../../../../../public/portal/portal.css';
 import { FaUser } from 'react-icons/fa';
 
-const PreviewPortalDashboardPage = ({ closeModal, customStyles, logoHeaderUrl, imageHash }) => {
+const PreviewPortalDashboardPage = ({ closeModal, customStyles, logoHeaderUrl, imageHash, dashboardSettings }) => {
+    const { welcomeTitle, welcomeMessage, widgets } = dashboardSettings;
+
     return (
         <div style={customStyles.modal} onClick={closeModal} title={'Klik om preview te sluiten'}>
             <div id="root" style={customStyles.root}>
@@ -176,9 +178,15 @@ const PreviewPortalDashboardPage = ({ closeModal, customStyles, logoHeaderUrl, i
                         <div style={customStyles.wContainer}>
                             <div style={customStyles.row}>
                                 <div style={customStyles.col}>
-                                    <h1 className="text-center" style={customStyles.contentHeading}>
-                                        Welkom op jouw energie gemeenschap
+                                    <h1
+                                        className="content-heading mt-0 text-center"
+                                        style={customStyles.contentHeading}
+                                    >
+                                        {welcomeTitle}
                                     </h1>
+                                    <p className="text-center" style={{ whiteSpace: 'break-spaces' }}>
+                                        {welcomeMessage}
+                                    </p>
                                 </div>
                             </div>
                             <div style={customStyles.row}>

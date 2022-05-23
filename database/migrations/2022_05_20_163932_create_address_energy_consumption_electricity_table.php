@@ -16,9 +16,11 @@ class CreateAddressEnergyConsumptionElectricityTable extends Migration
         Schema::create('address_energy_consumption_electricity', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('address_id');
-            $table->foreign('address_id', 'address_es_address_id_foreign')
+            $table->foreign('address_id', 'address_ece_address_id_foreign')
                 ->references('id')->on('addresses')
                 ->onDelete('restrict');
+            $table->date('date_begin')->nullable();
+            $table->date('date_end')->nullable();
             $table->double('consumption_high', 10, 0)->nullable();
             $table->double('consumption_low', 10, 0)->nullable();
             $table->double('return_high', 10, 0)->nullable();

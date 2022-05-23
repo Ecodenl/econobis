@@ -37,10 +37,10 @@ class InvoiceDetailsForm extends Component {
             <div>
                 <InvoiceDetailsFormGeneral />
                 <InvoiceProductsForm />
-                {this.props.invoiceDetails.usesTwinfield && <TwinfieldLogInvoicesForm />}
+                {this.props.invoiceDetails.usesTwinfield ? <TwinfieldLogInvoicesForm /> : null}
                 <InvoicePaymentsForm />
-                {this.props.invoiceDetails.usesMollie && <InvoiceMolliePaymentsForm />}
-                {this.props.invoiceDetails.usesTwinfield && <TwinfieldLogPaymentsForm />}
+                {this.props.invoiceDetails.usesMollie ? <InvoiceMolliePaymentsForm /> : null}
+                {this.props.invoiceDetails.usesTwinfield ? <TwinfieldLogPaymentsForm /> : null}
                 <InvoiceDetailsFormConclusion />
             </div>
         );

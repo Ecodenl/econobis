@@ -24,6 +24,34 @@ const DefaultContactPersonalEdit = function({
     values,
     setFieldValue,
 }) {
+    // determine memberSince disabledBefore and after
+    let memberSinceDisabledBefore = '';
+    let memberSinceDisabledAfter = '';
+    if (initialContact.primaryAddress.primaryAddressEnergySupplier.energySupplierId) {
+        if (
+            initialContact.primaryAddress.primaryAddressEnergySupplier.memberSince &&
+            initialContact.primaryAddress.primaryAddressEnergySupplier.energySupplierId !==
+                values.primaryAddress.primaryAddressEnergySupplier.energySupplierId
+        ) {
+            memberSinceDisabledBefore = moment(initialContact.primaryAddress.primaryAddressEnergySupplier.memberSince)
+                .add(1, 'day')
+                .format('YYYY-MM-DD');
+        } else if (initialContact.primaryAddress.primaryAddressEnergySupplier.endDatePrevious) {
+            memberSinceDisabledBefore = moment(
+                initialContact.primaryAddress.primaryAddressEnergySupplier.endDatePrevious
+            )
+                .add(1, 'day')
+                .format('YYYY-MM-DD');
+        }
+        if (initialContact.primaryAddress.primaryAddressEnergySupplier.memberSinceNext) {
+            memberSinceDisabledAfter = moment(
+                initialContact.primaryAddress.primaryAddressEnergySupplier.memberSinceNext
+            )
+                .subtract(1, 'day')
+                .format('YYYY-MM-DD');
+        }
+    }
+
     // Handy to know: Edit person/organisation is done directly or in step 2 of register steps.
     // When Edit person/organisation directly (not in step 2 of register steps) then projectTypeCodeRef = undefined
     return (
@@ -313,6 +341,24 @@ const DefaultContactPersonalEdit = function({
                         ''
                     )}
                 </FormLabel>
+                {((!isNaN(values.primaryAddress.number) && values.primaryAddress.number == 0) ||
+                    (isNaN(values.primaryAddress.number) && values.primaryAddress.number.trim() == '') ||
+                    values.primaryAddress.postalCode.trim() == '') &&
+                (values.primaryAddress.street.trim() != '' ||
+                    values.primaryAddress.number.trim() != '' ||
+                    values.primaryAddress.addition.trim() != '' ||
+                    values.primaryAddress.postalCode.trim() != '' ||
+                    values.primaryAddress.city.trim() != '') ? (
+                    <Row>
+                        <Col xs={12} sm={12}>
+                            <small className={'text-danger'}>
+                                Adres wordt alleen opgeslagen als minimaal nummer en postcode zijn ingevuld.
+                            </small>
+                        </Col>
+                    </Row>
+                ) : (
+                    ''
+                )}
                 <Row>
                     <Col xs={12} sm={12}>
                         <Field
@@ -421,6 +467,81 @@ const DefaultContactPersonalEdit = function({
                         />
                     </Col>
                 </Row>
+                <FormLabel
+                    htmlFor="ean_electricity"
+                    className={
+                        projectTypeCodeRef === 'postalcode_link_capital' ? 'field-label required' : 'field-label'
+                    }
+                >
+                    EAN nummer electriciteit
+                </FormLabel>
+                {((!isNaN(values.primaryAddress.number) && values.primaryAddress.number == 0) ||
+                    (isNaN(values.primaryAddress.number) && values.primaryAddress.number.trim() == '') ||
+                    values.primaryAddress.postalCode.trim() == '') &&
+                values.primaryAddress.eanElectricity != null &&
+                values.primaryAddress.eanElectricity.trim() != '' ? (
+                    <Row>
+                        <Col xs={12} sm={12}>
+                            <small className={'text-danger'}>
+                                EAN nummer electriciteit wordt alleen opgeslagen als minimaal nummer en postcode zijn
+                                ingevuld bij adres.
+                            </small>
+                        </Col>
+                    </Row>
+                ) : (
+                    ''
+                )}
+                <Row>
+                    <Col xs={12} sm={10} md={6}>
+                        <Field
+                            name="primaryAddress.eanElectricity"
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="eanElectricity"
+                                    placeholder={'EAN nummer electriciteit'}
+                                />
+                            )}
+                        />
+                    </Col>
+                </Row>
+                <FormLabel htmlFor="ean_gas" className={'field-label'}>
+                    EAN nummer gas
+                </FormLabel>
+                {((!isNaN(values.primaryAddress.number) && values.primaryAddress.number == 0) ||
+                    (isNaN(values.primaryAddress.number) && values.primaryAddress.number.trim() == '') ||
+                    values.primaryAddress.postalCode.trim() == '') &&
+                values.primaryAddress.eanGas != null &&
+                values.primaryAddress.eanGas.trim() != '' ? (
+                    <Row>
+                        <Col xs={12} sm={12}>
+                            <small className={'text-danger'}>
+                                EAN nummer gas wordt alleen opgeslagen als minimaal nummer en postcode zijn ingevuld bij
+                                adres.
+                            </small>
+                        </Col>
+                    </Row>
+                ) : (
+                    ''
+                )}
+                <Row>
+                    <Col xs={12} sm={10} md={6}>
+                        <Field
+                            name="primaryAddress.eanGas"
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="eanGas"
+                                    placeholder={'EAN nummer gas'}
+                                />
+                            )}
+                        />
+                    </Col>
+                </Row>
             </Col>
 
             <Col xs={12} md={6}>
@@ -520,10 +641,48 @@ const DefaultContactPersonalEdit = function({
                         >
                             Huidige energie leverancier
                         </FormLabel>
+                        {((!isNaN(values.primaryAddress.number) && values.primaryAddress.number == 0) ||
+                            (isNaN(values.primaryAddress.number) && values.primaryAddress.number.trim() == '') ||
+                            values.primaryAddress.postalCode.trim() == '') &&
+                        (values.primaryAddress.primaryAddressEnergySupplier.energySupplierId != null ||
+                            (values.primaryAddress.primaryAddressEnergySupplier.esNumber &&
+                                values.primaryAddress.primaryAddressEnergySupplier.esNumber.trim() != '') ||
+                            (values.primaryAddress.primaryAddressEnergySupplier.memberSince &&
+                                values.primaryAddress.primaryAddressEnergySupplier.memberSince.trim() != '')) ? (
+                            <Row>
+                                <Col xs={12} sm={12}>
+                                    <small className={'text-danger'}>
+                                        Huidige energie leverancier gegevens wordt alleen opgeslagen als minimaal nummer
+                                        en postcode zijn ingevuld bij adres.
+                                    </small>
+                                </Col>
+                            </Row>
+                        ) : (
+                            ''
+                        )}
+                        {(!values.primaryAddress.primaryAddressEnergySupplier.memberSince ||
+                            values.primaryAddress.primaryAddressEnergySupplier.memberSince.trim() == '') &&
+                        ((values.primaryAddress.primaryAddressEnergySupplier.energySupplierId != null &&
+                            values.primaryAddress.primaryAddressEnergySupplier.energySupplierId.trim() != '') ||
+                            (values.primaryAddress.primaryAddressEnergySupplier.esNumber &&
+                                values.primaryAddress.primaryAddressEnergySupplier.esNumber.trim() != '') ||
+                            (values.primaryAddress.primaryAddressEnergySupplier.memberSince &&
+                                values.primaryAddress.primaryAddressEnergySupplier.memberSince.trim() != '')) ? (
+                            <Row>
+                                <Col xs={12} sm={12}>
+                                    <small className={'text-danger'}>
+                                        Huidige energie leverancier gegevens wordt alleen opgeslagen als Klant bij
+                                        leverancier sinds is ingevuld.
+                                    </small>
+                                </Col>
+                            </Row>
+                        ) : (
+                            ''
+                        )}
                         <Row>
                             <Col xs={12} sm={12} md={8}>
                                 <Field
-                                    name="primaryContactEnergySupplier.energySupplierId"
+                                    name="primaryAddress.primaryAddressEnergySupplier.energySupplierId"
                                     render={({ field }) => (
                                         <Select
                                             field={field}
@@ -532,18 +691,28 @@ const DefaultContactPersonalEdit = function({
                                             id="energy_supplier_id"
                                             placeholder={'Selecteer uw leverancier'}
                                             options={EnergySuppliers}
-                                            // disabled={
-                                            //     initialContact.primaryContactEnergySupplier &&
-                                            //     initialContact.primaryContactEnergySupplier.energySupplierId &&
-                                            //     initialContact.isParticipant
-                                            // }
+                                            customOnChange={e => {
+                                                setFieldValue(
+                                                    'primaryAddress.primaryAddressEnergySupplier.energySupplierId',
+                                                    e.target.value
+                                                );
+                                                setFieldValue(
+                                                    'primaryAddress.primaryAddressEnergySupplier.esNumber',
+                                                    ''
+                                                );
+                                                setFieldValue(
+                                                    'primaryAddress.primaryAddressEnergySupplier.memberSince',
+                                                    ''
+                                                );
+                                            }}
                                         />
                                     )}
                                 />
                             </Col>
                         </Row>
 
-                        {values.primaryContactEnergySupplier && values.primaryContactEnergySupplier.energySupplierId ? (
+                        {values.primaryAddress.primaryAddressEnergySupplier &&
+                        values.primaryAddress.primaryAddressEnergySupplier.energySupplierId ? (
                             <>
                                 <FormLabel
                                     htmlFor="es_number"
@@ -558,7 +727,7 @@ const DefaultContactPersonalEdit = function({
                                 <Row>
                                     <Col xs={12} sm={12} md={8}>
                                         <Field
-                                            name="primaryContactEnergySupplier.esNumber"
+                                            name="primaryAddress.primaryAddressEnergySupplier.esNumber"
                                             render={({ field }) => (
                                                 <InputText
                                                     field={field}
@@ -566,12 +735,6 @@ const DefaultContactPersonalEdit = function({
                                                     touched={touched}
                                                     id="es_number"
                                                     placeholder={'Klant nummer bij leverancier'}
-                                                    // disabled={
-                                                    //     initialContact.primaryContactEnergySupplier &&
-                                                    //     initialContact.primaryContactEnergySupplier.energySupplierId &&
-                                                    //     initialContact.primaryContactEnergySupplier.esNumber &&
-                                                    //     initialContact.isParticipant
-                                                    // }
                                                 />
                                             )}
                                         />
@@ -584,78 +747,18 @@ const DefaultContactPersonalEdit = function({
                                 <Row>
                                     <Col xs={12} sm={12} md={8}>
                                         <Field
-                                            name="primaryContactEnergySupplier.memberSince"
+                                            name="primaryAddress.primaryAddressEnergySupplier.memberSince"
                                             render={({ field }) => (
                                                 <InputDate
                                                     {...field}
                                                     errors={errors}
                                                     touched={touched}
                                                     onChangeAction={setFieldValue}
+                                                    disabledBefore={memberSinceDisabledBefore}
+                                                    disabledAfter={memberSinceDisabledAfter}
+                                                    manualInput={false}
                                                     id="member_since"
                                                     placeholder={'Klant sinds'}
-                                                    // readOnly={
-                                                    //     initialContact.primaryContactEnergySupplier &&
-                                                    //     initialContact.primaryContactEnergySupplier.energySupplierId &&
-                                                    //     initialContact.primaryContactEnergySupplier.memberSince
-                                                    // }
-                                                />
-                                            )}
-                                        />
-                                    </Col>
-                                </Row>
-
-                                <FormLabel
-                                    htmlFor="ean_electricity"
-                                    className={
-                                        projectTypeCodeRef === 'postalcode_link_capital'
-                                            ? 'field-label required'
-                                            : 'field-label'
-                                    }
-                                >
-                                    EAN nummer electriciteit
-                                </FormLabel>
-                                <Row>
-                                    <Col xs={12} sm={12} md={8}>
-                                        <Field
-                                            name="primaryContactEnergySupplier.eanElectricity"
-                                            render={({ field }) => (
-                                                <InputText
-                                                    field={field}
-                                                    errors={errors}
-                                                    touched={touched}
-                                                    id="ean_electricity"
-                                                    placeholder={'EAN nummer electriciteit'}
-                                                    // disabled={
-                                                    //     initialContact.primaryContactEnergySupplier &&
-                                                    //     initialContact.primaryContactEnergySupplier.energySupplierId &&
-                                                    //     initialContact.primaryContactEnergySupplier.eanElectricity &&
-                                                    //     initialContact.isParticipant
-                                                    // }
-                                                />
-                                            )}
-                                        />
-                                    </Col>
-                                </Row>
-
-                                <FormLabel htmlFor="ean_gas" className={'field-label'}>
-                                    EAN nummer gas
-                                </FormLabel>
-                                <Row>
-                                    <Col xs={12} sm={12} md={8}>
-                                        <Field
-                                            name="primaryContactEnergySupplier.eanGas"
-                                            render={({ field }) => (
-                                                <InputText
-                                                    field={field}
-                                                    errors={errors}
-                                                    touched={touched}
-                                                    id="ean_gas"
-                                                    placeholder={'EAN nummer gas'}
-                                                    // disabled={
-                                                    //     initialContact.primaryContactEnergySupplier &&
-                                                    //     initialContact.primaryContactEnergySupplier.energySupplierId &&
-                                                    //     initialContact.primaryContactEnergySupplier.eanGas
-                                                    // }
                                                 />
                                             )}
                                         />

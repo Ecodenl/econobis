@@ -33,6 +33,9 @@ class Participationslist extends Component {
                                             {item.projectTypeCodeRef === 'loan'
                                                 ? `${MoneyPresenter(item.amountDefinitive)} in ${item.projectName} `
                                                 : `${item.participationsDefinitive} in ${item.projectName} `}
+                                            {item.participationPostalCodeNumberAddition
+                                                ? ` (${item.participationPostalCodeNumberAddition})`
+                                                : ''}
                                         </td>
                                     </tr>
                                 );

@@ -9,7 +9,7 @@ use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\EmailAddress\EmailAddress;
-use App\Eco\EnergySupplier\ContactEnergySupplier;
+use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakeReason;
 use App\Eco\Occupation\OccupationContact;
@@ -240,14 +240,14 @@ class WebformTest extends TestCase
             'primary' => true,
         ], array_intersect_key($phoneNumber->toArray(), array_flip(['contact_id', 'type_id', 'number', 'primary'])));
 
-        $contactEnergySupplier = ContactEnergySupplier::find(1);
+        $addressEnergySupplier = AddressEnergySupplier::find(1);
         $this->assertEquals([
             'contact_id' => 1,
             'energy_supplier_id' => 11,
-            'contact_energy_supply_type_id' => '3',
+            'energy_supply_type_id' => '3',
             'member_since' => '2005-06-07',
             'es_number' => 'klant_123',
-        ], array_intersect_key($contactEnergySupplier->toArray(), array_flip(['contact_id', 'energy_supplier_id', 'contact_energy_supply_type_id', 'member_since', 'es_number'])));
+        ], array_intersect_key($addressEnergySupplier->toArray(), array_flip(['contact_id', 'energy_supplier_id', 'energy_supply_type_id', 'member_since', 'es_number'])));
 
         $intake = Intake::find(1);
         $this->assertEquals([

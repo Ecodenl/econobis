@@ -44,6 +44,11 @@ import productsReducer from './product/ProductsReducer';
 import projectsReducer from './project/ProjectsReducer';
 import projectDetailsReducer from './project/ProjectDetailsReducer';
 import projectRevenueDetailsReducer from './project/ProjectRevenueDetailsReducer';
+import revenuesKwhDetailsReducer from './project/RevenuesKwhDetailsReducer';
+import revenuesKwhReportPreviewReducer from './project/RevenuesKwhReportPreviewReducer';
+import revenuesKwhReportEnergySupplierExcelReducer from './project/RevenuesKwhReportEnergySupplierExcelReducer';
+import revenuePartsKwhDetailsReducer from './project/RevenuePartsKwhDetailsReducer';
+import revenuePartsKwhReportPreviewReducer from './project/RevenuePartsKwhReportPreviewReducer';
 import projectRevenueReportPreviewReducer from './project/ProjectRevenueReportPreviewReducer';
 import projectParticipantReportPreviewReducer from './project/ProjectParticipantReportPreviewReducer';
 import intakeDetailsReducer from './intake/IntakeDetailsReducer';
@@ -137,6 +142,12 @@ const rootReducer = combineReducers({
     projectRevenue: projectRevenueDetailsReducer,
     projectRevenueReportPreview: projectRevenueReportPreviewReducer,
     projectParticipantReportPreview: projectParticipantReportPreviewReducer,
+    // RevenuesKwh
+    revenuesKwh: revenuesKwhDetailsReducer,
+    revenuesKwhReportPreview: revenuesKwhReportPreviewReducer,
+    revenuesKwhReportEnergySupplierExcel: revenuesKwhReportEnergySupplierExcelReducer,
+    revenuePartsKwh: revenuePartsKwhDetailsReducer,
+    revenuePartsKwhReportPreview: revenuePartsKwhReportPreviewReducer,
     // Intake
     intakes: intakesReducer,
     intakeDetails: intakeDetailsReducer,

@@ -37,6 +37,7 @@ export default [
     { id: 30, name: 'HVC Kringloop Energie' },
     { id: 23, name: 'Innova Energie' },
     { id: 10, name: 'Main energie' },
+    { id: 65, name: 'Mijn Domein Energie' },
     { id: 61, name: 'Nieuw Hollands Energiebedrijf' },
     { id: 38, name: 'NieuweStroom' },
     { id: 12, name: 'NL Energie' },

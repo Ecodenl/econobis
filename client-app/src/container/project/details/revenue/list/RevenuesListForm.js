@@ -15,28 +15,21 @@ const RevenuesListForm = ({
     projectType,
     projectRevenues,
     projectRevenueCategories,
-    hasNotConfirmedRevenuesKwhSplit,
 }) => {
     let disabled = false;
     let revenueDisabledEuro = false;
-    let revenueDisabledKwh = false;
     let redemptionDisabledEuro = false;
     let revenueTitleEuro = 'Nieuwe opbrengst Euro verdeling maken';
-    let revenueTitleKwh = 'Nieuwe opbrengst Kwh verdeling maken';
     let redemptionTitleEuro = 'Nieuwe aflossing Euro verdeling maken';
 
     if (projectStatus.codeRef !== 'active') {
         disabled = true;
         revenueTitleEuro = 'Opbrengst verdeling kan alleen bij projectstatus actief worden toegevoegd';
-        revenueTitleKwh = 'Opbrengst verdeling kan alleen bij projectstatus actief worden toegevoegd';
         redemptionTitleEuro = 'Aflossing verdeling kan alleen bij projectstatus actief worden toegevoegd';
     }
 
     const revenueEuroCategoryId = projectRevenueCategories.find(
         projectRevenueCategory => projectRevenueCategory.codeRef === 'revenueEuro'
-    ).id;
-    const revenueKwhCategoryId = projectRevenueCategories.find(
-        projectRevenueCategory => projectRevenueCategory.codeRef === 'revenueKwh'
     ).id;
     const redemptionEuroCategoryId = projectRevenueCategories.find(
         projectRevenueCategory => projectRevenueCategory.codeRef === 'redemptionEuro'
@@ -48,16 +41,6 @@ const RevenuesListForm = ({
             revenueTitleEuro = 'Lopende euro opbrengstverdeling al actief';
         }
 
-        if (projectRevenue.categoryId == revenueKwhCategoryId) {
-            if (projectRevenue.confirmed == 0) {
-                revenueDisabledKwh = true;
-                revenueTitleKwh = 'Lopende kwh opbrengstverdeling al actief';
-            } else if (hasNotConfirmedRevenuesKwhSplit) {
-                revenueDisabledKwh = true;
-                revenueTitleKwh = 'Lopende tussentijdse (deelnemer) kwh opbrengstverdeling(en) al actief';
-            }
-        }
-
         if (projectRevenue.categoryId == redemptionEuroCategoryId && projectRevenue.confirmed == 0) {
             redemptionDisabledEuro = true;
             redemptionTitleEuro = 'Lopende euro aflossingsverdeling al actief';
@@ -67,10 +50,12 @@ const RevenuesListForm = ({
     return (
         <Panel>
             <PanelHeader>
-                <span className="h5 text-bold">Opbrengsten</span>
+                <span className="h5 text-bold">
+                    {projectType.codeRef === 'postalcode_link_capital' ? 'Opbrengsten Euro' : 'Opbrengsten'}
+                </span>
                 {permissions.manageFinancial && (
                     <React.Fragment>
-                        {projectType.codeRef === 'capital' ? (
+                        {projectType.codeRef === 'capital' || projectType.codeRef === 'postalcode_link_capital' ? (
                             <ButtonIcon
                                 buttonClassName={'pull-right btn btn-link'}
                                 onClickAction={() =>
@@ -80,56 +65,6 @@ const RevenuesListForm = ({
                                 title={revenueTitleEuro}
                                 iconName={'glyphicon-plus'}
                             />
-                        ) : (
-                            ''
-                        )}
-
-                        {projectType.codeRef === 'postalcode_link_capital' ? (
-                            <div className="nav navbar-nav btn-group pull-right" role="group">
-                                <button className="btn btn-link" data-toggle="dropdown">
-                                    <span className="glyphicon glyphicon-plus" />
-                                </button>
-                                <ul className="dropdown-menu">
-                                    <li className={disabled || revenueDisabledEuro ? 'disabled' : null}>
-                                        {disabled || revenueDisabledEuro ? (
-                                            <a role={'button'} title={revenueTitleEuro} onClick={() => {}}>
-                                                Opbrengst Euro
-                                            </a>
-                                        ) : (
-                                            <a
-                                                role={'button'}
-                                                title={revenueTitleEuro}
-                                                onClick={() =>
-                                                    hashHistory.push(
-                                                        `/project/opbrengst/nieuw/${projectId}/${revenueEuroCategoryId}`
-                                                    )
-                                                }
-                                            >
-                                                Opbrengst Euro
-                                            </a>
-                                        )}
-                                    </li>
-                                    <li className={disabled || revenueDisabledKwh ? 'disabled' : null}>
-                                        {disabled || revenueDisabledKwh ? (
-                                            <a role={'button'} title={revenueTitleKwh} onClick={() => {}}>
-                                                Opbrengst Kwh
-                                            </a>
-                                        ) : (
-                                            <a
-                                                role={'button'}
-                                                title={revenueTitleKwh}
-                                                onClick={() =>
-                                                    hashHistory.push(
-                                                        `/project/opbrengst/nieuw/${projectId}/${revenueKwhCategoryId}`
-                                                    )
-                                                }
-                                            >
-                                                Opbrengst Kwh
-                                            </a>
-                                        )}
-                                    </li>
-                                </ul>
-                            </div>
                         ) : (
                             ''
                         )}
@@ -202,7 +137,6 @@ const mapStateToProps = state => {
         projectRevenues: state.projectDetails.revenues,
         projectType: state.projectDetails.projectType,
         projectRevenueCategories: state.systemData.projectRevenueCategories,
-        hasNotConfirmedRevenuesKwhSplit: state.projectDetails.hasNotConfirmedRevenuesKwhSplit,
     };
 };
 

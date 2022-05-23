@@ -1,6 +1,7 @@
 import React from 'react';
 import InputText from '../../../../../components/form/InputText';
 import InputDate from '../../../../../components/form/InputDate';
+import moment from 'moment';
 
 const MutationNewDeposit = ({
     statusCodeRef,
@@ -24,7 +25,15 @@ const MutationNewDeposit = ({
     handleInputChange,
     handleInputChangeDate,
     projectTypeCodeRef,
+    projectDateInterestBearingKwh,
 }) => {
+    let disableBeforeEntryDate = '';
+    if (projectTypeCodeRef === 'postalcode_link_capital') {
+        if (projectDateInterestBearingKwh) {
+            disableBeforeEntryDate = moment(projectDateInterestBearingKwh).format('YYYY-MM-DD');
+        }
+    }
+
     return (
         <React.Fragment>
             {statusCodeRef === 'interest' ? (
@@ -199,6 +208,7 @@ const MutationNewDeposit = ({
                             id={'dateEntry'}
                             value={dateEntry}
                             onChangeAction={handleInputChangeDate}
+                            disabledBefore={disableBeforeEntryDate}
                             required={'required'}
                             error={errors.dateEntry}
                         />

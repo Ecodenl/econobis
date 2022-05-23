@@ -13,7 +13,6 @@ import ContactDetailsFormConclusion from './conclusion/ContactDetailsFormConclus
 import ContactDetailsQuotations from './quotations/ContactDetailsQuotations';
 import ContactDetailsCampaigns from './campaigns/ContactDetailsCampaigns';
 import ContactDetailsFormOccupations from './occupations/ContactDetailsFormOccupations';
-import ContactDetailsFormContactEnergySupplier from './contact-energy-suppliers/ContactDetailsFormContactEnergySupplier';
 import moment from 'moment/moment';
 import ContactDetailsFormPortalUser from './portal-user/ContactDetailsFormPortalUser';
 moment.locale('nl');
@@ -56,7 +55,6 @@ class ContactDetailsForm extends Component {
                 <ContactDetailsFormAddress />
                 <ContactDetailsFormEmail />
                 <ContactDetailsFormPhone />
-                <ContactDetailsFormContactEnergySupplier />
                 {typeId == 'organisation' && <ContactDetailsQuotations />}
                 {typeId == 'organisation' && <ContactDetailsCampaigns />}
                 <ContactDetailsFormOccupations />

@@ -53,7 +53,7 @@ const RevenueFormView = props => {
 
             {category.codeRef === 'revenueEuro' || category.codeRef === 'redemptionEuro' ? (
                 <div className="row" onClick={props.switchToEdit}>
-                    {project.projectType.codeRef === 'obligation' ? (
+                    {project.projectType.codeRef !== 'loan' ? (
                         <ViewText
                             label={'Type opbrengst verdeling'}
                             value={distributionType ? distributionType.name : ''}
@@ -161,11 +161,10 @@ const RevenueFormView = props => {
                             label={'Opbrengst kWh €'}
                             value={
                                 payoutKwh &&
-                                '€ ' +
-                                    payoutKwh.toLocaleString('nl', {
-                                        minimumFractionDigits: 3,
-                                        maximumFractionDigits: 5,
-                                    })
+                                payoutKwh.toLocaleString('nl', {
+                                    minimumFractionDigits: 3,
+                                    maximumFractionDigits: 5,
+                                })
                             }
                         />
                         <ViewText label={'Totaal productie kWh'} value={kwhTotal && kwhTotal} />

@@ -270,7 +270,6 @@ class RevenueFormEdit extends Component {
             errorMessage.payoutKwh = 'Verplicht';
             hasErrors = true;
         }
-
         if (this.props.revenue.category.codeRef === 'redemptionEuro' && !revenue.dateBegin && revenue.dateEnd) {
             errors.dateBegin = true;
             errorMessage.dateBegin = 'Begin periode moet ook ingevuld worden als Eind periode ingevuld is.';
@@ -281,7 +280,6 @@ class RevenueFormEdit extends Component {
             errorMessage.dateEnd = 'Eind periode moet ook ingevuld worden als Begin periode ingevuld is.';
             hasErrors = true;
         }
-
         if (!hasErrors && revenue.dateEnd < revenue.dateBegin) {
             errors.dateEnd = true;
             errorMessage.dateEnd = 'Eind periode mag niet voor Begin periode liggen.';
@@ -528,7 +526,7 @@ class RevenueFormEdit extends Component {
 
                 {category.codeRef === 'revenueEuro' ? (
                     <div className="row">
-                        {projectTypeCodeRef === 'obligation' ? (
+                        {projectTypeCodeRef !== 'loan' ? (
                             <InputSelect
                                 label={'Type opbrengst verdeling'}
                                 name={'distributionTypeId'}
@@ -838,7 +836,6 @@ class RevenueFormEdit extends Component {
                                 errorMessage={this.state.errorMessage.payoutKwh}
                                 required={'required'}
                             />
-
                             <InputText
                                 type={'number'}
                                 label={'Totaal productie kWh'}
@@ -1004,9 +1001,9 @@ const mapDispatchToProps = dispatch => ({
     fetchRevenue: id => {
         dispatch(fetchRevenue(id));
     },
-    getParticipants: (id, page) => {
-        dispatch(getParticipants({ id, page }));
-    },
+    // getParticipants: (id, page) => {
+    //     dispatch(getParticipants({ id, page }));
+    // },
     getDistribution: (id, page) => {
         dispatch(getDistribution({ id, page }));
     },

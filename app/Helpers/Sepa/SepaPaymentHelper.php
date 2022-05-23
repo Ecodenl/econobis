@@ -18,7 +18,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Class SepaHelper
+ * Class SepaPaymentHelper
  *
  * @package App\Helpers\Sepa
  */
@@ -34,7 +34,7 @@ class SepaPaymentHelper
     private $invoices = [];
 
     /**
-     * SepaHelper constructor.
+     * SepaPaymentHelper constructor.
      *
      * @param Administration $administration
      * @param                $invoices
@@ -284,6 +284,7 @@ class SepaPaymentHelper
 
     public function translateToValidCharacterSet($field){
 
+        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
         $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 

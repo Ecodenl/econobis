@@ -196,7 +196,7 @@ class SepaHelper
 
             // Debtor
             $xml .= "\n\t\t\t\t<Dbtr>";
-            $xml .= "\n\t\t\t\t\t<Nm>" . $iban_attn . "</Nm>"; // Naam van geincasseerde
+            $xml .= "\n\t\t\t\t\t<Nm>" . $this->translateToValidCharacterSet($iban_attn) . "</Nm>"; // Naam van geincasseerde
             $xml .= "\n\t\t\t\t</Dbtr>";
 
             // Debtor Account
@@ -277,5 +277,14 @@ class SepaHelper
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);
         }
+    }
+
+    public function translateToValidCharacterSet($field){
+
+        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
+        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
+        $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
+
+        return $field;
     }
 }

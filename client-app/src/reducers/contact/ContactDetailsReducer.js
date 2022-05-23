@@ -164,23 +164,56 @@ export default function(state = {}, action) {
                     };
                 }),
             };
-        case 'NEW_CONTACT_ENERGY_SUPPLIER':
+        case 'NEW_ADDRESS_ENERGY_SUPPLIER':
             return {
                 ...state,
-                contactEnergySuppliers: action.contactEnergySupplier,
-            };
-        case 'UPDATE_CONTACT_ENERGY_SUPPLIER':
-            return {
-                ...state,
-                contactEnergySuppliers: action.contactEnergySupplier,
-            };
-        case 'DELETE_CONTACT_ENERGY_SUPPLIER':
-            return {
-                ...state,
-                contactEnergySuppliers: state.contactEnergySuppliers.filter(
-                    contactEnergySupplier => contactEnergySupplier.id !== action.id
+                addresses: state.addresses.map(address =>
+                    address.id === action.addressEnergySupplier.addressId
+                        ? {
+                              ...address,
+                              addressEnergySuppliers: [
+                                  ...address.addressEnergySuppliers,
+                                  {
+                                      ...action.addressEnergySupplier,
+                                  },
+                              ],
+                          }
+                        : address
                 ),
             };
+
+        case 'UPDATE_ADDRESS_ENERGY_SUPPLIER':
+            return {
+                ...state,
+                addresses: state.addresses.map(address =>
+                    address.id === action.addressEnergySupplier.addressId
+                        ? {
+                              ...address,
+                              addressEnergySuppliers: address.addressEnergySuppliers.map(addressEnergySupplier =>
+                                  addressEnergySupplier.id === action.addressEnergySupplier.id
+                                      ? {
+                                            ...action.addressEnergySupplier,
+                                        }
+                                      : addressEnergySupplier
+                              ),
+                          }
+                        : address
+                ),
+            };
+
+        case 'DELETE_ADDRESS_ENERGY_SUPPLIER':
+            return {
+                ...state,
+                addresses: state.addresses.map(address => {
+                    return {
+                        ...address,
+                        addressEnergySuppliers: address.addressEnergySuppliers.filter(
+                            addressEnergySupplier => addressEnergySupplier.id !== action.id
+                        ),
+                    };
+                }),
+            };
+
         case 'UPDATE_HOOM_ACCOUNT_ID':
             return { ...state, hoomAccountId: action.hoomAccountId };
         default:

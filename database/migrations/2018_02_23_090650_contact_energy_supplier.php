@@ -27,7 +27,7 @@ class ContactEnergySupplier extends Migration
         });
 
         $contact_energy_supply_statusses = [
-            'Geïntresseerd',
+            'Geïnteresseerd',
             'Geen interesse',
             'Stapt over',
             'Overgestapt'

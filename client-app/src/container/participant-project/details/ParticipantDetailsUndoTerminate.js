@@ -5,8 +5,8 @@ import { fetchParticipantProjectDetails } from '../../../actions/participants-pr
 import { connect } from 'react-redux';
 import ParticipantProjectDetailsAPI from '../../../api/participant-project/ParticipantProjectDetailsAPI';
 
-const ParticipantDetailsTerminate = ({
-    participantProjectId,
+const ParticipantDetailsUndoTerminate = ({
+    participantProject,
     setErrorModal,
     closeDeleteItemModal,
     projectTypeCodeRef,
@@ -16,11 +16,11 @@ const ParticipantDetailsTerminate = ({
 
     const confirmAction = () => {
         setDateTerminated(null);
-        ParticipantProjectDetailsAPI.undoTerminateParticipantProject(participantProjectId, {
+        ParticipantProjectDetailsAPI.undoTerminateParticipantProject(participantProject.id, {
             dateTerminated,
         })
             .then(payload => {
-                fetchParticipantProjectDetails(participantProjectId);
+                fetchParticipantProjectDetails(participantProject.id);
                 closeDeleteItemModal();
             })
             .catch(error => {
@@ -34,16 +34,34 @@ const ParticipantDetailsTerminate = ({
     };
 
     return (
-        <Modal
-            buttonConfirmText="Deelname beëindiging ongedaan maken"
-            buttonClassName={'btn-danger'}
-            closeModal={closeDeleteItemModal}
-            confirmAction={() => confirmAction()}
-            title="Beëindigen"
-            modalClassName={'modal-lg'}
-        >
-            <p>Weet u zeker dat u deze beëindigde deelname weer ongedaan wilt maken?</p>
-        </Modal>
+        <>
+            {participantProject.participantInConfirmedRevenue ? (
+                <Modal
+                    buttonConfirmText="Deelname beëindiging ongedaan maken"
+                    buttonClassName={'btn-danger'}
+                    closeModal={closeDeleteItemModal}
+                    showConfirmAction={false}
+                    title="Beëindigen ongedaan maken"
+                    modalClassName={'modal-lg'}
+                >
+                    <p>
+                        Deelname komt nog voor in niet verwerkte definitieve opbrengstverdeling. Beëindiging ongedaan
+                        maken niet mogelijk.
+                    </p>
+                </Modal>
+            ) : (
+                <Modal
+                    buttonConfirmText="Deelname beëindiging ongedaan maken"
+                    buttonClassName={'btn-danger'}
+                    closeModal={closeDeleteItemModal}
+                    confirmAction={() => confirmAction()}
+                    title="Beëindigen ongedaan maken"
+                    modalClassName={'modal-lg'}
+                >
+                    <p>Weet u zeker dat u deze beëindigde deelname weer ongedaan wilt maken?</p>
+                </Modal>
+            )}
+        </>
     );
 };
 
@@ -53,4 +71,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ParticipantDetailsTerminate);
+export default connect(null, mapDispatchToProps)(ParticipantDetailsUndoTerminate);

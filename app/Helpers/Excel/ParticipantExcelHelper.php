@@ -237,13 +237,19 @@ class ParticipantExcelHelper
                     $participant->cpPrimaryPhonenumber = $participant->contact->contactPerson->contact->primaryPhonenumber ? $participant->contact->contactPerson->contact->primaryPhonenumber->number : '';
                 }
 
+                // Participant addres if exsists otherwise contact primaryAddress
+                if($participant->address){
+                    $address = $participant->address;
+                }else{
+                    $address = $participant->contact->primaryAddress;
+                }
+
                 // Reformat energy supplier fields
-                if ($participant->contact->primaryContactEnergySupplier) {
-                    // Reformat when supplier starts with equal sign (example '=om')
+                if ($address && $address->primaryAddressEnergySupplier) {
                     $participant->energy_supplier_name
-                        = $participant->contact->primaryContactEnergySupplier->energySupplier->name;
+                        = $address->primaryAddressEnergySupplier->energySupplier->name;
                     $participant->energy_supplier_member_since
-                        = $this->formatDate($participant->contact->primaryContactEnergySupplier->member_since);
+                        = $this->formatDate($address->primaryAddressEnergySupplier->member_since);
                 }
 
                 //reformat bools
@@ -318,9 +324,9 @@ class ParticipantExcelHelper
                 $rowData[44] = $participant->phonenumber_3;
                 $rowData[45] = $participant->energy_supplier_name;
                 $rowData[46] = $participant->energy_supplier_member_since;
-                $rowData[47] = $participant->contact->primaryContactEnergySupplier ? $participant->contact->primaryContactEnergySupplier->es_number : '';
-                $rowData[48] = $participant->contact->primaryContactEnergySupplier && !empty($participant->contact->primaryContactEnergySupplier->ean_electricity) ? 'EAN: ' . $participant->contact->primaryContactEnergySupplier->ean_electricity : '';
-                $rowData[49] = $participant->contact->primaryContactEnergySupplier && !empty($participant->contact->primaryContactEnergySupplier->ean_gas) ? 'EAN: ' . $participant->contact->primaryContactEnergySupplier->ean_gas : '';
+                $rowData[47] = $address && $address->primaryAddressEnergySupplier ? $address->primaryAddressEnergySupplier->es_number : '';
+                $rowData[48] = $address && !empty($address->ean_electricity) ? 'EAN: ' . $address->ean_electricity : '';
+                $rowData[49] = $address && !empty($address->ean_gas) ? 'EAN: ' . $address->ean_gas : '';
                 $rowData[50] = $projectCode;
                 $rowData[51] = $currentBalanceAccount;
                 $rowData[52] = $participant->participations_returns_total;
@@ -587,6 +593,13 @@ class ParticipantExcelHelper
                     ? Carbon::parse($participant->date_register)
                         ->format('d-m-Y') : '';
 
+                // Participant addres if exsists otherwise contact primaryAddress
+                if($participant->address){
+                    $address = $participant->address;
+                }else{
+                    $address = $participant->contact->primaryAddress;
+                }
+
                 $rowData = [];
                 $rowData[] = $participant->contact->number;
                 $rowData[] = $participant->contact->organisation ? $participant->contact->organisation->name : '';
@@ -594,11 +607,11 @@ class ParticipantExcelHelper
                 $rowData[] = $participant->initials;
                 $rowData[] = $participant->first_name;
                 $rowData[] = $participant->last_name_prefix ? $participant->last_name_prefix . ' ' . $participant->last_name : $participant->last_name ;
-                $rowData[] = $participant->contact->primaryAddress ? $participant->contact->primaryAddress->street : '';
-                $rowData[] = $participant->contact->primaryAddress ? $participant->contact->primaryAddress->number : '';
-                $rowData[] = $participant->contact->primaryAddress ? $participant->contact->primaryAddress->addition : '';
-                $rowData[] = $participant->contact->primaryAddress ? $participant->contact->primaryAddress->postal_code : '';
-                $rowData[] = $participant->contact->primaryAddress ? $participant->contact->primaryAddress->city : '';
+                $rowData[] = $address ? $address->street : '';
+                $rowData[] = $address ? $address->number : '';
+                $rowData[] = $address ? $address->addition : '';
+                $rowData[] = $address ? $address->postal_code : '';
+                $rowData[] = $address ? $address->city : '';
                 $rowData[] = $participant->contact->primaryEmailAddress ? $participant->contact->primaryEmailAddress->email : '';
                 $rowData[] = $participant->contact->primaryphoneNumber ? $participant->contact->primaryphoneNumber->number : '';
                 $rowData[] = $participant->participations_definitive ;

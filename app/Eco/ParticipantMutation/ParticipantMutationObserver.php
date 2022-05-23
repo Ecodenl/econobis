@@ -8,6 +8,7 @@
 
 namespace App\Eco\ParticipantMutation;
 
+use App\Http\Controllers\Api\Project\RevenuesKwhController;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -51,10 +52,30 @@ class ParticipantMutationObserver
 
         }
         // If date_entry is changed, than determine date_register (is earliest first deposit date entry) by participant again.
-        if($participantMutation->isDirty('date_entry')) {
+
+        $dateEntry = Carbon::parse($participantMutation->date_entry)->format('Y-m-d');
+        $dateEntryOriginal = Carbon::parse($participantMutation->getOriginal('date_entry'))->format('Y-m-d');
+        if($dateEntry!=$dateEntryOriginal)
+        {
             $participantProject = $participantMutation->participation;
             $participantProject->date_register = $participantProject->dateEntryFirstDeposit;
             $participantProject->save();
+
+            $revenuesKwhController = new RevenuesKwhController();
+            foreach($participantProject->project->revenuesKwh as $revenuesKwh) {
+                // If project revenue is already confirmed then continue
+                if($revenuesKwh->confirmed) continue;
+
+                $revenuesKwhController->saveDistributionKwh($revenuesKwh, $participantProject);
+                $partsUpFromDate = $dateEntry < $dateEntryOriginal ? $dateEntry : $dateEntryOriginal;
+                $parts = $revenuesKwh->partsKwh->where('date_begin', '>=', $partsUpFromDate);
+                foreach($parts as $revenuePartsKwh) {
+                    if($revenuePartsKwh->status == 'concept'){
+                        $revenuePartsKwh->status = 'concept-to-update';
+                        $revenuePartsKwh->save();
+                    }
+                }
+            }
         }
     }
 

@@ -30,7 +30,7 @@ class ProjectGeneralForm extends Component {
         ) : (
             <div>
                 {this.renderProjectSummary()}
-                <ParticipantsListApp />
+                <ParticipantsListApp filterProjectId={this.props.filterProjectId} />
             </div>
         );
     }

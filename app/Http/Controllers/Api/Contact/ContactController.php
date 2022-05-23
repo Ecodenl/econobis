@@ -10,6 +10,7 @@ use App\Helpers\Delete\Models\DeleteContact;
 use App\Helpers\Hoomdossier\HoomdossierHelper;
 use App\Helpers\Import\ContactImportHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Contact\ContactWithAddressPeek;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\Contact\FullContactWithGroups;
 use App\Http\Resources\Task\SidebarTask;
@@ -23,11 +24,10 @@ class ContactController extends Controller
     {
         $this->authorize('view', $contact);
 
-        $contact->load(['addresses.country', 'emailAddresses', 'phoneNumbers', 'createdBy', 'updatedBy', 'owner', 'portalUser', 'tasks', 'notes', 'financialOverviewContactsSend', 'documents', 'opportunities', 'participations', 'orders', 'invoices']);
+        $contact->load(['addresses.addressEnergySuppliers.energySupplier', 'addresses.addressEnergySuppliers.energySupplyType', 'addresses.addressEnergySuppliers.energySupplyStatus', 'addresses.primaryAddressEnergySupplier', 'addresses.primaryAddressEnergySupplier.energySupplier', 'addresses.country', 'emailAddresses', 'phoneNumbers', 'createdBy', 'updatedBy', 'owner', 'portalUser', 'tasks', 'notes', 'financialOverviewContactsSend', 'documents', 'opportunities', 'participations', 'orders', 'invoices']);
         $contact->contactNotes->load(['createdBy', 'updatedBy']);
         $contact->occupations->load(['occupation', 'primaryContact', 'contact']);
         $contact->primaryOccupations->load(['occupation', 'primaryContact', 'contact']);
-        $contact->contactEnergySuppliers->load(['energySupplier', 'contactEnergySupplyStatus', 'contactEnergySupplyType', 'createdBy', 'contact']);
 
         if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisation.quotationRequests.opportunity.measureCategory', 'organisation.quotationRequests.opportunity.status', 'organisation.campaigns', 'contactPerson.contact']);
         if($contact->isPerson()) $contact->load(['person', 'person.title', 'person.organisation', 'person.type']);
@@ -119,9 +119,37 @@ class ContactController extends Controller
 
     public function peek()
     {
-        $contact = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->get();
+        $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->get();
 
-        return ContactPeek::collection($contact);
+        return ContactPeek::collection($contacts);
+    }
+
+    public function search(Request $request)
+    {
+        $contacts = Contact::select('id', 'full_name', 'number')->with('addresses')->orderBy('full_name');
+        foreach(explode(" ", $request->input('searchTerm')) as $searchTerm) {
+            $contacts->where(function ($contacts) use ($searchTerm) {
+                $contacts->where('contacts.full_name', 'like', '%' . $searchTerm . '%');
+            });
+        }
+        $contacts = $contacts->get();
+
+        return ContactWithAddressPeek::collection($contacts);
+    }
+
+    public function getContactWithAddresses(Contact $contact, Request $request)
+    {
+        $contact->load(['addressesWithoutOld']);
+        $contact->select('id', 'full_name', 'number')->orderBy('full_name')->first();
+
+        return new ContactWithAddressPeek($contact);
+    }
+
+    public function peekWithAddress()
+    {
+        $contacts = Contact::select('id', 'full_name', 'number')->with('addresses')->orderBy('full_name')->get();
+
+        return ContactWithAddressPeek::collection($contacts);
     }
 
     public function groups(Contact $contact)

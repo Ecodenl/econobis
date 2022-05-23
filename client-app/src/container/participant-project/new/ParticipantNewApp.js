@@ -6,7 +6,6 @@ import ParticipantNewToolbar from './ParticipantNewToolbar';
 import ParticipantProjectDetailsAPI from '../../../api/participant-project/ParticipantProjectDetailsAPI';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import ContactsAPI from '../../../api/contact/ContactsAPI';
 import ProjectsAPI from '../../../api/project/ProjectsAPI';
 import { connect } from 'react-redux';
 import MultipleMessagesModal from '../../../components/modal/MultipleMessagesModal';
@@ -15,6 +14,7 @@ import ParticipantSubmitHelper from './ParticipantSubmitHelper';
 import ParticipantValidateForm from './ParticipantValidateForm';
 import moment from 'moment';
 import validator from 'validator';
+import ContactDetailsAPI from '../../../api/contact/ContactDetailsAPI';
 
 class ParticipantNewApp extends Component {
     constructor(props) {
@@ -26,12 +26,17 @@ class ParticipantNewApp extends Component {
             modalText: [],
             modalRedirectTask: '',
             modalRedirectParticipation: '',
-            contacts: [],
+            selectedContact: {},
+            addresses: [],
             projects: [],
             participationWorth: 0,
             projectTypeCodeRef: '',
+            isSceProject: false,
+            disableClientSelection: !props.params.contactId ? false : true,
+            disableProjectSelection: !props.params.projectId ? false : true,
             participation: {
                 contactId: props.params.contactId || '',
+                addressId: '',
                 statusId: '',
                 projectId: props.params.projectId || '',
                 quantityInterest: 0,
@@ -53,6 +58,7 @@ class ParticipantNewApp extends Component {
             },
             errors: {
                 contactId: false,
+                addressId: false,
                 statusId: false,
                 projectId: false,
                 amountOption: false,
@@ -67,11 +73,22 @@ class ParticipantNewApp extends Component {
     }
 
     componentDidMount() {
-        ContactsAPI.getContactsPeek().then(payload => {
-            this.setState({
-                contacts: payload,
+        if (this.props.params.contactId) {
+            ContactDetailsAPI.getContactDetailsWithAddresses(this.props.params.contactId).then(payload => {
+                let contact = payload;
+
+                this.setState({
+                    ...this.state,
+                    selectedContact: contact,
+                    participation: {
+                        ...this.state.participation,
+                        contactId: contact.id,
+                        addressId: contact ? contact.primaryAddressId : 0,
+                    },
+                    addresses: contact ? contact.addresses : [],
+                });
             });
-        });
+        }
 
         ProjectsAPI.peekProjects().then(payload => {
             this.setState({
@@ -85,6 +102,7 @@ class ParticipantNewApp extends Component {
                 this.setState({
                     ...this.state,
                     projectTypeCodeRef: project.typeCodeRef,
+                    isSceProject: project.isSceProject,
                     participation: {
                         ...this.state.participation,
                         dateEntry: project.dateEntry
@@ -118,6 +136,16 @@ class ParticipantNewApp extends Component {
                 ? moment(moment().year(lastYearFinancialOverviewDefinitive + 1)).format('YYYY-01-01')
                 : '';
 
+        if (project && project.typeCodeRef === 'postalcode_link_capital') {
+            if (
+                project.dateInterestBearingKwh &&
+                (!disableBeforeEntryDate ||
+                    moment(project.dateInterestBearingKwh).format('YYYY-MM-DD') < disableBeforeEntryDate)
+            ) {
+                disableBeforeEntryDate = moment(project.dateInterestBearingKwh).format('YYYY-MM-DD');
+            }
+        }
+
         return disableBeforeEntryDate;
     }
 
@@ -135,62 +163,12 @@ class ParticipantNewApp extends Component {
             showModalError: false,
         });
     };
+
     handleInputChange = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        this.setState(
-            {
-                ...this.state,
-                participation: {
-                    ...this.state.participation,
-                    [name]: value,
-                },
-            },
-            () => this.linkedValueAdjustment(name)
-        );
-    };
-
-    linkedValueAdjustment = name => {
-        // If field statusId is changed then change dateGranted when applicable
-        if (name === 'statusId') {
-            const currentStatusId = Number(this.state.participation.statusId);
-            const checkStatusId = this.props.participantMutationStatuses.find(
-                participantMutationStatuses => participantMutationStatuses.codeRef === 'final'
-            ).id;
-            const dateGranted = currentStatusId === checkStatusId ? null : moment().format('YYYY-MM-DD');
-
-            this.setState({
-                ...this.state,
-                participation: {
-                    ...this.state.participation,
-                    dateGranted,
-                },
-            });
-        }
-
-        if (name === 'projectId') {
-            let project = this.state.projects.find(project => project.id == this.state.participation.projectId);
-            let disableBeforeEntryDate = this.getDisableBeforeEntryDate(project);
-
-            this.setState({
-                ...this.state,
-                projectTypeCodeRef: project.typeCodeRef,
-                participation: {
-                    ...this.state.participation,
-                    dateEntry: project.dateEntry
-                        ? moment(project.dateEntry).format('YYYY-MM-DD')
-                        : !validator.isEmpty(disableBeforeEntryDate + '')
-                        ? moment(disableBeforeEntryDate).format('YYYY-MM-DD')
-                        : moment().format('YYYY-MM-DD'),
-                    disableBeforeEntryDate: disableBeforeEntryDate,
-                },
-            });
-        }
-    };
-
-    handleInputChangeDate = (value, name) => {
         this.setState({
             ...this.state,
             participation: {
@@ -201,11 +179,84 @@ class ParticipantNewApp extends Component {
     };
 
     handleInputChangeContactId = selectedOption => {
+        const selectedContactId = selectedOption ? selectedOption.id : null;
+        if (selectedContactId) {
+            ContactDetailsAPI.getContactDetailsWithAddresses(selectedContactId).then(payload => {
+                let contact = payload;
+
+                this.setState({
+                    ...this.state,
+                    selectedContact: contact,
+                    participation: {
+                        ...this.state.participation,
+                        contactId: contact.id,
+                        addressId: contact ? contact.primaryAddressId : 0,
+                    },
+                    addresses: contact ? contact.addresses : [],
+                });
+            });
+        }
+    };
+
+    handleInputChangeAddressId = selectedOption => {
         this.setState({
             ...this.state,
             participation: {
                 ...this.state.participation,
-                contactId: selectedOption,
+                addressId: selectedOption,
+            },
+        });
+    };
+
+    handleInputChangeProjectId = selectedOption => {
+        const projectId = selectedOption;
+
+        let project = this.state.projects.find(project => project.id == projectId);
+        let disableBeforeEntryDate = this.getDisableBeforeEntryDate(project);
+
+        this.setState({
+            ...this.state,
+            projectTypeCodeRef: project.typeCodeRef,
+            isSceProject: project.isSceProject,
+            participation: {
+                ...this.state.participation,
+                projectId: projectId,
+                dateEntry: project.dateEntry
+                    ? moment(project.dateEntry).format('YYYY-MM-DD')
+                    : !validator.isEmpty(disableBeforeEntryDate + '')
+                    ? moment(disableBeforeEntryDate).format('YYYY-MM-DD')
+                    : moment().format('YYYY-MM-DD'),
+                disableBeforeEntryDate: disableBeforeEntryDate,
+            },
+        });
+    };
+
+    handleInputChangeStatusId = event => {
+        const target = event.target;
+        const statusId = target.value;
+
+        const currentStatusId = Number(statusId);
+        const checkStatusId = this.props.participantMutationStatuses.find(
+            participantMutationStatuses => participantMutationStatuses.codeRef === 'final'
+        ).id;
+        const dateGranted = currentStatusId === checkStatusId ? null : moment().format('YYYY-MM-DD');
+
+        this.setState({
+            ...this.state,
+            participation: {
+                ...this.state.participation,
+                statusId: statusId,
+                dateGranted,
+            },
+        });
+    };
+
+    handleInputChangeDate = (value, name) => {
+        this.setState({
+            ...this.state,
+            participation: {
+                ...this.state.participation,
+                [name]: value,
             },
         });
     };
@@ -279,13 +330,20 @@ class ParticipantNewApp extends Component {
                                         handleInputChange={this.handleInputChange}
                                         handleInputChangeDate={this.handleInputChangeDate}
                                         handleSubmit={this.handleSubmit}
-                                        contacts={this.state.contacts}
+                                        selectedContact={this.state.selectedContact}
+                                        addresses={this.state.addresses}
                                         projects={this.state.projects}
                                         handleProjectChange={this.handleProjectChange}
                                         projectTypeCodeRef={this.state.projectTypeCodeRef}
+                                        isSceProject={this.state.isSceProject}
+                                        disableProjectSelection={this.state.disableProjectSelection}
+                                        disableClientSelection={this.state.disableClientSelection}
                                         projectDateEntry={this.state.projectDateEntry}
                                         participantMutationStatuses={this.props.participantMutationStatuses}
                                         handleInputChangeContactId={this.handleInputChangeContactId}
+                                        handleInputChangeAddressId={this.handleInputChangeAddressId}
+                                        handleInputChangeProjectId={this.handleInputChangeProjectId}
+                                        handleInputChangeStatusId={this.handleInputChangeStatusId}
                                         isLoading={this.state.isLoading}
                                     />
                                 </div>

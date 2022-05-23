@@ -66,10 +66,3 @@ export const deleteObligationNumber = id => {
         id,
     };
 };
-
-export const deleteRevenueSplit = id => {
-    return {
-        type: 'DELETE_REVENUE_SPLIT',
-        id,
-    };
-};

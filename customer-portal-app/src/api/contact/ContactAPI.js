@@ -58,9 +58,27 @@ export default {
                                 'countryId',
                                 'primary',
                                 'typeId',
+                                'eanElectricity',
+                                'eanGas',
                             ],
                             rlt: {
                                 country: { fld: ['id', 'name'] },
+                                primaryAddressEnergySupplier: {
+                                    fld: [
+                                        'id',
+                                        'energySupplierId',
+                                        'esNumber',
+                                        'memberSince',
+                                        'isCurrentSupplier',
+                                        'endDatePrevious',
+                                        'memberSinceNext',
+                                    ],
+                                    rlt: { energySupplier: [] },
+                                    flt: {
+                                        f: 'isCurrentSupplier',
+                                        d: true,
+                                    },
+                                },
                             },
                         },
                         occupations: {
@@ -72,22 +90,6 @@ export default {
                                 primaryContact: {
                                     fld: ['id', 'fullName'],
                                 },
-                            },
-                        },
-                        primaryContactEnergySupplier: {
-                            fld: [
-                                'id',
-                                'energySupplierId',
-                                'esNumber',
-                                'eanElectricity',
-                                'eanGas',
-                                'memberSince',
-                                'isCurrentSupplier',
-                            ],
-                            rlt: { energySupplier: [] },
-                            flt: {
-                                f: 'isCurrentSupplier',
-                                d: true,
                             },
                         },
                     },

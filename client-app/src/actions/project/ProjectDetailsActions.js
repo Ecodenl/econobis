@@ -46,9 +46,44 @@ export const fetchRevenue = id => {
     };
 };
 
+export const fetchRevenuesKwh = id => {
+    return {
+        type: 'FETCH_REVENUES_KWH',
+        id,
+    };
+};
+
+export const fetchRevenuePartsKwh = id => {
+    return {
+        type: 'FETCH_REVENUE_PARTS_KWH',
+        id,
+    };
+};
+
 export const previewReport = data => {
     return {
         type: 'PROJECT_REVENUE_PREVIEW_REPORT',
+        data,
+    };
+};
+
+export const previewReportKwh = data => {
+    return {
+        type: 'REVENUES_KWH_PREVIEW_REPORT',
+        data,
+    };
+};
+
+export const energySupplierExcelReportKwh = data => {
+    return {
+        type: 'REVENUES_KWH_ENERGY_SUPPLIER_EXCEL_REPORT',
+        data,
+    };
+};
+
+export const previewReportPartsKwh = data => {
+    return {
+        type: 'REVENUE_PARTS_KWH_PREVIEW_REPORT',
         data,
     };
 };
@@ -60,9 +95,41 @@ export const getDistribution = data => {
     };
 };
 
+export const getDistributionKwh = data => {
+    return {
+        type: 'REVENUES_KWH_GET_DISTRIBUTION',
+        data,
+    };
+};
+
+export const getDistributionPartsKwh = data => {
+    return {
+        type: 'REVENUES_KWH_GET_DISTRIBUTION_PARTS',
+        data,
+    };
+};
+
 export const clearPreviewReport = () => {
     return {
         type: 'CLEAR_PROJECT_REVENUE_PREVIEW_REPORT',
+    };
+};
+
+export const clearPreviewReportKwh = () => {
+    return {
+        type: 'CLEAR_REVENUES_KWH_PREVIEW_REPORT',
+    };
+};
+
+export const clearEnergySupplierExcelReportKwh = () => {
+    return {
+        type: 'CLEAR_REVENUES_KWH_ENERGY_SUPPLIER_EXCEL_REPORT',
+    };
+};
+
+export const clearPreviewReportPartsKwh = () => {
+    return {
+        type: 'CLEAR_REVENUE_PARTS_KWH_PREVIEW_REPORT',
     };
 };
 
@@ -84,10 +151,32 @@ export const clearRevenue = () => {
         type: 'CLEAR_PROJECT_REVENUE',
     };
 };
+export const clearRevenuesKwh = () => {
+    return {
+        type: 'CLEAR_REVENUES_KWH',
+    };
+};
+export const clearRevenuePartsKwh = () => {
+    return {
+        type: 'CLEAR_REVENUE_PARTS_KWH',
+    };
+};
 
 export const deleteRevenue = id => {
     return {
         type: 'DELETE_REVENUE',
+        id,
+    };
+};
+export const deleteRevenuesKwh = id => {
+    return {
+        type: 'DELETE_REVENUES_KWH',
+        id,
+    };
+};
+export const deleteRevenuePartsKwh = id => {
+    return {
+        type: 'DELETE_REVENUE_PARTS_KWH',
         id,
     };
 };

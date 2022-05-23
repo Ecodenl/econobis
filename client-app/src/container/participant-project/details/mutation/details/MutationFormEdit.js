@@ -108,6 +108,7 @@ const MutationFormEdit = ({
                             cancelDetails={cancelDetails}
                             buttonText={buttonTextSubmit}
                             handleSubmit={handleSubmit}
+                            participantInDefinitiveRevenue={participantInDefinitiveRevenue}
                         />
                     ) : null}
                     {type.codeRef === 'result' ? (

@@ -43,6 +43,32 @@ export default {
             });
     },
 
+    peekDistributionsKwhById: distributionIds => {
+        const requestUrl = `distribution-kwh/peek-by-ids`;
+
+        return axiosInstance
+            .post(requestUrl, { ids: distributionIds })
+            .then(function(response) {
+                return response.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    },
+
+    peekDistributionsKwhPartsById: distributionIds => {
+        const requestUrl = `distribution-part-kwh/peek-by-ids`;
+
+        return axiosInstance
+            .post(requestUrl, { ids: distributionIds })
+            .then(function(response) {
+                return response.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    },
+
     peekParticipantsById: participantIds => {
         const requestUrl = `project/participant/peek-by-ids`;
 

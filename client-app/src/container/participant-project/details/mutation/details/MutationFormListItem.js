@@ -384,6 +384,7 @@ const mapStateToProps = state => {
         participantMutationStatuses: state.systemData.participantMutationStatuses,
         projectTypeCodeRef: state.participantProjectDetails.project.projectType.codeRef,
         projectDateEntry: state.participantProjectDetails.project.dateEntry,
+        projectDateInterestBearingKwh: state.participantProjectDetails.project.dateInterestBearingKwh,
     };
 };
 

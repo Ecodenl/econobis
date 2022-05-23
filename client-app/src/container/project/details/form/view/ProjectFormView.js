@@ -21,6 +21,7 @@ const ProjectFormView = props => {
         dateEnd,
         dateEntry,
         dateProduction,
+        dateInterestBearingKwh,
         dateStartRegistrations,
         dateEndRegistrations,
         projectType,
@@ -139,6 +140,7 @@ const ProjectFormView = props => {
                 dateEnd={dateEnd}
                 dateEntry={dateEntry}
                 dateProduction={dateProduction}
+                dateInterestBearingKwh={dateInterestBearingKwh}
                 isMembershipRequired={isMembershipRequired}
                 visibleForAllContacts={visibleForAllContacts}
                 textInfoProjectOnlyMembers={textInfoProjectOnlyMembers}

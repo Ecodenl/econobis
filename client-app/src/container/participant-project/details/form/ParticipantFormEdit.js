@@ -73,7 +73,7 @@ class ParticipantFormEdit extends Component {
     }
 
     componentDidMount() {
-        ContactsAPI.getContactsPeek().then(payload => {
+        ContactsAPI.getContactsAddressesPeek().then(payload => {
             this.setState({
                 contacts: payload,
             });
@@ -167,6 +167,7 @@ class ParticipantFormEdit extends Component {
 
         const {
             contact,
+            address,
             uniqueMutationStatuses,
             project,
             participationsDefinitive,
@@ -184,9 +185,9 @@ class ParticipantFormEdit extends Component {
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <ViewText
-                        label={'Contact'}
-                        value={contact ? contact.fullName : ''}
-                        link={contact ? 'contact/' + contact.id : ''}
+                        label={'Project'}
+                        value={project ? project.name : ''}
+                        link={project ? 'project/' + project.id : ''}
                         className={'col-sm-6 form-group'}
                     />
                     <ViewText
@@ -197,9 +198,9 @@ class ParticipantFormEdit extends Component {
                 </div>
                 <div className="row">
                     <ViewText
-                        label={'Project'}
-                        value={project ? project.name : ''}
-                        link={project ? 'project/' + project.id : ''}
+                        label={'Contact'}
+                        value={contact ? contact.fullName : ''}
+                        link={contact ? 'contact/' + contact.id : ''}
                         className={'col-sm-6 form-group'}
                     />
                     <ViewText
@@ -208,6 +209,31 @@ class ParticipantFormEdit extends Component {
                         className={'col-sm-6 form-group'}
                     />
                 </div>
+                <div className="row">
+                    <ViewText
+                        label={'Adres'}
+                        value={
+                            address
+                                ? address.streetPostalCodeCity
+                                : contact && contact.primaryAddress
+                                ? contact.primaryAddress.streetPostalCodeCity
+                                : ''
+                        }
+                        className={'col-sm-6 form-group'}
+                    />
+                    <ViewText
+                        label={'Adrestype'}
+                        value={
+                            address
+                                ? address.typeAndPrimary
+                                : contact && contact.primaryAddress
+                                ? contact.primaryAddress.typeAndPrimary
+                                : ''
+                        }
+                        className={'col-sm-6 form-group'}
+                    />
+                </div>
+
                 <div className="row">
                     {!didAcceptAgreement ? (
                         <InputToggle
@@ -341,7 +367,7 @@ class ParticipantFormEdit extends Component {
                     />
                     {dateTerminated ? (
                         <ViewText
-                            label={'Datum beeindiging deelname'}
+                            label={'Datum beëindiging deelname'}
                             value={dateTerminated ? moment(dateTerminated).format('DD-MM-Y') : ''}
                         />
                     ) : null}

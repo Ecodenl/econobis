@@ -10,11 +10,10 @@ use App\Eco\ContactNote\ContactNote;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
-use App\Eco\EnergySupplier\ContactEnergySupplier;
+use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Intake\Intake;
-use App\Eco\Intake\IntakeStatus;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Opportunity\Opportunity;
@@ -27,6 +26,7 @@ use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Portal\PortalUser;
+use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\Task\Task;
 use App\Eco\Twinfield\TwinfieldCustomerNumber;
 use App\Eco\User\User;
@@ -36,7 +36,6 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Laracasts\Presenter\PresentableTrait;
 use Venturecraft\Revisionable\RevisionableTrait;
 
@@ -68,7 +67,12 @@ class Contact extends Model
 
     public function addresses()
     {
-        return $this->hasMany(Address::class);
+        return $this->hasMany(Address::class)->orderByDesc('primary')->orderByDesc('id');
+    }
+
+    public function addressesWithoutOld()
+    {
+        return $this->hasMany(Address::class)->where('type_id', '!=',  'old')->orderByDesc('primary')->orderByDesc('id');
     }
 
     public function addressesActive()
@@ -202,20 +206,14 @@ class Contact extends Model
     {
         return $this->hasMany(ProjectRevenueDistribution::class);
     }
+    public function revenueDistributionKwh()
+    {
+        return $this->hasMany(RevenueDistributionKwh::class);
+    }
 
     public function housingFiles()
     {
         return $this->hasManyThrough(HousingFile::class, Address::class)->orderBy('housing_files.id', 'desc');
-    }
-
-    public function contactEnergySuppliers()
-    {
-        return $this->hasMany(ContactEnergySupplier::class);
-    }
-
-    public function primaryContactEnergySupplier()
-    {
-        return $this->hasOne(ContactEnergySupplier::class)->where('is_current_supplier', true);
     }
 
     public function participations()
@@ -525,6 +523,15 @@ class Contact extends Model
         return false;
     }
 
+    /**
+     * Primary address Id
+     * @return int
+     */
+    public function getPrimaryAddressIdAttribute()
+    {
+        return($this->primaryAddress ? $this->primaryAddress->id : 0);
+    }
+
     public function getBlockChangeAddressAttribute()
     {
         $hasIntakeOnPortalCheckAddress = false;
@@ -550,25 +557,6 @@ class Contact extends Model
             }
         }
         return false;
-    }
-
-    /**
-     * Previous energy supplier
-     * @return int
-     */
-    public function getPreviousContactEnergySupplierIdAttribute()
-    {
-        if(!$this->primaryContactEnergySupplier) {
-            return 0;
-        }
-        $contactEnergySuppliers = $this->contactEnergySuppliers
-            ->whereNotNull('member_since')
-            ->where('member_since', '<', $this->primaryContactEnergySupplier->member_since)
-            ->sortByDesc('member_since');
-        if(count($contactEnergySuppliers) == 0){
-            return 0;
-        }
-        return($contactEnergySuppliers->first()->id);
     }
 
     public function getPortalSettingsLayoutAssignedAttribute()

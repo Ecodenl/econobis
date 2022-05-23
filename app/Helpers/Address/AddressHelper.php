@@ -1,18 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: StagiarSoftware
- * Date: 19-1-2018
- * Time: 11:55
- */
 
 namespace App\Helpers\Address;
 
 use App\Eco\Address\Address;
 use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
-use App\Eco\Contact\ContactType;
 use App\Eco\Project\Project;
+use App\Eco\Task\Task;
+use App\Eco\Task\TaskType;
+use App\Helpers\Workflow\TaskWorkflowHelper;
+use Carbon\Carbon;
 
 class AddressHelper
 {
@@ -23,7 +20,7 @@ class AddressHelper
     private $address;
 
     /**
-     * TwinfieldHelper constructor.
+     * AddressHelper constructor.
      *
      * @param Administration $administration
      */
@@ -35,7 +32,7 @@ class AddressHelper
 
 
     /**
-     * @param Address $address
+     * @param bool $abort
      * @return bool
      */
     public function checkDoubleAddressAllowed($abort): bool
@@ -61,12 +58,12 @@ class AddressHelper
         $contactAddressesParticipants = [];
         foreach ($project->participantsProject as $participant){
             if($this->contact->id != $participant->contact->id){
-                $contactAddressesParticipants = array_unique(array_merge($contactAddressesParticipants, $participant->contact->addressesActive->pluck('id', 'postalCodeNumberAddition')->toArray()));
+                $contactAddressesParticipants = array_unique(array_merge($contactAddressesParticipants, $participant->contact->addressesActive->pluck('id', 'postalCodeNumberAdditionForDoubleCheck')->toArray()));
             }
         }
 
         $addressIsDouble = false;
-        if( array_key_exists($this->address->postalCodeNumberAddition, $contactAddressesParticipants) ){
+        if( array_key_exists($this->address->postalCodeNumberAdditionForDoubleCheck, $contactAddressesParticipants) ){
             $addressIsDouble = true;
         }
 
@@ -75,20 +72,6 @@ class AddressHelper
 
     public function checkAddress($projectId, $abort)
     {
-        // Bij personen alleen checken indien primary address
-        if($this->contact->type_id === ContactType::PERSON && !$this->address->primary) {
-            return true;
-        }
-        // Bij organisaties alleen checken indien eerste visit address
-        if($this->contact->type_id === ContactType::ORGANISATION) {
-            if($this->contact->addressForPostalCodeCheck && $this->contact->addressForPostalCodeCheck->id !== $this->address->id ) {
-                return true;
-            }
-            if(!$this->contact->addressForPostalCodeCheck && $this->address->type_id !== 'visit' ) {
-                return true;
-            }
-        }
-
         $messages = [];
 
         if ($projectId) {
@@ -97,8 +80,12 @@ class AddressHelper
                 $messages = $this->checkAddressProject($project, $this->address, $messages);
             }
         } else {
+
             foreach ($this->contact->participations as $participation) {
-                $messages = $this->checkAddressProject($participation->project, $this->address, $messages);
+                // Check address only for projects where address is used
+                if($participation->address_id == $this->address->id) {
+                    $messages = $this->checkAddressProject($participation->project, $this->address, $messages);
+                }
             }
         }
         if( !empty($messages) )
@@ -216,4 +203,39 @@ class AddressHelper
         }
         return $messages;
     }
+
+    public function addTaskAddressChangeParticipation($user)
+    {
+        $taskType = TaskType::where('name', 'Adres wijziging deelnemer')->first();
+        $note = $taskType->name . ".\n\n";
+        $note .= "Adres wijziging voor contact " . $this->contact->full_name . " (" . $this->contact->number . ").\n";
+        $note .= "Adres op type \"Oud\" gezet: " . $this->address->StreetPostalCodeCity . ".\n";
+        $note .= "Er is een deelname in een project op dit adres.\n";
+        $note .= "Deze deelname moet worden beëindigd en er moet een nieuwe deelname op het nieuwe adres worden aangemaakt.\n";
+        $task = Task::create([
+            'note' => $note,
+            'type_id' => $taskType->id,
+            'contact_id' => $this->contact->id,
+            'contact_group_id' => null,
+            'finished' => false,
+            'date_planned_start' => (new Carbon())->startOfDay(),
+            'date_planned_finish' => null,
+            'responsible_user_id' => $user,
+            'responsible_team_id' => null,
+            'intake_id' => null,
+            'project_id' => null,
+            'participation_project_id' => null,
+            'order_id' => null,
+        ]);
+        if ($task->type && $task->type->uses_wf_new_task) {
+            $taskWorkflowHelper = new TaskWorkflowHelper($task);
+            $processed = $taskWorkflowHelper->processWorkflowEmailNewTask();
+            if($processed)
+            {
+                $task->date_sent_wf_new_task =  Carbon::now();
+                $task->save();
+            }
+        }
+    }
+
 }

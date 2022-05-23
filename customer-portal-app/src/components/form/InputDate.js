@@ -11,7 +11,10 @@ const InputDate = ({
     value,
     required,
     readOnly,
+    manualInput,
     name,
+    disabledBefore,
+    disabledAfter,
     onChangeAction,
     placeholder,
     showErrorMessage,
@@ -27,11 +30,18 @@ const InputDate = ({
     };
 
     const formattedDate = value ? moment(value).format('L') : '';
+    let disabledDays = {};
+    if (disabledBefore) disabledDays.before = new Date(disabledBefore);
+    if (disabledAfter) disabledDays.after = new Date(disabledAfter);
 
     return (
         <>
-            {get(errors, name, '') && get(touched, name, '') && showErrorMessage ? (
-                <small className={`${classNameErrorMessage}`}>{get(errors, name, '')}</small>
+            {/*{get(errors, name, '') && get(touched, name, '') && showErrorMessage ? (*/}
+            {get(errors, name, '') && showErrorMessage ? (
+                <>
+                    <small className={`${classNameErrorMessage}`}>{get(errors, name, '')}</small>
+                    <br />
+                </>
             ) : null}
             <DayPickerInput
                 id={id}
@@ -44,14 +54,18 @@ const InputDate = ({
                     locale: 'nl',
                     firstDayOfWeek: 1,
                     localeUtils: MomentLocaleUtils,
+                    disabledDays: disabledDays,
                 }}
                 inputProps={{
-                    className: `text-input content w-input ${className} ${
-                        Boolean(get(errors, name, '') && get(touched, name, '')) ? 'has-error mb-0' : ''
-                    } `,
+                    className: `text-input content ${className}
+                     ${Boolean(manualInput) ? ' w-input' : ' w-input-date'}
+                     ${
+                         // Boolean(get(errors, name, '') && get(touched, name, '')) ? 'has-error mb-0' : ''
+                         Boolean(get(errors, name, '')) ? ' has-error mb-0' : ''
+                     } `,
                     name: name,
                     autoComplete: 'off',
-                    readOnly: readOnly,
+                    readOnly: Boolean(manualInput) ? readOnly : true,
                     disabled: readOnly,
                     placeholder: placeholder,
                 }}
@@ -67,6 +81,7 @@ InputDate.defaultProps = {
     className: '',
     required: '',
     readOnly: false,
+    manualInput: true,
     value: null,
     placeholder: '',
     showErrorMessage: true,

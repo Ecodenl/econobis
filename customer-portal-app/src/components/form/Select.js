@@ -15,7 +15,11 @@ const Select = ({
     touched,
     classNameErrorMessage,
     disabled,
+    customOnChange = null,
 }) => {
+    if (customOnChange) {
+        field.onChange = customOnChange;
+    }
     return (
         <>
             {get(errors, field.name, '') && get(touched, field.name, '') && showErrorMessage ? (

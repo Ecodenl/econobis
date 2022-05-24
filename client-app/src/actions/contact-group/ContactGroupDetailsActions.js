@@ -42,3 +42,10 @@ export const updateContactGroupLapostaList = lapostaListId => {
         lapostaListId,
     };
 };
+
+export const deActivateContactGroupLapostaList = lapostaListId => {
+    return {
+        type: 'DEACTIVATE_LAPOSTA_LIST_ID',
+        lapostaListId,
+    };
+};

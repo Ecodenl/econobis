@@ -18,6 +18,7 @@ use App\Console\Commands\deleteEmailDefinitive;
 //use App\Console\Commands\deleteFloatingAttachmentFiles;
 use App\Console\Commands\getAllEmail;
 use App\Console\Commands\processPaidInvoices;
+use App\Console\Commands\processStateAllMembersLaposta;
 use App\Console\Commands\processWorkflowEmailCompleteTask;
 use App\Console\Commands\processWorkflowEmailExpiredTask;
 use App\Console\Commands\processWorkflowEmailOpportunityStatus;
@@ -51,6 +52,7 @@ class Kernel extends ConsoleKernel
         setDaysLastReminderInvoice::class,
         setDaysToExpireInvoice::class,
         processPaidInvoices::class,
+        processStateAllMembersLaposta::class,
         checkMailboxes::class,
         processWorkflowEmailCompleteTask::class,
         processWorkflowEmailExpiredTask::class,
@@ -75,12 +77,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+// Time is CET. So when scheduled for 06:00 it is run at 04:00 Amsterdam time.
         $schedule->command('email:getAllEmail')->everyTenMinutes()->between('06:00', '23:30');
         $schedule->command('email:checkMailboxes')->dailyAt('05:58');
         $schedule->command('email:checkMailboxes')->dailyAt('08:58');
         $schedule->command('email:checkMailboxes')->dailyAt('11:58');
         $schedule->command('email:checkMailboxes')->dailyAt('14:58');
         $schedule->command('email:checkMailboxes')->dailyAt('17:58');
+        $schedule->command('laposta:processStateAllMembersLaposta')->dailyAt('22:30');
         $schedule->command('address:createTaskAtEndDateAddress')->dailyAt('00:30');
         $schedule->command('addressEnergySupplier:setIsCurrentSupplier')->dailyAt('01:00');
         $schedule->command('invoice:setDaysLastReminder')->dailyAt('01:05');

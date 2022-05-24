@@ -14,6 +14,8 @@ export default function(state = {}, action) {
             return {};
         case 'UPDATE_LAPOSTA_LIST_ID':
             return { ...state, lapostaListId: action.lapostaListId };
+        case 'DEACTIVATE_LAPOSTA_LIST_ID':
+            return { ...state, lapostaListId: action.lapostaListId };
         default:
             return state;
     }

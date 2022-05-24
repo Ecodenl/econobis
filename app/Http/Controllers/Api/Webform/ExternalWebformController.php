@@ -556,7 +556,7 @@ class ExternalWebformController extends Controller
             // contactActie = "GEEN" ->geen acties op contact naw of email
             // contactActie = "NAT" -> Nieuw adres + taak
             // contactActie = "NET" -> Nieuw emailadres + taak
-            // contactActie = "WGC" -> WG contact bijwerken + taak
+            // contactActie = "BCB" -> Bewoner contact bijwerken + taak
             // contactActie = "CCT" -> Controle contact taak
             switch($this->contactActie){
                 case 'GEEN' :
@@ -601,10 +601,10 @@ class ExternalWebformController extends Controller
                     $note .= "Controleer contactgegevens\n";
                     $this->addTaskCheckContact($responsibleIds, $contact, $webform, $note);
                     break;
-                case 'WGC' :
+                case 'BCB' :
                     $contact = $this->updateContact($contact, $data, $ownerAndResponsibleUser);
                     $note = "Webformulier " . $webform->name . ".\n\n";
-                    $note .= "Contact WG-buurt " . $contact->full_name . " (".$contact->number.") bijgewerkt op adres WG-buurt.\n";
+                    $note .= "Contact 'bewoner' " . $contact->full_name . " (".$contact->number.") bijgewerkt op adres 'bewoner'.\n";
                     $note .= "Controleer contactgegevens\n";
                     $this->addTaskCheckContact($responsibleIds, $contact, $webform, $note);
                     break;
@@ -695,11 +695,11 @@ class ExternalWebformController extends Controller
             // Gevonden op adres, check op specifiek contact of anders op email
             } else {
 
-                $checkContactForWG = $contactAddressQuery->first();
-                if($checkContactForWG && $checkContactForWG->person->last_name == 'bewoner van de WG-buurt' ){
-                    $this->contactActie = "WGC";
-                    $this->log('Contact "bewoner van de WG-buurt" gevonden op basis van adres, naam en email bijwerken');
-                    return $checkContactForWG;
+                $checkContactForBewoner = $contactAddressQuery->first();
+                if($checkContactForBewoner && str_contains( strtolower($checkContactForBewoner->person->last_name), 'bewoner') ){
+                    $this->contactActie = "BCB";
+                    $this->log('Contact "bewoner" gevonden op basis van adres, naam en email bijwerken');
+                    return $checkContactForBewoner;
                 }
 
                 $this->log($contactAddressQuery->count() . ' contacten gevonden op adres: ' . $data['address_postal_code']

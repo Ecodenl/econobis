@@ -124,6 +124,61 @@ class ContactsListApp extends Component {
         }, 100);
     };
 
+    getExcelAddressEnergyConsumptionGas = () => {
+        this.props.blockUI();
+        // console.log(this.props);
+        // console.log(this.props.contacts.meta);
+        // console.log(this.props.contacts.meta.totalWithConsumptionGas);
+        setTimeout(() => {
+            // const maxContacts = 1000;
+            // const amountFiles = Math.ceil(this.props.contacts.meta.total / maxContacts);
+            // const splitsExcel = this.props.contacts.meta.total > maxContacts;
+            // var counter = 1;
+            // for (var i = 1; i <= amountFiles; i++) {
+            //     var offset = i * maxContacts - maxContacts;
+            //     var pagination = { limit: maxContacts, offset: offset };
+            const filters = filterHelper(this.props.contactsFilters);
+            const extraFilters = this.state.extraFilters;
+            const sorts = this.props.contactsSorts;
+            // ContactsAPI.getExcelAddressEnergyConsumptionGas(filters, extraFilters, sorts, pagination, true)
+            ContactsAPI.getExcelAddressEnergyConsumptionGas({ filters, extraFilters, sorts })
+                .then(payload => {
+                    var excelFileName = `Contacten-verbruik-gas-${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`;
+                    // if (splitsExcel) {
+                    //     var excelFileName = `Contacten-verbruik-gas-${moment().format(
+                    //         'YYYY-MM-DD HH:mm:ss'
+                    //     )} (${counter} van ${amountFiles}).xlsx`;
+                    // }
+                    fileDownload(payload.data, excelFileName);
+                    // counter = counter + 1;
+                    this.props.unblockUI();
+                })
+                .catch(error => {
+                    this.props.unblockUI();
+                });
+            // }
+        }, 100);
+    };
+
+    getExcelAddressEnergyConsumptionElectricity = () => {
+        this.props.blockUI();
+        // setTimeout(() => {
+        const filters = filterHelper(this.props.contactsFilters);
+        const extraFilters = this.state.extraFilters;
+        const sorts = this.props.contactsSorts;
+        ContactsAPI.getExcelAddressEnergyConsumptionElectricity({ filters, extraFilters, sorts })
+            .then(payload => {
+                var excelFileName = `Contacten-verbruik-electriciteit-${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`;
+                fileDownload(payload.data, excelFileName);
+                // counter = counter + 1;
+                this.props.unblockUI();
+            })
+            .catch(error => {
+                this.props.unblockUI();
+            });
+        // }, 100);
+    };
+
     resetContactFilters = () => {
         this.props.clearFilterContacts();
 
@@ -215,6 +270,10 @@ class ContactsListApp extends Component {
                                 selectAllCheckboxes={() => this.selectAllCheckboxes()}
                                 checkedAllCheckboxes={this.state.checkedAllCheckboxes}
                                 getCSV={this.getCSV}
+                                getExcelAddressEnergyConsumptionGas={this.getExcelAddressEnergyConsumptionGas}
+                                getExcelAddressEnergyConsumptionElectricity={
+                                    this.getExcelAddressEnergyConsumptionElectricity
+                                }
                                 toggleSaveAsGroup={this.toggleSaveAsGroup}
                                 saveAsGroup={this.saveAsGroup}
                                 toggleShowExtraFilters={this.toggleShowExtraFilters}

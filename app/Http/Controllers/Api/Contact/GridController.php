@@ -6,6 +6,7 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactGroup\DynamicContactGroupFilter;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Helpers\CSV\ContactCSVHelper;
+use App\Helpers\Excel\ContactExcelHelper;
 use App\Http\Controllers\Controller;
 use App\Http\RequestQueries\Contact\Grid\RequestQuery;
 use App\Http\Resources\Contact\GridContactCollection;
@@ -22,9 +23,11 @@ class GridController extends Controller
         $contacts->load('primaryEmailAddress');
         $contacts->load('primaryPhoneNumber');
 
+//        $numberOfContactsWithConsumptionGas = $contacts->where('has_address_energy_consumption_gas_periods', true);
         return (new GridContactCollection($contacts))
             ->additional(['meta' => [
                 'total' => $requestQuery->total(),
+//                'totalWithConsumptionGas' => $numberOfContactsWithConsumptionGas->count(),
                 ]
             ]);
     }
@@ -37,6 +40,38 @@ class GridController extends Controller
         $contactCSVHelper = new ContactCSVHelper($contacts);
 
         return $contactCSVHelper->downloadCSV();
+    }
+
+    public function excelAddressEnergyConsumptionGas(RequestQuery $requestQuery)
+    {
+        set_time_limit(0);
+//        $contacts = $requestQuery->getQuery()->get();
+        $contacts = $requestQuery->getQueryNoPagination()->get();
+
+        $contacts->load([
+            'addresses',
+            'addresses.addressEnergyConsumptionGasPeriods',
+        ]);
+
+        $contactExcelHelper = new ContactExcelHelper($contacts);
+
+        return $contactExcelHelper->downloadExcelAddressEnergyConsumptionGas();
+    }
+
+    public function excelAddressEnergyConsumptionElectricity(RequestQuery $requestQuery)
+    {
+        set_time_limit(0);
+//        $contacts = $requestQuery->getQuery()->get();
+        $contacts = $requestQuery->getQueryNoPagination()->get();
+
+        $contacts->load([
+            'addresses',
+            'addresses.addressEnergyConsumptionElectricityPeriods',
+        ]);
+
+        $contactExcelHelper = new ContactExcelHelper($contacts);
+
+        return $contactExcelHelper->downloadExcelAddressEnergyConsumptionElectricity();
     }
 
     public function saveAsGroup(Request $request)

@@ -24,6 +24,7 @@ class ContactExcelHelper
         $completeData = [];
 
         $headerData = [];
+        $headerData[] = '#';
         $headerData[] = 'Naam';
         $headerData[] = 'Adres';
         $headerData[] = 'Huisnummer';
@@ -44,41 +45,90 @@ class ContactExcelHelper
         foreach ($this->contacts->chunk(500) as $chunk) {
 
             foreach ($chunk as $contact) {
+                $contactNumber = $contact->number;
+                $contactFullName = $contact->full_name;
                 // Addresses
-//                $contactHasConsumptionGas = false;
-//                if ($contact->addresses) {
-//                    foreach ($contact->addresses as $address) {
-//                        if ($address->addressEnergyConsumptionGasPeriods) {
-//                            foreach ($address->addressEnergyConsumptionGasPeriods as $addressEnergyConsumptionGasPeriod) {
-//                                $contactHasConsumptionGas = true;
-//                            }
-//                        }
-//                    }
-//                }
-//                if ($contactHasConsumptionGas) {
+                if ($contact->addresses->count() > 0) {
+                    foreach ($contact->addresses as $address) {
+                        $addressStreet = $address->street;
+                        $addressNumber = $address->number;
+                        $addressAddition = $address->addition;
+                        $addressPostalCode = $address->postal_code;
+                        $addressCity = $address->city;
+                        $addressCountryName = $address->country ? $address->country->name : '';
+                        // AddressEnergyConsumptionGasPeriods
+                        if ($address->addressEnergyConsumptionGasPeriods->count() > 0) {
+                            foreach ($address->addressEnergyConsumptionGasPeriods as $consumptionGasPeriod) {
+                                $rowData = [];
+                                $rowData[] = $contactNumber;
+                                $rowData[] = $contactFullName;
+                                $rowData[] = $addressStreet;
+                                $rowData[] = $addressNumber;
+                                $rowData[] = $addressAddition;
+                                $rowData[] = $addressPostalCode;
+                                $rowData[] = $addressCity;
+                                $rowData[] = $addressCountryName;
+                                $rowData[] = $this->formatDate($consumptionGasPeriod->date_begin);
+                                $rowData[] = $this->formatDate($consumptionGasPeriod->date_end);
+                                $rowData[] = $this->formatFinancial($consumptionGasPeriod->consumption, 0);
+                                $rowData[] = $this->formatFinancial($consumptionGasPeriod->proposed_variable_rate, 2);
+                                $rowData[] = $this->formatFinancial($consumptionGasPeriod->proposed_fixed_rate, 2);
+                                $rowData[] = $this->formatFinancial($consumptionGasPeriod->total_variable_costs, 2);
+                                $rowData[] = $this->formatFinancial($consumptionGasPeriod->total_fixed_costs, 2);
+                                $completeData[] = $rowData;
 
-                    foreach ($contact->addresses as $address){
-                        foreach ($address->addressEnergyConsumptionGasPeriods as $consumptionGasPeriod){
+//                                $contactNumber = '';
+//                                $contactFullName = '';
+//                                $addressStreet = '';
+//                                $addressNumber = '';
+//                                $addressAddition = '';
+//                                $addressPostalCode = '';
+//                                $addressCity = '';
+//                                $addressCountryName = '';
+                            }
+                        }else{
                             $rowData = [];
-                            $rowData[] = $contact->full_name;
-                            $rowData[] = $address->street;
-                            $rowData[] = $address->number;
-                            $rowData[] = $address->addition;
-                            $rowData[] = $address->postal_code;
-                            $rowData[] = $address->city;
-                            $rowData[] = $address->country ? $address->country->name : '';
-                            $rowData[] = $consumptionGasPeriod->date_begin;
-                            $rowData[] = $consumptionGasPeriod->date_end;
-                            $rowData[] = $consumptionGasPeriod->consumption;
-                            $rowData[] = $consumptionGasPeriod->proposed_variable_rate;
-                            $rowData[] = $consumptionGasPeriod->proposed_fixed_rate;
-                            $rowData[] = $consumptionGasPeriod->total_variable_costs;
-                            $rowData[] = $consumptionGasPeriod->total_fixed_costs;
+                            $rowData[] = $contactNumber;
+                            $rowData[] = $contactFullName;
+                            $rowData[] = $addressStreet;
+                            $rowData[] = $addressNumber;
+                            $rowData[] = $addressAddition;
+                            $rowData[] = $addressPostalCode;
+                            $rowData[] = $addressCity;
+                            $rowData[] = $addressCountryName;
+                            $rowData[] = '';
+                            $rowData[] = '';
+                            $rowData[] = '';
+                            $rowData[] = '';
+                            $rowData[] = '';
+                            $rowData[] = '';
+                            $rowData[] = '';
                             $completeData[] = $rowData;
+
+//                            $contactNumber = '';
+//                            $contactFullName = '';
                         }
                     }
+                }else{
+                    $rowData = [];
+                    $rowData[] = $contactNumber;
+                    $rowData[] = $contactFullName;
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $completeData[] = $rowData;
+                }
 
-//                }
             }
 
         }
@@ -112,6 +162,7 @@ class ContactExcelHelper
         $completeData = [];
 
         $headerData = [];
+        $headerData[] = '#';
         $headerData[] = 'Naam';
         $headerData[] = 'Adres';
         $headerData[] = 'Huisnummer';
@@ -140,47 +191,110 @@ class ContactExcelHelper
 
             foreach ($chunk as $contact) {
                 // Addresses
-//                $contactHasConsumptionElectricity = false;
-//                if ($contact->addresses) {
-//                    foreach ($contact->addresses as $address) {
-//                        if ($address->addressEnergyConsumptionElectricityPeriods) {
-//                            foreach ($address->addressEnergyConsumptionElectricityPeriods as $addressEnergyConsumptionElectricityPeriod) {
-//                                $contactHasConsumptionElectricity = true;
-//                            }
-//                        }
-//                    }
-//                }
-//                if ($contactHasConsumptionElectricity) {
+                $contactNumber = $contact->number;
+                $contactFullName = $contact->full_name;
+                if ($contact->addresses->count() > 0) {
+                    foreach ($contact->addresses as $address) {
+                        $addressStreet = $address->street;
+                        $addressNumber = $address->number;
+                        $addressAddition = $address->addition;
+                        $addressPostalCode = $address->postal_code;
+                        $addressCity = $address->city;
+                        $addressCountryName = $address->country ? $address->country->name : '';
+                        // AddressEnergyConsumptionElectricityPeriods
+                        if ($address->addressEnergyConsumptionElectricityPeriods->count() > 0) {
+                            foreach ($address->addressEnergyConsumptionElectricityPeriods as $consumptionElectricityPeriod){
+                                $rowData = [];
+                                $rowData[] = $contactNumber;
+                                $rowData[] = $contactFullName;
+                                $rowData[] = $addressStreet;
+                                $rowData[] = $addressNumber;
+                                $rowData[] = $addressAddition;
+                                $rowData[] = $addressPostalCode;
+                                $rowData[] = $addressCity;
+                                $rowData[] = $addressCountryName;
+                                $rowData[] = $this->formatDate($consumptionElectricityPeriod->date_begin);
+                                $rowData[] = $this->formatDate($consumptionElectricityPeriod->date_end);
+                                $rowData[] = $this->formatFinancial($consumptionElectricityPeriod->consumption_high, 0);
+                                $rowData[] = $this->formatFinancial($consumptionElectricityPeriod->consumption_low, 0);
+                                $rowData[] = $this->formatFinancial($consumptionElectricityPeriod->return_high, 0);
+                                $rowData[] = $this->formatFinancial($consumptionElectricityPeriod->return_low, 0);
+                                $rowData[] = $this->formatFinancial($consumptionElectricityPeriod->proposed_variable_rate_high, 2);
+                                $rowData[] = $this->formatFinancial($consumptionElectricityPeriod->proposed_variable_rate_low, 2);
+                                $rowData[] = $this->formatFinancial($consumptionElectricityPeriod->proposed_fixed_rate_high, 2);
+                                $rowData[] = $this->formatFinancial($consumptionElectricityPeriod->proposed_fixed_rate_low, 2);
+                                $rowData[] = $this->formatFinancial($consumptionElectricityPeriod->total_variable_costs_high, 2);
+                                $rowData[] = $this->formatFinancial($consumptionElectricityPeriod->total_variable_costs_low, 2);
+                                $rowData[] = $this->formatFinancial($consumptionElectricityPeriod->total_fixed_costs_high, 2);
+                                $rowData[] = $this->formatFinancial($consumptionElectricityPeriod->total_fixed_costs_low, 2);
+                                $completeData[] = $rowData;
 
-                    foreach ($contact->addresses as $address){
-                        foreach ($address->addressEnergyConsumptionElectricityPeriods as $consumptionElectricityPeriod){
+//                                $contactNumber = '';
+//                                $contactFullName = '';
+//                                $addressStreet = '';
+//                                $addressNumber = '';
+//                                $addressAddition = '';
+//                                $addressPostalCode = '';
+//                                $addressCity = '';
+//                                $addressCountryName = '';
+                            }
+                        }else{
                             $rowData = [];
-                            $rowData[] = $contact->full_name;
-                            $rowData[] = $address->street;
-                            $rowData[] = $address->number;
-                            $rowData[] = $address->addition;
-                            $rowData[] = $address->postal_code;
-                            $rowData[] = $address->city;
-                            $rowData[] = $address->country ? $address->country->name : '';
-                            $rowData[] = $consumptionElectricityPeriod->date_begin;
-                            $rowData[] = $consumptionElectricityPeriod->date_end;
-                            $rowData[] = $consumptionElectricityPeriod->consumption_high;
-                            $rowData[] = $consumptionElectricityPeriod->consumption_low;
-                            $rowData[] = $consumptionElectricityPeriod->return_high;
-                            $rowData[] = $consumptionElectricityPeriod->return_low;
-                            $rowData[] = $consumptionElectricityPeriod->proposed_variable_rate_high;
-                            $rowData[] = $consumptionElectricityPeriod->proposed_variable_rate_low;
-                            $rowData[] = $consumptionElectricityPeriod->proposed_fixed_rate_high;
-                            $rowData[] = $consumptionElectricityPeriod->proposed_fixed_rate_low;
-                            $rowData[] = $consumptionElectricityPeriod->total_variable_costs_high;
-                            $rowData[] = $consumptionElectricityPeriod->total_variable_costs_low;
-                            $rowData[] = $consumptionElectricityPeriod->total_fixed_costs_high;
-                            $rowData[] = $consumptionElectricityPeriod->total_fixed_costs_low;
+                            $rowData[] = $contactNumber;
+                            $rowData[] = $contactFullName;
+                            $rowData[] = $addressStreet;
+                            $rowData[] = $addressNumber;
+                            $rowData[] = $addressAddition;
+                            $rowData[] = $addressPostalCode;
+                            $rowData[] = $addressCity;
+                            $rowData[] = $addressCountryName;
+                            $rowData[] = '';
+                            $rowData[] = '';
+                            $rowData[] = '';
+                            $rowData[] = '';
+                            $rowData[] = '';
+                            $rowData[] = '';
+                            $rowData[] = '';
+                            $rowData[] = '';
+                            $rowData[] = '';
+                            $rowData[] = '';
+                            $rowData[] = '';
+                            $rowData[] = '';
+                            $rowData[] = '';
+                            $rowData[] = '';
                             $completeData[] = $rowData;
+
+//                            $contactNumber = '';
+//                            $contactFullName = '';
                         }
                     }
+                }else{
+                    $rowData = [];
+                    $rowData[] = $contactNumber;
+                    $rowData[] = $contactFullName;
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $completeData[] = $rowData;
+                }
 
-//                }
             }
 
         }
@@ -211,7 +325,7 @@ class ContactExcelHelper
     }
 
     private function formatFinancial($amount, $decimals){
-        return number_format($amount, $decimals, ',', '');
+        return number_format($amount, $decimals, '.', '');
     }
 
 }

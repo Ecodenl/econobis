@@ -10,6 +10,14 @@ export default function(state = { isLoading: false }, action) {
                 data: action.contacts.data.data,
                 meta: {
                     total: action.contacts.data.meta.total,
+// todo WM: opschonen
+//
+                    // totalWithConsumptionGas: action.contacts.data.meta.totalWithConsumptionGas
+                    //     ? action.contacts.data.meta.totalWithConsumptionGas
+                    //     : 0,
+                    // totalWithConsumptionElectricity: action.contacts.data.meta.totalWithConsumptionElectricity
+                    //     ? action.contacts.data.meta.totalWithConsumptionElectricity
+                    //     : 0,
                 },
                 isLoading: false,
             };

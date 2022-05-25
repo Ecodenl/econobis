@@ -121,7 +121,7 @@ export default {
         });
     },
 
-    getExcelAddressEnergyConsumptionGas: ({ filters, extraFilters, sorts }) => {
+    getExcelAddressEnergyConsumptionGas: ({ filters, extraFilters, sorts, pagination }) => {
         const requestUrl = `${URL_API}/api/contact/excel/verbruik/gas`;
 
         return axiosInstance.get(requestUrl, {
@@ -129,12 +129,14 @@ export default {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
                 sorts: JSON.stringify(sorts),
+                limit: pagination.limit,
+                offset: pagination.offset,
             },
             responseType: 'blob',
         });
     },
 
-    getExcelAddressEnergyConsumptionElectricity: ({ filters, extraFilters, sorts }) => {
+    getExcelAddressEnergyConsumptionElectricity: ({ filters, extraFilters, sorts, pagination }) => {
         const requestUrl = `${URL_API}/api/contact/excel/verbruik/electriciteit`;
 
         return axiosInstance.get(requestUrl, {
@@ -142,6 +144,8 @@ export default {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
                 sorts: JSON.stringify(sorts),
+                limit: pagination.limit,
+                offset: pagination.offset,
             },
             responseType: 'blob',
         });

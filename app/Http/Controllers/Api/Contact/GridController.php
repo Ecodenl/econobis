@@ -23,11 +23,18 @@ class GridController extends Controller
         $contacts->load('primaryEmailAddress');
         $contacts->load('primaryPhoneNumber');
 
+// todo WM: opschonen
+//
+// aanvullende meta velden moeten ook toegevoegd worden aan ContactListReducer
 //        $numberOfContactsWithConsumptionGas = $contacts->where('has_address_energy_consumption_gas_periods', true);
+//        $numberOfContactsWithConsumptionElectricity = $contacts->where('has_address_energy_consumption_electricity_periods', true);
         return (new GridContactCollection($contacts))
             ->additional(['meta' => [
                 'total' => $requestQuery->total(),
-//                'totalWithConsumptionGas' => $numberOfContactsWithConsumptionGas->count(),
+// todo WM: opschonen
+//
+//                'totalWithConsumptionGas' => $numberOfContactsWithConsumptionGas,
+//                'totalWithConsumptionElectricity' => $numberOfContactsWithConsumptionElectricity,
                 ]
             ]);
     }
@@ -45,8 +52,7 @@ class GridController extends Controller
     public function excelAddressEnergyConsumptionGas(RequestQuery $requestQuery)
     {
         set_time_limit(0);
-//        $contacts = $requestQuery->getQuery()->get();
-        $contacts = $requestQuery->getQueryNoPagination()->get();
+        $contacts = $requestQuery->getQuery()->get();
 
         $contacts->load([
             'addresses',
@@ -61,8 +67,7 @@ class GridController extends Controller
     public function excelAddressEnergyConsumptionElectricity(RequestQuery $requestQuery)
     {
         set_time_limit(0);
-//        $contacts = $requestQuery->getQuery()->get();
-        $contacts = $requestQuery->getQueryNoPagination()->get();
+        $contacts = $requestQuery->getQuery()->get();
 
         $contacts->load([
             'addresses',

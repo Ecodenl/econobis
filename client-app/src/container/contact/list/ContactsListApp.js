@@ -128,8 +128,8 @@ class ContactsListApp extends Component {
         this.props.blockUI();
         setTimeout(() => {
             const maxContacts = 10000;
-// todo WM: opschonen
-//
+            // todo WM: opschonen
+            //
             // const amountFiles = Math.ceil(this.props.contacts.meta.totalWithConsumptionGas / maxContacts);
             // const splitsExcel = this.props.contacts.meta.totalWithConsumptionGas > maxContacts;
             const amountFiles = Math.ceil(this.props.contacts.meta.total / maxContacts);
@@ -164,8 +164,8 @@ class ContactsListApp extends Component {
         this.props.blockUI();
         setTimeout(() => {
             const maxContacts = 10000;
-// todo WM: opschonen
-//
+            // todo WM: opschonen
+            //
             // const amountFiles = Math.ceil(this.props.contacts.meta.totalWithConsumptionGas / maxContacts);
             // const splitsExcel = this.props.contacts.meta.totalWithConsumptionGas > maxContacts;
             const amountFiles = Math.ceil(this.props.contacts.meta.total / maxContacts);

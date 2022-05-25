@@ -10,8 +10,8 @@ export default function(state = { isLoading: false }, action) {
                 data: action.contacts.data.data,
                 meta: {
                     total: action.contacts.data.meta.total,
-// todo WM: opschonen
-//
+                    // todo WM: opschonen
+                    //
                     // totalWithConsumptionGas: action.contacts.data.meta.totalWithConsumptionGas
                     //     ? action.contacts.data.meta.totalWithConsumptionGas
                     //     : 0,

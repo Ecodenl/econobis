@@ -10,6 +10,7 @@ export default function(state = { isLoading: false }, action) {
                 data: action.contacts.data.data,
                 meta: {
                     total: action.contacts.data.meta.total,
+                    useExportAddressConsumption: action.contacts.data.meta.useExportAddressConsumption,
                     // todo WM: opschonen
                     //
                     // totalWithConsumptionGas: action.contacts.data.meta.totalWithConsumptionGas

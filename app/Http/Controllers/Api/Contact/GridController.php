@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Contact;
 
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactGroup\DynamicContactGroupFilter;
+use App\Eco\Cooperation\Cooperation;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Helpers\CSV\ContactCSVHelper;
 use App\Helpers\Excel\ContactExcelHelper;
@@ -23,6 +24,9 @@ class GridController extends Controller
         $contacts->load('primaryEmailAddress');
         $contacts->load('primaryPhoneNumber');
 
+        $cooperation = Cooperation::first();
+        $useExportAddressConsumption = $cooperation ? $cooperation->use_export_address_consumption : false;
+
 // todo WM: opschonen
 //
 // aanvullende meta velden moeten ook toegevoegd worden aan ContactListReducer
@@ -31,6 +35,7 @@ class GridController extends Controller
         return (new GridContactCollection($contacts))
             ->additional(['meta' => [
                 'total' => $requestQuery->total(),
+                'useExportAddressConsumption' => $useExportAddressConsumption,
 // todo WM: opschonen
 //
 //                'totalWithConsumptionGas' => $numberOfContactsWithConsumptionGas,

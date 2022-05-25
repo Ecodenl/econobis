@@ -124,22 +124,26 @@ class ContactsListToolbar extends Component {
                                 title="Importeren contacten"
                             />
                         )}
-                        <a
-                            role="button"
-                            className={'btn btn-success btn-sm'}
-                            onClick={this.props.getExcelAddressEnergyConsumptionElectricity}
-                            title="Downloaden electriciteit verbruik"
-                        >
-                            <FaRegLightbulb width={'13px'} height={'12px'} />
-                        </a>
-                        <a
-                            role="button"
-                            className={'btn btn-success btn-sm'}
-                            onClick={this.props.getExcelAddressEnergyConsumptionGas}
-                            title="Downloaden gas verbruik"
-                        >
-                            <FaFire width={'13px'} height={'12px'} />
-                        </a>
+                        {meta.useExportAddressConsumption && (
+                            <>
+                                <a
+                                    role="button"
+                                    className={'btn btn-success btn-sm'}
+                                    onClick={this.props.getExcelAddressEnergyConsumptionElectricity}
+                                    title="Downloaden electriciteit verbruik"
+                                >
+                                    <FaRegLightbulb width={'13px'} height={'12px'} />
+                                </a>
+                                <a
+                                    role="button"
+                                    className={'btn btn-success btn-sm'}
+                                    onClick={this.props.getExcelAddressEnergyConsumptionGas}
+                                    title="Downloaden gas verbruik"
+                                >
+                                    <FaFire width={'13px'} height={'12px'} />
+                                </a>
+                            </>
+                        )}
                     </div>
                 </div>
                 <div className="col-md-4">

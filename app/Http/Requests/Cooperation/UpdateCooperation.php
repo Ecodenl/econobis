@@ -44,6 +44,7 @@ class UpdateCooperation extends FormRequest
             'hoomGroupId' => [''],
             'useLaposta' => [''],
             'lapostaKey' => [''],
+            'useExportAddressConsumption' => [''],
         ];
     }
 }

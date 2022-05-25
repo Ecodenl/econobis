@@ -267,6 +267,20 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                     </div>
                 </PanelBody>
 
+                <PanelHeader>
+                    <span className="h5 text-bold">Overig</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <InputToggle
+                            label="Gebruik export energieverbruik tarieven en verbruik"
+                            name={'useExportAddressConsumption'}
+                            value={values.useExportAddressConsumption}
+                            onChangeAction={e => setFieldValue('useExportAddressConsumption', e.target.checked)}
+                        />
+                    </div>
+                </PanelBody>
+
                 <PanelBody>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText buttonClassName={'btn-default'} buttonText={'Sluiten'} onClickAction={toggleEdit} />

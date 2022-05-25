@@ -64,6 +64,17 @@ function CooperationDetailsFormView({ formData, toggleEdit }) {
                         <ViewText label={'Laposta key'} value={formData.lapostaKey} />
                     </div>
                 </PanelBody>
+                <PanelHeader>
+                    <span className="h5 text-bold">Overig</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <ViewText
+                            label={'Gebruik export energieverbruik tarieven en verbruik'}
+                            value={formData.useExportAddressConsumption ? 'Ja' : 'Nee'}
+                        />
+                    </div>
+                </PanelBody>
             </Panel>
         </section>
     );

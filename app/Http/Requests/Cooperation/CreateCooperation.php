@@ -43,6 +43,7 @@ class CreateCooperation extends FormRequest
             'hoomGroupId' => [''],
             'useLaposta' => [''],
             'lapostaKey' => [''],
+            'useExportAddressConsumption' => [''],
         ];
     }
 }

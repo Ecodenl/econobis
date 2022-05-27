@@ -39,7 +39,8 @@ InputToggle.defaultProps = {
     divSize: 'col-sm-6',
     required: '',
     disabled: false,
-    value: '',
+    value: false,
+    textToolTip: '',
 };
 
 InputToggle.propTypes = {
@@ -49,6 +50,7 @@ InputToggle.propTypes = {
     divSize: PropTypes.string,
     id: PropTypes.string,
     name: PropTypes.string.isRequired,
+    textToolTip: PropTypes.string,
     value: PropTypes.bool,
     onChangeAction: PropTypes.func,
     required: PropTypes.string,

@@ -267,6 +267,45 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                     </div>
                 </PanelBody>
 
+                <PanelHeader>
+                    <span className="h5 text-bold">Overig</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <InputToggle
+                            label="Gebruik export energieverbruik tarieven en verbruik"
+                            name={'useExportAddressConsumption'}
+                            value={values.useExportAddressConsumption}
+                            onChangeAction={e => setFieldValue('useExportAddressConsumption', e.target.checked)}
+                            size={'col-sm-5'}
+                            textToolTip={`Met deze knop krijg je de optie om op de Contacten pagina een download te maken van energie verbruik en tarief voorstellen.<br/>
+Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waardes:<br/>
+{verbruik_gas_begindatum}<br/>
+{verbruik_gas_einddatum}<br/>
+{verbruik_gas_verbruik_m3}<br/>
+{verbruik_gas_voorgesteld_tarief_vast}<br/>
+{verbruik_gas_voorgesteld_tarief_variabel}<br/>
+{verbruik_gas_variabele_kosten}<br/>
+{verbruik_gas_vaste_kosten}<br/>
+<br/>
+{verbruik_electriciteit_begindatum}<br/>
+{verbruik_electriciteit_einddatum}<br/>
+{verbruik_electriciteit_verbruik_hoog}<br/>
+{verbruik_electriciteit_verbruik_laag}<br/>
+{verbruik_electriciteit_terug_hoog}<br/>
+{verbruik_electriciteit_terug_laag}<br/>
+{verbruik_electriciteit_voorgesteld_tarief_variabel_hoog<br/>
+{verbruik_electriciteit_voorgesteld_tarief_variabel_laag}<br/>
+{verbruik_electriciteit_voorgesteld_tarief_vast_hoog}<br/>
+{verbruik_electriciteit_voorgesteld_tarief_vast_laag}<br/>
+{verbruik_electriciteit_variabele_kosten_hoog}<br/>
+{verbruik_electriciteit_variabele_kosten_laag}<br/>
+{verbruik_electriciteit_vaste_kosten_hoog}<br/>
+{verbruik_electriciteit_vaste_kosten_laag}`}
+                        />
+                    </div>
+                </PanelBody>
+
                 <PanelBody>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText buttonClassName={'btn-default'} buttonText={'Sluiten'} onClickAction={toggleEdit} />

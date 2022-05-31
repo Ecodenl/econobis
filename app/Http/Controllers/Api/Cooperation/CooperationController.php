@@ -42,6 +42,7 @@ class CooperationController extends ApiController
         }
         $cooperation->send_email = $request->boolean('sendEmail');
         $cooperation->use_laposta = $request->boolean('useLaposta');
+        $cooperation->use_export_address_consumption = $request->boolean('useExportAddressConsumption');
         $cooperation->save();
 
         // Store attachment when given
@@ -64,6 +65,7 @@ class CooperationController extends ApiController
         }
         $cooperation->send_email = $request->boolean('sendEmail');
         $cooperation->use_laposta = $request->boolean('useLaposta');
+        $cooperation->use_export_address_consumption = $request->boolean('useExportAddressConsumption');
         $cooperation->save();
 
         // Store attachment when given

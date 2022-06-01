@@ -170,7 +170,7 @@ Route::namespace('Api')
         Route::post('distribution-part-kwh/process-revenue-parts-kwh', 'Project\RevenuePartsKwhController@processRevenuePartsKwh');
         Route::post('distribution-part-kwh/peek-by-ids', 'Project\RevenuePartsKwhController@peekDistributionKwhPartsByIds');
 
-        Route::post('distribution-part-kwh/create-revenue-part-kwh-report', 'Project\RevenuePartsKwhController@createRevenuePartsKwhReport');
+        Route::post('distribution-part-kwh/create-revenue-parts-kwh-report', 'Project\RevenuePartsKwhController@createRevenuePartsKwhReport');
         Route::post('distribution-part-kwh/{distributionPartsKwh}/download-preview', 'Project\RevenuePartsKwhController@downloadPreview');
         Route::post('distribution-part-kwh/{distributionPartsKwh}/preview-email', 'Project\RevenuePartsKwhController@previewEmail');
 

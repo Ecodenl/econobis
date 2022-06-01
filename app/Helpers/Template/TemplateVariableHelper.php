@@ -2016,6 +2016,12 @@ class TemplateVariableHelper
                     ->pluck('energy_supplier_number')->toArray()));
                 return $esNumbers;
                 break;
+            case 'begindatum':
+                return $model->revenuesKwh->date_begin ? Carbon::parse($model->revenuesKwh->date_begin)->format('d/m/Y') : null;
+                break;
+            case 'einddatum':
+                return $model->revenuesKwh->date_end ? Carbon::parse($model->revenuesKwh->date_end)->format('d/m/Y') : null;
+                break;
             default:
                 return '';
                 break;
@@ -2069,6 +2075,12 @@ class TemplateVariableHelper
                 break;
             case 'energieleverancier_nummer':
                 return $model->energy_supplier_number;
+                break;
+            case 'begindatum':
+                return $model->date_begin_from_till_visible ? Carbon::parse($model->date_begin_from_till_visible)->format('d/m/Y') : null;
+                break;
+            case 'einddatum':
+                return $model->partsKwh->date_end ? Carbon::parse($model->partsKwh->date_end)->format('d/m/Y') : null;
                 break;
             default:
                 return '';

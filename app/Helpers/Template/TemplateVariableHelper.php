@@ -1877,6 +1877,9 @@ class TemplateVariableHelper
             case 'kwh_totaal':
                 return $endKhw - $startKhw;
                 break;
+            case 'opbrengst_kwh_euro':
+                return $model->payout_kwh;
+                break;
             case 'beginperiode':
                 return $model->date_begin ? Carbon::parse($model->date_begin)->format('d/m/Y') : null;
                 break;

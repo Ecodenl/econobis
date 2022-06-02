@@ -1,6 +1,7 @@
 export default [
     { id: 26, name: 'Agem' },
     { id: 27, name: 'Anode Energie' },
+    { id: 66, name: 'ANWB Energie' },
     { id: 24, name: 'Betuwe stroom' },
     { id: 2, name: 'Budget Energie' },
     { id: 58, name: 'CEN / WoonEnergie' },
@@ -54,6 +55,7 @@ export default [
     { id: 55, name: 'Samsam' },
     { id: 31, name: 'Sepa Green' },
     { id: 32, name: 'Servicehouse' },
+    { id: 67, name: 'SHELL Eenergy' },
     { id: 34, name: 'Total' },
     { id: 22, name: 'United Consumers' },
     { id: 17, name: 'VanDeBron' },

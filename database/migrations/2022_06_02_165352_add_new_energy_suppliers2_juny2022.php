@@ -16,7 +16,7 @@ class AddNewEnergySuppliers2Juny2022 extends Migration
     {
         $newEnergieSuppliers = [
             ['name' => 'ANWB Energie', 'doesPCR' => 1, 'excelTemplateId' => 2, 'abbreviation' => 'ANW'],
-            ['name' => 'SHELL Eenergy', 'doesPCR' => 1, 'excelTemplateId' => 2, 'abbreviation' => 'SHL'],
+            ['name' => 'Shell Energie', 'doesPCR' => 1, 'excelTemplateId' => 2, 'abbreviation' => 'SHL'],
         ];
 
         foreach ($newEnergieSuppliers as $newEnergieSupplier) {

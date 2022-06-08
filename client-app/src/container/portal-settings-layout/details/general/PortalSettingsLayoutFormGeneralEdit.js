@@ -16,10 +16,10 @@ import InputToggle from '../../../../components/form/InputToggle';
 import PortalLogoLayoutNew from './PortalLogoLayoutNew';
 import PortalFaviconLayoutNew from './PortalFaviconLayoutNew';
 import Image from 'react-bootstrap/es/Image';
-import PreviewPortalLoginPagePcModal from '../../preview/PreviewPortalLoginPagePcModal';
-import PreviewPortalLoginPageMobileModal from '../../preview/PreviewPortalLoginPageMobileModal';
-import PreviewPortalDashboardPagePcModal from '../../preview/PreviewPortalDashboardPagePcModal';
-import PreviewPortalDashboardPageMobileModal from '../../preview/PreviewPortalDashboardPageMobileModal';
+import PreviewPortalLoginPagePcModal from '../../../portal-settings-preview/PreviewPortalLoginPagePcModal';
+import PreviewPortalLoginPageMobileModal from '../../../portal-settings-preview/PreviewPortalLoginPageMobileModal';
+import PreviewPortalDashboardPagePcModal from '../../../portal-settings-preview/PreviewPortalDashboardPagePcModal';
+import PreviewPortalDashboardPageMobileModal from '../../../portal-settings-preview/PreviewPortalDashboardPageMobileModal';
 import PortalLogoLayoutNewCrop from '../../../../components/cropImage/portalLayout/PortalLogoLayoutNewCrop';
 
 class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {

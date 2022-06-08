@@ -4,8 +4,8 @@ import ViewText from '../../../components/form/ViewText';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import PortalSettingsDashboardWidgetList from '../widgets/PortalSettingsDashboardWidgetList';
-import PreviewPortalDashboardPagePcModal from '../../portal-settings-layout/preview/PreviewPortalDashboardPagePcModal';
-import PreviewPortalDashboardPageMobileModal from '../../portal-settings-layout/preview/PreviewPortalDashboardPageMobileModal';
+import PreviewPortalDashboardPagePcModal from '../../portal-settings-preview/PreviewPortalDashboardPagePcModal';
+import PreviewPortalDashboardPageMobileModal from '../../portal-settings-preview/PreviewPortalDashboardPageMobileModal';
 import ButtonText from '../../../components/button/ButtonText';
 
 class PortalSettingsDashboardFormGeneralView extends Component {

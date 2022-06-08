@@ -12,8 +12,8 @@ import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import PortalSettingsDashboardAPI from '../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
 import InputTextArea from '../../../components/form/InputTextarea';
 import PortalSettingsDashboardWidgetList from '../widgets/PortalSettingsDashboardWidgetList';
-import PreviewPortalDashboardPagePcModal from '../../portal-settings-layout/preview/PreviewPortalDashboardPagePcModal';
-import PreviewPortalDashboardPageMobileModal from '../../portal-settings-layout/preview/PreviewPortalDashboardPageMobileModal';
+import PreviewPortalDashboardPagePcModal from '../../portal-settings-preview/PreviewPortalDashboardPagePcModal';
+import PreviewPortalDashboardPageMobileModal from '../../portal-settings-preview/PreviewPortalDashboardPageMobileModal';
 
 class PortalSettingsDashboardFormGeneralEdit extends Component {
     constructor(props) {

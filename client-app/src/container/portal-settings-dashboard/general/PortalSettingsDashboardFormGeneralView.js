@@ -15,6 +15,7 @@ class PortalSettingsDashboardFormGeneralView extends Component {
         this.state = {
             showPreviewPortalDashboardPagePc: false,
             showPreviewPortalDashboardPageMobile: false,
+            showMenu: false,
             imageHash: Date.now(),
         };
     }
@@ -25,6 +26,10 @@ class PortalSettingsDashboardFormGeneralView extends Component {
 
     togglePreviewPortalDashboardPageMobile = () => {
         this.setState({ showPreviewPortalDashboardPageMobile: !this.state.showPreviewPortalDashboardPageMobile });
+    };
+
+    setShowMenu = () => {
+        this.setState({ showMenu: !this.state.showMenu });
     };
 
     render() {
@@ -58,6 +63,8 @@ class PortalSettingsDashboardFormGeneralView extends Component {
                         <PreviewPortalDashboardPagePcModal
                             previewFromLayout={false}
                             closeModal={this.togglePreviewPortalDashboardPagePc}
+                            setShowMenu={this.setShowMenu}
+                            showMenu={this.state.showMenu}
                             imageHash={this.state.imageHash}
                             attachmentLogoHeader={''}
                             logoHeaderUrl={logoHeaderUrl}
@@ -70,6 +77,8 @@ class PortalSettingsDashboardFormGeneralView extends Component {
                         <PreviewPortalDashboardPageMobileModal
                             previewFromLayout={false}
                             closeModal={this.togglePreviewPortalDashboardPageMobile}
+                            setShowMenu={this.setShowMenu}
+                            showMenu={this.state.showMenu}
                             imageHash={this.state.imageHash}
                             attachmentLogoHeader={''}
                             logoHeaderUrl={logoHeaderUrl}

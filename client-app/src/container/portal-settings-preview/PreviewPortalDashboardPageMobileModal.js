@@ -59,6 +59,22 @@ class PreviewPortalDashboardPageMobileModal extends Component {
                 border: '5px solid #000',
                 maxHeight: '700px',
             },
+            closePreview: {
+                padding: '0',
+                position: 'fixed',
+                top: '70px',
+                left: '10px',
+                zIndex: '10',
+            },
+            closePreviewButton: {
+                backgroundColor: 'red',
+                color: 'white',
+                borderColor: 'black',
+                padding: '5px 10px',
+                fontSize: '12px',
+                lineHeight: '1.5',
+                borderRadius: '3px',
+            },
             root: {
                 padding: '0',
                 backgroundColor: '#fff',
@@ -181,6 +197,8 @@ class PreviewPortalDashboardPageMobileModal extends Component {
         return (
             <PreviewPortalDashboardPage
                 closeModal={this.props.closeModal}
+                setShowMenu={this.props.setShowMenu}
+                showMenu={this.props.showMenu}
                 customStyles={customStyles}
                 logoHeaderUrl={logoHeaderUrl}
                 imageHash={this.props.imageHash}

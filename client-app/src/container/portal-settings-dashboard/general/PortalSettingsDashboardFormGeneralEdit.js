@@ -22,6 +22,7 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
         this.state = {
             showPreviewPortalDashboardPagePc: false,
             showPreviewPortalDashboardPageMobile: false,
+            showMenu: false,
             imageHash: Date.now(),
             dashboardSettings: {
                 ...props.dashboardSettings,
@@ -54,6 +55,10 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
 
     togglePreviewPortalDashboardPageMobile = () => {
         this.setState({ showPreviewPortalDashboardPageMobile: !this.state.showPreviewPortalDashboardPageMobile });
+    };
+
+    setShowMenu = () => {
+        this.setState({ showMenu: !this.state.showMenu });
     };
 
     handleSubmit = event => {
@@ -220,6 +225,8 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
                         <PreviewPortalDashboardPagePcModal
                             previewFromLayout={false}
                             closeModal={this.togglePreviewPortalDashboardPagePc}
+                            setShowMenu={this.setShowMenu}
+                            showMenu={this.state.showMenu}
                             imageHash={this.state.imageHash}
                             attachmentLogoHeader={''}
                             logoHeaderUrl={logoHeaderUrl}
@@ -232,6 +239,8 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
                         <PreviewPortalDashboardPageMobileModal
                             previewFromLayout={false}
                             closeModal={this.togglePreviewPortalDashboardPageMobile}
+                            setShowMenu={this.setShowMenu}
+                            showMenu={this.state.showMenu}
                             imageHash={this.state.imageHash}
                             attachmentLogoHeader={''}
                             logoHeaderUrl={logoHeaderUrl}

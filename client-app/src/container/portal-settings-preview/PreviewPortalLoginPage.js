@@ -11,6 +11,11 @@ const PreviewPortalLoginPage = ({
     return (
         <div style={customStyles.modal} onClick={closeModal} title={'Klik om preview te sluiten'}>
             <div id="root" style={customStyles.root}>
+                <div style={customStyles.closePreview}>
+                    <button style={customStyles.closePreviewButton} onClick={closeModal}>
+                        Sluiten preview
+                    </button>
+                </div>
                 <div className="authorization-container container-fluid" style={customStyles.authorizationContainer}>
                     <div style={fullHeightJustifyAlignContentCenterRow}>
                         <div style={customStyles.col}>

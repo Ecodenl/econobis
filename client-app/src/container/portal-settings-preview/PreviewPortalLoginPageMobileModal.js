@@ -50,6 +50,22 @@ class PreviewPortalLoginPageMobileModal extends Component {
                 overflow: 'hidden',
                 outline: '0',
             },
+            closePreview: {
+                padding: '0',
+                position: 'fixed',
+                top: '70px',
+                left: '10px',
+                zIndex: '10',
+            },
+            closePreviewButton: {
+                backgroundColor: 'red',
+                color: 'white',
+                borderColor: 'black',
+                padding: '5px 10px',
+                fontSize: '12px',
+                lineHeight: '1.5',
+                borderRadius: '3px',
+            },
             authorizationContainer: {
                 maxHeight: '700px',
                 width: '400px',

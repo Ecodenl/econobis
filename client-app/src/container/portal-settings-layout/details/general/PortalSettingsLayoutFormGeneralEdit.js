@@ -31,6 +31,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
             showPreviewPortalDashboardPagePc: false,
             showPreviewPortalLoginPageMobile: false,
             showPreviewPortalDashboardPageMobile: false,
+            showMenu: false,
             portalSettingsLayout: {
                 ...props.portalSettingsLayout,
             },
@@ -88,6 +89,10 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
 
     togglePreviewPortalDashboardPageMobile = () => {
         this.setState({ showPreviewPortalDashboardPageMobile: !this.state.showPreviewPortalDashboardPageMobile });
+    };
+
+    setShowMenu = () => {
+        this.setState({ showMenu: !this.state.showMenu });
     };
 
     closeNewLogo = () => {
@@ -837,6 +842,8 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         <PreviewPortalDashboardPagePcModal
                             previewFromLayout={true}
                             closeModal={this.togglePreviewPortalDashboardPagePc}
+                            setShowMenu={this.setShowMenu}
+                            showMenu={this.state.showMenu}
                             imageHash={this.state.imageHash}
                             attachmentLogoHeader={this.state.attachmentLogoHeader}
                             logoHeaderUrl={logoHeaderUrl}
@@ -879,6 +886,8 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         <PreviewPortalDashboardPageMobileModal
                             previewFromLayout={true}
                             closeModal={this.togglePreviewPortalDashboardPageMobile}
+                            setShowMenu={this.setShowMenu}
+                            showMenu={this.state.showMenu}
                             imageHash={this.state.imageHash}
                             attachmentLogoHeader={this.state.attachmentLogoHeader}
                             logoHeaderUrl={logoHeaderUrl}

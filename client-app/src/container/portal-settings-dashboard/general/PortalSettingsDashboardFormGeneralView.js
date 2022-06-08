@@ -4,8 +4,8 @@ import ViewText from '../../../components/form/ViewText';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import PortalSettingsDashboardWidgetList from '../widgets/PortalSettingsDashboardWidgetList';
-import PreviewPortalDashboardPagePcModal from '../../portal-settings-layout/preview/PreviewPortalDashboardPagePcModal';
-import PreviewPortalDashboardPageMobileModal from '../../portal-settings-layout/preview/PreviewPortalDashboardPageMobileModal';
+import PreviewPortalDashboardPagePcModal from '../../portal-settings-preview/PreviewPortalDashboardPagePcModal';
+import PreviewPortalDashboardPageMobileModal from '../../portal-settings-preview/PreviewPortalDashboardPageMobileModal';
 import ButtonText from '../../../components/button/ButtonText';
 
 class PortalSettingsDashboardFormGeneralView extends Component {
@@ -15,6 +15,7 @@ class PortalSettingsDashboardFormGeneralView extends Component {
         this.state = {
             showPreviewPortalDashboardPagePc: false,
             showPreviewPortalDashboardPageMobile: false,
+            showMenu: false,
             imageHash: Date.now(),
         };
     }
@@ -25,6 +26,10 @@ class PortalSettingsDashboardFormGeneralView extends Component {
 
     togglePreviewPortalDashboardPageMobile = () => {
         this.setState({ showPreviewPortalDashboardPageMobile: !this.state.showPreviewPortalDashboardPageMobile });
+    };
+
+    setShowMenu = () => {
+        this.setState({ showMenu: !this.state.showMenu });
     };
 
     render() {
@@ -58,22 +63,28 @@ class PortalSettingsDashboardFormGeneralView extends Component {
                         <PreviewPortalDashboardPagePcModal
                             previewFromLayout={false}
                             closeModal={this.togglePreviewPortalDashboardPagePc}
+                            setShowMenu={this.setShowMenu}
+                            showMenu={this.state.showMenu}
                             imageHash={this.state.imageHash}
                             attachmentLogoHeader={''}
                             logoHeaderUrl={logoHeaderUrl}
                             attachmentImageBgHeader={''}
                             imageBgHeaderUrl={imageBgHeaderUrl}
+                            dashboardSettings={this.props.dashboardSettings}
                         />
                     )}
                     {this.state.showPreviewPortalDashboardPageMobile && (
                         <PreviewPortalDashboardPageMobileModal
                             previewFromLayout={false}
                             closeModal={this.togglePreviewPortalDashboardPageMobile}
+                            setShowMenu={this.setShowMenu}
+                            showMenu={this.state.showMenu}
                             imageHash={this.state.imageHash}
                             attachmentLogoHeader={''}
                             logoHeaderUrl={logoHeaderUrl}
                             attachmentImageBgHeader={''}
                             imageBgHeaderUrl={imageBgHeaderUrl}
+                            dashboardSettings={this.props.dashboardSettings}
                         />
                     )}
                 </div>

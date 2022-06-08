@@ -17,6 +17,12 @@ class AdministrationDetailsApp extends Component {
         this.props.fetchAdministrationDetails(this.props.params.id);
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.params.id !== prevProps.params.id) {
+            this.props.fetchAdministrationDetails(this.props.params.id);
+        }
+    }
+
     render() {
         return (
             <div className="row">

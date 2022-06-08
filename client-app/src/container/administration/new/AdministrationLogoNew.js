@@ -16,7 +16,7 @@ class AdministrationLogoNew extends Component {
     onDropAccepted(file) {
         this.props.addAttachment(file);
         setTimeout(() => {
-            this.props.toggleShowNew();
+            this.props.closeNewLogo();
         }, 500);
     }
 
@@ -28,7 +28,7 @@ class AdministrationLogoNew extends Component {
 
     render() {
         return (
-            <Modal closeModal={this.props.toggleShowNew} showConfirmAction={false} title="Upload bestand">
+            <Modal closeModal={this.props.closeNewLogo} showConfirmAction={false} title="Upload bestand">
                 <div className="upload-file-content">
                     <Dropzone
                         accept="image/jpeg, image/png, image/jpg"

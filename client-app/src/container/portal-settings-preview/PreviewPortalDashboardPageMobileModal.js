@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import '../../../../../public/portal/portal.css';
+import '../../../../public/portal/portal.css';
 import PreviewPortalDashboardPage from './PreviewPortalDashboardPage';
 
-class PreviewPortalDashboardPagePcModal extends Component {
+class PreviewPortalDashboardPageMobileModal extends Component {
     constructor(props) {
         super(props);
     }
@@ -49,28 +49,47 @@ class PreviewPortalDashboardPagePcModal extends Component {
                 top: '10vh',
                 right: '0',
                 bottom: '0',
-                left: '2vw',
+                left: '37%',
                 zIndex: '1050',
                 display: 'inline',
                 overflow: 'hidden',
                 outline: '0',
+                width: '410px',
+                borderRadius: '25px',
+                border: '5px solid #000',
+                maxHeight: '700px',
+            },
+            closePreview: {
+                padding: '0',
+                position: 'fixed',
+                top: '70px',
+                left: '10px',
+                zIndex: '10',
+            },
+            closePreviewButton: {
+                backgroundColor: 'red',
+                color: 'white',
+                borderColor: 'black',
+                padding: '5px 10px',
+                fontSize: '12px',
+                lineHeight: '1.5',
+                borderRadius: '3px',
             },
             root: {
                 padding: '0',
                 backgroundColor: '#fff',
+                width: '400px',
             },
             body_2: {
-                height: '85vh',
-                width: '96vw',
-                // overflow: 'auto',
+                maxHeight: '700px',
+                width: '425px',
+                overflow: 'auto',
                 backgroundColor: '#fff',
                 overflowWrap: 'initial',
                 fontFamily: 'Montserrat, sans-serif',
-                overflow: 'auto',
-                border: '2px solid #000',
+                paddingBottom: '1%',
             },
             container: {
-                maxWidth: '960px',
                 width: '100%',
                 paddingLeft: '15px',
                 paddingRight: '15px',
@@ -86,7 +105,7 @@ class PreviewPortalDashboardPagePcModal extends Component {
                 paddingRight: '15px',
             },
             headerLogo: {
-                maxWidth: '450px',
+                maxWidth: '100px',
                 padding: '14px 0',
             },
             logoContainer: {
@@ -96,8 +115,6 @@ class PreviewPortalDashboardPagePcModal extends Component {
                 display: 'inline-block',
             },
             col_widget: {
-                flex: '0 0 50%',
-                maxWidth: '50%',
                 position: 'relative',
                 width: '100%',
                 paddingLeft: '15px',
@@ -134,7 +151,7 @@ class PreviewPortalDashboardPagePcModal extends Component {
             wContainer: {
                 marginLeft: 'auto',
                 marginRight: 'auto',
-                maxWidth: '940px',
+                maxWidth: '360px',
             },
             card: {
                 marginTop: '30px',
@@ -180,12 +197,15 @@ class PreviewPortalDashboardPagePcModal extends Component {
         return (
             <PreviewPortalDashboardPage
                 closeModal={this.props.closeModal}
+                setShowMenu={this.props.setShowMenu}
+                showMenu={this.props.showMenu}
                 customStyles={customStyles}
                 logoHeaderUrl={logoHeaderUrl}
                 imageHash={this.props.imageHash}
+                dashboardSettings={this.props.dashboardSettings}
             />
         );
     }
 }
 
-export default PreviewPortalDashboardPagePcModal;
+export default PreviewPortalDashboardPageMobileModal;

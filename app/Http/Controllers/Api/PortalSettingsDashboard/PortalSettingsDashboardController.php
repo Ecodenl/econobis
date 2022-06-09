@@ -37,7 +37,7 @@ class PortalSettingsDashboardController extends Controller
 
     public function multiple(Request $request): array {
         $store = $this->getStore();
-        $keys = $this->getWhitelistedKeys($request);
+        $keys = $this->getWhitelistedKeys($request->input('keys', []));
 
         $response = [];
 
@@ -69,10 +69,10 @@ class PortalSettingsDashboardController extends Controller
         return $keyValues;
     }
 
-    protected function getWhitelistedKeys(Request $request): array
+    protected function getWhitelistedKeys(array $getKeys): array
     {
         $keys = [];
-        foreach ($request->input('keys', []) as $key) {
+        foreach ($getKeys as $key) {
             if ($this->isWhiteListed($key)) {
                 $keys[] = $key;
             }
@@ -98,6 +98,7 @@ class PortalSettingsDashboardController extends Controller
                 ->string('text')->whenMissing('')->onEmpty('')->next()
                 ->string('buttonText')->whenMissing('')->onEmpty('')->next()
                 ->string('buttonLink')->whenMissing('')->onEmpty('')->next()
+                ->string('name')->whenMissing('')->onEmpty('')->next()
                 ->get();
 
         if ($request->file('image') && !$request->file('image')->isValid()) {
@@ -107,10 +108,11 @@ class PortalSettingsDashboardController extends Controller
         $uuid = Uuid::uuid1();
         $widget = new \stdClass();
 
+        $fileExtensie = pathinfo($data['name'], PATHINFO_EXTENSION);
+        $widgetImageFileName = $uuid . '.' . $fileExtensie;
+
         if ($request->file('image')) {
             try {
-                $widgetImageFileName = $uuid . '.png';
-
                 if (Config::get('app.env') == "local") {
                     Storage::disk('public_portal_local')->putFileAs('images', $request->file('image'), $widgetImageFileName);
                     Storage::disk('customer_portal_app_build_local')->putFileAs('images', $request->file('image'), $widgetImageFileName);
@@ -118,8 +120,6 @@ class PortalSettingsDashboardController extends Controller
                 } else {
                     Storage::disk('public_portal')->putFileAs('images', $request->file('image'), $widgetImageFileName);
                 }
-
-                $widget->image = $widgetImageFileName;
             } catch (\Exception $exception) {
                 Log::error('Opslaan widget afbeelding mislukt : ' . $exception->getMessage());
                 abort('422', 'Opslaan widget afbeelding mislukt : ' . $exception->getMessage());
@@ -130,6 +130,7 @@ class PortalSettingsDashboardController extends Controller
         $widget->order = count($this->getStore()['widgets']) + 1;
         $widget->title = $data['title'];
         $widget->text = $data['text'];
+        $widget->image = $widgetImageFileName;
         $widget->buttonText = $data['buttonText'];
         $widget->buttonLink = $data['buttonLink'];
         $widget->active = true;
@@ -141,6 +142,8 @@ class PortalSettingsDashboardController extends Controller
 
     public function updateWidget(RequestInput $input, Request $request) {
         $data = $input->string('id')->whenMissing('')->onEmpty('')->next()
+            ->string('name')->whenMissing('')->onEmpty('')->next()
+            ->string('type')->whenMissing('')->onEmpty('')->next()
             ->get();
 
         if ($request->file('image') && !$request->file('image')->isValid()) {
@@ -152,7 +155,8 @@ class PortalSettingsDashboardController extends Controller
         }
 
         try {
-            $widgetImageFileName = $data['id'] . '.png';
+            $fileExtensie = pathinfo($data['name'], PATHINFO_EXTENSION);
+            $widgetImageFileName = $data['id'] . '.' . $fileExtensie;
 
             if (Config::get('app.env') == "local") {
                 Storage::disk('public_portal_local')->putFileAs('images', $request->file('image'), $widgetImageFileName);
@@ -161,6 +165,32 @@ class PortalSettingsDashboardController extends Controller
             } else {
                 Storage::disk('public_portal')->putFileAs('images', $request->file('image'), $widgetImageFileName);
             }
+
+            $imageTypeChanged = false;
+            $widgets = $this->getStore()->get('widgets');
+            $changedWidgets = [];
+            foreach ($widgets as $widget) {
+                if($widget['id'] === $data['id'] && $widget['image'] !== $widgetImageFileName ) {
+                    if (Config::get('app.env') == "local") {
+                        Storage::disk('public_portal_local')->delete('images/' . $widget['image']);
+                        Storage::disk('customer_portal_app_build_local')->delete('images/' . $widget['image']);
+                        Storage::disk('customer_portal_app_public_local')->delete('images/' . $widget['image']);
+                    } else {
+                        Storage::disk('public_portal')->delete('images/' . $widget['image']);
+                    }
+                    $widget['image'] = $widgetImageFileName;
+                    $imageTypeChanged = true;
+                }
+                $changedWidgets[] = $widget;
+            }
+            if($imageTypeChanged){
+                $this->getStore()->put('widgets', array());
+
+                foreach ($changedWidgets as $widget) {
+                    $this->getStore()->push('widgets', [$widget]);
+                }
+            }
+
         } catch (\Exception $exception) {
             Log::error('Opslaan widget afbeelding mislukt : ' . $exception->getMessage());
             abort('422', 'Opslaan widget afbeelding mislukt : ' . $exception->getMessage());
@@ -182,13 +212,17 @@ class PortalSettingsDashboardController extends Controller
 //    }
 
     public function destroy(RequestInput $input, Request $request) {
-        $data = $input->string('id')->whenMissing('')->onEmpty('')->next()->get();
+        $data = $input->string('id')->whenMissing('')->onEmpty('')->next()
+            ->string('name')->whenMissing('')->onEmpty('')->next()
+            ->string('type')->whenMissing('')->onEmpty('')->next()
+            ->get();
 
 //        $widgets = $this->getStore()->get('widgets');
 //        $this->getStore()->forget('widgets');
 
         try {
-            $widgetImageFileName = $data['id'] . '.png';
+            $fileExtensie = pathinfo($data['name'], PATHINFO_EXTENSION);
+            $widgetImageFileName = $data['id'] . '.' . $fileExtensie;
 
             if (Config::get('app.env') == "local") {
                 Storage::disk('public_portal_local')->delete('images/' . $widgetImageFileName);

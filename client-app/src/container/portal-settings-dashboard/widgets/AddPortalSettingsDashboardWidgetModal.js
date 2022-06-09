@@ -118,6 +118,7 @@ class AddPortalSettingsDashboardWidgetModal extends Component {
         data.append('image', widget.image);
         data.append('buttonText', widget.buttonText);
         data.append('buttonLink', widget.buttonLink);
+        data.append('name', widget.imageName);
 
         PortalSettingsDashboardAPI.addDashboardWidget(data)
             .then(response => {
@@ -145,6 +146,7 @@ class AddPortalSettingsDashboardWidgetModal extends Component {
 
     render() {
         const { widget, showCropImageModal, errors, errorMessage } = this.state;
+        const acceptedFiles = ['image/png', 'image/jpeg'];
 
         return (
             <Modal
@@ -187,7 +189,7 @@ class AddPortalSettingsDashboardWidgetModal extends Component {
                         <label className={'col-sm-12 required'}>Afbeelding</label>
                         {!!widget.imageName && <b>&nbsp;geslecteerd bestand: {widget.imageName}</b>}
                         <Dropzone
-                            accept="image/png"
+                            accept={acceptedFiles}
                             multiple={false}
                             className="dropzone"
                             onDropAccepted={this.onDropAccepted.bind(this)}

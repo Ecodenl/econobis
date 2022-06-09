@@ -117,6 +117,8 @@ class PortalLogoLayoutNewCrop extends Component {
         );
 
         return new Promise((resolve, reject) => {
+            const type = this.props.image.type ? this.props.image.type : 'image/png';
+
             canvas.toBlob(
                 blob => {
                     if (!blob) {
@@ -128,7 +130,7 @@ class PortalLogoLayoutNewCrop extends Component {
                     blob.preview = window.URL.createObjectURL(blob);
                     (blob.cropWidth = canvas.width), (blob.cropHeight = canvas.height), resolve(blob);
                 },
-                'image/png',
+                type,
                 1
             );
         });

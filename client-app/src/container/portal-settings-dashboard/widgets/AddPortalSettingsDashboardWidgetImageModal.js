@@ -27,13 +27,14 @@ class AddPortalSettingsDashboardWidgetImageModal extends Component {
     }
 
     render() {
+        const acceptedFiles = ['image/png', 'image/jpeg'];
         return (
             <Modal
                 closeModal={this.props.closeNewWidgetImage}
                 showConfirmAction={false}
-                title="Upload widget image bestand (PNG)"
+                title="Upload widget image bestand (PNG of JPEG)"
             >
-                <p>Alleen image bestanden met bestandstype PNG kunnen gebruikt worden.</p>
+                <p>Alleen image bestanden met bestandstype PNG of JPEG kunnen gebruikt worden.</p>
                 <p>
                     Breedte en hoogte zijn variabel en afhankelijk van window breedte/hoogte. Breedte/Hoogte verhouding
                     images blijft behouden en images zullen wel volledig getoond worden. Bij genoeg window breedte
@@ -42,7 +43,7 @@ class AddPortalSettingsDashboardWidgetImageModal extends Component {
                 </p>
                 <div className="upload-file-content">
                     <Dropzone
-                        accept="image/png"
+                        accept={acceptedFiles}
                         multiple={false}
                         className="dropzone"
                         onDropAccepted={this.onDropAccepted.bind(this)}
@@ -60,7 +61,7 @@ class AddPortalSettingsDashboardWidgetImageModal extends Component {
                 )}
                 {this.state.errorMaxSize && (
                     <p className="has-error-message">
-                        Uploaden mislukt. Het bestand moet bestandstype PNG zijn en mag maximaal 6MB groot zijn.
+                        Uploaden mislukt. Het bestand moet bestandstype PNG of JPEG zijn en mag maximaal 6MB groot zijn.
                     </p>
                 )}
             </Modal>

@@ -110,6 +110,8 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
         const data = new FormData();
         data.append('id', row.id);
         data.append('image', file);
+        data.append('name', widgetImage.name);
+        data.append('type', widgetImage.type);
 
         PortalSettingsDashboardAPI.updateDashboardWidget(data)
             .then(payload => {

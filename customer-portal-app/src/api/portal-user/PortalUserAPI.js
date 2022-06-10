@@ -16,6 +16,7 @@ export default {
                         'lastNamePrefix',
                         'lastName',
                         'hasFinancialOverviews',
+                        'singleRelatedAdministration',
                         'iban',
                         'ibanAttn',
                         'didAgreeAvg',
@@ -39,6 +40,7 @@ export default {
                                         'lastNamePrefix',
                                         'lastName',
                                         'hasFinancialOverviews',
+                                        'singleRelatedAdministration',
                                     ],
                                 },
                                 contact: {

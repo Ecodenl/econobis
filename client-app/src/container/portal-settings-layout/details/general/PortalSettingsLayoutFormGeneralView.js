@@ -125,19 +125,39 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                             className={'col-sm-8 form-group'}
                             textToolTip={`Om afbeelding zichtbaar te maken moet de achtergrond deels transparant zijn, zie 1. Login pagina / Header kleur voor meer informatie.`}
                         />
-                        <Image
-                            src={imageBgHeaderUrl}
-                            style={{
-                                backgroundColor: loginHeaderBackgroundColor,
-                                color: loginHeaderBackgroundTextColor,
-                                border: '1px solid #999',
-                                display: 'inline-block',
-                                padding: '1px',
-                                borderRadius: '1px',
-                                height: '50px',
-                                boxShadow: '0 0 0 1px #fff inset',
-                            }}
-                        />
+                        {/*<Image*/}
+                        {/*    src={imageBgHeaderUrl}*/}
+                        {/*    style={{*/}
+                        {/*        backgroundColor: loginHeaderBackgroundColor,*/}
+                        {/*        color: loginHeaderBackgroundTextColor,*/}
+                        {/*        border: '1px solid #999',*/}
+                        {/*        display: 'inline-block',*/}
+                        {/*        padding: '1px',*/}
+                        {/*        borderRadius: '1px',*/}
+                        {/*        height: '50px',*/}
+                        {/*        boxShadow: '0 0 0 1px #fff inset',*/}
+                        {/*    }}*/}
+                        {/*/>*/}
+                    </div>
+                    <div className="row">
+                        <div className="col-sm-12 form-group">
+                            <div className="col-sm-4" />
+                            <div className="col-sm-8">
+                                <Image
+                                    src={imageBgHeaderUrl}
+                                    style={{
+                                        backgroundColor: loginHeaderBackgroundColor,
+                                        color: loginHeaderBackgroundTextColor,
+                                        border: '1px solid #999',
+                                        display: 'inline-block',
+                                        padding: '1px',
+                                        borderRadius: '1px',
+                                        height: '50px',
+                                        boxShadow: '0 0 0 1px #fff inset',
+                                    }}
+                                />
+                            </div>
+                        </div>
                     </div>
                     <div className="row">
                         <ViewText

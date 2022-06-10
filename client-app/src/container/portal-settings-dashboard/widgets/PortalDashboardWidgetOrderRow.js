@@ -12,7 +12,7 @@ import { Image } from 'react-bootstrap';
 import Modal from '../../../components/modal/Modal';
 import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
-import PortalLogoLayoutNewCrop from '../../../components/cropImage/portalLayout/PortalLogoLayoutNewCrop';
+import PortalLayoutImageCrop from '../../../components/cropImage/portalLayout/PortalLayoutImageCrop';
 
 const DND_ITEM_TYPE = 'row';
 
@@ -292,7 +292,7 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
                 />
             )}
             {showCropImageModal && (
-                <PortalLogoLayoutNewCrop
+                <PortalLayoutImageCrop
                     closeShowCrop={closeShowCropWidgetImage}
                     useAutoCropper={useAutoCropper}
                     image={widgetImage}

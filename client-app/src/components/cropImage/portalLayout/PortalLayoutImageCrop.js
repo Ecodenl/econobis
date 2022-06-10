@@ -3,7 +3,7 @@ import ReactCrop from 'react-image-crop';
 import Modal from '../../modal/Modal';
 import 'react-image-crop/dist/ReactCrop.css';
 
-class PortalLogoLayoutNewCrop extends Component {
+class PortalLayoutImageCrop extends Component {
     constructor(props) {
         super(props);
 
@@ -39,8 +39,8 @@ class PortalLogoLayoutNewCrop extends Component {
 
                     break;
                 case 'image-bg-header':
-                    this.aspectString = '16:9';
-                    this.crop = { unit: 'px', height: 128, aspect: 16 / 9 };
+                    this.aspectString = '16:1';
+                    this.crop = { unit: 'px', height: 128, aspect: 16 / 1 };
                     this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
                     break;
                 case 'image-widget':
@@ -199,4 +199,4 @@ class PortalLogoLayoutNewCrop extends Component {
     }
 }
 
-export default PortalLogoLayoutNewCrop;
+export default PortalLayoutImageCrop;

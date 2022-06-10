@@ -20,7 +20,7 @@ import PreviewPortalLoginPagePcModal from '../../../portal-settings-preview/Prev
 import PreviewPortalLoginPageMobileModal from '../../../portal-settings-preview/PreviewPortalLoginPageMobileModal';
 import PreviewPortalDashboardPagePcModal from '../../../portal-settings-preview/PreviewPortalDashboardPagePcModal';
 import PreviewPortalDashboardPageMobileModal from '../../../portal-settings-preview/PreviewPortalDashboardPageMobileModal';
-import PortalLogoLayoutNewCrop from '../../../../components/cropImage/portalLayout/PortalLogoLayoutNewCrop';
+import PortalLayoutImageCrop from '../../../../components/cropImage/portalLayout/PortalLayoutImageCrop';
 
 class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -503,23 +503,48 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 required={'required'}
                                 error={this.state.errors.portalImageBgFileNameHeader}
                             />
-                            <Image
-                                src={
-                                    this.state.attachmentImageBgHeader && this.state.attachmentImageBgHeader.preview
-                                        ? this.state.attachmentImageBgHeader.preview
-                                        : imageBgHeaderUrl
-                                }
-                                style={{
-                                    backgroundColor: loginHeaderBackgroundColor,
-                                    color: loginHeaderBackgroundTextColor,
-                                    border: '1px solid #999',
-                                    display: 'inline-block',
-                                    padding: '1px',
-                                    borderRadius: '1px',
-                                    height: '50px',
-                                    boxShadow: '0 0 0 1px #fff inset',
-                                }}
-                            />
+                            {/*<Image*/}
+                            {/*    src={*/}
+                            {/*        this.state.attachmentImageBgHeader && this.state.attachmentImageBgHeader.preview*/}
+                            {/*            ? this.state.attachmentImageBgHeader.preview*/}
+                            {/*            : imageBgHeaderUrl*/}
+                            {/*    }*/}
+                            {/*    style={{*/}
+                            {/*        backgroundColor: loginHeaderBackgroundColor,*/}
+                            {/*        color: loginHeaderBackgroundTextColor,*/}
+                            {/*        border: '1px solid #999',*/}
+                            {/*        display: 'inline-block',*/}
+                            {/*        padding: '1px',*/}
+                            {/*        borderRadius: '1px',*/}
+                            {/*        height: '50px',*/}
+                            {/*        boxShadow: '0 0 0 1px #fff inset',*/}
+                            {/*    }}*/}
+                            {/*/>*/}
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-12 form-group">
+                                <div className="col-sm-4" />
+                                <div className="col-sm-8">
+                                    <Image
+                                        src={
+                                            this.state.attachmentImageBgHeader &&
+                                            this.state.attachmentImageBgHeader.preview
+                                                ? this.state.attachmentImageBgHeader.preview
+                                                : imageBgHeaderUrl
+                                        }
+                                        style={{
+                                            backgroundColor: loginHeaderBackgroundColor,
+                                            color: loginHeaderBackgroundTextColor,
+                                            border: '1px solid #999',
+                                            display: 'inline-block',
+                                            padding: '1px',
+                                            borderRadius: '1px',
+                                            height: '50px',
+                                            boxShadow: '0 0 0 1px #fff inset',
+                                        }}
+                                    />
+                                </div>
+                            </div>
                         </div>
                         <div className="row">
                             <InputText
@@ -798,7 +823,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             />
                         )}
                         {this.state.showModalCropLogo && (
-                            <PortalLogoLayoutNewCrop
+                            <PortalLayoutImageCrop
                                 closeShowCrop={this.closeShowCrop}
                                 useAutoCropper={true}
                                 image={this.state.image}

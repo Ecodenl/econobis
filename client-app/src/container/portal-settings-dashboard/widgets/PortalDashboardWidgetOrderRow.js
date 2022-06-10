@@ -20,6 +20,7 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
     const dropRef = useRef(null);
     const dragRef = useRef(null);
     const [newWidgetImage, setNewWidgetImage] = useState(false);
+    const [useAutoCropper, setUseAutoCropper] = useState(true);
     const [showCropImageModal, setShowCropImageModal] = useState(false);
     const [widgetImage, setWidgetImage] = useState('');
     const [showUploadSucces, setShowUploadSucces] = useState(false);
@@ -82,6 +83,10 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
     preview(drop(dropRef));
     drag(dragRef);
 
+    const toggleUseAutoCropper = () => {
+        setUseAutoCropper(!useAutoCropper);
+    };
+
     const closeNewWidgetImage = () => {
         setNewWidgetImage(false);
     };
@@ -92,6 +97,7 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
 
     const closeShowCropWidgetImage = () => {
         setWidgetImage('');
+        setUseAutoCropper(true);
         setShowCropImageModal(false);
     };
 
@@ -280,12 +286,15 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
             {newWidgetImage && (
                 <AddPortalSettingsDashboardWidgetImageModal
                     closeNewWidgetImage={closeNewWidgetImage}
+                    toggleUseAutoCropper={toggleUseAutoCropper}
+                    useAutoCropper={useAutoCropper}
                     addWidgetImage={addWidgetImage}
                 />
             )}
             {showCropImageModal && (
                 <PortalLogoLayoutNewCrop
                     closeShowCrop={closeShowCropWidgetImage}
+                    useAutoCropper={useAutoCropper}
                     image={widgetImage}
                     imageLayoutItemName={'image-widget'}
                     cropLogo={cropWidgetImage}

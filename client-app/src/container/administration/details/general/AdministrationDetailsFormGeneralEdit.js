@@ -1062,6 +1062,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                         {this.state.showModalCropLogo && (
                             <PortalLogoLayoutNewCrop
                                 closeShowCrop={this.closeShowCrop}
+                                useAutoCropper={true}
                                 image={this.state.image}
                                 imageLayoutItemName={this.state.imageLayoutItemName}
                                 cropLogo={this.cropLogo}

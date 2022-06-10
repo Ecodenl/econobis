@@ -8,6 +8,7 @@ import PortalSettingsDashboardAPI from '../../../api/portal-settings-dashboard/P
 import { Col } from 'react-bootstrap';
 import PortalLogoLayoutNewCrop from '../../../components/cropImage/portalLayout/PortalLogoLayoutNewCrop';
 import validator from 'validator';
+import InputToggle from '../../../components/form/InputToggle';
 const Dropzone = require('react-dropzone').default;
 
 class AddPortalSettingsDashboardWidgetModal extends Component {
@@ -24,6 +25,7 @@ class AddPortalSettingsDashboardWidgetModal extends Component {
                 buttonLink: '',
                 active: true,
             },
+            useAutoCropper: true,
             showCropImageModal: false,
             errors: {
                 title: false,
@@ -51,6 +53,13 @@ class AddPortalSettingsDashboardWidgetModal extends Component {
     onDropRejected() {
         alert('Er is wat fout gegaan.');
     }
+
+    toggleUseAutoCropper = () => {
+        this.setState({
+            ...this.state,
+            useAutoCropper: !this.state.useAutoCropper,
+        });
+    };
 
     closeShowCropWidgetImage = () => {
         this.setState({
@@ -145,7 +154,7 @@ class AddPortalSettingsDashboardWidgetModal extends Component {
     };
 
     render() {
-        const { widget, showCropImageModal, errors, errorMessage } = this.state;
+        const { widget, showCropImageModal, useAutoCropper, errors, errorMessage } = this.state;
         const acceptedFiles = ['image/png', 'image/jpeg'];
 
         return (
@@ -185,6 +194,18 @@ class AddPortalSettingsDashboardWidgetModal extends Component {
                                 required={'required'}
                                 error={errors.text}
                                 errorMessage={errorMessage.text}
+                            />
+                        </Col>
+                        <Col sm={12}>
+                            <InputToggle
+                                label={'Ik wil het standaard formaat aanhouden'}
+                                id={'useAutoCropper'}
+                                name={'useAutoCropper'}
+                                value={useAutoCropper}
+                                onChangeAction={this.toggleUseAutoCropper}
+                                divSize={'col-sm-6'}
+                                labelSize={'col-sm-6'}
+                                size={'col-sm-6'}
                             />
                         </Col>
                         <Col sm={12} style={{ paddingLeft: '30px', paddingRight: '30px' }}>
@@ -241,6 +262,7 @@ class AddPortalSettingsDashboardWidgetModal extends Component {
                     {showCropImageModal && (
                         <PortalLogoLayoutNewCrop
                             closeShowCrop={this.closeShowCropWidgetImage}
+                            useAutoCropper={useAutoCropper}
                             image={widget.image}
                             imageLayoutItemName={'image-widget'}
                             cropLogo={this.cropWidgetImage}

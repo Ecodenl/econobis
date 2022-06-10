@@ -14,13 +14,14 @@ import AboutUsDocumentTable from './document-table';
 function AboutUsAdministration({ match }) {
     const { currentSelectedContact } = useContext(PortalUserContext);
     const [administration, setAdministration] = useState({});
+    const [websiteLink, setWebsiteLink] = useState(null);
     const [isLoading, setLoading] = useState(true);
 
     useEffect(() => {
         if (currentSelectedContact.id) {
             (function callFetchAdministration() {
                 setLoading(true);
-                console.log(match);
+                // console.log(match);
                 AdministrationAPI.fetchAdministration(match.params.id)
                     .then(payload => {
                         setAdministration(payload.data.data);
@@ -33,6 +34,19 @@ function AboutUsAdministration({ match }) {
             })();
         }
     }, [match, currentSelectedContact]);
+
+    useEffect(() => {
+        if (administration.id && administration.website) {
+            if (
+                administration.website.toLowerCase().startsWith('http') ||
+                administration.website.toLowerCase().startsWith('https')
+            ) {
+                setWebsiteLink(administration.website);
+            } else {
+                setWebsiteLink('https://' + administration.website);
+            }
+        }
+    }, [administration]);
 
     return (
         <Container className={'content-section'}>
@@ -88,7 +102,15 @@ function AboutUsAdministration({ match }) {
                                                 <td>
                                                     <strong>Website</strong>
                                                 </td>
-                                                <td>{administration.website}</td>
+                                                <td>
+                                                    {administration.website && (
+                                                        <a href={websiteLink} target="_blank">
+                                                            <button className="w-button btn btn-primary btn-sm">
+                                                                {administration.website}
+                                                            </button>
+                                                        </a>
+                                                    )}
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td>

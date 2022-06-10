@@ -19,6 +19,7 @@ export default {
                         'ibanAttn',
                         'btwNumber',
                         'website',
+                        'email',
                     ],
                     rlt: {
                         country: { fld: ['name'] },

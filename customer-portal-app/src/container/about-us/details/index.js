@@ -114,6 +114,12 @@ function AboutUsAdministration({ match }) {
                                             </tr>
                                             <tr>
                                                 <td>
+                                                    <strong>E-mail</strong>
+                                                </td>
+                                                <td>{administration.email}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
                                                     <strong>IBAN</strong>
                                                 </td>
                                                 <td>{administration.iBAN}</td>

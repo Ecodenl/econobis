@@ -266,34 +266,37 @@ const PreviewPortalDashboardPage = ({
                                 </div>
                             </div>
                             <div style={customStyles.row}>
-                                {widgets.map(widget => {
-                                    const imageSrc =
-                                        widget.image && widget.image.includes('images/')
-                                            ? widget.image + '?' + imageHash
-                                            : 'images/' + widget.image + '?' + imageHash;
-                                    return (
-                                        <div style={customStyles.col_widget}>
-                                            <div id="widget-over-ons" style={customStyles.card}>
-                                                <img
-                                                    style={customStyles.cardImgTop}
-                                                    src={`${URL_API}/portal/${imageSrc}`}
-                                                />
-                                                <div style={customStyles.cardBody}>
-                                                    <h5 style={customStyles.cardTitle}>{widget.title}</h5>
-                                                    <p
-                                                        style={customStyles.cardText}
-                                                        style={{ whiteSpace: 'break-spaces' }}
-                                                    >
-                                                        {widget.text}
-                                                    </p>
-                                                    <button className="w-button btn btn-primary btn-sm">
-                                                        {widget.buttonText}
-                                                    </button>
+                                {widgets
+                                    .filter(w => w.active)
+                                    .sort((a, b) => (a.order > b.order ? 1 : -1))
+                                    .map(widget => {
+                                        const imageSrc =
+                                            widget.image && widget.image.includes('images/')
+                                                ? widget.image + '?' + imageHash
+                                                : 'images/' + widget.image + '?' + imageHash;
+                                        return (
+                                            <div style={customStyles.col_widget}>
+                                                <div id="widget-over-ons" style={customStyles.card}>
+                                                    <img
+                                                        style={customStyles.cardImgTop}
+                                                        src={`${URL_API}/portal/${imageSrc}`}
+                                                    />
+                                                    <div style={customStyles.cardBody}>
+                                                        <h5 style={customStyles.cardTitle}>{widget.title}</h5>
+                                                        <p
+                                                            style={customStyles.cardText}
+                                                            style={{ whiteSpace: 'break-spaces' }}
+                                                        >
+                                                            {widget.text}
+                                                        </p>
+                                                        <button className="w-button btn btn-primary btn-sm">
+                                                            {widget.buttonText}
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    })}
                             </div>
                             <div style={customStyles.row}>
                                 <div style={customStyles.col_widget}>

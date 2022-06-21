@@ -120,6 +120,11 @@ class PersonController extends ApiController
                 'countryId' => 'nullable',
                 'primary' => 'boolean',
             ]);
+
+            if(preg_match('/^\d{4}\s[A-Za-z]{2}$/', $data['postalCode'])){
+                $data['postalCode'] = preg_replace('/\s+/', '', $data['postalCode']);
+            }
+
             $address = new Address($this->arrayKeysToSnakeCase($data));
 
         }

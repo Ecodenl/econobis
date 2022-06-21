@@ -35,6 +35,8 @@ Route::namespace('Api')
 
         Route::get('/contact/grid', 'Contact\GridController@index');
         Route::get('/contact/csv', 'Contact\GridController@csv');
+        Route::get('/contact/excel/verbruik/gas', 'Contact\GridController@excelAddressEnergyConsumptionGas');
+        Route::get('/contact/excel/verbruik/electriciteit', 'Contact\GridController@excelAddressEnergyConsumptionElectricity');
         Route::get('/contact/save-as-group', 'Contact\GridController@saveAsGroup');
         Route::get('/contact/peek', 'Contact\ContactController@peek');
         Route::get('/contact/search', 'Contact\ContactController@search');
@@ -151,6 +153,7 @@ Route::namespace('Api')
         Route::get('contact-group/{contactGroup}/contacts/grid', 'ContactGroup\ContactGroupController@gridContacts');
         Route::post('contact-group/{contactGroup}/contacts/add-many', 'ContactGroup\ContactGroupController@addContacts');
         Route::get('contact-group/{contactGroup}/sync-laposta-list', 'ContactGroup\ContactGroupController@syncContactGroupLapostaList');
+        Route::get('contact-group/{contactGroup}/deactivate-laposta-list', 'ContactGroup\ContactGroupController@deActivateContactGroupLapostaList');
 
         Route::post('distribution/create-revenue-report', 'Project\ProjectRevenueController@createRevenueReport');
         Route::post('distribution/create-payment-invoices', 'Project\ProjectRevenueController@createPaymentInvoices');
@@ -167,7 +170,7 @@ Route::namespace('Api')
         Route::post('distribution-part-kwh/process-revenue-parts-kwh', 'Project\RevenuePartsKwhController@processRevenuePartsKwh');
         Route::post('distribution-part-kwh/peek-by-ids', 'Project\RevenuePartsKwhController@peekDistributionKwhPartsByIds');
 
-        Route::post('distribution-part-kwh/create-revenue-part-kwh-report', 'Project\RevenuePartsKwhController@createRevenuePartsKwhReport');
+        Route::post('distribution-part-kwh/create-revenue-parts-kwh-report', 'Project\RevenuePartsKwhController@createRevenuePartsKwhReport');
         Route::post('distribution-part-kwh/{distributionPartsKwh}/download-preview', 'Project\RevenuePartsKwhController@downloadPreview');
         Route::post('distribution-part-kwh/{distributionPartsKwh}/preview-email', 'Project\RevenuePartsKwhController@previewEmail');
 

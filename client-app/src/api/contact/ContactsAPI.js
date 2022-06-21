@@ -121,6 +121,36 @@ export default {
         });
     },
 
+    getExcelAddressEnergyConsumptionGas: ({ filters, extraFilters, sorts, pagination }) => {
+        const requestUrl = `${URL_API}/api/contact/excel/verbruik/gas`;
+
+        return axiosInstance.get(requestUrl, {
+            params: {
+                filters: JSON.stringify(filters),
+                extraFilters: JSON.stringify(extraFilters),
+                sorts: JSON.stringify(sorts),
+                limit: pagination.limit,
+                offset: pagination.offset,
+            },
+            responseType: 'blob',
+        });
+    },
+
+    getExcelAddressEnergyConsumptionElectricity: ({ filters, extraFilters, sorts, pagination }) => {
+        const requestUrl = `${URL_API}/api/contact/excel/verbruik/electriciteit`;
+
+        return axiosInstance.get(requestUrl, {
+            params: {
+                filters: JSON.stringify(filters),
+                extraFilters: JSON.stringify(extraFilters),
+                sorts: JSON.stringify(sorts),
+                limit: pagination.limit,
+                offset: pagination.offset,
+            },
+            responseType: 'blob',
+        });
+    },
+
     saveAsGroup: ({ filters, extraFilters, filterType }) => {
         const requestUrl = `${URL_API}/api/contact/save-as-group`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');

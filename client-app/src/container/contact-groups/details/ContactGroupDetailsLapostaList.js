@@ -4,7 +4,7 @@ import Modal from '../../../components/modal/Modal';
 import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
 import { updateContactGroupLapostaList } from '../../../actions/contact-group/ContactGroupDetailsActions';
 
-function ContactGroupDetailsLapostaList({ closeModal, id, updateContactGroupLapostaList }) {
+function ContactGroupDetailsLapostaList({ closeModal, id, lapostaListId }) {
     const [message, setMessage] = useState('Aanmaken laposta lijst gestart');
     const [errors, setErrors] = useState([]);
 
@@ -12,7 +12,7 @@ function ContactGroupDetailsLapostaList({ closeModal, id, updateContactGroupLapo
         ContactGroupAPI.syncLapostaList(id)
             .then(payload => {
                 setMessage('Laposta lijst is succesvol aangemaakt');
-                updateContactGroupLapostaList(1);
+                updateContactGroupLapostaList(lapostaListId);
                 setTimeout(closeModal, 2000);
             })
             .catch(error => {
@@ -66,6 +66,7 @@ function ContactGroupDetailsLapostaList({ closeModal, id, updateContactGroupLapo
 const mapStateToProps = state => {
     return {
         id: state.contactGroupDetails.id,
+        lapostaListId: state.contactGroupDetails.lapostaListId,
     };
 };
 

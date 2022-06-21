@@ -25,6 +25,7 @@ class PartEnergySupplierExcelNewApp extends Component {
                 documentName: '',
             },
             isLoading: false,
+            isCreating: false,
             errors: {
                 energySupplierId: false,
                 documentName: false,
@@ -74,10 +75,11 @@ class PartEnergySupplierExcelNewApp extends Component {
             hasErrors = true;
         }
 
-        this.setState({ ...this.state, errors: errors });
+        this.setState({ ...this.state, isCreating: true, errors: errors });
 
         !hasErrors &&
             RevenuePartsKwhAPI.createEnergySupplierExcel(excel.revenuePartId, excel.documentName).then(payload => {
+                this.setState({ ...this.state, isCreating: false });
                 hashHistory.push(`/documenten`);
             });
     };
@@ -91,19 +93,25 @@ class PartEnergySupplierExcelNewApp extends Component {
                     </div>
 
                     <div className="col-md-12">
-                        <Panel>
-                            <PanelBody>
-                                <div className="col-md-12">
-                                    <PartEnergySupplierExcelNew
-                                        documentName={this.state.excel.documentName}
-                                        errors={this.state.errors}
-                                        handleInputChange={this.handleInputChange}
-                                        handleSubmit={this.handleSubmit}
-                                        cancel={this.cancel}
-                                    />
-                                </div>
-                            </PanelBody>
-                        </Panel>
+                        <>
+                            {this.state.isCreating ? (
+                                <div>Bezig met verwerken...</div>
+                            ) : (
+                                <Panel>
+                                    <PanelBody>
+                                        <div className="col-md-12">
+                                            <PartEnergySupplierExcelNew
+                                                documentName={this.state.excel.documentName}
+                                                errors={this.state.errors}
+                                                handleInputChange={this.handleInputChange}
+                                                handleSubmit={this.handleSubmit}
+                                                cancel={this.cancel}
+                                            />
+                                        </div>
+                                    </PanelBody>
+                                </Panel>
+                            )}
+                        </>
                     </div>
                 </div>
                 <div className="col-md-3" />

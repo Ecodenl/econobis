@@ -459,4 +459,41 @@ class ContactGroupController extends Controller
 
         return $lapostaListId;
     }
+
+    public function deActivateContactGroupLapostaList(ContactGroup $contactGroup)
+    {
+        $this->deActivateLapostaList($contactGroup);
+
+        if (count($this->getErrorMessagesLaposta())) {
+            throw ValidationException::withMessages(array("econobis" => $this->getErrorMessagesLaposta()));
+        }
+    }
+
+    public function deActivateLapostaList(ContactGroup $contactGroup) {
+        // Laposta list bijwerken
+        if($contactGroup->is_used_in_laposta){
+
+            // via simulategroup
+            if($contactGroup->simulatedGroup){
+                $contactGroupToUpdate = $contactGroup->simulatedGroup->contacts->whereNotNull('pivot.laposta_member_id');
+                foreach ($contactGroupToUpdate as $contact) {
+                    $contactGroup->simulatedGroup->contacts()->updateExistingPivot($contact->id, ['laposta_member_id' => null, 'laposta_member_state' => null]);
+                }
+                $contactGroup->simulatedGroup->laposta_list_id = null;
+                $contactGroup->simulatedGroup->laposta_list_created_at = null;
+                $contactGroup->simulatedGroup->save();
+            }else{
+                $contactGroupToUpdate = $contactGroup->contacts->whereNotNull('pivot.laposta_member_id');
+                foreach ($contactGroupToUpdate as $contact) {
+                    $contactGroup->contacts()->updateExistingPivot($contact->id, ['laposta_member_id' => null, 'laposta_member_state' => null]);
+                }
+                $contactGroup->laposta_list_id = null;
+                $contactGroup->laposta_list_created_at = null;
+                $contactGroup->save();
+            }
+        }
+
+        // Laposta list uitzetten
+        return '';
+    }
 }

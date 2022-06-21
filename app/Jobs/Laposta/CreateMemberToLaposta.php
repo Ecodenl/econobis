@@ -11,7 +11,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Laposta;
 use Laposta_Member;
@@ -93,7 +92,11 @@ class CreateMemberToLaposta implements ShouldQueue
             } else {
                 $message = $message . 'Onbekend';
             }
-            Log::error( $message . '. Contactgroup id: ' . $this->contactGroup->id . '. Http status: ' . $e->getHttpStatus() . '.');
+            if($e->getMessage() && $e->getMessage() == 'API error: Email address exists'){
+                Log::info( $message . '. Contactgroup id: ' . $this->contactGroup->id . '. Http status: ' . $e->getHttpStatus() . '.');
+            }else{
+                Log::error( $message . '. Contactgroup id: ' . $this->contactGroup->id . '. Http status: ' . $e->getHttpStatus() . '.');
+            }
             $value = $message;
             $jobLog = new JobsLog();
             $jobLog->value = $value;

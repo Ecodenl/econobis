@@ -10,6 +10,11 @@ class PortalLogoLayoutNewCrop extends Component {
         this.imageRef = {};
 
         switch (this.props.imageLayoutItemName) {
+            case 'logo-administration':
+                this.aspectString = '2:1';
+                this.crop = { unit: 'px', height: 200, aspect: 2 / 1 };
+                this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
+                break;
             case 'logo-login':
                 // this.aspectString = '1:1';
                 // this.crop = { unit: 'px', width: 200, aspect: 1 / 1 };

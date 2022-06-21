@@ -80,7 +80,6 @@ class ContactDetailFormAddressItem extends Component {
     };
 
     openAddressEnergySupplier = () => {
-        console.log('openAddressEnergySupplier ');
         this.setState({ showAddressEnergySupplier: true });
     };
 

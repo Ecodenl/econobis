@@ -206,7 +206,6 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
             addressEnergySupplier.memberSince &&
             this.state.memberSinceDisabledBefore > addressEnergySupplier.memberSince
         ) {
-            console.log('disable before > membersince');
             errors.memberSince = true;
             hasErrors = true;
         }

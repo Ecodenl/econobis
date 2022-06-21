@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import '../../../../../public/portal/portal.css';
+import '../../../../public/portal/portal.css';
 import PreviewPortalLoginPage from './PreviewPortalLoginPage';
 
-class PreviewPortalLoginPageMobileModal extends Component {
+class PreviewPortalLoginPagePcModal extends Component {
     constructor(props) {
         super(props);
     }
@@ -50,17 +50,31 @@ class PreviewPortalLoginPageMobileModal extends Component {
                 overflow: 'hidden',
                 outline: '0',
             },
-            authorizationContainer: {
-                maxHeight: '700px',
-                width: '400px',
-                overflow: 'hidden',
-                borderRadius: '25px',
-                border: '5px solid #000',
+            closePreview: {
                 padding: '0',
+                position: 'fixed',
+                top: '70px',
+                left: '10px',
+                zIndex: '10',
+            },
+            closePreviewButton: {
+                backgroundColor: 'red',
+                color: 'white',
+                borderColor: 'black',
+                padding: '5px 10px',
+                fontSize: '12px',
+                lineHeight: '1.5',
+                borderRadius: '3px',
+            },
+            authorizationContainer: {
+                position: 'initial',
+                height: '85vh',
+                width: '96vw',
+                border: '2px solid #000',
+                overflow: 'auto',
             },
             fullHeight: {
                 height: '100vh',
-                maxHeight: '700px',
             },
             justifyContentCenter: {
                 justifyContent: 'center',
@@ -75,8 +89,8 @@ class PreviewPortalLoginPageMobileModal extends Component {
                 marginLeft: '-15px',
             },
             col: {
-                flex: '0 0 100%',
-                maxWidth: '80%',
+                flex: '0 0 250px',
+                maxWidth: '250px',
             },
         };
 
@@ -103,4 +117,4 @@ class PreviewPortalLoginPageMobileModal extends Component {
     }
 }
 
-export default PreviewPortalLoginPageMobileModal;
+export default PreviewPortalLoginPagePcModal;

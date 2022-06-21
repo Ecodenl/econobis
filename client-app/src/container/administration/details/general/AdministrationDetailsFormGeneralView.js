@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import ViewText from '../../../../components/form/ViewText';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+import Image from 'react-bootstrap/es/Image';
 import moment from 'moment';
 
 const AdministrationDetailsFormGeneralView = props => {
@@ -52,6 +53,7 @@ const AdministrationDetailsFormGeneralView = props => {
         usesMollie,
         mollieApiKey,
     } = props.administrationDetails;
+    const { logoFilenameSrc } = props.administrationLogoDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -145,7 +147,23 @@ const AdministrationDetailsFormGeneralView = props => {
 
                     <div className="row">
                         <ViewText label={"Nota's ook mailen in BCC naar"} value={emailBccNotas ? emailBccNotas : ''} />
-                        <ViewText label={'Gebruikt BTW'} value={usesVat ? 'Ja' : 'Nee'} hidden={true} />
+                        <div className="col-sm-6">
+                            <label className="col-sm-6"></label>
+                            <div className="col-sm-6">
+                                <Image
+                                    src={logoFilenameSrc}
+                                    style={{
+                                        border: '1px solid #999',
+                                        display: 'inline-block',
+                                        padding: '1px',
+                                        borderRadius: '1px',
+                                        minWidth: '50px',
+                                        height: '50px',
+                                        boxShadow: '0 0 0 1px #fff inset',
+                                    }}
+                                />
+                            </div>
+                        </div>
                     </div>
 
                     <div className="row">
@@ -153,6 +171,7 @@ const AdministrationDetailsFormGeneralView = props => {
                             label={'Portal instellingen layout'}
                             value={portalSettingsLayout ? portalSettingsLayout.description : 'gebruikt standaard'}
                         />
+                        <ViewText label={'Gebruikt BTW'} value={usesVat ? 'Ja' : 'Nee'} hidden={true} />
                     </div>
 
                     <div className="row">

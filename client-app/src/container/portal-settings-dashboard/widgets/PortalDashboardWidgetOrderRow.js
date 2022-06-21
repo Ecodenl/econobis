@@ -2,17 +2,17 @@ import React, { useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { arrows_vertical } from 'react-icons-kit/ikons/arrows_vertical';
 import Icon from 'react-icons-kit';
-import AddPortalSettingsDashboardWidgetImageModal from '../../../container/portal-settings-dashboard/widgets/AddPortalSettingsDashboardWidgetImageModal';
+import AddPortalSettingsDashboardWidgetImageModal from './AddPortalSettingsDashboardWidgetImageModal';
 import PortalSettingsDashboardAPI from '../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
-import ButtonIcon from '../../button/ButtonIcon';
-import InputText from '../../form/InputText';
-import InputTextArea from '../../form/InputTextarea';
-import InputToggle from '../../form/InputToggle';
+import ButtonIcon from '../../../components/button/ButtonIcon';
+import InputText from '../../../components/form/InputText';
+import InputTextArea from '../../../components/form/InputTextarea';
+import InputToggle from '../../../components/form/InputToggle';
 import { Image } from 'react-bootstrap';
-import Modal from '../../modal/Modal';
+import Modal from '../../../components/modal/Modal';
 import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
-import PortalLogoLayoutNewCrop from '../../cropImage/portalLayout/PortalLogoLayoutNewCrop';
+import PortalLogoLayoutNewCrop from '../../../components/cropImage/portalLayout/PortalLogoLayoutNewCrop';
 
 const DND_ITEM_TYPE = 'row';
 

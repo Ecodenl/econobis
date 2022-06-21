@@ -7,21 +7,21 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
-class createSystemDataJs extends Command
+class createServerDataJs extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'install:createSystemDataJs';
+    protected $signature = 'install:createServerDataJs';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Creëer een system-data.js';
+    protected $description = 'Creëer een server-data.js';
 
     /**
      * Create a new command instance.
@@ -57,6 +57,6 @@ class createSystemDataJs extends Command
             Log::error('Opslaan server-data.js mislukt : ' . $exception->getMessage());
         }
 
-        Log::info('Creëer een system-data.js klaar');
+        Log::info('Creëer een server-data.js klaar');
     }
 }

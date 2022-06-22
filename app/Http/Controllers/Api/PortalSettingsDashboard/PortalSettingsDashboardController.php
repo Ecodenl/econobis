@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Api\PortalSettingsDashboard;
 
-use App\Eco\PortalSettingsDashboard\PortalSettingsDashboard;
+use App\Eco\PortalSettingsDashboard\PortalSettingsDashboards;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\GenericResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
@@ -20,7 +19,7 @@ class PortalSettingsDashboardController extends Controller
 
     public function jory()
     {
-        return Jory::on(PortalSettingsDashboard::class);
+        return Jory::on(PortalSettingsDashboards::class);
     }
 
     public function get(Request $request): array {

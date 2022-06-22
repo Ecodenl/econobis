@@ -5,7 +5,7 @@ namespace App\Eco\PortalSettingsDashboard;
 use App\Eco\User\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class PortalSettingsDashboardPolicy
+class PortalSettingsDashboardsPolicy
 {
     use HandlesAuthorization;
 

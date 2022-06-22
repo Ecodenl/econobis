@@ -62,6 +62,8 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                 portalImageBgFileNameLogin: false,
                 portalImageBgFileNameHeader: false,
                 portalFaviconFileName: false,
+                portalMainBackgroundColor: false,
+                portalMainTextColor: false,
                 portalBackgroundColor: false,
                 portalBackgroundTextColor: false,
                 loginHeaderBackgroundColor: false,
@@ -213,6 +215,14 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
             errors.description = true;
             hasErrors = true;
         }
+        if (validator.isEmpty(portalSettingsLayout.portalMainBackgroundColor)) {
+            errors.portalMainBackgroundColor = true;
+            hasErrors = true;
+        }
+        if (validator.isEmpty(portalSettingsLayout.portalMainTextColor)) {
+            errors.portalMainTextColor = true;
+            hasErrors = true;
+        }
         if (validator.isEmpty(portalSettingsLayout.portalBackgroundColor)) {
             errors.portalBackgroundColor = true;
             hasErrors = true;
@@ -262,6 +272,8 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
         data.append('portalImageBgFileNameHeader', portalSettingsLayout.portalImageBgFileNameHeader);
         data.append('portalFaviconFileName', portalSettingsLayout.portalFaviconFileName);
         data.append('description', portalSettingsLayout.description);
+        data.append('portalMainBackgroundColor', portalSettingsLayout.portalMainBackgroundColor);
+        data.append('portalMainTextColor', portalSettingsLayout.portalMainTextColor);
         data.append('portalBackgroundColor', portalSettingsLayout.portalBackgroundColor);
         data.append('portalBackgroundTextColor', portalSettingsLayout.portalBackgroundTextColor);
         data.append('loginHeaderBackgroundColor', portalSettingsLayout.loginHeaderBackgroundColor);
@@ -304,6 +316,8 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
             portalImageBgFileNameLogin,
             portalImageBgFileNameHeader,
             portalFaviconFileName,
+            portalMainBackgroundColor,
+            portalMainTextColor,
             portalBackgroundColor,
             portalBackgroundTextColor,
             loginHeaderBackgroundColor,
@@ -815,6 +829,47 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 error={this.state.errors.buttonTextColor}
                             />
                         </div>
+                        <div className="row">
+                            <InputText
+                                label="10. Algmene achtergrond kleur"
+                                divSize={'col-sm-8'}
+                                name={'portalMainBackgroundColor'}
+                                value={portalMainBackgroundColor}
+                                onChangeAction={this.handleInputChange}
+                                readOnly={!managePortalSettings}
+                                required={'required'}
+                                error={this.state.errors.portalMainBackgroundColor}
+                            />
+                            <span
+                                className="rc-color-picker-trigger"
+                                unselectable="unselectable"
+                                style={{
+                                    backgroundColor: portalMainBackgroundColor,
+                                    color: portalMainTextColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '2px',
+                                    borderRadius: '2px',
+                                    width: '150px',
+                                    height: '30px',
+                                    boxShadow: '0 0 0 2px #fff inset',
+                                }}
+                            >
+                                Algemene tekst
+                            </span>
+                        </div>
+                        {/*<div className="row">*/}
+                        {/*    <InputText*/}
+                        {/*        label="11. Algemene tekst kleur"*/}
+                        {/*        divSize={'col-sm-8'}*/}
+                        {/*        name={'portalMainTextColor'}*/}
+                        {/*        value={portalMainTextColor}*/}
+                        {/*        onChangeAction={this.handleInputChange}*/}
+                        {/*        readOnly={!managePortalSettings}*/}
+                        {/*        required={'required'}*/}
+                        {/*        error={this.state.errors.portalMainTextColor}*/}
+                        {/*    />*/}
+                        {/*</div>*/}
                         {this.state.showModalNewLogo && (
                             <PortalLogoLayoutNew
                                 closeNewLogo={this.closeNewLogo}
@@ -852,6 +907,8 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             logoUrl={logoUrl}
                             attachmentImageBgLogin={this.state.attachmentImageBgLogin}
                             imageBgLoginUrl={imageBgLoginUrl}
+                            portalMainBackgroundColor={portalMainBackgroundColor}
+                            portalMainTextColor={portalMainTextColor}
                             portalBackgroundColor={portalBackgroundColor}
                             portalBackgroundTextColor={portalBackgroundTextColor}
                             loginHeaderBackgroundColor={loginHeaderBackgroundColor}
@@ -875,6 +932,8 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             logoHeaderUrl={logoHeaderUrl}
                             attachmentImageBgHeader={this.state.attachmentImageBgHeader}
                             imageBgHeaderUrl={imageBgHeaderUrl}
+                            portalMainBackgroundColor={portalMainBackgroundColor}
+                            portalMainTextColor={portalMainTextColor}
                             portalBackgroundColor={portalBackgroundColor}
                             portalBackgroundTextColor={portalBackgroundTextColor}
                             loginHeaderBackgroundColor={loginHeaderBackgroundColor}
@@ -896,6 +955,8 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             logoUrl={logoUrl}
                             attachmentImageBgLogin={this.state.attachmentImageBgLogin}
                             imageBgLoginUrl={imageBgLoginUrl}
+                            portalMainBackgroundColor={portalMainBackgroundColor}
+                            portalMainTextColor={portalMainTextColor}
                             portalBackgroundColor={portalBackgroundColor}
                             portalBackgroundTextColor={portalBackgroundTextColor}
                             loginHeaderBackgroundColor={loginHeaderBackgroundColor}
@@ -919,7 +980,8 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             logoHeaderUrl={logoHeaderUrl}
                             attachmentImageBgHeader={this.state.attachmentImageBgHeader}
                             imageBgHeaderUrl={imageBgHeaderUrl}
-                            portalBackgroundColor={portalBackgroundColor}
+                            portalMainBackgroundColor={portalMainBackgroundColor}
+                            portalMainTextColor={portalMainTextColor}
                             portalBackgroundTextColor={portalBackgroundTextColor}
                             loginHeaderBackgroundColor={loginHeaderBackgroundColor}
                             loginHeaderBackgroundTextColor={loginHeaderBackgroundTextColor}

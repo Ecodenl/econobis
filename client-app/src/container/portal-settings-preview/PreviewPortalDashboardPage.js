@@ -13,7 +13,7 @@ const PreviewPortalDashboardPage = ({
 }) => {
     const { welcomeTitle, welcomeMessage, widgets } = dashboardSettings;
     return (
-        <div style={customStyles.modal}>
+        <div style={customStyles.modal} className="portal-body">
             <div id="root" style={customStyles.root}>
                 <div style={customStyles.closePreview}>
                     <button style={customStyles.closePreviewButton} onClick={closeModal}>

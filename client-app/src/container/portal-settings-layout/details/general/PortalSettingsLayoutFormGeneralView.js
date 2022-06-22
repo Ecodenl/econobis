@@ -14,6 +14,8 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
     portalImageBgFileNameLogin,
     portalImageBgFileNameHeader,
     portalFaviconFileName,
+    portalMainBackgroundColor,
+    portalMainTextColor,
     portalBackgroundColor,
     portalBackgroundTextColor,
     loginHeaderBackgroundColor,
@@ -371,6 +373,39 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                             className={'col-sm-8 form-group'}
                         />
                     </div>
+                    <div className="row">
+                        <ViewText
+                            label={'10. Algemene achtergrond kleur'}
+                            divSize={'col-sm-8'}
+                            value={portalMainBackgroundColor}
+                            className={'col-sm-8 form-group'}
+                        />
+                        <span
+                            className="rc-color-picker-trigger"
+                            unselectable="unselectable"
+                            style={{
+                                backgroundColor: portalMainBackgroundColor,
+                                color: portalMainTextColor,
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '2px',
+                                borderRadius: '2px',
+                                width: '150px',
+                                height: '30px',
+                                boxShadow: '0 0 0 2px #fff inset',
+                            }}
+                        >
+                            Algemene tekst
+                        </span>
+                    </div>
+                    {/*<div className="row">*/}
+                    {/*    <ViewText*/}
+                    {/*        label={'11. Algemene tekst kleur'}*/}
+                    {/*        divSize={'col-sm-8'}*/}
+                    {/*        value={portalMainTextColor}*/}
+                    {/*        className={'col-sm-8 form-group'}*/}
+                    {/*    />*/}
+                    {/*</div>*/}
                 </PanelBody>
             </Panel>
         </div>

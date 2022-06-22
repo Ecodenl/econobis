@@ -36,11 +36,19 @@ const ThemeSettingsProvider = function(props) {
             'url(images/' + currentThemeSettings.portal_image_bg_file_name_header + '?' + imageHash + ')'
         );
         document.documentElement.style.setProperty(
-            '--main-primary-color',
+            '--portal-main-background-color',
+            currentThemeSettings.portal_main_background_color
+        );
+        document.documentElement.style.setProperty(
+            '--portal-main-text-color',
+            currentThemeSettings.portal_main_text_color
+        );
+        document.documentElement.style.setProperty(
+            '--portal-background-color',
             currentThemeSettings.portal_background_color
         );
         document.documentElement.style.setProperty(
-            '--main-primary-text-color',
+            '--portal-background-text-color',
             currentThemeSettings.portal_background_text_color
         );
         document.documentElement.style.setProperty(

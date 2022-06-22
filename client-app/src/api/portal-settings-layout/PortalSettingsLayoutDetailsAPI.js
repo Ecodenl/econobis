@@ -18,6 +18,8 @@ export default {
                         'portalImageBgFileNameLogin',
                         'portalImageBgFileNameHeader',
                         'portalFaviconFileName',
+                        'portalMainBackgroundColor',
+                        'portalMainTextColor',
                         'portalBackgroundColor',
                         'portalBackgroundTextColor',
                         'loginHeaderBackgroundColor',

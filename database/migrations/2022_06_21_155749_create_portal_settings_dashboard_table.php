@@ -30,9 +30,9 @@ class CreatePortalSettingsDashboardTable extends Migration
             $table->string('code_ref');
             $table->integer('order')->nullable();
             $table->string('title');
-            $table->string('text');
-            $table->string('button_text');
-            $table->string('button_link');
+            $table->text('text');
+            $table->text('button_text');
+            $table->text('button_link');
             $table->string('background_color', 30)->default('');
             $table->string('text_color', 30)->default('');
             $table->boolean('active')->default(false);

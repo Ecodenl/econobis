@@ -18,13 +18,15 @@ class PortalSettingsLayoutDetailsToolbar extends Component {
     };
 
     render() {
-        let { description, id, isDefault } = this.props;
+        let { description, id, isDefault, permissions } = this.props;
         return (
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
                         <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
-                        {!isDefault && <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />}
+                        {!isDefault && permissions.managePortalSettings && (
+                            <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
+                        )}
                     </div>
                 </div>
                 <div className="col-md-4">

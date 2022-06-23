@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Toggle from 'react-toggle';
+import { FaInfoCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 
 const InputToggle = props => {
-    const { label, size, id, name, value, onChangeAction, required, divSize, className, disabled, itemId } = props;
+    const { label, size, id, name, value, onChangeAction, textToolTip, required, divSize, className, disabled, itemId } = props;
 
     return (
         <div className={`form-group ${divSize} ${className}`}>
@@ -22,6 +24,18 @@ const InputToggle = props => {
                     data-item-id={itemId ?? ''}
                 />
             </div>
+            {textToolTip && (
+                <div className="col-sm-1">
+                    <FaInfoCircle color={'blue'} size={'15px'} data-tip={textToolTip} data-for={`tooltip-${name}`} />
+                    <ReactTooltip
+                        id={`tooltip-${name}`}
+                        effect="float"
+                        place="right"
+                        multiline={true}
+                        aria-haspopup="true"
+                    />
+                </div>
+            )}
         </div>
     );
 };
@@ -33,6 +47,7 @@ InputToggle.defaultProps = {
     required: '',
     disabled: false,
     value: false,
+    textToolTip: '',
 };
 
 InputToggle.propTypes = {
@@ -42,6 +57,7 @@ InputToggle.propTypes = {
     divSize: PropTypes.string,
     id: PropTypes.string,
     name: PropTypes.string.isRequired,
+    textToolTip: PropTypes.string,
     value: PropTypes.bool,
     onChangeAction: PropTypes.func,
     required: PropTypes.string,

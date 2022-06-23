@@ -228,4 +228,10 @@ export default {
 
         return axiosInstance.get(requestUrl);
     },
+
+    deActivateLapostaList: id => {
+        const requestUrl = `contact-group/${id}/deactivate-laposta-list`;
+
+        return axiosInstance.get(requestUrl);
+    },
 };

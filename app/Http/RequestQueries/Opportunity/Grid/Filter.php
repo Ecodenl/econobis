@@ -52,12 +52,12 @@ class Filter extends RequestFilter
 
     protected function applyCreatedAtStartFilter($query, $type, $data)
     {
-        $query->where('created_at', '>=', Carbon::parse($data)->startOfDay());
+        $query->where('opportunities.created_at', '>=', Carbon::parse($data)->startOfDay());
         return false;
     }
     protected function applyCreatedAtEndFilter($query, $type, $data)
     {
-        $query->where('created_at', '<=', Carbon::parse($data)->endOfDay());
+        $query->where('opportunities.created_at', '<=', Carbon::parse($data)->endOfDay());
         return false;
     }
 

@@ -13,6 +13,7 @@ import PanelBody from '../../../components/panel/PanelBody';
 import Panel from '../../../components/panel/Panel';
 import PortalSettingsLayoutDetailsAPI from '../../../api/portal-settings-layout/PortalSettingsLayoutDetailsAPI';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
+import ErrorUnauthorized from '../../global/ErrorUnauthorized';
 
 class PortalSettingsLayoutNewForm extends Component {
     constructor(props) {
@@ -95,6 +96,10 @@ class PortalSettingsLayoutNewForm extends Component {
     render() {
         const { description } = this.state.portalSettingsLayout;
 
+        if (!this.props.permissions.managePortalSettings) {
+            return <ErrorUnauthorized />;
+        }
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel>
@@ -129,6 +134,7 @@ class PortalSettingsLayoutNewForm extends Component {
 
 const mapStateToProps = state => {
     return {
+        permissions: state.meDetails.permissions,
         portalSettingsLayouts: state.systemData.portalSettingsLayouts,
     };
 };

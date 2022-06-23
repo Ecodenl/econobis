@@ -10,6 +10,8 @@ namespace App\Http\Controllers\Api\Webform;
 
 
 use App\Eco\Address\Address;
+use App\Eco\Address\AddressEnergyConsumptionElectricity;
+use App\Eco\Address\AddressEnergyConsumptionGas;
 use App\Eco\Address\AddressType;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
@@ -317,12 +319,15 @@ class ExternalWebformController extends Controller
 
         if ($this->address) {
             $this->addEnergySupplierToAddress($this->address, $data['energy_supplier']);
+            $this->addEnergyConsumptionGasToAddress($this->address, $data['address_energy_consumption_gas']);
+            $this->addEnergyConsumptionElectricityToAddress($this->address, $data['address_energy_consumption_electricity']);
+
             $intake = $this->addIntakeToAddress($this->address, $data['intake'], $webform);
             $housingFile = $this->addHousingFileToAddress($this->address, $data['housing_file'], $webform);
         } else {
             $intake = null;
             $housingFile = null;
-            $this->log("Er is geen adres gevonden en kon ook niet aangemaakt worden met huidige gegevens, intake en woondossier konden niet worden aangemaakt.");
+            $this->log("Er is geen adres gevonden en kon ook niet aangemaakt worden met huidige gegevens, intake en/of woondossier konden niet worden aangemaakt.");
         }
 
         // Bewaar intake en housingfile voor verdere acties later hiermee
@@ -383,6 +388,33 @@ class ExternalWebformController extends Controller
                 'contact_groep_ids' => 'contact_group_ids',
                 // Hoomdossier aanmaken
                 'hoomdossier_aanmaken' => 'create_hoom_dossier',
+            ],
+            'address_energy_consumption_gas' => [
+                // Address energy consumption gas
+                'verbruik_gas_begindatum' => 'date_begin',
+                'verbruik_gas_einddatum' => 'date_end',
+                'verbruik_gas_verbruik_m3' => 'consumption',
+                'verbruik_gas_voorgesteld_tarief_variabel' => 'proposed_variable_rate',
+                'verbruik_gas_voorgesteld_tarief_vast' => 'proposed_fixed_rate',
+                'verbruik_gas_variabele_kosten' => 'total_variable_costs',
+                'verbruik_gas_vaste_kosten' => 'total_fixed_costs',
+            ],
+            'address_energy_consumption_electricity' => [
+                // Address energy consumption gas
+                'verbruik_electriciteit_begindatum' => 'date_begin',
+                'verbruik_electriciteit_einddatum' => 'date_end',
+                'verbruik_electriciteit_verbruik_hoog' => 'consumption_high',
+                'verbruik_electriciteit_verbruik_laag' => 'consumption_low',
+                'verbruik_electriciteit_terug_hoog' => 'return_high',
+                'verbruik_electriciteit_terug_laag' => 'return_low',
+                'verbruik_electriciteit_voorgesteld_tarief_variabel_hoog' => 'proposed_variable_rate_high',
+                'verbruik_electriciteit_voorgesteld_tarief_vast_hoog' => 'proposed_variable_rate_low',
+                'verbruik_electriciteit_voorgesteld_tarief_variabel_laag' => 'proposed_fixed_rate_high',
+                'verbruik_electriciteit_voorgesteld_tarief_vast_laag' => 'proposed_fixed_rate_low',
+                'verbruik_electriciteit_variabele_kosten_hoog' => 'total_variable_costs_high',
+                'verbruik_electriciteit_vaste_kosten_hoog' => 'total_variable_costs_low',
+                'verbruik_electriciteit_variabele_kosten_laag' => 'total_fixed_costs_high',
+                'verbruik_electriciteit_vaste_kosten_laag' => 'total_fixed_costs_low',
             ],
             'energy_supplier' => [
                 // AddressEnergySupplier
@@ -455,7 +487,6 @@ class ExternalWebformController extends Controller
                 'woondossier_maatregelen_ids' => 'measure_ids',
                 'woondossier_maatregelen_datums_realisatie' => 'measure_dates',
             ],
-
         ];
 
         // Task properties toevoegen met prefix 'taak_'
@@ -481,6 +512,23 @@ class ExternalWebformController extends Controller
 
         // Sanitize
         $data['contact']['address_postal_code'] = strtoupper(str_replace(' ', '', $data['contact']['address_postal_code']));
+
+        // Amount values with decimals. Remove thousand points first, than replace decimal comma with point. 1.234,56 => 1234.56
+        $data['address_energy_consumption_gas']['proposed_variable_rate'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_gas']['proposed_variable_rate'])));
+        $data['address_energy_consumption_gas']['proposed_fixed_rate'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_gas']['proposed_fixed_rate'])));
+        $data['address_energy_consumption_gas']['total_variable_costs'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_gas']['total_variable_costs'])));
+        $data['address_energy_consumption_gas']['total_fixed_costs'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_gas']['total_fixed_costs'])));
+
+        $data['address_energy_consumption_electricity']['proposed_variable_rate_high'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['proposed_variable_rate_high'])));
+        $data['address_energy_consumption_electricity']['proposed_variable_rate_low'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['proposed_variable_rate_low'])));
+        $data['address_energy_consumption_electricity']['proposed_fixed_rate_high'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['proposed_fixed_rate_high'])));
+        $data['address_energy_consumption_electricity']['proposed_fixed_rate_low'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['proposed_fixed_rate_low'])));
+        $data['address_energy_consumption_electricity']['total_variable_costs_high'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['total_variable_costs_high'])));
+        $data['address_energy_consumption_electricity']['total_variable_costs_low'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['total_variable_costs_low'])));
+        $data['address_energy_consumption_electricity']['total_fixed_costs_high'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['total_fixed_costs_high'])));
+        $data['address_energy_consumption_electricity']['total_fixed_costs_low'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['total_fixed_costs_low'])));
+
+        $data['participation']['participation_mutation_amount'] = floatval(str_replace(',', '.', str_replace('.', '', $data['participation']['participation_mutation_amount'])));
 
         // Validatie op addressNummer (numeriek), indien nodig herstellen door evt. toevoeging eruit te halen.
         if(!isset($data['contact']['address_number']) || strlen($data['contact']['address_number']) == 0){
@@ -556,7 +604,7 @@ class ExternalWebformController extends Controller
             // contactActie = "GEEN" ->geen acties op contact naw of email
             // contactActie = "NAT" -> Nieuw adres + taak
             // contactActie = "NET" -> Nieuw emailadres + taak
-            // contactActie = "WGC" -> WG contact bijwerken + taak
+            // contactActie = "BCB" -> Bewoner contact bijwerken + taak
             // contactActie = "CCT" -> Controle contact taak
             switch($this->contactActie){
                 case 'GEEN' :
@@ -601,10 +649,10 @@ class ExternalWebformController extends Controller
                     $note .= "Controleer contactgegevens\n";
                     $this->addTaskCheckContact($responsibleIds, $contact, $webform, $note);
                     break;
-                case 'WGC' :
+                case 'BCB' :
                     $contact = $this->updateContact($contact, $data, $ownerAndResponsibleUser);
                     $note = "Webformulier " . $webform->name . ".\n\n";
-                    $note .= "Contact WG-buurt " . $contact->full_name . " (".$contact->number.") bijgewerkt op adres WG-buurt.\n";
+                    $note .= "Contact 'bewoner' " . $contact->full_name . " (".$contact->number.") bijgewerkt op adres 'bewoner'.\n";
                     $note .= "Controleer contactgegevens\n";
                     $this->addTaskCheckContact($responsibleIds, $contact, $webform, $note);
                     break;
@@ -695,11 +743,11 @@ class ExternalWebformController extends Controller
             // Gevonden op adres, check op specifiek contact of anders op email
             } else {
 
-                $checkContactForWG = $contactAddressQuery->first();
-                if($checkContactForWG && $checkContactForWG->person->last_name == 'bewoner van de WG-buurt' ){
-                    $this->contactActie = "WGC";
-                    $this->log('Contact "bewoner van de WG-buurt" gevonden op basis van adres, naam en email bijwerken');
-                    return $checkContactForWG;
+                $checkContactForBewoner = $contactAddressQuery->first();
+                if($checkContactForBewoner && str_contains( strtolower($checkContactForBewoner->person->last_name), 'bewoner') ){
+                    $this->contactActie = "BCB";
+                    $this->log('Contact "bewoner" gevonden op basis van adres, naam en email bijwerken');
+                    return $checkContactForBewoner;
                 }
 
                 $this->log($contactAddressQuery->count() . ' contacten gevonden op adres: ' . $data['address_postal_code']
@@ -1466,6 +1514,114 @@ protected function addEnergySupplierToAddress(Address $address, $data)
             }
         } else {
             $this->log('Er is geen energie leverancier meegegeven, niet koppelen.');
+        }
+    }
+
+protected function addEnergyConsumptionGasToAddress(Address $address, $data)
+    {
+        if ($data['date_begin'] != '' || $data['date_end'] != '') {
+            $this->log('Er is een verbruiksperiode meegegeven');
+
+            $addressEnergyConsumptionGas = AddressEnergyConsumptionGas::where('address_id', $address->id)->where('date_begin',  Carbon::parse($data['date_begin'])->format('Y-m-d'))->where('date_end',  Carbon::parse($data['date_end'])->format('Y-m-d'));
+            if ($addressEnergyConsumptionGas->exists()) {
+                $this->log('Verbruik gas gevonden voor periode ' . Carbon::parse($data['date_begin'])->format('d-m-Y') . ' t/m ' . Carbon::parse($data['date_end'])->format('d-m-Y') . ', deze worden bijgewerkt.');
+                //update
+                $addressEnergyConsumptionGas->update([
+                    'consumption' => $data['consumption'] ?: 0,
+                    'proposed_variable_rate' => $data['proposed_variable_rate'] ?: 0,
+                    'proposed_fixed_rate' => $data['proposed_fixed_rate'] ?: 0,
+                    'total_variable_costs' => $data['total_variable_costs'] ?: 0,
+                    'total_fixed_costs' => $data['total_fixed_costs'] ?: 0,
+                ]);
+            } else {
+                $addressEnergyConsumptionGasCheck = AddressEnergyConsumptionGas::where('address_id', $address->id)
+                    ->where(function ($query) use ($data) {
+                        $query->whereBetween('date_begin', [$data['date_begin'], $data['date_end']])
+                            ->orWhereBetween('date_end', [$data['date_begin'], $data['date_end']]);
+                    });
+
+                if ($addressEnergyConsumptionGasCheck->exists()) {
+                    $this->log('Verbruik gas voor periode ' . Carbon::parse($data['date_begin'])->format('d-m-Y') . ' t/m ' . Carbon::parse($data['date_end'])->format('d-m-Y') . ' overlapt met een andere verbruikperiode, deze gegevens worden NIET verwerkt.');
+                }else{
+                    //create new
+                    AddressEnergyConsumptionGas::create([
+                        'address_id' => $address->id,
+                        'date_begin' => Carbon::parse($data['date_begin'])->format('Y-m-d'),
+                        'date_end' => Carbon::parse($data['date_end'])->format('Y-m-d'),
+                        'consumption' => $data['consumption'] ?: 0,
+                        'proposed_variable_rate' => $data['proposed_variable_rate'] ?: 0,
+                        'proposed_fixed_rate' => $data['proposed_fixed_rate'] ?: 0,
+                        'total_variable_costs' => $data['total_variable_costs'] ?: 0,
+                        'total_fixed_costs' => $data['total_fixed_costs'] ?: 0,
+                    ]);
+
+                }
+
+            }
+
+        } else {
+            $this->log('Er is geen verbruiksperiode meegegeven, kan geen gas verbruik vastleggen');
+        }
+    }
+
+protected function addEnergyConsumptionElectricityToAddress(Address $address, $data)
+    {
+        if ($data['date_begin'] != '' || $data['date_end'] != '') {
+            $this->log('Er is een verbruiksperiode meegegeven');
+
+            $addressEnergyConsumptionElectricity = AddressEnergyConsumptionElectricity::where('address_id', $address->id)->where('date_begin',  Carbon::parse($data['date_begin'])->format('Y-m-d'))->where('date_end',  Carbon::parse($data['date_end'])->format('Y-m-d'));
+            if ($addressEnergyConsumptionElectricity->exists()) {
+                $this->log('Verbruik electriciteit gevonden voor periode ' . Carbon::parse($data['date_begin'])->format('d-m-Y') . ' t/m ' . Carbon::parse($data['date_end'])->format('d-m-Y') . ', deze worden bijgewerkt.');
+                //update
+                $addressEnergyConsumptionElectricity->update([
+                    'consumption_high' => $data['consumption_high'] ?: 0,
+                    'consumption_low' => $data['consumption_low'] ?: 0,
+                    'return_high' => $data['return_high'] ?: 0,
+                    'return_low' => $data['return_low'] ?: 0,
+                    'proposed_variable_rate_high' => $data['proposed_variable_rate_high'] ?: 0,
+                    'proposed_variable_rate_low' => $data['proposed_variable_rate_low'] ?: 0,
+                    'proposed_fixed_rate_high' => $data['proposed_fixed_rate_high'] ?: 0,
+                    'proposed_fixed_rate_low' => $data['proposed_fixed_rate_low'] ?: 0,
+                    'total_variable_costs_high' => $data['total_variable_costs_high'] ?: 0,
+                    'total_variable_costs_low' => $data['total_variable_costs_low'] ?: 0,
+                    'total_fixed_costs_high' => $data['total_fixed_costs_high'] ?: 0,
+                    'total_fixed_costs_low' => $data['total_fixed_costs_low'] ?: 0,
+                ]);
+            } else {
+                $addressEnergyConsumptionElectricityCheck = AddressEnergyConsumptionElectricity::where('address_id', $address->id)
+                    ->where(function ($query) use ($data) {
+                        $query->whereBetween('date_begin', [$data['date_begin'], $data['date_end']])
+                            ->orWhereBetween('date_end', [$data['date_begin'], $data['date_end']]);
+                    });
+
+                if ($addressEnergyConsumptionElectricityCheck->exists()) {
+                    $this->log('Verbruik electriciteit voor periode ' . Carbon::parse($data['date_begin'])->format('d-m-Y') . ' t/m ' . Carbon::parse($data['date_end'])->format('d-m-Y') . ' overlapt met een andere verbruikperiode, deze gegevens worden NIET verwerkt.');
+                }else{
+                    //create new
+                    AddressEnergyConsumptionElectricity::create([
+                        'address_id' => $address->id,
+                        'date_begin' => Carbon::parse($data['date_begin'])->format('Y-m-d'),
+                        'date_end' => Carbon::parse($data['date_end'])->format('Y-m-d'),
+                        'consumption_high' => $data['consumption_high'] ?: 0,
+                        'consumption_low' => $data['consumption_low'] ?: 0,
+                        'return_high' => $data['return_high'] ?: 0,
+                        'return_low' => $data['return_low'] ?: 0,
+                        'proposed_variable_rate_high' => $data['proposed_variable_rate_high'] ?: 0,
+                        'proposed_variable_rate_low' => $data['proposed_variable_rate_low'] ?: 0,
+                        'proposed_fixed_rate_high' => $data['proposed_fixed_rate_high'] ?: 0,
+                        'proposed_fixed_rate_low' => $data['proposed_fixed_rate_low'] ?: 0,
+                        'total_variable_costs_high' => $data['total_variable_costs_high'] ?: 0,
+                        'total_variable_costs_low' => $data['total_variable_costs_low'] ?: 0,
+                        'total_fixed_costs_high' => $data['total_fixed_costs_high'] ?: 0,
+                        'total_fixed_costs_low' => $data['total_fixed_costs_low'] ?: 0,
+                    ]);
+
+                }
+
+            }
+
+        } else {
+            $this->log('Er is geen verbruiksperiode meegegeven, kan geen electriciteit verbruik vastleggen');
         }
     }
 

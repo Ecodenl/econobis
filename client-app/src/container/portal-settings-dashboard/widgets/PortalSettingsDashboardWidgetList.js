@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PortalSettingsDashboardWidgetListToolbar from './PortalSettingsDashboardWidgetListToolbar';
 import AddPortalSettingsDashboardWidgetModal from './AddPortalSettingsDashboardWidgetModal';
-import PortalDashboardWidgetOrderTable from '../../../components/orderTable/portalDashboardWidgets/PortalDashboardWidgetOrderTable';
+import PortalDashboardWidgetOrderTable from './PortalDashboardWidgetOrderTable';
 
 class PortalSettingsDashboardWidgetList extends Component {
     constructor(props) {

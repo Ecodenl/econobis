@@ -82,8 +82,8 @@ class PortalSettingsDashboardFormGeneral extends Component {
 
 const mapStateToProps = state => {
     return {
+        // permissions: state.meDetails.permissions,
         meDetails: state.meDetails,
-        permissions: state.meDetails.permissions,
     };
 };
 

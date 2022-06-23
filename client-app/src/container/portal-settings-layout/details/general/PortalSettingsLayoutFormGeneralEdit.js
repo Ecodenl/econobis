@@ -21,6 +21,7 @@ import PreviewPortalLoginPageMobileModal from '../../../portal-settings-preview/
 import PreviewPortalDashboardPagePcModal from '../../../portal-settings-preview/PreviewPortalDashboardPagePcModal';
 import PreviewPortalDashboardPageMobileModal from '../../../portal-settings-preview/PreviewPortalDashboardPageMobileModal';
 import PortalLayoutImageCrop from '../../../../components/cropImage/portalLayout/PortalLayoutImageCrop';
+import InputTextColorPicker from '../../../../components/form/InputTextColorPicker';
 
 class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -648,17 +649,18 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             <h4 className={'col-md-12'}>Kleur</h4>
                         </div>
                         <div className="row">
-                            <InputText
+                            <InputTextColorPicker
                                 label="1. Login pagina/ header kleur"
                                 divSize={'col-sm-8'}
                                 name={'loginHeaderBackgroundColor'}
                                 value={loginHeaderBackgroundColor}
-                                size={'col-sm-5'}
+                                size={'col-sm-4'}
                                 textToolTip={`Achtergrond afbeelding werkt alleen als je hier RGBA kleurcode gebruiktkleur en daar (deels) transparantie op toepast: 0.0 (fully transparent) and 1.0 (fully opaque)<br />
                                     Bijv:<br />
                                     rgba(35, 150, 179, 0). Achtergrond kleur volledig transparant, dus zie je achtergrond afbeelding ook volledig.<br />
                                     rgba(35, 150, 179, 1). Achtergrond kleur volledig NIET transparant, dus zie je achtergrond afbeelding helemaal niet.<br />
-                                    rgba(35, 150, 179, 0.5). Achtergrond kleur voor 50% transparant, dus zie je achtergrond afbeelding voor 50% door achtergrond kleur heen. Hiermee krijgt je een soort watermerk effect.`}
+                                    rgba(35, 150, 179, 0.5). Achtergrond kleur voor 50% transparant, dus zie je achtergrond afbeelding voor 50% door achtergrond kleur heen. Hiermee krijgt je een soort watermerk effect.<br />
+                                    LETOP: Als je de colorpicker hier gebruikt dan wordt kleur vervangen door HEX waarde i.p.v. rgba waarde en vervalt de transparantie en zie je achtergornd afbeelding dus ook niet meer.`}
                                 readOnly={!managePortalSettings}
                                 required={'required'}
                                 onChangeAction={this.handleInputChange}
@@ -683,7 +685,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             </span>
                         </div>
                         <div className="row">
-                            <InputText
+                            <InputTextColorPicker
                                 label="2. Login pagina/ header tekst kleur"
                                 divSize={'col-sm-8'}
                                 name={'loginHeaderBackgroundTextColor'}
@@ -693,16 +695,9 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 required={'required'}
                                 error={this.state.errors.loginHeaderBackgroundTextColor}
                             />
-                            {/*<input*/}
-                            {/*    type="color"*/}
-                            {/*    name="loginHeaderBackgroundTextColor"*/}
-                            {/*    id="colorpicker"*/}
-                            {/*    value={loginHeaderBackgroundTextColor}*/}
-                            {/*    onChange={this.handleInputChange}*/}
-                            {/*/>*/}
                         </div>
                         <div className="row">
-                            <InputText
+                            <InputTextColorPicker
                                 label="3. Header - menu/poppetje kleur"
                                 divSize={'col-sm-8'}
                                 name={'headerIconsColor'}
@@ -732,7 +727,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             </span>
                         </div>
                         <div className="row">
-                            <InputText
+                            <InputTextColorPicker
                                 label="4. Login pagina tekstveld achtergrond kleur"
                                 divSize={'col-sm-8'}
                                 name={'loginFieldBackgroundColor'}
@@ -770,7 +765,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            <InputText
+                            <InputTextColorPicker
                                 label="5. Login pagina tekstveld tekst kleur"
                                 divSize={'col-sm-8'}
                                 name={'loginFieldBackgroundTextColor'}
@@ -782,7 +777,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             />
                         </div>
                         <div className="row">
-                            <InputText
+                            <InputTextColorPicker
                                 label="6. Menu achtergrond kleur / welkomsttitel tekst kleur"
                                 divSize={'col-sm-8'}
                                 name={'portalBackgroundColor'}
@@ -829,7 +824,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             </span>
                         </div>
                         <div className="row">
-                            <InputText
+                            <InputTextColorPicker
                                 label="7. Menu achtergrond tekst kleur"
                                 divSize={'col-sm-8'}
                                 name={'portalBackgroundTextColor'}
@@ -841,7 +836,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             />
                         </div>
                         <div className="row">
-                            <InputText
+                            <InputTextColorPicker
                                 label="8. Buttonknop / Profielcircel kleur"
                                 divSize={'col-sm-8'}
                                 name={'buttonColor'}
@@ -870,7 +865,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             </span>
                         </div>
                         <div className="row">
-                            <InputText
+                            <InputTextColorPicker
                                 label="9. Buttonknop / Profielcircel tekst kleur"
                                 divSize={'col-sm-8'}
                                 name={'buttonTextColor'}
@@ -882,12 +877,12 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             />
                         </div>
                         <div className="row">
-                            <InputText
+                            <InputTextColorPicker
                                 label="10. Algmene achtergrond kleur"
                                 divSize={'col-sm-8'}
                                 name={'portalMainBackgroundColor'}
                                 value={portalMainBackgroundColor}
-                                size={'col-sm-5'}
+                                size={'col-sm-4'}
                                 textToolTip={`Let op: geen donkere achtergrond kleur kiezen dan wordt zwarte tekst slecht leesbaar.`}
                                 onChangeAction={this.handleInputChange}
                                 readOnly={!managePortalSettings}
@@ -913,7 +908,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             </span>
                         </div>
                         {/*<div className="row">*/}
-                        {/*    <InputText*/}
+                        {/*    <InputTextColorPicker*/}
                         {/*        label="11. Algemene tekst kleur"*/}
                         {/*        divSize={'col-sm-8'}*/}
                         {/*        name={'portalMainTextColor'}*/}

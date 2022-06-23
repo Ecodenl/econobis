@@ -801,7 +801,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputText
-                                Men
                                 label="Logo"
                                 divSize={'col-sm-6'}
                                 value={attachment ? attachment.name : logoName}

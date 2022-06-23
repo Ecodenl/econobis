@@ -15,7 +15,7 @@ const DashboardWidget = function({ id, title, text, image, buttonText, buttonLin
     }
 
     return (
-        <Card key={key} id={key} style={{ marginTop: '30px' }}>
+        <Card key={key} id={key} style={{ marginTop: '30px', backgroundColor: '#fff', color: '#000' }}>
             <CardImg
                 src={image && image.includes('images/') ? image + '?' + imageHash : 'images/' + image + '?' + imageHash}
                 variant={'top'}

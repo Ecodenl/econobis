@@ -4,12 +4,11 @@ import { FaInfoCircle } from 'react-icons/fa';
 import { FaTimesCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 
-const InputText = props => {
+const InputTextColorPicker = props => {
     const {
         label,
         type,
         className,
-        size,
         id,
         placeholder,
         name,
@@ -30,6 +29,8 @@ const InputText = props => {
         errorMessage,
         divSize,
         labelSize,
+        size,
+        cpSize,
         divClassName,
         autoComplete,
         disabled,
@@ -43,6 +44,18 @@ const InputText = props => {
                     {label}
                 </label>
             )}
+            <div className={`${cpSize}`}>
+                <input
+                    style={{
+                        width: '100%',
+                    }}
+                    type="color"
+                    name={name}
+                    id={`cp_${name}`}
+                    value={value ? value : ''}
+                    onChange={onChangeAction}
+                />
+            </div>
             <div className={`${size}`}>
                 <input
                     type={type}
@@ -63,7 +76,7 @@ const InputText = props => {
                     disabled={disabled}
                     data-item-id={props.itemId ?? ''}
                 />
-            </div>{' '}
+            </div>
             {(textToolTip || textClearOrDelete) && (
                 <div className="col-sm-1">
                     {textToolTip && (
@@ -104,7 +117,7 @@ const InputText = props => {
                 </div>
             )}
             {error && (
-                <div className={`${size}`}>
+                <div className={`${divSize}`}>
                     <span className="has-error-message"> {errorMessage}</span>
                 </div>
             )}
@@ -112,12 +125,13 @@ const InputText = props => {
     );
 };
 
-InputText.defaultProps = {
+InputTextColorPicker.defaultProps = {
     divClassName: '',
     className: '',
-    size: 'col-sm-6',
     divSize: 'col-sm-6',
     labelSize: 'col-sm-6',
+    size: 'col-sm-5',
+    cpSize: 'col-sm-1',
     name: '',
     type: 'text',
     value: '',
@@ -130,7 +144,7 @@ InputText.defaultProps = {
     step: '',
     textToolTip: '',
     textClearOrDelete: '',
-    actionClearOrDelete: '',
+    actionClearOrDelete: () => {},
     errorMessage: '',
     autoComplete: 'off',
     disabled: false,
@@ -139,7 +153,7 @@ InputText.defaultProps = {
     onChangeAction: () => {},
 };
 
-InputText.propTypes = {
+InputTextColorPicker.propTypes = {
     label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     type: PropTypes.string,
     className: PropTypes.string,
@@ -169,4 +183,4 @@ InputText.propTypes = {
     disabled: PropTypes.bool,
 };
 
-export default InputText;
+export default InputTextColorPicker;

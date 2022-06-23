@@ -11,9 +11,13 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
     isDefault,
     portalLogoFileName,
     portalLogoFileNameHeader,
+    useTransparentBackgroundLogin,
     portalImageBgFileNameLogin,
+    useTransparentBackgroundHeader,
     portalImageBgFileNameHeader,
     portalFaviconFileName,
+    portalMainBackgroundColor,
+    portalMainTextColor,
     portalBackgroundColor,
     portalBackgroundTextColor,
     loginHeaderBackgroundColor,
@@ -69,7 +73,10 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                                 display: 'inline-block',
                                 padding: '1px',
                                 borderRadius: '1px',
-                                height: '50px',
+                                maxHeight: '50px',
+                                width: 'auto',
+                                marginLeft: '20px',
+                                marginBottom: '10px',
                                 boxShadow: '0 0 0 1px #fff inset',
                             }}
                         />
@@ -78,23 +85,28 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                         <ViewText
                             label={'B. Achtergrond afbeelding login pagina (bestandstype PNG)'}
                             divSize={'col-sm-8'}
-                            value={portalImageBgFileNameLogin}
+                            value={useTransparentBackgroundLogin ? 'Geen' : portalImageBgFileNameLogin}
                             className={'col-sm-8 form-group'}
                             textToolTip={`Om afbeelding zichtbaar te maken moet de achtergrond deels transparant zijn, zie 1. Login pagina / Header kleur voor meer informatie.`}
                         />
-                        <Image
-                            src={imageBgLoginUrl}
-                            style={{
-                                backgroundColor: loginHeaderBackgroundColor,
-                                color: loginHeaderBackgroundTextColor,
-                                border: '1px solid #999',
-                                display: 'inline-block',
-                                padding: '1px',
-                                borderRadius: '1px',
-                                height: '50px',
-                                boxShadow: '0 0 0 1px #fff inset',
-                            }}
-                        />
+                        {!useTransparentBackgroundLogin && (
+                            <Image
+                                src={imageBgLoginUrl}
+                                style={{
+                                    backgroundColor: loginHeaderBackgroundColor,
+                                    color: loginHeaderBackgroundTextColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '1px',
+                                    borderRadius: '1px',
+                                    maxHeight: '50px',
+                                    width: 'auto',
+                                    marginLeft: '20px',
+                                    marginBottom: '10px',
+                                    boxShadow: '0 0 0 1px #fff inset',
+                                }}
+                            />
+                        )}
                     </div>
                     <div className="row">
                         <ViewText
@@ -113,6 +125,9 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                                 padding: '1px',
                                 borderRadius: '1px',
                                 height: '50px',
+                                width: 'auto',
+                                marginLeft: '20px',
+                                marginBottom: '10px',
                                 boxShadow: '0 0 0 1px #fff inset',
                             }}
                         />
@@ -121,23 +136,28 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                         <ViewText
                             label={'D. Achtergrond afbeelding in de header (bestandstype PNG)'}
                             divSize={'col-sm-8'}
-                            value={portalImageBgFileNameHeader}
+                            value={useTransparentBackgroundHeader ? 'Geen' : portalImageBgFileNameHeader}
                             className={'col-sm-8 form-group'}
                             textToolTip={`Om afbeelding zichtbaar te maken moet de achtergrond deels transparant zijn, zie 1. Login pagina / Header kleur voor meer informatie.`}
                         />
-                        <Image
-                            src={imageBgHeaderUrl}
-                            style={{
-                                backgroundColor: loginHeaderBackgroundColor,
-                                color: loginHeaderBackgroundTextColor,
-                                border: '1px solid #999',
-                                display: 'inline-block',
-                                padding: '1px',
-                                borderRadius: '1px',
-                                height: '50px',
-                                boxShadow: '0 0 0 1px #fff inset',
-                            }}
-                        />
+                        {!useTransparentBackgroundHeader && (
+                            <Image
+                                src={imageBgHeaderUrl}
+                                style={{
+                                    backgroundColor: loginHeaderBackgroundColor,
+                                    color: loginHeaderBackgroundTextColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '1px',
+                                    borderRadius: '1px',
+                                    maxHeight: '50px',
+                                    width: 'auto',
+                                    marginLeft: '20px',
+                                    marginBottom: '10px',
+                                    boxShadow: '0 0 0 1px #fff inset',
+                                }}
+                            />
+                        )}
                     </div>
                     <div className="row">
                         <ViewText
@@ -172,7 +192,8 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                                 Bijv:<br />
                                 rgba(35, 150, 179, 0). Achtergrond kleur volledig transparant, dus zie je achtergrond afbeelding ook volledig.<br />
                                 rgba(35, 150, 179, 1). Achtergrond kleur volledig NIET transparant, dus zie je achtergrond afbeelding helemaal niet.<br />
-                                rgba(35, 150, 179, 0.5). Achtergrond kleur voor 50% transparant, dus zie je achtergrond afbeelding voor 50% door achtergrond kleur heen. Hiermee krijgt je een soort watermerk effect.`}
+                                rgba(35, 150, 179, 0.5). Achtergrond kleur voor 50% transparant, dus zie je achtergrond afbeelding voor 50% door achtergrond kleur heen. Hiermee krijgt je een soort watermerk effect.<br />
+                                LETOP: Als je de colorpicker hier gebruikt dan wordt kleur vervangen door HEX waarde i.p.v. rgba waarde en vervalt de transparantie en zie je achtergornd afbeelding dus ook niet meer.`}
                         />
                         <span
                             className="rc-color-picker-trigger"
@@ -351,6 +372,40 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                             className={'col-sm-8 form-group'}
                         />
                     </div>
+                    <div className="row">
+                        <ViewText
+                            label={'10. Algemene achtergrond kleur'}
+                            divSize={'col-sm-8'}
+                            value={portalMainBackgroundColor}
+                            className={'col-sm-8 form-group'}
+                            textToolTip={`Let op: geen donkere achtergrond kleur kiezen dan wordt zwarte tekst slecht leesbaar.`}
+                        />
+                        <span
+                            className="rc-color-picker-trigger"
+                            unselectable="unselectable"
+                            style={{
+                                backgroundColor: portalMainBackgroundColor,
+                                color: portalMainTextColor,
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '2px',
+                                borderRadius: '2px',
+                                width: '150px',
+                                height: '30px',
+                                boxShadow: '0 0 0 2px #fff inset',
+                            }}
+                        >
+                            Algemene tekst
+                        </span>
+                    </div>
+                    {/*<div className="row">*/}
+                    {/*    <ViewText*/}
+                    {/*        label={'11. Algemene tekst kleur'}*/}
+                    {/*        divSize={'col-sm-8'}*/}
+                    {/*        value={portalMainTextColor}*/}
+                    {/*        className={'col-sm-8 form-group'}*/}
+                    {/*    />*/}
+                    {/*</div>*/}
                 </PanelBody>
             </Panel>
         </div>

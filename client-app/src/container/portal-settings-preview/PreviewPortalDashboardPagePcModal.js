@@ -17,9 +17,14 @@ class PreviewPortalDashboardPagePcModal extends Component {
         );
 
         if (this.props.previewFromLayout) {
-            document.documentElement.style.setProperty('--main-primary-color', this.props.portalBackgroundColor);
             document.documentElement.style.setProperty(
-                '--main-primary-text-color',
+                '--portal-main-background-color',
+                this.props.portalMainBackgroundColor
+            );
+            document.documentElement.style.setProperty('--portal-main-text-color', this.props.portalMainTextColor);
+            document.documentElement.style.setProperty('--portal-background-color', this.props.portalBackgroundColor);
+            document.documentElement.style.setProperty(
+                '--portal-background-text-color',
                 this.props.portalBackgroundTextColor
             );
             document.documentElement.style.setProperty('--main-primary-rgba', this.props.loginHeaderBackgroundColor);
@@ -73,13 +78,10 @@ class PreviewPortalDashboardPagePcModal extends Component {
             },
             root: {
                 padding: '0',
-                backgroundColor: '#fff',
             },
             body_2: {
                 height: '85vh',
                 width: '96vw',
-                // overflow: 'auto',
-                backgroundColor: '#fff',
                 overflowWrap: 'initial',
                 fontFamily: 'Montserrat, sans-serif',
                 overflow: 'auto',
@@ -139,7 +141,7 @@ class PreviewPortalDashboardPagePcModal extends Component {
                 paddingRight: '15px',
             },
             contentHeading: {
-                color: 'var(--main-primary-color)',
+                color: 'var(--portal-background-color)',
                 fontSize: '24px',
                 fontWeight: '400',
                 textShadow: 'none',
@@ -160,6 +162,7 @@ class PreviewPortalDashboardPagePcModal extends Component {
                 minWidth: '0',
                 wordWrap: 'break-word',
                 backgroundColor: '#fff',
+                color: '#000',
                 backgroundClip: 'border-box',
                 border: '1px solid rgba(0,0,0,.125)',
                 borderRadius: '.25rem',

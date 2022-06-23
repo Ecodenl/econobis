@@ -12,7 +12,7 @@ import { Image } from 'react-bootstrap';
 import Modal from '../../../components/modal/Modal';
 import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
-import PortalLogoLayoutNewCrop from '../../../components/cropImage/portalLayout/PortalLogoLayoutNewCrop';
+import PortalLayoutImageCrop from '../../../components/cropImage/portalLayout/PortalLayoutImageCrop';
 
 const DND_ITEM_TYPE = 'row';
 
@@ -20,6 +20,7 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
     const dropRef = useRef(null);
     const dragRef = useRef(null);
     const [newWidgetImage, setNewWidgetImage] = useState(false);
+    const [useAutoCropper, setUseAutoCropper] = useState(true);
     const [showCropImageModal, setShowCropImageModal] = useState(false);
     const [widgetImage, setWidgetImage] = useState('');
     const [showUploadSucces, setShowUploadSucces] = useState(false);
@@ -82,6 +83,10 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
     preview(drop(dropRef));
     drag(dragRef);
 
+    const toggleUseAutoCropper = () => {
+        setUseAutoCropper(!useAutoCropper);
+    };
+
     const closeNewWidgetImage = () => {
         setNewWidgetImage(false);
     };
@@ -92,6 +97,7 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
 
     const closeShowCropWidgetImage = () => {
         setWidgetImage('');
+        setUseAutoCropper(true);
         setShowCropImageModal(false);
     };
 
@@ -110,6 +116,8 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
         const data = new FormData();
         data.append('id', row.id);
         data.append('image', file);
+        data.append('name', widgetImage.name);
+        data.append('type', widgetImage.type);
 
         PortalSettingsDashboardAPI.updateDashboardWidget(data)
             .then(payload => {
@@ -278,12 +286,15 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
             {newWidgetImage && (
                 <AddPortalSettingsDashboardWidgetImageModal
                     closeNewWidgetImage={closeNewWidgetImage}
+                    toggleUseAutoCropper={toggleUseAutoCropper}
+                    useAutoCropper={useAutoCropper}
                     addWidgetImage={addWidgetImage}
                 />
             )}
             {showCropImageModal && (
-                <PortalLogoLayoutNewCrop
+                <PortalLayoutImageCrop
                     closeShowCrop={closeShowCropWidgetImage}
+                    useAutoCropper={useAutoCropper}
                     image={widgetImage}
                     imageLayoutItemName={'image-widget'}
                     cropLogo={cropWidgetImage}

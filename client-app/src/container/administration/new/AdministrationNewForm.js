@@ -20,7 +20,7 @@ import ViewText from '../../../components/form/ViewText';
 import InputDate from '../../../components/form/InputDate';
 import moment from 'moment';
 import Image from 'react-bootstrap/lib/Image';
-import PortalLogoLayoutNewCrop from '../../../components/cropImage/portalLayout/PortalLogoLayoutNewCrop';
+import PortalLayoutImageCrop from '../../../components/cropImage/portalLayout/PortalLayoutImageCrop';
 
 class AdministrationNewForm extends Component {
     constructor(props) {
@@ -693,7 +693,6 @@ class AdministrationNewForm extends Component {
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputText
-                                Men
                                 label="Logo"
                                 divSize={'col-sm-6'}
                                 value={attachment ? attachment.name : logoName}
@@ -898,8 +897,9 @@ class AdministrationNewForm extends Component {
                             />
                         )}
                         {this.state.showModalCropLogo && (
-                            <PortalLogoLayoutNewCrop
+                            <PortalLayoutImageCrop
                                 closeShowCrop={this.closeShowCrop}
+                                useAutoCropper={true}
                                 image={this.state.image}
                                 imageLayoutItemName={this.state.imageLayoutItemName}
                                 cropLogo={this.cropLogo}

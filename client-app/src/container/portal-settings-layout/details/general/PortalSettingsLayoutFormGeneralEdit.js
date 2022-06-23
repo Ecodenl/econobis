@@ -110,6 +110,28 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
             });
         }
     };
+    setTransparantImage = imageLayoutItemName => {
+        switch (imageLayoutItemName) {
+            case 'image-bg-login':
+                this.setState({
+                    ...this.state,
+                    portalSettingsLayout: {
+                        ...this.state.portalSettingsLayout,
+                        useTransparentBackgroundLogin: 1,
+                    },
+                });
+                break;
+            case 'image-bg-header':
+                this.setState({
+                    ...this.state,
+                    portalSettingsLayout: {
+                        ...this.state.portalSettingsLayout,
+                        useTransparentBackgroundHeader: 1,
+                    },
+                });
+                break;
+        }
+    };
     closeShowCrop = () => {
         this.setState({
             showModalCropLogo: false,
@@ -153,6 +175,10 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                     attachmentImageBgLogin: file,
                     filenameImageBgLogin: file.name,
                     showModalCropLogo: false,
+                    portalSettingsLayout: {
+                        ...this.state.portalSettingsLayout,
+                        useTransparentBackgroundLogin: 0,
+                    },
                 });
                 break;
             case 'image-bg-header':
@@ -161,6 +187,10 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                     attachmentImageBgHeader: file,
                     filenameImageBgHeader: file.name,
                     showModalCropLogo: false,
+                    portalSettingsLayout: {
+                        ...this.state.portalSettingsLayout,
+                        useTransparentBackgroundHeader: 0,
+                    },
                 });
                 break;
         }
@@ -177,7 +207,8 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
-
+        console.log(name);
+        console.log(value);
         this.setState({
             ...this.state,
             portalSettingsLayout: {
@@ -265,11 +296,13 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
         const data = new FormData();
 
         data.append('description', portalSettingsLayout.description);
-        data.append('isDefault', portalSettingsLayout.isDefault);
+        data.append('isDefault', portalSettingsLayout.isDefault ? 1 : 0);
         data.append('portalLogoFileName', portalSettingsLayout.portalLogoFileName);
         data.append('portalLogoFileNameHeader', portalSettingsLayout.portalLogoFileNameHeader);
         data.append('portalImageBgFileNameLogin', portalSettingsLayout.portalImageBgFileNameLogin);
+        data.append('useTransparentBackgroundLogin', portalSettingsLayout.useTransparentBackgroundLogin ? 1 : 0);
         data.append('portalImageBgFileNameHeader', portalSettingsLayout.portalImageBgFileNameHeader);
+        data.append('useTransparentBackgroundHeader', portalSettingsLayout.useTransparentBackgroundHeader ? 1 : 0);
         data.append('portalFaviconFileName', portalSettingsLayout.portalFaviconFileName);
         data.append('description', portalSettingsLayout.description);
         data.append('portalMainBackgroundColor', portalSettingsLayout.portalMainBackgroundColor);
@@ -313,7 +346,9 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
             isDefault,
             portalLogoFileName,
             portalLogoFileNameHeader,
+            useTransparentBackgroundLogin,
             portalImageBgFileNameLogin,
+            useTransparentBackgroundHeader,
             portalImageBgFileNameHeader,
             portalFaviconFileName,
             portalMainBackgroundColor,
@@ -391,9 +426,9 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                Men
                                 label="A. Logo op login pagina (bestandstype PNG)"
                                 divSize={'col-sm-8'}
+                                name={'portalLogoFileName'}
                                 value={
                                     this.state.attachmentLogo.name ? this.state.attachmentLogo.name : portalLogoFileName
                                 }
@@ -418,18 +453,23 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                     display: 'inline-block',
                                     padding: '1px',
                                     borderRadius: '1px',
-                                    height: '50px',
+                                    maxHeight: '50px',
+                                    width: 'auto',
+                                    marginLeft: '20px',
+                                    marginBottom: '10px',
                                     boxShadow: '0 0 0 1px #fff inset',
                                 }}
                             />
                         </div>
                         <div className="row">
                             <InputText
-                                Men
                                 label="B. Achtergrond afbeelding login pagina (bestandstype PNG)"
                                 divSize={'col-sm-8'}
+                                name={'portalImageBgFileNameLogin'}
                                 value={
-                                    this.state.attachmentImageBgLogin.name
+                                    useTransparentBackgroundLogin
+                                        ? 'Geen'
+                                        : this.state.attachmentImageBgLogin.name
                                         ? this.state.attachmentImageBgLogin.name
                                         : portalImageBgFileNameLogin
                                 }
@@ -439,33 +479,44 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 onChangeaction={() => {}}
                                 size={'col-sm-5'}
                                 textToolTip={`Om afbeelding zichtbaar te maken moet de achtergrond deels transparant zijn, zie 1. Login pagina / Header kleur voor meer informatie.`}
+                                textClearOrDelete={
+                                    useTransparentBackgroundLogin ? '' : `Verwijder achtergrond afbeelding login pagina`
+                                }
+                                actionClearOrDelete={() => {
+                                    useTransparentBackgroundLogin ? '' : this.setTransparantImage('image-bg-login');
+                                }}
                                 readOnly={!managePortalSettings}
                                 required={'required'}
                                 error={this.state.errors.portalImageBgFileNameLogin}
                             />
-                            <Image
-                                src={
-                                    this.state.attachmentImageBgLogin && this.state.attachmentImageBgLogin.preview
-                                        ? this.state.attachmentImageBgLogin.preview
-                                        : imageBgLoginUrl
-                                }
-                                style={{
-                                    backgroundColor: loginHeaderBackgroundColor,
-                                    color: loginHeaderBackgroundTextColor,
-                                    border: '1px solid #999',
-                                    display: 'inline-block',
-                                    padding: '1px',
-                                    borderRadius: '1px',
-                                    height: '50px',
-                                    boxShadow: '0 0 0 1px #fff inset',
-                                }}
-                            />
+                            {!useTransparentBackgroundLogin && (
+                                <Image
+                                    src={
+                                        this.state.attachmentImageBgLogin && this.state.attachmentImageBgLogin.preview
+                                            ? this.state.attachmentImageBgLogin.preview
+                                            : imageBgLoginUrl
+                                    }
+                                    style={{
+                                        backgroundColor: loginHeaderBackgroundColor,
+                                        color: loginHeaderBackgroundTextColor,
+                                        border: '1px solid #999',
+                                        display: 'inline-block',
+                                        padding: '1px',
+                                        borderRadius: '1px',
+                                        maxHeight: '50px',
+                                        width: 'auto',
+                                        marginLeft: '20px',
+                                        marginBottom: '10px',
+                                        boxShadow: '0 0 0 1px #fff inset',
+                                    }}
+                                />
+                            )}
                         </div>
                         <div className="row">
                             <InputText
-                                Men
                                 label="C. Logo in de header (bestandstype PNG)"
                                 divSize={'col-sm-8'}
+                                name={'portalLogoFileNameHeader'}
                                 value={
                                     this.state.attachmentLogoHeader.name
                                         ? this.state.attachmentLogoHeader.name
@@ -492,18 +543,23 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                     display: 'inline-block',
                                     padding: '1px',
                                     borderRadius: '1px',
-                                    height: '50px',
+                                    maxHeight: '50px',
+                                    width: 'auto',
+                                    marginLeft: '20px',
+                                    marginBottom: '10px',
                                     boxShadow: '0 0 0 1px #fff inset',
                                 }}
                             />
                         </div>
                         <div className="row">
                             <InputText
-                                Men
                                 label="D. Achtergrond afbeelding in de header (bestandstype PNG)"
                                 divSize={'col-sm-8'}
+                                name={'portalImageBgFileNameHeader'}
                                 value={
-                                    this.state.attachmentImageBgHeader.name
+                                    useTransparentBackgroundHeader
+                                        ? 'Geen'
+                                        : this.state.attachmentImageBgHeader.name
                                         ? this.state.attachmentImageBgHeader.name
                                         : portalImageBgFileNameHeader
                                 }
@@ -513,57 +569,46 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 onChangeaction={() => {}}
                                 size={'col-md-5'}
                                 textToolTip={`Om afbeelding zichtbaar te maken moet de achtergrond deels transparant zijn, zie 1. Login pagina / Header kleur voor meer informatie.`}
+                                textClearOrDelete={
+                                    useTransparentBackgroundHeader
+                                        ? ''
+                                        : `Verwijder achtergrond afbeelding in de header`
+                                }
+                                actionClearOrDelete={() => {
+                                    useTransparentBackgroundHeader ? '' : this.setTransparantImage('image-bg-header');
+                                }}
                                 readOnly={!managePortalSettings}
                                 required={'required'}
                                 error={this.state.errors.portalImageBgFileNameHeader}
                             />
-                            {/*<Image*/}
-                            {/*    src={*/}
-                            {/*        this.state.attachmentImageBgHeader && this.state.attachmentImageBgHeader.preview*/}
-                            {/*            ? this.state.attachmentImageBgHeader.preview*/}
-                            {/*            : imageBgHeaderUrl*/}
-                            {/*    }*/}
-                            {/*    style={{*/}
-                            {/*        backgroundColor: loginHeaderBackgroundColor,*/}
-                            {/*        color: loginHeaderBackgroundTextColor,*/}
-                            {/*        border: '1px solid #999',*/}
-                            {/*        display: 'inline-block',*/}
-                            {/*        padding: '1px',*/}
-                            {/*        borderRadius: '1px',*/}
-                            {/*        height: '50px',*/}
-                            {/*        boxShadow: '0 0 0 1px #fff inset',*/}
-                            {/*    }}*/}
-                            {/*/>*/}
-                        </div>
-                        <div className="row">
-                            <div className="col-sm-12 form-group">
-                                <div className="col-sm-4" />
-                                <div className="col-sm-8">
-                                    <Image
-                                        src={
-                                            this.state.attachmentImageBgHeader &&
-                                            this.state.attachmentImageBgHeader.preview
-                                                ? this.state.attachmentImageBgHeader.preview
-                                                : imageBgHeaderUrl
-                                        }
-                                        style={{
-                                            backgroundColor: loginHeaderBackgroundColor,
-                                            color: loginHeaderBackgroundTextColor,
-                                            border: '1px solid #999',
-                                            display: 'inline-block',
-                                            padding: '1px',
-                                            borderRadius: '1px',
-                                            height: '50px',
-                                            boxShadow: '0 0 0 1px #fff inset',
-                                        }}
-                                    />
-                                </div>
-                            </div>
+                            {!useTransparentBackgroundHeader && (
+                                <Image
+                                    src={
+                                        this.state.attachmentImageBgHeader && this.state.attachmentImageBgHeader.preview
+                                            ? this.state.attachmentImageBgHeader.preview
+                                            : imageBgHeaderUrl
+                                    }
+                                    style={{
+                                        backgroundColor: loginHeaderBackgroundColor,
+                                        color: loginHeaderBackgroundTextColor,
+                                        border: '1px solid #999',
+                                        display: 'inline-block',
+                                        padding: '1px',
+                                        borderRadius: '1px',
+                                        maxHeight: '50px',
+                                        width: 'auto',
+                                        marginLeft: '20px',
+                                        marginBottom: '10px',
+                                        boxShadow: '0 0 0 1px #fff inset',
+                                    }}
+                                />
+                            )}
                         </div>
                         <div className="row">
                             <InputText
                                 label="E. Favicon in tabblad browser (bestandstype ICO)"
                                 divSize={'col-sm-8'}
+                                name={'portalFaviconFileName'}
                                 value={
                                     this.state.attachmentFavicon.name
                                         ? this.state.attachmentFavicon.name
@@ -648,6 +693,13 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 required={'required'}
                                 error={this.state.errors.loginHeaderBackgroundTextColor}
                             />
+                            {/*<input*/}
+                            {/*    type="color"*/}
+                            {/*    name="loginHeaderBackgroundTextColor"*/}
+                            {/*    id="colorpicker"*/}
+                            {/*    value={loginHeaderBackgroundTextColor}*/}
+                            {/*    onChange={this.handleInputChange}*/}
+                            {/*/>*/}
                         </div>
                         <div className="row">
                             <InputText
@@ -835,6 +887,8 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 divSize={'col-sm-8'}
                                 name={'portalMainBackgroundColor'}
                                 value={portalMainBackgroundColor}
+                                size={'col-sm-5'}
+                                textToolTip={`Let op: geen donkere achtergrond kleur kiezen dan wordt zwarte tekst slecht leesbaar.`}
                                 onChangeAction={this.handleInputChange}
                                 readOnly={!managePortalSettings}
                                 required={'required'}
@@ -982,6 +1036,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                             imageBgHeaderUrl={imageBgHeaderUrl}
                             portalMainBackgroundColor={portalMainBackgroundColor}
                             portalMainTextColor={portalMainTextColor}
+                            portalBackgroundColor={portalBackgroundColor}
                             portalBackgroundTextColor={portalBackgroundTextColor}
                             loginHeaderBackgroundColor={loginHeaderBackgroundColor}
                             loginHeaderBackgroundTextColor={loginHeaderBackgroundTextColor}

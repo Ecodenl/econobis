@@ -11,7 +11,9 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
     isDefault,
     portalLogoFileName,
     portalLogoFileNameHeader,
+    useTransparentBackgroundLogin,
     portalImageBgFileNameLogin,
+    useTransparentBackgroundHeader,
     portalImageBgFileNameHeader,
     portalFaviconFileName,
     portalMainBackgroundColor,
@@ -71,7 +73,10 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                                 display: 'inline-block',
                                 padding: '1px',
                                 borderRadius: '1px',
-                                height: '50px',
+                                maxHeight: '50px',
+                                width: 'auto',
+                                marginLeft: '20px',
+                                marginBottom: '10px',
                                 boxShadow: '0 0 0 1px #fff inset',
                             }}
                         />
@@ -80,23 +85,28 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                         <ViewText
                             label={'B. Achtergrond afbeelding login pagina (bestandstype PNG)'}
                             divSize={'col-sm-8'}
-                            value={portalImageBgFileNameLogin}
+                            value={useTransparentBackgroundLogin ? 'Geen' : portalImageBgFileNameLogin}
                             className={'col-sm-8 form-group'}
                             textToolTip={`Om afbeelding zichtbaar te maken moet de achtergrond deels transparant zijn, zie 1. Login pagina / Header kleur voor meer informatie.`}
                         />
-                        <Image
-                            src={imageBgLoginUrl}
-                            style={{
-                                backgroundColor: loginHeaderBackgroundColor,
-                                color: loginHeaderBackgroundTextColor,
-                                border: '1px solid #999',
-                                display: 'inline-block',
-                                padding: '1px',
-                                borderRadius: '1px',
-                                height: '50px',
-                                boxShadow: '0 0 0 1px #fff inset',
-                            }}
-                        />
+                        {!useTransparentBackgroundLogin && (
+                            <Image
+                                src={imageBgLoginUrl}
+                                style={{
+                                    backgroundColor: loginHeaderBackgroundColor,
+                                    color: loginHeaderBackgroundTextColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '1px',
+                                    borderRadius: '1px',
+                                    maxHeight: '50px',
+                                    width: 'auto',
+                                    marginLeft: '20px',
+                                    marginBottom: '10px',
+                                    boxShadow: '0 0 0 1px #fff inset',
+                                }}
+                            />
+                        )}
                     </div>
                     <div className="row">
                         <ViewText
@@ -115,6 +125,9 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                                 padding: '1px',
                                 borderRadius: '1px',
                                 height: '50px',
+                                width: 'auto',
+                                marginLeft: '20px',
+                                marginBottom: '10px',
                                 boxShadow: '0 0 0 1px #fff inset',
                             }}
                         />
@@ -123,43 +136,28 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                         <ViewText
                             label={'D. Achtergrond afbeelding in de header (bestandstype PNG)'}
                             divSize={'col-sm-8'}
-                            value={portalImageBgFileNameHeader}
+                            value={useTransparentBackgroundHeader ? 'Geen' : portalImageBgFileNameHeader}
                             className={'col-sm-8 form-group'}
                             textToolTip={`Om afbeelding zichtbaar te maken moet de achtergrond deels transparant zijn, zie 1. Login pagina / Header kleur voor meer informatie.`}
                         />
-                        {/*<Image*/}
-                        {/*    src={imageBgHeaderUrl}*/}
-                        {/*    style={{*/}
-                        {/*        backgroundColor: loginHeaderBackgroundColor,*/}
-                        {/*        color: loginHeaderBackgroundTextColor,*/}
-                        {/*        border: '1px solid #999',*/}
-                        {/*        display: 'inline-block',*/}
-                        {/*        padding: '1px',*/}
-                        {/*        borderRadius: '1px',*/}
-                        {/*        height: '50px',*/}
-                        {/*        boxShadow: '0 0 0 1px #fff inset',*/}
-                        {/*    }}*/}
-                        {/*/>*/}
-                    </div>
-                    <div className="row">
-                        <div className="col-sm-12 form-group">
-                            <div className="col-sm-4" />
-                            <div className="col-sm-8">
-                                <Image
-                                    src={imageBgHeaderUrl}
-                                    style={{
-                                        backgroundColor: loginHeaderBackgroundColor,
-                                        color: loginHeaderBackgroundTextColor,
-                                        border: '1px solid #999',
-                                        display: 'inline-block',
-                                        padding: '1px',
-                                        borderRadius: '1px',
-                                        height: '50px',
-                                        boxShadow: '0 0 0 1px #fff inset',
-                                    }}
-                                />
-                            </div>
-                        </div>
+                        {!useTransparentBackgroundHeader && (
+                            <Image
+                                src={imageBgHeaderUrl}
+                                style={{
+                                    backgroundColor: loginHeaderBackgroundColor,
+                                    color: loginHeaderBackgroundTextColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '1px',
+                                    borderRadius: '1px',
+                                    maxHeight: '50px',
+                                    width: 'auto',
+                                    marginLeft: '20px',
+                                    marginBottom: '10px',
+                                    boxShadow: '0 0 0 1px #fff inset',
+                                }}
+                            />
+                        )}
                     </div>
                     <div className="row">
                         <ViewText
@@ -379,6 +377,7 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                             divSize={'col-sm-8'}
                             value={portalMainBackgroundColor}
                             className={'col-sm-8 form-group'}
+                            textToolTip={`Let op: geen donkere achtergrond kleur kiezen dan wordt zwarte tekst slecht leesbaar.`}
                         />
                         <span
                             className="rc-color-picker-trigger"

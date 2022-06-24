@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\PortalSettingsLayout;
 use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
 use App\Helpers\Delete\Models\DeletePortalSettingsLayout;
 use App\Helpers\RequestInput\RequestInput;
-use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
 use App\Jobs\Portal\GeneratePortalCss;
 use Illuminate\Http\Request;
@@ -16,7 +16,7 @@ use JosKolenberg\LaravelJory\Facades\Jory;
 use Config;
 use Exception;
 
-class PortalSettingsLayoutController extends ApiController
+class PortalSettingsLayoutController extends Controller
 {
 
     public function jory()

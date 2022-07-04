@@ -16,7 +16,7 @@ import PortalLayoutImageCrop from '../../../components/cropImage/portalLayout/Po
 
 const DND_ITEM_TYPE = 'row';
 
-const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputChange, removeWidget, imageHash }) => {
+const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, handleInputChange, removeWidget, imageHash }) => {
     const dropRef = useRef(null);
     const dragRef = useRef(null);
     const [newWidgetImage, setNewWidgetImage] = useState(false);
@@ -116,7 +116,7 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
         const data = new FormData();
         data.append('id', row.id);
         data.append('image', file);
-        data.append('name', widgetImage.name);
+        data.append('widgetImageFileName', widgetImage.name);
         data.append('type', widgetImage.type);
 
         PortalSettingsDashboardAPI.updateDashboardWidget(data)
@@ -136,152 +136,58 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
     return (
         <>
             <tr ref={dropRef} style={{ opacity }}>
-                {edit && (
-                    <td ref={dragRef}>
-                        <Icon icon={arrows_vertical} />
-                        <FaInfoCircle
-                            color={'blue'}
-                            size={'15px'}
-                            data-tip={'Je kunt de volgorde van de widgets aanpassen door deze te slepen'}
-                            data-for={`tooltip-${dropRef}`}
-                        />
-                        <ReactTooltip
-                            id={`tooltip-${dropRef}`}
-                            effect="float"
-                            place="right"
-                            multiline={true}
-                            aria-haspopup="true"
-                        />
-                    </td>
-                )}
-                {edit
-                    ? // edit
-                      row.cells.map(cell => {
-                          switch (cell.column.id) {
-                              case 'title':
-                              case 'text':
-                              case 'buttonText':
-                              case 'buttonLink':
-                                  return (
-                                      <td key={cell.column.id}>
-                                          <InputTextArea
-                                              sizeInput={'col-sm-12'}
-                                              size={'col-sm-12'}
-                                              name={`${cell.row.id}-${cell.column.id}`}
-                                              value={cell.value}
-                                              onChangeAction={handleInputChange}
-                                              itemId={cell.row.id}
-                                          />
-                                      </td>
-                                  );
-                              case 'image':
-                                  const logoUrl =
-                                      cell.value && cell.value.includes('images/')
-                                          ? `${URL_API}/portal${cell.value}?${imageHash}`
-                                          : `${URL_API}/portal/images/${cell.value}?${imageHash}`;
+                {row.cells.map(cell => {
+                    switch (cell.column.id) {
+                        case 'active':
+                            return <td {...cell.getCellProps()}>{cell.value ? 'Ja' : 'Nee'}</td>;
+                        case 'order':
+                            return (
+                                <td ref={dragRef}>
+                                    <Icon icon={arrows_vertical} />
+                                    {/*todo WM: opschonen*/}
+                                    {cell.value} | {row.index}
+                                </td>
+                            );
+                        case 'widgetImageFileName': {
+                            const logoUrl = cell.value && `${URL_API}/portal/images/${cell.value}?${imageHash}`;
+                            return (
+                                <td key={cell.column.id}>
+                                    <Image
+                                        src={widgetImage && widgetImage.preview ? widgetImage.preview : logoUrl}
+                                        thumbnail={true}
+                                        style={{
+                                            border: '1px solid #999',
+                                            display: 'inline-block',
+                                            padding: '1px',
+                                            borderRadius: '1px',
+                                            height: '100%',
+                                            width: '100px',
+                                            boxShadow: '0 0 0 1px #fff inset',
+                                        }}
+                                    />
+                                </td>
+                            );
+                        }
+                        case 'codeRef':
+                            // todo WM: opschonen
+                            console.log(row);
+                            return (
+                                <td>
+                                    <ButtonIcon
+                                        iconName={'glyphicon-remove'}
+                                        buttonClassName={'btn-danger btn-sm'}
+                                        disabled={staticWidgets.includes(cell.value)}
+                                        onClickAction={() => removeWidget(row.id)}
+                                    />
+                                    {/*todo WM: opschonen*/}
+                                    {row.id}
+                                </td>
+                            );
+                    }
 
-                                  return (
-                                      <td key={cell.column.id}>
-                                          <Image
-                                              src={widgetImage && widgetImage.preview ? widgetImage.preview : logoUrl}
-                                              thumbnail={true}
-                                              style={{
-                                                  border: '1px solid #999',
-                                                  display: 'inline-block',
-                                                  padding: '1px',
-                                                  borderRadius: '1px',
-                                                  height: '100%',
-                                                  width: '100px',
-                                                  boxShadow: '0 0 0 1px #fff inset',
-                                              }}
-                                              onClick={toggleNewWidgetImage}
-                                          />
-                                          <InputText
-                                              type={'hidden'}
-                                              label={''}
-                                              divSize={'col-sm-12'}
-                                              size={'col-sm-12'}
-                                              value={widgetImage ? widgetImage.name : cell.value}
-                                              onClickAction={toggleNewWidgetImage}
-                                              onChangeaction={() => {}}
-                                          />
-                                      </td>
-                                  );
-                              case 'active':
-                                  return (
-                                      <td key={cell.column.id}>
-                                          <InputToggle
-                                              label={''}
-                                              name={`${cell.row.id}-${cell.column.id}`}
-                                              value={cell.value}
-                                              onChangeAction={handleInputChange}
-                                              itemId={cell.row.id}
-                                          />
-                                      </td>
-                                  );
-                              default:
-                                  return (
-                                      <td key={cell.column.id}>
-                                          <InputText
-                                              type={'text'}
-                                              divSize={'col-sm-12'}
-                                              divClassName={'no-padding'}
-                                              size={'col-sm-12'}
-                                              name={`${cell.row.id}-${cell.column.id}`}
-                                              value={cell.value}
-                                              onChangeAction={handleInputChange}
-                                              itemId={cell.row.id}
-                                              disabled={
-                                                  staticWidgets.includes(cell.row.id) &&
-                                                  staticInput.includes(cell.column.id)
-                                              }
-                                          />
-                                      </td>
-                                  );
-                          }
-                      })
-                    : // view
-                      row.cells.map(cell => {
-                          switch (cell.column.id) {
-                              case 'active':
-                                  return <td {...cell.getCellProps()}>{cell.value ? 'Ja' : 'Nee'}</td>;
-                              case 'image': {
-                                  const logoUrl =
-                                      cell.value && cell.value.includes('images/')
-                                          ? `${URL_API}/portal${cell.value}?${imageHash}`
-                                          : `${URL_API}/portal/images/${cell.value}?${imageHash}`;
-                                  return (
-                                      <td key={cell.column.id}>
-                                          <Image
-                                              src={widgetImage && widgetImage.preview ? widgetImage.preview : logoUrl}
-                                              thumbnail={true}
-                                              style={{
-                                                  border: '1px solid #999',
-                                                  display: 'inline-block',
-                                                  padding: '1px',
-                                                  borderRadius: '1px',
-                                                  height: '100%',
-                                                  width: '100px',
-                                                  boxShadow: '0 0 0 1px #fff inset',
-                                              }}
-                                          />
-                                      </td>
-                                  );
-                              }
-                          }
-
-                          return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
-                      })}
-                {edit && (
-                    <td>
-                        <ButtonIcon
-                            iconName={'glyphicon-remove'}
-                            buttonClassName={'btn-danger btn-sm'}
-                            disabled={staticWidgets.includes(row.id)}
-                            onClickAction={() => removeWidget(row.id)}
-                        />
-                    </td>
-                )}
+                    // Anders default
+                    return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
+                })}
             </tr>
             {newWidgetImage && (
                 <AddPortalSettingsDashboardWidgetImageModal

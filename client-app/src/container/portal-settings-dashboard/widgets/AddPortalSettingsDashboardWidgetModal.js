@@ -20,7 +20,7 @@ class AddPortalSettingsDashboardWidgetModal extends Component {
                 title: '',
                 text: '',
                 image: '',
-                imageName: '',
+                widgetImageFileName: '',
                 buttonText: '',
                 buttonLink: '',
                 active: true,
@@ -44,7 +44,7 @@ class AddPortalSettingsDashboardWidgetModal extends Component {
             widget: {
                 ...this.state.widget,
                 image: file[0],
-                imageName: file[0].name,
+                widgetImageFileName: file[0].name,
             },
             showCropImageModal: true,
         });
@@ -67,7 +67,7 @@ class AddPortalSettingsDashboardWidgetModal extends Component {
             widget: {
                 ...this.state.widget,
                 image: '',
-                imageName: '',
+                widgetImageFileName: '',
             },
             showCropImageModal: false,
         });
@@ -79,7 +79,7 @@ class AddPortalSettingsDashboardWidgetModal extends Component {
             widget: {
                 ...this.state.widget,
                 image: file,
-                imageName: file.name,
+                widgetImageFileName: file.name,
             },
             showCropImageModal: false,
         });
@@ -101,7 +101,7 @@ class AddPortalSettingsDashboardWidgetModal extends Component {
             errorMessage.text = 'Tekst verplicht veld.';
             hasErrors = true;
         }
-        if (validator.isEmpty(widget.imageName)) {
+        if (validator.isEmpty(widget.widgetImageFileName)) {
             errors.image = true;
             errorMessage.image = 'Afbeelding verplicht veld.';
             hasErrors = true;
@@ -127,7 +127,7 @@ class AddPortalSettingsDashboardWidgetModal extends Component {
         data.append('image', widget.image);
         data.append('buttonText', widget.buttonText);
         data.append('buttonLink', widget.buttonLink);
-        data.append('name', widget.imageName);
+        data.append('widgetImageFileName', widget.widgetImageFileName);
 
         PortalSettingsDashboardAPI.addDashboardWidget(data)
             .then(response => {
@@ -210,7 +210,9 @@ class AddPortalSettingsDashboardWidgetModal extends Component {
                         </Col>
                         <Col sm={12} style={{ paddingLeft: '30px', paddingRight: '30px' }}>
                             <label className={'col-sm-12 required'}>Afbeelding</label>
-                            {!!widget.imageName && <b>&nbsp;Geselecteerd bestand: {widget.imageName}</b>}
+                            {!!widget.widgetImageFileName && (
+                                <b>&nbsp;Geselecteerd bestand: {widget.widgetImageFileName}</b>
+                            )}
                             <Dropzone
                                 accept={acceptedFiles}
                                 multiple={false}

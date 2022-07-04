@@ -22,63 +22,71 @@ class PortalSettingsDashboardWidgetList extends Component {
 
     render() {
         const data = this.props.widgets;
-        const edit = this.props.edit;
 
         const columns = [
+            {
+                Header: '',
+                textToolTip: `Je kunt de volgorde van de widgets aanpassen door deze te slepen.`,
+                accessor: 'order',
+            },
             {
                 Header: 'Titel',
                 textToolTip: '',
                 accessor: 'title',
             },
-            {
-                Header: 'Tekst',
-                textToolTip: '',
-                accessor: 'text',
-            },
+            // todo WM: opschonen
+            //
+            // {
+            //     Header: 'Tekst',
+            //     textToolTip: '',
+            //     accessor: 'text',
+            // },
             {
                 Header: 'Afbeelding',
                 textToolTip: '',
-                accessor: 'image',
+                accessor: 'widgetImageFileName',
             },
-            {
-                Header: 'Knoptekst',
-                textToolTip: '',
-                accessor: 'buttonText',
-            },
-            {
-                Header: 'Knoplink',
-                textToolTip: `Knoplinks zonder HTTPS:// verwijzen naar pagina binnen xxxxxx.mijnenergiesamen.nl (de gebruikers portaal pagina) 
-                     <br /> bijvoorbeeld inschrijven-projecten verwijst naar: <br />
-                     https://xxxxxx.mijnenergiesamen.nl/#/inschrijven-projecten <br />
-                     Knoplinks met HTTPS:// (Externe links) verwijzen naar een pagina buiten de gebruikersportaal <br />
-                     bijvoorbeeld https://www.google.com/
-                     zal na aanklikken de website in een nieuw tabblad(nieuw scherm) openen.`,
-                accessor: 'buttonLink',
-            },
+            // todo WM: opschonen
+            //
+            // {
+            //     Header: 'Knoptekst',
+            //     textToolTip: '',
+            //     accessor: 'buttonText',
+            // },
+            // {
+            //     Header: 'Knoplink',
+            //     textToolTip: `Knoplinks zonder HTTPS:// verwijzen naar pagina binnen xxxxxx.mijnenergiesamen.nl (de gebruikers portaal pagina)
+            //          <br /> bijvoorbeeld inschrijven-projecten verwijst naar: <br />
+            //          https://xxxxxx.mijnenergiesamen.nl/#/inschrijven-projecten <br />
+            //          Knoplinks met HTTPS:// (Externe links) verwijzen naar een pagina buiten de gebruikersportaal <br />
+            //          bijvoorbeeld https://www.google.com/
+            //          zal na aanklikken de website in een nieuw tabblad(nieuw scherm) openen.`,
+            //     accessor: 'buttonLink',
+            // },
             {
                 Header: 'Actief',
                 textToolTip: '',
                 accessor: 'active',
             },
+            {
+                Header: '',
+                textToolTip: '',
+                accessor: 'codeRef',
+            },
         ];
 
         return (
             <>
-                {edit ? (
-                    <>
-                        <PortalSettingsDashboardWidgetListToolbar
-                            widgets={data}
-                            toggleAddWidgetModal={this.toggleAddWidgetModal}
-                        />
-                        <div style={{ height: '5px' }} />
-                    </>
-                ) : (
-                    <h5>Widgets</h5>
-                )}
+                <h5>Widgets</h5>
+                <PortalSettingsDashboardWidgetListToolbar
+                    widgets={data}
+                    toggleAddWidgetModal={this.toggleAddWidgetModal}
+                />
+                <div style={{ height: '5px' }} />
+
                 <PortalDashboardWidgetOrderTable
                     columns={columns}
                     data={data.sort((a, b) => (a.order > b.order ? 1 : -1))}
-                    edit={edit}
                     handleInputChange={this.props.handleWidgetInputChange}
                     removeWidget={this.props.removeWidget}
                     imageHash={this.props.imageHash}

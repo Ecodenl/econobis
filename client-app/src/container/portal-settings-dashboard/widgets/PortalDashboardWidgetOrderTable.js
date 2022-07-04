@@ -4,10 +4,10 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import PortalDashboardWidgetOrderRow from './PortalDashboardWidgetOrderRow';
 import update from 'immutability-helper';
-import {FaInfoCircle} from "react-icons/fa";
-import ReactTooltip from "react-tooltip";
+import { FaInfoCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 
-const PortalDashboardWidgetOrderTable = ({ columns, data, edit, handleInputChange, removeWidget, imageHash }) => {
+const PortalDashboardWidgetOrderTable = ({ columns, data, handleInputChange, removeWidget, imageHash }) => {
     const [records, setRecords] = useState(data);
 
     useEffect(
@@ -54,11 +54,12 @@ const PortalDashboardWidgetOrderTable = ({ columns, data, edit, handleInputChang
                 <thead>
                     {headerGroups.map(headerGroup => (
                         <tr {...headerGroup.getHeaderGroupProps()} className={'thead-title'}>
-                            {edit && <th />}
                             {headerGroup.headers.map(column => (
-                                <th {...column.getHeaderProps()}>{column.render('Header')}
+                                <th {...column.getHeaderProps()}>
+                                    {column.render('Header')}
                                     {column.textToolTip && (
-                                        <span>{' '}
+                                        <span>
+                                            {' '}
                                             <FaInfoCircle
                                                 color={'white'}
                                                 size={'15px'}
@@ -76,7 +77,6 @@ const PortalDashboardWidgetOrderTable = ({ columns, data, edit, handleInputChang
                                     )}
                                 </th>
                             ))}
-                            {edit && <th />}
                         </tr>
                     ))}
                 </thead>
@@ -88,7 +88,6 @@ const PortalDashboardWidgetOrderTable = ({ columns, data, edit, handleInputChang
                                     index={index}
                                     row={row}
                                     moveRow={moveRow}
-                                    edit={edit}
                                     handleInputChange={handleInputChange}
                                     removeWidget={removeWidget}
                                     {...row.getRowProps()}

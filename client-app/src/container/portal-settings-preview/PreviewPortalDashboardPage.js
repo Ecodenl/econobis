@@ -271,9 +271,8 @@ const PreviewPortalDashboardPage = ({
                                     .sort((a, b) => (a.order > b.order ? 1 : -1))
                                     .map(widget => {
                                         const imageSrc =
-                                            widget.image && widget.image.includes('images/')
-                                                ? widget.image + '?' + imageHash
-                                                : 'images/' + widget.image + '?' + imageHash;
+                                            widget.widgetImageFileName &&
+                                            'images/' + widget.widgetImageFileName + '?' + imageHash;
                                         return (
                                             <div style={customStyles.col_widget}>
                                                 <div id="widget-over-ons" style={customStyles.card}>

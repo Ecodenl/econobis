@@ -202,7 +202,6 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
                         <div className="row" style={{ margin: '0' }}>
                             <PortalSettingsDashboardWidgetList
                                 widgets={widgets}
-                                edit={true}
                                 handleWidgetInputChange={this.handleWidgetInputChange}
                                 addWidget={this.addWidget}
                                 removeWidget={this.removeWidget}

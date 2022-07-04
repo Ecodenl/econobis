@@ -29,11 +29,13 @@ class PortalSettingsLayoutDetailsApp extends Component {
 
     callFetchPortalSettingsLayoutDetails = () => {
         this.setState({ isLoading: true, hasError: false });
-        const keys = '?keys[]=welcomeTitle&keys[]=welcomeMessage&keys[]=widgets';
+        // todo WM: check anders
+        //
+        const id = 1;
         axios
             .all([
                 PortalSettingsLayoutDetailsAPI.fetchPortalSettingsLayoutDetails(this.props.params.id),
-                PortalSettingsDashboardAPI.fetchDashboardSettings(keys),
+                PortalSettingsDashboardAPI.fetchPortalSettingsDashboardDetails(id),
             ])
             .then(
                 axios.spread((portalSettingsLayout, dashboardSettings) => {

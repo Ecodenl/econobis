@@ -193,6 +193,19 @@ const PortalSettingsApp = React.lazy(() => import('./container/portal-settings/P
 const PortalSettingsDashboardApp = React.lazy(() =>
     import('./container/portal-settings-dashboard/PortalSettingsDashboardApp')
 );
+// todo WM: nog
+//
+// const PortalSettingsDashboardWidgetListApp = React.lazy(() =>
+//     import('./container/portal-settings-dashboard/widgets/new/PortalSettingsDashboardWidgetListApp')
+// );
+const PortalSettingsDashboardWidgetNewApp = React.lazy(() =>
+    import('./container/portal-settings-dashboard/widgets/new/PortalSettingsDashboardWidgetNewApp')
+);
+// todo WM: nog
+//
+// const PortalSettingsDashboardWidgetApp = React.lazy(() =>
+//     import('./container/portal-settings-dashboard/widgets/new/PortalSettingsDashboardWidgetApp')
+// );
 const PortalSettingsLayoutListApp = React.lazy(() =>
     import('./container/portal-settings-layout/list/PortalSettingsLayoutListApp')
 );
@@ -370,6 +383,14 @@ const Routes = () => {
                     <Route path="kostenplaats/:id" component={CostCenterDetailsApp} />
                     /* PortalSettingsLayout */
                     <Route path="portal-instellingen-dashboard" component={PortalSettingsDashboardApp} />
+                    {/*todo WM: nog*/}
+                    {/*<Route path="portal-instellingen-dashboard-widget" component={PortalSettingsDashboardWidgetListApp} />*/}
+                    <Route
+                        path="portal-instellingen-dashboard-widget/nieuw"
+                        component={PortalSettingsDashboardWidgetNewApp}
+                    />
+                    {/*todo WM: nog*/}
+                    {/*<Route path="portal-instellingen-dashboard-widget/:id" component={PortalSettingsDashboardWidgetApp} />*/}
                     /* PortalSettingsLayout */
                     <Route path="portal-instellingen-layout" component={PortalSettingsLayoutListApp} />
                     <Route path="portal-instellingen-layout/nieuw" component={PortalSettingsLayoutNewApp} />

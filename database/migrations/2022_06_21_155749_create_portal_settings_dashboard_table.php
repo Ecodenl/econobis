@@ -33,6 +33,10 @@ class CreatePortalSettingsDashboardTable extends Migration
             $table->text('text');
             $table->text('button_text');
             $table->text('button_link');
+            $table->string('widget_image_file_name')->default('');
+            $table->unsignedInteger('show_group_id')->nullable()->default(null);
+            $table->foreign('show_group_id', 'contact_groups_show_group_id_foreign')
+                ->references('id')->on('contact_groups');
             $table->string('background_color', 30)->default('');
             $table->string('text_color', 30)->default('');
             $table->boolean('active')->default(false);

@@ -112,11 +112,7 @@ class PortalSettingsDashboardFormGeneralView extends Component {
                     <Panel>
                         <PanelBody>
                             <div className="row" style={{ margin: '0' }}>
-                                <PortalSettingsDashboardWidgetList
-                                    widgets={widgets}
-                                    edit={false}
-                                    imageHash={this.state.imageHash}
-                                />
+                                <PortalSettingsDashboardWidgetList widgets={widgets} imageHash={this.state.imageHash} />
                             </div>
                         </PanelBody>
                     </Panel>

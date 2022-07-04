@@ -18,18 +18,20 @@ class PortalSettingsDashboardApp extends Component {
     }
 
     componentDidMount() {
-        this.callFetchDashboardSettings();
+        this.callFetchPortalSettingsDashboardDetails();
     }
 
-    callFetchDashboardSettings = () => {
+    callFetchPortalSettingsDashboardDetails = () => {
         this.setState({ isLoading: true, hasError: false });
-        const keys = '?keys[]=welcomeTitle&keys[]=welcomeMessage&keys[]=widgets';
-        PortalSettingsDashboardAPI.fetchDashboardSettings(keys)
+        // todo WM: check / anders
+        //
+        const id = 1;
+        PortalSettingsDashboardAPI.fetchPortalSettingsDashboardDetails(id)
             .then(payload => {
                 this.setState({
                     isLoading: false,
                     dashboardSettings: {
-                        ...payload.data,
+                        ...payload.data.data,
                     },
                 });
             })

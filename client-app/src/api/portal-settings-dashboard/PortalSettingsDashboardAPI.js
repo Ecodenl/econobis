@@ -1,19 +1,53 @@
 import axiosInstance from '../default-setup/AxiosInstance';
 
-const URL_PORTAL_SETTINGS_DASHBOARD = `setting-dashboard`;
+// todo WM: chcek / opschonen
+//
+const URL_PORTAL_SETTINGS_DASHBOARD = `portal-settings-dashboard`;
+const URL_PORTAL_SETTINGS_DASHBOARD_WIDGET = `portal-settings-dashboard-widget`;
 
 export default {
-    fetchDashboardSettings: keys => {
-        const requestUrl = `${URL_PORTAL_SETTINGS_DASHBOARD}/multiple${keys}`;
+    fetchPortalSettingsDashboardDetails: id => {
+        const requestUrl = `jory/${URL_PORTAL_SETTINGS_DASHBOARD}/${id}`;
 
-        return axiosInstance.get(requestUrl);
+        return axiosInstance.get(requestUrl, {
+            params: {
+                jory: {
+                    fld: [
+                        'id',
+                        'welcomeTitle',
+                        'welcomeMessage',
+                        'defaultWidgetBackgroundColor',
+                        'defaultWidgetTextColor',
+                    ],
+                    rlt: {
+                        widgets: {
+                            fld: [
+                                'id',
+                                'codeRef',
+                                'order',
+                                'title',
+                                'widgetImageFileName',
+                                'active',
+                                // 'text',
+                                // 'buttonText',
+                                // 'buttonLink',
+                                // 'showGroupId',
+                                // 'backgroundColor',
+                                // 'textColor',
+                            ],
+                        },
+                    },
+                },
+            },
+        });
     },
-
-    updateDashboardSettings: dashboardSettings => {
-        const requestUrl = `${URL_PORTAL_SETTINGS_DASHBOARD}`;
-
-        return axiosInstance.post(requestUrl, dashboardSettings);
-    },
+    // todo WM: opschonen
+    //
+    // updateDashboardSettings: dashboardSettings => {
+    //     const requestUrl = `${URL_PORTAL_SETTINGS_DASHBOARD}`;
+    //
+    //     return axiosInstance.post(requestUrl, dashboardSettings);
+    // },
 
     updateDashboardWidget: data => {
         const requestUrl = `${URL_PORTAL_SETTINGS_DASHBOARD}/widget`;

@@ -18,16 +18,18 @@ class PortalSettingsDashboardFormGeneral extends Component {
     }
 
     switchToEdit = () => {
+        // todo wm: opschonen
+        // console.log('switchToEdit');
         this.setState({
             showEdit: true,
         });
     };
 
     switchToView = () => {
+        // todo wm: opschonen
+        // console.log('switchToView');
         this.setState({
             showEdit: false,
-            imageHash: Date.now(),
-            activeDiv: '',
         });
     };
 
@@ -62,17 +64,22 @@ class PortalSettingsDashboardFormGeneral extends Component {
                     <PortalSettingsDashboardFormGeneralEdit
                         dashboardSettings={this.props.dashboardSettings}
                         updateState={this.props.updateState}
-                        meDetails={this.props.meDetails}
                         switchToView={this.switchToView}
                         imageHash={this.state.imageHash}
+                        // todo WM: opschonen
+                        // meDetails={this.props.meDetails}
+                        // switchToEdit={this.switchToEdit}
                     />
                 ) : isEmpty(this.props.dashboardSettings) ? (
                     <p>Nog geen dashboard instellingen opgeslagen.</p>
                 ) : (
                     <PortalSettingsDashboardFormGeneralView
                         dashboardSettings={this.props.dashboardSettings}
+                        updateState={this.props.updateState}
                         switchToEdit={this.switchToEdit}
                         imageHash={this.state.imageHash}
+                        // todo WM: opschonen
+                        // switchToView={this.switchToView}
                     />
                 )}
             </div>

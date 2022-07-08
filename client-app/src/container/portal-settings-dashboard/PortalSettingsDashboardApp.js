@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 
-import Panel from '../../components/panel/Panel';
-import PanelBody from '../../components/panel/PanelBody';
 import PortalSettingsDashboardToolbar from './PortalSettingsDashboardToolbar';
 import PortalSettingsDashboardForm from './PortalSettingsDashboardForm';
+import Panel from '../../components/panel/Panel';
+import PanelBody from '../../components/panel/PanelBody';
+import { setError } from '../../actions/general/ErrorActions';
+import { connect } from 'react-redux';
 import PortalSettingsDashboardAPI from '../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
 
 class PortalSettingsDashboardApp extends Component {
@@ -68,8 +70,6 @@ class PortalSettingsDashboardApp extends Component {
                             updateState={this.updateState}
                         />
                     </div>
-
-                    <div className="col-md-12 margin-10-top"></div>
                 </div>
                 <div className="col-md-3" />
             </div>
@@ -77,4 +77,16 @@ class PortalSettingsDashboardApp extends Component {
     }
 }
 
-export default PortalSettingsDashboardApp;
+const mapStateToProps = state => {
+    return {
+        permissions: state.meDetails.permissions,
+    };
+};
+
+const mapDispatchToProps = dispatch => ({
+    setError: (http_code, message) => {
+        dispatch(setError(http_code, message));
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(PortalSettingsDashboardApp);

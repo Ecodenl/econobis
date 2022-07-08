@@ -550,13 +550,13 @@ Route::namespace('Api')
 // todo WM: opschonen
 //
 //        Route::post('portal-settings-dashboard', 'PortalSettingsDashboard\PortalSettingsDashboardController@store');
-//        Route::get('portal-settings-dashboard/{PortalSettingsDashboard}', 'PortalSettingsDashboard\PortalSettingsDashboardController@get');
-        Route::post('portal-settings-dashboard/{PortalSettingsDashboard}', 'PortalSettingsDashboard\PortalSettingsDashboardController@update');
+//        Route::get('portal-settings-dashboard/{portalSettingsDashboard}', 'PortalSettingsDashboard\PortalSettingsDashboardController@get');
+        Route::post('portal-settings-dashboard/{portalSettingsDashboard}', 'PortalSettingsDashboard\PortalSettingsDashboardController@update');
 //        Route::post('portal-settings-dashboard/delete', 'PortalSettingsDashboard\PortalSettingsDashboardController@destroy');
 
         Route::post('portal-settings-dashboard-widget', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@store');
-        Route::post('portal-settings-dashboard-widget/{PortalSettingsDashboardWidget}', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@update');
-        Route::post('portal-settings-dashboard-widget/{PortalSettingsDashboardWidget}/delete', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@destroy');
+        Route::post('portal-settings-dashboard-widget/{portalSettingsDashboardWidget}', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@update');
+        Route::post('portal-settings-dashboard-widget/{portalSettingsDashboardWidget}/delete', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@destroy');
 
         Route::get('cooperation', 'Cooperation\CooperationController@show');
         Route::post('cooperation', 'Cooperation\CooperationController@store');

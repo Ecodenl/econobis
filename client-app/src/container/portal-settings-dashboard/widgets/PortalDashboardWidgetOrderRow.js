@@ -4,19 +4,24 @@ import { arrows_vertical } from 'react-icons-kit/ikons/arrows_vertical';
 import Icon from 'react-icons-kit';
 import AddPortalSettingsDashboardWidgetImageModal from './AddPortalSettingsDashboardWidgetImageModal';
 import PortalSettingsDashboardAPI from '../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
-import ButtonIcon from '../../../components/button/ButtonIcon';
-import InputText from '../../../components/form/InputText';
-import InputTextArea from '../../../components/form/InputTextarea';
-import InputToggle from '../../../components/form/InputToggle';
 import { Image } from 'react-bootstrap';
 import Modal from '../../../components/modal/Modal';
-import { FaInfoCircle } from 'react-icons/fa';
-import ReactTooltip from 'react-tooltip';
 import PortalLayoutImageCrop from '../../../components/cropImage/portalLayout/PortalLayoutImageCrop';
+import { hashHistory } from 'react-router';
 
 const DND_ITEM_TYPE = 'row';
 
-const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, handleInputChange, removeWidget, imageHash }) => {
+const PortalDashboardWidgetOrderRow = ({
+    row,
+    index,
+    moveRow,
+    showEditSort,
+    // todo wm: opschonen
+    // handleInputChange,
+    removeWidget,
+    imageHash,
+}) => {
+    console.log('showEditSort b: ' + showEditSort);
     const dropRef = useRef(null);
     const dragRef = useRef(null);
     const [newWidgetImage, setNewWidgetImage] = useState(false);
@@ -119,7 +124,7 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, handleInputChange,
         data.append('widgetImageFileName', widgetImage.name);
         data.append('type', widgetImage.type);
 
-        PortalSettingsDashboardAPI.updateDashboardWidget(data)
+        PortalSettingsDashboardAPI.updatePortalSettingsDashboardWidget(data)
             .then(payload => {
                 setShowCropImageModal(false);
                 setShowUploadSucces(true);
@@ -136,18 +141,25 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, handleInputChange,
     return (
         <>
             <tr ref={dropRef} style={{ opacity }}>
+                {showEditSort === true && (
+                    <td ref={dragRef}>
+                        <Icon icon={arrows_vertical} />
+                    </td>
+                )}
                 {row.cells.map(cell => {
                     switch (cell.column.id) {
                         case 'active':
                             return <td {...cell.getCellProps()}>{cell.value ? 'Ja' : 'Nee'}</td>;
                         case 'order':
-                            return (
-                                <td ref={dragRef}>
-                                    <Icon icon={arrows_vertical} />
-                                    {/*todo WM: opschonen*/}
-                                    {cell.value} | {row.index}
-                                </td>
-                            );
+                            // todo wm: opschonen
+                            // return (
+                            //     <td ref={dragRef}>
+                            //         <Icon icon={arrows_vertical} />
+                            //         {/*todo WM: opschonen*/}
+                            //         {cell.value} | {row.index}
+                            //     </td>
+                            // );
+                            return null;
                         case 'widgetImageFileName': {
                             const logoUrl = cell.value && `${URL_API}/portal/images/${cell.value}?${imageHash}`;
                             return (
@@ -170,19 +182,29 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, handleInputChange,
                         }
                         case 'codeRef':
                             // todo WM: opschonen
-                            console.log(row);
-                            return (
-                                <td>
-                                    <ButtonIcon
-                                        iconName={'glyphicon-remove'}
-                                        buttonClassName={'btn-danger btn-sm'}
-                                        disabled={staticWidgets.includes(cell.value)}
-                                        onClickAction={() => removeWidget(row.id)}
-                                    />
-                                    {/*todo WM: opschonen*/}
-                                    {row.id}
-                                </td>
-                            );
+                            // console.log(row);
+                            if (!showEditSort) {
+                                return (
+                                    <td>
+                                        <a role="button" onClick={() => hashHistory.push(`/project/opbrengst/${id}`)}>
+                                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                                        </a>
+                                        <a role="button" onClick={() => removeWidget(row.id)}>
+                                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                                        </a>
+                                        {/*todo WM: opschonen*/}
+                                        {/*<ButtonIcon*/}
+                                        {/*    iconName={'glyphicon-remove'}*/}
+                                        {/*    buttonClassName={'btn-danger btn-sm'}*/}
+                                        {/*    disabled={staticWidgets.includes(cell.value)}*/}
+                                        {/*    onClickAction={() => removeWidget(row.id)}*/}
+                                        {/*/>*/}
+                                        {/*{row.id}*/}
+                                    </td>
+                                );
+                            } else {
+                                return null;
+                            }
                     }
 
                     // Anders default

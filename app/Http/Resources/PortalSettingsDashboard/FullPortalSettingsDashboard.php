@@ -19,6 +19,8 @@ class FullPortalSettingsDashboard extends JsonResource
             'id' => $this->id,
             'welcomeTitle' => $this->welcome_title,
             'welcomeMessage' => $this->welcome_message,
+            'defaultWidgetBackgroundColor' => $this->default_widget_background_color,
+            'defaultWidgetTextColor' => $this->default_widget_text_color,
             'widgets' => FullPortalSettingsDashboardWidget::collection($this->whenLoaded('widgets')),
         ];
     }

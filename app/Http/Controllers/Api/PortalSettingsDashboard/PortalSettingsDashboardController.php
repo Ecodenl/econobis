@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\PortalSettingsDashboard;
 use App\Eco\PortalSettingsDashboard\PortalSettingsDashboard;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PortalSettingsDashboard\FullPortalSettingsDashboard;
 use Illuminate\Http\Request;
 use JosKolenberg\LaravelJory\Facades\Jory;
 use Config;
@@ -51,8 +52,8 @@ class PortalSettingsDashboardController extends Controller
     {
         $this->authorize('manage', PortalSettingsDashboard::class);
 
-        $data = $input->string('welcomeTitle')->whenMissing('')->onEmpty('')->next()
-            ->string('welcomeMessage')->whenMissing('')->onEmpty('')->next()
+        $data = $input->string('welcomeTitle')->whenMissing('')->onEmpty('')->alias('welcome_title')->next()
+            ->string('welcomeMessage')->whenMissing('')->onEmpty('')->alias('welcome_message')->next()
             ->string('defaultWidgetBackgroundColor')->whenMissing('#fff')->onEmpty('#fff')->alias('default_widget_background_color')->next()
             ->string('defaultWidgetTextColor')->whenMissing('#000')->onEmpty('#000')->alias('default_widget_text_color')->next()
             ->get();
@@ -60,12 +61,7 @@ class PortalSettingsDashboardController extends Controller
         $portalSettingsDashboard->fill($data);
         $portalSettingsDashboard->save();
 
-// todo WM: opschonen
-//
-        // Generate portal css with default color settings
-//        GeneratePortalCss::dispatch();
-
-        return GenericResource::make($portalSettingsDashboard);
+        return FullPortalSettingsDashboard::make($portalSettingsDashboard->load('widgets'));
     }
 
 // todo WM: is deze nodig? Per cooperatie is er altijd 1 record die bij installatie al wordt aangemaakt

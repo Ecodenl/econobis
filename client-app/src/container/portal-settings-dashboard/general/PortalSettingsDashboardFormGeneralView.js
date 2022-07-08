@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import ViewText from '../../../components/form/ViewText';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+import { setError } from '../../../actions/general/ErrorActions';
 import PortalSettingsDashboardWidgetList from '../widgets/PortalSettingsDashboardWidgetList';
 import PreviewPortalDashboardPagePcModal from '../../portal-settings-preview/PreviewPortalDashboardPagePcModal';
 import PreviewPortalDashboardPageMobileModal from '../../portal-settings-preview/PreviewPortalDashboardPageMobileModal';
 import ButtonText from '../../../components/button/ButtonText';
+import PortalSettingsDashboardAPI from '../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
 
 class PortalSettingsDashboardFormGeneralView extends Component {
     constructor(props) {
@@ -32,8 +35,53 @@ class PortalSettingsDashboardFormGeneralView extends Component {
         this.setState({ showMenu: !this.state.showMenu });
     };
 
+    addWidget = widget => {
+        this.setState({
+            ...this.state,
+            widgets: [...this.state.widgets, widget],
+        });
+    };
+
+    removeWidget = id => {
+        // todo WM: opschonen
+        // console.log('removeWidget: ' + id);
+        PortalSettingsDashboardAPI.removePortalSettingsDashboardWidget(id)
+            .then(response => {
+                this.setState({
+                    ...this.state,
+                    widgets: response.data,
+                });
+            })
+            .catch(error => {
+                if (error.response) {
+                    this.props.setError(error.response.status, error.response.data.message);
+                } else {
+                    console.log(error);
+                    alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
+                }
+
+                // console.log('error PortalSettingsDashboardFormGeneralEdit - removeWidget - removePortalSettingsDashboardWidget');
+                // console.log(error);
+                // alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
+                // this.props.setError(error.response.status, error.response.data.message);
+            });
+    };
+    closeShowEditSort = () => {
+        console.log('closeShowEditSort');
+        this.props.updateState(this.props.dashboardSettings);
+        this.setState({
+            showEditSort: false,
+        });
+    };
+
     render() {
-        const { welcomeTitle, welcomeMessage, widgets } = this.props.dashboardSettings;
+        const {
+            welcomeTitle,
+            welcomeMessage,
+            defaultWidgetBackgroundColor,
+            defaultWidgetTextColor,
+            widgets,
+        } = this.props.dashboardSettings;
 
         const logoHeaderUrl = `${URL_API}/portal/images/logo.png?${this.props.imageHash}`;
         const imageBgHeaderUrl = `${URL_API}/portal/images/background-header.png?${this.props.imageHash}`;
@@ -107,19 +155,61 @@ class PortalSettingsDashboardFormGeneralView extends Component {
                                     className={'col-sm-8 form-group'}
                                 />
                             </div>
-                        </PanelBody>
-                    </Panel>
-                    <Panel>
-                        <PanelBody>
-                            <div className="row" style={{ margin: '0' }}>
-                                <PortalSettingsDashboardWidgetList widgets={widgets} imageHash={this.state.imageHash} />
+                            <div className="row">
+                                <ViewText
+                                    label="Default widget achtergrond kleur"
+                                    divSize={'col-sm-8'}
+                                    value={defaultWidgetBackgroundColor}
+                                    className={'col-sm-8 form-group'}
+                                />
+                                <span
+                                    className="rc-color-picker-trigger"
+                                    unselectable="unselectable"
+                                    style={{
+                                        backgroundColor: defaultWidgetBackgroundColor,
+                                        color: defaultWidgetTextColor,
+                                        border: '1px solid #999',
+                                        display: 'inline-block',
+                                        padding: '2px',
+                                        borderRadius: '2px',
+                                        width: '150px',
+                                        height: '30px',
+                                        boxShadow: '0 0 0 2px #fff inset',
+                                    }}
+                                >
+                                    Algemene tekst
+                                </span>
+                            </div>
+                            <div className="row">
+                                <ViewText
+                                    label="Default widget tekst kleur"
+                                    divSize={'col-sm-8'}
+                                    value={defaultWidgetTextColor}
+                                    className={'col-sm-8 form-group'}
+                                />
                             </div>
                         </PanelBody>
                     </Panel>
+                </div>
+                <div>
+                    <PortalSettingsDashboardWidgetList
+                        widgets={widgets}
+                        // showEditSort={false}
+                        imageHash={this.state.imageHash}
+                        addWidget={this.addWidget}
+                        removeWidget={this.removeWidget}
+                        closeShowEditSort={this.closeShowEditSort}
+                    />
                 </div>
             </>
         );
     }
 }
 
-export default PortalSettingsDashboardFormGeneralView;
+const mapDispatchToProps = dispatch => ({
+    setError: (http_code, message) => {
+        dispatch(setError(http_code, message));
+    },
+});
+
+export default connect(null, mapDispatchToProps)(PortalSettingsDashboardFormGeneralView);

@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api\PortalSettingsDashboard;
 
 use App\Eco\PortalSettingsDashboard\PortalSettingsDashboard;
 use App\Eco\PortalSettingsDashboard\PortalSettingsDashboardWidget;
+use App\Helpers\Delete\Models\DeletePortalSettingsDashboardWidget;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use JosKolenberg\LaravelJory\Facades\Jory;
@@ -26,24 +28,26 @@ class PortalSettingsDashboardWidgetController extends Controller
     {
         $this->authorize('manage', PortalSettingsDashboard::class);
 
-        $data = $input->integer('code_ref')->whenMissing('')->onEmpty('')->alias('codeRef')->next()
-            ->integer('order')->whenMissing(null)->onEmpty(null)->next()
+        $data = $input->integer('portalSettingsDashboardId')->alias('portal_settings_dashboard_id')->next()
+            ->string('code_ref')->whenMissing('')->onEmpty('')->alias('codeRef')->next()
+            ->integer('order')->whenMissing(999)->onEmpty(999)->next()
             ->string('title')->whenMissing('')->onEmpty('')->next()
             ->string('text')->whenMissing('')->onEmpty('')->next()
             ->string('buttonText')->whenMissing('')->onEmpty('')->alias('button_text')->next()
             ->string('buttonLink')->whenMissing('')->onEmpty('')->alias('button_link')->next()
-            ->string('backgroundColor')->whenMissing('#fff')->onEmpty('#fff')->alias('background_color')->next()
-            ->string('textColor')->whenMissing('#000')->onEmpty('#000')->alias('text_color')->next()
+            ->string('backgroundColor')->whenMissing('#ffffff')->onEmpty('#ffffff')->alias('background_color')->next()
+            ->string('textColor')->whenMissing('#000000')->onEmpty('#000000')->alias('text_color')->next()
             ->string('widgetImageFileName')->whenMissing('')->onEmpty('')->alias('widget_image_file_name')->next()
-            ->integer('showGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('show_group_id')->next()
-            ->boolean('active')->whenMissing('#000')->onEmpty('#000')->next()
+            ->integer('showGroupId')->validate('nullable|exists:contact_groups,id')->whenMissing(null)->onEmpty(null)->alias('show_group_id')->next()
+            ->boolean('active')->whenMissing(true)->onEmpty(true)->next()
             ->get();
 
+        $data['code_ref'] = Uuid::uuid1();
+
         $portalSettingsDashboardWidget = new PortalSettingsDashboardWidget($data);
-        $portalSettingsDashboardWidget->code_ref = Uuid::uuid1();;
         $portalSettingsDashboardWidget->save();
 
-        $this->storeWidgetImage($request, $portalSettingsDashboardWidget, $data['name']);
+        $this->storeWidgetImage($request, $portalSettingsDashboardWidget, $data['widget_image_file_name']);
 
         return Jory::on($portalSettingsDashboardWidget);
     }
@@ -52,28 +56,29 @@ class PortalSettingsDashboardWidgetController extends Controller
     {
         $this->authorize('manage', PortalSettingsDashboard::class);
 
-        $data = $input->integer('code_ref')->whenMissing('')->onEmpty('')->alias('codeRef')->next()
-            ->integer('order')->whenMissing(null)->onEmpty(null)->next()
+        $data = $input->integer('portalSettingsDashboardId')->alias('portal_settings_dashboard_id')->next()
+            ->string('code_ref')->whenMissing('')->onEmpty('')->alias('codeRef')->next()
+            ->integer('order')->whenMissing(999)->onEmpty(999)->next()
             ->string('title')->whenMissing('')->onEmpty('')->next()
             ->string('text')->whenMissing('')->onEmpty('')->next()
             ->string('buttonText')->whenMissing('')->onEmpty('')->alias('button_text')->next()
             ->string('buttonLink')->whenMissing('')->onEmpty('')->alias('button_link')->next()
+            ->string('backgroundColor')->whenMissing('#ffffff')->onEmpty('#ffffff')->alias('background_color')->next()
+            ->string('textColor')->whenMissing('#000000')->onEmpty('#000000')->alias('text_color')->next()
             ->string('widgetImageFileName')->whenMissing('')->onEmpty('')->alias('widget_image_file_name')->next()
-            ->integer('showGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('show_group_id')->next()
-            ->string('backgroundColor')->whenMissing('#fff')->onEmpty('#fff')->alias('background_color')->next()
-            ->string('textColor')->whenMissing('#000')->onEmpty('#000')->alias('text_color')->next()
-            ->boolean('active')->whenMissing('#000')->onEmpty('#000')->next()
+            ->integer('showGroupId')->validate('nullable|exists:contact_groups,id')->whenMissing(null)->onEmpty(null)->alias('show_group_id')->next()
+            ->boolean('active')->whenMissing(true)->onEmpty(true)->next()
             ->get();
 
         $portalSettingsDashboardWidget->fill($data);
         $portalSettingsDashboardWidget->save();
 
-        $this->storeWidgetImage($request, $portalSettingsDashboardWidget, $data['name']);
+        $this->storeWidgetImage($request, $portalSettingsDashboardWidget, $data['widget_image_file_name']);
 
         return GenericResource::make($portalSettingsDashboardWidget);
     }
 
-    public function destroy(DeletePortalSettingsDashboardWidget $portalSettingsDashboardWidget)
+    public function destroy(PortalSettingsDashboardWidget $portalSettingsDashboardWidget)
     {
         $this->authorize('manage', PortalSettingsDashboard::class);
 

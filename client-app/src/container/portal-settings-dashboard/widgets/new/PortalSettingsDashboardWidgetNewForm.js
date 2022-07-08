@@ -21,13 +21,16 @@ const Dropzone = require('react-dropzone').default;
 class PortalSettingsDashboardWidgetNewForm extends Component {
     constructor(props) {
         super(props);
-
+        console.log(props);
         this.state = {
             widget: {
+                // todo wm: check anders
+                portalSettingsDashboardId: 1,
                 title: '',
                 text: '',
                 image: '',
                 widgetImageFileName: '',
+                showGroupId: '',
                 buttonText: '',
                 buttonLink: '',
                 active: true,
@@ -100,6 +103,9 @@ class PortalSettingsDashboardWidgetNewForm extends Component {
         let hasErrors = false;
 
         const { widget } = this.state;
+        // todo WM: opschonen
+        // console.log('widget');
+        // console.log(widget);
         if (validator.isEmpty(widget.title)) {
             errors.title = true;
             errorMessage.title = 'Titel verplicht veld.';
@@ -131,14 +137,16 @@ class PortalSettingsDashboardWidgetNewForm extends Component {
         if (hasErrors) return;
 
         const data = new FormData();
+        data.append('portalSettingsDashboardId', widget.portalSettingsDashboardId);
         data.append('title', widget.title);
         data.append('text', widget.text);
         data.append('image', widget.image);
         data.append('buttonText', widget.buttonText);
         data.append('buttonLink', widget.buttonLink);
         data.append('widgetImageFileName', widget.widgetImageFileName);
+        data.append('showGroupId', widget.showGroupId);
 
-        PortalSettingsDashboardAPI.addDashboardWidget(data)
+        PortalSettingsDashboardAPI.addPortalSettingsDashboardWidget(data)
             .then(response => {
                 this.props.addWidget(response.data);
                 this.props.toggleModal();

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import PortalSettingsDashboardWigdetNewForm from './PortalSettingsDashboardWidgetNewForm';
+import PortalSettingsDashboardWidgetNewForm from './PortalSettingsDashboardWidgetNewForm';
 import PortalSettingsDashboardWidgetNewToolbar from './PortalSettingsDashboardWidgetNewToolbar';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
@@ -18,7 +18,7 @@ const PortalSettingsDashboardWidgetNewApp = () => {
                 </div>
 
                 <div className="col-md-12 margin-10-top">
-                    <PortalSettingsDashboardWigdetNewForm />
+                    <PortalSettingsDashboardWidgetNewForm />
                 </div>
             </div>
             <div className="col-md-3" />

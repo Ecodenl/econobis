@@ -7,8 +7,17 @@ import update from 'immutability-helper';
 import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 
-const PortalDashboardWidgetOrderTable = ({ columns, data, handleInputChange, removeWidget, imageHash }) => {
+const PortalDashboardWidgetOrderTable = ({
+    columns,
+    data,
+    showEditSort,
+    handleInputChange,
+    removeWidget,
+    imageHash,
+}) => {
     const [records, setRecords] = useState(data);
+    // todo wm: opschonen
+    // console.log('showEditSort: ' + showEditSort);
 
     useEffect(
         function() {
@@ -54,29 +63,55 @@ const PortalDashboardWidgetOrderTable = ({ columns, data, handleInputChange, rem
                 <thead>
                     {headerGroups.map(headerGroup => (
                         <tr {...headerGroup.getHeaderGroupProps()} className={'thead-title'}>
-                            {headerGroup.headers.map(column => (
-                                <th {...column.getHeaderProps()}>
-                                    {column.render('Header')}
-                                    {column.textToolTip && (
-                                        <span>
-                                            {' '}
-                                            <FaInfoCircle
-                                                color={'white'}
-                                                size={'15px'}
-                                                data-tip={column.render('textToolTip')}
-                                                data-for={`tooltip-${column.render('accessor')}`}
-                                            />
-                                            <ReactTooltip
-                                                id={`tooltip-${column.render('accessor')}`}
-                                                effect="float"
-                                                place="right"
-                                                multiline={true}
-                                                aria-haspopup="true"
-                                            />
-                                        </span>
-                                    )}
+                            {showEditSort === true && (
+                                <th>
+                                    <span>
+                                        <FaInfoCircle
+                                            color={'white'}
+                                            size={'15px'}
+                                            data-tip={`Je kunt de volgorde van de widgets aanpassen door deze te slepen.`}
+                                            data-for={`tooltip-order`}
+                                        />
+                                        <ReactTooltip
+                                            id={`tooltip-order`}
+                                            effect="float"
+                                            place="right"
+                                            multiline={true}
+                                            aria-haspopup="true"
+                                        />
+                                    </span>
                                 </th>
-                            ))}
+                            )}
+
+                            {headerGroup.headers.map(
+                                column =>
+                                    column.fieldName !== 'order' &&
+                                    column.fieldName !== 'codeRef' && (
+                                        <th {...column.getHeaderProps()}>
+                                            {column.render('Header')}
+                                            {column.textToolTip && (
+                                                <span>
+                                                    {' '}
+                                                    <FaInfoCircle
+                                                        color={'white'}
+                                                        size={'15px'}
+                                                        data-tip={column.render('textToolTip')}
+                                                        data-for={`tooltip-${column.fieldName}`}
+                                                    />
+                                                    <ReactTooltip
+                                                        id={`tooltip-${column.fieldName}`}
+                                                        effect="float"
+                                                        place="right"
+                                                        multiline={true}
+                                                        aria-haspopup="true"
+                                                    />
+                                                </span>
+                                            )}
+                                        </th>
+                                    )
+                            )}
+
+                            {showEditSort !== true && <th />}
                         </tr>
                     ))}
                 </thead>
@@ -88,6 +123,7 @@ const PortalDashboardWidgetOrderTable = ({ columns, data, handleInputChange, rem
                                     index={index}
                                     row={row}
                                     moveRow={moveRow}
+                                    showEditSort={showEditSort}
                                     handleInputChange={handleInputChange}
                                     removeWidget={removeWidget}
                                     {...row.getRowProps()}

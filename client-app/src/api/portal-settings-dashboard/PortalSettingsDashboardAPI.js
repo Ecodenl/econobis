@@ -41,28 +41,26 @@ export default {
             },
         });
     },
-    // todo WM: opschonen
-    //
-    // updateDashboardSettings: dashboardSettings => {
-    //     const requestUrl = `${URL_PORTAL_SETTINGS_DASHBOARD}`;
-    //
-    //     return axiosInstance.post(requestUrl, dashboardSettings);
-    // },
+    updatePortalSettingsDashboard: dashboardSettings => {
+        const requestUrl = `${URL_PORTAL_SETTINGS_DASHBOARD}/${dashboardSettings.id}`;
 
-    updateDashboardWidget: data => {
-        const requestUrl = `${URL_PORTAL_SETTINGS_DASHBOARD}/widget`;
-
-        return axiosInstance.post(requestUrl, data);
+        return axiosInstance.post(requestUrl, dashboardSettings);
     },
 
-    addDashboardWidget: widget => {
-        const requestUrl = `portal-settings-dashboard`;
+    addPortalSettingsDashboardWidget: widget => {
+        const requestUrl = `${URL_PORTAL_SETTINGS_DASHBOARD_WIDGET}`;
 
         return axiosInstance.post(requestUrl, widget);
     },
 
-    removeDashboardWidget: id => {
-        const requestUrl = `portal-settings-dashboard/delete`;
+    updatePortalSettingsDashboardWidget: widget => {
+        const requestUrl = `${URL_PORTAL_SETTINGS_DASHBOARD_WIDGET}/${widget.id}`;
+
+        return axiosInstance.post(requestUrl, widget);
+    },
+
+    removePortalSettingsDashboardWidget: id => {
+        const requestUrl = `${URL_PORTAL_SETTINGS_DASHBOARD_WIDGET}/${id}/delete`;
 
         return axiosInstance.post(requestUrl, { id: id });
     },

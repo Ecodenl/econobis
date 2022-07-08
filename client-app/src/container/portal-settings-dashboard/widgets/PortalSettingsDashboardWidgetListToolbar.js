@@ -11,9 +11,11 @@ const PortalSettingsDashboardWidgetListToolbar = props => {
     return (
         <div className="row">
             <div className="col-md-2">
-                <div className="btn-group btn-group-flex" role="group">
-                    <ButtonIcon iconName="glyphicon-plus" onClickAction={newPortalSettingsLayout} />
-                </div>
+                {!props.showEditSort && (
+                    <div className="btn-group btn-group-flex" role="group">
+                        <ButtonIcon iconName="glyphicon-plus" onClickAction={newPortalSettingsLayout} />
+                    </div>
+                )}
             </div>
             <div className="col-md-8">
                 <h4 className="text-center table-title">Widgets</h4>

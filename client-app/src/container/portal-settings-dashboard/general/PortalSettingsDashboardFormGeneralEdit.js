@@ -15,7 +15,7 @@ import PortalSettingsDashboardWidgetList from '../widgets/PortalSettingsDashboar
 import PreviewPortalDashboardPagePcModal from '../../portal-settings-preview/PreviewPortalDashboardPagePcModal';
 import PreviewPortalDashboardPageMobileModal from '../../portal-settings-preview/PreviewPortalDashboardPageMobileModal';
 import InputTextColorPicker from '../../../components/form/InputTextColorPicker';
-import PortalSettingsDashboardFormGeneralView from "./PortalSettingsDashboardFormGeneralView";
+import PortalSettingsDashboardFormGeneralView from './PortalSettingsDashboardFormGeneralView';
 
 class PortalSettingsDashboardFormGeneralEdit extends Component {
     constructor(props) {

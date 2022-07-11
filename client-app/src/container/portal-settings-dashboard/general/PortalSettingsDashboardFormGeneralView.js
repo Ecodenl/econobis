@@ -35,44 +35,45 @@ class PortalSettingsDashboardFormGeneralView extends Component {
         this.setState({ showMenu: !this.state.showMenu });
     };
 
-    addWidget = widget => {
-        this.setState({
-            ...this.state,
-            widgets: [...this.state.widgets, widget],
-        });
-    };
-
-    removeWidget = id => {
-        // todo WM: opschonen
-        // console.log('removeWidget: ' + id);
-        PortalSettingsDashboardAPI.removePortalSettingsDashboardWidget(id)
-            .then(response => {
-                this.setState({
-                    ...this.state,
-                    widgets: response.data,
-                });
-            })
-            .catch(error => {
-                if (error.response) {
-                    this.props.setError(error.response.status, error.response.data.message);
-                } else {
-                    console.log(error);
-                    alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
-                }
-
-                // console.log('error PortalSettingsDashboardFormGeneralEdit - removeWidget - removePortalSettingsDashboardWidget');
-                // console.log(error);
-                // alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
-                // this.props.setError(error.response.status, error.response.data.message);
-            });
-    };
-    closeShowEditSort = () => {
-        console.log('closeShowEditSort');
-        this.props.updateState(this.props.dashboardSettings);
-        this.setState({
-            showEditSort: false,
-        });
-    };
+    // todo WM: verplaatsen naar portal settings dashboard widget code
+    // addWidget = widget => {
+    //     this.setState({
+    //         ...this.state,
+    //         widgets: [...this.state.widgets, widget],
+    //     });
+    // };
+    //
+    // removeWidget = id => {
+    //     // todo WM: opschonen
+    //     // console.log('removeWidget: ' + id);
+    //     PortalSettingsDashboardAPI.removePortalSettingsDashboardWidget(id)
+    //         .then(response => {
+    //             this.setState({
+    //                 ...this.state,
+    //                 widgets: response.data,
+    //             });
+    //         })
+    //         .catch(error => {
+    //             if (error.response) {
+    //                 this.props.setError(error.response.status, error.response.data.message);
+    //             } else {
+    //                 console.log(error);
+    //                 alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
+    //             }
+    //
+    //             // console.log('error PortalSettingsDashboardFormGeneralEdit - removeWidget - removePortalSettingsDashboardWidget');
+    //             // console.log(error);
+    //             // alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
+    //             // this.props.setError(error.response.status, error.response.data.message);
+    //         });
+    // };
+    // closeShowEditSort = () => {
+    //     console.log('closeShowEditSort');
+    //     this.props.updateState(this.props.dashboardSettings);
+    //     this.setState({
+    //         showEditSort: false,
+    //     });
+    // };
 
     render() {
         const {

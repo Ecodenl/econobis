@@ -116,8 +116,9 @@ class ExportGroupReportExcelHelper
                     $rowData[] = '';
                     $rowData[] = '';
                 }
+                $contactGroupIds = $contact->selectedGroups->pluck('id')->toArray();
                 foreach ($this->contactGroups as $contactGroup) {
-                    if($contact->selectedGroups->contains($contactGroup->id)){
+                    if(in_array($contactGroup->id, $contactGroupIds)){
                         $contactGroupsPivot= $contactGroup->contacts()->where('contact_id', $contact->id)->first()->pivot;
                         $rowData[] = $contactGroupsPivot->member_to_group_since ? $this->formatDate($contactGroupsPivot->member_to_group_since) : 'onbekend';
                     } else {

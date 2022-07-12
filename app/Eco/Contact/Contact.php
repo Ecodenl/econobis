@@ -10,7 +10,6 @@ use App\Eco\ContactNote\ContactNote;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
-use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Intake\Intake;

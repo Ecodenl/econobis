@@ -20,6 +20,11 @@ const ContactGroupsListToolbar = props => {
                     {permissions.manageGroup && (
                         <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newContactGroup} />
                     )}
+                    <ButtonIcon
+                        iconName={'glyphicon-download-alt'}
+                        onClickAction={props.getExcelExportGroupReport}
+                        title="Export contacten/groepen rapportage"
+                    />
                 </div>
             </div>
             <div className="col-md-4">

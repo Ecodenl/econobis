@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Api\ContactGroup;
 
 use App\Eco\Contact\Contact;
-use App\Eco\ContactGroup\ComposedContactGroup;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\CSV\ContactCSVHelper;
 use App\Helpers\Delete\Models\DeleteContactGroup;
+use App\Helpers\Excel\ExportGroupReportExcelHelper;
 use App\Helpers\Laposta\LapostaListHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\RequestInput\RequestInput;
@@ -83,6 +83,7 @@ class ContactGroupController extends Controller
             ->string('contactGroupComposedType')->validate('string')->alias('composed_group_type')->whenMissing('one')->onEmpty('one')->next()
             ->boolean('sendEmailNewContactLink')->validate('boolean')->alias('send_email_new_contact_link')->whenMissing(false)->next()
             ->integer('emailTemplateIdNewContactLink')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_new_contact_link')->next()
+            ->boolean('includeIntoExportGroupReport')->validate('boolean')->alias('include_into_export_group_report')->whenMissing(false)->next()
             ->get();
 
         $contactGroupIds = explode(',', $request->contactGroupIds);
@@ -129,6 +130,7 @@ class ContactGroupController extends Controller
             ->string('dynamicFilterType')->validate('string')->alias('dynamic_filter_type')->whenMissing('and')->onEmpty('and')->next()
             ->boolean('sendEmailNewContactLink')->validate('boolean')->alias('send_email_new_contact_link')->whenMissing(false)->next()
             ->integer('emailTemplateIdNewContactLink')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_new_contact_link')->next()
+            ->boolean('includeIntoExportGroupReport')->validate('boolean')->alias('include_into_export_group_report')->whenMissing(false)->next()
             ->get();
 
         //Van dynamisch een statische groep maken
@@ -282,6 +284,17 @@ class ContactGroupController extends Controller
 
         return $contactCSVHelper->downloadCSV();
     }
+
+    public function excelGroupReport()
+    {
+        set_time_limit(0);
+        $contacts = Contact::whereHas('selectedGroups')->get();
+
+        $exportGroupReportExcelHelper = new ExportGroupReportExcelHelper($contacts);
+
+        return $exportGroupReportExcelHelper->downloadExportGroupReportExcelHelper();
+    }
+
 
     public function detachComposedContactGroup(ContactGroup $contactGroup, ContactGroup $contactGroupToDetach)
     {

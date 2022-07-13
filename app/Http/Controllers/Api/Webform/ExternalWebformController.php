@@ -651,6 +651,14 @@ class ExternalWebformController extends Controller
                     break;
                 case 'BCB' :
                     $contact = $this->updateContact($contact, $data, $ownerAndResponsibleUser);
+                    $address = $contact->addresses()
+                        ->where('postal_code', $data['address_postal_code'])
+                        ->where('number', $data['address_number'])
+                        ->where('addition', $data['address_addition'])
+                        ->first();
+                    if($address){
+                        $this->address = $address;
+                    }
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Contact 'bewoner' " . $contact->full_name . " (".$contact->number.") bijgewerkt op adres 'bewoner'.\n";
                     $note .= "Controleer contactgegevens\n";

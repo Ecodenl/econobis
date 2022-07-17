@@ -2,12 +2,9 @@ import React, { useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { arrows_vertical } from 'react-icons-kit/ikons/arrows_vertical';
 import Icon from 'react-icons-kit';
-import AddPortalSettingsDashboardWidgetImageModal from './AddPortalSettingsDashboardWidgetImageModal';
-import PortalSettingsDashboardAPI from '../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
 import { Image } from 'react-bootstrap';
-import Modal from '../../../components/modal/Modal';
-import PortalLayoutImageCrop from '../../../components/cropImage/portalLayout/PortalLayoutImageCrop';
 import { hashHistory } from 'react-router';
+import PortalSettingsDashboardWidgetDeleteItem from './details/PortalSettingsDashboardWidgetDeleteItem';
 
 const DND_ITEM_TYPE = 'row';
 
@@ -16,23 +13,16 @@ const PortalDashboardWidgetOrderRow = ({
     index,
     moveRow,
     showEditSort,
-    // todo wm: opschonen
-    // handleInputChange,
-    removeWidget,
+    deletePortalSettingsDashboardWidget,
     imageHash,
 }) => {
-    console.log('showEditSort b: ' + showEditSort);
     const dropRef = useRef(null);
     const dragRef = useRef(null);
-    const [newWidgetImage, setNewWidgetImage] = useState(false);
-    const [useAutoCropper, setUseAutoCropper] = useState(true);
-    const [showCropImageModal, setShowCropImageModal] = useState(false);
-    const [widgetImage, setWidgetImage] = useState('');
-    const [showUploadSucces, setShowUploadSucces] = useState(false);
-    const [uploadSuccesMessage, setUploadSuccesMessage] = useState('');
+    const [showDelete, setShowDelete] = useState(false);
 
-    const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
-    const staticInput = ['buttonLink'];
+    // todo WM: hier moeten we nog wat mee !!
+    // const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
+    // const staticInput = ['buttonLink'];
 
     const [, drop] = useDrop({
         accept: DND_ITEM_TYPE,
@@ -88,84 +78,29 @@ const PortalDashboardWidgetOrderRow = ({
     preview(drop(dropRef));
     drag(dragRef);
 
-    const toggleUseAutoCropper = () => {
-        setUseAutoCropper(!useAutoCropper);
-    };
-
-    const closeNewWidgetImage = () => {
-        setNewWidgetImage(false);
-    };
-
-    const toggleNewWidgetImage = () => {
-        setNewWidgetImage(!newWidgetImage);
-    };
-
-    const closeShowCropWidgetImage = () => {
-        setWidgetImage('');
-        setUseAutoCropper(true);
-        setShowCropImageModal(false);
-    };
-
-    const toggleShowUploadSucces = () => {
-        setShowUploadSucces(!showUploadSucces);
-    };
-
-    const addWidgetImage = file => {
-        setWidgetImage(file[0]);
-        setShowCropImageModal(true);
-    };
-
-    const cropWidgetImage = file => {
-        setWidgetImage(file);
-
-        const data = new FormData();
-        data.append('id', row.id);
-        data.append('image', file);
-        data.append('widgetImageFileName', widgetImage.name);
-        data.append('type', widgetImage.type);
-
-        PortalSettingsDashboardAPI.updatePortalSettingsDashboardWidget(data)
-            .then(payload => {
-                setShowCropImageModal(false);
-                setShowUploadSucces(true);
-                setUploadSuccesMessage(payload.data.message);
-                // alert(payload.data.message);
-            })
-            .catch(error => {
-                setShowCropImageModal(false);
-                console.log(error);
-                alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
-            });
-    };
-
     return (
         <>
             <tr ref={dropRef} style={{ opacity }}>
-                {showEditSort === true && (
-                    <td ref={dragRef}>
-                        <Icon icon={arrows_vertical} />
-                    </td>
-                )}
                 {row.cells.map(cell => {
                     switch (cell.column.id) {
                         case 'active':
                             return <td {...cell.getCellProps()}>{cell.value ? 'Ja' : 'Nee'}</td>;
                         case 'order':
-                            // todo wm: opschonen
-                            // return (
-                            //     <td ref={dragRef}>
-                            //         <Icon icon={arrows_vertical} />
-                            //         {/*todo WM: opschonen*/}
-                            //         {cell.value} | {row.index}
-                            //     </td>
-                            // );
-                            return null;
+                            if (showEditSort === true) {
+                                return (
+                                    <td ref={dragRef}>
+                                        <Icon icon={arrows_vertical} />
+                                    </td>
+                                );
+                            } else {
+                                return null;
+                            }
                         case 'widgetImageFileName': {
-                            const logoUrl = cell.value && `${URL_API}/portal/images/${cell.value}?${imageHash}`;
+                            const imageUrl = cell.value && `${URL_API}/portal/images/${cell.value}?${imageHash}`;
                             return (
                                 <td key={cell.column.id}>
                                     <Image
-                                        src={widgetImage && widgetImage.preview ? widgetImage.preview : logoUrl}
+                                        src={imageUrl}
                                         thumbnail={true}
                                         style={{
                                             border: '1px solid #999',
@@ -181,25 +116,20 @@ const PortalDashboardWidgetOrderRow = ({
                             );
                         }
                         case 'codeRef':
-                            // todo WM: opschonen
-                            // console.log(row);
                             if (!showEditSort) {
                                 return (
                                     <td>
-                                        <a role="button" onClick={() => hashHistory.push(`/project/opbrengst/${id}`)}>
-                                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                                        <a
+                                            role="button"
+                                            onClick={() =>
+                                                hashHistory.push(`/portal-instellingen-dashboard-widget/${row.id}`)
+                                            }
+                                        >
+                                            <span className="glyphicon glyphicon-pencil mybtn-success" />
                                         </a>
-                                        <a role="button" onClick={() => removeWidget(row.id)}>
+                                        <a role="button" onClick={() => setShowDelete(true)}>
                                             <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
                                         </a>
-                                        {/*todo WM: opschonen*/}
-                                        {/*<ButtonIcon*/}
-                                        {/*    iconName={'glyphicon-remove'}*/}
-                                        {/*    buttonClassName={'btn-danger btn-sm'}*/}
-                                        {/*    disabled={staticWidgets.includes(cell.value)}*/}
-                                        {/*    onClickAction={() => removeWidget(row.id)}*/}
-                                        {/*/>*/}
-                                        {/*{row.id}*/}
                                     </td>
                                 );
                             } else {
@@ -211,33 +141,13 @@ const PortalDashboardWidgetOrderRow = ({
                     return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
                 })}
             </tr>
-            {newWidgetImage && (
-                <AddPortalSettingsDashboardWidgetImageModal
-                    closeNewWidgetImage={closeNewWidgetImage}
-                    toggleUseAutoCropper={toggleUseAutoCropper}
-                    useAutoCropper={useAutoCropper}
-                    addWidgetImage={addWidgetImage}
+            {showDelete && (
+                <PortalSettingsDashboardWidgetDeleteItem
+                    closeDeleteItemModal={() => setShowDelete(false)}
+                    description={row.cells.find(cell => cell.column.id === 'title').value}
+                    id={row.id}
+                    deletePortalSettingsDashboardWidget={deletePortalSettingsDashboardWidget}
                 />
-            )}
-            {showCropImageModal && (
-                <PortalLayoutImageCrop
-                    closeShowCrop={closeShowCropWidgetImage}
-                    useAutoCropper={useAutoCropper}
-                    image={widgetImage}
-                    imageLayoutItemName={'image-widget'}
-                    cropLogo={cropWidgetImage}
-                />
-            )}
-
-            {showUploadSucces && (
-                <Modal
-                    title={'Succes'}
-                    closeModal={toggleShowUploadSucces}
-                    buttonCancelText={'Ok'}
-                    showConfirmAction={false}
-                >
-                    {uploadSuccesMessage}
-                </Modal>
             )}
         </>
     );

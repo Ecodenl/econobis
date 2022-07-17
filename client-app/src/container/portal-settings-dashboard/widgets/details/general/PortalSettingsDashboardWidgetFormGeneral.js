@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { isEmpty } from 'lodash';
 
-import PortalSettingsDashboardFormGeneralEdit from './PortalSettingsDashboardFormGeneralEdit';
-import PortalSettingsDashboardFormGeneralView from './PortalSettingsDashboardFormGeneralView';
-import ErrorUnauthorized from '../../global/ErrorUnauthorized';
+import PortalSettingsDashboardWidgetFormGeneralEdit from './PortalSettingsDashboardWidgetFormGeneralEdit';
+import PortalSettingsDashboardWidgetFormGeneralView from './PortalSettingsDashboardWidgetFormGeneralView';
+import ErrorUnauthorized from '../../../../global/ErrorUnauthorized';
 
-class PortalSettingsDashboardFormGeneral extends Component {
+class PortalSettingsDashboardWidgetFormGeneral extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
-            showEdit: false,
             imageHash: Date.now(),
+            showEdit: false,
             activeDiv: '',
         };
     }
@@ -25,6 +25,8 @@ class PortalSettingsDashboardFormGeneral extends Component {
     switchToView = () => {
         this.setState({
             showEdit: false,
+            imageHash: Date.now(),
+            activeDiv: '',
         });
     };
 
@@ -44,7 +46,6 @@ class PortalSettingsDashboardFormGeneral extends Component {
 
     render() {
         const { permissions = {} } = this.props.meDetails;
-
         if (!permissions.managePortalSettings) {
             return <ErrorUnauthorized />;
         }
@@ -56,25 +57,20 @@ class PortalSettingsDashboardFormGeneral extends Component {
                 onMouseLeave={() => this.onDivLeave()}
             >
                 {this.state.showEdit && permissions.managePortalSettings ? (
-                    <PortalSettingsDashboardFormGeneralEdit
+                    <PortalSettingsDashboardWidgetFormGeneralEdit
+                        portalSettingsDashboardWidget={this.props.portalSettingsDashboardWidget}
                         dashboardSettings={this.props.dashboardSettings}
+                        contactGroups={this.props.contactGroups}
+                        isLoading={this.props.isLoading}
                         updateState={this.props.updateState}
                         switchToView={this.switchToView}
                         imageHash={this.state.imageHash}
-                        // todo WM: opschonen
-                        // meDetails={this.props.meDetails}
-                        // switchToEdit={this.switchToEdit}
                     />
-                ) : isEmpty(this.props.dashboardSettings) ? (
-                    <p>Nog geen dashboard instellingen opgeslagen.</p>
                 ) : (
-                    <PortalSettingsDashboardFormGeneralView
-                        dashboardSettings={this.props.dashboardSettings}
-                        updateState={this.props.updateState}
+                    <PortalSettingsDashboardWidgetFormGeneralView
+                        {...this.props.portalSettingsDashboardWidget}
                         switchToEdit={this.switchToEdit}
                         imageHash={this.state.imageHash}
-                        // todo WM: opschonen
-                        // switchToView={this.switchToView}
                     />
                 )}
             </div>
@@ -86,7 +82,8 @@ const mapStateToProps = state => {
     return {
         // permissions: state.meDetails.permissions,
         meDetails: state.meDetails,
+        portalSettingsDashboardWidgets: state.systemData.portalSettingsDashboardWidgets,
     };
 };
 
-export default connect(mapStateToProps)(PortalSettingsDashboardFormGeneral);
+export default connect(mapStateToProps)(PortalSettingsDashboardWidgetFormGeneral);

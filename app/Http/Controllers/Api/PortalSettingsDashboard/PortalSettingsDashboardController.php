@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\PortalSettingsDashboard;
 
 use App\Eco\PortalSettingsDashboard\PortalSettingsDashboard;
+use App\Eco\PortalSettingsDashboard\PortalSettingsDashboardWidget;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PortalSettingsDashboard\FullPortalSettingsDashboard;
@@ -61,6 +62,15 @@ class PortalSettingsDashboardController extends Controller
         $portalSettingsDashboard->fill($data);
         $portalSettingsDashboard->save();
 
+        if($request->input('widgets')){
+            foreach ($request->input('widgets') as $inputWidget) {
+                $widget = PortalSettingsDashboardWidget::find($inputWidget['id']);
+                if($widget){
+                    $widget->order = $inputWidget['order'];
+                    $widget->save();
+                }
+            }
+        }
         return FullPortalSettingsDashboard::make($portalSettingsDashboard->load('widgets'));
     }
 

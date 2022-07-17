@@ -93,6 +93,7 @@ import LoadingPage from './container/global/LoadingPage';
 import RevenuesKwhNewApp from './container/project/details/revenueKwh/new/RevenuesKwhNewApp';
 import RevenuesKwhDetailsApp from './container/project/details/revenueKwh/details/RevenuesKwhDetailsApp';
 import RevenuePartsKwhDetailsApp from './container/project/details/revenueKwh/details/revenue-parts/details/RevenuePartsKwhDetailsApp';
+import PortalSettingsDashboardWidgetDetailsApp from './container/portal-settings-dashboard/widgets/details/PortalSettingsDashboardWidgetDetailsApp';
 const MeasuresListApp = React.lazy(() => import('./container/measures/list/MeasuresListApp'));
 const MeasureDetailsApp = React.lazy(() => import('./container/measures/details/MeasureDetailsApp'));
 const MeasureCategoriesListApp = React.lazy(() =>
@@ -383,14 +384,14 @@ const Routes = () => {
                     <Route path="kostenplaats/:id" component={CostCenterDetailsApp} />
                     /* PortalSettingsLayout */
                     <Route path="portal-instellingen-dashboard" component={PortalSettingsDashboardApp} />
-                    {/*todo WM: nog*/}
-                    {/*<Route path="portal-instellingen-dashboard-widget" component={PortalSettingsDashboardWidgetListApp} />*/}
                     <Route
                         path="portal-instellingen-dashboard-widget/nieuw"
                         component={PortalSettingsDashboardWidgetNewApp}
                     />
-                    {/*todo WM: nog*/}
-                    {/*<Route path="portal-instellingen-dashboard-widget/:id" component={PortalSettingsDashboardWidgetApp} />*/}
+                    <Route
+                        path="portal-instellingen-dashboard-widget/:id"
+                        component={PortalSettingsDashboardWidgetDetailsApp}
+                    />
                     /* PortalSettingsLayout */
                     <Route path="portal-instellingen-layout" component={PortalSettingsLayoutListApp} />
                     <Route path="portal-instellingen-layout/nieuw" component={PortalSettingsLayoutNewApp} />

@@ -1,45 +1,36 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Image from 'react-bootstrap/lib/Image';
-import { hashHistory } from 'react-router';
+import Image from 'react-bootstrap/es/Image';
 import moment from 'moment';
 import validator from 'validator';
 
 moment.locale('nl');
 
-import ButtonText from '../../../../components/button/ButtonText';
-import InputText from '../../../../components/form/InputText';
-import InputTextArea from '../../../../components/form/InputTextArea';
-import Panel from '../../../../components/panel/Panel';
-import PanelBody from '../../../../components/panel/PanelBody';
-import PortalImageCrop from '../../../../components/imageUploadAndCrop/PortalImageCrop';
-import PortalImageUpload from '../../../../components/imageUploadAndCrop/PortalImageUpload';
-import PortalSettingsDashboardAPI from '../../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
-import ContactGroupAPI from '../../../../api/contact-group/ContactGroupAPI';
-import InputReactSelect from '../../../../components/form/InputReactSelect';
-import InputTextColorPicker from '../../../../components/form/InputTextColorPicker';
+import ButtonText from '../../../../../components/button/ButtonText';
+import InputText from '../../../../../components/form/InputText';
+import InputTextArea from '../../../../../components/form/InputTextArea';
+import Panel from '../../../../../components/panel/Panel';
+import PanelBody from '../../../../../components/panel/PanelBody';
+import PortalImageCrop from '../../../../../components/imageUploadAndCrop/PortalImageCrop';
+import PortalImageUpload from '../../../../../components/imageUploadAndCrop/PortalImageUpload';
+import PreviewPortalDashboardPagePcModal from '../../../../portal-settings-preview/PreviewPortalDashboardPagePcModal';
+import PreviewPortalDashboardPageMobileModal from '../../../../portal-settings-preview/PreviewPortalDashboardPageMobileModal';
+import PortalSettingsDashboardAPI from '../../../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
+import InputTextColorPicker from '../../../../../components/form/InputTextColorPicker';
+import InputReactSelect from '../../../../../components/form/InputReactSelect';
 
-class PortalSettingsDashboardWidgetNewForm extends Component {
+class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            showPreviewPortalDashboardPagePc: false,
+            showPreviewPortalDashboardPageMobile: false,
+            showMenu: false,
             widget: {
-                // todo wm: check anders
-                portalSettingsDashboardId: 1,
-                title: '',
-                text: '',
-                image: '',
-                widgetImageFileName: '',
-                showGroupId: '',
-                buttonText: '',
-                buttonLink: '',
-                backgroundColor: '',
-                textColor: '',
-                active: true,
+                ...props.portalSettingsDashboardWidget,
             },
-            contactGroups: {},
-            contactGroupsLoading: false,
+            imageHash: Date.now(),
             image: '',
             imageItemName: '',
             showModalUploadImage: false,
@@ -60,22 +51,16 @@ class PortalSettingsDashboardWidgetNewForm extends Component {
         };
     }
 
-    componentDidMount() {
-        this.callFetchContactGroups();
-    }
+    togglePreviewPortalLoginPagePc = () => {
+        this.setState({ showPreviewPortalLoginPagePc: !this.state.showPreviewPortalLoginPagePc });
+    };
 
-    callFetchContactGroups = () => {
-        this.setState({ contactGroupsLoading: true });
-        ContactGroupAPI.peekContactGroups()
-            .then(payload => {
-                this.setState({
-                    contactGroupsLoading: false,
-                    contactGroups: payload,
-                });
-            })
-            .catch(error => {
-                this.setState({ contactGroupsLoading: false });
-            });
+    togglePreviewPortalDashboardPagePc = () => {
+        this.setState({ showPreviewPortalDashboardPagePc: !this.state.showPreviewPortalDashboardPagePc });
+    };
+
+    setShowMenu = () => {
+        this.setState({ showMenu: !this.state.showMenu });
     };
 
     closeUploadImage = () => {
@@ -180,22 +165,24 @@ class PortalSettingsDashboardWidgetNewForm extends Component {
         if (hasErrors) return;
 
         const data = new FormData();
-        data.append('portalSettingsDashboardId', widget.portalSettingsDashboardId);
+        // data.append('portalSettingsDashboardId', widget.portalSettingsDashboardId);
         data.append('title', widget.title);
         data.append('text', widget.text);
         data.append('image', widget.image);
         data.append('buttonText', widget.buttonText);
         data.append('buttonLink', widget.buttonLink);
         data.append('widgetImageFileName', widget.widgetImageFileName);
-        data.append('showGroupId', widget.showGroupId);
+        data.append('showGroupId', widget.showGroupId ? widget.showGroupId : '');
         data.append('backgroundColor', widget.backgroundColor);
         data.append('textColor', widget.textColor);
 
         this.setState({ ...this.state, errors: errors });
 
-        PortalSettingsDashboardAPI.addPortalSettingsDashboardWidget(data)
-            .then(response => {
-                hashHistory.push(`/portal-instellingen-dashboard`);
+        PortalSettingsDashboardAPI.updatePortalSettingsDashboardWidget(widget.id, data)
+            .then(payload => {
+                console.log(payload);
+                this.props.updateState(payload.data.data);
+                this.props.switchToView();
             })
             .catch(error => {
                 console.log(error);
@@ -211,6 +198,25 @@ class PortalSettingsDashboardWidgetNewForm extends Component {
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
+                <Panel>
+                    <PanelBody>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <div className="btn-group btn-group-flex" role="group">
+                                    <ButtonText
+                                        buttonText="Preview dashboard pagina PC"
+                                        onClickAction={this.togglePreviewPortalDashboardPagePc}
+                                    />
+                                    <ButtonText
+                                        buttonText="Preview dashboard pagina mobiel"
+                                        onClickAction={this.togglePreviewPortalDashboardPageMobile}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </PanelBody>
+                </Panel>
+
                 <Panel>
                     <PanelBody>
                         <div className={'row'}>
@@ -302,11 +308,18 @@ class PortalSettingsDashboardWidgetNewForm extends Component {
                                 label={'Toon voor groep'}
                                 divSize={'col-sm-8'}
                                 name={'showGroupId'}
-                                options={this.state.contactGroups}
+                                options={this.props.contactGroups}
                                 value={widget.showGroupId}
                                 onChangeAction={this.handleReactSelectChange}
-                                isLoading={this.state.contactGroupsLoading}
+                                isLoading={this.props.isLoading}
+                                clearable={true}
                             />
+                            {/*<ViewText*/}
+                            {/*    label={'Toon voor groep'}*/}
+                            {/*    value={widget.showGroupId == null ? 'Alle groepen' : widget.contactGroup.name}*/}
+                            {/*    divSize={'col-sm-8'}*/}
+                            {/*    className={'col-sm-8 form-group'}*/}
+                            {/*/>*/}
                         </div>
                         <div className="row">
                             <InputTextColorPicker
@@ -371,13 +384,63 @@ class PortalSettingsDashboardWidgetNewForm extends Component {
                     <PanelBody>
                         <div className="pull-right btn-group" role="group">
                             <ButtonText
-                                buttonText={'Opslaan'}
-                                onClickAction={this.handleSubmit}
-                                type={'submit'}
-                                value={'Submit'}
+                                buttonClassName={'btn-default'}
+                                buttonText={'Sluiten'}
+                                onClickAction={this.props.switchToView}
                             />
+                            <ButtonText buttonText={'Opslaan'} type={'submit'} value={'Submit'} />
                         </div>
                     </PanelBody>
+                    {this.state.showPreviewPortalDashboardPagePc && (
+                        <PreviewPortalDashboardPagePcModal
+                            previewFromDashboardWidget={true}
+                            closeModal={this.togglePreviewPortalDashboardPagePc}
+                            setShowMenu={this.setShowMenu}
+                            showMenu={this.state.showMenu}
+                            imageHash={this.state.imageHash}
+                            attachmentLogoHeader={this.state.attachmentLogoHeader}
+                            logoHeaderUrl={logoHeaderUrl}
+                            attachmentImageBgHeader={this.state.attachmentImageBgHeader}
+                            imageBgHeaderUrl={imageBgHeaderUrl}
+                            portalMainBackgroundColor={portalMainBackgroundColor}
+                            portalMainTextColor={portalMainTextColor}
+                            portalBackgroundColor={portalBackgroundColor}
+                            portalBackgroundTextColor={portalBackgroundTextColor}
+                            loginHeaderBackgroundColor={loginHeaderBackgroundColor}
+                            loginHeaderBackgroundTextColor={loginHeaderBackgroundTextColor}
+                            headerIconsColor={headerIconsColor}
+                            loginFieldBackgroundColor={loginFieldBackgroundColor}
+                            loginFieldBackgroundTextColor={loginFieldBackgroundTextColor}
+                            buttonColor={buttonColor}
+                            buttonTextColor={buttonTextColor}
+                            dashboardSettings={this.props.dashboardSettings}
+                        />
+                    )}
+                    {this.state.showPreviewPortalDashboardPageMobile && (
+                        <PreviewPortalDashboardPageMobileModal
+                            previewFromDashboardWidget={true}
+                            closeModal={this.togglePreviewPortalDashboardPageMobile}
+                            setShowMenu={this.setShowMenu}
+                            showMenu={this.state.showMenu}
+                            imageHash={this.state.imageHash}
+                            attachmentLogoHeader={this.state.attachmentLogoHeader}
+                            logoHeaderUrl={logoHeaderUrl}
+                            attachmentImageBgHeader={this.state.attachmentImageBgHeader}
+                            imageBgHeaderUrl={imageBgHeaderUrl}
+                            portalMainBackgroundColor={portalMainBackgroundColor}
+                            portalMainTextColor={portalMainTextColor}
+                            portalBackgroundColor={portalBackgroundColor}
+                            portalBackgroundTextColor={portalBackgroundTextColor}
+                            loginHeaderBackgroundColor={loginHeaderBackgroundColor}
+                            loginHeaderBackgroundTextColor={loginHeaderBackgroundTextColor}
+                            headerIconsColor={headerIconsColor}
+                            loginFieldBackgroundColor={loginFieldBackgroundColor}
+                            loginFieldBackgroundTextColor={loginFieldBackgroundTextColor}
+                            buttonColor={buttonColor}
+                            buttonTextColor={buttonTextColor}
+                            dashboardSettings={this.props.dashboardSettings}
+                        />
+                    )}
                 </Panel>
             </form>
         );
@@ -387,9 +450,11 @@ class PortalSettingsDashboardWidgetNewForm extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
+        // portalSettingsDashboards: state.systemData.portalSettingsDashboards,
     };
 };
 
+// const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 const mapDispatchToProps = null;
 
-export default connect(mapStateToProps, mapDispatchToProps)(PortalSettingsDashboardWidgetNewForm);
+export default connect(mapStateToProps, mapDispatchToProps)(PortalSettingsDashboardWidgetFormGeneralEdit);

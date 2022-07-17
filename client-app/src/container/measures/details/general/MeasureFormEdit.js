@@ -10,7 +10,7 @@ import PanelFooter from '../../../../components/panel/PanelFooter';
 import MeasureAPI from '../../../../api/measure/MeasureAPI';
 
 import { fetchMeasure } from '../../../../actions/measure/MeasureDetailsActions';
-import InputTextArea from '../../../../components/form/InputTextarea';
+import InputTextArea from '../../../../components/form/InputTextArea';
 
 class MeasureFormEdit extends Component {
     constructor(props) {

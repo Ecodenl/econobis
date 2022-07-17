@@ -12,12 +12,10 @@ const PortalDashboardWidgetOrderTable = ({
     data,
     showEditSort,
     handleInputChange,
-    removeWidget,
+    deletePortalSettingsDashboardWidget,
     imageHash,
 }) => {
     const [records, setRecords] = useState(data);
-    // todo wm: opschonen
-    // console.log('showEditSort: ' + showEditSort);
 
     useEffect(
         function() {
@@ -125,7 +123,7 @@ const PortalDashboardWidgetOrderTable = ({
                                     moveRow={moveRow}
                                     showEditSort={showEditSort}
                                     handleInputChange={handleInputChange}
-                                    removeWidget={removeWidget}
+                                    deletePortalSettingsDashboardWidget={deletePortalSettingsDashboardWidget}
                                     {...row.getRowProps()}
                                     imageHash={imageHash}
                                 />

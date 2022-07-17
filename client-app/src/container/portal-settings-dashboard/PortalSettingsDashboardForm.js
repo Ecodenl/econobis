@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import PortalSettingsDashboardFormGeneral from './general/PortalSettingsDashboardFormGeneral';
 import * as PropTypes from 'prop-types';
 import PortalSettingsLayoutDetailsForm from '../portal-settings-layout/details/PortalSettingsLayoutForm';
+import PortalSettingsDashboardWidgetApp from './widgets/PortalSettingsDashboardWidgetApp';
 
 class PortalSettingsDashboardForm extends Component {
     constructor(props) {
@@ -25,7 +26,7 @@ class PortalSettingsDashboardForm extends Component {
         ) : (
             <div>
                 <PortalSettingsDashboardFormGeneral dashboardSettings={dashboardSettings} updateState={updateState} />
-                {/*<PortalSettingsDashboardFormWidgets />*/}
+                <PortalSettingsDashboardWidgetApp dashboardSettings={dashboardSettings} updateState={updateState} />
             </div>
         );
     }

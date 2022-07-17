@@ -47,19 +47,49 @@ export default {
         return axiosInstance.post(requestUrl, dashboardSettings);
     },
 
+    fetchPortalSettingsDashboardWidgetDetails: id => {
+        const requestUrl = `jory/portal-settings-dashboard-widget/${id}`;
+
+        return axiosInstance.get(requestUrl, {
+            params: {
+                jory: {
+                    fld: [
+                        'id',
+                        'codeRef',
+                        'order',
+                        'title',
+                        'widgetImageFileName',
+                        'active',
+                        'text',
+                        'buttonText',
+                        'buttonLink',
+                        'showGroupId',
+                        'backgroundColor',
+                        'textColor',
+                    ],
+                    rlt: {
+                        contactGroup: {
+                            fld: ['name'],
+                        },
+                    },
+                },
+            },
+        });
+    },
+
     addPortalSettingsDashboardWidget: widget => {
         const requestUrl = `${URL_PORTAL_SETTINGS_DASHBOARD_WIDGET}`;
 
         return axiosInstance.post(requestUrl, widget);
     },
 
-    updatePortalSettingsDashboardWidget: widget => {
-        const requestUrl = `${URL_PORTAL_SETTINGS_DASHBOARD_WIDGET}/${widget.id}`;
+    updatePortalSettingsDashboardWidget: (widgetId, widget) => {
+        const requestUrl = `${URL_PORTAL_SETTINGS_DASHBOARD_WIDGET}/${widgetId}`;
 
         return axiosInstance.post(requestUrl, widget);
     },
 
-    removePortalSettingsDashboardWidget: id => {
+    deletePortalSettingsDashboardWidget: id => {
         const requestUrl = `${URL_PORTAL_SETTINGS_DASHBOARD_WIDGET}/${id}/delete`;
 
         return axiosInstance.post(requestUrl, { id: id });

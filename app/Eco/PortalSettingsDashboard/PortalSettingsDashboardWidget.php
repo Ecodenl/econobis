@@ -2,6 +2,7 @@
 
 namespace App\Eco\PortalSettingsDashboard;
 
+use App\Eco\ContactGroup\ContactGroup;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -20,6 +21,11 @@ class PortalSettingsDashboardWidget extends Model
     public function portalSettingsDashboard()
     {
         return $this->belongsTo(PortalSettingsDashboard::class);
+    }
+
+    public function contactGroup()
+    {
+        return $this->belongsTo(ContactGroup::class, 'show_group_id');
     }
 
     public function getBackgroundColor()

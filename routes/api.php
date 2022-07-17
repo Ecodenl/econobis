@@ -547,13 +547,14 @@ Route::namespace('Api')
         Route::post('portal-settings-layout/{portalSettingsLayout}/delete', 'PortalSettingsLayout\PortalSettingsLayoutController@destroy');
 
         Route::get('portal-settings-dashboard/jory', 'PortalSettingsDashboard\PortalSettingsDashboardController@jory');
-// todo WM: opschonen
+// todo WM: store nieuwe portal-settings-dashboard
 //
 //        Route::post('portal-settings-dashboard', 'PortalSettingsDashboard\PortalSettingsDashboardController@store');
 //        Route::get('portal-settings-dashboard/{portalSettingsDashboard}', 'PortalSettingsDashboard\PortalSettingsDashboardController@get');
         Route::post('portal-settings-dashboard/{portalSettingsDashboard}', 'PortalSettingsDashboard\PortalSettingsDashboardController@update');
 //        Route::post('portal-settings-dashboard/delete', 'PortalSettingsDashboard\PortalSettingsDashboardController@destroy');
 
+        Route::get('portal-settings-dashboard-widget/jory', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@jory');
         Route::post('portal-settings-dashboard-widget', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@store');
         Route::post('portal-settings-dashboard-widget/{portalSettingsDashboardWidget}', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@update');
         Route::post('portal-settings-dashboard-widget/{portalSettingsDashboardWidget}/delete', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@destroy');

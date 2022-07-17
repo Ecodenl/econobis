@@ -10,12 +10,10 @@ import PanelBody from '../../../components/panel/PanelBody';
 import { setError } from '../../../actions/general/ErrorActions';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import PortalSettingsDashboardAPI from '../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
-import InputTextArea from '../../../components/form/InputTextarea';
-import PortalSettingsDashboardWidgetList from '../widgets/PortalSettingsDashboardWidgetList';
+import InputTextArea from '../../../components/form/InputTextArea';
 import PreviewPortalDashboardPagePcModal from '../../portal-settings-preview/PreviewPortalDashboardPagePcModal';
 import PreviewPortalDashboardPageMobileModal from '../../portal-settings-preview/PreviewPortalDashboardPageMobileModal';
 import InputTextColorPicker from '../../../components/form/InputTextColorPicker';
-import PortalSettingsDashboardFormGeneralView from './PortalSettingsDashboardFormGeneralView';
 
 class PortalSettingsDashboardFormGeneralEdit extends Component {
     constructor(props) {
@@ -86,10 +84,6 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
         event.preventDefault();
 
         const { dashboardSettings } = this.state;
-        // todo WM: opschonen
-        // console.log('handleSubmit');
-        // console.log(dashboardSettings);
-        // console.log(widgets);
 
         // Validation
         let errors = {};
@@ -111,15 +105,7 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
 
         // If no errors send form
         !hasErrors &&
-            PortalSettingsDashboardAPI.updatePortalSettingsDashboard(
-                dashboardSettings
-                // todo WM: opschonen
-                // {
-                // welcomeTitle: dashboardSettings.welcomeTitle,
-                // welcomeMessage: dashboardSettings.welcomeMessage,
-                // widgets: widgets,
-                // }
-            )
+            PortalSettingsDashboardAPI.updatePortalSettingsDashboard(dashboardSettings)
                 .then(payload => {
                     this.props.updateState(payload.data.data);
                     this.props.switchToView();
@@ -131,71 +117,7 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
                         console.log(error);
                         alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
                     }
-                    // todo WM: opschonen
-                    // console.log(error);
-                    // alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
-                    // this.props.setError(error.response.status, error.response.data.message);
                 });
-    };
-
-    // todo WM: opschonen
-    // handleWidgetInputChange = event => {
-    //     const target = event.target;
-    //     const value = target.type === 'checkbox' ? target.checked : target.value;
-    //     const id = target.getAttribute('data-item-id');
-    //     const name = target.name.replace(id + '-', '');
-    //
-    //     const widgets = Object.assign([...this.state.widgets], {
-    //         [this.state.widgets.findIndex(el => el.id === id)]: {
-    //             ...this.state.widgets[this.state.widgets.findIndex(el => el.id === id)],
-    //             [name]: value,
-    //         },
-    //     });
-    //
-    //     this.setState({
-    //         ...this.state,
-    //         widgets: widgets,
-    //     });
-    // };
-
-    addWidget = widget => {
-        this.setState({
-            ...this.state,
-            widgets: [...this.state.widgets, widget],
-        });
-    };
-
-    removeWidget = id => {
-        // todo WM: opschonen
-        // console.log('removeWidget: ' + id);
-        PortalSettingsDashboardAPI.removePortalSettingsDashboardWidget(id)
-            .then(response => {
-                this.setState({
-                    ...this.state,
-                    widgets: response.data,
-                });
-            })
-            .catch(error => {
-                if (error.response) {
-                    this.props.setError(error.response.status, error.response.data.message);
-                } else {
-                    console.log(error);
-                    alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
-                }
-
-                // todo WM: opschonen
-                // console.log('error PortalSettingsDashboardFormGeneralEdit - removeWidget - removePortalSettingsDashboardWidget');
-                // console.log(error);
-                // alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
-                // this.props.setError(error.response.status, error.response.data.message);
-            });
-    };
-    closeShowEditSort = () => {
-        console.log('closeShowEditSort');
-        this.props.updateState(this.props.dashboardSettings);
-        this.setState({
-            showEditSort: false,
-        });
     };
 
     render() {
@@ -204,7 +126,6 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
             welcomeMessage,
             defaultWidgetBackgroundColor,
             defaultWidgetTextColor,
-            widgets,
         } = this.state.dashboardSettings;
 
         const logoHeaderUrl = `${URL_API}/portal/images/logo.png?${this.props.imageHash}`;
@@ -310,15 +231,6 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
                         </div>
                     </PanelBody>
                 </Panel>
-                <PortalSettingsDashboardWidgetList
-                    widgets={widgets}
-                    // showEditSort={false}
-                    imageHash={this.props.imageHash}
-                    // handleWidgetInputChange={this.handleWidgetInputChange}
-                    addWidget={this.addWidget}
-                    removeWidget={this.removeWidget}
-                    closeShowEditSort={this.closeShowEditSort}
-                />
                 {this.state.showPreviewPortalDashboardPagePc && (
                     <PreviewPortalDashboardPagePcModal
                         previewFromLayout={false}

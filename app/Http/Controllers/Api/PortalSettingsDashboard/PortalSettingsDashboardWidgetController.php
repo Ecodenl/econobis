@@ -7,6 +7,8 @@ use App\Eco\PortalSettingsDashboard\PortalSettingsDashboardWidget;
 use App\Helpers\Delete\Models\DeletePortalSettingsDashboardWidget;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PortalSettingsDashboard\FullPortalSettingsDashboard;
+use App\Http\Resources\PortalSettingsDashboard\FullPortalSettingsDashboardWidget;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -35,10 +37,10 @@ class PortalSettingsDashboardWidgetController extends Controller
             ->string('text')->whenMissing('')->onEmpty('')->next()
             ->string('buttonText')->whenMissing('')->onEmpty('')->alias('button_text')->next()
             ->string('buttonLink')->whenMissing('')->onEmpty('')->alias('button_link')->next()
-            ->string('backgroundColor')->whenMissing('#ffffff')->onEmpty('#ffffff')->alias('background_color')->next()
-            ->string('textColor')->whenMissing('#000000')->onEmpty('#000000')->alias('text_color')->next()
+            ->string('backgroundColor')->whenMissing('')->onEmpty('')->alias('background_color')->next()
+            ->string('textColor')->whenMissing('')->onEmpty('')->alias('text_color')->next()
             ->string('widgetImageFileName')->whenMissing('')->onEmpty('')->alias('widget_image_file_name')->next()
-            ->integer('showGroupId')->validate('nullable|exists:contact_groups,id')->whenMissing(null)->onEmpty(null)->alias('show_group_id')->next()
+            ->integer('showGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('show_group_id')->next()
             ->boolean('active')->whenMissing(true)->onEmpty(true)->next()
             ->get();
 
@@ -56,17 +58,18 @@ class PortalSettingsDashboardWidgetController extends Controller
     {
         $this->authorize('manage', PortalSettingsDashboard::class);
 
-        $data = $input->integer('portalSettingsDashboardId')->alias('portal_settings_dashboard_id')->next()
+        $data = $input
+//            ->integer('portalSettingsDashboardId')->alias('portal_settings_dashboard_id')->next()
             ->string('code_ref')->whenMissing('')->onEmpty('')->alias('codeRef')->next()
             ->integer('order')->whenMissing(999)->onEmpty(999)->next()
             ->string('title')->whenMissing('')->onEmpty('')->next()
             ->string('text')->whenMissing('')->onEmpty('')->next()
             ->string('buttonText')->whenMissing('')->onEmpty('')->alias('button_text')->next()
             ->string('buttonLink')->whenMissing('')->onEmpty('')->alias('button_link')->next()
-            ->string('backgroundColor')->whenMissing('#ffffff')->onEmpty('#ffffff')->alias('background_color')->next()
-            ->string('textColor')->whenMissing('#000000')->onEmpty('#000000')->alias('text_color')->next()
+            ->string('backgroundColor')->whenMissing('')->onEmpty('')->alias('background_color')->next()
+            ->string('textColor')->whenMissing('')->onEmpty('')->alias('text_color')->next()
             ->string('widgetImageFileName')->whenMissing('')->onEmpty('')->alias('widget_image_file_name')->next()
-            ->integer('showGroupId')->validate('nullable|exists:contact_groups,id')->whenMissing(null)->onEmpty(null)->alias('show_group_id')->next()
+            ->integer('showGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('show_group_id')->next()
             ->boolean('active')->whenMissing(true)->onEmpty(true)->next()
             ->get();
 
@@ -75,7 +78,8 @@ class PortalSettingsDashboardWidgetController extends Controller
 
         $this->storeWidgetImage($request, $portalSettingsDashboardWidget, $data['widget_image_file_name']);
 
-        return GenericResource::make($portalSettingsDashboardWidget);
+        return FullPortalSettingsDashboardWidget::make($portalSettingsDashboardWidget->load('contactGroup'));
+
     }
 
     public function destroy(PortalSettingsDashboardWidget $portalSettingsDashboardWidget)
@@ -114,6 +118,7 @@ class PortalSettingsDashboardWidgetController extends Controller
             abort(501, 'Er is helaas een fout opgetreden.');
         }
 
+        return FullPortalSettingsDashboard::make($portalSettingsDashboardWidget->portalSettingsDashboard->load('widgets'));
     }
 
     /**
@@ -123,37 +128,45 @@ class PortalSettingsDashboardWidgetController extends Controller
      */
     protected function storeWidgetImage(Request $request, PortalSettingsDashboardWidget $portalSettingsDashboardWidget, $originalFileName)
     {
-        if ($request->file('image') && !$request->file('image')->isValid()) {
-            abort('422', 'Error uploading file image.');
-        }
 
-        try {
-            $fileExtensie = pathinfo($originalFileName, PATHINFO_EXTENSION);
-            $widgetImageFileName = $portalSettingsDashboardWidget->code_ref . '.' . $fileExtensie;
+        //get imageWidget
+        $imageWidget = $request->file('image')
+            ? $request->file('image') : false;
 
-            if (Config::get('app.env') == "local") {
-                Storage::disk('public_portal_local')->putFileAs('images', $request->file('image'), $widgetImageFileName);
-                Storage::disk('customer_portal_app_build_local')->putFileAs('images', $request->file('image'), $widgetImageFileName);
-                Storage::disk('customer_portal_app_public_local')->putFileAs('images', $request->file('image'), $widgetImageFileName);
-            } else {
-                Storage::disk('public_portal')->putFileAs('images', $request->file('image'), $widgetImageFileName);
+        if ($imageWidget) {
+            //store imageWidget
+            if (!$imageWidget->isValid()) {
+                abort('422', 'Error uploading file background-login');
             }
 
-            if($portalSettingsDashboardWidget->widget_image_file_name !== $widgetImageFileName ) {
+            try {
+                $fileExtensie = pathinfo($originalFileName, PATHINFO_EXTENSION);
+                $widgetImageFileName = $portalSettingsDashboardWidget->code_ref . '.' . $fileExtensie;
+
                 if (Config::get('app.env') == "local") {
-                    Storage::disk('public_portal_local')->delete('images/' . $portalSettingsDashboardWidget->widget_image_file_name);
-                    Storage::disk('customer_portal_app_build_local')->delete('images/' . $portalSettingsDashboardWidget->widget_image_file_name);
-                    Storage::disk('customer_portal_app_public_local')->delete('images/' . $portalSettingsDashboardWidget->widget_image_file_name);
+                    Storage::disk('public_portal_local')->putFileAs('images', $request->file('image'), $widgetImageFileName);
+                    Storage::disk('customer_portal_app_build_local')->putFileAs('images', $request->file('image'), $widgetImageFileName);
+                    Storage::disk('customer_portal_app_public_local')->putFileAs('images', $request->file('image'), $widgetImageFileName);
                 } else {
-                    Storage::disk('public_portal')->delete('images/' . $portalSettingsDashboardWidget->widget_image_file_name);
+                    Storage::disk('public_portal')->putFileAs('images', $request->file('image'), $widgetImageFileName);
                 }
-                $portalSettingsDashboardWidget->widget_image_file_name = $widgetImageFileName;
-                $portalSettingsDashboardWidget->save();
-            }
 
-        } catch (\Exception $exception) {
-            Log::error('Opslaan widget afbeelding mislukt : ' . $exception->getMessage());
-            abort('422', 'Opslaan widget afbeelding mislukt : ' . $exception->getMessage());
+                if ($portalSettingsDashboardWidget->widget_image_file_name !== $widgetImageFileName) {
+                    if (Config::get('app.env') == "local") {
+                        Storage::disk('public_portal_local')->delete('images/' . $portalSettingsDashboardWidget->widget_image_file_name);
+                        Storage::disk('customer_portal_app_build_local')->delete('images/' . $portalSettingsDashboardWidget->widget_image_file_name);
+                        Storage::disk('customer_portal_app_public_local')->delete('images/' . $portalSettingsDashboardWidget->widget_image_file_name);
+                    } else {
+                        Storage::disk('public_portal')->delete('images/' . $portalSettingsDashboardWidget->widget_image_file_name);
+                    }
+                    $portalSettingsDashboardWidget->widget_image_file_name = $widgetImageFileName;
+                    $portalSettingsDashboardWidget->save();
+                }
+
+            } catch (\Exception $exception) {
+                Log::error('Opslaan widget afbeelding mislukt : ' . $exception->getMessage());
+                abort('422', 'Opslaan widget afbeelding mislukt : ' . $exception->getMessage());
+            }
         }
     }
 

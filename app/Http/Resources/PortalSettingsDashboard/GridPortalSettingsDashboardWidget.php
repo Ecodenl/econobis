@@ -11,7 +11,7 @@ namespace App\Http\Resources\PortalSettingsDashboard;
 use App\Http\Resources\ContactGroup\ContactGroupPeek;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullPortalSettingsDashboardWidget
+class GridPortalSettingsDashboardWidget
     extends JsonResource
 {
     public function toArray($request)
@@ -21,14 +21,8 @@ class FullPortalSettingsDashboardWidget
             'codeRef' => $this->welcome_title,
             'order' => $this->order,
             'title' => $this->title,
-            'text' => $this->text,
             'widgetImageFileName' => $this->widget_image_file_name,
             'active' => $this->active,
-            'buttonText' => $this->button_text,
-            'buttonLink' => $this->button_link,
-            'backgroundColor' => $this->getBackgroundColor(),
-            'textColor' => $this->getTextColor(),
-            'showGroupId' => $this->show_group_id,
             'contactGroup' => ContactGroupPeek::make($this->whenLoaded('contactGroup')),
         ];
     }

@@ -418,6 +418,7 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
                                 addImage={this.addImage}
                                 imageItemName={this.state.imageItemName}
                                 acceptedFiles={['image/png', 'image/jpeg']}
+                                acceptedExtenties={'PNG of JPG'}
                             />
                         )}
                         {this.state.showModalCropImage && (

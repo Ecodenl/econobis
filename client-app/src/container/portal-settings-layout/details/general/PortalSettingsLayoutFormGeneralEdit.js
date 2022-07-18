@@ -923,6 +923,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 addImage={this.addImage}
                                 imageItemName={this.state.imageItemName}
                                 acceptedFiles={['image/png']}
+                                acceptedExtenties={'PNG'}
                             />
                         )}
                         {this.state.showModalCropImage && (

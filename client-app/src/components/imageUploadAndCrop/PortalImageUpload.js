@@ -11,7 +11,7 @@ class PortalImageUpload extends Component {
 
         switch (this.props.imageItemName) {
             case 'logo-login':
-                this.title = 'Upload logo bestand (PNG) tbv login pagina';
+                this.title = `Upload logo bestand (${this.props.acceptedExtenties}) tbv login pagina`;
                 this.descriptionImage =
                     'Maximale breedte van image zal 200px zijn.' +
                     ' De hoogte is variabel.' +
@@ -19,7 +19,7 @@ class PortalImageUpload extends Component {
                     ' Aanbevolen afmeting (in pixels): 200 x 200.';
                 break;
             case 'logo-header':
-                this.title = 'Upload logo bestand (PNG) tbv de portaal header';
+                this.title = `Upload logo bestand (${this.props.acceptedExtenties}) tbv de portaal header`;
                 this.descriptionImage =
                     'Maximale hoogte van image zal 100px zijn.' +
                     ' Maximale breedte van image zal 200px zijn als window breedte > 480px is en 150px als window breedte < 480px.' +
@@ -27,7 +27,7 @@ class PortalImageUpload extends Component {
                     ' Aanbevolen afmeting (in pixels): tussen de 200x100 voor maximale benutting op een PC of 100x100 voor best view op een mobiel.';
                 break;
             case 'image-bg-login':
-                this.title = 'Upload background image bestand (PNG) tbv login pagina';
+                this.title = `Upload background image bestand (${this.props.acceptedExtenties}) tbv login pagina`;
                 this.descriptionImage =
                     'Breedte en hoogte zijn variabel en afhankelijk van window breedte/hoogte. ' +
                     ' Image zal gecentreerd over de hele breedte/hoogte getoond worden.' +
@@ -35,7 +35,7 @@ class PortalImageUpload extends Component {
                     ' Aanbevolen afmeting (in pixels): tussen de 800 x450 en 1200x675 voor best view op een PC (verhouding 16:9) of 400x800 voor best view op een mobiel (verhouding 1:2).';
                 break;
             case 'image-bg-header':
-                this.title = 'Upload background image bestand (PNG) tbv de portaal header';
+                this.title = `Upload background image bestand (${this.props.acceptedExtenties}) tbv de portaal header`;
                 this.descriptionImage =
                     'Maximale hoogte van image zal 128px zijn.' +
                     ' De breedte is afhankelijk van window breedte.' +
@@ -44,7 +44,7 @@ class PortalImageUpload extends Component {
                     ' Aanbevolen afmeting (in pixels): tussen de 1200 x 128 voor waarschijnlijk maximale benutting op een PC of 360x128 voor waarschijnlijk maximaal benutting op een mobiel.';
                 break;
             case 'image-widget':
-                this.title = 'Upload widget image bestand (PNG of JPG)';
+                this.title = `Upload widget image bestand (${this.props.acceptedExtenties})`;
                 this.descriptionImage =
                     'Maximale breedte van image is gelijk aan breedte van widget.' +
                     ' De hoogte is variabel.' +
@@ -88,7 +88,10 @@ class PortalImageUpload extends Component {
             <Modal closeModal={this.props.closeUploadImage} showConfirmAction={false} title={this.title}>
                 <div className={'row'}>
                     <Col sm={12}>
-                        <p>Alleen image bestanden met bestandstype PNG kunnen gebruikt worden.</p>
+                        <p>
+                            Alleen image bestanden met bestandstype {this.props.acceptedExtenties} kunnen gebruikt
+                            worden.
+                        </p>
                     </Col>
                     <Col sm={12}>
                         <p>{this.descriptionImage}</p>
@@ -108,7 +111,7 @@ class PortalImageUpload extends Component {
                     <Col sm={12}>
                         <div className="upload-file-content">
                             <Dropzone
-                                accept="image/png"
+                                accept={this.props.acceptedFiles}
                                 multiple={false}
                                 className="dropzone"
                                 onDropAccepted={this.onDropAccepted.bind(this)}
@@ -128,7 +131,8 @@ class PortalImageUpload extends Component {
                     {this.state.errorMaxSize && (
                         <Col sm={12}>
                             <p className="has-error-message">
-                                Uploaden mislukt. Het bestand moet bestandstype PNG zijn en mag maximaal 6MB groot zijn.
+                                Uploaden mislukt. Het bestand moet bestandstype {this.props.acceptedExtenties} zijn en
+                                mag maximaal 6MB groot zijn.
                             </p>
                         </Col>
                     )}

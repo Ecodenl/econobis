@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
+import { FaInfoCircle, FaTimesCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 
 const InputReactSelect = props => {
     const {
@@ -21,6 +23,7 @@ const InputReactSelect = props => {
         disabled,
         placeholder,
         clearable,
+        textToolTip,
     } = props;
 
     const customStyles = {
@@ -71,7 +74,27 @@ const InputReactSelect = props => {
                         },
                     })}
                 />
-            </div>
+            </div>{' '}
+            {textToolTip && (
+                <div className="col-sm-1">
+                    <>
+                        <FaInfoCircle
+                            color={'blue'}
+                            size={'15px'}
+                            data-tip={textToolTip}
+                            data-for={`tooltip-${name}`}
+                        />
+                        <ReactTooltip
+                            id={`tooltip-${name ? name : id}`}
+                            effect="float"
+                            place="right"
+                            multiline={true}
+                            aria-haspopup="true"
+                        />
+                        &nbsp;
+                    </>
+                </div>
+            )}
             {error && (
                 <div className="col-sm-offset-3 col-sm-8">
                     <span className="has-error-message"> {errorMessage}</span>
@@ -94,6 +117,7 @@ InputReactSelect.defaultProps = {
     isLoading: false,
     placeholder: '',
     clearable: false,
+    textToolTip: '',
 };
 
 InputReactSelect.propTypes = {
@@ -115,6 +139,7 @@ InputReactSelect.propTypes = {
     isLoading: PropTypes.bool,
     placeholder: PropTypes.string,
     clearable: PropTypes.bool,
+    textToolTip: PropTypes.string,
 };
 
 export default InputReactSelect;

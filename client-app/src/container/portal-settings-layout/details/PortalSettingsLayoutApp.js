@@ -42,7 +42,7 @@ class PortalSettingsLayoutDetailsApp extends Component {
                     this.setState({
                         isLoading: false,
                         portalSettingsLayout: portalSettingsLayout.data.data,
-                        dashboardSettings: dashboardSettings.data,
+                        dashboardSettings: dashboardSettings.data.data,
                     });
                 })
             )

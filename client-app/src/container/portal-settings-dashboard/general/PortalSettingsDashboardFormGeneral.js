@@ -61,9 +61,6 @@ class PortalSettingsDashboardFormGeneral extends Component {
                         updateState={this.props.updateState}
                         switchToView={this.switchToView}
                         imageHash={this.state.imageHash}
-                        // todo WM: opschonen
-                        // meDetails={this.props.meDetails}
-                        // switchToEdit={this.switchToEdit}
                     />
                 ) : isEmpty(this.props.dashboardSettings) ? (
                     <p>Nog geen dashboard instellingen opgeslagen.</p>
@@ -73,8 +70,6 @@ class PortalSettingsDashboardFormGeneral extends Component {
                         updateState={this.props.updateState}
                         switchToEdit={this.switchToEdit}
                         imageHash={this.state.imageHash}
-                        // todo WM: opschonen
-                        // switchToView={this.switchToView}
                     />
                 )}
             </div>
@@ -84,7 +79,6 @@ class PortalSettingsDashboardFormGeneral extends Component {
 
 const mapStateToProps = state => {
     return {
-        // permissions: state.meDetails.permissions,
         meDetails: state.meDetails,
     };
 };

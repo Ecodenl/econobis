@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import validator from 'validator';
 import moment from 'moment';
 moment.locale('nl');
 
@@ -90,17 +89,6 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
         let errorMessage = {};
         let hasErrors = false;
 
-        // todo WM: opschonen
-        // if (validator.isEmpty(dashboardSettings.welcomeMessage)) {
-        //     errors.welcomeMessage = true;
-        //     hasErrors = true;
-        // }
-        //
-        // if (validator.isEmpty(dashboardSettings.welcomeTitle)) {
-        //     errors.welcomeTitle = true;
-        //     hasErrors = true;
-        // }
-
         this.setState({ ...this.state, errors: errors, errorMessage: errorMessage });
 
         // If no errors send form
@@ -128,7 +116,7 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
             defaultWidgetTextColor,
         } = this.state.dashboardSettings;
 
-        const logoHeaderUrl = `${URL_API}/portal/images/logo.png?${this.props.imageHash}`;
+        const logoHeaderUrl = `${URL_API}/portal/images/logo-header.png?${this.props.imageHash}`;
         const imageBgHeaderUrl = `${URL_API}/portal/images/background-header.png?${this.props.imageHash}`;
 
         return (
@@ -208,9 +196,6 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
                                 name={'defaultWidgetTextColor'}
                                 value={defaultWidgetTextColor}
                                 onChangeAction={this.handleInputChange}
-                                // readOnly={!managePortalSettings}
-                                required={'required'}
-                                // error={this.state.errors.defaultWidgetTextColor}
                             />
                         </div>
                     </PanelBody>

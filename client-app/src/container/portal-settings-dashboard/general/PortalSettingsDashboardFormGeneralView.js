@@ -41,7 +41,7 @@ class PortalSettingsDashboardFormGeneralView extends Component {
             defaultWidgetTextColor,
         } = this.props.dashboardSettings;
 
-        const logoHeaderUrl = `${URL_API}/portal/images/logo.png?${this.props.imageHash}`;
+        const logoHeaderUrl = `${URL_API}/portal/images/logo-header.png?${this.props.imageHash}`;
         const imageBgHeaderUrl = `${URL_API}/portal/images/background-header.png?${this.props.imageHash}`;
 
         return (

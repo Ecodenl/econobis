@@ -12,6 +12,7 @@ const PreviewPortalDashboardPage = ({
     showMenu,
 }) => {
     const { welcomeTitle, welcomeMessage, widgets } = dashboardSettings;
+
     return (
         <div style={customStyles.modal} className="portal-body">
             <div id="root" style={customStyles.root}>
@@ -271,17 +272,17 @@ const PreviewPortalDashboardPage = ({
                                     .sort((a, b) => (a.order > b.order ? 1 : -1))
                                     .map(widget => {
                                         const imageSrc =
-                                            widget.widgetImageFileName &&
-                                            'images/' + widget.widgetImageFileName + '?' + imageHash;
+                                            widget.image && widget.image.preview
+                                                ? widget.image.preview
+                                                : `${URL_API}/portal/images/${widget.widgetImageFileName}?${imageHash}`;
                                         return (
                                             <div style={customStyles.col_widget}>
                                                 <div id="widget-over-ons" style={customStyles.card}>
-                                                    <img
-                                                        style={customStyles.cardImgTop}
-                                                        src={`${URL_API}/portal/${imageSrc}`}
-                                                    />
+                                                    <img style={customStyles.cardImgTop} src={imageSrc} />
                                                     <div style={customStyles.cardBody}>
-                                                        <h5 style={customStyles.cardTitle}>{widget.title}</h5>
+                                                        <h5 style={customStyles.cardTitle}>
+                                                            {widget.title} | {widget.widgetImageFileName}
+                                                        </h5>
                                                         <p
                                                             style={customStyles.cardText}
                                                             style={{ whiteSpace: 'break-spaces' }}

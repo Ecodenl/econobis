@@ -38,13 +38,6 @@ class PortalSettingsFormGeneralEdit extends Component {
             staticContactGroups: {
                 ...props.staticContactGroups,
             },
-            // todo WM: opschonen
-            // attachmentLogo: '',
-            // filenameLogo: '',
-            // uploadImage: false,
-            // attachmentFavicon: '',
-            // filenameFavicon: '',
-            // newFavicon: false,
             errors: {
                 portalActive: false,
                 portalName: false,
@@ -70,37 +63,6 @@ class PortalSettingsFormGeneralEdit extends Component {
 
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     }
-
-    // todo WM: opschonen
-    // toggleUploadImage = () => {
-    //     if (this.manageTechnicalPortalSettings) {
-    //         this.setState({
-    //             uploadImage: !this.state.uploadImage,
-    //         });
-    //     }
-    // };
-    // toggleNewFavicon = () => {
-    //     if (this.manageTechnicalPortalSettings) {
-    //         this.setState({
-    //             newFavicon: !this.state.newFavicon,
-    //         });
-    //     }
-    // };
-    // addImage = (file, imageItemName, useAutoCropper) => {
-    //     this.setState({
-    //         ...this.state,
-    //         attachmentLogo: file[0],
-    //         filenameLogo: file[0].name,
-    //         useAutoCropper: useAutoCropper,
-    //     });
-    // };
-    // addFavicon = file => {
-    //     this.setState({
-    //         ...this.state,
-    //         attachmentFavicon: file[0],
-    //         filenameFavicon: file[0].name,
-    //     });
-    // };
 
     handleReactSelectChange(selectedOption, name) {
         this.setState({
@@ -128,8 +90,6 @@ class PortalSettingsFormGeneralEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        // todo WM: opschonen
-        // const { portalSettings, attachmentLogo, attachmentFavicon } = this.state;
         const { portalSettings } = this.state;
 
         // Validation
@@ -270,10 +230,6 @@ class PortalSettingsFormGeneralEdit extends Component {
             portalSettings.defaultAdministrationId ? portalSettings.defaultAdministrationId : ''
         );
 
-        // todo WM: opschonen
-        // data.append('attachmentLogo', attachmentLogo);
-        // data.append('attachmentFavicon', attachmentFavicon);
-
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
@@ -313,9 +269,6 @@ class PortalSettingsFormGeneralEdit extends Component {
             defaultAdministrationId,
         } = this.state.portalSettings;
 
-        // todo WM: opschonen
-        // const logoUrl = `${URL_API}/portal/images/logo.png?${this.props.imageHash}`;
-        // const faviconUrl = `${URL_API}/portal/favicon.ico?${this.props.imageHash}`;
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel>

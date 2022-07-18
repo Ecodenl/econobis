@@ -45,7 +45,7 @@ Route::middleware(['auth:api', 'scopes:use-portal'])
 //
 //        Route::get('setting-dashboard', '\\' . PortalSettingsDashboardController::class . '@get');
 //        Route::get('setting-dashboard/multiple', '\\' . PortalSettingsDashboardController::class . '@multiple');
-        Route::get('/portal-settings-dashboard/{portalSettingsDashboard}', 'PortalSettingsDashboard\PortalSettingsDashboardController@get');
+        Route::get('/portal-settings-dashboard/{portalSettingsDashboard}/{contact}', 'PortalSettingsDashboard\PortalSettingsDashboardController@get');
 
         Route::get('/contact/{contact}/contact-projects', 'Contact\ContactController@getContactProjects');
         Route::get('/contact/{contact}/{project}/contact-project-data', 'Contact\ContactController@getContactProjectData');

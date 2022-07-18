@@ -57,9 +57,6 @@ class PortalSettingsDashboardWidgetApp extends Component {
         });
     };
     updateSortWidgets = event => {
-        // event.preventDefault();
-        // todo WM: opschonen
-        console.log('updateSortWidgets');
         PortalSettingsDashboardAPI.updatePortalSettingsDashboard(this.state.dashboardSettings)
             .then(payload => {
                 this.setState({
@@ -85,33 +82,33 @@ class PortalSettingsDashboardWidgetApp extends Component {
         const columns = [
             {
                 Header: 'Order',
-                textToolTip: '',
                 fieldName: 'order',
                 accessor: 'order',
+                width: '10%',
             },
             {
                 Header: 'Titel',
-                textToolTip: '',
                 fieldName: 'title',
                 accessor: 'title',
+                width: '40%',
             },
             {
                 Header: 'Afbeelding',
-                textToolTip: '',
                 fieldName: 'widgetImageFileName',
                 accessor: 'widgetImageFileName',
+                width: '20%',
             },
             {
                 Header: 'Actief',
-                textToolTip: '',
                 fieldName: 'active',
                 accessor: 'active',
+                width: '20%',
             },
             {
                 Header: '',
-                textToolTip: '',
                 fieldName: 'codeRef',
                 accessor: 'codeRef',
+                width: '10%',
             },
         ];
 
@@ -147,7 +144,6 @@ class PortalSettingsDashboardWidgetApp extends Component {
                                 columns={columns}
                                 data={widgets.sort((a, b) => (a.order > b.order ? 1 : -1))}
                                 showEditSort={showEditSort}
-                                // handleInputChange={this.props.handleWidgetInputChange}
                                 deletePortalSettingsDashboardWidget={this.deletePortalSettingsDashboardWidget}
                                 imageHash={this.state.imageHash}
                             />

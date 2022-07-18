@@ -53,13 +53,9 @@ const Dashboard = function(props) {
         // todo WM: check anders
         //
         const id = 1;
-        DashboardSettingsAPI.fetchDashboardSettings(id)
+        DashboardSettingsAPI.fetchDashboardSettings(id, props.currentSelectedContact.id)
             .then(payload => {
-                console.log(payload);
                 setDashboardSettings(payload.data.data);
-                // todo WM: opschonen
-                //
-                // setDashboardSettings(payload.data);
                 setLoading(false);
             })
             .catch(error => {

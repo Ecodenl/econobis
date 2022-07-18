@@ -429,7 +429,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="A. Logo op login pagina (bestandstype PNG)"
+                                label={'A. Logo op de login pagina (bestandstype PNG)'}
                                 divSize={'col-sm-8'}
                                 name={'portalLogoFileName'}
                                 value={
@@ -458,7 +458,6 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                     borderRadius: '1px',
                                     maxHeight: '50px',
                                     width: 'auto',
-                                    marginLeft: '20px',
                                     marginBottom: '10px',
                                     boxShadow: '0 0 0 1px #fff inset',
                                 }}
@@ -466,7 +465,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="B. Achtergrond afbeelding login pagina (bestandstype PNG)"
+                                label={'B. Achtergrond afbeelding login pagina (bestandstype PNG)'}
                                 divSize={'col-sm-8'}
                                 name={'portalImageBgFileNameLogin'}
                                 value={
@@ -508,7 +507,6 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                         borderRadius: '1px',
                                         maxHeight: '50px',
                                         width: 'auto',
-                                        marginLeft: '20px',
                                         marginBottom: '10px',
                                         boxShadow: '0 0 0 1px #fff inset',
                                     }}
@@ -517,7 +515,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="C. Logo in de header (bestandstype PNG)"
+                                label={'C. Logo in de header (bestandstype PNG)'}
                                 divSize={'col-sm-8'}
                                 name={'portalLogoFileNameHeader'}
                                 value={
@@ -548,7 +546,6 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                     borderRadius: '1px',
                                     maxHeight: '50px',
                                     width: 'auto',
-                                    marginLeft: '20px',
                                     marginBottom: '10px',
                                     boxShadow: '0 0 0 1px #fff inset',
                                 }}
@@ -556,7 +553,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="D. Achtergrond afbeelding in de header (bestandstype PNG)"
+                                label={'D. Achtergrond afbeelding in de header (bestandstype PNG)'}
                                 divSize={'col-sm-8'}
                                 name={'portalImageBgFileNameHeader'}
                                 value={
@@ -600,7 +597,6 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                         borderRadius: '1px',
                                         maxHeight: '50px',
                                         width: 'auto',
-                                        marginLeft: '20px',
                                         marginBottom: '10px',
                                         boxShadow: '0 0 0 1px #fff inset',
                                     }}
@@ -609,7 +605,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="E. Favicon in tabblad browser (bestandstype ICO)"
+                                label={'E. Favicon in tabblad browser (bestandstype ICO)'}
                                 divSize={'col-sm-8'}
                                 name={'portalFaviconFileName'}
                                 value={

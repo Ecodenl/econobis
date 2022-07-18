@@ -30,6 +30,9 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
             widget: {
                 ...props.portalSettingsDashboardWidget,
             },
+            dashboardSettings: {
+                ...props.dashboardSettings,
+            },
             imageHash: Date.now(),
             image: '',
             imageItemName: '',
@@ -51,12 +54,12 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
         };
     }
 
-    togglePreviewPortalLoginPagePc = () => {
-        this.setState({ showPreviewPortalLoginPagePc: !this.state.showPreviewPortalLoginPagePc });
-    };
-
     togglePreviewPortalDashboardPagePc = () => {
         this.setState({ showPreviewPortalDashboardPagePc: !this.state.showPreviewPortalDashboardPagePc });
+    };
+
+    togglePreviewPortalDashboardPageMobile = () => {
+        this.setState({ showPreviewPortalDashboardPageMobile: !this.state.showPreviewPortalDashboardPageMobile });
     };
 
     setShowMenu = () => {
@@ -98,6 +101,20 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
                 image: file,
                 widgetImageFileName: file.name,
             },
+            dashboardSettings: {
+                ...this.state.dashboardSettings,
+                widgets: this.state.dashboardSettings.widgets.map(widget => {
+                    if (widget.id == this.state.widget.id) {
+                        return {
+                            ...this.state.widget,
+                            image: file,
+                            widgetImageFileName: file.name,
+                        };
+                    } else {
+                        return widget;
+                    }
+                }),
+            },
             showModalCropImage: false,
         });
     };
@@ -113,6 +130,19 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
                 ...this.state.widget,
                 [name]: value,
             },
+            dashboardSettings: {
+                ...this.state.dashboardSettings,
+                widgets: this.state.dashboardSettings.widgets.map(widget => {
+                    if (widget.id == this.state.widget.id) {
+                        return {
+                            ...this.state.widget,
+                            [name]: value,
+                        };
+                    } else {
+                        return widget;
+                    }
+                }),
+            },
         });
     };
 
@@ -122,6 +152,19 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
             widget: {
                 ...this.state.widget,
                 [name]: selectedOption,
+            },
+            dashboardSettings: {
+                ...this.state.dashboardSettings,
+                widgets: this.state.dashboardSettings.widgets.map(widget => {
+                    if (widget.id == this.state.widget.id) {
+                        return {
+                            ...this.state.widget,
+                            [name]: selectedOption,
+                        };
+                    } else {
+                        return widget;
+                    }
+                }),
             },
         });
     };
@@ -180,7 +223,6 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
 
         PortalSettingsDashboardAPI.updatePortalSettingsDashboardWidget(widget.id, data)
             .then(payload => {
-                console.log(payload);
                 this.props.updateState(payload.data.data);
                 this.props.switchToView();
             })
@@ -195,6 +237,9 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
 
         const imageUrl = `${URL_API}/portal/images/${widget.widgetImageFileName}?${this.props.imageHash}`;
         const { managePortalSettings = {} } = this.props.permissions;
+
+        const logoHeaderUrl = `${URL_API}/portal/images/logo-header.png?${this.props.imageHash}`;
+        const imageBgHeaderUrl = `${URL_API}/portal/images/background-header.png?${this.props.imageHash}`;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -256,7 +301,6 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
                                     borderRadius: '1px',
                                     maxHeight: '50px',
                                     width: 'auto',
-                                    marginLeft: '20px',
                                     marginBottom: '10px',
                                     boxShadow: '0 0 0 1px #fff inset',
                                 }}
@@ -314,12 +358,6 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
                                 isLoading={this.props.isLoading}
                                 clearable={true}
                             />
-                            {/*<ViewText*/}
-                            {/*    label={'Toon voor groep'}*/}
-                            {/*    value={widget.showGroupId == null ? 'Alle groepen' : widget.contactGroup.name}*/}
-                            {/*    divSize={'col-sm-8'}*/}
-                            {/*    className={'col-sm-8 form-group'}*/}
-                            {/*/>*/}
                         </div>
                         <div className="row">
                             <InputTextColorPicker
@@ -393,52 +431,30 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
                     </PanelBody>
                     {this.state.showPreviewPortalDashboardPagePc && (
                         <PreviewPortalDashboardPagePcModal
-                            previewFromDashboardWidget={true}
+                            previewFromLayout={false}
                             closeModal={this.togglePreviewPortalDashboardPagePc}
                             setShowMenu={this.setShowMenu}
                             showMenu={this.state.showMenu}
                             imageHash={this.state.imageHash}
-                            attachmentLogoHeader={this.state.attachmentLogoHeader}
+                            attachmentLogoHeader={''}
                             logoHeaderUrl={logoHeaderUrl}
-                            attachmentImageBgHeader={this.state.attachmentImageBgHeader}
+                            attachmentImageBgHeader={''}
                             imageBgHeaderUrl={imageBgHeaderUrl}
-                            portalMainBackgroundColor={portalMainBackgroundColor}
-                            portalMainTextColor={portalMainTextColor}
-                            portalBackgroundColor={portalBackgroundColor}
-                            portalBackgroundTextColor={portalBackgroundTextColor}
-                            loginHeaderBackgroundColor={loginHeaderBackgroundColor}
-                            loginHeaderBackgroundTextColor={loginHeaderBackgroundTextColor}
-                            headerIconsColor={headerIconsColor}
-                            loginFieldBackgroundColor={loginFieldBackgroundColor}
-                            loginFieldBackgroundTextColor={loginFieldBackgroundTextColor}
-                            buttonColor={buttonColor}
-                            buttonTextColor={buttonTextColor}
-                            dashboardSettings={this.props.dashboardSettings}
+                            dashboardSettings={this.state.dashboardSettings}
                         />
                     )}
                     {this.state.showPreviewPortalDashboardPageMobile && (
                         <PreviewPortalDashboardPageMobileModal
-                            previewFromDashboardWidget={true}
+                            previewFromLayout={false}
                             closeModal={this.togglePreviewPortalDashboardPageMobile}
                             setShowMenu={this.setShowMenu}
                             showMenu={this.state.showMenu}
                             imageHash={this.state.imageHash}
-                            attachmentLogoHeader={this.state.attachmentLogoHeader}
+                            attachmentLogoHeader={''}
                             logoHeaderUrl={logoHeaderUrl}
-                            attachmentImageBgHeader={this.state.attachmentImageBgHeader}
+                            attachmentImageBgHeader={''}
                             imageBgHeaderUrl={imageBgHeaderUrl}
-                            portalMainBackgroundColor={portalMainBackgroundColor}
-                            portalMainTextColor={portalMainTextColor}
-                            portalBackgroundColor={portalBackgroundColor}
-                            portalBackgroundTextColor={portalBackgroundTextColor}
-                            loginHeaderBackgroundColor={loginHeaderBackgroundColor}
-                            loginHeaderBackgroundTextColor={loginHeaderBackgroundTextColor}
-                            headerIconsColor={headerIconsColor}
-                            loginFieldBackgroundColor={loginFieldBackgroundColor}
-                            loginFieldBackgroundTextColor={loginFieldBackgroundTextColor}
-                            buttonColor={buttonColor}
-                            buttonTextColor={buttonTextColor}
-                            dashboardSettings={this.props.dashboardSettings}
+                            dashboardSettings={this.state.dashboardSettings}
                         />
                     )}
                 </Panel>
@@ -450,11 +466,9 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        // portalSettingsDashboards: state.systemData.portalSettingsDashboards,
     };
 };
 
-// const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 const mapDispatchToProps = null;
 
 export default connect(mapStateToProps, mapDispatchToProps)(PortalSettingsDashboardWidgetFormGeneralEdit);

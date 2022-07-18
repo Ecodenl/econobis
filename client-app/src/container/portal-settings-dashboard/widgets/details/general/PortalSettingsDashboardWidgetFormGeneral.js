@@ -80,7 +80,6 @@ class PortalSettingsDashboardWidgetFormGeneral extends Component {
 
 const mapStateToProps = state => {
     return {
-        // permissions: state.meDetails.permissions,
         meDetails: state.meDetails,
         portalSettingsDashboardWidgets: state.systemData.portalSettingsDashboardWidgets,
     };

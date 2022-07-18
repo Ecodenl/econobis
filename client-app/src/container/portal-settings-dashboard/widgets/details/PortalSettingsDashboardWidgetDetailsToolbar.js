@@ -18,13 +18,17 @@ class PortalSettingsDashboardWidgetDetailsToolbar extends Component {
     };
 
     render() {
-        let { description, id, permissions } = this.props;
+        let { portalSettingsDashboardWidget, permissions } = this.props;
+        let { id, title, codeRef } = portalSettingsDashboardWidget;
+
+        const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
+
         return (
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
                         <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
-                        {permissions.managePortalSettings && (
+                        {permissions.managePortalSettings && !staticWidgets.includes(codeRef) && (
                             <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
                         )}
                     </div>
@@ -36,7 +40,7 @@ class PortalSettingsDashboardWidgetDetailsToolbar extends Component {
                 {this.state.showDelete && (
                     <PortalSettingsDashboardWidgetDeleteItem
                         closeDeleteItemModal={this.toggleDelete}
-                        description={description}
+                        description={title}
                         id={id}
                         deletePortalSettingsDashboardWidget={this.props.deletePortalSettingsDashboardWidget}
                     />

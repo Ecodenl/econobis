@@ -19,10 +19,10 @@ const PortalDashboardWidgetOrderRow = ({
     const dropRef = useRef(null);
     const dragRef = useRef(null);
     const [showDelete, setShowDelete] = useState(false);
+    const [showActionButtons, setShowActionButtons] = useState(false);
+    const [highlightRow, setHighLightRow] = useState('');
 
-    // todo WM: hier moeten we nog wat mee !!
-    // const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
-    // const staticInput = ['buttonLink'];
+    const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
 
     const [, drop] = useDrop({
         accept: DND_ITEM_TYPE,
@@ -80,11 +80,22 @@ const PortalDashboardWidgetOrderRow = ({
 
     return (
         <>
-            <tr ref={dropRef} style={{ opacity }}>
+            <tr
+                ref={dropRef}
+                style={{ opacity }}
+                className={highlightRow}
+                onDoubleClick={() => hashHistory.push(`/portal-instellingen-dashboard-widget/${row.id}`)}
+                onMouseEnter={() => {
+                    setShowActionButtons(true);
+                    setHighLightRow('highlight-row');
+                }}
+                onMouseLeave={() => {
+                    setShowActionButtons(false);
+                    setHighLightRow('');
+                }}
+            >
                 {row.cells.map(cell => {
                     switch (cell.column.id) {
-                        case 'active':
-                            return <td {...cell.getCellProps()}>{cell.value ? 'Ja' : 'Nee'}</td>;
                         case 'order':
                             if (showEditSort === true) {
                                 return (
@@ -95,6 +106,8 @@ const PortalDashboardWidgetOrderRow = ({
                             } else {
                                 return null;
                             }
+                        case 'title':
+                            return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
                         case 'widgetImageFileName': {
                             const imageUrl = cell.value && `${URL_API}/portal/images/${cell.value}?${imageHash}`;
                             return (
@@ -115,32 +128,36 @@ const PortalDashboardWidgetOrderRow = ({
                                 </td>
                             );
                         }
+                        case 'active':
+                            return <td {...cell.getCellProps()}>{cell.value ? 'Ja' : 'Nee'}</td>;
                         case 'codeRef':
                             if (!showEditSort) {
                                 return (
                                     <td>
-                                        <a
-                                            role="button"
-                                            onClick={() =>
-                                                hashHistory.push(`/portal-instellingen-dashboard-widget/${row.id}`)
-                                            }
-                                        >
-                                            <span className="glyphicon glyphicon-pencil mybtn-success" />
-                                        </a>
-                                        <a role="button" onClick={() => setShowDelete(true)}>
-                                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
-                                        </a>
+                                        {showActionButtons && (
+                                            <a
+                                                role="button"
+                                                onClick={() =>
+                                                    hashHistory.push(`/portal-instellingen-dashboard-widget/${row.id}`)
+                                                }
+                                            >
+                                                <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                                            </a>
+                                        )}
+                                        {!staticWidgets.includes(cell.value) && showActionButtons ? (
+                                            <a role="button" onClick={() => setShowDelete(true)}>
+                                                <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                                            </a>
+                                        ) : null}
                                     </td>
                                 );
                             } else {
                                 return null;
                             }
                     }
-
-                    // Anders default
-                    return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
                 })}
             </tr>
+
             {showDelete && (
                 <PortalSettingsDashboardWidgetDeleteItem
                     closeDeleteItemModal={() => setShowDelete(false)}

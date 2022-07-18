@@ -61,55 +61,63 @@ const PortalDashboardWidgetOrderTable = ({
                 <thead>
                     {headerGroups.map(headerGroup => (
                         <tr {...headerGroup.getHeaderGroupProps()} className={'thead-title'}>
-                            {showEditSort === true && (
-                                <th>
-                                    <span>
-                                        <FaInfoCircle
-                                            color={'white'}
-                                            size={'15px'}
-                                            data-tip={`Je kunt de volgorde van de widgets aanpassen door deze te slepen.`}
-                                            data-for={`tooltip-order`}
-                                        />
-                                        <ReactTooltip
-                                            id={`tooltip-order`}
-                                            effect="float"
-                                            place="right"
-                                            multiline={true}
-                                            aria-haspopup="true"
-                                        />
-                                    </span>
-                                </th>
-                            )}
-
-                            {headerGroup.headers.map(
-                                column =>
-                                    column.fieldName !== 'order' &&
-                                    column.fieldName !== 'codeRef' && (
-                                        <th {...column.getHeaderProps()}>
-                                            {column.render('Header')}
-                                            {column.textToolTip && (
-                                                <span>
-                                                    {' '}
-                                                    <FaInfoCircle
-                                                        color={'white'}
-                                                        size={'15px'}
-                                                        data-tip={column.render('textToolTip')}
-                                                        data-for={`tooltip-${column.fieldName}`}
-                                                    />
-                                                    <ReactTooltip
-                                                        id={`tooltip-${column.fieldName}`}
-                                                        effect="float"
-                                                        place="right"
-                                                        multiline={true}
-                                                        aria-haspopup="true"
-                                                    />
-                                                </span>
-                                            )}
+                            {headerGroup.headers.map(column => (
+                                <>
+                                    {column.fieldName === 'order' && showEditSort === true ? (
+                                        <th
+                                            {...column.getHeaderProps({
+                                                style: { width: column.width },
+                                            })}
+                                        >
+                                            <span>
+                                                <FaInfoCircle
+                                                    color={'white'}
+                                                    size={'15px'}
+                                                    data-tip={`Je kunt de volgorde van de widgets aanpassen door deze te slepen.`}
+                                                    data-for={`tooltip-order`}
+                                                />
+                                                <ReactTooltip
+                                                    id={`tooltip-order`}
+                                                    effect="float"
+                                                    place="right"
+                                                    multiline={true}
+                                                    aria-haspopup="true"
+                                                />
+                                            </span>
                                         </th>
-                                    )
-                            )}
-
-                            {showEditSort !== true && <th />}
+                                    ) : column.fieldName === 'title' ? (
+                                        <th
+                                            {...column.getHeaderProps({
+                                                style: { width: column.width },
+                                            })}
+                                        >
+                                            {column.render('Header')}
+                                        </th>
+                                    ) : column.fieldName === 'widgetImageFileName' ? (
+                                        <th
+                                            {...column.getHeaderProps({
+                                                style: { width: column.width },
+                                            })}
+                                        >
+                                            {column.render('Header')}
+                                        </th>
+                                    ) : column.fieldName === 'active' ? (
+                                        <th
+                                            {...column.getHeaderProps({
+                                                style: { width: column.width },
+                                            })}
+                                        >
+                                            {column.render('Header')}
+                                        </th>
+                                    ) : column.fieldName === 'codeRef' && showEditSort !== true ? (
+                                        <th
+                                            {...column.getHeaderProps({
+                                                style: { width: column.width },
+                                            })}
+                                        />
+                                    ) : null}
+                                </>
+                            ))}
                         </tr>
                     ))}
                 </thead>

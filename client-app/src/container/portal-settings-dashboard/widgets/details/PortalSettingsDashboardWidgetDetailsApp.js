@@ -44,7 +44,7 @@ class PortalSettingsDashboardWidgetDetailsApp extends Component {
                     this.setState({
                         isLoading: false,
                         portalSettingsDashboardWidget: portalSettingsDashboardWidget.data.data,
-                        dashboardSettings: dashboardSettings.data,
+                        dashboardSettings: dashboardSettings.data.data,
                         contactGroups: contactGroups,
                     });
                 })
@@ -61,7 +61,6 @@ class PortalSettingsDashboardWidgetDetailsApp extends Component {
                 hashHistory.push(`/portal-instellingen-dashboard`);
             })
             .catch(error => {
-                // this.setState({ isLoading: false, hasError: true });
                 this.props.setError(error.response.status, error.response.data.message);
             });
     };
@@ -78,8 +77,7 @@ class PortalSettingsDashboardWidgetDetailsApp extends Component {
                         <Panel>
                             <PanelBody className="panel-small">
                                 <PortalSettingsDashboardWidgetDetailsToolbar
-                                    description={this.state.portalSettingsDashboardWidget.title || ''}
-                                    id={this.state.portalSettingsDashboardWidget.id}
+                                    portalSettingsDashboardWidget={this.state.portalSettingsDashboardWidget}
                                     deletePortalSettingsDashboardWidget={this.deletePortalSettingsDashboardWidget}
                                     permissions={this.props.permissions}
                                 />

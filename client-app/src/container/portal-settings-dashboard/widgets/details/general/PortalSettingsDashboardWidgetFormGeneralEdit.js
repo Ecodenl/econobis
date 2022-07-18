@@ -349,7 +349,7 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputReactSelect
-                                label={'Toon voor groep'}
+                                label={'Zichtbaar voor groep'}
                                 divSize={'col-sm-8'}
                                 name={'showGroupId'}
                                 options={this.props.contactGroups}

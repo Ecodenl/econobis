@@ -108,7 +108,7 @@ const PortalSettingsDashboardWidgetFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Toon voor groep'}
+                            label={'Zichtbaar voor groep'}
                             value={contactGroup ? contactGroup.name : 'Alle groepen'}
                             divSize={'col-sm-8'}
                             className={'col-sm-8 form-group'}

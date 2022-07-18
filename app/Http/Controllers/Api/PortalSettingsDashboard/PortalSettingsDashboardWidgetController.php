@@ -39,7 +39,7 @@ class PortalSettingsDashboardWidgetController extends Controller
             ->string('buttonLink')->whenMissing('')->onEmpty('')->alias('button_link')->next()
             ->string('backgroundColor')->whenMissing('')->onEmpty('')->alias('background_color')->next()
             ->string('textColor')->whenMissing('')->onEmpty('')->alias('text_color')->next()
-            ->string('widgetImageFileName')->whenMissing('')->onEmpty('')->alias('widget_image_file_name')->next()
+//            ->string('widgetImageFileName')->whenMissing('')->onEmpty('')->alias('widget_image_file_name')->next()
             ->integer('showGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('show_group_id')->next()
             ->boolean('active')->whenMissing(true)->onEmpty(true)->next()
             ->get();
@@ -49,7 +49,7 @@ class PortalSettingsDashboardWidgetController extends Controller
         $portalSettingsDashboardWidget = new PortalSettingsDashboardWidget($data);
         $portalSettingsDashboardWidget->save();
 
-        $this->storeWidgetImage($request, $portalSettingsDashboardWidget, $data['widget_image_file_name']);
+        $this->storeWidgetImage($request, $portalSettingsDashboardWidget, $request->input('widgetImageFileName'), null);
 
         return Jory::on($portalSettingsDashboardWidget);
     }
@@ -68,7 +68,7 @@ class PortalSettingsDashboardWidgetController extends Controller
             ->string('buttonLink')->whenMissing('')->onEmpty('')->alias('button_link')->next()
             ->string('backgroundColor')->whenMissing('')->onEmpty('')->alias('background_color')->next()
             ->string('textColor')->whenMissing('')->onEmpty('')->alias('text_color')->next()
-            ->string('widgetImageFileName')->whenMissing('')->onEmpty('')->alias('widget_image_file_name')->next()
+//            ->string('widgetImageFileName')->whenMissing('')->onEmpty('')->alias('widget_image_file_name')->next()
             ->integer('showGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('show_group_id')->next()
             ->boolean('active')->whenMissing(true)->onEmpty(true)->next()
             ->get();
@@ -82,11 +82,12 @@ class PortalSettingsDashboardWidgetController extends Controller
             $active = true;
         }
         $data['active'] = $active;
+        $oldWidgetImageFileName = $portalSettingsDashboardWidget->widget_image_file_name;
 
         $portalSettingsDashboardWidget->fill($data);
         $portalSettingsDashboardWidget->save();
 
-        $this->storeWidgetImage($request, $portalSettingsDashboardWidget, $data['widget_image_file_name']);
+        $this->storeWidgetImage($request, $portalSettingsDashboardWidget, $request->input('widgetImageFileName'), $oldWidgetImageFileName);
 
         return FullPortalSettingsDashboardWidget::make($portalSettingsDashboardWidget->load('contactGroup'));
 
@@ -132,13 +133,14 @@ class PortalSettingsDashboardWidgetController extends Controller
     }
 
     /**
-     * @param $request
-     * @param $data
-     * @return \stdClass
+     * @param Request $request
+     * @param $portalSettingsDashboardWidget
+     * @param $originalFileName
+     * @param $oldWidgetImageFileName
+     * @return void
      */
-    protected function storeWidgetImage(Request $request, PortalSettingsDashboardWidget $portalSettingsDashboardWidget, $originalFileName)
+    protected function storeWidgetImage(Request $request, $portalSettingsDashboardWidget, $originalFileName, $oldWidgetImageFileName)
     {
-
         //get imageWidget
         $imageWidget = $request->file('image')
             ? $request->file('image') : false;
@@ -151,25 +153,25 @@ class PortalSettingsDashboardWidgetController extends Controller
 
             try {
                 $fileExtensie = pathinfo($originalFileName, PATHINFO_EXTENSION);
-                $widgetImageFileName = $portalSettingsDashboardWidget->code_ref . '.' . $fileExtensie;
+                $newWidgetImageFileName = $portalSettingsDashboardWidget->code_ref . '.' . $fileExtensie;
 
                 if (Config::get('app.env') == "local") {
-                    Storage::disk('public_portal_local')->putFileAs('images', $request->file('image'), $widgetImageFileName);
-                    Storage::disk('customer_portal_app_build_local')->putFileAs('images', $request->file('image'), $widgetImageFileName);
-                    Storage::disk('customer_portal_app_public_local')->putFileAs('images', $request->file('image'), $widgetImageFileName);
+                    Storage::disk('public_portal_local')->putFileAs('images', $request->file('image'), $newWidgetImageFileName);
+                    Storage::disk('customer_portal_app_build_local')->putFileAs('images', $request->file('image'), $newWidgetImageFileName);
+                    Storage::disk('customer_portal_app_public_local')->putFileAs('images', $request->file('image'), $newWidgetImageFileName);
                 } else {
-                    Storage::disk('public_portal')->putFileAs('images', $request->file('image'), $widgetImageFileName);
+                    Storage::disk('public_portal')->putFileAs('images', $request->file('image'), $newWidgetImageFileName);
                 }
 
-                if ($portalSettingsDashboardWidget->widget_image_file_name !== $widgetImageFileName) {
+                if ($oldWidgetImageFileName !== $newWidgetImageFileName) {
                     if (Config::get('app.env') == "local") {
-                        Storage::disk('public_portal_local')->delete('images/' . $portalSettingsDashboardWidget->widget_image_file_name);
-                        Storage::disk('customer_portal_app_build_local')->delete('images/' . $portalSettingsDashboardWidget->widget_image_file_name);
-                        Storage::disk('customer_portal_app_public_local')->delete('images/' . $portalSettingsDashboardWidget->widget_image_file_name);
+                        Storage::disk('public_portal_local')->delete('images/' . $oldWidgetImageFileName);
+                        Storage::disk('customer_portal_app_build_local')->delete('images/' . $oldWidgetImageFileName);
+                        Storage::disk('customer_portal_app_public_local')->delete('images/' . $oldWidgetImageFileName);
                     } else {
-                        Storage::disk('public_portal')->delete('images/' . $portalSettingsDashboardWidget->widget_image_file_name);
+                        Storage::disk('public_portal')->delete('images/' . $oldWidgetImageFileName);
                     }
-                    $portalSettingsDashboardWidget->widget_image_file_name = $widgetImageFileName;
+                    $portalSettingsDashboardWidget->widget_image_file_name = $newWidgetImageFileName;
                     $portalSettingsDashboardWidget->save();
                 }
 

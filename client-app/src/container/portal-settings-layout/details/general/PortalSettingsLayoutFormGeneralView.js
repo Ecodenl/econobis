@@ -75,7 +75,6 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                                 borderRadius: '1px',
                                 maxHeight: '50px',
                                 width: 'auto',
-                                marginLeft: '20px',
                                 marginBottom: '10px',
                                 boxShadow: '0 0 0 1px #fff inset',
                             }}
@@ -101,7 +100,6 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                                     borderRadius: '1px',
                                     maxHeight: '50px',
                                     width: 'auto',
-                                    marginLeft: '20px',
                                     marginBottom: '10px',
                                     boxShadow: '0 0 0 1px #fff inset',
                                 }}
@@ -126,7 +124,6 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                                 borderRadius: '1px',
                                 height: '50px',
                                 width: 'auto',
-                                marginLeft: '20px',
                                 marginBottom: '10px',
                                 boxShadow: '0 0 0 1px #fff inset',
                             }}
@@ -152,7 +149,6 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                                     borderRadius: '1px',
                                     maxHeight: '50px',
                                     width: 'auto',
-                                    marginLeft: '20px',
                                     marginBottom: '10px',
                                     boxShadow: '0 0 0 1px #fff inset',
                                 }}

@@ -6,7 +6,7 @@ import InputDate from '../../../components/form/InputDate';
 import ButtonText from '../../../components/button/ButtonText';
 import PanelFooter from '../../../components/panel/PanelFooter';
 import InputText from '../../../components/form/InputText';
-import InputTextArea from '../../../components/form/InputTextarea';
+import InputTextArea from '../../../components/form/InputTextArea';
 import MeasuresOfCategory from '../../../selectors/MeasuresOfCategory';
 import InputMultiSelect from '../../../components/form/InputMultiSelect';
 

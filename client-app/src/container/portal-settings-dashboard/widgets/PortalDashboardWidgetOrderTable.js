@@ -4,10 +4,17 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import PortalDashboardWidgetOrderRow from './PortalDashboardWidgetOrderRow';
 import update from 'immutability-helper';
-import {FaInfoCircle} from "react-icons/fa";
-import ReactTooltip from "react-tooltip";
+import { FaInfoCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 
-const PortalDashboardWidgetOrderTable = ({ columns, data, edit, handleInputChange, removeWidget, imageHash }) => {
+const PortalDashboardWidgetOrderTable = ({
+    columns,
+    data,
+    showEditSort,
+    handleInputChange,
+    deletePortalSettingsDashboardWidget,
+    imageHash,
+}) => {
     const [records, setRecords] = useState(data);
 
     useEffect(
@@ -54,29 +61,63 @@ const PortalDashboardWidgetOrderTable = ({ columns, data, edit, handleInputChang
                 <thead>
                     {headerGroups.map(headerGroup => (
                         <tr {...headerGroup.getHeaderGroupProps()} className={'thead-title'}>
-                            {edit && <th />}
                             {headerGroup.headers.map(column => (
-                                <th {...column.getHeaderProps()}>{column.render('Header')}
-                                    {column.textToolTip && (
-                                        <span>{' '}
-                                            <FaInfoCircle
-                                                color={'white'}
-                                                size={'15px'}
-                                                data-tip={column.render('textToolTip')}
-                                                data-for={`tooltip-${column.render('accessor')}`}
-                                            />
-                                            <ReactTooltip
-                                                id={`tooltip-${column.render('accessor')}`}
-                                                effect="float"
-                                                place="right"
-                                                multiline={true}
-                                                aria-haspopup="true"
-                                            />
-                                        </span>
-                                    )}
-                                </th>
+                                <>
+                                    {column.fieldName === 'order' && showEditSort === true ? (
+                                        <th
+                                            {...column.getHeaderProps({
+                                                style: { width: column.width },
+                                            })}
+                                        >
+                                            <span>
+                                                <FaInfoCircle
+                                                    color={'white'}
+                                                    size={'15px'}
+                                                    data-tip={`Je kunt de volgorde van de widgets aanpassen door deze te slepen.`}
+                                                    data-for={`tooltip-order`}
+                                                />
+                                                <ReactTooltip
+                                                    id={`tooltip-order`}
+                                                    effect="float"
+                                                    place="right"
+                                                    multiline={true}
+                                                    aria-haspopup="true"
+                                                />
+                                            </span>
+                                        </th>
+                                    ) : column.fieldName === 'title' ? (
+                                        <th
+                                            {...column.getHeaderProps({
+                                                style: { width: column.width },
+                                            })}
+                                        >
+                                            {column.render('Header')}
+                                        </th>
+                                    ) : column.fieldName === 'widgetImageFileName' ? (
+                                        <th
+                                            {...column.getHeaderProps({
+                                                style: { width: column.width },
+                                            })}
+                                        >
+                                            {column.render('Header')}
+                                        </th>
+                                    ) : column.fieldName === 'active' ? (
+                                        <th
+                                            {...column.getHeaderProps({
+                                                style: { width: column.width },
+                                            })}
+                                        >
+                                            {column.render('Header')}
+                                        </th>
+                                    ) : column.fieldName === 'codeRef' && showEditSort !== true ? (
+                                        <th
+                                            {...column.getHeaderProps({
+                                                style: { width: column.width },
+                                            })}
+                                        />
+                                    ) : null}
+                                </>
                             ))}
-                            {edit && <th />}
                         </tr>
                     ))}
                 </thead>
@@ -88,9 +129,9 @@ const PortalDashboardWidgetOrderTable = ({ columns, data, edit, handleInputChang
                                     index={index}
                                     row={row}
                                     moveRow={moveRow}
-                                    edit={edit}
+                                    showEditSort={showEditSort}
                                     handleInputChange={handleInputChange}
-                                    removeWidget={removeWidget}
+                                    deletePortalSettingsDashboardWidget={deletePortalSettingsDashboardWidget}
                                     {...row.getRowProps()}
                                     imageHash={imageHash}
                                 />

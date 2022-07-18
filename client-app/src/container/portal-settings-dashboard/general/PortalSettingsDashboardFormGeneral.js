@@ -9,7 +9,6 @@ import ErrorUnauthorized from '../../global/ErrorUnauthorized';
 class PortalSettingsDashboardFormGeneral extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             showEdit: false,
             imageHash: Date.now(),
@@ -26,8 +25,6 @@ class PortalSettingsDashboardFormGeneral extends Component {
     switchToView = () => {
         this.setState({
             showEdit: false,
-            imageHash: Date.now(),
-            activeDiv: '',
         });
     };
 
@@ -62,7 +59,6 @@ class PortalSettingsDashboardFormGeneral extends Component {
                     <PortalSettingsDashboardFormGeneralEdit
                         dashboardSettings={this.props.dashboardSettings}
                         updateState={this.props.updateState}
-                        meDetails={this.props.meDetails}
                         switchToView={this.switchToView}
                         imageHash={this.state.imageHash}
                     />
@@ -71,6 +67,7 @@ class PortalSettingsDashboardFormGeneral extends Component {
                 ) : (
                     <PortalSettingsDashboardFormGeneralView
                         dashboardSettings={this.props.dashboardSettings}
+                        updateState={this.props.updateState}
                         switchToEdit={this.switchToEdit}
                         imageHash={this.state.imageHash}
                     />
@@ -82,7 +79,6 @@ class PortalSettingsDashboardFormGeneral extends Component {
 
 const mapStateToProps = state => {
     return {
-        // permissions: state.meDetails.permissions,
         meDetails: state.meDetails,
     };
 };

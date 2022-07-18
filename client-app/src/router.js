@@ -93,6 +93,7 @@ import LoadingPage from './container/global/LoadingPage';
 import RevenuesKwhNewApp from './container/project/details/revenueKwh/new/RevenuesKwhNewApp';
 import RevenuesKwhDetailsApp from './container/project/details/revenueKwh/details/RevenuesKwhDetailsApp';
 import RevenuePartsKwhDetailsApp from './container/project/details/revenueKwh/details/revenue-parts/details/RevenuePartsKwhDetailsApp';
+import PortalSettingsDashboardWidgetDetailsApp from './container/portal-settings-dashboard/widgets/details/PortalSettingsDashboardWidgetDetailsApp';
 const MeasuresListApp = React.lazy(() => import('./container/measures/list/MeasuresListApp'));
 const MeasureDetailsApp = React.lazy(() => import('./container/measures/details/MeasureDetailsApp'));
 const MeasureCategoriesListApp = React.lazy(() =>
@@ -193,6 +194,19 @@ const PortalSettingsApp = React.lazy(() => import('./container/portal-settings/P
 const PortalSettingsDashboardApp = React.lazy(() =>
     import('./container/portal-settings-dashboard/PortalSettingsDashboardApp')
 );
+// todo WM: nog
+//
+// const PortalSettingsDashboardWidgetListApp = React.lazy(() =>
+//     import('./container/portal-settings-dashboard/widgets/new/PortalSettingsDashboardWidgetListApp')
+// );
+const PortalSettingsDashboardWidgetNewApp = React.lazy(() =>
+    import('./container/portal-settings-dashboard/widgets/new/PortalSettingsDashboardWidgetNewApp')
+);
+// todo WM: nog
+//
+// const PortalSettingsDashboardWidgetApp = React.lazy(() =>
+//     import('./container/portal-settings-dashboard/widgets/new/PortalSettingsDashboardWidgetApp')
+// );
 const PortalSettingsLayoutListApp = React.lazy(() =>
     import('./container/portal-settings-layout/list/PortalSettingsLayoutListApp')
 );
@@ -370,6 +384,14 @@ const Routes = () => {
                     <Route path="kostenplaats/:id" component={CostCenterDetailsApp} />
                     /* PortalSettingsLayout */
                     <Route path="portal-instellingen-dashboard" component={PortalSettingsDashboardApp} />
+                    <Route
+                        path="portal-instellingen-dashboard-widget/nieuw"
+                        component={PortalSettingsDashboardWidgetNewApp}
+                    />
+                    <Route
+                        path="portal-instellingen-dashboard-widget/:id"
+                        component={PortalSettingsDashboardWidgetDetailsApp}
+                    />
                     /* PortalSettingsLayout */
                     <Route path="portal-instellingen-layout" component={PortalSettingsLayoutListApp} />
                     <Route path="portal-instellingen-layout/nieuw" component={PortalSettingsLayoutNewApp} />

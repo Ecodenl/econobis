@@ -11,7 +11,7 @@ import PanelFooter from '../../../../components/panel/PanelFooter';
 import OpportunityDetailsAPI from '../../../../api/opportunity/OpportunityDetailsAPI';
 
 import { fetchOpportunity } from '../../../../actions/opportunity/OpportunityDetailsActions';
-import InputTextArea from '../../../../components/form/InputTextarea';
+import InputTextArea from '../../../../components/form/InputTextArea';
 import InputMultiSelect from '../../../../components/form/InputMultiSelect';
 import MeasuresOfCategory from '../../../../selectors/MeasuresOfCategory';
 import moment from 'moment';

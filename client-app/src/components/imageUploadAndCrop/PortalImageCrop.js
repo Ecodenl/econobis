@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import ReactCrop from 'react-image-crop';
-import Modal from '../../modal/Modal';
+import Modal from '../modal/Modal';
 import 'react-image-crop/dist/ReactCrop.css';
 
-class PortalLayoutImageCrop extends Component {
+class PortalImageCrop extends Component {
     constructor(props) {
         super(props);
 
@@ -14,7 +14,7 @@ class PortalLayoutImageCrop extends Component {
             this.crop = { unit: '%', width: '100', height: '100' };
             this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
         } else {
-            switch (this.props.imageLayoutItemName) {
+            switch (this.props.imageItemName) {
                 case 'logo-administration':
                     this.aspectString = '2:1';
                     this.crop = { unit: 'px', height: 200, aspect: 2 / 1 };
@@ -155,7 +155,7 @@ class PortalLayoutImageCrop extends Component {
                     modalClassName={'modal-portal-layout-crop'}
                     title={'Bijsnijden image (' + this.props.image.name + ') verhouding ' + this.aspectString}
                     closeModal={this.props.closeShowCrop}
-                    confirmAction={() => this.props.cropLogo(croppedImage)}
+                    confirmAction={() => this.props.cropImage(croppedImage)}
                     buttonConfirmText={'Bevestig'}
                 >
                     {src && (
@@ -199,4 +199,4 @@ class PortalLayoutImageCrop extends Component {
     }
 }
 
-export default PortalLayoutImageCrop;
+export default PortalImageCrop;

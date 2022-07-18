@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Eco\PortalSettingsDashboard;
+
+use App\Eco\ContactGroup\ContactGroup;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class PortalSettingsDashboardWidget extends Model
+{
+    use SoftDeletes;
+
+    protected $guarded = ['id'];
+
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
+    public function portalSettingsDashboard()
+    {
+        return $this->belongsTo(PortalSettingsDashboard::class);
+    }
+
+    public function contactGroup()
+    {
+        return $this->belongsTo(ContactGroup::class, 'show_group_id');
+    }
+
+    public function getBackgroundColor()
+    {
+        return !empty($this->background_color) ? $this->background_color : $this->portalSettingsDashboard->default_widget_background_color;
+    }
+
+    public function getTextColor()
+    {
+        return !empty($this->text_color) ? $this->text_color : $this->portalSettingsDashboard->default_widget_text_color;
+    }
+
+}

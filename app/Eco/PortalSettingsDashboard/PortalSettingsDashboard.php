@@ -5,7 +5,7 @@ namespace App\Eco\PortalSettingsDashboard;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class PortalSettingsDashboards extends Model
+class PortalSettingsDashboard extends Model
 {
     use SoftDeletes;
 
@@ -19,7 +19,7 @@ class PortalSettingsDashboards extends Model
 
     public function widgets()
     {
-        return $this->hasMany(PortalSettingsDashboardWidgets::class);
+        return $this->hasMany(PortalSettingsDashboardWidget::class);
     }
 
 }

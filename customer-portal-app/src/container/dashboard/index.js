@@ -115,7 +115,7 @@ const Dashboard = function(props) {
                             <ContactDetailsDashboardWidget
                                 contact={contact}
                                 backgroundColorUsed={dashboardSettings.defaultWidgetBackgroundColor}
-                                textColorUsed={dashboardSettings.defaultWidgeTextColor}
+                                textColorUsed={dashboardSettings.defaultWidgetTextColor}
                             />
                         </Col>
                         <PortalUserConsumer>
@@ -128,7 +128,7 @@ const Dashboard = function(props) {
                                                 currentSelectedContact={currentSelectedContact}
                                                 switchCurrentContact={switchCurrentContact}
                                                 backgroundColorUsed={dashboardSettings.defaultWidgetBackgroundColor}
-                                                textColorUsed={dashboardSettings.defaultWidgeTextColor}
+                                                textColorUsed={dashboardSettings.defaultWidgetTextColor}
                                             />
                                         </Col>
                                     );

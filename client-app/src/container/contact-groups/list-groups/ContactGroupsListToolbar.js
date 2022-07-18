@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
+import ButtonText from '../../../components/button/ButtonText';
+import { FaInfoCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 
 const ContactGroupsListToolbar = props => {
     const newContactGroup = () => {
@@ -20,6 +23,29 @@ const ContactGroupsListToolbar = props => {
                     {permissions.manageGroup && (
                         <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newContactGroup} />
                     )}
+                    <br /> <br />
+                    <ButtonText
+                        onClickAction={props.getExcelExportGroupReport}
+                        buttonText={`Export groepsrapportage`}
+                    />
+                    <span>
+                        &nbsp;
+                        <FaInfoCircle
+                            color={'blue'}
+                            size={'15px'}
+                            data-tip={
+                                'Deze knop exporteert alle groepen waarbij de optie "Meenemen in export groep rapportage" is aangevinkt. Export groep rapportage werkt alleen bij statische groepen.'
+                            }
+                            data-for={'tooltip-export-group-report'}
+                        />
+                        <ReactTooltip
+                            id={'tooltip-export-group-report'}
+                            effect="float"
+                            place="right"
+                            multiline={true}
+                            aria-haspopup="true"
+                        />
+                    </span>
                 </div>
             </div>
             <div className="col-md-4">

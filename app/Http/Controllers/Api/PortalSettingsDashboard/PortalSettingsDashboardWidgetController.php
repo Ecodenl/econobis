@@ -73,6 +73,16 @@ class PortalSettingsDashboardWidgetController extends Controller
             ->boolean('active')->whenMissing(true)->onEmpty(true)->next()
             ->get();
 
+        //bool als string? waarschijnlijk door formdata
+        $active = $request->input('active');
+        if($active == 'false' || $active == '0'){
+            $active = false;
+        }
+        if($active == 'true' || $active == '1'){
+            $active = true;
+        }
+        $data['active'] = $active;
+
         $portalSettingsDashboardWidget->fill($data);
         $portalSettingsDashboardWidget->save();
 

@@ -226,8 +226,10 @@ class PortalSettingsLayoutController extends Controller
                         Storage::disk('customer_portal_app_public_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . '1x1.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'background-login.png');
                     }
                 } else {
+                    Storage::disk('public_portal')->delete(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . $layoutImageBgLoginName);
                     Storage::disk('public_portal')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . '1x1.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . $layoutImageBgLoginName);
                     if ($portalSettingsLayout->is_default) {
+                        Storage::disk('public_portal')->delete(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'background-login.png');
                         Storage::disk('public_portal')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . '1x1.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'background-login.png');
                     }
                 }
@@ -298,8 +300,10 @@ class PortalSettingsLayoutController extends Controller
                         Storage::disk('customer_portal_app_public_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . '1x1.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'background-header.png');
                     }
                 } else {
+                    Storage::disk('public_portal')->delete(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . $layoutImageBgHeaderName);
                     Storage::disk('public_portal')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . '1x1.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . $layoutImageBgHeaderName);
                     if ($portalSettingsLayout->is_default) {
+                        Storage::disk('public_portal')->delete(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'background-header.png');
                         Storage::disk('public_portal')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . '1x1.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'background-header.png');
                     }
                 }

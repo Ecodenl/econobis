@@ -18,6 +18,7 @@ import PreviewPortalDashboardPageMobileModal from '../../../../portal-settings-p
 import PortalSettingsDashboardAPI from '../../../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
 import InputTextColorPicker from '../../../../../components/form/InputTextColorPicker';
 import InputReactSelect from '../../../../../components/form/InputReactSelect';
+import InputToggle from '../../../../../components/form/InputToggle';
 
 class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
     constructor(props) {
@@ -209,7 +210,9 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
 
         const data = new FormData();
         // data.append('portalSettingsDashboardId', widget.portalSettingsDashboardId);
+        data.append('order', widget.order);
         data.append('title', widget.title);
+        data.append('active', widget.active);
         data.append('text', widget.text);
         data.append('image', widget.image);
         data.append('buttonText', widget.buttonText);
@@ -275,6 +278,15 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
                                 required={'required'}
                                 error={errors.title}
                                 errorMessage={errorMessage.title}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputToggle
+                                label={'Actief'}
+                                divSize={'col-sm-8'}
+                                name={'active'}
+                                value={Boolean(widget.active)}
+                                onChangeAction={this.handleInputChange}
                             />
                         </div>
                         <div className="row">

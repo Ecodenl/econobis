@@ -280,9 +280,7 @@ const PreviewPortalDashboardPage = ({
                                                 <div id="widget-over-ons" style={customStyles.card}>
                                                     <img style={customStyles.cardImgTop} src={imageSrc} />
                                                     <div style={customStyles.cardBody}>
-                                                        <h5 style={customStyles.cardTitle}>
-                                                            {widget.title} | {widget.widgetImageFileName}
-                                                        </h5>
+                                                        <h5 style={customStyles.cardTitle}>{widget.title}</h5>
                                                         <p
                                                             style={customStyles.cardText}
                                                             style={{ whiteSpace: 'break-spaces' }}

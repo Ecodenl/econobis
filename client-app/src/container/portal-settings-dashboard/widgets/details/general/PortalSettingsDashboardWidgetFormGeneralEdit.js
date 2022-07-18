@@ -364,6 +364,8 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
                                 label={'Zichtbaar voor groep'}
                                 divSize={'col-sm-8'}
                                 name={'showGroupId'}
+                                size={'col-sm-5'}
+                                textToolTip={`Je kan maar één groep kiezen, als je meerdere groepen deze widget wil laten tonen kan je onder groepenbeheer > + knop een samengestelde groep maken.`}
                                 options={this.props.contactGroups}
                                 value={widget.showGroupId}
                                 onChangeAction={this.handleReactSelectChange}

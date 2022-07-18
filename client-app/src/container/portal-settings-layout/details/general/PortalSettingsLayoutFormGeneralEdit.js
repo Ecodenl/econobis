@@ -835,7 +835,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputTextColorPicker
-                                label="8. Buttonknop / Profielcircel kleur"
+                                label="8. Buttonknop / Profielcirkel kleur"
                                 divSize={'col-sm-8'}
                                 name={'buttonColor'}
                                 value={buttonColor}
@@ -864,7 +864,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputTextColorPicker
-                                label="9. Buttonknop / Profielcircel tekst kleur"
+                                label="9. Buttonknop / Profielcirkel tekst kleur"
                                 divSize={'col-sm-8'}
                                 name={'buttonTextColor'}
                                 value={buttonTextColor}

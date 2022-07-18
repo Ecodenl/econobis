@@ -150,6 +150,14 @@ class Contact extends Model
     {
         return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since')->orderBy('contact_groups.id', 'desc');
     }
+    public function selectedGroups()
+    {
+        return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')
+            ->where('contact_groups.type_id', 'static')
+            ->where('contact_groups.include_into_export_group_report', true)
+            ->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since')
+            ->orderBy('contact_groups.id', 'desc');
+    }
 
     public function isPerson()
     {

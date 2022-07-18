@@ -34,6 +34,8 @@ export default {
                                 'showGroupId',
                                 'backgroundColor',
                                 'textColor',
+                                'backgroundColorUsed',
+                                'textColorUsed',
                             ],
                         },
                     },
@@ -66,6 +68,8 @@ export default {
                         'showGroupId',
                         'backgroundColor',
                         'textColor',
+                        'backgroundColorUsed',
+                        'textColorUsed',
                     ],
                     rlt: {
                         contactGroup: {

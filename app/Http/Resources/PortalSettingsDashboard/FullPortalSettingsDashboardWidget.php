@@ -26,8 +26,10 @@ class FullPortalSettingsDashboardWidget
             'active' => $this->active,
             'buttonText' => $this->button_text,
             'buttonLink' => $this->button_link,
-            'backgroundColor' => $this->getBackgroundColor(),
-            'textColor' => $this->getTextColor(),
+            'backgroundColor' => $this->background_color,
+            'textColor' => $this->text_color,
+            'backgroundColorUsed' => $this->background_color_used,
+            'textColorUsed' => $this->text_color_used,
             'showGroupId' => $this->show_group_id,
             'contactGroup' => ContactGroupPeek::make($this->whenLoaded('contactGroup')),
         ];

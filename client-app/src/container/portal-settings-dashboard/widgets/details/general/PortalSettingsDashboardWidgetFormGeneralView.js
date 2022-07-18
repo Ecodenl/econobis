@@ -20,6 +20,8 @@ const PortalSettingsDashboardWidgetFormGeneralView = ({
     contactGroup,
     backgroundColor,
     textColor,
+    backgroundColorUsed,
+    textColorUsed,
     switchToEdit,
     imageHash,
 }) => {
@@ -125,8 +127,8 @@ const PortalSettingsDashboardWidgetFormGeneralView = ({
                             className="rc-color-picker-trigger"
                             unselectable="unselectable"
                             style={{
-                                backgroundColor: backgroundColor,
-                                color: textColor,
+                                backgroundColor: backgroundColor ? backgroundColor : backgroundColorUsed,
+                                color: textColor ? textColor : textColorUsed,
                                 border: '1px solid #999',
                                 display: 'inline-block',
                                 padding: '2px',

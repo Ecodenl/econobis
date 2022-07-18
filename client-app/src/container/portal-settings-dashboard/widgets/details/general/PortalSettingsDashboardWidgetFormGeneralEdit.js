@@ -379,6 +379,8 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
                                 divSize={'col-sm-8'}
                                 name={'backgroundColor'}
                                 value={widget.backgroundColor}
+                                size={'col-sm-4'}
+                                textToolTip={`Let op: geen donkere achtergrond kleur kiezen dan wordt zwarte titel slecht leesbaar.`}
                                 onChangeAction={this.handleInputChange}
                                 readOnly={!managePortalSettings}
                                 required={'required'}
@@ -388,8 +390,10 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
                                 className="rc-color-picker-trigger"
                                 unselectable="unselectable"
                                 style={{
-                                    backgroundColor: widget.backgroundColor,
-                                    color: widget.textColor,
+                                    backgroundColor: widget.backgroundColor
+                                        ? widget.backgroundColor
+                                        : widget.backgroundColorUsed,
+                                    color: widget.textColor ? widget.textColor : widget.textColorUsed,
                                     border: '1px solid #999',
                                     display: 'inline-block',
                                     padding: '2px',

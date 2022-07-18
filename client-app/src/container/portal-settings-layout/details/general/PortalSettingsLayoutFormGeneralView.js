@@ -313,7 +313,7 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                             className="rc-color-picker-trigger"
                             unselectable="unselectable"
                             style={{
-                                backgroundColor: '#fff',
+                                backgroundColor: '#ffffff',
                                 color: portalBackgroundColor,
                                 border: '1px solid #999',
                                 display: 'inline-block',

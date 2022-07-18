@@ -11,7 +11,18 @@ const PreviewPortalDashboardPage = ({
     setShowMenu,
     showMenu,
 }) => {
-    const { welcomeTitle, welcomeMessage, widgets } = dashboardSettings;
+    const {
+        welcomeTitle,
+        welcomeMessage,
+        widgets,
+        defaultWidgetBackgroundColor,
+        defaultWidgetTextColor,
+    } = dashboardSettings;
+
+    const defaultCardStyle = {
+        backgroundColor: defaultWidgetBackgroundColor,
+        color: defaultWidgetTextColor,
+    };
 
     return (
         <div style={customStyles.modal} className="portal-body">
@@ -275,21 +286,31 @@ const PreviewPortalDashboardPage = ({
                                             widget.image && widget.image.preview
                                                 ? widget.image.preview
                                                 : `${URL_API}/portal/images/${widget.widgetImageFileName}?${imageHash}`;
+                                        const cardStyle = {
+                                            backgroundColor: `${
+                                                widget.backgroundColor
+                                                    ? widget.backgroundColor
+                                                    : widget.backgroundColorUsed
+                                            }`,
+                                            color: `${widget.textColor ? widget.textColor : widget.textColorUsed}`,
+                                        };
                                         return (
                                             <div style={customStyles.col_widget}>
-                                                <div id="widget-over-ons" style={customStyles.card}>
-                                                    <img style={customStyles.cardImgTop} src={imageSrc} />
-                                                    <div style={customStyles.cardBody}>
-                                                        <h5 style={customStyles.cardTitle}>{widget.title}</h5>
-                                                        <p
-                                                            style={customStyles.cardText}
-                                                            style={{ whiteSpace: 'break-spaces' }}
-                                                        >
-                                                            {widget.text}
-                                                        </p>
-                                                        <button className="w-button btn btn-primary btn-sm">
-                                                            {widget.buttonText}
-                                                        </button>
+                                                <div id={widget.codeRef} style={customStyles.card}>
+                                                    <div style={cardStyle}>
+                                                        <img style={customStyles.cardImgTop} src={imageSrc} />
+                                                        <div style={customStyles.cardBody}>
+                                                            <h5 style={customStyles.cardTitle}>{widget.title}</h5>
+                                                            <p
+                                                                style={customStyles.cardText}
+                                                                style={{ whiteSpace: 'break-spaces' }}
+                                                            >
+                                                                {widget.text}
+                                                            </p>
+                                                            <button className="w-button btn btn-primary btn-sm">
+                                                                {widget.buttonText}
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -299,64 +320,68 @@ const PreviewPortalDashboardPage = ({
                             <div style={customStyles.row}>
                                 <div style={customStyles.col_widget}>
                                     <div id="widget-contact-details" style={customStyles.card}>
-                                        <div style={customStyles.cardBody}>
-                                            <h5 style={customStyles.cardTitle}>Naam Account</h5>
-                                            <div style={customStyles.cardText}>
-                                                <div>
-                                                    <b>Bezoekadres</b>
-                                                    <br />
-                                                    Straat 1
-                                                    <br />
-                                                    1234 AB Plaats, Nederland
+                                        <div style={defaultCardStyle}>
+                                            <div style={customStyles.cardBody}>
+                                                <h5 style={customStyles.cardTitle}>Naam Account</h5>
+                                                <div style={customStyles.cardText}>
+                                                    <div>
+                                                        <b>Bezoekadres</b>
+                                                        <br />
+                                                        Straat 1
+                                                        <br />
+                                                        1234 AB Plaats, Nederland
+                                                    </div>
+                                                    <div>
+                                                        <br />
+                                                        <b>Telefoon</b>
+                                                        <br />
+                                                        012-3456789
+                                                    </div>
+                                                    <div>
+                                                        <br />
+                                                        <b>E-mail</b>
+                                                        <br />
+                                                        email@adres.nl
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <br />
-                                                    <b>Telefoon</b>
-                                                    <br />
-                                                    012-3456789
-                                                </div>
-                                                <div>
-                                                    <br />
-                                                    <b>E-mail</b>
-                                                    <br />
-                                                    email@adres.nl
-                                                </div>
+                                                <br />
+                                                <button className="w-button btn btn-primary btn-sm">
+                                                    Gegevens beheren
+                                                </button>
                                             </div>
-                                            <br />
-                                            <button className="w-button btn btn-primary btn-sm">
-                                                Gegevens beheren
-                                            </button>
                                         </div>
                                     </div>
                                 </div>
                                 <div style={customStyles.col_widget}>
                                     <div id="widget-switch-contact" style={customStyles.card}>
-                                        <div style={customStyles.cardBody}>
-                                            <h5 style={customStyles.cardTitle}>Wissel van contact</h5>
-                                            <div
-                                                style={customStyles.cardText}
-                                                style={{
-                                                    display: 'flex',
-                                                    justifyContent: 'left',
-                                                    overflowX: 'auto',
-                                                }}
-                                            >
-                                                <button
-                                                    id="user-1"
-                                                    style={{ margin: '5px' }}
-                                                    type="button"
-                                                    className="w-button btn btn-primary btn-sm btn btn-primary"
+                                        <div style={defaultCardStyle}>
+                                            <div style={customStyles.cardBody}>
+                                                <h5 style={customStyles.cardTitle}>Wissel van contact</h5>
+                                                <div
+                                                    style={customStyles.cardText}
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'left',
+                                                        overflowX: 'auto',
+                                                    }}
                                                 >
-                                                    Naam account 1
-                                                </button>
-                                                <button
-                                                    id="user-2"
-                                                    style={{ margin: '5px' }}
-                                                    type="button"
-                                                    className="w-button btn btn-primary btn-sm btn btn-primary"
-                                                >
-                                                    Naam account 2
-                                                </button>
+                                                    <button
+                                                        id="user-1"
+                                                        style={{ margin: '5px' }}
+                                                        type="button"
+                                                        className="w-button btn btn-primary btn-sm btn btn-primary"
+                                                    >
+                                                        Naam account 1
+                                                    </button>
+                                                    <button
+                                                        id="user-2"
+                                                        style={{ margin: '5px' }}
+                                                        type="button"
+                                                        className="w-button btn btn-primary btn-sm btn btn-primary"
+                                                    >
+                                                        Naam account 2
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

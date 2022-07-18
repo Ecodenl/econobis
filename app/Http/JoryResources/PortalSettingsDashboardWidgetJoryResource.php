@@ -30,6 +30,8 @@ class PortalSettingsDashboardWidgetJoryResource extends JoryResource
         $this->field('deleted_at')->filterable()->sortable();
 
         // Attributes
+        $this->field('background_color_used')->filterable()->sortable();
+        $this->field('text_color_used')->filterable()->sortable();
 
         // Relations
         $this->relation('contactGroup');

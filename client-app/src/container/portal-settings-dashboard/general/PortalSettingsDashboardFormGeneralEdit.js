@@ -168,6 +168,8 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
                                 divSize={'col-sm-8'}
                                 name={'defaultWidgetBackgroundColor'}
                                 value={defaultWidgetBackgroundColor}
+                                size={'col-sm-4'}
+                                textToolTip={`Let op: geen donkere achtergrond kleur kiezen dan wordt zwarte titel slecht leesbaar.`}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
                             />

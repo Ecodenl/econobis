@@ -163,8 +163,8 @@ class PreviewPortalDashboardPageMobileModal extends Component {
                 flexDirection: 'column',
                 minWidth: '0',
                 wordWrap: 'break-word',
-                backgroundColor: '#fff',
-                color: '#000',
+                backgroundColor: '#ffffff',
+                color: '#000000',
                 backgroundClip: 'border-box',
                 border: '1px solid rgba(0,0,0,.125)',
                 borderRadius: '.25rem',
@@ -188,13 +188,13 @@ class PreviewPortalDashboardPageMobileModal extends Component {
                 lineHeight: '20px',
                 marginTop: '10px',
                 fontWeight: 'bold',
-                color: '#333',
+                color: '#333333',
             },
             cardText: {
                 whiteSpace: 'break-spaces',
                 marginTop: '0',
                 marginBottom: '10px',
-                color: '#333',
+                color: '#333333',
             },
         };
 

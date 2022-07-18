@@ -104,13 +104,19 @@ const Dashboard = function(props) {
                                         text={widget.text}
                                         buttonText={widget.buttonText}
                                         buttonLink={widget.buttonLink}
+                                        backgroundColorUsed={widget.backgroundColorUsed}
+                                        textColorUsed={widget.textColorUsed}
                                     />
                                 </Col>
                             ))}
                     </Row>
                     <Row>
                         <Col md={6}>
-                            <ContactDetailsDashboardWidget contact={contact} />
+                            <ContactDetailsDashboardWidget
+                                contact={contact}
+                                backgroundColorUsed={dashboardSettings.defaultWidgetBackgroundColor}
+                                textColorUsed={dashboardSettings.defaultWidgeTextColor}
+                            />
                         </Col>
                         <PortalUserConsumer>
                             {({ user, currentSelectedContact, switchCurrentContact }) => {
@@ -121,6 +127,8 @@ const Dashboard = function(props) {
                                                 user={user}
                                                 currentSelectedContact={currentSelectedContact}
                                                 switchCurrentContact={switchCurrentContact}
+                                                backgroundColorUsed={dashboardSettings.defaultWidgetBackgroundColor}
+                                                textColorUsed={dashboardSettings.defaultWidgeTextColor}
                                             />
                                         </Col>
                                     );

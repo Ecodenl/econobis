@@ -28,12 +28,12 @@ class PortalSettingsDashboardWidget extends Model
         return $this->belongsTo(ContactGroup::class, 'show_group_id');
     }
 
-    public function getBackgroundColor()
+    public function getBackgroundColorUsedAttribute()
     {
         return !empty($this->background_color) ? $this->background_color : $this->portalSettingsDashboard->default_widget_background_color;
     }
 
-    public function getTextColor()
+    public function getTextColorUsedAttribute()
     {
         return !empty($this->text_color) ? $this->text_color : $this->portalSettingsDashboard->default_widget_text_color;
     }

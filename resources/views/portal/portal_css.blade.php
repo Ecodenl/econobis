@@ -2,16 +2,16 @@
 
 :root {
 --portal-main-background-color: {{ (!empty($defaultPortalSettingsLayout->portal_main_background_color) ? $defaultPortalSettingsLayout->portal_main_background_color : '#f1eff0') }};
---portal-main-text-color: {{ (!empty($defaultPortalSettingsLayout->portal_main_text_color) ? $defaultPortalSettingsLayout->portal_main_text_color : '#000') }};
+--portal-main-text-color: {{ (!empty($defaultPortalSettingsLayout->portal_main_text_color) ? $defaultPortalSettingsLayout->portal_main_text_color : '#000000') }};
 --portal-background-color: {{ (!empty($defaultPortalSettingsLayout->portal_background_color) ? $defaultPortalSettingsLayout->portal_background_color : '#034b8c') }};
---portal-background-text-color: {{ (!empty($defaultPortalSettingsLayout->portal_background_text_color) ? $defaultPortalSettingsLayout->portal_background_text_color : '#fff') }};
+--portal-background-text-color: {{ (!empty($defaultPortalSettingsLayout->portal_background_text_color) ? $defaultPortalSettingsLayout->portal_background_text_color : '#ffffff') }};
 --main-primary-rgba: {{ (!empty($defaultPortalSettingsLayout->login_header_background_color) ? $defaultPortalSettingsLayout->login_header_background_color : 'rgba(3, 75, 140, 0.9)') }};
---main-primary-rgba-text-color: {{ (!empty($defaultPortalSettingsLayout->login_header_background_text_color) ? $defaultPortalSettingsLayout->login_header_background_text_color : '#333') }};
---main-header-portal-icon-color: {{ (!empty($defaultPortalSettingsLayout->header_icons_color) ? $defaultPortalSettingsLayout->header_icons_color : '#fff') }};
+--main-primary-rgba-text-color: {{ (!empty($defaultPortalSettingsLayout->login_header_background_text_color) ? $defaultPortalSettingsLayout->login_header_background_text_color : '#333333') }};
+--main-header-portal-icon-color: {{ (!empty($defaultPortalSettingsLayout->header_icons_color) ? $defaultPortalSettingsLayout->header_icons_color : '#ffffff') }};
 --main-secondary-color: {{ (!empty($defaultPortalSettingsLayout->login_field_background_color) ? $defaultPortalSettingsLayout->login_field_background_color : '#3898EC') }};
---main-secondary-text-color: {{ (!empty($defaultPortalSettingsLayout->login_field_background_text_color) ? $defaultPortalSettingsLayout->login_field_background_text_color : '#fff') }};
+--main-secondary-text-color: {{ (!empty($defaultPortalSettingsLayout->login_field_background_text_color) ? $defaultPortalSettingsLayout->login_field_background_text_color : '#ffffff') }};
 --button-primary-color: {{ (!empty($defaultPortalSettingsLayout->button_color) ? $defaultPortalSettingsLayout->button_color : '#3898EC') }};
---button-primary-text-color: {{ (!empty($defaultPortalSettingsLayout->button_text_color) ? $defaultPortalSettingsLayout->button_text_color : '#fff') }};
+--button-primary-text-color: {{ (!empty($defaultPortalSettingsLayout->button_text_color) ? $defaultPortalSettingsLayout->button_text_color : '#ffffff') }};
 --main-warning-color: #dc3545;
 --black-color: #252525;
 --main-login-background-image-url: url({{ (!empty($defaultPortalSettingsLayout->portal_image_bg_file_name_login) ? 'images/' . $defaultPortalSettingsLayout->portal_image_bg_file_name_login . '?v=' . $imageHash : 'images/page-head5.jpg?v=' . $imageHash ) }});

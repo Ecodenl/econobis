@@ -163,8 +163,8 @@ class PreviewPortalDashboardPageMobileModal extends Component {
                 flexDirection: 'column',
                 minWidth: '0',
                 wordWrap: 'break-word',
-                backgroundColor: '#ffffff',
-                color: '#000000',
+                backgroundColor: this.props.dashboardSettings.defaultWidgetBackgroundColor,
+                color: this.props.dashboardSettings.defaultWidgetTextColor,
                 backgroundClip: 'border-box',
                 border: '1px solid rgba(0,0,0,.125)',
                 borderRadius: '.25rem',
@@ -185,16 +185,16 @@ class PreviewPortalDashboardPageMobileModal extends Component {
             cardTitle: {
                 marginBottom: '.75rem',
                 fontSize: '14px',
-                lineHeight: '20px',
+                lineHeight: '0px',
                 marginTop: '10px',
                 fontWeight: 'bold',
-                color: '#333333',
+                color: 'inherit',
             },
             cardText: {
                 whiteSpace: 'break-spaces',
                 marginTop: '0',
                 marginBottom: '10px',
-                color: '#333333',
+                color: 'inherit',
             },
         };
 

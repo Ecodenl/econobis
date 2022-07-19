@@ -210,6 +210,9 @@ class DocumentNewApp extends Component {
                 }
             );
         }
+        if (this.props.params.projectId) {
+            this.setParticipants(this.props.params.projectId);
+        }
     }
 
     handleInputChange(event) {

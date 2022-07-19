@@ -24,6 +24,7 @@ const DocumentNewForm = ({
     measures,
     tasks,
     errors,
+    errorMessage,
     handleSubmit,
     handleInputChange,
     handleProjectChange,
@@ -52,6 +53,7 @@ const DocumentNewForm = ({
                         measures={measures}
                         campaigns={campaigns}
                         errors={errors}
+                        errorMessage={errorMessage}
                         handleInputChange={handleInputChange}
                         handleProjectChange={handleProjectChange}
                     />
@@ -59,6 +61,7 @@ const DocumentNewForm = ({
                         <DocumentNewFormCreateDocument
                             document={document}
                             errors={errors}
+                            errorMessage={errorMessage}
                             handleInputChange={handleInputChange}
                             templates={templates}
                             handleDocumentGroupChange={handleDocumentGroupChange}
@@ -67,6 +70,7 @@ const DocumentNewForm = ({
                         <DocumentNewFormUpload
                             document={document}
                             errors={errors}
+                            errorMessage={errorMessage}
                             handleInputChange={handleInputChange}
                             onDropAccepted={onDropAccepted}
                             onDropRejected={onDropRejected}

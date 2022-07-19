@@ -13,6 +13,7 @@ const DocumentNewFormProject = ({
     projects,
     templates,
     errors,
+    errorMessage,
     handleSubmit,
     handleInputChange,
     handleDocumentGroupChange,
@@ -29,12 +30,14 @@ const DocumentNewFormProject = ({
                         document={document}
                         projects={projects}
                         errors={errors}
+                        errorMessage={errorMessage}
                         handleInputChange={handleInputChange}
                     />
                     {document.documentType === 'internal' ? (
                         <DocumentNewFormCreateDocument
                             document={document}
                             errors={errors}
+                            errorMessage={errorMessage}
                             handleInputChange={handleInputChange}
                             templates={templates}
                             handleDocumentGroupChange={handleDocumentGroupChange}
@@ -43,6 +46,7 @@ const DocumentNewFormProject = ({
                         <DocumentNewFormUpload
                             document={document}
                             errors={errors}
+                            errorMessage={errorMessage}
                             handleInputChange={handleInputChange}
                             onDropAccepted={onDropAccepted}
                             onDropRejected={onDropRejected}

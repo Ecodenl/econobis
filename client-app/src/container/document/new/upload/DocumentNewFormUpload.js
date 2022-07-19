@@ -20,7 +20,15 @@ class DocumentNewFormUpload extends Component {
     }
 
     render() {
-        const { document, errors, handleInputChange, documentGroups, onDropAccepted, onDropRejected } = this.props;
+        const {
+            document,
+            errors,
+            errorMessage,
+            handleInputChange,
+            documentGroups,
+            onDropAccepted,
+            onDropRejected,
+        } = this.props;
         const { documentGroup, attachment } = document;
 
         return (
@@ -34,6 +42,7 @@ class DocumentNewFormUpload extends Component {
                         onChangeAction={handleInputChange}
                         required={'required'}
                         error={errors.documentGroup}
+                        errorMessage={errorMessage.documentGroup}
                     />
                     <div className="form-group col-sm-6">
                         <label className="col-sm-6">Kies bestand</label>
@@ -45,6 +54,11 @@ class DocumentNewFormUpload extends Component {
                                 onClick={this.toggleUploadModal}
                             />
                         </div>
+                        {errors && (
+                            <div className="col-sm-offset-6 col-sm-6">
+                                <span className="has-error-message"> {errorMessage.noDocument}</span>
+                            </div>
+                        )}
                     </div>
                 </div>
                 {this.state.showUploadModal && (

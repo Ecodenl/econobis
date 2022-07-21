@@ -24,12 +24,18 @@ const DocumentNewForm = ({
     measures,
     tasks,
     errors,
+    errorMessage,
     handleSubmit,
     handleInputChange,
     handleProjectChange,
     handleDocumentGroupChange,
     onDropAccepted,
     onDropRejected,
+    handleInputChangeContactId,
+    searchTermContact,
+    isLoadingContact,
+    setSearchTermContact,
+    setLoadingContact,
 }) => {
     const submitText = document.documentType === 'internal' ? 'Maak document' : 'Upload document';
 
@@ -52,13 +58,20 @@ const DocumentNewForm = ({
                         measures={measures}
                         campaigns={campaigns}
                         errors={errors}
+                        errorMessage={errorMessage}
                         handleInputChange={handleInputChange}
                         handleProjectChange={handleProjectChange}
+                        handleInputChangeContactId={handleInputChangeContactId}
+                        searchTermContact={searchTermContact}
+                        isLoadingContact={isLoadingContact}
+                        setSearchTermContact={setSearchTermContact}
+                        setLoadingContact={setLoadingContact}
                     />
                     {document.documentType === 'internal' ? (
                         <DocumentNewFormCreateDocument
                             document={document}
                             errors={errors}
+                            errorMessage={errorMessage}
                             handleInputChange={handleInputChange}
                             templates={templates}
                             handleDocumentGroupChange={handleDocumentGroupChange}
@@ -67,6 +80,7 @@ const DocumentNewForm = ({
                         <DocumentNewFormUpload
                             document={document}
                             errors={errors}
+                            errorMessage={errorMessage}
                             handleInputChange={handleInputChange}
                             onDropAccepted={onDropAccepted}
                             onDropRejected={onDropRejected}

@@ -57,7 +57,7 @@ class DocumentDetailsToolbar extends Component {
                 )}
                 <div className="col-md-4">
                     <h4 className="text-right margin-10-right">
-                        Gemaakt vanuit:{' '}
+                        Gemaakt vanuit/voor:{' '}
                         <strong>{this.props.documentCreatedFrom ? this.props.documentCreatedFrom.name : ''}</strong>
                     </h4>
                 </div>

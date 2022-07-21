@@ -81,12 +81,13 @@ class DocumentNewApp extends Component {
             quotationRequests: [],
             measures: [],
             tasks: [],
-            projects: [],
             participants: [],
+            projects: [],
             orders: [],
             document: {
                 administrationId: this.props.params.administrationId || '',
                 contactId: this.props.params.contactId || '',
+                selectedContact: null,
                 contactGroupId: this.props.params.contactGroupId || '',
                 intakeId: this.props.params.intakeId || '',
                 opportunityId: this.props.params.opportunityId || '',
@@ -118,7 +119,17 @@ class DocumentNewApp extends Component {
                 uploadFailed: false,
                 templateId: false,
                 noDocument: false,
+                description: false,
             },
+            errorMessage: {
+                docLinkedAtAny: '',
+                documentGroup: '',
+                templateId: '',
+                noDocument: '',
+                description: '',
+            },
+            searchTermContact: '',
+            isLoadingContact: false,
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -127,6 +138,8 @@ class DocumentNewApp extends Component {
         this.onDropRejected = this.onDropRejected.bind(this);
         this.handleDocumentGroupChange = this.handleDocumentGroupChange.bind(this);
         this.handleProjectChange = this.handleProjectChange.bind(this);
+        this.setSearchTermContact = this.setSearchTermContact.bind(this);
+        this.setLoadingContact = this.setLoadingContact.bind(this);
     }
 
     componentDidMount() {
@@ -210,6 +223,9 @@ class DocumentNewApp extends Component {
                 }
             );
         }
+        if (this.props.params.projectId) {
+            this.setParticipants(this.props.params.projectId);
+        }
     }
 
     handleInputChange(event) {
@@ -225,6 +241,20 @@ class DocumentNewApp extends Component {
             },
         });
     }
+
+    handleInputChangeContactId = selectedOption => {
+        const selectedContactId = selectedOption ? selectedOption.id : null;
+        if (selectedContactId) {
+            this.setState({
+                ...this.state,
+                document: {
+                    ...this.state.document,
+                    contactId: selectedContactId,
+                    selectedContact: selectedOption,
+                },
+            });
+        }
+    };
 
     handleProjectChange(event) {
         const target = event.target;
@@ -306,6 +336,19 @@ class DocumentNewApp extends Component {
         });
     }
 
+    setSearchTermContact(searchTermContact) {
+        this.setState({
+            ...this.state,
+            searchTermContact: searchTermContact,
+        });
+    }
+    setLoadingContact(isLoadingContact) {
+        this.setState({
+            ...this.state,
+            isLoadingContact: isLoadingContact,
+        });
+    }
+
     handleSubmit(event) {
         event.preventDefault();
 
@@ -338,46 +381,55 @@ class DocumentNewApp extends Component {
 
         // Validation
         let errors = {};
+        let errorMessage = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(description + '')) {
-            errors.description = true;
+        if (
+            validator.isEmpty(contactId + '') &&
+            validator.isEmpty(contactGroupId + '') &&
+            // validator.isEmpty(intakeId + '') &&            // intake hoort minimaal bij een contact
+            // validator.isEmpty(opportunityId + '') &&       // opportunity hoort minimaal bij een contact
+            validator.isEmpty(taskId + '') &&
+            // validator.isEmpty(quotationRequestId + '') &&  // quotationRequest hoort minimaal bij een contact
+            // validator.isEmpty(housingFileId + '') &&       // housingFile hoort minimaal bij een contact
+            validator.isEmpty(projectId + '') &&
+            validator.isEmpty(participantId + '') && // participant hoort minimaal bij een project
+            validator.isEmpty(orderId + '') &&
+            validator.isEmpty(administrationId + '') &&
+            validator.isEmpty(measureId + '') &&
+            validator.isEmpty(campaignId + '')
+        ) {
+            errors.docLinkedAtAny = true;
+            errorMessage.docLinkedAtAny =
+                'Minimaal 1 van de volgende gegevens moet geselecteerd zijn: Contact, Groep, Taak, Project, Deelnemer, Order, Administratie, Maatregel of Campagne.';
             hasErrors = true;
         }
 
-        if (
-            validator.isEmpty(administrationId + '') &&
-            validator.isEmpty(contactId + '') &&
-            validator.isEmpty(contactGroupId + '') &&
-            validator.isEmpty(intakeId + '') &&
-            validator.isEmpty(opportunityId + '') &&
-            validator.isEmpty(housingFileId + '') &&
-            validator.isEmpty(quotationRequestId + '') &&
-            validator.isEmpty(projectId + '') &&
-            validator.isEmpty(participantId + '') &&
-            validator.isEmpty(taskId + '') &&
-            validator.isEmpty(orderId + '')
-        ) {
-            errors.docLinkedAtAny = true;
+        if (validator.isEmpty(description + '')) {
+            errors.description = true;
+            errorMessage.description = 'Verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(documentGroup + '')) {
             errors.documentGroup = true;
+            errorMessage.documentGroup = 'Verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(templateId + '') && documentType == 'internal') {
             errors.templateId = true;
+            errorMessage.templateId = 'Verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(attachment + '') && documentType == 'upload') {
             errors.noDocument = true;
+            errorMessage.noDocument = 'Verplicht';
             hasErrors = true;
         }
 
-        this.setState({ ...this.state, errors: errors });
+        this.setState({ ...this.state, errors: errors, errorMessage: errorMessage });
 
         // If no errors send form
         if (!hasErrors) {
@@ -443,6 +495,7 @@ class DocumentNewApp extends Component {
                                 templates={this.state.templates}
                                 projects={this.state.projects}
                                 errors={this.state.errors}
+                                errorMessage={this.state.errorMessage}
                                 handleSubmit={this.handleSubmit}
                                 handleDocumentGroupChange={this.handleDocumentGroupChange}
                                 handleInputChange={this.handleInputChange}
@@ -454,6 +507,7 @@ class DocumentNewApp extends Component {
                                 document={this.state.document}
                                 templates={this.state.templates}
                                 errors={this.state.errors}
+                                errorMessage={this.state.errorMessage}
                                 handleSubmit={this.handleSubmit}
                                 handleDocumentGroupChange={this.handleDocumentGroupChange}
                                 handleInputChange={this.handleInputChange}
@@ -467,6 +521,7 @@ class DocumentNewApp extends Component {
                                 projects={this.state.projects}
                                 participants={this.state.participants}
                                 errors={this.state.errors}
+                                errorMessage={this.state.errorMessage}
                                 handleSubmit={this.handleSubmit}
                                 handleDocumentGroupChange={this.handleDocumentGroupChange}
                                 handleInputChange={this.handleInputChange}
@@ -491,12 +546,18 @@ class DocumentNewApp extends Component {
                                 participants={this.state.participants}
                                 orders={this.state.orders}
                                 errors={this.state.errors}
+                                errorMessage={this.state.errorMessage}
                                 handleSubmit={this.handleSubmit}
                                 handleDocumentGroupChange={this.handleDocumentGroupChange}
                                 handleInputChange={this.handleInputChange}
                                 handleProjectChange={this.handleProjectChange}
                                 onDropAccepted={this.onDropAccepted}
                                 onDropRejected={this.onDropRejected}
+                                handleInputChangeContactId={this.handleInputChangeContactId}
+                                searchTermContact={this.state.searchTermContact}
+                                isLoadingContact={this.state.isLoadingContact}
+                                setSearchTermContact={this.setSearchTermContact}
+                                setLoadingContact={this.setLoadingContact}
                             />
                         )}
                     </div>

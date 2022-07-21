@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputTinyMCEUpdateable from '../../../../components/form/InputTinyMCEUpdateable';
 import * as PropTypes from 'prop-types';
-import InputMultiSelect from '../../../../components/form/InputMultiSelect';
 import EmailAddressAPI from '../../../../api/contact/EmailAddressAPI';
 import AsyncSelectSet from '../../../../components/form/AsyncSelectSet';
 import InputReactSelectLong from '../../../../components/form/InputReactSelectLong';

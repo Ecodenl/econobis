@@ -13,7 +13,6 @@ const DocumentNewForm = ({
     projects,
     participants,
     orders,
-    contacts,
     contactGroups,
     templates,
     intakes,
@@ -48,7 +47,6 @@ const DocumentNewForm = ({
                         quotationRequests={quotationRequests}
                         housingFiles={housingFiles}
                         document={document}
-                        contacts={contacts}
                         contactGroups={contactGroups}
                         intakes={intakes}
                         opportunities={opportunities}

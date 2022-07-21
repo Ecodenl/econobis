@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class SeedMarch2022MeasureCategoriesTable extends Migration
+class SeedJuly2022MeasureCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,14 +14,20 @@ class SeedMarch2022MeasureCategoriesTable extends Migration
     public function up()
     {
         $categorizedMeasures = [
-            'Energiebespaaradvies' => [
-                'EP-W',
+            'Energieconciërge' => [
+                'Klimaatklusser',
+            ],
+            'Overig' => [
+                'Energiebespaartegoed 100 euro',
+            ],
+            'Isolatieglas' => [
+                'Isolerende beglazing',
             ],
         ];
 
-        $id = 4;
+        $id = 6;
         foreach ($categorizedMeasures as $category => $measures) {
-            // Create the category
+            // Get the category
             $catId = DB::table('measure_categories')->where('name', $category)->first()->id;
             // Create the measures
             foreach($measures as $measure) {
@@ -33,6 +39,10 @@ class SeedMarch2022MeasureCategoriesTable extends Migration
                 $id++;
             }
         }
+
+        // Change label 'voorbereiding' to 'concept'
+        DB::table('measures')->where('name', 'Algemeen')->where('measure_category_id', 3)->update(['name' => 'Dakisolatie algemeen']);
+
     }
 
     /**

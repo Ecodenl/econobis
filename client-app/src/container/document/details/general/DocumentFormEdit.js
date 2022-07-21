@@ -21,6 +21,7 @@ import ParticipantsProjectAPI from '../../../../api/participant-project/Particip
 import ProjectsAPI from '../../../../api/project/ProjectsAPI';
 import OrdersAPI from '../../../../api/order/OrdersAPI';
 import InputToggle from '../../../../components/form/InputToggle';
+import AsyncSelectSet from '../../../../components/form/AsyncSelectSet';
 
 class DocumentDetailsFormEdit extends Component {
     constructor(props) {
@@ -33,6 +34,7 @@ class DocumentDetailsFormEdit extends Component {
             projectId,
             participantId,
             contactId,
+            contact,
             contactGroupId,
             intakeId,
             opportunityId,
@@ -70,6 +72,13 @@ class DocumentDetailsFormEdit extends Component {
                 id: id,
                 administrationId: administrationId || '',
                 contactId: contactId || '',
+                selectedContact: contact
+                    ? {
+                          id: contact.id,
+                          fullName: contact.fullName + ' (' + contact.number + ')',
+                          primaryAddressId: contact.primaryAddressId,
+                      }
+                    : null,
                 contactGroupId: contactGroupId || '',
                 intakeId: intakeId || '',
                 opportunityId: opportunityId || '',
@@ -98,11 +107,26 @@ class DocumentDetailsFormEdit extends Component {
                 docLinkedAtAny: '',
                 description: '',
             },
+            searchTermContact: '',
+            isLoadingContact: false,
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleProjectChange = this.handleProjectChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    setSearchTermContact(searchTermContact) {
+        this.setState({
+            ...this.state,
+            searchTermContact: searchTermContact,
+        });
+    }
+    setLoadingContact(isLoadingContact) {
+        this.setState({
+            ...this.state,
+            isLoadingContact: isLoadingContact,
+        });
     }
 
     componentDidMount() {
@@ -166,6 +190,22 @@ class DocumentDetailsFormEdit extends Component {
             },
         });
     }
+
+    handleInputChangeContactId = selectedOption => {
+        console.log(selectedOption);
+
+        const selectedContactId = selectedOption ? selectedOption.id : null;
+        if (selectedContactId) {
+            this.setState({
+                ...this.state,
+                document: {
+                    ...this.state.document,
+                    contactId: selectedContactId,
+                    selectedContact: selectedOption,
+                },
+            });
+        }
+    };
 
     handleProjectChange(event) {
         const target = event.target;
@@ -318,6 +358,7 @@ class DocumentDetailsFormEdit extends Component {
             administrationId,
             orderId,
             contactId,
+            selectedContact,
             contactGroupId,
             intakeId,
             opportunityId,
@@ -350,6 +391,25 @@ class DocumentDetailsFormEdit extends Component {
             measureId === '' &&
             campaignId === '';
 
+        const getContactOptions = async () => {
+            if (this.state.searchTermContact.length <= 1) return;
+
+            this.setLoadingContact(true);
+
+            try {
+                const results = await ContactsAPI.fetchContactSearch(this.state.searchTermContact);
+                this.setLoadingContact(false);
+                return results.data.data;
+            } catch (error) {
+                this.setLoadingContact(false);
+                // console.log(error);
+            }
+        };
+
+        const handleInputSearchChange = value => {
+            this.setSearchTermContact(value);
+        };
+
         return (
             <div>
                 <div>
@@ -361,16 +421,6 @@ class DocumentDetailsFormEdit extends Component {
                         </div>
                     )}
                     <div className="row">
-                        <InputSelect
-                            label="Contact"
-                            name={'contactId'}
-                            value={contactId}
-                            options={contacts}
-                            optionName={'fullName'}
-                            onChangeAction={this.handleInputChange}
-                            required={oneOfFieldRequired && 'required'}
-                            error={errors.docLinkedAtAny}
-                        />
                         <InputText
                             label="Type"
                             name={'documentType'}
@@ -379,6 +429,24 @@ class DocumentDetailsFormEdit extends Component {
                             }
                             readOnly={true}
                         />
+                    </div>
+                    <div className="row">
+                        <div className="row">
+                            <AsyncSelectSet
+                                label={'Contact'}
+                                name={'contactId'}
+                                id={'contactId'}
+                                loadOptions={getContactOptions}
+                                optionName={'fullName'}
+                                value={selectedContact}
+                                onChangeAction={this.handleInputChangeContactId}
+                                required={'required'}
+                                error={errors.docLinkedAtAny}
+                                isLoading={this.state.isLoadingContact}
+                                handleInputChange={handleInputSearchChange}
+                                multi={false}
+                            />
+                        </div>
                     </div>
                     <div className="row">
                         <InputSelect

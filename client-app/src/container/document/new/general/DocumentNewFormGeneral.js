@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import InputSelect from '../../../../components/form/InputSelect';
 import InputText from '../../../../components/form/InputText';
 import InputToggle from '../../../../components/form/InputToggle';
+import AsyncSelectSet from '../../../../components/form/AsyncSelectSet';
+import ContactsAPI from '../../../../api/contact/ContactsAPI';
 
 const DocumentNewFormGeneral = ({
     document,
@@ -25,10 +27,16 @@ const DocumentNewFormGeneral = ({
     handleProjectChange,
     documentTypes,
     administrations,
+    handleInputChangeContactId,
+    searchTermContact,
+    isLoadingContact,
+    setSearchTermContact,
+    setLoadingContact,
 }) => {
     const {
         administrationId,
         contactId,
+        selectedContact,
         contactGroupId,
         intakeId,
         opportunityId,
@@ -62,6 +70,25 @@ const DocumentNewFormGeneral = ({
         measureId === '' &&
         campaignId === '';
 
+    const getContactOptions = async () => {
+        if (searchTermContact.length <= 1) return;
+
+        setLoadingContact(true);
+
+        try {
+            const results = await ContactsAPI.fetchContactSearch(searchTermContact);
+            setLoadingContact(false);
+            return results.data.data;
+        } catch (error) {
+            setLoadingContact(false);
+            // console.log(error);
+        }
+    };
+
+    const handleInputSearchChange = value => {
+        setSearchTermContact(value);
+    };
+
     return (
         <div className={'margin-30-bottom'}>
             {errors.docLinkedAtAny && (
@@ -72,17 +99,34 @@ const DocumentNewFormGeneral = ({
                 </div>
             )}
             <div className="row">
-                <InputSelect
-                    label="Contact"
-                    name={'contactId'}
-                    value={contactId}
-                    options={contacts}
-                    optionName={'fullName'}
-                    onChangeAction={handleInputChange}
-                    required={oneOfFieldRequired && 'required'}
-                    error={errors.docLinkedAtAny}
-                />
+                {/*<InputSelect*/}
+                {/*    label="Contact"*/}
+                {/*    name={'contactId'}*/}
+                {/*    value={contactId}*/}
+                {/*    options={contacts}*/}
+                {/*    optionName={'fullName'}*/}
+                {/*    onChangeAction={handleInputChange}*/}
+                {/*    required={oneOfFieldRequired && 'required'}*/}
+                {/*    error={errors.docLinkedAtAny}*/}
+                {/*/>*/}
                 <InputText label="Type" name={'documentTypeName'} value={documentTypeName} readOnly={true} />
+            </div>
+            <div className="row">
+                <AsyncSelectSet
+                    label={'Contact'}
+                    name={'contactId'}
+                    id={'contactId'}
+                    size={'col-sm-6'}
+                    loadOptions={getContactOptions}
+                    optionName={'fullName'}
+                    value={selectedContact}
+                    onChangeAction={handleInputChangeContactId}
+                    required={'required'}
+                    error={errors.docLinkedAtAny}
+                    isLoading={isLoadingContact}
+                    handleInputChange={handleInputSearchChange}
+                    multi={false}
+                />
             </div>
             <div className="row">
                 <InputSelect

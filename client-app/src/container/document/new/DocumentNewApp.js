@@ -87,6 +87,7 @@ class DocumentNewApp extends Component {
             document: {
                 administrationId: this.props.params.administrationId || '',
                 contactId: this.props.params.contactId || '',
+                selectedContact: null,
                 contactGroupId: this.props.params.contactGroupId || '',
                 intakeId: this.props.params.intakeId || '',
                 opportunityId: this.props.params.opportunityId || '',
@@ -127,6 +128,8 @@ class DocumentNewApp extends Component {
                 noDocument: '',
                 description: '',
             },
+            searchTermContact: '',
+            isLoadingContact: false,
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -135,6 +138,8 @@ class DocumentNewApp extends Component {
         this.onDropRejected = this.onDropRejected.bind(this);
         this.handleDocumentGroupChange = this.handleDocumentGroupChange.bind(this);
         this.handleProjectChange = this.handleProjectChange.bind(this);
+        this.setSearchTermContact = this.setSearchTermContact.bind(this);
+        this.setLoadingContact = this.setLoadingContact.bind(this);
     }
 
     componentDidMount() {
@@ -237,6 +242,20 @@ class DocumentNewApp extends Component {
         });
     }
 
+    handleInputChangeContactId = selectedOption => {
+        const selectedContactId = selectedOption ? selectedOption.id : null;
+        if (selectedContactId) {
+            this.setState({
+                ...this.state,
+                document: {
+                    ...this.state.document,
+                    contactId: selectedContactId,
+                    selectedContact: selectedOption,
+                },
+            });
+        }
+    };
+
     handleProjectChange(event) {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -314,6 +333,19 @@ class DocumentNewApp extends Component {
                 ...this.state.errors,
                 uploadFailed: true,
             },
+        });
+    }
+
+    setSearchTermContact(searchTermContact) {
+        this.setState({
+            ...this.state,
+            searchTermContact: searchTermContact,
+        });
+    }
+    setLoadingContact(isLoadingContact) {
+        this.setState({
+            ...this.state,
+            isLoadingContact: isLoadingContact,
         });
     }
 
@@ -521,6 +553,11 @@ class DocumentNewApp extends Component {
                                 handleProjectChange={this.handleProjectChange}
                                 onDropAccepted={this.onDropAccepted}
                                 onDropRejected={this.onDropRejected}
+                                handleInputChangeContactId={this.handleInputChangeContactId}
+                                searchTermContact={this.state.searchTermContact}
+                                isLoadingContact={this.state.isLoadingContact}
+                                setSearchTermContact={this.setSearchTermContact}
+                                setLoadingContact={this.setLoadingContact}
                             />
                         )}
                     </div>

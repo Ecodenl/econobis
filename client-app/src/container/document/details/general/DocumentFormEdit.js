@@ -116,19 +116,6 @@ class DocumentDetailsFormEdit extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    setSearchTermContact(searchTermContact) {
-        this.setState({
-            ...this.state,
-            searchTermContact: searchTermContact,
-        });
-    }
-    setLoadingContact(isLoadingContact) {
-        this.setState({
-            ...this.state,
-            isLoadingContact: isLoadingContact,
-        });
-    }
-
     componentDidMount() {
         ContactsAPI.getContactsPeek().then(payload => {
             this.setState({ contacts: payload });
@@ -192,8 +179,6 @@ class DocumentDetailsFormEdit extends Component {
     }
 
     handleInputChangeContactId = selectedOption => {
-        console.log(selectedOption);
-
         const selectedContactId = selectedOption ? selectedOption.id : null;
         if (selectedContactId) {
             this.setState({
@@ -235,6 +220,19 @@ class DocumentDetailsFormEdit extends Component {
             this.setState({
                 participants: participants,
             });
+        });
+    }
+
+    setSearchTermContact(searchTermContact) {
+        this.setState({
+            ...this.state,
+            searchTermContact: searchTermContact,
+        });
+    }
+    setLoadingContact(isLoadingContact) {
+        this.setState({
+            ...this.state,
+            isLoadingContact: isLoadingContact,
         });
     }
 
@@ -431,22 +429,21 @@ class DocumentDetailsFormEdit extends Component {
                         />
                     </div>
                     <div className="row">
-                        <div className="row">
-                            <AsyncSelectSet
-                                label={'Contact'}
-                                name={'contactId'}
-                                id={'contactId'}
-                                loadOptions={getContactOptions}
-                                optionName={'fullName'}
-                                value={selectedContact}
-                                onChangeAction={this.handleInputChangeContactId}
-                                required={'required'}
-                                error={errors.docLinkedAtAny}
-                                isLoading={this.state.isLoadingContact}
-                                handleInputChange={handleInputSearchChange}
-                                multi={false}
-                            />
-                        </div>
+                        <AsyncSelectSet
+                            label={'Contact'}
+                            name={'contactId'}
+                            id={'contactId'}
+                            size={'col-sm-6'}
+                            loadOptions={getContactOptions}
+                            optionName={'fullName'}
+                            value={selectedContact}
+                            onChangeAction={this.handleInputChangeContactId}
+                            required={'required'}
+                            error={errors.docLinkedAtAny}
+                            isLoading={this.state.isLoadingContact}
+                            handleInputChange={handleInputSearchChange}
+                            multi={false}
+                        />
                     </div>
                     <div className="row">
                         <InputSelect
@@ -607,7 +604,6 @@ class DocumentDetailsFormEdit extends Component {
                             </div>
                         </div>
                     </div>
-
                     {documentType === 'upload' ? (
                         <div className="row margin-30-top">
                             <InputText

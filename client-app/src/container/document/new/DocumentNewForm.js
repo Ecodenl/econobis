@@ -31,6 +31,11 @@ const DocumentNewForm = ({
     handleDocumentGroupChange,
     onDropAccepted,
     onDropRejected,
+    handleInputChangeContactId,
+    searchTermContact,
+    isLoadingContact,
+    setSearchTermContact,
+    setLoadingContact,
 }) => {
     const submitText = document.documentType === 'internal' ? 'Maak document' : 'Upload document';
 
@@ -56,6 +61,11 @@ const DocumentNewForm = ({
                         errorMessage={errorMessage}
                         handleInputChange={handleInputChange}
                         handleProjectChange={handleProjectChange}
+                        handleInputChangeContactId={handleInputChangeContactId}
+                        searchTermContact={searchTermContact}
+                        isLoadingContact={isLoadingContact}
+                        setSearchTermContact={setSearchTermContact}
+                        setLoadingContact={setLoadingContact}
                     />
                     {document.documentType === 'internal' ? (
                         <DocumentNewFormCreateDocument

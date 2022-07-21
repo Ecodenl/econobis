@@ -55,7 +55,6 @@ class DocumentDetailsFormEdit extends Component {
         } = props.documentDetails;
 
         this.state = {
-            contacts: [],
             contactGroups: [],
             intakes: [],
             opportunities: [],
@@ -117,10 +116,6 @@ class DocumentDetailsFormEdit extends Component {
     }
 
     componentDidMount() {
-        ContactsAPI.getContactsPeek().then(payload => {
-            this.setState({ contacts: payload });
-        });
-
         IntakesAPI.peekIntakes().then(payload => {
             this.setState({ intakes: payload });
         });
@@ -340,7 +335,6 @@ class DocumentDetailsFormEdit extends Component {
             errors,
             errorMessage,
             orders,
-            contacts,
             contactGroups,
             intakes,
             opportunities,
@@ -353,6 +347,7 @@ class DocumentDetailsFormEdit extends Component {
             participants,
         } = this.state;
         const {
+            documentCreatedFrom,
             administrationId,
             orderId,
             contactId,
@@ -443,6 +438,14 @@ class DocumentDetailsFormEdit extends Component {
                             isLoading={this.state.isLoadingContact}
                             handleInputChange={handleInputSearchChange}
                             multi={false}
+                            disabled={[
+                                'contact',
+                                'intake',
+                                'opportunity',
+                                'quotationrequest',
+                                'housingfile',
+                                'participant',
+                            ].includes(documentCreatedFrom)}
                         />
                     </div>
                     <div className="row">
@@ -454,6 +457,7 @@ class DocumentDetailsFormEdit extends Component {
                             onChangeAction={this.handleInputChange}
                             required={oneOfFieldRequired && 'required'}
                             error={errors.docLinkedAtAny}
+                            readOnly={['contactgroup'].includes(documentCreatedFrom)}
                         />
                         <InputSelect
                             label="Intake"
@@ -461,6 +465,7 @@ class DocumentDetailsFormEdit extends Component {
                             value={intakeId}
                             options={intakes}
                             onChangeAction={this.handleInputChange}
+                            readOnly={['intake', 'quotationrequest', 'opportunity'].includes(documentCreatedFrom)}
                             // required={oneOfFieldRequired && 'required'}
                             // error={errors.docLinkedAtAny}
                         />
@@ -472,6 +477,7 @@ class DocumentDetailsFormEdit extends Component {
                             value={opportunityId}
                             options={opportunities}
                             onChangeAction={this.handleInputChange}
+                            readOnly={['opportunity', 'quotationrequest'].includes(documentCreatedFrom)}
                             // required={oneOfFieldRequired && 'required'}
                             // error={errors.docLinkedAtAny}
                         />
@@ -483,6 +489,7 @@ class DocumentDetailsFormEdit extends Component {
                             onChangeAction={this.handleInputChange}
                             required={oneOfFieldRequired && 'required'}
                             error={errors.docLinkedAtAny}
+                            readOnly={['task'].includes(documentCreatedFrom)}
                         />
                     </div>
                     <div className="row">
@@ -492,6 +499,7 @@ class DocumentDetailsFormEdit extends Component {
                             value={quotationRequestId}
                             options={quotationRequests}
                             onChangeAction={this.handleInputChange}
+                            readOnly={['quotationrequest'].includes(documentCreatedFrom)}
                             // required={oneOfFieldRequired && 'required'}
                             // error={errors.docLinkedAtAny}
                         />
@@ -501,6 +509,7 @@ class DocumentDetailsFormEdit extends Component {
                             value={housingFileId}
                             options={housingFiles}
                             onChangeAction={this.handleInputChange}
+                            readOnly={['housingfile'].includes(documentCreatedFrom)}
                             // required={oneOfFieldRequired && 'required'}
                             // error={errors.docLinkedAtAny}
                         />
@@ -537,6 +546,7 @@ class DocumentDetailsFormEdit extends Component {
                             onChangeAction={this.handleInputChange}
                             required={oneOfFieldRequired && 'required'}
                             error={errors.docLinkedAtAny}
+                            readOnly={['order'].includes(documentCreatedFrom)}
                         />
                         <InputSelect
                             label="Administratie"
@@ -558,6 +568,7 @@ class DocumentDetailsFormEdit extends Component {
                             onChangeAction={this.handleInputChange}
                             required={oneOfFieldRequired && 'required'}
                             error={errors.docLinkedAtAny}
+                            readOnly={['measure', 'quotationrequest'].includes(documentCreatedFrom)}
                         />
                         <InputSelect
                             label="Campagne"
@@ -567,6 +578,7 @@ class DocumentDetailsFormEdit extends Component {
                             onChangeAction={this.handleInputChange}
                             required={oneOfFieldRequired && 'required'}
                             error={errors.docLinkedAtAny}
+                            readOnly={['campaign', 'quotationrequest'].includes(documentCreatedFrom)}
                         />
                     </div>
 

@@ -11,7 +11,6 @@ import { isEqual } from 'lodash';
 import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
 import IntakesAPI from '../../../api/intake/IntakesAPI';
 import OpportunitiesAPI from '../../../api/opportunity/OpportunitiesAPI';
-import ContactsAPI from '../../../api/contact/ContactsAPI';
 import DocumentTemplateAPI from '../../../api/document-template/DocumentTemplateAPI';
 import MeasureAPI from '../../../api/measure/MeasureAPI';
 import TasksAPI from '../../../api/task/TasksAPI';
@@ -28,6 +27,7 @@ import QuotationRequestDetailsAPI from '../../../api/quotation-request/Quotation
 import DocumentNewFormProject from './DocumentNewFormProject';
 import DocumentNewFormAdministration from './DocumentNewFormAdministration';
 import DocumentNewFormParticipant from './DocumentNewFormParticipant';
+import ContactDetailsAPI from '../../../api/contact/ContactDetailsAPI';
 
 class DocumentNewApp extends Component {
     constructor(props) {
@@ -39,7 +39,7 @@ class DocumentNewApp extends Component {
         } else if (props.params.opportunityId) {
             documentCreatedFrom = 'opportunity';
         } else if (props.params.quotationRequestId) {
-            documentCreatedFrom = 'quotationreguest';
+            documentCreatedFrom = 'quotationrequest';
         } else if (props.params.housingFileId) {
             documentCreatedFrom = 'housingfile';
         } else if (props.params.intakeId) {
@@ -71,7 +71,6 @@ class DocumentNewApp extends Component {
         }).name;
 
         this.state = {
-            contacts: [],
             contactsGroups: [],
             intakes: [],
             opportunities: [],
@@ -143,9 +142,23 @@ class DocumentNewApp extends Component {
     }
 
     componentDidMount() {
-        ContactsAPI.getContactsPeek().then(payload => {
-            this.setState({ contacts: payload });
-        });
+        if (this.props.params.contactId) {
+            ContactDetailsAPI.getContactDetails(this.props.params.contactId).then(payload => {
+                if (payload) {
+                    this.setState({
+                        ...this.state,
+                        document: {
+                            ...this.state.document,
+                            selectedContact: {
+                                id: payload.id,
+                                fullName: payload.fullName + ' (' + payload.number + ')',
+                                primaryAddressId: payload.primaryAddressId,
+                            },
+                        },
+                    });
+                }
+            });
+        }
 
         IntakesAPI.peekIntakes().then(payload => {
             this.setState({ intakes: payload });
@@ -207,8 +220,8 @@ class DocumentNewApp extends Component {
             });
         }
         if (this.props.params.quotationRequestId) {
-            QuotationRequestDetailsAPI.fetchQuotationRequestDetails(this.props.params.quotationRequestId).then(
-                payload => {
+            QuotationRequestDetailsAPI.fetchQuotationRequestDetails(this.props.params.quotationRequestId)
+                .then(payload => {
                     this.setState({
                         ...this.state,
                         document: {
@@ -220,12 +233,31 @@ class DocumentNewApp extends Component {
                             campaignId: payload.opportunity.intake.campaign.id,
                         },
                     });
-                }
-            );
+                })
+                .finally(() => this.callFetchContact());
         }
         if (this.props.params.projectId) {
             this.setParticipants(this.props.params.projectId);
         }
+    }
+
+    callFetchContact() {
+        // console.log(this.state.document.contactId);
+        ContactDetailsAPI.getContactDetails(this.state.document.contactId).then(payload => {
+            if (payload) {
+                this.setState({
+                    ...this.state,
+                    document: {
+                        ...this.state.document,
+                        selectedContact: {
+                            id: payload.id,
+                            fullName: payload.fullName + ' (' + payload.number + ')',
+                            primaryAddressId: payload.primaryAddressId,
+                        },
+                    },
+                });
+            }
+        });
     }
 
     handleInputChange(event) {
@@ -532,7 +564,6 @@ class DocumentNewApp extends Component {
                         ) : (
                             <DocumentNewForm
                                 document={this.state.document}
-                                contacts={this.state.contacts}
                                 contactGroups={this.state.contactGroups}
                                 intakes={this.state.intakes}
                                 opportunities={this.state.opportunities}

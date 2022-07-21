@@ -30,6 +30,7 @@ class SeedApril2022MeasureCategoriesTable extends Migration
                         'measure_category_id' => $catId,
                         'number' => 'M2022-' . $id ]
                 );
+                $id++;
             }
         }
     }

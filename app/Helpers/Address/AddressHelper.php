@@ -82,8 +82,8 @@ class AddressHelper
         } else {
 
             foreach ($this->contact->participations as $participation) {
-                // Check address only for projects where address is used
-                if($participation->address_id == $this->address->id) {
+                // Check address only for projects where address is used and participation is not terminated
+                if($participation->address_id == $this->address->id && $participation->date_terminated == null) {
                     $messages = $this->checkAddressProject($participation->project, $this->address, $messages);
                 }
             }

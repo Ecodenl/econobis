@@ -64,10 +64,14 @@ export default {
             });
     },
 
-    createParticipantReport: (templateId, emailTemplateId, subject, participantIds) => {
+    createParticipantReport: (templateId, emailTemplateId, subject, participantIds, showOnPortal) => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/create-participant-report/${templateId}/${emailTemplateId}`;
 
-        return axiosInstance.post(requestUrl, { participantIds: participantIds, subject: subject });
+        return axiosInstance.post(requestUrl, {
+            participantIds: participantIds,
+            subject: subject,
+            showOnPortal: showOnPortal,
+        });
     },
 
     previewPDF: (templateId, emailTemplateId, participantIds) => {

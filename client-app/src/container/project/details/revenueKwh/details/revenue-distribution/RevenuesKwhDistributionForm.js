@@ -20,11 +20,10 @@ import {
 } from '../../../../../../actions/project/ProjectDetailsActions';
 import { setError } from '../../../../../../actions/general/ErrorActions';
 import moment from 'moment-business-days';
-import InputDate from '../../../../../../components/form/InputDate';
 import ButtonIcon from '../../../../../../components/button/ButtonIcon';
 import ErrorModal from '../../../../../../components/modal/ErrorModal';
 import RevenuesKwhDistributionFormList from './RevenuesKwhDistributionFormList';
-import RevenuesKwhAPI from '../../../../../../api/project/RevenuesKwhAPI';
+import InputToggle from '../../../../../../components/form/InputToggle';
 
 class RevenuesKwhDistributionForm extends Component {
     constructor(props) {
@@ -57,6 +56,7 @@ class RevenuesKwhDistributionForm extends Component {
             createType: '',
             showErrorModal: false,
             modalErrorMessage: '',
+            showOnPortal: true,
         };
     }
 
@@ -251,6 +251,7 @@ class RevenuesKwhDistributionForm extends Component {
                 emailTemplateId: this.state.emailTemplateId,
                 subject: this.state.subject,
                 distributionKwhIds: this.state.distributionKwhIds,
+                showOnPortal: this.state.showOnPortal,
             });
             hashHistory.push(`/project/opbrengst-kwh/${this.props.revenuesKwh.id}/rapportage`);
         } else if (!error) {
@@ -341,7 +342,14 @@ class RevenuesKwhDistributionForm extends Component {
                                     </div>
                                     <div className="col-md-12">
                                         <ViewText label="Geselecteerde deelnemers" value={numberSelectedNumberTotal} />
-
+                                        <InputToggle
+                                            label={'Rapportage tonen op portal'}
+                                            name={'showOnPortal'}
+                                            value={this.state.showOnPortal}
+                                            onChangeAction={this.handleInputChange}
+                                        />
+                                    </div>
+                                    <div className="col-md-12">
                                         <div className="margin-10-top pull-right btn-group" role="group">
                                             <ButtonText
                                                 buttonClassName={'btn-default'}

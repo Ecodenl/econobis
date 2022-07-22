@@ -21,6 +21,7 @@ import moment from 'moment-business-days';
 import InputDate from '../../../../../../components/form/InputDate';
 import ButtonIcon from '../../../../../../components/button/ButtonIcon';
 import ErrorModal from '../../../../../../components/modal/ErrorModal';
+import InputToggle from '../../../../../../components/form/InputToggle';
 
 class RevenueDistributionForm extends Component {
     constructor(props) {
@@ -52,6 +53,7 @@ class RevenueDistributionForm extends Component {
             createType: '',
             showErrorModal: false,
             modalErrorMessage: '',
+            showOnPortal: true,
         };
     }
 
@@ -245,6 +247,7 @@ class RevenueDistributionForm extends Component {
                 emailTemplateId: this.state.emailTemplateId,
                 subject: this.state.subject,
                 distributionIds: this.state.distributionIds,
+                showOnPortal: this.state.showOnPortal,
             });
             hashHistory.push(`/project/opbrengst/${this.props.projectRevenue.id}/rapportage`);
         } else if (!error) {
@@ -476,7 +479,14 @@ class RevenueDistributionForm extends Component {
                                     </div>
                                     <div className="col-md-12">
                                         <ViewText label="Geselecteerde deelnemers" value={numberSelectedNumberTotal} />
-
+                                        <InputToggle
+                                            label={'Rapportage tonen op portal'}
+                                            name={'showOnPortal'}
+                                            value={this.state.showOnPortal}
+                                            onChangeAction={this.handleInputChange}
+                                        />
+                                    </div>
+                                    <div className="col-md-12">
                                         <div className="margin-10-top pull-right btn-group" role="group">
                                             <ButtonText
                                                 buttonClassName={'btn-default'}

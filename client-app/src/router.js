@@ -194,19 +194,9 @@ const PortalSettingsApp = React.lazy(() => import('./container/portal-settings/P
 const PortalSettingsDashboardApp = React.lazy(() =>
     import('./container/portal-settings-dashboard/PortalSettingsDashboardApp')
 );
-// todo WM: nog
-//
-// const PortalSettingsDashboardWidgetListApp = React.lazy(() =>
-//     import('./container/portal-settings-dashboard/widgets/new/PortalSettingsDashboardWidgetListApp')
-// );
 const PortalSettingsDashboardWidgetNewApp = React.lazy(() =>
     import('./container/portal-settings-dashboard/widgets/new/PortalSettingsDashboardWidgetNewApp')
 );
-// todo WM: nog
-//
-// const PortalSettingsDashboardWidgetApp = React.lazy(() =>
-//     import('./container/portal-settings-dashboard/widgets/new/PortalSettingsDashboardWidgetApp')
-// );
 const PortalSettingsLayoutListApp = React.lazy(() =>
     import('./container/portal-settings-layout/list/PortalSettingsLayoutListApp')
 );
@@ -313,8 +303,6 @@ const Routes = () => {
                     {/* todo WM: worden deze nog gebruikt? */}
                     {/*<Route path="document/nieuw/:type/kans/:opportunityId" component={DocumentNewApp} />*/}
                     {/*<Route path="document/nieuw/:type/intake/:intakeId" component={DocumentNewApp} />*/}
-                    {/* todo WM: end */}
-                    {/*<Route path="document/:id/:createdFrom" component={DocumentDetailsApp} />*/}
                     <Route path="document/:id" component={DocumentDetailsApp} />
                     <Route path="document/inzien/:id" component={DocumentViewApp} />
                     /* Document templates */

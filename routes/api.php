@@ -504,16 +504,7 @@ Route::namespace('Api')
 
         Route::get('setting', 'Setting\SettingController@get');
         Route::get('setting/multiple', 'Setting\SettingController@multiple');
-// todo WM: opschonen
-//
-//        Route::get('setting-dashboard', 'PortalSettingsDashboard\PortalSettingsDashboardController@get');
-//        Route::get('setting-dashboard/multiple', 'PortalSettingsDashboard\PortalSettingsDashboardController@multiple');
-
         Route::post('setting', 'Setting\SettingController@store');
-// todo WM: opschonen
-//
-//        Route::post('setting-dashboard', 'PortalSettingsDashboard\PortalSettingsDashboardController@put');
-//        Route::post('setting-dashboard/widget', 'PortalSettingsDashboard\PortalSettingsDashboardController@updateWidget');
 
         Route::get('financial-overview/jory', 'FinancialOverview\FinancialOverviewController@jory');
         Route::post('financial-overview', 'FinancialOverview\FinancialOverviewController@store');
@@ -548,12 +539,7 @@ Route::namespace('Api')
         Route::post('portal-settings-layout/{portalSettingsLayout}/delete', 'PortalSettingsLayout\PortalSettingsLayoutController@destroy');
 
         Route::get('portal-settings-dashboard/jory', 'PortalSettingsDashboard\PortalSettingsDashboardController@jory');
-// todo WM: store nieuwe portal-settings-dashboard
-//
-//        Route::post('portal-settings-dashboard', 'PortalSettingsDashboard\PortalSettingsDashboardController@store');
-//        Route::get('portal-settings-dashboard/{portalSettingsDashboard}', 'PortalSettingsDashboard\PortalSettingsDashboardController@get');
         Route::post('portal-settings-dashboard/{portalSettingsDashboard}', 'PortalSettingsDashboard\PortalSettingsDashboardController@update');
-//        Route::post('portal-settings-dashboard/delete', 'PortalSettingsDashboard\PortalSettingsDashboardController@destroy');
 
         Route::get('portal-settings-dashboard-widget/jory', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@jory');
         Route::post('portal-settings-dashboard-widget', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@store');

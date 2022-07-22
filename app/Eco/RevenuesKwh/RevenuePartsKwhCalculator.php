@@ -22,15 +22,9 @@ class RevenuePartsKwhCalculator
     public function runRevenuePartsKwh()
     {
         if($this->revenuePartKwh->status == 'in-progress-update') {
-//todo WM: cleanup logs
-//            Log::info("Start RevenuePartsKwhCalculator|runRevenuePartsKwh voor revenuePartKwh id " . $this->revenuePartKwh->id . " : " . Carbon::now()->format("m-d-Y H:i:s.u"));
             $revenuesKwhHelper = new RevenuesKwhHelper();
-//            $revenuesKwhHelper->createOrUpdateRevenueValuesKwh($valuesKwhData, $this->revenuePartKwh, $alwaysRecalculate);
-//            Log::info("RevenuePartsKwhCalculator na createOrUpdateRevenueValuesKwh voor revenuePartKwh id " . $this->revenuePartKwh->id . " : " . Carbon::now()->format("m-d-Y H:i:s.u"));
             $revenuesKwhHelper->saveParticipantsOfDistributionParts($this->revenuePartKwh);
-//            Log::info("RevenuePartsKwhCalculator na saveParticipantsOfDistributionParts " . $this->revenuePartKwh->id . " : " . Carbon::now()->format("m-d-Y H:i:s.u"));
             $this->calculateDeliveredKwh();
-//            Log::info("RevenuePartsKwhCalculator na calculateDeliveredKwh " . $this->revenuePartKwh->id . " : " . Carbon::now()->format("m-d-Y H:i:s.u"));
 
             if ($this->revenuePartKwh->status === 'in-progress-update') {
                 $this->revenuePartKwh->status = 'concept';
@@ -38,7 +32,6 @@ class RevenuePartsKwhCalculator
             }
 
             $this->countingsConceptConfirmedProcessed();
-//            Log::info("Einde RevenuePartsKwhCalculator|runRevenuePartsKwh voor revenuePartKwh id " . $this->revenuePartKwh->id . " : " . Carbon::now()->format("m-d-Y H:i:s.u"));
         } else {
             Log::error("RevenuePartsKwhCalculator niet uitgevoerd voor revenuePartKwh id " . $this->revenuePartKwh->id . " i.v.m. ongeldige status: " . $this->revenuePartKwh->status);
         }
@@ -48,9 +41,7 @@ class RevenuePartsKwhCalculator
 
     public function runCountingsRevenuesKwh()
     {
-//        Log::info("Start RevenuePartsKwhCalculator|runCountingsRevenuesKwh voor revenuePartKwh id " . $this->revenuePartKwh->id . " : " . Carbon::now()->format("m-d-Y H:i:s.u"));
         $this->countingsConceptConfirmedProcessed();
-//        Log::info("Einde RevenuePartsKwhCalculator|runCountingsRevenuesKwh voor revenuePartKwh id " . $this->revenuePartKwh->id . " : " . Carbon::now()->format("m-d-Y H:i:s.u"));
     }
 
     protected function calculateDeliveredKwh()

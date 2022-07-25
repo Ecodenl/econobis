@@ -1,6 +1,6 @@
 import axiosInstance from '../default-setup/AxiosInstance';
 
-// todo WM: chcek / opschonen
+// todo WM: check / opschonen
 //
 const URL_PORTAL_SETTINGS_DASHBOARD = `portal-settings-dashboard`;
 const URL_PORTAL_SETTINGS_DASHBOARD_WIDGET = `portal-settings-dashboard-widget`;

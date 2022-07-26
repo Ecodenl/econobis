@@ -17,7 +17,7 @@ class CreatePortalSettingsDashboardTable extends Migration
             $table->increments('id');
             $table->string('welcome_title');
             $table->text('welcome_message');
-            $table->string('default_widget_background_color', 30)->default('#f5f5f5');
+            $table->string('default_widget_background_color', 30)->default('#ffffff');
             $table->string('default_widget_text_color', 30)->default('#000000');
             $table->timestamps();
             $table->softdeletes();

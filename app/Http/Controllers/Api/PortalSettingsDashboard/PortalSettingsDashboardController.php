@@ -31,7 +31,7 @@ class PortalSettingsDashboardController extends Controller
 
         $data = $input->string('welcomeTitle')->whenMissing('')->onEmpty('')->alias('welcome_title')->next()
             ->string('welcomeMessage')->whenMissing('')->onEmpty('')->alias('welcome_message')->next()
-            ->string('defaultWidgetBackgroundColor')->whenMissing('#f5f5f5')->onEmpty('#f5f5f5')->alias('default_widget_background_color')->next()
+            ->string('defaultWidgetBackgroundColor')->whenMissing('#ffffff')->onEmpty('#ffffff')->alias('default_widget_background_color')->next()
             ->string('defaultWidgetTextColor')->whenMissing('#000000')->onEmpty('#000000')->alias('default_widget_text_color')->next()
             ->get();
 

@@ -16,7 +16,7 @@ class AddFieldsPortalSettingsLayoutsTable extends Migration
         Schema::table('portal_settings_layouts', function (Blueprint $table) {
             $table->boolean('use_transparent_background_login')->default(false)->after('portal_image_bg_file_name_login');
             $table->boolean('use_transparent_background_header')->default(false)->after('portal_image_bg_file_name_header');
-            $table->string('portal_main_background_color', 30)->default('#f1eff0')->after('button_text_color');
+            $table->string('portal_main_background_color', 30)->default('#f5f5f5')->after('button_text_color');
             $table->string('portal_main_text_color', 30)->default('#000000')->after('portal_main_background_color');
         });
     }

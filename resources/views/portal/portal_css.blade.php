@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic,Droid%20Sans:400,700,Inconsolata:400,700');
 
 :root {
---portal-main-background-color: {{ (!empty($defaultPortalSettingsLayout->portal_main_background_color) ? $defaultPortalSettingsLayout->portal_main_background_color : '#f1eff0') }};
+--portal-main-background-color: {{ (!empty($defaultPortalSettingsLayout->portal_main_background_color) ? $defaultPortalSettingsLayout->portal_main_background_color : '#f5f5f5') }};
 --portal-main-text-color: {{ (!empty($defaultPortalSettingsLayout->portal_main_text_color) ? $defaultPortalSettingsLayout->portal_main_text_color : '#000000') }};
 --portal-background-color: {{ (!empty($defaultPortalSettingsLayout->portal_background_color) ? $defaultPortalSettingsLayout->portal_background_color : '#034b8c') }};
 --portal-background-text-color: {{ (!empty($defaultPortalSettingsLayout->portal_background_text_color) ? $defaultPortalSettingsLayout->portal_background_text_color : '#ffffff') }};

@@ -14,8 +14,8 @@
 --button-primary-text-color: {{ (!empty($defaultPortalSettingsLayout->button_text_color) ? $defaultPortalSettingsLayout->button_text_color : '#ffffff') }};
 --main-warning-color: #dc3545;
 --black-color: #252525;
---main-login-background-image-url: url({{ (!empty($defaultPortalSettingsLayout->portal_image_bg_file_name_login) ? 'images/' . $defaultPortalSettingsLayout->portal_image_bg_file_name_login . '?v=' . $imageHash : 'images/page-head5.jpg?v=' . $imageHash ) }});
---main-header-background-image-url: url({{ (!empty($defaultPortalSettingsLayout->portal_image_bg_file_name_header) ? 'images/' . $defaultPortalSettingsLayout->portal_image_bg_file_name_header . '?v=' . $imageHash : 'images/page-head5.jpg?v=' . $imageHash ) }});
+--main-login-background-image-url: url({{ (!empty($defaultPortalSettingsLayout->portal_image_bg_file_name_login) ? 'images/' . $defaultPortalSettingsLayout->portal_image_bg_file_name_login . '?v=' . $imageHash : 'images/page-head5.png?v=' . $imageHash ) }});
+--main-header-background-image-url: url({{ (!empty($defaultPortalSettingsLayout->portal_image_bg_file_name_header) ? 'images/' . $defaultPortalSettingsLayout->portal_image_bg_file_name_header . '?v=' . $imageHash : 'images/page-head5.png?v=' . $imageHash ) }});
 }
 
 /* ----------------- LOGIN STYLING -----------------*/

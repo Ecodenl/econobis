@@ -167,7 +167,7 @@ class Administration extends Model
         }
         if(empty($portalSettingsLayout->portal_image_bg_file_name_login))
         {
-            $portalSettingsLayout->portal_image_bg_file_name_login = 'page-head5.jpg';
+            $portalSettingsLayout->portal_image_bg_file_name_login = 'page-head5.png';
         }
         if(empty($portalSettingsLayout->portal_image_bg_file_name_header))
         {

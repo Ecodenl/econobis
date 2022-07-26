@@ -229,7 +229,10 @@ class DocumentNewApp extends Component {
                             contactId: payload.opportunity.intake.contact.id,
                             intakeId: payload.opportunity.intake.id,
                             opportunityId: payload.opportunity.id,
-                            measureId: payload.opportunity.measureCategory.id,
+                            measureId:
+                                payload.opportunity.measures && payload.opportunity.measures.length == 1
+                                    ? payload.opportunity.measures[0].id
+                                    : '',
                             campaignId: payload.opportunity.intake.campaign.id,
                         },
                     });

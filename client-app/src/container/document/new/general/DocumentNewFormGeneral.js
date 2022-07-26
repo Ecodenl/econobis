@@ -256,7 +256,7 @@ const DocumentNewFormGeneral = ({
                     onChangeAction={handleInputChange}
                     required={oneOfFieldRequired && 'required'}
                     error={errors.docLinkedAtAny}
-                    readOnly={['measure', 'quotationrequest'].includes(documentCreatedFrom)}
+                    readOnly={['measure'].includes(documentCreatedFrom)}
                 />
                 <InputSelect
                     label="Campagne"

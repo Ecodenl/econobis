@@ -25,7 +25,7 @@ const PreviewPortalDashboardPage = ({
     };
 
     return (
-        <div style={customStyles.modal} className="portal-body">
+        <div style={customStyles.modal} className="preview-portal portal-body">
             <div id="root" style={customStyles.root}>
                 <div style={customStyles.closePreview}>
                     <button style={customStyles.closePreviewButton} onClick={closeModal}>

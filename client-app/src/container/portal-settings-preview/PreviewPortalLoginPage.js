@@ -9,7 +9,12 @@ const PreviewPortalLoginPage = ({
     justifyContentCenterRow,
 }) => {
     return (
-        <div style={customStyles.modal} onClick={closeModal} title={'Klik om preview te sluiten'}>
+        <div
+            style={customStyles.modal}
+            onClick={closeModal}
+            title={'Klik om preview te sluiten'}
+            className="preview-portal"
+        >
             <div id="root" style={customStyles.root}>
                 <div style={customStyles.closePreview}>
                     <button style={customStyles.closePreviewButton} onClick={closeModal}>

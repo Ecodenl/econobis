@@ -33,8 +33,12 @@ const DocumentDetailsFormView = props => {
         <div>
             <div className="row" onClick={props.switchToEdit}>
                 <div className="row">
-                    <ViewText label={'Contact'} value={contact && contact.fullName} />
                     <ViewText label={'Type'} value={documentType && documentType.name} />
+                </div>
+            </div>
+            <div className="row" onClick={props.switchToEdit}>
+                <div className="row">
+                    <ViewText label={'Contact'} value={contact && contact.fullName} />
                 </div>
             </div>
             <div className="row" onClick={props.switchToEdit}>

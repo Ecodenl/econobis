@@ -2,7 +2,16 @@ import { Card, CardImg } from 'react-bootstrap';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-const DashboardWidget = function({ id, title, text, image, buttonText, buttonLink }) {
+const DashboardWidget = function({
+    id,
+    title,
+    text,
+    image,
+    buttonText,
+    buttonLink,
+    backgroundColorUsed,
+    textColorUsed,
+}) {
     const history = useHistory();
     const key = 'widget-' + id;
     const [imageHash, setImageHash] = useState(Date.now());
@@ -15,7 +24,11 @@ const DashboardWidget = function({ id, title, text, image, buttonText, buttonLin
     }
 
     return (
-        <Card key={key} id={key} style={{ marginTop: '30px' }}>
+        <Card
+            key={key}
+            id={key}
+            style={{ marginTop: '30px', backgroundColor: backgroundColorUsed, color: textColorUsed }}
+        >
             <CardImg
                 src={image && image.includes('images/') ? image + '?' + imageHash : 'images/' + image + '?' + imageHash}
                 variant={'top'}

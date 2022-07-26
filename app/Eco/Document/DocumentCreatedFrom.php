@@ -33,7 +33,7 @@ class DocumentCreatedFrom extends EnumWithIdAndName
             new static('intake', 'Intake'),
             new static('measure', 'Maatregel'),
             new static('opportunity', 'Kans'),
-            new static('quotationreguest', 'Offerteverzoek'),
+            new static('quotationrequest', 'Offerteverzoek'),
             new static('order', 'Order'),
             new static('project', 'Project'),
             new static('task', 'Taak'),

@@ -38,12 +38,6 @@ class PortalSettingsFormGeneralEdit extends Component {
             staticContactGroups: {
                 ...props.staticContactGroups,
             },
-            attachmentLogo: '',
-            filenameLogo: '',
-            newLogo: false,
-            attachmentFavicon: '',
-            filenameFavicon: '',
-            newFavicon: false,
             errors: {
                 portalActive: false,
                 portalName: false,
@@ -69,35 +63,6 @@ class PortalSettingsFormGeneralEdit extends Component {
 
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     }
-
-    toggleNewLogo = () => {
-        if (this.manageTechnicalPortalSettings) {
-            this.setState({
-                newLogo: !this.state.newLogo,
-            });
-        }
-    };
-    toggleNewFavicon = () => {
-        if (this.manageTechnicalPortalSettings) {
-            this.setState({
-                newFavicon: !this.state.newFavicon,
-            });
-        }
-    };
-    addLogo = file => {
-        this.setState({
-            ...this.state,
-            attachmentLogo: file[0],
-            filenameLogo: file[0].name,
-        });
-    };
-    addFavicon = file => {
-        this.setState({
-            ...this.state,
-            attachmentFavicon: file[0],
-            filenameFavicon: file[0].name,
-        });
-    };
 
     handleReactSelectChange(selectedOption, name) {
         this.setState({
@@ -125,7 +90,7 @@ class PortalSettingsFormGeneralEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { portalSettings, attachmentLogo, attachmentFavicon } = this.state;
+        const { portalSettings } = this.state;
 
         // Validation
         let errors = {};
@@ -265,9 +230,6 @@ class PortalSettingsFormGeneralEdit extends Component {
             portalSettings.defaultAdministrationId ? portalSettings.defaultAdministrationId : ''
         );
 
-        data.append('attachmentLogo', attachmentLogo);
-        data.append('attachmentFavicon', attachmentFavicon);
-
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
@@ -307,8 +269,6 @@ class PortalSettingsFormGeneralEdit extends Component {
             defaultAdministrationId,
         } = this.state.portalSettings;
 
-        const logoUrl = `${URL_API}/portal/images/logo.png?${this.props.imageHash}`;
-        const faviconUrl = `${URL_API}/portal/favicon.ico?${this.props.imageHash}`;
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel>

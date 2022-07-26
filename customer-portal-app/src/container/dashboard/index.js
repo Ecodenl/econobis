@@ -50,10 +50,12 @@ const Dashboard = function(props) {
 
     function callFetchDashboardSettings() {
         setLoading(true);
-        const keys = '?keys[]=welcomeTitle&keys[]=welcomeMessage&keys[]=widgets';
-        DashboardSettingsAPI.fetchDashboardSettings(keys)
+        // todo WM: check anders
+        //
+        const id = 1;
+        DashboardSettingsAPI.fetchDashboardSettings(id, props.currentSelectedContact.id)
             .then(payload => {
-                setDashboardSettings(payload.data);
+                setDashboardSettings(payload.data.data);
                 setLoading(false);
             })
             .catch(error => {
@@ -96,19 +98,25 @@ const Dashboard = function(props) {
                             .map(widget => (
                                 <Col md={6}>
                                     <DashboardWidget
-                                        id={widget.id}
-                                        image={widget.image}
+                                        id={widget.codeRef}
+                                        image={widget.widgetImageFileName}
                                         title={widget.title}
                                         text={widget.text}
                                         buttonText={widget.buttonText}
                                         buttonLink={widget.buttonLink}
+                                        backgroundColorUsed={widget.backgroundColorUsed}
+                                        textColorUsed={widget.textColorUsed}
                                     />
                                 </Col>
                             ))}
                     </Row>
                     <Row>
                         <Col md={6}>
-                            <ContactDetailsDashboardWidget contact={contact} />
+                            <ContactDetailsDashboardWidget
+                                contact={contact}
+                                backgroundColorUsed={dashboardSettings.defaultWidgetBackgroundColor}
+                                textColorUsed={dashboardSettings.defaultWidgetTextColor}
+                            />
                         </Col>
                         <PortalUserConsumer>
                             {({ user, currentSelectedContact, switchCurrentContact }) => {
@@ -119,6 +127,8 @@ const Dashboard = function(props) {
                                                 user={user}
                                                 currentSelectedContact={currentSelectedContact}
                                                 switchCurrentContact={switchCurrentContact}
+                                                backgroundColorUsed={dashboardSettings.defaultWidgetBackgroundColor}
+                                                textColorUsed={dashboardSettings.defaultWidgetTextColor}
                                             />
                                         </Col>
                                     );

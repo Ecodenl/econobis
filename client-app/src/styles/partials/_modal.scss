@@ -14,15 +14,21 @@
   }
 }
 
-.portal-layout-crop div.modal{
+.portal-layout-crop div.modal,
+.portal-layout-add-widget div.modal,
+{
   display: inline;
   top: 5vh;
   height: 95vh;
 }
-.modal-portal-layout-crop{
+.modal-portal-layout-crop,
+.modal-portal-layout-add-widget
+{
   width: 90vw;
 }
-.modal-portal-layout-crop div.modal-content{
+.modal-portal-layout-crop div.modal-content,
+.modal-portal-layout-add-widget div.modal-content
+{
    height: 80vh;
    overflow: scroll;
 }

@@ -2,7 +2,6 @@
 
 namespace App\Eco\PortalSettingsDashboard;
 
-use App\Eco\Administration\Administration;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -18,9 +17,9 @@ class PortalSettingsDashboard extends Model
         'deleted_at',
     ];
 
-    public function administrations()
+    public function widgets()
     {
-        return $this->hasMany(Administration::class);
+        return $this->hasMany(PortalSettingsDashboardWidget::class);
     }
 
 }

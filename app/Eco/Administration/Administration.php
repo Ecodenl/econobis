@@ -10,7 +10,6 @@ use App\Eco\Invoice\Invoice;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Order\Order;
 use App\Eco\PaymentInvoice\PaymentInvoice;
-use App\Eco\PortalSettingsDashboard\PortalSettingsDashboard;
 use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
 use App\Eco\Product\Product;
 use App\Eco\Project\Project;
@@ -52,11 +51,6 @@ class Administration extends Model
         if(!$this->twinfield_connection_type) return null;
 
         return TwinfieldConnectionTypeWithIdAndName::get($this->twinfield_connection_type);
-    }
-
-    public function portalSettingsDashboard()
-    {
-        return $this->belongsTo(PortalSettingsDashboard::class);
     }
 
     public function users()

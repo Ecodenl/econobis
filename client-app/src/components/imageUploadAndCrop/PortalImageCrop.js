@@ -1,53 +1,64 @@
 import React, { Component } from 'react';
 import ReactCrop from 'react-image-crop';
-import Modal from '../../modal/Modal';
+import Modal from '../modal/Modal';
 import 'react-image-crop/dist/ReactCrop.css';
 
-class PortalLogoLayoutNewCrop extends Component {
+class PortalImageCrop extends Component {
     constructor(props) {
         super(props);
 
         this.imageRef = {};
 
-        switch (this.props.imageLayoutItemName) {
-            case 'logo-administration':
-                this.aspectString = '2:1';
-                this.crop = { unit: 'px', height: 200, aspect: 2 / 1 };
-                this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
-                break;
-            case 'logo-login':
-                // this.aspectString = '1:1';
-                // this.crop = { unit: 'px', width: 200, aspect: 1 / 1 };
-                this.aspectString = 'geen';
-                this.crop = { unit: '%', width: '100', height: '100' };
-                this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
-                break;
-            case 'logo-header':
-                this.aspectString = '2:1';
-                this.crop = { unit: 'px', height: 100, aspect: 2 / 1 };
-                this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
-                break;
-            case 'image-bg-login':
-                this.aspectString = '16:9';
-                this.crop = { unit: 'px', width: 800, aspect: 16 / 9 };
-                this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
+        if (!this.props.useAutoCropper) {
+            this.aspectString = 'geen';
+            this.crop = { unit: '%', width: '100', height: '100' };
+            this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
+        } else {
+            switch (this.props.imageItemName) {
+                case 'logo-administration':
+                    this.aspectString = '2:1';
+                    this.crop = { unit: 'px', height: 200, aspect: 2 / 1 };
+                    this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
+                    break;
+                case 'logo-login':
+                    // this.aspectString = '1:1';
+                    // this.crop = { unit: 'px', width: 200, aspect: 1 / 1 };
+                    this.aspectString = 'geen';
+                    this.crop = { unit: '%', width: '100', height: '100' };
+                    this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
+                    break;
+                case 'logo-header':
+                    this.aspectString = '2:1';
+                    this.crop = { unit: 'px', height: 100, aspect: 2 / 1 };
+                    this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
+                    break;
+                case 'image-bg-login':
+                    this.aspectString = '16:9';
+                    this.crop = { unit: 'px', width: 800, aspect: 16 / 9 };
+                    this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
 
-                break;
-            case 'image-bg-header':
-                this.aspectString = '16:9';
-                this.crop = { unit: 'px', height: 128, aspect: 16 / 9 };
-                this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
-                break;
-            case 'image-widget':
-                this.aspectString = '3:1';
-                this.crop = { unit: 'px', width: 453, aspect: 3 / 1 };
-                this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
-                break;
-            default:
-                this.aspectString = '1:1';
-                this.crop = { unit: '%', width: 100, aspect: 1 / 1 };
-                this.cropStyle = { width: '200px', margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
-                break;
+                    break;
+                case 'image-bg-header':
+                    this.aspectString = '16:1';
+                    this.crop = { unit: 'px', height: 128, aspect: 16 / 1 };
+                    this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
+                    break;
+                case 'image-widget':
+                    this.aspectString = '3:1';
+                    this.crop = { unit: 'px', width: 453, aspect: 3 / 1 };
+                    this.cropStyle = { margin: '10px', border: '1px #000 dashed', verticalAlign: 'top' };
+                    break;
+                default:
+                    this.aspectString = '1:1';
+                    this.crop = { unit: '%', width: 100, aspect: 1 / 1 };
+                    this.cropStyle = {
+                        width: '200px',
+                        margin: '10px',
+                        border: '1px #000 dashed',
+                        verticalAlign: 'top',
+                    };
+                    break;
+            }
         }
 
         this.state = {
@@ -117,6 +128,8 @@ class PortalLogoLayoutNewCrop extends Component {
         );
 
         return new Promise((resolve, reject) => {
+            const type = this.props.image.type ? this.props.image.type : 'image/png';
+
             canvas.toBlob(
                 blob => {
                     if (!blob) {
@@ -128,7 +141,7 @@ class PortalLogoLayoutNewCrop extends Component {
                     blob.preview = window.URL.createObjectURL(blob);
                     (blob.cropWidth = canvas.width), (blob.cropHeight = canvas.height), resolve(blob);
                 },
-                'image/png',
+                type,
                 1
             );
         });
@@ -142,7 +155,7 @@ class PortalLogoLayoutNewCrop extends Component {
                     modalClassName={'modal-portal-layout-crop'}
                     title={'Bijsnijden image (' + this.props.image.name + ') verhouding ' + this.aspectString}
                     closeModal={this.props.closeShowCrop}
-                    confirmAction={() => this.props.cropLogo(croppedImage)}
+                    confirmAction={() => this.props.cropImage(croppedImage)}
                     buttonConfirmText={'Bevestig'}
                 >
                     {src && (
@@ -186,4 +199,4 @@ class PortalLogoLayoutNewCrop extends Component {
     }
 }
 
-export default PortalLogoLayoutNewCrop;
+export default PortalImageCrop;

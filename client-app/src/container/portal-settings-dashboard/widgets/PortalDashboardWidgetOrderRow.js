@@ -2,31 +2,27 @@ import React, { useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { arrows_vertical } from 'react-icons-kit/ikons/arrows_vertical';
 import Icon from 'react-icons-kit';
-import AddPortalSettingsDashboardWidgetImageModal from './AddPortalSettingsDashboardWidgetImageModal';
-import PortalSettingsDashboardAPI from '../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
-import ButtonIcon from '../../../components/button/ButtonIcon';
-import InputText from '../../../components/form/InputText';
-import InputTextArea from '../../../components/form/InputTextarea';
-import InputToggle from '../../../components/form/InputToggle';
 import { Image } from 'react-bootstrap';
-import Modal from '../../../components/modal/Modal';
-import { FaInfoCircle } from 'react-icons/fa';
-import ReactTooltip from 'react-tooltip';
-import PortalLogoLayoutNewCrop from '../../../components/cropImage/portalLayout/PortalLogoLayoutNewCrop';
+import { hashHistory } from 'react-router';
+import PortalSettingsDashboardWidgetDeleteItem from './details/PortalSettingsDashboardWidgetDeleteItem';
 
 const DND_ITEM_TYPE = 'row';
 
-const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputChange, removeWidget, imageHash }) => {
+const PortalDashboardWidgetOrderRow = ({
+    row,
+    index,
+    moveRow,
+    showEditSort,
+    deletePortalSettingsDashboardWidget,
+    imageHash,
+}) => {
     const dropRef = useRef(null);
     const dragRef = useRef(null);
-    const [newWidgetImage, setNewWidgetImage] = useState(false);
-    const [showCropImageModal, setShowCropImageModal] = useState(false);
-    const [widgetImage, setWidgetImage] = useState('');
-    const [showUploadSucces, setShowUploadSucces] = useState(false);
-    const [uploadSuccesMessage, setUploadSuccesMessage] = useState('');
+    const [showDelete, setShowDelete] = useState(false);
+    const [showActionButtons, setShowActionButtons] = useState(false);
+    const [highlightRow, setHighLightRow] = useState('');
 
     const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
-    const staticInput = ['buttonLink'];
 
     const [, drop] = useDrop({
         accept: DND_ITEM_TYPE,
@@ -82,223 +78,93 @@ const PortalDashboardWidgetOrderRow = ({ row, index, moveRow, edit, handleInputC
     preview(drop(dropRef));
     drag(dragRef);
 
-    const closeNewWidgetImage = () => {
-        setNewWidgetImage(false);
-    };
-
-    const toggleNewWidgetImage = () => {
-        setNewWidgetImage(!newWidgetImage);
-    };
-
-    const closeShowCropWidgetImage = () => {
-        setWidgetImage('');
-        setShowCropImageModal(false);
-    };
-
-    const toggleShowUploadSucces = () => {
-        setShowUploadSucces(!showUploadSucces);
-    };
-
-    const addWidgetImage = file => {
-        setWidgetImage(file[0]);
-        setShowCropImageModal(true);
-    };
-
-    const cropWidgetImage = file => {
-        setWidgetImage(file);
-
-        const data = new FormData();
-        data.append('id', row.id);
-        data.append('image', file);
-
-        PortalSettingsDashboardAPI.updateDashboardWidget(data)
-            .then(payload => {
-                setShowCropImageModal(false);
-                setShowUploadSucces(true);
-                setUploadSuccesMessage(payload.data.message);
-                // alert(payload.data.message);
-            })
-            .catch(error => {
-                setShowCropImageModal(false);
-                console.log(error);
-                alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
-            });
-    };
-
     return (
         <>
-            <tr ref={dropRef} style={{ opacity }}>
-                {edit && (
-                    <td ref={dragRef}>
-                        <Icon icon={arrows_vertical} />
-                        <FaInfoCircle
-                            color={'blue'}
-                            size={'15px'}
-                            data-tip={'Je kunt de volgorde van de widgets aanpassen door deze te slepen'}
-                            data-for={`tooltip-${dropRef}`}
-                        />
-                        <ReactTooltip
-                            id={`tooltip-${dropRef}`}
-                            effect="float"
-                            place="right"
-                            multiline={true}
-                            aria-haspopup="true"
-                        />
-                    </td>
-                )}
-                {edit
-                    ? // edit
-                      row.cells.map(cell => {
-                          switch (cell.column.id) {
-                              case 'title':
-                              case 'text':
-                              case 'buttonText':
-                              case 'buttonLink':
-                                  return (
-                                      <td key={cell.column.id}>
-                                          <InputTextArea
-                                              sizeInput={'col-sm-12'}
-                                              size={'col-sm-12'}
-                                              name={`${cell.row.id}-${cell.column.id}`}
-                                              value={cell.value}
-                                              onChangeAction={handleInputChange}
-                                              itemId={cell.row.id}
-                                          />
-                                      </td>
-                                  );
-                              case 'image':
-                                  const logoUrl =
-                                      cell.value && cell.value.includes('images/')
-                                          ? `${URL_API}/portal${cell.value}?${imageHash}`
-                                          : `${URL_API}/portal/images/${cell.value}?${imageHash}`;
-
-                                  return (
-                                      <td key={cell.column.id}>
-                                          <Image
-                                              src={widgetImage && widgetImage.preview ? widgetImage.preview : logoUrl}
-                                              thumbnail={true}
-                                              style={{
-                                                  border: '1px solid #999',
-                                                  display: 'inline-block',
-                                                  padding: '1px',
-                                                  borderRadius: '1px',
-                                                  height: '100%',
-                                                  width: '100px',
-                                                  boxShadow: '0 0 0 1px #fff inset',
-                                              }}
-                                              onClick={toggleNewWidgetImage}
-                                          />
-                                          <InputText
-                                              type={'hidden'}
-                                              label={''}
-                                              divSize={'col-sm-12'}
-                                              size={'col-sm-12'}
-                                              value={widgetImage ? widgetImage.name : cell.value}
-                                              onClickAction={toggleNewWidgetImage}
-                                              onChangeaction={() => {}}
-                                          />
-                                      </td>
-                                  );
-                              case 'active':
-                                  return (
-                                      <td key={cell.column.id}>
-                                          <InputToggle
-                                              label={''}
-                                              name={`${cell.row.id}-${cell.column.id}`}
-                                              value={cell.value}
-                                              onChangeAction={handleInputChange}
-                                              itemId={cell.row.id}
-                                          />
-                                      </td>
-                                  );
-                              default:
-                                  return (
-                                      <td key={cell.column.id}>
-                                          <InputText
-                                              type={'text'}
-                                              divSize={'col-sm-12'}
-                                              divClassName={'no-padding'}
-                                              size={'col-sm-12'}
-                                              name={`${cell.row.id}-${cell.column.id}`}
-                                              value={cell.value}
-                                              onChangeAction={handleInputChange}
-                                              itemId={cell.row.id}
-                                              disabled={
-                                                  staticWidgets.includes(cell.row.id) &&
-                                                  staticInput.includes(cell.column.id)
-                                              }
-                                          />
-                                      </td>
-                                  );
-                          }
-                      })
-                    : // view
-                      row.cells.map(cell => {
-                          switch (cell.column.id) {
-                              case 'active':
-                                  return <td {...cell.getCellProps()}>{cell.value ? 'Ja' : 'Nee'}</td>;
-                              case 'image': {
-                                  const logoUrl =
-                                      cell.value && cell.value.includes('images/')
-                                          ? `${URL_API}/portal${cell.value}?${imageHash}`
-                                          : `${URL_API}/portal/images/${cell.value}?${imageHash}`;
-                                  return (
-                                      <td key={cell.column.id}>
-                                          <Image
-                                              src={widgetImage && widgetImage.preview ? widgetImage.preview : logoUrl}
-                                              thumbnail={true}
-                                              style={{
-                                                  border: '1px solid #999',
-                                                  display: 'inline-block',
-                                                  padding: '1px',
-                                                  borderRadius: '1px',
-                                                  height: '100%',
-                                                  width: '100px',
-                                                  boxShadow: '0 0 0 1px #fff inset',
-                                              }}
-                                          />
-                                      </td>
-                                  );
-                              }
-                          }
-
-                          return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
-                      })}
-                {edit && (
-                    <td>
-                        <ButtonIcon
-                            iconName={'glyphicon-remove'}
-                            buttonClassName={'btn-danger btn-sm'}
-                            disabled={staticWidgets.includes(row.id)}
-                            onClickAction={() => removeWidget(row.id)}
-                        />
-                    </td>
-                )}
+            <tr
+                ref={dropRef}
+                style={{ opacity }}
+                className={highlightRow}
+                onDoubleClick={() => hashHistory.push(`/portal-instellingen-dashboard-widget/${row.id}`)}
+                onMouseEnter={() => {
+                    setShowActionButtons(true);
+                    setHighLightRow('highlight-row');
+                }}
+                onMouseLeave={() => {
+                    setShowActionButtons(false);
+                    setHighLightRow('');
+                }}
+            >
+                {row.cells.map(cell => {
+                    switch (cell.column.id) {
+                        case 'order':
+                            if (showEditSort === true) {
+                                return (
+                                    <td ref={dragRef}>
+                                        <Icon icon={arrows_vertical} />
+                                    </td>
+                                );
+                            } else {
+                                return null;
+                            }
+                        case 'title':
+                            return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
+                        case 'widgetImageFileName': {
+                            const imageUrl = cell.value && `${URL_API}/portal/images/${cell.value}?${imageHash}`;
+                            return (
+                                <td key={cell.column.id}>
+                                    <Image
+                                        src={imageUrl}
+                                        thumbnail={true}
+                                        style={{
+                                            border: '1px solid #999',
+                                            display: 'inline-block',
+                                            padding: '1px',
+                                            borderRadius: '1px',
+                                            height: '100%',
+                                            width: '100px',
+                                            boxShadow: '0 0 0 1px #fff inset',
+                                        }}
+                                    />
+                                </td>
+                            );
+                        }
+                        case 'active':
+                            return <td {...cell.getCellProps()}>{cell.value ? 'Ja' : 'Nee'}</td>;
+                        case 'codeRef':
+                            if (!showEditSort) {
+                                return (
+                                    <td>
+                                        {showActionButtons && (
+                                            <a
+                                                role="button"
+                                                onClick={() =>
+                                                    hashHistory.push(`/portal-instellingen-dashboard-widget/${row.id}`)
+                                                }
+                                            >
+                                                <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                                            </a>
+                                        )}
+                                        {!staticWidgets.includes(cell.value) && showActionButtons ? (
+                                            <a role="button" onClick={() => setShowDelete(true)}>
+                                                <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                                            </a>
+                                        ) : null}
+                                    </td>
+                                );
+                            } else {
+                                return null;
+                            }
+                    }
+                })}
             </tr>
-            {newWidgetImage && (
-                <AddPortalSettingsDashboardWidgetImageModal
-                    closeNewWidgetImage={closeNewWidgetImage}
-                    addWidgetImage={addWidgetImage}
-                />
-            )}
-            {showCropImageModal && (
-                <PortalLogoLayoutNewCrop
-                    closeShowCrop={closeShowCropWidgetImage}
-                    image={widgetImage}
-                    imageLayoutItemName={'image-widget'}
-                    cropLogo={cropWidgetImage}
-                />
-            )}
 
-            {showUploadSucces && (
-                <Modal
-                    title={'Succes'}
-                    closeModal={toggleShowUploadSucces}
-                    buttonCancelText={'Ok'}
-                    showConfirmAction={false}
-                >
-                    {uploadSuccesMessage}
-                </Modal>
+            {showDelete && (
+                <PortalSettingsDashboardWidgetDeleteItem
+                    closeDeleteItemModal={() => setShowDelete(false)}
+                    description={row.cells.find(cell => cell.column.id === 'title').value}
+                    id={row.id}
+                    deletePortalSettingsDashboardWidget={deletePortalSettingsDashboardWidget}
+                />
             )}
         </>
     );

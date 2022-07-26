@@ -1,5 +1,5 @@
 :root {
---main-primary-color: #034b8c;
+--portal-background-color: #034b8c;
 --main-primary-rgba: rgba(3, 75, 140, 0.9);
 --main-secondary-color: #3898EC;
 --button-primary-color:#3898EC;
@@ -9,7 +9,7 @@
 
 /* ----------------- LOGIN STYLING -----------------*/
 .authorization-container {
-background-color: var(--main-primary-color);
+background-color: var(--portal-background-color);
 background-image: -webkit-gradient(linear, left top, left bottom, from(var(--main-primary-rgba)), to(var(--main-primary-rgba))), url('images/page-head5.jpg');
 background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-primary-rgba)), url('images/page-head5.jpg');
 background-position: 0px 0px, 50% 50%;
@@ -23,14 +23,14 @@ min-height: 100vh;
 width: 100%;
 border-radius: 7px;
 background-color: white;
-color: var(--main-primary-color);
+color: var(--portal-background-color);
 font-weight: 600;
 text-align: center;
 }
 
 .authorization-button.btn-primary:hover, .authorization-button.btn-primary:active, .authorization-button.btn-primary:focus, .authorization-button.btn-primary:disabled {
 background-color: white;
-color: var(--main-primary-color);
+color: var(--portal-background-color);
 outline: none;
 opacity: 1;
 }
@@ -73,7 +73,7 @@ padding-bottom: 60px;
 }
 
 .content-heading {
-color: var(--main-primary-color);
+color: var(--portal-background-color);
 font-size: 24px;
 font-weight: 400;
 text-shadow: none;
@@ -254,7 +254,7 @@ height: 100%;
 
 /* General sidebar styles */
 .bm-menu {
-background-color: var(--main-primary-color);
+background-color: var(--portal-background-color);
 padding: 0.5em 1.5em 0;
 /*font-size: 1.15em;*/
 }
@@ -363,11 +363,11 @@ transition: opacity 0.3s ease 0.5s;
 
 .arrow-steps .step.current {
 color: white;
-background-color: var(--main-primary-color);
+background-color: var(--portal-background-color);
 }
 
 .arrow-steps .step.current:after {
-border-left: 17px solid var(--main-primary-color);
+border-left: 17px solid var(--portal-background-color);
 }
 
 @media  screen and (max-width: 992px) {
@@ -523,7 +523,7 @@ font-size: 14px;
 }
 
 .dropdown-header {
-color: var(--main-primary-color);
+color: var(--portal-background-color);
 font-weight: bold;
 }
 

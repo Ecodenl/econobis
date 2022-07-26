@@ -14,9 +14,14 @@ class PreviewPortalLoginPageMobileModal extends Component {
         document.documentElement.style.setProperty('--main-login-background-image-url', 'url(' + imageBgLoginUrl + ')');
 
         if (this.props.previewFromLayout) {
-            document.documentElement.style.setProperty('--main-primary-color', this.props.portalBackgroundColor);
             document.documentElement.style.setProperty(
-                '--main-primary-text-color',
+                '--portal-main-background-color',
+                this.props.portalMainBackgroundColor
+            );
+            document.documentElement.style.setProperty('--portal-main-text-color', this.props.portalMainTextColor);
+            document.documentElement.style.setProperty('--portal-background-color', this.props.portalBackgroundColor);
+            document.documentElement.style.setProperty(
+                '--portal-background-text-color',
                 this.props.portalBackgroundTextColor
             );
             document.documentElement.style.setProperty('--main-primary-rgba', this.props.loginHeaderBackgroundColor);

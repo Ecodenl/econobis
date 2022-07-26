@@ -3,6 +3,7 @@
 namespace App\Eco\Contact;
 
 use App\Eco\Address\Address;
+use App\Eco\Administration\Administration;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignResponse;
 use App\Eco\ContactGroup\ContactGroup;
@@ -29,6 +30,7 @@ use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\Task\Task;
 use App\Eco\Twinfield\TwinfieldCustomerNumber;
 use App\Eco\User\User;
+use App\Helpers\Settings\PortalSettings;
 use App\Http\Resources\ContactGroup\GridContactGroup;
 use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
@@ -534,6 +536,29 @@ class Contact extends Model
             return Address::where('contact_id', $this->id)->where('type_id', 'visit')->first();
         }
     }
+
+    public function getSingleRelatedAdministrationAttribute()
+    {
+        $contactId = $this->id;
+        $administrations = Administration::whereHas('projects', function($query) use($contactId){
+            $query->WhereHas('participantsProject', function($query2) use($contactId){
+                $query2->where('contact_id', $contactId);
+            });
+        })->orderBy('name')->get();
+        if($administrations->count() == 0){
+            $defaultAdministrationId = PortalSettings::get('defaultAdministrationId');
+            if(!empty($defaultAdministrationId)){
+                $administrations = Administration::whereId($defaultAdministrationId)->get();
+            }
+        }
+
+        if($administrations->count() === 1){
+            return $administrations->first()->id;
+        }
+
+        return false;
+    }
+
 
     public function getNoAddressesFoundAttribute()
     {

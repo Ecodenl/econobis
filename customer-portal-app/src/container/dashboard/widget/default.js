@@ -3,14 +3,18 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 
-export const ContactDetailsDashboardWidget = function({ contact }) {
+export const ContactDetailsDashboardWidget = function({ contact, backgroundColorUsed, textColorUsed }) {
     const history = useHistory();
     const key = 'widget-' + 'contact-details';
 
     const typeContact = contact.typeId ? contact.typeId : null;
 
     return (
-        <Card key={key} id={key} style={{ marginTop: '30px' }}>
+        <Card
+            key={key}
+            id={key}
+            style={{ marginTop: '30px', backgroundColor: backgroundColorUsed, color: textColorUsed }}
+        >
             <div className="card-body">
                 <h5 className="card-title">{contact.fullNameFnf}</h5>
                 <div className="card-text">
@@ -97,12 +101,22 @@ export const ContactDetailsDashboardWidget = function({ contact }) {
     );
 };
 
-export const SwitchContactDashboardWidget = function({ user, currentSelectedContact, switchCurrentContact }) {
+export const SwitchContactDashboardWidget = function({
+    user,
+    currentSelectedContact,
+    switchCurrentContact,
+    backgroundColorUsed,
+    textColorUsed,
+}) {
     const history = useHistory();
     const key = 'widget-' + 'switch-contact';
 
     return (
-        <Card key={key} id={key} style={{ marginTop: '30px' }}>
+        <Card
+            key={key}
+            id={key}
+            style={{ marginTop: '30px', backgroundColor: backgroundColorUsed, color: textColorUsed }}
+        >
             <div className="card-body">
                 <h5 className="card-title">Wissel van contact</h5>
                 <div

@@ -29,7 +29,7 @@ class AdministrationJoryResource extends JoryResource
         $this->field('IBAN')->filterable()->sortable();
         $this->field('iban_attn')->filterable()->sortable();
         $this->field('btw_number')->filterable()->sortable();
-        $this->field('website')->filterable()->sortable();
+        $this->field('email')->filterable()->sortable();
 
         // Attributes
         $this->field('portal_settings_layout_assigned')->filterable()->sortable();

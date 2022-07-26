@@ -20,7 +20,7 @@ import ViewText from '../../../components/form/ViewText';
 import InputDate from '../../../components/form/InputDate';
 import moment from 'moment';
 import Image from 'react-bootstrap/lib/Image';
-import PortalLogoLayoutNewCrop from '../../../components/cropImage/portalLayout/PortalLogoLayoutNewCrop';
+import PortalImageCrop from '../../../components/imageUploadAndCrop/PortalImageCrop';
 
 class AdministrationNewForm extends Component {
     constructor(props) {
@@ -29,9 +29,10 @@ class AdministrationNewForm extends Component {
         this.state = {
             showPreviewInvoice: false,
             image: '',
-            imageLayoutItemName: '',
-            showModalNewLogo: false,
-            showModalCropLogo: false,
+            imageItemName: '',
+            showModalUploadImage: false,
+            showModalCropImage: false,
+            useAutoCropper: true,
             emailTemplates: [],
             mailboxAddresses: [],
             isSaving: false,
@@ -134,32 +135,33 @@ class AdministrationNewForm extends Component {
         });
     }
 
-    closeNewLogo = () => {
+    closeUploadImage = () => {
         this.setState({
-            showModalNewLogo: false,
+            showModalUploadImage: false,
         });
     };
-    toggleNewLogo = imageLayoutItemName => {
+    toggleUploadImage = imageItemName => {
         this.setState({
-            showModalNewLogo: !this.state.showModalNewLogo,
-            imageLayoutItemName: imageLayoutItemName,
+            showModalUploadImage: !this.state.showModalUploadImage,
+            imageItemName: imageItemName,
+        });
+    };
+
+    addImage = (file, imageItemName, useAutoCropper) => {
+        this.setState({
+            ...this.state,
+            image: file[0],
+            useAutoCropper: useAutoCropper,
+            showModalCropImage: true,
         });
     };
 
     closeShowCrop = () => {
         this.setState({
-            showModalCropLogo: false,
+            showModalCropImage: false,
         });
     };
-
-    addLogo = file => {
-        this.setState({
-            ...this.state,
-            image: file[0],
-            showModalCropLogo: true,
-        });
-    };
-    cropLogo = file => {
+    cropImage = file => {
         this.setState({
             ...this.state,
             administration: {
@@ -169,7 +171,7 @@ class AdministrationNewForm extends Component {
                 logoName: file.name,
                 src: file.name,
             },
-            showModalCropLogo: false,
+            showModalCropImage: false,
         });
     };
 
@@ -693,12 +695,11 @@ class AdministrationNewForm extends Component {
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputText
-                                Men
                                 label="Logo"
                                 divSize={'col-sm-6'}
                                 value={attachment ? attachment.name : logoName}
                                 onClickAction={() => {
-                                    this.toggleNewLogo('logo-administration');
+                                    this.toggleUploadImage('logo-administration');
                                 }}
                                 onChangeaction={() => {}}
                             />
@@ -890,19 +891,20 @@ class AdministrationNewForm extends Component {
                             </React.Fragment>
                         )}
 
-                        {this.state.showModalNewLogo && (
+                        {this.state.showModalUploadImage && (
                             <AdministrationLogoNew
-                                closeNewLogo={this.closeNewLogo}
-                                addAttachment={this.addLogo}
-                                imageLayoutItemName={this.state.imageLayoutItemName}
+                                closeUploadImage={this.closeUploadImage}
+                                addAttachment={this.addImage}
+                                imageItemName={this.state.imageItemName}
                             />
                         )}
-                        {this.state.showModalCropLogo && (
-                            <PortalLogoLayoutNewCrop
+                        {this.state.showModalCropImage && (
+                            <PortalImageCrop
                                 closeShowCrop={this.closeShowCrop}
+                                useAutoCropper={this.state.useAutoCropper}
                                 image={this.state.image}
-                                imageLayoutItemName={this.state.imageLayoutItemName}
-                                cropLogo={this.cropLogo}
+                                imageItemName={this.state.imageItemName}
+                                cropImage={this.cropImage}
                             />
                         )}
                     </PanelBody>

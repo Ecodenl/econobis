@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import ViewText from '../../../components/form/ViewText';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import PortalSettingsDashboardWidgetList from '../widgets/PortalSettingsDashboardWidgetList';
+import { setError } from '../../../actions/general/ErrorActions';
 import PreviewPortalDashboardPagePcModal from '../../portal-settings-preview/PreviewPortalDashboardPagePcModal';
 import PreviewPortalDashboardPageMobileModal from '../../portal-settings-preview/PreviewPortalDashboardPageMobileModal';
 import ButtonText from '../../../components/button/ButtonText';
@@ -33,9 +34,14 @@ class PortalSettingsDashboardFormGeneralView extends Component {
     };
 
     render() {
-        const { welcomeTitle, welcomeMessage, widgets } = this.props.dashboardSettings;
+        const {
+            welcomeTitle,
+            welcomeMessage,
+            defaultWidgetBackgroundColor,
+            defaultWidgetTextColor,
+        } = this.props.dashboardSettings;
 
-        const logoHeaderUrl = `${URL_API}/portal/images/logo.png?${this.props.imageHash}`;
+        const logoHeaderUrl = `${URL_API}/portal/images/logo-header.png?${this.props.imageHash}`;
         const imageBgHeaderUrl = `${URL_API}/portal/images/background-header.png?${this.props.imageHash}`;
 
         return (
@@ -107,15 +113,37 @@ class PortalSettingsDashboardFormGeneralView extends Component {
                                     className={'col-sm-8 form-group'}
                                 />
                             </div>
-                        </PanelBody>
-                    </Panel>
-                    <Panel>
-                        <PanelBody>
-                            <div className="row" style={{ margin: '0' }}>
-                                <PortalSettingsDashboardWidgetList
-                                    widgets={widgets}
-                                    edit={false}
-                                    imageHash={this.state.imageHash}
+                            <div className="row">
+                                <ViewText
+                                    label="Default widget achtergrond kleur"
+                                    divSize={'col-sm-8'}
+                                    value={defaultWidgetBackgroundColor}
+                                    className={'col-sm-8 form-group'}
+                                />
+                                <span
+                                    className="rc-color-picker-trigger"
+                                    unselectable="unselectable"
+                                    style={{
+                                        backgroundColor: defaultWidgetBackgroundColor,
+                                        color: defaultWidgetTextColor,
+                                        border: '1px solid #999',
+                                        display: 'inline-block',
+                                        padding: '2px',
+                                        borderRadius: '2px',
+                                        width: '150px',
+                                        height: '30px',
+                                        boxShadow: '0 0 0 2px #fff inset',
+                                    }}
+                                >
+                                    Algemene tekst
+                                </span>
+                            </div>
+                            <div className="row">
+                                <ViewText
+                                    label="Default widget tekst kleur"
+                                    divSize={'col-sm-8'}
+                                    value={defaultWidgetTextColor}
+                                    className={'col-sm-8 form-group'}
                                 />
                             </div>
                         </PanelBody>
@@ -126,4 +154,10 @@ class PortalSettingsDashboardFormGeneralView extends Component {
     }
 }
 
-export default PortalSettingsDashboardFormGeneralView;
+const mapDispatchToProps = dispatch => ({
+    setError: (http_code, message) => {
+        dispatch(setError(http_code, message));
+    },
+});
+
+export default connect(null, mapDispatchToProps)(PortalSettingsDashboardFormGeneralView);

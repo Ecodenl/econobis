@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import validator from 'validator';
 import moment from 'moment';
 moment.locale('nl');
 
@@ -10,10 +9,10 @@ import PanelBody from '../../../components/panel/PanelBody';
 import { setError } from '../../../actions/general/ErrorActions';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import PortalSettingsDashboardAPI from '../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
-import InputTextArea from '../../../components/form/InputTextarea';
-import PortalSettingsDashboardWidgetList from '../widgets/PortalSettingsDashboardWidgetList';
+import InputTextArea from '../../../components/form/InputTextArea';
 import PreviewPortalDashboardPagePcModal from '../../portal-settings-preview/PreviewPortalDashboardPagePcModal';
 import PreviewPortalDashboardPageMobileModal from '../../portal-settings-preview/PreviewPortalDashboardPageMobileModal';
+import InputTextColorPicker from '../../../components/form/InputTextColorPicker';
 
 class PortalSettingsDashboardFormGeneralEdit extends Component {
     constructor(props) {
@@ -27,12 +26,31 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
             dashboardSettings: {
                 ...props.dashboardSettings,
             },
-            widgets: [...props.dashboardSettings.widgets],
             errors: {
                 welcomeTitle: '',
                 welcomeMessage: '',
             },
+            errorMessage: {},
         };
+    }
+
+    componentDidMount() {
+        this.setState({ isLoading: true, hasError: false });
+        // todo WM: check / anders
+        //
+        const id = 1;
+        PortalSettingsDashboardAPI.fetchPortalSettingsDashboardDetails(id)
+            .then(payload => {
+                this.setState({
+                    isLoading: false,
+                    dashboardSettings: {
+                        ...payload.data.data,
+                    },
+                });
+            })
+            .catch(error => {
+                this.setState({ isLoading: false, hasError: true });
+            });
     }
 
     handleInputChange = event => {
@@ -64,114 +82,63 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { dashboardSettings, widgets } = this.state;
+        const { dashboardSettings } = this.state;
 
         // Validation
         let errors = {};
+        let errorMessage = {};
         let hasErrors = false;
 
-        // if (validator.isEmpty(dashboardSettings.welcomeMessage)) {
-        //     errors.welcomeMessage = true;
-        //     hasErrors = true;
-        // }
-        //
-        // if (validator.isEmpty(dashboardSettings.welcomeTitle)) {
-        //     errors.welcomeTitle = true;
-        //     hasErrors = true;
-        // }
-
-        this.setState({ ...this.state, errors: errors });
+        this.setState({ ...this.state, errors: errors, errorMessage: errorMessage });
 
         // If no errors send form
         !hasErrors &&
-            PortalSettingsDashboardAPI.updateDashboardSettings({
-                welcomeTitle: dashboardSettings.welcomeTitle,
-                welcomeMessage: dashboardSettings.welcomeMessage,
-                widgets: widgets,
-            })
+            PortalSettingsDashboardAPI.updatePortalSettingsDashboard(dashboardSettings)
                 .then(payload => {
-                    this.props.updateState(payload.data);
+                    this.props.updateState(payload.data.data);
                     this.props.switchToView();
                 })
                 .catch(error => {
-                    console.log(
-                        'error PortalSettingsDashboardFormGeneralEdit - handleSubmit - updateDashboardSettings'
-                    );
-                    console.log(error);
-                    // alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
-                    this.props.setError(error.response.status, error.response.data.message);
+                    if (error.response) {
+                        this.props.setError(error.response.status, error.response.data.message);
+                    } else {
+                        console.log(error);
+                        alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
+                    }
                 });
-    };
-
-    handleWidgetInputChange = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const id = target.getAttribute('data-item-id');
-        const name = target.name.replace(id + '-', '');
-
-        const widgets = Object.assign([...this.state.widgets], {
-            [this.state.widgets.findIndex(el => el.id === id)]: {
-                ...this.state.widgets[this.state.widgets.findIndex(el => el.id === id)],
-                [name]: value,
-            },
-        });
-
-        this.setState({
-            ...this.state,
-            widgets: widgets,
-        });
-    };
-
-    addWidget = widget => {
-        this.setState({
-            ...this.state,
-            widgets: [...this.state.widgets, widget],
-        });
-    };
-
-    removeWidget = id => {
-        PortalSettingsDashboardAPI.removeDashboardWidget(id)
-            .then(response => {
-                this.setState({
-                    ...this.state,
-                    widgets: response.data,
-                });
-            })
-            .catch(error => {
-                console.log('error PortalSettingsDashboardFormGeneralEdit - removeWidget - removeDashboardWidget');
-                console.log(error);
-                // alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
-                this.props.setError(error.response.status, error.response.data.message);
-            });
     };
 
     render() {
-        const { welcomeTitle, welcomeMessage } = this.state.dashboardSettings;
-        const { widgets } = this.state;
+        const {
+            welcomeTitle,
+            welcomeMessage,
+            defaultWidgetBackgroundColor,
+            defaultWidgetTextColor,
+        } = this.state.dashboardSettings;
 
-        const logoHeaderUrl = `${URL_API}/portal/images/logo.png?${this.props.imageHash}`;
+        const logoHeaderUrl = `${URL_API}/portal/images/logo-header.png?${this.props.imageHash}`;
         const imageBgHeaderUrl = `${URL_API}/portal/images/background-header.png?${this.props.imageHash}`;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
-                {/*<Panel>*/}
-                {/*    <PanelBody>*/}
-                {/*        <div className="row">*/}
-                {/*            <div className="col-md-6">*/}
-                {/*                <div className="btn-group btn-group-flex" role="group">*/}
-                {/*                    <ButtonText*/}
-                {/*                        buttonText="Preview dashboard pagina PC"*/}
-                {/*                        onClickAction={this.togglePreviewPortalDashboardPagePc}*/}
-                {/*                    />*/}
-                {/*                    <ButtonText*/}
-                {/*                        buttonText="Preview dashboard pagina mobiel"*/}
-                {/*                        onClickAction={this.togglePreviewPortalDashboardPageMobile}*/}
-                {/*                    />*/}
-                {/*                </div>*/}
-                {/*            </div>*/}
-                {/*        </div>*/}
-                {/*    </PanelBody>*/}
-                {/*</Panel>*/}
+                <Panel>
+                    <PanelBody>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <div className="btn-group btn-group-flex" role="group">
+                                    <ButtonText
+                                        buttonText="Preview dashboard pagina PC"
+                                        onClickAction={this.togglePreviewPortalDashboardPagePc}
+                                    />
+                                    <ButtonText
+                                        buttonText="Preview dashboard pagina mobiel"
+                                        onClickAction={this.togglePreviewPortalDashboardPageMobile}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </PanelBody>
+                </Panel>
 
                 <Panel>
                     <PanelBody>
@@ -195,18 +162,42 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
                                 error={!!this.state.errors.welcomeMessage}
                             />
                         </div>
-                    </PanelBody>
-                </Panel>
-                <Panel>
-                    <PanelBody>
-                        <div className="row" style={{ margin: '0' }}>
-                            <PortalSettingsDashboardWidgetList
-                                widgets={widgets}
-                                edit={true}
-                                handleWidgetInputChange={this.handleWidgetInputChange}
-                                addWidget={this.addWidget}
-                                removeWidget={this.removeWidget}
-                                imageHash={this.props.imageHash}
+                        <div className="row">
+                            <InputTextColorPicker
+                                label="Default widget achtergrond kleur"
+                                divSize={'col-sm-8'}
+                                name={'defaultWidgetBackgroundColor'}
+                                value={defaultWidgetBackgroundColor}
+                                // size={'col-sm-4'}
+                                // textToolTip={`Let op: geen donkere achtergrond kleur kiezen dan wordt zwarte titel slecht leesbaar.`}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                            />
+                            <span
+                                className="rc-color-picker-trigger"
+                                unselectable="unselectable"
+                                style={{
+                                    backgroundColor: defaultWidgetBackgroundColor,
+                                    color: defaultWidgetTextColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '2px',
+                                    borderRadius: '2px',
+                                    width: '150px',
+                                    height: '30px',
+                                    boxShadow: '0 0 0 2px #fff inset',
+                                }}
+                            >
+                                Algemene tekst
+                            </span>
+                        </div>
+                        <div className="row">
+                            <InputTextColorPicker
+                                label="Default widget tekst kleur"
+                                divSize={'col-sm-8'}
+                                name={'defaultWidgetTextColor'}
+                                value={defaultWidgetTextColor}
+                                onChangeAction={this.handleInputChange}
                             />
                         </div>
                     </PanelBody>
@@ -218,38 +209,43 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
                                 buttonText={'Sluiten'}
                                 onClickAction={this.props.switchToView}
                             />
-                            <ButtonText buttonText={'Opslaan'} type={'submit'} value={'Submit'} />
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                type={'submit'}
+                                value={'Submit'}
+                                onClickAction={this.handleSubmit}
+                            />
                         </div>
                     </PanelBody>
-                    {this.state.showPreviewPortalDashboardPagePc && (
-                        <PreviewPortalDashboardPagePcModal
-                            previewFromLayout={false}
-                            closeModal={this.togglePreviewPortalDashboardPagePc}
-                            setShowMenu={this.setShowMenu}
-                            showMenu={this.state.showMenu}
-                            imageHash={this.state.imageHash}
-                            attachmentLogoHeader={''}
-                            logoHeaderUrl={logoHeaderUrl}
-                            attachmentImageBgHeader={''}
-                            imageBgHeaderUrl={imageBgHeaderUrl}
-                            dashboardSettings={this.props.dashboardSettings}
-                        />
-                    )}
-                    {this.state.showPreviewPortalDashboardPageMobile && (
-                        <PreviewPortalDashboardPageMobileModal
-                            previewFromLayout={false}
-                            closeModal={this.togglePreviewPortalDashboardPageMobile}
-                            setShowMenu={this.setShowMenu}
-                            showMenu={this.state.showMenu}
-                            imageHash={this.state.imageHash}
-                            attachmentLogoHeader={''}
-                            logoHeaderUrl={logoHeaderUrl}
-                            attachmentImageBgHeader={''}
-                            imageBgHeaderUrl={imageBgHeaderUrl}
-                            dashboardSettings={this.props.dashboardSettings}
-                        />
-                    )}
                 </Panel>
+                {this.state.showPreviewPortalDashboardPagePc && (
+                    <PreviewPortalDashboardPagePcModal
+                        previewFromLayout={false}
+                        closeModal={this.togglePreviewPortalDashboardPagePc}
+                        setShowMenu={this.setShowMenu}
+                        showMenu={this.state.showMenu}
+                        imageHash={this.state.imageHash}
+                        attachmentLogoHeader={''}
+                        logoHeaderUrl={logoHeaderUrl}
+                        attachmentImageBgHeader={''}
+                        imageBgHeaderUrl={imageBgHeaderUrl}
+                        dashboardSettings={this.state.dashboardSettings}
+                    />
+                )}
+                {this.state.showPreviewPortalDashboardPageMobile && (
+                    <PreviewPortalDashboardPageMobileModal
+                        previewFromLayout={false}
+                        closeModal={this.togglePreviewPortalDashboardPageMobile}
+                        setShowMenu={this.setShowMenu}
+                        showMenu={this.state.showMenu}
+                        imageHash={this.state.imageHash}
+                        attachmentLogoHeader={''}
+                        logoHeaderUrl={logoHeaderUrl}
+                        attachmentImageBgHeader={''}
+                        imageBgHeaderUrl={imageBgHeaderUrl}
+                        dashboardSettings={this.state.dashboardSettings}
+                    />
+                )}
             </form>
         );
     }

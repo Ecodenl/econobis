@@ -1,15 +1,17 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic,Droid%20Sans:400,700,Inconsolata:400,700');
 
 :root {
---main-primary-color: {{ (!empty($defaultPortalSettingsLayout->portal_background_color) ? $defaultPortalSettingsLayout->portal_background_color : '#034b8c') }};
---main-primary-text-color: {{ (!empty($defaultPortalSettingsLayout->portal_background_text_Color) ? $defaultPortalSettingsLayout->portal_background_text_Color : '#fff') }};
+--portal-main-background-color: {{ (!empty($defaultPortalSettingsLayout->portal_main_background_color) ? $defaultPortalSettingsLayout->portal_main_background_color : '#f1eff0') }};
+--portal-main-text-color: {{ (!empty($defaultPortalSettingsLayout->portal_main_text_color) ? $defaultPortalSettingsLayout->portal_main_text_color : '#000000') }};
+--portal-background-color: {{ (!empty($defaultPortalSettingsLayout->portal_background_color) ? $defaultPortalSettingsLayout->portal_background_color : '#034b8c') }};
+--portal-background-text-color: {{ (!empty($defaultPortalSettingsLayout->portal_background_text_color) ? $defaultPortalSettingsLayout->portal_background_text_color : '#ffffff') }};
 --main-primary-rgba: {{ (!empty($defaultPortalSettingsLayout->login_header_background_color) ? $defaultPortalSettingsLayout->login_header_background_color : 'rgba(3, 75, 140, 0.9)') }};
---main-primary-rgba-text-color: {{ (!empty($defaultPortalSettingsLayout->login_header_background_text_color) ? $defaultPortalSettingsLayout->login_header_background_text_color : '#333') }};
---main-header-portal-icon-color: {{ (!empty($defaultPortalSettingsLayout->header_icons_color) ? $defaultPortalSettingsLayout->header_icons_color : '#fff') }};
+--main-primary-rgba-text-color: {{ (!empty($defaultPortalSettingsLayout->login_header_background_text_color) ? $defaultPortalSettingsLayout->login_header_background_text_color : '#333333') }};
+--main-header-portal-icon-color: {{ (!empty($defaultPortalSettingsLayout->header_icons_color) ? $defaultPortalSettingsLayout->header_icons_color : '#ffffff') }};
 --main-secondary-color: {{ (!empty($defaultPortalSettingsLayout->login_field_background_color) ? $defaultPortalSettingsLayout->login_field_background_color : '#3898EC') }};
---main-secondary-text-color: {{ (!empty($defaultPortalSettingsLayout->login_field_background_text_color) ? $defaultPortalSettingsLayout->login_field_background_text_color : '#fff') }};
+--main-secondary-text-color: {{ (!empty($defaultPortalSettingsLayout->login_field_background_text_color) ? $defaultPortalSettingsLayout->login_field_background_text_color : '#ffffff') }};
 --button-primary-color: {{ (!empty($defaultPortalSettingsLayout->button_color) ? $defaultPortalSettingsLayout->button_color : '#3898EC') }};
---button-primary-text-color: {{ (!empty($defaultPortalSettingsLayout->button_text_color) ? $defaultPortalSettingsLayout->button_text_color : '#fff') }};
+--button-primary-text-color: {{ (!empty($defaultPortalSettingsLayout->button_text_color) ? $defaultPortalSettingsLayout->button_text_color : '#ffffff') }};
 --main-warning-color: #dc3545;
 --black-color: #252525;
 --main-login-background-image-url: url({{ (!empty($defaultPortalSettingsLayout->portal_image_bg_file_name_login) ? 'images/' . $defaultPortalSettingsLayout->portal_image_bg_file_name_login . '?v=' . $imageHash : 'images/page-head5.jpg?v=' . $imageHash ) }});
@@ -18,7 +20,7 @@
 
 /* ----------------- LOGIN STYLING -----------------*/
 .authorization-container {
-background-color: var(--main-primary-color);
+background-color: var(--portal-background-color);
 background-image: -webkit-gradient(linear, left top, left bottom, from(var(--main-primary-rgba)), to(var(--main-primary-rgba))), var(--main-login-background-image-url);
 background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-primary-rgba)), var(--main-login-background-image-url);
 background-position: 0px 0px, 50% 50%;
@@ -103,20 +105,25 @@ font-family: initial;
 :focus {outline:none;}
 ::-moz-focus-inner {border:0;}
 
+.portal-body{
+background-color: var(--portal-main-background-color) !important;
+color: var(--portal-main-text-color) !important;
+}
+
 .content-section {
 padding-top: 100px;
 padding-bottom: 60px;
 }
 
 .content-heading {
-color: var(--main-primary-color);
+color: var(--portal-background-color);
 font-size: 24px;
 font-weight: 400;
 text-shadow: none;
 }
 
 .content-subheading {
-color: var(--main-primary-color);
+color: var(--portal-background-color);
 font-size: 20px;
 font-weight: 200;
 text-shadow: none;
@@ -124,7 +131,7 @@ margin-bottom: 15px;
 }
 
 .card-header_title {
-color: var(--main-primary-color);
+color: var(--portal-background-color);
 font-size: 18px;
 font-weight: 400;
 }
@@ -268,18 +275,18 @@ text-shadow: none;
 }
 
 .nav-link {
-color: var(--main-primary-text-color) !important;
+color: var(--portal-background-text-color) !important;
 font-size: 1.15em;
 }
 
 .nav-link.w--current {
-border-left: 1px solid var(--main-primary-text-color) !important;
-color: var(--main-primary-text-color);
+border-left: 1px solid var(--portal-background-text-color) !important;
+color: var(--portal-background-text-color);
 }
 
 .nav-link:hover {
-background-color: var(--main-primary-text-color) !important;
-color: var(--main-primary-color) !important;
+background-color: var(--portal-background-text-color) !important;
+color: var(--portal-background-color) !important;
 text-shadow: none;
 }
 
@@ -346,8 +353,8 @@ height: 100%;
 
 /* General sidebar styles */
 .bm-menu {
-background-color: var(--main-primary-color);
-color: var(--main-primary-text-color);
+background-color: var(--portal-background-color);
+color: var(--portal-background-text-color);
 padding: 0.5em 1.5em 0;
 /*font-size: 1.15em;*/
 }
@@ -455,12 +462,12 @@ transition: opacity 0.3s ease 0.5s;
 }
 
 .arrow-steps .step.current {
-background-color: var(--main-primary-color);
-color: var(--main-primary-text-color);
+background-color: var(--portal-background-color);
+color: var(--portal-background-text-color);
 }
 
 .arrow-steps .step.current:after {
-border-left: 17px solid var(--main-primary-color);
+border-left: 17px solid var(--portal-background-color);
 }
 
 @media screen and (max-width: 992px) {
@@ -728,7 +735,7 @@ font-size: 14px;
 }
 
 .dropdown-header {
-color: var(--main-primary-color);
+color: var(--portal-background-color);
 font-weight: bold;
 }
 

@@ -1,10 +1,10 @@
 import axiosInstance from '../default-setup/AxiosInstance';
 
-const URL_PORTAL_SETTINGS_DASHBOARD = `setting-dashboard`;
+const URL_PORTAL_SETTINGS_DASHBOARD = `/portal-settings-dashboard`;
 
 export default {
-    fetchDashboardSettings: keys => {
-        const requestUrl = `${URL_PORTAL_SETTINGS_DASHBOARD}/multiple${keys}`;
+    fetchDashboardSettings: (id, contactId) => {
+        const requestUrl = `${URL_PORTAL_SETTINGS_DASHBOARD}/${id}/${contactId}`;
 
         return axiosInstance.get(requestUrl);
     },

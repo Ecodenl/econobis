@@ -93,6 +93,7 @@ import LoadingPage from './container/global/LoadingPage';
 import RevenuesKwhNewApp from './container/project/details/revenueKwh/new/RevenuesKwhNewApp';
 import RevenuesKwhDetailsApp from './container/project/details/revenueKwh/details/RevenuesKwhDetailsApp';
 import RevenuePartsKwhDetailsApp from './container/project/details/revenueKwh/details/revenue-parts/details/RevenuePartsKwhDetailsApp';
+import PortalSettingsDashboardWidgetDetailsApp from './container/portal-settings-dashboard/widgets/details/PortalSettingsDashboardWidgetDetailsApp';
 const MeasuresListApp = React.lazy(() => import('./container/measures/list/MeasuresListApp'));
 const MeasureDetailsApp = React.lazy(() => import('./container/measures/details/MeasureDetailsApp'));
 const MeasureCategoriesListApp = React.lazy(() =>
@@ -192,6 +193,9 @@ const CostCenterDetailsApp = React.lazy(() => import('./container/cost-center/de
 const PortalSettingsApp = React.lazy(() => import('./container/portal-settings/PortalSettingsApp'));
 const PortalSettingsDashboardApp = React.lazy(() =>
     import('./container/portal-settings-dashboard/PortalSettingsDashboardApp')
+);
+const PortalSettingsDashboardWidgetNewApp = React.lazy(() =>
+    import('./container/portal-settings-dashboard/widgets/new/PortalSettingsDashboardWidgetNewApp')
 );
 const PortalSettingsLayoutListApp = React.lazy(() =>
     import('./container/portal-settings-layout/list/PortalSettingsLayoutListApp')
@@ -299,8 +303,6 @@ const Routes = () => {
                     {/* todo WM: worden deze nog gebruikt? */}
                     {/*<Route path="document/nieuw/:type/kans/:opportunityId" component={DocumentNewApp} />*/}
                     {/*<Route path="document/nieuw/:type/intake/:intakeId" component={DocumentNewApp} />*/}
-                    {/* todo WM: end */}
-                    {/*<Route path="document/:id/:createdFrom" component={DocumentDetailsApp} />*/}
                     <Route path="document/:id" component={DocumentDetailsApp} />
                     <Route path="document/inzien/:id" component={DocumentViewApp} />
                     /* Document templates */
@@ -370,6 +372,14 @@ const Routes = () => {
                     <Route path="kostenplaats/:id" component={CostCenterDetailsApp} />
                     /* PortalSettingsLayout */
                     <Route path="portal-instellingen-dashboard" component={PortalSettingsDashboardApp} />
+                    <Route
+                        path="portal-instellingen-dashboard-widget/nieuw"
+                        component={PortalSettingsDashboardWidgetNewApp}
+                    />
+                    <Route
+                        path="portal-instellingen-dashboard-widget/:id"
+                        component={PortalSettingsDashboardWidgetDetailsApp}
+                    />
                     /* PortalSettingsLayout */
                     <Route path="portal-instellingen-layout" component={PortalSettingsLayoutListApp} />
                     <Route path="portal-instellingen-layout/nieuw" component={PortalSettingsLayoutNewApp} />

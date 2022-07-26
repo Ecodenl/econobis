@@ -765,15 +765,16 @@ class ParticipationProjectController extends ApiController
         set_time_limit(0);
         $participantIds = $request->input('participantIds');
         $subject = $request->input('subject');
+        $showOnPortal = $request->input('showOnPortal');
 
         foreach($participantIds as $participantId) {
-            CreateParticipantReport::dispatch($participantId, $subject, $documentTemplate->id, $emailTemplate->id, Auth::id());
+            CreateParticipantReport::dispatch($participantId, $subject, $documentTemplate->id, $emailTemplate->id, $showOnPortal, Auth::id());
         }
 
         return null;
     }
 
-    public function createParticipantProjectReport($subject, $participantId, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate)
+    public function createParticipantProjectReport($subject, $participantId, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate, $showOnPortal)
     {
         $portalName = PortalSettings::get('portalName');
         $cooperativeName = PortalSettings::get('cooperativeName');
@@ -836,6 +837,7 @@ class ParticipationProjectController extends ApiController
             $document->project_id = $project->id;
             $document->participation_project_id = $participant->id;
             $document->template_id = $documentTemplate->id;
+            $document->show_on_portal = $showOnPortal;
 
             $filename = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_' . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
 

@@ -62,7 +62,8 @@ class ParticipantReportCreateApp extends Component {
             this.props.reportPreview.templateId,
             this.props.reportPreview.emailTemplateId,
             this.props.reportPreview.subject,
-            this.props.reportPreview.participantIds
+            this.props.reportPreview.participantIds,
+            this.props.reportPreview.showOnPortal
         ).then(payload => {
             document.body.style.cursor = 'default';
             if (!payload.data) {
@@ -114,6 +115,7 @@ class ParticipantReportCreateApp extends Component {
                                             this.state.participants ? this.state.participants.length : 0
                                         }
                                         administrationId={this.props.params.id}
+                                        showOnPortal={this.props.reportPreview.showOnPortal}
                                     />
                                 </PanelBody>
                             </Panel>

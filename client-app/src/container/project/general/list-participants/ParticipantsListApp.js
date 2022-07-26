@@ -28,6 +28,7 @@ import ParticipantsProjectAPI from '../../../../api/participant-project/Particip
 import fileDownload from 'js-file-download';
 import moment from 'moment/moment';
 import ParticipantsListExtraFilters from './ParticipantsListExtraFilters';
+import InputToggle from '../../../../components/form/InputToggle';
 
 class ParticipantsListApp extends Component {
     constructor(props) {
@@ -52,6 +53,7 @@ class ParticipantsListApp extends Component {
             filterType: 'and',
             amountOfFilters: 1,
             extraFilters: [{ field: 'projectId', type: 'eq', data: props.filterProjectId + '', readOnly: true }],
+            showOnPortal: true,
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -143,9 +145,10 @@ class ParticipantsListApp extends Component {
     handleInputChange(event) {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
 
         this.setState({
-            templateId: value,
+            [name]: value,
         });
     }
 
@@ -281,6 +284,7 @@ class ParticipantsListApp extends Component {
                 emailTemplateId: this.state.emailTemplateId,
                 subject: this.state.subject,
                 participantIds: this.state.participantIds,
+                showOnPortal: this.state.showOnPortal,
             });
             hashHistory.push(`/project/preview-rapportage`);
         } else if (!error) {
@@ -445,7 +449,14 @@ class ParticipantsListApp extends Component {
                                     </div>
                                     <div className="col-md-12">
                                         <ViewText label="Geselecteerde deelnemers" value={numberSelectedNumberTotal} />
-
+                                        <InputToggle
+                                            label={'Rapportage tonen op portal'}
+                                            name={'showOnPortal'}
+                                            value={Boolean(this.state.showOnPortal)}
+                                            onChangeAction={this.handleInputChange}
+                                        />
+                                    </div>
+                                    <div className="col-md-12">
                                         <div className="margin-10-top pull-right btn-group" role="group">
                                             <ButtonText
                                                 buttonClassName={'btn-default'}

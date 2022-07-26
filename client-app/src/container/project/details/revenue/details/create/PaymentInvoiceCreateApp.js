@@ -77,7 +77,8 @@ class PaymentInvoiceCreateApp extends Component {
             this.props.reportPreview.templateId,
             this.props.reportPreview.emailTemplateId,
             this.props.reportPreview.subject,
-            this.props.reportPreview.distributionIds
+            this.props.reportPreview.distributionIds,
+            this.props.reportPreview.showOnPortal
         ).then(payload => {
             document.body.style.cursor = 'default';
             if (!payload.data) {
@@ -136,6 +137,7 @@ class PaymentInvoiceCreateApp extends Component {
                                             this.state.distribution.category &&
                                             this.state.distribution.category.codeRef
                                         }
+                                        showOnPortal={this.props.reportPreview.showOnPortal}
                                     />
                                 </PanelBody>
                             </Panel>

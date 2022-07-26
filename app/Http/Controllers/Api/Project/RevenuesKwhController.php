@@ -573,15 +573,16 @@ class RevenuesKwhController extends ApiController
         $subject = $request->input('subject');
         $documentTemplateId = $request->input('documentTemplateId');
         $emailTemplateId = $request->input('emailTemplateId');
+        $showOnPortal = $request->input('showOnPortal');
 
         foreach($distributionKwhIds as $distributionKwhId) {
-            CreateRevenuesKwhReport::dispatch($distributionKwhId, $subject, $documentTemplateId, $emailTemplateId, Auth::id());
+            CreateRevenuesKwhReport::dispatch($distributionKwhId, $subject, $documentTemplateId, $emailTemplateId, $showOnPortal, Auth::id());
         }
 
         return null;
     }
 
-    public function createParticipantRevenueReport($subject, $distributionKwhId, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate)
+    public function createParticipantRevenueReport($subject, $distributionKwhId, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate, $showOnPortal)
     {
         $portalName = PortalSettings::get('portalName');
         $cooperativeName = PortalSettings::get('cooperativeName');
@@ -677,6 +678,7 @@ class RevenuesKwhController extends ApiController
                 $document->project_id = $project->id;
                 $document->participation_project_id = $distributionKwh->participation_id;
                 $document->template_id = $documentTemplate->id;
+                $document->show_on_portal = $showOnPortal;
 
                 $filename = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_'
                     . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));

@@ -42,7 +42,7 @@ export default {
             });
     },
 
-    createRevenuesKwhReport: (templateId, emailTemplateId, subject, distributionKwhIds) => {
+    createRevenuesKwhReport: (templateId, emailTemplateId, subject, distributionKwhIds, showOnPortal) => {
         const requestUrl = `${URL_API}/api/distribution-kwh/create-revenues-kwh-report`;
 
         return axiosInstance.post(requestUrl, {
@@ -50,6 +50,7 @@ export default {
             emailTemplateId: emailTemplateId,
             distributionKwhIds: distributionKwhIds,
             subject: subject,
+            showOnPortal: showOnPortal,
         });
     },
 

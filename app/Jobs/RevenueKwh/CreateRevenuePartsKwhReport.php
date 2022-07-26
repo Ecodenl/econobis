@@ -36,9 +36,10 @@ class CreateRevenuePartsKwhReport implements ShouldQueue
     private $subject;
     private $documentTemplateId;
     private $emailTemplateId;
+    private $showOnPortal;
     private $userId;
 
-    public function __construct($distributionPartsKwhId, $subject, $documentTemplateId, $emailTemplateId, $userId)
+    public function __construct($distributionPartsKwhId, $subject, $documentTemplateId, $emailTemplateId, $showOnPortal, $userId)
     {
         $this->distributionPartsKwhId = $distributionPartsKwhId;
         $distributionPartsKwh = RevenueDistributionPartsKwh::find($distributionPartsKwhId);
@@ -51,6 +52,7 @@ class CreateRevenuePartsKwhReport implements ShouldQueue
         $this->subject = $subject;
         $this->documentTemplateId = $documentTemplateId;
         $this->emailTemplateId = $emailTemplateId;
+        $this->showOnPortal = $showOnPortal;
         $this->userId = $userId;
 
         $this->distributionPartsDateBegin = Carbon::parse($distributionPartsKwh->date_begin_from_till_visible)->format('d-m-Y');
@@ -75,7 +77,9 @@ class CreateRevenuePartsKwhReport implements ShouldQueue
             $this->distributionPartsKwhId,
             $this->distributionId,
             DocumentTemplate::find($this->documentTemplateId),
-            EmailTemplate::find($this->emailTemplateId));
+            EmailTemplate::find($this->emailTemplateId),
+            $this->showOnPortal,
+        );
 
         if($result && $result['messages'])
         {

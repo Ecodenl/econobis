@@ -35,9 +35,9 @@ class AddPortalImagesToPortalSettingsLayoutsTable extends Migration
                     Storage::disk('public_portal_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'page-head5.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'background-header-' . $portalSettingsLayoutDefaultId . '.png');
                     Storage::disk('public_portal_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'page-head5.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'background-login.png');
                     Storage::disk('public_portal_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'page-head5.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'background-login-' . $portalSettingsLayoutDefaultId . '.png');
-                    Storage::disk('public_portal_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'over-ons.png');
-                    Storage::disk('public_portal_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'project-schrijf-je-in.png');
-                    Storage::disk('public_portal_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'huidige-deelnames.png');
+                    Storage::disk('public_portal_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'default-widget.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'over-ons.png');
+                    Storage::disk('public_portal_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'default-widget.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'project-schrijf-je-in.png');
+                    Storage::disk('public_portal_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'default-widget.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'huidige-deelnames.png');
 
                     Storage::disk('customer_portal_app_build_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo-header.png');
                     Storage::disk('customer_portal_app_build_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo-' . $portalSettingsLayoutDefaultId . '.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo-header-' . $portalSettingsLayoutDefaultId . '.png');
@@ -45,9 +45,9 @@ class AddPortalImagesToPortalSettingsLayoutsTable extends Migration
                     Storage::disk('customer_portal_app_build_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'page-head5.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'background-header-' . $portalSettingsLayoutDefaultId . '.png');
                     Storage::disk('customer_portal_app_build_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'page-head5.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'background-login.png');
                     Storage::disk('customer_portal_app_build_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'page-head5.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'background-login-' . $portalSettingsLayoutDefaultId . '.png');
-                    Storage::disk('customer_portal_app_build_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'over-ons.png');
-                    Storage::disk('customer_portal_app_build_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'project-schrijf-je-in.png');
-                    Storage::disk('customer_portal_app_build_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'huidige-deelnames.png');
+                    Storage::disk('customer_portal_app_build_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'default-widget.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'over-ons.png');
+                    Storage::disk('customer_portal_app_build_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'default-widget.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'project-schrijf-je-in.png');
+                    Storage::disk('customer_portal_app_build_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'default-widget.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'huidige-deelnames.png');
 
                     Storage::disk('customer_portal_app_public_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo-header.png');
                     Storage::disk('customer_portal_app_public_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo-' . $portalSettingsLayoutDefaultId . '.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo-header-' . $portalSettingsLayoutDefaultId . '.png');
@@ -55,9 +55,9 @@ class AddPortalImagesToPortalSettingsLayoutsTable extends Migration
                     Storage::disk('customer_portal_app_public_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'page-head5.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'background-header-' . $portalSettingsLayoutDefaultId . '.png');
                     Storage::disk('customer_portal_app_public_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'page-head5.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'background-login.png');
                     Storage::disk('customer_portal_app_public_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'page-head5.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'background-login-' . $portalSettingsLayoutDefaultId . '.png');
-                    Storage::disk('customer_portal_app_public_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'over-ons.png');
-                    Storage::disk('customer_portal_app_public_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'project-schrijf-je-in.png');
-                    Storage::disk('customer_portal_app_public_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'huidige-deelnames.png');
+                    Storage::disk('customer_portal_app_public_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'default-widget.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'over-ons.png');
+                    Storage::disk('customer_portal_app_public_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'default-widget.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'project-schrijf-je-in.png');
+                    Storage::disk('customer_portal_app_public_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'default-widget.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'huidige-deelnames.png');
 
                 } else {
                     Storage::disk('public_portal')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo-header.png');
@@ -66,9 +66,9 @@ class AddPortalImagesToPortalSettingsLayoutsTable extends Migration
                     Storage::disk('public_portal')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'page-head5.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'background-header-' . $portalSettingsLayoutDefaultId . '.png');
                     Storage::disk('public_portal')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'page-head5.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'background-login.png');
                     Storage::disk('public_portal')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'page-head5.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'background-login-' . $portalSettingsLayoutDefaultId . '.png');
-                    Storage::disk('public_portal')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'over-ons.png');
-                    Storage::disk('public_portal')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'project-schrijf-je-in.png');
-                    Storage::disk('public_portal')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'huidige-deelnames.png');
+                    Storage::disk('public_portal')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'default-widget.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'over-ons.png');
+                    Storage::disk('public_portal')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'default-widget.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'project-schrijf-je-in.png');
+                    Storage::disk('public_portal')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'default-widget.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'huidige-deelnames.png');
 
                 }
 

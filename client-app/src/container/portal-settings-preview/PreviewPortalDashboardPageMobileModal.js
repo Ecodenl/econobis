@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '../../../../public/portal/portal.css';
+// import '../../../../public/portal/portal.css';
 import PreviewPortalDashboardPage from './PreviewPortalDashboardPage';
 
 class PreviewPortalDashboardPageMobileModal extends Component {

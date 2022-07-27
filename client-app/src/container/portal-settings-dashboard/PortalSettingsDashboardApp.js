@@ -7,12 +7,15 @@ import PanelBody from '../../components/panel/PanelBody';
 import { setError } from '../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
 import PortalSettingsDashboardAPI from '../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
+import axios from 'axios';
+import PortalSettingsLayoutDetailsAPI from '../../api/portal-settings-layout/PortalSettingsLayoutDetailsAPI';
 
 class PortalSettingsDashboardApp extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            defaultPortalSettingsLayout: {},
             dashboardSettings: {},
             isLoading: false,
             hasError: false,
@@ -28,15 +31,22 @@ class PortalSettingsDashboardApp extends Component {
         // todo WM: check / anders
         //
         const id = 1;
-        PortalSettingsDashboardAPI.fetchPortalSettingsDashboardDetails(id)
-            .then(payload => {
-                this.setState({
-                    isLoading: false,
-                    dashboardSettings: {
-                        ...payload.data.data,
-                    },
-                });
-            })
+        axios
+            .all([
+                PortalSettingsLayoutDetailsAPI.fetchDefaultPortalSettingsLayoutDetails(),
+                PortalSettingsDashboardAPI.fetchPortalSettingsDashboardDetails(id),
+            ])
+            .then(
+                axios.spread((defaultPortalSettingsLayout, dashboardSettings) => {
+                    this.setState({
+                        isLoading: false,
+                        defaultPortalSettingsLayout: defaultPortalSettingsLayout.data.data,
+                        dashboardSettings: {
+                            ...dashboardSettings.data.data,
+                        },
+                    });
+                })
+            )
             .catch(error => {
                 this.setState({ isLoading: false, hasError: true });
             });
@@ -64,6 +74,7 @@ class PortalSettingsDashboardApp extends Component {
 
                     <div className="col-md-12 margin-10-top">
                         <PortalSettingsDashboardForm
+                            defaultPortalSettingsLayout={this.state.defaultPortalSettingsLayout}
                             dashboardSettings={this.state.dashboardSettings}
                             isLoading={this.state.isLoading}
                             hasError={this.state.hasError}

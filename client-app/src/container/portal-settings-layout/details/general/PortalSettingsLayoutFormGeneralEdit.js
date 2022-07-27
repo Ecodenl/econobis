@@ -80,18 +80,30 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
     }
 
     togglePreviewPortalLoginPagePc = () => {
+        if (this.state.showPreviewPortalLoginPagePc) {
+            document.documentElement.removeAttribute('style');
+        }
         this.setState({ showPreviewPortalLoginPagePc: !this.state.showPreviewPortalLoginPagePc });
     };
 
     togglePreviewPortalDashboardPagePc = () => {
+        if (this.state.showPreviewPortalDashboardPagePc) {
+            document.documentElement.removeAttribute('style');
+        }
         this.setState({ showPreviewPortalDashboardPagePc: !this.state.showPreviewPortalDashboardPagePc });
     };
 
     togglePreviewPortalLoginPageMobile = () => {
+        if (this.state.showPreviewPortalLoginPageMobile) {
+            document.documentElement.removeAttribute('style');
+        }
         this.setState({ showPreviewPortalLoginPageMobile: !this.state.showPreviewPortalLoginPageMobile });
     };
 
     togglePreviewPortalDashboardPageMobile = () => {
+        if (this.state.showPreviewPortalDashboardPageMobile) {
+            document.documentElement.removeAttribute('style');
+        }
         this.setState({ showPreviewPortalDashboardPageMobile: !this.state.showPreviewPortalDashboardPageMobile });
     };
 
@@ -949,7 +961,6 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                     </PanelBody>
                     {this.state.showPreviewPortalLoginPagePc && (
                         <PreviewPortalLoginPagePcModal
-                            previewFromLayout={true}
                             closeModal={this.togglePreviewPortalLoginPagePc}
                             imageHash={this.state.imageHash}
                             attachmentLogo={this.state.attachmentLogo}
@@ -972,7 +983,6 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                     )}
                     {this.state.showPreviewPortalDashboardPagePc && (
                         <PreviewPortalDashboardPagePcModal
-                            previewFromLayout={true}
                             closeModal={this.togglePreviewPortalDashboardPagePc}
                             setShowMenu={this.setShowMenu}
                             showMenu={this.state.showMenu}
@@ -997,7 +1007,6 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                     )}
                     {this.state.showPreviewPortalLoginPageMobile && (
                         <PreviewPortalLoginPageMobileModal
-                            previewFromLayout={true}
                             closeModal={this.togglePreviewPortalLoginPageMobile}
                             imageHash={this.state.imageHash}
                             attachmentLogo={this.state.attachmentLogo}
@@ -1020,7 +1029,6 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                     )}
                     {this.state.showPreviewPortalDashboardPageMobile && (
                         <PreviewPortalDashboardPageMobileModal
-                            previewFromLayout={true}
                             closeModal={this.togglePreviewPortalDashboardPageMobile}
                             setShowMenu={this.setShowMenu}
                             showMenu={this.state.showMenu}

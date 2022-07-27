@@ -56,6 +56,11 @@ class PortalSettingsLayoutController extends Controller
         return Jory::on($portalSettingsLayout);
     }
 
+    public function getDefault(RequestInput $input, Request $request)
+    {
+        return GenericResource::make(PortalSettingsLayout::where('is_default', true)->first());
+    }
+
     public function update(PortalSettingsLayout $portalSettingsLayout, RequestInput $input, Request $request)
     {
         $this->authorize('manage', PortalSettingsLayout::class);

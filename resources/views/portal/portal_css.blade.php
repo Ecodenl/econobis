@@ -20,7 +20,7 @@
 
 /* ----------------- LOGIN STYLING -----------------*/
 .authorization-container {
-background-color: var(--portal-background-color);
+background-color: #ffffff;
 background-image: -webkit-gradient(linear, left top, left bottom, from(var(--main-primary-rgba)), to(var(--main-primary-rgba))), var(--main-login-background-image-url);
 background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-primary-rgba)), var(--main-login-background-image-url);
 background-position: 0px 0px, 50% 50%;

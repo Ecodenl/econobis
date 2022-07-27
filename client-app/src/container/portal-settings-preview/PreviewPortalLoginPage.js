@@ -1,5 +1,4 @@
 import React from 'react';
-// import '../../../../public/portal/portal.css';
 
 const PreviewPortalLoginPage = ({
     closeModal,

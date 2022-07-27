@@ -57,6 +57,7 @@ class PortalSettingsDashboardFormGeneral extends Component {
             >
                 {this.state.showEdit && permissions.managePortalSettings ? (
                     <PortalSettingsDashboardFormGeneralEdit
+                        defaultPortalSettingsLayout={this.props.defaultPortalSettingsLayout}
                         dashboardSettings={this.props.dashboardSettings}
                         updateState={this.props.updateState}
                         switchToView={this.switchToView}
@@ -66,6 +67,7 @@ class PortalSettingsDashboardFormGeneral extends Component {
                     <p>Nog geen dashboard instellingen opgeslagen.</p>
                 ) : (
                     <PortalSettingsDashboardFormGeneralView
+                        defaultPortalSettingsLayout={this.props.defaultPortalSettingsLayout}
                         dashboardSettings={this.props.dashboardSettings}
                         updateState={this.props.updateState}
                         switchToEdit={this.switchToEdit}

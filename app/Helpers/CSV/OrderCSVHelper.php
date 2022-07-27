@@ -172,8 +172,6 @@ class OrderCSVHelper
                 'payment_type' => 'Betaalwijze',
                 'contact.iban' => 'Ibannr contact',
                 'contact.iban_attn' => 'Ibannr t.n.v.',
-                'IBAN' => 'Iban order',
-                'iban_attn' => 'Iban t.n.v.',
             ];
 
             for ($x = 0; $x <= $maxOrderProducts; $x++) {

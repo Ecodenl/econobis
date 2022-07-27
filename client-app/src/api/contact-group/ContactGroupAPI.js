@@ -179,6 +179,12 @@ export default {
         return axios.get(requestUrl);
     },
 
+    getExcelExportGroupReport: () => {
+        const requestUrl = `${URL_CONTACT_GROUP}/excel/group-report`;
+
+        return axiosInstance.get(requestUrl, { responseType: 'blob' });
+    },
+
     deleteComposedGroup: ({ contactGroupId, contactGroupToDetachId }) => {
         const requestUrl = `${URL_CONTACT_GROUP}/composed/${contactGroupId}/${contactGroupToDetachId}/detach`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
@@ -225,6 +231,12 @@ export default {
 
     syncLapostaList: id => {
         const requestUrl = `contact-group/${id}/sync-laposta-list`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
+    deActivateLapostaList: id => {
+        const requestUrl = `contact-group/${id}/deactivate-laposta-list`;
 
         return axiosInstance.get(requestUrl);
     },

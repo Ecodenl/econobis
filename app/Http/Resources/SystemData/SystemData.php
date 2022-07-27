@@ -15,6 +15,7 @@ use App\Eco\Cooperation\Cooperation;
 use App\Eco\CostCenter\CostCenter;
 use App\Eco\Country\Country;
 use App\Eco\Document\DocumentGroup;
+use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\Document\DocumentType;
 use App\Eco\DocumentTemplate\DocumentTemplateType;
 use App\Eco\Email\EmailStatus;
@@ -161,11 +162,12 @@ class SystemData extends JsonResource
             'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
             'contactStatuses' => FullEnumWithIdAndName::collection(ContactStatus::collection()),
             'contactTypes' => FullEnumWithIdAndName::collection(ContactType::collection()),
-            'cooperation' => Cooperation::select(['id', 'hoom_link', 'use_laposta'])->first(),
+            'cooperation' => Cooperation::select(['id', 'hoom_link', 'use_laposta', 'use_export_address_consumption'])->first(),
             'costCenters' => FullCostCenter::collection(CostCenter::all()),
             'countries' => GenericResource::collection(Country::all()),
             'documentGroups' => FullEnumWithIdAndName::collection(DocumentGroup::collection()),
             'documentTemplateTypes' => FullEnumWithIdAndName::collection(DocumentTemplateType::collection()),
+            'documentCreatedFroms' => FullEnumWithIdAndName::collection(DocumentCreatedFrom::collection()),
             'documentTypes' => FullEnumWithIdAndName::collection(DocumentType::collection()),
             'emailAddressTypes' => FullEnumWithIdAndName::collection(EmailAddressType::collection()),
             'emailStatuses' => FullEnumWithIdAndName::collection(EmailStatus::collection()),

@@ -42,7 +42,7 @@ export default {
             });
     },
 
-    createRevenueReport: (templateId, emailTemplateId, subject, distributionIds) => {
+    createRevenueReport: (templateId, emailTemplateId, subject, distributionIds, showOnPortal) => {
         const requestUrl = `${URL_API}/api/distribution/create-revenue-report`;
 
         return axiosInstance.post(requestUrl, {
@@ -50,6 +50,7 @@ export default {
             emailTemplateId: emailTemplateId,
             distributionIds: distributionIds,
             subject: subject,
+            showOnPortal: showOnPortal,
         });
     },
 

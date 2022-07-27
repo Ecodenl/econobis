@@ -19,7 +19,8 @@ class ParticipantProjectPeek extends JsonResource
         return
             [
                 'id' => $this->id,
-                'name' => $this->contact->full_name . ' ' . $this->project->name,
+                'name' => $this->contact->full_name,
+                'projectId' => $this->project_id,
             ];
     }
 }

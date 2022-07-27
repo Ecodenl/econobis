@@ -1,5 +1,4 @@
 import axiosInstance from '../default-setup/AxiosInstance';
-import moment from '../project/ProjectAPI';
 
 export default {
     fetchContact: function(id) {
@@ -12,7 +11,11 @@ export default {
                         'id',
                         'typeId',
                         'number',
-                        'fullName',
+                        'fullNameFnf',
+                        'firstName',
+                        'lastNamePrefix',
+                        'lastName',
+                        'hasFinancialOverviews',
                         'iban',
                         'ibanAttn',
                         'didAgreeAvg',
@@ -88,7 +91,7 @@ export default {
                                     fld: ['id', 'primaryOccupation', 'secondaryOccupation', 'occupationForPortal'],
                                 },
                                 primaryContact: {
-                                    fld: ['id', 'fullName'],
+                                    fld: ['id', 'fullNameFnf'],
                                 },
                             },
                         },
@@ -108,7 +111,11 @@ export default {
                         'id',
                         'typeId',
                         'number',
-                        'fullName',
+                        'fullNameFnf',
+                        'typeId',
+                        'firstName',
+                        'lastNamePrefix',
+                        'lastName',
                         'iban',
                         'ibanAttn',
                         'didAgreeAvg',

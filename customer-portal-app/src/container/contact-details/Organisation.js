@@ -53,7 +53,7 @@ function ContactDetailsOrganisation({
                                 />
                                 <Row>
                                     <Col>
-                                        <ButtonGroup aria-label="Steps" className="float-right">
+                                        <ButtonGroup aria-label="organisation" className="float-right">
                                             <Button
                                                 variant={'outline-dark'}
                                                 size="sm"

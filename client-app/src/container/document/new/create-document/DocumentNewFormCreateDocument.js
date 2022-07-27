@@ -7,6 +7,7 @@ const DocumentNewFormCreateDocument = ({
     document,
     templates,
     errors,
+    errorMessage,
     handleInputChange,
     handleDocumentGroupChange,
     documentGroups,
@@ -25,6 +26,7 @@ const DocumentNewFormCreateDocument = ({
                     onChangeAction={handleDocumentGroupChange}
                     required={'required'}
                     error={errors.documentGroup}
+                    errorMessage={errorMessage.documentGroup}
                 />
                 <InputSelect
                     label="Template"
@@ -34,6 +36,7 @@ const DocumentNewFormCreateDocument = ({
                     onChangeAction={handleInputChange}
                     required={'required'}
                     error={errors.templateId}
+                    errorMessage={errorMessage.templateId}
                 />
             </div>
             <div className="row">
@@ -70,16 +73,16 @@ const DocumentNewFormCreateDocument = ({
                     </div>
                 </div>
             </div>
-            <div className="row">
-                <InputSelect
-                    label="Afzender"
-                    name={'sentById'}
-                    value={sentById}
-                    options={users}
-                    optionName={'fullName'}
-                    onChangeAction={handleInputChange}
-                />
-            </div>
+            {/*<div className="row">*/}
+            {/*    <InputSelect*/}
+            {/*        label="Afzender"*/}
+            {/*        name={'sentById'}*/}
+            {/*        value={sentById}*/}
+            {/*        options={users}*/}
+            {/*        optionName={'fullName'}*/}
+            {/*        onChangeAction={handleInputChange}*/}
+            {/*    />*/}
+            {/*</div>*/}
         </div>
     );
 };

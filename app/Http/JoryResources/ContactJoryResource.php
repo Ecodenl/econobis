@@ -23,16 +23,21 @@ class ContactJoryResource extends JoryResource
         $this->field('id')->filterable()->sortable();
         $this->field('number')->filterable()->sortable();
         $this->field('type_id')->filterable()->sortable();
-        $this->field('full_name')->filterable()->sortable();
+        $this->field('first_name')->filterable()->sortable();
+        $this->field('last_name_prefix')->filterable()->sortable();
+        $this->field('last_name')->filterable()->sortable();
         $this->field('iban')->filterable()->sortable();
         $this->field('iban_attn')->filterable()->sortable();
         $this->field('did_agree_avg')->filterable()->sortable();
         $this->field('date_did_agree_avg')->filterable()->sortable();
 
         // Custom attributes
+        $this->field('full_name_fnf')->filterable()->sortable();
+        $this->field('has_financial_overviews')->filterable()->sortable();
         $this->field('address_lines')->hideByDefault();
         $this->field('is_participant')->filterable()->sortable();
         $this->field('disable_change_contact_name_on_portal')->filterable()->sortable();
+        $this->field('single_related_administration')->filterable()->sortable();
         $this->field('no_addresses_found')->filterable()->sortable();
         $this->field('is_participant_pcr_project')->filterable()->sortable();
         $this->field('is_participant_sce_project')->filterable()->sortable();

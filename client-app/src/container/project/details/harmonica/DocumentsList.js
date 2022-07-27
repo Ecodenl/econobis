@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
-import { connect } from 'react-redux';
 import moment from 'moment';
 
 class DocumentsList extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            relatedDocuments: '',
-        };
     }
 
     openItem = id => {
@@ -17,11 +13,12 @@ class DocumentsList extends Component {
 
     render() {
         const { relatedDocuments } = this.props;
+
         return (
             <div>
-                {relatedDocuments == '' && <div>Geen documenten gevonden.</div>}
+                {relatedDocuments && relatedDocuments == '' && <div>Geen documenten gevonden.</div>}
 
-                {relatedDocuments != '' && (
+                {relatedDocuments && relatedDocuments != '' && (
                     <table className="table harmonica-table">
                         <tbody>
                             {relatedDocuments.map((item, i) => {
@@ -40,10 +37,4 @@ class DocumentsList extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        relatedDocuments: state.projectDetails.relatedDocuments,
-    };
-};
-
-export default connect(mapStateToProps)(DocumentsList);
+export default DocumentsList;

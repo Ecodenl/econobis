@@ -6,12 +6,11 @@ import moment from 'moment';
 moment.locale('nl');
 
 import QuotationRequestDetailsAPI from '../../../../api/quotation-request/QuotationRequestDetailsAPI';
-import OrganisationAPI from '../../../../api/contact/OrganisationAPI';
 import InputSelect from '../../../../components/form/InputSelect';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputText from '../../../../components/form/InputText';
 import InputDate from '../../../../components/form/InputDate';
-import InputTextArea from '../../../../components/form/InputTextarea';
+import InputTextArea from '../../../../components/form/InputTextArea';
 import validator from 'validator';
 import { fetchQuotationRequestDetails } from '../../../../actions/quotation-request/QuotationRequestDetailsActions';
 

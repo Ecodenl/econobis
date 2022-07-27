@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import PortalSettingsLayoutFormGeneralEdit from './PortalSettingsLayoutFormGeneralEdit';
 import PortalSettingsLayoutFormGeneralView from './PortalSettingsLayoutFormGeneralView';
-import PortalSettingsFormGeneralEdit from '../../../portal-settings/general/PortalSettingsFormGeneralEdit';
+import ErrorUnauthorized from '../../../global/ErrorUnauthorized';
 
 class PortalSettingsLayoutFormGeneral extends Component {
     constructor(props) {
@@ -24,8 +24,8 @@ class PortalSettingsLayoutFormGeneral extends Component {
 
     switchToView = () => {
         this.setState({
-            imageHash: Date.now(),
             showEdit: false,
+            imageHash: Date.now(),
             activeDiv: '',
         });
     };
@@ -46,6 +46,9 @@ class PortalSettingsLayoutFormGeneral extends Component {
 
     render() {
         const { permissions = {} } = this.props.meDetails;
+        if (!permissions.managePortalSettings) {
+            return <ErrorUnauthorized />;
+        }
 
         return (
             <div
@@ -53,9 +56,10 @@ class PortalSettingsLayoutFormGeneral extends Component {
                 onMouseEnter={() => this.onDivEnter()}
                 onMouseLeave={() => this.onDivLeave()}
             >
-                {this.state.showEdit && permissions.manageFinancial ? (
+                {this.state.showEdit && permissions.managePortalSettings ? (
                     <PortalSettingsLayoutFormGeneralEdit
                         portalSettingsLayout={this.props.portalSettingsLayout}
+                        dashboardSettings={this.props.dashboardSettings}
                         portalSettingsLayouts={this.props.portalSettingsLayouts}
                         switchToView={this.switchToView}
                         updateState={this.props.updateState}
@@ -76,8 +80,8 @@ class PortalSettingsLayoutFormGeneral extends Component {
 
 const mapStateToProps = state => {
     return {
+        // permissions: state.meDetails.permissions,
         meDetails: state.meDetails,
-        permissions: state.meDetails.permissions,
         portalSettingsLayouts: state.systemData.portalSettingsLayouts,
     };
 };

@@ -30,7 +30,8 @@ const ProtectedRoute = ({ component: Component, setInitialUserData, isAuth, ...r
             if (
                 !location.pathname.includes('/project/') &&
                 !location.pathname.includes('/project-deelname/') &&
-                !location.pathname.includes('/inschrijven/')
+                !location.pathname.includes('/inschrijven/') &&
+                !location.pathname.includes('/dashboard/')
             ) {
                 switchToDefaultThemeSettings();
             }

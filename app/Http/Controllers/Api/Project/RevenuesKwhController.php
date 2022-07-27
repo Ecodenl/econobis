@@ -302,6 +302,7 @@ class RevenuesKwhController extends ApiController
         ])->output();
 
         $document = new Document();
+        $document->document_created_from = 'project';
         $document->document_type = 'internal';
         $document->document_group = 'revenue';
         $document->project_id = $project->id;
@@ -314,16 +315,22 @@ class RevenuesKwhController extends ApiController
             . $document->filename));
         file_put_contents($filePath, $pdf);
 
-        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
-        $alfrescoResponse = $alfrescoHelper->createFile($filePath,
-            $document->filename, $document->getDocumentGroup()->name);
+            $alfrescoResponse = $alfrescoHelper->createFile($filePath,
+                $document->filename, $document->getDocumentGroup()->name);
 
-        $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+        }else{
+            $document->alfresco_node_id = null;
+        }
         $document->save();
 
         //delete file on server, still saved on alfresco.
-        Storage::disk('documents')->delete($document->filename);
+        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+            Storage::disk('documents')->delete($document->filename);
+        }
     }
 
     public function destroy(RevenuesKwh $revenuesKwh)
@@ -435,8 +442,10 @@ class RevenuesKwhController extends ApiController
 
             return $pdf;
         } else {
+            $revenueHtml = '<h1>Kon geen document opstellen: adres niet compleet</h1>';
+
             $pdf = PDF::loadView('documents.generic', [
-                'html' => '',
+                'html' => $revenueHtml,
             ])->output();
 
             return $pdf;
@@ -476,7 +485,7 @@ class RevenuesKwhController extends ApiController
 
             //Make preview email
             if ($primaryEmailAddress) {
-                $mailbox = $this->setMailConfigByDistribution($distributionKwh);
+                $mailbox = $this->setMailConfigByDistribution($project);
                 if ($mailbox) {
                     $fromEmail = $mailbox->email;
                     $fromName = $mailbox->name;
@@ -564,15 +573,16 @@ class RevenuesKwhController extends ApiController
         $subject = $request->input('subject');
         $documentTemplateId = $request->input('documentTemplateId');
         $emailTemplateId = $request->input('emailTemplateId');
+        $showOnPortal = $request->input('showOnPortal');
 
         foreach($distributionKwhIds as $distributionKwhId) {
-            CreateRevenuesKwhReport::dispatch($distributionKwhId, $subject, $documentTemplateId, $emailTemplateId, Auth::id());
+            CreateRevenuesKwhReport::dispatch($distributionKwhId, $subject, $documentTemplateId, $emailTemplateId, $showOnPortal, Auth::id());
         }
 
         return null;
     }
 
-    public function createParticipantRevenueReport($subject, $distributionKwhId, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate)
+    public function createParticipantRevenueReport($subject, $distributionKwhId, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate, $showOnPortal)
     {
         $portalName = PortalSettings::get('portalName');
         $cooperativeName = PortalSettings::get('cooperativeName');
@@ -661,12 +671,14 @@ class RevenuesKwhController extends ApiController
                 $time = Carbon::now();
 
                 $document = new Document();
+                $document->document_created_from = 'participant';
                 $document->document_type = 'internal';
                 $document->document_group = 'revenue';
                 $document->contact_id = $contact->id;
                 $document->project_id = $project->id;
                 $document->participation_project_id = $distributionKwh->participation_id;
                 $document->template_id = $documentTemplate->id;
+                $document->show_on_portal = $showOnPortal;
 
                 $filename = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_'
                     . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
@@ -686,28 +698,33 @@ class RevenuesKwhController extends ApiController
                     . 'documents/' . $document->filename));
                 file_put_contents($filePath, $pdf);
 
-                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'),
-                    \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+                if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+                    $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'),
+                        \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
-                $alfrescoResponse = $alfrescoHelper->createFile($filePath,
-                    $document->filename, $document->getDocumentGroup()->name);
-                if($alfrescoResponse == null)
-                {
-                    throw new \Exception('Fout bij maken rapport document in Alfresco.');
+                    $alfrescoResponse = $alfrescoHelper->createFile($filePath,
+                        $document->filename, $document->getDocumentGroup()->name);
+                    if($alfrescoResponse == null)
+                    {
+                        throw new \Exception('Fout bij maken rapport document in Alfresco.');
+                    }
+                    $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+                }else{
+                    $document->alfresco_node_id = null;
                 }
-                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+
                 $document->save();
             }
             catch (\Exception $e) {
                 Log::error('Fout bij maken rapport document voor ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
                 Log::error($e->getMessage());
-                array_push($messages, 'Fout bij maken rapport document voor ' . $primaryEmailAddress->email . ' (' . $contact->full_name . ')' );
+                array_push($messages, 'Fout bij maken rapport document voor ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
             }
 
             //send email
             if ($primaryEmailAddress) {
                 try{
-                    $mailbox = $this->setMailConfigByDistribution($distributionKwh);
+                    $mailbox = $this->setMailConfigByDistribution($project);
                     if ($mailbox) {
                         $fromEmail = $mailbox->email;
                         $fromName = $mailbox->name;
@@ -775,16 +792,14 @@ class RevenuesKwhController extends ApiController
                 }
 
             } else {
-                return [
-                    'from' => 'Geen e-mail bekend.',
-                    'to' => 'Geen e-mail bekend.',
-                    'subject' => 'Geen e-mail bekend.',
-                    'htmlBody' => 'Geen e-mail bekend.'
-                ];
+                Log::error( 'Fout bij verzenden email naar **onbekend emailadres** (' . $contact->full_name . ')' );
+                array_push($messages, 'Fout bij verzenden email naar **onbekend emailadres** (' . $contact->full_name . ')' );
             }
 
             //delete file on server, still saved on alfresco.
-            Storage::disk('documents')->delete($document->filename);
+            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+                Storage::disk('documents')->delete($document->filename);
+            }
         }
         if(count($messages) > 0)
         {
@@ -796,13 +811,10 @@ class RevenuesKwhController extends ApiController
         }
     }
 
-    protected function setMailConfigByDistribution(RevenueDistributionKwh $distributionKwh)
+    protected function setMailConfigByDistribution($project)
     {
         // Standaard vanuit primaire mailbox mailen
         $mailboxToSendFrom = Mailbox::getDefault();
-
-        // Als er een mailbox aan de administratie is gekoppeld, dan deze gebruiken
-        $project = $distributionKwh->revenuesKwh->project;
 
         if ($project->administration && $project->administration->mailbox) {
             $mailboxToSendFrom = $project->administration->mailbox;
@@ -818,11 +830,10 @@ class RevenuesKwhController extends ApiController
     protected function translateToValidCharacterSet($field){
 
         $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
-        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
+//        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 
         return $field;
     }
-
 
 }

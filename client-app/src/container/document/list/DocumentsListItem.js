@@ -41,7 +41,16 @@ class DocumentsListItem extends Component {
     }
 
     render() {
-        const { id, number, createdAt, filename, contact, documentType, documentGroup } = this.props;
+        const {
+            id,
+            number,
+            createdAt,
+            filename,
+            contact,
+            documentCreatedFrom,
+            documentType,
+            documentGroup,
+        } = this.props;
         return (
             <tr
                 className={this.state.highlightRow}
@@ -53,6 +62,7 @@ class DocumentsListItem extends Component {
                 <td>{createdAt ? moment(createdAt).format('DD-MM-Y') : 'Onbekend'}</td>
                 <td>{filename}</td>
                 <td>{contact && contact.fullName}</td>
+                <td>{documentCreatedFrom}</td>
                 <td>{documentType}</td>
                 <td>{documentGroup}</td>
                 <td>

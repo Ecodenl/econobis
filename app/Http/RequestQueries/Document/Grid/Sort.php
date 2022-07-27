@@ -20,6 +20,7 @@ class Sort extends RequestSort
         'date',
         'filename',
         'contact',
+        'documentCreatedFrom',
         'documentType',
         'documentGroup',
     ];
@@ -29,6 +30,7 @@ class Sort extends RequestSort
         'date' => 'documents.created_at',
         'filename' => 'documents.filename',
         'contact' => 'contacts.full_name',
+        'documentCreatedFrom'  => 'documents.document_created_from',
         'documentType'  => 'documents.document_type',
         'documentGroup'  => 'documents.document_group',
     ];

@@ -29,6 +29,7 @@ use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ContactGroup\ContactGroupController;
+use App\Http\Controllers\Api\Document\DocumentController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ParticipantProject\Templates\ParticipantReportMail;
 use App\Http\Resources\Portal\ParticipantProject\ParticipantProjectResource;
@@ -77,12 +78,43 @@ class ParticipationProjectController extends Controller
             'mutationsForPortal.createdBy',
             'mutationsForPortal.updatedBy',
             'obligationNumbers',
-            'documents',
+            'documentsOnPortal',
             'createdBy',
             'updatedBy',
         ]);
 
         return ParticipantProjectResource::make($participantProject);
+    }
+
+    public function documentDownload(ParticipantProject $participantProject, Document $document)
+    {
+        $portalUser = Auth::user();
+        if (!Auth::isPortalUser() || !$portalUser->contact) {
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
+        $allowedContactOrganisationIds = $portalUser->contact->occupations->where('type_id', 'organisation')->where('primary', true)->pluck('primary_contact_id')->toArray();
+        $allowedContactPersonIds = $portalUser->contact->occupations->where('type_id', 'person')->where('occupation_for_portal', true)->pluck('primary_contact_id')->toArray();
+        $allowedContactIds = array_merge($allowedContactOrganisationIds, $allowedContactPersonIds);
+
+        $authorizedForContact = in_array($participantProject->contact_id, $allowedContactIds);
+        if ($portalUser->contact_id != $participantProject->contact_id && !$authorizedForContact) {
+            abort(403, 'Verboden');
+        }
+
+        if ($document->filename) {
+            // todo wellicht moeten we hier nog wat op anders verzinnen, voornu gebruiken we responisibleUserId from settings.json, verderop zetten we dat weer terug naar portal user
+            $responsibleUserId = PortalSettings::get('responsibleUserId');
+            if (!$responsibleUserId) {
+                abort(501, 'Er is helaas een fout opgetreden (5).');
+            }
+            Auth::setUser(User::find($responsibleUserId));
+
+            $documentController = new DocumentController();
+            return $documentController->download($document);
+
+            // Voor zekerheid hierna weer even Auth user herstellen met portal user
+            Auth::setUser($portalUser);
+        }
     }
 
     public function create(Request $request)
@@ -201,8 +233,11 @@ class ParticipationProjectController extends Controller
         Auth::setUser(User::find($responsibleUserId));
 
         $document = new Document();
+        $document->document_created_from = 'participant';
         $document->document_type = 'internal';
         $document->document_group = 'registration';
+        $document->show_on_portal = true;
+        $document->description = 'Inschrijfformulier project ' . $project->name;
         $document->contact_id = $contact->id;
         $document->project_id = $project->id;
         $document->participation_project_id = $participation->id;
@@ -345,7 +380,7 @@ class ParticipationProjectController extends Controller
     protected function translateToValidCharacterSet($field){
 
         $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
-        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
+//        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 
         return $field;

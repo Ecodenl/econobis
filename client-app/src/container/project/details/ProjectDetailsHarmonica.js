@@ -14,7 +14,8 @@ class ProjectDetailsHarmonica extends Component {
         this.state = {
             toggleShowList: {
                 tasks: false,
-                documents: false,
+                documentsNotOnPortal: false,
+                documentsOnPortal: false,
                 emailsInbox: false,
                 emailsSent: false,
             },
@@ -37,8 +38,11 @@ class ProjectDetailsHarmonica extends Component {
         hashHistory.push(`/taak/nieuw/project/${this.props.project.id}`);
     };
 
-    newDocument = type => {
-        hashHistory.push(`/document/nieuw/${type}/project/${this.props.project.id}`);
+    newDocumentNotOnPortal = type => {
+        hashHistory.push(`/document/nieuw/${type}/eco/project/${this.props.project.id}`);
+    };
+    newDocumentOnPortal = type => {
+        hashHistory.push(`/document/nieuw/${type}/portal/project/${this.props.project.id}`);
     };
 
     newEmail = () => {
@@ -56,10 +60,21 @@ class ProjectDetailsHarmonica extends Component {
                 />
 
                 <DocumentHarmonica
-                    toggleShowList={() => this.toggleShowList('documents')}
-                    showDocumentsList={this.state.toggleShowList.documents}
-                    newDocument={this.newDocument}
-                    documentCount={this.props.project.documentCount}
+                    title={'DOCUMENTEN ALLEEN IN ECONOBIS'}
+                    toggleShowList={() => this.toggleShowList('documentsNotOnPortal')}
+                    showDocumentsList={this.state.toggleShowList.documentsNotOnPortal}
+                    newDocument={this.newDocumentNotOnPortal}
+                    documentCount={this.props.project.documentCountNotOnPortal}
+                    relatedDocuments={this.props.project.relatedDocumentsNotOnPortal}
+                />
+
+                <DocumentHarmonica
+                    title={'DOCUMENTEN PORTAL'}
+                    toggleShowList={() => this.toggleShowList('documentsOnPortal')}
+                    showDocumentsList={this.state.toggleShowList.documentsOnPortal}
+                    newDocument={this.newDocumentOnPortal}
+                    documentCount={this.props.project.documentCountOnPortal}
+                    relatedDocuments={this.props.project.relatedDocumentsOnPortal}
                 />
 
                 <EmailInboxHarmonica

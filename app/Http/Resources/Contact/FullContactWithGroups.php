@@ -48,6 +48,7 @@ class FullContactWithGroups extends JsonResource
             'dateDidAgreeAvg' => $this->date_did_agree_avg,
             'addresses' => FullAddress::collection($this->whenLoaded('addresses')),
             'addressesNotSoftDeleted' => FullAddress::collection($this->whenLoaded('addressesNotSoftDeleted')),
+            'primaryAddressId' => $this->primary_address_id,
             'primaryAddress' => FullAddress::make($this->whenLoaded('primaryAddress')),
             'emailAddresses' => FullEmailAddress::collection($this->whenLoaded('emailAddresses')),
             'primaryEmailAddress' => FullEmailAddress::make($this->whenLoaded('primaryEmailAddress')),

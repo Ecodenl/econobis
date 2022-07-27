@@ -31,6 +31,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
             dynamicFilterType,
             sendEmailNewContactLink,
             emailTemplateIdNewContactLink,
+            includeIntoExportGroupReport,
         } = props.contactGroupDetails;
 
         this.state = {
@@ -51,6 +52,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                 dynamicFilterType: dynamicFilterType ? dynamicFilterType : 'and',
                 sendEmailNewContactLink: sendEmailNewContactLink ? sendEmailNewContactLink : false,
                 emailTemplateIdNewContactLink: emailTemplateIdNewContactLink ? emailTemplateIdNewContactLink : '',
+                includeIntoExportGroupReport: includeIntoExportGroupReport ? includeIntoExportGroupReport : false,
             },
             errors: {
                 name: false,
@@ -216,6 +218,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
             lapostaListId,
             lapostaListCreatedAt,
             emailTemplateIdNewContactLink,
+            includeIntoExportGroupReport,
         } = this.state.contactGroup;
 
         return (
@@ -424,6 +427,19 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                         />
                     )}
                 </div>
+                {/*todo WM: check of filter op static er niet af moet ?*/}
+                {this.props.contactGroupDetails.type.id === 'static' && (
+                    <div className="row">
+                        <InputToggle
+                            label={'Meenemen in export groep rapportage'}
+                            name={'includeIntoExportGroupReport'}
+                            value={includeIntoExportGroupReport}
+                            onChangeAction={this.handleInputChange}
+                            size={'col-sm-5'}
+                            textToolTip={`Als je deze optie op "AAN" zet zal deze groep getoond worden in de export groepen rapportage op de "groepen beheer" pagina.`}
+                        />
+                    </div>
+                )}
 
                 <div className="row">
                     <InputText

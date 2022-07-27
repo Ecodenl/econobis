@@ -36,21 +36,21 @@ class PortalSettingsLayoutListItem extends Component {
         return (
             <tr
                 className={this.state.highlightRow}
-                onDoubleClick={permissions.manageFinancial ? () => this.openItem(id) : null}
+                onDoubleClick={permissions.managePortalSettings ? () => this.openItem(id) : null}
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
                 <td>{description}</td>
                 <td>{isDefault ? 'Standaard' : ''}</td>
                 <td>
-                    {this.state.showActionButtons && permissions.manageFinancial ? (
+                    {this.state.showActionButtons && permissions.managePortalSettings ? (
                         <a role="button" onClick={() => this.openItem(id)}>
                             <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
                         </a>
                     ) : (
                         ''
                     )}
-                    {this.state.showActionButtons && !isDefault && permissions.manageFinancial ? (
+                    {this.state.showActionButtons && !isDefault && permissions.managePortalSettings ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, description)}>
                             <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
                         </a>

@@ -28,6 +28,7 @@ const INITIAL_STATE = {
         hoomGroupId: '',
         useLaposta: false,
         lapostaKey: '',
+        useExportAddressConsumption: false,
     },
     isLoading: true,
     showEdit: false,

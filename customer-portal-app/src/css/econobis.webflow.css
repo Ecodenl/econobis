@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css?family=Montserrat:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic,Droid%20Sans:400,700,Inconsolata:400,700');
+/* deze import verplaatst naar portal_css.blade */
+/*@import url('https://fonts.googleapis.com/css?family=Montserrat:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic,Droid%20Sans:400,700,Inconsolata:400,700');*/
 
 .w-checkbox {
   display: block;
@@ -206,12 +207,6 @@ h3 {
   background-color: transparent;
 }
 
-.profile-pic.corporate {
-  background-color: #034b8c;
-  background-image: url('../images/logo.png');
-  background-size: 80px;
-}
-
 .heading-content {
   margin-top: 20px;
   margin-bottom: 4px;
@@ -374,4 +369,28 @@ h3 {
   .select-field {
     font-weight: 500;
   }
+}
+
+/*.row {*/
+/*  padding-top: 15px;*/
+/*  padding-bottom: 15px;*/
+/*}*/
+
+#account-dropdown::after {
+  display: none;
+}
+
+.header-dashboard-button {
+  position: absolute;
+  top: 180px;
+}
+.floating-action-button {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  z-index: 9999;
+}
+.floating-action-button > button {
+  display: flex;
+  align-items: center;
 }

@@ -3,6 +3,7 @@
 namespace App\Eco\Contact;
 
 use App\Eco\Address\Address;
+use App\Eco\Administration\Administration;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignResponse;
 use App\Eco\ContactGroup\ContactGroup;
@@ -10,7 +11,6 @@ use App\Eco\ContactNote\ContactNote;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
-use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Intake\Intake;
@@ -30,6 +30,7 @@ use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\Task\Task;
 use App\Eco\Twinfield\TwinfieldCustomerNumber;
 use App\Eco\User\User;
+use App\Helpers\Settings\PortalSettings;
 use App\Http\Resources\ContactGroup\GridContactGroup;
 use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
@@ -148,6 +149,14 @@ class Contact extends Model
     public function groups()
     {
         return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since')->orderBy('contact_groups.id', 'desc');
+    }
+    public function selectedGroups()
+    {
+        return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')
+            ->where('contact_groups.type_id', 'static')
+            ->where('contact_groups.include_into_export_group_report', true)
+            ->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since')
+            ->orderBy('contact_groups.id', 'desc');
     }
 
     public function isPerson()
@@ -429,6 +438,51 @@ class Contact extends Model
 
     }
 
+    // Contact fullname, firstname first.
+    public function getFullNameFnfAttribute()
+    {
+        if ($this->type_id == 'person') {
+            $firstName = $this->person->first_name ? $this->person->first_name . ' ' : ($this->person->initials ? $this->person->initials . ' ' : "");
+            $prefix = $this->person->last_name_prefix ? $this->person->last_name_prefix . ' ' : '';
+            $fullNameFnf = ( $firstName . $prefix . $this->person->last_name );
+        } else {
+            $fullNameFnf = $this->full_name;
+        }
+        return $fullNameFnf;
+    }
+    // Has contact financialoverview documents ?.
+    public function getHasFinancialOverviewsAttribute()
+    {
+        return $this->financialOverviewContactsSend()->exists();
+    }
+    // Contact firstname (only if person).
+    public function getFirstNameAttribute()
+    {
+        if ($this->type_id == 'person') {
+            return $this->person->first_name;
+        } else {
+            return '';
+        }
+    }
+    // Contact lastname prefix (only if person).
+    public function getLastNamePrefixAttribute()
+    {
+        if ($this->type_id == 'person') {
+            return $this->person->last_name_prefix;
+        } else {
+            return '';
+        }
+    }
+    // Contact lastname (only if person).
+    public function getLastNameAttribute()
+    {
+        if ($this->type_id == 'person') {
+            return $this->person->last_name;
+        } else {
+            return '';
+        }
+    }
+
     public function getAddressLinesAttribute(){
         if(Address::where('contact_id', $this->id)->where('primary', true)->where('type_id', 'invoice')->exists()){
             $address = Address::where('contact_id', $this->id)->where('primary', true)->where('type_id', 'invoice')->first();
@@ -482,6 +536,29 @@ class Contact extends Model
             return Address::where('contact_id', $this->id)->where('type_id', 'visit')->first();
         }
     }
+
+    public function getSingleRelatedAdministrationAttribute()
+    {
+        $contactId = $this->id;
+        $administrations = Administration::whereHas('projects', function($query) use($contactId){
+            $query->WhereHas('participantsProject', function($query2) use($contactId){
+                $query2->where('contact_id', $contactId);
+            });
+        })->orderBy('name')->get();
+        if($administrations->count() == 0){
+            $defaultAdministrationId = PortalSettings::get('defaultAdministrationId');
+            if(!empty($defaultAdministrationId)){
+                $administrations = Administration::whereId($defaultAdministrationId)->get();
+            }
+        }
+
+        if($administrations->count() === 1){
+            return $administrations->first()->id;
+        }
+
+        return false;
+    }
+
 
     public function getNoAddressesFoundAttribute()
     {

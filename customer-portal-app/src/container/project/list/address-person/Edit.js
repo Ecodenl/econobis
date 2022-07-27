@@ -94,7 +94,7 @@ function PersonalAddressEdit({ initialContact, handleSubmitContactAddressValues 
 
                             <Row>
                                 <Col>
-                                    <ButtonGroup aria-label="Steps" className="float-right">
+                                    <ButtonGroup aria-label="address-person" className="float-right">
                                         <Link to={`/`}>
                                             <Button variant={'outline-dark'} size="sm">
                                                 Annuleren

@@ -9,7 +9,7 @@ class PortalSettingsLayoutDetailsForm extends Component {
         super(props);
     }
     render() {
-        let { portalSettingsLayout, hasError, isLoading, updateState } = this.props;
+        let { portalSettingsLayout, dashboardSettings, hasError, isLoading, updateState } = this.props;
         let loadingText = '';
         let loading = true;
 
@@ -29,6 +29,7 @@ class PortalSettingsLayoutDetailsForm extends Component {
             <div>
                 <PortalSettingsLayoutFormGeneral
                     portalSettingsLayout={portalSettingsLayout}
+                    dashboardSettings={dashboardSettings}
                     updateState={updateState}
                 />
             </div>
@@ -38,6 +39,7 @@ class PortalSettingsLayoutDetailsForm extends Component {
 
 PortalSettingsLayoutDetailsForm.propTypes = {
     portalSettingsLayout: PropTypes.any,
+    dashboardSettings: PropTypes.any,
     hasError: PropTypes.any,
     isLoading: PropTypes.any,
     updateState: PropTypes.any,

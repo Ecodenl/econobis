@@ -18,6 +18,11 @@ export const setFilterDocumentContact = contact => ({
     contact,
 });
 
+export const setFilterDocumentDocumentCreatedFrom = documentCreatedFrom => ({
+    type: 'SET_FILTER_DOCUMENT_DOCUMENT_CREATED_FROM',
+    documentCreatedFrom,
+});
+
 export const setFilterDocumentDocumentType = documentType => ({
     type: 'SET_FILTER_DOCUMENT_DOCUMENT_TYPE',
     documentType,

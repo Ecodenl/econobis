@@ -92,7 +92,11 @@ class UpdateMemberToLaposta implements ShouldQueue
             } else {
                 $message = $message . 'Onbekend';
             }
-            Log::error( $message . '. Contactgroup id: ' . $this->contactGroup->id . '. Http status: ' . ($e->getHttpStatus() ? $e->getHttpStatus() : '') . '.');
+            if($e->getMessage() && $e->getMessage() == 'API error: Email address exists'){
+                Log::info( $message . '. Contactgroup id: ' . $this->contactGroup->id . '. Http status: ' . ($e->getHttpStatus() ? $e->getHttpStatus() : '') . '.');
+            }else{
+                Log::error( $message . '. Contactgroup id: ' . $this->contactGroup->id . '. Http status: ' . ($e->getHttpStatus() ? $e->getHttpStatus() : '') . '.');
+            }
             $value = $message;
             $jobLog = new JobsLog();
             $jobLog->value = $value;

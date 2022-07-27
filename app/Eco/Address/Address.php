@@ -71,6 +71,16 @@ class Address extends Model
         return $this->belongsTo(Country::class);
     }
 
+    public function addressEnergyConsumptionGasPeriods()
+    {
+        return $this->hasMany(AddressEnergyConsumptionGas::class)->orderBy('date_begin')->orderBy('id');
+    }
+
+    public function addressEnergyConsumptionElectricityPeriods()
+    {
+        return $this->hasMany(AddressEnergyConsumptionElectricity::class)->orderBy('date_begin')->orderBy('id');
+    }
+
     public function getType()
     {
         if (!$this->type_id) return null;

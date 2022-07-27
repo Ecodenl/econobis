@@ -19,12 +19,19 @@ export default {
                         'ibanAttn',
                         'btwNumber',
                         'website',
+                        'email',
                     ],
                     rlt: {
                         country: { fld: ['name'] },
+                        documentsOnPortal: { fld: ['id', 'filename', 'description'] },
                     },
                 },
             },
         });
+    },
+    documentDownload: function(administrationId, id) {
+        const requestUrl = `/administration/${administrationId}/document/${id}/download`;
+
+        return axiosInstance.get(requestUrl, { responseType: 'blob' });
     },
 };

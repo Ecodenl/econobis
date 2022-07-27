@@ -1,22 +1,28 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic,Droid%20Sans:400,700,Inconsolata:400,700');
+
 :root {
---main-primary-color: {{ (!empty($defaultPortalSettingsLayout->portal_background_color) ? $defaultPortalSettingsLayout->portal_background_color : '#034b8c') }};
---main-primary-text-color: {{ (!empty($defaultPortalSettingsLayout->portal_background_text_Color) ? $defaultPortalSettingsLayout->portal_background_text_Color : '#fff') }};
+--portal-main-background-color: {{ (!empty($defaultPortalSettingsLayout->portal_main_background_color) ? $defaultPortalSettingsLayout->portal_main_background_color : '#f5f5f5') }};
+--portal-main-text-color: {{ (!empty($defaultPortalSettingsLayout->portal_main_text_color) ? $defaultPortalSettingsLayout->portal_main_text_color : '#000000') }};
+--portal-background-color: {{ (!empty($defaultPortalSettingsLayout->portal_background_color) ? $defaultPortalSettingsLayout->portal_background_color : '#034b8c') }};
+--portal-background-text-color: {{ (!empty($defaultPortalSettingsLayout->portal_background_text_color) ? $defaultPortalSettingsLayout->portal_background_text_color : '#ffffff') }};
 --main-primary-rgba: {{ (!empty($defaultPortalSettingsLayout->login_header_background_color) ? $defaultPortalSettingsLayout->login_header_background_color : 'rgba(3, 75, 140, 0.9)') }};
---main-primary-rgba-text-color: {{ (!empty($defaultPortalSettingsLayout->login_header_background_text_color) ? $defaultPortalSettingsLayout->login_header_background_text_color : '#333') }};
---main-header-portal-icon-color: {{ (!empty($defaultPortalSettingsLayout->header_icons_color) ? $defaultPortalSettingsLayout->header_icons_color : '#fff') }};
+--main-primary-rgba-text-color: {{ (!empty($defaultPortalSettingsLayout->login_header_background_text_color) ? $defaultPortalSettingsLayout->login_header_background_text_color : '#333333') }};
+--main-header-portal-icon-color: {{ (!empty($defaultPortalSettingsLayout->header_icons_color) ? $defaultPortalSettingsLayout->header_icons_color : '#ffffff') }};
 --main-secondary-color: {{ (!empty($defaultPortalSettingsLayout->login_field_background_color) ? $defaultPortalSettingsLayout->login_field_background_color : '#3898EC') }};
---main-secondary-text-color: {{ (!empty($defaultPortalSettingsLayout->login_field_background_text_color) ? $defaultPortalSettingsLayout->login_field_background_text_color : '#fff') }};
+--main-secondary-text-color: {{ (!empty($defaultPortalSettingsLayout->login_field_background_text_color) ? $defaultPortalSettingsLayout->login_field_background_text_color : '#ffffff') }};
 --button-primary-color: {{ (!empty($defaultPortalSettingsLayout->button_color) ? $defaultPortalSettingsLayout->button_color : '#3898EC') }};
---button-primary-text-color: {{ (!empty($defaultPortalSettingsLayout->button_text_color) ? $defaultPortalSettingsLayout->button_text_color : '#fff') }};
+--button-primary-text-color: {{ (!empty($defaultPortalSettingsLayout->button_text_color) ? $defaultPortalSettingsLayout->button_text_color : '#ffffff') }};
 --main-warning-color: #dc3545;
 --black-color: #252525;
+--main-login-background-image-url: url({{ (!empty($defaultPortalSettingsLayout->portal_image_bg_file_name_login) ? 'images/' . $defaultPortalSettingsLayout->portal_image_bg_file_name_login . '?v=' . $imageHash : 'images/page-head5.png?v=' . $imageHash ) }});
+--main-header-background-image-url: url({{ (!empty($defaultPortalSettingsLayout->portal_image_bg_file_name_header) ? 'images/' . $defaultPortalSettingsLayout->portal_image_bg_file_name_header . '?v=' . $imageHash : 'images/page-head5.png?v=' . $imageHash ) }});
 }
 
 /* ----------------- LOGIN STYLING -----------------*/
 .authorization-container {
-background-color: var(--main-primary-color);
-background-image: -webkit-gradient(linear, left top, left bottom, from(var(--main-primary-rgba)), to(var(--main-primary-rgba))), url('images/page-head5.jpg');
-background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-primary-rgba)), url('images/page-head5.jpg');
+background-color: var(--portal-background-color);
+background-image: -webkit-gradient(linear, left top, left bottom, from(var(--main-primary-rgba)), to(var(--main-primary-rgba))), var(--main-login-background-image-url);
+background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-primary-rgba)), var(--main-login-background-image-url);
 background-position: 0px 0px, 50% 50%;
 background-size: auto, cover;
 font-family: Montserrat, sans-serif;
@@ -99,30 +105,40 @@ font-family: initial;
 :focus {outline:none;}
 ::-moz-focus-inner {border:0;}
 
+.portal-body{
+background-color: var(--portal-main-background-color) !important;
+color: var(--portal-main-text-color) !important;
+}
+
 .content-section {
-padding-top: 80px;
+padding-top: 100px;
 padding-bottom: 60px;
 }
 
 .content-heading {
-color: var(--main-primary-color);
+color: var(--portal-background-color);
 font-size: 24px;
 font-weight: 400;
 text-shadow: none;
 }
 
 .content-subheading {
-color: var(--main-primary-color);
+color: var(--portal-background-color);
 font-size: 20px;
 font-weight: 200;
 text-shadow: none;
-margin-bottom: 32px;
+margin-bottom: 15px;
 }
 
 .card-header_title {
-color: var(--main-primary-color);
+color: var(--portal-background-color);
 font-size: 18px;
 font-weight: 400;
+}
+
+h5.card-title {
+line-height: 0px;
+margin-top: 0px;
 }
 
 .text-block {
@@ -163,13 +179,17 @@ text-decoration: none;
 .header-portal {
 position: relative;
 height: 128px;
-background-image: -webkit-gradient(linear, left top, left bottom, from(var(--main-primary-rgba)), to(var(--main-primary-rgba))), url('images/page-head5.jpg');
-background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-primary-rgba)), url('images/page-head5.jpg');
+background-image: -webkit-gradient(linear, left top, left bottom, from(var(--main-primary-rgba)), to(var(--main-primary-rgba))), var(--main-header-background-image-url);
+background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-primary-rgba)), var(--main-header-background-image-url);
 background-position: 0px 0px, 50% 50%;
 background-size: auto, cover;
 background-repeat: repeat, no-repeat;
 color: var(--main-primary-rgba-text-color);
 
+}
+
+.header-portal .profile-pic .dropdown-toggle{
+color: var(--button-primary-text-color) !important;
 }
 
 .header-portal .bm-burger-bars {
@@ -179,6 +199,11 @@ background-color: var(--main-header-portal-icon-color) !important;
 .header-portal .dropdown-toggle{
 color: var(--main-header-portal-icon-color) !important;
 }
+
+.header-portal .dropdown-toggle .account-dropdown-text{
+color: var(--main-primary-rgba-text-color) !important;
+}
+
 
 /* ----------------- INPUT STYLING -----------------*/
 .has-error {
@@ -213,6 +238,15 @@ color: red;
 font-size: 18px;
 }
 /* ----------------- BUTTON STYLING -----------------*/
+.w-button-group {
+margin-bottom: 10px;
+}
+
+.w-button-group-left {
+float: left !important;
+left: 15px;
+}
+
 .w-button.w-button {
 background-color: var(--button-primary-color);
 border-color: var(--button-primary-color);
@@ -241,18 +275,18 @@ text-shadow: none;
 }
 
 .nav-link {
-color: var(--main-primary-text-color) !important;
+color: var(--portal-background-text-color) !important;
 font-size: 1.15em;
 }
 
 .nav-link.w--current {
-border-left: 1px solid var(--main-primary-text-color) !important;
-color: var(--main-primary-text-color);
+border-left: 1px solid var(--portal-background-text-color) !important;
+color: var(--portal-background-text-color);
 }
 
 .nav-link:hover {
-background-color: var(--main-primary-text-color) !important;
-color: var(--main-primary-color) !important;
+background-color: var(--portal-background-text-color) !important;
+color: var(--portal-background-color) !important;
 text-shadow: none;
 }
 
@@ -319,8 +353,8 @@ height: 100%;
 
 /* General sidebar styles */
 .bm-menu {
-background-color: var(--main-primary-color);
-color: var(--main-primary-text-color);
+background-color: var(--portal-background-color);
+color: var(--portal-background-text-color);
 padding: 0.5em 1.5em 0;
 /*font-size: 1.15em;*/
 }
@@ -428,12 +462,12 @@ transition: opacity 0.3s ease 0.5s;
 }
 
 .arrow-steps .step.current {
-background-color: var(--main-primary-color);
-color: var(--main-primary-text-color);
+background-color: var(--portal-background-color);
+color: var(--portal-background-text-color);
 }
 
 .arrow-steps .step.current:after {
-border-left: 17px solid var(--main-primary-color);
+border-left: 17px solid var(--portal-background-color);
 }
 
 @media screen and (max-width: 992px) {
@@ -475,104 +509,105 @@ border-bottom: 17px solid transparent;
 }
 }
 
-@media (max-width: 479px) {
-.body {
-background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(3, 75, 140, 0.9)), to(rgba(3, 75, 140, 0.9))), url('../images/page-head5.jpg');
-background-image: linear-gradient(180deg, rgba(3, 75, 140, 0.9), rgba(3, 75, 140, 0.9)), url('../images/page-head5.jpg');
-background-position: 0px 0px, 100% 50%;
-}
-.div-block {
-padding-right: 20px;
-padding-left: 20px;
-}
-.text-input {
-min-width: 240px;
-}
-.text-input.content._w-40 {
-width: 100%;
-}
-.text-input.content._w-40._w-40-mob {
-width: 25%;
-}
-.text-input.content._w-90 {
-width: 100%;
-}
-.text-input.content._w-90._w-90-mob {
-width: 91%;
-}
-.text-input.content._w-70 {
-width: 100%;
-}
-.text-input.content._w-70._w-70-mob {
-width: 71%;
-}
-.text-input.content._w-50 {
-display: inline-block;
-}
-.button {
-margin-bottom: 10px;
-}
-.login-button {
-cursor: pointer;
-}
-.header-portal {
-position: relative;
-height: 128px;
-}
-.navbar {
-position: fixed;
-width: 100%;
-background-color: transparent;
-}
-.container {
-background-color: rgba(3, 75, 140, 0);
-}
-.icon {
-color: #fff;
-}
-.nav-menu {
-width: 100%;
-background-color: #034b8c;
-}
-.nav-link {
-display: block;
-margin-left: 40px;
-line-height: 32px;
-}
-.nav-link.w--current {
-border-left: 1px solid #fff;
-color: #fff;
-}
-.heading {
-margin-left: 40px;
-padding-left: 20px;
-text-align: left;
-}
-.heading.in-menu {
-margin-top: 100px;
-}
-.menu-button.w--open {
-background-color: #034b8c;
-}
-.profile-pic {
-position: absolute;
-left: 50%;
-top: auto;
-right: auto;
-bottom: -60px;
-min-width: 120px;
-height: 120px;
-border: 4px solid #fff;
-border-radius: 50%;
--webkit-transform: translate(-50%, 0px);
--ms-transform: translate(-50%, 0px);
-transform: translate(-50%, 0px);
-padding: 10px 20px;
-}
-.heading-content {
-margin-bottom: 0px;
-}
-}
+{{--@media (max-width: 479px) {--}}
+{{--.body {--}}
+{{--background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(3, 75, 140, 0.9)), to(rgba(3, 75, 140, 0.9))), var(--main-header-background-image-url);--}}
+{{--background-image: linear-gradient(180deg, rgba(3, 75, 140, 0.9), rgba(3, 75, 140, 0.9)), var(--main-header-background-image-url);--}}
+{{--background-position: 0px 0px, 100% 50%;--}}
+{{--}--}}
+{{--.div-block {--}}
+{{--padding-right: 20px;--}}
+{{--padding-left: 20px;--}}
+{{--}--}}
+{{--.text-input {--}}
+{{--min-width: 240px;--}}
+{{--}--}}
+{{--.text-input.content._w-40 {--}}
+{{--width: 100%;--}}
+{{--}--}}
+{{--.text-input.content._w-40._w-40-mob {--}}
+{{--width: 25%;--}}
+{{--}--}}
+{{--.text-input.content._w-90 {--}}
+{{--width: 100%;--}}
+{{--}--}}
+{{--.text-input.content._w-90._w-90-mob {--}}
+{{--width: 91%;--}}
+{{--}--}}
+{{--.text-input.content._w-70 {--}}
+{{--width: 100%;--}}
+{{--}--}}
+{{--.text-input.content._w-70._w-70-mob {--}}
+{{--width: 71%;--}}
+{{--}--}}
+{{--.text-input.content._w-50 {--}}
+{{--display: inline-block;--}}
+{{--}--}}
+{{--.button {--}}
+{{--margin-bottom: 10px;--}}
+{{--}--}}
+{{--.login-button {--}}
+{{--cursor: pointer;--}}
+{{--}--}}
+{{--.header-portal {--}}
+{{--position: relative;--}}
+{{--height: 128px;--}}
+{{--}--}}
+{{--.navbar {--}}
+{{--position: fixed;--}}
+{{--width: 100%;--}}
+{{--background-color: transparent;--}}
+{{--}--}}
+{{--.container {--}}
+{{--background-color: rgba(3, 75, 140, 0);--}}
+{{--}--}}
+{{--.icon {--}}
+{{--color: #fff;--}}
+{{--}--}}
+{{--.nav-menu {--}}
+{{--width: 100%;--}}
+{{--background-color: #034b8c;--}}
+{{--}--}}
+{{--.nav-link {--}}
+{{--display: block;--}}
+{{--margin-left: 40px;--}}
+{{--line-height: 32px;--}}
+{{--}--}}
+{{--.nav-link.w--current {--}}
+{{--border-left: 1px solid #fff;--}}
+{{--color: #fff;--}}
+{{--}--}}
+{{--.heading {--}}
+{{--margin-left: 40px;--}}
+{{--padding-left: 20px;--}}
+{{--text-align: left;--}}
+{{--}--}}
+{{--.heading.in-menu {--}}
+{{--margin-top: 100px;--}}
+{{--}--}}
+{{--.menu-button.w--open {--}}
+{{--background-color: #034b8c;--}}
+{{--}--}}
+{{--.profile-pic {--}}
+{{--position: absolute;--}}
+{{--left: 50%;--}}
+{{--top: auto;--}}
+{{--right: auto;--}}
+{{--bottom: -60px;--}}
+{{--min-width: 120px;--}}
+{{--height: 120px;--}}
+{{--border: 4px solid #fff;--}}
+{{--border-radius: 50%;--}}
+{{---webkit-transform: translate(-50%, 0px);--}}
+{{---ms-transform: translate(-50%, 0px);--}}
+{{--transform: translate(-50%, 0px);--}}
+{{--padding: 10px 20px;--}}
+{{--z-index: 1000;--}}
+{{--}--}}
+{{--.heading-content {--}}
+{{--margin-bottom: 0px;--}}
+{{--}--}}
+{{--}--}}
 
 /* ----------------- End ARROW STEPS STYLING -----------------*/
 
@@ -618,11 +653,11 @@ bottom: -60px;
 min-width: 120px;
 height: 120px;
 border: 4px solid white;
-background-color: var(--main-primary-rgba);
+background-color: var(--button-primary-color);
 background-position: 50% 50%;
 background-size: contain;
 background-repeat: no-repeat;
-color: var(--main-primary-rgba-text-color);
+color: var(--button-primary-text-color);
 box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.1);
 -webkit-transform: translate(-50%, 0px);
 -ms-transform: translate(-50%, 0px);
@@ -633,6 +668,7 @@ border-radius: 100%;
 text-align: center;
 display: flex;
 text-wrap: normal;
+z-index: 1000;
 }
 
 .alert-wrapper{
@@ -640,7 +676,7 @@ margin-top: 10px;
 }
 
 .profile-pic .profile-title {
-color: var(--main-primary-rgba-text-color);
+color: var(--button-primary-text-color);
 font-weight: bold;
 white-space: nowrap;
 margin: 20px;
@@ -654,8 +690,16 @@ white-space: nowrap;
 
 /* ----------------- LOGO STYLING -----------------*/
 header .header-logo {
+max-width: 450px;
+padding: 14px 0;
+}
+@media only screen and (max-width: 480px) {
+header .header-logo {
 max-width: 100px;
-padding: 10px 0;
+}
+}
+.header-logo img {
+max-height: 100px;
 }
 .logo-container {
 max-width: 200px;
@@ -691,7 +735,7 @@ font-size: 14px;
 }
 
 .dropdown-header {
-color: var(--main-primary-color);
+color: var(--portal-background-color);
 font-weight: bold;
 }
 

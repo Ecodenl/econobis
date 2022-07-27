@@ -16,7 +16,8 @@ const Reset = ({ location, match, login }) => {
     const email = decodeURIComponent(match.params.email);
 
     const [redirectToReferrer, toggleRedirect] = useState(false);
-    let { from } = location.state || { from: { pathname: '/gegevens' } };
+    let { from } = location.state || { from: { pathname: '/dashboard' } };
+    const [imageHash, setImageHash] = useState(Date.now());
 
     function handleSubmit(values, actions) {
         AuthAPI.reset({ token, email, password: values.password, password_confirmation: values.passwordConfirmation })
@@ -55,7 +56,7 @@ const Reset = ({ location, match, login }) => {
                 <Container fluid className="authorization-container">
                     <Row className="justify-content-center align-content-center full-height">
                         <Col xs="12" sm="8" md="6" lg="4" xl="2">
-                            <img src="images/logo.png" alt="" className="image logo-container" />
+                            <img src={`images/logo.png?${imageHash}`} alt="" className="image logo-container" />
                             {showSuccessMessage ? (
                                 <>
                                     <Row className="justify-content-center">

@@ -19,6 +19,7 @@ class Cooperation extends Model
     protected $casts = [
         'send_email' => 'boolean',
         'use_laposta' => 'bool',
+        'use_export_address_consumption' => 'bool',
         'created_at' => 'date',
         'updated_at' => 'date',
         'deleted_at' => 'date',

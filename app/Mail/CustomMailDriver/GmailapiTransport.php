@@ -7,14 +7,9 @@ use App\Helpers\Gmail\GmailConnectionManager;
 use Exception;
 use Google_Client;
 use Google_Service_Gmail;
-use Google_Service_Gmail_Draft;
 use Google_Service_Gmail_Message;
 use Illuminate\Mail\Transport\Transport;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
-use Swift_Mailer;
 use Swift_Mime_SimpleMessage;
-use Swift_SmtpTransport;
 
 class GmailapiTransport extends Transport
 {
@@ -40,7 +35,7 @@ class GmailapiTransport extends Transport
         try {
             $message = $this->gmailService->users_messages->send($this->user, $message);
             return $message;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             print 'An error occurred: ' . $e->getMessage();
         }
     }

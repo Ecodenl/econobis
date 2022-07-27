@@ -11,7 +11,8 @@ class ParticipantDetailsHarmonica extends Component {
 
         this.state = {
             toggleShowList: {
-                documents: false,
+                documentsNotOnPortal: false,
+                documentsOnPortal: false,
                 orders: false,
             },
         };
@@ -29,9 +30,14 @@ class ParticipantDetailsHarmonica extends Component {
         });
     }
 
-    newDocument = type => {
+    newDocumentNotOnPortal = type => {
         hashHistory.push(
-            `/document/nieuw/${type}/project/${this.props.participant.projectId}/deelnemer/${this.props.participant.id}/contact/${this.props.participant.contact.id}`
+            `/document/nieuw/${type}/eco/project/${this.props.participant.projectId}/deelnemer/${this.props.participant.id}/contact/${this.props.participant.contact.id}`
+        );
+    };
+    newDocumentOnPortal = type => {
+        hashHistory.push(
+            `/document/nieuw/${type}/portal/project/${this.props.participant.projectId}/deelnemer/${this.props.participant.id}/contact/${this.props.participant.contact.id}`
         );
     };
 
@@ -49,13 +55,23 @@ class ParticipantDetailsHarmonica extends Component {
             <div>
                 <div className="margin-10-top">
                     <DocumentHarmonica
-                        toggleShowList={() => this.toggleShowList('documents')}
-                        showDocumentsList={this.state.toggleShowList.documents}
-                        newDocument={this.newDocument}
-                        documentCount={this.props.participant.documentCount}
+                        title={'DOCUMENTEN ALLEEN IN ECONOBIS'}
+                        toggleShowList={() => this.toggleShowList('documentsNotOnPortal')}
+                        showDocumentsList={this.state.toggleShowList.documentsNotOnPortal}
+                        newDocument={this.newDocumentNotOnPortal}
+                        documentCount={this.props.participant.documentCountNotOnPortal}
+                        relatedDocuments={this.props.participant.relatedDocumentsNotOnPortal}
                     />
-                </div>
-                <div className="margin-10-top">
+
+                    <DocumentHarmonica
+                        title={'DOCUMENTEN PORTAL'}
+                        toggleShowList={() => this.toggleShowList('documentsOnPortal')}
+                        showDocumentsList={this.state.toggleShowList.documentsOnPortal}
+                        newDocument={this.newDocumentOnPortal}
+                        documentCount={this.props.participant.documentCountOnPortal}
+                        relatedDocuments={this.props.participant.relatedDocumentsOnPortal}
+                    />
+
                     <OrderHarmonica
                         toggleShowList={() => this.toggleShowList('orders')}
                         showOrdersList={this.state.toggleShowList.orders}

@@ -31,7 +31,7 @@ const InputSelectGroup = props => {
                     value={value}
                     onChange={onChangeAction}
                     onBlur={onBlurAction}
-                    readOnly={readOnly}
+                    disabled={readOnly}
                 >
                     <option value="" />
                     {optionsInGroups.map((group, i) => {

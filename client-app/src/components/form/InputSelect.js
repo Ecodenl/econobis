@@ -36,7 +36,7 @@ const InputSelect = props => {
                     value={value ? value : ''}
                     onChange={onChangeAction}
                     onBlur={onBlurAction}
-                    readOnly={readOnly}
+                    disabled={readOnly}
                 >
                     {emptyOption && <option value="">{placeholder}</option>}
                     {options.map(option => {

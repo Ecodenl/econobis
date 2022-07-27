@@ -35,7 +35,7 @@ class ParticipantReportCreateViewEmail extends Component {
         return this.props.isLoading ? (
             <div>Gegevens aan het laden.</div>
         ) : !this.state.email ? (
-            this.props.amountOfParticipants > 0 ? (
+            this.props.amountOfParticipants > 0 && this.state.email == null ? (
                 <div>Selecteer links in het scherm een contact om een preview te zien.</div>
             ) : (
                 <div>Geen gegevens gevonden.</div>

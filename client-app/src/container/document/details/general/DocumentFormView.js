@@ -3,13 +3,10 @@ import { connect } from 'react-redux';
 
 import ViewText from '../../../../components/form/ViewText';
 
-const createMarkup = value => {
-    return { __html: value };
-};
-
-const EmailTemplateFormView = props => {
+const DocumentDetailsFormView = props => {
     const {
         id,
+        administration,
         project,
         participant,
         contact,
@@ -18,6 +15,8 @@ const EmailTemplateFormView = props => {
         opportunity,
         documentType,
         description,
+        freeText1,
+        freeText2,
         documentGroup,
         filename,
         template,
@@ -27,14 +26,19 @@ const EmailTemplateFormView = props => {
         campaign,
         measure,
         order,
+        showOnPortal,
     } = props.documentDetails;
 
     return (
         <div>
             <div className="row" onClick={props.switchToEdit}>
                 <div className="row">
-                    <ViewText label={'Contact'} value={contact && contact.fullName} />
                     <ViewText label={'Type'} value={documentType && documentType.name} />
+                </div>
+            </div>
+            <div className="row" onClick={props.switchToEdit}>
+                <div className="row">
+                    <ViewText label={'Contact'} value={contact && contact.fullName} />
                 </div>
             </div>
             <div className="row" onClick={props.switchToEdit}>
@@ -69,20 +73,20 @@ const EmailTemplateFormView = props => {
             <div className="row" onClick={props.switchToEdit}>
                 <div className="row">
                     <ViewText label={'Order'} value={order && order.name} />
+                    <ViewText label={'Administratie'} value={administration && administration.name} />
                 </div>
             </div>
 
-            {documentType === 'upload' && (
-                <div className="row" onClick={props.switchToEdit}>
-                    <div className="row">
-                        <ViewText label={'Campagne'} value={campaign && campaign.name} />
-                        <ViewText label={'Maatregel'} value={measure && measure.name} />
-                    </div>
-                </div>
-            )}
             <div className="row" onClick={props.switchToEdit}>
                 <div className="row">
-                    <ViewText label={'Template'} value={template && template.name} />
+                    <ViewText label={'Campagne'} value={campaign && campaign.name} />
+                    <ViewText label={'Maatregel'} value={measure && measure.name} />
+                </div>
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
+                <div className="row">
+                    <ViewText label={'Tonen op portal'} value={showOnPortal ? 'Ja' : 'Nee'} />
                 </div>
             </div>
             <div className="row" onClick={props.switchToEdit}>
@@ -91,12 +95,35 @@ const EmailTemplateFormView = props => {
                 </div>
                 <div className="col-sm-6">{description}</div>
             </div>
-            <div className="row margin-30-top" onClick={props.switchToEdit}>
-                <div className="row">
-                    <ViewText label={'Documentgroep'} value={documentGroup && documentGroup.name} />
-                    <ViewText label={'Bestandsnaam'} value={filename} />
+            {documentType.id === 'upload' ? (
+                <div className="row margin-30-top" onClick={props.switchToEdit}>
+                    <div className="row">
+                        <ViewText label={'Documentgroep'} value={documentGroup && documentGroup.name} />
+                        <ViewText label={'Bestandsnaam'} value={filename} />
+                    </div>
                 </div>
-            </div>
+            ) : (
+                <>
+                    <div className="row margin-30-top" onClick={props.switchToEdit}>
+                        <div className="row">
+                            <ViewText label={'Documentgroep'} value={documentGroup && documentGroup.name} />
+                            <ViewText label={'Template'} value={template && template.name} />
+                        </div>
+                    </div>
+                    <div className="row" onClick={props.switchToEdit}>
+                        <div className="col-sm-3">
+                            <label>Tekst veld 1</label>
+                        </div>
+                        <div className="col-sm-6">{freeText1}</div>
+                    </div>
+                    <div className="row" onClick={props.switchToEdit}>
+                        <div className="col-sm-3">
+                            <label>Tekst veld 2</label>
+                        </div>
+                        <div className="col-sm-6">{freeText2}</div>
+                    </div>
+                </>
+            )}
         </div>
     );
 };
@@ -107,4 +134,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(EmailTemplateFormView);
+export default connect(mapStateToProps)(DocumentDetailsFormView);

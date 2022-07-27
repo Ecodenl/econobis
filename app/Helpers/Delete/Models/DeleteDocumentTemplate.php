@@ -67,12 +67,6 @@ class DeleteDocumentTemplate implements DeleteInterface
         if($projectNames){
             abort('409','Ontkoppel template eerst in de volgende projecten: ' . implode(', ', $projectNames));
         }
-
-//        $documentNames = Document::where('template_id', $this->documentTemplate->id)->pluck('number')->toArray();
-//        if($documentNames){
-//            abort('409','Template is gebruikt in de volgende documenten: ' . implode(', ', $documentNames));
-//        }
-
     }
 
     /** Deletes models recursive

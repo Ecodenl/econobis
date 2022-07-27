@@ -129,7 +129,8 @@ class ContactController extends Controller
         $contacts = Contact::select('id', 'full_name', 'number')->with('addresses')->orderBy('full_name');
         foreach(explode(" ", $request->input('searchTerm')) as $searchTerm) {
             $contacts->where(function ($contacts) use ($searchTerm) {
-                $contacts->where('contacts.full_name', 'like', '%' . $searchTerm . '%');
+                $contacts->where('contacts.full_name', 'like', '%' . $searchTerm . '%')
+                ->orWhere('contacts.number', 'like', '%' . $searchTerm . '%');
             });
         }
         $contacts = $contacts->get();

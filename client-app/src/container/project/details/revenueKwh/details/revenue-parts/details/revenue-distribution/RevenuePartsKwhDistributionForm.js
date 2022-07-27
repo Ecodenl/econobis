@@ -24,6 +24,7 @@ import moment from 'moment-business-days';
 import ButtonIcon from '../../../../../../../../components/button/ButtonIcon';
 import ErrorModal from '../../../../../../../../components/modal/ErrorModal';
 import RevenuePartsKwhDistributionFormList from './RevenuePartsKwhDistributionFormList';
+import InputToggle from '../../../../../../../../components/form/InputToggle';
 
 class RevenuePartsKwhDistributionForm extends Component {
     constructor(props) {
@@ -58,6 +59,7 @@ class RevenuePartsKwhDistributionForm extends Component {
             createType: '',
             showErrorModal: false,
             modalErrorMessage: '',
+            showOnPortal: true,
         };
     }
 
@@ -255,6 +257,7 @@ class RevenuePartsKwhDistributionForm extends Component {
                 emailTemplateId: this.state.emailTemplateId,
                 subject: this.state.subject,
                 distributionPartsKwhIds: this.state.distributionPartsKwhIds,
+                showOnPortal: this.state.showOnPortal,
             });
             hashHistory.push(`/project/opbrengst-deelperiode-kwh/${this.props.revenuePartsKwh.id}/rapportage`);
         } else if (!error) {
@@ -367,7 +370,14 @@ class RevenuePartsKwhDistributionForm extends Component {
                                     </div>
                                     <div className="col-md-12">
                                         <ViewText label="Geselecteerde deelnemers" value={numberSelectedNumberTotal} />
-
+                                        <InputToggle
+                                            label={'Rapportage tonen op portal'}
+                                            name={'showOnPortal'}
+                                            value={this.state.showOnPortal}
+                                            onChangeAction={this.handleInputChange}
+                                        />
+                                    </div>
+                                    <div className="col-md-12">
                                         <div className="margin-10-top pull-right btn-group" role="group">
                                             <ButtonText
                                                 buttonClassName={'btn-default'}

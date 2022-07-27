@@ -17,7 +17,7 @@ import CampaignsAPI from '../../../../api/campaign/CampaignsAPI';
 import InputReactSelect from '../../../../components/form/InputReactSelect';
 import InputTime from '../../../../components/form/InputTime';
 import TaskDetailsFormGeneralEditExtraConnections from './extra-connections/TaskDetailsFormGeneralEditExtraConnections';
-import InputTextArea from '../../../../components/form/InputTextarea';
+import InputTextArea from '../../../../components/form/InputTextArea';
 import InputToggle from '../../../../components/form/InputToggle';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import InputSelectGroup from '../../../../components/form/InputSelectGroup';

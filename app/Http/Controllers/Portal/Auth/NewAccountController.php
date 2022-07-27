@@ -66,6 +66,10 @@ class NewAccountController extends Controller
             }
 
             $responsibleUser = User::find($responsibleUserId);
+            if (!$responsibleUser) {
+                abort(501, 'Er is helaas een fout opgetreden (7).');
+            }
+
             $responsibleUser->occupation = '@portal-update@';
             Auth::setUser($responsibleUser);
 

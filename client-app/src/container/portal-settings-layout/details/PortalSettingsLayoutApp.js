@@ -8,6 +8,8 @@ import PortalSettingsLayoutDetailsAPI from '../../../api/portal-settings-layout/
 import { setError } from '../../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
+import PortalSettingsDashboardAPI from '../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
+import axios from 'axios';
 
 class PortalSettingsLayoutDetailsApp extends Component {
     constructor(props) {
@@ -15,6 +17,7 @@ class PortalSettingsLayoutDetailsApp extends Component {
 
         this.state = {
             portalSettingsLayout: {},
+            dashboardSettings: {},
             isLoading: false,
             hasError: false,
         };
@@ -26,13 +29,23 @@ class PortalSettingsLayoutDetailsApp extends Component {
 
     callFetchPortalSettingsLayoutDetails = () => {
         this.setState({ isLoading: true, hasError: false });
-        PortalSettingsLayoutDetailsAPI.fetchPortalSettingsLayoutDetails(this.props.params.id)
-            .then(payload => {
-                this.setState({
-                    isLoading: false,
-                    portalSettingsLayout: payload.data.data,
-                });
-            })
+        // todo WM: check anders
+        //
+        const id = 1;
+        axios
+            .all([
+                PortalSettingsLayoutDetailsAPI.fetchPortalSettingsLayoutDetails(this.props.params.id),
+                PortalSettingsDashboardAPI.fetchPortalSettingsDashboardDetails(id),
+            ])
+            .then(
+                axios.spread((portalSettingsLayout, dashboardSettings) => {
+                    this.setState({
+                        isLoading: false,
+                        portalSettingsLayout: portalSettingsLayout.data.data,
+                        dashboardSettings: dashboardSettings.data.data,
+                    });
+                })
+            )
             .catch(error => {
                 this.setState({ isLoading: false, hasError: true });
             });
@@ -66,6 +79,7 @@ class PortalSettingsLayoutDetailsApp extends Component {
                                     id={this.state.portalSettingsLayout.id}
                                     isDefault={this.state.portalSettingsLayout.isDefault}
                                     deletePortalSettingsLayout={this.deletePortalSettingsLayout}
+                                    permissions={this.props.permissions}
                                 />
                             </PanelBody>
                         </Panel>
@@ -74,6 +88,7 @@ class PortalSettingsLayoutDetailsApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <PortalSettingsLayoutForm
                             portalSettingsLayout={this.state.portalSettingsLayout}
+                            dashboardSettings={this.state.dashboardSettings}
                             isLoading={this.state.isLoading}
                             hasError={this.state.hasError}
                             updateState={this.updateState}
@@ -86,10 +101,16 @@ class PortalSettingsLayoutDetailsApp extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        permissions: state.meDetails.permissions,
+    };
+};
+
 const mapDispatchToProps = dispatch => ({
     setError: (http_code, message) => {
         dispatch(setError(http_code, message));
     },
 });
 
-export default connect(null, mapDispatchToProps)(PortalSettingsLayoutDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(PortalSettingsLayoutDetailsApp);

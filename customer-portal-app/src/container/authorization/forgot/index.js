@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 const Forgot = props => {
     const [showError, toggleError] = useState(false);
     const [showSuccessMessage, toggleSuccessMessage] = useState(false);
+    const [imageHash, setImageHash] = useState(Date.now());
 
     function handleSubmit(values, actions) {
         AuthAPI.forgot(values)
@@ -33,7 +34,7 @@ const Forgot = props => {
         <Container fluid className="authorization-container">
             <Row className="justify-content-center align-content-center full-height">
                 <Col xs="12" sm="10" md="8" lg="6" xl="4">
-                    <img src="images/logo.png" alt="" className="image logo-container" />
+                    <img src={`images/logo.png?${imageHash}`} alt="" className="image logo-container" />
                     {showSuccessMessage ? (
                         <div>
                             <Row className={'justify-content-center '}>

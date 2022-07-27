@@ -32,9 +32,10 @@ class CreateRevenueReport implements ShouldQueue
     private $subject;
     private $documentTemplateId;
     private $emailTemplateId;
+    private $showOnPortal;
     private $userId;
 
-    public function __construct($distributionId, $subject, $documentTemplateId, $emailTemplateId, $userId)
+    public function __construct($distributionId, $subject, $documentTemplateId, $emailTemplateId, $showOnPortal, $userId)
     {
         $this->distributionId = $distributionId;
         $distribution = ProjectRevenueDistribution::find($distributionId);
@@ -45,6 +46,7 @@ class CreateRevenueReport implements ShouldQueue
         $this->subject = $subject;
         $this->documentTemplateId = $documentTemplateId;
         $this->emailTemplateId = $emailTemplateId;
+        $this->showOnPortal = $showOnPortal;
         $this->userId = $userId;
 
         $jobLog = new JobsLog();
@@ -65,7 +67,9 @@ class CreateRevenueReport implements ShouldQueue
             $this->subject,
             $this->distributionId,
             DocumentTemplate::find($this->documentTemplateId),
-            EmailTemplate::find($this->emailTemplateId));
+            EmailTemplate::find($this->emailTemplateId),
+            $this->showOnPortal,
+        );
 
         if($result && isset($result['messages']))
         {

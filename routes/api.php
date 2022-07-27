@@ -136,6 +136,7 @@ Route::namespace('Api')
         Route::get('contact-group/grid', 'ContactGroup\ContactGroupController@grid');
         Route::get('contact-group/peek', 'ContactGroup\ContactGroupController@peek');
         Route::get('contact-group/peek/static', 'ContactGroup\ContactGroupController@peekStatic');
+        Route::get('contact-group/excel/group-report', 'ContactGroup\ContactGroupController@excelGroupReport');
         Route::get('contact-group/{contactGroup}', 'ContactGroup\ContactGroupController@show');
         Route::get('contact-group/{contactGroup}/csv', 'ContactGroup\ContactGroupController@getCsv');
         Route::get('contact-group/{contactGroup}/name', 'ContactGroup\ContactGroupController@getName');
@@ -394,6 +395,7 @@ Route::namespace('Api')
         Route::get('administration/{administration}', 'Administration\AdministrationController@show');
         Route::get('administration/sepa/{sepa}', 'Administration\AdministrationController@downloadSepa');
         Route::get('administration/{administration}/ledgers', 'Administration\AdministrationController@getLedgers');
+        Route::get('administration/{administration}/logo-details', 'Administration\AdministrationController@getLogoDetails');
         Route::get('administration/{administration}/totals-info-administration', 'Administration\AdministrationController@getTotalsInfoAdministration');
         Route::post('administration/sepa/{sepa}/delete', 'Administration\AdministrationController@deleteSepa');
         Route::post('administration', 'Administration\AdministrationController@store');
@@ -535,6 +537,14 @@ Route::namespace('Api')
         Route::post('portal-settings-layout', 'PortalSettingsLayout\PortalSettingsLayoutController@store');
         Route::post('portal-settings-layout/{portalSettingsLayout}', 'PortalSettingsLayout\PortalSettingsLayoutController@update');
         Route::post('portal-settings-layout/{portalSettingsLayout}/delete', 'PortalSettingsLayout\PortalSettingsLayoutController@destroy');
+
+        Route::get('portal-settings-dashboard/jory', 'PortalSettingsDashboard\PortalSettingsDashboardController@jory');
+        Route::post('portal-settings-dashboard/{portalSettingsDashboard}', 'PortalSettingsDashboard\PortalSettingsDashboardController@update');
+
+        Route::get('portal-settings-dashboard-widget/jory', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@jory');
+        Route::post('portal-settings-dashboard-widget', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@store');
+        Route::post('portal-settings-dashboard-widget/{portalSettingsDashboardWidget}', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@update');
+        Route::post('portal-settings-dashboard-widget/{portalSettingsDashboardWidget}/delete', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@destroy');
 
         Route::get('cooperation', 'Cooperation\CooperationController@show');
         Route::post('cooperation', 'Cooperation\CooperationController@store');

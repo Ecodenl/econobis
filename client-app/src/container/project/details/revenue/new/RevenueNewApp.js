@@ -302,21 +302,6 @@ class RevenueNewApp extends Component {
             errorMessage.dateEnd = 'Eind periode mag niet voor Begin periode liggen.';
             hasErrors = true;
         }
-        // todo WM: cleanup Jaaroverschrijdend ook toestaan voor kapitoaal
-        // if (
-        //     !hasErrors &&
-        //     category.codeRef !== 'revenueKwh' &&
-        //     category.codeRef !== 'redemptionEuro' &&
-        //     (this.state.project.projectType.codeRef === 'capital' ||
-        //         this.state.project.projectType.codeRef === 'postalcode_link_capital') &&
-        //     moment(revenue.dateBegin).year() !== moment(revenue.dateEnd).year()
-        // ) {
-        //     errors.dateBegin = true;
-        //     errorMessage.dateBegin = 'Jaaroverschrijdende perioden niet toegestaan.';
-        //     errors.dateEnd = true;
-        //     errorMessage.dateEnd = 'Jaaroverschrijdende perioden niet toegestaan.';
-        //     hasErrors = true;
-        // }
         if (
             !hasErrors &&
             category.codeRef === 'redemptionEuro' &&
@@ -335,9 +320,6 @@ class RevenueNewApp extends Component {
         if (
             !hasErrors &&
             category.codeRef === 'revenueEuro' &&
-            // todo WM: cleanup Jaaroverschrijdend ook toestaan voor kapitoaal
-            // (this.state.project.projectType.codeRef === 'loan' ||
-            //     this.state.project.projectType.codeRef === 'obligation') &&
             moment(revenue.dateBegin).format('Y-MM-DD') <
                 moment(revenue.dateEnd)
                     .add(-1, 'year')

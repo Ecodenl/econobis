@@ -243,6 +243,8 @@ class ParticipationProjectController extends ApiController
             'mutations.updatedBy',
             'obligationNumbers',
             'documents',
+            'documentsNotOnPortal',
+            'documentsOnPortal',
             'createdBy',
             'updatedBy',
         ]);
@@ -536,11 +538,12 @@ class ParticipationProjectController extends ApiController
 
     public function peek()
     {
-
-        $participants = ParticipantProject::all();
+        $participants = ParticipantProject::orderBy('project_id')->get();
         $participants->load(['contact', 'project']);
-
-        return ParticipantProjectPeek::collection($participants);
+        $sortedParticipants = $participants->sortBy(function($item) {
+            return $item->project_id.'-'.$item->contact->full_name;
+        }, SORT_NATURAL|SORT_FLAG_CASE)->values()->all();
+        return ParticipantProjectPeek::collection($sortedParticipants);
     }
 
     public function validatePostalCode(&$message, Project $project, Contact $contact, Address $address)
@@ -762,15 +765,16 @@ class ParticipationProjectController extends ApiController
         set_time_limit(0);
         $participantIds = $request->input('participantIds');
         $subject = $request->input('subject');
+        $showOnPortal = $request->input('showOnPortal');
 
         foreach($participantIds as $participantId) {
-            CreateParticipantReport::dispatch($participantId, $subject, $documentTemplate->id, $emailTemplate->id, Auth::id());
+            CreateParticipantReport::dispatch($participantId, $subject, $documentTemplate->id, $emailTemplate->id, $showOnPortal, Auth::id());
         }
 
         return null;
     }
 
-    public function createParticipantProjectReport($subject, $participantId, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate)
+    public function createParticipantProjectReport($subject, $participantId, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate, $showOnPortal)
     {
         $portalName = PortalSettings::get('portalName');
         $cooperativeName = PortalSettings::get('cooperativeName');
@@ -826,12 +830,14 @@ class ParticipationProjectController extends ApiController
             $time = Carbon::now();
 
             $document = new Document();
+            $document->document_created_from = 'participant';
             $document->document_type = 'internal';
             $document->document_group = $documentTemplate->document_group;
             $document->contact_id = $contact->id;
             $document->project_id = $project->id;
             $document->participation_project_id = $participant->id;
             $document->template_id = $documentTemplate->id;
+            $document->show_on_portal = $showOnPortal;
 
             $filename = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_' . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
 
@@ -1247,7 +1253,7 @@ class ParticipationProjectController extends ApiController
     protected function translateToValidCharacterSet($field){
 
         $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
-        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
+//        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 
         return $field;

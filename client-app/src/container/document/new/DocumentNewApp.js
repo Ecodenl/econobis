@@ -11,7 +11,6 @@ import { isEqual } from 'lodash';
 import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
 import IntakesAPI from '../../../api/intake/IntakesAPI';
 import OpportunitiesAPI from '../../../api/opportunity/OpportunitiesAPI';
-import ContactsAPI from '../../../api/contact/ContactsAPI';
 import DocumentTemplateAPI from '../../../api/document-template/DocumentTemplateAPI';
 import MeasureAPI from '../../../api/measure/MeasureAPI';
 import TasksAPI from '../../../api/task/TasksAPI';
@@ -25,12 +24,53 @@ import ParticipantsProjectAPI from '../../../api/participant-project/Participant
 import OrdersAPI from '../../../api/order/OrdersAPI';
 import EmailDetailsAPI from '../../../api/email/EmailAPI';
 import QuotationRequestDetailsAPI from '../../../api/quotation-request/QuotationRequestDetailsAPI';
+import DocumentNewFormProject from './DocumentNewFormProject';
+import DocumentNewFormAdministration from './DocumentNewFormAdministration';
+import DocumentNewFormParticipant from './DocumentNewFormParticipant';
+import ContactDetailsAPI from '../../../api/contact/ContactDetailsAPI';
 
 class DocumentNewApp extends Component {
     constructor(props) {
         super(props);
+
+        let documentCreatedFrom = '';
+        if (props.params.participantId) {
+            documentCreatedFrom = 'participant';
+        } else if (props.params.opportunityId) {
+            documentCreatedFrom = 'opportunity';
+        } else if (props.params.quotationRequestId) {
+            documentCreatedFrom = 'quotationrequest';
+        } else if (props.params.housingFileId) {
+            documentCreatedFrom = 'housingfile';
+        } else if (props.params.intakeId) {
+            documentCreatedFrom = 'intake';
+        } else if (props.params.measureId) {
+            documentCreatedFrom = 'measure';
+        } else if (props.params.administrationId) {
+            documentCreatedFrom = 'administration';
+        } else if (props.params.campaignId) {
+            documentCreatedFrom = 'campaign';
+        } else if (props.params.taskId) {
+            documentCreatedFrom = 'task';
+        } else if (props.params.projectId) {
+            documentCreatedFrom = 'project';
+        } else if (props.params.orderId) {
+            documentCreatedFrom = 'order';
+        } else if (props.params.contactGroupId) {
+            documentCreatedFrom = 'contactgroup';
+        } else if (props.params.contactId) {
+            documentCreatedFrom = 'contact';
+        } else if (props.params.emailAttachmentId) {
+            documentCreatedFrom = 'emailattachment';
+        } else {
+            documentCreatedFrom = 'document';
+        }
+
+        const documentCreatedFromName = this.props.documentCreatedFroms.find(item => {
+            return item.id == documentCreatedFrom;
+        }).name;
+
         this.state = {
-            contacts: [],
             contactsGroups: [],
             intakes: [],
             opportunities: [],
@@ -40,11 +80,13 @@ class DocumentNewApp extends Component {
             quotationRequests: [],
             measures: [],
             tasks: [],
-            projects: [],
             participants: [],
+            projects: [],
             orders: [],
             document: {
+                administrationId: this.props.params.administrationId || '',
                 contactId: this.props.params.contactId || '',
+                selectedContact: null,
                 contactGroupId: this.props.params.contactGroupId || '',
                 intakeId: this.props.params.intakeId || '',
                 opportunityId: this.props.params.opportunityId || '',
@@ -56,6 +98,8 @@ class DocumentNewApp extends Component {
                 projectId: this.props.params.projectId || '',
                 participantId: this.props.params.participantId || '',
                 orderId: this.props.params.orderId || '',
+                documentCreatedFrom: documentCreatedFrom,
+                documentCreatedFromName: documentCreatedFromName,
                 documentType: this.props.params.type,
                 description: '',
                 documentGroup: '',
@@ -65,6 +109,8 @@ class DocumentNewApp extends Component {
                 sentById: '',
                 attachment: '',
                 filename: 'temp',
+                showOnPortal:
+                    this.props.params.showOnPortal && this.props.params.showOnPortal === 'portal' ? true : false,
             },
             errors: {
                 docLinkedAtAny: false,
@@ -72,7 +118,17 @@ class DocumentNewApp extends Component {
                 uploadFailed: false,
                 templateId: false,
                 noDocument: false,
+                description: false,
             },
+            errorMessage: {
+                docLinkedAtAny: '',
+                documentGroup: '',
+                templateId: '',
+                noDocument: '',
+                description: '',
+            },
+            searchTermContact: '',
+            isLoadingContact: false,
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -80,12 +136,29 @@ class DocumentNewApp extends Component {
         this.onDropAccepted = this.onDropAccepted.bind(this);
         this.onDropRejected = this.onDropRejected.bind(this);
         this.handleDocumentGroupChange = this.handleDocumentGroupChange.bind(this);
+        this.handleProjectChange = this.handleProjectChange.bind(this);
+        this.setSearchTermContact = this.setSearchTermContact.bind(this);
+        this.setLoadingContact = this.setLoadingContact.bind(this);
     }
 
     componentDidMount() {
-        ContactsAPI.getContactsPeek().then(payload => {
-            this.setState({ contacts: payload });
-        });
+        if (this.props.params.contactId) {
+            ContactDetailsAPI.getContactDetails(this.props.params.contactId).then(payload => {
+                if (payload) {
+                    this.setState({
+                        ...this.state,
+                        document: {
+                            ...this.state.document,
+                            selectedContact: {
+                                id: payload.id,
+                                fullName: payload.fullName + ' (' + payload.number + ')',
+                                primaryAddressId: payload.primaryAddressId,
+                            },
+                        },
+                    });
+                }
+            });
+        }
 
         IntakesAPI.peekIntakes().then(payload => {
             this.setState({ intakes: payload });
@@ -127,10 +200,6 @@ class DocumentNewApp extends Component {
             this.setState({ projects: payload });
         });
 
-        ParticipantsProjectAPI.peekParticipantsProjects().then(payload => {
-            this.setState({ participants: payload });
-        });
-
         OrdersAPI.peekOrders().then(payload => {
             this.setState({ orders: payload });
         });
@@ -145,14 +214,14 @@ class DocumentNewApp extends Component {
                         ...this.state.document,
                         attachment: file[0],
                         filename: payload.headers['x-filename'],
-                        contactId: payload.headers['x-contactid'],
+                        contactId: payload.headers['x-contactid'] ? payload.headers['x-contactid'] : '',
                     },
                 });
             });
         }
         if (this.props.params.quotationRequestId) {
-            QuotationRequestDetailsAPI.fetchQuotationRequestDetails(this.props.params.quotationRequestId).then(
-                payload => {
+            QuotationRequestDetailsAPI.fetchQuotationRequestDetails(this.props.params.quotationRequestId)
+                .then(payload => {
                     this.setState({
                         ...this.state,
                         document: {
@@ -160,13 +229,38 @@ class DocumentNewApp extends Component {
                             contactId: payload.opportunity.intake.contact.id,
                             intakeId: payload.opportunity.intake.id,
                             opportunityId: payload.opportunity.id,
-                            measureId: payload.opportunity.measureCategory.id,
+                            measureId:
+                                payload.opportunity.measures && payload.opportunity.measures.length == 1
+                                    ? payload.opportunity.measures[0].id
+                                    : '',
                             campaignId: payload.opportunity.intake.campaign.id,
                         },
                     });
-                }
-            );
+                })
+                .finally(() => this.callFetchContact());
         }
+        if (this.props.params.projectId) {
+            this.setParticipants(this.props.params.projectId);
+        }
+    }
+
+    callFetchContact() {
+        // console.log(this.state.document.contactId);
+        ContactDetailsAPI.getContactDetails(this.state.document.contactId).then(payload => {
+            if (payload) {
+                this.setState({
+                    ...this.state,
+                    document: {
+                        ...this.state.document,
+                        selectedContact: {
+                            id: payload.id,
+                            fullName: payload.fullName + ' (' + payload.number + ')',
+                            primaryAddressId: payload.primaryAddressId,
+                        },
+                    },
+                });
+            }
+        });
     }
 
     handleInputChange(event) {
@@ -180,6 +274,51 @@ class DocumentNewApp extends Component {
                 ...this.state.document,
                 [name]: value,
             },
+        });
+    }
+
+    handleInputChangeContactId = selectedOption => {
+        const selectedContactId = selectedOption ? selectedOption.id : null;
+        if (selectedContactId) {
+            this.setState({
+                ...this.state,
+                document: {
+                    ...this.state.document,
+                    contactId: selectedContactId,
+                    selectedContact: selectedOption,
+                },
+            });
+        }
+    };
+
+    handleProjectChange(event) {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            document: {
+                ...this.state.document,
+                [name]: value,
+            },
+        });
+        this.setParticipants(value);
+    }
+
+    setParticipants(value) {
+        ParticipantsProjectAPI.peekParticipantsProjects().then(payload => {
+            let participants = [];
+
+            payload.forEach(function(participant) {
+                if (participant.projectId == value) {
+                    participants.push({ id: participant.id, name: participant.name, projectId: participant.projectId });
+                }
+            });
+
+            this.setState({
+                participants: participants,
+            });
         });
     }
 
@@ -232,14 +371,29 @@ class DocumentNewApp extends Component {
         });
     }
 
+    setSearchTermContact(searchTermContact) {
+        this.setState({
+            ...this.state,
+            searchTermContact: searchTermContact,
+        });
+    }
+    setLoadingContact(isLoadingContact) {
+        this.setState({
+            ...this.state,
+            isLoadingContact: isLoadingContact,
+        });
+    }
+
     handleSubmit(event) {
         event.preventDefault();
 
         const {
+            administrationId,
             contactId,
             contactGroupId,
             intakeId,
             opportunityId,
+            documentCreatedFrom,
             documentType,
             description,
             documentGroup,
@@ -257,53 +411,71 @@ class DocumentNewApp extends Component {
             participantId,
             orderId,
             attachment,
+            showOnPortal,
         } = this.state.document;
 
         // Validation
         let errors = {};
+        let errorMessage = {};
         let hasErrors = false;
 
         if (
             validator.isEmpty(contactId + '') &&
             validator.isEmpty(contactGroupId + '') &&
-            validator.isEmpty(intakeId + '') &&
-            validator.isEmpty(opportunityId + '') &&
-            validator.isEmpty(housingFileId + '') &&
-            validator.isEmpty(quotationRequestId + '') &&
-            validator.isEmpty(projectId + '') &&
-            validator.isEmpty(participantId + '') &&
+            // validator.isEmpty(intakeId + '') &&            // intake hoort minimaal bij een contact
+            // validator.isEmpty(opportunityId + '') &&       // opportunity hoort minimaal bij een contact
             validator.isEmpty(taskId + '') &&
-            validator.isEmpty(orderId + '')
+            // validator.isEmpty(quotationRequestId + '') &&  // quotationRequest hoort minimaal bij een contact
+            // validator.isEmpty(housingFileId + '') &&       // housingFile hoort minimaal bij een contact
+            validator.isEmpty(projectId + '') &&
+            validator.isEmpty(participantId + '') && // participant hoort minimaal bij een project
+            validator.isEmpty(orderId + '') &&
+            validator.isEmpty(administrationId + '') &&
+            validator.isEmpty(measureId + '') &&
+            validator.isEmpty(campaignId + '')
         ) {
             errors.docLinkedAtAny = true;
+            errorMessage.docLinkedAtAny =
+                'Minimaal 1 van de volgende gegevens moet geselecteerd zijn: Contact, Groep, Taak, Project, Deelnemer, Order, Administratie, Maatregel of Campagne.';
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(description + '')) {
+            errors.description = true;
+            errorMessage.description = 'Verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(documentGroup + '')) {
             errors.documentGroup = true;
+            errorMessage.documentGroup = 'Verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(templateId + '') && documentType == 'internal') {
             errors.templateId = true;
+            errorMessage.templateId = 'Verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(attachment + '') && documentType == 'upload') {
             errors.noDocument = true;
+            errorMessage.noDocument = 'Verplicht';
             hasErrors = true;
         }
 
-        this.setState({ ...this.state, errors: errors });
+        this.setState({ ...this.state, errors: errors, errorMessage: errorMessage });
 
         // If no errors send form
         if (!hasErrors) {
             const data = new FormData();
 
+            data.append('administrationId', administrationId);
             data.append('contactId', contactId);
             data.append('contactGroupId', contactGroupId);
             data.append('intakeId', intakeId);
             data.append('opportunityId', opportunityId);
+            data.append('documentCreatedFrom', documentCreatedFrom);
             data.append('documentType', documentType);
             data.append('description', description);
             data.append('documentGroup', documentGroup);
@@ -321,6 +493,7 @@ class DocumentNewApp extends Component {
             data.append('participantId', participantId);
             data.append('orderId', orderId);
             data.append('attachment', attachment);
+            data.append('showOnPortal', showOnPortal);
 
             DocumentDetailsAPI.newDocument(data)
                 .then(payload => {
@@ -343,33 +516,84 @@ class DocumentNewApp extends Component {
                     <div className="col-md-12">
                         <Panel>
                             <PanelBody className="panel-small">
-                                <DocumentNewToolbar handleSubmit={this.handleSubmit} />
+                                <DocumentNewToolbar
+                                    handleSubmit={this.handleSubmit}
+                                    documentCreatedFromName={this.state.document.documentCreatedFromName}
+                                />
                             </PanelBody>
                         </Panel>
                     </div>
                     <div className="col-md-12">
-                        <DocumentNewForm
-                            document={this.state.document}
-                            contacts={this.state.contacts}
-                            contactGroups={this.state.contactGroups}
-                            intakes={this.state.intakes}
-                            opportunities={this.state.opportunities}
-                            templates={this.state.templates}
-                            tasks={this.state.tasks}
-                            measures={this.state.measures}
-                            quotationRequests={this.state.quotationRequests}
-                            housingFiles={this.state.housingFiles}
-                            campaigns={this.state.campaigns}
-                            projects={this.state.projects}
-                            participants={this.state.participants}
-                            orders={this.state.orders}
-                            errors={this.state.errors}
-                            handleSubmit={this.handleSubmit}
-                            handleDocumentGroupChange={this.handleDocumentGroupChange}
-                            handleInputChange={this.handleInputChange}
-                            onDropAccepted={this.onDropAccepted}
-                            onDropRejected={this.onDropRejected}
-                        />
+                        {this.state.document.documentCreatedFrom === 'project' ? (
+                            <DocumentNewFormProject
+                                document={this.state.document}
+                                templates={this.state.templates}
+                                projects={this.state.projects}
+                                errors={this.state.errors}
+                                errorMessage={this.state.errorMessage}
+                                handleSubmit={this.handleSubmit}
+                                handleDocumentGroupChange={this.handleDocumentGroupChange}
+                                handleInputChange={this.handleInputChange}
+                                onDropAccepted={this.onDropAccepted}
+                                onDropRejected={this.onDropRejected}
+                            />
+                        ) : this.state.document.documentCreatedFrom === 'administration' ? (
+                            <DocumentNewFormAdministration
+                                document={this.state.document}
+                                templates={this.state.templates}
+                                errors={this.state.errors}
+                                errorMessage={this.state.errorMessage}
+                                handleSubmit={this.handleSubmit}
+                                handleDocumentGroupChange={this.handleDocumentGroupChange}
+                                handleInputChange={this.handleInputChange}
+                                onDropAccepted={this.onDropAccepted}
+                                onDropRejected={this.onDropRejected}
+                            />
+                        ) : this.state.document.documentCreatedFrom === 'participant' ? (
+                            <DocumentNewFormParticipant
+                                document={this.state.document}
+                                templates={this.state.templates}
+                                projects={this.state.projects}
+                                participants={this.state.participants}
+                                errors={this.state.errors}
+                                errorMessage={this.state.errorMessage}
+                                handleSubmit={this.handleSubmit}
+                                handleDocumentGroupChange={this.handleDocumentGroupChange}
+                                handleInputChange={this.handleInputChange}
+                                handleProjectChange={this.handleProjectChange}
+                                onDropAccepted={this.onDropAccepted}
+                                onDropRejected={this.onDropRejected}
+                            />
+                        ) : (
+                            <DocumentNewForm
+                                document={this.state.document}
+                                contactGroups={this.state.contactGroups}
+                                intakes={this.state.intakes}
+                                opportunities={this.state.opportunities}
+                                templates={this.state.templates}
+                                tasks={this.state.tasks}
+                                measures={this.state.measures}
+                                quotationRequests={this.state.quotationRequests}
+                                housingFiles={this.state.housingFiles}
+                                campaigns={this.state.campaigns}
+                                projects={this.state.projects}
+                                participants={this.state.participants}
+                                orders={this.state.orders}
+                                errors={this.state.errors}
+                                errorMessage={this.state.errorMessage}
+                                handleSubmit={this.handleSubmit}
+                                handleDocumentGroupChange={this.handleDocumentGroupChange}
+                                handleInputChange={this.handleInputChange}
+                                handleProjectChange={this.handleProjectChange}
+                                onDropAccepted={this.onDropAccepted}
+                                onDropRejected={this.onDropRejected}
+                                handleInputChangeContactId={this.handleInputChangeContactId}
+                                searchTermContact={this.state.searchTermContact}
+                                isLoadingContact={this.state.isLoadingContact}
+                                setSearchTermContact={this.setSearchTermContact}
+                                setLoadingContact={this.setLoadingContact}
+                            />
+                        )}
                     </div>
                 </div>
                 <div className="col-md-3" />
@@ -384,4 +608,10 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(DocumentNewApp);
+const mapStateToProps = state => {
+    return {
+        documentCreatedFroms: state.systemData.documentCreatedFroms,
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DocumentNewApp);

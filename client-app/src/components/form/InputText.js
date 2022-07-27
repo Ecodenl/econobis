@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FaInfoCircle } from 'react-icons/fa';
+import { FaTimesCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 
 const InputText = props => {
@@ -24,17 +25,24 @@ const InputText = props => {
         max,
         step,
         textToolTip,
+        textClearOrDelete,
+        actionClearOrDelete,
         errorMessage,
         divSize,
+        labelSize,
         divClassName,
         autoComplete,
+        disabled,
+        attribute,
     } = props;
 
     return (
         <div className={`form-group ${divSize} ${divClassName}`}>
-            <label htmlFor={id} className={`col-sm-6 ${required}`}>
-                {label}
-            </label>
+            {!!label && (
+                <label htmlFor={id} className={`${labelSize} ${required}`}>
+                    {label}
+                </label>
+            )}
             <div className={`${size}`}>
                 <input
                     type={type}
@@ -52,22 +60,51 @@ const InputText = props => {
                     max={max}
                     autoComplete={autoComplete}
                     step={step}
+                    disabled={disabled}
+                    data-item-id={props.itemId ?? ''}
                 />
             </div>{' '}
-            {textToolTip && (
+            {(textToolTip || textClearOrDelete) && (
                 <div className="col-sm-1">
-                    <FaInfoCircle color={'blue'} size={'15px'} data-tip={textToolTip} data-for={`tooltip-${name}`} />
-                    <ReactTooltip
-                        id={`tooltip-${name}`}
-                        effect="float"
-                        place="right"
-                        multiline={true}
-                        aria-haspopup="true"
-                    />
+                    {textToolTip && (
+                        <>
+                            <FaInfoCircle
+                                color={'blue'}
+                                size={'15px'}
+                                data-tip={textToolTip}
+                                data-for={`tooltip-${name}`}
+                            />
+                            <ReactTooltip
+                                id={`tooltip-${name ? name : id}`}
+                                effect="float"
+                                place="right"
+                                multiline={true}
+                                aria-haspopup="true"
+                            />
+                            &nbsp;
+                        </>
+                    )}
+                    {textClearOrDelete && (
+                        <span onClick={actionClearOrDelete}>
+                            <FaTimesCircle
+                                color={'red'}
+                                size={'15px'}
+                                data-tip={textClearOrDelete}
+                                data-for={`clearOrDelete-${name}`}
+                            />
+                            <ReactTooltip
+                                id={`clearOrDelete-${name}`}
+                                effect="float"
+                                place="right"
+                                multiline={true}
+                                aria-haspopup="true"
+                            />
+                        </span>
+                    )}
                 </div>
             )}
             {error && (
-                <div className="col-sm-offset-6 col-sm-6">
+                <div className={`${size}`}>
                     <span className="has-error-message"> {errorMessage}</span>
                 </div>
             )}
@@ -80,6 +117,7 @@ InputText.defaultProps = {
     className: '',
     size: 'col-sm-6',
     divSize: 'col-sm-6',
+    labelSize: 'col-sm-6',
     name: '',
     type: 'text',
     value: '',
@@ -91,20 +129,24 @@ InputText.defaultProps = {
     max: '',
     step: '',
     textToolTip: '',
+    textClearOrDelete: '',
+    actionClearOrDelete: '',
     errorMessage: '',
     autoComplete: 'off',
+    disabled: false,
     onBlurAction: () => {},
     onClickAction: () => {},
     onChangeAction: () => {},
 };
 
 InputText.propTypes = {
-    label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+    label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     type: PropTypes.string,
     className: PropTypes.string,
     divClassName: PropTypes.string,
     size: PropTypes.string,
     divSize: PropTypes.string,
+    labelSize: PropTypes.string,
     id: PropTypes.string,
     placeholder: PropTypes.string,
     name: PropTypes.string.isRequired,
@@ -120,8 +162,11 @@ InputText.propTypes = {
     max: PropTypes.string,
     step: PropTypes.string,
     textToolTip: PropTypes.string,
+    textClearOrDelete: PropTypes.string,
+    actionClearOrDelete: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
     errorMessage: PropTypes.string,
     autoComplete: PropTypes.string,
+    disabled: PropTypes.bool,
 };
 
 export default InputText;

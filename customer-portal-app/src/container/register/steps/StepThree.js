@@ -7,6 +7,9 @@ import * as Yup from 'yup';
 import Col from 'react-bootstrap/Col';
 import { Alert } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
+import ProjectAPI from '../../../api/project/ProjectAPI';
+import fileDownload from 'js-file-download';
+import { FaFileDownload } from 'react-icons/all';
 
 function StepThree({ project, contactProjectData, previous, next, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
@@ -21,6 +24,18 @@ function StepThree({ project, contactProjectData, previous, next, initialRegiste
             value => value === true
         ),
     });
+
+    function downloadFile(e, id, filename) {
+        e.preventDefault();
+
+        ProjectAPI.documentDownload(project.id, id)
+            .then(payload => {
+                fileDownload(payload.data, filename);
+            })
+            .catch(() => {
+                alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+            });
+    }
 
     return (
         <div>
@@ -37,11 +52,16 @@ function StepThree({ project, contactProjectData, previous, next, initialRegiste
                         <Form>
                             <Row>
                                 <Col xs={12} md={10}>
-                                    <p
-                                        dangerouslySetInnerHTML={{
-                                            __html: contactProjectData.textAgreeTermsMerged.replace(/\n/g, '<br />'),
-                                        }}
-                                    />
+                                    <p>
+                                        <span
+                                            dangerouslySetInnerHTML={{
+                                                __html: contactProjectData.textAgreeTermsMerged.replace(
+                                                    /\n/g,
+                                                    '<br />'
+                                                ),
+                                            }}
+                                        />
+                                    </p>
                                 </Col>
                             </Row>
                             <Row>
@@ -67,6 +87,23 @@ function StepThree({ project, contactProjectData, previous, next, initialRegiste
                                                         ),
                                                     }}
                                                 />
+                                                {project.documentAgreeTerms ? (
+                                                    <>
+                                                        {' '}
+                                                        <a
+                                                            href="#"
+                                                            onClick={e =>
+                                                                downloadFile(
+                                                                    e,
+                                                                    project.documentAgreeTerms.id,
+                                                                    project.documentAgreeTerms.filename
+                                                                )
+                                                            }
+                                                        >
+                                                            <FaFileDownload /> downloaden
+                                                        </a>
+                                                    </>
+                                                ) : null}
                                                 {touched[field.name] && errors[field.name] ? (
                                                     <div className={'error-message text-danger'}>
                                                         {errors[field.name]}
@@ -100,6 +137,23 @@ function StepThree({ project, contactProjectData, previous, next, initialRegiste
                                                         ),
                                                     }}
                                                 />
+                                                {project.documentUnderstandInfo ? (
+                                                    <>
+                                                        {' '}
+                                                        <a
+                                                            href="#"
+                                                            onClick={e =>
+                                                                downloadFile(
+                                                                    e,
+                                                                    project.documentUnderstandInfo.id,
+                                                                    project.documentUnderstandInfo.filename
+                                                                )
+                                                            }
+                                                        >
+                                                            <FaFileDownload /> downloaden
+                                                        </a>
+                                                    </>
+                                                ) : null}{' '}
                                                 {touched[field.name] && errors[field.name] ? (
                                                     <div className={'error-message text-danger'}>
                                                         {errors[field.name]}

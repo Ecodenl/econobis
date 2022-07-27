@@ -206,6 +206,7 @@ class RevenuePartsKwhController extends ApiController
         }
 
         $document = new Document();
+        $document->document_created_from = 'project';
         $document->document_type = 'internal';
         $document->document_group = 'revenue';
         $document->project_id = $revenuePartsKwh->revenuesKwh->project->id;
@@ -503,15 +504,16 @@ class RevenuePartsKwhController extends ApiController
         $subject = $request->input('subject');
         $documentTemplateId = $request->input('documentTemplateId');
         $emailTemplateId = $request->input('emailTemplateId');
+        $showOnPortal = $request->input('showOnPortal');
 
         foreach($distributionPartsKwhIds as $distributionPartsKwhId) {
-            CreateRevenuePartsKwhReport::dispatch($distributionPartsKwhId, $subject, $documentTemplateId, $emailTemplateId, Auth::id());
+            CreateRevenuePartsKwhReport::dispatch($distributionPartsKwhId, $subject, $documentTemplateId, $emailTemplateId, $showOnPortal, Auth::id());
         }
 
         return null;
     }
 
-    public function createParticipantRevenuePartsReport($subject, $distributionPartsKwhId, $distributionKwhId, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate)
+    public function createParticipantRevenuePartsReport($subject, $distributionPartsKwhId, $distributionKwhId, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate, $showOnPortal)
     {
         $portalName = PortalSettings::get('portalName');
         $cooperativeName = PortalSettings::get('cooperativeName');
@@ -607,6 +609,7 @@ class RevenuePartsKwhController extends ApiController
                 $document->project_id = $project->id;
                 $document->participation_project_id = $distributionKwh->participation_id;
                 $document->template_id = $documentTemplate->id;
+                $document->show_on_portal = $showOnPortal;
 
                 $filename = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_'
                     . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
@@ -878,7 +881,7 @@ class RevenuePartsKwhController extends ApiController
     protected function translateToValidCharacterSet($field){
 
         $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
-        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
+//        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 
         return $field;

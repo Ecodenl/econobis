@@ -26,11 +26,6 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
     return (
         <Row>
             <Col xs={12} md={6}>
-                <FormLabel className={'field-label'}>Contactnummer</FormLabel>
-                <Row>
-                    <TextBlock className={'col-12 col-sm-8'}>{number}</TextBlock>
-                </Row>
-
                 <FormLabel className={'field-label'}>Bedrijfsnaam</FormLabel>
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'} placeholder={'Bedrijfsnaam'}>
@@ -117,6 +112,11 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                     <TextBlock className={'col-12 col-sm-6'} placeholder={'Telefoonnummer'}>
                         {phoneNumberTwo.number}
                     </TextBlock>
+                </Row>
+
+                <FormLabel className={'field-label'}>Contactnummer</FormLabel>
+                <Row>
+                    <TextBlock className={'col-12 col-sm-8'}>{number}</TextBlock>
                 </Row>
             </Col>
             <Col xs={12} md={6}>

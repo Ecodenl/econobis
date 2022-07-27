@@ -71,11 +71,13 @@ class ProjectRevenueDistributionCalculator
                 foreach ($mutations as $mutation) {
                     $dateEntry = $mutation->date_entry;
 
-                    // If date entry is before date begin then date entry is equal to date begin
-                    if($dateEntry < $dateBegin) $dateEntry = $dateBegin;
+                    if($dateEntry <= $dateEnd) {
+                        // If date entry is before date begin then date entry is equal to date begin
+                        if ($dateEntry < $dateBegin) $dateEntry = $dateBegin;
 
-                    $daysOfPeriod = $dateEnd->diffInDays($dateEntry);
-                    $totalParticipationsDays = $totalParticipationsDays + ($daysOfPeriod * $mutation->quantity);
+                        $daysOfPeriod = $dateEnd->diffInDays($dateEntry);
+                        $totalParticipationsDays = $totalParticipationsDays + ($daysOfPeriod * $mutation->quantity);
+                    }
                 }
             }
 
@@ -84,11 +86,13 @@ class ProjectRevenueDistributionCalculator
             foreach ($mutations as $mutation) {
                 $dateEntry = $mutation->date_entry;
 
-                // If date entry is before date begin then date entry is equal to date begin
-                if($dateEntry < $dateBegin) $dateEntry = $dateBegin;
+                if($dateEntry <= $dateEnd) {
+                    // If date entry is before date begin then date entry is equal to date begin
+                    if ($dateEntry < $dateBegin) $dateEntry = $dateBegin;
 
-                $daysOfPeriod = $dateEnd->diffInDays($dateEntry);
-                $distributionParticipationsDays = $distributionParticipationsDays + ($daysOfPeriod * $mutation->quantity);
+                    $daysOfPeriod = $dateEnd->diffInDays($dateEntry);
+                    $distributionParticipationsDays = $distributionParticipationsDays + ($daysOfPeriod * $mutation->quantity);
+                }
             }
             $distributionFactor = $distributionParticipationsDays / $totalParticipationsDays;
             $payout = $totalResult * $distributionFactor;

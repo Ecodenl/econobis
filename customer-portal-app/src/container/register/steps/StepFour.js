@@ -37,7 +37,6 @@ function StepFour({ project, contactProjectData, previous, next, registerValues,
     function handleSubmitRegisterValues(actions, next) {
         ParticipantProjectAPI.createParticipantProject(registerValues)
             .then(payload => {
-                // console.log(payload);
                 actions.setSubmitting(false);
 
                 /**

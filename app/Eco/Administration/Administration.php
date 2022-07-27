@@ -3,6 +3,7 @@
 namespace App\Eco\Administration;
 
 use App\Eco\Country\Country;
+use App\Eco\Document\Document;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\Invoice\Invoice;
@@ -42,7 +43,7 @@ class Administration extends Model
     //Per administratie heeft de contact een ander twinfield nummer
     public function twinfieldNumbers()
     {
-        return $this->hasMany(TwinfieldcustomerNumber::class);
+        return $this->hasMany(TwinfieldCustomerNumber::class);
     }
 
     public function getTwinfieldConnectionTypeWithIdAndName()
@@ -51,7 +52,6 @@ class Administration extends Model
 
         return TwinfieldConnectionTypeWithIdAndName::get($this->twinfield_connection_type);
     }
-
 
     public function users()
     {
@@ -71,6 +71,11 @@ class Administration extends Model
     public function sepas()
     {
         return $this->hasMany(Sepa::class)->orderBy('created_at', 'desc');
+    }
+
+    public function documents()
+    {
+        return $this->belongsToMany(Document::class);
     }
 
     public function projects()
@@ -137,15 +142,39 @@ class Administration extends Model
         return $this->belongsTo(PortalSettingsLayout::class);
     }
 
+    public function documentsNotOnPortal(){
+        return $this->hasMany(Document::class)->where('document_created_from', 'administration')->where('show_on_portal', false)->orderBy('documents.id', 'desc');
+    }
+
+    public function documentsOnPortal(){
+        return $this->hasMany(Document::class)->where('document_created_from', 'administration')->where('show_on_portal', true)->orderBy('documents.id', 'desc');
+    }
+
+
     //appended fields
     public function getPortalSettingsLayoutAssignedAttribute()
     {
         if($this->portal_settings_layout_id)
         {
-            return PortalSettingsLayout::where('id', $this->portal_settings_layout_id)->first();
+            $portalSettingsLayout = PortalSettingsLayout::where('id', $this->portal_settings_layout_id)->first();
         }else{
-            return PortalSettingsLayout::where('is_default', true)->first();
+            $portalSettingsLayout = PortalSettingsLayout::where('is_default', true)->first();
         }
+
+        if(empty($portalSettingsLayout->portal_logo_file_name_header))
+        {
+            $portalSettingsLayout->portal_logo_file_name_header = $portalSettingsLayout->portal_logo_file_name;
+        }
+        if(empty($portalSettingsLayout->portal_image_bg_file_name_login))
+        {
+            $portalSettingsLayout->portal_image_bg_file_name_login = 'page-head5.png';
+        }
+        if(empty($portalSettingsLayout->portal_image_bg_file_name_header))
+        {
+            $portalSettingsLayout->portal_image_bg_file_name_header = $portalSettingsLayout->portal_image_bg_file_name_login;
+        }
+
+        return $portalSettingsLayout;
     }
 
     public function getTotalOrdersAttribute()

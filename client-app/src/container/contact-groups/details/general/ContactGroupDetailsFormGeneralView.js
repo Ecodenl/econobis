@@ -25,6 +25,7 @@ const ContactGroupDetailsFormGeneralView = props => {
         lapostaListId,
         lapostaListCreatedAt,
         emailTemplateNewContactLink = {},
+        includeIntoExportGroupReport,
     } = props.contactGroupDetails;
 
     return (
@@ -95,6 +96,19 @@ const ContactGroupDetailsFormGeneralView = props => {
                     />
                 )}
             </div>
+
+            {/*todo WM: check of filter op static er niet af moet ?*/}
+            {type.id === 'static' && (
+                <div className="row">
+                    <ViewText
+                        label={'Meenemen in export groep rapportage'}
+                        value={includeIntoExportGroupReport ? 'Ja' : 'Nee'}
+                        size={'col-sm-5'}
+                        name={'includeIntoExportGroupReport'}
+                        textToolTip={`Als je deze optie op "AAN" zet zal deze groep getoond worden in de export groepen rapportage op de "groepen beheer" pagina.`}
+                    />
+                </div>
+            )}
 
             <div className="row">
                 <ViewText label={'Gemaakt op'} value={createdAt && moment(createdAt).format('DD-MM-Y')} />

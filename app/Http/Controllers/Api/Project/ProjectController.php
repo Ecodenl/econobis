@@ -57,9 +57,14 @@ class ProjectController extends ApiController
             'revenuesKwh.createdBy',
             'tasks',
             'documents',
+            'documentsNotOnPortal',
+            'documentsOnPortal',
             'administration',
             'requiresContactGroups',
             'documentTemplateAgreement',
+            'documentAgreeTerms',
+            'documentUnderstandInfo',
+            'documentProjectInfo',
             'emailTemplateAgreement',
             'questionAboutMembershipGroup',
             'memberGroup',
@@ -124,6 +129,9 @@ class ProjectController extends ApiController
             ->string('linkAgreeTerms')->alias('link_agree_terms')->next()
             ->string('linkUnderstandInfo')->alias('link_understand_info')->next()
             ->string('linkProjectInfo')->alias('link_project_info')->next()
+            ->integer('documentIdAgreeTerms')->validate('nullable|exists:documents,id')->onEmpty(null)->alias('document_id_agree_terms')->next()
+            ->integer('documentIdUnderstandInfo')->validate('nullable|exists:documents,id')->onEmpty(null)->alias('document_id_understand_info')->next()
+            ->integer('documentIdProjectInfo')->validate('nullable|exists:documents,id')->onEmpty(null)->alias('document_id_project_info')->next()
             ->boolean('showQuestionAboutMembership')->whenMissing(false)->onEmpty(false)->alias('show_question_about_membership')->next()
             ->boolean('useTransactionCostsWithMembership')->whenMissing(false)->onEmpty(false)->alias('use_transaction_costs_with_membership')->next()
             ->integer('questionAboutMembershipGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('question_about_membership_group_id')->next()
@@ -239,6 +247,9 @@ class ProjectController extends ApiController
             ->string('linkAgreeTerms')->alias('link_agree_terms')->next()
             ->string('linkUnderstandInfo')->alias('link_understand_info')->next()
             ->string('linkProjectInfo')->alias('link_project_info')->next()
+            ->integer('documentIdAgreeTerms')->validate('nullable|exists:documents,id')->onEmpty(null)->alias('document_id_agree_terms')->next()
+            ->integer('documentIdUnderstandInfo')->validate('nullable|exists:documents,id')->onEmpty(null)->alias('document_id_understand_info')->next()
+            ->integer('documentIdProjectInfo')->validate('nullable|exists:documents,id')->onEmpty(null)->alias('document_id_project_info')->next()
             ->boolean('showQuestionAboutMembership')->whenMissing(false)->onEmpty(false)->alias('show_question_about_membership')->next()
             ->boolean('useTransactionCostsWithMembership')->whenMissing(false)->onEmpty(false)->alias('use_transaction_costs_with_membership')->next()
             ->integer('questionAboutMembershipGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('question_about_membership_group_id')->next()

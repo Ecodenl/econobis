@@ -5,17 +5,38 @@ import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 
 const InputToggle = props => {
-    const { label, size, id, name, value, onChangeAction, textToolTip, required, divSize, className, disabled } = props;
+    const {
+        label,
+        size,
+        id,
+        name,
+        value,
+        onChangeAction,
+        textToolTip,
+        required,
+        divSize,
+        labelSize,
+        className,
+        disabled,
+        itemId,
+    } = props;
 
     return (
         <div className={`form-group ${divSize} ${className}`}>
             <div>
-                <label htmlFor={id} className={`col-sm-6 ${required}`}>
+                <label htmlFor={id} className={`${labelSize} ${required}`}>
                     {label}
                 </label>
             </div>
             <div className={`${size}`}>
-                <Toggle id={id} name={name} onChange={onChangeAction} defaultChecked={value} disabled={disabled} />
+                <Toggle
+                    id={id}
+                    name={name}
+                    onChange={onChangeAction}
+                    defaultChecked={value}
+                    disabled={disabled}
+                    data-item-id={itemId ?? ''}
+                />
             </div>
             {textToolTip && (
                 <div className="col-sm-1">
@@ -37,6 +58,7 @@ InputToggle.defaultProps = {
     className: '',
     size: 'col-sm-6',
     divSize: 'col-sm-6',
+    labelSize: 'col-sm-6',
     required: '',
     disabled: false,
     value: false,
@@ -48,6 +70,7 @@ InputToggle.propTypes = {
     type: PropTypes.string,
     size: PropTypes.string,
     divSize: PropTypes.string,
+    labelSize: PropTypes.string,
     id: PropTypes.string,
     name: PropTypes.string.isRequired,
     textToolTip: PropTypes.string,

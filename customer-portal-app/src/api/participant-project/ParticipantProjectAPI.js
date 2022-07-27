@@ -12,4 +12,10 @@ export default {
 
         return axiosInstance.get(requestUrl);
     },
+
+    participantDocumentDownload: function(participantId, id) {
+        const requestUrl = `/project/participant/${participantId}/document/${id}/download`;
+
+        return axiosInstance.get(requestUrl, { responseType: 'blob' });
+    },
 };

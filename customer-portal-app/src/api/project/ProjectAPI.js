@@ -72,9 +72,18 @@ export default {
                     rlt: {
                         projectType: { fld: ['id', 'codeRef'] },
                         administration: { fld: ['id', 'name', 'portalSettingsLayoutAssigned'] },
+                        documentAgreeTerms: { fld: ['id', 'filename'] },
+                        documentUnderstandInfo: { fld: ['id', 'filename'] },
+                        documentProjectInfo: { fld: ['id', 'filename'] },
                     },
                 },
             },
         });
+    },
+
+    documentDownload: function(projectId, id) {
+        const requestUrl = `/project/${projectId}/document/${id}/download`;
+
+        return axiosInstance.get(requestUrl, { responseType: 'blob' });
     },
 };

@@ -46,6 +46,9 @@ const ProjectFormViewGeneral = ({
     linkAgreeTerms,
     linkUnderstandInfo,
     linkProjectInfo,
+    documentAgreeTerms,
+    documentUnderstandInfo,
+    documentProjectInfo,
     showQuestionAboutMembership,
     useTransactionCostsWithMembership,
     questionAboutMembershipGroup,
@@ -279,7 +282,11 @@ const ProjectFormViewGeneral = ({
                         </label>
                     </div>
                     <div className="row">
-                        <ViewTextLong label={'Informatie link'} value={linkProjectInfo} />
+                        {documentProjectInfo != null ? (
+                            <ViewTextLong label={'Informatie document'} value={documentProjectInfo.description} />
+                        ) : (
+                            <ViewTextLong label={'Informatie link'} value={linkProjectInfo} />
+                        )}
                     </div>
                     <hr />
                     <div className="row">
@@ -419,17 +426,28 @@ const ProjectFormViewGeneral = ({
                     </div>
                     <hr />
                     <div className="row">
-                        <ViewTextLong label={'Voorwaarden link'} value={linkAgreeTerms} />
+                        {documentAgreeTerms != null ? (
+                            <ViewTextLong label={'Voorwaarden document'} value={documentAgreeTerms.description} />
+                        ) : (
+                            <ViewTextLong label={'Voorwaarden link'} value={linkAgreeTerms} />
+                        )}
                     </div>
                     <div className="row">
-                        <ViewTextLong label={'Voorwaarden link tekst'} value={textLinkAgreeTerms} />
+                        <ViewTextLong label={'Voorwaarden tekst'} value={textLinkAgreeTerms} />
                     </div>
                     <hr />
                     <div className="row">
-                        <ViewTextLong label={'Project informatie link'} value={linkUnderstandInfo} />
+                        {documentUnderstandInfo != null ? (
+                            <ViewTextLong
+                                label={'Project informatie  document'}
+                                value={documentUnderstandInfo.description}
+                            />
+                        ) : (
+                            <ViewTextLong label={'Project informatie link'} value={linkUnderstandInfo} />
+                        )}
                     </div>
                     <div className="row">
-                        <ViewTextLong label={'Project informatie link tekst'} value={textLinkUnderstandInfo} />
+                        <ViewTextLong label={'Project informatie tekst'} value={textLinkUnderstandInfo} />
                     </div>
                     <hr />
                     <div className="row">

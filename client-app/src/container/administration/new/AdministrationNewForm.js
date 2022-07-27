@@ -19,13 +19,20 @@ import InputToggle from '../../../components/form/InputToggle';
 import ViewText from '../../../components/form/ViewText';
 import InputDate from '../../../components/form/InputDate';
 import moment from 'moment';
+import Image from 'react-bootstrap/lib/Image';
+import PortalImageCrop from '../../../components/imageUploadAndCrop/PortalImageCrop';
 
 class AdministrationNewForm extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            newLogo: false,
+            showPreviewInvoice: false,
+            image: '',
+            imageItemName: '',
+            showModalUploadImage: false,
+            showModalCropImage: false,
+            useAutoCropper: true,
             emailTemplates: [],
             mailboxAddresses: [],
             isSaving: false,
@@ -49,6 +56,7 @@ class AdministrationNewForm extends Component {
                 rsinNumber: '',
                 defaultPaymentTerm: '',
                 numberOfInvoiceReminders: 3,
+                logoName: '',
                 emailTemplateIdCollection: '',
                 emailTemplateIdTransfer: '',
                 emailTemplateReminderId: '',
@@ -99,7 +107,6 @@ class AdministrationNewForm extends Component {
                 emailTemplates: true,
             },
         };
-
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     }
 
@@ -128,20 +135,43 @@ class AdministrationNewForm extends Component {
         });
     }
 
-    toggleNewLogo = () => {
+    closeUploadImage = () => {
         this.setState({
-            newLogo: !this.state.newLogo,
+            showModalUploadImage: false,
+        });
+    };
+    toggleUploadImage = imageItemName => {
+        this.setState({
+            showModalUploadImage: !this.state.showModalUploadImage,
+            imageItemName: imageItemName,
         });
     };
 
-    addAttachment = file => {
+    addImage = (file, imageItemName, useAutoCropper) => {
+        this.setState({
+            ...this.state,
+            image: file[0],
+            useAutoCropper: useAutoCropper,
+            showModalCropImage: true,
+        });
+    };
+
+    closeShowCrop = () => {
+        this.setState({
+            showModalCropImage: false,
+        });
+    };
+    cropImage = file => {
         this.setState({
             ...this.state,
             administration: {
                 ...this.state.administration,
-                attachment: file[0],
-                filename: file[0].name,
+                attachment: file,
+                filename: file.name,
+                logoName: file.name,
+                src: file.name,
             },
+            showModalCropImage: false,
         });
     };
 
@@ -298,7 +328,6 @@ class AdministrationNewForm extends Component {
             if (administrationCodeNotUnique) {
                 errors.administrationCode = true;
                 hasErrors = true;
-                console.log('fout 2');
             }
 
             let twinFieldOfficeAndOrganizationCodeNotUnique = false;
@@ -361,8 +390,8 @@ class AdministrationNewForm extends Component {
             data.append('emailTemplateReminderId', administration.emailTemplateReminderId);
             data.append('emailTemplateExhortationId', administration.emailTemplateExhortationId);
             data.append('emailTemplateFinancialOverviewId', administration.emailTemplateFinancialOverviewId);
-            data.append('usesTwinfield', administration.usesTwinfield);
             data.append('attachment', administration.attachment);
+            data.append('usesTwinfield', administration.usesTwinfield);
             data.append('twinfieldConnectionType', administration.twinfieldConnectionType);
             data.append('twinfieldUsername', administration.twinfieldUsername);
             data.append('twinfieldPassword', administration.twinfieldPassword);
@@ -376,7 +405,7 @@ class AdministrationNewForm extends Component {
             data.append('usesVat', administration.usesVat);
             data.append('emailBccNotas', administration.emailBccNotas);
             data.append('portalSettingsLayoutId', administration.portalSettingsLayoutId);
-            data.append('usesMollie', administration.usesMollie);
+            data.append('logoName', administration.logoName);
             data.append('usesMollie', administration.usesMollie);
             data.append('mollieApiKey', administration.mollieApiKey);
 
@@ -410,6 +439,7 @@ class AdministrationNewForm extends Component {
             defaultPaymentTerm,
             numberOfInvoiceReminders,
             attachment,
+            logoName,
             emailTemplateIdCollection,
             emailTemplateIdTransfer,
             emailTemplateReminderId,
@@ -664,17 +694,15 @@ class AdministrationNewForm extends Component {
                                 value={mailboxId}
                                 onChangeAction={this.handleInputChange}
                             />
-                            <div className="form-group col-sm-6">
-                                <label className="col-sm-6">Kies logo</label>
-                                <div className="col-sm-6">
-                                    <input
-                                        type="text"
-                                        className="form-control input-sm col-sm-6"
-                                        value={attachment && attachment.name}
-                                        onClick={this.toggleNewLogo}
-                                    />
-                                </div>
-                            </div>
+                            <InputText
+                                label="Logo"
+                                divSize={'col-sm-6'}
+                                value={attachment ? attachment.name : logoName}
+                                onClickAction={() => {
+                                    this.toggleUploadImage('logo-administration');
+                                }}
+                                onChangeaction={() => {}}
+                            />
                         </div>
 
                         <div className="row">
@@ -685,12 +713,23 @@ class AdministrationNewForm extends Component {
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.emailBccNotas}
                             />
-                            <ViewText
-                                label={'Gebruikt BTW'}
-                                value={usesVat ? 'Ja' : 'Nee'}
-                                className={'col-sm-6 form-group'}
-                                hidden={true}
-                            />
+                            <div className="col-sm-6">
+                                <label className="col-sm-6"></label>
+                                <div className="col-sm-6">
+                                    <Image
+                                        src={attachment && attachment.preview ? attachment.preview : ''}
+                                        style={{
+                                            border: '1px solid #999',
+                                            display: 'inline-block',
+                                            padding: '1px',
+                                            borderRadius: '1px',
+                                            minWidth: '50px',
+                                            height: '50px',
+                                            boxShadow: '0 0 0 1px #fff inset',
+                                        }}
+                                    />
+                                </div>
+                            </div>
                         </div>
 
                         <div className="row">
@@ -702,14 +741,13 @@ class AdministrationNewForm extends Component {
                                 value={portalSettingsLayoutId}
                                 onChangeAction={this.handleReactSelectChange}
                             />
-                        </div>
-
-                        {this.state.newLogo && (
-                            <AdministrationLogoNew
-                                toggleShowNew={this.toggleNewLogo}
-                                addAttachment={this.addAttachment}
+                            <ViewText
+                                label={'Gebruikt BTW'}
+                                value={usesVat ? 'Ja' : 'Nee'}
+                                className={'col-sm-6 form-group'}
+                                hidden={true}
                             />
-                        )}
+                        </div>
 
                         {(this.props.meDetails.email === 'support@econobis.nl' ||
                             this.props.meDetails.email === 'software@xaris.nl') && (
@@ -853,10 +891,20 @@ class AdministrationNewForm extends Component {
                             </React.Fragment>
                         )}
 
-                        {this.state.newLogo && (
+                        {this.state.showModalUploadImage && (
                             <AdministrationLogoNew
-                                toggleShowNew={this.toggleNewLogo}
-                                addAttachment={this.addAttachment}
+                                closeUploadImage={this.closeUploadImage}
+                                addAttachment={this.addImage}
+                                imageItemName={this.state.imageItemName}
+                            />
+                        )}
+                        {this.state.showModalCropImage && (
+                            <PortalImageCrop
+                                closeShowCrop={this.closeShowCrop}
+                                useAutoCropper={this.state.useAutoCropper}
+                                image={this.state.image}
+                                imageItemName={this.state.imageItemName}
+                                cropImage={this.cropImage}
                             />
                         )}
                     </PanelBody>

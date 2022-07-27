@@ -19,7 +19,8 @@ const Register = ({ location, match, login }) => {
     const email = decodeURIComponent(match.params.email);
 
     const [redirectToReferrer, toggleRedirect] = useState(false);
-    let { from } = location.state || { from: { pathname: '/gegevens' } };
+    let { from } = location.state || { from: { pathname: '/dashboard' } };
+    const [imageHash, setImageHash] = useState(Date.now());
 
     function handleSubmit(values, actions) {
         AuthAPI.register({
@@ -50,8 +51,8 @@ const Register = ({ location, match, login }) => {
                     });
             })
             .catch(error => {
-                console.log(error.response.status);
-                console.log(error.response.data.message);
+                // console.log(error.response.status);
+                // console.log(error.response.data.message);
                 toggleError(true);
                 if (
                     error.response &&
@@ -84,7 +85,7 @@ const Register = ({ location, match, login }) => {
                 <Container fluid className="authorization-container">
                     <Row className="justify-content-center align-content-center full-height">
                         <Col xs="12" sm="8" md="6" lg="4" xl="2">
-                            <img src="images/logo.png" alt="" className="image logo-container" />
+                            <img src={`images/logo.png?${imageHash}`} alt="" className="image logo-container" />
                             {showSuccessMessage ? (
                                 <>
                                     <h3 className={'authorization-text'}>Je account is geactiveerd</h3>

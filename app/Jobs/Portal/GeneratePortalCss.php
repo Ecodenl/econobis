@@ -37,17 +37,20 @@ class GeneratePortalCss implements ShouldQueue
     {
         $defaultPortalSettingsLayout = PortalSettingsLayout::where('is_default', true)->first();
         $html = view('portal.portal_css', [
-            'defaultPortalSettingsLayout' => $defaultPortalSettingsLayout
+            'defaultPortalSettingsLayout' => $defaultPortalSettingsLayout,
+            'imageHash' => time()
         ])->render();
 
         try{
             if(Config::get('app.env') == "local")
             {
                 Storage::disk('public_portal_local')->put('portal.css', $html);
+                Storage::disk('customer_portal_app_build_local')->put('portal.css', $html);
+                Storage::disk('customer_portal_app_public_local')->put('portal.css', $html);
             }else{
                 Storage::disk('public_portal')->put('portal.css', $html);
             }
-        }catch (Exception $exception){
+        }catch (\Exception $exception){
             Log::error('Opslaan gewijzigde portal.css mislukt : ' . $exception->getMessage());
         }
     }

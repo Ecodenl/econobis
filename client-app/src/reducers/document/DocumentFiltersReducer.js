@@ -15,6 +15,10 @@ const filtersReducerDefaultState = {
         field: 'contact',
         data: '',
     },
+    documentCreatedFrom: {
+        field: 'documentCreatedFrom',
+        data: '',
+    },
     documentType: {
         field: 'documentType',
         data: '',
@@ -57,6 +61,14 @@ export default (state = filtersReducerDefaultState, action) => {
                 contact: {
                     ...state.contact,
                     data: action.contact,
+                },
+            };
+        case 'SET_FILTER_DOCUMENT_DOCUMENT_CREATED_FROM':
+            return {
+                ...state,
+                documentCreatedFrom: {
+                    ...state.documentCreatedFrom,
+                    data: action.documentCreatedFrom,
                 },
             };
         case 'SET_FILTER_DOCUMENT_DOCUMENT_TYPE':

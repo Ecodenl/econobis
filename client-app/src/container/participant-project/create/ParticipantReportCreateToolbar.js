@@ -7,6 +7,7 @@ import ButtonText from '../../../components/button/ButtonText';
 class ParticipantReportCreateToolbar extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             showCreate: false,
         };
@@ -30,6 +31,15 @@ class ParticipantReportCreateToolbar extends Component {
                 </div>
                 <div className="col-md-4">
                     <h4 className="text-center">Rapportage aanmaken ({this.props.amountOfParticipants})</h4>
+                    {this.props.showOnPortal ? (
+                        <div className="text-center text-success">
+                            Deze rapportage zal ook beschikbaar/zichtbaar worden op de Portal
+                        </div>
+                    ) : (
+                        <div className="text-center text-danger">
+                            Deze rapportage zal NIET beschikbaar/zichtbaar worden op de Portal
+                        </div>
+                    )}
                 </div>
                 <div className="col-md-4" />
             </div>

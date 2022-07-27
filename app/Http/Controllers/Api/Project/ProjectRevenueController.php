@@ -698,9 +698,10 @@ class ProjectRevenueController extends ApiController
         $subject = $request->input('subject');
         $documentTemplateId = $request->input('documentTemplateId');
         $emailTemplateId = $request->input('emailTemplateId');
+        $showOnPortal = $request->input('showOnPortal');
 
         foreach($distributionIds as $distributionId) {
-            CreateRevenueReport::dispatch($distributionId, $subject, $documentTemplateId, $emailTemplateId, Auth::id());
+            CreateRevenueReport::dispatch($distributionId, $subject, $documentTemplateId, $emailTemplateId, $showOnPortal, Auth::id());
         }
 
 // null voor succesboodschap. todo nog even checken of wat nut was om hier ProjectRevenueDistiibution terug te geven.
@@ -708,7 +709,7 @@ class ProjectRevenueController extends ApiController
         return null;
     }
 
-    public function createParticipantRevenueReport($subject, $distributionId, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate)
+    public function createParticipantRevenueReport($subject, $distributionId, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate, $showOnPortal)
     {
         $portalName = PortalSettings::get('portalName');
         $cooperativeName = PortalSettings::get('cooperativeName');
@@ -797,12 +798,14 @@ class ProjectRevenueController extends ApiController
                 $time = Carbon::now();
 
                 $document = new Document();
+                $document->document_created_from = 'participant';
                 $document->document_type = 'internal';
                 $document->document_group = 'revenue';
                 $document->contact_id = $contact->id;
                 $document->project_id = $project->id;
                 $document->participation_project_id = $distribution->participation_id;
                 $document->template_id = $documentTemplate->id;
+                $document->show_on_portal = $showOnPortal;
 
                 $filename = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_'
                     . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
@@ -967,7 +970,7 @@ class ProjectRevenueController extends ApiController
     protected function translateToValidCharacterSet($field){
 
         $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
-        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
+//        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 
         return $field;

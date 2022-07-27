@@ -179,6 +179,12 @@ export default {
         return axios.get(requestUrl);
     },
 
+    getExcelExportGroupReport: () => {
+        const requestUrl = `${URL_CONTACT_GROUP}/excel/group-report`;
+
+        return axiosInstance.get(requestUrl, { responseType: 'blob' });
+    },
+
     deleteComposedGroup: ({ contactGroupId, contactGroupToDetachId }) => {
         const requestUrl = `${URL_CONTACT_GROUP}/composed/${contactGroupId}/${contactGroupToDetachId}/detach`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;

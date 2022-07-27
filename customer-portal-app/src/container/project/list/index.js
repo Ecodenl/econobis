@@ -8,8 +8,6 @@ import moment from 'moment';
 import LoadingView from '../../../components/general/LoadingView';
 import ContactAPI from '../../../api/contact/ContactAPI';
 import { PortalUserConsumer } from '../../../context/PortalUserContext';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import Button from 'react-bootstrap/Button';
 import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 import rebaseContact from '../../../helpers/RebaseContact';
@@ -73,20 +71,6 @@ function ProjectList(props) {
             });
     }
 
-    function formatFullName(fullName) {
-        if (fullName) {
-            if (fullName.search(',') < 0) {
-                return fullName;
-            } else {
-                const firstName = fullName.slice(fullName.search(',') + 2);
-                const lastName = fullName.slice(0, fullName.search(','));
-                return firstName + ' ' + lastName;
-            }
-        } else {
-            return ' ';
-        }
-    }
-
     function usePrevious(value) {
         const ref = useRef();
         useEffect(() => {
@@ -114,25 +98,10 @@ function ProjectList(props) {
     return (
         <Container className={'content-section'}>
             <Row>
-                <ButtonGroup aria-label="Steps" className="float-left">
-                    <Link to={`/gegevens`}>
-                        <Button className={'w-button'} size="sm">
-                            Gegevens
-                        </Button>
-                    </Link>
-                    &nbsp;
-                    <Link to={`/inschrijvingen-projecten`}>
-                        <Button className={'w-button'} size="sm">
-                            Huidige deelnames
-                        </Button>
-                    </Link>
-                </ButtonGroup>
-            </Row>
-            <Row>
                 <Col>
                     <h1 className="content-heading">
-                        Overzicht projecten waarop{' '}
-                        <strong>{formatFullName(props.currentSelectedContact.fullName)}</strong> kan inschrijven.
+                        Overzicht projecten waarop <strong>{props.currentSelectedContact.fullNameFnf}</strong> kan
+                        inschrijven.
                     </h1>
                 </Col>
             </Row>
@@ -163,7 +132,7 @@ function ProjectList(props) {
                                 <Table responsive>
                                     <thead>
                                         <tr>
-                                            <th>Uitgevende instantie</th>
+                                            <th>Organisatie</th>
                                             <th>Project</th>
                                             <th>Ingeschreven</th>
                                             <th>Start inschrijving</th>

@@ -23,33 +23,16 @@ class DocumentNewFormUpload extends Component {
         const {
             document,
             errors,
+            errorMessage,
             handleInputChange,
             documentGroups,
-            measures,
-            campaigns,
             onDropAccepted,
             onDropRejected,
         } = this.props;
-        const { documentGroup, measureId, campaignId, attachment } = document;
+        const { documentGroup, attachment } = document;
 
         return (
             <div>
-                <div className="row">
-                    <InputSelect
-                        label="Maatregel"
-                        name={'measureId'}
-                        value={measureId}
-                        options={measures}
-                        onChangeAction={handleInputChange}
-                    />
-                    <InputSelect
-                        label="Campagne"
-                        name={'campaignId'}
-                        value={campaignId}
-                        options={campaigns}
-                        onChangeAction={handleInputChange}
-                    />
-                </div>
                 <div className="row">
                     <InputSelect
                         label="Documentgroep"
@@ -59,9 +42,8 @@ class DocumentNewFormUpload extends Component {
                         onChangeAction={handleInputChange}
                         required={'required'}
                         error={errors.documentGroup}
+                        errorMessage={errorMessage.documentGroup}
                     />
-                </div>
-                <div className="row">
                     <div className="form-group col-sm-6">
                         <label className="col-sm-6">Kies bestand</label>
                         <div className="col-sm-6">
@@ -72,6 +54,11 @@ class DocumentNewFormUpload extends Component {
                                 onClick={this.toggleUploadModal}
                             />
                         </div>
+                        {errors && (
+                            <div className="col-sm-offset-6 col-sm-6">
+                                <span className="has-error-message"> {errorMessage.noDocument}</span>
+                            </div>
+                        )}
                     </div>
                 </div>
                 {this.state.showUploadModal && (

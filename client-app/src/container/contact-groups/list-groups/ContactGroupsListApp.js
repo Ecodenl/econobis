@@ -4,12 +4,16 @@ import { connect } from 'react-redux';
 import { fetchContactGroups, clearContactGroups } from '../../../actions/contact/ContactGroupsActions';
 import { setContactGroupPagination } from '../../../actions/contact/ContactGroupPaginationActions';
 import { clearFilterContactGroups } from '../../../actions/contact/ContactGroupsFiltersActions';
+import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
 import ContactGroupsList from './ContactGroupsList';
 import ContactGroupsListToolbar from './ContactGroupsListToolbar';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import filterHelper from '../../../helpers/FilterHelper';
 import { bindActionCreators } from 'redux';
+import moment from 'moment';
+import fileDownload from 'js-file-download';
+import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
 
 class ContactGroupsListApp extends Component {
     constructor(props) {
@@ -49,6 +53,22 @@ class ContactGroupsListApp extends Component {
         this.fetchContactGroupsData();
     }
 
+    getExcelExportGroupReport() {
+        this.props.blockUI();
+
+        setTimeout(() => {
+            ContactGroupAPI.getExcelExportGroupReport()
+                .then(payload => {
+                    var excelFileName = `Contacten-groepen-rapportage-${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`;
+                    fileDownload(payload.data, excelFileName);
+                    this.props.unblockUI();
+                })
+                .catch(error => {
+                    this.props.unblockUI();
+                });
+        }, 100);
+    }
+
     onSubmitFilter() {
         this.props.clearContactGroups();
 
@@ -71,7 +91,10 @@ class ContactGroupsListApp extends Component {
             <Panel className="col-md-12">
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
-                        <ContactGroupsListToolbar resetContactGroupsFilters={() => this.resetContactGroupsFilters()} />
+                        <ContactGroupsListToolbar
+                            resetContactGroupsFilters={() => this.resetContactGroupsFilters()}
+                            getExcelExportGroupReport={() => this.getExcelExportGroupReport()}
+                        />
                     </div>
 
                     <div className="col-md-12 margin-10-top">
@@ -101,7 +124,14 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
-        { fetchContactGroups, clearContactGroups, clearFilterContactGroups, setContactGroupPagination },
+        {
+            fetchContactGroups,
+            clearContactGroups,
+            clearFilterContactGroups,
+            setContactGroupPagination,
+            blockUI,
+            unblockUI,
+        },
         dispatch
     );
 };

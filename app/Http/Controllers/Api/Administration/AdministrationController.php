@@ -62,6 +62,8 @@ class AdministrationController extends ApiController
             'emailTemplateFinancialOverview',
             'portalSettingsLayout',
             'sepas',
+            'documentsNotOnPortal',
+            'documentsOnPortal',
         ]);
 
         return FullAdministration::make($administration);
@@ -109,6 +111,7 @@ class AdministrationController extends ApiController
             ->string('prefixInvoiceNumber')->whenMissing(null)->onEmpty(null)->alias('prefix_invoice_number')->next()
             ->string('emailBccNotas')->whenMissing(null)->onEmpty(null)->alias('email_bcc_notas')->next()
             ->integer('portalSettingsLayoutId')->validate('nullable|exists:portal_settings_layouts,id')->onEmpty(null)->whenMissing(null)->alias('portal_settings_layout_id')->next()
+            ->string('logoName')->whenMissing(null)->onEmpty(null)->alias('logo_name')->next()
             ->get();
 
         //bool als string? waarschijnlijk door formdata
@@ -213,6 +216,7 @@ class AdministrationController extends ApiController
             ->string('prefixInvoiceNumber')->whenMissing(null)->onEmpty(null)->alias('prefix_invoice_number')->next()
             ->string('emailBccNotas')->whenMissing(null)->onEmpty(null)->alias('email_bcc_notas')->next()
             ->integer('portalSettingsLayoutId')->validate('nullable|exists:portal_settings_layouts,id')->onEmpty(null)->whenMissing(null)->alias('portal_settings_layout_id')->next()
+            ->string('logoName')->whenMissing(null)->onEmpty(null)->alias('logo_name')->next()
             ->get();
 
         //bool als string? waarschijnlijk door formdata
@@ -338,7 +342,6 @@ class AdministrationController extends ApiController
             . DIRECTORY_SEPARATOR . 'logos', 'administrations');
 
         $administration->logo_filename = $filename;
-        $administration->logo_name = $attachment->getClientOriginalName();
 
         $administration->save();
     }
@@ -394,6 +397,20 @@ class AdministrationController extends ApiController
     public function syncSentInvoicesFromTwinfield(Administration $administration){
         $twinfieldInvoiceHelper = new TwinfieldInvoiceHelper($administration);
         return $twinfieldInvoiceHelper->processPaidInvoices();
+    }
+
+    public function getLogoDetails(Administration $administration)
+    {
+        $logoFilenameSrc = '';
+        if ($administration->logo_filename) {
+            $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $administration->logo_filename);
+            $logo = file_get_contents($path);
+            $logoFilenameSrc = 'data:' . mime_content_type($path)
+                . ';charset=binary;base64,' . base64_encode($logo);
+            $logoFilenameSrc = str_replace(" ", "", $logoFilenameSrc);
+        }
+
+        return ['logoFilenameSrc' => $logoFilenameSrc];
     }
 
     public function getTotalsInfoAdministration(Administration $administration)

@@ -46,7 +46,7 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
                 </Row>
                 <FormLabel className={'field-label'}>Geboortedatum</FormLabel>
                 <Row>
-                    <TextBlock className={'col-12 col-sm-6 col-md-4'} placeholder={'Geboortedatum'}>
+                    <TextBlock className={'col-12 col-sm-8'} placeholder={'Geboortedatum (dd-mm-jjjj)'}>
                         {person.dateOfBirth ? moment(person.dateOfBirth).format('L') : ''}
                     </TextBlock>
                 </Row>

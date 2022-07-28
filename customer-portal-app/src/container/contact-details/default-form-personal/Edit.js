@@ -176,7 +176,7 @@ const DefaultContactPersonalEdit = function({
                     Geboortedatum
                 </FormLabel>
                 <Row>
-                    <Col xs={12} sm={6}>
+                    <Col xs={12} sm={12} md={8}>
                         <Field
                             name="person.dateOfBirth"
                             render={({ field }) => (
@@ -186,7 +186,7 @@ const DefaultContactPersonalEdit = function({
                                     touched={touched}
                                     onChangeAction={setFieldValue}
                                     id="date_of_birth"
-                                    placeholder={'Geboortedatum'}
+                                    placeholder={'Geboortedatum (dd-mm-jjjj)'}
                                 />
                             )}
                         />

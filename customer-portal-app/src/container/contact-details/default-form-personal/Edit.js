@@ -662,7 +662,7 @@ const DefaultContactPersonalEdit = function({
                         {(!values.primaryAddress.primaryAddressEnergySupplier.memberSince ||
                             values.primaryAddress.primaryAddressEnergySupplier.memberSince.trim() == '') &&
                         ((values.primaryAddress.primaryAddressEnergySupplier.energySupplierId != null &&
-                            values.primaryAddress.primaryAddressEnergySupplier.energySupplierId.trim() != '') ||
+                            values.primaryAddress.primaryAddressEnergySupplier.energySupplierId != '') ||
                             (values.primaryAddress.primaryAddressEnergySupplier.esNumber &&
                                 values.primaryAddress.primaryAddressEnergySupplier.esNumber.trim() != '') ||
                             (values.primaryAddress.primaryAddressEnergySupplier.memberSince &&

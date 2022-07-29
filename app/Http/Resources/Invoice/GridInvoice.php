@@ -28,7 +28,8 @@ class GridInvoice extends JsonResource
         }
 
         $invoiceInTwinfield = ($this->administration->uses_twinfield && $this->twinfield_number && !empty($this->twinfield_number)) ? true : false;
-        $invoicePaidInTwinfield = $invoiceInTwinfield || !$this->administration->date_sync_twinfield_invoices || $this->date_sent >= $this->administration->date_sync_twinfield_invoices;
+        $invoicePaidInTwinfield = $invoiceInTwinfield && (
+            !$this->administration->date_sync_twinfield_invoices || $this->date_sent >= $this->administration->date_sync_twinfield_invoices );
 
         return [
             'id' => $this->id,

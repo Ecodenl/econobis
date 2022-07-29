@@ -161,7 +161,7 @@ class TwinfieldSalesTransactionHelper
         $twinfieldCustomer = null;
         if($twinfieldNumber && $twinfieldNumber->twinfield_number)
         {
-            $twinfieldCustomer = $twinfieldCustomerHelper->getTwinfieldCustomerByCode($twinfieldNumber->twinfield_number);
+            $twinfieldCustomer = $twinfieldCustomerHelper->getTwinfieldCustomerByCode($twinfieldNumber->twinfield_number, $invoice->order->contact);
         }
         if(!$twinfieldCustomer)
         {
@@ -169,9 +169,15 @@ class TwinfieldSalesTransactionHelper
             $twinfieldCustomerHelper->updateCustomer($invoice->order->contact);
         }
 
-        //Invoice datum
+        //Invoice totaal bedrag incl. BTW
+        //Destiny FINAL indien 0 invoice, anders TEMPORARY
+        $totaalBedragIncl = new Money((round($invoice->getTotalInclVatInclReductionAttribute() * 100, 0) ), $this->currency );
+        $isNullInvoice = $invoice->getTotalInclVatInclReductionAttribute() == 0;
+        $invoiceDestiny = $isNullInvoice ? Destiny::FINAL() : Destiny::TEMPORARY();
 
+        //Invoice datum
         $dateInvoice = Carbon::parse($invoice->date_sent);
+
         //Due datum bepalen
         if ($invoice->payment_type_id === 'transfer') {
             if ( $invoice->days_to_expire && $invoice->days_to_expire > 0 ){
@@ -194,11 +200,10 @@ class TwinfieldSalesTransactionHelper
             }
         }
 
-//        dd("bye");
         //Salestransaction - Header XML maken
         $twinfieldSalesTransaction = new SalesTransaction();
         $twinfieldSalesTransaction
-            ->setDestiny(Destiny::TEMPORARY())
+            ->setDestiny($invoiceDestiny)
             ->setRaiseWarning(false )
             ->setCode($this->dagboekCode)
             ->setCurrency($this->currency)
@@ -211,10 +216,6 @@ class TwinfieldSalesTransactionHelper
 
         //Salestransaction - Total line maken
         $idTeller = 1;
-//        $totaalBedragExcl = round($invoice->getTotalExclVatInclReductionAttribute() * 100, 0);
-//        $totaalBedragBtw  = round($invoice->getTotalVatInclReductionAttribute() * 100, 0);
-//        $totaalBedragIncl = new Money(($totaalBedragExcl + $totaalBedragBtw ), $this->currency );
-        $totaalBedragIncl = new Money((round($invoice->getTotalInclVatInclReductionAttribute() * 100, 0) ), $this->currency );
         $twinfieldTransactionLineTotal = new SalesTransactionLine();
         $twinfieldTransactionLineTotal
             ->setId($idTeller)
@@ -304,7 +305,12 @@ class TwinfieldSalesTransactionHelper
         try {
             $response = $this->transactionApiConnector->send($twinfieldSalesTransaction);
             if($invoice->status_id === 'sent'){
-                $invoice->status_id = 'exported';
+                // 0 invoice meteen op betaald zetten
+                if($isNullInvoice){
+                    $invoice->status_id = 'paid';
+                }else{
+                    $invoice->status_id = 'exported';
+                }
             }
             $invoice->twinfield_number = $response->getNumber();
             $invoice->save();

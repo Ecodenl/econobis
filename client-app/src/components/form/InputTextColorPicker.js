@@ -13,6 +13,7 @@ const InputTextColorPicker = props => {
         placeholder,
         name,
         value,
+        defaultValue,
         onClickAction,
         onChangeAction,
         onBlurAction,
@@ -52,7 +53,7 @@ const InputTextColorPicker = props => {
                     type="color"
                     name={name}
                     id={`cp_${name}`}
-                    value={value ? value : ''}
+                    value={value ? value : defaultValue}
                     onChange={onChangeAction}
                 />
             </div>
@@ -135,6 +136,7 @@ InputTextColorPicker.defaultProps = {
     name: '',
     type: 'text',
     value: '',
+    defaultValue: '',
     required: '',
     readOnly: false,
     maxLength: null,
@@ -165,6 +167,7 @@ InputTextColorPicker.propTypes = {
     placeholder: PropTypes.string,
     name: PropTypes.string.isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     onClickAction: PropTypes.func,
     onChangeAction: PropTypes.func,
     onBlurAction: PropTypes.func,

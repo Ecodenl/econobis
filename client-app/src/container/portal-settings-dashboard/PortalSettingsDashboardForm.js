@@ -10,7 +10,7 @@ class PortalSettingsDashboardForm extends Component {
         super(props);
     }
     render() {
-        const { dashboardSettings, hasError, isLoading, updateState } = this.props;
+        const { defaultPortalSettingsLayout, dashboardSettings, hasError, isLoading, updateState } = this.props;
         let loadingText = '';
         let loading = true;
 
@@ -25,7 +25,11 @@ class PortalSettingsDashboardForm extends Component {
             <div>{loadingText}</div>
         ) : (
             <div>
-                <PortalSettingsDashboardFormGeneral dashboardSettings={dashboardSettings} updateState={updateState} />
+                <PortalSettingsDashboardFormGeneral
+                    defaultPortalSettingsLayout={defaultPortalSettingsLayout}
+                    dashboardSettings={dashboardSettings}
+                    updateState={updateState}
+                />
                 <PortalSettingsDashboardWidgetApp dashboardSettings={dashboardSettings} updateState={updateState} />
             </div>
         );

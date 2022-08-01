@@ -11,6 +11,7 @@ class PortalSettingsDashboardWidgetDetailsForm extends Component {
     render() {
         let {
             portalSettingsDashboardWidget,
+            defaultPortalSettingsLayout,
             dashboardSettings,
             contactGroups,
             hasError,
@@ -36,6 +37,7 @@ class PortalSettingsDashboardWidgetDetailsForm extends Component {
             <div>
                 <PortalSettingsDashboardWidgetFormGeneral
                     portalSettingsDashboardWidget={portalSettingsDashboardWidget}
+                    defaultPortalSettingsLayout={defaultPortalSettingsLayout}
                     dashboardSettings={dashboardSettings}
                     contactGroups={contactGroups}
                     isLoading={isLoading}

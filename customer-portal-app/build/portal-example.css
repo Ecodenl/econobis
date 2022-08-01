@@ -10,8 +10,8 @@
 /* ----------------- LOGIN STYLING -----------------*/
 .authorization-container {
 background-color: var(--portal-background-color);
-background-image: -webkit-gradient(linear, left top, left bottom, from(var(--main-primary-rgba)), to(var(--main-primary-rgba))), url('images/page-head5.jpg');
-background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-primary-rgba)), url('images/page-head5.jpg');
+background-image: -webkit-gradient(linear, left top, left bottom, from(var(--main-primary-rgba)), to(var(--main-primary-rgba))), url('images/page-head5.png');
+background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-primary-rgba)), url('images/page-head5.png');
 background-position: 0px 0px, 50% 50%;
 background-size: auto, cover;
 font-family: Montserrat, sans-serif;
@@ -118,8 +118,8 @@ text-decoration: none;
 .header-deltaw {
 position: relative;
 height: 128px;
-background-image: -webkit-gradient(linear, left top, left bottom, from(var(--main-primary-rgba)), to(var(--main-primary-rgba))), url('images/page-head5.jpg');
-background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-primary-rgba)), url('images/page-head5.jpg');
+background-image: -webkit-gradient(linear, left top, left bottom, from(var(--main-primary-rgba)), to(var(--main-primary-rgba))), url('images/page-head5.png');
+background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-primary-rgba)), url('images/page-head5.png');
 background-position: 0px 0px, 50% 50%;
 background-size: auto, cover;
 background-repeat: repeat, no-repeat;

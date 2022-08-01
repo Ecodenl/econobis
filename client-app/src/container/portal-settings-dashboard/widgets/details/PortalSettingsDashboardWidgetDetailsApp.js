@@ -10,6 +10,7 @@ import { hashHistory } from 'react-router';
 import PortalSettingsDashboardAPI from '../../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
 import axios from 'axios';
 import ContactGroupAPI from '../../../../api/contact-group/ContactGroupAPI';
+import PortalSettingsLayoutDetailsAPI from '../../../../api/portal-settings-layout/PortalSettingsLayoutDetailsAPI';
 
 class PortalSettingsDashboardWidgetDetailsApp extends Component {
     constructor(props) {
@@ -17,6 +18,7 @@ class PortalSettingsDashboardWidgetDetailsApp extends Component {
 
         this.state = {
             portalSettingsDashboardWidget: {},
+            defaultPortalSettingsLayout: {},
             dashboardSettings: {},
             contactGroups: {},
             isLoading: false,
@@ -36,18 +38,22 @@ class PortalSettingsDashboardWidgetDetailsApp extends Component {
         axios
             .all([
                 PortalSettingsDashboardAPI.fetchPortalSettingsDashboardWidgetDetails(this.props.params.id),
+                PortalSettingsLayoutDetailsAPI.fetchDefaultPortalSettingsLayoutDetails(),
                 PortalSettingsDashboardAPI.fetchPortalSettingsDashboardDetails(id),
                 ContactGroupAPI.peekContactGroups(),
             ])
             .then(
-                axios.spread((portalSettingsDashboardWidget, dashboardSettings, contactGroups) => {
-                    this.setState({
-                        isLoading: false,
-                        portalSettingsDashboardWidget: portalSettingsDashboardWidget.data.data,
-                        dashboardSettings: dashboardSettings.data.data,
-                        contactGroups: contactGroups,
-                    });
-                })
+                axios.spread(
+                    (portalSettingsDashboardWidget, defaultPortalSettingsLayout, dashboardSettings, contactGroups) => {
+                        this.setState({
+                            isLoading: false,
+                            portalSettingsDashboardWidget: portalSettingsDashboardWidget.data.data,
+                            defaultPortalSettingsLayout: defaultPortalSettingsLayout.data.data,
+                            dashboardSettings: dashboardSettings.data.data,
+                            contactGroups: contactGroups,
+                        });
+                    }
+                )
             )
             .catch(error => {
                 this.setState({ isLoading: false, hasError: true });
@@ -88,6 +94,7 @@ class PortalSettingsDashboardWidgetDetailsApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <PortalSettingsDashboardWidgetDetailsForm
                             portalSettingsDashboardWidget={this.state.portalSettingsDashboardWidget}
+                            defaultPortalSettingsLayout={this.state.defaultPortalSettingsLayout}
                             dashboardSettings={this.state.dashboardSettings}
                             contactGroups={this.state.contactGroups}
                             isLoading={this.state.isLoading}

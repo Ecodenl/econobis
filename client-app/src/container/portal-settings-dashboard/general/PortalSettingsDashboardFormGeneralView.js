@@ -67,7 +67,6 @@ class PortalSettingsDashboardFormGeneralView extends Component {
                     </Panel>
                     {this.state.showPreviewPortalDashboardPagePc && (
                         <PreviewPortalDashboardPagePcModal
-                            previewFromLayout={false}
                             closeModal={this.togglePreviewPortalDashboardPagePc}
                             setShowMenu={this.setShowMenu}
                             showMenu={this.state.showMenu}
@@ -76,12 +75,28 @@ class PortalSettingsDashboardFormGeneralView extends Component {
                             logoHeaderUrl={logoHeaderUrl}
                             attachmentImageBgHeader={''}
                             imageBgHeaderUrl={imageBgHeaderUrl}
+                            portalMainBackgroundColor={this.props.defaultPortalSettingsLayout.portalMainBackgroundColor}
+                            portalMainTextColor={this.props.defaultPortalSettingsLayout.portalMainTextColor}
+                            portalBackgroundColor={this.props.defaultPortalSettingsLayout.portalBackgroundColor}
+                            portalBackgroundTextColor={this.props.defaultPortalSettingsLayout.portalBackgroundTextColor}
+                            loginHeaderBackgroundColor={
+                                this.props.defaultPortalSettingsLayout.loginHeaderBackgroundColor
+                            }
+                            loginHeaderBackgroundTextColor={
+                                this.props.defaultPortalSettingsLayout.loginHeaderBackgroundTextColor
+                            }
+                            headerIconsColor={this.props.defaultPortalSettingsLayout.headerIconsColor}
+                            loginFieldBackgroundColor={this.props.defaultPortalSettingsLayout.loginFieldBackgroundColor}
+                            loginFieldBackgroundTextColor={
+                                this.props.defaultPortalSettingsLayout.loginFieldBackgroundTextColor
+                            }
+                            buttonColor={this.props.defaultPortalSettingsLayout.buttonColor}
+                            buttonTextColor={this.props.defaultPortalSettingsLayout.buttonTextColor}
                             dashboardSettings={this.props.dashboardSettings}
                         />
                     )}
                     {this.state.showPreviewPortalDashboardPageMobile && (
                         <PreviewPortalDashboardPageMobileModal
-                            previewFromLayout={false}
                             closeModal={this.togglePreviewPortalDashboardPageMobile}
                             setShowMenu={this.setShowMenu}
                             showMenu={this.state.showMenu}
@@ -90,6 +105,23 @@ class PortalSettingsDashboardFormGeneralView extends Component {
                             logoHeaderUrl={logoHeaderUrl}
                             attachmentImageBgHeader={''}
                             imageBgHeaderUrl={imageBgHeaderUrl}
+                            portalMainBackgroundColor={this.props.defaultPortalSettingsLayout.portalMainBackgroundColor}
+                            portalMainTextColor={this.props.defaultPortalSettingsLayout.portalMainTextColor}
+                            portalBackgroundColor={this.props.defaultPortalSettingsLayout.portalBackgroundColor}
+                            portalBackgroundTextColor={this.props.defaultPortalSettingsLayout.portalBackgroundTextColor}
+                            loginHeaderBackgroundColor={
+                                this.props.defaultPortalSettingsLayout.loginHeaderBackgroundColor
+                            }
+                            loginHeaderBackgroundTextColor={
+                                this.props.defaultPortalSettingsLayout.loginHeaderBackgroundTextColor
+                            }
+                            headerIconsColor={this.props.defaultPortalSettingsLayout.headerIconsColor}
+                            loginFieldBackgroundColor={this.props.defaultPortalSettingsLayout.loginFieldBackgroundColor}
+                            loginFieldBackgroundTextColor={
+                                this.props.defaultPortalSettingsLayout.loginFieldBackgroundTextColor
+                            }
+                            buttonColor={this.props.defaultPortalSettingsLayout.buttonColor}
+                            buttonTextColor={this.props.defaultPortalSettingsLayout.buttonTextColor}
                             dashboardSettings={this.props.dashboardSettings}
                         />
                     )}

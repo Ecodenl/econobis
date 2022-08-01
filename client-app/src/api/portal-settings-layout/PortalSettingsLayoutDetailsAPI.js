@@ -37,6 +37,12 @@ export default {
         });
     },
 
+    fetchDefaultPortalSettingsLayoutDetails: () => {
+        const requestUrl = `${URL_PORTAL_SETTINGS_LAYOUT}/default`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
     newPortalSettingsLayout: portalSettingsLayout => {
         const requestUrl = URL_PORTAL_SETTINGS_LAYOUT;
 

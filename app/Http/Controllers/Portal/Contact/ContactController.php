@@ -296,6 +296,9 @@ class ContactController extends ApiController
             if (!isset($personData['titleId']) || empty($personData['titleId']) || $personData['titleId'] == 'null' || $personData['titleId'] == 0 ) {
                 $personData['titleId'] = null;
             }
+            if (!isset($personData['dateOfBirth']) || empty($personData['dateOfBirth']) || $personData['dateOfBirth'] == 'null' ) {
+                $personData['dateOfBirth'] = null;
+            }
 
             $lnp = $person->last_name_prefix;
             if (isset($personData['lastNamePrefixId']) ) {

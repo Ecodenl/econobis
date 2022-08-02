@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import GetNameByIdHelper from '../../../../helpers/GetNameByIdHelper';
 
-const ContactDetailFormPhoneView = props => {
+const ContactDetailsFormPhoneView = props => {
     const { number, typeId, primary } = props.phoneNumber;
 
     return (
@@ -45,4 +45,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(ContactDetailFormPhoneView);
+export default connect(mapStateToProps, null)(ContactDetailsFormPhoneView);

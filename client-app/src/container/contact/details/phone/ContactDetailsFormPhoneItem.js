@@ -14,7 +14,7 @@ import ContactDetailsFormPhoneEdit from './ContactDetailsFormPhoneEdit';
 import ContactDetailsFormPhoneDelete from './ContactDetailsFormPhoneDelete';
 import ContactDetailsFormEmailDelete from '../email/ContactDetailsFormEmailItem';
 
-class ContactDetailFormPhoneItem extends Component {
+class ContactDetailsFormPhoneItem extends Component {
     constructor(props) {
         super(props);
 
@@ -169,4 +169,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ContactDetailFormPhoneItem);
+export default connect(null, mapDispatchToProps)(ContactDetailsFormPhoneItem);

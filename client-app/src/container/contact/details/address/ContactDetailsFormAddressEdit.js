@@ -24,9 +24,9 @@ const ContactDetailsFormAddressEdit = props => {
         eanGas,
     } = props.address;
 
-    // if primairy address and more then 1 addresses, then don't allow set to type old.
+    // if primairy address and more then 1 addresses (not old), then don't allow set to type old.
     let addressTypesToSelect = props.addressTypes;
-    if (primary && props.numberOfAddresses > 1) {
+    if (primary && props.numberOfAddressesNotOld > 1) {
         addressTypesToSelect = addressTypesToSelect.filter(filter => filter.id !== 'old');
     }
 
@@ -95,13 +95,20 @@ const ContactDetailsFormAddressEdit = props => {
                             <InputSelect
                                 label={
                                     <span>
-                                        Type
+                                        Type ({props.numberOfAddressesNotOld})
                                         {typeId === 'old' && primary && props.numberOfAddresses === 1 ? (
                                             <React.Fragment>
                                                 <br />
                                                 <small style={{ color: 'red', fontWeight: 'normal' }}>
                                                     <strong>Let op!</strong> Dit is een primair adres en enige adres bij
                                                     contact.
+                                                </small>
+                                            </React.Fragment>
+                                        ) : typeId === 'old' && primary ? (
+                                            <React.Fragment>
+                                                <br />
+                                                <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                                    <strong>Let op!</strong> Dit is een primair adres met type Oud.
                                                 </small>
                                             </React.Fragment>
                                         ) : (

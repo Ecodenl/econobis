@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import GetNameByIdHelper from '../../../../helpers/GetNameByIdHelper';
 import { FaRegLightbulb } from 'react-icons/fa';
 
-const ContactDetailFormAddressView = props => {
+const ContactDetailsFormAddressView = props => {
     const {
         typeId,
         street,
@@ -41,29 +41,29 @@ const ContactDetailFormAddressView = props => {
                 <div className="col-sm-1">{primary ? <span className="pull-right">Primair</span> : ''}</div>
             </div>
             <div className="col-sm-1">
-                {props.showActionButtons ? (
-                    <>
-                        {props.addressEnergySupplierNewOrEditOpen == false && (
-                            <>
-                                <a role="button" onClick={props.openEdit}>
-                                    <span
-                                        className="glyphicon glyphicon-pencil mybtn-success"
-                                        title="Wijzigen adresgegevens"
-                                    />{' '}
-                                </a>
-                                <a role="button" onClick={props.openAddressEnergySupplier} title="Leveranciergegevens">
-                                    {/*<span className="glyphicon glyphicon-cog mybtn-success" />*/}
-                                    <FaRegLightbulb className="mybtn-success" size={'15px'} />
-                                </a>
-                                <a role="button" onClick={props.toggleDelete} title="Verwijderen adres">
-                                    <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
-                                </a>
-                            </>
-                        )}
-                    </>
-                ) : (
-                    ''
-                )}
+                {props.showActionButtons
+                    ? props.addressEnergySupplierNewOrEditOpen == false && (
+                          <>
+                              {(props.numberOfAddressesNotOld > 0 || primary == true) && (
+                                  <>
+                                      <a role="button" onClick={props.openEdit}>
+                                          <span
+                                              className="glyphicon glyphicon-pencil mybtn-success"
+                                              title="Wijzigen adresgegevens"
+                                          />{' '}
+                                      </a>
+                                  </>
+                              )}
+                              <a role="button" onClick={props.openAddressEnergySupplier} title="Leveranciergegevens">
+                                  {/*<span className="glyphicon glyphicon-cog mybtn-success" />*/}
+                                  <FaRegLightbulb className="mybtn-success" size={'15px'} />
+                              </a>
+                              <a role="button" onClick={props.toggleDelete} title="Verwijderen adres">
+                                  <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                              </a>
+                          </>
+                      )
+                    : ''}
             </div>
         </div>
     );
@@ -75,4 +75,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(ContactDetailFormAddressView);
+export default connect(mapStateToProps, null)(ContactDetailsFormAddressView);

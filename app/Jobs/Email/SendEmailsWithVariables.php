@@ -34,6 +34,7 @@ class SendEmailsWithVariables implements ShouldQueue {
     private $errors = 0;
     private $tos;
     private $ccs;
+    private $extraEmailTos;
     private $bccs;
     private $userId;
 
@@ -53,7 +54,14 @@ class SendEmailsWithVariables implements ShouldQueue {
 
         // bij 1e call cc's en bcc's bewaren
         if ($firstCall) {
-            $this->ccs = ($email->cc != []) ? $email->cc : null;
+            // bij groups mail gebruiken we cc als extra emailadressen (apart mailen)
+            if ($email->contact_group_id) {
+                $this->extraEmailTos = ($email->cc != []) ? $email->cc : null;
+                $this->ccs = null;
+            } else {
+                $this->extraEmailTos = null;
+                $this->ccs = ($email->cc != []) ? $email->cc : null;
+            }
             $this->bccs = ($email->bcc != []) ? $email->bcc : null;
 
             $jobLog = new JobsLog();
@@ -313,13 +321,13 @@ class SendEmailsWithVariables implements ShouldQueue {
                 $mail = Mail::to($emailAddress->email);
                 $subjectWithContactVariables = 'Econobis';
 
-                if (!$ccBccSent) {
-                    if($this->ccs != []) $mail->cc($this->ccs);
-                    if($this->bccs != []) $mail->bcc($this->bccs);
-                    $ccBccSent = true;
-                    $this->ccs = [];
-                    $this->bccs = [];
-                }
+//                if (!$ccBccSent) {
+//                    if($this->ccs != []) $mail->cc($this->ccs);
+//                    if($this->bccs != []) $mail->bcc($this->bccs);
+//                    $ccBccSent = true;
+//                    $this->ccs = [];
+//                    $this->bccs = [];
+//                }
 
                 /**
                  * Replace variables subject
@@ -396,6 +404,75 @@ class SendEmailsWithVariables implements ShouldQueue {
                 $didFinishEmail = false;
                 self::dispatch($email, [], $this->userId, false);
             }
+
+            // Nu nog mailen naar extra contact emailadressen (indien aanwezig)
+            if(!empty($this->extraEmailTos)){
+
+                $email->subject = $saveSubject;
+                $email->html_body = $saveHtmlBody;
+
+                foreach ($this->extraEmailTos as $extraEmailTo) {
+                    /**
+                     * Setup
+                     */
+                    $mail = Mail::to($extraEmailTo);
+                    $subjectWithContactVariables = 'Econobis';
+
+                    /**
+                     * Replace variables subject
+                     */
+                    if (!empty($email->subject)) {
+                        $subjectWithContactVariables = $email->subject;
+                        $subjectWithContactVariables = str_replace('{contactpersoon}', '', $subjectWithContactVariables);
+                        $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'contact', null);
+                        $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'ik', Auth::user());
+                        $subjectWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($subjectWithContactVariables, 'portal');
+                        $subjectWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($subjectWithContactVariables, 'contacten_portal');
+                        $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateCooperativeVariables($subjectWithContactVariables, 'cooperatie');
+
+                        if ($email->contactGroup) {
+                            $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'groep', $email->contactGroup);
+                        }
+                    }
+
+                    Log::info('subject extra: ' . $subjectWithContactVariables);
+                    $email->subject = $subjectWithContactVariables;
+
+                    /**
+                     * Replace body subject
+                     */
+                    $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, null);
+                    $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact', null);
+                    $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', Auth::user());
+                    $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBodyWithContactVariables, 'portal');
+                    $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBodyWithContactVariables, 'contacten_portal');
+                    $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateCooperativeVariables($htmlBodyWithContactVariables, 'cooperatie');
+
+                    if ($email->contactGroup) {
+                        $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'groep', $email->contactGroup);
+                    }
+
+                    $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
+
+                    /**
+                     * Execute
+                     */
+                    try {
+                        $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
+
+                    } catch (\Exception $e) {
+                        Log::error('Mail ' . $email->id . ' vanuit groep kon niet worden verzonden naar extra e-mailadres ' . $extraEmailTo);
+                        Log::error($e->getMessage());
+                        $jobLog = new JobsLog();
+                        $jobLog->value = 'Mail ' . $email->id . ' vanuit groep kon niet worden verzonden naar extra e-mailadres ' . $extraEmailTo;
+                        $this->errors++;
+                        $jobLog->user_id = $this->userId;
+                        $jobLog->job_category_id = 'email';
+                        $jobLog->save();
+                    }
+                }
+            }
+
         }
 
         if ($didFinishEmail) {

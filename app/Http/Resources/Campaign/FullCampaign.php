@@ -41,6 +41,7 @@ class FullCampaign extends JsonResource
             'documentCount' => $this->documents()->count(),
             'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
             'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
+            'numberOfIntakes' => $this->numberOfIntakes,
         ];
     }
 }

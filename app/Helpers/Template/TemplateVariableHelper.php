@@ -1081,15 +1081,16 @@ class TemplateVariableHelper
                 return $model->participantProjectPayoutType ? $model->participantProjectPayoutType->name : '';
                 break;
             case 'iban_uitkeren_gedeeltelijk':
-                if($model->iban_payout && strlen($model->iban_payout)>13)
+                $ibanPayout = $model->iban_payout ? $model->iban_payout : $model->contact->iban;
+                if($ibanPayout && strlen($ibanPayout)>13)
                 {
-                    $numberOfHiddenCharacters = strlen($model->iban_payout) - 11;
-                    $partialHiddenIban = substr($model->iban_payout, 0, 6);
+                    $numberOfHiddenCharacters = strlen($ibanPayout) - 11;
+                    $partialHiddenIban = substr($ibanPayout, 0, 6);
                     while($numberOfHiddenCharacters > 0) {
                         $partialHiddenIban = $partialHiddenIban . '*';
                         $numberOfHiddenCharacters--;
                     }
-                    return $partialHiddenIban . substr($model->iban_payout, -4);
+                    return $partialHiddenIban . substr($ibanPayout, -4);
                 } else {
                     return '';
                 }

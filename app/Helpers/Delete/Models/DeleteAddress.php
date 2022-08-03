@@ -62,9 +62,9 @@ class DeleteAddress implements DeleteInterface
             array_push($this->errorMessage, "Er zijn nog deelnames.");
         }
         // todo WM-es: wellicht alleen bij PCR projecten?
-        if($this->address->addressEnergySuppliers()->count() > 0){
-            array_push($this->errorMessage, "Er zijn nog energie leveranciers.");
-        }
+//        if($this->address->addressEnergySuppliers()->count() > 0){
+//            array_push($this->errorMessage, "Er zijn nog energie leveranciers.");
+//        }
         if($this->address->housingFiles()->count() > 0){
             array_push($this->errorMessage, "Er zijn nog woningdossiers.");
         }

@@ -20,6 +20,8 @@ class ConversionEnergySupplier33To54 extends Migration
     {
         Log::info('Omzetten AddressEnergySupplier 33 Holthausen Clean Energy naar AddressEnergySupplier 54 Clean Energy');
 
+        Schema::dropIfExists('xxx_contact_energy_supplier');
+
         $addressEnergySuppliers = AddressEnergySupplier::where('energy_supplier_id', 33)->get();
         foreach ($addressEnergySuppliers as $addressEnergySupplier){
             $addressEnergySupplier->energy_supplier_id = 54;

@@ -23,6 +23,7 @@ use App\Http\RequestQueries\Email\Grid\RequestQuery;
 use App\Http\Resources\Email\FullEmail;
 use App\Http\Resources\Email\GridEmail;
 use App\Http\Resources\GenericResource;
+use App\Jobs\Email\SendGroupEmail;
 use Carbon\Carbon;
 use Config;
 use Illuminate\Http\Request;
@@ -327,7 +328,11 @@ class EmailController
         $email->sent_by_user_id = Auth::id();
         $email->save();
 
-        SendEmailsWithVariables::dispatch($email, json_decode($request['to']), Auth::id());
+        if ($email->contact_group_id) {
+            SendGroupEmail::dispatch($email, json_decode($request['cc']), Auth::id());
+        } else {
+            SendEmailsWithVariables::dispatch($email, json_decode($request['to']), Auth::id());
+        }
     }
 
     public function storeConcept(Mailbox $mailbox, RequestInput $requestInput)

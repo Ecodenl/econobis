@@ -34,6 +34,7 @@ class DocumentGroup extends EnumWithIdAndName
             new static('revenue', 'Opbrengst'),
             new static('order', 'Order'),
             new static('privacy', 'Privacyverklaring'),
+            new static('quickscan', 'Quickscan'),
             new static('consultation', 'Verslag adviesgesprek'),
             new static('pre-registration', 'Voorinschrijving'),
             new static('financial-overview', 'Waardestaat'),

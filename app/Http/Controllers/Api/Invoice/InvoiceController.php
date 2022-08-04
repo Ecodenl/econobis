@@ -86,11 +86,17 @@ class InvoiceController extends ApiController
             $invoices = $invoices->reject(function ($invoice) {
                 return ($invoice->total_incl_vat_incl_reduction < 0 && $invoice->payment_type_id === 'collection');
             });
+            $invoices = $invoices->reject(function ($invoice) {
+                return ($invoice->administration->uses_twinfield && !$invoice->isInvoiceFullyCompatibleWithTwinfield());
+            });
             $selectedInvoices = $selectedInvoices->reject(function ($invoice) {
                 return ( $invoice->emailToAddress === 'Geen e-mail bekend' || ( empty($invoice->order->contact->iban) && $invoice->payment_type_id === 'collection' ) );
             });
             $selectedInvoices = $selectedInvoices->reject(function ($invoice) {
                 return ($invoice->total_incl_vat_incl_reduction < 0 && $invoice->payment_type_id === 'collection');
+            });
+            $selectedInvoices = $selectedInvoices->reject(function ($invoice) {
+                return ($invoice->administration->uses_twinfield && !$invoice->isInvoiceFullyCompatibleWithTwinfield());
             });
         }
         elseif ($onlyPostInvoices)
@@ -106,11 +112,17 @@ class InvoiceController extends ApiController
             $invoices = $invoices->reject(function ($invoice) {
                 return ($invoice->total_incl_vat_incl_reduction < 0 && $invoice->payment_type_id === 'collection');
             });
+            $invoices = $invoices->reject(function ($invoice) {
+                return ($invoice->administration->uses_twinfield && !$invoice->isInvoiceFullyCompatibleWithTwinfield());
+            });
             $selectedInvoices = $selectedInvoices->reject(function ($invoice) {
                 return ( $invoice->emailToAddress !== 'Geen e-mail bekend' || ( empty($invoice->order->contact->iban) && $invoice->payment_type_id === 'collection' ) );
             });
             $selectedInvoices = $selectedInvoices->reject(function ($invoice) {
                 return ($invoice->total_incl_vat_incl_reduction < 0 && $invoice->payment_type_id === 'collection');
+            });
+            $selectedInvoices = $selectedInvoices->reject(function ($invoice) {
+                return ($invoice->administration->uses_twinfield && !$invoice->isInvoiceFullyCompatibleWithTwinfield());
             });
         }
 

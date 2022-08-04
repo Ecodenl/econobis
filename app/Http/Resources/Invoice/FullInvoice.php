@@ -54,6 +54,7 @@ class FullInvoice extends JsonResource
                 'invoiceInTwinfield' => $invoiceInTwinfield,
                 'invoicePaidInTwinfield' => $invoicePaidInTwinfield,
                 'twinfieldNumber' => $this->twinfield_number,
+                'compatibleWithTwinfield' => $this->isInvoiceFullyCompatibleWithTwinfield(),
 
                 'amountOpen' => $this->amount_open,
                 'datePaid' => $this->date_paid,

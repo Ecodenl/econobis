@@ -271,13 +271,13 @@ class TemplateVariableHelper
                 return optional($model->primaryAddress)->ean_electricity;
                 break;
             case 'energieleverancier_klant_sinds':
-                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->member_since ? Carbon::parse(optional($model->primaryAddressEnergySupplier)->member_since)->format('d/m/Y') : null;;
+                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->member_since ? Carbon::parse(optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->member_since)->format('d/m/Y') : null;;
                 break;
             case 'energieleverancier_klant_einddatum':
-                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->end_date ? Carbon::parse(optional($model->primaryAddressEnergySupplier)->end_date)->format('d/m/Y') : null;;
+                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->end_date ? Carbon::parse(optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->end_date)->format('d/m/Y') : null;;
                 break;
             case 'energieleverancier_mogelijke_overstap':
-                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->switch_date ? Carbon::parse(optional($model->primaryAddressEnergySupplier)->switch_date)->format('d/m/Y') : null;;
+                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->switch_date ? Carbon::parse(optional(optional($model->primaryAddress)->primaryAddressEnergySupplier)->switch_date)->format('d/m/Y') : null;;
                 break;
             case 'kvk':
                 if($model->type_id == 'organisation'){
@@ -1081,15 +1081,16 @@ class TemplateVariableHelper
                 return $model->participantProjectPayoutType ? $model->participantProjectPayoutType->name : '';
                 break;
             case 'iban_uitkeren_gedeeltelijk':
-                if($model->iban_payout && strlen($model->iban_payout)>13)
+                $ibanPayout = $model->iban_payout ? $model->iban_payout : $model->contact->iban;
+                if($ibanPayout && strlen($ibanPayout)>13)
                 {
-                    $numberOfHiddenCharacters = strlen($model->iban_payout) - 11;
-                    $partialHiddenIban = substr($model->iban_payout, 0, 6);
+                    $numberOfHiddenCharacters = strlen($ibanPayout) - 11;
+                    $partialHiddenIban = substr($ibanPayout, 0, 6);
                     while($numberOfHiddenCharacters > 0) {
                         $partialHiddenIban = $partialHiddenIban . '*';
                         $numberOfHiddenCharacters--;
                     }
-                    return $partialHiddenIban . substr($model->iban_payout, -4);
+                    return $partialHiddenIban . substr($ibanPayout, -4);
                 } else {
                     return '';
                 }

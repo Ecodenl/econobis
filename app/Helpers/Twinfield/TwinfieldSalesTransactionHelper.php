@@ -317,7 +317,7 @@ class TwinfieldSalesTransactionHelper
             return true;
         } catch (PhpTwinfieldException $exceptionTwinfield) {
             Log::error($exceptionTwinfield->getMessage());
-            $message = $exceptionTwinfield->getMessage() ? $exceptionTwinfield->getMessage() : 'Er is een twinfield fout opgetreden bij het versturen van verkoopgegevens notanr. ' . $invoice->number . '.';
+            $message = $exceptionTwinfield->getMessage();
 //            TwinfieldLog::create([
 //                'invoice_id' => $invoice->id,
 //                'contact_id' => null,
@@ -327,9 +327,9 @@ class TwinfieldSalesTransactionHelper
 //                'is_error' => true,
 //            ]);
             return $message;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Log::error($e->getMessage());
-            $message = $e->getMessage() ? $e->getMessage() : 'Er is een fout opgetreden bij het versturen van verkoopgegevens notanr. ' . $invoice->number . '.';
+            $message = $e->getMessage();
 //            TwinfieldLog::create([
 //                'invoice_id' => $invoice->id,
 //                'contact_id' => null,
@@ -379,7 +379,7 @@ class TwinfieldSalesTransactionHelper
                 'is_error' => true,
             ]);
             array_push($this->messages, $message);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Log::error($e->getMessage());
             $message = 'Blokkeren voor betaalrun (nota ' . $invoice->number . ') gaf de volgende foutmelding: ' . $e->getMessage();
             TwinfieldLog::create([

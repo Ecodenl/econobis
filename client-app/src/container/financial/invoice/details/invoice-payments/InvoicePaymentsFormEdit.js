@@ -20,6 +20,7 @@ const InvoicePaymentsFormEdit = props => {
                         <div className="row">
                             <InputText
                                 label={'Bedrag'}
+                                type={'number'}
                                 id={'amount'}
                                 name={'amount'}
                                 value={amount}

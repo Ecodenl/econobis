@@ -95,7 +95,7 @@ const ContactDetailsFormAddressEdit = props => {
                             <InputSelect
                                 label={
                                     <span>
-                                        Type ({props.numberOfAddressesNotOld})
+                                        Type
                                         {typeId === 'old' && primary && props.numberOfAddresses === 1 ? (
                                             <React.Fragment>
                                                 <br />

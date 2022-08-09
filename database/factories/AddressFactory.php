@@ -1,7 +1,14 @@
 <?php
 
+namespace Database\Factories;
+
+use App\Eco\Address\Address;
+use App\Eco\Address\AddressType;
+use App\Eco\BuildingType\BuildingType;
+use Faker\Generator;
+
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
-$factory->define(\App\Eco\Address\Address::class, function (Faker\Generator $faker) {
+$factory->define(Address::class, function (Generator $faker) {
     return [
         'street' => $faker->streetName,
         'number' => $faker->buildingNumber,
@@ -12,10 +19,10 @@ $factory->define(\App\Eco\Address\Address::class, function (Faker\Generator $fak
         },
         'type_id' => function(){
             if(random_int(0,10) < 2) return null;
-            return \App\Eco\Address\AddressType::random()->id;
+            return AddressType::random()->id;
         },
         'building_type_id' => function() use ($faker){
-            if($faker->boolean(50)) return \App\Eco\BuildingType\BuildingType::inRandomOrder()->first()->id;
+            if($faker->boolean(50)) return BuildingType::inRandomOrder()->first()->id;
         },
         'build_year' => function() use ($faker){
             if($faker->boolean(50)) return $faker->year();

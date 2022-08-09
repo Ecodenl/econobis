@@ -1,5 +1,9 @@
 <?php
 
+namespace Database\Seeders;
+
+use App\Eco\Contact\Contact;
+use App\Eco\ContactGroup\ContactGroup;
 use Illuminate\Database\Seeder;
 
 class ContactGroupsSeeder extends Seeder
@@ -11,11 +15,11 @@ class ContactGroupsSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Eco\ContactGroup\ContactGroup::class, 10)
+        factory(ContactGroup::class, 10)
             ->create()
             ->each(function ($contactGroup) {
                 $contactGroup->contacts()->sync(
-                    \App\Eco\Contact\Contact::orderByRaw('RAND()')
+                    Contact::orderByRaw('RAND()')
                         ->limit(random_int(0, 50))
                         ->get()
                 );

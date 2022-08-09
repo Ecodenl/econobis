@@ -1,14 +1,20 @@
 <?php
 
+namespace Database\Factories;
+
+use App\Eco\PhoneNumber\PhoneNumber;
+use App\Eco\PhoneNumber\PhoneNumberType;
+use Faker\Generator;
+
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
-$factory->define(\App\Eco\PhoneNumber\PhoneNumber::class, function (Faker\Generator $faker) {
+$factory->define(PhoneNumber::class, function (Generator $faker) {
     return [
         'number' => $faker->phoneNumber,
         'contact_id' => function(){
             return factory('App\Eco\Contact\Contact')->create()->id;
         },
         'type_id' => function(){
-            return \App\Eco\PhoneNumber\PhoneNumberType::random()->id;
+            return PhoneNumberType::random()->id;
         },
     ];
 });

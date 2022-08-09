@@ -1,24 +1,35 @@
 <?php
 
+namespace Database\Factories;
+
+use App\Eco\Contact\Contact;
+use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\Intake\Intake;
+use App\Eco\Opportunity\Opportunity;
+use App\Eco\Task\Task;
+use App\Eco\Task\TaskType;
+use App\Eco\User\User;
+use Faker\Generator;
+
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
-$factory->define(App\Eco\Task\Task::class, function (Faker\Generator $faker) {
+$factory->define(Task::class, function (Generator $faker) {
     return [
         'note' => $faker->text(),
         'type_id' => function () {
-            return \App\Eco\Task\TaskType::inRandomOrder()->first()->id;
+            return TaskType::inRandomOrder()->first()->id;
         },
         'contact_id' => function () use ($faker) {
-            if ($faker->boolean(50)) return \App\Eco\Contact\Contact::inRandomOrder()->first()->id;
+            if ($faker->boolean(50)) return Contact::inRandomOrder()->first()->id;
         },
         'finished' => $faker->boolean(),
         'intake_id' => function () use ($faker) {
-            if ($faker->boolean(50)) return \App\Eco\Intake\Intake::inRandomOrder()->first()->id;
+            if ($faker->boolean(50)) return Intake::inRandomOrder()->first()->id;
         },
         'opportunity_id' => function () use ($faker) {
-            if ($faker->boolean(50)) return \App\Eco\Opportunity\Opportunity::inRandomOrder()->first()->id;
+            if ($faker->boolean(50)) return Opportunity::inRandomOrder()->first()->id;
         },
         'contact_group_id' => function () use ($faker) {
-            if ($faker->boolean(50)) return \App\Eco\ContactGroup\ContactGroup::inRandomOrder()->first()->id;
+            if ($faker->boolean(50)) return ContactGroup::inRandomOrder()->first()->id;
         },
         'date_planned_start' => function () use ($faker) {
             if ($faker->boolean(50)) return $faker->date();
@@ -36,13 +47,13 @@ $factory->define(App\Eco\Task\Task::class, function (Faker\Generator $faker) {
             if ($faker->boolean(50)) return $faker->date();
         },
         'responsible_user_id' => function () {
-            return \App\Eco\User\User::inRandomOrder()->first()->id;
+            return User::inRandomOrder()->first()->id;
         },
         'created_by_id' => function () {
-            return \App\Eco\User\User::inRandomOrder()->first()->id;
+            return User::inRandomOrder()->first()->id;
         },
         'finished_by_id' => function () use ($faker) {
-            if ($faker->boolean(50)) return \App\Eco\User\User::inRandomOrder()->first()->id;
+            if ($faker->boolean(50)) return User::inRandomOrder()->first()->id;
         },
     ];
 });

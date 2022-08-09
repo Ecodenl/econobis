@@ -1,5 +1,10 @@
 <?php
 
+namespace Database\Seeders;
+
+
+use App\Eco\Task\Task;
+use App\Eco\Task\TaskPropertyValue;
 use Illuminate\Database\Seeder;
 
 class TasksSeeder extends Seeder
@@ -11,10 +16,10 @@ class TasksSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Eco\Task\Task::class, 100)
+        factory(Task::class, 100)
             ->create()
             ->each(function ($task) {
-                factory(\App\Eco\Task\TaskPropertyValue::class, random_int(0, 5))
+                factory(TaskPropertyValue::class, random_int(0, 5))
                     ->create(['task_id' => $task->id]);
             });
 

@@ -1,7 +1,12 @@
 <?php
 
+namespace Database\Factories;
+
+use App\Eco\PersonType\PersonType;
+use Faker\Generator;
+
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
-$factory->define(\App\Eco\PersonType\PersonType::class, function (Faker\Generator $faker) {
+$factory->define(PersonType::class, function (Generator $faker) {
     return [
         'name' => $faker->jobTitle,
     ];

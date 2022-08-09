@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Eco\User\User;
 use Illuminate\Database\Seeder;
 use Laravel\Passport\Passport;

@@ -1,7 +1,12 @@
 <?php
 
+namespace Database\Factories;
+
+use App\Eco\Industry\Industry;
+use Faker\Generator;
+
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
-$factory->define(\App\Eco\Industry\Industry::class, function (Faker\Generator $faker) {
+$factory->define(Industry::class, function (Generator $faker) {
     return [
         'name' => '',
     ];

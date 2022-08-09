@@ -1,5 +1,8 @@
 <?php
 
+namespace Database\Seeders;
+
+use App\Eco\Organisation\Organisation;
 use Illuminate\Database\Seeder;
 
 class OrganisationsSeeder extends Seeder
@@ -11,6 +14,6 @@ class OrganisationsSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Eco\Organisation\Organisation::class, 5)->create();
+        factory(Organisation::class, 5)->create();
     }
 }

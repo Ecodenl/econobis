@@ -1,5 +1,8 @@
 <?php
 
+namespace Database\Seeders;
+
+use App\Eco\Person\Person;
 use Illuminate\Database\Seeder;
 
 class PeopleSeeder extends Seeder
@@ -11,6 +14,6 @@ class PeopleSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Eco\Person\Person::class, 50)->create();
+        factory(Person::class, 50)->create();
     }
 }

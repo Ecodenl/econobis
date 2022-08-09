@@ -1,14 +1,21 @@
 <?php
 
+namespace Database\Factories;
+
+use App\Eco\Task\Task;
+use App\Eco\Task\TaskProperty;
+use App\Eco\Task\TaskPropertyValue;
+use Faker\Generator;
+
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
-$factory->define(App\Eco\Task\TaskPropertyValue::class, function (Faker\Generator $faker) {
+$factory->define(TaskPropertyValue::class, function (Generator $faker) {
     return [
         'value' => $faker->sentence(),
         'property_id' => function () {
-            return \App\Eco\Task\TaskProperty::inRandomOrder()->first()->id;
+            return TaskProperty::inRandomOrder()->first()->id;
         },
         'task_id' => function () {
-            return \App\Eco\Task\Task::inRandomOrder()->first()->id;
+            return Task::inRandomOrder()->first()->id;
         },
     ];
 });

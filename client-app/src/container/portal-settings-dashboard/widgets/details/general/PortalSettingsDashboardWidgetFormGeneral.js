@@ -59,6 +59,7 @@ class PortalSettingsDashboardWidgetFormGeneral extends Component {
                 {this.state.showEdit && permissions.managePortalSettings ? (
                     <PortalSettingsDashboardWidgetFormGeneralEdit
                         portalSettingsDashboardWidget={this.props.portalSettingsDashboardWidget}
+                        defaultPortalSettingsLayout={this.props.defaultPortalSettingsLayout}
                         dashboardSettings={this.props.dashboardSettings}
                         contactGroups={this.props.contactGroups}
                         isLoading={this.props.isLoading}

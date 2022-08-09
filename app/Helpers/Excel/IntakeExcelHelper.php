@@ -113,10 +113,10 @@ class IntakeExcelHelper
                 $rowData[17] = $this->formatDate($intake->created_at);
                 $rowData[18] = $intake->createdBy ? $intake->createdBy->present()->fullName() : '' ;
 
-//                $completeData[] = $rowData;
+                if (count($intake->measuresRequested)>0) {
 
-                // measuresRequested
-                foreach ($intake->measuresRequested as $measure) {
+                    // measuresRequested
+                    foreach ($intake->measuresRequested as $measure) {
 //                    $rowData = [];
 
 //                    $x = 0;
@@ -125,19 +125,27 @@ class IntakeExcelHelper
 //                        $x++;
 //                    }
 
-                    $rowData[19] = $measure->name;
+                        $rowData[19] = $measure->name;
 
-                    // opportunity
-                    $opportunity = Opportunity::where('intake_id', $intake->id)->where('measure_category_id',$measure->id)->first();
-                    if($opportunity){
-                        $rowData[20] = $opportunity->number;
-                        $rowData[21] = $opportunity->status ? $opportunity->status->name : '';
-                        $rowData[22] = $this->formatDate($opportunity->desired_date);
-                        $rowData[23] = $this->formatDate($opportunity->evaluation_agreed_date);
+                        // opportunity
+                        $opportunity = Opportunity::where('intake_id', $intake->id)->where('measure_category_id', $measure->id)->first();
+                        if ($opportunity) {
+                            $rowData[20] = $opportunity->number;
+                            $rowData[21] = $opportunity->status ? $opportunity->status->name : '';
+                            $rowData[22] = $this->formatDate($opportunity->desired_date);
+                            $rowData[23] = $this->formatDate($opportunity->evaluation_agreed_date);
+                        }
+
+                        $completeData[] = $rowData;
+
                     }
-
+                } else {
+                    $rowData[19] = '';
+                    $rowData[20] = '';
+                    $rowData[21] = '';
+                    $rowData[22] = '';
+                    $rowData[23] = '';
                     $completeData[] = $rowData;
-
                 }
             }
         }
@@ -148,7 +156,7 @@ class IntakeExcelHelper
         // Load all data in worksheet
         $sheet->fromArray($completeData);
 
-        for ($col = 'A'; $col !== 'Z'; $col++) {
+        for ($col = 'A'; $col !== 'Y'; $col++) {
             $spreadsheet->getActiveSheet()
                 ->getColumnDimension($col)
                 ->setAutoSize(true);

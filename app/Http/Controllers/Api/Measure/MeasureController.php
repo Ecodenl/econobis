@@ -18,7 +18,6 @@ use App\Http\RequestQueries\Measure\Grid\RequestQuery;
 use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\Measure\GridMeasure;
 use App\Http\Resources\Measure\MeasurePeek;
-use App\Http\Resources\Opportunity\FullOpportunity;
 
 class MeasureController extends ApiController
 {
@@ -26,12 +25,12 @@ class MeasureController extends ApiController
     public function grid(RequestQuery $requestQuery)
     {
         $measures = $requestQuery->get();
+        $measures->load(['measureCategory']);
+        $sortedMeasures = $measures->sortBy(function($item) {
+            return $item->measureCategory->name.'-'.$item->name;
+        }, SORT_NATURAL|SORT_FLAG_CASE)->values()->all();
 
-        $measures->load([
-            'measureCategory',
-        ]);
-
-        return GridMeasure::collection($measures);
+        return GridMeasure::collection($sortedMeasures);
     }
 
     public function show(Measure $measure)

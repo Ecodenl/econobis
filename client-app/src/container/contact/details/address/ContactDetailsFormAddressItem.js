@@ -12,7 +12,7 @@ import { isEqual } from 'lodash';
 import Modal from '../../../../components/modal/Modal';
 import AddressDetailsFormAddressEnergySupplier from './address-energy-suppliers/AddressDetailsFormAddressEnergySupplier';
 
-class ContactDetailFormAddressItem extends Component {
+class ContactDetailsFormAddressItem extends Component {
     constructor(props) {
         super(props);
 
@@ -70,8 +70,10 @@ class ContactDetailFormAddressItem extends Component {
     };
 
     openEdit = () => {
-        this.setState({ showEdit: true });
-        this.props.setAddressEnergySupplierNewOrEditOpen(true);
+        if (this.props.numberOfAddressesNotOld > 0 || this.state.address.primary == true) {
+            this.setState({ showEdit: true });
+            this.props.setAddressEnergySupplierNewOrEditOpen(true);
+        }
     };
 
     closeEdit = () => {
@@ -222,12 +224,14 @@ class ContactDetailFormAddressItem extends Component {
                     showEdit={this.state.showEdit}
                     openAddressEnergySupplier={this.openAddressEnergySupplier}
                     toggleDelete={this.toggleDelete}
+                    numberOfAddressesNotOld={this.props.numberOfAddressesNotOld}
                     address={this.state.address}
                     addressEnergySupplierNewOrEditOpen={this.props.addressEnergySupplierNewOrEditOpen}
                 />
                 {this.state.showEdit && (
                     <ContactDetailsFormAddressEdit
                         numberOfAddresses={this.props.numberOfAddresses}
+                        numberOfAddressesNotOld={this.props.numberOfAddressesNotOld}
                         address={this.state.address}
                         handleInputChange={this.handleInputChange}
                         handleInputChangeDate={this.handleInputChangeDate}
@@ -287,4 +291,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ContactDetailFormAddressItem);
+export default connect(null, mapDispatchToProps)(ContactDetailsFormAddressItem);

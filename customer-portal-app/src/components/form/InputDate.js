@@ -72,6 +72,7 @@ const InputDate = ({
                 required={required}
                 readOnly={readOnly}
                 placeholder={''}
+                style={{ width: '100%' }}
             />
         </>
     );

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import ContactDetailFormPhoneItem from './ContactDetailsFormPhoneItem';
+import ContactDetailsFormPhoneItem from './ContactDetailsFormPhoneItem';
 
 const ContactDetailsFormPhoneList = props => {
     return (
@@ -17,7 +17,7 @@ const ContactDetailsFormPhoneList = props => {
             {props.phoneNumbers.length > 0 ? (
                 props.phoneNumbers.map(phoneNumber => {
                     return (
-                        <ContactDetailFormPhoneItem
+                        <ContactDetailsFormPhoneItem
                             key={phoneNumber.id}
                             phoneNumber={phoneNumber}
                             numberOfPhoneNumbers={props.phoneNumbers.length}

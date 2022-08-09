@@ -6,6 +6,7 @@ use App\Eco\AbstractType\HasTypeTrait;
 use App\Eco\Contact\Contact;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddressType;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -13,7 +14,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 class EmailAddress extends Model
 {
 
-    use RevisionableTrait, SoftDeletes;
+    use RevisionableTrait, SoftDeletes, HasFactory;
 
     protected $guarded = ['id'];
 

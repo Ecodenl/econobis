@@ -11,13 +11,14 @@ use App\Eco\Organisation\Organisation;
 use App\Eco\Intake\Intake;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Campaign extends Model
 {
-    use RevisionableTrait, SoftDeletes;
+    use RevisionableTrait, SoftDeletes, HasFactory;
 
     protected $table = 'campaigns';
      /**

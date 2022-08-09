@@ -23,17 +23,17 @@ class DatabaseSeeder extends Seeder
         // Organisations (includes Contacts)
         $this->call(OrganisationsSeeder::class);
         // People (includes Contacts)
-        $this->call(PeopleSeeder::class);
+        $this->call(PersonSeeder::class);
         // Addresses on Contacts
-        $this->call(AddressesSeeder::class);
+        $this->call(AddressSeeder::class);
         // PhoneNumbers on Contacts
         $this->call(PhoneNumbersSeeder::class);
         // EmailAdresses on Contacts
-        $this->call(EmailAddressesSeeder::class);
+        $this->call(EmailAddressSeeder::class);
         // ContactNotes on Contacts
-        $this->call(ContactNotesSeeder::class);
+        $this->call(ContactNoteSeeder::class);
 
-        $this->call(CampaignsSeeder::class);
+        $this->call(CampaignSeeder::class);
 
         // Intakes (en aanverwante data) toevoegen
         $this->call(IntakesSeeder::class);

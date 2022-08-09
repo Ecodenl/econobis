@@ -6,7 +6,7 @@ use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
 use Illuminate\Database\Seeder;
 
-class AddressesSeeder extends Seeder
+class AddressSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,7 +16,8 @@ class AddressesSeeder extends Seeder
     public function run()
     {
         foreach(Contact::all() as $contact){
-            factory(Address::class, random_int(0, 3))->create(['contact_id' => $contact->id]);
+//            factory(Address::class, random_int(0, 3))->create(['contact_id' => $contact->id]);
+            Address::factory()->count(random_int(0, 3))->create(['contact_id' => $contact->id]);
         }
     }
 }

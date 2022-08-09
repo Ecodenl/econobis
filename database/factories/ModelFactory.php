@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Eco\User\User;
-use Faker\Generator;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,14 +16,21 @@ use Faker\Generator;
 |
 */
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
-$factory->define(User::class, function (Generator $faker) {
-    static $password;
+class ModelFactory extends Factory
+{
+    protected $model = User::class;
 
-    return [
-        'name' => $faker->name,
-        'email' => $faker->unique()->safeEmail,
-        'password' => $password ?: $password = bcrypt('secret'),
-        'remember_token' => str_random(10),
-    ];
-});
+    public function definition()
+    {
+        $faker =  $this->faker;
+
+        static $password;
+
+        return [
+            'name' => $faker->name,
+            'email' => $faker->unique()->safeEmail,
+            'password' => $password ?: $password = bcrypt('secret'),
+            'remember_token' => str_random(10),
+        ];
+    }
+}

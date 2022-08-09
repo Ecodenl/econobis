@@ -8,6 +8,7 @@ use App\Eco\Intake\IntakeReason;
 use App\Eco\Intake\IntakeSource;
 use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureRequested;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Seeder;
 
 class IntakesSeeder extends Seeder
@@ -19,11 +20,11 @@ class IntakesSeeder extends Seeder
      */
     public function run()
     {
-        $faker = Faker\Factory::create();
+        $faker = Factory::create();
 
         // Per adres intakes aanmaken
         foreach (Address::all() as $address) {
-            factory(Intake::class, random_int(0, 1)) // Is optionele one to one relatie
+            Intake::factory()->count(random_int(0, 1)) // Is optionele one to one relatie
                 ->create(['address_id' => $address->id])
                 ->each(function ($intake) use ($faker, $address) {
                     // Per intake sources koppelen
@@ -46,7 +47,8 @@ class IntakesSeeder extends Seeder
                         ->limit(random_int(0, 3))
                         ->get()
                         ->each(function ($measure) use ($address, $faker) {
-                            factory(MeasureRequested::class, 1)->create([
+                            MeasureRequested::factory()->count(1)
+                                ->create([
                                     'address_id' => $address->id,
                                     'measure_id' => $measure->id,
                                 ]

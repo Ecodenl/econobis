@@ -15,7 +15,7 @@ class ContactGroupsSeeder extends Seeder
      */
     public function run()
     {
-        factory(ContactGroup::class, 10)
+        ContactGroup::factory()->count(10)
             ->create()
             ->each(function ($contactGroup) {
                 $contactGroup->contacts()->sync(

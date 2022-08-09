@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Eco\Person\Person;
 use Illuminate\Database\Seeder;
 
-class PeopleSeeder extends Seeder
+class PersonSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,6 +14,7 @@ class PeopleSeeder extends Seeder
      */
     public function run()
     {
-        factory(Person::class, 50)->create();
+        Person::factory()->count(5)
+            ->create();
     }
 }

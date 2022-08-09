@@ -7,6 +7,7 @@ use App\Eco\Organisation\Organisation;
 use App\Eco\Contact\Contact;
 use App\Eco\PersonType\PersonType;
 use App\Eco\Title\Title;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laracasts\Presenter\PresentableTrait;
@@ -14,7 +15,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 
 class Person extends Model
 {
-    use RevisionableTrait, PresentableTrait, SoftDeletes;
+    use RevisionableTrait, PresentableTrait, SoftDeletes, HasFactory;
     protected $presenter = PersonPresenter::class;
 
     protected $guarded = ['id'];

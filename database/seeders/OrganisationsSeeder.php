@@ -14,6 +14,7 @@ class OrganisationsSeeder extends Seeder
      */
     public function run()
     {
-        factory(Organisation::class, 5)->create();
+        Organisation::factory()->count(5)
+            ->create();
     }
 }

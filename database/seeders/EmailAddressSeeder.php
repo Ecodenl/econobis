@@ -6,7 +6,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\EmailAddress\EmailAddress;
 use Illuminate\Database\Seeder;
 
-class EmailAddressesSeeder extends Seeder
+class EmailAddressSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,7 +16,7 @@ class EmailAddressesSeeder extends Seeder
     public function run()
     {
         foreach(Contact::all() as $contact){
-            factory(EmailAddress::class, 2)->create(['contact_id' => $contact->id]);
+            EmailAddress::factory()->count(2)->create(['contact_id' => $contact->id]);
         }
     }
 }

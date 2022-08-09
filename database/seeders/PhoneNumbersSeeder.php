@@ -16,7 +16,8 @@ class PhoneNumbersSeeder extends Seeder
     public function run()
     {
         foreach(Contact::all() as $contact){
-            factory(PhoneNumber::class, 2)->create(['contact_id' => $contact->id]);
+            PhoneNumber::factory()->count(5)
+                ->create(['contact_id' => $contact->id]);
         }
     }
 }

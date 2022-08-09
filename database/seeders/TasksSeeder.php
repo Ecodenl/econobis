@@ -16,7 +16,7 @@ class TasksSeeder extends Seeder
      */
     public function run()
     {
-        factory(Task::class, 100)
+        Task::factory()->count(100)
             ->create()
             ->each(function ($task) {
                 factory(TaskPropertyValue::class, random_int(0, 5))

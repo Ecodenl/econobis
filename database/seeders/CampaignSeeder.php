@@ -4,11 +4,11 @@ namespace Database\Seeders;
 
 use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignResponse;
-use App\Eco\Measure\Measure;
+use App\Eco\Measure\MeasureCategory;
 use App\Eco\Organisation\Organisation;
 use Illuminate\Database\Seeder;
 
-class CampaignsSeeder extends Seeder
+class CampaignSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -17,16 +17,16 @@ class CampaignsSeeder extends Seeder
      */
     public function run()
     {
-        factory(Campaign::class, 10)
+        Campaign::factory()->count(10)
             ->create()
             ->each(function ($campaign) {
-                factory(CampaignResponse::class, random_int(0, 3))
+                CampaignResponse::factory()->count(random_int(0, 3))
                     ->create([
                         'campaign_id' => $campaign->id,
                     ]);
 
-                $campaign->measures()->sync(
-                    Measure::inRandomOrder()
+                $campaign->measureCategories()->sync(
+                    MeasureCategory::inRandomOrder()
                         ->limit(random_int(0, 3))
                         ->get()
                 );

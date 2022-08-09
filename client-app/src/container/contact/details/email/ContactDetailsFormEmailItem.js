@@ -14,7 +14,7 @@ import ContactDetailsFormEmailDelete from './ContactDetailsFormEmailDelete';
 import { isEqual } from 'lodash';
 import ContactDetailsFormAddressDelete from '../address/ContactDetailsFormAddressItem';
 
-class ContactDetailFormEmailItem extends Component {
+class ContactDetailsFormEmailItem extends Component {
     constructor(props) {
         super(props);
 
@@ -169,4 +169,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ContactDetailFormEmailItem);
+export default connect(null, mapDispatchToProps)(ContactDetailsFormEmailItem);

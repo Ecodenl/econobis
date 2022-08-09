@@ -2,7 +2,7 @@ import React from 'react';
 
 import ViewText from '../../../../components/form/ViewText';
 
-const ContactDetailFormNoteView = props => {
+const ContactDetailsFormNoteView = props => {
     const { note, createdAt, createdBy } = props.note;
 
     return (
@@ -36,4 +36,4 @@ const ContactDetailFormNoteView = props => {
     );
 };
 
-export default ContactDetailFormNoteView;
+export default ContactDetailsFormNoteView;

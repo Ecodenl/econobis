@@ -17,7 +17,11 @@ class ContactDetailsFormAddressNew extends Component {
     constructor(props) {
         super(props);
 
+        const addressesNotOld = props.addresses.filter(address => address.typeId !== 'old');
+        const numberOfAddressesNotOld = addressesNotOld.length;
+
         this.state = {
+            numberOfAddressesNotOld: numberOfAddressesNotOld,
             address: {
                 contactId: this.props.id,
                 street: '',
@@ -27,7 +31,7 @@ class ContactDetailsFormAddressNew extends Component {
                 city: '',
                 typeId: 'visit',
                 endDate: '',
-                primary: false,
+                primary: numberOfAddressesNotOld == 0 ? true : false,
                 countryId: '',
                 eanElectricity: '',
                 eanGas: '',
@@ -188,7 +192,7 @@ class ContactDetailsFormAddressNew extends Component {
             eanElectricity,
             eanGas,
         } = this.state.address;
-
+        const { numberOfAddressesNotOld, errors } = this.state;
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
@@ -201,7 +205,7 @@ class ContactDetailsFormAddressNew extends Component {
                                 value={postalCode}
                                 onChangeAction={this.handleInputPicoChange}
                                 required={'required'}
-                                error={this.state.errors.postalCode}
+                                error={errors.postalCode}
                             />
                             <div className="form-group col-sm-6">
                                 <label htmlFor={'number'} className={`col-sm-6 required`}>
@@ -210,9 +214,7 @@ class ContactDetailsFormAddressNew extends Component {
                                 <div className={`col-sm-4`}>
                                     <input
                                         type={'number'}
-                                        className={
-                                            `form-control input-sm ` + (this.state.errors.number ? 'has-error' : '')
-                                        }
+                                        className={`form-control input-sm ` + (errors.number ? 'has-error' : '')}
                                         id={'number'}
                                         name={'number'}
                                         value={number}
@@ -261,7 +263,7 @@ class ContactDetailsFormAddressNew extends Component {
                                 value={typeId}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
-                                error={this.state.errors.typeId}
+                                error={errors.typeId}
                             />
                             {typeId === 'old' && (
                                 <InputDate
@@ -269,7 +271,7 @@ class ContactDetailsFormAddressNew extends Component {
                                     name="endDate"
                                     value={endDate}
                                     onChangeAction={this.handleInputChangeDate}
-                                    error={this.state.errors.endDate}
+                                    error={errors.endDate}
                                 />
                             )}
                         </div>
@@ -283,13 +285,14 @@ class ContactDetailsFormAddressNew extends Component {
                                 options={this.props.countries}
                                 value={countryId}
                                 onChangeAction={this.handleInputChange}
-                                error={this.state.errors.countryId}
+                                error={errors.countryId}
                             />
                             <InputToggle
                                 label={'Primair adres'}
                                 name={'primary'}
                                 value={primary}
                                 onChangeAction={this.handleInputChange}
+                                disabled={numberOfAddressesNotOld == 0}
                             />
                         </div>
 
@@ -300,7 +303,7 @@ class ContactDetailsFormAddressNew extends Component {
                                 name={'eanElectricity'}
                                 value={eanElectricity}
                                 onChangeAction={this.handleInputChange}
-                                error={this.state.errors.eanElectricity}
+                                error={errors.eanElectricity}
                             />
                             <InputText
                                 label={'EAN gas'}
@@ -308,7 +311,7 @@ class ContactDetailsFormAddressNew extends Component {
                                 name={'eanGas'}
                                 value={eanGas}
                                 onChangeAction={this.handleInputChange}
-                                error={this.state.errors.eanGas}
+                                error={errors.eanGas}
                             />
                         </div>
 
@@ -334,6 +337,7 @@ class ContactDetailsFormAddressNew extends Component {
 
 const mapStateToProps = state => {
     return {
+        addresses: state.contactDetails.addresses,
         addressTypes: state.systemData.addressTypes,
         countries: state.systemData.countries,
         id: state.contactDetails.id,

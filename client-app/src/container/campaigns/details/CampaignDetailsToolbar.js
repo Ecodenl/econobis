@@ -37,7 +37,13 @@ function CampaignDetailsToolbar({ campaign, permissions }) {
                 </Panel>
             </div>
 
-            {showDelete && <CampaignDetailsDelete closeDeleteItemModal={toggleDelete} id={campaign.id} />}
+            {showDelete && (
+                <CampaignDetailsDelete
+                    id={campaign.id}
+                    numberOfIntakes={campaign.numberOfIntakes}
+                    closeDeleteItemModal={toggleDelete}
+                />
+            )}
         </div>
     );
 }

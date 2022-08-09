@@ -33,7 +33,6 @@ export default [
     { id: 40, name: 'Groenpand' },
     { id: 44, name: 'Hezelaer' },
     { id: 9, name: 'Holland Wind' },
-    { id: 33, name: 'Holthausen Clean Energy (HCE)' },
     { id: 20, name: 'Huismerk Energie' },
     { id: 30, name: 'HVC Kringloop Energie' },
     { id: 23, name: 'Innova Energie' },

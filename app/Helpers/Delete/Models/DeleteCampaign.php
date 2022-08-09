@@ -72,6 +72,10 @@ class DeleteCampaign implements DeleteInterface
             $deleteTask = new DeleteTask($task);
             $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
         }
+        foreach ($this->campaign->intakes as $intake) {
+            $deletetIntake = new DeleteIntake($intake);
+            $this->errorMessage = array_merge($this->errorMessage, $deletetIntake->delete());
+        }
     }
 
     /** The relations which should be dissociated

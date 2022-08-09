@@ -9,7 +9,6 @@
         "barryvdh/laravel-dompdf": "^0.8.1",
         "cmpayments/iban": "^1.1",
         "doctrine/dbal": "^2.6",
-        "ecodenl/pico-wrapper": "dev-master",
         "fruitcake/laravel-cors": "^2.0",
         "google/apiclient": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",

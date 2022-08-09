@@ -31,7 +31,7 @@ const ContactDetailsPhoneDelete = props => {
                 <p className={'text-danger'}>
                     <strong>Fout!</strong> Dit is een primair telefoonnummer en kan niet worden verwijderd.
                     <br />
-                    Maak eerst een ander e-mailadres primair.
+                    Maak eerst een ander telefoonnummer primair.
                 </p>
             )}
             {props.primary && allowDelete && (

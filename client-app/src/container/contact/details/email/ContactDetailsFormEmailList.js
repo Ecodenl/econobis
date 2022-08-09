@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import ContactDetailFormEmailItem from './ContactDetailsFormEmailItem';
-import ContactDetailFormAddressItem from '../address/ContactDetailsFormAddressList';
+import ContactDetailsFormEmailItem from './ContactDetailsFormEmailItem';
 
 const ContactDetailsFormEmailList = props => {
     return (
@@ -18,7 +17,7 @@ const ContactDetailsFormEmailList = props => {
             {props.emailAddresses.length > 0 ? (
                 props.emailAddresses.map(emailAddress => {
                     return (
-                        <ContactDetailFormEmailItem
+                        <ContactDetailsFormEmailItem
                             key={emailAddress.id}
                             emailAddress={emailAddress}
                             numberOfEmailAddresses={props.emailAddresses.length}

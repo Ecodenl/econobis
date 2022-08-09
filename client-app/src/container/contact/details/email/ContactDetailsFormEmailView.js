@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import GetNameByIdHelper from '../../../../helpers/GetNameByIdHelper';
 
-const ContactDetailFormEmailView = props => {
+const ContactDetailsFormEmailView = props => {
     const { email, typeId, primary } = props.emailAddress;
 
     return (
@@ -45,4 +45,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(ContactDetailFormEmailView);
+export default connect(mapStateToProps, null)(ContactDetailsFormEmailView);

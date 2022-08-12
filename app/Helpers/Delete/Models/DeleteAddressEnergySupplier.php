@@ -13,27 +13,27 @@ use App\Helpers\Delete\DeleteInterface;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class DeleteAddress
+ * Class DeleteAddressEnergySupplier
  *
  * Relation: 1-n Housing files. Action: call DeleteHousingFile
  * Relation: 1-n Intakes. Action: call DeleteIntake
  *
  * @package App\Helpers\Delete\Models
  */
-class DeleteAddress implements DeleteInterface
+class DeleteAddressEnergySupplier implements DeleteInterface
 {
 
     private $errorMessage = [];
-    private $address;
+    private $addressEnergySupplier;
 
     /** Sets the model to delete
      *
-     * @param Model $address the model to delete
+     * @param Model $addressEnergySupplier the model to delete
      */
 
-    public function __construct(Model $address)
+    public function __construct(Model $addressEnergySupplier)
     {
-        $this->address = $address;
+        $this->addressEnergySupplier = $addressEnergySupplier;
     }
 
     /** Main method for deleting this model and all it's relations
@@ -48,7 +48,7 @@ class DeleteAddress implements DeleteInterface
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->address->delete();
+        $this->addressEnergySupplier->delete();
 
         return $this->errorMessage;
     }
@@ -58,32 +58,12 @@ class DeleteAddress implements DeleteInterface
      */
     public function canDelete()
     {
-        if($this->address->participations()->count() > 0){
-            array_push($this->errorMessage, "Er zijn nog deelnames.");
-        }
-        if($this->address->housingFiles()->count() > 0){
-            array_push($this->errorMessage, "Er zijn nog woningdossiers.");
-        }
     }
 
     /** Deletes models recursive
      */
     public function deleteModels()
     {
-        foreach ($this->address->addressEnergySuppliers as $addressEnergySupplier){
-            $deleteAddressEnergySupplier = new DeleteAddressEnergySupplier($addressEnergySupplier);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteAddressEnergySupplier->delete());
-        }
-
-        foreach ($this->address->intakes as $intake){
-            $deleteIntake = new DeleteIntake($intake);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteIntake->delete());
-        }
-
-        foreach ($this->address->housingFiles as $housingFile){
-            $deleteHousingFile = new DeleteHousingFile($housingFile);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteHousingFile->delete());
-        }
     }
 
     /** The relations which should be dissociated

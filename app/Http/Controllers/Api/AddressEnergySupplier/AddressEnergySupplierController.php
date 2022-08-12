@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api\AddressEnergySupplier;
 
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
+use App\Helpers\Delete\Models\DeleteAddressEnergySupplier;
 use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\AddressEnergySupplier\FullAddressEnergySupplier;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class AddressEnergySupplierController extends ApiController
@@ -82,6 +84,8 @@ class AddressEnergySupplierController extends ApiController
 
         $addressEnergySupplier->fill($data);
 
+        $this->authorize('create', $addressEnergySupplier);
+
         if ($this->validateOverlapPeriode($addressEnergySupplier, false)) {
             $this->setEndDateAddressEnergySupplier($addressEnergySupplier);
         }
@@ -138,6 +142,8 @@ class AddressEnergySupplierController extends ApiController
 
     public function update(RequestInput $requestInput, AddressEnergySupplier $addressEnergySupplier)
     {
+        $this->authorize('update', $addressEnergySupplier);
+
         $data = $requestInput
             ->string('energySupplyTypeId')->validate('required|exists:energy_supply_types,id')->alias('energy_supply_type_id')->next()
             ->date('memberSince')->whenMissing(null)->onEmpty(null)->alias('member_since')->next()
@@ -211,7 +217,25 @@ class AddressEnergySupplierController extends ApiController
 
     public function destroy(AddressEnergySupplier $addressEnergySupplier)
     {
-        $addressEnergySupplier->forceDelete();
+        $this->authorize('delete', $addressEnergySupplier);
+
+        try {
+            DB::beginTransaction();
+
+            $deleteAddressEnergySupplier = new DeleteAddressEnergySupplier($addressEnergySupplier);
+            $result = $deleteAddressEnergySupplier->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
     }
 
     /**

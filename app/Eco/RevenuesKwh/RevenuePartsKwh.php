@@ -175,6 +175,13 @@ class RevenuePartsKwh extends Model
         $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_end', '<=', $this->date_end)->pluck('id')->toArray();
         $distributionKwhIds = RevenueDistributionPartsKwh::whereIn('parts_id', $upToPartsKwhIds)->where('is_visible', 1)->whereNull('date_energy_supplier_report')->whereNotNull('es_id')->where('delivered_kwh', '!=', 0)->pluck('distribution_id')->toArray();
 
+// todo WM: Werkt wel, maar hierdoor wordt hij nu 10x zo traag !!!
+//        $distributionKwhCollection = RevenueDistributionPartsKwh::whereIn('parts_id', $upToPartsKwhIds)->where('is_visible', 1)->whereNull('date_energy_supplier_report')->whereNotNull('es_id')->get();
+//        $distributionKwhIds = $distributionKwhCollection->filter(function($model){
+//            return $model->delivered_kwh_from_till_visible != 0;
+//        })
+//            ->pluck('distribution_id')->toArray();
+
         if(count($distributionKwhIds) == 0){
             return null;
         }

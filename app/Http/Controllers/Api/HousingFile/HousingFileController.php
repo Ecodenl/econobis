@@ -87,6 +87,9 @@ class HousingFileController extends ApiController
             ->integer('floors')->validate('nullable|integer')->onEmpty(null)->whenMissing(null)->alias('floors')->next()
             ->integer('energyLabelStatusId')->validate('nullable|exists:energy_label_status,id')->onEmpty(null)->whenMissing(null)->alias('energy_label_status_id')->next()
             ->boolean('isMonument')->validate('boolean')->alias('is_monument')->whenMissing(false)->next()
+            ->integer('numberOfResidents')->validate('integer')->onEmpty(0)->whenMissing(0)->alias('number_of_residents')->next()
+            ->integer('revenueSolarPanels')->validate('integer')->onEmpty(0)->whenMissing(0)->alias('revenue_solar_panels')->next()
+            ->string('remark')->validate('string')->onEmpty('')->whenMissing('')->alias('remark')->next()
             ->get();
 
         $housingFile = new HousingFile($data);
@@ -110,6 +113,9 @@ class HousingFileController extends ApiController
             ->integer('floors')->validate('nullable|integer')->onEmpty(null)->whenMissing(null)->alias('floors')->next()
             ->integer('energyLabelStatusId')->validate('nullable|exists:energy_label_status,id')->onEmpty(null)->whenMissing(null)->alias('energy_label_status_id')->next()
             ->boolean('isMonument')->validate('boolean')->alias('is_monument')->whenMissing(false)->next()
+            ->integer('numberOfResidents')->validate('integer')->onEmpty(0)->whenMissing(0)->alias('number_of_residents')->next()
+            ->integer('revenueSolarPanels')->validate('integer')->onEmpty(0)->whenMissing(0)->alias('revenue_solar_panels')->next()
+            ->string('remark')->validate('string')->onEmpty('')->whenMissing('')->alias('remark')->next()
             ->get();
 
         $housingFile->fill($data);

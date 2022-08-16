@@ -91,6 +91,10 @@ return [
             'transport' => 'gmailapi',
         ],
 
+        'ms-graphapi' => [
+            'transport' => 'ms-graphapi',
+        ],
+
     ],
 
     /*

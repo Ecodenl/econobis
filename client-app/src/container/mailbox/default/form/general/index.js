@@ -15,9 +15,11 @@ import { MailboxValidationSmtp } from './Validation';
 import { MailboxValidationPassword } from './Validation';
 import { MailboxValidationMailgun } from './Validation';
 import { MailboxValidationGmail } from './Validation';
+import { MailboxValidationMsGraph } from './Validation';
 import MailboxDefaultFormGeneralGmailApiSettings from './GmailApiSettings';
 import ViewText from '../../../../../components/form/ViewText';
 import moment from 'moment';
+import MailboxDefaultFormGeneralMsGraphApiSettings from './MsGraphApiSettings';
 
 function MailboxDefaultFormGeneral({
     initialValues,
@@ -66,6 +68,9 @@ function MailboxDefaultFormGeneral({
         }
         if (currentIncomingServerType === 'gmail' || currentOutgoingServerType === 'gmail') {
             validationSchema = validationSchema.concat(MailboxValidationGmail);
+        }
+        if (currentIncomingServerType === 'ms-graph' || currentOutgoingServerType === 'ms-graph') {
+            validationSchema = validationSchema.concat(MailboxValidationMsGraph);
         }
         return validationSchema;
     }
@@ -332,6 +337,15 @@ function MailboxDefaultFormGeneral({
 
                 {(values.incomingServerType === 'gmail' || values.outgoingServerType === 'gmail') && (
                     <MailboxDefaultFormGeneralGmailApiSettings
+                        values={values}
+                        errors={errors}
+                        touched={touched}
+                        handleChange={handleChange}
+                        handleBlur={handleBlur}
+                    />
+                )}
+                {(values.incomingServerType === 'ms-graph' || values.outgoingServerType === 'ms-graph') && (
+                    <MailboxDefaultFormGeneralMsGraphApiSettings
                         values={values}
                         errors={errors}
                         touched={touched}

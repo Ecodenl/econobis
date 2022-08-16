@@ -7,7 +7,8 @@ import PanelHeader from '../../../../components/panel/PanelHeader';
 import PanelBody from '../../../../components/panel/PanelBody';
 import moment from 'moment/moment';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { REDIRECT_URL } from '../../../../constants';
+import { REDIRECT_URL_GMAIL } from '../../../../constants';
+import { REDIRECT_URL_MS_GRAPH } from '../../../../constants';
 
 function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
     const {
@@ -159,12 +160,12 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                         <PanelBody>
                             <div className="row">
                                 <ViewText label={'Project id'} value={gmailApiSettings?.projectId} />
-                                <ViewText label={'Redirect url'} value={REDIRECT_URL} />
+                                <ViewText label={'Redirect url'} value={REDIRECT_URL_GMAIL} />
                                 {/*<div className="form-group col-sm-6">*/}
                                 {/*    <label className="col-sm-6">Redirect url</label>*/}
                                 {/*    <div className="col-sm-6" style={{ paddingRight: '5px' }} onClick={null}>*/}
-                                {/*        {REDIRECT_URL}*/}
-                                {/*        <CopyToClipboard text={REDIRECT_URL}>*/}
+                                {/*        {REDIRECT_URL_GMAIL}*/}
+                                {/*        <CopyToClipboard text={REDIRECT_URL_GMAIL}>*/}
                                 {/*            <span*/}
                                 {/*                className="glyphicon glyphicon-copy mybtn-success pull-right"*/}
                                 {/*                style={{ top: '5px' }}*/}
@@ -179,6 +180,41 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                             <div className="row">
                                 <ViewText label={'Client id'} value={gmailApiSettings?.clientId} />
                                 <ViewText label={'Client secret'} value={gmailApiSettings?.clientSecret} />
+                            </div>
+                        </PanelBody>
+                    </>
+                )}
+
+                {(incomingServerType === 'ms-graph' || outgoingServerType === 'ms-graph') && (
+                    <>
+                        <PanelHeader>
+                            <span className="h5">
+                                <strong>Microsoft Graph api instellingen</strong>
+                            </span>
+                        </PanelHeader>
+                        <PanelBody>
+                            <div className="row">
+                                <ViewText label={'Client id'} value={gmailApiSettings?.clientId} />
+                                <ViewText label={'Client secret'} value={gmailApiSettings?.clientSecret} />
+                            </div>
+                            <div className="row">
+                                <ViewText label={'Tenant id'} value={gmailApiSettings?.projectId} />
+                                <ViewText label={'Redirect url'} value={REDIRECT_URL_MS_GRAPH} />
+                                {/*<div className="form-group col-sm-6">*/}
+                                {/*    <label className="col-sm-6">Redirect url</label>*/}
+                                {/*    <div className="col-sm-6" style={{ paddingRight: '5px' }} onClick={null}>*/}
+                                {/*        {REDIRECT_URL_MS_GRAPH}*/}
+                                {/*        <CopyToClipboard text={REDIRECT_URL_MS_GRAPH}>*/}
+                                {/*            <span*/}
+                                {/*                className="glyphicon glyphicon-copy mybtn-success pull-right"*/}
+                                {/*                style={{ top: '5px' }}*/}
+                                {/*                role="button"*/}
+                                {/*                onClick={null}*/}
+                                {/*                title={'Kopieer sleutel'}*/}
+                                {/*            />*/}
+                                {/*        </CopyToClipboard>*/}
+                                {/*    </div>*/}
+                                {/*</div>*/}
                             </div>
                         </PanelBody>
                     </>

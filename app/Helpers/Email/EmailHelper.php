@@ -33,6 +33,9 @@ class EmailHelper
             $this->setConfigToSmtpMailbox($mailbox);
         } elseif($mailbox->outgoing_server_type === 'gmail'){
             $this->setConfigToGmailApiMailbox($mailbox);
+//todo WM oauth: nog testen !!!
+        } elseif($mailbox->outgoing_server_type === 'ms-graph'){
+            $this->setConfigToMsGraphApiMailbox($mailbox);
         }
     }
 
@@ -83,6 +86,22 @@ class EmailHelper
         Config::set('mail.from', ['address' => $mailbox->email, 'name' => $mailbox->name]);
         Config::set('mail.default', 'gmailapi');
         Config::set('services.gmailapi.mailbox_id', $mailbox->id);
+    }
+
+//todo WM oauth: nog testen !!!
+    protected function setConfigToMsGraphApiMailbox(Mailbox $mailbox)
+    {
+        $msGraphApiSettings = $mailbox->msGraphApiSettings;
+        if(!$msGraphApiSettings){
+            throw new \Exception('Mailbox ' . $mailbox->id . ' should have configured Microsoft Graph api settings.');
+        }
+        if(!$msGraphApiSettings->token){
+            throw new \Exception('Mailbox ' . $mailbox->id . ' should have a token.');
+        }
+
+        Config::set('mail.from', ['address' => $mailbox->email, 'name' => $mailbox->name]);
+        Config::set('mail.default', 'ms-graphapi');
+        Config::set('services.ms-graphapi.mailbox_id', $mailbox->id);
     }
 
     protected function inProduction()

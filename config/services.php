@@ -51,4 +51,8 @@ return [
     'gmailapi' => [
         'mailbox_id' => null,
     ],
+
+    'ms-graphapi' => [
+        'mailbox_id' => null,
+    ],
 ];

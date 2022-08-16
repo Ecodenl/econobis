@@ -27,3 +27,6 @@ Route::get('/portal/mollie/redirect/{participantMutationCode}', [ParticipantMuta
 Route::get('/', 'HomeController@welcome');
 
 Route::get('/oauth/gmail/callback', [MailboxController::class, 'gmailApiConnectionCallback'])->name('oauth.gmail.callback');
+//todo WM oauth: nog testen en opschonen !!!
+Route::get('/oauth/ms-graph/redirect', [MailboxController::class, 'msGraphApiConnectionRedirect'])->name('oauth.ms-graph.redirect');
+Route::get('/oauth/ms-graph/callback', [MailboxController::class, 'msGraphApiConnectionCallback'])->name('oauth.ms-graph.callback');

@@ -52,6 +52,8 @@ use App\Eco\Organisation\Organisation;
 use App\Eco\Organisation\OrganisationPolicy;
 use App\Eco\Address\Address;
 use App\Eco\Address\AddressPolicy;
+use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
+use App\Eco\AddressEnergySupplier\AddressEnergySupplierPolicy;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationPolicy;
 use App\Eco\ParticipantProject\ObligationNumber;
@@ -109,6 +111,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         Organisation::class => OrganisationPolicy::class,
         Address::class => AddressPolicy::class,
+        AddressEnergySupplier::class => AddressEnergySupplierPolicy::class,
         Contact::class => ContactPolicy::class,
         ContactNote::class => ContactNotePolicy::class,
         PortalUser::class => PortalUserPolicy::class,

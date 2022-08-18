@@ -16,7 +16,11 @@ function MailboxDetailsFormGeneralEdit({ mailboxDetails, updateMailbox, fetchSys
             })
             .catch(error => {
                 console.log(error);
-                if (error.response.status === 401 && error.response.data.message === 'gmail_unauthorised') {
+                if (
+                    error.response.status === 401 &&
+                    (error.response.data.message === 'gmail_unauthorised' ||
+                        error.response.data.message === 'ms_graph_unauthorised')
+                ) {
                     window.location = error.response.data.authUrl;
                 }
 

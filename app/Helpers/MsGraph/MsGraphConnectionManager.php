@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\TokenStore\TokenCache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use League\OAuth2\Client\Provider\GenericProvider;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model;
@@ -30,15 +31,25 @@ class MsGraphConnectionManager extends Controller
     public function connect()
     {
         $authUrl = $this->client->getAuthorizationUrl();
+//todo WM oauth: nog testen en opschonen !!!
+//
+        Log::info('MsGraphConnectionManager - connect');
         Log::info('oauthState: ' . $this->client->getState());
         Log::info('authUrl: ' . $authUrl);
         // Save client state so we can validate in callback
-//        session(['oauthState' => $this->client->getState(), 'msGraphMailboxEmail' => $this->mailbox->email]);
+//        Session::put('test', 'test123abc');
         session(['oauthState' => $this->client->getState(), 'msGraphMailboxEmail' => $this->mailbox->email]);
 
-        // Redirect to AAD signin page
-        return redirect()->away($authUrl);
+//todo WM oauth: nog testen en opschonen !!!
+//
+        // Request authorization from the user.
 
+        // Redirect to AAD signin page
+//        return $authUrl;
+        return ['message' => 'ms_graph_unauthorised', 'description' => 'Not authorised for MS graph oauth API', 'authUrl' =>  $authUrl];
+
+//todo WM oauth: nog testen en opschonen !!!
+//
 //        $redirectUrl = '/oauth/ms-graph/redirect?authUrl=' . $authUrl;
 //        Log::info('redirectUrl: ' . $redirectUrl);
 //        return redirect()->to($redirectUrl);
@@ -50,16 +61,23 @@ class MsGraphConnectionManager extends Controller
 
     public function callback(Request $request)
     {
-        Log::info(session()->all());
-        Log::info(session('oauthState'));
-        Log::info(session('msGraphMailboxEmail'));
-//        Log::info($request->getSession()->get('msGraphMailboxEmail'));
-//        Log::info(session('msGraphMailboxEmail'));
+//todo WM oauth: nog testen en opschonen !!!
+//
+        Log::info('MsGraphConnectionManager - callback');
+        Log::info('Authorization code: ' . $request->query('code'));
+        Log::info('session all: ');
+        Log::info(Session::all());
         // Validate state
-        $expectedState = session('oauthState');
+        $expectedState = Session('oauthState');
         $request->session()->forget('oauthState');
-        $request->session()->forget('msGraphMailboxEmail');
         $providedState = $request->query('state');
+//todo WM oauth: nog testen en opschonen !!!
+//
+        Log::info('expectedState oauthState: ' . $expectedState);
+        Log::info('provided oauthState: ' . $providedState);
+        Log::info(Session('msGraphMailboxEmail'));
+//        $mailboxEmail = session('msGraphMailboxEmail');
+//        $request->session()->forget('msGraphMailboxEmail');
 
         if (!isset($expectedState)) {
             // If there is no expected state in the session,
@@ -68,6 +86,10 @@ class MsGraphConnectionManager extends Controller
         }
 
         if (!isset($providedState) || $expectedState != $providedState) {
+            //todo WM oauth: nog testen en opschonen !!!
+//
+            Log::info('The provided auth state did not match the expected value');
+
             return redirect('/')
                 ->with('error', 'Invalid auth state')
                 ->with('errorDetail', 'The provided auth state did not match the expected value');
@@ -142,8 +164,6 @@ class MsGraphConnectionManager extends Controller
             'urlResourceOwnerDetails' => '',
             'scopes'                  => config('azure.scopes'),
         ]);
-
     }
-
 
 }

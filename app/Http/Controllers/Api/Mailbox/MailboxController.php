@@ -22,6 +22,7 @@ use App\Helpers\Gmail\GmailConnectionManager;
 use App\Helpers\MsGraph\MsGraphConnectionManager;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\EncryptCookies;
 use App\Http\Resources\Email\GridEmailTemplate;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Mailbox\FullMailbox;
@@ -33,11 +34,18 @@ use Doctrine\Common\Annotations\Annotation\Enum;
 use http\Header;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class MailboxController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware([EncryptCookies::class, StartSession::class])->only('update');
+    }
 
     public function grid()
     {
@@ -102,7 +110,7 @@ class MailboxController extends Controller
             $msGraphConnectionManage = new MsGraphConnectionManager($mailbox);
             $client = $msGraphConnectionManage->connect();
 
-            if (isset($client['message']) && $client['message'] == 'gmail_unauthorised') {
+            if (isset($client['message']) && $client['message'] == 'ms_graph_unauthorised') {
                 return response()->json($client, 401);
             }
         } else {
@@ -123,6 +131,9 @@ class MailboxController extends Controller
 
     public function update(Mailbox $mailbox, Request $request, RequestInput $input)
     {
+//        Session::put('test', 'test1234');
+//        dd();
+//        dd(Session::all());
         $this->authorize('create', Mailbox::class);
 
         $data = $input->string('name')->next()
@@ -168,19 +179,18 @@ class MailboxController extends Controller
             }
 //todo WM oauth: nog testen en opschonen !!!
         } elseif ($mailbox->incoming_server_type === 'ms-graph') {
-            Log::info( 'hallo ms graph !!!');
             $msGraphConnectionManage = new MsGraphConnectionManager($mailbox);
-            return $msGraphConnectionManage->connect();
-//            $authUrl = $msGraphConnectionManage->connect();
-
-//            return redirect()->away($authUrl);
-//            return redirect()->to('/oauth/ms-graph/redirect?authUrl=' . $authUrl);
-            Log::info( 'komen we hier nog bbb ????????????');
+            $client = $msGraphConnectionManage->connect();
+//            Log::info( 'client?');
+//            Log::info( $client);
+//            $authUrl = response()->json([
+//                'redirect_url' => $msGraphConnectionManage->connect(),
+//            ]);
 
 //
-//            if (isset($client['message']) && $client['message'] == 'gmail_unauthorised') {
-//                return response()->json($client, 401);
-//            }
+            if (isset($client['message']) && $client['message'] == 'ms_graph_unauthorised') {
+                return response()->json($client, 401);
+            }
         } else {
             new MailFetcher($mailbox);
         }
@@ -353,17 +363,37 @@ class MailboxController extends Controller
 
     public function msGraphApiConnectionCallback(Request $request)
     {
-        $mailbox = Mailbox::where('email','xaris@energiesamen.nu')->first();
-        $msGraphConnectionManager = new MsGraphConnectionManager($mailbox);
-        $msGraphConnectionManager->callback($request);
-            return;
-Log::info($request->getSession()->get('msGraphMailboxEmail'));
-Log::info(session('msGraphMailboxEmail'));
+//todo WM oauth: nog testen en opschonen !!!
+//
+//        dd(Session::all());
+//        Log::info('MailboxController - msGraphApiConnectionCallback - callback');
+//        Log::info(Session::all());
+//        Log::info('oauthState: ');
+//        Log::info(session('oauthState'));
+//        Log::info('msGraphMailboxEmail: ');
+//        Log::info(session('msGraphMailboxEmail'));
+//        Log::info('oauthState b: ');
+//        Log::info(Session('oauthState'));
+//        Log::info('msGraphMailboxEmail: ');
+//        Log::info(Session('msGraphMailboxEmail'));
+//        $mailbox = Mailbox::where('email','xaris@energiesamen.nu')->first();
+//        $msGraphConnectionManager = new MsGraphConnectionManager($mailbox);
+//        $appUrl = config('app.url');
+
         $state = json_decode(base64_decode($request->state));
-Log::info($state);
+//todo WM oauth: nog testen en opschonen !!!
+//
+        Log::info('msGraphApiConnectionCallback - state');
+        Log::info($state);
+
         $mailboxEmail = session('msGraphMailboxEmail');
-Log::info($mailboxEmail);
-        $mailbox = Mailbox::where('email',$mailboxEmail)->first();
+        $request->session()->forget('$mailboxEmail');
+//todo WM oauth: nog testen en opschonen !!!
+//
+        Log::info('msGraphApiConnectionCallback - mailboxEmail');
+        Log::info($mailboxEmail);
+
+        $mailbox = Mailbox::where('email', $mailboxEmail)->first();
 
         if (!$mailbox || !$request->code) return;
 
@@ -372,7 +402,7 @@ Log::info($mailboxEmail);
         $appUrl = config('app.url');
 
         // TODO If callback is not valid then show message to the user
-        if ($msGraphConnectionManager->callback($request->code)) {
+        if ($msGraphConnectionManager->callback($request)) {
             header("Location: {$appUrl}/#/mailbox/{$mailbox->id}");
             exit;
         } else {
@@ -380,5 +410,36 @@ Log::info($mailboxEmail);
             header("Location: {$appUrl}/#/mailbox/{$mailbox->id}");
             exit;
         }
+
+//todo WM oauth: nog testen en opschonen !!!
+//
+//        $msGraphConnectionManager->callback($request);
+//
+//            return;
+//        Log::info('test session');
+//Log::info(Session::all());
+//Log::info(session('msGraphMailboxEmail'));
+//        $state = json_decode(base64_decode($request->state));
+//Log::info($state);
+//        $mailboxEmail = session('msGraphMailboxEmail');
+//        $request->session()->forget('$mailboxEmail');
+//        Log::info($mailboxEmail);
+//        $mailbox = Mailbox::where('email',$mailboxEmail)->first();
+//
+//        if (!$mailbox || !$request->code) return;
+//
+//        $msGraphConnectionManager = new MsGraphConnectionManager($mailbox);
+//
+//        $appUrl = config('app.url');
+//
+//        // TODO If callback is not valid then show message to the user
+//        if ($msGraphConnectionManager->callback($request->code)) {
+//            header("Location: {$appUrl}/#/mailbox/{$mailbox->id}");
+//            exit;
+//        } else {
+//            Log::error("Callback vanuit ms-graph is NIET ok");
+//            header("Location: {$appUrl}/#/mailbox/{$mailbox->id}");
+//            exit;
+//        }
     }
 }

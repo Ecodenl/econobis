@@ -19,7 +19,7 @@ class AddressEnergySupplierPolicy
      */
     public function view(User $user, AddressEnergySupplier $addressEnergySupplier)
     {
-        return $user->can('view', $addressEnergySupplier->address>contact);
+        return $user->can('view', $addressEnergySupplier->address->contact);
     }
 
     /**
@@ -42,7 +42,7 @@ class AddressEnergySupplierPolicy
      */
     public function update(User $user, AddressEnergySupplier $addressEnergySupplier)
     {
-        return $user->can('update', $addressEnergySupplier->address>contact);
+        return $user->can('update', $addressEnergySupplier->address->contact);
     }
 
     /**
@@ -54,6 +54,6 @@ class AddressEnergySupplierPolicy
      */
     public function delete(User $user, AddressEnergySupplier $addressEnergySupplier)
     {
-        return $user->can('update', $addressEnergySupplier->address>contact);
+        return $user->can('update', $addressEnergySupplier->address->contact);
     }
 }

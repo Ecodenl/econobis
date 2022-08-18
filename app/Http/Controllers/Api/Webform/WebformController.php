@@ -21,7 +21,8 @@ class WebformController extends Controller
 
     public function __construct()
     {
-        $this->authorize('manage', Webform::class);
+        //todo WM: check of dit goed is
+//        $this->authorize('manage', Webform::class);
     }
 
     public function grid()

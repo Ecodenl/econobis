@@ -34,7 +34,7 @@ class EmailHelper
         } elseif($mailbox->outgoing_server_type === 'gmail'){
             $this->setConfigToGmailApiMailbox($mailbox);
 //todo WM oauth: nog testen !!!
-        } elseif($mailbox->outgoing_server_type === 'ms-graph'){
+        } elseif($mailbox->outgoing_server_type === 'ms-oauth'){
             $this->setConfigToMsGraphApiMailbox($mailbox);
         }
     }
@@ -100,8 +100,8 @@ class EmailHelper
         }
 
         Config::set('mail.from', ['address' => $mailbox->email, 'name' => $mailbox->name]);
-        Config::set('mail.default', 'ms-graphapi');
-        Config::set('services.ms-graphapi.mailbox_id', $mailbox->id);
+        Config::set('mail.default', 'ms-oauthapi');
+        Config::set('services.ms-oauthapi.mailbox_id', $mailbox->id);
     }
 
     protected function inProduction()

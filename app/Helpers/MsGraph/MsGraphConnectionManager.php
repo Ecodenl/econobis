@@ -10,7 +10,6 @@ use App\Http\Controllers\Controller;
 use App\TokenStore\TokenCache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 use League\OAuth2\Client\Provider\GenericProvider;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model;
@@ -31,53 +30,18 @@ class MsGraphConnectionManager extends Controller
     public function connect()
     {
         $authUrl = $this->client->getAuthorizationUrl();
-//todo WM oauth: nog testen en opschonen !!!
-//
-        Log::info('MsGraphConnectionManager - connect');
-        Log::info('oauthState: ' . $this->client->getState());
-        Log::info('authUrl: ' . $authUrl);
         // Save client state so we can validate in callback
-//        Session::put('test', 'test123abc');
-        session(['oauthState' => $this->client->getState(), 'msGraphMailboxEmail' => $this->mailbox->email]);
-
-//todo WM oauth: nog testen en opschonen !!!
-//
-        // Request authorization from the user.
-
-        // Redirect to AAD signin page
-//        return $authUrl;
+        // And save mailbox email
+        session(['oauthState' => $this->client->getState(), 'msGraphMailboxId' => $this->mailbox->id]);
         return ['message' => 'ms_graph_unauthorised', 'description' => 'Not authorised for MS graph oauth API', 'authUrl' =>  $authUrl];
-
-//todo WM oauth: nog testen en opschonen !!!
-//
-//        $redirectUrl = '/oauth/ms-graph/redirect?authUrl=' . $authUrl;
-//        Log::info('redirectUrl: ' . $redirectUrl);
-//        return redirect()->to($redirectUrl);
-//        Log::info( 'komen we hier nog aaa ????????????');
-
-//        return $authUrl;
-//        die();
     }
 
-    public function callback(Request $request)
+    public function callback(Request $request, Mailbox $mailbox)
     {
-//todo WM oauth: nog testen en opschonen !!!
-//
-        Log::info('MsGraphConnectionManager - callback');
-        Log::info('Authorization code: ' . $request->query('code'));
-        Log::info('session all: ');
-        Log::info(Session::all());
         // Validate state
         $expectedState = Session('oauthState');
         $request->session()->forget('oauthState');
         $providedState = $request->query('state');
-//todo WM oauth: nog testen en opschonen !!!
-//
-        Log::info('expectedState oauthState: ' . $expectedState);
-        Log::info('provided oauthState: ' . $providedState);
-        Log::info(Session('msGraphMailboxEmail'));
-//        $mailboxEmail = session('msGraphMailboxEmail');
-//        $request->session()->forget('msGraphMailboxEmail');
 
         if (!isset($expectedState)) {
             // If there is no expected state in the session,
@@ -86,9 +50,9 @@ class MsGraphConnectionManager extends Controller
         }
 
         if (!isset($providedState) || $expectedState != $providedState) {
-            //todo WM oauth: nog testen en opschonen !!!
+//todo WM oauth: nog testen !
 //
-            Log::info('The provided auth state did not match the expected value');
+            Log::error('The provided auth state did not match the expected value');
 
             return redirect('/')
                 ->with('error', 'Invalid auth state')
@@ -97,25 +61,27 @@ class MsGraphConnectionManager extends Controller
 
         // Authorization code should be in the "code" query param
         $authCode = $request->query('code');
+        Log::info('authCode: ' . $authCode);
         if (isset($authCode)) {
-            // Initialize the OAuth client
             $this->client = new \League\OAuth2\Client\Provider\GenericProvider([
-                'clientId'                => config('azure.appId'),
-                'clientSecret'            => config('azure.appSecret'),
-//                'authTenant'              => config('azure.authTenant'),
-                'redirectUri'             => config('azure.redirectUri'),
+                'clientId'                => $this->gmailApiSettings->client_id,
+                'clientSecret'            => $this->gmailApiSettings->client_secret,
+                'redirectUri'             => config('app.url') . '/' . config('azure.redirectUri'),
                 'urlAuthorize'            => config('azure.authority').config('azure.authorizeEndpoint'),
                 'urlAccessToken'          => config('azure.authority').config('azure.tokenEndpoint'),
                 'urlResourceOwnerDetails' => '',
-                'scopes'                  => config('azure.scopes')
+                'scopes'                  => config('azure.scopes'),
             ]);
 
-            // <StoreTokensSnippet>
             try {
+                Log::info('getAccessToken');
                 // Make the token request
                 $accessToken = $this->client->getAccessToken('authorization_code', [
                     'code' => $authCode
                 ]);
+// todo WM oauth: nog testen en opschonen
+//
+                Log::info('accessToken: ' . $accessToken);
 
                 $graph = new Graph();
                 $graph->setAccessToken($accessToken->getToken());
@@ -129,8 +95,10 @@ class MsGraphConnectionManager extends Controller
 
                 return redirect('/');
             }
-                // </StoreTokensSnippet>
             catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
+                Log::info('Error requesting access token');
+                Log::info(json_encode($e->getResponseBody()));
+
                 return redirect('/')
                     ->with('error', 'Error requesting access token')
                     ->with('errorDetail', json_encode($e->getResponseBody()));
@@ -153,12 +121,20 @@ class MsGraphConnectionManager extends Controller
 
     private function setClientConfig()
     {
+// todo WM oauth: nog testen en opschonen
+//
+//        Log::info('client_id uit gmailApiSettigns: ' . $this->gmailApiSettings->client_id);
+//        Log::info('client_secret uit gmailApiSettigns: ' . $this->gmailApiSettings->client_secret);
+//        Log::info('project_id uit gmailApiSettigns: ' . $this->gmailApiSettings->project_id);
+
+//        Log::info('client_id uit config azure: ' . config('azure.appId'));
+//        Log::info('client_secret uit config azure: ' . config('azure.appSecret'));
+
         // Initialize the OAuth client
         $this->client = new \League\OAuth2\Client\Provider\GenericProvider([
-            'clientId'                => config('azure.appId'),
-            'clientSecret'            => config('azure.appSecret'),
-//            'authTenant'              => config('azure.authTenant'),
-            'redirectUri'             => config('azure.redirectUri'),
+            'clientId'                => $this->gmailApiSettings->client_id,
+            'clientSecret'            => $this->gmailApiSettings->client_secret,
+            'redirectUri'             => config('app.url') . '/' . config('azure.redirectUri'),
             'urlAuthorize'            => config('azure.authority').config('azure.authorizeEndpoint'),
             'urlAccessToken'          => config('azure.authority').config('azure.tokenEndpoint'),
             'urlResourceOwnerDetails' => '',

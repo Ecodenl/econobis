@@ -69,7 +69,7 @@ function MailboxDefaultFormGeneral({
         if (currentIncomingServerType === 'gmail' || currentOutgoingServerType === 'gmail') {
             validationSchema = validationSchema.concat(MailboxValidationGmail);
         }
-        if (currentIncomingServerType === 'ms-graph' || currentOutgoingServerType === 'ms-graph') {
+        if (currentIncomingServerType === 'ms-oauth' || currentOutgoingServerType === 'ms-oauth') {
             validationSchema = validationSchema.concat(MailboxValidationMsGraph);
         }
         return validationSchema;
@@ -344,7 +344,7 @@ function MailboxDefaultFormGeneral({
                         handleBlur={handleBlur}
                     />
                 )}
-                {(values.incomingServerType === 'ms-graph' || values.outgoingServerType === 'ms-graph') && (
+                {(values.incomingServerType === 'ms-oauth' || values.outgoingServerType === 'ms-oauth') && (
                     <MailboxDefaultFormGeneralMsGraphApiSettings
                         values={values}
                         errors={errors}

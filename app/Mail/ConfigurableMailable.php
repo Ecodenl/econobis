@@ -42,9 +42,9 @@ class ConfigurableMailable extends Mailable
 
             $transport = new GmailapiTransport($mailboxId);
 //todo WM oauth: nog testen !!!
-        }elseif(config('mail.default') === 'ms-graphapi') {
-            // Send mail with ms-graphapi?!?!?
-            $mailboxId = config('services.ms-graphapi.mailbox_id');
+        }elseif(config('mail.default') === 'ms-oauthapi') {
+            // Send mail with ms-oauthapi?!?!?
+            $mailboxId = config('services.ms-oauthapi.mailbox_id');
 
             if(!$mailboxId) return;
 

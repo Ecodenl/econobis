@@ -52,7 +52,7 @@ return [
         'mailbox_id' => null,
     ],
 
-    'ms-graphapi' => [
+    'ms-oauthapi' => [
         'mailbox_id' => null,
     ],
 ];

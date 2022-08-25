@@ -185,7 +185,7 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                     </>
                 )}
 
-                {(incomingServerType === 'ms-graph' || outgoingServerType === 'ms-graph') && (
+                {(incomingServerType === 'ms-oauth' || outgoingServerType === 'ms-oauth') && (
                     <>
                         <PanelHeader>
                             <span className="h5">
@@ -198,7 +198,7 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                                 <ViewText label={'Client secret'} value={gmailApiSettings?.clientSecret} />
                             </div>
                             <div className="row">
-                                <ViewText label={'Tenant id'} value={gmailApiSettings?.projectId} />
+                                {/*<ViewText label={'Tenant id'} value={gmailApiSettings?.projectId} />*/}
                                 <ViewText label={'Redirect url'} value={REDIRECT_URL_MS_GRAPH} />
                                 {/*<div className="form-group col-sm-6">*/}
                                 {/*    <label className="col-sm-6">Redirect url</label>*/}

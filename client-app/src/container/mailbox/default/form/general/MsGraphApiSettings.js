@@ -38,16 +38,16 @@ function MailboxDefaultFormGeneralMsGraphApiSettings({ values, errors, touched, 
                     />
                 </div>
                 <div className="row">
-                    <InputText
-                        label={'Tenant id'}
-                        name={'gmailApiSettings.projectId'}
-                        value={values.gmailApiSettings?.projectId}
-                        onChangeAction={handleChange}
-                        onBlurAction={handleBlur}
-                        required={'required'}
-                        error={errors.gmailApiSettings?.projectId && touched.gmailApiSettings?.projectId}
-                        errorMessage={errors.gmailApiSettings?.projectId}
-                    />
+                    {/*<InputText*/}
+                    {/*    label={'Tenant id'}*/}
+                    {/*    name={'gmailApiSettings.projectId'}*/}
+                    {/*    value={values.gmailApiSettings?.projectId}*/}
+                    {/*    onChangeAction={handleChange}*/}
+                    {/*    onBlurAction={handleBlur}*/}
+                    {/*    required={'required'}*/}
+                    {/*    error={errors.gmailApiSettings?.projectId && touched.gmailApiSettings?.projectId}*/}
+                    {/*    errorMessage={errors.gmailApiSettings?.projectId}*/}
+                    {/*/>*/}
                     <ViewText className="form-group col-sm-6" label={'Redirect url'} value={REDIRECT_URL_MS_GRAPH} />
                     {/*<div className="form-group col-sm-6">*/}
                     {/*    <label className="col-sm-6">Redirect url</label>*/}

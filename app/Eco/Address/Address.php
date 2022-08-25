@@ -36,6 +36,11 @@ class Address extends Model
     {
         return $this->hasOne(AddressEnergySupplier::class)->where('is_current_supplier', true)->whereIn('energy_supply_type_id', [2, 3] );
     }
+    // primaryAddressEnergySupplierGas: only for Gas ! (type 1 or 3)
+    public function primaryAddressEnergySupplierGas()
+    {
+        return $this->hasOne(AddressEnergySupplier::class)->where('is_current_supplier', true)->whereIn('energy_supply_type_id', [1, 3] );
+    }
 
     public function contact()
     {

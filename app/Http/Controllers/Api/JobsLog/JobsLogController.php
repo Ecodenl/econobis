@@ -12,7 +12,7 @@ use App\Eco\Jobs\JobsLog;
 use App\Http\Controllers\Api\ApiController;
 use JosKolenberg\LaravelJory\Facades\Jory;
 
-class JobController extends ApiController
+class JobsLogController extends ApiController
 {
     public function jory()
     {

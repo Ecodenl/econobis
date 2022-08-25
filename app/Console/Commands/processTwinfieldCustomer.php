@@ -3,25 +3,25 @@
 namespace App\Console\Commands;
 
 use App\Eco\Administration\Administration;
-use App\Helpers\Twinfield\TwinfieldInvoiceHelper;
+use App\Helpers\Twinfield\TwinfieldCustomerHelper;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
-class processPaidInvoices extends Command
+class processTwinfieldCustomer extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'invoice:processPaidInvoices';
+    protected $signature = 'invoice:processTwinfieldCustomer';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = "Gaat in Twinfield kijken of nota's betaald zijn. Als is dit moeten ze in Econobis ook op betaald";
+    protected $description = "Customers in Twinfield aanmaken.";
 
     /**
      * Create a new command instance.
@@ -41,10 +41,10 @@ class processPaidInvoices extends Command
     public function handle()
     {
         foreach (Administration::where('twinfield_is_valid', 1)->where('uses_twinfield', 1)->get() as $administration) {
-            $twinfieldInvoiceHelper = new TwinfieldInvoiceHelper($administration);
-            $twinfieldInvoiceHelper->processPaidInvoices();
+            $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration, null);
+            $twinfieldCustomerHelper->processTwinfieldCustomer();
         }
 
-        Log::info("Betaalde Twinfield nota's in Econobis bijgewerkt.");
+        Log::info("Contacten Econobis in Twinfield bijgewerkt.");
     }
 }

@@ -1,4 +1,12 @@
-export const fetchInvoices = (filters, sorts, pagination, administrationId, onlyEmailInvoices, onlyPostInvoices) => {
+export const fetchInvoices = (
+    filters,
+    sorts,
+    pagination,
+    administrationId,
+    onlyEmailInvoices,
+    onlyPostInvoices,
+    setInvoicesPaid
+) => {
     return {
         type: 'FETCH_INVOICES',
         filters,
@@ -7,6 +15,7 @@ export const fetchInvoices = (filters, sorts, pagination, administrationId, only
         administrationId,
         onlyEmailInvoices,
         onlyPostInvoices,
+        setInvoicesPaid,
     };
 };
 

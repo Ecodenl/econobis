@@ -220,10 +220,10 @@ class OrganisationController extends ApiController
             foreach (Administration::where('twinfield_is_valid', 1)->where('uses_twinfield', 1)->get() as $administration) {
 
                 $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration, null);
-                $errorMessages = $twinfieldCustomerHelper->updateCustomer($contact);
-                if($errorMessages)
+                $customer = $twinfieldCustomerHelper->updateCustomer($contact);
+                if($twinfieldCustomerHelper->messages)
                 {
-                    array_push($messages, $errorMessages);
+                    array_merge($messages, $twinfieldCustomerHelper->messages);
                 }
             }
             if( !empty($messages) )

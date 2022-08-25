@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api\Twinfield;
 
 use App\Eco\Administration\Administration;
+use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
-class TwinfieldController extends Controller
+class TwinfieldController extends ApiController
 {
     public function twinfield(Request $request)
     {

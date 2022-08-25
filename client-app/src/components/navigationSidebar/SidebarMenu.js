@@ -253,11 +253,21 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                 <NavIcon>
                     <SvgIcon size={20} icon={stopwatch} />
                 </NavIcon>
-                <NavText>
-                    <Link className="sidebar-link-header" to="processen">
-                        Processen
-                    </Link>
-                </NavText>
+                <NavText>Logs</NavText>
+                <Nav key={'nav-processen'} id={`processen`}>
+                    <NavText>
+                        <Link className="sidebar-link-header" to="processen">
+                            Processen
+                        </Link>
+                    </NavText>
+                </Nav>
+                <Nav key={'nav-twinfield'} id={`twinfield`}>
+                    <NavText>
+                        <Link className="sidebar-link-header" to="twinfield">
+                            Twinfield
+                        </Link>
+                    </NavText>
+                </Nav>
             </Nav>
             {permissions.viewDocument && (
                 <Nav id="documenten">

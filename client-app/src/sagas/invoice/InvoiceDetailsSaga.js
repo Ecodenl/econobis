@@ -14,6 +14,22 @@ export function* fetchInvoiceDetailsSaga({ id }) {
     }
 }
 
+export function* fetchInvoiceFromTwinfieldDetailsSaga({ twinfieldCode, twinfieldNumber }) {
+    try {
+        yield put({ type: 'IS_LOADING' });
+        const invoiceDetails = yield call(
+            InvoiceDetailsAPI.fetchInvoiceFromTwinfieldDetails,
+            twinfieldCode,
+            twinfieldNumber
+        );
+        yield put({ type: 'FETCH_INVOICE_FROM_TWINFIELD_DETAILS_SUCCESS', invoiceDetails });
+        yield put({ type: 'IS_LOADING_COMPLETE' });
+    } catch (error) {
+        yield put({ type: 'FETCH_INVOICE_FROM_TWINFIELD_DETAILS_ERROR', error });
+        yield put({ type: 'LOADING_ERROR', error });
+    }
+}
+
 export function* deleteInvoiceSaga({ id }) {
     try {
         yield call(InvoiceDetailsAPI.deleteInvoice, id);

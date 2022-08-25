@@ -137,24 +137,32 @@ class InvoicePaymentsFormItem extends Component {
                     openEdit={this.openEdit}
                     toggleDelete={this.toggleDelete}
                     payment={this.state.payment}
+                    invoiceInTwinfield={this.props.invoiceInTwinfield}
+                    invoicePaidInTwinfield={this.props.invoicePaidInTwinfield}
                 />
-                {!this.props.invoiceInTwinfield && this.state.showEdit && this.props.permissions.manageFinancial && (
-                    <InvoicePaymentsFormEdit
-                        errors={this.state.errors}
-                        payment={this.state.payment}
-                        handleInputChange={this.handleInputChange}
-                        handleInputChangeDate={this.handleInputChangeDate}
-                        handleSubmit={this.handleSubmit}
-                        cancelEdit={this.cancelEdit}
-                    />
-                )}
-                {!this.props.invoiceInTwinfield && this.state.showDelete && this.props.permissions.manageFinancial && (
-                    <InvoicePaymentsFormDelete
-                        closeDeleteItemModal={this.toggleDelete}
-                        id={this.state.payment.id}
-                        invoiceId={this.state.payment.invoiceId}
-                    />
-                )}
+                {!this.props.invoiceInTwinfield &&
+                    !this.props.invoicePaidInTwinfield &&
+                    this.state.showEdit &&
+                    this.props.permissions.manageFinancial && (
+                        <InvoicePaymentsFormEdit
+                            errors={this.state.errors}
+                            payment={this.state.payment}
+                            handleInputChange={this.handleInputChange}
+                            handleInputChangeDate={this.handleInputChangeDate}
+                            handleSubmit={this.handleSubmit}
+                            cancelEdit={this.cancelEdit}
+                        />
+                    )}
+                {!this.props.invoiceInTwinfield &&
+                    !this.props.invoicePaidInTwinfield &&
+                    this.state.showDelete &&
+                    this.props.permissions.manageFinancial && (
+                        <InvoicePaymentsFormDelete
+                            closeDeleteItemModal={this.toggleDelete}
+                            id={this.state.payment.id}
+                            invoiceId={this.state.payment.invoiceId}
+                        />
+                    )}
             </div>
         );
     }
@@ -164,6 +172,7 @@ const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
         invoiceInTwinfield: state.invoiceDetails.invoiceInTwinfield,
+        invoicePaidInTwinfield: state.invoiceDetails.invoicePaidInTwinfield,
     };
 };
 

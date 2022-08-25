@@ -15,7 +15,20 @@ const ContactDetailsFormAddressView = props => {
         primary,
         country,
         primaryAddressEnergySupplier,
+        primaryAddressEnergySupplierGas,
     } = props.address;
+
+    let primaryAddressEnergySuppliers = [];
+    if (primaryAddressEnergySupplier && primaryAddressEnergySupplier.energySupplyTypeId === 3) {
+        primaryAddressEnergySuppliers.push(primaryAddressEnergySupplier.energySupplier.name);
+    } else {
+        if (primaryAddressEnergySupplier && primaryAddressEnergySupplier.energySupplier) {
+            primaryAddressEnergySuppliers.push(primaryAddressEnergySupplier.energySupplier.name + ' (Electra)');
+        }
+        if (primaryAddressEnergySupplierGas && primaryAddressEnergySupplierGas.energySupplier) {
+            primaryAddressEnergySuppliers.push(primaryAddressEnergySupplierGas.energySupplier.name + ' (Gas)');
+        }
+    }
 
     return (
         <div
@@ -34,9 +47,14 @@ const ContactDetailsFormAddressView = props => {
                 </div>
                 {/*<div className="col-sm-2">{country ? country.name : ''}</div>*/}
                 <div className="col-sm-2">
-                    {primaryAddressEnergySupplier && primaryAddressEnergySupplier.energySupplier
-                        ? primaryAddressEnergySupplier.energySupplier.name
-                        : ''}
+                    {primaryAddressEnergySuppliers.map(energySupplier => {
+                        return (
+                            <>
+                                {energySupplier}
+                                <br />
+                            </>
+                        );
+                    })}
                 </div>
                 <div className="col-sm-1">{primary ? <span className="pull-right">Primair</span> : ''}</div>
             </div>

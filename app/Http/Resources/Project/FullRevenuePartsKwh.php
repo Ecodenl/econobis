@@ -36,7 +36,10 @@ class FullRevenuePartsKwh extends JsonResource
                 'isEndOfYearRevenuePartsKwh' => $this->is_end_of_year_revenue_parts_kwh,
                 'dateBeginRevenuesKwh' => $this->revenuesKwh->date_begin,
                 'nextRevenuePartsKwh' => FullRevenuePartsKwh::make($this->next_revenue_parts_kwh),
-                'distributionKwhForReportEnergySupplier' => $this->distribution_kwh_for_report_energy_supplier,
+// todo WM: opschonen
+//
+//                'distributionKwhForReportEnergySupplier' => $this->distribution_kwh_for_report_energy_supplier,
+                'distributionKwhForReportEnergySupplier' => $this->getDistributionsForReportEnergySupplier(),
             ];
     }
 }

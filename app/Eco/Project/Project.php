@@ -113,18 +113,6 @@ class Project extends Model
         return $this->hasMany(FinancialOverviewProject::class);
     }
 
-    public function participantsProjectDefinitive(){
-        $projectType = $this->projectType;
-        $mutationType = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id', $projectType->id)->first()->id;
-        $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
-        return $this->hasMany(ParticipantProject::class, 'project_id')->whereNull('date_terminated')
-            ->where(function ($query) use($mutationType, $mutationStatusFinal) {
-            $query->whereHas('mutations', function ($query) use($mutationType, $mutationStatusFinal) {
-                $query->where('type_id', $mutationType)->where('status_id', $mutationStatusFinal);
-            });
-        });
-    }
-
     public function requiresContactGroups(){
         return $this->belongsToMany(ContactGroup::class, 'contact_group_participation', 'project_id', 'group_id');
     }

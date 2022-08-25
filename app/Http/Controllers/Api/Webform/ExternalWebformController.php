@@ -647,6 +647,14 @@ class ExternalWebformController extends Controller
                     $this->addPhoneNumberToContact($data, $contact);
                     $this->addContactNotesToContact($data, $contact);
                     $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
+                    $address = $contact->addresses()
+                        ->where('postal_code', $data['address_postal_code'])
+                        ->where('number', $data['address_number'])
+                        ->where('addition', $data['address_addition'])
+                        ->first();
+                    if($address){
+                        $this->address = $address;
+                    }
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw e-mailadres  " . $data['email_address'] . " toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
                     $note .= "Controleer contactgegevens\n";

@@ -19,7 +19,7 @@ export default {
         });
     },
 
-    getExcel: (filters, extraFilters, sorts, pagination, fetchFromProject) => {
+    getExcel: (filters, extraFilters, sorts, pagination, fetchFromProject, filterProjectId) => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/excel`;
 
         return axiosInstance.get(requestUrl, {
@@ -30,12 +30,13 @@ export default {
                 limit: pagination.limit,
                 offset: pagination.offset,
                 fetchFromProject: fetchFromProject,
+                filterProjectId: filterProjectId,
             },
             responseType: 'blob',
         });
     },
 
-    getExcelParticipants: (filters, extraFilters, sorts, pagination, fetchFromProject) => {
+    getExcelParticipants: (filters, extraFilters, sorts, pagination, fetchFromProject, filterProjectId) => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/excelParticipants`;
 
         return axiosInstance.get(requestUrl, {
@@ -46,6 +47,7 @@ export default {
                 limit: pagination.limit,
                 offset: pagination.offset,
                 fetchFromProject: fetchFromProject,
+                filterProjectId: filterProjectId,
             },
             responseType: 'blob',
         });

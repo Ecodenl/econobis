@@ -155,9 +155,11 @@ class ParticipationProjectController extends ApiController
         }
     }
 
-    public function excel(RequestQuery $requestQuery)
+    public function excel(RequestQuery $requestQuery, Request $request)
     {
         set_time_limit(0);
+
+        $filterProjectId = $request->input('filterProjectId');
 
         $participants = $requestQuery->getQuery()->get();
 
@@ -187,14 +189,16 @@ class ParticipationProjectController extends ApiController
             'mutations.type',
         ]);
 
-        $participantExcelHelper = new ParticipantExcelHelper($participants);
+        $participantExcelHelper = new ParticipantExcelHelper($participants, $filterProjectId);
 
         return $participantExcelHelper->downloadExcel();
     }
 
-    public function excelParticipants(RequestQuery $requestQuery)
+    public function excelParticipants(RequestQuery $requestQuery, Request $request)
     {
         set_time_limit(0);
+
+        $filterProjectId = $request->input('filterProjectId');
 
         $participants = $requestQuery->getQuery()->get();
 
@@ -213,7 +217,7 @@ class ParticipationProjectController extends ApiController
             'participantProjectPayoutType',
         ]);
 
-        $participantExcelHelper = new ParticipantExcelHelper($participants);
+        $participantExcelHelper = new ParticipantExcelHelper($participants, $filterProjectId);
 
         return $participantExcelHelper->downloadExcelParticipants();
     }

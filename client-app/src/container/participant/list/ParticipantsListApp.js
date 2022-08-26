@@ -319,7 +319,7 @@ class ParticipantsListApp extends Component {
             const filters = filterHelper(this.props.participantsProjectFilters);
             const extraFilters = this.state.extraFilters;
             const sorts = this.props.participantsProjectSorts;
-            ParticipantsProjectAPI.getExcel(filters, extraFilters, sorts, pagination)
+            ParticipantsProjectAPI.getExcel(filters, extraFilters, sorts, pagination, false, null)
                 .then(payload => {
                     excelFileName = `Deelnemers-${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`;
                     if (splitsExcel) {

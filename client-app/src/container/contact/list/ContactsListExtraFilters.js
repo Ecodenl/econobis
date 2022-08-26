@@ -305,6 +305,11 @@ class ContactsListExtraFilters extends Component {
                 type: 'dropdown',
                 dropDownOptions: this.props.energySuppliers,
             },
+            energySupplierType: {
+                name: 'Type primaire energie leverancier',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.energySupplierTypes,
+            },
             didAgreeAvg: {
                 name: 'Akkoord privacybeleid',
                 type: 'boolean',
@@ -472,6 +477,7 @@ const mapStateToProps = state => {
         campaigns: state.systemData.campaigns,
         products: state.systemData.products,
         energySuppliers: state.systemData.energySuppliers,
+        energySupplierTypes: state.systemData.energySupplierTypes,
         countries: state.systemData.countries,
         orderStatuses: state.systemData.orderStatuses,
     };

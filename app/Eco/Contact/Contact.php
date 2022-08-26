@@ -3,6 +3,7 @@
 namespace App\Eco\Contact;
 
 use App\Eco\Address\Address;
+use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Administration\Administration;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignResponse;
@@ -223,6 +224,11 @@ class Contact extends Model
     public function housingFiles()
     {
         return $this->hasManyThrough(HousingFile::class, Address::class)->orderBy('housing_files.id', 'desc');
+    }
+
+    public function addressEnergySuppliers()
+    {
+        return $this->hasManyThrough(AddressEnergySupplier::class, Address::class)->orderBy('address_energy_suppliers.id', 'desc');
     }
 
     public function participations()

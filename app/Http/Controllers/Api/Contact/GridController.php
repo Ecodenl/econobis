@@ -6,6 +6,7 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactGroup\DynamicContactGroupFilter;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\EnergySupplier\EnergySupplierType;
 use App\Helpers\CSV\ContactCSVHelper;
 use App\Helpers\Excel\ContactExcelHelper;
 use App\Http\Controllers\Controller;
@@ -156,6 +157,9 @@ class GridController extends Controller
                 break;
             case 'energySupplier':
                 return EnergySupplier::class;
+                break;
+            case 'energySupplierType':
+                return EnergySupplierType::class;
                 break;
         }
     }

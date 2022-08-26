@@ -31,8 +31,8 @@ class Address extends Model
         return $this->hasMany(AddressEnergySupplier::class)->orderByDesc('member_since')->orderByDesc('id');
     }
 
-    // primaryAddressEnergySupplier: only for Electricity ! (type 2 or 3)
-    public function primaryAddressEnergySupplier()
+    // primaryAddressEnergySupplierElectricity: only for Electricity ! (type 2 or 3)
+    public function primaryAddressEnergySupplierElectricity()
     {
         return $this->hasOne(AddressEnergySupplier::class)->where('is_current_supplier', true)->whereIn('energy_supply_type_id', [2, 3] );
     }
@@ -40,6 +40,11 @@ class Address extends Model
     public function primaryAddressEnergySupplierGas()
     {
         return $this->hasOne(AddressEnergySupplier::class)->where('is_current_supplier', true)->whereIn('energy_supply_type_id', [1, 3] );
+    }
+    // primaryAddressEnergySupplierElectricityAndGas
+    public function primaryAddressEnergySupplierElectricityAndGas()
+    {
+        return $this->hasMany(AddressEnergySupplier::class)->where('is_current_supplier', true);
     }
 
     public function contact()

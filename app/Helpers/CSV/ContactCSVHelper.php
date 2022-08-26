@@ -39,7 +39,8 @@ class ContactCSVHelper
                 'primaryphoneNumber',
                 'phoneNumbers',
                 'primaryAddress',
-                'primaryAddress.primaryAddressEnergySupplier.energySupplier',
+                'primaryAddress.primaryAddressEnergySupplierElectricity.energySupplier',
+                'primaryAddress.primaryAddressEnergySupplierGas.energySupplier',
                 'contactNotes',
                 'occupations.occupation',
                 'occupations.primaryContact.person.title',
@@ -205,11 +206,11 @@ class ContactCSVHelper
                 }
 
                 // Reformat energy supplier fields
-                if ($contact->primaryAddress && $contact->primaryAddress->primaryAddressEnergySupplier) {
-                    $contact->energy_supplier_name_electricity = $contact->primaryAddress->primaryAddressEnergySupplier->energySupplier->name;
-                    $contact->es_number_electricity = $contact->primaryAddress->primaryAddressEnergySupplier->es_number;
+                if ($contact->primaryAddress && $contact->primaryAddress->primaryAddressEnergySupplierElectricity) {
+                    $contact->energy_supplier_name_electricity = $contact->primaryAddress->primaryAddressEnergySupplierElectricity->energySupplier->name;
+                    $contact->es_number_electricity = $contact->primaryAddress->primaryAddressEnergySupplierElectricity->es_number;
                     $contact->energy_member_since_electricity
-                        = $this->formatDate($contact->primaryAddress->primaryAddressEnergySupplier->member_since);
+                        = $this->formatDate($contact->primaryAddress->primaryAddressEnergySupplierElectricity->member_since);
                 }
                 if ($contact->primaryAddress && $contact->primaryAddress->primaryAddressEnergySupplierGas) {
                     $contact->energy_supplier_name_gas = $contact->primaryAddress->primaryAddressEnergySupplierGas->energySupplier->name;

@@ -25,22 +25,28 @@ const DefaultContactOrganisationEdit = function({
     // determine memberSince disabledBefore and after
     let memberSinceDisabledBefore = '';
     let memberSinceDisabledAfter = '';
-    if (initialContact.visitAddress.primaryAddressEnergySupplier.energySupplierId) {
+    if (initialContact.visitAddress.primaryAddressEnergySupplierElectricity.energySupplierId) {
         if (
-            initialContact.visitAddress.primaryAddressEnergySupplier.memberSince &&
-            initialContact.visitAddress.primaryAddressEnergySupplier.energySupplierId !==
-                values.visitAddress.primaryAddressEnergySupplier.energySupplierId
+            initialContact.visitAddress.primaryAddressEnergySupplierElectricity.memberSince &&
+            initialContact.visitAddress.primaryAddressEnergySupplierElectricity.energySupplierId !==
+                values.visitAddress.primaryAddressEnergySupplierElectricity.energySupplierId
         ) {
-            memberSinceDisabledBefore = moment(initialContact.visitAddress.primaryAddressEnergySupplier.memberSince)
+            memberSinceDisabledBefore = moment(
+                initialContact.visitAddress.primaryAddressEnergySupplierElectricity.memberSince
+            )
                 .add(1, 'day')
                 .format('YYYY-MM-DD');
-        } else if (initialContact.visitAddress.primaryAddressEnergySupplier.endDatePrevious) {
-            memberSinceDisabledBefore = moment(initialContact.visitAddress.primaryAddressEnergySupplier.endDatePrevious)
+        } else if (initialContact.visitAddress.primaryAddressEnergySupplierElectricity.endDatePrevious) {
+            memberSinceDisabledBefore = moment(
+                initialContact.visitAddress.primaryAddressEnergySupplierElectricity.endDatePrevious
+            )
                 .add(1, 'day')
                 .format('YYYY-MM-DD');
         }
-        if (initialContact.visitAddress.primaryAddressEnergySupplier.memberSinceNext) {
-            memberSinceDisabledAfter = moment(initialContact.visitAddress.primaryAddressEnergySupplier.memberSinceNext)
+        if (initialContact.visitAddress.primaryAddressEnergySupplierElectricity.memberSinceNext) {
+            memberSinceDisabledAfter = moment(
+                initialContact.visitAddress.primaryAddressEnergySupplierElectricity.memberSinceNext
+            )
                 .subtract(1, 'day')
                 .format('YYYY-MM-DD');
         }
@@ -605,11 +611,12 @@ const DefaultContactOrganisationEdit = function({
                         {((!isNaN(values.visitAddress.number) && values.visitAddress.number == 0) ||
                             (isNaN(values.visitAddress.number) && values.visitAddress.number.trim() == '') ||
                             values.visitAddress.postalCode.trim() == '') &&
-                        (values.visitAddress.primaryAddressEnergySupplier.energySupplierId != null ||
-                            (values.visitAddress.primaryAddressEnergySupplier.esNumber &&
-                                values.visitAddress.primaryAddressEnergySupplier.esNumber.trim() != '') ||
-                            (values.visitAddress.primaryAddressEnergySupplier.memberSince &&
-                                values.visitAddress.primaryAddressEnergySupplier.memberSince.trim() != '')) ? (
+                        (values.visitAddress.primaryAddressEnergySupplierElectricity.energySupplierId != null ||
+                            (values.visitAddress.primaryAddressEnergySupplierElectricity.esNumber &&
+                                values.visitAddress.primaryAddressEnergySupplierElectricity.esNumber.trim() != '') ||
+                            (values.visitAddress.primaryAddressEnergySupplierElectricity.memberSince &&
+                                values.visitAddress.primaryAddressEnergySupplierElectricity.memberSince.trim() !=
+                                    '')) ? (
                             <Row>
                                 <Col xs={12} sm={12}>
                                     <small className={'text-danger'}>
@@ -621,14 +628,15 @@ const DefaultContactOrganisationEdit = function({
                         ) : (
                             ''
                         )}
-                        {(!values.visitAddress.primaryAddressEnergySupplier.memberSince ||
-                            values.visitAddress.primaryAddressEnergySupplier.memberSince.trim() == '') &&
-                        ((values.visitAddress.primaryAddressEnergySupplier.energySupplierId != null &&
-                            values.visitAddress.primaryAddressEnergySupplier.energySupplierId != '') ||
-                            (values.visitAddress.primaryAddressEnergySupplier.esNumber &&
-                                values.visitAddress.primaryAddressEnergySupplier.esNumber.trim() != '') ||
-                            (values.visitAddress.primaryAddressEnergySupplier.memberSince &&
-                                values.visitAddress.primaryAddressEnergySupplier.memberSince.trim() != '')) ? (
+                        {(!values.visitAddress.primaryAddressEnergySupplierElectricity.memberSince ||
+                            values.visitAddress.primaryAddressEnergySupplierElectricity.memberSince.trim() == '') &&
+                        ((values.visitAddress.primaryAddressEnergySupplierElectricity.energySupplierId != null &&
+                            values.visitAddress.primaryAddressEnergySupplierElectricity.energySupplierId != '') ||
+                            (values.visitAddress.primaryAddressEnergySupplierElectricity.esNumber &&
+                                values.visitAddress.primaryAddressEnergySupplierElectricity.esNumber.trim() != '') ||
+                            (values.visitAddress.primaryAddressEnergySupplierElectricity.memberSince &&
+                                values.visitAddress.primaryAddressEnergySupplierElectricity.memberSince.trim() !=
+                                    '')) ? (
                             <Row>
                                 <Col xs={12} sm={12}>
                                     <small className={'text-danger'}>
@@ -643,7 +651,7 @@ const DefaultContactOrganisationEdit = function({
                         <Row>
                             <Col xs={12} sm={12} md={8}>
                                 <Field
-                                    name="visitAddress.primaryAddressEnergySupplier.energySupplierId"
+                                    name="visitAddress.primaryAddressEnergySupplierElectricity.energySupplierId"
                                     render={({ field }) => (
                                         <Select
                                             field={field}
@@ -654,12 +662,15 @@ const DefaultContactOrganisationEdit = function({
                                             options={EnergySuppliers}
                                             customOnChange={e => {
                                                 setFieldValue(
-                                                    'visitAddress.primaryAddressEnergySupplier.energySupplierId',
+                                                    'visitAddress.primaryAddressEnergySupplierElectricity.energySupplierId',
                                                     e.target.value
                                                 );
-                                                setFieldValue('visitAddress.primaryAddressEnergySupplier.esNumber', '');
                                                 setFieldValue(
-                                                    'visitAddress.primaryAddressEnergySupplier.memberSince',
+                                                    'visitAddress.primaryAddressEnergySupplierElectricity.esNumber',
+                                                    ''
+                                                );
+                                                setFieldValue(
+                                                    'visitAddress.primaryAddressEnergySupplierElectricity.memberSince',
                                                     ''
                                                 );
                                             }}
@@ -669,8 +680,8 @@ const DefaultContactOrganisationEdit = function({
                             </Col>
                         </Row>
 
-                        {values.visitAddress.primaryAddressEnergySupplier &&
-                        values.visitAddress.primaryAddressEnergySupplier.energySupplierId ? (
+                        {values.visitAddress.primaryAddressEnergySupplierElectricity &&
+                        values.visitAddress.primaryAddressEnergySupplierElectricity.energySupplierId ? (
                             <>
                                 <FormLabel
                                     htmlFor="es_number"
@@ -685,7 +696,7 @@ const DefaultContactOrganisationEdit = function({
                                 <Row>
                                     <Col xs={12} sm={12} md={8}>
                                         <Field
-                                            name="visitAddress.primaryAddressEnergySupplier.esNumber"
+                                            name="visitAddress.primaryAddressEnergySupplierElectricity.esNumber"
                                             render={({ field }) => (
                                                 <InputText
                                                     field={field}
@@ -705,7 +716,7 @@ const DefaultContactOrganisationEdit = function({
                                 <Row>
                                     <Col xs={12} sm={12} md={8}>
                                         <Field
-                                            name="visitAddress.primaryAddressEnergySupplier.memberSince"
+                                            name="visitAddress.primaryAddressEnergySupplierElectricity.memberSince"
                                             render={({ field }) => (
                                                 <InputDate
                                                     {...field}

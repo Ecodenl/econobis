@@ -506,11 +506,11 @@ class ExtraFilter extends RequestExtraFilter
         if($type === 'eq'){
             if(empty($data)) {
                 $query->whereHas('addresses', function($query) {
-                    $query->whereHas('primaryAddressEnergySupplier');
+                    $query->whereHas('primaryAddressEnergySupplierElectricityAndGas');
                 });
             }else{
                 $query->whereHas('addresses', function($query) use ($data) {
-                    $query->whereHas('primaryAddressEnergySupplier', function($query) use ($data) {
+                    $query->whereHas('primaryAddressEnergySupplierElectricityAndGas', function($query) use ($data) {
                         $query->where('energy_supplier_id', $data);
                     });
                 });
@@ -520,8 +520,8 @@ class ExtraFilter extends RequestExtraFilter
             if(empty($data)){
                 $query->whereDoesntHave('addresses')
                     ->orWhereHas('addresses', function ($query) use ($type, $data) {
-                        $query->whereDoesntHave('primaryAddressEnergySupplier')
-                            ->whereDoesntHave('primaryAddressEnergySupplier', function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas')
+                            ->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas', function ($query) use ($type, $data) {
                                 $data = str_replace(' ', '', $data);
                                 RequestFilter::applyFilter($query, 'energy_supplier_id', $type, $data);
                             });
@@ -529,8 +529,8 @@ class ExtraFilter extends RequestExtraFilter
             }else {
                 $query->whereDoesntHave('addresses')
                     ->orWhereHas('addresses', function ($query) use ($type, $data) {
-                        $query->whereDoesntHave('primaryAddressEnergySupplier')
-                            ->whereDoesntHave('primaryAddressEnergySupplier', function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas')
+                            ->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas', function ($query) use ($type, $data) {
                                 $data = str_replace(' ', '', $data);
                                 RequestFilter::applyFilter($query, 'energy_supplier_id', $type, $data);
                             });
@@ -540,8 +540,8 @@ class ExtraFilter extends RequestExtraFilter
         elseif($type === 'nl'){
             $query->whereDoesntHave('addresses')
                 ->orWhereHas('addresses', function ($query) use ($type, $data) {
-                    $query->whereDoesntHave('primaryAddressEnergySupplier')
-                        ->whereDoesntHave('primaryAddressEnergySupplier', function ($query) use ($type, $data) {
+                    $query->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas')
+                        ->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas', function ($query) use ($type, $data) {
                             $data = str_replace(' ', '', $data);
                             RequestFilter::applyFilter($query, 'energy_supplier_id', $type, $data);
                         });
@@ -549,7 +549,7 @@ class ExtraFilter extends RequestExtraFilter
         }
         elseif($type === 'nnl'){
             $query->whereHas('addresses', function($query) use ($data) {
-                $query->whereHas('primaryAddressEnergySupplier', function($query) use ($data) {
+                $query->whereHas('primaryAddressEnergySupplierElectricityAndGas', function($query) use ($data) {
                     $query->where('energy_supplier_id', $data);
                 });
             });

@@ -14,16 +14,18 @@ const ContactDetailsFormAddressView = props => {
         city,
         primary,
         country,
-        primaryAddressEnergySupplier,
+        primaryAddressEnergySupplierElectricity,
         primaryAddressEnergySupplierGas,
     } = props.address;
 
     let primaryAddressEnergySuppliers = [];
-    if (primaryAddressEnergySupplier && primaryAddressEnergySupplier.energySupplyTypeId === 3) {
-        primaryAddressEnergySuppliers.push(primaryAddressEnergySupplier.energySupplier.name);
+    if (primaryAddressEnergySupplierElectricity && primaryAddressEnergySupplierElectricity.energySupplyTypeId === 3) {
+        primaryAddressEnergySuppliers.push(primaryAddressEnergySupplierElectricity.energySupplier.name);
     } else {
-        if (primaryAddressEnergySupplier && primaryAddressEnergySupplier.energySupplier) {
-            primaryAddressEnergySuppliers.push(primaryAddressEnergySupplier.energySupplier.name + ' (Electra)');
+        if (primaryAddressEnergySupplierElectricity && primaryAddressEnergySupplierElectricity.energySupplier) {
+            primaryAddressEnergySuppliers.push(
+                primaryAddressEnergySupplierElectricity.energySupplier.name + ' (Electra)'
+            );
         }
         if (primaryAddressEnergySupplierGas && primaryAddressEnergySupplierGas.energySupplier) {
             primaryAddressEnergySuppliers.push(primaryAddressEnergySupplierGas.energySupplier.name + ' (Gas)');

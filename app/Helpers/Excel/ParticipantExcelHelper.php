@@ -245,11 +245,11 @@ class ParticipantExcelHelper
                 }
 
                 // Reformat energy supplier fields
-                if ($address && $address->primaryAddressEnergySupplier) {
+                if ($address && $address->primaryAddressEnergySupplierElectricity) {
                     $participant->energy_supplier_name
-                        = $address->primaryAddressEnergySupplier->energySupplier->name;
+                        = $address->primaryAddressEnergySupplierElectricity->energySupplier->name;
                     $participant->energy_supplier_member_since
-                        = $this->formatDate($address->primaryAddressEnergySupplier->member_since);
+                        = $this->formatDate($address->primaryAddressEnergySupplierElectricity->member_since);
                 }
 
                 //reformat bools
@@ -324,7 +324,7 @@ class ParticipantExcelHelper
                 $rowData[44] = $participant->phonenumber_3;
                 $rowData[45] = $participant->energy_supplier_name;
                 $rowData[46] = $participant->energy_supplier_member_since;
-                $rowData[47] = $address && $address->primaryAddressEnergySupplier ? $address->primaryAddressEnergySupplier->es_number : '';
+                $rowData[47] = $address && $address->primaryAddressEnergySupplierElectricity ? $address->primaryAddressEnergySupplierElectricity->es_number : '';
                 $rowData[48] = $address && !empty($address->ean_electricity) ? 'EAN: ' . $address->ean_electricity : '';
                 $rowData[49] = $address && !empty($address->ean_gas) ? 'EAN: ' . $address->ean_gas : '';
                 $rowData[50] = $projectCode;

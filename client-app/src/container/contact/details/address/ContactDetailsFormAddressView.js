@@ -18,17 +18,21 @@ const ContactDetailsFormAddressView = props => {
         primaryAddressEnergySupplierGas,
     } = props.address;
 
-    let primaryAddressEnergySuppliers = [];
+    let primaryAddressEnergySupplierNames = [];
+    let primaryAddressEnergySupplierNumbers = [];
     if (primaryAddressEnergySupplierElectricity && primaryAddressEnergySupplierElectricity.energySupplyTypeId === 3) {
-        primaryAddressEnergySuppliers.push(primaryAddressEnergySupplierElectricity.energySupplier.name);
+        primaryAddressEnergySupplierNames.push(primaryAddressEnergySupplierElectricity.energySupplier.name);
+        primaryAddressEnergySupplierNumbers.push(primaryAddressEnergySupplierElectricity.esNumber);
     } else {
         if (primaryAddressEnergySupplierElectricity && primaryAddressEnergySupplierElectricity.energySupplier) {
-            primaryAddressEnergySuppliers.push(
+            primaryAddressEnergySupplierNames.push(
                 primaryAddressEnergySupplierElectricity.energySupplier.name + ' (Electra)'
             );
+            primaryAddressEnergySupplierNumbers.push(primaryAddressEnergySupplierElectricity.esNumber + ' (Electra)');
         }
         if (primaryAddressEnergySupplierGas && primaryAddressEnergySupplierGas.energySupplier) {
-            primaryAddressEnergySuppliers.push(primaryAddressEnergySupplierGas.energySupplier.name + ' (Gas)');
+            primaryAddressEnergySupplierNames.push(primaryAddressEnergySupplierGas.energySupplier.name + ' (Gas)');
+            primaryAddressEnergySupplierNumbers.push(primaryAddressEnergySupplierGas.esNumber + ' (Gas)');
         }
     }
 
@@ -42,17 +46,27 @@ const ContactDetailsFormAddressView = props => {
                 <div className="col-sm-1">
                     <GetNameByIdHelper id={typeId} items={props.addressTypes} />
                 </div>
-                <div className="col-sm-3">{street + ' ' + number + (addition ? '-' + addition : '')}</div>
-                <div className="col-sm-2">{postalCode}</div>
+                <div className="col-sm-2">{street + ' ' + number + (addition ? '-' + addition : '')}</div>
+                <div className="col-sm-1">{postalCode}</div>
                 <div className="col-sm-2">
                     {city} {country ? '(' + country.id + ')' : ''}
                 </div>
                 {/*<div className="col-sm-2">{country ? country.name : ''}</div>*/}
                 <div className="col-sm-2">
-                    {primaryAddressEnergySuppliers.map(energySupplier => {
+                    {primaryAddressEnergySupplierNames.map(energySupplierName => {
                         return (
                             <>
-                                {energySupplier}
+                                {energySupplierName}
+                                <br />
+                            </>
+                        );
+                    })}
+                </div>
+                <div className="col-sm-2">
+                    {primaryAddressEnergySupplierNumbers.map(energySupplierNumber => {
+                        return (
+                            <>
+                                {energySupplierNumber}
                                 <br />
                             </>
                         );

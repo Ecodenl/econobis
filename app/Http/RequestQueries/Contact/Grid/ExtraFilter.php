@@ -505,36 +505,44 @@ class ExtraFilter extends RequestExtraFilter
     {
         if($type === 'eq'){
             if(empty($data)) {
-                $query->whereHas('addresses', function($query) {
-                    $query->whereHas('primaryAddressEnergySupplierElectricityAndGas');
+                $query->where(function ($query) use ($type, $data) {
+                    $query->whereHas('addresses', function($query) {
+                        $query->whereHas('primaryAddressEnergySupplierElectricityAndGas');
+                    });
                 });
             }else{
-                $query->whereHas('addresses', function($query) use ($data) {
-                    $query->whereHas('primaryAddressEnergySupplierElectricityAndGas', function($query) use ($data) {
-                        $query->where('energy_supplier_id', $data);
+                $query->where(function ($query) use ($type, $data) {
+                    $query->whereHas('addresses', function($query) use ($data) {
+                        $query->whereHas('primaryAddressEnergySupplierElectricityAndGas', function($query) use ($data) {
+                            $query->where('energy_supplier_id', $data);
+                        });
                     });
                 });
             }
         }
         elseif($type === 'neq'){
             if(empty($data)){
-                $query->whereDoesntHave('addresses')
-                    ->orWhereHas('addresses', function ($query) use ($type, $data) {
-                        $query->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas')
-                            ->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas', function ($query) use ($type, $data) {
-                                $data = str_replace(' ', '', $data);
-                                RequestFilter::applyFilter($query, 'energy_supplier_id', $type, $data);
-                            });
-                    });
+                $query->where(function ($query) use ($type, $data) {
+                    $query->whereDoesntHave('addresses')
+                        ->orWhereHas('addresses', function ($query) use ($type, $data) {
+                            $query->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas')
+                                ->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas', function ($query) use ($type, $data) {
+                                    $data = str_replace(' ', '', $data);
+                                    RequestFilter::applyFilter($query, 'energy_supplier_id', $type, $data);
+                                });
+                        });
+                });
             }else {
-                $query->whereDoesntHave('addresses')
-                    ->orWhereHas('addresses', function ($query) use ($type, $data) {
-                        $query->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas')
-                            ->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas', function ($query) use ($type, $data) {
-                                $data = str_replace(' ', '', $data);
-                                RequestFilter::applyFilter($query, 'energy_supplier_id', $type, $data);
-                            });
-                    });
+                $query->where(function ($query) use ($type, $data) {
+                    $query->whereDoesntHave('addresses')
+                        ->orWhereHas('addresses', function ($query) use ($type, $data) {
+                            $query->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas')
+                                ->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas', function ($query) use ($type, $data) {
+                                    $data = str_replace(' ', '', $data);
+                                    RequestFilter::applyFilter($query, 'energy_supplier_id', $type, $data);
+                                });
+                        });
+                });
             }
         }
         elseif($type === 'nl'){

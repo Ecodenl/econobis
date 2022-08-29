@@ -62,12 +62,12 @@ class checkFetchEmail extends Command
 
         if($imap){
 
-            if($mailbox->date_last_fetched) {
-                $dateLastFetched = Carbon::parse($mailbox->date_last_fetched)->subDay()->format('Y-m-d');
-            }else{
-                $dateLastFetched = Carbon::now()->subDay()->format('Y-m-d');
-            }
-            Log::info('DateLastFetched: ' . $dateLastFetched);
+//            if($mailbox->date_last_fetched) {
+//                $dateLastFetched = Carbon::parse($mailbox->date_last_fetched)->subDay()->format('Y-m-d');
+//            }else{
+//                $dateLastFetched = Carbon::now()->subDay()->format('Y-m-d');
+//            }
+//            Log::info('DateLastFetched: ' . $dateLastFetched);
 
 //            try {
 //                // Get all emails (messages)

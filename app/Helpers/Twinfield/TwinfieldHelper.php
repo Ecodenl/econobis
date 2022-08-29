@@ -17,7 +17,6 @@ use PhpTwinfield\Exception;
 use PhpTwinfield\Office;
 use PhpTwinfield\Secure\OpenIdConnectAuthentication;
 use PhpTwinfield\Secure\Provider\OAuthProvider;
-use PhpTwinfield\Secure\WebservicesAuthentication;
 
 class TwinfieldHelper
 {
@@ -50,8 +49,6 @@ class TwinfieldHelper
                 $this->connection = null;
             }
 
-        }else{
-            $this->connection = new WebservicesAuthentication($administration->twinfield_username, $administration->twinfield_password, $administration->twinfield_organization_code);
         }
     }
 

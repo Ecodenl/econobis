@@ -98,6 +98,11 @@ class InvoiceToolbar extends Component {
     };
 
     render() {
+        const compatibleStatus =
+            (this.props.invoiceDetails.statusId === 'to-send' || this.props.invoiceDetails.statusId === 'sent') &&
+            this.props.invoiceDetails.usesTwinfield &&
+            !this.props.invoiceDetails.compatibleWithTwinfield;
+
         return (
             <div className="row">
                 <div className="col-md-4">
@@ -106,15 +111,18 @@ class InvoiceToolbar extends Component {
                         <ButtonIcon iconName={'glyphicon-eye-open'} onClickAction={this.view} />
                         {(this.props.invoiceDetails.statusId === 'to-send' ||
                             this.props.invoiceDetails.statusId === 'error-sending') &&
-                            this.props.invoiceDetails.emailToAddress !== 'Geen e-mail bekend' && (
+                            this.props.invoiceDetails.emailToAddress !== 'Geen e-mail bekend' &&
+                            !compatibleStatus && (
                                 <ButtonIcon iconName={'glyphicon-envelope'} onClickAction={this.showSend} />
                             )}
                         {(this.props.invoiceDetails.statusId === 'to-send' ||
                             this.props.invoiceDetails.statusId === 'error-sending') &&
-                            this.props.invoiceDetails.emailToAddress === 'Geen e-mail bekend' && (
+                            this.props.invoiceDetails.emailToAddress === 'Geen e-mail bekend' &&
+                            !compatibleStatus && (
                                 <ButtonIcon iconName={'glyphicon-envelope'} onClickAction={this.showSendPost} />
                             )}
                         {!this.props.invoiceDetails.invoiceInTwinfield &&
+                            !this.props.invoiceDetails.invoicePaidInTwinfield &&
                             (this.props.invoiceDetails.statusId === 'sent' ||
                                 this.props.invoiceDetails.statusId === 'exported') && (
                                 <ButtonIcon iconName={'glyphicon-euro'} onClickAction={this.showSetPaid} />

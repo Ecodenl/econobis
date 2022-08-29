@@ -48,7 +48,7 @@ class ReportEnergySupplierExcel implements ShouldQueue
         $this->upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_end', '<=', $revenuePartsKwh->date_end)->pluck('id')->toArray();
 
         $this->revenuesKwh = $revenuePartsKwh->revenuesKwh;
-        $this->distributions = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $revenuePartsKwh->distribution_kwh_for_report_energy_supplier_ids)->get();
+        $this->distributions = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $revenuePartsKwh->getDistributionsForReportEnergySupplierIds())->get();
 
         if($this->distributions->count() == 0){
             return;
@@ -88,7 +88,14 @@ class ReportEnergySupplierExcel implements ShouldQueue
 
         $energySupplierIds = [];
         foreach ($upToRevenuePartsKwh as $partItem){
-            $partItemEnergySupplierIds = $partItem->distributionPartsKwh()->whereNull('date_energy_supplier_report')->where('is_visible', 1)->whereNotNull('es_id')->where('delivered_kwh', '!=', 0)->pluck('es_id')->toArray();
+// todo WM: opschonen
+//
+//            $partItemEnergySupplierIds = $partItem->distributionPartsKwh()->whereNull('date_energy_supplier_report')->where('is_visible', 1)->whereNotNull('es_id')->where('delivered_kwh', '!=', 0)->pluck('es_id')->toArray();
+            $distributionKwhCollection   = $partItem->distributionPartsKwh()->whereNull('date_energy_supplier_report')->where('is_visible', 1)->whereNotNull('es_id')->get();
+            $partItemEnergySupplierIds = $distributionKwhCollection->filter(function($model){
+                return $model->delivered_kwh_from_till_visible != 0;
+            })
+                ->pluck('es_id')->toArray();
             $energySupplierIds = array_merge($partItemEnergySupplierIds, $energySupplierIds);
         }
 

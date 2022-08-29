@@ -17,7 +17,8 @@ use App\Console\Commands\conversionPortalRegistrationCode;
 use App\Console\Commands\deleteEmailDefinitive;
 //use App\Console\Commands\deleteFloatingAttachmentFiles;
 use App\Console\Commands\getAllEmail;
-use App\Console\Commands\processPaidInvoices;
+use App\Console\Commands\processTwinfieldCustomer;
+use App\Console\Commands\processTwinfieldInvoicePayment;
 use App\Console\Commands\processStateAllMembersLaposta;
 use App\Console\Commands\processWorkflowEmailCompleteTask;
 use App\Console\Commands\processWorkflowEmailExpiredTask;
@@ -51,7 +52,8 @@ class Kernel extends ConsoleKernel
         setIsCurrentSupplier::class,
         setDaysLastReminderInvoice::class,
         setDaysToExpireInvoice::class,
-        processPaidInvoices::class,
+        processTwinfieldCustomer::class,
+        processTwinfieldInvoicePayment::class,
         processStateAllMembersLaposta::class,
         checkMailboxes::class,
         processWorkflowEmailCompleteTask::class,
@@ -91,7 +93,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('invoice:setDaysToExpire')->dailyAt('02:05');
         $schedule->command('email:deleteEmailDefinitive')->dailyAt('03:05');
 //        $schedule->command('email:deleteFloatingAttachmentFiles')->dailyAt('03:35');
-        $schedule->command('invoice:processPaidInvoices')->dailyAt('04:30');
+        $schedule->command('invoice:processTwinfieldCustomer')->dailyAt('04:20');
+        $schedule->command('invoice:processTwinfieldInvoicePayment')->dailyAt('04:30');
         $schedule->command('workflow:processWorkflowEmailCompleteTask')->dailyAt('05:00');
         $schedule->command('workflow:processWorkflowEmailExpiredTask')->dailyAt('05:05');
         $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->dailyAt('05:10');

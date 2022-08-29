@@ -229,7 +229,21 @@ class ProjectRevenueController extends ApiController
         set_time_limit(300);
         $project = $projectRevenue->project;
 
-        $participants = $project->participantsProjectDefinitive;
+        $dateBegin = Carbon::parse($projectRevenue->date_begin)->format('Y-m-d');
+        $projectType = $project->projectType;
+        $mutationType = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id', $projectType->id)->first()->id;
+        $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+        $participants = ParticipantProject::where('project_id', $project->id)
+            ->where(function ($query) use($dateBegin) {
+                $query->whereNull('date_terminated')
+                    ->orWhere('date_terminated',  '>=', $dateBegin);
+            })
+            ->where(function ($query) use($mutationType, $mutationStatusFinal) {
+                $query->whereHas('mutations', function ($query) use($mutationType, $mutationStatusFinal) {
+                    $query->where('type_id', $mutationType)->where('status_id', $mutationStatusFinal);
+                });
+            })->get();
+
         foreach ($participants as $participant) {
             $this->saveDistribution($projectRevenue, $participant, $closing);
         }

@@ -9,13 +9,14 @@ use App\Eco\EnergySupplier\EnergySupplierType;
 use App\Eco\User\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class AddressEnergySupplier extends Model
 {
     protected $table = 'address_energy_suppliers';
 
-    use RevisionableTrait;
+    use RevisionableTrait, SoftDeletes;
 
     protected $guarded = ['id'];
 

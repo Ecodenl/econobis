@@ -569,24 +569,24 @@ class ExtraFilter extends RequestExtraFilter
         if(empty($data)){
             switch($type) {
                 case 'eq':
-                    $query->whereHas('addressEnergySuppliers');
+                    $query->whereHas('primaryAddressEnergySuppliers');
                     break;
                 default:
-                    $query->whereDoesntHave('addressEnergySuppliers');
+                    $query->whereDoesntHave('primaryAddressEnergySuppliers');
                     break;
             }
         }else{
             switch($type) {
                 case 'neq':
                     $query->where(function ($query) use ($type, $data) {
-                        $query->whereDoesntHave('addressEnergySuppliers')
-                            ->orWhereDoesntHave('addressEnergySuppliers', function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('primaryAddressEnergySuppliers')
+                            ->orWhereDoesntHave('primaryAddressEnergySuppliers', function ($query) use ($type, $data) {
                                 RequestFilter::applyFilter($query, 'energy_supply_type_id', 'eq', $data);
                             });
                     });
                     break;
                 default:
-                    $query->whereHas('addressEnergySuppliers', function ($query) use ($type, $data) {
+                    $query->whereHas('primaryAddressEnergySuppliers', function ($query) use ($type, $data) {
                         RequestFilter::applyFilter($query, 'energy_supply_type_id', $type, $data);
                     });
                     break;

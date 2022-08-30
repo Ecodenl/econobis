@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8ff10d708ce2065ba3a63963cc51c91f",
+    "content-hash": "df1a0529a448f0464e8194259503c301",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1095,6 +1095,54 @@
                 }
             ],
             "time": "2022-01-18T15:43:28+00:00"
+        },
+        {
+            "name": "ecodenl/pico-wrapper",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Ecodenl/PicoWrapper.git",
+                "reference": "e2c9ec28db7ff0ac202475ca924dc125ddcb5176"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Ecodenl/PicoWrapper/zipball/e2c9ec28db7ff0ac202475ca924dc125ddcb5176",
+                "reference": "e2c9ec28db7ff0ac202475ca924dc125ddcb5176",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.3.1|^7.4.5",
+                "php": "^7.2.5|^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Ecodenl\\PicoWrapper\\PicoServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Ecodenl\\PicoWrapper\\": "src"
+                }
+            },
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Patrick van Kouteren",
+                    "email": "p.vankouteren@wedesignit.nl",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Wrapper for the PICO web service",
+            "support": {
+                "source": "https://github.com/Ecodenl/PicoWrapper/tree/v1.0.1",
+                "issues": "https://github.com/Ecodenl/PicoWrapper/issues"
+            },
+            "time": "2022-08-10T08:48:30+00:00"
         },
         {
             "name": "egulias/email-validator",

@@ -574,6 +574,6 @@ Route::namespace('Api')
 Route::namespace('Api')
     ->middleware([EncryptCookies::class, StartSession::class])
     ->group(function () {
-        Route::get('oauth/ms-graph/callback', [MailboxController::class, 'msGraphApiConnectionCallback'])->name('oauth.ms-graph.callback');
+        Route::get('oauth/ms-azure/callback', [MailboxController::class, 'msOauthApiConnectionCallback'])->name('oauth.ms-azure.callback');
     });
 

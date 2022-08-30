@@ -35,7 +35,7 @@ class EmailHelper
             $this->setConfigToGmailApiMailbox($mailbox);
 //todo WM oauth: nog testen !!!
         } elseif($mailbox->outgoing_server_type === 'ms-oauth'){
-            $this->setConfigToMsGraphApiMailbox($mailbox);
+            $this->setConfigToMsOauthApiMailbox($mailbox);
         }
     }
 
@@ -89,13 +89,13 @@ class EmailHelper
     }
 
 //todo WM oauth: nog testen !!!
-    protected function setConfigToMsGraphApiMailbox(Mailbox $mailbox)
+    protected function setConfigToMsOauthApiMailbox(Mailbox $mailbox)
     {
-        $msGraphApiSettings = $mailbox->msGraphApiSettings;
-        if(!$msGraphApiSettings){
+        $msOauthApiSettings = $mailbox->msOauthApiSettings;
+        if(!$msOauthApiSettings){
             throw new \Exception('Mailbox ' . $mailbox->id . ' should have configured Microsoft Graph api settings.');
         }
-        if(!$msGraphApiSettings->token){
+        if(!$msOauthApiSettings->token){
             throw new \Exception('Mailbox ' . $mailbox->id . ' should have a token.');
         }
 

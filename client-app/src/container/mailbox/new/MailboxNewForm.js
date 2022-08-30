@@ -45,7 +45,7 @@ function MailboxNewForm({ fetchSystemData }) {
                 if (
                     error.response.status === 401 &&
                     (error.response.data.message === 'gmail_unauthorised' ||
-                        error.response.data.message === 'ms_graph_unauthorised')
+                        error.response.data.message === 'ms_oauth_unauthorised')
                 ) {
                     window.location = error.response.data.authUrl;
                 }

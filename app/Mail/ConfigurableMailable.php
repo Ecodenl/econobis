@@ -48,7 +48,7 @@ class ConfigurableMailable extends Mailable
 
             if(!$mailboxId) return;
 
-            $transport = new MsgraphpapiTransport($mailboxId);
+            $transport = new MsoauthpapiTransport($mailboxId);
         }elseif(config('mail.default') !== 'log') {
             $host      = config('mail.host');
             $port      = config('mail.port');

@@ -3,10 +3,10 @@ import PanelHeader from '../../../../../components/panel/PanelHeader';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import InputText from '../../../../../components/form/InputText';
 // import CopyToClipboard from 'react-copy-to-clipboard';
-import { REDIRECT_URL_MS_GRAPH } from '../../../../../constants';
+import { REDIRECT_URL_MS_OAUTH } from '../../../../../constants';
 import ViewText from '../../../../../components/form/ViewText';
 
-function MailboxDefaultFormGeneralMsGraphApiSettings({ values, errors, touched, handleChange, handleBlur }) {
+function MailboxDefaultFormGeneralMsOauthApiSettings({ values, errors, touched, handleChange, handleBlur }) {
     return (
         <>
             <PanelHeader>
@@ -48,12 +48,12 @@ function MailboxDefaultFormGeneralMsGraphApiSettings({ values, errors, touched, 
                     {/*    error={errors.gmailApiSettings?.projectId && touched.gmailApiSettings?.projectId}*/}
                     {/*    errorMessage={errors.gmailApiSettings?.projectId}*/}
                     {/*/>*/}
-                    <ViewText className="form-group col-sm-6" label={'Redirect url'} value={REDIRECT_URL_MS_GRAPH} />
+                    <ViewText className="form-group col-sm-6" label={'Redirect url'} value={REDIRECT_URL_MS_OAUTH} />
                     {/*<div className="form-group col-sm-6">*/}
                     {/*    <label className="col-sm-6">Redirect url</label>*/}
                     {/*    <div className="col-sm-6" style={{ paddingRight: '5px' }} onClick={null}>*/}
-                    {/*        {REDIRECT_URL_MS_GRAPH}*/}
-                    {/*        <CopyToClipboard text={REDIRECT_URL_MS_GRAPH}>*/}
+                    {/*        {REDIRECT_URL_MS_OAUTH}*/}
+                    {/*        <CopyToClipboard text={REDIRECT_URL_MS_OAUTH}>*/}
                     {/*            <span*/}
                     {/*                className="glyphicon glyphicon-copy mybtn-success pull-right"*/}
                     {/*                style={{ top: '5px' }}*/}
@@ -70,4 +70,4 @@ function MailboxDefaultFormGeneralMsGraphApiSettings({ values, errors, touched, 
     );
 }
 
-export default MailboxDefaultFormGeneralMsGraphApiSettings;
+export default MailboxDefaultFormGeneralMsOauthApiSettings;

@@ -43,7 +43,7 @@ export const MailboxValidationGmail = Yup.object().shape({
     }),
 });
 
-export const MailboxValidationMsGraph = Yup.object().shape({
+export const MailboxValidationMsOauth = Yup.object().shape({
     gmailApiSettings: Yup.object().shape({
         clientId: Yup.string()
             .trim()

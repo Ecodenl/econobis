@@ -8,7 +8,7 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import moment from 'moment/moment';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { REDIRECT_URL_GMAIL } from '../../../../constants';
-import { REDIRECT_URL_MS_GRAPH } from '../../../../constants';
+import { REDIRECT_URL_MS_OAUTH } from '../../../../constants';
 
 function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
     const {
@@ -199,12 +199,12 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                             </div>
                             <div className="row">
                                 {/*<ViewText label={'Tenant id'} value={gmailApiSettings?.projectId} />*/}
-                                <ViewText label={'Redirect url'} value={REDIRECT_URL_MS_GRAPH} />
+                                <ViewText label={'Redirect url'} value={REDIRECT_URL_MS_OAUTH} />
                                 {/*<div className="form-group col-sm-6">*/}
                                 {/*    <label className="col-sm-6">Redirect url</label>*/}
                                 {/*    <div className="col-sm-6" style={{ paddingRight: '5px' }} onClick={null}>*/}
-                                {/*        {REDIRECT_URL_MS_GRAPH}*/}
-                                {/*        <CopyToClipboard text={REDIRECT_URL_MS_GRAPH}>*/}
+                                {/*        {REDIRECT_URL_MS_OAUTH}*/}
+                                {/*        <CopyToClipboard text={REDIRECT_URL_MS_OAUTH}>*/}
                                 {/*            <span*/}
                                 {/*                className="glyphicon glyphicon-copy mybtn-success pull-right"*/}
                                 {/*                style={{ top: '5px' }}*/}

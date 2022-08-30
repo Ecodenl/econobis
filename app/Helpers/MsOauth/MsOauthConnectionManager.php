@@ -2,7 +2,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-namespace App\Helpers\MsGraph;
+namespace App\Helpers\MsOauth;
 
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailboxGmailApiSettings;
@@ -14,7 +14,7 @@ use League\OAuth2\Client\Provider\GenericProvider;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model;
 
-class MsGraphConnectionManager extends Controller
+class MsOauthConnectionManager extends Controller
 {
     private Mailbox $mailbox;
     private MailboxGmailApiSettings $gmailApiSettings;
@@ -32,8 +32,8 @@ class MsGraphConnectionManager extends Controller
         $authUrl = $this->client->getAuthorizationUrl();
         // Save client state so we can validate in callback
         // And save mailbox email
-        session(['oauthState' => $this->client->getState(), 'msGraphMailboxId' => $this->mailbox->id]);
-        return ['message' => 'ms_graph_unauthorised', 'description' => 'Not authorised for MS graph oauth API', 'authUrl' =>  $authUrl];
+        session(['oauthState' => $this->client->getState(), 'msOauthMailboxId' => $this->mailbox->id]);
+        return ['message' => 'ms_oauth_unauthorised', 'description' => 'Not authorised for MS oauth API', 'authUrl' =>  $authUrl];
     }
 
     public function callback(Request $request, Mailbox $mailbox)
@@ -61,10 +61,16 @@ class MsGraphConnectionManager extends Controller
 
         // Authorization code should be in the "code" query param
         $authCode = $request->query('code');
+//todo WM oauth: nog testen en opschonen!
+//
         Log::info('authCode: ' . $authCode);
+        Log::info('client_id: ' . $this->gmailApiSettings->client_id);
+        Log::info('client_secret: ' . $this->gmailApiSettings->client_secret);
+
         if (isset($authCode)) {
             $this->client = new \League\OAuth2\Client\Provider\GenericProvider([
                 'clientId'                => $this->gmailApiSettings->client_id,
+//todo WM oauth: in clientSecret moet value komen niet ID !!
                 'clientSecret'            => $this->gmailApiSettings->client_secret,
                 'redirectUri'             => config('app.url') . '/' . config('azure.redirectUri'),
                 'urlAuthorize'            => config('azure.authority').config('azure.authorizeEndpoint'),

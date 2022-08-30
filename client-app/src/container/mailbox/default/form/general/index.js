@@ -19,7 +19,7 @@ import { MailboxValidationMsGraph } from './Validation';
 import MailboxDefaultFormGeneralGmailApiSettings from './GmailApiSettings';
 import ViewText from '../../../../../components/form/ViewText';
 import moment from 'moment';
-import MailboxDefaultFormGeneralMsGraphApiSettings from './MsGraphApiSettings';
+import MailboxDefaultFormGeneralMsGraphApiSettings from './MsOauthApiSettings';
 
 function MailboxDefaultFormGeneral({
     initialValues,

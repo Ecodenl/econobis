@@ -19,7 +19,7 @@ use App\Eco\Mailbox\MailValidator;
 use App\Eco\Mailbox\SmtpEncryptionType;
 use App\Eco\User\User;
 use App\Helpers\Gmail\GmailConnectionManager;
-use App\Helpers\MsGraph\MsGraphConnectionManager;
+use App\Helpers\MsOauth\MsOauthConnectionManager;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\EncryptCookies;
@@ -107,10 +107,10 @@ class MailboxController extends Controller
                 return response()->json($client, 401);
             }
         } elseif ($mailbox->incoming_server_type === 'ms-oauth') {
-            $msGraphConnectionManage = new MsGraphConnectionManager($mailbox);
-            $client = $msGraphConnectionManage->connect();
+            $msOauthConnectionManage = new MsOauthConnectionManager($mailbox);
+            $client = $msOauthConnectionManage->connect();
 
-            if (isset($client['message']) && $client['message'] == 'ms_graph_unauthorised') {
+            if (isset($client['message']) && $client['message'] == 'ms_oauth_unauthorised') {
                 return response()->json($client, 401);
             }
         } else {
@@ -176,10 +176,10 @@ class MailboxController extends Controller
                 return response()->json($client, 401);
             }
         } elseif ($mailbox->incoming_server_type === 'ms-oauth') {
-            $msGraphConnectionManage = new MsGraphConnectionManager($mailbox);
-            $client = $msGraphConnectionManage->connect();
+            $msOauthConnectionManage = new MsOauthConnectionManager($mailbox);
+            $client = $msOauthConnectionManage->connect();
 
-            if (isset($client['message']) && $client['message'] == 'ms_graph_unauthorised') {
+            if (isset($client['message']) && $client['message'] == 'ms_oauth_unauthorised') {
                 return response()->json($client, 401);
             }
         } else {
@@ -354,10 +354,13 @@ class MailboxController extends Controller
         }
     }
 
-    public function msGraphApiConnectionCallback(Request $request)
+    public function msOauthApiConnectionCallback(Request $request)
     {
-        $mailboxId= session('msGraphMailboxId');
-        $request->session()->forget('msGraphMailboxId');
+//todo WM oauth: opschonen
+//        Log::error("XXxxxxxxxxxxxxxxxxxxxxxxxxxx");
+
+        $mailboxId= session('msOauthMailboxId');
+        $request->session()->forget('msOauthMailboxId');
         $mailbox = Mailbox::find($mailboxId);
 
         $appUrl = config('app.url');
@@ -373,10 +376,10 @@ class MailboxController extends Controller
             exit;
         }
 
-        $msGraphConnectionManager = new MsGraphConnectionManager($mailbox);
+        $msOauthConnectionManager = new MsOauthConnectionManager($mailbox);
 
         // TODO If callback is not valid then show message to the user
-        if ($msGraphConnectionManager->callback($request, $mailbox)) {
+        if ($msOauthConnectionManager->callback($request, $mailbox)) {
             header("Location: {$appUrl}/#/mailbox/{$mailbox->id}");
             exit;
         } else {

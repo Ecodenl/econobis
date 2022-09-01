@@ -19,7 +19,7 @@ import { MailboxValidationMsGraph } from './Validation';
 import MailboxDefaultFormGeneralGmailApiSettings from './GmailApiSettings';
 import ViewText from '../../../../../components/form/ViewText';
 import moment from 'moment';
-import MailboxDefaultFormGeneralMsGraphApiSettings from './MsOauthApiSettings';
+import MailboxDefaultFormGeneralMsOauthApiSettings from './MsOauthApiSettings';
 
 function MailboxDefaultFormGeneral({
     initialValues,
@@ -345,7 +345,7 @@ function MailboxDefaultFormGeneral({
                     />
                 )}
                 {(values.incomingServerType === 'ms-oauth' || values.outgoingServerType === 'ms-oauth') && (
-                    <MailboxDefaultFormGeneralMsGraphApiSettings
+                    <MailboxDefaultFormGeneralMsOauthApiSettings
                         values={values}
                         errors={errors}
                         touched={touched}

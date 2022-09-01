@@ -93,7 +93,7 @@ class EmailHelper
     {
         $msOauthApiSettings = $mailbox->msOauthApiSettings;
         if(!$msOauthApiSettings){
-            throw new \Exception('Mailbox ' . $mailbox->id . ' should have configured Microsoft Graph api settings.');
+            throw new \Exception('Mailbox ' . $mailbox->id . ' should have configured Microsoft Azure api settings.');
         }
         if(!$msOauthApiSettings->token){
             throw new \Exception('Mailbox ' . $mailbox->id . ' should have a token.');

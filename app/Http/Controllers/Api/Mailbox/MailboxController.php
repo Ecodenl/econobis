@@ -15,6 +15,7 @@ use App\Eco\Mailbox\MailboxGmailApiSettings;
 use App\Eco\Mailbox\MailboxIgnore;
 use App\Eco\Mailbox\MailFetcher;
 use App\Eco\Mailbox\MailFetcherGmail;
+use App\Eco\Mailbox\MailFetcherMsOauth;
 use App\Eco\Mailbox\MailValidator;
 use App\Eco\Mailbox\SmtpEncryptionType;
 use App\Eco\User\User;
@@ -216,8 +217,11 @@ class MailboxController extends Controller
             return 'This mailbox is invalid';
         }
 
+        //Create a new mailfetcher. This will check if the mailbox is valid and set it in the db.
         if ($mailbox->incoming_server_type === 'gmail') {
             $mailFetcher = new MailFetcherGmail($mailbox);
+        } elseif ($mailbox->incoming_server_type === 'ms-oauth') {
+            $mailFetcher = new MailFetcherMsOauth($mailbox);
         } else {
             $mailFetcher = new MailFetcher($mailbox);
         }

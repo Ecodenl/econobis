@@ -11,8 +11,6 @@ use App\TokenStore\TokenCache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use League\OAuth2\Client\Provider\GenericProvider;
-use Microsoft\Graph\Graph;
-use Microsoft\Graph\Model;
 
 class MsOauthConnectionManager extends Controller
 {
@@ -50,8 +48,6 @@ class MsOauthConnectionManager extends Controller
         }
 
         if (!isset($providedState) || $expectedState != $providedState) {
-//todo WM oauth: nog testen !
-//
             Log::error('The provided auth state did not match the expected value');
 
             return redirect('/')
@@ -61,16 +57,15 @@ class MsOauthConnectionManager extends Controller
 
         // Authorization code should be in the "code" query param
         $authCode = $request->query('code');
-//todo WM oauth: nog testen en opschonen!
+// todo WM oauth: nog testen en opschonen
 //
-        Log::info('authCode: ' . $authCode);
-        Log::info('client_id: ' . $this->gmailApiSettings->client_id);
-        Log::info('client_secret: ' . $this->gmailApiSettings->client_secret);
+//        Log::info('authCode: ' . $authCode);
+//        Log::info('client_id: ' . $this->gmailApiSettings->client_id);
+//        Log::info('client_secret: ' . $this->gmailApiSettings->client_secret);
 
         if (isset($authCode)) {
             $this->client = new \League\OAuth2\Client\Provider\GenericProvider([
                 'clientId'                => $this->gmailApiSettings->client_id,
-//todo WM oauth: in clientSecret moet value komen niet ID !!
                 'clientSecret'            => $this->gmailApiSettings->client_secret,
                 'redirectUri'             => config('app.url') . '/' . config('azure.redirectUri'),
                 'urlAuthorize'            => config('azure.authority').config('azure.authorizeEndpoint'),
@@ -80,36 +75,41 @@ class MsOauthConnectionManager extends Controller
             ]);
 
             try {
-                Log::info('getAccessToken');
+//                Log::info('getAccessToken');
                 // Make the token request
                 $accessToken = $this->client->getAccessToken('authorization_code', [
                     'code' => $authCode
                 ]);
 // todo WM oauth: nog testen en opschonen
 //
-                Log::info('accessToken: ' . $accessToken);
+//                Log::info('accessToken: ' . $accessToken);
 
-                $graph = new Graph();
-                $graph->setAccessToken($accessToken->getToken());
+                $this->gmailApiSettings->token = json_encode($accessToken);
+                $this->gmailApiSettings->save();
 
-                $user = $graph->createRequest('GET', '/me?$select=displayName,mail,mailboxSettings,userPrincipalName')
-                    ->setReturnType(Model\User::class)
-                    ->execute();
-
-                $tokenCache = new TokenCache();
-                $tokenCache->storeTokens($accessToken, $user);
+                $this->mailbox->valid = true;
+                $this->mailbox->save();
 
                 return redirect('/');
             }
             catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
-                Log::info('Error requesting access token');
-                Log::info(json_encode($e->getResponseBody()));
+                $this->mailbox->valid = false;
+                $this->mailbox->save();
+
+                Log::error('Error requesting access token');
+                Log::error(json_encode($e->getResponseBody()));
 
                 return redirect('/')
                     ->with('error', 'Error requesting access token')
                     ->with('errorDetail', json_encode($e->getResponseBody()));
             }
         }
+
+        $this->mailbox->valid = false;
+        $this->mailbox->save();
+
+        Log::error($request->query('error'));
+        Log::error($request->query('error_description'));
 
         return redirect('/')
             ->with('error', $request->query('error'))

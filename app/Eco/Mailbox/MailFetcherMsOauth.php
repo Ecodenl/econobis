@@ -43,7 +43,7 @@ class MailFetcherMsOauth
         $this->mailbox = $mailbox;
 
         $this->initStorageDir();
-//        $this->initGmailConfig();
+        $this->initMsOauthConfig();
     }
 
     public function fetchNew()
@@ -96,18 +96,18 @@ class MailFetcherMsOauth
 //
 //    }
 //
-//    private function initGmailConfig(): void
-//    {
-//        $gmailConnectionManager = new GmailConnectionManager($this->mailbox);
-//        $client = $gmailConnectionManager->connect();
-//
-//        // Todo improve failure message
-//        if (!($client instanceof Google_Client) && isset($client['message']) && $client['message'] === 'gmail_unauthorised') {
-//            throw new Exception('InitGmailConfig: ' . $client['message']);
-//        }
-//
-//        $this->service = new Google_Service_Gmail($client);
-//    }
+    private function initMsOauthConfig(): void
+    {
+        $gmailConnectionManager = new GmailConnectionManager($this->mailbox);
+        $client = $gmailConnectionManager->connect();
+
+        // Todo improve failure message
+        if (!($client instanceof Google_Client) && isset($client['message']) && $client['message'] === 'gmail_unauthorised') {
+            throw new Exception('InitGmailConfig: ' . $client['message']);
+        }
+
+        $this->service = new Google_Service_Gmail($client);
+    }
 //
 //    private function fetchEmail(string $gmailMessageId)
 //    {

@@ -11,7 +11,7 @@ function MailboxDefaultFormGeneralMsOauthApiSettings({ values, errors, touched, 
         <>
             <PanelHeader>
                 <span className="h5">
-                    <strong>Microsoft Graph api instellingen</strong>
+                    <strong>Microsoft Azure api instellingen</strong>
                 </span>
             </PanelHeader>
             <PanelBody>
@@ -27,43 +27,31 @@ function MailboxDefaultFormGeneralMsOauthApiSettings({ values, errors, touched, 
                         errorMessage={errors.gmailApiSettings?.clientId}
                     />
                     <InputText
-                        label={'Client secret'}
+                        label={'Client secret id'}
+                        name={'gmailApiSettings.projectId'}
+                        value={values.gmailApiSettings?.projectId}
+                        onChangeAction={handleChange}
+                        onBlurAction={handleBlur}
+                        required={'required'}
+                        error={errors.gmailApiSettings?.projectId && touched.gmailApiSettings?.projectId}
+                        errorMessage={errors.gmailApiSettings?.projectId}
+                    />
+                </div>
+                <div className="row">
+                    <ViewText className="form-group col-sm-6" label={'Redirect url'} value={REDIRECT_URL_MS_OAUTH} />
+                    <InputText
+                        type={'text'}
+                        label={'Client secret waarde'}
                         name={'gmailApiSettings.clientSecret'}
                         value={values.gmailApiSettings?.clientSecret}
+                        // className={'numeric-password'}
+                        // placeholder="**********"
                         onChangeAction={handleChange}
                         onBlurAction={handleBlur}
                         required={'required'}
                         error={errors.gmailApiSettings?.clientSecret && touched.gmailApiSettings?.clientSecret}
                         errorMessage={errors.gmailApiSettings?.clientSecret}
                     />
-                </div>
-                <div className="row">
-                    {/*<InputText*/}
-                    {/*    label={'Tenant id'}*/}
-                    {/*    name={'gmailApiSettings.projectId'}*/}
-                    {/*    value={values.gmailApiSettings?.projectId}*/}
-                    {/*    onChangeAction={handleChange}*/}
-                    {/*    onBlurAction={handleBlur}*/}
-                    {/*    required={'required'}*/}
-                    {/*    error={errors.gmailApiSettings?.projectId && touched.gmailApiSettings?.projectId}*/}
-                    {/*    errorMessage={errors.gmailApiSettings?.projectId}*/}
-                    {/*/>*/}
-                    <ViewText className="form-group col-sm-6" label={'Redirect url'} value={REDIRECT_URL_MS_OAUTH} />
-                    {/*<div className="form-group col-sm-6">*/}
-                    {/*    <label className="col-sm-6">Redirect url</label>*/}
-                    {/*    <div className="col-sm-6" style={{ paddingRight: '5px' }} onClick={null}>*/}
-                    {/*        {REDIRECT_URL_MS_OAUTH}*/}
-                    {/*        <CopyToClipboard text={REDIRECT_URL_MS_OAUTH}>*/}
-                    {/*            <span*/}
-                    {/*                className="glyphicon glyphicon-copy mybtn-success pull-right"*/}
-                    {/*                style={{ top: '5px' }}*/}
-                    {/*                role="button"*/}
-                    {/*                onClick={null}*/}
-                    {/*                title={'Kopieer sleutel'}*/}
-                    {/*            />*/}
-                    {/*        </CopyToClipboard>*/}
-                    {/*    </div>*/}
-                    {/*</div>*/}
                 </div>
             </PanelBody>
         </>

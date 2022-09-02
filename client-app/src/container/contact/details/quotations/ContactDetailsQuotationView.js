@@ -4,7 +4,7 @@ import { hashHistory } from 'react-router';
 
 const ContactDetailsQuotationView = props => {
     const { opportunity, dateRecorded, dateReleased } = props.quotation;
-console.log(opportunity);
+
     return (
         <div
             className={`row border ${props.highlightLine}`}

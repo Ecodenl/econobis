@@ -1,6 +1,4 @@
 <?php
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
 
 namespace App\Helpers\MsOauth;
 
@@ -11,12 +9,14 @@ use App\TokenStore\TokenCache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use League\OAuth2\Client\Provider\GenericProvider;
+use Microsoft\Graph\Graph;
+use Microsoft\Graph\Model\User;
 
 class MsOauthConnectionManager extends Controller
 {
     private Mailbox $mailbox;
     private MailboxGmailApiSettings $gmailApiSettings;
-    private GenericProvider $client;
+    private Graph $graph;
 
     public function __construct(Mailbox $mailbox)
     {
@@ -27,6 +27,15 @@ class MsOauthConnectionManager extends Controller
 
     public function connect()
     {
+        $token = $this->gmailApiSettings->token;
+
+        // Load previously authorized token from the database, if it exists.
+        if ($token != null) {
+            $graph = new Graph();
+            $graph->setAccessToken($token);
+
+        }
+//todo oauth WM: hier gebleven @@NOG
         $authUrl = $this->client->getAuthorizationUrl();
         // Save client state so we can validate in callback
         // And save mailbox email
@@ -82,7 +91,27 @@ class MsOauthConnectionManager extends Controller
                 ]);
 // todo WM oauth: nog testen en opschonen
 //
-//                Log::info('accessToken: ' . $accessToken);
+                Log::info('accessToken (full): ' . $accessToken);
+                Log::info('accessToken: ' . $accessToken->getToken());
+                Log::info('refreshToken: ' . $accessToken->getRefreshToken());
+                Log::info('tokenExpires: ' . $accessToken->getExpires());
+
+                $graph = new Graph();
+                $graph->setAccessToken($accessToken->getToken());
+
+                $user = $graph->createRequest('GET', '/me?$select=displayName,mail,mailboxSettings,userPrincipalName')
+                    ->setReturnType(User::class)
+                    ->execute();
+
+                Log::info('userName: ' . $user->getDisplayName());
+                Log::info('userEmail: ' . null !== $user->getMail() ? $user->getMail() : $user->getUserPrincipalName());
+                Log::info('userTimeZone: ' . $user->getMailboxSettings()->getTimeZone());
+//'accessToken' => $accessToken->getToken(),
+//'refreshToken' => $accessToken->getRefreshToken(),
+//'tokenExpires' => $accessToken->getExpires(),
+//'userName' => $user->getDisplayName(),
+//'userEmail' => null !== $user->getMail() ? $user->getMail() : $user->getUserPrincipalName(),
+//'userTimeZone' => $user->getMailboxSettings()->getTimeZone()
 
                 $this->gmailApiSettings->token = json_encode($accessToken);
                 $this->gmailApiSettings->save();

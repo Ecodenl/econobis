@@ -7,6 +7,7 @@ use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Helpers\Gmail\GmailConnectionManager;
+use App\Helpers\MsOauth\MsOauthConnectionManager;
 use App\Http\Traits\Email\EmailRelations;
 use App\Http\Traits\Email\Storage;
 use App\Http\Traits\GmailApi\Attachment;
@@ -98,15 +99,15 @@ class MailFetcherMsOauth
 //
     private function initMsOauthConfig(): void
     {
-        $gmailConnectionManager = new GmailConnectionManager($this->mailbox);
+        $gmailConnectionManager = new MsOauthConnectionManager($this->mailbox);
         $client = $gmailConnectionManager->connect();
-
-        // Todo improve failure message
-        if (!($client instanceof Google_Client) && isset($client['message']) && $client['message'] === 'gmail_unauthorised') {
-            throw new Exception('InitGmailConfig: ' . $client['message']);
-        }
-
-        $this->service = new Google_Service_Gmail($client);
+//
+//        // Todo improve failure message
+//        if (!($client instanceof Google_Client) && isset($client['message']) && $client['message'] === 'gmail_unauthorised') {
+//            throw new Exception('InitGmailConfig: ' . $client['message']);
+//        }
+//
+//        $this->service = new Google_Service_Gmail($client);
     }
 //
 //    private function fetchEmail(string $gmailMessageId)

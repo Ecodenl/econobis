@@ -602,9 +602,9 @@ class RevenuePartsKwhFormEdit extends Component {
                                 >
                                     <p>
                                         Het bijwerken van de opbrengst periode verdeling kan enige tijd duren, vooral
-                                        bij veel deelnemers. Dit proces gebeurd daarom op de achtergrond. Zolang deze
+                                        bij veel deelnemers. Dit proces gebeurt daarom op de achtergrond. Zolang deze
                                         opbrengst periode verdeling wordt bijgewerkt kunnen er verder geen wijzigingen
-                                        of acties op uitgevoerd worden op deze opbrengst periode verdeling.
+                                        of acties uitgevoerd worden op deze opbrengst periode verdeling.
                                         <br />
                                         Als er eindstanden zijn gewijzigd en er is een volgende periode aanwezig, dan
                                         zal deze ook direct bijgewerkt worden. De eindstanden van deze opbrengst periode

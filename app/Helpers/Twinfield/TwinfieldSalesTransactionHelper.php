@@ -224,7 +224,7 @@ class TwinfieldSalesTransactionHelper
             ->setDim2($twinfieldCustomer->getCode())
             ->setValue($totaalBedragIncl)
             ->setDebitCredit($totaalBedragIncl->getAmount()<0 ? DebitCredit::CREDIT() : DebitCredit::DEBIT())
-            ->setDescription($invoice->subject);
+            ->setDescription(substr($invoice->subject, 0, 40));
         $twinfieldSalesTransaction->addLine($twinfieldTransactionLineTotal);
 
         //Vanuit invoice products bedragen per product (omzet) / bedragen per btw code alvast doortellen voor VAT regels hierna

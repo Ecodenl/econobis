@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Mail\CustomMailDriver\GmailapiManager;
+use App\Mail\CustomMailDriver\MsoauthapiManager;
 use Illuminate\Mail\MailServiceProvider;
 
 class CustomMailServiceProvider extends MailServiceProvider
@@ -16,6 +17,10 @@ class CustomMailServiceProvider extends MailServiceProvider
     {
         $this->app->singleton('mail.manager', function($app) {
             return new GmailapiManager($app);
+        });
+
+        $this->app->singleton('mail.manager', function($app) {
+            return new MsoauthapiManager($app);
         });
 
         // Copied from Illuminate\Mail\MailServiceProvider

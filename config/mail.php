@@ -91,8 +91,8 @@ return [
             'transport' => 'gmailapi',
         ],
 
-        'ms-oauthapi' => [
-            'transport' => 'ms-oauthapi',
+        'msoauthapi' => [
+            'transport' => 'msoauthapi',
         ],
 
     ],

@@ -52,7 +52,7 @@ return [
         'mailbox_id' => null,
     ],
 
-    'ms-oauthapi' => [
+    'msoauthapi' => [
         'mailbox_id' => null,
     ],
 ];

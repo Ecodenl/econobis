@@ -91,7 +91,7 @@ class EmailHelper
 //todo WM oauth: nog testen !!!
     protected function setConfigToMsOauthApiMailbox(Mailbox $mailbox)
     {
-        $msOauthApiSettings = $mailbox->msOauthApiSettings;
+        $msOauthApiSettings = $mailbox->gmailApiSettings;
         if(!$msOauthApiSettings){
             throw new \Exception('Mailbox ' . $mailbox->id . ' should have configured Microsoft Azure api settings.');
         }
@@ -100,8 +100,8 @@ class EmailHelper
         }
 
         Config::set('mail.from', ['address' => $mailbox->email, 'name' => $mailbox->name]);
-        Config::set('mail.default', 'ms-oauthapi');
-        Config::set('services.ms-oauthapi.mailbox_id', $mailbox->id);
+        Config::set('mail.default', 'msoauthapi');
+        Config::set('services.msoauthapi.mailbox_id', $mailbox->id);
     }
 
     protected function inProduction()

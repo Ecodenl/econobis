@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use App\Eco\Mailbox\Mailbox;
 use App\Mail\CustomMailDriver\GmailapiTransport;
+use App\Mail\CustomMailDriver\MsoauthapiTransport;
 use Illuminate\Bus\Queueable;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Mail\Factory as MailFactory;
@@ -42,13 +43,13 @@ class ConfigurableMailable extends Mailable
 
             $transport = new GmailapiTransport($mailboxId);
 //todo WM oauth: nog testen !!!
-        }elseif(config('mail.default') === 'ms-oauthapi') {
-            // Send mail with ms-oauthapi?!?!?
-            $mailboxId = config('services.ms-oauthapi.mailbox_id');
+        }elseif(config('mail.default') === 'msoauthapi') {
+            // Send mail with msoauthapi?!?!?
+            $mailboxId = config('services.msoauthapi.mailbox_id');
 
             if(!$mailboxId) return;
 
-            $transport = new MsoauthpapiTransport($mailboxId);
+            $transport = new MsoauthapiTransport($mailboxId);
         }elseif(config('mail.default') !== 'log') {
             $host      = config('mail.host');
             $port      = config('mail.port');

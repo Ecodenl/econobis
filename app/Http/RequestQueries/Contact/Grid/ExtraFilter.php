@@ -44,6 +44,7 @@ class ExtraFilter extends RequestExtraFilter
         'orderStatus',
         'dateOfBirth',
         'energySupplier',
+        'energySupplierType',
         'portalUser',
         'didAgreeAvg',
     ];
@@ -505,43 +506,51 @@ class ExtraFilter extends RequestExtraFilter
     {
         if($type === 'eq'){
             if(empty($data)) {
-                $query->whereHas('addresses', function($query) {
-                    $query->whereHas('primaryAddressEnergySupplier');
+                $query->where(function ($query) use ($type, $data) {
+                    $query->whereHas('addresses', function($query) {
+                        $query->whereHas('primaryAddressEnergySupplierElectricityAndGas');
+                    });
                 });
             }else{
-                $query->whereHas('addresses', function($query) use ($data) {
-                    $query->whereHas('primaryAddressEnergySupplier', function($query) use ($data) {
-                        $query->where('energy_supplier_id', $data);
+                $query->where(function ($query) use ($type, $data) {
+                    $query->whereHas('addresses', function($query) use ($data) {
+                        $query->whereHas('primaryAddressEnergySupplierElectricityAndGas', function($query) use ($data) {
+                            $query->where('energy_supplier_id', $data);
+                        });
                     });
                 });
             }
         }
         elseif($type === 'neq'){
             if(empty($data)){
-                $query->whereDoesntHave('addresses')
-                    ->orWhereHas('addresses', function ($query) use ($type, $data) {
-                        $query->whereDoesntHave('primaryAddressEnergySupplier')
-                            ->whereDoesntHave('primaryAddressEnergySupplier', function ($query) use ($type, $data) {
-                                $data = str_replace(' ', '', $data);
-                                RequestFilter::applyFilter($query, 'energy_supplier_id', $type, $data);
-                            });
-                    });
+                $query->where(function ($query) use ($type, $data) {
+                    $query->whereDoesntHave('addresses')
+                        ->orWhereHas('addresses', function ($query) use ($type, $data) {
+                            $query->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas')
+                                ->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas', function ($query) use ($type, $data) {
+                                    $data = str_replace(' ', '', $data);
+                                    RequestFilter::applyFilter($query, 'energy_supplier_id', $type, $data);
+                                });
+                        });
+                });
             }else {
-                $query->whereDoesntHave('addresses')
-                    ->orWhereHas('addresses', function ($query) use ($type, $data) {
-                        $query->whereDoesntHave('primaryAddressEnergySupplier')
-                            ->whereDoesntHave('primaryAddressEnergySupplier', function ($query) use ($type, $data) {
-                                $data = str_replace(' ', '', $data);
-                                RequestFilter::applyFilter($query, 'energy_supplier_id', $type, $data);
-                            });
-                    });
+                $query->where(function ($query) use ($type, $data) {
+                    $query->whereDoesntHave('addresses')
+                        ->orWhereHas('addresses', function ($query) use ($type, $data) {
+                            $query->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas')
+                                ->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas', function ($query) use ($type, $data) {
+                                    $data = str_replace(' ', '', $data);
+                                    RequestFilter::applyFilter($query, 'energy_supplier_id', $type, $data);
+                                });
+                        });
+                });
             }
         }
         elseif($type === 'nl'){
             $query->whereDoesntHave('addresses')
                 ->orWhereHas('addresses', function ($query) use ($type, $data) {
-                    $query->whereDoesntHave('primaryAddressEnergySupplier')
-                        ->whereDoesntHave('primaryAddressEnergySupplier', function ($query) use ($type, $data) {
+                    $query->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas')
+                        ->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas', function ($query) use ($type, $data) {
                             $data = str_replace(' ', '', $data);
                             RequestFilter::applyFilter($query, 'energy_supplier_id', $type, $data);
                         });
@@ -549,11 +558,41 @@ class ExtraFilter extends RequestExtraFilter
         }
         elseif($type === 'nnl'){
             $query->whereHas('addresses', function($query) use ($data) {
-                $query->whereHas('primaryAddressEnergySupplier', function($query) use ($data) {
+                $query->whereHas('primaryAddressEnergySupplierElectricityAndGas', function($query) use ($data) {
                     $query->where('energy_supplier_id', $data);
                 });
             });
         }
+    }
+    protected function applyEnergySupplierTypeFilter($query, $type, $data)
+    {
+        if(empty($data)){
+            switch($type) {
+                case 'eq':
+                    $query->whereHas('primaryAddressEnergySuppliers');
+                    break;
+                default:
+                    $query->whereDoesntHave('primaryAddressEnergySuppliers');
+                    break;
+            }
+        }else{
+            switch($type) {
+                case 'neq':
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('primaryAddressEnergySuppliers')
+                            ->orWhereDoesntHave('primaryAddressEnergySuppliers', function ($query) use ($type, $data) {
+                                RequestFilter::applyFilter($query, 'energy_supply_type_id', 'eq', $data);
+                            });
+                    });
+                    break;
+                default:
+                    $query->whereHas('primaryAddressEnergySuppliers', function ($query) use ($type, $data) {
+                        RequestFilter::applyFilter($query, 'energy_supply_type_id', $type, $data);
+                    });
+                    break;
+            }
+        }
+
     }
 
     protected function applyDidAgreeAvgFilter($query, $type, $data)

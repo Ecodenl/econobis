@@ -309,7 +309,7 @@ class ParticipantsListApp extends Component {
             const filters = filterHelper(this.props.participantsProjectFilters);
             const extraFilters = this.state.extraFilters;
             const sorts = this.props.participantsProjectSorts;
-            ParticipantsProjectAPI.getExcel(filters, extraFilters, sorts, pagination, true)
+            ParticipantsProjectAPI.getExcel(filters, extraFilters, sorts, pagination, true, this.props.filterProjectId)
                 .then(payload => {
                     excelFileName = `Deelnemers-${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`;
                     if (splitsExcel) {
@@ -340,7 +340,14 @@ class ParticipantsListApp extends Component {
             const filters = filterHelper(this.props.participantsProjectFilters);
             const extraFilters = this.state.extraFilters;
             const sorts = this.props.participantsProjectSorts;
-            ParticipantsProjectAPI.getExcelParticipants(filters, extraFilters, sorts, pagination, true)
+            ParticipantsProjectAPI.getExcelParticipants(
+                filters,
+                extraFilters,
+                sorts,
+                pagination,
+                true,
+                this.props.filterProjectId
+            )
                 .then(payload => {
                     excelFileName = `Deelnemers-${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`;
                     if (splitsExcel) {

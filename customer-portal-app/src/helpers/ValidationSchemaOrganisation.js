@@ -183,7 +183,7 @@ export default {
                 .trim()
                 .matches(/(\d.*){18}|^$/, 'Minimaal 18 cijfers nodig')
                 .required('Verplicht'),
-            primaryAddressEnergySupplier: Yup.object().shape({
+            primaryAddressEnergySupplierElectricity: Yup.object().shape({
                 energySupplierId: Yup.string()
                     .nullable()
                     .required('Verplicht'),

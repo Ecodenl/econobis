@@ -22,7 +22,8 @@ class ConversionEnergySupplier33To54 extends Migration
 
         Schema::dropIfExists('xxx_contact_energy_supplier');
 
-        $addressEnergySuppliers = AddressEnergySupplier::where('energy_supplier_id', 33)->get();
+//        $addressEnergySuppliers = AddressEnergySupplier::where('energy_supplier_id', 33)->get();
+        $addressEnergySuppliers = DB::table('address_energy_suppliers')->where('energy_supplier_id', 33)->get();
         foreach ($addressEnergySuppliers as $addressEnergySupplier){
             $addressEnergySupplier->energy_supplier_id = 54;
             $addressEnergySupplier->save();

@@ -8,6 +8,8 @@ const ContactGroupExtraFilterView = props => {
     if (
         isEmpty(dataName) &&
         (field === 'energySupplier' ||
+            field === 'campaign' ||
+            field === 'energySupplierType' ||
             field === 'orderStatus' ||
             field === 'product' ||
             field === 'opportunityMeasureCategory' ||

@@ -52,8 +52,6 @@ class importIntakesDeltawind2 extends Command
         $tmps = DB::table('tmp_1')->get();
         foreach($tmps as $tmp) {
 
-//if($tmp->ID == 258) {
-
     $email = $tmp->emailadres;
     $vouchercode = $tmp->code;
     $ID = $tmp->ID;
@@ -66,12 +64,15 @@ class importIntakesDeltawind2 extends Command
 
     if (count($contact_emails) == 1) {
         $contact_id = $contact_emails[0]->contact_id;
+//        Log::info('Toevoegen Contact A: ' . $contact_id . ' - Emailadres: ' . $contact_emails[0]->email);
     } else {
         $contact = DB::table('tmp2')
             ->where('ID', $ID)
             ->whereRaw('ucase(`Voucher toewijzen aan`) = "Y"')
             ->first();
         $contact_id = $contact ? $contact->contact_id : 0;
+        $contact_email = $contact ? $contact->email : "";
+//        Log::info('Toevoegen Contact B: ' . $contact_id . ' - Emailadres: ' . $contact_email);
 
         if ($contact_id == 0 && count($contact_emails) > 1) {
             $saveContactId = $contact_emails[0]->contact_id;
@@ -82,9 +83,14 @@ class importIntakesDeltawind2 extends Command
                     break;
                 }
             }
+            if ($doIntake) {
+                $contact_id = $contact_emails[0]->contact_id;
+                $contact_email = $contact_emails[0]->email;
+//                Log::info('Toevoegen Contact C: ' . $contact_id . ' - Emailadres: ' . $contact_email);
+            }
             if (!$doIntake) {
                 foreach ($contact_emails as $contact_email) {
-                    Log::info('Contact : ' . $contact_email->contact_id . ' - Emailadres: ' . $contact_email->email);
+//                    Log::info('???? Contact : ' . $contact_email->contact_id . ' - Emailadres: ' . $contact_email->email);
                 }
             }
         }
@@ -92,39 +98,46 @@ class importIntakesDeltawind2 extends Command
     }
     if ($contact_id == 0) continue;
 
-//            $contact = Contact::find($contact_id);
-//
-//            //Intake toevoegen
-//            $newIntake = Intake::make([
-//                'contact_id' => $contact_id,
-//                'intake_status_id' => 2,
-//                'campaign_id' => 9,
-//                'note' => $vraag,
-//            ]);
-//            $newIntake->address_id = $contact->primaryAddress->id;
-//            $newIntake->created_at = "2022-09-02";
-//            $newIntake->save();
-//
-//            $newIntake->measuresRequested()->sync(14);
-//
-//            $opportunityNew = Opportunity::create([
-//                'measure_category_id' => 14,
-//                'status_id' => 3,
-//                'intake_id' => $newIntake->id,
-//                'quotation_text' => $vouchercode,
-//                'desired_date' => null,
-//                'evaluation_agreed_date' => null,
-//            ]);
-//            $opportunityNew->updated_by_id = $opportunityNew->created_by_id;
-//            $opportunityNew->created_at = "2022-09-02";
-//            $opportunityNew->updated_at = "2022-09-02";
-//            $opportunityNew->save();
-//
-//            $opportunityNew->measures()->sync(120);
+    $intake = DB::table('intakes')
+        ->where('created_at', '2022-09-02 00:00:00')
+        ->where('contact_id', $contact_id)
+        ->get();
+            if( count($intake) != 0 ){
+//        Log::info('Intake(s) (' . count($intake) . ') al gemaakt voor contact : ' . $contact_id);
+            } else {
+                Log::info('Intake maken voor contact : ' . $contact_id);
+                $contact = Contact::find($contact_id);
 
-//}
+                //Intake toevoegen
+                $newIntake = Intake::make([
+                    'contact_id' => $contact_id,
+                    'intake_status_id' => 2,
+                    'campaign_id' => 9,
+                    'note' => $vraag,
+                ]);
+                $newIntake->address_id = $contact->primaryAddress->id;
+                $newIntake->created_at = "2022-09-02";
+                $newIntake->save();
 
-       }
+                $newIntake->measuresRequested()->sync(14);
+
+                $opportunityNew = Opportunity::create([
+                    'measure_category_id' => 14,
+                    'status_id' => 3,
+                    'intake_id' => $newIntake->id,
+                    'quotation_text' => $vouchercode,
+                    'desired_date' => null,
+                    'evaluation_agreed_date' => null,
+                ]);
+                $opportunityNew->updated_by_id = $opportunityNew->created_by_id;
+                $opportunityNew->created_at = "2022-09-02";
+                $opportunityNew->updated_at = "2022-09-02";
+                $opportunityNew->save();
+
+                $opportunityNew->measures()->sync(120);
+            }
+
+        }
 
     }
 }

@@ -140,7 +140,7 @@ abstract class RequestFilter
 
     protected function getMappedField($field)
     {
-        if (array_key_exists($field, $this->mapping)) return $this->mapping[$field];
+        if (isset($field, $this->mapping)) return $this->mapping[$field];
 
         return $field;
     }
@@ -163,7 +163,7 @@ abstract class RequestFilter
 
     protected function applyJoin($query, $field)
     {
-        if (!array_key_exists($field, $this->joins)) return;
+        if (!isset($field, $this->joins)) return;
 
         $joinName = $this->joins[$field];
         if (!$this->joiner) throw new RequestFilterException('Missing Joiner to apply join ' . $joinName . ' in ' . get_called_class());

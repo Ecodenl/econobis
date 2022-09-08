@@ -167,11 +167,11 @@ class AddressController extends ApiController
         $city = '';
 
         if(!empty($address[0])) {
-            if (array_key_exists('straat', $address[0])) {
+            if (isset($address['straat'][0])) {
                 $street = $address[0]['straat'];
             }
 
-            if (array_key_exists('woonplaats', $address[0])) {
+            if (isset($address['woonplaats'][0])) {
                 $city = $address[0]['woonplaats'];
             }
         }

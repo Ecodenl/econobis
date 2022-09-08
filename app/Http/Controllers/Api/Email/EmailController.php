@@ -549,49 +549,49 @@ class EmailController
             }
         }
 
-        if(!array_key_exists('replyTypeId', $data)){
+        if(!isset($data['replyTypeId'])){
             $data['replyTypeId'] = null;
         }
         if($data['replyTypeId'] == ''){
             $data['replyTypeId'] = null;
         }
 
-        if(!array_key_exists('oldEmailId', $data)){
+        if(!isset($data['oldEmailId'])){
             $data['oldEmailId'] = null;
         }
         if($data['oldEmailId'] == ''){
             $data['oldEmailId'] = null;
         }
 
-        if(!array_key_exists('contactGroupId', $data)){
+        if(!('contactGroupId', $data)){
             $data['contactGroupId'] = null;
         }
         if($data['contactGroupId'] == ''){
             $data['contactGroupId'] = null;
         }
 
-        if(!array_key_exists('opportunityId', $data)){
+        if(!isset($data['opportunityId'])){
             $data['opportunityId'] = null;
         }
         if($data['opportunityId'] == ''){
             $data['opportunityId'] = null;
         }
 
-        if(!array_key_exists('quotationRequestId', $data)){
+        if(!isset($data['quotationRequestId'])){
             $data['quotationRequestId'] = null;
         }
         if($data['quotationRequestId'] == ''){
             $data['quotationRequestId'] = null;
         }
 
-        if(!array_key_exists('intakeId', $data)){
+        if(!isset($data['intakeId'])){
             $data['intakeId'] = null;
         }
         if($data['intakeId'] == ''){
             $data['intakeId'] = null;
         }
 
-        if(!array_key_exists('taskId', $data)){
+        if(!isset($data['taskId'])){
             $data['taskId'] = null;
         }
         if($data['taskId'] == ''){

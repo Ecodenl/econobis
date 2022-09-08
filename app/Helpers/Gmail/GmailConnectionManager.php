@@ -68,7 +68,7 @@ class GmailConnectionManager
         $accessToken = $this->client->fetchAccessTokenWithAuthCode($code);
 
         // Check to see if there was an error.
-        if (array_key_exists('error', $accessToken)) {
+        if (isset($accessToken['error'])) {
             Log::error("Geen access token verkregen vanuit callback, mailbox " . $this->mailbox->id . " op invalid!");
             $this->mailbox->valid = false;
             $this->mailbox->save();

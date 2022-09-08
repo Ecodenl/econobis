@@ -49,9 +49,9 @@ class MailFetcherGmail
     public function fetchNew()
     {
         if ($this->mailbox->date_last_fetched) {
-            $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->format('Y-m-d');
+            $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->subDay()->format('Y-m-d');
         } else {
-            $dateLastFetched = Carbon::now()->format('Y-m-d');
+            $dateLastFetched = Carbon::now()->subDay()->format('Y-m-d');
         }
 
         $dateTime = Carbon::now();

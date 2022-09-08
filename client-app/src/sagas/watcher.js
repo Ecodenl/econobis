@@ -112,7 +112,11 @@ import {
 } from './product/ProductDetailsSaga';
 import { deleteProductSaga, fetchProductsSaga } from './product/ProductsSaga';
 import { deleteInvoiceFromGridSaga, fetchInvoicesSaga } from './invoice/InvoicesSaga';
-import { deleteInvoiceSaga, fetchInvoiceDetailsSaga } from './invoice/InvoiceDetailsSaga';
+import {
+    deleteInvoiceSaga,
+    fetchInvoiceDetailsSaga,
+    fetchInvoiceFromTwinfieldDetailsSaga,
+} from './invoice/InvoiceDetailsSaga';
 import { fetchPaymentInvoicesSaga } from './payment-invoice/PaymentInvoicesSaga';
 import { deleteWebformSaga, fetchWebformsSaga } from './webform/WebformsSaga';
 import { fetchWebformDetailsSaga, updateWebformDetailsSaga } from './webform/WebformDetailsSaga';
@@ -232,6 +236,7 @@ export default function* watchSagas() {
     yield takeLatest('DELETE_INTAKE_MEASURE_REQUESTED', deleteIntakeMeasureRequestedSaga);
     // Invoice
     yield takeLatest('FETCH_INVOICE_DETAILS', fetchInvoiceDetailsSaga);
+    yield takeLatest('FETCH_INVOICE_FROM_TWINFIELD_DETAILS', fetchInvoiceFromTwinfieldDetailsSaga);
     yield takeLatest('FETCH_INVOICES', fetchInvoicesSaga);
     yield takeLatest('DELETE_INVOICE', deleteInvoiceSaga);
     yield takeLatest('DELETE_INVOICE_FROM_GRID', deleteInvoiceFromGridSaga);

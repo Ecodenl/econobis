@@ -22,7 +22,7 @@ class FullParticipantAddress extends JsonResource
             'addition' => $this->addition,
             'postalCode' => $this->postal_code,
             'city' => $this->city,
-            'primaryAddressEnergySupplier' => FullAddressEnergySupplier::make($this->whenLoaded('primaryAddressEnergySupplier')),
+            'primaryAddressEnergySupplierElectricity' => FullAddressEnergySupplier::make($this->whenLoaded('primaryAddressEnergySupplierElectricity')),
         ];
     }
 }

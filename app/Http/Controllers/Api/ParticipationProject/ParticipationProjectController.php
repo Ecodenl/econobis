@@ -64,7 +64,7 @@ class ParticipationProjectController extends ApiController
     {
         $participantProject = $requestQuery->get();
         $participantProject->load([
-            'address.primaryAddressEnergySupplier.energySupplier',
+            'address.primaryAddressEnergySupplierElectricity.energySupplier',
             'contact.primaryAddress',
             'contact.primaryEmailAddress',
             'project',
@@ -155,9 +155,11 @@ class ParticipationProjectController extends ApiController
         }
     }
 
-    public function excel(RequestQuery $requestQuery)
+    public function excel(RequestQuery $requestQuery, Request $request)
     {
         set_time_limit(0);
+
+        $filterProjectId = $request->input('filterProjectId');
 
         $participants = $requestQuery->getQuery()->get();
 
@@ -177,7 +179,7 @@ class ParticipationProjectController extends ApiController
             'contact.primaryEmailAddress',
             'contact.primaryphoneNumber',
             'contact.primaryAddress.country',
-            'address.primaryAddressEnergySupplier.energySupplier',
+            'address.primaryAddressEnergySupplierElectricity.energySupplier',
             'giftedByContact',
             'legalRepContact',
             'project',
@@ -187,14 +189,16 @@ class ParticipationProjectController extends ApiController
             'mutations.type',
         ]);
 
-        $participantExcelHelper = new ParticipantExcelHelper($participants);
+        $participantExcelHelper = new ParticipantExcelHelper($participants, $filterProjectId);
 
         return $participantExcelHelper->downloadExcel();
     }
 
-    public function excelParticipants(RequestQuery $requestQuery)
+    public function excelParticipants(RequestQuery $requestQuery, Request $request)
     {
         set_time_limit(0);
+
+        $filterProjectId = $request->input('filterProjectId');
 
         $participants = $requestQuery->getQuery()->get();
 
@@ -213,7 +217,7 @@ class ParticipationProjectController extends ApiController
             'participantProjectPayoutType',
         ]);
 
-        $participantExcelHelper = new ParticipantExcelHelper($participants);
+        $participantExcelHelper = new ParticipantExcelHelper($participants, $filterProjectId);
 
         return $participantExcelHelper->downloadExcelParticipants();
     }
@@ -228,7 +232,7 @@ class ParticipationProjectController extends ApiController
         $participantProject->load([
             'contact',
             'contact.primaryAddress',
-            'address.primaryAddressEnergySupplier',
+            'address.primaryAddressEnergySupplierElectricity',
             'project.projectType',
             'project.administration',
             'project.projectValueCourses',
@@ -608,14 +612,14 @@ class ParticipationProjectController extends ApiController
     {
         $checkText = 'Energieleverancier check: ';
 
-        $primaryAddressEnergySupplier = $address ? $address->primaryAddressEnergySupplier : null;
+        $primaryAddressEnergySupplierElectricity = $address ? $address->primaryAddressEnergySupplierElectricity : null;
 
-        if(!$primaryAddressEnergySupplier){
+        if(!$primaryAddressEnergySupplierElectricity){
             $message[] = $checkText . 'Contact heeft nog geen energieleverancier.';
             return false;
         }
 
-        $energySupplier = $primaryAddressEnergySupplier->energySupplier;
+        $energySupplier = $primaryAddressEnergySupplierElectricity->energySupplier;
 
         if(!$energySupplier->does_postal_code_links){
             $message[] = $checkText . 'Energieleverancier van contact doet niet mee aan postcoderoos.';

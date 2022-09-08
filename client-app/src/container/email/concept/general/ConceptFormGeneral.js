@@ -170,7 +170,8 @@ function ConceptFormGeneral(props) {
                                 <br />
                                 <small style={{ color: 'red', fontWeight: 'normal' }}>
                                     Contacten in groep en extra contacten krijgen elk een aparte mail en zien niet de
-                                    e-mail adressen van anderen. Samenvoegvelden werken.
+                                    e-mail adressen van anderen. Samenvoegvelden werken niet voor extra contacten waar
+                                    alleen emailadres is toegevoegd.
                                 </small>
                             </span>
                         }

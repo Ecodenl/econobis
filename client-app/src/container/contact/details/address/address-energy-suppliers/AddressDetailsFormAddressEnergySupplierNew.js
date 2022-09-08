@@ -413,7 +413,7 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
                                 {' komt al voor bij een andere adres voor leverancier '}
                                 <strong>{this.state.messageDoubleEsName}</strong>
                                 {
-                                    '. (N.B. dit kan ook bij een ander contact zijn). Gewijzigde gegevens van deze adres/energie leverancier zijn wel opgeslagen.'
+                                    '. (N.B. dit kan ook bij een ander contact zijn). Gewijzigde gegevens van deze adres/energieleverancier zijn wel opgeslagen.'
                                 }
                                 <br /> <br />
                                 {'Contacten/adressen met dezelfde klantnummer leverancier zijn:'} <br />
@@ -451,7 +451,7 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
                                         : {}
                                 }
                             >
-                                Beëindigde adres/Energyleverancier komt voor bij deelnames in volgende projecten: <br />
+                                Beëindigde adres/energieleverancier komt voor bij deelnames in volgende projecten: <br />
                                 <ul>
                                     {this.state.messageHasParticipationsProjectsArray.map(item => (
                                         <li>{item.projectMessage}</li>

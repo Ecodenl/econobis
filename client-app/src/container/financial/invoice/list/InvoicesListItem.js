@@ -124,6 +124,7 @@ class InvoicesListItem extends Component {
             subStatus,
             usesTwinfield,
             invoiceInTwinfield,
+            invoicePaidInTwinfield,
             compatibleWithTwinfield,
         } = this.props;
 
@@ -210,14 +211,14 @@ class InvoicesListItem extends Component {
                     ) : (
                         ''
                     )}
-                    {this.state.showActionButtons && this.props.statusId === 'to-send' ? (
+                    {this.state.showActionButtons && this.props.statusId === 'to-send' && !compatibleStatus ? (
                         <a role="button" onClick={() => this.showSend()} title="Verstuur nota">
                             <span className="glyphicon glyphicon-envelope mybtn-success" />{' '}
                         </a>
                     ) : (
                         ''
                     )}
-                    {this.state.showActionButtons && this.props.statusId === 'error-sending' ? (
+                    {this.state.showActionButtons && this.props.statusId === 'error-sending' && !compatibleStatus ? (
                         <a role="button" onClick={() => this.showSend()} title="Verstuur nota opnieuw">
                             <span className="glyphicon glyphicon-envelope mybtn-success" />{' '}
                         </a>
@@ -225,6 +226,7 @@ class InvoicesListItem extends Component {
                         ''
                     )}
                     {!invoiceInTwinfield &&
+                    !invoicePaidInTwinfield &&
                     this.state.showActionButtons &&
                     (this.props.statusId === 'sent' || this.props.statusId === 'exported') ? (
                         <a role="button" onClick={() => this.showSetPaid()} title="Zet op betaald">

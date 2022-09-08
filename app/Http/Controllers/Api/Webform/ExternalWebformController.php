@@ -486,6 +486,9 @@ class ExternalWebformController extends Controller
                 'woondossier_momument' => 'is_monument',
                 'woondossier_maatregelen_ids' => 'measure_ids',
                 'woondossier_maatregelen_datums_realisatie' => 'measure_dates',
+                'woondossier_aantal_bewoners' => 'number_of_residents',
+                'woondossier_opbrengst_zonnepanelen' => 'revenue_solar_panels',
+                'woondossier_opmerking' => 'remark',
             ],
         ];
 
@@ -644,6 +647,14 @@ class ExternalWebformController extends Controller
                     $this->addPhoneNumberToContact($data, $contact);
                     $this->addContactNotesToContact($data, $contact);
                     $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
+                    $address = $contact->addresses()
+                        ->where('postal_code', $data['address_postal_code'])
+                        ->where('number', $data['address_number'])
+                        ->where('addition', $data['address_addition'])
+                        ->first();
+                    if($address){
+                        $this->address = $address;
+                    }
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw e-mailadres  " . $data['email_address'] . " toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
                     $note .= "Controleer contactgegevens\n";
@@ -1774,6 +1785,9 @@ protected function addEnergyConsumptionElectricityToAddress(Address $address, $d
             && $data['is_monument'] == ''
             && $data['measure_ids'] == ''
             && $data['measure_dates'] == ''
+            && $data['number_of_residents'] == ''
+            && $data['revenue_solar_panels'] == ''
+            && $data['remark'] == ''
         ){
             $this->log('Er zijn geen woondossiergegevens meegegeven.');
             return null;
@@ -1844,6 +1858,9 @@ protected function addEnergyConsumptionElectricityToAddress(Address $address, $d
                 'floors' => is_numeric($data['floors']) ? $data['floors'] : null,
                 'energy_label_status_id' => $eneryLabelStatus ? $eneryLabelStatus->id : null,
                 'is_monument' => $data['is_monument'] == '1' ? true : false,
+                'number_of_residents' => is_numeric($data['number_of_residents']) ? $data['number_of_residents'] : 0,
+                'revenue_solar_panels' => is_numeric($data['revenue_solar_panels']) ? $data['revenue_solar_panels'] : 0,
+                'remark' => $data['remark'],
             ]);
             $this->log("Woondossier met id " . $housingFile->id . " aangemaakt en gekoppeld aan adres id " . $address->id . ".");
 
@@ -1876,6 +1893,9 @@ protected function addEnergyConsumptionElectricityToAddress(Address $address, $d
             $housingFile->floors = is_numeric($data['floors']) ? $data['floors'] : null;
             $housingFile->energy_label_status_id = $eneryLabelStatus ? $eneryLabelStatus->id : null;
             $housingFile->is_monument = $data['is_monument'] == '1' ? true : false;
+            $housingFile->number_of_residents = is_numeric($data['number_of_residents']) ? $data['number_of_residents'] : 0;
+            $housingFile->revenue_solar_panels = is_numeric($data['revenue_solar_panels']) ? $data['revenue_solar_panels'] : 0;
+            $housingFile->remark = $data['remark'];
             $housingFile->save();
             $this->log("Woondossier met id " . $housingFile->id . " is gewijzigd voor adres id " . $address->id . ".");
 

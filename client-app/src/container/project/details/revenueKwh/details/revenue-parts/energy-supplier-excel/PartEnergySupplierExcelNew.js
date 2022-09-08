@@ -26,7 +26,8 @@ const PartEnergySupplierExcelNew = props => {
             <div className="row">
                 {props.revenuePartsKwh &&
                 props.revenuePartsKwh.distributionKwhForReportEnergySupplier &&
-                (props.revenuePartsKwh.isLastRevenuePartsKwh || props.revenuePartsKwh.isEndOfYearRevenuePartsKwh) ? (
+                props.revenuePartsKwh.distributionKwhForReportEnergySupplier.length == 0 &&
+                    props.revenuePartsKwh.distributionKwhForReportEnergySupplier.length > 100 ? (
                     <>
                         <ViewText
                             className={'form-group col-sm-6'}

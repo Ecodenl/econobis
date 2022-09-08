@@ -128,6 +128,7 @@ class FullAdministration extends JsonResource
                 'twinfieldIsValid' => $this->twinfield_is_valid,
                 'dateSyncTwinfieldContacts' => $this->date_sync_twinfield_contacts,
                 'dateSyncTwinfieldPayments' => $this->date_sync_twinfield_payments,
+                'dateSyncTwinfieldInvoices' => $this->date_sync_twinfield_invoices,
                 'prefixInvoiceNumber' => $this->prefix_invoice_number,
 
                 'createdAt' => $this->created_at,
@@ -140,6 +141,9 @@ class FullAdministration extends JsonResource
 
                 'emailBccNotas' => $this->email_bcc_notas,
                 'lastYearFinancialOverviewDefinitive' => $this->last_year_financial_overview_definitive,
+                'pendingInvoicesPresent' => $this->pending_invoices_present,
+                'oldestUnpaidInvoiceDate' => $this->oldest_unpaid_invoice_date,
+                'oldestTwinfieldInvoiceDate' => $this->oldest_twinfield_invoice_date,
                 'portalSettingsLayoutId' => $this->portal_settings_layout_id,
                 'portalSettingsLayout' => $this->portalSettingsLayout,
 

@@ -61,10 +61,6 @@ class DeleteAddress implements DeleteInterface
         if($this->address->participations()->count() > 0){
             array_push($this->errorMessage, "Er zijn nog deelnames.");
         }
-        // todo WM-es: wellicht alleen bij PCR projecten?
-        if($this->address->addressEnergySuppliers()->count() > 0){
-            array_push($this->errorMessage, "Er zijn nog energie leveranciers.");
-        }
         if($this->address->housingFiles()->count() > 0){
             array_push($this->errorMessage, "Er zijn nog woningdossiers.");
         }
@@ -74,6 +70,11 @@ class DeleteAddress implements DeleteInterface
      */
     public function deleteModels()
     {
+        foreach ($this->address->addressEnergySuppliers as $addressEnergySupplier){
+            $deleteAddressEnergySupplier = new DeleteAddressEnergySupplier($addressEnergySupplier);
+            $this->errorMessage = array_merge($this->errorMessage, $deleteAddressEnergySupplier->delete());
+        }
+
         foreach ($this->address->intakes as $intake){
             $deleteIntake = new DeleteIntake($intake);
             $this->errorMessage = array_merge($this->errorMessage, $deleteIntake->delete());

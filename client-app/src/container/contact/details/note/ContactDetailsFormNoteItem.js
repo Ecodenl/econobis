@@ -8,7 +8,7 @@ import ContactDetailsFormNoteView from './ContactDetailsFormNoteView';
 import ContactDetailsFormNoteEdit from './ContactDetailsFormNoteEdit';
 import ContactDetailsFormNoteDelete from './ContactDetailsFormNoteDelete';
 
-class ContactDetailFormNoteItem extends Component {
+class ContactDetailsFormNoteItem extends Component {
     constructor(props) {
         super(props);
 
@@ -116,4 +116,4 @@ class ContactDetailFormNoteItem extends Component {
     }
 }
 
-export default connect()(ContactDetailFormNoteItem);
+export default connect()(ContactDetailsFormNoteItem);

@@ -86,4 +86,14 @@ class Campaign extends Model
     public function documents(){
         return $this->hasMany(Document::class)->orderBy('documents.id', 'desc');
     }
+
+
+    // simulategroup up-to-date?
+    public function getNumberOfIntakesAttribute(){
+        $numberOfIntakes = 0;
+        if($this->intakes){
+            $numberOfIntakes = $this->intakes->count();
+        }
+        return $numberOfIntakes;
+    }
 }

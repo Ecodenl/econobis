@@ -43,6 +43,7 @@ const initialState = {
     sendRemindersTextEmail: 'Selecteer e-mail herinneringen',
     sendRemindersTextPost: 'Selecteer post herinneringen',
     setInvoicesPaidText: "Selecteer betaalde nota's",
+    setInvoicesPaid: false,
     showSetInvoicesPaid: false,
     deleteItem: {
         id: '',
@@ -162,8 +163,16 @@ class InvoicesList extends Component {
             const administrationId = this.props.administrationId;
             const onlyEmailInvoices = this.state.onlyEmailInvoices;
             const onlyPostInvoices = this.state.onlyPostInvoices;
-
-            this.props.fetchInvoices(filters, sorts, pagination, administrationId, onlyEmailInvoices, onlyPostInvoices);
+            const setInvoicesPaid = this.state.setInvoicesPaid;
+            this.props.fetchInvoices(
+                filters,
+                sorts,
+                pagination,
+                administrationId,
+                onlyEmailInvoices,
+                onlyPostInvoices,
+                setInvoicesPaid
+            );
         }, 100);
 
         this.props.fetchTotalsInfoAdministration(this.props.administrationId);
@@ -276,9 +285,11 @@ class InvoicesList extends Component {
             });
         } else {
             this.setState({
+                setInvoicesPaid: true,
                 showSetInvoicesPaid: false,
                 setInvoicesPaidText: "Zet nota's betaald",
             });
+            this.fetchInvoicesData();
             this.toggleShowCheckboxList();
         }
     };

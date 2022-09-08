@@ -1,18 +1,23 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import ContactDetailFormAddressItem from './ContactDetailsFormAddressItem';
+import ContactDetailsFormAddressItem from './ContactDetailsFormAddressItem';
 
 const ContactDetailsFormAddressList = props => {
+    const numberOfAddresses = props.addresses.length;
+    const addressesNotOld = props.addresses.filter(address => address.typeId !== 'old');
+    const numberOfAddressesNotOld = addressesNotOld.length;
+
     return (
         <div>
             <div className="row border header">
                 <div className="col-sm-1">Type</div>
-                <div className="col-sm-3">Adres</div>
-                <div className="col-sm-2">Postcode</div>
+                <div className="col-sm-2">Adres</div>
+                <div className="col-sm-1">Postcode</div>
                 <div className="col-sm-2">Plaats</div>
                 {/*<div className="col-sm-2">Land</div>*/}
                 <div className="col-sm-2">Energieleverancier</div>
+                <div className="col-sm-2">Klantnummer</div>
                 <div className="col-sm-1">
                     <span className="pull-right">Primair</span>
                 </div>
@@ -21,10 +26,11 @@ const ContactDetailsFormAddressList = props => {
             {props.addresses.length > 0 ? (
                 props.addresses.map(address => {
                     return (
-                        <ContactDetailFormAddressItem
+                        <ContactDetailsFormAddressItem
                             key={address.id}
                             address={address}
-                            numberOfAddresses={props.addresses.length}
+                            numberOfAddresses={numberOfAddresses}
+                            numberOfAddressesNotOld={numberOfAddressesNotOld}
                             setAddressEnergySupplierNewOrEditOpen={props.setAddressEnergySupplierNewOrEditOpen}
                             addressEnergySupplierNewOrEditOpen={props.addressEnergySupplierNewOrEditOpen}
                         />

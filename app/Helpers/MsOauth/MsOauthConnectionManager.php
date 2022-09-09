@@ -113,7 +113,7 @@ class MsOauthConnectionManager extends Controller
 //'userEmail' => null !== $user->getMail() ? $user->getMail() : $user->getUserPrincipalName(),
 //'userTimeZone' => $user->getMailboxSettings()->getTimeZone()
 
-                $this->gmailApiSettings->token = json_encode($accessToken);
+                $this->gmailApiSettings->token = json_encode($accessToken->getToken());
                 $this->gmailApiSettings->save();
 
                 $this->mailbox->valid = true;

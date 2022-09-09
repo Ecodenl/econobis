@@ -8,6 +8,11 @@ use Exception;
 use Illuminate\Mail\Transport\Transport;
 use Illuminate\Support\Facades\Log;
 use Microsoft\Graph\Graph;
+use Microsoft\Graph\Model\ItemBody;
+use Microsoft\Graph\Model\Message;
+use Microsoft\Graph\Model\EmailAddress;
+use Microsoft\Graph\Model\Recipient;
+use Microsoft\Graph\Model\FileAttachment;
 use Swift_Mime_SimpleMessage;
 
 class MsoauthapiTransport extends Transport
@@ -15,7 +20,6 @@ class MsoauthapiTransport extends Transport
     private Mailbox $mailbox;
     private string $user = 'me';
     private Graph $graph;
-//    private Google_Service_Gmail $msOauthService;
 
     public function __construct(int $mailboxId, $user = 'me')
     {
@@ -28,45 +32,73 @@ class MsoauthapiTransport extends Transport
 
     public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
     {
-        Log::info("komen we hier? MsOauthapiTransport - send !!");
+// todo oauth WM: testen en opschonen
+//        Log::info("MsOauthapiTransport - send !!");
+//        Log::info(implode(';', array_keys($message->getTo() ?: [])));
+//        Log::info(implode(';', array_keys($message->getCc() ?: [])));
+//        Log::info(implode(';', array_keys($message->getBcc() ?: [])));
+//        Log::info($message->getSubject());
+//        Log::info($message->getBody());
 
-        $msg = $this->base64url_encode($message);
+        $messageGraph = new Message();
+        $messageGraph->setSubject( $message->getSubject());
+        $body = new ItemBody();
+        $body->setContent($message->getBody());
+        $body->setContentType('HTML');
+        $messageGraph->setBody($body);
+        $tos = array_keys($message->getTo() ?: []);
+        $recipients = array();
+        foreach ( $tos as $to) {
+            $emailAddress = new EmailAddress();
+            $emailAddress->setAddress($to);
+            $recipient = new Recipient();
+            $recipient->setEmailAddress($emailAddress);
+            array_push($recipients, $recipient);
+        }
+        $messageGraph->setToRecipients($recipients);
+
+// todo oauth WM: attachments toevoegen !
+
+//        $attachment = new FileAttachment();
+//        $attachment->setName("MyFileAttachment.txt");
+//        $attachment->setContentBytes("data");
+//        $attachment->setODataType("#microsoft.graph.fileAttachment");
+//
+//        $messageGraph->setAttachments(array($attachment));
+
+        $messageToSend = array ('message' => $messageGraph);
+
+// todo oauth WM: opschonen !
+//        LOG::info('messageToSend');
+//        LOG::info($messageToSend);
+//        return;
+
         $token = $this->mailbox->gmailApiSettings->token;
 
         if ($token != null) {
+
             $graph = new Graph();
-            $graph->setAccessToken($token);
-        }
+            $graph->setAccessToken(json_decode($token));
 
-        //        $message = new Google_Service_Gmail_Message();
-//        $message->setRaw($msg);
+            try {
+              $response = $graph->createRequest("POST", "/me/sendmail")
+                    ->attachBody($messageToSend)
+                    ->execute();
 
-        try {
-            $sendMailBody = array(
-                'message' => array (
-                    'subject' => $subject,
-                    'body' => array (
-                        'content' => $msg,
-                        'contentType' => 'text'
-                    ),
-                    'toRecipients' => array (
-                        array (
-                            'emailAddress' => array (
-                                'address' => $recipient
-                            )
-                        )
-                    )
-                )
-            );
+// todo oauth WM: nog iets met response doen ?
+//              Log::info('response');
+//              Log::info($response->getMessage());
 
-            GraphHelper::$userClient->createRequest('POST', '/me/sendMail')
-                ->attachBody($sendMailBody)
-                ->execute();
+// todo oauth WM: zie wellicht in MailTest ?
+//            $mailFolderMessages = $graph->createRequest("GET", "/me/mailFolders/sentItems/messages?\$filter=subject eq '\$message->getSubject()'")
+//                ->setReturnType(Model\Message::class)
+//                ->execute();
+//            $this->assertNotNull($mailFolderMessages);
 
-//            $message = $this->msOauthService->users_messages->send($this->user, $message);
-//            return $message;
-        } catch (\Exception $e) {
-            print 'An error occurred: ' . $e->getMessage();
+            } catch (\Exception $e) {
+                Log::error('An error occurred: ' . $e->getMessage());
+                print 'An error occurred: ' . $e->getMessage();
+            }
         }
     }
 
@@ -87,6 +119,5 @@ class MsoauthapiTransport extends Transport
             throw new Exception('InitMsOauthConfig: ' . $client['message']);
         }
 
-//        $this->msOauthService = new Google_Service_MsOauth($client);
     }
 }

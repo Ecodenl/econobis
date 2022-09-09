@@ -46,16 +46,39 @@ class MsoauthapiTransport extends Transport
         $body->setContent($message->getBody());
         $body->setContentType('HTML');
         $messageGraph->setBody($body);
-        $tos = array_keys($message->getTo() ?: []);
-        $recipients = array();
-        foreach ( $tos as $to) {
+
+        $recipientsTo = array();
+        foreach ( $message->getTo() as $toEmail => $toName) {
             $emailAddress = new EmailAddress();
-            $emailAddress->setAddress($to);
+            $emailAddress->setAddress($toEmail);
+            $emailAddress->setName($toName);
             $recipient = new Recipient();
             $recipient->setEmailAddress($emailAddress);
-            array_push($recipients, $recipient);
+            array_push($recipientsTo, $recipient);
         }
-        $messageGraph->setToRecipients($recipients);
+        $messageGraph->setToRecipients($recipientsTo);
+
+        $recipientsCc = array();
+        foreach ( $message->getCc() as $ccEmail => $ccName) {
+            $emailAddress = new EmailAddress();
+            $emailAddress->setAddress($ccEmail);
+            $emailAddress->setName($ccName);
+            $recipient = new Recipient();
+            $recipient->setEmailAddress($emailAddress);
+            array_push($recipientsCc, $recipient);
+        }
+        $messageGraph->setCcRecipients($recipientsCc);
+
+        $recipientsBcc = array();
+        foreach ( $message->getBcc() as $bccEmail => $bccName) {
+            $emailAddress = new EmailAddress();
+            $emailAddress->setAddress($bccEmail);
+            $emailAddress->setName($bccName);
+            $recipient = new Recipient();
+            $recipient->setEmailAddress($emailAddress);
+            array_push($recipientsBcc, $recipient);
+        }
+        $messageGraph->setBccRecipients($recipientsBcc);
 
 // todo oauth WM: attachments toevoegen !
 

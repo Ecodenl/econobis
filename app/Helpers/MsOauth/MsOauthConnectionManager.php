@@ -10,13 +10,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use League\OAuth2\Client\Provider\GenericProvider;
 use Microsoft\Graph\Graph;
-use Microsoft\Graph\Model\User;
 
 class MsOauthConnectionManager extends Controller
 {
     private Mailbox $mailbox;
     private MailboxGmailApiSettings $gmailApiSettings;
-    private Graph $graph;
+    private Graph $appClient;
+    private GenericProvider $clientProvider;
 
     public function __construct(Mailbox $mailbox)
     {
@@ -28,23 +28,44 @@ class MsOauthConnectionManager extends Controller
     public function connect()
     {
         $token = $this->gmailApiSettings->token;
-
         // Load previously authorized token from the database, if it exists.
+//todo oauth WM: opschonen
+//
+//        json_decode($token, true) :
+//        array (
+//            'token_type' => 'Bearer',
+//            'scope' => 'Calendars.ReadWrite Mail.Read Mail.Send MailboxSettings.Read openid profile User.Read email',
+//            'ext_expires_in' => 4913,
+//            'access_token' => hier access token,
+//            'refresh_token' => hier refresh token,
+//            'expires' => 1662988694,
+//        )
+
         if ($token != null) {
-            $graph = new Graph();
-            $graph->setAccessToken($token);
+//todo oauth WM: opschonen
+//
+            Log::info('Token in connect: ');
+            Log::info(json_decode($token, true));
+
+            $this->appClient = new Graph();
+            $this->appClient->setAccessToken($token);
+
+        } else {
+            Log::info('Token null !!');
 
         }
-//todo oauth WM: hier gebleven @@NOG
-        $authUrl = $this->client->getAuthorizationUrl();
+
+        $authUrl = $this->clientProvider->getAuthorizationUrl();
         // Save client state so we can validate in callback
         // And save mailbox email
-        session(['oauthState' => $this->client->getState(), 'msOauthMailboxId' => $this->mailbox->id]);
+        session(['oauthState' => $this->clientProvider->getState(), 'msOauthMailboxId' => $this->mailbox->id]);
         return ['message' => 'ms_oauth_unauthorised', 'description' => 'Not authorised for MS oauth API', 'authUrl' =>  $authUrl];
     }
 
     public function callback(Request $request, Mailbox $mailbox)
     {
+        Log::info('callback !!');
+
         // Validate state
         $expectedState = Session('oauthState');
         $request->session()->forget('oauthState');
@@ -73,7 +94,7 @@ class MsOauthConnectionManager extends Controller
 //        Log::info('client_secret: ' . $this->gmailApiSettings->client_secret);
 
         if (isset($authCode)) {
-            $this->client = new \League\OAuth2\Client\Provider\GenericProvider([
+            $this->clientProvider = new GenericProvider([
                 'clientId'                => $this->gmailApiSettings->client_id,
                 'clientSecret'            => $this->gmailApiSettings->client_secret,
                 'redirectUri'             => config('app.url') . '/' . config('azure.redirectUri'),
@@ -86,7 +107,7 @@ class MsOauthConnectionManager extends Controller
             try {
 //                Log::info('getAccessToken');
                 // Make the token request
-                $accessToken = $this->client->getAccessToken('authorization_code', [
+                $accessToken = $this->clientProvider->getAccessToken('authorization_code', [
                     'code' => $authCode
                 ]);
 // todo WM oauth: nog testen en opschonen
@@ -96,25 +117,23 @@ class MsOauthConnectionManager extends Controller
                 Log::info('refreshToken: ' . $accessToken->getRefreshToken());
                 Log::info('tokenExpires: ' . $accessToken->getExpires());
 
-                $graph = new Graph();
-                $graph->setAccessToken($accessToken->getToken());
+                $this->appClient = new Graph();
+                $this->appClient->setAccessToken(json_encode($accessToken));
 
-                $user = $graph->createRequest('GET', '/me?$select=displayName,mail,mailboxSettings,userPrincipalName')
-                    ->setReturnType(User::class)
-                    ->execute();
+// todo WM oauth: opschonen
+//
+//                $user = $this->appClient->createRequest('GET', '/me?$select=displayName,mail,mailboxSettings,userPrincipalName')
+//                    ->setReturnType(User::class)
+//                    ->execute();
 
-                Log::info('userName: ' . $user->getDisplayName());
-                Log::info('userEmail: ' . null !== $user->getMail() ? $user->getMail() : $user->getUserPrincipalName());
-                Log::info('userTimeZone: ' . $user->getMailboxSettings()->getTimeZone());
-//'accessToken' => $accessToken->getToken(),
-//'refreshToken' => $accessToken->getRefreshToken(),
-//'tokenExpires' => $accessToken->getExpires(),
-//'userName' => $user->getDisplayName(),
-//'userEmail' => null !== $user->getMail() ? $user->getMail() : $user->getUserPrincipalName(),
-//'userTimeZone' => $user->getMailboxSettings()->getTimeZone()
+//                Log::info('userName: ' . $user->getDisplayName());
+//                Log::info('userEmail: ' . null !== $user->getMail() ? $user->getMail() : $user->getUserPrincipalName());
+//                Log::info('userTimeZone: ' . $user->getMailboxSettings()->getTimeZone());
 
-                $this->gmailApiSettings->token = json_encode($accessToken->getToken());
+                Log::info('accessToken (json_encode): ' . json_encode($accessToken));
+                $this->gmailApiSettings->token = json_encode($accessToken);
                 $this->gmailApiSettings->save();
+                Log::info('this->gmailApiSettings->token: ' . $this->gmailApiSettings->token);
 
                 $this->mailbox->valid = true;
                 $this->mailbox->save();
@@ -166,7 +185,7 @@ class MsOauthConnectionManager extends Controller
 //        Log::info('client_secret uit config azure: ' . config('azure.appSecret'));
 
         // Initialize the OAuth client
-        $this->client = new \League\OAuth2\Client\Provider\GenericProvider([
+        $this->clientProvider = new GenericProvider([
             'clientId'                => $this->gmailApiSettings->client_id,
             'clientSecret'            => $this->gmailApiSettings->client_secret,
             'redirectUri'             => config('app.url') . '/' . config('azure.redirectUri'),

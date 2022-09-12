@@ -14,32 +14,26 @@ use Microsoft\Graph\Model\EmailAddress;
 use Microsoft\Graph\Model\Recipient;
 use Microsoft\Graph\Model\FileAttachment;
 use Swift_Mime_SimpleMessage;
+use GuzzleHttp\Client;
 
 class MsoauthapiTransport extends Transport
 {
     private Mailbox $mailbox;
     private string $user = 'me';
-    private Graph $graph;
+//    private Client $tokenClient;
+//    private Graph $graph;
 
     public function __construct(int $mailboxId, $user = 'me')
     {
         $this->mailbox = Mailbox::where('id', $mailboxId)->first();
-
         $this->user= $user;
+//        $this->tokenClient = new Client();
 
         $this->initMsOauthConfig();
     }
 
     public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
     {
-// todo oauth WM: testen en opschonen
-//        Log::info("MsOauthapiTransport - send !!");
-//        Log::info(implode(';', array_keys($message->getTo() ?: [])));
-//        Log::info(implode(';', array_keys($message->getCc() ?: [])));
-//        Log::info(implode(';', array_keys($message->getBcc() ?: [])));
-//        Log::info($message->getSubject());
-//        Log::info($message->getBody());
-
         $messageGraph = new Message();
         $messageGraph->setSubject( $message->getSubject());
         $body = new ItemBody();
@@ -47,47 +41,76 @@ class MsoauthapiTransport extends Transport
         $body->setContentType('HTML');
         $messageGraph->setBody($body);
 
-        $recipientsTo = array();
-        foreach ( $message->getTo() as $toEmail => $toName) {
-            $emailAddress = new EmailAddress();
-            $emailAddress->setAddress($toEmail);
-            $emailAddress->setName($toName);
-            $recipient = new Recipient();
-            $recipient->setEmailAddress($emailAddress);
-            array_push($recipientsTo, $recipient);
+        if($message->getTo()) {
+            $recipientsTo = array();
+            foreach ($message->getTo() as $toEmail => $toName) {
+                $emailAddress = new EmailAddress();
+                $emailAddress->setAddress($toEmail);
+                $emailAddress->setName($toName);
+                $recipient = new Recipient();
+                $recipient->setEmailAddress($emailAddress);
+                array_push($recipientsTo, $recipient);
+            }
+            $messageGraph->setToRecipients($recipientsTo);
         }
-        $messageGraph->setToRecipients($recipientsTo);
 
-        $recipientsCc = array();
-        foreach ( $message->getCc() as $ccEmail => $ccName) {
-            $emailAddress = new EmailAddress();
-            $emailAddress->setAddress($ccEmail);
-            $emailAddress->setName($ccName);
-            $recipient = new Recipient();
-            $recipient->setEmailAddress($emailAddress);
-            array_push($recipientsCc, $recipient);
-        }
-        $messageGraph->setCcRecipients($recipientsCc);
+        if($message->getCc()){
+            $recipientsCc = array();
+            foreach ( $message->getCc() as $ccEmail => $ccName) {
+                $emailAddress = new EmailAddress();
+                $emailAddress->setAddress($ccEmail);
+                $emailAddress->setName($ccName);
+                $recipient = new Recipient();
+                $recipient->setEmailAddress($emailAddress);
+                array_push($recipientsCc, $recipient);
+            }
+            $messageGraph->setCcRecipients($recipientsCc);
 
-        $recipientsBcc = array();
-        foreach ( $message->getBcc() as $bccEmail => $bccName) {
-            $emailAddress = new EmailAddress();
-            $emailAddress->setAddress($bccEmail);
-            $emailAddress->setName($bccName);
-            $recipient = new Recipient();
-            $recipient->setEmailAddress($emailAddress);
-            array_push($recipientsBcc, $recipient);
         }
-        $messageGraph->setBccRecipients($recipientsBcc);
+
+        if($message->getBcc()){
+            $recipientsBcc = array();
+            foreach ( $message->getBcc() as $bccEmail => $bccName) {
+                $emailAddress = new EmailAddress();
+                $emailAddress->setAddress($bccEmail);
+                $emailAddress->setName($bccName);
+                $recipient = new Recipient();
+                $recipient->setEmailAddress($emailAddress);
+                array_push($recipientsBcc, $recipient);
+            }
+            $messageGraph->setBccRecipients($recipientsBcc);
+        }
 
 // todo oauth WM: attachments toevoegen !
 
-//        $attachment = new FileAttachment();
-//        $attachment->setName("MyFileAttachment.txt");
-//        $attachment->setContentBytes("data");
-//        $attachment->setODataType("#microsoft.graph.fileAttachment");
-//
-//        $messageGraph->setAttachments(array($attachment));
+        if($message->getChildren()) {
+            $attachments = array();
+
+            foreach ($message->getChildren() as $child) {
+                Log::info('Attachment test');
+//                Log::info($child);
+//                Log::info($child->toString());
+                if($child->getHeaders() && $child->getHeaders()->get('content-disposition')){
+//                    Log::info($child->getHeaders());
+                    $filename = str_replace('attachment; filename=', null, $child->getHeaders()->get('content-disposition')->getFieldBody());
+                    Log::info($filename);
+//                    Log::info($child->getHeaders()->get('data'));
+
+                    $attachment = new FileAttachment();
+                    $attachment->setName($filename);
+                    $attachment->setContentBytes(chunk_split(base64_decode("R0lGODdhEAYEAA7")));
+                    $attachment->setODataType("#microsoft.graph.fileAttachment");
+                    array_push($attachments, $attachment);
+                } else {
+                    Log::info('Geen headers');
+                    Log::info($child->getHeaders());
+
+                }
+
+            }
+
+            $messageGraph->setAttachments($attachments);
+        }
 
         $messageToSend = array ('message' => $messageGraph);
 
@@ -98,10 +121,21 @@ class MsoauthapiTransport extends Transport
 
         $token = $this->mailbox->gmailApiSettings->token;
 
+// todo oauth WM: opschonen !
+//        testje
+//        $this::getUserToken();
+
         if ($token != null) {
 
+//todo oauth WM: opschonen
+//
+            Log::info('Token in send: ');
+            Log::info(json_decode($token, true));
+
             $graph = new Graph();
-            $graph->setAccessToken(json_decode($token));
+            Log::info('Refresh token: ');
+            Log::info(json_decode($token, true)['refresh_token']);
+            $graph->setAccessToken(json_decode($token, true)['access_token']);
 
             try {
               $response = $graph->createRequest("POST", "/me/sendmail")
@@ -120,10 +154,97 @@ class MsoauthapiTransport extends Transport
 
             } catch (\Exception $e) {
                 Log::error('An error occurred: ' . $e->getMessage());
-                print 'An error occurred: ' . $e->getMessage();
+//                print 'An error occurred: ' . $e->getMessage();
+                throw new Exception("Fout bij versturen met MS oauth api:".  $e->getMessage());
             }
         }
     }
+
+
+//    public function getUserToken(): string {
+//        Log::info('Test getUserToken');
+//
+//        // If we already have a user token, just return it
+//        // Tokens are valid for one hour, after that it needs to be refreshed
+////        if (isset(GraphHelper::$userToken)) {
+////            return GraphHelper::$userToken;
+////        }
+//
+//        $tokenRequestUrl = config('azure.authority').config('azure.tokenEndpoint');
+//        $token = json_decode($this->tokenClient->post($tokenRequestUrl, [
+//            'form_params' => [
+//                'client_id'     => config('azure.appId'),
+//                'client_secret' => config('azure.appSecret'),
+//                'scope' => config('azure.scopes'),
+//            ],
+//        ])->getBody()->getContents());
+//
+//        Log::info('token');
+//        Log::info($token);
+//        Log::info($token->access_token);
+//        Log::info($token->expires);
+
+
+//        // https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-device-code
+//        $deviceCodeRequestUrl = config('azure.authority').'/oauth2/v2.0/devicecode';
+//        $tokenRequestUrl = config('azure.authority').config('azure.tokenEndpoint');
+//
+//        // First POST to /devicecode
+//        $deviceCodeResponse = json_decode($this->tokenClient->post($deviceCodeRequestUrl, [
+//            'form_params' => [
+//                'client_id' => $this->mailbox->gmailApiSettings->client_id,
+//                'scope' => config('azure.scopes'),
+//            ]
+//        ])->getBody()->getContents());
+//
+//        // Display the user prompt
+//        Log::info('deviceCodeResponse->message');
+//        Log::info($deviceCodeResponse->message);
+
+//        // Response also indicates how often to poll for completion
+//        // And gives a device code to send in the polling requests
+//        $interval = (int)$deviceCodeResponse->interval;
+//        $device_code = $deviceCodeResponse->device_code;
+//
+//        // Do polling - if attempt times out the token endpoint
+//        // returns an error
+//        while (true) {
+//            sleep($interval);
+//
+//            // POST to the /token endpoint
+//            $tokenResponse = GraphHelper::$tokenClient->post($tokenRequestUrl, [
+//                'form_params' => [
+//                    'client_id' => GraphHelper::$clientId,
+//                    'grant_type' => 'urn:ietf:params:oauth:grant-type:device_code',
+//                    'device_code' => $device_code
+//                ],
+//                // These options are needed to enable getting
+//                // the response body from a 4xx response
+//                'http_errors' => false,
+//                'curl' => [
+//                    CURLOPT_FAILONERROR => false
+//                ]
+//            ]);
+//
+//            if ($tokenResponse->getStatusCode() == 200) {
+//                // Return the access_token
+//                $responseBody = json_decode($tokenResponse->getBody()->getContents());
+//                GraphHelper::$userToken = $responseBody->access_token;
+//                return $responseBody->access_token;
+//            } else if ($tokenResponse->getStatusCode() == 400) {
+//                // Check the error in the response body
+//                $responseBody = json_decode($tokenResponse->getBody()->getContents());
+//                if (isset($responseBody->error)) {
+//                    $error = $responseBody->error;
+//                    // authorization_pending means we should keep polling
+//                    if (strcmp($error, 'authorization_pending') != 0) {
+//                        throw new Exception('Token endpoint returned '.$error, 100);
+//                    }
+//                }
+//            }
+//        }
+//    }
+
 
     private function base64url_encode($data) {
         return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
@@ -134,8 +255,12 @@ class MsoauthapiTransport extends Transport
      */
     private function initMsOauthConfig(): void
     {
+//todo oauth WM: opschonen
+//
+        Log::info('connect in transport');
         $msOauthConnectionManager = new MsOauthConnectionManager($this->mailbox);
         $client = $msOauthConnectionManager->connect();
+        Log::info('na connect in transport');
 
         // Todo improve failure message
         if (!($client instanceof Graph) && isset($client['message']) && $client['message'] === 'msOauth_unauthorised') {

@@ -44,8 +44,8 @@ function MailboxDefaultFormGeneralMsOauthApiSettings({ values, errors, touched, 
                         label={'Client secret waarde'}
                         name={'gmailApiSettings.clientSecret'}
                         value={values.gmailApiSettings?.clientSecret}
-                        // className={'numeric-password'}
-                        // placeholder="**********"
+                        className={'numeric-password'}
+                        placeholder="**********"
                         onChangeAction={handleChange}
                         onBlurAction={handleBlur}
                         required={'required'}

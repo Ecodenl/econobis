@@ -124,26 +124,20 @@ class MsOauthConnectionManager extends Controller
                 $this->appClient = new Graph();
                 $this->appClient->setAccessToken(json_encode($accessToken));
 
-// todo WM oauth: opschonen
-//
-//                $user = $this->appClient->createRequest('GET', '/me?$select=displayName,mail,mailboxSettings,userPrincipalName')
-//                    ->setReturnType(User::class)
-//                    ->execute();
-
-//                Log::info('userName: ' . $user->getDisplayName());
-//                Log::info('userEmail: ' . null !== $user->getMail() ? $user->getMail() : $user->getUserPrincipalName());
-//                Log::info('userTimeZone: ' . $user->getMailboxSettings()->getTimeZone());
-
                 Log::info('accessToken (json_encode): ' . json_encode($accessToken));
 
+//                Log::info('client_id:  ' . $this->gmailApiSettings->client_id );
+//                Log::info('project_id:  ' . $this->gmailApiSettings->project_id );
+//                Log::info('client_secret:  ' . $this->gmailApiSettings->client_secret );
                 $msOauthApiSettings = MailboxGmailApiSettings::where('client_id', $this->gmailApiSettings->client_id)
-                    ->where('project_id', $this->gmailApiSettings->projectId)
-                    ->where('client_secret', $this->gmailApiSettings->clientSecret)->get();
+                    ->where('project_id', $this->gmailApiSettings->project_id)->get();
+//                    ->where('client_secret', $this->gmailApiSettings->client_secret)->get();
+//                Log::info('aantal:  ' . $msOauthApiSettings->count() );
                 foreach ($msOauthApiSettings as $msOauthApiSetting) {
+//                    Log::info('Save gmailApiSettings id: ' . $msOauthApiSetting->id);
                     $msOauthApiSetting->token = json_encode($accessToken);
                     $msOauthApiSetting->save();
                 }
-                Log::info('this->gmailApiSettings->token: ' . $this->gmailApiSettings->token);
 
                 $this->mailbox->valid = true;
                 $this->mailbox->save();

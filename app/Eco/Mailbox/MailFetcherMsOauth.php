@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Log;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Http\GraphCollectionRequest;
 use Microsoft\Graph\Model\Message;
+use Microsoft\Graph\Model\User;
 
 
 class MailFetcherMsOauth
@@ -60,9 +61,7 @@ class MailFetcherMsOauth
 
         $moreAvailable = true;
 
-        while ($moreAvailable) {
-            try {
-                $graph = new Graph();
+        $graph = new Graph();
 //todo oauth WM: opschonen
 //
 //                Log::info('Access token: ');
@@ -71,13 +70,27 @@ class MailFetcherMsOauth
 //                Log::info(json_decode($token, true)['expires'] . ' - ' . Carbon::parse(json_decode($token, true)['expires']));
 //                Log::info('Refresh token: ');
 //                Log::info(json_decode($token, true)['refresh_token']);
-                $graph->setAccessToken(json_decode($token, true)['access_token']);
+        $graph->setAccessToken(json_decode($token, true)['access_token']);
 
+        $user = $graph->createRequest('GET', '/me?$select=displayName,mail,mailboxSettings,userPrincipalName')
+            ->setReturnType(User::class)
+            ->execute();
+// todo WM oauth: opschonen
+//
+//        Log::info('userId: ' . $user->getId());
+//        Log::info('userName: ' . $user->getDisplayName());
+//        Log::info('principalName: ' . $user->getUserPrincipalName());
+//        Log::info('userEmail: ' . null !== $user->getMail() ? $user->getMail() : $user->getUserPrincipalName());
+//        Log::info('userTimeZone: ' . $user->getMailboxSettings()->getTimeZone());
+
+        while ($moreAvailable) {
+            try {
                 // Only request specific properties
-                $select = '$select=internetMessageId, sender,from,toRecipients,ccRecipients,bccRecipients,receivedDateTime,sentDateTime,subject,bodyPreview,body,isRead,hasAttachments';
+                $select = '$select=internetMessageId,sender,from,toRecipients,ccRecipients,bccRecipients,receivedDateTime,sentDateTime,subject,bodyPreview,body,isRead,hasAttachments';
                 // Sort by received time, newest first
                 $orderBy = '$orderBy=receivedDateTime DESC';
-                $requestUrl = '/me/mailFolders/inbox/messages?'.$select.'&'.$orderBy;
+//                $requestUrl = '/me/mailFolders/inbox/messages?'.$select.'&'.$orderBy;
+                $requestUrl = '/users/' . $user->getId() . '/mailFolders/inbox/messages?'.$select.'&'.$orderBy;
 
                 $messages = $graph->createCollectionRequest('GET', $requestUrl)
                     ->setReturnType(Message::class)
@@ -103,6 +116,10 @@ class MailFetcherMsOauth
     {
         foreach ($listMessages->getPage() as $message) {
             $msOauthMessageId = $message->getId();
+//todo oauth WM: opschonen
+//        Log::info('Message: '.$message->getSubject());
+//        Log::info('  Sender: '.$message->getSender()->getEmailAddress()->getAddress());
+//        Log::info('  From: '.$message->getFrom()->getEmailAddress()->getAddress());
 
             if(!Email::whereMailboxId($this->mailbox->id)
                 ->whereGmailMessageId($msOauthMessageId)

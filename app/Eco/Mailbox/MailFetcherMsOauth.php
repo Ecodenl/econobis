@@ -74,7 +74,7 @@ class MailFetcherMsOauth
                 $graph->setAccessToken(json_decode($token, true)['access_token']);
 
                 // Only request specific properties
-                $select = '$select=from,isRead,receivedDateTime,subject,sentDateTime,hasAttachments,bodyPreview,body';
+                $select = '$select=internetMessageId, sender,from,toRecipients,ccRecipients,bccRecipients,receivedDateTime,sentDateTime,subject,bodyPreview,body,isRead,hasAttachments';
                 // Sort by received time, newest first
                 $orderBy = '$orderBy=receivedDateTime DESC';
                 $requestUrl = '/me/mailFolders/inbox/messages?'.$select.'&'.$orderBy;
@@ -86,8 +86,8 @@ class MailFetcherMsOauth
                 $moreAvailable = $this->processMessages($messages);
             } catch (Exception $e) {
                 Log::error('Error getting user\'s inbox: '.$e->getMessage());
-                $this->mailbox->valid = false;
-                $this->mailbox->save();
+//                $this->mailbox->valid = false;
+//                $this->mailbox->save();
 
                 return $e->getMessage();
 
@@ -166,67 +166,94 @@ class MailFetcherMsOauth
 
 //todo oauth WM: opschonen
 //
-        Log::info('Message: '.$message->getSubject());
-        Log::info('  From: '.$message->getFrom()->getEmailAddress()->getName());
-        $status = $message->getIsRead() ? "Read" : "Unread";
-        Log::info('  Status: '.$status);
-        Log::info('  Received: '.$message->getReceivedDateTime()->format(\DateTimeInterface::RFC2822));
-        Log::info('  receivedDateTime formated: '. Carbon::parse( $message->getReceivedDateTime() ));
-        Log::info('  sentDateTime formated: '. Carbon::parse( $message->getSentDateTime() ));
-        Log::info('  hasAttachments: '. $message->getHasAttachments());
-        Log::info('  subject: '. $message->getSubject() );
-        Log::info('  body preview: '. $message->getBodyPreview());
+//        Log::info('  internetMessageId: '.$message->getInternetMessageId());
+//        Log::info('Message: '.$message->getSubject());
+//        Log::info('  Sender: '.$message->getSender()->getEmailAddress()->getAddress());
+//        Log::info('  From: '.$message->getFrom()->getEmailAddress()->getAddress());
+//        Log::info('  To\'s: '.$message->getToRecipients());
+//        Log::info('  To\'s: ');
+//        Log::info(json_decode(json_encode($message->getToRecipients()), true));
+        $tos = [];
+        if($message->getToRecipients()){
+            foreach ($message->getToRecipients() as $toRecipient){
+                $tos[] = $toRecipient['emailAddress']['address'];
+            }
+        }
+        $ccs = [];
+        if($message->getCcRecipients()){
+            foreach ($message->getCcRecipients() as $ccRecipient){
+                $ccs[] = $ccRecipient['emailAddress']['address'];
+            }
+        }
+        $bccs = [];
+        if($message->getBccRecipients()){
+            foreach ($message->getBccRecipients() as $bccRecipient){
+                $bccs[] = $bccRecipient['emailAddress']['address'];
+            }
+        }
+//todo oauth WM: opschonen
+//
+//        Log::info('  From: '.$message->getFrom()->getEmailAddress()->getName());
+//        $status = $message->getIsRead() ? "Read" : "Unread";
+//        Log::info('  Status: '.$status);
+//        Log::info('  Received: '.$message->getReceivedDateTime()->format(\DateTimeInterface::RFC2822));
+//        Log::info('  receivedDateTime formated: '. Carbon::parse( $message->getReceivedDateTime() ));
+//        Log::info('  sentDateTime formated: '. Carbon::parse( $message->getSentDateTime() ));
+//        Log::info('  hasAttachments: '. $message->getHasAttachments());
+//        Log::info('  subject: '. $message->getSubject() );
+//        Log::info('  body preview: '. $message->getBodyPreview());
+//
+//        Log::info('  body content: ');
+//        Log::info(json_decode(json_encode($message->getBody()), true)['contentType']);
+//        Log::info('  body : ');
+//        Log::info($message->getBody()->getContent());
 
-        Log::info('  body content: ');
-        Log::info(json_decode(json_encode($message->getBody()), true)['contentType']);
-        Log::info('  body : ');
-        Log::info($message->getBody()->getContent());
+        $textHtml = '';
+        try {
+            $textHtml = $message->getBody()->getContent();
+        } catch (\Exception $ex) {
+            Log::error("Failed to retrieve HtmlBody from email (" . $message->getId() . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage());
+            return;
+        }
+        $textHtml = $textHtml ?: '';
+        // when encoding isn't UTF-8 encode texthtml to utf8.
+        $currentEncodingTextHtml = mb_detect_encoding($textHtml, 'UTF-8', true);
+        if (false === $currentEncodingTextHtml) {
+            $textHtml = utf8_encode($textHtml);
+        }
 
-//        $textHtml = '';
-//        try {
-//            $textHtml = $this->getHtmlBody();
-//        } catch (\Exception $ex) {
-//            Log::error("Failed to retrieve HtmlBody from email (" . $headers->message_id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage());
-////            echo "Failed to retrieve :HtmlBody from email (" . $headers->message_id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage();
-//            return;
-//        }
-//        $textHtml = $textHtml ?: '';
-//        // when encoding isn't UTF-8 encode texthtml to utf8.
-//        $currentEncodingTextHtml = mb_detect_encoding($textHtml, 'UTF-8', true);
-//        if (false === $currentEncodingTextHtml) {
-//            $textHtml = utf8_encode($textHtml);
-//        }
-//
-//        if (strlen($textHtml) > 250000) {
-//            $textHtml = substr($textHtml, 0, 250000);
-//            $textHtml .= '<p>Deze mail is langer dan 250.000 karakters en hierdoor ingekort.</p>';
-//        }
-//
-//        $subject = $headers['subject'] ?: '';
-//
-//        if (strlen($subject) > 250) {
-//            $subject = substr($subject, 0, 249);
-//        }
-//
-//        $email = new Email([
-//            'mailbox_id' => $this->mailbox->id,
-//            'from' => $headers['from'],
-//            'to' => $headers['to'],
-//            'cc' => $headers['cc'] ?? [],
-//            'bcc' => $headers['bcc'] ?? [],
-//            'subject' => $subject,
-//            'html_body' => $textHtml,
-//            'date_sent' => $headers['date'],
-//            'folder' => 'inbox',
-//            'imap_id' => null,
-//            'gmail_message_id' => $gmailMessageId,
-//            'message_id' => $headers['message_id'],
-//            'status' => 'unread'
-//        ]);
-//        $email->save();
-//
-//        //if from email exists in any of the email addresses make a pivot record.
-//        $this->addRelationToContacts($email);
+        if (strlen($textHtml) > 250000) {
+            $textHtml = substr($textHtml, 0, 250000);
+            $textHtml .= '<p>Deze mail is langer dan 250.000 karakters en hierdoor ingekort.</p>';
+        }
+
+        $subject = $message->getSubject() ?: '';
+
+        if (strlen($subject) > 250) {
+            $subject = substr($subject, 0, 249);
+        }
+
+        $email = new Email([
+            'mailbox_id' => $this->mailbox->id,
+            'from' => $message->getFrom()->getEmailAddress()->getAddress(),
+            'to' => $tos,
+            'cc' => $ccs,
+            'bcc' => $bccs,
+            'subject' => $subject,
+            'html_body' => $textHtml,
+            'date_sent' => Carbon::parse( $message->getSentDateTime() ),
+            'folder' => 'inbox',
+            'imap_id' => null,
+            'gmail_message_id' => $message->getId(),
+            'message_id' => $message->getInternetMessageId(),
+            'status' => 'unread'
+        ]);
+        $email->save();
+
+        //if from email exists in any of the email addresses make a pivot record.
+        $this->addRelationToContacts($email);
+
+// todo oauth WM: attachments toevoegen !
 //
 //        $this->storeAttachments($gmailMessageId, $email);
 //

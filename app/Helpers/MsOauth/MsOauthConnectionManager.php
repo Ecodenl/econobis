@@ -70,6 +70,10 @@ class MsOauthConnectionManager extends Controller
         $expectedState = Session('oauthState');
         $request->session()->forget('oauthState');
         $providedState = $request->query('state');
+// todo WM oauth: opschonen
+//
+        Log::info('expectedState: ' . $expectedState);
+        Log::info('providedState: ' . $providedState);
 
         if (!isset($expectedState)) {
             // If there is no expected state in the session,
@@ -131,8 +135,14 @@ class MsOauthConnectionManager extends Controller
 //                Log::info('userTimeZone: ' . $user->getMailboxSettings()->getTimeZone());
 
                 Log::info('accessToken (json_encode): ' . json_encode($accessToken));
-                $this->gmailApiSettings->token = json_encode($accessToken);
-                $this->gmailApiSettings->save();
+
+                $msOauthApiSettings = MailboxGmailApiSettings::where('client_id', $this->gmailApiSettings->client_id)
+                    ->where('project_id', $this->gmailApiSettings->projectId)
+                    ->where('client_secret', $this->gmailApiSettings->clientSecret)->get();
+                foreach ($msOauthApiSettings as $msOauthApiSetting) {
+                    $msOauthApiSetting->token = json_encode($accessToken);
+                    $msOauthApiSetting->save();
+                }
                 Log::info('this->gmailApiSettings->token: ' . $this->gmailApiSettings->token);
 
                 $this->mailbox->valid = true;

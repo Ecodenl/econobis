@@ -6,7 +6,6 @@ namespace App\Eco\Mailbox;
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 use App\Eco\EmailAddress\EmailAddress;
-use App\Helpers\Gmail\GmailConnectionManager;
 use App\Helpers\MsOauth\MsOauthConnectionManager;
 use App\Http\Traits\Email\EmailRelations;
 use App\Http\Traits\Email\Storage;
@@ -20,6 +19,9 @@ use Google_Client;
 use Google_Service_Gmail;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use Microsoft\Graph\Graph;
+use Microsoft\Graph\Http\GraphCollectionRequest;
+use Microsoft\Graph\Model\Message;
 
 
 class MailFetcherMsOauth
@@ -30,10 +32,7 @@ class MailFetcherMsOauth
      * @var Mailbox
      */
     private Mailbox $mailbox;
-//    private Google_Service_Gmail $gmailService;
-    private string $user = 'me';
     private array $fetchedEmails = [];
-//    private \Google_Service_Gmail_MessagePart $payload;
     private Collection $parts;
 
     /**
@@ -50,53 +49,72 @@ class MailFetcherMsOauth
     public function fetchNew()
     {
         if ($this->mailbox->date_last_fetched) {
-            $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->format('Y-m-d');
+            $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->subDay()->format('Y-m-d');
         } else {
-            $dateLastFetched = Carbon::now()->format('Y-m-d');
+            $dateLastFetched = Carbon::now()->subDay()->format('Y-m-d');
         }
 
-//        $dateTime = Carbon::now();
+        $dateTime = Carbon::now();
+
+        $token = $this->mailbox->gmailApiSettings->token;
+
+        $moreAvailable = true;
+
+        while ($moreAvailable) {
+            try {
+                $graph = new Graph();
+//todo oauth WM: opschonen
 //
-//        try {
-//            // Get all emails (messages)
-//            $optParams['labelIds'] = 'INBOX';
-//            $optParams['q'] = 'after:' . $dateLastFetched;
-//            $listMessages = $this->service->users_messages->listUsersMessages($this->user, $optParams);
-////            Log::info("Search since " . $dateLastFetched . ": " . implode(',', $mailIds));
-//            $this->processMessages($listMessages);
-//        } catch (\Google\Service\Exception $ex) {
-//            Log::error("Geen refresh token verkregen, mailbox " . $this->mailbox->id . " op invalid!");
-//            Log::error("MS oauth connection failed. Error: " . $ex->getMessage());
-//            $this->mailbox->valid = false;
-//            $this->mailbox->save();
-//
-//            return $ex->getMessage();
-//        }
+//                Log::info('Access token: ');
+//                Log::info(json_decode($token, true)['access_token']);
+//                Log::info('Expires: ');
+//                Log::info(json_decode($token, true)['expires'] . ' - ' . Carbon::parse(json_decode($token, true)['expires']));
+//                Log::info('Refresh token: ');
+//                Log::info(json_decode($token, true)['refresh_token']);
+                $graph->setAccessToken(json_decode($token, true)['access_token']);
+
+                // Only request specific properties
+                $select = '$select=from,isRead,receivedDateTime,subject,sentDateTime,hasAttachments,bodyPreview,body';
+                // Sort by received time, newest first
+                $orderBy = '$orderBy=receivedDateTime DESC';
+                $requestUrl = '/me/mailFolders/inbox/messages?'.$select.'&'.$orderBy;
+
+                $messages = $graph->createCollectionRequest('GET', $requestUrl)
+                    ->setReturnType(Message::class)
+                    ->setPageSize(25);
+
+                $moreAvailable = $this->processMessages($messages);
+            } catch (Exception $e) {
+                Log::error('Error getting user\'s inbox: '.$e->getMessage());
+                $this->mailbox->valid = false;
+                $this->mailbox->save();
+
+                return $e->getMessage();
+
+            }
+
+        }
+
+        $this->mailbox->date_last_fetched = $dateTime;
+        $this->mailbox->save();
+    }
+
+    private function processMessages(GraphCollectionRequest $listMessages): bool
+    {
+        foreach ($listMessages->getPage() as $message) {
+            $msOauthMessageId = $message->getId();
+
+            if(!Email::whereMailboxId($this->mailbox->id)
+                ->whereGmailMessageId($msOauthMessageId)
+                ->exists()){
+                $this->fetchEmail($message);
+            }
+        }
+
+        return $listMessages->isEnd() ? false : true;
 
     }
 
-//    private function processMessages(\Google_Service_Gmail_ListMessagesResponse $listMessages): void
-//    {
-//        // Check and fetch email
-//        array_map([$this, 'processMessage'], $listMessages->getMessages());
-//
-//        $this->mailbox->date_last_fetched = Carbon::now();
-//        $this->mailbox->save();
-//    }
-//
-//    private function processMessage(\Google_Service_Gmail_Message $message): void
-//    {
-//        $gmailMessageId = $message->getId();
-//
-//        if(!Email::whereMailboxId($this->mailbox->id)
-//            ->whereGmailMessageId($gmailMessageId)
-//            ->exists()){
-//            // Fetch the full email
-//            $this->fetchEmail($gmailMessageId);
-//        }
-//
-//    }
-//
     private function initMsOauthConfig(): void
     {
         $gmailConnectionManager = new MsOauthConnectionManager($this->mailbox);
@@ -109,12 +127,9 @@ class MailFetcherMsOauth
 //
 //        $this->service = new Google_Service_Gmail($client);
     }
-//
-//    private function fetchEmail(string $gmailMessageId)
-//    {
-//        $optParamsGet['format'] = 'full';
-//        $message = $this->service->users_messages->get($this->user, $gmailMessageId, $optParamsGet);
-//
+
+    private function fetchEmail(Message $message)
+    {
 //        $messagePayload = $message->getPayload();
 //        $headers = $this->reformatHeaders($messagePayload->getHeaders());
 //
@@ -122,7 +137,51 @@ class MailFetcherMsOauth
 //        if ($this->payload) {
 //            $this->parts = collect($this->payload->getParts());
 //        }
+
+// Output each message's details
+//            "id": "AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEMAAAiIsqMbYjsT5e-T7KzowPTAATGXiGiAAA=",
+//            "createdDateTime": "2022-09-05T15:14:45Z",
+//            "lastModifiedDateTime": "2022-09-05T15:19:48Z",
+//            "changeKey": "CQAAABYAAAAiIsqMbYjsT5e/T7KzowPTAATFi0K6",
+//            "categories": [],
+//            "receivedDateTime": "2022-09-05T15:14:46Z",
+//            "sentDateTime": "2022-09-05T15:14:46Z",
+//            "hasAttachments": false,
+//            "internetMessageId": "<SJ0PR15MB524545A0C167DF7E56FD2B78CD7F9@SJ0PR15MB5245.namprd15.prod.outlook.com>",
+//            "subject": "Your digest email",
+//            "bodyPreview": "Private to youHi, Megan Bowen,Discover trends in your work habitsAn in-depth look at your work patterns in the last four weeksSomething to considerAugust 7 – September 3In a typical week, you spend about 12 hours in meetings, most of",
+//            "importance": "normal",
+//            "parentFolderId": "AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OAAuAAAAAAAiQ8W967B7TKBjgx9rVEURAQAiIsqMbYjsT5e-T7KzowPTAAAAAAEMAAA=",
+//            "conversationId": "AAQkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OAAQABCZt7xowNdOgTvSp1Ru0Ig=",
+//            "conversationIndex": "AQHYwTo7EJm3vGjA106BO9KnVG7QiA==",
+//            "isDeliveryReceiptRequested": false,
+//            "isReadReceiptRequested": false,
+//            "isRead": false,
+//            "isDraft": false,
+//            "webLink": "https://outlook.office365.com/owa/?ItemID=AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e%2FT7KzowPTAAAAAAEMAAAiIsqMbYjsT5e%2FT7KzowPTAATGXiGiAAA%3D&exvsurl=1&viewmodel=ReadMessageItem",
+//            "inferenceClassification": "focused",
+//            "body": {
+//            "contentType": "html",
+//                "content": "<html lang=
+
+//todo oauth WM: opschonen
 //
+        Log::info('Message: '.$message->getSubject());
+        Log::info('  From: '.$message->getFrom()->getEmailAddress()->getName());
+        $status = $message->getIsRead() ? "Read" : "Unread";
+        Log::info('  Status: '.$status);
+        Log::info('  Received: '.$message->getReceivedDateTime()->format(\DateTimeInterface::RFC2822));
+        Log::info('  receivedDateTime formated: '. Carbon::parse( $message->getReceivedDateTime() ));
+        Log::info('  sentDateTime formated: '. Carbon::parse( $message->getSentDateTime() ));
+        Log::info('  hasAttachments: '. $message->getHasAttachments());
+        Log::info('  subject: '. $message->getSubject() );
+        Log::info('  body preview: '. $message->getBodyPreview());
+
+        Log::info('  body content: ');
+        Log::info(json_decode(json_encode($message->getBody()), true)['contentType']);
+        Log::info('  body : ');
+        Log::info($message->getBody()->getContent());
+
 //        $textHtml = '';
 //        try {
 //            $textHtml = $this->getHtmlBody();
@@ -172,7 +231,7 @@ class MailFetcherMsOauth
 //        $this->storeAttachments($gmailMessageId, $email);
 //
 //        $this->fetchedEmails[] = $email;
-//    }
+    }
 
     /**
      * @param bool $raw

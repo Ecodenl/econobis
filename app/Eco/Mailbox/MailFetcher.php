@@ -11,7 +11,6 @@ namespace App\Eco\Mailbox;
 
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
-use App\Eco\EmailAddress\EmailAddress;
 use App\Http\Traits\Email\EmailRelations;
 use App\Http\Traits\Email\Storage;
 use Carbon\Carbon;
@@ -38,6 +37,8 @@ class MailFetcher
 
     public function fetchNew()
     {
+        //        Log::info("Check fetchNew mailbox " . $this->mailbox->id);
+
         if ($this->mailbox->start_fetch_mail != null) {
             return;
         }
@@ -45,10 +46,9 @@ class MailFetcher
         $this->mailbox->start_fetch_mail = Carbon::now();
         $this->mailbox->save();
 
-
-        if($this->mailbox->date_last_fetched) {
+        if ($this->mailbox->date_last_fetched) {
             $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->subDay()->format('Y-m-d');
-        }else{
+        } else {
             $dateLastFetched = Carbon::now()->subDay()->format('Y-m-d');
         }
 

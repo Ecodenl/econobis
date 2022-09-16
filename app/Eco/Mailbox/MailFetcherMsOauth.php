@@ -164,13 +164,14 @@ class MailFetcherMsOauth
                 $requestUrl = '/me/mailFolders/inbox/messages?'.$select.'&'.$orderBy;
 //                $requestUrl = '/users/' . $user->getId() . '/mailFolders/inbox/messages?'.$select.'&'.$orderBy;
 
-                Log::info("createCollectionRequest ");
+                Log::info("CreateCollectionRequest");
 
                 $messages = $graph->createCollectionRequest('GET', $requestUrl)
                     ->setReturnType(Message::class)
                     ->setPageSize(25);
 
                 $moreAvailable = $this->processMessages($messages);
+                Log::info("Meer mail ophalen: " . $moreAvailable);
             } catch (Exception $e) {
                 Log::error('Error getting user\'s inbox: '.$e->getMessage());
 //                $this->mailbox->valid = false;
@@ -195,11 +196,16 @@ class MailFetcherMsOauth
 //        Log::info('  Sender: '.$message->getSender()->getEmailAddress()->getAddress());
 //        Log::info('  From: '.$message->getFrom()->getEmailAddress()->getAddress());
 
-            if(!Email::whereMailboxId($this->mailbox->id)
+            if(Email::whereMailboxId($this->mailbox->id)
                 ->whereGmailMessageId($msOauthMessageId)
                 ->exists()){
-                $this->fetchEmail($message);
+//                $emailCheck = Email::whereMailboxId($this->mailbox->id)
+//                    ->whereGmailMessageId($msOauthMessageId)
+//                    ->get()->first();
+//                Log::info("Mail bestaat reeds (" . $emailCheck->id . "), stoppen inlezen");
+                return false;
             }
+            $this->fetchEmail($message);
         }
 
         return $listMessages->isEnd() ? false : true;

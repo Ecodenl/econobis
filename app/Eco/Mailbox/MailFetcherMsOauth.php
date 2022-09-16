@@ -65,7 +65,7 @@ class MailFetcherMsOauth
         $moreAvailable = true;
 
         if (isset(json_decode($token, true)['refresh_token'])) {
-            $this->clientProvider = new GenericProvider([
+            $clientProvider = new GenericProvider([
                 'clientId'                => $this->mailbox->gmailApiSettings->client_id,
                 'clientSecret'            => $this->mailbox->gmailApiSettings->client_secret,
                 'redirectUri'             => config('app.url') . '/' . config('azure.redirectUri'),
@@ -84,7 +84,7 @@ class MailFetcherMsOauth
 
                 Log::info('getAccessToken');
                 // Make the token request
-                $accessToken = $this->clientProvider->getAccessToken('refresh_token', [
+                $accessToken = $clientProvider->getAccessToken('refresh_token', [
                     'refresh_token' => json_decode($token, true)['refresh_token']
                 ]);
 // todo WM oauth: nog testen en opschonen
@@ -95,7 +95,7 @@ class MailFetcherMsOauth
                 Log::info('tokenExpires: ' . $accessToken->getExpires());
 
                 $graph = new Graph();
-                $graph->setAccessToken(json_encode($accessToken));
+                $graph->setAccessToken($accessToken->getToken());
 
 //                Log::info('client_id:  ' . $this->mailbox->gmailApiSettings->client_id );
 //                Log::info('project_id:  ' . $this->mailbox->gmailApiSettings->project_id );

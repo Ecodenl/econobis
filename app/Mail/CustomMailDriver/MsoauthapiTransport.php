@@ -3,10 +3,12 @@
 namespace App\Mail\CustomMailDriver;
 
 use App\Eco\Mailbox\Mailbox;
+use App\Eco\Mailbox\MailboxGmailApiSettings;
 use App\Helpers\MsOauth\MsOauthConnectionManager;
 use Exception;
 use Illuminate\Mail\Transport\Transport;
 use Illuminate\Support\Facades\Log;
+use League\OAuth2\Client\Provider\GenericProvider;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\ItemBody;
 use Microsoft\Graph\Model\Message;
@@ -29,7 +31,7 @@ class MsoauthapiTransport extends Transport
         $this->user= $user;
 //        $this->tokenClient = new Client();
 
-        $this->initMsOauthConfig();
+//        $this->initMsOauthConfig();
     }
 
     public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
@@ -132,10 +134,72 @@ class MsoauthapiTransport extends Transport
             Log::info('Token in send: ');
             Log::info(json_decode($token, true));
 
-            $graph = new Graph();
-            Log::info('Refresh token: ');
-            Log::info(json_decode($token, true)['refresh_token']);
-            $graph->setAccessToken(json_decode($token, true)['access_token']);
+            if (isset(json_decode($token, true)['refresh_token'])) {
+                $clientProvider = new GenericProvider([
+                    'clientId'                => $this->mailbox->gmailApiSettings->client_id,
+                    'clientSecret'            => $this->mailbox->gmailApiSettings->client_secret,
+                    'redirectUri'             => config('app.url') . '/' . config('azure.redirectUri'),
+                    'urlAuthorize'            => config('azure.authority').config('azure.authorizeEndpoint'),
+                    'urlAccessToken'          => config('azure.authority').config('azure.tokenEndpoint'),
+                    'urlResourceOwnerDetails' => '',
+                    'scopes'                  => config('azure.scopes'),
+                ]);
+
+                try {
+                    Log::info('Before: accessToken (full): ');
+                    Log::info(json_decode($token, true));
+                    Log::info('accessToken: ' . json_decode($token, true)['access_token']);
+                    Log::info('refreshToken: ' . json_decode($token, true)['refresh_token']);
+                    Log::info('tokenExpires: ' . json_decode($token, true)['expires']);
+
+                    Log::info('getAccessToken');
+                    // Make the token request
+                    $accessToken = $clientProvider->getAccessToken('refresh_token', [
+                        'refresh_token' => json_decode($token, true)['refresh_token']
+                    ]);
+// todo WM oauth: nog testen en opschonen
+//
+                    Log::info('After: accessToken (full): ' . $accessToken);
+                    Log::info('accessToken: ' . $accessToken->getToken());
+                    Log::info('refreshToken: ' . $accessToken->getRefreshToken());
+                    Log::info('tokenExpires: ' . $accessToken->getExpires());
+
+                    $graph = new Graph();
+                    $graph->setAccessToken($accessToken->getToken());
+
+//                Log::info('client_id:  ' . $this->mailbox->gmailApiSettings->client_id );
+//                Log::info('project_id:  ' . $this->mailbox->gmailApiSettings->project_id );
+//                Log::info('client_secret:  ' . $this->mailbox->gmailApiSettings->client_secret );
+                    $msOauthApiSettings = MailboxGmailApiSettings::where('client_id', $this->mailbox->gmailApiSettings->client_id)
+                        ->where('project_id', $this->mailbox->gmailApiSettings->project_id)->get();
+//                    ->where('client_secret', $this->mailbox->gmailApiSettings->client_secret)->get();
+//                Log::info('aantal:  ' . $msOauthApiSettings->count() );
+                    foreach ($msOauthApiSettings as $msOauthApiSetting) {
+//                    Log::info('Save gmailApiSettings id: ' . $msOauthApiSetting->id);
+                        $msOauthApiSetting->token = json_encode($accessToken);
+                        $msOauthApiSetting->save();
+                    }
+
+                    $this->mailbox->valid = true;
+                    $this->mailbox->save();
+                }
+                catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
+                    $this->mailbox->valid = false;
+                    $this->mailbox->save();
+
+                    Log::error('Error requesting access token (1)');
+                    Log::error(json_encode($e->getResponseBody()));
+
+                    return json_encode($e->getResponseBody());
+                }
+            } else {
+                $this->mailbox->valid = false;
+                $this->mailbox->save();
+
+                Log::error('Error requesting access token (2)');
+
+                return json_encode('Error requesting access token (2)');
+            }
 
             try {
               $response = $graph->createRequest("POST", "/me/sendmail")
@@ -253,19 +317,19 @@ class MsoauthapiTransport extends Transport
     /**
      * @inheritDoc
      */
-    private function initMsOauthConfig(): void
-    {
-//todo oauth WM: opschonen
+//    private function initMsOauthConfig(): void
+//    {
+////todo oauth WM: opschonen
+////
+//        Log::info('connect in transport');
+//        $msOauthConnectionManager = new MsOauthConnectionManager($this->mailbox);
+//        $client = $msOauthConnectionManager->connect();
+//        Log::info('na connect in transport');
 //
-        Log::info('connect in transport');
-        $msOauthConnectionManager = new MsOauthConnectionManager($this->mailbox);
-        $client = $msOauthConnectionManager->connect();
-        Log::info('na connect in transport');
-
-        // Todo improve failure message
-        if (!($client instanceof Graph) && isset($client['message']) && $client['message'] === 'msOauth_unauthorised') {
-            throw new Exception('InitMsOauthConfig: ' . $client['message']);
-        }
-
-    }
+//        // Todo improve failure message
+//        if (!($client instanceof Graph) && isset($client['message']) && $client['message'] === 'msOauth_unauthorised') {
+//            throw new Exception('InitMsOauthConfig: ' . $client['message']);
+//        }
+//
+//    }
 }

@@ -30,7 +30,7 @@ class SeedEnergySuppliersTable extends Migration
             'NL Energie' => 0,
             'Nuon' => 0,
             'Oxxio' => 0,
-            'Pure energy' => 0,
+            'Pure energie' => 0,
             'Qurrent' => 0,
             'VanDeBron' => 0,
             'Overig' => 0

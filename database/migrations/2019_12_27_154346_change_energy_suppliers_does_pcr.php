@@ -31,7 +31,7 @@ class ChangeEnergySuppliersDoesPcr extends Migration
             ->where('name', 'Vattenfall')
             ->update(['does_postal_code_links' => 1]);
         DB::table('energy_suppliers')
-            ->where('name', 'Pure energy')
+            ->where('name', 'Pure energie')
             ->update(['does_postal_code_links' => 1]);
         DB::table('energy_suppliers')
             ->where('name', 'Qurrent')

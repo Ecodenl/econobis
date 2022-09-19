@@ -63,7 +63,7 @@ class AddressHelper
         }
 
         $addressIsDouble = false;
-        if( isset($this->address->postalCodeNumberAdditionForDoubleCheck, $contactAddressesParticipants) ){
+        if(isset($contactAddressesParticipants[$this->address->postalCodeNumberAdditionForDoubleCheck]) ){
             $addressIsDouble = true;
         }
 

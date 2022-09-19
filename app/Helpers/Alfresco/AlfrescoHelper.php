@@ -81,7 +81,7 @@ class AlfrescoHelper
 
 //        if(!$response || $response === null){
 //            Log::info('checkIfAccountExists - response null');
-//        }elseif(isset('succes', $response) && $response['succes']){
+//        }elseif(isset($response['succes']) && $response['succes']){
 //            Log::info('checkIfAccountExists - response "succes"');
 //            Log::info( $response );
 //        }else{
@@ -283,6 +283,7 @@ class AlfrescoHelper
                         ];
                     }
                 } else {
+
                     //else success
 //                        Log::info("Decoded response (zonder error): ");
 //                        Log::info($decoded_response);

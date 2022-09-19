@@ -563,7 +563,7 @@ class EmailController
             $data['oldEmailId'] = null;
         }
 
-        if(!('contactGroupId', $data)){
+        if(!isset($data['contactGroupId'])){
             $data['contactGroupId'] = null;
         }
         if($data['contactGroupId'] == ''){

@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 class ApiController extends Controller
 {
 
-    protected function arrayKeysToSnakeCase($array)
+    protected function arrayKeysToSnakeCase($array): array
     {
         $result = [];
 
@@ -26,7 +26,7 @@ class ApiController extends Controller
         return $result;
     }
 
-    protected function sanitizeData(array $array, array $casts)
+    protected function sanitizeData(array $array, array $casts): array
     {
         foreach($array as $key => $value){
             if(isset($key, $casts)){

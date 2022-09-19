@@ -122,6 +122,10 @@ class ContactCSVHelper
                             $contact['occupationPrimaryEmailAddress'] = $occupation->primaryContact->primaryEmailAddress ? $occupation->primaryContact->primaryEmailAddress : '';
                             $contact['occupationPrimaryTelephoneNumber'] = $occupation->primaryContact->primaryphoneNumber ? $occupation->primaryContact->primaryphoneNumber : '';
                             $contact['occupationRole'] = $occupation->occupation->primary_occupation;
+                            $contact['occupationLoanCurrent'] = $occupation->loan_current;
+                            $contact['occupationpostalcodeLinkCapitalCurrent'] = $primaryOccupation->postalcode_link_capital_current;
+                            $contact['occupationparticipationsCurrent'] = $primaryOccupation->participations_current;
+                            $contact['occupationobligationsCurrent'] = $primaryOccupation->obligations_current;
                             $first = false;
                         }
                         else{
@@ -140,6 +144,10 @@ class ContactCSVHelper
                             $repContact['occupationPrimaryEmailAddress'] = $occupation->primaryContact->primaryEmailAddress ? $occupation->primaryContact->primaryEmailAddress : '';
                             $repContact['occupationPrimaryTelephoneNumber'] = $occupation->primaryContact->primaryphoneNumber ? $occupation->primaryContact->primaryphoneNumber : '';
                             $repContact['occupationRole'] = $occupation->occupation->primary_occupation;
+                            $repContact['occupationLoanCurrent'] = $occupation->loan_current;
+                            $repContact['occupationpostalcodeLinkCapitalCurrent'] = $primaryOccupation->postalcode_link_capital_current;
+                            $repContact['occupationparticipationsCurrent'] = $primaryOccupation->participations_current;
+                            $repContact['occupationobligationsCurrent'] = $primaryOccupation->obligations_current;
                             $index = $chunk->search(function ($item, $key) use ($contact) {
                                 return $item->id == $contact->id;
                             });
@@ -166,6 +174,10 @@ class ContactCSVHelper
                             $contact['occupationPrimaryEmailAddress'] = $primaryOccupation->contact->primaryEmailAddress ? $primaryOccupation->contact->primaryEmailAddress : '';
                             $contact['occupationPrimaryTelephoneNumber'] = $primaryOccupation->contact->primaryphoneNumber ? $primaryOccupation->contact->primaryphoneNumber : '';
                             $contact['occupationRole'] = $primaryOccupation->occupation->secondary_occupation;
+                            $contact['occupationLoanCurrent'] = $primaryOccupation->loan_current;
+                            $contact['occupationpostalcodeLinkCapitalCurrent'] = $primaryOccupation->postalcode_link_capital_current;
+                            $contact['occupationparticipationsCurrent'] = $primaryOccupation->participations_current;
+                            $contact['occupationobligationsCurrent'] = $primaryOccupation->obligations_current;
                             $first = false;
                         }
                         else{
@@ -184,6 +196,11 @@ class ContactCSVHelper
                             $repContact['occupationPrimaryEmailAddress'] = $primaryOccupation->contact->primaryEmailAddress ? $primaryOccupation->contact->primaryEmailAddress : '';
                             $repContact['occupationPrimaryTelephoneNumber'] = $primaryOccupation->contact->primaryphoneNumber ? $primaryOccupation->contact->primaryphoneNumber : '';
                             $repContact['occupationRole'] = $primaryOccupation->occupation->secondary_occupation;
+                            $repContact['occupationLoanCurrent'] = $primaryOccupation->loan_current;
+                            $repContact['occupationpostalcodeLinkCapitalCurrent'] = $primaryOccupation->postalcode_link_capital_current;
+                            $repContact['occupationparticipationsCurrent'] = $primaryOccupation->participations_current;
+                            $repContact['occupationobligationsCurrent'] = $primaryOccupation->obligations_current;
+
                             $index = $chunk->search(function ($item, $key) use ($contact) {
                                 return $item->id == $contact->id;
                             });
@@ -317,6 +334,11 @@ class ContactCSVHelper
                 'occupationPrimaryEmailAddress.email' => 'Primair e-mailadres',
                 'occupationPrimaryTelephoneNumber.number' => 'Primair telefoonnummer',
                 'occupationRole' => 'Rol van contact',
+                'participations_current' => 'Aantal Participaties',
+                'obligations_current' => 'Aantal Obligaties',
+                'postalcode_link_capital_current' => 'Aantal PCR',
+                'loan_current' => 'Aantal Leningbedrag',
+
             ], $headers);
             $headers = false;
         }

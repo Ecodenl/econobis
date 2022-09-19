@@ -200,6 +200,7 @@ class ContactCSVHelper
                             $repContact['occupationpostalcodeLinkCapitalCurrent'] = $primaryOccupation->postalcode_link_capital_current;
                             $repContact['occupationparticipationsCurrent'] = $primaryOccupation->participations_current;
                             $repContact['occupationobligationsCurrent'] = $primaryOccupation->obligations_current;
+
                             $index = $chunk->search(function ($item, $key) use ($contact) {
                                 return $item->id == $contact->id;
                             });

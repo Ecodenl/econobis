@@ -15,15 +15,11 @@ use App\Http\Traits\GmailApi\HasDecodableBody;
 use App\Http\Traits\GmailApi\HasParts;
 use Carbon\Carbon;
 use Exception;
-use Google_Client;
-use Google_Service_Gmail;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use League\OAuth2\Client\Provider\GenericProvider;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Http\GraphCollectionRequest;
 use Microsoft\Graph\Model\Message;
-use Microsoft\Graph\Model\User;
 
 
 class MailFetcherMsOauth
@@ -36,6 +32,7 @@ class MailFetcherMsOauth
     private Mailbox $mailbox;
     private array $fetchedEmails = [];
     private Collection $parts;
+    private Graph $appClient;
 
     /**
      * @throws Exception
@@ -45,7 +42,7 @@ class MailFetcherMsOauth
         $this->mailbox = $mailbox;
 
         $this->initStorageDir();
-//        $this->initMsOauthConfig();
+        $this->initMsOauthConfig();
     }
 
     public function fetchNew()
@@ -60,95 +57,14 @@ class MailFetcherMsOauth
 
         $dateTime = Carbon::now();
 
-        $token = $this->mailbox->gmailApiSettings->token;
-
         $moreAvailable = true;
 
-        if (isset(json_decode($token, true)['refresh_token'])) {
-            $clientProvider = new GenericProvider([
-                'clientId'                => $this->mailbox->gmailApiSettings->client_id,
-                'clientSecret'            => $this->mailbox->gmailApiSettings->client_secret,
-                'redirectUri'             => config('app.url') . '/' . config('azure.redirectUri'),
-                'urlAuthorize'            => config('azure.authority').config('azure.authorizeEndpoint'),
-                'urlAccessToken'          => config('azure.authority').config('azure.tokenEndpoint'),
-                'urlResourceOwnerDetails' => '',
-                'scopes'                  => config('azure.scopes'),
-            ]);
-
-            try {
-                Log::info('Before: accessToken (full): ');
-                Log::info(json_decode($token, true));
-                Log::info('accessToken: ' . json_decode($token, true)['access_token']);
-                Log::info('refreshToken: ' . json_decode($token, true)['refresh_token']);
-                Log::info('tokenExpires: ' . json_decode($token, true)['expires']);
-
-                Log::info('getAccessToken');
-                // Make the token request
-                $accessToken = $clientProvider->getAccessToken('refresh_token', [
-                    'refresh_token' => json_decode($token, true)['refresh_token']
-                ]);
-// todo WM oauth: nog testen en opschonen
+// todo WM oauth: check of we nog iets kunnen met user ophalen ivm email check anders opschonen
 //
-                Log::info('After: accessToken (full): ' . $accessToken);
-                Log::info('accessToken: ' . $accessToken->getToken());
-                Log::info('refreshToken: ' . $accessToken->getRefreshToken());
-                Log::info('tokenExpires: ' . $accessToken->getExpires());
-
-                $graph = new Graph();
-                $graph->setAccessToken($accessToken->getToken());
-
-//                Log::info('client_id:  ' . $this->mailbox->gmailApiSettings->client_id );
-//                Log::info('project_id:  ' . $this->mailbox->gmailApiSettings->project_id );
-//                Log::info('client_secret:  ' . $this->mailbox->gmailApiSettings->client_secret );
-                $msOauthApiSettings = MailboxGmailApiSettings::where('client_id', $this->mailbox->gmailApiSettings->client_id)
-                    ->where('project_id', $this->mailbox->gmailApiSettings->project_id)->get();
-//                    ->where('client_secret', $this->mailbox->gmailApiSettings->client_secret)->get();
-//                Log::info('aantal:  ' . $msOauthApiSettings->count() );
-                foreach ($msOauthApiSettings as $msOauthApiSetting) {
-//                    Log::info('Save gmailApiSettings id: ' . $msOauthApiSetting->id);
-                    $msOauthApiSetting->token = json_encode($accessToken);
-                    $msOauthApiSetting->save();
-                }
-
-                $this->mailbox->valid = true;
-                $this->mailbox->save();
-            }
-            catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
-                $this->mailbox->valid = false;
-                $this->mailbox->save();
-
-                Log::error('Error requesting access token (1)');
-                Log::error(json_encode($e->getResponseBody()));
-
-                return json_encode($e->getResponseBody());
-            }
-        } else {
-            $this->mailbox->valid = false;
-            $this->mailbox->save();
-
-            Log::error('Error requesting access token (2)');
-
-            return json_encode('Error requesting access token (2)');
-        }
-
-//        $graph = new Graph();
-////todo oauth WM: opschonen
-////
-////                Log::info('Access token: ');
-////                Log::info(json_decode($token, true)['access_token']);
-////                Log::info('Expires: ');
-////                Log::info(json_decode($token, true)['expires'] . ' - ' . Carbon::parse(json_decode($token, true)['expires']));
-////                Log::info('Refresh token: ');
-////                Log::info(json_decode($token, true)['refresh_token']);
-//
-//        $graph->setAccessToken(json_decode($token, true)['access_token']);
-//
-//        $user = $graph->createRequest('GET', '/me?$select=displayName,mail,mailboxSettings,userPrincipalName')
+//        $user = $this->appClient->createRequest('GET', '/me?$select=displayName,mail,mailboxSettings,userPrincipalName')
 //            ->setReturnType(User::class)
 //            ->execute();
 
-// todo WM oauth: opschonen
-//
 //        Log::info('userId: ' . $user->getId());
 //        Log::info('userName: ' . $user->getDisplayName());
 //        Log::info('principalName: ' . $user->getUserPrincipalName());
@@ -166,7 +82,7 @@ class MailFetcherMsOauth
 
                 Log::info("CreateCollectionRequest");
 
-                $messages = $graph->createCollectionRequest('GET', $requestUrl)
+                $messages = $this->appClient->createCollectionRequest('GET', $requestUrl)
                     ->setReturnType(Message::class)
                     ->setPageSize(25);
 
@@ -212,24 +128,24 @@ class MailFetcherMsOauth
 
     }
 
-//    private function initMsOauthConfig(): void
-//    {
-//        Log::info('Hallo initMsOauthConfig');
-//        $gmailConnectionManager = new MsOauthConnectionManager($this->mailbox);
-//        $this->authUrl = $gmailConnectionManager->connectWithRefresh();
-//        Log::info('Na connect, komen we hier ????');
-//        if (isset($client['message']) && $client['message'] == 'ms_oauth_unauthorised') {
-//            Log::info($client);
-////            return response()->json($client, 401);
+    private function initMsOauthConfig(): void
+    {
+        $msOauthConnectionManager = new MsOauthConnectionManager($this->mailbox);
+        $this->appClient = $msOauthConnectionManager->setAccessTokenFromRefreshToken();
+
+// todo oauth WM: nog iets met response doen ?
+//        if (isset($this->appClient['message']) && $this->appClient['message'] == 'ms_oauth_unauthorised') {
+//            Log::info($this->appClient);
+//            throw new Exception('InitGmailConfig: ' . $client['message']);
 //        }
-////
-////        // Todo improve failure message
-////        if (!($client instanceof Google_Client) && isset($client['message']) && $client['message'] === 'gmail_unauthorised') {
-////            throw new Exception('InitGmailConfig: ' . $client['message']);
-////        }
-////
-////        $this->service = new Google_Service_Gmail($client);
-//    }
+//
+//        // Todo improve failure message
+//        if (!($client instanceof Google_Client) && isset($client['message']) && $client['message'] === 'gmail_unauthorised') {
+//            throw new Exception('InitGmailConfig: ' . $client['message']);
+//        }
+//
+//        $this->service = new Google_Service_Gmail($client);
+    }
 
     private function fetchEmail(Message $message)
     {

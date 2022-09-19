@@ -200,4 +200,65 @@ class MsOauthConnectionManager extends Controller
         ]);
     }
 
+    /**
+     * @param $token
+     * @return array
+     */
+    public function setAccessTokenFromRefreshToken()
+    {
+        $token = json_decode($this->gmailApiSettings->token, true);
+        if (isset($token['refresh_token'])) {
+
+            $clientProvider = new GenericProvider([
+                'clientId' => $this->gmailApiSettings->client_id,
+                'clientSecret' => $this->gmailApiSettings->client_secret,
+                'redirectUri' => config('app.url') . '/' . config('azure.redirectUri'),
+                'urlAuthorize' => config('azure.authority') . config('azure.authorizeEndpoint'),
+                'urlAccessToken' => config('azure.authority') . config('azure.tokenEndpoint'),
+                'urlResourceOwnerDetails' => '',
+                'scopes' => config('azure.scopes'),
+            ]);
+
+            try {
+                // Make the token request
+                $accessToken = $clientProvider->getAccessToken('refresh_token', [
+                    'refresh_token' => $token['refresh_token']
+                ]);
+                $appClient = new Graph();
+                $appClient->setAccessToken($accessToken->getToken());
+
+                $msOauthApiSettings = MailboxGmailApiSettings::where('client_id', $this->gmailApiSettings->client_id)
+                    ->where('project_id', $this->gmailApiSettings->project_id)->get();
+//                    ->where('client_secret', $this->gmailApiSettings->client_secret)->get();
+//                Log::info('aantal:  ' . $msOauthApiSettings->count() );
+                foreach ($msOauthApiSettings as $msOauthApiSetting) {
+//                    Log::info('Save gmailApiSettings id: ' . $msOauthApiSetting->id);
+                    $msOauthApiSetting->token = json_encode($accessToken);
+                    $msOauthApiSetting->save();
+                }
+
+                $this->mailbox->valid = true;
+                $this->mailbox->save();
+
+                return $appClient;
+            } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
+                $this->mailbox->valid = false;
+                $this->mailbox->save();
+
+                Log::error('Error requesting access token (1)');
+                Log::error(json_encode($e->getResponseBody()));
+
+//                return json_encode($e->getResponseBody());
+            }
+        } else {
+            $this->mailbox->valid = false;
+            $this->mailbox->save();
+
+            Log::error('Error requesting access token (2)');
+
+//            return json_encode('Error requesting access token (2)');
+        }
+
+    }
+
 }

@@ -9,7 +9,6 @@
 namespace App\Helpers\RequestQuery;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 abstract class RequestSort
 {
@@ -95,7 +94,7 @@ abstract class RequestSort
 
     private function applyJoin($query, $field)
     {
-        if (!isset($field[$this->joins])) return;
+        if (!isset($this->joins[$field])) return;
         $joinName = $this->joins[$field];
 
         if (!$this->joiner) throw new RequestFilterException('Missing Joiner to apply join ' . $joinName . ' in ' . get_called_class());
@@ -109,7 +108,7 @@ abstract class RequestSort
 
     private function getMappedField($field)
     {
-        if (isset($field[$this->mapping])) return $this->mapping[$field];
+        if (isset($this->mapping[$field])) return $this->mapping[$field];
 
         return $field;
     }

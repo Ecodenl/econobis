@@ -236,7 +236,7 @@ class AlfrescoHelper
             try {
                 $err = json_decode($err);
                 Log::error('Alfresco error' . $err);
-                if(isset($err['error']) && isset($err['statusCode'], $err['error'])){
+                if(isset($err['error']) && isset($err['error']['statusCode'])){
                     abort($err['error']['statusCode']);
                 }
             }
@@ -266,12 +266,8 @@ class AlfrescoHelper
                             Log::error('Alfresco error: '
                                 . $decoded_response['error']['statusCode']);
                         }
+                        abort($decoded_response['error']['statusCode']);
                     }
-                    else{
-                        Log::error('Alfresco error: unknown');
-                    }
-                    abort($decoded_response['error']['statusCode']);
-                }
                     //niet aborten, wel error ter info in log.
                     else {
                         Log::info('Alfresco error (no abort): '

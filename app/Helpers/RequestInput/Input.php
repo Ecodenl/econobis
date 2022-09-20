@@ -34,7 +34,7 @@ class Input
      */
     public function has($key)
     {
-        return array_key_exists($key, $this->data);
+        return isset($this->data[$key]);
     }
 
     /**

@@ -29,7 +29,7 @@ class ApiController extends Controller
     protected function sanitizeData(array $array, array $casts): array
     {
         foreach($array as $key => $value){
-            if(isset($key, $casts)){
+            if(isset($casts[$key])){
                 switch ($casts[$key]){
                     case 'nullable':
                         if(empty($value)){

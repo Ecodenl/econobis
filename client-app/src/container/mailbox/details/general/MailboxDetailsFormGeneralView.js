@@ -195,7 +195,7 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                         <PanelBody>
                             <div className="row">
                                 <ViewText label={'Client id'} value={gmailApiSettings?.clientId} />
-                                <ViewText label={'Client secret id'} value={gmailApiSettings?.projectId} />
+                                <ViewText label={'Object ID'} value={gmailApiSettings?.projectId} />
                             </div>
                             <div className="row">
                                 <ViewText label={'Redirect url'} value={REDIRECT_URL_MS_OAUTH} />

@@ -3,12 +3,10 @@
 namespace App\Mail\CustomMailDriver;
 
 use App\Eco\Mailbox\Mailbox;
-use App\Eco\Mailbox\MailboxGmailApiSettings;
 use App\Helpers\MsOauth\MsOauthConnectionManager;
 use Exception;
 use Illuminate\Mail\Transport\Transport;
 use Illuminate\Support\Facades\Log;
-use League\OAuth2\Client\Provider\GenericProvider;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\ItemBody;
 use Microsoft\Graph\Model\Message;
@@ -16,7 +14,6 @@ use Microsoft\Graph\Model\EmailAddress;
 use Microsoft\Graph\Model\Recipient;
 use Microsoft\Graph\Model\FileAttachment;
 use Swift_Mime_SimpleMessage;
-use GuzzleHttp\Client;
 
 class MsoauthapiTransport extends Transport
 {
@@ -119,7 +116,7 @@ class MsoauthapiTransport extends Transport
 //        return;
 
         try {
-          $response = $this->appClient->createRequest("POST", "/me/sendmail")
+          $response = $this->appClient->createRequest('POST', '/users/' . $this->mailbox->gmailApiSettings->project_id. '/sendmail')
                 ->attachBody($messageToSend)
                 ->execute();
 

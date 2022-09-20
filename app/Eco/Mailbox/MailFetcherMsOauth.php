@@ -61,7 +61,7 @@ class MailFetcherMsOauth
 
 // todo WM oauth: check of we nog iets kunnen met user ophalen ivm email check anders opschonen
 //
-//        $user = $this->appClient->createRequest('GET', '/me?$select=displayName,mail,mailboxSettings,userPrincipalName')
+//        $user = $this->appClient->createRequest('GET', '/users/' . $this->mailbox->gmailApiSettings->project_id. '?$select=displayName,mail,mailboxSettings,userPrincipalName')
 //            ->setReturnType(User::class)
 //            ->execute();
 
@@ -77,7 +77,7 @@ class MailFetcherMsOauth
                 $select = '$select=internetMessageId,sender,from,toRecipients,ccRecipients,bccRecipients,receivedDateTime,sentDateTime,subject,bodyPreview,body,isRead,hasAttachments';
                 // Sort by received time, newest first
                 $orderBy = '$orderBy=receivedDateTime DESC';
-                $requestUrl = '/me/mailFolders/inbox/messages?'.$select.'&'.$orderBy;
+                $requestUrl = '/users/' . $this->mailbox->gmailApiSettings->project_id. '/mailFolders/inbox/messages?'.$select.'&'.$orderBy;
 //                $requestUrl = '/users/' . $user->getId() . '/mailFolders/inbox/messages?'.$select.'&'.$orderBy;
 
                 Log::info("CreateCollectionRequest");

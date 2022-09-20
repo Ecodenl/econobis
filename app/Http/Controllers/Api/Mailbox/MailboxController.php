@@ -267,6 +267,8 @@ class MailboxController extends Controller
         foreach ($mailboxes as $mailbox) {
             if ($mailbox->incoming_server_type === 'gmail') {
                 $mailFetcher = new MailFetcherGmail($mailbox);
+            } elseif ($mailbox->incoming_server_type === 'ms-oauth') {
+                $mailFetcher = new MailFetcherMsOauth($mailbox);
             } else {
                 $mailFetcher = new MailFetcher($mailbox);
             }

@@ -47,7 +47,7 @@ class MailFetcherMsOauth
 
     public function fetchNew()
     {
-        Log::info("Check fetchNew mailbox " . $this->mailbox->id);
+//        Log::info("Check fetchNew mailbox " . $this->mailbox->id);
 
         if ($this->mailbox->date_last_fetched) {
             $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->subDay()->format('Y-m-d');
@@ -80,14 +80,14 @@ class MailFetcherMsOauth
                 $requestUrl = '/users/' . $this->mailbox->gmailApiSettings->project_id. '/mailFolders/inbox/messages?'.$select.'&'.$orderBy;
 //                $requestUrl = '/users/' . $user->getId() . '/mailFolders/inbox/messages?'.$select.'&'.$orderBy;
 
-                Log::info("CreateCollectionRequest");
+//                Log::info("CreateCollectionRequest");
 
                 $messages = $this->appClient->createCollectionRequest('GET', $requestUrl)
                     ->setReturnType(Message::class)
                     ->setPageSize(25);
 
-                $moreAvailable = $this->processMessages($messages);
-                Log::info("Meer mail ophalen: " . $moreAvailable);
+                $moreAvailable = $this->processMessages($messages, $dateLastFetched);
+//                Log::info("Meer mail ophalen: " . $moreAvailable);
             } catch (Exception $e) {
                 Log::error('Error getting user\'s inbox: '.$e->getMessage());
 //                $this->mailbox->valid = false;
@@ -103,7 +103,7 @@ class MailFetcherMsOauth
         $this->mailbox->save();
     }
 
-    private function processMessages(GraphCollectionRequest $listMessages): bool
+    private function processMessages(GraphCollectionRequest $listMessages, $dateLastFetched): bool
     {
         foreach ($listMessages->getPage() as $message) {
             $msOauthMessageId = $message->getId();
@@ -112,16 +112,14 @@ class MailFetcherMsOauth
 //        Log::info('  Sender: '.$message->getSender()->getEmailAddress()->getAddress());
 //        Log::info('  From: '.$message->getFrom()->getEmailAddress()->getAddress());
 
-            if(Email::whereMailboxId($this->mailbox->id)
-                ->whereGmailMessageId($msOauthMessageId)
-                ->exists()){
-//                $emailCheck = Email::whereMailboxId($this->mailbox->id)
-//                    ->whereGmailMessageId($msOauthMessageId)
-//                    ->get()->first();
-//                Log::info("Mail bestaat reeds (" . $emailCheck->id . "), stoppen inlezen");
-                return false;
+            $receivedDateTime = Carbon::parse( $message->getReceivedDateTime()->format('Y-m-d'));
+            if($receivedDateTime >= $dateLastFetched) {
+                if (!Email::whereMailboxId($this->mailbox->id)
+                    ->whereGmailMessageId($msOauthMessageId)
+                    ->exists()) {
+                    $this->fetchEmail($message);
+                }
             }
-            $this->fetchEmail($message);
         }
 
         return $listMessages->isEnd() ? false : true;

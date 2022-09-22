@@ -197,14 +197,14 @@ class MailFetcherMsOauth
             foreach ($requestResult->getPage() as $attachment){
                 $contents = base64_decode( $attachment->getProperties()['contentBytes']);
                 $name = $attachment->getName();
-                $filename = $this->getAttachmentDBName() . $name;
+                $filePathAndName = $this->getAttachmentDBName() . \bin2hex(\random_bytes(16)).'.bin';
                 $emailAttachment = new EmailAttachment([
-                    'filename' => $filename,
-                    'name' => $attachment->getName(),
+                    'filename' => $filePathAndName,
+                    'name' => $name,
                     'email_id' => $email->id,
                 ]);
                 $emailAttachment->save();
-                \Illuminate\Support\Facades\Storage::disk('mail_attachments')->put($filename, $contents);
+                \Illuminate\Support\Facades\Storage::disk('mail_attachments')->put($filePathAndName, $contents);
             }
 
         }

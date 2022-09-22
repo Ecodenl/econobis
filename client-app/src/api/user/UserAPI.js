@@ -1,14 +1,12 @@
-import axios from 'axios';
+import axiosInstance from "../default-setup/AxiosInstance";
 
 const URL_USER = `${URL_API}/api/user`;
 
 export default {
     fetchUserDetails: function(id) {
         const requestUrl = `${URL_USER}/${id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -20,33 +18,25 @@ export default {
 
     newUser: person => {
         const requestUrl = `${URL_USER}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, person);
+        return axiosInstance.post(requestUrl, person);
     },
 
     updateUser: person => {
         const requestUrl = `${URL_USER}/${person.id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, person);
+        return axiosInstance.post(requestUrl, person);
     },
 
     addRole: (userId, roleId) => {
         const requestUrl = `${URL_USER}/${userId}/roles/add/${roleId}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl);
+        return axiosInstance.post(requestUrl);
     },
 
     removeRole: (userId, roleId) => {
         const requestUrl = `${URL_USER}/${userId}/roles/remove/${roleId}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl);
+        return axiosInstance.post(requestUrl);
     },
 };

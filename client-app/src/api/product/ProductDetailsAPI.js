@@ -1,14 +1,12 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_PRODUCT = `${URL_API}/api/product`;
 
 export default {
     fetchProductDetails: function(id) {
         const requestUrl = `${URL_PRODUCT}/${id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -20,10 +18,8 @@ export default {
 
     newProduct: product => {
         const requestUrl = `${URL_PRODUCT}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, product)
             .then(function(response) {
                 return response.data;
@@ -35,10 +31,8 @@ export default {
 
     updateProduct: ({ product }) => {
         const requestUrl = `${URL_PRODUCT}/${product.id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, product)
             .then(function(response) {
                 return response;
@@ -50,17 +44,13 @@ export default {
 
     deleteProduct: id => {
         const requestUrl = `${URL_PRODUCT}/${id}/delete`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl);
+        return axiosInstance.post(requestUrl);
     },
 
     newPriceHistory: priceHistory => {
         const requestUrl = `${URL_PRODUCT}/price-history`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, priceHistory);
+        return axiosInstance.post(requestUrl, priceHistory);
     },
 };

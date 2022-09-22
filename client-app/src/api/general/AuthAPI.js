@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const AUTH_KEY = {
     grant_type: process.env.GRANT_TYPE,
@@ -10,9 +10,10 @@ const AUTH_KEY = {
 export default {
     loginUser: loginCredentials => {
         const requestUrl = `${URL_API}/oauth/token`;
-        delete axios.defaults.headers.common['Authorization'];
+        console.log(axiosInstance);
+        delete axiosInstance.defaults.headers.common['Authorization'];
 
-        return axios
+        return axiosInstance
             .post(requestUrl, { ...AUTH_KEY, ...loginCredentials })
             .then(function(response) {
                 return response;
@@ -33,7 +34,7 @@ export default {
 
         const requestUrl = `${URL_API}/oauth/token`;
 
-        return axios.post(requestUrl, request);
+        return axiosInstance.post(requestUrl, request);
         /*.then(function (response) {
                 localStorage.setItem('access_token', response.data.access_token);
                 localStorage.setItem('refresh_token', response.data.refresh_token);

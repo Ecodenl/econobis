@@ -1,14 +1,12 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_ORDER = `${URL_API}/api/order`;
 
 export default {
     fetchOrderDetails: function(id) {
         const requestUrl = `${URL_ORDER}/${id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -20,10 +18,8 @@ export default {
 
     newOrder: order => {
         const requestUrl = `${URL_ORDER}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, order)
             .then(function(response) {
                 return response.data;
@@ -35,10 +31,8 @@ export default {
 
     updateOrder: ({ order }) => {
         const requestUrl = `${URL_ORDER}/${order.id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, order)
             .then(function(response) {
                 return response;
@@ -50,42 +44,32 @@ export default {
 
     deleteOrder: id => {
         const requestUrl = `${URL_ORDER}/${id}/delete`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl);
+        return axiosInstance.post(requestUrl);
     },
 
     newOrderProduct: orderProduct => {
         const requestUrl = `${URL_ORDER}/order-product`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, orderProduct);
+        return axiosInstance.post(requestUrl, orderProduct);
     },
 
     newProductAndOrderProduct: (orderProduct, product) => {
         const requestUrl = `${URL_ORDER}/product-and-order-product`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, { orderProduct: orderProduct, product: product });
+        return axiosInstance.post(requestUrl, { orderProduct: orderProduct, product: product });
     },
 
     updateOrderProductOneTime: (orderProduct, product) => {
         const requestUrl = `${URL_ORDER}/product-and-order-product/update`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, { orderProduct: orderProduct, product: product });
+        return axiosInstance.post(requestUrl, { orderProduct: orderProduct, product: product });
     },
 
     deleteOrderProduct: orderProductId => {
         const requestUrl = `${URL_ORDER}/order-product/${orderProductId}/delete`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl)
             .then(function(response) {
                 return response.data;
@@ -97,18 +81,14 @@ export default {
 
     updateOrderProduct: orderProduct => {
         const requestUrl = `${URL_ORDER}/order-product/${orderProduct.id}/update`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, orderProduct);
+        return axiosInstance.post(requestUrl, orderProduct);
     },
 
     fetchContactInfoForOrder: function(contactId) {
         const requestUrl = `${URL_ORDER}/${contactId}/contact-info-for-order`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response;
@@ -120,18 +100,14 @@ export default {
 
     downloadPreview: id => {
         const requestUrl = `${URL_ORDER}/${id}/download-preview`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl, { responseType: 'blob' });
+        return axiosInstance.get(requestUrl, { responseType: 'blob' });
     },
 
     createAll: orderIds => {
         const requestUrl = `${URL_ORDER}/create-all`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, { orderIds: orderIds })
             .then(function(response) {
                 return response.data;
@@ -143,10 +119,8 @@ export default {
 
     getEmailPreview: id => {
         const requestUrl = `${URL_ORDER}/${id}/email-preview`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data;

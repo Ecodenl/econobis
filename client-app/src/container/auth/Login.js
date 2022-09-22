@@ -56,7 +56,7 @@ class Login extends Component {
                         return;
                     }
 
-                    if(!payload.data.hasValidToken) {
+                    if(payload.data.hasValidToken) {
                         hashHistory.push('/');
                         return;
                     }

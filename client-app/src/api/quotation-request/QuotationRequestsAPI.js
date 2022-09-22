@@ -1,12 +1,10 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 export default {
     fetchQuotationRequests: ({ filters, sorts, pagination }) => {
         const requestUrl = `${URL_API}/api/quotation-request/grid`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl, {
+        return axiosInstance.get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
@@ -18,10 +16,8 @@ export default {
 
     peekQuotationRequests: () => {
         const requestUrl = `${URL_API}/api/quotation-request/peek`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -33,10 +29,8 @@ export default {
 
     getAmountActive: () => {
         const requestUrl = `${URL_API}/api/quotation-request/amount-open`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(response => response.data)
             .catch(error => {
@@ -46,10 +40,8 @@ export default {
 
     getCSV: ({ filters, sorts }) => {
         const requestUrl = `${URL_API}/api/quotation-request/csv`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl, {
+        return axiosInstance.get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),

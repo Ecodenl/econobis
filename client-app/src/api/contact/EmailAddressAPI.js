@@ -11,10 +11,8 @@ const URL_EMAIL_ADDRESS = `${URL_API}/api/email-address`;
 export default {
     newEmailAddress: emailAddress => {
         const requestUrl = `${URL_EMAIL_ADDRESS}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, emailAddress)
             .then(function(response) {
                 return response.data.data;
@@ -26,10 +24,8 @@ export default {
 
     updateEmailAddress: emailAddress => {
         const requestUrl = `${URL_EMAIL_ADDRESS}/${emailAddress.id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, emailAddress)
             .then(function(response) {
                 return response.data.data;
@@ -41,10 +37,8 @@ export default {
 
     deleteEmailAddress: id => {
         const requestUrl = `${URL_EMAIL_ADDRESS}/${id}/delete`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -63,7 +57,7 @@ export default {
         }
 
         //Save the cancel token for the current request
-        cancelToken = axios.CancelToken.source();
+        cancelToken = axiosInstance.CancelToken.source();
 
         return axiosInstance.get(requestUrl, {
             cancelToken: cancelToken.token,
@@ -72,10 +66,8 @@ export default {
 
     fetchPrimaryEmailAddressId: contactIds => {
         const requestUrl = `${URL_API}/api/contact/get-primary-email-addresses-id`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl, {
                 params: {
                     contactIds: contactIds,

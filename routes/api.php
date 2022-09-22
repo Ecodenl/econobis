@@ -22,7 +22,7 @@ Route::get('password/reset/{token}', [
 ]);
 
 Route::namespace('Api')
-    ->middleware(['auth:api', 'scopes:use-app'])
+    ->middleware(['auth:api', 'scopes:use-app', 'two-factor'])
     ->group(function () {
 
         Route::get('/jobs', 'Job\JobController@getLastJobs');
@@ -559,7 +559,11 @@ Route::namespace('Api')
         Route::get('jory/{resource}/count', '\\'.JoryController::class.'@count');
         Route::get('jory/{resource}/{id}', '\\'.JoryController::class.'@find');
         Route::get('jory/{resource}', '\\'.JoryController::class.'@get')->name('jory.get');
+    });
 
+Route::namespace('Api')
+    ->middleware(['auth:api', 'scopes:use-app'])
+    ->group(function () {
         Route::get('me/two-factor-status', [\App\Http\Controllers\Auth\TwoFactorAuthenticationController::class, 'status']);
         Route::post('me/two-factor-authentication', [\App\Http\Controllers\Auth\TwoFactorAuthenticationController::class, 'store']);
         Route::post('me/confirmed-two-factor-authentication', [\App\Http\Controllers\Auth\ConfirmedTwoFactorAuthenticationController::class, 'store']);

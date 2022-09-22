@@ -1,22 +1,18 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_ADMINISTRATION = `${URL_API}/api/administration`;
 
 export default {
     fetchAdministrations: () => {
         const requestUrl = `${URL_ADMINISTRATION}/grid`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl);
+        return axiosInstance.get(requestUrl);
     },
 
     peekAdministrations: () => {
         const requestUrl = `${URL_ADMINISTRATION}/peek`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -28,10 +24,8 @@ export default {
 
     fetchTwinfieldInfoAdministrations: () => {
         const requestUrl = `${URL_ADMINISTRATION}/twinfield-info-administrations`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -43,10 +37,8 @@ export default {
 
     peekLedgers: id => {
         const requestUrl = `${URL_ADMINISTRATION}/${id}/ledger/peek`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl)
             .then(function(response) {
                 return response.data.data;

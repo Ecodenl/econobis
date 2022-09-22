@@ -1,14 +1,12 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_PARTICIPANT_TRANSACTION = `${URL_API}/api/project/participant/transaction`;
 
 export default {
     newParticipantTransaction: participantTransaction => {
         const requestUrl = `${URL_PARTICIPANT_TRANSACTION}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, participantTransaction)
             .then(function(response) {
                 return response.data.data;
@@ -20,10 +18,8 @@ export default {
 
     updateParticipantTransaction: participantTransaction => {
         const requestUrl = `${URL_PARTICIPANT_TRANSACTION}/${participantTransaction.id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, participantTransaction)
             .then(function(response) {
                 return response.data.data;
@@ -35,10 +31,8 @@ export default {
 
     deleteParticipantTransaction: id => {
         const requestUrl = `${URL_PARTICIPANT_TRANSACTION}/${id}/delete`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl)
             .then(function(response) {
                 return response.data.data;

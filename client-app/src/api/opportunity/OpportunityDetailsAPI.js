@@ -1,14 +1,12 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_OPPORTUNITY = `${URL_API}/api/opportunity`;
 
 export default {
     fetchOpportunity: id => {
         const requestUrl = `${URL_OPPORTUNITY}/${id}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -18,10 +16,8 @@ export default {
 
     updateOpportunity: (id, data) => {
         const requestUrl = `${URL_OPPORTUNITY}/${id}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -31,10 +27,8 @@ export default {
 
     storeOpportunity: data => {
         const requestUrl = `${URL_OPPORTUNITY}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -44,18 +38,14 @@ export default {
 
     deleteOpportunity: id => {
         const requestUrl = `${URL_OPPORTUNITY}/${id}/delete`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl);
+        return axiosInstance.post(requestUrl);
     },
 
     updateOpportunityEvaluation: (id, data) => {
         const requestUrl = `${URL_OPPORTUNITY}/evaluation/${id}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {

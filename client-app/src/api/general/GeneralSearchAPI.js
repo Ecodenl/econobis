@@ -1,12 +1,10 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 export default {
     search: function(data) {
         const requestUrl = `${URL_API}/api/general-search`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, { searchText: data })
             .then(function(response) {
                 return response.data;

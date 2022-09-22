@@ -1,22 +1,18 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_EMAIL_TEMPLATE = `${URL_API}/api/email-template`;
 
 export default {
     fetchEmailTemplates: () => {
         const requestUrl = `${URL_EMAIL_TEMPLATE}/grid`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl);
+        return axiosInstance.get(requestUrl);
     },
 
     fetchEmailTemplate: id => {
         const requestUrl = `${URL_EMAIL_TEMPLATE}/${id}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -26,10 +22,8 @@ export default {
 
     fetchEmailTemplateWithUser: id => {
         const requestUrl = `${URL_EMAIL_TEMPLATE}/with-user/${id}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -39,10 +33,8 @@ export default {
 
     storeEmailTemplate: data => {
         const requestUrl = `${URL_EMAIL_TEMPLATE}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -52,10 +44,8 @@ export default {
 
     updateEmailTemplate: data => {
         const requestUrl = `${URL_EMAIL_TEMPLATE}/${data.id}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -65,10 +55,8 @@ export default {
 
     fetchEmailTemplatesPeek: () => {
         const requestUrl = `${URL_EMAIL_TEMPLATE}/peek`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -80,9 +68,7 @@ export default {
 
     deleteEmailTemplate: id => {
         const requestUrl = `${URL_EMAIL_TEMPLATE}/${id}/delete`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl);
+        return axiosInstance.post(requestUrl);
     },
 };

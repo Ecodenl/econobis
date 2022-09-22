@@ -18,6 +18,7 @@
         "joskolenberg/laravel-jory": "^3.1",
         "laposta/laposta-api-php": "^1.5",
         "laracasts/presenter": "^0.2.1",
+        "laravel/fortify": "^1.13",
         "laravel/framework": "^8.0",
         "laravel/helpers": "^1.1",
         "laravel/passport": "^10.0",

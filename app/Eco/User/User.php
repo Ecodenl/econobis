@@ -16,13 +16,14 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Hash;
 use Laracasts\Presenter\PresentableTrait;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens, RevisionableTrait, HasRoles, PresentableTrait, CanResetPassword, Encryptable, HasFactory;
+    use Notifiable, HasApiTokens, RevisionableTrait, HasRoles, PresentableTrait, CanResetPassword, Encryptable, HasFactory, TwoFactorAuthenticatable;
     protected $presenter = UserPresenter::class;
 
     /**
@@ -46,6 +47,7 @@ class User extends Authenticatable
     protected $casts = [
         'visit_count' => 'integer',
         'active' => 'boolean',
+        'two_factor_enabled' => 'boolean',
     ];
 
     protected $dates = [
@@ -79,6 +81,11 @@ class User extends Authenticatable
     public function administrations()
     {
         return $this->belongsToMany(Administration::class);
+    }
+
+    public function twoFactorTokens()
+    {
+        return $this->hasMany(TwoFactorToken::class);
     }
 
     /**

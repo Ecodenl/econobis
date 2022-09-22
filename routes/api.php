@@ -560,6 +560,10 @@ Route::namespace('Api')
         Route::get('jory/{resource}/{id}', '\\'.JoryController::class.'@find');
         Route::get('jory/{resource}', '\\'.JoryController::class.'@get')->name('jory.get');
 
+        Route::get('me/two-factor-status', [\App\Http\Controllers\Auth\TwoFactorAuthenticationController::class, 'status']);
+        Route::post('me/two-factor-authentication', [\App\Http\Controllers\Auth\TwoFactorAuthenticationController::class, 'store']);
+        Route::post('me/confirmed-two-factor-authentication', [\App\Http\Controllers\Auth\ConfirmedTwoFactorAuthenticationController::class, 'store']);
+        Route::get('me/two-factor-qr-code', [\App\Http\Controllers\Auth\TwoFactorQrCodeController::class, 'show']);
     });
 
 Route::namespace('Api')

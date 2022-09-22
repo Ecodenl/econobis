@@ -6,6 +6,7 @@ import { authSuccess } from '../../actions/general/AuthActions';
 import AuthAPI from '../../api/general/AuthAPI';
 import Logo from '../../components/logo/Logo';
 import moment from 'moment';
+import MeAPI from "../../api/general/MeAPI";
 
 class Login extends Component {
     constructor(props) {
@@ -44,7 +45,24 @@ class Login extends Component {
 
                 this.props.authSuccess();
 
-                hashHistory.push('/');
+                MeAPI.fetchTwoFactorStatus().then(payload => {
+                    if (!payload.data.twoFactorEnabled) {
+                        hashHistory.push('/');
+                        return;
+                    }
+
+                    if(!payload.data.twoFactorActivated) {
+                        hashHistory.push('/two-factor/activate');
+                        return;
+                    }
+
+                    if(!payload.data.hasValidToken) {
+                        hashHistory.push('/');
+                        return;
+                    }
+
+                    hashHistory.push('/two-factor/confirm');
+                })
             } else {
                 this.setState({
                     username: '',

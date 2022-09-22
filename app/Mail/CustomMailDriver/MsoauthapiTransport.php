@@ -77,43 +77,28 @@ class MsoauthapiTransport extends Transport
             $messageGraph->setBccRecipients($recipientsBcc);
         }
 
-// todo oauth WM: attachments toevoegen !
-
         if($message->getChildren()) {
             $attachments = array();
 
             foreach ($message->getChildren() as $child) {
-                Log::info('Attachment test');
-//                Log::info($child);
+//                Log::info('Attachment test');
 //                Log::info($child->toString());
-                if($child->getHeaders() && $child->getHeaders()->get('content-disposition')){
-//                    Log::info($child->getHeaders());
+                if ($child->getHeaders() && $child->getHeaders()->get('content-disposition')) {
                     $filename = str_replace('attachment; filename=', null, $child->getHeaders()->get('content-disposition')->getFieldBody());
-                    Log::info($filename);
-//                    Log::info($child->getHeaders()->get('data'));
-
+//                    Log::info($filename);
                     $attachment = new FileAttachment();
                     $attachment->setName($filename);
-                    $attachment->setContentBytes(chunk_split(base64_decode("R0lGODdhEAYEAA7")));
+                    $contectBytesBody = $child->getBody();
+                    $attachment->setContentBytes(chunk_split(base64_encode($contectBytesBody)));
+                    $attachment->setContentType($child->getContentType());
                     $attachment->setODataType("#microsoft.graph.fileAttachment");
                     array_push($attachments, $attachment);
-                } else {
-                    Log::info('Geen headers');
-                    Log::info($child->getHeaders());
-
                 }
-
             }
 
             $messageGraph->setAttachments($attachments);
         }
-
         $messageToSend = array ('message' => $messageGraph);
-
-// todo oauth WM: opschonen !
-//        LOG::info('messageToSend');
-//        LOG::info($messageToSend);
-//        return;
 
         try {
           $response = $this->appClient->createRequest('POST', '/users/' . $this->mailbox->gmailApiSettings->project_id. '/sendmail')

@@ -6,6 +6,7 @@ import { fetchUserDetails } from '../../../actions/user/UserDetailsActions';
 import UserDetailsFormGeneral from './general/UserDetailsFormGeneral';
 import UserDetailsFormLog from './log/UserDetailsFormLog';
 import UserDetailsFormRoles from './roles/UserDetailsFormRoles';
+import UserDetailsFormTwoFactor from './two-factor/UserDetailsFormTwoFactor';
 
 class UserDetailsForm extends Component {
     constructor(props) {
@@ -33,6 +34,7 @@ class UserDetailsForm extends Component {
                 <UserDetailsFormGeneral />
                 <UserDetailsFormRoles />
                 <UserDetailsFormLog />
+                <UserDetailsFormTwoFactor />
             </div>
         );
     }

@@ -8,10 +8,12 @@ use App\Helpers\Email\EmailHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Resources\User\FullUser;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -73,9 +75,15 @@ class UserController extends Controller
         return $this->show($user->fresh());
     }
 
-    public function update(User $user, RequestInput $input)
+    public function update(User $user, RequestInput $input, Request $request)
     {
         $this->authorize('update', $user);
+
+        $resetTwoFactorAuthentication = false;
+
+        if($user->require_two_factor_authentication && $request->input('requireTwoFactorAuthentication') === false) {
+            $resetTwoFactorAuthentication = true;
+        }
 
         $data = $input->string('email')->validate(['required', 'email', Rule::unique('users', 'email')->ignore($user->id)])->next()
             ->password('password')->next()
@@ -84,14 +92,20 @@ class UserController extends Controller
             ->string('lastNamePrefixId')->validate('exists:last_name_prefixes,id')->onEmpty(null)->alias('last_name_prefix_id')->next()
             ->string('lastName')->alias('last_name')->next()
             ->string('phoneNumber')->alias('phone_number')->next()
+            ->boolean('requireTwoFactorAuthentication')->alias('require_two_factor_authentication')->next()
             ->string('mobile')->next()
             ->boolean('active')->next()
             ->string('occupation')->next()
             ->get();
 
-
         $user->fill($data);
         $user->save();
+
+        if($resetTwoFactorAuthentication) {
+            $user->twoFactorTokens()->delete();
+
+            (new DisableTwoFactorAuthentication())($user);
+        }
 
         return $this->show($user->fresh());
     }

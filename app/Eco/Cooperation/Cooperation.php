@@ -23,6 +23,7 @@ class Cooperation extends Model
         'created_at' => 'date',
         'updated_at' => 'date',
         'deleted_at' => 'date',
+        'require_two_factor_authentication' => 'bool',
     ];
 
     protected $encryptable = [

@@ -15,7 +15,7 @@ class TwoFactorAuthenticationController extends Controller
         $token = $request->header('TwoFactorToken');
 
         return response()->json([
-            'twoFactorEnabled' => $request->user()->two_factor_enabled,
+            'requireTwoFactorAuthentication' => $request->user()->requiresTwoFactorAuthentication(),
             'twoFactorActivated' => !!$request->user()->two_factor_secret,
             'hasValidToken' => $request->user()->twoFactorTokens()
                 ->where('token', $token)
@@ -26,6 +26,13 @@ class TwoFactorAuthenticationController extends Controller
 
     public function store(Request $request, EnableTwoFactorAuthentication $enable)
     {
+        if($request->user()->two_factor_secret){
+            /**
+             * Niet een 2e keer generen omdat dan de huidige 2fa meteen ongeldig wordt.
+             */
+            return response()->json(['message' => 'Two factor authentication is already enabled.'], 422);
+        }
+
         $enable($request->user());
 
         return new JsonResponse('', 200);

@@ -3,6 +3,7 @@
 namespace App\Eco\User;
 
 use App\Eco\Administration\Administration;
+use App\Eco\Cooperation\Cooperation;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Team\Team;
@@ -10,6 +11,7 @@ use App\Eco\Title\Title;
 use App\Http\Traits\Encryptable;
 use App\Notifications\MailResetPasswordToken;
 use App\Notifications\MailResetPasswordTokenFirstTime;
+use Carbon\Carbon;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
@@ -47,7 +49,7 @@ class User extends Authenticatable
     protected $casts = [
         'visit_count' => 'integer',
         'active' => 'boolean',
-        'two_factor_enabled' => 'boolean',
+        'require_two_factor_authentication' => 'boolean',
     ];
 
     protected $dates = [
@@ -88,6 +90,17 @@ class User extends Authenticatable
         return $this->hasMany(TwoFactorToken::class);
     }
 
+    public function requiresTwoFactorAuthentication()
+    {
+        $cooperation = Cooperation::first();
+
+        if($cooperation && $cooperation->require_two_factor_authentication){
+            return true;
+        }
+
+        return $this->require_two_factor_authentication;
+    }
+
     /**
      * Laravel passport checkt op deze functie voor het valideren van logingegevens
      *
@@ -114,4 +127,11 @@ class User extends Authenticatable
         }
     }
 
+    public function hasValidTwoFactorToken($token)
+    {
+        return $this->twoFactorTokens()
+            ->where('token', $token)
+            ->where('created_at', '>', Carbon::now()->subMinutes(config('auth.two_factor_token_ttl')))
+            ->exists();
+    }
 }

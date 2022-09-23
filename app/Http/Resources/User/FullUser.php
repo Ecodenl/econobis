@@ -43,6 +43,7 @@ class FullUser extends JsonResource
             'permissions' => $this->getPermissions(),
             'hasAlfrescoAccount' => $this->has_alfresco_account ? true : false,
             'roles' => $this->getRoles(),
+            'requireTwoFactorAuthentication' => $this->require_two_factor_authentication,
         ];
     }
 

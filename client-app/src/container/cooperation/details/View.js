@@ -101,6 +101,14 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
                         />
                     </div>
                 </PanelBody>
+                <PanelHeader>
+                    <span className="h5 text-bold">Twee factor authenticatie</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <ViewText label={'Verplicht'} value={formData.requireTwoFactorAuthentication ? 'Ja' : 'Nee'} />
+                    </div>
+                </PanelBody>
             </Panel>
         </section>
     );

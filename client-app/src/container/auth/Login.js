@@ -46,7 +46,7 @@ class Login extends Component {
                 this.props.authSuccess();
 
                 MeAPI.fetchTwoFactorStatus().then(payload => {
-                    if (!payload.data.twoFactorEnabled) {
+                    if (!payload.data.requireTwoFactorAuthentication) {
                         hashHistory.push('/');
                         return;
                     }

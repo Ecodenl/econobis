@@ -306,6 +306,20 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
                     </div>
                 </PanelBody>
 
+                <PanelHeader>
+                    <span className="h5 text-bold">Twee factor authenticatie</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <InputToggle
+                            label="Verplicht"
+                            name={'requireTwoFactorAuthentication'}
+                            value={values.requireTwoFactorAuthentication}
+                            onChangeAction={e => setFieldValue('requireTwoFactorAuthentication', e.target.checked)}
+                        />
+                    </div>
+                </PanelBody>
+
                 <PanelBody>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText buttonClassName={'btn-default'} buttonText={'Sluiten'} onClickAction={toggleEdit} />

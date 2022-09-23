@@ -25,6 +25,12 @@ export default {
         return axiosInstance.get(requestUrl);
     },
 
+    fetchTwoFactorRecoveryCodes: function() {
+        const requestUrl = `${URL_API}/api/me/two-factor-recovery-codes`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
     fetchTwoFactorStatus: function() {
         return axiosInstance.get(`${URL_API}/api/me/two-factor-status`);
     },

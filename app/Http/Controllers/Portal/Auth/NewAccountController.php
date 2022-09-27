@@ -146,7 +146,7 @@ class NewAccountController extends Controller
             foreach ($fields as $inputName => $outputName) {
                 // Alle input standaard waarde '' meegeven.
                 // Op deze manier hoeven we later alleen op lege string te checken...
-                // ... ipv bijv. if(!array_key_exists() || is_null($var) || $var = '')
+                // ... ipv bijv. if(!isset() || is_null($var) || $var = '')
                 $data[$groupname][$outputName] = trim($request->get($inputName, ''));
             }
         }

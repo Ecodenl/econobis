@@ -10,6 +10,7 @@ use App\Eco\Intake\Intake;
 use App\Eco\Measure\Measure;
 use App\Eco\ParticipantProject\ParticipantProject;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laracasts\Presenter\PresentableTrait;
@@ -17,7 +18,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 
 class Address extends Model
 {
-    use PresentableTrait, RevisionableTrait, SoftDeletes;
+    use PresentableTrait, RevisionableTrait, SoftDeletes, HasFactory;
     protected $presenter = AddressPresenter::class;
 
     protected $guarded = ['id'];

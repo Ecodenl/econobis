@@ -81,7 +81,7 @@ class AlfrescoHelper
 
 //        if(!$response || $response === null){
 //            Log::info('checkIfAccountExists - response null');
-//        }elseif(array_key_exists('succes', $response) && $response['succes']){
+//        }elseif(isset($response['succes']) && $response['succes']){
 //            Log::info('checkIfAccountExists - response "succes"');
 //            Log::info( $response );
 //        }else{
@@ -90,7 +90,7 @@ class AlfrescoHelper
 //        }
 
         $exists = false;
-        if(array_key_exists('succes', $response) && $response['succes']){
+        if(isset($response['succes']) && $response['succes']){
             $exists = true;
         }
 
@@ -107,7 +107,7 @@ class AlfrescoHelper
 
         $response = $this->executeCurl($url, $args, 'application/json', false, false);
 
-        if(array_key_exists('succes', $response) && $response['succes']){
+        if(isset($response['succes']) && $response['succes']){
             return '';
         }else{
             return $response['message'];
@@ -129,7 +129,7 @@ class AlfrescoHelper
 
         $response = $this->executeCurl($url, $args, 'application/json', false, false);
 
-        if(array_key_exists('succes', $response) && $response['succes']){
+        if(isset($response['succes']) && $response['succes']){
             return '';
         }else{
             return $response['message'];
@@ -142,7 +142,7 @@ class AlfrescoHelper
 
         $response = $this->executeCurl($url);
 
-        if(array_key_exists('succes', $response) && $response['succes']){
+        if(isset($response['succes']) && $response['succes']){
             $siteNodeId =  $response['message']['entry']['guid'];
         }else{
             return $response['message'];
@@ -236,7 +236,7 @@ class AlfrescoHelper
             try {
                 $err = json_decode($err);
                 Log::error('Alfresco error' . $err);
-                if(array_key_exists('error', $err) && array_key_exists('statusCode', $err['error'])){
+                if(isset($err['error']) && isset($err['error']['statusCode'])){
                     abort($err['error']['statusCode']);
                 }
             }
@@ -252,24 +252,19 @@ class AlfrescoHelper
                 $decoded_response = json_decode($response, true);
 
                 //catch alfresco errors
-                if ($decoded_response && array_key_exists('error', $decoded_response)) {
+                if ($decoded_response && isset($decoded_response['error'])) {
                     if($abort_on_error) {
-                        if(isset($decoded_response['error'])) {
-                            if(isset($decoded_response['error']['errorKey'])) {
-                                Log::error('Alfresco error: '
-                                    . $decoded_response['error']['errorKey']);
-                            }
-                            if(isset($decoded_response['error']['briefSummary'])) {
-                                Log::error('Alfresco error: '
-                                    . $decoded_response['error']['briefSummary']);
-                            }
-                            if(isset($decoded_response['error']['statusCode'])) {
-                                Log::error('Alfresco error: '
-                                    . $decoded_response['error']['statusCode']);
-                            }
+                        if(isset($decoded_response['error']['errorKey'])) {
+                            Log::error('Alfresco error: '
+                                . $decoded_response['error']['errorKey']);
                         }
-                        else{
-                            Log::error('Alfresco error: unknown');
+                        if(isset($decoded_response['error']['briefSummary'])) {
+                            Log::error('Alfresco error: '
+                                . $decoded_response['error']['briefSummary']);
+                        }
+                        if(isset($decoded_response['error']['statusCode'])) {
+                            Log::error('Alfresco error: '
+                                . $decoded_response['error']['statusCode']);
                         }
                         abort($decoded_response['error']['statusCode']);
                     }
@@ -284,6 +279,7 @@ class AlfrescoHelper
                         ];
                     }
                 } else {
+
                     //else success
 //                        Log::info("Decoded response (zonder error): ");
 //                        Log::info($decoded_response);
@@ -344,7 +340,7 @@ class AlfrescoHelper
             $decoded_response = json_decode($response, true);
 
             //catch alfresco errors
-            if ($decoded_response && array_key_exists('error', $decoded_response)) {
+            if ($decoded_response && isset( $decoded_response['error'])) {
                 Log::error('Alfresco error' . $decoded_response['error']);
             } //else success
             else {

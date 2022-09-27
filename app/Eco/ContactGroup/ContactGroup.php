@@ -10,6 +10,7 @@ use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ use Laracasts\Presenter\PresentableTrait;
 
 class ContactGroup extends Model
 {
-    use PresentableTrait, SoftDeletes;
+    use PresentableTrait, SoftDeletes, HasFactory;
     protected $presenter = ContactGroupPresenter::class;
 
     protected $casts

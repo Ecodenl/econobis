@@ -10,13 +10,14 @@ namespace App\Eco\Campaign;
 
 
 use App\Eco\Contact\Contact;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class CampaignResponse extends Model
 {
 
-    use RevisionableTrait;
+    use RevisionableTrait, HasFactory;
 
     protected $dates = [
 //        'date_responded',

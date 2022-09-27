@@ -35,6 +35,7 @@ use App\Helpers\Settings\PortalSettings;
 use App\Http\Resources\ContactGroup\GridContactGroup;
 use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
@@ -43,7 +44,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 
 class Contact extends Model
 {
-    use PresentableTrait, RevisionableTrait, Encryptable, SoftDeletes;
+    use PresentableTrait, RevisionableTrait, Encryptable, SoftDeletes, HasFactory;
     protected $presenter = ContactPresenter::class;
 
     protected $guarded = ['id'];

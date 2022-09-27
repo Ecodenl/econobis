@@ -4,13 +4,14 @@ namespace App\Eco\ContactNote;
 
 use App\Eco\Contact\Contact;
 use App\Eco\User\User;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class ContactNote extends Model
 {
-    use RevisionableTrait;
+    use RevisionableTrait, HasFactory;
 
     protected $guarded = ['id'];
 

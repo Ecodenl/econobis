@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\QuotationRequest;
 
+use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Opportunity\FullOpportunity;
@@ -39,6 +40,7 @@ class FullQuotationRequest extends JsonResource
                 'relatedEmailsSent' => $this->relatedEmailsSent,
                 'documentCount' => $this->documents()->count(),
                 'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
+                'contact' => FullContact::make($this->opportunity->intake->contact),
             ];
     }
 }

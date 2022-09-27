@@ -17,6 +17,7 @@ const ContactDetailsQuotationView = props => {
                 <div className="col-sm-2">{opportunity ? opportunity.status.name : ''}</div>
                 <div className="col-sm-2">{dateRecorded ? moment(dateRecorded).format('L') : ''}</div>
                 <div className="col-sm-2">{dateReleased ? moment(dateReleased).format('L') : ''}</div>
+                <div className="col-sm-2">{opportunity ? opportunity.intake.contact.fullName : ''}</div>
             </div>
         </div>
     );

@@ -256,9 +256,9 @@ class PersonController extends ApiController
             'collectMandateFirstRunDate' => 'nullable',
         ]);
 
-        if(array_key_exists('iban', $contactData) && $contact->iban != $contactData['iban']) $this->authorize('updateIban', $contact);
+        if(isset($contactData['iban']) && $contact->iban != $contactData['iban']) $this->authorize('updateIban', $contact);
 
-        if(array_key_exists('liabilityAmount', $contactData)){
+        if(isset($contactData['liabilityAmount'])){
         $contactData['liabilityAmount'] != ''
             ?: $contactData['liabilityAmount'] = 0;
         }

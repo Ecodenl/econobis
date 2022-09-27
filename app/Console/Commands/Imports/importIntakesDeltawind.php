@@ -102,7 +102,7 @@ class importIntakesDeltawind extends Command
             $opportunityNew->save();
 
             $opportunityNew->measures()->sync(120);
-       }
+        }
 
     }
 }

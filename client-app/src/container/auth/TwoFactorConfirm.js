@@ -40,6 +40,21 @@ class TwoFactorConfirm extends Component {
         });
     };
 
+    handleCancel = event => {
+        event.preventDefault();
+
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('last_activity');
+        localStorage.removeItem('last_activity');
+        localStorage.removeItem('two_factor_token');
+
+        hashHistory.push('/login');
+    };
+
     render() {
         return (
             <div className="col-md-4 col-sm-8 col-xs-10 login-form">
@@ -69,6 +84,7 @@ class TwoFactorConfirm extends Component {
                                             placeholder=""
                                             onChange={this.handleInputChange}
                                             autoComplete={'off'}
+                                            autoFocus
                                         />
                                     </div>
                                 </div>
@@ -76,8 +92,11 @@ class TwoFactorConfirm extends Component {
 
                             <div className="row">
                                 <div className="col-sm-10 col-md-offset-1">
-                                    <div className="btn-group pull-right">
-                                        <button type="submit" className="btn btn-primary">
+                                    <div className="pull-right">
+                                        <button type="button" className="btn btn-default" onClick={this.handleCancel}>
+                                            Annuleren
+                                        </button>
+                                        <button type="submit" className="btn btn-primary" style={{marginLeft: '5px'}}>
                                             Login
                                         </button>
                                     </div>

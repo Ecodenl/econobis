@@ -14,13 +14,10 @@ class TwoFactorQrCodeController extends Controller
     {
         if($request->user()->hasTwoFactorActivated()){
             /**
-             * QR kan alleen worden getoond als 2fa nog niet is geactiveerd (=eerste keer activatie), of als gebruiker ook 2fa ingelogd is.
+             * QR kan alleen worden getoond als 2fa nog niet is geactiveerd.
+             * (Geactiveerd betekent dat er al een keer is ingelogd met 2fa.)
              */
-            $token = $request->header('TwoFactorToken');
-
-            if (!$request->user()->hasValidTwoFactorToken($token)) {
-                return response()->json(['message' => 'Two factor authentication is already confirmed, won\'t display QR again without being 2fa authenticated.'], 422);
-            }
+            return response()->json(['message' => 'Two factor authentication is already confirmed, won\'t display QR again without being 2fa authenticated.'], 422);
         }
 
         return response()->json([

@@ -21,6 +21,7 @@ class Main extends Component {
             menuActive: false,
             menuStuck: false,
             changePasswordActive: false,
+            twoFactorSettingsActive: false,
             showAboutUs: false,
         };
 
@@ -34,6 +35,7 @@ class Main extends Component {
         this.onMenuLeave = this.onMenuLeave.bind(this);
         this.toggleMenu = this.toggleMenu.bind(this);
         this.toggleChangePassword = this.toggleChangePassword.bind(this);
+        this.toggleTwoFactorSettings = this.toggleTwoFactorSettings.bind(this);
         this.toggleAboutUs = this.toggleAboutUs.bind(this);
         this.toggleMenuStuck = this.toggleMenuStuck.bind(this);
     }
@@ -76,6 +78,12 @@ class Main extends Component {
         });
     }
 
+    toggleTwoFactorSettings() {
+        this.setState({
+            twoFactorSettingsActive: !this.state.twoFactorSettingsActive,
+        });
+    }
+
     toggleAboutUs() {
         this.setState({
             showAboutUs: !this.state.showAboutUs,
@@ -102,6 +110,7 @@ class Main extends Component {
                                     menuStuck={this.state.menuStuck}
                                     toggleMenuStuck={this.toggleMenuStuck}
                                     toggleChangePassword={this.toggleChangePassword}
+                                    toggleTwoFactorSettings={this.toggleTwoFactorSettings}
                                     toggleAboutUs={this.toggleAboutUs}
                                 />
                                 <Sidebar
@@ -118,7 +127,9 @@ class Main extends Component {
                                         <Content
                                             children={this.props.children}
                                             toggleChangePassword={this.toggleChangePassword}
+                                            toggleTwoFactorSettings={this.toggleTwoFactorSettings}
                                             changePasswordActive={this.state.changePasswordActive}
+                                            twoFactorSettingsActive={this.state.twoFactorSettingsActive}
                                             toggleAboutUs={this.toggleAboutUs}
                                             showAboutUs={this.state.showAboutUs}
                                         />

@@ -80,7 +80,7 @@ class TwoFactorConfirm extends Component {
                             <div>
                                 <div className="row">
                                     <div className="col-sm-10 col-md-offset-1 alert alert-success">
-                                        Herstelcode is geaccepteerd. Klik op doorgaan om twee-factor authenticatie
+                                        Herstelcode is geaccepteerd. Klik op doorgaan om twee factor authenticatie
                                         opnieuw in te stellen.
                                     </div>
                                 </div>
@@ -99,7 +99,7 @@ class TwoFactorConfirm extends Component {
                             <form onSubmit={this.handleSubmit}>
                                 <div className="row margin-10-top">
                                     <div className="col-sm-10 col-md-offset-1">
-                                        Geef een van de herstelcodes voor twee-factor authenticatie op.
+                                        Geef een van de herstelcodes voor twee factor authenticatie op.
                                     </div>
                                 </div>
 

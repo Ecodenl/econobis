@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Eco\User\TwoFactorToken;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
@@ -22,6 +23,13 @@ class ConfirmedTwoFactorAuthenticationController extends Controller
             'token' => Str::random(40),
         ]);
         $token->save();
+
+        /**
+         * Verwijder oude verlopen tokens van deze gebruiker, zodat de tabel niet oneindig aangroeit.
+         */
+        $request->user()->twoFactorTokens()
+            ->where('created_at', '<', Carbon::now()->subMinutes(config('auth.two_factor_token_ttl')))
+            ->delete();
 
         return response()->json([
             'token' => $token->token,

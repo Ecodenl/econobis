@@ -10,7 +10,7 @@ const AUTH_KEY = {
 export default {
     loginUser: loginCredentials => {
         const requestUrl = `${URL_API}/oauth/token`;
-        console.log(axiosInstance);
+
         delete axiosInstance.defaults.headers.common['Authorization'];
 
         return axiosInstance

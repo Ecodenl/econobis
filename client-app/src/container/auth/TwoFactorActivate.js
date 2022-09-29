@@ -82,7 +82,7 @@ class TwoFactorActivate extends Component {
                         </div>
                         <div className="row margin-10-top text-center">
                             <div className="col-sm-10 col-md-offset-1">
-                                Het gebruik van twee-factor authenticatie is verplicht. Sla de herstelcodes op een veilige plek op en scan vervolgens de QR-code met een authenticator app.
+                                Het gebruik van twee factor authenticatie is ingeschakeld voor uw account. Sla de herstelcodes op een veilige plek op en scan vervolgens de QR-code met een authenticator app.
                             </div>
                         </div>
                         <div className="row margin-10-top text-center">

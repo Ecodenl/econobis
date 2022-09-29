@@ -83,7 +83,7 @@ class TwoFactorConfirm extends Component {
                         <form onSubmit={this.handleSubmit}>
                             <div className="row margin-10-top">
                                 <div className="col-sm-10 col-md-offset-1">
-                                    Geef de twee-factor code in die je in je authenticator app hebt gekregen.
+                                    Geef de twee factor code in die je in je authenticator app hebt gekregen.
                                 </div>
                             </div>
 

@@ -57,9 +57,9 @@ class UserDetailsFormTwoFactor extends Component {
                 </PanelHeader>
                 <PanelBody>
                     {this.state.showEdit && permissions.manageUser ? (
-                        <UserDetailsFormTwoFactorEdit switchToView={this.switchToView} />
+                        <UserDetailsFormTwoFactorEdit switchToView={this.switchToView} requiredByCooperation={this.props.cooperation.require_two_factor_authentication} />
                     ) : (
-                        <UserDetailsFormTwoFactorView switchToEdit={this.switchToEdit} />
+                        <UserDetailsFormTwoFactorView switchToEdit={this.switchToEdit} requiredByCooperation={this.props.cooperation.require_two_factor_authentication} />
                     )}
                 </PanelBody>
             </Panel>
@@ -71,6 +71,7 @@ const mapStateToProps = state => {
     return {
         contactDetails: state.contactDetails,
         meDetails: state.meDetails,
+        cooperation: state.systemData.cooperation,
     };
 };
 

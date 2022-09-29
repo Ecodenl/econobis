@@ -137,4 +137,14 @@ class UserController extends Controller
         (new EmailHelper())->setConfigToDefaultMailbox();
         (new ForgotPasswordController())->sendResetLinkEmail($request);
     }
+
+    public function resetTwoFactor(User $user)
+    {
+        $user->twoFactorTokens()->delete();
+        $user->two_factor_secret = null;
+        $user->two_factor_recovery_codes = null;
+        $user->two_factor_confirmed_at = null;
+
+        $user->save();
+    }
 }

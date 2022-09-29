@@ -10,7 +10,7 @@ class TwoFactorQrCodeController extends Controller
 {
     public function show(Request $request)
     {
-        if (is_null($request->user()->two_factor_secret)) {
+        if (!$request->user()->hasTwoFactorActivated()) {
             return [];
         }
 

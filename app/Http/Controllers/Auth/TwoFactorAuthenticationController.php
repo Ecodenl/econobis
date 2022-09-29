@@ -16,7 +16,7 @@ class TwoFactorAuthenticationController extends Controller
 
         return response()->json([
             'requireTwoFactorAuthentication' => $request->user()->requiresTwoFactorAuthentication(),
-            'twoFactorActivated' => !!$request->user()->two_factor_secret,
+            'twoFactorActivated' => !!$request->user()->hasTwoFactorActivated(),
             'hasValidToken' => $request->user()->twoFactorTokens()
                 ->where('token', $token)
                 ->where('created_at', '>', Carbon::now()->subMinutes(config('auth.two_factor_token_ttl')))
@@ -26,7 +26,7 @@ class TwoFactorAuthenticationController extends Controller
 
     public function store(Request $request, EnableTwoFactorAuthentication $enable)
     {
-        if($request->user()->two_factor_secret){
+        if($request->user()->hasTwoFactorActivated()){
             /**
              * Niet een 2e keer generen omdat dan de huidige 2fa meteen ongeldig wordt.
              */

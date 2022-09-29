@@ -134,4 +134,9 @@ class User extends Authenticatable
             ->where('created_at', '>', Carbon::now()->subMinutes(config('auth.two_factor_token_ttl')))
             ->exists();
     }
+
+    public function hasTwoFactorActivated()
+    {
+        return !!$this->two_factor_secret;
+    }
 }

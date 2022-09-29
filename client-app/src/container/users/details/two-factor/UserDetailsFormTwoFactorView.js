@@ -11,7 +11,12 @@ const UserDetailsFormTwoFactorView = props => {
     return (
         <div onClick={props.switchToEdit}>
             <div className="row">
-                <ViewText label={'Verplicht'} value={requireTwoFactorAuthentication ? 'Ja' : 'Nee'} />
+                {props.requiredByCooperation ? (
+                    <ViewText label={'Verplicht'} value="Verplicht vanuit coöperatie" />
+                ) : (
+                    <ViewText label={'Verplicht'} value={requireTwoFactorAuthentication ? 'Ja' : 'Nee'} />
+                )}
+                <ViewText label={'Geactiveerd'} value={props.userDetails.hasTwoFactorActivated ? 'Ja' : 'Nee'} />
             </div>
         </div>
     );

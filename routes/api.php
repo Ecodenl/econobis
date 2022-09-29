@@ -95,6 +95,7 @@ Route::namespace('Api')
         Route::get('/user/with-permission/{permission}', 'User\UserController@withPermission');
         Route::post('/user/{user}/roles/add/{role}', 'User\UserController@addRole');
         Route::post('/user/{user}/roles/remove/{role}', 'User\UserController@removeRole');
+        Route::post('/user/{user}/reset-two-factor', 'User\UserController@resetTwoFactor');
 
         Route::post('/address/pico', 'Address\AddressController@getPicoAddress');
         Route::post('/address', 'Address\AddressController@store');

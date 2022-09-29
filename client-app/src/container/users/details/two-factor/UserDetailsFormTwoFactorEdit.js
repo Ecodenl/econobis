@@ -1,13 +1,12 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import validator from 'validator';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
 
-import { updateUser } from '../../../../actions/user/UserDetailsActions';
-import InputText from '../../../../components/form/InputText';
-import InputSelect from '../../../../components/form/InputSelect';
+import {fetchUserDetails, updateUser} from '../../../../actions/user/UserDetailsActions';
 import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from '../../../../components/panel/PanelFooter';
 import InputToggle from '../../../../components/form/InputToggle';
+import ViewText from "../../../../components/form/ViewText";
+import UserAPI from "../../../../api/user/UserAPI";
 
 class UserDetailsFormTwoFactorEdit extends Component {
     constructor(props) {
@@ -37,7 +36,7 @@ class UserDetailsFormTwoFactorEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { user } = this.state;
+        const {user} = this.state;
 
         user.titleId = user.titleId ? user.titleId : '';
         user.lastNamePrefixId = user.lastNamePrefixId ? user.lastNamePrefixId : '';
@@ -45,16 +44,35 @@ class UserDetailsFormTwoFactorEdit extends Component {
         this.props.updateUser(user, this.props.switchToView);
     };
 
+    handleTwoFactorReset = event => {
+        event.preventDefault();
+        UserAPI.resetTwoFactor(this.state.user.id)
+            .then(() => {
+                this.props.fetchUserDetails(this.state.user.id);
+            });
+
+    };
+
     render() {
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
-                    <InputToggle
-                        label="Verplicht"
-                        name={'requireTwoFactorAuthentication'}
-                        value={this.state.user.requireTwoFactorAuthentication}
-                        onChangeAction={this.handleInputChange}
-                    />
+                    {this.props.requiredByCooperation ? (
+                        <ViewText label={'Verplicht'} value="Verplicht vanuit coöperatie"/>
+                    ) : (
+                        <InputToggle
+                            label="Verplicht"
+                            name={'requireTwoFactorAuthentication'}
+                            value={this.state.user.requireTwoFactorAuthentication}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    )}
+                    <div className="col-sm-6"><label className="col-sm-6">Geactiveerd</label>
+                        <div className="col-sm-3">{this.state.user.hasTwoFactorActivated ? 'Ja' : 'Nee'}</div>
+                        {this.state.user.hasTwoFactorActivated ? (
+                            <a href="#" className="col-sm-3" onClick={this.handleTwoFactorReset}>reset</a>
+                        ) : null }
+                    </div>
                 </div>
 
                 <PanelFooter>
@@ -88,6 +106,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
     updateUser: (id, switchToView) => {
         dispatch(updateUser(id, switchToView));
+    },
+    fetchUserDetails: (id) => {
+        dispatch(fetchUserDetails(id));
     },
 });
 

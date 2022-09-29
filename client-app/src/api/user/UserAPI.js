@@ -39,4 +39,10 @@ export default {
 
         return axiosInstance.post(requestUrl);
     },
+
+    resetTwoFactor: (userId) => {
+        const requestUrl = `${URL_USER}/${userId}/reset-two-factor`;
+
+        return axiosInstance.post(requestUrl);
+    },
 };

@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Illuminate\Http\JsonResponse;
+use App\Http\Requests\TwoFactorLoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Laravel\Fortify\Actions\GenerateNewRecoveryCodes;
+use Laravel\Fortify\Contracts\FailedTwoFactorLoginResponse;
 
 class RecoveryCodeController extends Controller
 {
     /**
-     * Get the two factor authentication recovery codes for authenticated user.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Geef de recoverycode voor de huidige gebruiker
      */
     public function index(Request $request)
     {
@@ -22,9 +19,9 @@ class RecoveryCodeController extends Controller
             return [];
         }
 
-        if($request->user()->two_factor_confirmed_at){
+        if($request->user()->hasTwoFactorActivated()){
             /**
-             * Recovery codes mogen alleen worden getoond als 2fa nog niet is bevestigd (=eerste keer activatie), of als gebruiker ook 2fa ingelogd is.
+             * Recovery codes mogen alleen worden getoond als 2fa nog niet is geactiveerd (=eerste keer activatie), of als gebruiker ook 2fa ingelogd is.
              */
             $token = $request->header('TwoFactorToken');
 
@@ -39,18 +36,22 @@ class RecoveryCodeController extends Controller
     }
 
     /**
-     * Generate a fresh set of two factor authentication recovery codes.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Laravel\Fortify\Actions\GenerateNewRecoveryCodes  $generate
-     * @return \Illuminate\Http\Response
+     * Check een recoverycode voor de huidige gebruiker.
+     * Na succesvolle verificatie worden de 2fa instellingen verwijderd zodat deze opnieuw kunnen worden ingesteld
      */
-    public function store(Request $request, GenerateNewRecoveryCodes $generate)
+    public function recover(TwoFactorLoginRequest $request)
     {
-        $generate($request->user());
+        $user = $request->user();
 
-        return $request->wantsJson()
-                    ? new JsonResponse('', 200)
-                    : back()->with('status', 'recovery-codes-generated');
+        if ($request->validRecoveryCode()) {
+            $user->two_factor_secret = null;
+            $user->two_factor_recovery_codes = null;
+            $user->two_factor_confirmed_at = null;
+            $user->save();
+        } elseif (! $request->hasValidCode()) {
+            return app(FailedTwoFactorLoginResponse::class)->toResponse($request);
+        }
+
+        return response()->json([], 200);
     }
 }

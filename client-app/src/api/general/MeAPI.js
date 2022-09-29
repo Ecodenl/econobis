@@ -19,6 +19,12 @@ export default {
         return axiosInstance.post(requestUrl, data);
     },
 
+    recoverTwoFactor: function(data) {
+        const requestUrl = `${URL_API}/api/me/two-factor-challenge`;
+
+        return axiosInstance.post(requestUrl, data);
+    },
+
     fetchTwoFactorQr: function() {
         const requestUrl = `${URL_API}/api/me/two-factor-qr-code`;
 

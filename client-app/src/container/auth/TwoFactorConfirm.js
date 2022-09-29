@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import MeAPI from "../../api/general/MeAPI";
 import Logo from "../../components/logo/Logo";
-import {hashHistory} from "react-router";
+import {hashHistory, Link} from "react-router";
 
 class TwoFactorConfirm extends Component {
     constructor(props) {
@@ -9,6 +9,7 @@ class TwoFactorConfirm extends Component {
 
         this.state = {
             twoFactorCode: '',
+            errorMessage: '',
         };
     }
 
@@ -35,8 +36,14 @@ class TwoFactorConfirm extends Component {
             } else {
                 this.setState({
                     twoFactorCode: '',
+                    errorMessage: 'Ongeldige code.',
                 });
             }
+        }).catch(() => {
+            this.setState({
+                twoFactorCode: '',
+                errorMessage: 'Ongeldige code.',
+            });
         });
     };
 
@@ -54,6 +61,16 @@ class TwoFactorConfirm extends Component {
 
         hashHistory.push('/login');
     };
+
+    renderAlert() {
+        if (this.state.errorMessage) {
+            return (
+                <div className="col-sm-10 col-md-offset-1 alert alert-danger login-alert">
+                    {this.state.errorMessage}
+                </div>
+            );
+        }
+    }
 
     render() {
         return (
@@ -88,10 +105,14 @@ class TwoFactorConfirm extends Component {
                                         />
                                     </div>
                                 </div>
+                                {this.renderAlert()}
                             </div>
 
                             <div className="row">
                                 <div className="col-sm-10 col-md-offset-1">
+                                    <Link to="two-factor/recover" className="link-underline">
+                                        Gebruik herstelcode
+                                    </Link>
                                     <div className="pull-right">
                                         <button type="button" className="btn btn-default" onClick={this.handleCancel}>
                                             Annuleren

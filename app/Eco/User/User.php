@@ -137,6 +137,6 @@ class User extends Authenticatable
 
     public function hasTwoFactorActivated()
     {
-        return !!$this->two_factor_secret;
+        return !!$this->two_factor_confirmed_at;
     }
 }

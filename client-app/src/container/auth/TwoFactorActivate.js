@@ -82,12 +82,12 @@ class TwoFactorActivate extends Component {
                         </div>
                         <div className="row margin-10-top text-center">
                             <div className="col-sm-10 col-md-offset-1">
-                                Het gebruik van twee-factor authenticatie is verplicht. Sla de recovery codes op een veilige plek op en scan de QR-code met een authenticator app.
+                                Het gebruik van twee-factor authenticatie is verplicht. Sla de herstelcodes op een veilige plek op en scan vervolgens de QR-code met een authenticator app.
                             </div>
                         </div>
                         <div className="row margin-10-top text-center">
                             <div className="col-sm-10 col-md-offset-1">
-                                <h4>Recovery codes:</h4>
+                                <h4>Herstelcodes:</h4>
                                 <ul style={{listStyleType: 'none', padding: 0}}>
                                     {this.state.recoveryCodes.map((code) => {
                                         return (
@@ -111,7 +111,7 @@ class TwoFactorActivate extends Component {
                                                 hashHistory.push(`/two-factor/confirm`);
                                             }}
                                     >
-                                        Doorgaan...
+                                        Doorgaan
                                     </button>
                                 </div>
                             </div>

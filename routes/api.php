@@ -570,6 +570,7 @@ Route::namespace('Api')
         Route::post('me/confirmed-two-factor-authentication', [\App\Http\Controllers\Auth\ConfirmedTwoFactorAuthenticationController::class, 'store']);
         Route::get('me/two-factor-qr-code', [\App\Http\Controllers\Auth\TwoFactorQrCodeController::class, 'show']);
         Route::get('me/two-factor-recovery-codes', [\App\Http\Controllers\Auth\RecoveryCodeController::class, 'index']);
+        Route::post('me/two-factor-challenge', [\App\Http\Controllers\Auth\RecoveryCodeController::class, 'recover']);
     });
 
 Route::namespace('Api')

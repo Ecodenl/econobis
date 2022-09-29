@@ -10,6 +10,9 @@ use Laravel\Fortify\Actions\ConfirmTwoFactorAuthentication;
 
 class ConfirmedTwoFactorAuthenticationController extends Controller
 {
+    /**
+     * Valideer de 2fa code voor de huidige gebruiker en geef een token terug waarmee de gebruiker 2fa-ingelogd kan blijven.
+     */
     public function store(Request $request, ConfirmTwoFactorAuthentication $confirm)
     {
         $confirm($request->user(), $request->input('code'));

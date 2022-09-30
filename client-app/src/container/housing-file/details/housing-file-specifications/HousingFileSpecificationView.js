@@ -5,7 +5,6 @@ import moment from 'moment/moment';
 moment.locale('nl');
 
 const HousingFileSpecificationView = props => {
-    console.log(props);
     const { id, measure, status, measureDate, answer, floor, side, typeBrand } = props.housingFileSpecification;
 
     return (

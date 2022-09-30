@@ -11,6 +11,8 @@ import InputSelect from '../../../../components/form/InputSelect';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import MeasuresOfCategory from '../../../../selectors/MeasuresOfCategory';
+import InputTextArea from '../../../../components/form/InputTextArea';
+import InputText from '../../../../components/form/InputText';
 
 class HousingFileSpecificationNew extends Component {
     constructor(props) {
@@ -22,6 +24,11 @@ class HousingFileSpecificationNew extends Component {
                 measureId: '',
                 measureCategoryId: '',
                 measureDate: '',
+                answer: '',
+                statusId: '',
+                floorId: '',
+                sideId: '',
+                typeBrand: '',
             },
             errors: {
                 measureId: false,
@@ -82,7 +89,16 @@ class HousingFileSpecificationNew extends Component {
     };
 
     render() {
-        const { measureCategoryId, measureId, measureDate } = this.state.housingFileSpecification;
+        const {
+            measureCategoryId,
+            measureId,
+            measureDate,
+            answer,
+            statusId,
+            floorId,
+            sideId,
+            typeBrand,
+        } = this.state.housingFileSpecification;
         const measuresMatchToCategory = MeasuresOfCategory(this.props.measures, measureCategoryId);
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -98,7 +114,6 @@ class HousingFileSpecificationNew extends Component {
                             />
                             <InputSelect
                                 label={'Maatregel - specifiek'}
-                                size={'col-sm-6'}
                                 name={'measureId'}
                                 options={measuresMatchToCategory}
                                 value={measureId}
@@ -109,11 +124,53 @@ class HousingFileSpecificationNew extends Component {
                         </div>
 
                         <div className="row">
+                            <InputSelect
+                                label={'Status'}
+                                name={'statusId'}
+                                options={this.props.statuses}
+                                value={statusId}
+                                onChangeAction={this.handleInputChange}
+                            />
                             <InputDate
                                 label={'Datum realisatie'}
                                 name="measureDate"
                                 value={measureDate}
                                 onChangeAction={this.handleMeasureDate}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputTextArea
+                                label={'Waarde (antwoord)'}
+                                name={'answer'}
+                                value={answer}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputSelect
+                                label={'Verdieping'}
+                                name={'floorId'}
+                                options={this.props.floors}
+                                value={floorId}
+                                onChangeAction={this.handleInputChange}
+                            />
+                            <InputSelect
+                                label={'Zijde'}
+                                name={'sideId'}
+                                options={this.props.sides}
+                                value={sideId}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputText
+                                label={'Type/merk'}
+                                name={'typeBrand'}
+                                value={typeBrand}
+                                onChangeAction={this.handleInputChange}
                             />
                         </div>
 
@@ -139,8 +196,12 @@ class HousingFileSpecificationNew extends Component {
 
 const mapStateToProps = state => {
     return {
+        housingFileId: state.housingFileDetails.id,
         measures: state.systemData.measures,
         measureCategories: state.systemData.measureCategories,
+        statuses: state.systemData.housingFileSpecificationStatuses,
+        floors: state.systemData.housingFileSpecificationFloors,
+        sides: state.systemData.housingFileSpecificationSides,
     };
 };
 

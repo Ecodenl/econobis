@@ -135,10 +135,10 @@ class HousingFileController extends ApiController
             ->integer('housingFileId')->validate('required|exists:housing_files,id')->alias('housing_file_id')->next()
             ->integer('measureId')->validate('required|exists:measures,id')->alias('measure_id')->next()
             ->string('measureDate')->whenMissing(null)->onEmpty(null)->alias('measure_date')->next()
-            ->text('answer')->whenMissing(null)->onEmpty(null)->alias('answer')->next()
+            ->string('answer')->whenMissing(null)->onEmpty(null)->alias('answer')->next()
             ->integer('statusId')->validate('nullable|exists:housing_file_specification_statuses,id')->whenMissing(null)->onEmpty(null)->alias('status_id')->next()
             ->integer('floorId')->validate('nullable|exists:housing_file_specification_floors,id')->whenMissing(null)->onEmpty(null)->alias('floor_id')->next()
-            ->integer('sideId')->validate('nullable|exists:housing_file_specification_side,id')->whenMissing(null)->onEmpty(null)->alias('side_id')->next()
+            ->integer('sideId')->validate('nullable|exists:housing_file_specification_sides,id')->whenMissing(null)->onEmpty(null)->alias('side_id')->next()
             ->string('typeBrand')->whenMissing(null)->onEmpty(null)->alias('type_brand')->next()
             ->get();
 
@@ -147,6 +147,7 @@ class HousingFileController extends ApiController
 
         $housingFileSpecification->load([
             'measure',
+            'measure.measureCategory',
             'status',
             'floor',
             'side',
@@ -160,33 +161,24 @@ class HousingFileController extends ApiController
 
         $data = $requestInput
             ->string('measureDate')->whenMissing(null)->onEmpty(null)->alias('measure_date')->next()
-            ->text('answer')->whenMissing(null)->onEmpty(null)->alias('answer')->next()
+            ->string('answer')->whenMissing(null)->onEmpty(null)->alias('answer')->next()
             ->integer('statusId')->validate('nullable|exists:housing_file_specification_statuses,id')->whenMissing(null)->onEmpty(null)->alias('status_id')->next()
             ->integer('floorId')->validate('nullable|exists:housing_file_specification_floors,id')->whenMissing(null)->onEmpty(null)->alias('floor_id')->next()
-            ->integer('sideId')->validate('nullable|exists:housing_file_specification_side,id')->whenMissing(null)->onEmpty(null)->alias('side_id')->next()
+            ->integer('sideId')->validate('nullable|exists:housing_file_specification_sides,id')->whenMissing(null)->onEmpty(null)->alias('side_id')->next()
             ->string('typeBrand')->whenMissing(null)->onEmpty(null)->alias('type_brand')->next()
             ->get();
 
         $housingFileSpecification->fill($data);
         $housingFileSpecification->save();
 
-        $housingFileSpecification->housingFile->load([
-            'address.contact',
-            'housingFileSpecifications',
-            'housingFileSpecifications.measure',
-            'housingFileSpecifications.status',
-            'housingFileSpecifications.floor',
-            'housingFileSpecifications.side',
-            'buildingType',
-            'roofType',
-            'energyLabel',
-            'energyLabelStatus',
-            'createdBy',
-            'updatedBy',
-            'notes',
-            'documents'
+        $housingFileSpecification->load([
+            'measure',
+            'measure.measureCategory',
+            'status',
+            'floor',
+            'side',
         ]);
-        return FullHousingFile::make($housingFileSpecification->housingFile);
+        return FullHousingFileSpecification::make($housingFileSpecification);
     }
 
     public function deleteHousingFileSpecification(HousingFileSpecification $housingFileSpecification)

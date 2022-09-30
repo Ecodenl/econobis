@@ -27,6 +27,9 @@ use App\Eco\FinancialOverview\FinancialOverviewContactStatus;
 use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\HousingFile\EnergyLabelStatus;
+use App\Eco\HousingFile\HousingFileSpecificationFloor;
+use App\Eco\HousingFile\HousingFileSpecificationSide;
+use App\Eco\HousingFile\HousingFileSpecificationStatus;
 use App\Eco\HousingFile\RoofType;
 use App\Eco\Industry\Industry;
 use App\Eco\Intake\IntakeReason;
@@ -175,6 +178,9 @@ class SystemData extends JsonResource
             'energyLabelStatus' => FullEnumWithIdAndName::collection(EnergyLabelStatus::all()),
             'energySuppliers' => GenericResource::collection($sortedEnergySuppliers),
             'financialOverviewContactStatuses' => FullEnumWithIdAndName::collection(FinancialOverviewContactStatus::collection()),
+            'housingFileSpecificationStatuses' => HousingFileSpecificationStatus::select(['id', 'name'])->orderBy('name')->get(),
+            'housingFileSpecificationFloors' => HousingFileSpecificationFloor::select(['id', 'name'])->orderBy('name')->get(),
+            'housingFileSpecificationSides' => HousingFileSpecificationSide::select(['id', 'name'])->orderBy('name')->get(),
             'industries' => FullIndustry::collection(Industry::all()),
             'intakeSources' => IntakeSource::select(['id', 'name'])->get(),
             'intakeStatuses' => IntakeStatus::select(['id', 'name'])->get(),

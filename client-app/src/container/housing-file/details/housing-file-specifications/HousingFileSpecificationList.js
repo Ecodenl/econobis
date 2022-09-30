@@ -7,8 +7,14 @@ const HousingFileSpecificationList = props => {
     return (
         <div>
             <div className="row border header">
-                <div className="col-sm-6">Maatregel</div>
-                <div className="col-sm-5">Datum realisatie</div>
+                <div className="col-sm-2">Specificatie</div>
+                <div className="col-sm-1">Status</div>
+                <div className="col-sm-1">Datum realisatie</div>
+                <div className="col-sm-2">Waarde (antwoord)</div>
+                <div className="col-sm-1">Verdieping</div>
+                <div className="col-sm-1">Zijde</div>
+                <div className="col-sm-1">Type/merk</div>
+                <div className="col-sm-2">Categorie</div>
                 <div className="col-sm-1" />
             </div>
             {props.housingFileSpecifications.length > 0 ? (

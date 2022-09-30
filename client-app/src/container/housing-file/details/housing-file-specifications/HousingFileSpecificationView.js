@@ -5,7 +5,8 @@ import moment from 'moment/moment';
 moment.locale('nl');
 
 const HousingFileSpecificationView = props => {
-    const { id, measure, measureDate } = props.housingFileSpecification;
+    console.log(props);
+    const { id, measure, status, measureDate, answer, floor, side, typeBrand } = props.housingFileSpecification;
 
     return (
         <div
@@ -14,8 +15,14 @@ const HousingFileSpecificationView = props => {
             onMouseLeave={() => props.onLineLeave()}
         >
             <div>
-                <div className="col-sm-6">{measure.name}</div>
-                <div className="col-sm-5">{measureDate && moment(measureDate).format('L')}</div>
+                <div className="col-sm-2">{measure.name}</div>
+                <div className="col-sm-1">{status ? status.name : ''}</div>
+                <div className="col-sm-1">{measureDate && moment(measureDate).format('L')}</div>
+                <div className="col-sm-2">{answer ? answer : ''}</div>
+                <div className="col-sm-1">{floor ? floor.name : ''}</div>
+                <div className="col-sm-1">{side ? side.name : ''}</div>
+                <div className="col-sm-1">{typeBrand ? typeBrand : ''}</div>
+                <div className="col-sm-2">{measure.measureCategory && measure.measureCategory.name}</div>
             </div>
             <div className="col-sm-1">
                 {props.permissions.manageHousingFile && props.showActionButtons ? (

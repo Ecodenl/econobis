@@ -28,6 +28,7 @@ use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\HousingFile;
+use App\Eco\HousingFile\HousingFileSpecification;
 use App\Eco\HousingFile\RoofType;
 use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakeReason;
@@ -486,6 +487,11 @@ class ExternalWebformController extends Controller
                 'woondossier_momument' => 'is_monument',
                 'woondossier_maatregelen_ids' => 'measure_ids',
                 'woondossier_maatregelen_datums_realisatie' => 'measure_dates',
+                'woondossier_maatregelen_antwoorden' => 'measure_answers',
+                'woondossier_maatregelen_status_ids' => 'measure_status_ids',
+                'woondossier_maatregelen_floors_ids' => 'measure_floors_ids',
+                'woondossier_maatregelen_zijde_ids' => 'measure_sides_ids',
+                'woondossier_maatregelen_type_merken' => 'measure_type_brands',
                 'woondossier_aantal_bewoners' => 'number_of_residents',
                 'woondossier_opbrengst_zonnepanelen' => 'revenue_solar_panels',
                 'woondossier_opmerking' => 'remark',
@@ -1785,6 +1791,11 @@ protected function addEnergyConsumptionElectricityToAddress(Address $address, $d
             && $data['is_monument'] == ''
             && $data['measure_ids'] == ''
             && $data['measure_dates'] == ''
+            && $data['measure_answers'] == ''
+            && $data['measure_status_ids'] == ''
+            && $data['measure_floors_ids'] == ''
+            && $data['measure_sides_ids'] == ''
+            && $data['measure_type_brands'] == ''
             && $data['number_of_residents'] == ''
             && $data['revenue_solar_panels'] == ''
             && $data['remark'] == ''
@@ -1841,6 +1852,11 @@ protected function addEnergyConsumptionElectricityToAddress(Address $address, $d
 
         $measures = Measure::whereIn('id', explode(',', $data['measure_ids']))->get();
         $measureDates = explode(',', $data['measure_dates']);
+        $measureAnswers = explode(',', $data['measure_answers']);
+        $measureStatusIds = explode(',', $data['measure_status_ids']);
+        $measureFloorsIds = explode(',', $data['measure_floors_ids']);
+        $measureSidesids = explode(',', $data['measure_sides_ids']);
+        $measureTypeBrands = explode(',', $data['measure_type_brands']);
 
         $housingFile = HousingFile::where('address_id', $address->id)->orderBy('id', 'desc')->first();
         // Nog geen woondossier op adres, nieuw aanmaken
@@ -1870,11 +1886,40 @@ protected function addEnergyConsumptionElectricityToAddress(Address $address, $d
                 }
 
                 foreach ($measures as $key=>$measure) {
-                    if(!$data['measure_dates'] || !isset($data['measure_dates']) ){
-                        $address->measuresTaken()->attach($measure->id, ['measure_date' => null]);
-                    }else{
-                        $address->measuresTaken()->attach($measure->id, ['measure_date' => $measureDates[$key]]);
+                    $measureAnswer = null;
+                    $measureStatusId = null;
+                    $measureFloor = null;
+                    $measureSidesid = null;
+                    $measureTypeBrand = null;
+                    if($data['measure_dates'] && isset($data['measure_dates']) ){
+                        $measureDate = $measureDates[$key];
                     }
+                    if($data['measure_answers'] && isset($data['measure_answers']) ){
+                        $measureAnswer = $measureAnswers[$key];
+                    }
+                    if($data['measure_status_ids'] && isset($data['measure_status_ids']) ){
+                        $measureStatusId = $measureStatusIds[$key];
+                    }
+                    if($data['measure_floors_ids'] && isset($data['measure_floors_ids']) ){
+                        $measureFloorId = $measureFloorsIds[$key];
+                    }
+                    if($data['measure_sides_ids'] && isset($data['measure_sides_ids']) ){
+                        $measureSidesid = $measureSidesids[$key];
+                    }
+                    if($data['measure_type_brands'] && isset($data['measure_type_brands']) ){
+                        $measureTypeBrand = $measureTypeBrands[$key];
+                    }
+                    $housingFileSpecification = HousingFileSpecification::create([
+                        'housing_file_id' =>  $housingFile->id,
+                        'measure_id' => $measure->id,
+                        'measure_date' => $measureDate,
+                        'answer' => $measureAnswer,
+                        'status_id' => $measureStatusId,
+                        'floor_id' => $measureFloorId,
+                        'side_id' => $measureSidesid,
+                        'type_brand' => $measureTypeBrand,
+                    ]);
+
                 }
             } else {
                 $this->log("Er zijn geen maatregelen opgenomen voor woondossier.");
@@ -1904,12 +1949,40 @@ protected function addEnergyConsumptionElectricityToAddress(Address $address, $d
                     $this->log('Er zijn geen datum(s) realisaties meegegeven.');
                 }
                 foreach ($measures as $key=>$measure) {
-                    if(!$address->measuresTaken()->where('measure_id', $measure->id)->exists()){
-                        if(!$data['measure_dates'] || !isset($data['measure_dates']) ){
-                            $address->measuresTaken()->attach($measure->id, ['measure_date' => null]);
-                        }else{
-                            $address->measuresTaken()->attach($measure->id, ['measure_date' => $measureDates[$key]]);
+                    if(!HousingFileSpecification::where('housing_file_id', $housingFile)->where('measure_id', $measure->id)->exists()) {
+                        $measureAnswer = null;
+                        $measureStatusId = null;
+                        $measureFloor = null;
+                        $measureSidesid = null;
+                        $measureTypeBrand = null;
+                        if ($data['measure_dates'] && isset($data['measure_dates'])) {
+                            $measureDate = $measureDates[$key];
                         }
+                        if ($data['measure_answers'] && isset($data['measure_answers'])) {
+                            $measureAnswer = $measureAnswers[$key];
+                        }
+                        if ($data['measure_status_ids'] && isset($data['measure_status_ids'])) {
+                            $measureStatusId = $measureStatusIds[$key];
+                        }
+                        if ($data['measure_floors_ids'] && isset($data['measure_floors_ids'])) {
+                            $measureFloorId = $measureFloorsIds[$key];
+                        }
+                        if ($data['measure_sides_ids'] && isset($data['measure_sides_ids'])) {
+                            $measureSidesid = $measureSidesids[$key];
+                        }
+                        if ($data['measure_type_brands'] && isset($data['measure_type_brands'])) {
+                            $measureTypeBrand = $measureTypeBrands[$key];
+                        }
+                        $housingFileSpecification = HousingFileSpecification::create([
+                            'housing_file_id' => $housingFile->id,
+                            'measure_id' => $measure->id,
+                            'measure_date' => $measureDate,
+                            'answer' => $measureAnswer,
+                            'status_id' => $measureStatusId,
+                            'floor_id' => $measureFloorId,
+                            'side_id' => $measureSidesid,
+                            'type_brand' => $measureTypeBrand,
+                        ]);
                     }
                 }
             } else {

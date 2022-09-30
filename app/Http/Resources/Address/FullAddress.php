@@ -8,7 +8,6 @@ use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\HousingFile\FullHousingFile;
 use App\Http\Resources\Intake\FullIntake;
-use App\Http\Resources\Measure\FullMeasure;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -58,7 +57,6 @@ class FullAddress extends JsonResource
             'eanGas' => $this->ean_gas,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
-            'measuresTaken' => FullMeasure::collection($this->whenLoaded('measuresTaken')),
             'housingFile' => FullHousingFile::make($this->whenLoaded('housingFile')),
             'buildingType' => GenericResource::make($this->whenLoaded('building_type')),
             'intake' => FullIntake::make($this->whenLoaded('intake')),

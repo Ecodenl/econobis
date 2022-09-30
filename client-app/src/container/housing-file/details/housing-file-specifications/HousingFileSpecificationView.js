@@ -4,8 +4,8 @@ import moment from 'moment/moment';
 
 moment.locale('nl');
 
-const HousingFileMeasuresTakenView = props => {
-    const { id, name, measureTakenDate } = props.measureTaken;
+const HousingFileSpecificationView = props => {
+    const { id, measure, measureDate } = props.housingFileSpecification;
 
     return (
         <div
@@ -14,8 +14,8 @@ const HousingFileMeasuresTakenView = props => {
             onMouseLeave={() => props.onLineLeave()}
         >
             <div>
-                <div className="col-sm-6">{name}</div>
-                <div className="col-sm-5">{measureTakenDate && moment(measureTakenDate).format('L')}</div>
+                <div className="col-sm-6">{measure.name}</div>
+                <div className="col-sm-5">{measureDate && moment(measureDate).format('L')}</div>
             </div>
             <div className="col-sm-1">
                 {props.permissions.manageHousingFile && props.showActionButtons ? (
@@ -36,4 +36,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(HousingFileMeasuresTakenView);
+export default connect(mapStateToProps, null)(HousingFileSpecificationView);

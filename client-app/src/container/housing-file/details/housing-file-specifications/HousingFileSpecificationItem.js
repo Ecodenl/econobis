@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import HousingFileMeasuresTakenView from './HousingFileMeasuresTakenView';
-import HousingFileMeasuresTakenDelete from './HousingFileMeasuresTakenDelete';
-import HousingFileDetailsAPI from '../../../../api/housing-file/HousingFileDetailsAPI';
+import HousingFileSpecificationView from './HousingFileSpecificationView';
+import HousingFileSpecificationDelete from './HousingFileSpecificationDelete';
 import { isEqual } from 'lodash';
 
-class HousingFileMeasuresTakenItem extends Component {
+class HousingFileSpecificationItem extends Component {
     constructor(props) {
         super(props);
 
@@ -14,18 +13,18 @@ class HousingFileMeasuresTakenItem extends Component {
             showActionButtons: false,
             highlightLine: '',
             showDelete: false,
-            measureTaken: {
-                ...props.measureTaken,
+            housingFileSpecification: {
+                ...props.housingFileSpecification,
             },
         };
     }
 
     componentWillReceiveProps(nextProps) {
-        if (!isEqual(this.state.measureTaken, nextProps.measureTaken)) {
+        if (!isEqual(this.state.housingFileSpecification, nextProps.housingFileSpecification)) {
             this.setState({
                 ...this.state,
-                measureTaken: {
-                    ...nextProps.measureTaken,
+                housingFileSpecification: {
+                    ...nextProps.housingFileSpecification,
                 },
             });
         }
@@ -51,18 +50,18 @@ class HousingFileMeasuresTakenItem extends Component {
     render() {
         return (
             <div>
-                <HousingFileMeasuresTakenView
+                <HousingFileSpecificationView
                     highlightLine={this.state.highlightLine}
                     showActionButtons={this.state.showActionButtons}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
                     toggleDelete={this.toggleDelete}
-                    measureTaken={this.state.measureTaken}
+                    housingFileSpecification={this.state.housingFileSpecification}
                 />
                 {this.state.showDelete && (
-                    <HousingFileMeasuresTakenDelete
+                    <HousingFileSpecificationDelete
                         closeDeleteItemModal={this.toggleDelete}
-                        {...this.props.measureTaken}
+                        {...this.props.housingFileSpecification}
                     />
                 )}
             </div>
@@ -76,4 +75,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(HousingFileMeasuresTakenItem);
+export default connect(mapStateToProps, null)(HousingFileSpecificationItem);

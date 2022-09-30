@@ -2,14 +2,10 @@
 
 namespace App\Http\Resources\Measure;
 
-use App\Eco\Address\Address;
-use App\Eco\Document\Document;
-use App\Http\Resources\Address\FullAddress;
 use App\Http\Resources\GenericResource;
-use App\Http\Resources\HousingFile\FullHousingFile;
+use App\Http\Resources\HousingFile\FullHousingFileSpecification;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Organisation\FullOrganisation;
-use App\Http\Resources\Intake\FullIntake;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -36,9 +32,7 @@ class FullMeasure extends JsonResource
             'faqs' => $this->faqs()->get(),
             'suppliers' => FullOrganisation::collection($this->whenLoaded('deliveredByOrganisations')),
             'opportunities' => FullOpportunity::collection($this->whenLoaded('opportunities')),
-            'measuresTaken' => FullAddress::collection($this->whenLoaded('addresses')),
-            'measureTakenDate' => $this->whenPivotLoaded('housing_file_measure_taken', function () {
-                return $this->pivot->measure_date;}),
+            'housingFileSpecifications' => FullHousingFileSpecification::collection($this->whenLoaded('housingFileSpecifications')),
             'relatedDocuments' => $this->documents()->get(),
             'documentCount' => $this->documents()->count(),
         ];

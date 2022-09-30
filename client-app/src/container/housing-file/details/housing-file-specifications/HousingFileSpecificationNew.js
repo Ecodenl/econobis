@@ -4,7 +4,7 @@ import moment from 'moment';
 import validator from 'validator';
 moment.locale('nl');
 import HousingFileDetailsAPI from '../../../../api/housing-file/HousingFileDetailsAPI';
-import { newHousingFileMeasureTaken } from '../../../../actions/housing-file/HousingFileDetailsActions';
+import { addHousingFileSpecificationToState } from '../../../../actions/housing-file/HousingFileDetailsActions';
 import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from '../../../../components/form/InputSelect';
@@ -12,13 +12,13 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import MeasuresOfCategory from '../../../../selectors/MeasuresOfCategory';
 
-class HousingFileMeasuresTakenNew extends Component {
+class HousingFileSpecificationNew extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            measureTaken: {
-                addressId: this.props.addressId,
+            housingFileSpecification: {
+                housingFileId: this.props.housingFileId,
                 measureId: '',
                 measureCategoryId: '',
                 measureDate: '',
@@ -36,8 +36,8 @@ class HousingFileMeasuresTakenNew extends Component {
 
         this.setState({
             ...this.state,
-            measureTaken: {
-                ...this.state.measureTaken,
+            housingFileSpecification: {
+                ...this.state.housingFileSpecification,
                 [name]: value,
             },
         });
@@ -48,8 +48,8 @@ class HousingFileMeasuresTakenNew extends Component {
 
         this.setState({
             ...this.state,
-            measureTaken: {
-                ...this.state.measureTaken,
+            housingFileSpecification: {
+                ...this.state.housingFileSpecification,
                 measureDate: formattedDate,
             },
         });
@@ -58,12 +58,12 @@ class HousingFileMeasuresTakenNew extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { measureTaken } = this.state;
+        const { housingFileSpecification } = this.state;
 
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(measureTaken.measureId)) {
+        if (validator.isEmpty(housingFileSpecification.measureId)) {
             errors.measureId = true;
             hasErrors = true;
         }
@@ -71,9 +71,9 @@ class HousingFileMeasuresTakenNew extends Component {
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-            HousingFileDetailsAPI.attachMeasureTaken(measureTaken)
+            HousingFileDetailsAPI.addHousingFileSpecification(housingFileSpecification)
                 .then(payload => {
-                    this.props.newHousingFileMeasureTaken(payload.data.data);
+                    this.props.addHousingFileSpecificationToState(payload.data.data);
                     this.props.toggleShowNew();
                 })
                 .catch(function(error) {
@@ -82,7 +82,7 @@ class HousingFileMeasuresTakenNew extends Component {
     };
 
     render() {
-        const { measureCategoryId, measureId, measureDate } = this.state.measureTaken;
+        const { measureCategoryId, measureId, measureDate } = this.state.housingFileSpecification;
         const measuresMatchToCategory = MeasuresOfCategory(this.props.measures, measureCategoryId);
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -141,14 +141,13 @@ const mapStateToProps = state => {
     return {
         measures: state.systemData.measures,
         measureCategories: state.systemData.measureCategories,
-        addressId: state.housingFileDetails.address.id,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    newHousingFileMeasureTaken: address => {
-        dispatch(newHousingFileMeasureTaken(address));
+    addHousingFileSpecificationToState: housingFileSpecification => {
+        dispatch(addHousingFileSpecificationToState(housingFileSpecification));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(HousingFileMeasuresTakenNew);
+export default connect(mapStateToProps, mapDispatchToProps)(HousingFileSpecificationNew);

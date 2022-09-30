@@ -9,21 +9,18 @@
 namespace App\Http\Controllers\Api\HousingFile;
 
 
-use App\Eco\Address\Address;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Contact\Contact;
-use App\Eco\Measure\Measure;
+use App\Eco\HousingFile\HousingFileSpecification;
 use App\Helpers\Delete\Models\DeleteHousingFile;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\HousingFile\Grid\RequestQuery;
-use App\Http\Resources\Address\FullAddress;
-use App\Http\Resources\GenericResource;
 use App\Http\Resources\HousingFile\FullHousingFile;
+use App\Http\Resources\HousingFile\FullHousingFileSpecification;
 use App\Http\Resources\HousingFile\GridHousingFile;
 use App\Http\Resources\HousingFile\HousingFilePeek;
 use App\Http\Resources\HousingFile\IntakePeek;
-use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -59,7 +56,11 @@ class HousingFileController extends ApiController
     {
         $housingFile->load([
             'address.contact',
-            'address.measuresTaken',
+            'housingFileSpecifications',
+            'housingFileSpecifications.measure',
+            'housingFileSpecifications.status',
+            'housingFileSpecifications.floor',
+            'housingFileSpecifications.side',
             'buildingType',
             'roofType',
             'energyLabel',
@@ -125,31 +126,63 @@ class HousingFileController extends ApiController
     }
 
 
-    public function attachMeasureTaken(RequestInput $requestInput)
+    public function addHousingFileSpecification(RequestInput $requestInput)
     {
         $this->authorize('manage', HousingFile::class);
 
         $data = $requestInput
-            ->integer('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
+            ->integer('housingFileId')->validate('required|exists:housing_files,id')->alias('housing_file_id')->next()
             ->integer('measureId')->validate('required|exists:measures,id')->alias('measure_id')->next()
             ->string('measureDate')->whenMissing(null)->onEmpty(null)->alias('measure_date')->next()
             ->get();
 
-        $address = Address::find($data['address_id']);
-        $address->measuresTaken()->attach($data['measure_id'], ['measure_date' => $data['measure_date']]);
+        $housingFileSpecification = new HousingFileSpecification($data);
+        $housingFileSpecification->save();
 
-        $address->load('measuresTaken', 'contact');
+        $housingFileSpecification->load([
+            'measure',
+            'status',
+            'floor',
+            'side',
+        ]);
+        return FullHousingFileSpecification::make($housingFileSpecification);
+   }
 
-        return FullAddress::make($address);
-    }
-
-    public function detachMeasureTaken(Address $address, Measure $measure)
+    public function updateHousingFileSpecification(RequestInput $requestInput, HousingFileSpecification $housingFileSpecification)
     {
         $this->authorize('manage', HousingFile::class);
 
-        $address->measuresTaken()->detach($measure->id);
+        $data = $requestInput
+            ->string('measureDate')->whenMissing(null)->onEmpty(null)->alias('measure_date')->next()
+            ->get();
 
-        return GenericResource::make($measure);
+        $housingFileSpecification->fill($data);
+        $housingFileSpecification->save();
+
+        $housingFileSpecification->housingFile->load([
+            'address.contact',
+            'housingFileSpecifications',
+            'housingFileSpecifications.measure',
+            'housingFileSpecifications.status',
+            'housingFileSpecifications.floor',
+            'housingFileSpecifications.side',
+            'buildingType',
+            'roofType',
+            'energyLabel',
+            'energyLabelStatus',
+            'createdBy',
+            'updatedBy',
+            'notes',
+            'documents'
+        ]);
+        return FullHousingFile::make($housingFileSpecification->housingFile);
+    }
+
+    public function deleteHousingFileSpecification(HousingFileSpecification $housingFileSpecification)
+    {
+        $this->authorize('manage', HousingFile::class);
+
+       $housingFileSpecification->delete();
     }
 
     public function destroy(HousingFile $housingFile)

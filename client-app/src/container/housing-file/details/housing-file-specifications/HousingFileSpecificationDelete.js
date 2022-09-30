@@ -2,14 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../../components/modal/Modal';
-import {
-    deleteHousingFileMeasureTaken,
-    fetchHousingFileDetails,
-} from '../../../../actions/housing-file/HousingFileDetailsActions';
+import { deleteHousingFileSpecification } from '../../../../actions/housing-file/HousingFileDetailsActions';
 
-const HousingFileMeasuresTakenDelete = props => {
+const HousingFileSpecificationDelete = props => {
     const confirmAction = () => {
-        props.deleteHousingFileMeasureTaken(props.addressId, props.id);
+        props.deleteHousingFileSpecification(props.id);
         props.closeDeleteItemModal();
     };
 
@@ -22,7 +19,7 @@ const HousingFileMeasuresTakenDelete = props => {
             title="Verwijderen"
         >
             <p>
-                Verwijder maatregel genomen: <strong> {`${props.name}`} </strong>
+                Verwijder specificatie: <strong> {`${props.measure.name}`} </strong>
             </p>
         </Modal>
     );
@@ -30,15 +27,14 @@ const HousingFileMeasuresTakenDelete = props => {
 
 const mapStateToProps = state => {
     return {
-        addressId: state.housingFileDetails.address.id,
         housingFileId: state.housingFileDetails.id,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteHousingFileMeasureTaken: (addressId, measureId) => {
-        dispatch(deleteHousingFileMeasureTaken(addressId, measureId));
+    deleteHousingFileSpecification: housingFileSpecificationId => {
+        dispatch(deleteHousingFileSpecification(housingFileSpecificationId));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(HousingFileMeasuresTakenDelete);
+export default connect(mapStateToProps, mapDispatchToProps)(HousingFileSpecificationDelete);

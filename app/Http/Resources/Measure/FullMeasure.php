@@ -24,6 +24,7 @@ class FullMeasure extends JsonResource
             'number' => $this->number,
             'name' => $this->name,
             'description' => $this->description,
+            'visible' => $this->visible,
             'createdAt' => $this->created_at,
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
             'updatedAt' => $this->updated_at,

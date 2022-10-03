@@ -489,7 +489,7 @@ class ExternalWebformController extends Controller
                 'woondossier_maatregelen_datums_realisatie' => 'measure_dates',
                 'woondossier_maatregelen_antwoorden' => 'measure_answers',
                 'woondossier_maatregelen_status_ids' => 'measure_status_ids',
-                'woondossier_maatregelen_floors_ids' => 'measure_floors_ids',
+                'woondossier_maatregelen_verdieping_ids' => 'measure_floors_ids',
                 'woondossier_maatregelen_zijde_ids' => 'measure_sides_ids',
                 'woondossier_maatregelen_type_merken' => 'measure_type_brands',
                 'woondossier_aantal_bewoners' => 'number_of_residents',
@@ -1888,7 +1888,7 @@ protected function addEnergyConsumptionElectricityToAddress(Address $address, $d
                 foreach ($measures as $key=>$measure) {
                     $measureAnswer = null;
                     $measureStatusId = null;
-                    $measureFloor = null;
+                    $measureFloorId = null;
                     $measureSidesid = null;
                     $measureTypeBrand = null;
                     if($data['measure_dates'] && isset($data['measure_dates']) ){
@@ -1952,7 +1952,7 @@ protected function addEnergyConsumptionElectricityToAddress(Address $address, $d
                     if(!HousingFileSpecification::where('housing_file_id', $housingFile)->where('measure_id', $measure->id)->exists()) {
                         $measureAnswer = null;
                         $measureStatusId = null;
-                        $measureFloor = null;
+                        $measureFloorId = null;
                         $measureSidesid = null;
                         $measureTypeBrand = null;
                         if ($data['measure_dates'] && isset($data['measure_dates'])) {

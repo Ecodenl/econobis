@@ -181,7 +181,7 @@ class TwinfieldCustomerHelper
             }
             // Check in Twinfield, bestaat hij daar echt, zo niet dan ook nieuw aanmaken ?
             try {
-                $customer = $this->getTwinfieldCustomerByCode($twinfieldCustomerNumber->twinfield_number);
+                $customer = $this->getTwinfieldCustomerByCode($twinfieldCustomerNumber->twinfield_number, $contact);
                 if(!$customer || $customer->getUID() == null){
                     $customer = new Customer();
                     $createNew = true;

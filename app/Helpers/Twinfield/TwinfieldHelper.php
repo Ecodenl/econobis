@@ -67,7 +67,9 @@ class TwinfieldHelper
         $result = true;
 
         try {
-           $officeApiConnector->listAllWithoutOfficeCode();
+           $offices = $officeApiConnector->listAllWithoutOfficeCode();
+           Log::info('Test twinfield connection is ok, offices:');
+           Log::info($offices);
         }
         catch(Exception $e){
             Log::error($e->getMessage());

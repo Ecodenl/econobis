@@ -43,13 +43,19 @@ class MailFetcherMsOauth
     {
 //        Log::info("Check fetchNew mailbox " . $this->mailbox->id);
 
+        if ($this->mailbox->start_fetch_mail != null) {
+            return;
+        }
+
+        $this->mailbox->start_fetch_mail = Carbon::now();
+        $this->mailbox->save();
+
         if ($this->mailbox->date_last_fetched) {
             $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->subDay()->format('Y-m-d');
         } else {
             $dateLastFetched = Carbon::now()->subDay()->format('Y-m-d');
         }
 
-        $dateTime = Carbon::now();
         $moreAvailable = true;
 
         while ($moreAvailable) {
@@ -71,7 +77,8 @@ class MailFetcherMsOauth
 
         }
 
-        $this->mailbox->date_last_fetched = $dateTime;
+        $this->mailbox->date_last_fetched = Carbon::now();
+        $this->mailbox->start_fetch_mail = null;
         $this->mailbox->save();
     }
 
@@ -79,14 +86,20 @@ class MailFetcherMsOauth
     {
         foreach ($listMessages->getPage() as $message) {
             $msOauthMessageId = $message->getId();
+//            Log::info('msOauthMessageId: '.$msOauthMessageId);
+//            Log::info('subject: '. ($message->getSubject() ?: ''));
             $receivedDateTime = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::parse( $message->getReceivedDateTime())->format('Y-m-d H:i:s'), 'UTC');
             $receivedDateTime->setTimezone(date_default_timezone_get());
+//            Log::info('receivedDateTime: '. $receivedDateTime);
+//            Log::info('dateLastFetched: '. $dateLastFetched);
             if($receivedDateTime >= $dateLastFetched) {
                 if (!Email::whereMailboxId($this->mailbox->id)
                     ->whereGmailMessageId($msOauthMessageId)
                     ->exists()) {
                     $this->fetchEmail($message);
                 }
+            } else {
+                return false;
             }
         }
 

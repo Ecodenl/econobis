@@ -141,7 +141,7 @@ class HousingFileSpecificationNew extends Component {
 
                         <div className="row">
                             <InputTextArea
-                                label={'Waarde (antwoord)'}
+                                label={'Waarde'}
                                 name={'answer'}
                                 value={answer}
                                 onChangeAction={this.handleInputChange}

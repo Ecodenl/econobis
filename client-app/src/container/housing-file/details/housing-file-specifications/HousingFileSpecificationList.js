@@ -10,7 +10,7 @@ const HousingFileSpecificationList = props => {
                 <div className="col-sm-2">Specificatie</div>
                 <div className="col-sm-1">Status</div>
                 <div className="col-sm-1">Datum realisatie</div>
-                <div className="col-sm-2">Waarde (antwoord)</div>
+                <div className="col-sm-2">Waarde</div>
                 <div className="col-sm-1">Verdieping</div>
                 <div className="col-sm-1">Zijde</div>
                 <div className="col-sm-1">Type/merk</div>

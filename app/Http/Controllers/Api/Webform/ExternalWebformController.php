@@ -1881,36 +1881,33 @@ protected function addEnergyConsumptionElectricityToAddress(Address $address, $d
             $this->log("Woondossier met id " . $housingFile->id . " aangemaakt en gekoppeld aan adres id " . $address->id . ".");
 
             if($measures){
-                if(!$data['measure_dates'] || !isset($data['measure_dates']) ){
-                    $this->log('Er zijn geen datum(s) realisaties meegegeven.');
-                }
-
                 foreach ($measures as $key=>$measure) {
+                    $measureDate = null;
                     $measureAnswer = null;
                     $measureStatusId = null;
                     $measureFloorId = null;
                     $measureSidesid = null;
                     $measureTypeBrand = null;
-                    if($data['measure_dates'] && isset($data['measure_dates']) ){
+                    if (isset($measureDates[$key]) && !empty($measureDates[$key])) {
                         $measureDate = $measureDates[$key];
                     }
-                    if($data['measure_answers'] && isset($data['measure_answers']) ){
+                    if (isset($measureAnswers[$key]) && !empty($measureAnswers[$key])) {
                         $measureAnswer = $measureAnswers[$key];
                     }
-                    if($data['measure_status_ids'] && isset($data['measure_status_ids']) ){
+                    if (isset($measureStatusIds[$key]) && !empty($measureStatusIds[$key])) {
                         $measureStatusId = $measureStatusIds[$key];
                     }
-                    if($data['measure_floors_ids'] && isset($data['measure_floors_ids']) ){
+                    if (isset($measureFloorsIds[$key]) && !empty($measureFloorsIds[$key])) {
                         $measureFloorId = $measureFloorsIds[$key];
                     }
-                    if($data['measure_sides_ids'] && isset($data['measure_sides_ids']) ){
+                    if (isset($measureSidesids[$key]) && !empty($measureSidesids[$key])) {
                         $measureSidesid = $measureSidesids[$key];
                     }
-                    if($data['measure_type_brands'] && isset($data['measure_type_brands']) ){
+                    if (isset($measureTypeBrands[$key]) && !empty($measureTypeBrands[$key])) {
                         $measureTypeBrand = $measureTypeBrands[$key];
                     }
                     $housingFileSpecification = HousingFileSpecification::create([
-                        'housing_file_id' =>  $housingFile->id,
+                        'housing_file_id' => $housingFile->id,
                         'measure_id' => $measure->id,
                         'measure_date' => $measureDate,
                         'answer' => $measureAnswer,
@@ -1919,7 +1916,6 @@ protected function addEnergyConsumptionElectricityToAddress(Address $address, $d
                         'side_id' => $measureSidesid,
                         'type_brand' => $measureTypeBrand,
                     ]);
-
                 }
             } else {
                 $this->log("Er zijn geen maatregelen opgenomen voor woondossier.");
@@ -1945,32 +1941,30 @@ protected function addEnergyConsumptionElectricityToAddress(Address $address, $d
             $this->log("Woondossier met id " . $housingFile->id . " is gewijzigd voor adres id " . $address->id . ".");
 
             if(isset($measures)){
-                if(!$data['measure_dates'] || !isset($data['measure_dates']) ){
-                    $this->log('Er zijn geen datum(s) realisaties meegegeven.');
-                }
                 foreach ($measures as $key=>$measure) {
                     if(!HousingFileSpecification::where('housing_file_id', $housingFile)->where('measure_id', $measure->id)->exists()) {
+                        $measureDate = null;
                         $measureAnswer = null;
                         $measureStatusId = null;
                         $measureFloorId = null;
                         $measureSidesid = null;
                         $measureTypeBrand = null;
-                        if ($data['measure_dates'] && isset($data['measure_dates'])) {
+                        if (isset($measureDates[$key]) && !empty($measureDates[$key])) {
                             $measureDate = $measureDates[$key];
                         }
-                        if ($data['measure_answers'] && isset($data['measure_answers'])) {
+                        if (isset($measureAnswers[$key]) && !empty($measureAnswers[$key])) {
                             $measureAnswer = $measureAnswers[$key];
                         }
-                        if ($data['measure_status_ids'] && isset($data['measure_status_ids'])) {
+                        if (isset($measureStatusIds[$key]) && !empty($measureStatusIds[$key])) {
                             $measureStatusId = $measureStatusIds[$key];
                         }
-                        if ($data['measure_floors_ids'] && isset($data['measure_floors_ids'])) {
+                        if (isset($measureFloorsIds[$key]) && !empty($measureFloorsIds[$key])) {
                             $measureFloorId = $measureFloorsIds[$key];
                         }
-                        if ($data['measure_sides_ids'] && isset($data['measure_sides_ids'])) {
+                        if (isset($measureSidesids[$key]) && !empty($measureSidesids[$key])) {
                             $measureSidesid = $measureSidesids[$key];
                         }
-                        if ($data['measure_type_brands'] && isset($data['measure_type_brands'])) {
+                        if (isset($measureTypeBrands[$key]) && !empty($measureTypeBrands[$key])) {
                             $measureTypeBrand = $measureTypeBrands[$key];
                         }
                         $housingFileSpecification = HousingFileSpecification::create([

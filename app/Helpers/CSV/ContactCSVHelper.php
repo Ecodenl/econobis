@@ -184,7 +184,6 @@ class ContactCSVHelper
                             $repContact['occupationPrimaryEmailAddress'] = $primaryOccupation->contact->primaryEmailAddress ? $primaryOccupation->contact->primaryEmailAddress : '';
                             $repContact['occupationPrimaryTelephoneNumber'] = $primaryOccupation->contact->primaryphoneNumber ? $primaryOccupation->contact->primaryphoneNumber : '';
                             $repContact['occupationRole'] = $primaryOccupation->occupation->secondary_occupation;
-
                             $index = $chunk->search(function ($item, $key) use ($contact) {
                                 return $item->id == $contact->id;
                             });
@@ -322,7 +321,6 @@ class ContactCSVHelper
                 'occupationPrimaryEmailAddress.email' => 'Primair e-mailadres',
                 'occupationPrimaryTelephoneNumber.number' => 'Primair telefoonnummer',
                 'occupationRole' => 'Rol van contact',
-
             ], $headers);
             $headers = false;
         }

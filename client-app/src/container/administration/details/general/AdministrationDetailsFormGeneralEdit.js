@@ -1021,7 +1021,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                     />
                                     <ViewText
                                         className={'col-sm-6 form-group'}
-                                        label={'Oudste nota datum gesynchronisserd met Twinfield'}
+                                        label={'Oudste nota datum gesynchroniseerd met Twinfield'}
                                         value={
                                             oldestTwinfieldInvoiceDate
                                                 ? moment(oldestTwinfieldInvoiceDate).format('L')

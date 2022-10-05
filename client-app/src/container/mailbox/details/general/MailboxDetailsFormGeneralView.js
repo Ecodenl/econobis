@@ -203,7 +203,7 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                         <ViewText
                             label={'Hoe laat is de fetch gestart?'}
                             value={startFetchMail}
-                            value={startFetchMail ? moment(startFetchMail).format('L HH:mm:ss') : 'Nog niet bepaald'}
+                            value={startFetchMail ? moment(startFetchMail).format('L HH:mm:ss') : 'Momenteel niet aan het fetchen.'}
                         />
                     </div>
                 </PanelBody>

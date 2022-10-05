@@ -108,6 +108,11 @@ class MailFetcher
         $this->mailbox->start_fetch_mail = null;
         $this->mailbox->save();
 
+        if($this->mailbox->start_fetch_mail != null) {
+            Log::info("Start fetch mail has stopped due to an error: " . $this->mailbox->start_fetch_mail);
+            $this->mailbox->start_fetch_mail = null;
+        }
+
     }
 
     public function getImap()

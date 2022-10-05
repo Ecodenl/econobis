@@ -21,6 +21,7 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
         imapEncryption,
         imapInboxPrefix,
         dateLastFetched,
+        startFetchMail,
         imapIdLastFetched,
         username,
         incomingServerType,
@@ -197,6 +198,13 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                             value={dateLastFetched ? moment(dateLastFetched).format('L HH:mm:ss') : 'Nog niet bepaald'}
                         />
                         <ViewText label={'UID email laatst opgehaald'} value={imapIdLastFetched} />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Hoe laat is de fetch gestart?'}
+                            value={startFetchMail}
+                            value={startFetchMail ? moment(startFetchMail).format('L HH:mm:ss') : 'Nog niet bepaald'}
+                        />
                     </div>
                 </PanelBody>
             </Panel>

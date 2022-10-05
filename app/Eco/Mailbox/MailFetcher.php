@@ -108,11 +108,6 @@ class MailFetcher
         $this->mailbox->start_fetch_mail = null;
         $this->mailbox->save();
 
-        if($this->mailbox->start_fetch_mail != null) {
-            Log::info("Start fetch mail has stopped due to an error: " . $this->mailbox->start_fetch_mail);
-            $this->mailbox->start_fetch_mail = null;
-        }
-
     }
 
     public function getImap()
@@ -143,6 +138,7 @@ class MailFetcher
             } catch(\Exception $ex2) {
                 Log::error("Failed to retrieve date sent (" . $emailData->date . ") from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex2->getMessage());
                 echo "Failed to retrieve date sent from email: " . $ex2->getMessage();
+                $this->mailbox->start_fetch_mail = null;
                 die();
             }
         }

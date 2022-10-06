@@ -192,9 +192,8 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                 </PanelHeader>
                 <PanelBody>
                     <div className="row">
-                        <ViewText 'sidebar__alert'
+                        <ViewText
                             label={'Datum email laatst opgehaald'}
-                            value={dateLastFetched}
                             value={dateLastFetched ? moment(dateLastFetched).format('L HH:mm:ss') : 'Nog niet bepaald'}
                         />
                         <ViewText label={'UID email laatst opgehaald'} value={imapIdLastFetched} />
@@ -202,16 +201,13 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                     <div className="row">
                         <ViewText
                             label={
-                                'Status fetching van e-mail?'
-                            }
-                            value={
-                                startFetchMail
+                                'Status ophalen van e-mail'
                             }
                             value={
                                 startFetchMail ?
-                                        'Momenteel aan het fetchen'
+                                        'Momenteel aan het ophalen'
                                     :
-                                        'Momenteel niet aan het fetchen.'
+                                        ''
                             }
                         />
                     </div>

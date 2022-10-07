@@ -64,14 +64,20 @@ class MailFetcher
             $mailIds = $this->imap->searchMailbox('SINCE "'.$dateLastFetched.'"');
 //            Log::info("Search since " . $dateLastFetched . ": " . implode(',', $mailIds));
         } catch(PhpImap\Exceptions\ConnectionException $ex) {
-            echo "IMAP connection failed: " . $ex;
+            Log::error("IMAP connection failed: " . $ex);
+//            echo "IMAP connection failed: " . $ex;
+            $this->mailbox->start_fetch_mail = null;
+            $this->mailbox->save();
             die();
         } catch(\Exception $ex2) {
             try {
                 $mailIds = $this->imap->searchMailbox('ALL');
 //                Log::info("Search ALL : " . implode(',', $mailIds));
-            } catch(PhpImap\Exceptions\ConnectionException $ex) {
-                echo "IMAP connection failed: " . $ex;
+            } catch(PhpImap\Exceptions\ConnectionException $ex3) {
+                Log::error("IMAP connection failed: " . $ex3);
+//                echo "IMAP connection failed: " . $ex3;
+                $this->mailbox->start_fetch_mail = null;
+                $this->mailbox->save();
                 die();
             }
         }
@@ -137,7 +143,9 @@ class MailFetcher
                 $dateSent = Carbon::parse( $dateSentStrip );
             } catch(\Exception $ex2) {
                 Log::error("Failed to retrieve date sent (" . $emailData->date . ") from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex2->getMessage());
-                echo "Failed to retrieve date sent from email: " . $ex2->getMessage();
+//                echo "Failed to retrieve date sent from email: " . $ex2->getMessage();
+                $this->mailbox->start_fetch_mail = null;
+                $this->mailbox->save();
                 die();
             }
         }
@@ -153,7 +161,7 @@ class MailFetcher
             }
         } catch(\Exception $ex) {
             Log::error("Failed to retrieve textHtml or textPlain from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage());
-            echo "Failed to retrieve textHtml or textPlain from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage();
+//            echo "Failed to retrieve textHtml or textPlain from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage();
             return;
         }
         $textHtml = $textHtml?: '';
@@ -233,9 +241,20 @@ class MailFetcher
 
         try {
             $this->imap->checkMailbox();
+//            Log::info('checkMailbox ok');
+//            if($mb->start_fetch_mail && Carbon::parse($mb->start_fetch_mail) < Carbon::now()->subHours(12)){
+//                Log::info('Resetten start_fetch_mail');
+//                Log::info('start_fetch_mail: ' . Carbon::parse($mb->start_fetch_mail)->format('Y-m-d H:i:s'));
+//                Log::info('Vandaag: ' . Carbon::now()->subHours(12)->format('Y-m-d H:i:s'));
+//            } elseif($mb->start_fetch_mail) {
+//                Log::info('Doe niets');
+//                Log::info('start_fetch_mail: ' . Carbon::parse($mb->start_fetch_mail)->format('Y-m-d H:i:s'));
+//                Log::info('Vandaag: ' . Carbon::now()->subHours(12)->format('Y-m-d H:i:s'));
+//            }
             if($mb->valid == false){
                 $mb->valid = true;
                 $mb->login_tries = 0;
+                $mb->start_fetch_mail = null;
                 $mb->save();
             }
         }

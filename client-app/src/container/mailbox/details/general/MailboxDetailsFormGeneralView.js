@@ -200,14 +200,15 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                     </div>
                     <div className="row">
                         <ViewText
-                            label={
-                                'Status ophalen van e-mail'
-                            }
+                            label={'Status ophalen van e-mail'}
                             value={
-                                startFetchMail ?
-                                        'Momenteel aan het ophalen'
-                                    :
-                                        ''
+                                startFetchMail ? (
+                                    <span style={{ color: 'red' }}>
+                                        Procedure bezig vanaf: {moment(startFetchMail).format('L HH:mm:ss')}
+                                    </span>
+                                ) : (
+                                    'wacht op synchronisatie ronde'
+                                )
                             }
                         />
                     </div>

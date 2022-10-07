@@ -65,6 +65,8 @@ class MailFetcher
 //            Log::info("Search since " . $dateLastFetched . ": " . implode(',', $mailIds));
         } catch(PhpImap\Exceptions\ConnectionException $ex) {
             echo "IMAP connection failed: " . $ex;
+            $this->mailbox->start_fetch_mail = null;
+            $this->mailbox->save();
             die();
         } catch(\Exception $ex2) {
             try {
@@ -72,6 +74,8 @@ class MailFetcher
 //                Log::info("Search ALL : " . implode(',', $mailIds));
             } catch(PhpImap\Exceptions\ConnectionException $ex) {
                 echo "IMAP connection failed: " . $ex;
+                $this->mailbox->start_fetch_mail = null;
+                $this->mailbox->save();
                 die();
             }
         }
@@ -139,6 +143,7 @@ class MailFetcher
                 Log::error("Failed to retrieve date sent (" . $emailData->date . ") from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex2->getMessage());
                 echo "Failed to retrieve date sent from email: " . $ex2->getMessage();
                 $this->mailbox->start_fetch_mail = null;
+                $this->mailbox->save();
                 die();
             }
         }
@@ -234,9 +239,20 @@ class MailFetcher
 
         try {
             $this->imap->checkMailbox();
+//            Log::info('checkMailbox ok');
+//            if($mb->start_fetch_mail && Carbon::parse($mb->start_fetch_mail) < Carbon::now()->subHours(12)){
+//                Log::info('Resetten start_fetch_mail');
+//                Log::info('start_fetch_mail: ' . Carbon::parse($mb->start_fetch_mail)->format('Y-m-d H:i:s'));
+//                Log::info('Vandaag: ' . Carbon::now()->subHours(12)->format('Y-m-d H:i:s'));
+//            } elseif($mb->start_fetch_mail) {
+//                Log::info('Doe niets');
+//                Log::info('start_fetch_mail: ' . Carbon::parse($mb->start_fetch_mail)->format('Y-m-d H:i:s'));
+//                Log::info('Vandaag: ' . Carbon::now()->subHours(12)->format('Y-m-d H:i:s'));
+//            }
             if($mb->valid == false){
                 $mb->valid = true;
                 $mb->login_tries = 0;
+                $mb->start_fetch_mail = null;
                 $mb->save();
             }
         }

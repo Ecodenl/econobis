@@ -71,6 +71,8 @@ class MailFetcherMsOauth
                 $moreAvailable = $this->processMessages($messages, $dateLastFetched);
             } catch (Exception $e) {
                 Log::error('Error getting user\'s inbox: '.$e->getMessage());
+                $this->mailbox->start_fetch_mail = null;
+                $this->mailbox->save();
 
                 return $e->getMessage();
             }
@@ -151,6 +153,8 @@ class MailFetcherMsOauth
             $textHtml = $message->getBody()->getContent();
         } catch (\Exception $ex) {
             Log::error("Failed to retrieve HtmlBody from email (" . $message->getId() . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage());
+            $this->mailbox->start_fetch_mail = null;
+            $this->mailbox->save();
             return;
         }
         $textHtml = $textHtml ?: '';

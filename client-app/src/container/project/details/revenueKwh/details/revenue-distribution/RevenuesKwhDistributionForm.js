@@ -294,12 +294,18 @@ class RevenuesKwhDistributionForm extends Component {
                     <span className="h5 text-bold">Opbrengstverdeling deelnemers</span>
                     <div className="btn-group pull-right">
                         <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={this.reloadDistributions} />
-                        {this.props.revenuesKwh.confirmed == 1 &&
-                        administrationIds.includes(this.props.revenuesKwh.project.administrationId) &&
+                        {/*{this.props.revenuesKwh.confirmed == 1 &&*/}
+                        {administrationIds.includes(this.props.revenuesKwh.project.administrationId) &&
                         this.state.createType === '' ? (
                             <React.Fragment>
                                 <ButtonText
                                     buttonText={'Selecteer preview rapportage'}
+                                    buttonClassName={this.props.revenuesKwh.confirmed == 0 ? 'btn-danger' : ''}
+                                    title={
+                                        this.props.revenuesKwh.confirmed == 0
+                                            ? 'Totale opbrengstverdeling is nog niet definitief'
+                                            : ''
+                                    }
                                     onClickAction={() => this.toggleShowCheckboxList('createReport')}
                                 />
                             </React.Fragment>

@@ -64,7 +64,8 @@ class MailFetcher
             $mailIds = $this->imap->searchMailbox('SINCE "'.$dateLastFetched.'"');
 //            Log::info("Search since " . $dateLastFetched . ": " . implode(',', $mailIds));
         } catch(PhpImap\Exceptions\ConnectionException $ex) {
-            echo "IMAP connection failed: " . $ex;
+            Log::error("IMAP connection failed: " . $ex);
+//            echo "IMAP connection failed: " . $ex;
             $this->mailbox->start_fetch_mail = null;
             $this->mailbox->save();
             die();
@@ -72,8 +73,9 @@ class MailFetcher
             try {
                 $mailIds = $this->imap->searchMailbox('ALL');
 //                Log::info("Search ALL : " . implode(',', $mailIds));
-            } catch(PhpImap\Exceptions\ConnectionException $ex) {
-                echo "IMAP connection failed: " . $ex;
+            } catch(PhpImap\Exceptions\ConnectionException $ex3) {
+                Log::error("IMAP connection failed: " . $ex3);
+//                echo "IMAP connection failed: " . $ex3;
                 $this->mailbox->start_fetch_mail = null;
                 $this->mailbox->save();
                 die();
@@ -141,7 +143,7 @@ class MailFetcher
                 $dateSent = Carbon::parse( $dateSentStrip );
             } catch(\Exception $ex2) {
                 Log::error("Failed to retrieve date sent (" . $emailData->date . ") from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex2->getMessage());
-                echo "Failed to retrieve date sent from email: " . $ex2->getMessage();
+//                echo "Failed to retrieve date sent from email: " . $ex2->getMessage();
                 $this->mailbox->start_fetch_mail = null;
                 $this->mailbox->save();
                 die();
@@ -159,7 +161,7 @@ class MailFetcher
             }
         } catch(\Exception $ex) {
             Log::error("Failed to retrieve textHtml or textPlain from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage());
-            echo "Failed to retrieve textHtml or textPlain from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage();
+//            echo "Failed to retrieve textHtml or textPlain from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage();
             return;
         }
         $textHtml = $textHtml?: '';

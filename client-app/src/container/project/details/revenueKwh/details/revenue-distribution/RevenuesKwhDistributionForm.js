@@ -300,7 +300,9 @@ class RevenuesKwhDistributionForm extends Component {
                             <React.Fragment>
                                 <ButtonText
                                     buttonText={'Selecteer preview rapportage'}
-                                    buttonClassName={this.props.revenuesKwh.confirmed == 0 ? 'btn-danger' : ''}
+                                    buttonClassName={
+                                        this.props.revenuesKwh.confirmed == 0 ? 'btn-danger' : 'btn-success'
+                                    }
                                     title={
                                         this.props.revenuesKwh.confirmed == 0
                                             ? 'Totale opbrengstverdeling is nog niet definitief'

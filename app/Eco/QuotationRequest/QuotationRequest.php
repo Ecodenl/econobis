@@ -2,11 +2,9 @@
 
 namespace App\Eco\QuotationRequest;
 
-use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
-use App\Eco\Measure\Measure;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
 use App\Eco\User\User;
@@ -28,10 +26,17 @@ class QuotationRequest extends Model
         'id'
     ];
 
-    public function organisation()
+   public function organisationOrCoach()
     {
-        return $this->belongsTo(Organisation::class);
+        return $this->belongsTo(Contact::class, 'contact_id', 'id');
     }
+
+    // todo: Deze hoeven we niet meer te bruiken toch? Nu hebben we contact_id (zie relation organisationOrCoach hierboven).
+    // todo WM: opschonen
+//    public function organisation()
+//    {
+//        return $this->belongsTo(Organisation::class);
+//    }
 
     public function opportunity()
     {

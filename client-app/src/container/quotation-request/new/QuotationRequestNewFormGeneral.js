@@ -26,14 +26,14 @@ class QuotationRequestNewFormGeneral extends Component {
             },
             quotationRequest: {
                 opportunityId: '',
-                organisationId: '',
+                organisationOrCoachId: '',
                 dateRecorded: '',
                 statusId: '5', //offerte aangevraagd, also alter componentwillmount when changing default!
                 dateReleased: '',
                 quotationText: '',
             },
             errors: {
-                organisation: false,
+                organisationOrCoach: false,
                 status: false,
             },
         };
@@ -53,7 +53,7 @@ class QuotationRequestNewFormGeneral extends Component {
                 },
                 quotationRequest: {
                     opportunityId: payload.id,
-                    organisationId: '',
+                    organisationOrCoachId: '',
                     dateRecorded: '',
                     statusId: '5',
                     dateReleased: '',
@@ -101,8 +101,8 @@ class QuotationRequestNewFormGeneral extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(quotationRequest.organisationId)) {
-            errors.organisation = true;
+        if (validator.isEmpty(quotationRequest.organisationOrCoachId)) {
+            errors.organisationOrCoach = true;
             hasErrors = true;
         }
 
@@ -116,7 +116,13 @@ class QuotationRequestNewFormGeneral extends Component {
     };
 
     render() {
-        const { organisationId, dateRecorded, statusId, dateReleased, quotationText } = this.state.quotationRequest;
+        const {
+            organisationOrCoachId,
+            dateRecorded,
+            statusId,
+            dateReleased,
+            quotationText,
+        } = this.state.quotationRequest;
         const {
             fullName,
             fullAddress,
@@ -130,8 +136,8 @@ class QuotationRequestNewFormGeneral extends Component {
                     <InputSelect
                         label={'Organisatie / Coach'}
                         size={'col-sm-6'}
-                        name="organisationId"
-                        value={organisationId}
+                        name="organisationOrCoachId"
+                        value={organisationOrCoachId}
                         options={organisationsOrCoaches}
                         onChangeAction={this.handleInputChange}
                         required={'required'}

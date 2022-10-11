@@ -20,7 +20,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
 
         const {
             id,
-            organisation,
+            organisationOrCoach,
             dateRecorded,
             status,
             datePlannedToSendWfEmailStatus,
@@ -34,13 +34,15 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                 fullAddress: opportunity.intake ? opportunity.intake.fullAddress : '',
                 measureNames: opportunity.measures && opportunity.measures.map(measure => measure.name).join(', '),
                 measureCategoryName: opportunity.measureCategory.name,
-                organisations:
-                    opportunity.intake && opportunity.intake.campaign ? opportunity.intake.campaign.organisations : '',
+                organisationsOrCoaches:
+                    opportunity.intake && opportunity.intake.campaign
+                        ? opportunity.intake.campaign.organisationsOrCoaches
+                        : '',
             },
             quotationRequest: {
                 id,
                 opportunityId: opportunity.id,
-                organisationId: organisation.id,
+                organisationOrCoachId: organisationOrCoach.id,
                 dateRecorded: dateRecorded ? dateRecorded : '',
                 statusId: status.id,
                 statusUsesWf: status ? status.usesWf : false,
@@ -51,7 +53,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                 quotationText: quotationText ? quotationText : '',
             },
             errors: {
-                organisation: false,
+                organisationOrCoach: false,
                 status: false,
             },
         };
@@ -96,8 +98,8 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(quotationRequest.organisationId + '')) {
-            errors.organisation = true;
+        if (validator.isEmpty(quotationRequest.organisationOrCoachId + '')) {
+            errors.organisationOrCoach = true;
             hasErrors = true;
         }
 
@@ -113,7 +115,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
 
     render() {
         const {
-            organisationId,
+            organisationOrCoachId,
             dateRecorded,
             statusId,
             statusUsesWf,
@@ -121,20 +123,26 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             dateReleased,
             quotationText,
         } = this.state.quotationRequest;
-        const { fullName, fullAddress, organisations, measureNames, measureCategoryName } = this.state.opportunity;
+        const {
+            fullName,
+            fullAddress,
+            organisationsOrCoaches,
+            measureNames,
+            measureCategoryName,
+        } = this.state.opportunity;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputSelect
-                        label={'Organisatie'}
+                        label={'Organisatie/Coach'}
                         size={'col-sm-6'}
-                        name="organisationId"
-                        value={organisationId}
-                        options={organisations}
+                        name="organisationOrCoachId"
+                        value={organisationOrCoachId}
+                        options={organisationsOrCoaches}
                         onChangeAction={this.handleInputChange}
                         required={'required'}
-                        error={this.state.errors.organisation}
+                        error={this.state.errors.organisationOrCoach}
                     />
                     <InputText
                         label={'Verzoek voor'}

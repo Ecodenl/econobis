@@ -33,7 +33,7 @@ class QuotationRequestController extends ApiController
         $quotationRequests = $requestQuery->get();
 
         $quotationRequests->load([
-            'organisation',
+            'organisationOrCoach',
             'opportunity.intake.address',
             'opportunity.measureCategory',
             'opportunity.measures',
@@ -52,10 +52,11 @@ class QuotationRequestController extends ApiController
     public function show(QuotationRequest $quotationRequest)
     {
         $quotationRequest->load([
-            'organisation.contact.contactPerson.contact',
+            'organisationOrCoach.contactPerson.contact',
             'opportunity.intake.contact',
             'opportunity.intake.campaign',
             'opportunity.intake.campaign.organisations',
+            'opportunity.intake.campaign.coaches',
             'opportunity.measureCategory',
             'opportunity.measures',
             'documents',
@@ -101,7 +102,7 @@ class QuotationRequestController extends ApiController
         $this->authorize('manage', QuotationRequest::class);
 
         $data = $request->validate([
-            'organisationId' => 'required|exists:organisations,id',
+            'organisationOrCoachId' => 'required|exists:contacts,id',
             'opportunityId' => 'required|exists:opportunities,id',
             'dateRecorded' => 'string',
             'dateReleased' => 'string',
@@ -113,7 +114,10 @@ class QuotationRequestController extends ApiController
         $quotationRequest = new QuotationRequest();
 
         //required
-        $quotationRequest->organisation_id = $data['organisationId'];
+        $quotationRequest->contact_id = $data['organisationOrCoachId'];
+// todo: Deze hoeven we niet meer te bruiken toch? Nu hebben we contact_id
+// todo WM: opschonen
+//        $quotationRequest-organisation_id =  $data['organisationId'];
         $quotationRequest->opportunity_id = $data['opportunityId'];
         $quotationRequest->status_id = $data['statusId'];
 
@@ -141,7 +145,7 @@ class QuotationRequestController extends ApiController
         $this->authorize('manage', QuotationRequest::class);
 
         $data = $request->validate([
-            'organisationId' => 'required|exists:organisations,id',
+            'organisationOrCoachId' => 'required|exists:contacts,id',
             'opportunityId' => 'required|exists:opportunities,id',
             'dateRecorded' => 'string',
             'dateReleased' => 'string',
@@ -150,7 +154,10 @@ class QuotationRequestController extends ApiController
         ]);
 
         //required
-        $quotationRequest->organisation_id = $data['organisationId'];
+        $quotationRequest->contact_id = $data['organisationOrCoachId'];
+// todo: Deze hoeven we niet meer te bruiken toch? Nu hebben we contact_id
+// todo WM: opschonen
+//        $quotationRequest->organisation_id = $data['organisationId'];
         $quotationRequest->opportunity_id = $data['opportunityId'];
         $quotationRequest->status_id = $data['statusId'];
 

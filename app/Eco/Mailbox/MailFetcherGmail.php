@@ -46,6 +46,8 @@ class MailFetcherGmail
 
     public function fetchNew()
     {
+//        Log::info("Check fetchNew mailbox " . $this->mailbox->id);
+
         if ($this->mailbox->start_fetch_mail != null) {
             return;
         }

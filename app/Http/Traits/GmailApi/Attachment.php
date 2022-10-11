@@ -73,7 +73,7 @@ trait Attachment
      * @return string
      * @throws \Exception
      */
-    public function saveAttachmentTo($attachment)
+    public function saveAttachmentTo($attachment, $filePathAndName)
     {
         $filename = $name = $attachment['filename'];
 
@@ -83,11 +83,11 @@ trait Attachment
             throw new \Exception('Could not get the attachment.');
         }
 
-        $filename = $filename ?: $this->filename;
-
-        $path = $this->getAttachmentDBName();
-
-        $filePathAndName = "{$path}{$filename}";
+//        $filename = $filename ?: $this->filename;
+//
+//        $path = $this->getAttachmentDBName();
+//
+//        $filePathAndName = "{$path}{$filename}";
 
         Storage::disk('mail_attachments')->put($filePathAndName, $data);
 
@@ -184,19 +184,18 @@ trait Attachment
         if($this->hasAttachments()) {
             foreach ($this->getAttachments() as $attachment){
                 $this->id = $attachment['id'];
+                $filePathAndName = $this->getAttachmentDBName() . \bin2hex(\random_bytes(16)).'.bin';
 
                 try {
-                    $this->saveAttachmentTo($attachment);
+                    $this->saveAttachmentTo($attachment, $filePathAndName);
                 } catch(\Exception $exAtt) {
                     Log::error("Failed to retrieve Attachment from email (" . $email->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $exAtt->getMessage());
                     echo "Failed to retrieve Attachment from email (" . $email->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $exAtt->getMessage();
                     return;
                 }
 
-                $filename = $this->getAttachmentDBName() . $attachment['filename'];
-
                 $emailAttachment = new EmailAttachment([
-                    'filename' => $filename,
+                    'filename' => $filePathAndName,
                     'name' => $attachment['filename'],
                     'email_id' => $email->id,
                 ]);

@@ -35,16 +35,22 @@ class MailboxesListItem extends Component {
             id,
             name,
             email,
-            username,
+            incomingServerType,
+            incomingServerTypeName,
+            outgoingServerType,
+            outgoingServerTypeName,
+            // username,
             imapHost,
+            imapPort,
             smtpHost,
+            smtpPort,
             mailgunDomain,
             valid,
-            outgoingServerType,
             primary,
             isActive,
         } = this.props;
-        const usesMailgun = outgoingServerType === 'mailgun';
+        //todo WM oauth: nog testen en opschonen !!!
+        // const usesMailgun = outgoingServerType === 'mailgun';
 
         return (
             <tr
@@ -55,10 +61,29 @@ class MailboxesListItem extends Component {
             >
                 <td>{name}</td>
                 <td>{email}</td>
-                <td>{username}</td>
-                <td>{imapHost}</td>
-                <td>{usesMailgun ? 'Ja' : 'Nee'}</td>
-                <td>{usesMailgun ? mailgunDomain : smtpHost}</td>
+                {/*<td>{username}</td>*/}
+                {/*<td>{imapHost}</td>*/}
+                {/*<td>{usesMailgun ? 'Ja' : 'Nee'}</td>*/}
+                {/*<td>{usesMailgun ? mailgunDomain : smtpHost}</td>*/}
+                {incomingServerType === 'imap' ? (
+                    <td>
+                        {incomingServerTypeName} {imapHost} ({imapPort})
+                    </td>
+                ) : (
+                    <td>{incomingServerTypeName}</td>
+                )}
+                {outgoingServerType === 'smtp' ? (
+                    <td>
+                        {outgoingServerTypeName} {smtpHost} ({smtpPort})
+                    </td>
+                ) : outgoingServerType === 'mailgun' ? (
+                    <td>
+                        {outgoingServerTypeName} {mailgunDomain}
+                    </td>
+                ) : (
+                    <td>{outgoingServerTypeName}</td>
+                )}
+
                 <td>{primary ? 'Primair' : ''}</td>
                 <td>{isActive ? 'Ja' : 'Nee'}</td>
                 <td>

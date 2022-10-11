@@ -51,4 +51,8 @@ return [
     'gmailapi' => [
         'mailbox_id' => null,
     ],
+
+    'msoauthapi' => [
+        'mailbox_id' => null,
+    ],
 ];

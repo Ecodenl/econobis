@@ -42,7 +42,11 @@ function MailboxNewForm({ fetchSystemData }) {
                 hashHistory.push(`/mailbox/${payload.data.data.id}`);
             })
             .catch(error => {
-                if (error.response.status === 401 && error.response.data.message === 'gmail_unauthorised') {
+                if (
+                    error.response.status === 401 &&
+                    (error.response.data.message === 'gmail_unauthorised' ||
+                        error.response.data.message === 'ms_oauth_unauthorised')
+                ) {
                     window.location = error.response.data.authUrl;
                 }
 

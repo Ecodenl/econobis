@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailFetcher;
 use App\Eco\Mailbox\MailFetcherGmail;
+use App\Eco\Mailbox\MailFetcherMsOauth;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -46,6 +47,8 @@ class checkMailboxes extends Command
             //In construct wordt gelijk valid gekeken
             if ($mailbox->incoming_server_type === 'gmail') {
                 new MailFetcherGmail($mailbox);
+            } else if ($mailbox->incoming_server_type === 'ms-oauth') {
+                new MailFetcherMsOauth($mailbox);
             } else {
                 new MailFetcher($mailbox);
             }

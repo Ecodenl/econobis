@@ -3,7 +3,7 @@ import PanelHeader from '../../../../../components/panel/PanelHeader';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import InputText from '../../../../../components/form/InputText';
 // import CopyToClipboard from 'react-copy-to-clipboard';
-import { REDIRECT_URL } from '../../../../../constants';
+import { REDIRECT_URL_GMAIL } from '../../../../../constants';
 import ViewText from '../../../../../components/form/ViewText';
 
 function MailboxDefaultFormGeneralGmailApiSettings({ values, errors, touched, handleChange, handleBlur }) {
@@ -26,12 +26,12 @@ function MailboxDefaultFormGeneralGmailApiSettings({ values, errors, touched, ha
                         error={errors.gmailApiSettings?.projectId && touched.gmailApiSettings?.projectId}
                         errorMessage={errors.gmailApiSettings?.projectId}
                     />
-                    <ViewText className="form-group col-sm-6" label={'Redirect url'} value={REDIRECT_URL} />
+                    <ViewText className="form-group col-sm-6" label={'Redirect url'} value={REDIRECT_URL_GMAIL} />
                     {/*<div className="form-group col-sm-6">*/}
                     {/*    <label className="col-sm-6">Redirect url</label>*/}
                     {/*    <div className="col-sm-6" style={{ paddingRight: '5px' }} onClick={null}>*/}
-                    {/*        {REDIRECT_URL}*/}
-                    {/*        <CopyToClipboard text={REDIRECT_URL}>*/}
+                    {/*        {REDIRECT_URL_GMAIL}*/}
+                    {/*        <CopyToClipboard text={REDIRECT_URL_GMAIL}>*/}
                     {/*            <span*/}
                     {/*                className="glyphicon glyphicon-copy mybtn-success pull-right"*/}
                     {/*                style={{ top: '5px' }}*/}

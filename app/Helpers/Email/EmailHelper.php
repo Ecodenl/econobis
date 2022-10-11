@@ -33,6 +33,9 @@ class EmailHelper
             $this->setConfigToSmtpMailbox($mailbox);
         } elseif($mailbox->outgoing_server_type === 'gmail'){
             $this->setConfigToGmailApiMailbox($mailbox);
+//todo WM oauth: nog testen !!!
+        } elseif($mailbox->outgoing_server_type === 'ms-oauth'){
+            $this->setConfigToMsOauthApiMailbox($mailbox);
         }
     }
 
@@ -83,6 +86,22 @@ class EmailHelper
         Config::set('mail.from', ['address' => $mailbox->email, 'name' => $mailbox->name]);
         Config::set('mail.default', 'gmailapi');
         Config::set('services.gmailapi.mailbox_id', $mailbox->id);
+    }
+
+//todo WM oauth: nog testen !!!
+    protected function setConfigToMsOauthApiMailbox(Mailbox $mailbox)
+    {
+        $msOauthApiSettings = $mailbox->gmailApiSettings;
+        if(!$msOauthApiSettings){
+            throw new \Exception('Mailbox ' . $mailbox->id . ' should have configured Microsoft Azure api settings.');
+        }
+        if(!$msOauthApiSettings->token){
+            throw new \Exception('Mailbox ' . $mailbox->id . ' should have a token.');
+        }
+
+        Config::set('mail.from', ['address' => $mailbox->email, 'name' => $mailbox->name]);
+        Config::set('mail.default', 'msoauthapi');
+        Config::set('services.msoauthapi.mailbox_id', $mailbox->id);
     }
 
     protected function inProduction()

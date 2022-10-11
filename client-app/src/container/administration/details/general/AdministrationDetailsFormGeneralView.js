@@ -284,7 +284,7 @@ const AdministrationDetailsFormGeneralView = props => {
                                             nota. Deze synchronisatie moet handmatig aangevraagd worden.`}
                                 />
                                 <ViewText
-                                    label={'Oudste nota datum gesynchronisserd met Twinfield'}
+                                    label={'Oudste nota datum gesynchroniseerd met Twinfield'}
                                     value={
                                         oldestTwinfieldInvoiceDate ? moment(oldestTwinfieldInvoiceDate).format('L') : ''
                                     }

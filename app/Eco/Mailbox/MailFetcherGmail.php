@@ -46,6 +46,8 @@ class MailFetcherGmail
 
     public function fetchNew()
     {
+//        Log::info("Check fetchNew mailbox " . $this->mailbox->id);
+
         if ($this->mailbox->start_fetch_mail != null) {
             return;
         }
@@ -70,6 +72,7 @@ class MailFetcherGmail
             Log::error("Geen refresh token verkregen, mailbox " . $this->mailbox->id . " op invalid!");
             Log::error("Gmail connection failed. Error: " . $ex->getMessage());
             $this->mailbox->valid = false;
+            $this->mailbox->start_fetch_mail = null;
             $this->mailbox->save();
 
             return $ex->getMessage();
@@ -132,6 +135,8 @@ class MailFetcherGmail
         } catch (\Exception $ex) {
             Log::error("Failed to retrieve HtmlBody from email (" . $headers->message_id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage());
 //            echo "Failed to retrieve :HtmlBody from email (" . $headers->message_id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage();
+            $this->mailbox->start_fetch_mail = null;
+            $this->mailbox->save();
             return;
         }
         $textHtml = $textHtml ?: '';

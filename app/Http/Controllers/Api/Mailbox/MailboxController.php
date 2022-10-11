@@ -15,12 +15,15 @@ use App\Eco\Mailbox\MailboxGmailApiSettings;
 use App\Eco\Mailbox\MailboxIgnore;
 use App\Eco\Mailbox\MailFetcher;
 use App\Eco\Mailbox\MailFetcherGmail;
+use App\Eco\Mailbox\MailFetcherMsOauth;
 use App\Eco\Mailbox\MailValidator;
 use App\Eco\Mailbox\SmtpEncryptionType;
 use App\Eco\User\User;
 use App\Helpers\Gmail\GmailConnectionManager;
+use App\Helpers\MsOauth\MsOauthConnectionManager;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\EncryptCookies;
 use App\Http\Resources\Email\GridEmailTemplate;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Mailbox\FullMailbox;
@@ -32,11 +35,18 @@ use Doctrine\Common\Annotations\Annotation\Enum;
 use http\Header;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class MailboxController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware([EncryptCookies::class, StartSession::class])->only('update');
+    }
 
     public function grid()
     {
@@ -81,7 +91,9 @@ class MailboxController extends Controller
             $this->makePrimary($mailbox);
         }
 
-        if ($mailbox->incoming_server_type == 'gmail' || $mailbox->outgoing_server_type == 'gmail') {
+        if ($mailbox->incoming_server_type == 'gmail' || $mailbox->outgoing_server_type == 'gmail'
+        || $mailbox->incoming_server_type == 'ms-oauth' || $mailbox->outgoing_server_type == 'ms-oauth'
+        ) {
             $this->storeOrUpdateGmailApiSettings($mailbox, $request->gmailApiSettings);
         }
 
@@ -93,6 +105,13 @@ class MailboxController extends Controller
             $client = $gmailConnectionManager->connect();
 
             if (isset($client['message']) && $client['message'] == 'gmail_unauthorised') {
+                return response()->json($client, 401);
+            }
+        } elseif ($mailbox->incoming_server_type === 'ms-oauth') {
+            $msOauthConnectionManage = new MsOauthConnectionManager($mailbox);
+            $client = $msOauthConnectionManage->connect();
+
+            if (isset($client['message']) && $client['message'] == 'ms_oauth_unauthorised') {
                 return response()->json($client, 401);
             }
         } else {
@@ -139,7 +158,8 @@ class MailboxController extends Controller
         $mailbox->update($data);
         $mailbox->save();
 
-        if ($mailbox->incoming_server_type == 'gmail' || $mailbox->outgoing_server_type == 'gmail') {
+        if ($mailbox->incoming_server_type == 'gmail' || $mailbox->outgoing_server_type == 'gmail'
+            || $mailbox->incoming_server_type == 'ms-oauth' || $mailbox->outgoing_server_type == 'ms-oauth') {
             $this->storeOrUpdateGmailApiSettings($mailbox, $request->gmailApiSettings);
         }
 
@@ -154,6 +174,13 @@ class MailboxController extends Controller
             $client = $gmailConnectionManager->connect();
 
             if (isset($client['message']) && $client['message'] == 'gmail_unauthorised') {
+                return response()->json($client, 401);
+            }
+        } elseif ($mailbox->incoming_server_type === 'ms-oauth') {
+            $msOauthConnectionManage = new MsOauthConnectionManager($mailbox);
+            $client = $msOauthConnectionManage->connect();
+
+            if (isset($client['message']) && $client['message'] == 'ms_oauth_unauthorised') {
                 return response()->json($client, 401);
             }
         } else {
@@ -190,8 +217,11 @@ class MailboxController extends Controller
             return 'This mailbox is invalid';
         }
 
+        //Create a new mailfetcher. This will check if the mailbox is valid and set it in the db.
         if ($mailbox->incoming_server_type === 'gmail') {
             $mailFetcher = new MailFetcherGmail($mailbox);
+        } elseif ($mailbox->incoming_server_type === 'ms-oauth') {
+            $mailFetcher = new MailFetcherMsOauth($mailbox);
         } else {
             $mailFetcher = new MailFetcher($mailbox);
         }
@@ -237,6 +267,8 @@ class MailboxController extends Controller
         foreach ($mailboxes as $mailbox) {
             if ($mailbox->incoming_server_type === 'gmail') {
                 $mailFetcher = new MailFetcherGmail($mailbox);
+            } elseif ($mailbox->incoming_server_type === 'ms-oauth') {
+                $mailFetcher = new MailFetcherMsOauth($mailbox);
             } else {
                 $mailFetcher = new MailFetcher($mailbox);
             }
@@ -302,9 +334,20 @@ class MailboxController extends Controller
 
         if (!$mailbox || !$request->code) return;
 
-        $gmailConnectionManager = new GmailConnectionManager($mailbox);
-
         $appUrl = config('app.url');
+
+        if (!$mailbox){
+            Log::error("Callback vanuit gmail is NIET ok - mailbox niet meer gevonden");
+            header("Location: {$appUrl}/#/mailboxen");
+            exit;
+        }
+        if (!$request->code){
+            Log::error("Callback vanuit gmail is NIET ok - geen authorization code");
+            header("Location: {$appUrl}/#/mailbox/{$mailbox->id}");
+            exit;
+        }
+
+        $gmailConnectionManager = new GmailConnectionManager($mailbox);
 
         // TODO If callback is not valid then show message to the user
         if ($gmailConnectionManager->callback($request->code)) {
@@ -312,6 +355,41 @@ class MailboxController extends Controller
             exit;
         } else {
             Log::error("Callback vanuit gmail is NIET ok");
+            header("Location: {$appUrl}/#/mailbox/{$mailbox->id}");
+            exit;
+        }
+    }
+
+    public function msOauthApiConnectionCallback(Request $request)
+    {
+//todo WM oauth: opschonen
+//        Log::error("XXxxxxxxxxxxxxxxxxxxxxxxxxxx");
+
+        $mailboxId= session('msOauthMailboxId');
+        $request->session()->forget('msOauthMailboxId');
+        $mailbox = Mailbox::find($mailboxId);
+
+        $appUrl = config('app.url');
+
+        if (!$mailbox){
+            Log::error("Callback vanuit ms-oauth is NIET ok - mailbox niet meer gevonden");
+            header("Location: {$appUrl}/#/mailboxen");
+            exit;
+        }
+        if (!$request->code){
+            Log::error("Callback vanuit ms-oauth is NIET ok - geen authorization code");
+            header("Location: {$appUrl}/#/mailbox/{$mailbox->id}");
+            exit;
+        }
+
+        $msOauthConnectionManager = new MsOauthConnectionManager($mailbox);
+
+        // TODO If callback is not valid then show message to the user
+        if ($msOauthConnectionManager->callback($request, $mailbox)) {
+            header("Location: {$appUrl}/#/mailbox/{$mailbox->id}");
+            exit;
+        } else {
+            Log::error("Callback vanuit ms-oauth is NIET ok");
             header("Location: {$appUrl}/#/mailbox/{$mailbox->id}");
             exit;
         }

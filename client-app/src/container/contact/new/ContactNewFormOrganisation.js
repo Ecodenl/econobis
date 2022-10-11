@@ -43,6 +43,7 @@ class ContactNewFormOrganisation extends Component {
                 ibanAttn: '',
                 ownerId: props.userId,
                 didAgreeAvg: false,
+                isCoach: false,
             },
             address: {
                 street: '',
@@ -347,6 +348,7 @@ class ContactNewFormOrganisation extends Component {
             ibanAttn,
             ownerId,
             didAgreeAvg,
+            isCoach,
         } = this.state.organisation;
 
         return (
@@ -446,6 +448,15 @@ class ContactNewFormOrganisation extends Component {
                         label={'Akkoord privacybeleid'}
                         name={'didAgreeAvg'}
                         value={didAgreeAvg}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputToggle
+                        label="Is coach"
+                        name="isCoach"
+                        value={isCoach}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

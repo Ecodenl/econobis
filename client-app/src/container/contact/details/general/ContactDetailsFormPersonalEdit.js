@@ -19,7 +19,7 @@ class ContactDetailsFormPersonalEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { number, createdAt, person, didAgreeAvg, dateDidAgreeAvg } = props.contactDetails;
+        const { number, createdAt, person, didAgreeAvg, dateDidAgreeAvg, isCoach } = props.contactDetails;
 
         this.state = {
             lastNamePrefixes: props.lastNamePrefixes,
@@ -42,6 +42,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                 dateOfBirth: person.dateOfBirth ? moment(person.dateOfBirth).format('Y-MM-DD') : '',
                 didAgreeAvg: didAgreeAvg,
                 dateDidAgreeAvg: dateDidAgreeAvg ? moment(dateDidAgreeAvg).format('Y-MM-DD') : '',
+                isCoach: isCoach,
             },
             errors: {
                 name: false,
@@ -159,6 +160,7 @@ class ContactDetailsFormPersonalEdit extends Component {
             didAgreeAvg,
             dateDidAgreeAvg,
             lastNamePrefix,
+            isCoach,
         } = this.state.person;
 
         return (
@@ -284,6 +286,16 @@ class ContactDetailsFormPersonalEdit extends Component {
                                 }
                             />
                         )}
+                    </div>
+
+                    <div className="row">
+                        <InputToggle
+                            label="Is coach"
+                            divSize={'col-xs-12'}
+                            name="isCoach"
+                            value={isCoach}
+                            onChangeAction={this.handleInputChange}
+                        />
                     </div>
 
                     <PanelFooter>

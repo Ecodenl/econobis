@@ -90,6 +90,7 @@ class QuotationRequestController extends ApiController
             'measureCategory',
             'intake.contact',
             'intake.campaign.organisations',
+            'intake.campaign.coaches',
         ]);
 
         return FullOpportunity::make($opportunity);

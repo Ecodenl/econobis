@@ -2200,6 +2200,10 @@ protected function addEnergyConsumptionElectricityToAddress(Address $address, $d
                     $this->contactIdToEmailNewContactToGroup = $contact->id;
                     $this->processEmailNewContactToGroup = true;
                 }
+                if($contactGroup->is_coach_group){
+                    $contact->is_coach = true;
+                    $contact->save();
+                }
             }
         }
 
@@ -2230,6 +2234,10 @@ protected function addEnergyConsumptionElectricityToAddress(Address $address, $d
                             if ($contactGroup->send_email_new_contact_link) {
                                 $this->contactIdToEmailNewContactToGroup = $contact->id;
                                 $this->processEmailNewContactToGroup = true;
+                            }
+                            if($contactGroup->is_coach_group){
+                                $contact->is_coach = true;
+                                $contact->save();
                             }
                         }
                     }

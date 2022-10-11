@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 
-const CampaignDetailsOrganisationView = ({
-    organisation: { id, contactId, address, contact, name, amountOfQuotations, amountOfWonQuotations },
+const CampaignDetailsCoachView = ({
+    coach: { id, number, name, address },
     highlightLine,
     onLineEnter,
     onLineLeave,
@@ -13,13 +13,10 @@ const CampaignDetailsOrganisationView = ({
 }) => {
     return (
         <div className={`row border ${highlightLine}`} onMouseEnter={onLineEnter} onMouseLeave={onLineLeave}>
-            <div onClick={() => hashHistory.push(`/contact/${contactId}`)}>
-                <div className="col-sm-1">{contact.number}</div>
-                <div className="col-sm-2">{name}</div>
-                <div className="col-sm-2">{address?.city || ''}</div>
-                <div className="col-sm-2">{contact.contactPerson?.contact?.fullName || ''}</div>
-                <div className="col-sm-2">{amountOfQuotations}</div>
-                <div className="col-sm-2">{amountOfWonQuotations}</div>
+            <div onClick={() => hashHistory.push(`/contact/${id}`)}>
+                <div className="col-sm-2">{number}</div>
+                <div className="col-sm-4">{name}</div>
+                <div className="col-sm-4">{address ? address.city : ''}</div>
             </div>
             <div className="col-sm-1">
                 {showActionButtons && permissions.manageMarketing ? (
@@ -40,4 +37,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(CampaignDetailsOrganisationView);
+export default connect(mapStateToProps)(CampaignDetailsCoachView);

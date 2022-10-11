@@ -27,6 +27,7 @@ use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Portal\PortalUser;
+use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\Task\Task;
 use App\Eco\Twinfield\TwinfieldCustomerNumber;
@@ -170,6 +171,12 @@ class Contact extends Model
         return ($this->type_id == ContactType::ORGANISATION);
     }
 
+    public function isCoach()
+    {
+        return $this->is_coach;
+
+    }
+
     public function getType()
     {
         if(!$this->type_id) return null;
@@ -185,6 +192,10 @@ class Contact extends Model
     public function opportunities()
     {
         return $this->hasManyThrough(Opportunity::class, Intake::class)->orderBy('opportunities.id', 'desc');
+    }
+
+    public function coachQuotationRequests(){
+        return $this->hasMany(QuotationRequest::class);
     }
 
     // Only an unfinished task is a task

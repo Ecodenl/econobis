@@ -63,6 +63,18 @@ export default {
         return axiosInstance.post(requestUrl);
     },
 
+    attachCoach: (campaignId, coachId) => {
+        const requestUrl = `${URL_CAMPAIGN}/${campaignId}/coach/${coachId}/attach`;
+
+        return axiosInstance.post(requestUrl);
+    },
+
+    detachCoach: (campaignId, coachId) => {
+        const requestUrl = `${URL_CAMPAIGN}/${campaignId}/coach/${coachId}/detach`;
+
+        return axiosInstance.post(requestUrl);
+    },
+
     updateCampaignOwner: (campaignId, userId) => {
         const requestUrl = `${URL_CAMPAIGN}/${campaignId}/owner/${userId}/associate`;
 

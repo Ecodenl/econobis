@@ -18,6 +18,7 @@ const ContactDetailsFormOrganisationView = props => {
         collectMandateSignatureDate,
         collectMandateFirstRunDate,
         collectMandateCollectionSchema,
+        isCoach,
     } = props.contactDetails;
 
     return (
@@ -76,6 +77,10 @@ const ContactDetailsFormOrganisationView = props => {
                         )
                     }
                 />
+            </div>
+
+            <div className="row">
+                <ViewText className={'col-xs-12'} label={'Is coach'} value={isCoach ? 'Ja' : 'Nee'} />
             </div>
 
             <div className="row">

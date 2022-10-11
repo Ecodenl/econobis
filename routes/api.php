@@ -122,6 +122,8 @@ Route::namespace('Api')
         Route::post('/organisation/{organisation}', 'Organisation\OrganisationController@update');
         Route::get('/organisation/peek', 'Organisation\OrganisationController@peek');
 
+        Route::get('/coach/peek', 'Contact\ContactController@peekCoach');
+
         Route::post('/contact-note', 'ContactNote\ContactNoteController@store');
         Route::post('/contact-note/{contactNote}', 'ContactNote\ContactNoteController@update');
         Route::post('/contact-note/{contactNote}/delete', 'ContactNote\ContactNoteController@destroy');
@@ -218,6 +220,8 @@ Route::namespace('Api')
         Route::post('campaign/{campaign}/response/{contact}/detach', 'Campaign\CampaignController@detachResponse');
         Route::post('campaign/{campaign}/organisation/{organisation}/attach', 'Campaign\CampaignController@attachOrganisation');
         Route::post('campaign/{campaign}/organisation/{organisation}/detach', 'Campaign\CampaignController@detachOrganisation');
+        Route::post('campaign/{campaign}/coach/{coach}/attach', 'Campaign\CampaignController@attachCoach');
+        Route::post('campaign/{campaign}/coach/{coach}/detach', 'Campaign\CampaignController@detachCoach');
 
         Route::get('measure/grid', 'Measure\MeasureController@grid');
         Route::get('measure/peek', 'Measure\MeasureController@peek');

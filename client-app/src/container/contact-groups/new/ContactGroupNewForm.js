@@ -13,8 +13,6 @@ import InputToggle from '../../../components/form/InputToggle';
 import InputMultiSelect from '../../../components/form/InputMultiSelect';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import InputReactSelect from '../../../components/form/InputReactSelect';
-import ViewText from '../../../components/form/ViewText';
-import PanelBody from '../../../components/panel/PanelBody';
 import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
 
 class ContactGroupNewForm extends Component {
@@ -41,6 +39,7 @@ class ContactGroupNewForm extends Component {
                 contactGroupComposedType: '',
                 sendEmailNewContactLink: false,
                 emailTemplateIdNewContactLink: '',
+                isCoachGroup: false,
             },
             errors: {
                 name: false,
@@ -206,6 +205,7 @@ class ContactGroupNewForm extends Component {
             contactGroupIdsSelected,
             sendEmailNewContactLink,
             emailTemplateIdNewContactLink,
+            isCoachGroup,
         } = this.state.contactGroup;
 
         return (
@@ -335,6 +335,19 @@ class ContactGroupNewForm extends Component {
                         />
                     )}
                 </div>
+
+                {/*{this.props.contactGroupDetails.type.id === 'static' && (*/}
+                <div className="row">
+                    <InputToggle
+                        label={'Is coach groep'}
+                        name={'isCoachGroup'}
+                        value={isCoachGroup}
+                        onChangeAction={this.handleInputChange}
+                        size={'col-sm-5'}
+                        textToolTip={`Als dit aanstaat en een contact wordt aan deze groep toegevoegd dan wordt dat contact energie coach`}
+                    />
+                </div>
+                {/*)}*/}
 
                 <div className="row">
                     <InputText

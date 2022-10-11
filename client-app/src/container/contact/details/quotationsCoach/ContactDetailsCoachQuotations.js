@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 
-import ContactDetailsQuotationsList from './ContactDetailsQuotationsList';
+import ContactDetailsCoachQuotationsList from './ContactDetailsCoachQuotationsList';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 
-class ContactDetailsQuotations extends Component {
+class ContactDetailsCoachQuotations extends Component {
     constructor(props) {
         super(props);
     }
@@ -14,11 +14,11 @@ class ContactDetailsQuotations extends Component {
         return (
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Offertes organisatie</span>
+                    <span className="h5 text-bold">Offertes coach</span>
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        <ContactDetailsQuotationsList />
+                        <ContactDetailsCoachQuotationsList />
                     </div>
                 </PanelBody>
             </Panel>
@@ -26,4 +26,4 @@ class ContactDetailsQuotations extends Component {
     }
 }
 
-export default ContactDetailsQuotations;
+export default ContactDetailsCoachQuotations;

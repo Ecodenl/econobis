@@ -10,6 +10,7 @@ use App\Helpers\Delete\Models\DeleteContact;
 use App\Helpers\Hoomdossier\HoomdossierHelper;
 use App\Helpers\Import\ContactImportHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Contact\ContactPeekCoach;
 use App\Http\Resources\Contact\ContactWithAddressPeek;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\Contact\FullContactWithGroups;
@@ -31,6 +32,7 @@ class ContactController extends Controller
 
         if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisation.quotationRequests.opportunity.measureCategory', 'organisation.quotationRequests.opportunity.status', 'organisation.campaigns', 'contactPerson.contact']);
         if($contact->isPerson()) $contact->load(['person', 'person.title', 'person.organisation', 'person.type']);
+        if($contact->isCoach()) $contact->load(['coachQuotationRequests.opportunity.measureCategory', 'coachQuotationRequests.opportunity.status']);
 
         $contact->relatedEmailsInbox = $this->getRelatedEmails($contact, $contact->id, 'inbox');
         $contact->relatedEmailsSent = $this->getRelatedEmails($contact, $contact->id, 'sent');
@@ -122,6 +124,13 @@ class ContactController extends Controller
         $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->get();
 
         return ContactPeek::collection($contacts);
+    }
+
+    public function peekCoach(Request $request)
+    {
+        $coaches = Contact::where('is_coach', true)->select('id', 'full_name')->orderBy('full_name', 'asc')->get();
+
+        return ContactPeekCoach::collection($coaches);
     }
 
     public function search(Request $request)

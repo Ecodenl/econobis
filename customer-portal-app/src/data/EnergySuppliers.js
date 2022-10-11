@@ -47,7 +47,7 @@ export default [
     { id: 39, name: 'ParkStroom' },
     { id: 62, name: 'PostcodeStroom' },
     { id: 36, name: 'Power peers' },
-    { id: 15, name: 'Pure energy' },
+    { id: 15, name: 'Pure energie' },
     { id: 63, name: 'PZEM' },
     { id: 16, name: 'Qurrent' },
     { id: 48, name: 'Qwint' },

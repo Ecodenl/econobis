@@ -4,8 +4,6 @@ namespace App\Eco\Mailbox;
 
 
 use App\Eco\Email\Email;
-use App\Eco\Email\EmailAttachment;
-use App\Eco\EmailAddress\EmailAddress;
 use App\Helpers\Gmail\GmailConnectionManager;
 use App\Http\Traits\Email\EmailRelations;
 use App\Http\Traits\Email\Storage;
@@ -48,13 +46,20 @@ class MailFetcherGmail
 
     public function fetchNew()
     {
+//        Log::info("Check fetchNew mailbox " . $this->mailbox->id);
+
+        if ($this->mailbox->start_fetch_mail != null) {
+            return;
+        }
+
+        $this->mailbox->start_fetch_mail = Carbon::now();
+        $this->mailbox->save();
+
         if ($this->mailbox->date_last_fetched) {
             $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->subDay()->format('Y-m-d');
         } else {
             $dateLastFetched = Carbon::now()->subDay()->format('Y-m-d');
         }
-
-        $dateTime = Carbon::now();
 
         try {
             // Get all emails (messages)
@@ -67,6 +72,7 @@ class MailFetcherGmail
             Log::error("Geen refresh token verkregen, mailbox " . $this->mailbox->id . " op invalid!");
             Log::error("Gmail connection failed. Error: " . $ex->getMessage());
             $this->mailbox->valid = false;
+            $this->mailbox->start_fetch_mail = null;
             $this->mailbox->save();
 
             return $ex->getMessage();
@@ -80,6 +86,7 @@ class MailFetcherGmail
         array_map([$this, 'processMessage'], $listMessages->getMessages());
 
         $this->mailbox->date_last_fetched = Carbon::now();
+        $this->mailbox->start_fetch_mail = null;
         $this->mailbox->save();
     }
 
@@ -128,6 +135,8 @@ class MailFetcherGmail
         } catch (\Exception $ex) {
             Log::error("Failed to retrieve HtmlBody from email (" . $headers->message_id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage());
 //            echo "Failed to retrieve :HtmlBody from email (" . $headers->message_id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage();
+            $this->mailbox->start_fetch_mail = null;
+            $this->mailbox->save();
             return;
         }
         $textHtml = $textHtml ?: '';

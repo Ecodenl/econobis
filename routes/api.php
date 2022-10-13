@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\Invoice\InvoiceMolliePaymentController;
+use App\Http\Controllers\Api\Mailbox\MailboxController;
+use App\Http\Middleware\EncryptCookies;
+use Illuminate\Session\Middleware\StartSession;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
 /*
@@ -579,3 +582,9 @@ Route::namespace('Api')
 
         Route::post('mollie/webhook', [InvoiceMolliePaymentController::class, 'webhook'])->name('mollie.webhook');
     });
+Route::namespace('Api')
+    ->middleware([EncryptCookies::class, StartSession::class])
+    ->group(function () {
+        Route::get('oauth/ms-azure/callback', [MailboxController::class, 'msOauthApiConnectionCallback'])->name('oauth.ms-azure.callback');
+    });
+

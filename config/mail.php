@@ -91,6 +91,10 @@ return [
             'transport' => 'gmailapi',
         ],
 
+        'msoauthapi' => [
+            'transport' => 'msoauthapi',
+        ],
+
     ],
 
     /*

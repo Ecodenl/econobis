@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const ButtonText = props => {
-    const { buttonClassName, buttonText, onClickAction, type, value, loading, loadText, disabled } = props;
+    const { buttonClassName, buttonText, onClickAction, type, value, loading, loadText, disabled, title } = props;
 
     if (loading) {
         return (
@@ -23,6 +23,7 @@ const ButtonText = props => {
                 onClick={onClickAction}
                 value={value}
                 disabled={disabled}
+                title={title}
             >
                 {buttonText}
             </button>
@@ -37,6 +38,7 @@ ButtonText.defaultProps = {
     loading: false,
     loadText: 'Aan het laden',
     disabled: false,
+    title: '',
 };
 
 ButtonText.propTypes = {
@@ -48,6 +50,7 @@ ButtonText.propTypes = {
     loading: PropTypes.bool,
     loadText: PropTypes.string,
     disabled: PropTypes.bool,
+    title: PropTypes.string,
 };
 
 export default ButtonText;

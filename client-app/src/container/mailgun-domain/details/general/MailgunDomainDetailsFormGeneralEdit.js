@@ -76,7 +76,7 @@ class MailgunDomainDetailsFormGeneralEdit extends Component {
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label="Domesin"
+                                label="Domein"
                                 name={'domain'}
                                 value={domain}
                                 onChangeAction={this.handleInputChange}

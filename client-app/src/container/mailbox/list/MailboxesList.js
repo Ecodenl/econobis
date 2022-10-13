@@ -33,9 +33,9 @@ class MailboxesList extends Component {
                         <tr className="thead-title">
                             <DataTableHeadTitle title={'Weergavenaam'} width={'15%'} />
                             <DataTableHeadTitle title={'E-mail'} width={'15%'} />
-                            <DataTableHeadTitle title={'Gebruikersnaam'} width={'15%'} />
+                            {/*<DataTableHeadTitle title={'Gebruikersnaam'} width={'15%'} />*/}
                             <DataTableHeadTitle title={'Inkomend'} width={'15%'} />
-                            <DataTableHeadTitle title={'Gebruikt mailgun'} width={'10%'} />
+                            {/*<DataTableHeadTitle title={'Gebruikt mailgun'} width={'10%'} />*/}
                             <DataTableHeadTitle title={'Uitgaand'} width={'15%'} />
                             <DataTableHeadTitle title={'Primair'} width={'5%'} />
                             <DataTableHeadTitle title={'Actief'} width={'5%'} />
@@ -45,7 +45,7 @@ class MailboxesList extends Component {
                     <DataTableBody>
                         {loading ? (
                             <tr>
-                                <td colSpan={9}>{loadingText}</td>
+                                <td colSpan={7}>{loadingText}</td>
                             </tr>
                         ) : (
                             this.props.mailboxes.map(mailbox => {

@@ -52,4 +52,19 @@ class Mailbox extends Model
     {
         return static::where('primary', true)->first();
     }
+
+    public function getIncomingServerType()
+    {
+        if (!$this->incoming_server_type) return null;
+
+        return IncomingServerType::get($this->incoming_server_type);
+    }
+    public function getOutcomingServerType()
+    {
+        if (!$this->outgoing_server_type) return null;
+
+        return OutgoingServerType::get($this->outgoing_server_type);
+    }
+
+
 }

@@ -177,6 +177,12 @@ class Contact extends Model
 
     }
 
+    public function getIsInCoachGroupAttribute()
+    {
+        return $this->groups()->where('is_coach_group', true)->exists();;
+    }
+
+
     public function getType()
     {
         if(!$this->type_id) return null;

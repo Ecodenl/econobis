@@ -104,6 +104,7 @@ class FullContactWithGroups extends JsonResource
             'collectMandateCollectionSchema' => $this->collect_mandate_collection_schema,
             'hoomAccountId' => $this->hoom_account_id,
             'isParticipantPcrProject' => $this->is_participant_pcr_project,
+            'isInCoachGroup' => $this->is_in_coach_group,
             'isCoach' => $this->is_coach,
             'coachQuotationRequests' => FullQuotationRequest::collection($this->whenLoaded('coachQuotationRequests')),
             'organisationQuotationRequests' => FullQuotationRequest::collection($this->whenLoaded('organisationQuotationRequests')),

@@ -163,6 +163,8 @@ class ContactDetailsFormPersonalEdit extends Component {
             isCoach,
         } = this.state.person;
 
+        const { isInCoachGroup } = this.props.contactDetails;
+
         return (
             <React.Fragment>
                 <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -294,6 +296,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                             divSize={'col-xs-12'}
                             name="isCoach"
                             value={isCoach}
+                            disabled={Boolean(isInCoachGroup)}
                             onChangeAction={this.handleInputChange}
                         />
                     </div>

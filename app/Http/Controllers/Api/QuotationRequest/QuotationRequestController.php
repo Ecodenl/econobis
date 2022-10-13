@@ -10,6 +10,8 @@ namespace App\Http\Controllers\Api\QuotationRequest;
 
 
 use App\Eco\Email\Email;
+use App\Eco\Occupation\Occupation;
+use App\Eco\Occupation\OccupationContact;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Helpers\CSV\QuotationRequestCSVHelper;
@@ -21,7 +23,6 @@ use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\QuotationRequest\GridQuotationRequest;
 use App\Http\Resources\QuotationRequest\QuotationRequestPeek;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -136,6 +137,8 @@ class QuotationRequestController extends ApiController
 
         $quotationRequest->save();
 
+        $this->creatEnergyCoachOccupation($quotationRequest);
+
         return $this->show($quotationRequest);
     }
 
@@ -180,6 +183,8 @@ class QuotationRequestController extends ApiController
 
         $quotationRequest->save();
 
+        $this->creatEnergyCoachOccupation($quotationRequest);
+
         return $this->show($quotationRequest);
     }
 
@@ -218,6 +223,25 @@ class QuotationRequestController extends ApiController
 
     public function getAmountOfOpenQuotationRequests(){
         return QuotationRequest::where('status_id', 1)->count();
+    }
+
+    protected function creatEnergyCoachOccupation(QuotationRequest $quotationRequest)
+    {
+        $organisationOrCoach = $quotationRequest->organisationOrCoach;
+        $resident = $quotationRequest->opportunity->intake->contact;
+        $energyCoachOccupation = Occupation::where('primary_occupation', 'LIKE', 'Energiecoach%')->first();
+        if($energyCoachOccupation && $resident && $organisationOrCoach->isCoach()){
+            // is coach, create occupation if not exits yet.
+            if (!OccupationContact::where('primary_contact_id', $organisationOrCoach->id)->where('contact_id', $resident->id)->where('occupation_id', $energyCoachOccupation->id)->exists()) {
+                // rol coach/resident doesn't exists yet.
+                OccupationContact::create([
+                    'occupation_id' => $energyCoachOccupation->id,
+                    'primary_contact_id' => $organisationOrCoach->id,
+                    'contact_id' => $resident->id,
+                    'primary' => true,
+                ]);
+            }
+        }
     }
 
 }

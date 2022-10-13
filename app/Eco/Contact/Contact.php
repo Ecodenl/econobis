@@ -194,8 +194,11 @@ class Contact extends Model
         return $this->hasManyThrough(Opportunity::class, Intake::class)->orderBy('opportunities.id', 'desc');
     }
 
+    public function organisationQuotationRequests(){
+        return $this->isOrganisation() ? $this->hasMany(QuotationRequest::class) : $this->hasMany(QuotationRequest::class)->whereRaw('1=1') ;
+    }
     public function coachQuotationRequests(){
-        return $this->hasMany(QuotationRequest::class);
+        return $this->isCoach() ? $this->hasMany(QuotationRequest::class) : $this->hasMany(QuotationRequest::class)->whereRaw('1=1') ;
     }
 
     // Only an unfinished task is a task

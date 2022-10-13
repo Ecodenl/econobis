@@ -56,7 +56,7 @@ class ContactDetailsForm extends Component {
                 <ContactDetailsFormAddress />
                 <ContactDetailsFormEmail />
                 <ContactDetailsFormPhone />
-                {isCoach && <ContactDetailsCoachQuotations />}
+                {isCoach ? <ContactDetailsCoachQuotations /> : null}
                 {typeId == 'organisation' && <ContactDetailsQuotations />}
                 {typeId == 'organisation' && <ContactDetailsCampaigns />}
                 <ContactDetailsFormOccupations />

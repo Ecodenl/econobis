@@ -452,14 +452,15 @@ class ContactNewFormOrganisation extends Component {
                     />
                 </div>
 
-                <div className="row">
-                    <InputToggle
-                        label="Is coach"
-                        name="isCoach"
-                        value={isCoach}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
+                {/* vooralsnog alleen bij persons, organisations kunnen al gekoppeld worden aan offerteverzoeken */}
+                {/*<div className="row">*/}
+                {/*    <InputToggle*/}
+                {/*        label="Is coach"*/}
+                {/*        name="isCoach"*/}
+                {/*        value={isCoach}*/}
+                {/*        onChangeAction={this.handleInputChange}*/}
+                {/*    />*/}
+                {/*</div>*/}
 
                 <div className="margin-10-top">
                     <PanelHeader>

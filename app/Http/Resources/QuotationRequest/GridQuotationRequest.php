@@ -9,6 +9,7 @@
 namespace App\Http\Resources\QuotationRequest;
 
 
+use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Opportunity\OpportunityByQuotationRequest;
 use App\Http\Resources\Organisation\FullOrganisation;

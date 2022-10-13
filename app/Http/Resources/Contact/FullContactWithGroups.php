@@ -106,6 +106,7 @@ class FullContactWithGroups extends JsonResource
             'isParticipantPcrProject' => $this->is_participant_pcr_project,
             'isCoach' => $this->is_coach,
             'coachQuotationRequests' => FullQuotationRequest::collection($this->whenLoaded('coachQuotationRequests')),
+            'organisationQuotationRequests' => FullQuotationRequest::collection($this->whenLoaded('organisationQuotationRequests')),
         ];
     }
 }

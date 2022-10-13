@@ -79,9 +79,10 @@ const ContactDetailsFormOrganisationView = props => {
                 />
             </div>
 
-            <div className="row">
-                <ViewText className={'col-xs-12'} label={'Is coach'} value={isCoach ? 'Ja' : 'Nee'} />
-            </div>
+            {/* vooralsnog alleen bij persons, organisations kunnen al gekoppeld worden aan offerteverzoeken */}
+            {/*<div className="row">*/}
+            {/*    <ViewText className={'col-xs-12'} label={'Is coach'} value={isCoach ? 'Ja' : 'Nee'} />*/}
+            {/*</div>*/}
 
             <div className="row">
                 <ViewText

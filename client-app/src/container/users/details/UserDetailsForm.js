@@ -32,9 +32,9 @@ class UserDetailsForm extends Component {
         ) : (
             <div>
                 <UserDetailsFormGeneral />
+                <UserDetailsFormTwoFactor />
                 <UserDetailsFormRoles />
                 <UserDetailsFormLog />
-                <UserDetailsFormTwoFactor />
             </div>
         );
     }

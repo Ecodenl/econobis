@@ -65,6 +65,14 @@ function CooperationDetailsFormView({ formData, toggleEdit }) {
                     </div>
                 </PanelBody>
                 <PanelHeader>
+                    <span className="h5 text-bold">Twee factor authenticatie</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <ViewText label={'Verplicht'} value={formData.requireTwoFactorAuthentication ? 'Ja' : 'Nee'} />
+                    </div>
+                </PanelBody>
+                <PanelHeader>
                     <span className="h5 text-bold">Overig</span>
                 </PanelHeader>
                 <PanelBody>
@@ -99,14 +107,6 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
 {verbruik_electriciteit_vaste_kosten_hoog}<br/>
 {verbruik_electriciteit_vaste_kosten_laag}`}
                         />
-                    </div>
-                </PanelBody>
-                <PanelHeader>
-                    <span className="h5 text-bold">Twee factor authenticatie</span>
-                </PanelHeader>
-                <PanelBody>
-                    <div className="row">
-                        <ViewText label={'Verplicht'} value={formData.requireTwoFactorAuthentication ? 'Ja' : 'Nee'} />
                     </div>
                 </PanelBody>
             </Panel>

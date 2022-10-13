@@ -268,6 +268,20 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                 </PanelBody>
 
                 <PanelHeader>
+                    <span className="h5 text-bold">Twee factor authenticatie</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <InputToggle
+                            label="Verplicht"
+                            name={'requireTwoFactorAuthentication'}
+                            value={values.requireTwoFactorAuthentication}
+                            onChangeAction={e => setFieldValue('requireTwoFactorAuthentication', e.target.checked)}
+                        />
+                    </div>
+                </PanelBody>
+
+                <PanelHeader>
                     <span className="h5 text-bold">Overig</span>
                 </PanelHeader>
                 <PanelBody>
@@ -302,20 +316,6 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
 {verbruik_electriciteit_variabele_kosten_laag}<br/>
 {verbruik_electriciteit_vaste_kosten_hoog}<br/>
 {verbruik_electriciteit_vaste_kosten_laag}`}
-                        />
-                    </div>
-                </PanelBody>
-
-                <PanelHeader>
-                    <span className="h5 text-bold">Twee factor authenticatie</span>
-                </PanelHeader>
-                <PanelBody>
-                    <div className="row">
-                        <InputToggle
-                            label="Verplicht"
-                            name={'requireTwoFactorAuthentication'}
-                            value={values.requireTwoFactorAuthentication}
-                            onChangeAction={e => setFieldValue('requireTwoFactorAuthentication', e.target.checked)}
                         />
                     </div>
                 </PanelBody>

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCampaignCoachesTable extends Migration
+class CreateCampaignCoachTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateCampaignCoachesTable extends Migration
      */
     public function up()
     {
-        Schema::create('campaign_coaches', function (Blueprint $table) {
+        Schema::create('campaign_coach', function (Blueprint $table) {
             $table->unsignedInteger('campaign_id');
             $table->unsignedInteger('contact_id');
             $table->timestamps();
@@ -28,6 +28,6 @@ class CreateCampaignCoachesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('campaign_coaches');
+        Schema::dropIfExists('campaign_coach');
     }
 }

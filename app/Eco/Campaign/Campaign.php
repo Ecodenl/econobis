@@ -63,7 +63,7 @@ class Campaign extends Model
     }
 
     public function coaches(){
-        return $this->belongsToMany(Contact::class, 'campaign_coaches');
+        return $this->belongsToMany(Contact::class, 'campaign_coach');
     }
 
     public function organisationsOrCoachesIds(){

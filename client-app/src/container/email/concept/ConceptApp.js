@@ -163,6 +163,11 @@ class ConceptApp extends Component {
                     attachments: payload.data.data,
                 },
             });
+            // todo WM: opschonen!!
+            console.log('Test calling window.URL.revokeObjectURL(file.preview)');
+            files.map((file, key) => {
+                window.URL.revokeObjectURL(file.preview);
+            });
         });
     }
 

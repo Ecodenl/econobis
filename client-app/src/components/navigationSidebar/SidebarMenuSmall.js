@@ -25,41 +25,59 @@ const SidebarMenuSmall = ({ permissions, administrations }) => (
             <SvgIcon size={20} icon={ic_dashboard} />
         </div>
         {/* Contacten */}
-        <div className="sidebar-menu-small-item">
-            <SvgIcon size={20} icon={ic_contacts} />
-        </div>
-        {/* Projexts */}
-        <div className="sidebar-menu-small-item">
-            <SvgIcon size={20} icon={drawer} />
-        </div>
+        {permissions.menuContacts && (
+            <div className="sidebar-menu-small-item">
+                <SvgIcon size={20} icon={ic_contacts} />
+            </div>
+        )}
+        {/* Projects */}
+        {permissions.menuProjects && (
+            <div className="sidebar-menu-small-item">
+                <SvgIcon size={20} icon={drawer} />
+            </div>
+        )}
         {/* Intakes */}
-        <div className="sidebar-menu-small-item">
-            <SvgIcon size={20} icon={home} />
-        </div>
+        {permissions.menuEnergySaving && (
+            <div className="sidebar-menu-small-item">
+                <SvgIcon size={20} icon={home} />
+            </div>
+        )}
         {/* Groepen beheer */}
-        <div className="sidebar-menu-small-item">
-            <SvgIcon size={20} icon={ic_aspect_ratio} />
-        </div>
+        {permissions.menuContactGroups && (
+            <div className="sidebar-menu-small-item">
+                <SvgIcon size={20} icon={ic_aspect_ratio} />
+            </div>
+        )}
         {/* Email */}
-        <div className="sidebar-menu-small-item">
-            <SvgIcon size={20} icon={ic_email} />
-        </div>
+        {permissions.menuEmail && (
+            <div className="sidebar-menu-small-item">
+                <SvgIcon size={20} icon={ic_email} />
+            </div>
+        )}
         {/* Marketing */}
-        <div className="sidebar-menu-small-item">
-            <SvgIcon size={20} icon={speech_bubbles} />
-        </div>
+        {permissions.menuMarketing && (
+            <div className="sidebar-menu-small-item">
+                <SvgIcon size={20} icon={speech_bubbles} />
+            </div>
+        )}
         {/* Taken */}
-        <div className="sidebar-menu-small-item">
-            <SvgIcon size={20} icon={ic_business} />
-        </div>
+        {permissions.menuTasks && (
+            <div className="sidebar-menu-small-item">
+                <SvgIcon size={20} icon={ic_business} />
+            </div>
+        )}
         {/* Agenda */}
-        <div className="sidebar-menu-small-item">
-            <SvgIcon size={20} icon={calendar} />
-        </div>
+        {permissions.menuAgenda && (
+            <div className="sidebar-menu-small-item">
+                <SvgIcon size={20} icon={calendar} />
+            </div>
+        )}
         {/* Processen */}
-        <div className="sidebar-menu-small-item">
-            <SvgIcon size={20} icon={stopwatch} />
-        </div>
+        {permissions.menuProcesses && (
+            <div className="sidebar-menu-small-item">
+                <SvgIcon size={20} icon={stopwatch} />
+            </div>
+        )}
         {/* Documenten */}
         {permissions.viewDocumentTemplate && (
             <div className="sidebar-menu-small-item">
@@ -73,13 +91,17 @@ const SidebarMenuSmall = ({ permissions, administrations }) => (
             </div>
         )}
         {/* Workflow */}
-        <div className="sidebar-menu-small-item">
-            <SvgIcon size={20} icon={forward} />
-        </div>
+        {permissions.manageFinancial && (
+            <div className="sidebar-menu-small-item">
+                <SvgIcon size={20} icon={forward} />
+            </div>
+        )}
         {/* Instellingen */}
-        <div className="sidebar-menu-small-item">
-            <SvgIcon size={20} icon={cog} />
-        </div>
+        {permissions.menuSettings && (
+            <div className="sidebar-menu-small-item">
+                <SvgIcon size={20} icon={cog} />
+            </div>
+        )}
         {/* Portal instellingen */}
         {permissions.managePortalSettings && (
             <div className="sidebar-menu-small-item">

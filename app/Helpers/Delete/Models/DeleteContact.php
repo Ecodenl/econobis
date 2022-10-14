@@ -82,7 +82,7 @@ class DeleteContact implements DeleteInterface
 
         if($this->contact->organisation && $this->contact->organisation->campaigns->count() > 0){
             $campaignNumbers = $this->contact->organisation->campaigns->pluck('number')->toArray();
-            array_push($this->errorMessage, "Organisatie is nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers));
+            array_push($this->errorMessage, "Organisatie is nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de organisatie als betrokken bedrijf bij campagne(s) en verwijder dan het contact opnieuw.");
         }
 
     }

@@ -33,8 +33,6 @@ class DeleteMemberToLaposta implements ShouldQueue
         $this->lapostaMemberId = $lapostaMemberId;
         $this->userId = $userId;
 
-        Log::info('Start Verwijderen relatie '. ( $this->contact->primaryEmailAddress ? $this->contact->primaryEmailAddress->email : '**onbekend**' ) .' in Laposta.');
-
         $jobLog = new JobsLog();
         $jobLog->value = 'Start Verwijderen relatie '. ( $this->contact->primaryEmailAddress ? $this->contact->primaryEmailAddress->email : '**onbekend**' ) .' in Laposta.';
         $jobLog->user_id = $userId;

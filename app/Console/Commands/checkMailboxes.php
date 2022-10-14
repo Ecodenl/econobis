@@ -6,6 +6,7 @@ use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailFetcher;
 use App\Eco\Mailbox\MailFetcherGmail;
 use App\Eco\Mailbox\MailFetcherMsOauth;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -53,6 +54,19 @@ class checkMailboxes extends Command
                 new MailFetcher($mailbox);
             }
         }
-        Log::info('Mailboxen gecheckt.');
+
+        $mailboxes2 = Mailbox::where('valid', 1)->where('is_active', 1)->get();
+        foreach ($mailboxes2 as $mailbox2) {
+
+            if($mailbox2->start_fetch_mail && Carbon::parse($mailbox2->start_fetch_mail) < Carbon::now()->subHours(12)){
+//                Log::info('start_fetch_mail: ' . Carbon::parse($mailbox2->start_fetch_mail)->format('Y-m-d H:i:s'));
+//                Log::info('Vandaag: ' . Carbon::now()->subHours(12)->format('Y-m-d H:i:s'));
+                Log::error(Carbon::now()->format('Y-m-d H:i:s') . ' : Mailbox id ' . $mailbox2->id . ' had start_fetch_mail ' . Carbon::parse($mailbox2->start_fetch_mail) . '. Deze is nu weer vrijgegeven.');
+                $mailbox2->start_fetch_mail = null;
+                $mailbox2->save();
+            }
+        }
+
+        Log::info('Mailboxen gecheckt om ' . Carbon::now()->format('Y-m-d H:i:s') . '.');
     }
 }

@@ -69,15 +69,15 @@ class DeleteContact implements DeleteInterface
     public function canDelete()
     {
         if($this->contact->primaryOccupations()->count() > 0){
-            array_push($this->errorMessage, "Er is nog een verbinding aanwezig.");
+            array_push($this->errorMessage, "Er is nog een verbinding aanwezig, Verwijder de verbinding bij het contact en verwijder dan het contact opnieuw.");
         }
 
         if($this->contact->occupations()->count() > 0){
-            array_push($this->errorMessage, "Er is nog een verbinding aanwezig.");
+            array_push($this->errorMessage, "Er is nog een verbinding aanwezig, Verwijder de verbinding bij het contact en verwijder dan het contact opnieuw.");
         }
 
         if($this->contact->portalUser()->count() > 0){
-            array_push($this->errorMessage, "Er is nog een portal gebruiker aanwezig.");
+            array_push($this->errorMessage, "Dit contact maakt gebruik van de 'mijn coöperatie portal'. Ga naar het contact en verwijder onder 'Portal gebruiker gegevens' het e-mail adres.  Verwijder dan het contact opnieuw.");
         }
 
         if($this->contact->organisation && $this->contact->organisation->campaigns->count() > 0){

@@ -33,8 +33,10 @@ class DeleteMemberToLaposta implements ShouldQueue
         $this->lapostaMemberId = $lapostaMemberId;
         $this->userId = $userId;
 
+        Log::info('Start Verwijderen relatie '. ( $this->contact->primaryEmailAddress ? $this->contact->primaryEmailAddress->email : '**onbekend**' ) .' in Laposta.');
+
         $jobLog = new JobsLog();
-        $jobLog->value = 'Start Verwijderen relatie '.$this->contact->primaryEmailAddress->email.' in Laposta.';
+        $jobLog->value = 'Start Verwijderen relatie '. ( $this->contact->primaryEmailAddress ? $this->contact->primaryEmailAddress->email : '**onbekend**' ) .' in Laposta.';
         $jobLog->user_id = $userId;
         $jobLog->job_category_id = 'sync-laposta';
         $jobLog->save();
@@ -57,7 +59,7 @@ class DeleteMemberToLaposta implements ShouldQueue
                 ]);
             }
 
-            $value = 'Relatie '.$this->contact->primaryEmailAddress->email.') in Laposta verwijderd.';
+            $value = 'Relatie '. ( $this->contact->primaryEmailAddress ? $this->contact->primaryEmailAddress->email : '**onbekend**' ) .') in Laposta verwijderd.';
             $jobLog = new JobsLog();
             $jobLog->value = $value;
             $jobLog->user_id = $this->userId;
@@ -65,7 +67,7 @@ class DeleteMemberToLaposta implements ShouldQueue
             $jobLog->save();
 
         } catch (\Exception $e) {
-            $message = 'Groep: ' . $this->contactGroup->name . ' - Fout bij het verwijderen van gekoppelde Laposta relatie  ' . $this->contact->primaryEmailAddress->email . '), melding Laposta: ' ;
+            $message = 'Groep: ' . $this->contactGroup->name . ' - Fout bij het verwijderen van gekoppelde Laposta relatie  ' . ( $this->contact->primaryEmailAddress ? $this->contact->primaryEmailAddress->email : '**onbekend**' ) . '), melding Laposta: ' ;
             if ($e->getMessage()) {
                 $message = $message . $e->getMessage();
             } else {
@@ -84,12 +86,12 @@ class DeleteMemberToLaposta implements ShouldQueue
     public function failed(\Exception $exception)
     {
         $jobLog = new JobsLog();
-        $jobLog->value = 'Verwijderen relatie '.$this->contact->primaryEmailAddress->email.' in Laposta mislukt.';
+        $jobLog->value = 'Verwijderen relatie '. ( $this->contact->primaryEmailAddress ? $this->contact->primaryEmailAddress->email : '**onbekend**' ) .' in Laposta mislukt.';
         $jobLog->user_id = $this->userId;
         $jobLog->job_category_id = 'sync-laposta';
         $jobLog->save();
 
-        Log::error('Verwijderen relatie '.$this->contact->primaryEmailAddress->email.' in Laposta mislukt: ' . $exception->getMessage());
+        Log::error('Verwijderen relatie '. ( $this->contact->primaryEmailAddress ? $this->contact->primaryEmailAddress->email : '**onbekend**' ) .' in Laposta mislukt: ' . $exception->getMessage());
     }
 
 }

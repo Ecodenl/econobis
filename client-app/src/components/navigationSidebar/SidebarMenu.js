@@ -61,7 +61,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                 )}
             </Nav>
 
-            {permissions.menuContacts  && (
+            {permissions.menuContacts && (
                 <Nav id="contacten">
                     <NavIcon>
                         <SvgIcon size={20} icon={ic_contacts} />
@@ -122,7 +122,6 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                     )}
                 </Nav>
             )}
-
 
             {permissions.menuEnergySaving && (
                 <Nav id="energy-saving">
@@ -298,7 +297,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                 </Nav>
             )}
 
-            {permissions.viewDocument && permissions.menuDocuments && (
+            {permissions.menuDocuments && permissions.viewDocument && (
                 <Nav id="documenten">
                     <NavIcon>
                         <SvgIcon size={20} icon={documents} />
@@ -311,7 +310,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                 </Nav>
             )}
 
-            {permissions.manageFinancial && permissions.menuFinancial && administrations.length > 0 && (
+            {permissions.menuFinancial && permissions.manageFinancial && administrations.length > 0 && (
                 <Nav id="financial">
                     <NavIcon>
                         <SvgIcon size={20} icon={ic_business_center} />
@@ -331,7 +330,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                 </Nav>
             )}
 
-            {permissions.manageFinancial && (
+            {permissions.menuWorflow && permissions.manageFinancial && (
                 <Nav id="workflow">
                     <NavIcon>
                         <SvgIcon size={20} icon={forward} />
@@ -368,7 +367,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                 </Nav>
             )}
 
-            {permissions.menuPortalSettings && (
+            {permissions.menuGeneralSettings && (
                 <Nav id="instellingen">
                     <NavIcon>
                         <SvgIcon size={20} icon={cog} />
@@ -507,7 +506,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                 </Nav>
             )}
 
-            {permissions.managePortalSettings && (
+            {permissions.menuPortalSettings && permissions.managePortalSettings && (
                 <Nav id="portalSettings">
                     <NavIcon>
                         <SvgIcon size={20} icon={road} />
@@ -537,7 +536,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         </NavText>
                     </Nav>
                 </Nav>
-                )}
+            )}
         </SideNav>
     </div>
 );

@@ -79,31 +79,31 @@ const SidebarMenuSmall = ({ permissions, administrations }) => (
             </div>
         )}
         {/* Documenten */}
-        {permissions.viewDocumentTemplate && (
+        {permissions.menuDocuments && permissions.viewDocumentTemplate && (
             <div className="sidebar-menu-small-item">
                 <SvgIcon size={20} icon={documents} />
             </div>
         )}
         {/* Administraties */}
-        {permissions.manageFinancial && administrations.length > 0 && (
+        {permissions.menuFinacial && permissions.manageFinancial && administrations.length > 0 && (
             <div className="sidebar-menu-small-item">
                 <SvgIcon size={20} icon={ic_business_center} />
             </div>
         )}
         {/* Workflow */}
-        {permissions.manageFinancial && (
+        {permissions.menuWorkflow && permissions.manageFinancial && (
             <div className="sidebar-menu-small-item">
                 <SvgIcon size={20} icon={forward} />
             </div>
         )}
         {/* Instellingen */}
-        {permissions.menuSettings && (
+        {permissions.menuGeneralSettings && (
             <div className="sidebar-menu-small-item">
                 <SvgIcon size={20} icon={cog} />
             </div>
         )}
         {/* Portal instellingen */}
-        {permissions.managePortalSettings && (
+        {permissions.menuPortalSettings && permissions.managePortalSettings && (
             <div className="sidebar-menu-small-item">
                 <SvgIcon size={20} icon={road} />
             </div>
@@ -112,6 +112,8 @@ const SidebarMenuSmall = ({ permissions, administrations }) => (
 );
 
 const mapStateToProps = state => {
+    console.log(state.meDetails.permissions);
+
     return {
         permissions: state.meDetails.permissions,
         administrations: state.meDetails.administrations,

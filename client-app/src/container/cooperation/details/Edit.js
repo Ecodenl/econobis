@@ -23,6 +23,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
     const [isLoading, setIsLoading] = useState(true);
     const [showUploadLogo, setShowUploadLogo] = useState(false);
     const [attachment, setAttachment] = useState(null);
+    const [showActivateTwoFactorWarning, setShowActivateTwoFactorWarning] = useState(false);
 
     const { values, errors, touched, handleChange, handleSubmit, setFieldValue, handleBlur } = useFormik({
         initialValues: formData,
@@ -85,200 +86,224 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
             });
     }
 
+    function handleRequireTwoFactorChange(e){
+        setFieldValue('requireTwoFactorAuthentication', e.target.checked);
+
+        if(e.target.checked){
+            setShowActivateTwoFactorWarning(true);
+        }
+    }
+
     function toggleShowUploadLogo() {
         setShowUploadLogo(!showUploadLogo);
     }
 
     return (
-        <section className={'panel-hover'}>
-            <Panel>
-                <PanelBody>
-                    <div className="row">
-                        <InputText
-                            label="Naam"
-                            name={'name'}
-                            value={values.name}
-                            onChangeAction={handleChange}
-                            onBlurAction={handleBlur}
-                            required={'required'}
-                            error={errors.name && touched.name}
-                            errorMessage={errors.name}
-                        />
-                        <InputText
-                            label="KvK"
-                            name={'kvkNumber'}
-                            value={values.kvkNumber}
-                            onChangeAction={handleChange}
-                            error={errors.kvkNumber && touched.kvkNumber}
-                            errorMessage={errors.kvkNumber}
-                        />
-                    </div>
-                    <div className="row">
-                        <InputText
-                            label="Adres"
-                            name={'address'}
-                            value={values.address}
-                            onChangeAction={handleChange}
-                        />
-                        <InputText
-                            label="Btw nummer"
-                            name={'btwNumber'}
-                            value={values.btwNumber}
-                            onChangeAction={handleChange}
-                        />
-                    </div>
-                    <div className="row">
-                        <InputText
-                            label="Postcode"
-                            name={'postalCode'}
-                            value={values.postalCode}
-                            onChangeAction={handleChange}
-                        />
-                        <InputText
-                            label="IBAN"
-                            name={'iban'}
-                            value={values.iban}
-                            onChangeAction={handleChange}
-                            onBlurAction={handleBlur}
-                            error={errors.iban && touched.iban}
-                            errorMessage={errors.iban}
-                        />
-                    </div>
-                    <div className="row">
-                        <InputText label="Plaats" name={'city'} value={values.city} onChangeAction={handleChange} />
-
-                        <InputText
-                            label="IBAN t.n.v."
-                            name={'ibanAttn'}
-                            value={values.ibanAttn}
-                            onChangeAction={handleChange}
-                        />
-                    </div>
-                    <div className="row">
-                        <InputText
-                            label="Email"
-                            name={'email'}
-                            value={values.email}
-                            onChangeAction={handleChange}
-                            onBlurAction={handleBlur}
-                            error={errors.email && touched.email}
-                            errorMessage={errors.email}
-                        />
-                        <InputText
-                            label="Website"
-                            name={'website'}
-                            value={values.website}
-                            onChangeAction={handleChange}
-                            onBlurAction={handleBlur}
-                            error={errors.website && touched.website}
-                            errorMessage={errors.website}
-                        />
-                    </div>
-                    <div className="row">
-                        <div className="form-group col-sm-6">
-                            <label className="col-sm-6">Kies logo</label>
-                            <div className="col-sm-6">
-                                <input
-                                    type="text"
-                                    className="form-control input-sm col-sm-6"
-                                    value={attachment ? attachment.name : values.logoName}
-                                    onClick={toggleShowUploadLogo}
-                                    onChange={() => {}}
-                                />
-                            </div>
-                        </div>
-                        {showUploadLogo ? (
-                            <CooperationUploadLogo
-                                addAttachment={setAttachment}
-                                toggleShowUploadLogo={toggleShowUploadLogo}
+        <div>
+            <section className={'panel-hover'}>
+                <Panel>
+                    <PanelBody>
+                        <div className="row">
+                            <InputText
+                                label="Naam"
+                                name={'name'}
+                                value={values.name}
+                                onChangeAction={handleChange}
+                                onBlurAction={handleBlur}
+                                required={'required'}
+                                error={errors.name && touched.name}
+                                errorMessage={errors.name}
                             />
-                        ) : null}
-                    </div>
-                </PanelBody>
-                <PanelHeader>
-                    <span className="h5 text-bold">Hoom gegevens</span>
-                </PanelHeader>
-                <PanelBody>
-                    <div className="row">
-                        <InputText
-                            label="Hoom link"
-                            name={'hoomLink'}
-                            value={values.hoomLink}
-                            onChangeAction={handleChange}
-                            onBlurAction={handleBlur}
-                            error={errors.hoomLink && touched.hoomLink}
-                            errorMessage={errors.hoomLink}
-                        />
-                        <InputText
-                            label="Hoom key"
-                            name={'hoomKey'}
-                            value={values.hoomKey}
-                            onChangeAction={handleChange}
-                        />
-                    </div>
-                    <div className="row">
-                        <InputReactSelect
-                            label={'Hoom e-mail template'}
-                            name={'hoomEmailTemplateId'}
-                            options={emailTemplates}
-                            value={values.hoomEmailTemplateId}
-                            onChangeAction={(value, name) => setFieldValue(name, value)}
-                            isLoading={isLoading}
-                        />
-                        <InputReactSelect
-                            label={'Hoom groep'}
-                            name={'hoomGroupId'}
-                            options={staticContactGroups}
-                            value={values.hoomGroupId}
-                            onChangeAction={(value, name) => setFieldValue(name, value)}
-                            isLoading={isLoading}
-                        />
-                    </div>
-                    <div className="row">
-                        <InputToggle
-                            label={'Stuur e-mail bij nieuw Hoomdossier'}
-                            name={'sendEmail'}
-                            value={!!values.sendEmail}
-                            onChangeAction={event => {
-                                event.persist();
-                                setFieldValue(event.target.name, event.target.checked);
-                            }}
-                        />
-                    </div>
-                </PanelBody>
+                            <InputText
+                                label="KvK"
+                                name={'kvkNumber'}
+                                value={values.kvkNumber}
+                                onChangeAction={handleChange}
+                                error={errors.kvkNumber && touched.kvkNumber}
+                                errorMessage={errors.kvkNumber}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Adres"
+                                name={'address'}
+                                value={values.address}
+                                onChangeAction={handleChange}
+                            />
+                            <InputText
+                                label="Btw nummer"
+                                name={'btwNumber'}
+                                value={values.btwNumber}
+                                onChangeAction={handleChange}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Postcode"
+                                name={'postalCode'}
+                                value={values.postalCode}
+                                onChangeAction={handleChange}
+                            />
+                            <InputText
+                                label="IBAN"
+                                name={'iban'}
+                                value={values.iban}
+                                onChangeAction={handleChange}
+                                onBlurAction={handleBlur}
+                                error={errors.iban && touched.iban}
+                                errorMessage={errors.iban}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText label="Plaats" name={'city'} value={values.city} onChangeAction={handleChange}/>
 
-                <PanelHeader>
-                    <span className="h5 text-bold">Laposta gegevens</span>
-                </PanelHeader>
-                <PanelBody>
-                    <div className="row">
-                        <InputToggle
-                            label="Gebruik Laposta"
-                            name={'useLaposta'}
-                            value={values.useLaposta}
-                            onChangeAction={e => setFieldValue('useLaposta', e.target.checked)}
-                        />
-                        <InputText
-                            label="Laposta key"
-                            name={'lapostaKey'}
-                            value={values.lapostaKey}
-                            onChangeAction={handleChange}
-                        />
-                    </div>
-                </PanelBody>
+                            <InputText
+                                label="IBAN t.n.v."
+                                name={'ibanAttn'}
+                                value={values.ibanAttn}
+                                onChangeAction={handleChange}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Email"
+                                name={'email'}
+                                value={values.email}
+                                onChangeAction={handleChange}
+                                onBlurAction={handleBlur}
+                                error={errors.email && touched.email}
+                                errorMessage={errors.email}
+                            />
+                            <InputText
+                                label="Website"
+                                name={'website'}
+                                value={values.website}
+                                onChangeAction={handleChange}
+                                onBlurAction={handleBlur}
+                                error={errors.website && touched.website}
+                                errorMessage={errors.website}
+                            />
+                        </div>
+                        <div className="row">
+                            <div className="form-group col-sm-6">
+                                <label className="col-sm-6">Kies logo</label>
+                                <div className="col-sm-6">
+                                    <input
+                                        type="text"
+                                        className="form-control input-sm col-sm-6"
+                                        value={attachment ? attachment.name : values.logoName}
+                                        onClick={toggleShowUploadLogo}
+                                        onChange={() => {
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                            {showUploadLogo ? (
+                                <CooperationUploadLogo
+                                    addAttachment={setAttachment}
+                                    toggleShowUploadLogo={toggleShowUploadLogo}
+                                />
+                            ) : null}
+                        </div>
+                    </PanelBody>
+                    <PanelHeader>
+                        <span className="h5 text-bold">Hoom gegevens</span>
+                    </PanelHeader>
+                    <PanelBody>
+                        <div className="row">
+                            <InputText
+                                label="Hoom link"
+                                name={'hoomLink'}
+                                value={values.hoomLink}
+                                onChangeAction={handleChange}
+                                onBlurAction={handleBlur}
+                                error={errors.hoomLink && touched.hoomLink}
+                                errorMessage={errors.hoomLink}
+                            />
+                            <InputText
+                                label="Hoom key"
+                                name={'hoomKey'}
+                                value={values.hoomKey}
+                                onChangeAction={handleChange}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputReactSelect
+                                label={'Hoom e-mail template'}
+                                name={'hoomEmailTemplateId'}
+                                options={emailTemplates}
+                                value={values.hoomEmailTemplateId}
+                                onChangeAction={(value, name) => setFieldValue(name, value)}
+                                isLoading={isLoading}
+                            />
+                            <InputReactSelect
+                                label={'Hoom groep'}
+                                name={'hoomGroupId'}
+                                options={staticContactGroups}
+                                value={values.hoomGroupId}
+                                onChangeAction={(value, name) => setFieldValue(name, value)}
+                                isLoading={isLoading}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputToggle
+                                label={'Stuur e-mail bij nieuw Hoomdossier'}
+                                name={'sendEmail'}
+                                value={!!values.sendEmail}
+                                onChangeAction={event => {
+                                    event.persist();
+                                    setFieldValue(event.target.name, event.target.checked);
+                                }}
+                            />
+                        </div>
+                    </PanelBody>
 
-                <PanelHeader>
-                    <span className="h5 text-bold">Overig</span>
-                </PanelHeader>
-                <PanelBody>
-                    <div className="row">
-                        <InputToggle
-                            label="Gebruik export energieverbruik tarieven en verbruik"
-                            name={'useExportAddressConsumption'}
-                            value={values.useExportAddressConsumption}
-                            onChangeAction={e => setFieldValue('useExportAddressConsumption', e.target.checked)}
-                            size={'col-sm-5'}
-                            textToolTip={`Met deze knop krijg je de optie om op de Contacten pagina een download te maken van energie verbruik en tarief voorstellen.<br/>
+                    <PanelHeader>
+                        <span className="h5 text-bold">Laposta gegevens</span>
+                    </PanelHeader>
+                    <PanelBody>
+                        <div className="row">
+                            <InputToggle
+                                label="Gebruik Laposta"
+                                name={'useLaposta'}
+                                value={values.useLaposta}
+                                onChangeAction={e => setFieldValue('useLaposta', e.target.checked)}
+                            />
+                            <InputText
+                                label="Laposta key"
+                                name={'lapostaKey'}
+                                value={values.lapostaKey}
+                                onChangeAction={handleChange}
+                            />
+                        </div>
+                    </PanelBody>
+
+                    <PanelHeader>
+                        <span className="h5 text-bold">Twee factor authenticatie</span>
+                    </PanelHeader>
+                    <PanelBody>
+                        <div className="row">
+                            <InputToggle
+                                label="Verplicht"
+                                name={'requireTwoFactorAuthentication'}
+                                value={values.requireTwoFactorAuthentication}
+                                onChangeAction={handleRequireTwoFactorChange}
+                            />
+                        </div>
+                    </PanelBody>
+
+                    <PanelHeader>
+                        <span className="h5 text-bold">Overig</span>
+                    </PanelHeader>
+                    <PanelBody>
+                        <div className="row">
+                            <InputToggle
+                                label="Gebruik export energieverbruik tarieven en verbruik"
+                                name={'useExportAddressConsumption'}
+                                value={values.useExportAddressConsumption}
+                                onChangeAction={e => setFieldValue('useExportAddressConsumption', e.target.checked)}
+                                size={'col-sm-5'}
+                                textToolTip={`Met deze knop krijg je de optie om op de Contacten pagina een download te maken van energie verbruik en tarief voorstellen.<br/>
 Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waardes:<br/>
 {verbruik_gas_begindatum}<br/>
 {verbruik_gas_einddatum}<br/>
@@ -302,25 +327,38 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
 {verbruik_electriciteit_variabele_kosten_laag}<br/>
 {verbruik_electriciteit_vaste_kosten_hoog}<br/>
 {verbruik_electriciteit_vaste_kosten_laag}`}
-                        />
-                    </div>
-                </PanelBody>
+                            />
+                        </div>
+                    </PanelBody>
 
-                <PanelBody>
-                    <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonClassName={'btn-default'} buttonText={'Sluiten'} onClickAction={toggleEdit} />
-                        <ButtonText
-                            loading={false}
-                            loadText={'laden'}
-                            buttonText={'Opslaan'}
-                            onClickAction={handleSubmit}
-                            type={'submit'}
-                            value={'Submit'}
-                        />
-                    </div>
-                </PanelBody>
-            </Panel>
-        </section>
+                    <PanelBody>
+                        <div className="pull-right btn-group" role="group">
+                            <ButtonText buttonClassName={'btn-default'} buttonText={'Sluiten'}
+                                        onClickAction={toggleEdit}/>
+                            <ButtonText
+                                loading={false}
+                                loadText={'laden'}
+                                buttonText={'Opslaan'}
+                                onClickAction={handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
+                        </div>
+                    </PanelBody>
+                </Panel>
+            </section>
+            {showActivateTwoFactorWarning && (
+                <Modal
+                    showConfirmAction={false}
+                    buttonCancelText={'Sluiten'}
+                    closeModal={() => setShowActivateTwoFactorWarning(false)}
+                    title="Waarschuwing"
+                >
+                    Bij het activeren van twee factor authenticatie voor de gehele coöperatie worden alle gebruikers per direct verplicht om twee factor authenticatie in te stellen.<br/><br/>
+                    Dit geldt ook voor gebruikers die op dit moment in het programma actief zijn.
+                </Modal>
+            )}
+        </div>
     );
 }
 

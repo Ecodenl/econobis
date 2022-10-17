@@ -1,14 +1,12 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_ORDER = `${URL_API}/api/order`;
 
 export default {
     fetchOrders: ({ filters, sorts, pagination, administrationId }) => {
         const requestUrl = `${URL_ORDER}/grid`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl, {
+        return axiosInstance.get(requestUrl, {
             params: {
                 administrationId: JSON.stringify(administrationId),
                 filters: JSON.stringify(filters),
@@ -21,10 +19,8 @@ export default {
 
     peekOrders: () => {
         const requestUrl = `${URL_ORDER}/peek`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -36,10 +32,8 @@ export default {
 
     getCSV: ({ filters, sorts, administrationId }) => {
         const requestUrl = `${URL_ORDER}/csv`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl, {
+        return axiosInstance.get(requestUrl, {
             params: {
                 administrationId: JSON.stringify(administrationId),
                 filters: JSON.stringify(filters),
@@ -50,10 +44,8 @@ export default {
 
     getCollectionOrders: () => {
         const requestUrl = `${URL_ORDER}/amount-collection`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(response => response.data)
             .catch(error => {
@@ -63,10 +55,8 @@ export default {
 
     getOrdersForCreating: ids => {
         const requestUrl = `${URL_ORDER}/creating`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, { ids: ids })
             .then(response => response.data)
             .catch(error => {

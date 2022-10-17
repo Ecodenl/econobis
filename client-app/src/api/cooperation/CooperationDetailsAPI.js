@@ -1,5 +1,4 @@
 import axiosInstance from '../default-setup/AxiosInstance';
-import axios from 'axios';
 
 export default {
     fetchDetails: function() {

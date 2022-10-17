@@ -1,4 +1,3 @@
-import axios from 'axios';
 import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_ADDRESS = `${URL_API}/api/address`;

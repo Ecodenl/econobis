@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_INVOICE = `${URL_API}/api/invoice`;
 
@@ -13,10 +13,8 @@ export default {
         setInvoicesPaid,
     }) => {
         const requestUrl = `${URL_INVOICE}/grid`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl, {
+        return axiosInstance.get(requestUrl, {
             params: {
                 administrationId: JSON.stringify(administrationId),
                 onlyEmailInvoices: JSON.stringify(onlyEmailInvoices),
@@ -32,10 +30,8 @@ export default {
 
     peekInvoices: () => {
         const requestUrl = `${URL_INVOICE}/peek`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -47,10 +43,8 @@ export default {
 
     getCSV: ({ filters, sorts, administrationId }) => {
         const requestUrl = `${URL_INVOICE}/csv`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl, {
+        return axiosInstance.get(requestUrl, {
             params: {
                 administrationId: JSON.stringify(administrationId),
                 filters: JSON.stringify(filters),
@@ -61,10 +55,8 @@ export default {
 
     getUnpaidInvoices: () => {
         const requestUrl = `${URL_INVOICE}/amount-unpaid`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(response => response.data)
             .catch(error => {
@@ -74,10 +66,8 @@ export default {
 
     getInvoicesForSending: ids => {
         const requestUrl = `${URL_INVOICE}/sending`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, { ids: ids })
             .then(response => response.data)
             .catch(error => {

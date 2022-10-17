@@ -45,6 +45,7 @@ class UpdateCooperation extends FormRequest
             'useLaposta' => [''],
             'lapostaKey' => [''],
             'useExportAddressConsumption' => [''],
+            'requireTwoFactorAuthentication' => [''],
         ];
     }
 }

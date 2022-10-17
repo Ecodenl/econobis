@@ -65,6 +65,14 @@ function CooperationDetailsFormView({ formData, toggleEdit }) {
                     </div>
                 </PanelBody>
                 <PanelHeader>
+                    <span className="h5 text-bold">Twee factor authenticatie</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <ViewText label={'Verplicht'} value={formData.requireTwoFactorAuthentication ? 'Ja' : 'Nee'} />
+                    </div>
+                </PanelBody>
+                <PanelHeader>
                     <span className="h5 text-bold">Overig</span>
                 </PanelHeader>
                 <PanelBody>

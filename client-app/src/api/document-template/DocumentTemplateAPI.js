@@ -1,22 +1,18 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_DOCUMENT_TEMPLATE = `${URL_API}/api/document-template`;
 
 export default {
     fetchDocumentTemplates: () => {
         const requestUrl = `${URL_DOCUMENT_TEMPLATE}/grid`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl);
+        return axiosInstance.get(requestUrl);
     },
 
     fetchDocumentTemplate: id => {
         const requestUrl = `${URL_DOCUMENT_TEMPLATE}/${id}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -26,10 +22,8 @@ export default {
 
     storeDocumentTemplate: data => {
         const requestUrl = `${URL_DOCUMENT_TEMPLATE}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -39,10 +33,8 @@ export default {
 
     updateDocumentTemplate: data => {
         const requestUrl = `${URL_DOCUMENT_TEMPLATE}/${data.id}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -52,10 +44,8 @@ export default {
 
     fetchDocumentTemplatesPeekGeneral: () => {
         const requestUrl = `${URL_DOCUMENT_TEMPLATE}/peekGeneral`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -67,10 +57,8 @@ export default {
 
     fetchDocumentTemplatesPeekNotGeneral: () => {
         const requestUrl = `${URL_DOCUMENT_TEMPLATE}/peekNotGeneral`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -82,17 +70,13 @@ export default {
 
     deleteDocumentTemplate: id => {
         const requestUrl = `${URL_DOCUMENT_TEMPLATE}/${id}/delete`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl);
+        return axiosInstance.post(requestUrl);
     },
 
     duplicateTemplate: id => {
         const requestUrl = `${URL_DOCUMENT_TEMPLATE}/${id}/duplicate`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl);
+        return axiosInstance.post(requestUrl);
     },
 };

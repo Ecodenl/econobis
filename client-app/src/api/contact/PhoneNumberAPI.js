@@ -1,14 +1,12 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_PHONE_NUMBER = `${URL_API}/api/phone-number`;
 
 export default {
     newPhoneNumber: phoneNumber => {
         const requestUrl = `${URL_PHONE_NUMBER}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, phoneNumber)
             .then(function(response) {
                 return response.data.data;
@@ -20,10 +18,8 @@ export default {
 
     updatePhoneNumber: phoneNumber => {
         const requestUrl = `${URL_PHONE_NUMBER}/${phoneNumber.id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, phoneNumber)
             .then(function(response) {
                 return response.data.data;
@@ -35,10 +31,8 @@ export default {
 
     deletePhoneNumber: id => {
         const requestUrl = `${URL_PHONE_NUMBER}/${id}/delete`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl)
             .then(function(response) {
                 return response.data.data;

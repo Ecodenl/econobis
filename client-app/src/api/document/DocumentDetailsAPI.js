@@ -1,45 +1,35 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_DOCUMENT = `${URL_API}/api/document`;
 
 export default {
     fetchDocumentDetails: id => {
         const requestUrl = `${URL_DOCUMENT}/${id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl);
+        return axiosInstance.get(requestUrl);
     },
 
     newDocument: data => {
         const requestUrl = `${URL_DOCUMENT}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, data);
+        return axiosInstance.post(requestUrl, data);
     },
 
     updateDocument: document => {
         const requestUrl = `${URL_DOCUMENT}/${document.id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, document);
+        return axiosInstance.post(requestUrl, document);
     },
 
     deleteDocument: id => {
         const requestUrl = `${URL_DOCUMENT}/${id}/delete`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl);
+        return axiosInstance.post(requestUrl);
     },
 
     download: id => {
         const requestUrl = `${URL_DOCUMENT}/${id}/download`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl, { responseType: 'blob' });
+        return axiosInstance.get(requestUrl, { responseType: 'blob' });
     },
 };

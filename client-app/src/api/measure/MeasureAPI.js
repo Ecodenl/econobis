@@ -1,14 +1,12 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_MEASURE = `${URL_API}/api/measure`;
 
 export default {
     fetchMeasureGrid: () => {
         const requestUrl = `${URL_MEASURE}/grid`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -18,10 +16,8 @@ export default {
 
     fetchMeasure: id => {
         const requestUrl = `${URL_MEASURE}/${id}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -31,10 +27,8 @@ export default {
 
     updateMeasure: (id, data) => {
         const requestUrl = `${URL_MEASURE}/${id}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -44,10 +38,8 @@ export default {
 
     storeFaq: (measureId, data) => {
         const requestUrl = `${URL_MEASURE}/${measureId}/faq`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -57,10 +49,8 @@ export default {
 
     deleteFaq: id => {
         const requestUrl = `${URL_MEASURE}/faq/${id}/delete`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -70,10 +60,8 @@ export default {
 
     updateFaq: faq => {
         const requestUrl = `${URL_MEASURE}/faq/${faq.id}/update`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, faq)
             .then(function(response) {
                 return response.data;
@@ -85,10 +73,8 @@ export default {
 
     attachSupplier: (measureId, organisationId) => {
         const requestUrl = `${URL_MEASURE}/${measureId}/supplier/${organisationId}/attach`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -98,10 +84,8 @@ export default {
 
     detachSupplier: (measureId, organisationId) => {
         const requestUrl = `${URL_MEASURE}/${measureId}/supplier/${organisationId}/detach`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -111,10 +95,8 @@ export default {
 
     associateOpportunity: (measureId, opportunityId) => {
         const requestUrl = `${URL_MEASURE}/${measureId}/opportunity/${opportunityId}/associate`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -124,10 +106,8 @@ export default {
 
     peekMeasures: () => {
         const requestUrl = `${URL_MEASURE}/peek`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;

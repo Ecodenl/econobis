@@ -12,6 +12,8 @@ class Logout extends Component {
         localStorage.removeItem('userId');
         localStorage.removeItem('userName');
         localStorage.removeItem('last_activity');
+        localStorage.removeItem('last_activity');
+        localStorage.removeItem('two_factor_token');
 
         this.props.authLogout();
 

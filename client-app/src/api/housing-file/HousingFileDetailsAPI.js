@@ -1,14 +1,12 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_HOUSING_FILE = `${URL_API}/api/housing-file`;
 
 export default {
     fetchHousingFilesDetails: function(id) {
         const requestUrl = `${URL_HOUSING_FILE}/${id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -20,10 +18,8 @@ export default {
 
     newHousingFile: housingFile => {
         const requestUrl = `${URL_API}/api/contact/housing-file`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, housingFile)
             .then(function(response) {
                 return response.data;
@@ -35,10 +31,8 @@ export default {
 
     updateHousingFile: housingFile => {
         const requestUrl = `${URL_HOUSING_FILE}/${housingFile.id}/update`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, housingFile)
             .then(function(response) {
                 return response.data.data;
@@ -50,26 +44,20 @@ export default {
 
     deleteHousingFile: id => {
         const requestUrl = `${URL_HOUSING_FILE}/${id}/delete`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl);
+        return axiosInstance.post(requestUrl);
     },
 
     attachMeasureTaken: measureTaken => {
         const requestUrl = `${URL_HOUSING_FILE}/measure-taken`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, measureTaken);
+        return axiosInstance.post(requestUrl, measureTaken);
     },
 
     detachMeasureTaken: (addressId, measureId) => {
         const requestUrl = `${URL_HOUSING_FILE}/${addressId}/${measureId}/detach`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl)
             .then(function(response) {
                 return response.data.data;

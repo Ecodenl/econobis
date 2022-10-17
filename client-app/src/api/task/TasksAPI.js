@@ -1,12 +1,10 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 export default {
     fetchTasks: ({ filters, sorts, pagination }) => {
         const requestUrl = `${URL_API}/api/task/grid/tasks`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl, {
+        return axiosInstance.get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
@@ -18,10 +16,8 @@ export default {
 
     fetchNotes: ({ filters, sorts, pagination }) => {
         const requestUrl = `${URL_API}/api/task/grid/notes`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl, {
+        return axiosInstance.get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
@@ -33,10 +29,8 @@ export default {
 
     getAmountActive: () => {
         const requestUrl = `${URL_API}/api/task/amount-active`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(response => response.data)
             .catch(error => {
@@ -46,10 +40,8 @@ export default {
 
     fetchTasksCalendarEvents: (startDate, endDate) => {
         const requestUrl = `${URL_API}/api/task/calendar`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl, {
+        return axiosInstance.get(requestUrl, {
             params: {
                 startDate,
                 endDate,
@@ -59,10 +51,8 @@ export default {
 
     peekTasks: () => {
         const requestUrl = `${URL_API}/api/task/peek`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;

@@ -25,7 +25,7 @@ Route::get('password/reset/{token}', [
 ]);
 
 Route::namespace('Api')
-    ->middleware(['auth:api', 'scopes:use-app'])
+    ->middleware(['auth:api', 'scopes:use-app', 'two-factor'])
     ->group(function () {
 
         Route::get('/jobs', 'Job\JobController@getLastJobs');
@@ -98,6 +98,7 @@ Route::namespace('Api')
         Route::get('/user/with-permission/{permission}', 'User\UserController@withPermission');
         Route::post('/user/{user}/roles/add/{role}', 'User\UserController@addRole');
         Route::post('/user/{user}/roles/remove/{role}', 'User\UserController@removeRole');
+        Route::post('/user/{user}/reset-two-factor', 'User\UserController@resetTwoFactor');
 
         Route::post('/address/pico', 'Address\AddressController@getPicoAddress');
         Route::post('/address', 'Address\AddressController@store');
@@ -562,7 +563,18 @@ Route::namespace('Api')
         Route::get('jory/{resource}/count', '\\'.JoryController::class.'@count');
         Route::get('jory/{resource}/{id}', '\\'.JoryController::class.'@find');
         Route::get('jory/{resource}', '\\'.JoryController::class.'@get')->name('jory.get');
+    });
 
+Route::namespace('Api')
+    ->middleware(['auth:api', 'scopes:use-app'])
+    ->group(function () {
+        Route::get('me/two-factor-status', [\App\Http\Controllers\Auth\TwoFactorAuthenticationController::class, 'status']);
+        Route::post('me/hide-two-factor-notification', [\App\Http\Controllers\Auth\ConfirmedTwoFactorAuthenticationController::class, 'hideNotification']);
+        Route::post('me/two-factor-authentication', [\App\Http\Controllers\Auth\TwoFactorAuthenticationController::class, 'store']);
+        Route::post('me/confirmed-two-factor-authentication', [\App\Http\Controllers\Auth\ConfirmedTwoFactorAuthenticationController::class, 'store']);
+        Route::get('me/two-factor-qr-code', [\App\Http\Controllers\Auth\TwoFactorQrCodeController::class, 'show']);
+        Route::get('me/two-factor-recovery-codes', [\App\Http\Controllers\Auth\RecoveryCodeController::class, 'index']);
+        Route::post('me/two-factor-challenge', [\App\Http\Controllers\Auth\RecoveryCodeController::class, 'recover']);
     });
 
 Route::namespace('Api')

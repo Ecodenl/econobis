@@ -38,6 +38,7 @@ class FullCooperation extends JsonResource
             'hoomGroup' => ['name' => $this->contactGroup ? $this->contactGroup->name : ''],
             'useLaposta' => $this->use_laposta,
             'useExportAddressConsumption' => $this->use_export_address_consumption,
+            'requireTwoFactorAuthentication' => $this->require_two_factor_authentication,
             'lapostaKey' => $this->laposta_key,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,

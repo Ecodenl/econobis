@@ -29,6 +29,7 @@ const INITIAL_STATE = {
         useLaposta: false,
         lapostaKey: '',
         useExportAddressConsumption: false,
+        requireTwoFactorAuthentication: false,
     },
     isLoading: true,
     showEdit: false,

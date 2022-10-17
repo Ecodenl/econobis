@@ -58,9 +58,9 @@ class checkMailboxes extends Command
         $mailboxes2 = Mailbox::where('valid', 1)->where('is_active', 1)->get();
         foreach ($mailboxes2 as $mailbox2) {
 
-            if($mailbox2->start_fetch_mail && Carbon::parse($mailbox2->start_fetch_mail) < Carbon::now()->subHours(12)){
+            if($mailbox2->start_fetch_mail && Carbon::parse($mailbox2->start_fetch_mail) < Carbon::now()->subHours(3)){
 //                Log::info('start_fetch_mail: ' . Carbon::parse($mailbox2->start_fetch_mail)->format('Y-m-d H:i:s'));
-//                Log::info('Vandaag: ' . Carbon::now()->subHours(12)->format('Y-m-d H:i:s'));
+//                Log::info('Vandaag: ' . Carbon::now()->subHours(3)->format('Y-m-d H:i:s'));
                 Log::error(Carbon::now()->format('Y-m-d H:i:s') . ' : Mailbox id ' . $mailbox2->id . ' had start_fetch_mail ' . Carbon::parse($mailbox2->start_fetch_mail) . '. Deze is nu weer vrijgegeven.');
                 $mailbox2->start_fetch_mail = null;
                 $mailbox2->save();

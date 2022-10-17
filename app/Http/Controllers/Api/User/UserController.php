@@ -102,9 +102,7 @@ class UserController extends Controller
         $user->save();
 
         if($resetTwoFactorAuthentication) {
-            $user->twoFactorTokens()->delete();
-
-            (new DisableTwoFactorAuthentication())($user);
+            $this->doResetTwoFactor($user);
         }
 
         return $this->show($user->fresh());
@@ -139,6 +137,11 @@ class UserController extends Controller
     }
 
     public function resetTwoFactor(User $user)
+    {
+        $this->doResetTwoFactor($user);
+    }
+
+    private function doResetTwoFactor(User $user)
     {
         $user->twoFactorTokens()->delete();
         $user->two_factor_secret = null;

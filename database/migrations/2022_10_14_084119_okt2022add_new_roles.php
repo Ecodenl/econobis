@@ -104,16 +104,16 @@ class Okt2022addNewRoles extends Migration
 
         //make roles inzake nieuw view permissions
         $newViewRoles = [
-            'Medewerker' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks','menu_agenda','menu_processes','menu_documents','menu_general_settings'],
-            'Medewerker 2' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks','menu_agenda','menu_processes','menu_documents','menu_general_settings'],
-            'Projectmedewerker' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks','menu_agenda','menu_processes','menu_documents','menu_general_settings'],
-            'Financieel medewerker' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks','menu_agenda','menu_processes','menu_documents','menu_financial','menu_workflow','menu_general_settings'],
-            'Financieel controller' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks','menu_agenda','menu_processes','menu_documents','menu_financial','menu_workflow','menu_general_settings'],
-            'Participatie medewerker' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks','menu_agenda','menu_processes','menu_documents','menu_general_settings'],
-            'Energie adviseur' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks','menu_agenda','menu_processes','menu_documents','menu_general_settings'],
-            'Marketing medewerker' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks','menu_agenda','menu_processes','menu_documents','menu_general_settings'],
-            'Energiemanager' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks','menu_agenda','menu_processes','menu_documents','menu_general_settings'],
-            'Energiecoordinator' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks','menu_agenda','menu_processes','menu_documents','menu_general_settings'],
+            'Medewerker' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_processes', 'menu_documents', 'menu_general_settings'],
+            'Medewerker 2' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_processes', 'menu_documents', 'menu_general_settings'],
+            'Projectmedewerker' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_processes', 'menu_documents', 'menu_general_settings'],
+            'Financieel medewerker' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_processes', 'menu_documents', 'menu_financial', 'menu_workflow', 'menu_general_settings'],
+            'Financieel controller' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_processes', 'menu_documents', 'menu_financial', 'menu_workflow', 'menu_general_settings'],
+            'Participatie medewerker' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks','menu_agenda', 'menu_processes', 'menu_documents', 'menu_general_settings'],
+            'Energie adviseur' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_processes', 'menu_documents', 'menu_general_settings'],
+            'Marketing medewerker' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_processes', 'menu_documents', 'menu_general_settings'],
+            'Energiemanager' => ['menu_contacts', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks','menu_agenda','menu_documents'],
+            'Energiecoordinator' => ['menu_contacts', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_documents'],
         ];
 
         foreach($newViewRoles as $newViewRoleName => $permissions) {

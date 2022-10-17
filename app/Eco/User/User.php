@@ -50,6 +50,7 @@ class User extends Authenticatable
         'visit_count' => 'integer',
         'active' => 'boolean',
         'require_two_factor_authentication' => 'boolean',
+        'show_two_factor_notification' => 'boolean',
     ];
 
     protected $dates = [

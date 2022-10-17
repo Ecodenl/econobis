@@ -35,4 +35,10 @@ class ConfirmedTwoFactorAuthenticationController extends Controller
             'token' => $token->token,
         ]);
     }
+
+    public function hideNotification(Request $request)
+    {
+        $request->user()->show_two_factor_notification = false;
+        $request->user()->save();
+    }
 }

@@ -569,6 +569,7 @@ Route::namespace('Api')
     ->middleware(['auth:api', 'scopes:use-app'])
     ->group(function () {
         Route::get('me/two-factor-status', [\App\Http\Controllers\Auth\TwoFactorAuthenticationController::class, 'status']);
+        Route::post('me/hide-two-factor-notification', [\App\Http\Controllers\Auth\ConfirmedTwoFactorAuthenticationController::class, 'hideNotification']);
         Route::post('me/two-factor-authentication', [\App\Http\Controllers\Auth\TwoFactorAuthenticationController::class, 'store']);
         Route::post('me/confirmed-two-factor-authentication', [\App\Http\Controllers\Auth\ConfirmedTwoFactorAuthenticationController::class, 'store']);
         Route::get('me/two-factor-qr-code', [\App\Http\Controllers\Auth\TwoFactorQrCodeController::class, 'show']);

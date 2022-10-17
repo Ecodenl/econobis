@@ -37,7 +37,7 @@ class TwoFactorSettings extends Component {
     handleTwoFactorActivate = event => {
         event.preventDefault();
 
-        if (!confirm('Weet u zeker dat u twee factor authenticatie wilt activeren?')) {
+        if (!confirm('Weet u zeker dat u twee factor authenticatie wilt activeren? U krijgt een QR code te zien die u moet scannen met uw authenticator app.')) {
             return;
         }
 
@@ -75,7 +75,7 @@ class TwoFactorSettings extends Component {
                                     <ul style={{listStyleType: 'none', padding: 0}}>
                                         {this.state.recoveryCodes.map((code) => {
                                             return (
-                                                <li>{code}</li>
+                                                <li key={code}>{code}</li>
                                             );
                                         })}
                                     </ul>

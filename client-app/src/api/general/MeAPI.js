@@ -19,6 +19,12 @@ export default {
         return axiosInstance.post(requestUrl, data);
     },
 
+    hideTwoFactorNotification: function() {
+        const requestUrl = `${URL_API}/api/me/hide-two-factor-notification`;
+
+        return axiosInstance.post(requestUrl);
+    },
+
     recoverTwoFactor: function(data) {
         const requestUrl = `${URL_API}/api/me/two-factor-challenge`;
 

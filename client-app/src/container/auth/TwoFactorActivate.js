@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import MeAPI from "../../api/general/MeAPI";
 import Logo from "../../components/logo/Logo";
-import {hashHistory, Link} from "react-router";
-import moment from "moment/moment";
+import {hashHistory} from "react-router";
+import {BrowserView, MobileView} from 'react-device-detect';
 
 class TwoFactorActivate extends Component {
     constructor(props) {
@@ -82,7 +82,12 @@ class TwoFactorActivate extends Component {
                         </div>
                         <div className="row margin-10-top text-center">
                             <div className="col-sm-10 col-md-offset-1">
-                                Het gebruik van twee factor authenticatie is ingeschakeld voor uw account. Sla de herstelcodes op een veilige plek op en scan vervolgens de QR-code met een authenticator app.
+                                <BrowserView>
+                                    Het gebruik van twee factor authenticatie is ingeschakeld voor uw account. Sla de herstelcodes op een veilige plek op en scan vervolgens de QR-code met een authenticator app.
+                                </BrowserView>
+                                <MobileView>
+                                    Het gebruik van twee factor authenticatie is ingeschakeld voor uw account. Sla de herstelcodes op een veilige plek op en open vervolgens uw authenticator app met onderstaande button.
+                                </MobileView>
                             </div>
                         </div>
                         <div className="row margin-10-top text-center">
@@ -98,10 +103,23 @@ class TwoFactorActivate extends Component {
                             </div>
                         </div>
                         <div className="row margin-10-top text-center">
-                            <div className="col-sm-10 col-md-offset-1">
-                                <h4>QR</h4>
-                                <div dangerouslySetInnerHTML={{__html: this.state.qr.svg}}/>
-                            </div>
+                            <BrowserView>
+                                <div className="col-sm-10 col-md-offset-1">
+                                    <h4>QR</h4>
+                                    <div dangerouslySetInnerHTML={{__html: this.state.qr.svg}}/>
+                                </div>
+                            </BrowserView>
+                            <MobileView>
+                                <div className="col-sm-10 col-md-offset-1">
+                                    <button type="button" className="btn btn-primary"
+                                            onClick={() => {
+                                                window.location.href = this.state.qr.url;
+                                            }}
+                                    >
+                                        Open Authenticator app
+                                    </button>
+                                </div>
+                            </MobileView>
                         </div>
                         <div className="row margin-10-top">
                             <div className="col-sm-10 col-md-offset-1">

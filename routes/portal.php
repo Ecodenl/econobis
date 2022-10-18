@@ -25,6 +25,7 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
             Route::delete('me/two-factor-authentication', [\App\Http\Controllers\Portal\Auth\TwoFactorAuthenticationController::class, 'destroy']);
             Route::get('me/two-factor-qr-code', [\App\Http\Controllers\Portal\Auth\TwoFactorQrCodeController::class, 'show']);
             Route::get('me/two-factor-recovery-codes', [\App\Http\Controllers\Portal\Auth\RecoveryCodeController::class, 'index']);
+            Route::post('me/two-factor-recovery-codes', [\App\Http\Controllers\Portal\Auth\RecoveryCodeController::class, 'store']);
         });
         Route::get('/portal-user-email', 'PortalUser\PortalUserController@portalUserEmail');
 

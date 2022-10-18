@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import MeAPI from "../../api/general/MeAPI";
 import {Alert} from "react-bootstrap";
 
@@ -13,7 +13,9 @@ const TwoFactorSettings = function () {
     const [activationCode, setActivationCode] = useState('');
     const [recoveryCodes, setRecoveryCodes] = useState([]);
 
-    const checkPasswordHandler = () => {
+    const checkPasswordHandler = (event) => {
+        event.preventDefault();
+
         setErrorMessage('');
         MeAPI.checkPassword(password).then(payload => {
             setHasValidPassword(true);
@@ -72,6 +74,14 @@ const TwoFactorSettings = function () {
         });
     }
 
+    const regenerateRecoveryCodes = () => {
+        setRecoveryCodes([]);
+
+        MeAPI.regenerateTwoFactorRecoveryCodes(password).then(payload => {
+            fetchRecoveryCodes();
+        });
+    }
+
     return (
         <div className="content-container w-container">
             <h4>Twee factor authenticatie</h4>
@@ -101,6 +111,7 @@ const TwoFactorSettings = function () {
                                         );
                                     })}
                                 </ul>
+                                <button onClick={regenerateRecoveryCodes}>Vernieuw recovery codes</button>
                                 <button onClick={() => setRecoveryCodes([])}>Verberg recovery codes</button>
                             </>) : (<>
                                 <button onClick={fetchRecoveryCodes}>Toon recovery codes</button>
@@ -130,9 +141,11 @@ const TwoFactorSettings = function () {
                 </>
             ) : (
                 <>
+                    <form onSubmit={checkPasswordHandler}>
                     Voer uw wachtwoord opnieuw in om de instellingen te wijzigen.<br/>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-                    <button onClick={checkPasswordHandler}>Ontgrendel</button>
+                    <input autoComplete="on" type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+                    <button type="submit">Ontgrendel</button>
+                    </form>
                 </>
             )}
         </div>

@@ -43,6 +43,7 @@ export default () => {
                                 placeholder="Twee factor code"
                                 value={code}
                                 onChange={(e) => setCode(e.target.value)}
+                                autoFocus={true}
                             />
                             <ButtonText
                                 buttonText={'Bevestigen'}

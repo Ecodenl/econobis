@@ -38,6 +38,7 @@ export default () => {
                                 placeholder="Recovery code"
                                 value={code}
                                 onChange={(e) => setCode(e.target.value)}
+                                autoFocus={true}
                             />
                             <ButtonText
                                 buttonText={'Herstellen'}

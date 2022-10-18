@@ -1,13 +1,13 @@
 import axiosInstance from "../default-setup/AxiosInstance";
 
 export default {
-    confirmTwoFactor: function(code) {
+    confirmTwoFactor: function (code) {
         return axiosInstance.post(`me/confirmed-two-factor-authentication`, {
             code
         });
     },
 
-    fetchTwoFactorQr: function(password) {
+    fetchTwoFactorQr: function (password) {
         return axiosInstance.get(`me/two-factor-qr-code`, {
             params: {
                 password
@@ -15,7 +15,7 @@ export default {
         });
     },
 
-    fetchTwoFactorRecoveryCodes: function(password) {
+    fetchTwoFactorRecoveryCodes: function (password) {
         return axiosInstance.get(`me/two-factor-recovery-codes`, {
             params: {
                 password
@@ -23,7 +23,13 @@ export default {
         });
     },
 
-    checkPassword: function(password) {
+    regenerateTwoFactorRecoveryCodes: function (password) {
+        return axiosInstance.post(`me/two-factor-recovery-codes`, {
+            password
+        });
+    },
+
+    checkPassword: function (password) {
         return axiosInstance.get(`me/check-password`, {
             params: {
                 password
@@ -31,17 +37,17 @@ export default {
         });
     },
 
-    fetchTwoFactorStatus: function() {
+    fetchTwoFactorStatus: function () {
         return axiosInstance.get(`me/two-factor-status`);
     },
 
-    enableTwoFactor: function(password) {
+    enableTwoFactor: function (password) {
         return axiosInstance.post(`me/two-factor-authentication`, {
             password
         });
     },
 
-    disableTwoFactor: function(password) {
+    disableTwoFactor: function (password) {
         return axiosInstance.delete(`me/two-factor-authentication`, {
             params: {
                 password
@@ -49,7 +55,7 @@ export default {
         });
     },
 
-    recoverTwoFactor: function(code) {
+    recoverTwoFactor: function (code) {
         return axiosInstance.post(`me/two-factor-challenge`, {
             recovery_code: code
         });

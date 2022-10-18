@@ -57,7 +57,7 @@ class DeleteInvoice implements DeleteInterface
     public function canDelete()
     {
         if(!($this->invoice->status_id == 'to-send') || $this->invoice->number != 0 ){
-            array_push($this->errorMessage, "Er is al een nota aangemaakt.");
+            array_push($this->errorMessage, "Er is al een nota aangemaakt. Een nota kan niet worden verwijderd vanwege de bewaarplicht. Daarom kan het contact ook niet worden verwijderd.");
         }
     }
 

@@ -67,4 +67,10 @@ class Kernel extends HttpKernel
         'two-factor' => VerifyTwoFactorAuthentication::class,
         'two-factor-portal' => VerifyPortalTwoFactorAuthentication::class,
     ];
+
+    protected $middlewarePriority = [
+        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
+        'two-factor' => VerifyTwoFactorAuthentication::class,
+        'two-factor-portal' => VerifyPortalTwoFactorAuthentication::class,
+    ];
 }

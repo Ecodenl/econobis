@@ -1,9 +1,8 @@
 import axiosInstance from "../default-setup/AxiosInstance";
 
 export default {
-    confirmTwoFactor: function({password, code}) {
+    confirmTwoFactor: function(code) {
         return axiosInstance.post(`me/confirmed-two-factor-authentication`, {
-            password,
             code
         });
     },
@@ -32,12 +31,8 @@ export default {
         });
     },
 
-    fetchTwoFactorStatus: function(password) {
-        return axiosInstance.get(`me/two-factor-status`, {
-            params: {
-                password
-            }
-        });
+    fetchTwoFactorStatus: function() {
+        return axiosInstance.get(`me/two-factor-status`);
     },
 
     enableTwoFactor: function(password) {

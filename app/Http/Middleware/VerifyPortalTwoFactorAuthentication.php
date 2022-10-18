@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Auth\AuthenticationException;
 
 class VerifyPortalTwoFactorAuthentication
 {
@@ -16,7 +15,10 @@ class VerifyPortalTwoFactorAuthentication
         $token = $request->header('TwoFactorToken');
 
         if (!$request->user()->hasValidTwoFactorToken($token)) {
-            throw new AuthenticationException();
+            return response()->json([
+                'code' => 'two_factor_token_invalid',
+                'message' => 'Two factor token is invalid.'
+            ], 401);
         }
 
         return $next($request);

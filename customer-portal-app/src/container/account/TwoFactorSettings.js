@@ -4,7 +4,7 @@ import {Alert} from "react-bootstrap";
 
 const TwoFactorSettings = function () {
     const activationCodeInput = useRef(null);
-    const [password, setPassword] = useState('Test123456');
+    const [password, setPassword] = useState('');
     const [hasValidPassword, setHasValidPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [hasTwoFactorEnabled, setHasTwoFactorEnabled] = useState(false);
@@ -40,7 +40,7 @@ const TwoFactorSettings = function () {
     }
 
     const fetchTwoFactorStatus = () => {
-        MeAPI.fetchTwoFactorStatus(password).then(payload => {
+        MeAPI.fetchTwoFactorStatus().then(payload => {
             setHasTwoFactorEnabled(payload.data.hasTwoFactorEnabled);
         });
     }
@@ -54,7 +54,7 @@ const TwoFactorSettings = function () {
     const confirmTwoFactorHandler = () => {
         setErrorMessage('');
 
-        MeAPI.confirmTwoFactor({password, code: activationCode}).then(payload => {
+        MeAPI.confirmTwoFactor(password).then(payload => {
             setIsActivatingTwoFactor(false);
             setHasTwoFactorEnabled(true);
             setActivationCode('');

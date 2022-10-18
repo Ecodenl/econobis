@@ -19,13 +19,11 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
     ->group(function () {
         Route::get('/me', 'PortalUser\PortalUserController@me');
 
-        Route::middleware([\App\Http\Middleware\CheckPasswordConfirmation::class])->group(function(){
+        Route::middleware([\App\Http\Middleware\CheckPasswordConfirmation::class])->group(function () {
             Route::get('/me/check-password', 'PortalUser\PortalUserController@checkPassword');
-            Route::get('me/two-factor-status', [\App\Http\Controllers\Portal\Auth\TwoFactorAuthenticationController::class, 'status']);
             Route::post('me/two-factor-authentication', [\App\Http\Controllers\Portal\Auth\TwoFactorAuthenticationController::class, 'store']);
             Route::delete('me/two-factor-authentication', [\App\Http\Controllers\Portal\Auth\TwoFactorAuthenticationController::class, 'destroy']);
             Route::get('me/two-factor-qr-code', [\App\Http\Controllers\Portal\Auth\TwoFactorQrCodeController::class, 'show']);
-            Route::post('me/confirmed-two-factor-authentication', [\App\Http\Controllers\Portal\Auth\ConfirmedTwoFactorAuthenticationController::class, 'store']);
             Route::get('me/two-factor-recovery-codes', [\App\Http\Controllers\Portal\Auth\RecoveryCodeController::class, 'index']);
 //        Route::post('me/two-factor-challenge', [\App\Http\Controllers\Portal\Auth\RecoveryCodeController::class, 'recover']);
         });
@@ -62,6 +60,12 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
         Route::get('jory/{uri}/count', '\\' . JoryController::class . '@count');
         Route::get('jory/{uri}/{id}', '\\' . JoryController::class . '@find');
         Route::get('jory/{uri}', '\\' . JoryController::class . '@get');
+    });
+
+Route::middleware(['auth:api', 'scopes:use-portal'])
+    ->group(function () {
+        Route::get('me/two-factor-status', [\App\Http\Controllers\Portal\Auth\TwoFactorAuthenticationController::class, 'status']);
+        Route::post('me/confirmed-two-factor-authentication', [\App\Http\Controllers\Portal\Auth\ConfirmedTwoFactorAuthenticationController::class, 'store']);
     });
 
 Route::post('mollie/webhook', [ParticipantMutationMolliePaymentController::class, 'webhook'])->name('portal.mollie.webhook');

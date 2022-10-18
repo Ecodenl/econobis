@@ -33,6 +33,13 @@ function Header({ location, history }) {
         updateStateMenu(false);
     }
 
+    function logoutHandler() {
+        localStorage.removeItem('__customer-portal-econobis-token__');
+        localStorage.removeItem('__customer-portal-econobis-last-activity__');
+        localStorage.removeItem('portal_two_factor_token');
+        localStorage.removeItem('__customer-portal-econobis-current_selected_contact__');
+    }
+
     // This can be used to toggle the menu, e.g. when using a custom icon
     // Tip: You probably want to hide either/both default icons if using a custom icon
     // See https://github.com/negomi/react-burger-menu#custom-icons
@@ -317,6 +324,13 @@ function Header({ location, history }) {
                                 onClick={closeMenu}
                             >
                                 Over ons
+                            </Link>
+                            <Link
+                                to={'/login'}
+                                className={`nav-link w-nav-link w--nav-link-open`}
+                                onClick={logoutHandler}
+                            >
+                                Uitloggen
                             </Link>
                         </React.Fragment>
                     </div>

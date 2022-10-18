@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import {Link, Redirect, useHistory} from 'react-router-dom';
 
 import { AuthConsumer } from '../../../context/AuthContext';
 import LoginForm from './Form';
@@ -9,8 +9,10 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import PortalSettingsAPI from '../../../api/portal-settings/PortalSettingsAPI';
+import MeAPI from "../../../api/general/MeAPI";
 
 export default props => {
+    const history = useHistory();
     const [isLoading, setIsLoading] = useState(true);
     const [showError, toggleError] = useState(false);
 
@@ -60,7 +62,16 @@ export default props => {
         AuthAPI.login(values)
             .then(payload => {
                 toggleError(false);
-                login(payload.data, () => toggleRedirect(true));
+                login(payload.data, () => {
+                    MeAPI.fetchTwoFactorStatus().then(payload => {
+                        if(payload.data.hasTwoFactorEnabled) {
+                            history.push('/two-factor/confirm');
+                            return;
+                        }
+
+                        toggleRedirect(true)
+                    });
+                });
             })
             .catch(error => {
                 // If login fails show error and then set submitting back to false

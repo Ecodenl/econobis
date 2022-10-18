@@ -1,6 +1,8 @@
-import React, {useEffect, useRef, useState} from 'react';
-import MeAPI from "../../api/general/MeAPI";
+import React, {useRef, useState} from 'react';
+import MeAPI from "../../../api/general/MeAPI";
 import {Alert} from "react-bootstrap";
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 const TwoFactorSettings = function () {
     const activationCodeInput = useRef(null);
@@ -35,6 +37,10 @@ const TwoFactorSettings = function () {
     }
 
     const disableTwoFactorHandler = () => {
+        if(!window.confirm('Weet u zeker dat u twee factor authenticatie wilt uitschakelen.')) {
+            return;
+        }
+
         MeAPI.disableTwoFactor(password).then(payload => {
             setHasTwoFactorEnabled(false);
             localStorage.removeItem('portal_two_factor_token');
@@ -75,7 +81,9 @@ const TwoFactorSettings = function () {
     }
 
     const regenerateRecoveryCodes = () => {
-        setRecoveryCodes([]);
+        if(!window.confirm('Weet u zeker dat u nieuwe recovery codes wilt genereren? De bestaande codes zijn daarna niet meer geldig.')) {
+            return;
+        }
 
         MeAPI.regenerateTwoFactorRecoveryCodes(password).then(payload => {
             fetchRecoveryCodes();
@@ -83,9 +91,8 @@ const TwoFactorSettings = function () {
     }
 
     return (
-        <div className="content-container w-container">
-            <h4>Twee factor authenticatie</h4>
-
+        <Row>
+            <Col xs={12} md={9}>
             {errorMessage && (<>
                 <Alert variant={'danger'}>
                     {errorMessage}
@@ -97,24 +104,24 @@ const TwoFactorSettings = function () {
                     {hasTwoFactorEnabled ? (
                         <>
                             <p>U heeft twee factor authenticatie geactiveerd.</p>
-                            <button onClick={disableTwoFactorHandler}>Twee factor uitschakelen</button>
+                            <button onClick={disableTwoFactorHandler} className="btn btn-primary btn-sm">Twee factor uitschakelen</button>
                             <br/><br/>
-                            <p>U kunt recovery codes om uw account te herstellen bij problemen met uw authenticator app
-                                of verlies van uw telefoon. Sla deze op een veilige plek op.</p>
+                            <strong>Recovery codes</strong>
+                            <p><small>Recovery codes kunt u gebruiken om uw account te herstellen bij problemen met uw authenticator app
+                                of verlies van uw telefoon. Sla deze op een veilige plek op.</small></p>
 
                             {recoveryCodes.length ? (<>
-                                <strong>Recovery codes</strong>
-                                <ul style={{listStyleType: 'none', padding: 0}}>
+                                <ul>
                                     {recoveryCodes.map((code) => {
                                         return (
                                             <li key={code}>{code}</li>
                                         );
                                     })}
                                 </ul>
-                                <button onClick={regenerateRecoveryCodes}>Vernieuw recovery codes</button>
-                                <button onClick={() => setRecoveryCodes([])}>Verberg recovery codes</button>
+                                <button onClick={() => setRecoveryCodes([])} className="btn btn-sm">Verbergen</button>
+                                <button onClick={regenerateRecoveryCodes} className="btn btn-sm btn-primary">Vernieuwen</button>
                             </>) : (<>
-                                <button onClick={fetchRecoveryCodes}>Toon recovery codes</button>
+                                <button onClick={fetchRecoveryCodes} className="btn btn-primary btn-sm">Toon recovery codes</button>
                             </>)}
                         </>) : (
                         <>
@@ -124,15 +131,15 @@ const TwoFactorSettings = function () {
                                         in.</p>
                                     <div dangerouslySetInnerHTML={{__html: activationQr}}/>
                                     <br/>
-                                    <input ref={activationCodeInput} type="text" value={activationCode}
+                                    <input ref={activationCodeInput} placeholder="Code" className="text-input w-input content" type="text" value={activationCode}
                                            onChange={(e) => setActivationCode(e.target.value)}/>
-                                    <button onClick={() => setIsActivatingTwoFactor(false)}>Annuleren</button>
-                                    <button onClick={confirmTwoFactorHandler}>Bevestigen</button>
+                                    <button onClick={() => setIsActivatingTwoFactor(false)} className="btn btn-sm btn-light">Annuleren</button>
+                                    <button onClick={confirmTwoFactorHandler} className="btn btn-primary btn-sm">Bevestigen</button>
                                 </>
                             ) : (
                                 <>
                                     <p>U heeft twee factor authenticatie <strong>niet</strong> geactiveerd.</p>
-                                    <button onClick={enableTwoFactorHandler}>Twee factor inschakelen</button>
+                                    <button onClick={enableTwoFactorHandler} className="btn btn-primary btn-sm">Twee factor inschakelen</button>
                                 </>
                             )}
                         </>
@@ -142,13 +149,14 @@ const TwoFactorSettings = function () {
             ) : (
                 <>
                     <form onSubmit={checkPasswordHandler}>
-                    Voer uw wachtwoord opnieuw in om de instellingen te wijzigen.<br/>
-                    <input autoComplete="on" type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-                    <button type="submit">Ontgrendel</button>
+                    Voer uw wachtwoord in om de twee factor instellingen te wijzigen.<br/>
+                    <input placeholder="Wachtwoord" className="text-input w-input content" type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+                    <button type="submit" className="btn btn-primary btn-sm">Ontgrendel</button>
                     </form>
                 </>
             )}
-        </div>
+            </Col>
+        </Row>
     );
 };
 

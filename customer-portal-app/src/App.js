@@ -11,7 +11,6 @@ import Register from './container/authorization/register';
 import Forgot from './container/authorization/forgot';
 import Reset from './container/authorization/reset';
 import Dashboard from './container/dashboard';
-import Account from './container/account';
 import ContactDetails from './container/contact-details';
 import MyAreasOfInterest from './container/my-areas-of-interest';
 import RegisterProject from './container/register';
@@ -38,7 +37,6 @@ function App() {
                             <ProtectedRoute exact path="/" component={Dashboard} />
                             <ProtectedRoute path="/dashboard" component={Dashboard} />
                             <ProtectedRoute path="/gegevens" component={ContactDetails} />
-                            <ProtectedRoute path="/account" component={Account} />
                             <ProtectedRoute path="/mijn-interessegebieden" component={MyAreasOfInterest} />
                             <ProtectedRoute
                                 path="/inschrijven/mollie-resultaat/:code"

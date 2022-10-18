@@ -4,6 +4,7 @@ import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import ChangeAccountEmail from './Email';
 import ChangeAccountPassword from './Password';
+import TwoFactorSettings from "./TwoFactorSettings";
 
 function ChangeAccount() {
     return (
@@ -23,6 +24,13 @@ function ChangeAccount() {
                     <h3 className={'h3'}>Wijzig wachtwoord</h3>
 
                     <ChangeAccountPassword />
+                </Col>
+            </Row>
+            <Row>
+                <Col xs={12} md={6} style={{marginTop: '24px'}}>
+                    <h3 className={'h3'}>Twee factor authenticatie</h3>
+
+                    <TwoFactorSettings/>
                 </Col>
             </Row>
         </Container>

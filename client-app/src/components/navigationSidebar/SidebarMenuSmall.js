@@ -112,8 +112,6 @@ const SidebarMenuSmall = ({ permissions, administrations }) => (
 );
 
 const mapStateToProps = state => {
-    console.log(state.meDetails.permissions);
-
     return {
         permissions: state.meDetails.permissions,
         administrations: state.meDetails.administrations,

@@ -86,7 +86,7 @@ import {
 import { deleteIntakeMeasureRequestedSaga, deleteIntakeSaga, fetchIntakeDetailsSaga } from './intake/IntakeDetailsSaga';
 import { fetchIntakesSaga } from './intake/IntakesSaga';
 import {
-    deleteHousingFileMeasureTakenSaga,
+    deleteHousingFileSpecificationSaga,
     deleteHousingFileSaga,
     fetchHousingFileDetailsSaga,
 } from './housing-file/HousingFileDetailsSaga';
@@ -183,7 +183,7 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_HOUSING_FILES', fetchHousingFilesSaga);
     yield takeLatest('FETCH_HOUSING_FILE_DETAILS', fetchHousingFileDetailsSaga);
     yield takeLatest('DELETE_HOUSING_FILE', deleteHousingFileSaga);
-    yield takeLatest('DELETE_HOUSING_FILE_MEASURE_TAKEN', deleteHousingFileMeasureTakenSaga);
+    yield takeLatest('DELETE_HOUSING_FILE_SPECIFICATION', deleteHousingFileSpecificationSaga);
     // Quotation Requests
     yield takeLatest('FETCH_QUOTATION_REQUESTS', fetchQuotationRequestsSaga);
     yield takeLatest('FETCH_QUOTATION_REQUEST_DETAILS', fetchQuotationRequestDetailsSaga);

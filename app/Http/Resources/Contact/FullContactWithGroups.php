@@ -18,6 +18,7 @@ use App\Http\Resources\ParticipantProject\RelatedParticipantProjectToContact;
 use App\Http\Resources\Person\FullPerson;
 use App\Http\Resources\PhoneNumber\FullPhoneNumber;
 use App\Http\Resources\PortalUser\FullPortalUser;
+use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\Task\GridTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -103,6 +104,10 @@ class FullContactWithGroups extends JsonResource
             'collectMandateCollectionSchema' => $this->collect_mandate_collection_schema,
             'hoomAccountId' => $this->hoom_account_id,
             'isParticipantPcrProject' => $this->is_participant_pcr_project,
+            'isInCoachGroup' => $this->is_in_coach_group,
+            'isCoach' => $this->is_coach,
+            'coachQuotationRequests' => FullQuotationRequest::collection($this->whenLoaded('coachQuotationRequests')),
+            'organisationQuotationRequests' => FullQuotationRequest::collection($this->whenLoaded('organisationQuotationRequests')),
         ];
     }
 }

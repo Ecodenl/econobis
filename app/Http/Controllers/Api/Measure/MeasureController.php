@@ -38,11 +38,8 @@ class MeasureController extends ApiController
         $measure->load([
             'faqs',
             'deliveredByOrganisations.contact.primaryAddress',
-            'addresses.housingFile',
-            'addresses.contact',
             'createdBy',
             'updatedBy',
-            'addresses',
             'measureCategory',
             'documents',
             'opportunities.intake.campaign',
@@ -59,6 +56,7 @@ class MeasureController extends ApiController
 
         $data = $requestInput
             ->string('description')->onEmpty(null)->next()
+            ->boolean('visible')->validate('boolean')->onEmpty(false)->whenMissing(false)->next()
             ->get();
 
         $measure->fill($data);

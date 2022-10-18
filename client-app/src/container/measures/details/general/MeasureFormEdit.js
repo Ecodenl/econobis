@@ -11,17 +11,19 @@ import MeasureAPI from '../../../../api/measure/MeasureAPI';
 
 import { fetchMeasure } from '../../../../actions/measure/MeasureDetailsActions';
 import InputTextArea from '../../../../components/form/InputTextArea';
+import InputToggle from '../../../../components/form/InputToggle';
 
 class MeasureFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, description } = props.measureDetails;
+        const { id, description, visible } = props.measureDetails;
 
         this.state = {
             measure: {
                 id,
                 description: description ? description : '',
+                visible: visible ? visible : false,
             },
         };
     }
@@ -52,7 +54,7 @@ class MeasureFormEdit extends Component {
     };
 
     render() {
-        const { description } = this.state.measure;
+        const { description, visible } = this.state.measure;
         const { name, number, measureCategory = {} } = this.props.measureDetails;
 
         return (
@@ -75,6 +77,12 @@ class MeasureFormEdit extends Component {
                         value={name}
                         onChangeAction={() => {}}
                         readOnly={true}
+                    />
+                    <InputToggle
+                        label={'Zichtbaar'}
+                        name={'visible'}
+                        value={visible}
+                        onChangeAction={this.handleInputChange}
                     />
                 </div>
 

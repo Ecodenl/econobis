@@ -349,7 +349,7 @@ class ContactsListExtraFilters extends Component {
             opportunityMeasure: {
                 name: 'Kans maatregel specifiek',
                 type: 'dropdownHas',
-                dropDownOptions: this.props.measures,
+                dropDownOptions: this.props.measures.filter(measure => measure.visible == true),
             },
             opportunityEvaluationRealised: {
                 name: 'Kans status evaluatie uitgevoerd',

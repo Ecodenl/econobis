@@ -15,7 +15,9 @@ use Carbon\Carbon;
 class Filter extends RequestFilter
 {
     protected $fields = [
-        'organisation',
+// todo WM: opschonen
+//        'organisation',
+        'organisationOrCoach',
         'contact',
         'address',
         'campaign',
@@ -28,7 +30,9 @@ class Filter extends RequestFilter
     ];
 
     protected $mapping = [
-        'organisation' => 'organisations.name',
+// todo WM: opschonen
+//        'organisation' => 'organisations.name',
+        'organisationOrCoach' => 'organisationOrCoaches.full_name',
         'contact' => 'contacts.full_name',
         'campaign' => 'campaigns.name',
         'measure' => 'measure_categories.name',
@@ -38,7 +42,9 @@ class Filter extends RequestFilter
     ];
 
     protected $joins = [
-        'organisation' => 'organisation',
+// todo WM: opschonen
+//        'organisation' => 'organisation',
+        'organisationOrCoach' => 'organisationOrCoach',
         'contact' => 'contact',
         'address' => 'address',
         'campaign' => 'campaign',

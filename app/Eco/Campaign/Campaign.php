@@ -62,6 +62,17 @@ class Campaign extends Model
         return $this->belongsToMany(Organisation::class);
     }
 
+    public function coaches(){
+        return $this->belongsToMany(Contact::class, 'campaign_coach');
+    }
+
+    public function organisationsOrCoachesIds(){
+        $contactIdsOrganisations = $this->organisations()->get()->pluck('contact_id')->toArray();
+        $contactIdsCoaches = $this->coaches()->get()->pluck('id')->toArray();
+
+        return array_unique(array_merge($contactIdsOrganisations, $contactIdsCoaches));
+    }
+
     public function createdBy(){
         return $this->belongsTo(User::class);
     }

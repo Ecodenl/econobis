@@ -1,6 +1,6 @@
 const filtersReducerDefaultState = {
-    organisation: {
-        field: 'organisation',
+    organisationOrCoach: {
+        field: 'organisationOrCoach',
         data: '',
     },
     contact: {
@@ -43,12 +43,12 @@ const filtersReducerDefaultState = {
 
 export default (state = filtersReducerDefaultState, action) => {
     switch (action.type) {
-        case 'SET_FILTER_QUOTATION_REQUEST_ORGANISATION':
+        case 'SET_FILTER_QUOTATION_REQUEST_ORGANISATION_OR_COACH':
             return {
                 ...state,
-                organisation: {
-                    ...state.organisation,
-                    data: action.organisation,
+                organisationOrCoach: {
+                    ...state.organisationOrCoach,
+                    data: action.organisationOrCoach,
                 },
             };
         case 'SET_FILTER_QUOTATION_REQUEST_CONTACT':

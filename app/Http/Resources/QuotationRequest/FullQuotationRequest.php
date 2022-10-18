@@ -28,7 +28,10 @@ class FullQuotationRequest extends JsonResource
                 'dateRecorded' => $this->date_recorded,
                 'dateReleased' => $this->date_released,
                 'quotationText' => $this->quotation_text,
-                'organisation' => FullOrganisation::make($this->whenLoaded('organisation')),
+                'contact_id' => $this->contact_id,
+                'organisationOrCoach' => FullContact::make($this->whenLoaded('organisationOrCoach')),
+//todo WM: opschonen
+//                'organisation' => FullOrganisation::make($this->whenLoaded('organisation')),
                 'opportunity' => FullOpportunity::make($this->whenLoaded('opportunity')),
                 'status' => GenericResource::make($this->whenLoaded('status')),
                 'datePlannedToSendWfEmailStatus' => $this->date_planned_to_send_wf_email_status,

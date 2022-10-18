@@ -2,8 +2,8 @@
 
 namespace App\Eco\Measure;
 
-use App\Eco\Address\Address;
 use App\Eco\Document\Document;
+use App\Eco\HousingFile\HousingFileSpecification;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
 use App\Eco\User\User;
@@ -25,9 +25,9 @@ class Measure extends Model
         'id'
     ];
 
-    public function addresses()
+    public function housingFileSpecifications()
     {
-        return $this->belongsToMany(Address::class, 'housing_file_measure_taken')->withPivot('measure_date');;
+        return $this->belongsToMany(HousingFileSpecification::class);
     }
 
     public function deliveredByOrganisations()

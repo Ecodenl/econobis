@@ -98,6 +98,7 @@ class FullContact extends JsonResource
             'collectMandateSignatureDate' => $this->collect_mandate_signature_date,
             'collectMandateFirstRunDate' => $this->collect_mandate_first_run_date,
             'collectMandateCollectionSchema' => $this->collect_mandate_collection_schema,
+            'isCoach' =>  $this->is_coach,
         ];
     }
 }

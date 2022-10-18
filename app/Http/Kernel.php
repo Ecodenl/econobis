@@ -4,6 +4,7 @@ namespace App\Http;
 
 use App\Http\Middleware\SetAppScope;
 use App\Http\Middleware\SetPortalScope;
+use App\Http\Middleware\VerifyPortalTwoFactorAuthentication;
 use App\Http\Middleware\VerifyTwoFactorAuthentication;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -64,5 +65,12 @@ class Kernel extends HttpKernel
         'scope.app' => SetAppScope::class,
         'scope.portal' => SetPortalScope::class,
         'two-factor' => VerifyTwoFactorAuthentication::class,
+        'two-factor-portal' => VerifyPortalTwoFactorAuthentication::class,
+    ];
+
+    protected $middlewarePriority = [
+        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
+        'two-factor' => VerifyTwoFactorAuthentication::class,
+        'two-factor-portal' => VerifyPortalTwoFactorAuthentication::class,
     ];
 }

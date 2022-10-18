@@ -16,6 +16,7 @@ import CooperationUploadLogo from './UploadLogo';
 import InputToggle from '../../../components/form/InputToggle';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import { connect } from 'react-redux';
+import Modal from "../../../components/modal/Modal";
 
 function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchSystemData }) {
     const [emailTemplates, setEmailTemplates] = useState([]);

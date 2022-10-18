@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import TeamDetailsGroupsItem from './TeamDetailsGroupsItem';
 
 const TeamDetailsGroupsList = props => {
+    console.log(props);
     return (
         <div>
             <div className="row border header">

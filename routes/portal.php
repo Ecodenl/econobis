@@ -15,9 +15,20 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 Route::post('register', 'Auth\RegisterController@register');
 Route::post('new-account', 'Auth\NewAccountController@createNewAccount');
 
-Route::middleware(['auth:api', 'scopes:use-portal'])
+Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
     ->group(function () {
         Route::get('/me', 'PortalUser\PortalUserController@me');
+
+        Route::middleware([\App\Http\Middleware\CheckPasswordConfirmation::class])->group(function(){
+            Route::get('/me/check-password', 'PortalUser\PortalUserController@checkPassword');
+            Route::get('me/two-factor-status', [\App\Http\Controllers\Portal\Auth\TwoFactorAuthenticationController::class, 'status']);
+            Route::post('me/two-factor-authentication', [\App\Http\Controllers\Portal\Auth\TwoFactorAuthenticationController::class, 'store']);
+            Route::delete('me/two-factor-authentication', [\App\Http\Controllers\Portal\Auth\TwoFactorAuthenticationController::class, 'destroy']);
+            Route::get('me/two-factor-qr-code', [\App\Http\Controllers\Portal\Auth\TwoFactorQrCodeController::class, 'show']);
+            Route::post('me/confirmed-two-factor-authentication', [\App\Http\Controllers\Portal\Auth\ConfirmedTwoFactorAuthenticationController::class, 'store']);
+//        Route::get('me/two-factor-recovery-codes', [\App\Http\Controllers\Portal\Auth\RecoveryCodeController::class, 'index']);
+//        Route::post('me/two-factor-challenge', [\App\Http\Controllers\Portal\Auth\RecoveryCodeController::class, 'recover']);
+        });
         Route::get('/portal-user-email', 'PortalUser\PortalUserController@portalUserEmail');
 
         Route::post('/portal-user/change-email', 'PortalUser\PortalUserController@changeEmail');

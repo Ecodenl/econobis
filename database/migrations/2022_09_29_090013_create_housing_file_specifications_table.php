@@ -105,13 +105,6 @@ class CreateHousingFileSpecificationsTable extends Migration
             }
         }
 
-//        Schema::table('housing_files', function (Blueprint $table) {
-//            $table->unsignedInteger('housing_file_specifications_id')->nullable()->default(null)->after('address_id');
-//            $table->foreign('housing_file_specifications_id')
-//                ->references('id')->on('housing_file_specifications')
-//                ->onDelete('restrict');
-//        });
-
     }
 
     /**
@@ -121,14 +114,6 @@ class CreateHousingFileSpecificationsTable extends Migration
      */
     public function down()
     {
-//        if (Schema::hasColumn('housing_files', 'housing_file_specifications_id'))
-//        {
-//            Schema::table('housing_files', function (Blueprint $table)
-//            {
-//                $table->dropForeign('housing_files_housing_file_specifications_id_foreign');
-//                $table->dropColumn('housing_file_specifications_id');
-//            });
-//        }
         Schema::dropIfExists('housing_file_specifications');
         Schema::dropIfExists('housing_file_specification_floors');
         Schema::dropIfExists('housing_file_specification_sides');

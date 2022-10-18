@@ -336,7 +336,6 @@ class ContactGroupNewForm extends Component {
                     )}
                 </div>
 
-                {/*{this.props.contactGroupDetails.type.id === 'static' && (*/}
                 <div className="row">
                     <InputToggle
                         label={'Is coach groep'}
@@ -347,7 +346,6 @@ class ContactGroupNewForm extends Component {
                         textToolTip={`Als dit aanstaat en een contact wordt aan deze groep toegevoegd dan wordt dat contact energie coach`}
                     />
                 </div>
-                {/*)}*/}
 
                 <div className="row">
                     <InputText

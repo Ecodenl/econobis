@@ -241,16 +241,6 @@ class MailFetcher
 
         try {
             $this->imap->checkMailbox();
-//            Log::info('checkMailbox ok');
-//            if($mb->start_fetch_mail && Carbon::parse($mb->start_fetch_mail) < Carbon::now()->subHours(12)){
-//                Log::info('Resetten start_fetch_mail');
-//                Log::info('start_fetch_mail: ' . Carbon::parse($mb->start_fetch_mail)->format('Y-m-d H:i:s'));
-//                Log::info('Vandaag: ' . Carbon::now()->subHours(12)->format('Y-m-d H:i:s'));
-//            } elseif($mb->start_fetch_mail) {
-//                Log::info('Doe niets');
-//                Log::info('start_fetch_mail: ' . Carbon::parse($mb->start_fetch_mail)->format('Y-m-d H:i:s'));
-//                Log::info('Vandaag: ' . Carbon::now()->subHours(12)->format('Y-m-d H:i:s'));
-//            }
             if($mb->valid == false){
                 $mb->valid = true;
                 $mb->login_tries = 0;

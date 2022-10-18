@@ -6,6 +6,7 @@ import { AuthProvider } from './context/AuthContext';
 import { PortalUserProvider } from './context/PortalUserContext';
 import Login from './container/authorization/login';
 import TwoFactorConfirm from './container/authorization/two-factor';
+import TwoFactorRecover from './container/authorization/two-factor/recover';
 import Register from './container/authorization/register';
 import Forgot from './container/authorization/forgot';
 import Reset from './container/authorization/reset';
@@ -54,6 +55,7 @@ function App() {
                             <ProtectedRoute path="/over-ons-organisatie/:id" component={AboutUsAdministration} />
                             <PublicRoute path="/login" component={Login} />
                             <PublicRoute path="/two-factor/confirm" component={TwoFactorConfirm} />
+                            <PublicRoute path="/two-factor/recover" component={TwoFactorRecover} />
                             <PublicRoute path="/activeer-registratie/:registrationCode/:email" component={Register} />
                             <PublicRoute path="/wachtwoord-vergeten" component={Forgot} />
                             <PublicRoute path="/wachtwoord-wijzigen/:token/:email" component={Reset} />

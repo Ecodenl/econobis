@@ -23,19 +23,19 @@ class RecoveryCodeController extends Controller
      * Check een recoverycode voor de huidige gebruiker.
      * Na succesvolle verificatie worden de 2fa instellingen verwijderd zodat deze opnieuw kunnen worden ingesteld
      */
-//    public function recover(TwoFactorLoginRequest $request)
-//    {
-//        $user = $request->user();
-//
-//        if ($request->validRecoveryCode()) {
-//            $user->two_factor_secret = null;
-//            $user->two_factor_recovery_codes = null;
-//            $user->two_factor_confirmed_at = null;
-//            $user->save();
-//        } elseif (! $request->hasValidCode()) {
-//            return app(FailedTwoFactorLoginResponse::class)->toResponse($request);
-//        }
-//
-//        return response()->json([], 200);
-//    }
+    public function recover(TwoFactorLoginRequest $request)
+    {
+        $user = $request->user();
+
+        if ($request->validRecoveryCode()) {
+            $user->two_factor_secret = null;
+            $user->two_factor_recovery_codes = null;
+            $user->two_factor_confirmed_at = null;
+            $user->save();
+        } elseif (! $request->hasValidCode()) {
+            return app(FailedTwoFactorLoginResponse::class)->toResponse($request);
+        }
+
+        return response()->json([], 200);
+    }
 }

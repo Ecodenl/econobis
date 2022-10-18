@@ -48,4 +48,10 @@ export default {
             }
         });
     },
+
+    recoverTwoFactor: function(code) {
+        return axiosInstance.post(`me/two-factor-challenge`, {
+            recovery_code: code
+        });
+    },
 };

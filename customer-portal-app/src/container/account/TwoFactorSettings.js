@@ -54,7 +54,7 @@ const TwoFactorSettings = function () {
     const confirmTwoFactorHandler = () => {
         setErrorMessage('');
 
-        MeAPI.confirmTwoFactor(password).then(payload => {
+        MeAPI.confirmTwoFactor(activationCode).then(payload => {
             setIsActivatingTwoFactor(false);
             setHasTwoFactorEnabled(true);
             setActivationCode('');
@@ -87,8 +87,10 @@ const TwoFactorSettings = function () {
                     {hasTwoFactorEnabled ? (
                         <>
                             <p>U heeft twee factor authenticatie geactiveerd.</p>
-                            <button onClick={disableTwoFactorHandler}>Twee factor uitschakelen</button><br/><br/>
-                            <p>U kunt recovery codes om uw account te herstellen bij problemen met uw authenticator app of verlies van uw telefoon. Sla deze op een veilige plek op.</p>
+                            <button onClick={disableTwoFactorHandler}>Twee factor uitschakelen</button>
+                            <br/><br/>
+                            <p>U kunt recovery codes om uw account te herstellen bij problemen met uw authenticator app
+                                of verlies van uw telefoon. Sla deze op een veilige plek op.</p>
 
                             {recoveryCodes.length ? (<>
                                 <strong>Recovery codes</strong>
@@ -100,23 +102,26 @@ const TwoFactorSettings = function () {
                                     })}
                                 </ul>
                                 <button onClick={() => setRecoveryCodes([])}>Verberg recovery codes</button>
-                                </>) : (<>
+                            </>) : (<>
                                 <button onClick={fetchRecoveryCodes}>Toon recovery codes</button>
                             </>)}
                         </>) : (
                         <>
                             {isActivatingTwoFactor ? (
                                 <>
-                                    <p>Scan onderstaande QR met uw authenticator app en voer de zescijferige code in.</p>
-                                    <div dangerouslySetInnerHTML={{__html: activationQr}}/><br/>
-                                    <input ref={activationCodeInput} type="text" value={activationCode} onChange={(e) => setActivationCode(e.target.value)}/>
+                                    <p>Scan onderstaande QR met uw authenticator app en voer de zescijferige code
+                                        in.</p>
+                                    <div dangerouslySetInnerHTML={{__html: activationQr}}/>
+                                    <br/>
+                                    <input ref={activationCodeInput} type="text" value={activationCode}
+                                           onChange={(e) => setActivationCode(e.target.value)}/>
                                     <button onClick={() => setIsActivatingTwoFactor(false)}>Annuleren</button>
                                     <button onClick={confirmTwoFactorHandler}>Bevestigen</button>
                                 </>
                             ) : (
                                 <>
-                                <p>U heeft twee factor authenticatie nog niet geactiveerd.</p>
-                                <button onClick={enableTwoFactorHandler}>Twee factor inschakelen</button>
+                                    <p>U heeft twee factor authenticatie <strong>niet</strong> geactiveerd.</p>
+                                    <button onClick={enableTwoFactorHandler}>Twee factor inschakelen</button>
                                 </>
                             )}
                         </>

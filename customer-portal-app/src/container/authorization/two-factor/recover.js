@@ -16,16 +16,11 @@ export default () => {
         event.preventDefault();
         toggleError(false);
 
-        MeAPI.confirmTwoFactor(code)
-            .then(payload => {
-                localStorage.setItem('portal_two_factor_token', payload.data.token);
-
-                history.push('/dashboard');
-            })
-            .catch(error => {
-                // If login fails show error and then set submitting back to false
-                toggleError(true);
-            });
+        MeAPI.recoverTwoFactor(code).then(() => {
+            history.push('/dashboard');
+        }).catch(() => {
+            toggleError(true);
+        });
     }
 
     return (
@@ -34,18 +29,18 @@ export default () => {
                 <Row className="justify-content-center align-content-center full-height">
                     <Col xs="12" sm="6" md="4" lg="3" xl="2">
                         <img src={`images/logo.png`} alt="" className="image logo-container"/>
-                        <p>Account is beveiligd met twee factor authenticatie, voer hier onder de code uit uw authenticator app in.</p>
+                        <p>Voer hier één van de recovery codes van de twee factor authenticatie in.</p>
                         <React.Fragment>
                             <form onSubmit={handleSubmit}>
                             <input
                                 type="text"
                                 className={`text-input w-input`}
-                                placeholder="Twee factor code"
+                                placeholder="Recovery code"
                                 value={code}
                                 onChange={(e) => setCode(e.target.value)}
                             />
                             <ButtonText
-                                buttonText={'Bevestigen'}
+                                buttonText={'Herstellen'}
                                 buttonClassName={'authorization-button'}
                                 type="submit"
                             />
@@ -59,8 +54,8 @@ export default () => {
                                 </Row>
                             ) : null}
                             <Row className="justify-content-center">
-                                <Link to={'/two-factor/recover'} className="authorization-link">
-                                    Twee factor herstellen
+                                <Link to={'/two-factor/confirm'} className="authorization-link">
+                                    Terug
                                 </Link>
                             </Row>
                         </React.Fragment>

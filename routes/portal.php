@@ -25,7 +25,6 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
             Route::delete('me/two-factor-authentication', [\App\Http\Controllers\Portal\Auth\TwoFactorAuthenticationController::class, 'destroy']);
             Route::get('me/two-factor-qr-code', [\App\Http\Controllers\Portal\Auth\TwoFactorQrCodeController::class, 'show']);
             Route::get('me/two-factor-recovery-codes', [\App\Http\Controllers\Portal\Auth\RecoveryCodeController::class, 'index']);
-//        Route::post('me/two-factor-challenge', [\App\Http\Controllers\Portal\Auth\RecoveryCodeController::class, 'recover']);
         });
         Route::get('/portal-user-email', 'PortalUser\PortalUserController@portalUserEmail');
 
@@ -66,6 +65,7 @@ Route::middleware(['auth:api', 'scopes:use-portal'])
     ->group(function () {
         Route::get('me/two-factor-status', [\App\Http\Controllers\Portal\Auth\TwoFactorAuthenticationController::class, 'status']);
         Route::post('me/confirmed-two-factor-authentication', [\App\Http\Controllers\Portal\Auth\ConfirmedTwoFactorAuthenticationController::class, 'store']);
+        Route::post('me/two-factor-challenge', [\App\Http\Controllers\Portal\Auth\RecoveryCodeController::class, 'recover']);
     });
 
 Route::post('mollie/webhook', [ParticipantMutationMolliePaymentController::class, 'webhook'])->name('portal.mollie.webhook');

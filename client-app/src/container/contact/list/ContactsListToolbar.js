@@ -81,7 +81,6 @@ class ContactsListToolbar extends Component {
                                 </ul>
                             </div>
                         ) : null}
-                        ;
                         {permissions.updatePerson && permissions.updateOrganisation && (
                             <div className="nav navbar-nav btn-group" role="group">
                                 <button

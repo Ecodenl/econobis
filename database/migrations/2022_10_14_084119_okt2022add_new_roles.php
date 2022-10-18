@@ -79,10 +79,10 @@ class Okt2022addNewRoles extends Migration
         // Participatie medewerker
         // Energie adviseur
         // Marketing medewerker
-        // Beheerder webformulier             is specifieke extra role. hier hoven geen nieuwe permissions aan toegevoegd te worden
-        // Beheerder Mailgun domeinen         is specifieke extra role. hier hoven geen nieuwe permissions aan toegevoegd te worden
-        // Beheerder Portal Settings          is specifieke extra role. hier hoven geen nieuwe permissions aan toegevoegd te worden
-        // Beheerder coöperatie instellingen  is specifieke extra role. hier hoven geen nieuwe permissions aan toegevoegd te worden
+        // Beheerder webformulier             is specifieke extra role. hier hoeven geen nieuwe permissions aan toegevoegd te worden
+        // Beheerder Mailgun domeinen         is specifieke extra role. hier hoeven geen nieuwe permissions aan toegevoegd te worden
+        // Beheerder Portal Settings          is specifieke extra role. hier hoeven geen nieuwe permissions aan toegevoegd te worden
+        // Beheerder coöperatie instellingen  is specifieke extra role. hier hoeven geen nieuwe permissions aan toegevoegd te worden
         // Energiemanager                     is nieuwe role
         // Energiecoordinator                 is nieuwe role
 
@@ -135,6 +135,17 @@ class Okt2022addNewRoles extends Migration
 
         foreach($newViewRoles as $newViewRoleName => $permissions) {
             $role =  \Spatie\Permission\Models\Role::findByName($newViewRoleName);
+            $role->givePermissionTo($permissions);
+
+        }
+
+        //make roles inzake menu permissions
+        $newRolePermissions = [
+            'Energiemanager' => ['create_person', 'view_person', 'update_person', 'create_organisation', 'view_organisation', 'update_organisation', 'manage_opportunity', 'manage_task', 'manage_intake', 'manage_marketing', 'create_document', 'view_document', 'manage_housing_file', 'manage_quotation_request'],
+            'Energiecoordinator' => ['view_person', 'view_organisation', 'manage_opportunity', 'manage_task', 'manage_intake', 'manage_marketing', 'create_document', 'view_document', 'manage_housing_file', 'manage_quotation_request'],
+        ];
+        foreach($newRolePermissions as $newRolePermissionRoleName => $permissions) {
+            $role =  \Spatie\Permission\Models\Role::findByName($newRolePermissionRoleName);
             $role->givePermissionTo($permissions);
 
         }

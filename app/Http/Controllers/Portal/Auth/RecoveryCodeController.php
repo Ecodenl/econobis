@@ -12,28 +12,12 @@ class RecoveryCodeController extends Controller
     /**
      * Geef de recoverycode voor de huidige gebruiker
      */
-//    public function index(Request $request)
-//    {
-//        if (! $request->user()->two_factor_secret ||
-//            ! $request->user()->two_factor_recovery_codes) {
-//            return [];
-//        }
-//
-//        if($request->user()->hasEnabledTwoFactorAuthentication()){
-//            /**
-//             * Recovery codes mogen alleen worden getoond als 2fa nog niet is geactiveerd (=eerste keer activatie), of als gebruiker ook 2fa ingelogd is.
-//             */
-//            $token = $request->header('TwoFactorToken');
-//
-//            if (!$request->user()->hasValidTwoFactorToken($token)) {
-//                return response()->json(['message' => 'Two factor authentication is already confirmed, won\'t display recovery codes again without being 2fa authenticated.'], 422);
-//            }
-//        }
-//
-//        return response()->json(json_decode(decrypt(
-//            $request->user()->two_factor_recovery_codes
-//        ), true));
-//    }
+    public function index(Request $request)
+    {
+        return response()->json(json_decode(decrypt(
+            $request->user()->two_factor_recovery_codes
+        ), true));
+    }
 
     /**
      * Check een recoverycode voor de huidige gebruiker.

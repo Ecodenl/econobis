@@ -16,11 +16,13 @@ export default {
         });
     },
 
-    // fetchTwoFactorRecoveryCodes: function() {
-    //     const requestUrl = `${URL_API}/api/me/two-factor-recovery-codes`;
-    //
-    //     return axiosInstance.get(requestUrl);
-    // },
+    fetchTwoFactorRecoveryCodes: function(password) {
+        return axiosInstance.get(`me/two-factor-recovery-codes`, {
+            params: {
+                password
+            }
+        });
+    },
 
     checkPassword: function(password) {
         return axiosInstance.get(`me/check-password`, {

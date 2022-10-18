@@ -133,7 +133,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         <SvgIcon size={20} icon={home} />
                     </NavIcon>
                     <NavText> Energiebesparing </NavText>
-                    {permissions.menuHousingFiles(
+                    {permissions.menuHousingFile && (
                         <Nav id="home-files">
                             <NavText>
                                 <Link className="sidebar-link" to="woningdossiers">

@@ -270,15 +270,6 @@ function Header({ location, history }) {
                                 Gegevens
                             </Link>
                             <Link
-                                to={'/account'}
-                                className={`nav-link w-nav-link w--nav-link-open ${
-                                    location.pathname === '/account' ? 'w--current' : ''
-                                }`}
-                                onClick={closeMenu}
-                            >
-                                Account
-                            </Link>
-                            <Link
                                 to={'/inschrijven-projecten'}
                                 className={`nav-link w-nav-link w--nav-link-open ${
                                     location.pathname === '/inschrijven-projecten' ? 'w--current' : ''

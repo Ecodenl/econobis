@@ -25,6 +25,21 @@ export default function(state = [], action) {
                 ...state,
                 users: state.users.filter(user => user.id !== action.userId),
             };
+        case 'NEW_TEAM_GROUP':
+            return {
+                ...state,
+                groups: [
+                    ...state.groups,
+                    {
+                        ...action.teamGroup,
+                    },
+                ],
+            };
+        case 'DELETE_TEAM_GROUP_SUCCESS':
+            return {
+                ...state,
+                groups: state.groups.filter(group => group.id !== action.groupId),
+            };
         default:
             return state;
     }

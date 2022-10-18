@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
-import TeamDetailsUsersView from './TeamDetailsUsersView';
-import TeamDetailsUsersItemDelete from './TeamDetailsUsersDelete';
+import TeamDetailsGroupsView from './TeamDetailsGroupsView';
+import TeamDetailsGroupsItemDelete from './TeamDetailsGroupsDelete';
 
-class TeamDetailsUsersItem extends Component {
+class TeamDetailsGroupsItem extends Component {
     constructor(props) {
         super(props);
 
@@ -13,7 +13,7 @@ class TeamDetailsUsersItem extends Component {
             highlightLine: '',
             showDelete: false,
 
-            user: props.user,
+            group: props.group,
         };
     }
 
@@ -38,16 +38,16 @@ class TeamDetailsUsersItem extends Component {
     render() {
         return (
             <div>
-                <TeamDetailsUsersView
+                <TeamDetailsGroupsView
                     highlightLine={this.state.highlightLine}
                     showActionButtons={this.state.showActionButtons}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
                     toggleDelete={this.toggleDelete}
-                    user={this.state.user}
+                    group={this.state.group}
                 />
                 {this.state.showDelete && this.props.permissions.createTeam && (
-                    <TeamDetailsUsersItemDelete toggleDelete={this.toggleDelete} userId={this.state.user.id} />
+                    <TeamDetailsGroupsItemDelete toggleDelete={this.toggleDelete} groupId={this.state.group.id} />
                 )}
             </div>
         );
@@ -60,4 +60,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(TeamDetailsUsersItem);
+export default connect(mapStateToProps)(TeamDetailsGroupsItem);

@@ -22,6 +22,15 @@ export function* deleteTeamUserSaga({ teamId, userId }) {
     }
 }
 
+export function* deleteTeamGroupSaga({ teamId, groupId }) {
+    try {
+        yield call(TeamDetailsAPI.deleteTeamGroup, { teamId, groupId });
+        yield put({ type: 'DELETE_TEAM_GROUP_SUCCESS', groupId });
+    } catch (error) {
+        yield put({ type: 'DELETE_TEAM_GROUP_ERROR', error });
+    }
+}
+
 // Update team details and switch to view callback
 export function* updateTeamDetailsSaga({ team, switchToView }) {
     try {

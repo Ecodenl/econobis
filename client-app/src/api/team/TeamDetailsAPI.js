@@ -42,4 +42,20 @@ export default {
 
         return axios.post(requestUrl);
     },
+
+    newTeamGroup: ({ teamId, groupId }) => {
+        const requestUrl = `${URL_TEAM}/${teamId}/${groupId}/attach`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl);
+    },
+
+    deleteTeamGroup: ({ teamId, groupId }) => {
+        const requestUrl = `${URL_TEAM}/${teamId}/${groupId}/detach`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl);
+    },
 };

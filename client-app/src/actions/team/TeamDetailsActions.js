@@ -27,3 +27,18 @@ export const deleteTeamUser = (teamId, userId) => {
         userId,
     };
 };
+
+export const newTeamGroup = teamGroup => {
+    return {
+        type: 'NEW_TEAM_GROUP',
+        teamGroup,
+    };
+};
+
+export const deleteTeamGroup = (teamId, groupId) => {
+    return {
+        type: 'DELETE_TEAM_GROUP',
+        teamId,
+        groupId,
+    };
+};

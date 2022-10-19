@@ -32,7 +32,7 @@ class ContactController extends Controller
 
         if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisationQuotationRequests.opportunity.measureCategory', 'organisationQuotationRequests.opportunity.status', 'organisation.campaigns', 'contactPerson.contact']);
         if($contact->isPerson()) $contact->load(['person', 'person.title', 'person.organisation', 'person.type']);
-        if($contact->isCoach()) $contact->load(['coachQuotationRequests.opportunity.measureCategory', 'coachQuotationRequests.opportunity.status']);
+        if($contact->isCoach()) $contact->load(['coachCampaigns', 'coachQuotationRequests.opportunity.measureCategory', 'coachQuotationRequests.opportunity.status']);
 
         $contact->relatedEmailsInbox = $this->getRelatedEmails($contact, $contact->id, 'inbox');
         $contact->relatedEmailsSent = $this->getRelatedEmails($contact, $contact->id, 'sent');

@@ -20,7 +20,6 @@ class FullHousingFileSpecification extends JsonResource
         return
             [
                 'id' => $this->id,
-//                'housingFile' => FullHousingFile::make($this->whenLoaded('housingFile')),
                 'measure' => FullMeasure::make($this->whenLoaded('measure')),
                 'measureId' => $this->measure_id,
                 'measureDate' => $this->measure_date,

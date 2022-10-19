@@ -15,6 +15,7 @@ class Sort extends RequestSort
 {
 
     protected $fields = [
+// todo WM: opschonen
 //        'organisation',
         'organisationOrCoach',
         'contact',
@@ -28,6 +29,7 @@ class Sort extends RequestSort
     ];
 
     protected $mapping = [
+// todo WM: opschonen
 //        'organisation' => 'organisation.name',
         'organisationOrCoach' => 'organisationOrCoaches.full_name',
         'contact' => 'contacts.full_name',
@@ -40,6 +42,7 @@ class Sort extends RequestSort
     ];
 
     protected $joins = [
+// todo WM: opschonen
 //        'organisation' => 'organisation',
         'organisationOrCoach' => 'organisationOrCoach',
         'contact' => 'contact',

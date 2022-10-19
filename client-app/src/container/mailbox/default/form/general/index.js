@@ -15,7 +15,7 @@ import { MailboxValidationSmtp } from './Validation';
 import { MailboxValidationPassword } from './Validation';
 import { MailboxValidationMailgun } from './Validation';
 import { MailboxValidationGmail } from './Validation';
-import { MailboxValidationMsGraph } from './Validation';
+import { MailboxValidationMsOauth } from './Validation';
 import MailboxDefaultFormGeneralGmailApiSettings from './GmailApiSettings';
 import ViewText from '../../../../../components/form/ViewText';
 import moment from 'moment';
@@ -70,7 +70,7 @@ function MailboxDefaultFormGeneral({
             validationSchema = validationSchema.concat(MailboxValidationGmail);
         }
         if (currentIncomingServerType === 'ms-oauth' || currentOutgoingServerType === 'ms-oauth') {
-            validationSchema = validationSchema.concat(MailboxValidationMsGraph);
+            validationSchema = validationSchema.concat(MailboxValidationMsOauth);
         }
         return validationSchema;
     }

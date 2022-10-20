@@ -60,7 +60,7 @@ export default {
     },
 
     newTeamMailbox: ({ teamId, mailboxId }) => {
-        const requestUrl = `${URL_TEAM}/${teamId}/${mailboxId}/attach`;
+        const requestUrl = `${URL_TEAM}/${teamId}/${mailboxId}/attach-mailbox`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -68,7 +68,7 @@ export default {
     },
 
     deleteTeamMailbox: ({ teamId, mailboxId }) => {
-        const requestUrl = `${URL_TEAM}/${teamId}/${mailboxId}/detach`;
+        const requestUrl = `${URL_TEAM}/${teamId}/${mailboxId}/detach-mailbox`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

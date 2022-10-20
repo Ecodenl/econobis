@@ -193,15 +193,6 @@ class MailboxController extends Controller
         return $this->show($mailbox);
     }
 
-    public function addUser(Mailbox $mailbox, User $user)
-    {
-        $this->authorize('create', Mailbox::class);
-
-        $mailbox->users()->attach($user);
-
-        return UserPeek::make($user);
-    }
-
     public function removeUser(Mailbox $mailbox, User $user)
     {
         $this->authorize('create', Mailbox::class);
@@ -211,6 +202,7 @@ class MailboxController extends Controller
 
     public function peek()
     {
+        Log::info(' hallo');
         return MailboxPeek::collection(Mailbox::orderBy('name')->get());
     }
 

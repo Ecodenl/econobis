@@ -42,7 +42,6 @@ class TeamsListItem extends Component {
             >
                 <td>{name}</td>
                 <td>{users.map(user => user.fullName).join(', ')}</td>
-                <td>{contactGroups.map(contactGroup => contactGroup.name).join(', ')}</td>
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>

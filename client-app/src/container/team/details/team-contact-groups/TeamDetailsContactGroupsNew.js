@@ -9,6 +9,7 @@ import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from '../../../../components/form/InputSelect';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+import ContactGroupAPI from '../../../../api/contact-group/ContactGroupAPI';
 
 class TeamDetailsContactGroupsNew extends Component {
     constructor(props) {
@@ -16,6 +17,7 @@ class TeamDetailsContactGroupsNew extends Component {
 
         this.state = {
             contactGroupId: '',
+            contactGroupsToSelect: [],
             errors: {
                 contactGroupId: false,
                 hasErrors: true,
@@ -31,6 +33,12 @@ class TeamDetailsContactGroupsNew extends Component {
         const value = target.value;
 
         this.setState({ contactGroupId: value });
+    }
+
+    componentDidMount() {
+        ContactGroupAPI.peekContactGroups().then(payload => {
+            this.setState({ contactGroupsToSelect: payload });
+        });
     }
 
     handleSubmit(event) {
@@ -75,8 +83,8 @@ class TeamDetailsContactGroupsNew extends Component {
                                 label={'Gebruiker'}
                                 size={'col-sm-6'}
                                 name={'contactGroupId'}
-                                options={this.props.contactGroups}
-                                optionName={'fullName'}
+                                options={this.state.contactGroupsToSelect}
+                                optionName={'name'}
                                 value={this.state.contactGroupId}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
@@ -108,7 +116,6 @@ const mapStateToProps = state => {
     return {
         teamId: state.teamDetails.id,
         teamName: state.teamDetails.name,
-        contactGroups: state.systemData.contactGroups,
     };
 };
 

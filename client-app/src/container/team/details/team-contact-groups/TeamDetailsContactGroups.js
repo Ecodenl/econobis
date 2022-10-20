@@ -26,7 +26,7 @@ class TeamDetailsContactGroups extends Component {
         return (
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Gekoppelde groepen</span>
+                    <span className="h5 text-bold">Gekoppelde groepen xx</span>
                     {this.props.permissions.createTeam && (
                         <a role="button" className="pull-right" onClick={this.toggleShowNew}>
                             <span className="glyphicon glyphicon-plus" />

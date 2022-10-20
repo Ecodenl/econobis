@@ -10,7 +10,7 @@ const TeamDetailsContactGroupsList = props => {
                 <div className="col-sm-11">Groep naam</div>
                 <div className="col-sm-1" />
             </div>
-            {props.contactGroups > 0 ? (
+            {props.contactGroups && props.contactGroups.length > 0 ? (
                 props.contactGroups.map(contactGroup => {
                     return <TeamDetailsContactGroupsItem key={contactGroup.id} contactGroup={contactGroup} />;
                 })

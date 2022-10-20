@@ -81,7 +81,7 @@ const TwoFactorSettings = function () {
     }
 
     const regenerateRecoveryCodes = () => {
-        if(!window.confirm('Weet u zeker dat u nieuwe recovery codes wilt genereren? De bestaande codes zijn daarna niet meer geldig.')) {
+        if(!window.confirm('Weet u zeker dat u nieuwe recovery code wilt genereren? De huidige code is daarna niet meer geldig.')) {
             return;
         }
 
@@ -106,8 +106,8 @@ const TwoFactorSettings = function () {
                             <p>U heeft twee factor authenticatie geactiveerd.</p>
                             <button onClick={disableTwoFactorHandler} className="btn btn-primary btn-sm">Twee factor uitschakelen</button>
                             <br/><br/>
-                            <strong>Recovery codes</strong>
-                            <p><small>Recovery codes kunt u gebruiken om uw account te herstellen bij problemen met uw authenticator app
+                            <strong>Recovery code</strong>
+                            <p><small>De recovery code kunt u gebruiken om uw account te herstellen bij problemen met uw authenticator app
                                 of verlies van uw telefoon. Sla deze op een veilige plek op.</small></p>
 
                             {recoveryCodes.length ? (<>
@@ -121,7 +121,7 @@ const TwoFactorSettings = function () {
                                 <button onClick={() => setRecoveryCodes([])} className="btn btn-sm">Verbergen</button>
                                 <button onClick={regenerateRecoveryCodes} className="btn btn-sm btn-primary">Vernieuwen</button>
                             </>) : (<>
-                                <button onClick={fetchRecoveryCodes} className="btn btn-primary btn-sm">Toon recovery codes</button>
+                                <button onClick={fetchRecoveryCodes} className="btn btn-primary btn-sm">Toon recovery code</button>
                             </>)}
                         </>) : (
                         <>

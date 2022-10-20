@@ -6,9 +6,7 @@ export default {
     },
 
     enableTwoFactor: function (password) {
-        return axiosInstance.post(`me/two-factor-authentication`, {
-            password,
-        }, {
+        return axiosInstance.post(`me/two-factor-authentication`, {}, {
             headers: {
                 PasswordConfirmation: password,
             }

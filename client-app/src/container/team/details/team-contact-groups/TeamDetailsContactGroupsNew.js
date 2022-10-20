@@ -3,21 +3,21 @@ import { connect } from 'react-redux';
 import validator from 'validator';
 
 import TeamDetailsAPI from '../../../../api/team/TeamDetailsAPI';
-import { newTeamGroup } from '../../../../actions/team/TeamDetailsActions';
+import { newTeamContactGroup } from '../../../../actions/team/TeamDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from '../../../../components/form/InputSelect';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 
-class TeamDetailsGroupsNew extends Component {
+class TeamDetailsContactGroupsNew extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            groupId: '',
+            contactGroupId: '',
             errors: {
-                groupId: false,
+                contactGroupId: false,
                 hasErrors: true,
             },
         };
@@ -30,32 +30,32 @@ class TeamDetailsGroupsNew extends Component {
         const target = event.target;
         const value = target.value;
 
-        this.setState({ groupId: value });
+        this.setState({ contactGroupId: value });
     }
 
     handleSubmit(event) {
         event.preventDefault();
 
-        const teamGroup = {
+        const teamContactGroup = {
             teamId: this.props.teamId,
-            groupId: this.state.groupId,
+            contactGroupId: this.state.contactGroupId,
         };
 
         // Validation
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(teamGroup.groupId)) {
-            errors.groupId = true;
+        if (validator.isEmpty(teamContactGroup.contactGroupId)) {
+            errors.contactGroupId = true;
             hasErrors = true;
         }
 
         this.setState({ ...this.state, errors: errors });
 
         if (!hasErrors) {
-            TeamDetailsAPI.newTeamGroup(teamGroup)
+            TeamDetailsAPI.newTeamContactGroup(teamContactGroup)
                 .then(payload => {
-                    this.props.newTeamGroup(payload.data.data);
+                    this.props.newTeamContactGroup(payload.data.data);
                     this.props.toggleShowNew();
                 })
                 .catch(error => {
@@ -74,13 +74,13 @@ class TeamDetailsGroupsNew extends Component {
                             <InputSelect
                                 label={'Gebruiker'}
                                 size={'col-sm-6'}
-                                name={'groupId'}
-                                options={this.props.groups}
+                                name={'contactGroupId'}
+                                options={this.props.contactGroups}
                                 optionName={'fullName'}
-                                value={this.state.groupId}
+                                value={this.state.contactGroupId}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
-                                error={this.state.errors.groupId}
+                                error={this.state.errors.contactGroupId}
                             />
                         </div>
 
@@ -108,14 +108,14 @@ const mapStateToProps = state => {
     return {
         teamId: state.teamDetails.id,
         teamName: state.teamDetails.name,
-        groups: state.systemData.groups,
+        contactGroups: state.systemData.contactGroups,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    newTeamGroup: teamGroup => {
-        dispatch(newTeamGroup(teamGroup));
+    newTeamContactGroup: teamContactGroup => {
+        dispatch(newTeamContactGroup(teamContactGroup));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsGroupsNew);
+export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsContactGroupsNew);

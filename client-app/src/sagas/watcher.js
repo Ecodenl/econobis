@@ -101,7 +101,7 @@ import { fetchTasksSaga, setTaskFinishedSaga } from './task/TasksSaga';
 import { fetchNotesSaga } from './task/NotesSaga';
 import { deleteTeamSaga, fetchTeamsSaga } from './team/TeamsSaga';
 import {
-    deleteTeamGroupSaga,
+    deleteTeamContactGroupSaga,
     deleteTeamUserSaga,
     fetchTeamDetailsSaga,
     updateTeamDetailsSaga,
@@ -258,7 +258,7 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_TEAM_DETAILS', fetchTeamDetailsSaga);
     yield takeLatest('DELETE_TEAM', deleteTeamSaga);
     yield takeLatest('DELETE_TEAM_USER', deleteTeamUserSaga);
-    yield takeLatest('DELETE_TEAM_GROUP', deleteTeamGroupSaga);
+    yield takeLatest('DELETE_TEAM_CONTACT_GROUP', deleteTeamContactGroupSaga);
     yield takeLatest('UPDATE_TEAM', updateTeamDetailsSaga);
 
     // Products

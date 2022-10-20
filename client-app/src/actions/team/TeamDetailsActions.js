@@ -28,17 +28,17 @@ export const deleteTeamUser = (teamId, userId) => {
     };
 };
 
-export const newTeamGroup = teamGroup => {
+export const newTeamContactGroup = teamContactGroup => {
     return {
-        type: 'NEW_TEAM_GROUP',
-        teamGroup,
+        type: 'NEW_TEAM_CONTACT_GROUP',
+        teamContactGroup,
     };
 };
 
-export const deleteTeamGroup = (teamId, groupId) => {
+export const deleteTeamContactGroup = (teamId, contactGroupId) => {
     return {
-        type: 'DELETE_TEAM_GROUP',
+        type: 'DELETE_TEAM_CONTACT_GROUP',
         teamId,
-        groupId,
+        contactGroupId,
     };
 };

@@ -4,10 +4,10 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import { connect } from 'react-redux';
-import TeamDetailsGroupsList from './TeamDetailsGroupsList';
-import TeamDetailsGroupsNew from './TeamDetailsGroupsNew';
+import TeamDetailsContactGroupsList from './TeamDetailsContactGroupsList';
+import TeamDetailsContactGroupsNew from './TeamDetailsContactGroupsNew';
 
-class TeamDetailsGroups extends Component {
+class TeamDetailsContactGroups extends Component {
     constructor(props) {
         super(props);
 
@@ -26,7 +26,7 @@ class TeamDetailsGroups extends Component {
         return (
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Gekoppelde gebruikers</span>
+                    <span className="h5 text-bold">Gekoppelde groepen</span>
                     {this.props.permissions.createTeam && (
                         <a role="button" className="pull-right" onClick={this.toggleShowNew}>
                             <span className="glyphicon glyphicon-plus" />
@@ -35,10 +35,10 @@ class TeamDetailsGroups extends Component {
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        <TeamDetailsGroupsList />
+                        <TeamDetailsContactGroupsList />
                     </div>
                     <div className="col-md-12 margin-10-top">
-                        {this.state.showNew && <TeamDetailsGroupsNew toggleShowNew={this.toggleShowNew} />}
+                        {this.state.showNew && <TeamDetailsContactGroupsNew toggleShowNew={this.toggleShowNew} />}
                     </div>
                 </PanelBody>
             </Panel>
@@ -52,4 +52,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(TeamDetailsGroups);
+export default connect(mapStateToProps)(TeamDetailsContactGroups);

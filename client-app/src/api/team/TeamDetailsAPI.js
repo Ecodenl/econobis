@@ -43,16 +43,16 @@ export default {
         return axios.post(requestUrl);
     },
 
-    newTeamGroup: ({ teamId, groupId }) => {
-        const requestUrl = `${URL_TEAM}/${teamId}/${groupId}/attach`;
+    newTeamContactGroup: ({ teamId, contactGroupId }) => {
+        const requestUrl = `${URL_TEAM}/${teamId}/${contactGroupId}/attach`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         return axios.post(requestUrl);
     },
 
-    deleteTeamGroup: ({ teamId, groupId }) => {
-        const requestUrl = `${URL_TEAM}/${teamId}/${groupId}/detach`;
+    deleteTeamContactGroup: ({ teamId, contactGroupId }) => {
+        const requestUrl = `${URL_TEAM}/${teamId}/${contactGroupId}/detach`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

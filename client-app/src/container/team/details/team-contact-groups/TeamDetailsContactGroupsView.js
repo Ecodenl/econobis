@@ -3,8 +3,8 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 
-const TeamDetailsGroupsView = props => {
-    const { id, fullName } = props.group;
+const TeamDetailsContactGroupsView = props => {
+    const { id, name } = props.contactGroup;
 
     return (
         <div
@@ -12,7 +12,7 @@ const TeamDetailsGroupsView = props => {
             onMouseEnter={() => props.onLineEnter()}
             onMouseLeave={() => props.onLineLeave()}
         >
-            <div className="col-sm-11">{fullName}</div>
+            <div className="col-sm-11">{name}</div>
             <div className="col-sm-1">
                 {props.showActionButtons && props.permissions.createTeam ? (
                     <a role="button" onClick={props.toggleDelete}>
@@ -32,4 +32,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(TeamDetailsGroupsView);
+export default connect(mapStateToProps)(TeamDetailsContactGroupsView);

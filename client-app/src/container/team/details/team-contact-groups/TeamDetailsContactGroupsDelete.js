@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../../components/modal/Modal';
-import { deleteTeamGroup } from '../../../../actions/team/TeamDetailsActions';
+import { deleteTeamContactGroup } from '../../../../actions/team/TeamDetailsActions';
 
-const TeamDetailsGroupsDelete = props => {
+const TeamDetailsContactGroupsDelete = props => {
     const confirmAction = () => {
-        props.deleteTeamGroup(props.teamId, props.groupId);
+        props.deleteTeamContactGroup(props.teamId, props.contactGroupId);
         props.toggleDelete();
     };
 
@@ -30,9 +30,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteTeamGroup: (teamId, groupId) => {
-        dispatch(deleteTeamGroup(teamId, groupId));
+    deleteTeamContactGroup: (teamId, contactGroupId) => {
+        dispatch(deleteTeamContactGroup(teamId, contactGroupId));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsGroupsDelete);
+export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsContactGroupsDelete);

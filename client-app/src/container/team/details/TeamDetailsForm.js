@@ -5,7 +5,7 @@ import { isEmpty } from 'lodash';
 import { fetchTeamDetails } from '../../../actions/team/TeamDetailsActions';
 import TeamDetailsFormGeneral from './general/TeamDetailsFormGeneral';
 import TeamDetailsUsers from './team-users/TeamDetailsUsers';
-import TeamDetailsGroups from './team-contact-groups/TeamDetailsGroups';
+import TeamDetailsContactGroups from './team-contact-groups/TeamDetailsContactGroups';
 
 class TeamDetailsForm extends Component {
     constructor(props) {
@@ -32,7 +32,7 @@ class TeamDetailsForm extends Component {
             <div>
                 <TeamDetailsFormGeneral />
                 <TeamDetailsUsers />
-                <TeamDetailsGroups />
+                <TeamDetailsContactGroups />
             </div>
         );
     }

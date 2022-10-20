@@ -31,7 +31,7 @@ class TeamsListItem extends Component {
     }
 
     render() {
-        const { id, name, users = [] } = this.props;
+        const { id, name, users, contactGroups = [] } = this.props;
 
         return (
             <tr
@@ -42,6 +42,7 @@ class TeamsListItem extends Component {
             >
                 <td>{name}</td>
                 <td>{users.map(user => user.fullName).join(', ')}</td>
+                <td>{contactGroups.map(contactGroup => contactGroup.name).join(', ')}</td>
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
-import TeamDetailsGroupsView from './TeamDetailsGroupsView';
-import TeamDetailsGroupsItemDelete from './TeamDetailsGroupsDelete';
+import TeamDetailsContactGroupsView from './TeamDetailsContactGroupsView';
+import TeamDetailsContactGroupsItemDelete from './TeamDetailsContactGroupsDelete';
 
-class TeamDetailsGroupsItem extends Component {
+class TeamDetailsContactGroupsItem extends Component {
     constructor(props) {
         super(props);
 
@@ -13,7 +13,7 @@ class TeamDetailsGroupsItem extends Component {
             highlightLine: '',
             showDelete: false,
 
-            group: props.group,
+            contactGroup: props.contactGroup,
         };
     }
 
@@ -38,16 +38,19 @@ class TeamDetailsGroupsItem extends Component {
     render() {
         return (
             <div>
-                <TeamDetailsGroupsView
+                <TeamDetailsContactGroupsView
                     highlightLine={this.state.highlightLine}
                     showActionButtons={this.state.showActionButtons}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
                     toggleDelete={this.toggleDelete}
-                    group={this.state.group}
+                    contactGroup={this.state.contactGroup}
                 />
                 {this.state.showDelete && this.props.permissions.createTeam && (
-                    <TeamDetailsGroupsItemDelete toggleDelete={this.toggleDelete} groupId={this.state.group.id} />
+                    <TeamDetailsContactGroupsItemDelete
+                        toggleDelete={this.toggleDelete}
+                        contactGroupId={this.state.contactGroup.id}
+                    />
                 )}
             </div>
         );
@@ -60,4 +63,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(TeamDetailsGroupsItem);
+export default connect(mapStateToProps)(TeamDetailsContactGroupsItem);

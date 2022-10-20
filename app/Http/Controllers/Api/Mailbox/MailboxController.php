@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api\Mailbox;
 
 
+use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Mailbox\ImapEncryptionType;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailboxGmailApiSettings;
@@ -24,12 +25,14 @@ use App\Helpers\MsOauth\MsOauthConnectionManager;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\EncryptCookies;
+use App\Http\Resources\ContactGroup\ContactGroupPeek;
 use App\Http\Resources\Email\GridEmailTemplate;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Mailbox\FullMailbox;
 use App\Http\Resources\Mailbox\FullMailboxIgnore;
 use App\Http\Resources\Mailbox\GridMailbox;
 use App\Http\Resources\Mailbox\LoggedInEmailPeek;
+use App\Http\Resources\Mailbox\MailboxPeek;
 use App\Http\Resources\User\UserPeek;
 use Doctrine\Common\Annotations\Annotation\Enum;
 use http\Header;
@@ -204,6 +207,11 @@ class MailboxController extends Controller
         $this->authorize('create', Mailbox::class);
 
         $mailbox->users()->detach($user);
+    }
+
+    public function peek()
+    {
+        return MailboxPeek::collection(Mailbox::orderBy('name')->get());
     }
 
     public function receive(Mailbox $mailbox)

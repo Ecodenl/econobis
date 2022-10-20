@@ -3,11 +3,21 @@
 namespace App\Http\JoryResources;
 
 use App\Eco\Jobs\JobsLog;
+use App\Http\Controllers\Api\JobsLog\JobsLogController;
 use App\Http\JoryResources\Base\JoryResource;
+use Illuminate\Support\Facades\Log;
 
 class JobsLogJoryResource extends JoryResource
 {
     protected $modelClass = JobsLog::class;
+
+    protected function checkAuthorize(): void
+    {
+        // TODO: Implement checkAuthorize() method.
+        Log::info('Test JobsLog checkAuthorize');
+        $jobsLogController = new JobsLogController();
+        $jobsLogController->authorize('view', JobsLog::class);
+    }
 
     protected function configureForApp(): void
     {

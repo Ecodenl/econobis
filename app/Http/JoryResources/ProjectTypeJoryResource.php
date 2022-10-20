@@ -9,6 +9,11 @@ class ProjectTypeJoryResource extends JoryResource
 {
     protected $modelClass = ProjectType::class;
 
+    protected function checkAuthorize(): void
+    {
+        // TODO: Implement checkAuthorize() method.
+    }
+
     protected function configureForApp(): void
     {
         // Fields

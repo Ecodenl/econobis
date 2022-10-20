@@ -7,6 +7,11 @@ use App\Http\JoryResources\Base\JoryResource;
 
 class MailgunDomainJoryResource extends JoryResource
 {
+
+    protected function checkAuthorize(): void
+    {
+        // TODO: Implement checkAuthorize() method.
+    }
     protected $modelClass = MailgunDomain::class;
 
     protected function configureForApp(): void

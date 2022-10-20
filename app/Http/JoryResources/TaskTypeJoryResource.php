@@ -10,6 +10,11 @@ class TaskTypeJoryResource extends JoryResource
 {
     protected $modelClass = TaskType::class;
 
+    protected function checkAuthorize(): void
+    {
+        // TODO: Implement checkAuthorize() method.
+    }
+
     protected function configureForApp(): void
     {
         $this->field('id')->filterable()->sortable();

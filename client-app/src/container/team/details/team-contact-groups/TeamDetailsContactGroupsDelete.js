@@ -18,7 +18,7 @@ const TeamDetailsContactGroupsDelete = props => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            <p>Wil je deze gebruiker ontkoppelen van dit team?</p>
+            <p>Wil je deze groep ontkoppelen van dit team?</p>
         </Modal>
     );
 };

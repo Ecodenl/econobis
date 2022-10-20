@@ -44,7 +44,7 @@ export default {
     },
 
     newTeamContactGroup: ({ teamId, contactGroupId }) => {
-        const requestUrl = `${URL_TEAM}/${teamId}/${contactGroupId}/attach`;
+        const requestUrl = `${URL_TEAM}/${teamId}/${contactGroupId}/attach-contact-group`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -52,7 +52,7 @@ export default {
     },
 
     deleteTeamContactGroup: ({ teamId, contactGroupId }) => {
-        const requestUrl = `${URL_TEAM}/${teamId}/${contactGroupId}/detach`;
+        const requestUrl = `${URL_TEAM}/${teamId}/${contactGroupId}/detach-contact-group`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

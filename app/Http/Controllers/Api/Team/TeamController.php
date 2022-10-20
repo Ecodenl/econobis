@@ -8,12 +8,14 @@
 
 namespace App\Http\Controllers\Api\Team;
 
+use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
 use App\Helpers\Settings\PortalSettings;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Team\Grid\RequestQuery;
 
+use App\Http\Resources\ContactGroup\ContactGroupPeek;
 use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\Team\PeekTeam;
 use App\Http\Resources\User\UserPeek;
@@ -94,11 +96,27 @@ class TeamController extends ApiController
         return UserPeek::make($user);
     }
 
+    public function attachContactGroup(Team $team, ContactGroup $contactGroup)
+    {
+        $this->authorize('create', Team::class);
+
+        $team->contactGroups()->attach($contactGroup->id);
+
+        return ContactGroupPeek::make($contactGroup);
+    }
+
     public function detachUser(Team $team, User $user)
     {
         $this->authorize('create', Team::class);
 
         $team->users()->detach($user->id);
+    }
+
+    public function detachContactGroup(Team $team, ContactGroup $contactGroup)
+    {
+        $this->authorize('create', Team::class);
+
+        $team->contactGroups()->detach($contactGroup->id);
     }
 
     public function destroy(Team $team)

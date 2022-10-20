@@ -312,6 +312,8 @@ Route::namespace('Api')
         Route::post('team/{team}/delete', 'Team\TeamController@destroy');
         Route::post('team/{team}/{user}/attach', 'Team\TeamController@attachUser');
         Route::post('team/{team}/{user}/detach', 'Team\TeamController@detachUser');
+        Route::post('team/{team}/{contactGroup}/attach-contact-group', 'Team\TeamController@attachContactGroup');
+        Route::post('team/{team}/{contactGroup}/detach-contact-group', 'Team\TeamController@detachContactGroup');
 
         Route::get('/quotation-request/grid', 'QuotationRequest\QuotationRequestController@grid');
         Route::get('/quotation-request/peek', 'QuotationRequest\QuotationRequestController@peek');

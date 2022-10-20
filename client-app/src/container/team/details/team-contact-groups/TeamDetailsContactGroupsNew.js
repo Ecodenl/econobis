@@ -80,7 +80,7 @@ class TeamDetailsContactGroupsNew extends Component {
                         <div className="row">
                             <InputText label={'Team'} name={'team'} value={this.props.teamName} readOnly={true} />
                             <InputSelect
-                                label={'Gebruiker'}
+                                label={'Groep'}
                                 size={'col-sm-6'}
                                 name={'contactGroupId'}
                                 options={this.state.contactGroupsToSelect}

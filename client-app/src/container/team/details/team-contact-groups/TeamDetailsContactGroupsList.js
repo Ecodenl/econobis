@@ -15,7 +15,7 @@ const TeamDetailsContactGroupsList = props => {
                     return <TeamDetailsContactGroupsItem key={contactGroup.id} contactGroup={contactGroup} />;
                 })
             ) : (
-                <div>Geen groepen bekend.</div>
+                <div>Geen groepen bekend in het systeem.</div>
             )}
         </div>
     );

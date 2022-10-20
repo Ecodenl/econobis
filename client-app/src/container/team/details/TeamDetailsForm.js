@@ -6,6 +6,7 @@ import { fetchTeamDetails } from '../../../actions/team/TeamDetailsActions';
 import TeamDetailsFormGeneral from './general/TeamDetailsFormGeneral';
 import TeamDetailsUsers from './team-users/TeamDetailsUsers';
 import TeamDetailsContactGroups from './team-contact-groups/TeamDetailsContactGroups';
+import TeamDetailsMailboxes from './team-mailboxes/TeamDetailsMailboxes';
 
 class TeamDetailsForm extends Component {
     constructor(props) {
@@ -33,6 +34,7 @@ class TeamDetailsForm extends Component {
                 <TeamDetailsFormGeneral />
                 <TeamDetailsUsers />
                 <TeamDetailsContactGroups />
+                <TeamDetailsMailboxes />
             </div>
         );
     }

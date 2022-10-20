@@ -344,7 +344,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                 </Nav>
             )}
 
-            {permissions.menuWorflow && permissions.manageFinancial && (
+            {permissions.menuWorkflow && permissions.manageFinancial && (
                 <Nav id="workflow">
                     <NavIcon>
                         <SvgIcon size={20} icon={forward} />

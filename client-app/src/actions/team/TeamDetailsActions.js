@@ -42,3 +42,18 @@ export const deleteTeamContactGroup = (teamId, contactGroupId) => {
         contactGroupId,
     };
 };
+
+export const newTeamMailbox = teamMailbox => {
+    return {
+        type: 'NEW_TEAM_MAILBOX',
+        teamMailbox,
+    };
+};
+
+export const deleteTeamMailbox = (teamId, mailboxId) => {
+    return {
+        type: 'DELETE_TEAM_MAILBOX',
+        teamId,
+        mailboxId,
+    };
+};

@@ -1,4 +1,5 @@
 import axiosInstance from '../default-setup/AxiosInstance';
+import axios from 'axios';
 
 const URL_MAILBOX = 'mailbox';
 
@@ -61,6 +62,21 @@ export default {
         const requestUrl = `${URL_MAILBOX}/ignore`;
 
         return axiosInstance.post(requestUrl, ignore);
+    },
+
+    peekMailboxes: () => {
+        const requestUrl = `${URL_API}/api/mailbox/peek`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
+                return response.data.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
     },
 
     updateIgnore: ignore => {

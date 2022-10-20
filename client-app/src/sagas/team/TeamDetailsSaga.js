@@ -31,6 +31,15 @@ export function* deleteTeamContactGroupSaga({ teamId, contactGroupId }) {
     }
 }
 
+export function* deleteTeamMailboxSaga({ teamId, mailboxId }) {
+    try {
+        yield call(TeamDetailsAPI.deleteTeamMailbox, { teamId, mailboxId });
+        yield put({ type: 'DELETE_TEAM_CONTACT_GROUP_SUCCESS', mailboxId });
+    } catch (error) {
+        yield put({ type: 'DELETE_TEAM_CONTACT_GROUP_ERROR', error });
+    }
+}
+
 // Update team details and switch to view callback
 export function* updateTeamDetailsSaga({ team, switchToView }) {
     try {

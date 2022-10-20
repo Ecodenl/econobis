@@ -29,7 +29,7 @@ class TeamController extends ApiController
         $teams = $requestQuery->get();
 
         $teams->load([
-            'users'
+            'users', 'contactGroups'
         ]);
 
         return FullTeam::collection($teams)
@@ -44,7 +44,7 @@ class TeamController extends ApiController
         $this->authorize('view', Team::class);
 
         $team->load([
-            'users'
+            'users', 'contactGroups'
         ]);
 
         return FullTeam::make($team);

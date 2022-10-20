@@ -4,6 +4,7 @@ namespace App\Eco\Team;
 
 use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
+use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\Measure\Measure;
@@ -24,6 +25,11 @@ class Team extends Model
     public function users()
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function contactGroups()
+    {
+          return $this->belongsToMany(ContactGroup::class,  'team_contact_group');
     }
 
     public function tasks()

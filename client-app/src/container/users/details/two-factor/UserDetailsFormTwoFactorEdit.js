@@ -58,13 +58,15 @@ class UserDetailsFormTwoFactorEdit extends Component {
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
                     {this.props.requiredByCooperation ? (
-                        <ViewText label={'Verplicht'} value="Verplicht vanuit coöperatie"/>
+                        <ViewText label={'Verplicht voor deze gebruiker'} value="Verplicht vanuit coöperatie"/>
                     ) : (
                         <InputToggle
-                            label="Verplicht"
+                            label="Verplicht voor deze gebruiker"
                             name={'requireTwoFactorAuthentication'}
                             value={this.state.user.requireTwoFactorAuthentication}
                             onChangeAction={this.handleInputChange}
+                            size={'col-sm-5'}
+                            textToolTip="Je kan 2 factor authenticatie voor alle gebruikers verplichten via instellingen > coöperatie"
                         />
                     )}
                     <div className="col-sm-6"><label className="col-sm-6">Geactiveerd</label>

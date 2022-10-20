@@ -5,17 +5,15 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Hash;
 
-class CheckPasswordConfirmation
+class CheckPasswordConfirmationHeader
 {
     public function handle($request, Closure $next)
     {
-        $request->validate([
-            'password' => 'required|string',
-        ]);
+        $password = $request->header('PasswordConfirmation');
 
         $user = $request->user();
 
-        if(!Hash::check($request->input('password'), $user->password)){
+        if(!Hash::check($password, $user->password)){
             abort(422, 'Wachtwoordbevestiging is niet correct.');
         }
 

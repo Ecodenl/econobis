@@ -99,7 +99,7 @@ class TwoFactorConfirm extends Component {
                             <form onSubmit={this.handleSubmit}>
                                 <div className="row margin-10-top">
                                     <div className="col-sm-10 col-md-offset-1">
-                                        Geef een van de herstelcodes voor twee factor authenticatie op.
+                                        Geef hier de herstelcode die je bij eerste keer instellen van 2 factor authenticatie hebt gekregen. (je kan de code inclusief – teken hier invullen) Als je deze niet (meer) weet kan je contact opnemen met een key-user/administrator van deze econobis omgeving om je 2 factor authenticatie te resetten.
                                     </div>
                                 </div>
 

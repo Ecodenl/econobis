@@ -568,12 +568,17 @@ Route::namespace('Api')
 Route::namespace('Api')
     ->middleware(['auth:api', 'scopes:use-app'])
     ->group(function () {
+        Route::middleware([\App\Http\Middleware\CheckPasswordConfirmationHeader::class])->group(function () {
+            Route::get('/me/check-password', [\App\Http\Controllers\Api\User\UserController::class, 'checkPassword']);
+            Route::post('me/two-factor-authentication', [\App\Http\Controllers\Auth\TwoFactorAuthenticationController::class, 'store']);
+            Route::delete('me/two-factor-authentication', [\App\Http\Controllers\Auth\TwoFactorAuthenticationController::class, 'destroy']);
+            Route::get('me/two-factor-qr-code', [\App\Http\Controllers\Auth\TwoFactorQrCodeController::class, 'show']);
+            Route::get('me/two-factor-recovery-codes', [\App\Http\Controllers\Auth\RecoveryCodeController::class, 'index']);
+        });
+
         Route::get('me/two-factor-status', [\App\Http\Controllers\Auth\TwoFactorAuthenticationController::class, 'status']);
         Route::post('me/hide-two-factor-notification', [\App\Http\Controllers\Auth\ConfirmedTwoFactorAuthenticationController::class, 'hideNotification']);
-        Route::post('me/two-factor-authentication', [\App\Http\Controllers\Auth\TwoFactorAuthenticationController::class, 'store']);
         Route::post('me/confirmed-two-factor-authentication', [\App\Http\Controllers\Auth\ConfirmedTwoFactorAuthenticationController::class, 'store']);
-        Route::get('me/two-factor-qr-code', [\App\Http\Controllers\Auth\TwoFactorQrCodeController::class, 'show']);
-        Route::get('me/two-factor-recovery-codes', [\App\Http\Controllers\Auth\RecoveryCodeController::class, 'index']);
         Route::post('me/two-factor-challenge', [\App\Http\Controllers\Auth\RecoveryCodeController::class, 'recover']);
     });
 

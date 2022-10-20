@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Carbon\Carbon;
+use App\Eco\Cooperation\Cooperation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
 
 class TwoFactorAuthenticationController extends Controller
@@ -18,6 +19,7 @@ class TwoFactorAuthenticationController extends Controller
         $token = $request->header('TwoFactorToken');
 
         return response()->json([
+            'cooperationRequiresTwoFactorAuthentication' => Cooperation::first()->require_two_factor_authentication,
             'requireTwoFactorAuthentication' => $request->user()->requiresTwoFactorAuthentication(),
             'twoFactorActivated' => !!$request->user()->hasTwoFactorActivated(),
             'hasValidToken' => $request->user()->hasValidTwoFactorToken($token),
@@ -31,14 +33,13 @@ class TwoFactorAuthenticationController extends Controller
     public function store(Request $request, EnableTwoFactorAuthentication $enable)
     {
         $user = $request->user();
-        if($user->two_factor_secret){
+
+        if(!$user->two_factor_secret){
             /**
              * Niet een 2e keer generen omdat dan de huidige 2fa meteen ongeldig wordt.
              */
-            return response()->json(['message' => 'Two factor authentication is already enabled.'], 422);
+            $enable($user);
         }
-
-        $enable($user);
 
         /**
          * Two factor kan vanuit cooperatie verplicht zijn waardoor het wordt geactiveerd.
@@ -46,6 +47,27 @@ class TwoFactorAuthenticationController extends Controller
          */
         $user->require_two_factor_authentication = true;
         $user->save();
+
+        return new JsonResponse('', 200);
+    }
+
+    public function destroy(Request $request, DisableTwoFactorAuthentication $disable)
+    {
+        $cooperation = Cooperation::first();
+
+        if($cooperation->require_two_factor_authentication){
+            return response()->json(['message' => 'Two factor authentication is required by the cooperation.'], 422);
+        }
+
+        $user = $request->user();
+
+        $disable($user);
+
+        $user->require_two_factor_authentication = false;
+        $user->two_factor_confirmed_at = null;
+        $user->save();
+
+        $user->twoFactorTokens()->delete();
 
         return new JsonResponse('', 200);
     }

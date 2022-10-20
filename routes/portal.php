@@ -19,7 +19,7 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
     ->group(function () {
         Route::get('/me', 'PortalUser\PortalUserController@me');
 
-        Route::middleware([\App\Http\Middleware\CheckPasswordConfirmation::class])->group(function () {
+        Route::middleware([\App\Http\Middleware\CheckPasswordConfirmationHeader::class])->group(function () {
             Route::get('/me/check-password', 'PortalUser\PortalUserController@checkPassword');
             Route::post('me/two-factor-authentication', [\App\Http\Controllers\Portal\Auth\TwoFactorAuthenticationController::class, 'store']);
             Route::delete('me/two-factor-authentication', [\App\Http\Controllers\Portal\Auth\TwoFactorAuthenticationController::class, 'destroy']);

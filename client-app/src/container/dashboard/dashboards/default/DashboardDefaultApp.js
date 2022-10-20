@@ -36,9 +36,7 @@ class DashboardDefaultApp extends Component {
                                     <div className="alert alert-info"
                                          style={{display: 'flex', justifyContent: 'space-between'}} role="alert">
                                         <div style={{flex: '1 1 auto'}}><a href="#"
-                                                                           onClick={() => this.setState({twoFactorSettingsActive: true})}>Two
-                                            Factor authenticatie is uitgeschakeld, schakel dit nu in voor extra
-                                            beveiliging van uw account.</a></div>
+                                                                           onClick={() => this.setState({twoFactorSettingsActive: true})}>Om de toegang van Econobis beter te beveiligen kan je nu kiezen voor 2 factor authenticatie bij het inloggen op Econobis. Deze functie is optioneel. Als je 2 factor authenticatie wilt instellen klik dan op deze tekst. Wil je geen gebruik maken van 2 factor authenticatie klik dan op het kruisje. Als je later alsnog 2 factor authenticatie wilt instellen kan je rechtsboven op je naam klikken en de optie “2 factor authenticatie” aanklikken</a></div>
                                         <div>
                                             <a href="#" onClick={this.handleHideTwoFactorNotification}
                                                className="btn btn-sm">x</a>

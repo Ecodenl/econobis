@@ -13,8 +13,6 @@ class JobsLogJoryResource extends JoryResource
 
     protected function checkAuthorize(): void
     {
-        // TODO: Implement checkAuthorize() method.
-        Log::info('Test JobsLog checkAuthorize');
         $jobsLogController = new JobsLogController();
         $jobsLogController->authorize('view', JobsLog::class);
     }

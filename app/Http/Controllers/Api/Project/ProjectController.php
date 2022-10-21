@@ -28,6 +28,8 @@ class ProjectController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', Project::class);
+
         $projects = $requestQuery->get();
 
         $projects->load([
@@ -43,6 +45,8 @@ class ProjectController extends ApiController
 
     public function show(Project $project)
     {
+        $this->authorize('view', Project::class);
+
         $project->load([
             'projectStatus',
             'projectType',
@@ -364,6 +368,8 @@ class ProjectController extends ApiController
 
     public function peek()
     {
+        $this->authorize('view', Project::class);
+
         $projects = Project::orderBy('name')->orderBy('id')->get();
 
         $projects->load(['projectType']);
@@ -371,7 +377,10 @@ class ProjectController extends ApiController
         return ProjectPeek::collection($projects);
     }
 
-    public function getObligationNumbers(Project $project){
+    public function getObligationNumbers(Project $project)
+    {
+        $this->authorize('view', Project::class);
+
         $obligationNumbers = [];
 
         foreach ($project->participantsProject as $participation){
@@ -383,14 +392,20 @@ class ProjectController extends ApiController
 
     public function getRelatedEmails($id, $folder)
     {
+        $this->authorize('view', Project::class);
+
         return Email::where('project_id', $id)->where('folder', $folder)->get();
     }
 
     public function getActive(){
+        $this->authorize('view', Project::class);
+
         return Project::whereIn('project_status_id', [1,2])->pluck('id');
     }
 
     public function getChartData(Project $project){
+        $this->authorize('view', Project::class);
+
         //TODO fixing chart data
 //        $participantProjectStatuses = ParticipantProjectStatus::all();
 //
@@ -407,6 +422,8 @@ class ProjectController extends ApiController
     }
 
     public function getChartDataParticipations(Project $project){
+        $this->authorize('view', Project::class);
+
         //TODO fixing chart data
 //        $participantProjectStatuses = ParticipantProjectStatus::all();
 //
@@ -430,6 +447,8 @@ class ProjectController extends ApiController
     }
 
     public function getChartDataStatus(Project $project){
+        $this->authorize('view', Project::class);
+
         //TODO fixing chart data
 
 //        $contactStatuses = ContactStatus::collection();

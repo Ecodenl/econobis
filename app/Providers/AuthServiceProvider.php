@@ -32,6 +32,8 @@ use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakePolicy;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoicePolicy;
+use App\Eco\Jobs\JobsLog;
+use App\Eco\Jobs\JobsLogPolicy;
 use App\Eco\Ledger\Ledger;
 use App\Eco\Ledger\LedgerPolicy;
 use App\Eco\Mailbox\Mailbox;
@@ -90,6 +92,8 @@ use App\Eco\Task\TaskType;
 use App\Eco\Task\TaskTypePolicy;
 use App\Eco\Team\Team;
 use App\Eco\Team\TeamPolicy;
+use App\Eco\Twinfield\TwinfieldLog;
+use App\Eco\Twinfield\TwinfieldLogPolicy;
 use App\Eco\User\User;
 use App\Eco\User\UserPolicy;
 use App\Eco\VatCode\VatCode;
@@ -156,6 +160,8 @@ class AuthServiceProvider extends ServiceProvider
         PortalSettingsLayout::class => PortalSettingsLayoutPolicy::class,
         PortalSettingsDashboard::class => PortalSettingsDashboardPolicy::class,
         Cooperation::class => CooperationPolicy::class,
+        JobsLog::class => JobsLogPolicy::class,
+        TwinfieldLog::class => TwinfieldLogPolicy::class,
     ];
 
     /**

@@ -15,12 +15,16 @@ class Okt2022addNewRoles extends Migration
      */
     public function up()
     {
+        // reset cached roles and permissions
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
         $permissions = [
 //            'menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_processes', 'menu_documents', 'menu_financial', 'menu_workflow', 'menu_general_settings', 'menu_portal_settings',
 //            'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',
-//            'view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview_contact',
+//            'view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview',
             'view_contact_general', 'view_contact_address', 'view_contact_email', 'view_contact_phone', 'view_contact_quotation', 'view_contact_coach_quotation', 'view_contact_campaign', 'view_contact_occupation',
             'view_contact_other', 'view_contact_portal_user', 'view_contact_note', 'view_contact_conclusion',
+            'view_project', 'view_jobs_log', 'view_twinfield_log',
             'create_contact_address', 'create_contact_email', 'create_contact_phone', 'create_contact_occupation', 'create_contact_note',
             'update_contact_general', 'update_contact_address', 'update_contact_email', 'update_contact_phone', 'update_contact_occupation', 'update_contact_other', 'update_contact_portal_user', 'update_contact_note',
             'delete_contact_address', 'delete_contact_email', 'delete_contact_phone', 'delete_contact_occupation', 'delete_contact_portal_user', 'delete_contact_note'
@@ -67,26 +71,46 @@ class Okt2022addNewRoles extends Migration
 
         //make roles inzake menu permissions
 //        $menuRoles = [
-//            'Medewerker' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_processes', 'menu_documents', 'menu_general_settings',
-//                'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',],
-//            'Medewerker 2' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_processes', 'menu_documents', 'menu_general_settings',
-//                'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',],
-//            'Projectmedewerker' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_processes', 'menu_documents', 'menu_general_settings',
-//                'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures', ],
-//            'Financieel medewerker' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_processes', 'menu_documents', 'menu_financial', 'menu_workflow', 'menu_general_settings',
-//                'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',],
-//            'Financieel controller' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_processes', 'menu_documents', 'menu_financial', 'menu_workflow', 'menu_general_settings',
-//                'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',],
-//            'Participatie medewerker' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks','menu_agenda', 'menu_processes', 'menu_documents', 'menu_general_settings',
-//                'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',],
-//            'Energie adviseur' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_processes', 'menu_documents', 'menu_general_settings',
-//                'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',],
-//            'Marketing medewerker' => ['menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_processes', 'menu_documents', 'menu_general_settings',
-//                'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',],
-//            'Energiemanager' => ['menu_contacts', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks','menu_agenda','menu_documents',
-//                'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',],
-//            'Energiecoordinator' => ['menu_contacts', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_documents',
-//                'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',],
+//            'Medewerker' => [
+//                'menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_processes', 'menu_documents', 'menu_general_settings',
+//                'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',
+//                ],
+//            'Medewerker 2' => [
+//                'menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_processes', 'menu_documents', 'menu_general_settings',
+//                'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',
+//                ],
+//            'Projectmedewerker' => [
+//                'menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_processes', 'menu_documents', 'menu_general_settings',
+//                'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',
+//                ],
+//            'Financieel medewerker' => [
+//                'menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_processes', 'menu_documents', 'menu_financial', 'menu_workflow', 'menu_general_settings',
+//                'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',
+//                ],
+//            'Financieel controller' => [
+//                'menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_processes', 'menu_documents', 'menu_financial', 'menu_workflow', 'menu_general_settings',
+//                'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',
+//                ],
+//            'Participatie medewerker' => [
+//                'menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks','menu_agenda', 'menu_processes', 'menu_documents', 'menu_general_settings',
+//                'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',
+//                ],
+//            'Energie adviseur' => [
+//                'menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_processes', 'menu_documents', 'menu_general_settings',
+//                'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',
+//                ],
+//            'Marketing medewerker' => [
+//                'menu_contacts', 'menu_projects', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_processes', 'menu_documents', 'menu_general_settings',
+//                'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',
+//                ],
+//            'Energiemanager' => [
+//                'menu_contacts', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks','menu_agenda','menu_documents',
+//                'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',
+//                ],
+//            'Energiecoordinator' => [
+//                'menu_contacts', 'menu_energy_saving', 'menu_contact_groups', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_documents',
+//                'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',
+//                ],
 //        ];
 //        foreach($menuRoles as $menuRoleName => $permissions) {
 //            $role =  \Spatie\Permission\Models\Role::findByName($menuRoleName);
@@ -95,23 +119,51 @@ class Okt2022addNewRoles extends Migration
 //        }
 
         //make roles inzake nieuw view permissions
-//        $newViewRoles = [
-//            'Medewerker' => ['view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview_contact'],
-//            'Medewerker 2' => ['view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview_contact'],
-//            'Projectmedewerker' => ['view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview_contact'],
-//            'Financieel medewerker' => ['view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview_contact'],
-//            'Financieel controller' => ['view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview_contact'],
-//            'Participatie medewerker' => ['view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview_contact'],
-//            'Energie adviseur' => ['view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview_contact'],
-//            'Marketing medewerker' => ['view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview_contact'],
-//            'Energiemanager' => ['view_email', 'view_task', 'view_note', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group'],
-//            'Energiecoordinator' => ['view_email', 'view_task', 'view_note', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group'],
-//        ];
-//        foreach($newViewRoles as $newViewRoleName => $permissions) {
-//            $role =  \Spatie\Permission\Models\Role::findByName($newViewRoleName);
-//            $role->givePermissionTo($permissions);
-//
-//        }
+        $newViewRoles = [
+            'Medewerker' => [
+//                'view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview',
+                'view_project', 'view_jobs_log', 'view_twinfield_log',
+            ],
+            'Medewerker 2' => [
+//                'view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview',
+                'view_project', 'view_jobs_log', 'view_twinfield_log',
+            ],
+            'Projectmedewerker' => [
+//                'view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview',
+                'view_project', 'view_jobs_log', 'view_twinfield_log',
+            ],
+            'Financieel medewerker' => [
+//                'view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview',
+                'view_project', 'view_jobs_log', 'view_twinfield_log',
+            ],
+            'Financieel controller' => [
+//                'view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview',
+                'view_project', 'view_jobs_log', 'view_twinfield_log',
+            ],
+            'Participatie medewerker' => [
+//                'view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview',
+                'view_project', 'view_jobs_log', 'view_twinfield_log',
+            ],
+            'Energie adviseur' => [
+//                'view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview',
+                'view_project', 'view_jobs_log', 'view_twinfield_log',
+            ],
+            'Marketing medewerker' => [
+//                'view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview',
+                'view_project', 'view_jobs_log', 'view_twinfield_log',
+            ],
+//            'Energiemanager' => [
+//                'view_email', 'view_task', 'view_note', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group',
+//            ],
+//            'Energiecoordinator' => [
+//                'view_email', 'view_task', 'view_note', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group',
+//            ],
+        ];
+        foreach($newViewRoles as $newViewRoleName => $permissions) {
+            $role =  \Spatie\Permission\Models\Role::findByName($newViewRoleName);
+            $role->givePermissionTo($permissions);
+
+        }
 
         //make roles inzake menu permissions
 //        $newRolePermissions = [
@@ -131,7 +183,6 @@ class Okt2022addNewRoles extends Migration
                 'create_contact_address', 'create_contact_email', 'create_contact_phone', 'create_contact_occupation', 'create_contact_note',
                 'update_contact_general', 'update_contact_address', 'update_contact_email', 'update_contact_phone', 'update_contact_occupation', 'update_contact_other', 'update_contact_portal_user', 'update_contact_note',
                 'delete_contact_address', 'delete_contact_email', 'delete_contact_phone', 'delete_contact_occupation', 'delete_contact_portal_user', 'delete_contact_note'
-
             ],
             'Medewerker 2' => [
                 'view_contact_general', 'view_contact_address', 'view_contact_email', 'view_contact_phone', 'view_contact_quotation', 'view_contact_coach_quotation', 'view_contact_campaign', 'view_contact_occupation', 'view_contact_other', 'view_contact_portal_user', 'view_contact_note',

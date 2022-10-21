@@ -3,7 +3,9 @@
 namespace App\Http\JoryResources;
 
 use App\Eco\Twinfield\TwinfieldLog;
+use App\Http\Controllers\Api\TwinfieldLog\TwinfieldLogController;
 use App\Http\JoryResources\Base\JoryResource;
+use Illuminate\Support\Facades\Log;
 
 class TwinfieldLogJoryResource extends JoryResource
 {
@@ -11,7 +13,9 @@ class TwinfieldLogJoryResource extends JoryResource
 
     protected function checkAuthorize(): void
     {
-        // TODO: Implement checkAuthorize() method.
+        Log::info('Test TwinfieldLog checkAuthorize');
+        $jobsLogController = new TwinfieldLogController();
+        $jobsLogController->authorize('view', TwinfieldLog::class);
     }
 
     protected function configureForApp(): void

@@ -31,6 +31,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
             collectMandateSignatureDate,
             collectMandateFirstRunDate,
             collectMandateCollectionSchema,
+            isCoach,
         } = props.contactDetails;
 
         this.state = {
@@ -49,6 +50,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 didAgreeAvg: didAgreeAvg,
                 dateDidAgreeAvg: dateDidAgreeAvg ? moment(dateDidAgreeAvg).format('Y-MM-DD') : '',
                 isCollectMandate,
+                isCoach: isCoach,
                 collectMandateCode: collectMandateCode ? collectMandateCode : '',
                 collectMandateSignatureDate: collectMandateSignatureDate
                     ? moment(collectMandateSignatureDate).format('Y-MM-DD')
@@ -184,6 +186,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
             collectMandateSignatureDate,
             collectMandateFirstRunDate,
             collectMandateCollectionSchema,
+            isCoach,
         } = this.state.organisation;
 
         return (
@@ -317,6 +320,17 @@ class ContactDetailsFormOrganisationEdit extends Component {
                             />
                         )}
                     </div>
+
+                    {/* vooralsnog alleen bij persons, organisations kunnen al gekoppeld worden aan offerteverzoeken */}
+                    {/*<div className="row">*/}
+                    {/*    <InputToggle*/}
+                    {/*        label="Is coach"*/}
+                    {/*        divSize={'col-xs-12'}*/}
+                    {/*        name="isCoach"*/}
+                    {/*        value={isCoach}*/}
+                    {/*        onChangeAction={this.handleInputChange}*/}
+                    {/*    />*/}
+                    {/*</div>*/}
 
                     <div className="row">
                         <InputToggle

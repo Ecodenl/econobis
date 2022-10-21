@@ -7,7 +7,6 @@ use App\Eco\Country\Country;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Intake\Intake;
-use App\Eco\Measure\Measure;
 use App\Eco\ParticipantProject\ParticipantProject;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -70,11 +69,6 @@ class Address extends Model
     public function intakes()
     {
         return $this->hasMany(Intake::class);
-    }
-
-    public function measuresTaken()
-    {
-        return $this->belongsToMany(Measure::class, 'housing_file_measure_taken')->withPivot('measure_date');
     }
 
     public function country(){

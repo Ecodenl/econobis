@@ -16,8 +16,8 @@ const QuotationRequestsListHead = props => {
     return (
         <tr className="thead-title">
             <DataTableHeadTitleAndSort
-                sortColumn={'organisation'}
-                title={'Organisatie'}
+                sortColumn={'organisationOrCoach'}
+                title={'Organisatie/Coach'}
                 width={'10%'}
                 setSorts={setSorts}
             />

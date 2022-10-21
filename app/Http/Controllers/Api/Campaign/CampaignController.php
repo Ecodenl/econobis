@@ -52,6 +52,8 @@ class CampaignController extends ApiController
             'responses.contact.primaryAddress',
             'organisations',
             'organisations.contact.contactPerson.contact',
+            'coaches',
+            'coaches.primaryAddress',
             'createdBy',
             'ownedBy',
             'tasks',
@@ -194,6 +196,18 @@ class CampaignController extends ApiController
     {
         $this->authorize('manage', Campaign::class);
         $campaign->organisations()->detach($organisation);
+    }
+
+    public function attachCoach(Campaign $campaign, Contact $coach)
+    {
+        $this->authorize('manage', Campaign::class);
+        $campaign->coaches()->attach($coach);
+    }
+
+    public function detachCoach(Campaign $campaign, Contact $coach)
+    {
+        $this->authorize('manage', Campaign::class);
+        $campaign->coaches()->detach($coach);
     }
 
     public function peek()

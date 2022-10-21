@@ -15,6 +15,7 @@ import ContactDetailsCampaigns from './campaigns/ContactDetailsCampaigns';
 import ContactDetailsFormOccupations from './occupations/ContactDetailsFormOccupations';
 import moment from 'moment/moment';
 import ContactDetailsFormPortalUser from './portal-user/ContactDetailsFormPortalUser';
+import ContactDetailsCoachQuotations from './quotationsCoach/ContactDetailsCoachQuotations';
 moment.locale('nl');
 
 class ContactDetailsForm extends Component {
@@ -33,7 +34,7 @@ class ContactDetailsForm extends Component {
     }
 
     render() {
-        const { typeId } = this.props.contactDetails;
+        const { typeId, isCoach } = this.props.contactDetails;
         let loadingText = '';
         let loading = true;
 
@@ -55,6 +56,7 @@ class ContactDetailsForm extends Component {
                 <ContactDetailsFormAddress />
                 <ContactDetailsFormEmail />
                 <ContactDetailsFormPhone />
+                {isCoach ? <ContactDetailsCoachQuotations /> : null}
                 {typeId == 'organisation' && <ContactDetailsQuotations />}
                 {typeId == 'organisation' && <ContactDetailsCampaigns />}
                 <ContactDetailsFormOccupations />

@@ -45,7 +45,9 @@ class OpportunityController extends ApiController
     {
         $opportunity->load([
             'measureCategory',
-            'quotationRequests.organisation',
+            'quotationRequests.organisationOrCoach',
+//todo WM: opschonen
+//            'quotationRequests.organisation',
             'quotationRequests.createdBy',
             'quotationRequests.status',
             'status',

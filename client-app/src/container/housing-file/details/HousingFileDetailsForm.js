@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
 import HousingFileDetailsFormGeneral from './general/HousingFileDetailsFormGeneral';
-import HousingFileMeasuresTaken from './measures-taken/HousingFileMeasuresTaken';
+import HousingFileSpecifications from './housing-file-specifications/HousingFileSpecifications';
 import HousingFileDetailsFormConclusion from './conclusion/HousingFileDetailsFormConclusion';
 
 class HousingFileDetailsForm extends Component {
@@ -30,7 +30,7 @@ class HousingFileDetailsForm extends Component {
         ) : (
             <div>
                 <HousingFileDetailsFormGeneral />
-                <HousingFileMeasuresTaken />
+                <HousingFileSpecifications />
                 <HousingFileDetailsFormConclusion />
             </div>
         );

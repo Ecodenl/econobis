@@ -19,6 +19,7 @@ class MeasurePeek extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'measureCategoryId' => $this->measure_category_id,
+            'visible' => $this->visible,
         ];
     }
 }

@@ -7,7 +7,7 @@ import ViewText from '../../../../components/form/ViewText';
 
 const QuotationRequestDetailsFormGeneralView = props => {
     const {
-        organisation,
+        organisationOrCoach,
         dateRecorded,
         status,
         datePlannedToSendWfEmailStatus,
@@ -20,26 +20,28 @@ const QuotationRequestDetailsFormGeneralView = props => {
         <div onClick={props.switchToEdit}>
             <div className="row">
                 <ViewText
-                    label={'Organisatie'}
-                    value={organisation && organisation.name}
-                    link={organisation ? 'contact/' + organisation.contact.id : ''}
+                    label={'Organisatie/Coach'}
+                    value={organisationOrCoach && organisationOrCoach.fullName}
+                    link={organisationOrCoach ? 'contact/' + organisationOrCoach.id : ''}
                 />
                 <ViewText label={'Verzoek voor'} value={opportunity.intake && opportunity.intake.contact.fullName} />
             </div>
 
-            <div className="row">
-                <ViewText
-                    label={'Organisatie contactpersoon'}
-                    value={
-                        organisation.contact.contactPerson ? organisation.contact.contactPerson.contact.fullName : ''
-                    }
-                    link={
-                        organisation.contact.contactPerson
-                            ? 'contact/' + organisation.contact.contactPerson.contact.id
-                            : ''
-                    }
-                />
-            </div>
+            {organisationOrCoach.typeId === 'organisation' && (
+                <div className="row">
+                    <ViewText
+                        label={'Organisatie contactpersoon'}
+                        value={
+                            organisationOrCoach.contactPerson ? organisationOrCoach.contactPerson.contact.fullName : ''
+                        }
+                        link={
+                            organisationOrCoach.contactPerson
+                                ? 'contact/' + organisationOrCoach.contactPerson.contact.id
+                                : ''
+                        }
+                    />
+                </div>
+            )}
 
             <div className="row">
                 <ViewText label={'Adres voor'} value={opportunity.intake && opportunity.intake.fullAddress} />

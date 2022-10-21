@@ -2,8 +2,8 @@
 export default (measures, measureCategoryId) => {
     return measures.filter(measure => {
         const categoryMatch = measureCategoryId
-            ? Number(measure.measureCategoryId) === Number(measureCategoryId)
-            : measure.measureCategoryId;
+            ? measure.visible && Number(measure.measureCategoryId) === Number(measureCategoryId)
+            : false;
 
         return categoryMatch;
     });

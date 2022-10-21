@@ -56,16 +56,16 @@ export default {
         return axios.post(requestUrl);
     },
 
-    attachMeasureTaken: measureTaken => {
-        const requestUrl = `${URL_HOUSING_FILE}/measure-taken`;
+    addHousingFileSpecification: housingFileSpecification => {
+        const requestUrl = `${URL_HOUSING_FILE}/housing-file-specification`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, measureTaken);
+        return axios.post(requestUrl, housingFileSpecification);
     },
 
-    detachMeasureTaken: (addressId, measureId) => {
-        const requestUrl = `${URL_HOUSING_FILE}/${addressId}/${measureId}/detach`;
+    deleteSpecification: housingFileSpecificationId => {
+        const requestUrl = `${URL_HOUSING_FILE}/housing-file-specification/${housingFileSpecificationId}/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

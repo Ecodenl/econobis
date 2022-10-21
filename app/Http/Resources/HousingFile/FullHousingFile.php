@@ -49,6 +49,7 @@ class FullHousingFile extends JsonResource
                 'relatedNotes' => FullTask::collection($this->whenLoaded('notes')),
                 'documentCount' => $this->documents()->count(),
                 'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
+                'housingFileSpecifications' => FullHousingFileSpecification::collection($this->whenLoaded('housingFileSpecifications')),
             ];
     }
 }

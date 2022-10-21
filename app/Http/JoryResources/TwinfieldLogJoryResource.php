@@ -5,7 +5,6 @@ namespace App\Http\JoryResources;
 use App\Eco\Twinfield\TwinfieldLog;
 use App\Http\Controllers\Api\TwinfieldLog\TwinfieldLogController;
 use App\Http\JoryResources\Base\JoryResource;
-use Illuminate\Support\Facades\Log;
 
 class TwinfieldLogJoryResource extends JoryResource
 {

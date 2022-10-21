@@ -261,7 +261,7 @@ class ContactDetailsHarmonica extends Component {
                     />
                 ) : null}
 
-                {this.props.permissions.viewFinancialOverviewContact ? (
+                {this.props.permissions.viewFinancialOverview ? (
                     <FinancialOverviewContactHarmonica
                         toggleShowList={() => this.toggleShowList('financialOverviewContacts')}
                         showFinancialOverviewContactList={this.state.toggleShowList.financialOverviewContacts}

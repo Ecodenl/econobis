@@ -131,6 +131,13 @@ class TeamController extends ApiController
         $team->contactGroups()->detach($contactGroup->id);
     }
 
+    public function detachMailbox(Team $team, Mailbox $mailbox)
+    {
+        $this->authorize('create', Team::class);
+
+        $team->mailboxes()->detach($mailbox->id);
+    }
+
     public function destroy(Team $team)
     {
         $this->authorize('create', Team::class);

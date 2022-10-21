@@ -1,7 +1,5 @@
 import React from 'react';
-import moment from 'moment';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
 
 const TeamDetailsContactGroupsView = props => {
     const { id, name } = props.contactGroup;

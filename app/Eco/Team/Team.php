@@ -2,14 +2,9 @@
 
 namespace App\Eco\Team;
 
-use App\Eco\Campaign\Campaign;
-use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
-use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\Mailbox\Mailbox;
-use App\Eco\Measure\Measure;
-use App\Eco\Intake\Intake;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
@@ -33,6 +28,11 @@ class Team extends Model
           return $this->belongsToMany(ContactGroup::class,  'team_contact_group');
     }
 
+    public function mailboxes()
+    {
+        return $this->belongsToMany(Mailbox::class,  'team_mailbox');
+    }
+
     public function tasks()
     {
         return $this->hasMany(Task::class, 'responsible_team_id');
@@ -41,10 +41,5 @@ class Team extends Model
     public function emails()
     {
         return $this->hasMany(Email::class, 'responsible_team_id');
-    }
-
-    public function mailboxes()
-    {
-        return $this->belongsToMany(Mailbox::class,  'team_mailbox');
     }
 }

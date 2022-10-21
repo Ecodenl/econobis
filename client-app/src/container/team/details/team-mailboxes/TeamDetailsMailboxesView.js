@@ -1,7 +1,5 @@
 import React from 'react';
-import moment from 'moment';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
 
 const TeamDetailsMailboxesView = props => {
     const { id, name } = props.mailbox;

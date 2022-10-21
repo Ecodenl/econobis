@@ -37,7 +37,7 @@ class TeamDetailsMailboxesNew extends Component {
 
     componentDidMount() {
         MailboxAPI.peekMailboxes().then(payload => {
-            this.setState({ mailboxesToSelect: payload });
+            this.setState({ mailboxesToSelect: payload.data.data });
         });
     }
 

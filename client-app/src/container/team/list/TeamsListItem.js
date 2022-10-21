@@ -31,7 +31,7 @@ class TeamsListItem extends Component {
     }
 
     render() {
-        const { id, name, users, contactGroups = [] } = this.props;
+        const { id, name, users = [] } = this.props;
 
         return (
             <tr

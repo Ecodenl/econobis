@@ -2,8 +2,6 @@
 
 namespace App\Http\Resources\Mailbox;
 
-use App\Http\Resources\Contact\FullContact;
-use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class MailboxPeek extends JsonResource

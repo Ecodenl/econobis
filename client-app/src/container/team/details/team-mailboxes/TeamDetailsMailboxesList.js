@@ -15,7 +15,7 @@ const TeamDetailsMailboxesList = props => {
                     return <TeamDetailsMailboxesItem key={mailbox.id} mailbox={mailbox} />;
                 })
             ) : (
-                <div>Geen mailboxes bekend in het systeem.</div>
+                <div>Geen mailboxes gekoppeld.</div>
             )}
         </div>
     );

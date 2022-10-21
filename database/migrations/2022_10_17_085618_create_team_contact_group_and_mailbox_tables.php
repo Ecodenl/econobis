@@ -14,11 +14,11 @@ class CreateTeamContactGroupAndMailboxTables extends Migration
     public function up()
     {
         Schema::create('team_contact_group', function (Blueprint $table) {
-            $table->integer('group_id')->unsigned();
-            $table->foreign('group_id')->references('id')->on('contact_groups');
+            $table->integer('contact_group_id')->unsigned();
+            $table->foreign('contact_group_id')->references('id')->on('contact_groups');
             $table->integer('team_id')->unsigned();
             $table->foreign('team_id')->references('id')->on('teams');
-            $table->unique(['group_id','team_id']);
+            $table->unique(['contact_group_id','team_id']);
             $table->timestamps();
         });
         Schema::create('team_mailbox', function (Blueprint $table) {

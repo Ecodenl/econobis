@@ -8,6 +8,7 @@ use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Task\Task;
+use App\Eco\Team\Team;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -136,6 +137,10 @@ class ContactGroup extends Model
         return $this->hasMany(Email::class);
     }
 
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class, 'team_contact_group');
+    }
     public function getDynamicContactsAttribute()
     {
         $requestQuery = '';

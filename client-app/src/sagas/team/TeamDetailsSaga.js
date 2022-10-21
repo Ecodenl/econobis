@@ -22,6 +22,24 @@ export function* deleteTeamUserSaga({ teamId, userId }) {
     }
 }
 
+export function* deleteTeamContactGroupSaga({ teamId, contactGroupId }) {
+    try {
+        yield call(TeamDetailsAPI.deleteTeamContactGroup, { teamId, contactGroupId });
+        yield put({ type: 'DELETE_TEAM_CONTACT_GROUP_SUCCESS', contactGroupId });
+    } catch (error) {
+        yield put({ type: 'DELETE_TEAM_CONTACT_GROUP_ERROR', error });
+    }
+}
+
+export function* deleteTeamMailboxSaga({ teamId, mailboxId }) {
+    try {
+        yield call(TeamDetailsAPI.deleteTeamMailbox, { teamId, mailboxId });
+        yield put({ type: 'DELETE_TEAM_MAILBOX_SUCCESS', mailboxId });
+    } catch (error) {
+        yield put({ type: 'DELETE_TEAM_MAILBOX_ERROR', error });
+    }
+}
+
 // Update team details and switch to view callback
 export function* updateTeamDetailsSaga({ team, switchToView }) {
     try {
@@ -30,7 +48,7 @@ export function* updateTeamDetailsSaga({ team, switchToView }) {
 
         yield put({ type: 'UPDATE_TEAM_SUCCESS', teamDetails });
 
-        // Reload system data after updating user
+        // Reload system data after updating team details
         yield put({ type: 'FETCH_SYSTEM_DATA' });
         // Switch back to view callback fn
         yield switchToView();

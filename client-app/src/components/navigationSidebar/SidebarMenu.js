@@ -71,20 +71,24 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             Contacten
                         </Link>
                     </NavText>
-                    <Nav id="alle-organisaties">
-                        <NavText>
-                            <Link className="sidebar-link" to="contacten/type/organisation">
-                                Alle organisaties
-                            </Link>
-                        </NavText>
-                    </Nav>
-                    <Nav id="alle-personen">
-                        <NavText>
-                            <Link className="sidebar-link" to="contacten/type/person">
-                                Alle personen
-                            </Link>
-                        </NavText>
-                    </Nav>
+                    {permissions.menuOrganisations && (
+                        <Nav id="alle-organisaties">
+                            <NavText>
+                                <Link className="sidebar-link" to="contacten/type/organisation">
+                                    Alle organisaties
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.menuPersons && (
+                        <Nav id="alle-personen">
+                            <NavText>
+                                <Link className="sidebar-link" to="contacten/type/person">
+                                    Alle personen
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
                 </Nav>
             )}
 
@@ -129,41 +133,51 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         <SvgIcon size={20} icon={home} />
                     </NavIcon>
                     <NavText> Energiebesparing </NavText>
-                    <Nav id="home-files">
-                        <NavText>
-                            <Link className="sidebar-link" to="woningdossiers">
-                                Woningdossiers
-                            </Link>
-                        </NavText>
-                    </Nav>
-                    <Nav id="intakes">
-                        <NavText>
-                            <Link className="sidebar-link" to="intakes">
-                                Intakes
-                            </Link>
-                        </NavText>
-                    </Nav>
-                    <Nav id="opportunities">
-                        <NavText>
-                            <Link className="sidebar-link" to="kansen">
-                                Kansen
-                            </Link>
-                        </NavText>
-                    </Nav>
-                    <Nav id="quotation-requests">
-                        <NavText>
-                            <Link className="sidebar-link" to="offerteverzoeken">
-                                Offerteverzoeken
-                            </Link>
-                        </NavText>
-                    </Nav>
-                    <Nav id="measures">
-                        <NavText>
-                            <Link className="sidebar-link" to="maatregelen">
-                                Maatregelen
-                            </Link>
-                        </NavText>
-                    </Nav>
+                    {permissions.menuHousingFile && (
+                        <Nav id="home-files">
+                            <NavText>
+                                <Link className="sidebar-link" to="woningdossiers">
+                                    Woningdossiers
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.menuIntakes && (
+                        <Nav id="intakes">
+                            <NavText>
+                                <Link className="sidebar-link" to="intakes">
+                                    Intakes
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.menuOpportunities && (
+                        <Nav id="opportunities">
+                            <NavText>
+                                <Link className="sidebar-link" to="kansen">
+                                    Kansen
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.menuQuotationRequests && (
+                        <Nav id="quotation-requests">
+                            <NavText>
+                                <Link className="sidebar-link" to="offerteverzoeken">
+                                    Offerteverzoeken
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.menuMeasures && (
+                        <Nav id="measures">
+                            <NavText>
+                                <Link className="sidebar-link" to="maatregelen">
+                                    Maatregelen
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
                     <Nav id="marketing-sub">
                         <NavText>
                             <Link className="sidebar-link" to="campagnes">
@@ -330,7 +344,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                 </Nav>
             )}
 
-            {permissions.menuWorflow && permissions.manageFinancial && (
+            {permissions.menuWorkflow && permissions.manageFinancial && (
                 <Nav id="workflow">
                     <NavIcon>
                         <SvgIcon size={20} icon={forward} />

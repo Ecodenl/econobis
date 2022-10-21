@@ -27,3 +27,33 @@ export const deleteTeamUser = (teamId, userId) => {
         userId,
     };
 };
+
+export const newTeamContactGroup = teamContactGroup => {
+    return {
+        type: 'NEW_TEAM_CONTACT_GROUP',
+        teamContactGroup,
+    };
+};
+
+export const deleteTeamContactGroup = (teamId, contactGroupId) => {
+    return {
+        type: 'DELETE_TEAM_CONTACT_GROUP',
+        teamId,
+        contactGroupId,
+    };
+};
+
+export const newTeamMailbox = teamMailbox => {
+    return {
+        type: 'NEW_TEAM_MAILBOX',
+        teamMailbox,
+    };
+};
+
+export const deleteTeamMailbox = (teamId, mailboxId) => {
+    return {
+        type: 'DELETE_TEAM_MAILBOX',
+        teamId,
+        mailboxId,
+    };
+};

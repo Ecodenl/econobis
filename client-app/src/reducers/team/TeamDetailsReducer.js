@@ -25,6 +25,36 @@ export default function(state = [], action) {
                 ...state,
                 users: state.users.filter(user => user.id !== action.userId),
             };
+        case 'NEW_TEAM_MAILBOX':
+            return {
+                ...state,
+                mailboxes: [
+                    ...state.mailboxes,
+                    {
+                        ...action.teamMailbox,
+                    },
+                ],
+            };
+        case 'DELETE_TEAM_MAILBOX_SUCCESS':
+            return {
+                ...state,
+                mailboxes: state.mailboxes.filter(mailbox => mailbox.id !== action.mailboxId),
+            };
+        case 'NEW_TEAM_CONTACT_GROUP':
+            return {
+                ...state,
+                contactGroups: [
+                    ...state.contactGroups,
+                    {
+                        ...action.teamContactGroup,
+                    },
+                ],
+            };
+        case 'DELETE_TEAM_CONTACT_GROUP_SUCCESS':
+            return {
+                ...state,
+                contactGroups: state.contactGroups.filter(contactGroup => contactGroup.id !== action.contactGroupId),
+            };
         default:
             return state;
     }

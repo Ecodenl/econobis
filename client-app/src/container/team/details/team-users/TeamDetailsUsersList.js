@@ -15,7 +15,7 @@ const TeamDetailsUsersList = props => {
                     return <TeamDetailsUsersItem key={user.id} user={user} />;
                 })
             ) : (
-                <div>Geen gebruikers bekend.</div>
+                <div>Geen gebruikers gekoppeld.</div>
             )}
         </div>
     );

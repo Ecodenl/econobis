@@ -42,4 +42,36 @@ export default {
 
         return axios.post(requestUrl);
     },
+
+    newTeamContactGroup: ({ teamId, contactGroupId }) => {
+        const requestUrl = `${URL_TEAM}/${teamId}/${contactGroupId}/attach-contact-group`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl);
+    },
+
+    deleteTeamContactGroup: ({ teamId, contactGroupId }) => {
+        const requestUrl = `${URL_TEAM}/${teamId}/${contactGroupId}/detach-contact-group`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl);
+    },
+
+    newTeamMailbox: ({ teamId, mailboxId }) => {
+        const requestUrl = `${URL_TEAM}/${teamId}/${mailboxId}/attach-mailbox`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl);
+    },
+
+    deleteTeamMailbox: ({ teamId, mailboxId }) => {
+        const requestUrl = `${URL_TEAM}/${teamId}/${mailboxId}/detach-mailbox`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl);
+    },
 };

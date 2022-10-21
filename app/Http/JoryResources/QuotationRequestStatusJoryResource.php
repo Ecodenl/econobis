@@ -10,6 +10,11 @@ class QuotationRequestStatusJoryResource extends JoryResource
 {
     protected $modelClass = QuotationRequestStatus::class;
 
+    protected function checkAuthorize(): void
+    {
+        // TODO: Implement checkAuthorize() method.
+    }
+
     protected function configureForApp(): void
     {
         $this->field('id')->filterable()->sortable();

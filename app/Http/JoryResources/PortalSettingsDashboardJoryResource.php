@@ -9,6 +9,11 @@ class PortalSettingsDashboardJoryResource extends JoryResource
 {
     protected $modelClass = PortalSettingsDashboard::class;
 
+    protected function checkAuthorize(): void
+    {
+        // TODO: Implement checkAuthorize() method.
+    }
+
     protected function configureForApp(): void
     {
         // Fields

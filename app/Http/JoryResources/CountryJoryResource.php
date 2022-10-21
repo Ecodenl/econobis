@@ -9,6 +9,11 @@ class CountryJoryResource extends JoryResource
 {
     protected $modelClass = Country::class;
 
+    protected function checkAuthorize(): void
+    {
+        // TODO: Implement checkAuthorize() method.
+    }
+
     protected function configureForApp(): void
     {
     }

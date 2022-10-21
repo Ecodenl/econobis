@@ -10,6 +10,11 @@ class ParticipantMutationJoryResource extends JoryResource
 {
     protected $modelClass = ParticipantMutation::class;
 
+    protected function checkAuthorize(): void
+    {
+        // TODO: Implement checkAuthorize() method.
+    }
+
     /**
      * Configure the JoryResource.
      *

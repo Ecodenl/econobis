@@ -9,6 +9,12 @@ class LedgerJoryResource extends JoryResource
 {
     protected $modelClass = Ledger::class;
 
+
+    protected function checkAuthorize(): void
+    {
+        // TODO: Implement checkAuthorize() method.
+    }
+
     protected function configureForApp(): void
     {
         // Fields

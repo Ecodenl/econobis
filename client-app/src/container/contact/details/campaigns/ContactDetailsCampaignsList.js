@@ -26,7 +26,7 @@ const ContactDetailsCampaignsList = props => {
 
 const mapStateToProps = state => {
     return {
-        campaigns: state.contactDetails.organisation.campaigns,
+        campaigns: state.contactDetails.organisantionOrCoachCampaigns,
     };
 };
 export default connect(mapStateToProps)(ContactDetailsCampaignsList);

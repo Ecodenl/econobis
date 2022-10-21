@@ -13,7 +13,6 @@ class TwinfieldLogJoryResource extends JoryResource
 
     protected function checkAuthorize(): void
     {
-        Log::info('Test TwinfieldLog checkAuthorize');
         $jobsLogController = new TwinfieldLogController();
         $jobsLogController->authorize('view', TwinfieldLog::class);
     }

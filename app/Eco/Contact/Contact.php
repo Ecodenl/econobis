@@ -51,6 +51,7 @@ class Contact extends Model
 
     protected $casts = [
         'liable' => 'boolean',
+        'is_coach' => 'boolean',
     ];
 
     protected $dates = [

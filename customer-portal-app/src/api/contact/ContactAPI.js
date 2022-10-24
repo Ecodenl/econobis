@@ -206,8 +206,4 @@ export default {
 
         return axiosInstance.get(requestUrl);
     },
-
-    fetchQuotationRequests: function(contactId) {
-        return axiosInstance.get('contact/' + contactId + '/quotation-requests');
-    }
 };

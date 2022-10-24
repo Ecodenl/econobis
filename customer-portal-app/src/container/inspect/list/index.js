@@ -5,14 +5,16 @@ import Col from 'react-bootstrap/Col';
 import Table from 'react-bootstrap/Table';
 import LoadingView from '../../../components/general/LoadingView';
 import {PortalUserConsumer} from '../../../context/PortalUserContext';
-import ContactAPI from "../../../api/contact/ContactAPI";
+import moment from "moment";
+import {Link} from "react-router-dom";
+import QuotationRequestAPI from "../../../api/quotation-request/QuotationRequestAPI";
 
-function ProjectList(props) {
+function Inspectlist(props) {
     const [quotationRequestsArray, setQuotationRequestsArray] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        ContactAPI.fetchQuotationRequests(props.user.id).then((response) => {
+        QuotationRequestAPI.fetchByContactId(props.user.id).then((response) => {
             setQuotationRequestsArray(response.data);
 
             setIsLoading(false);
@@ -47,20 +49,26 @@ function ProjectList(props) {
                                 <th>Datum offerte</th>
                                 <th>Akkoord projectleider</th>
                                 <th>Akkoord bewoner</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
                             {quotationRequestsArray.map(quotationRequest => (
-                                <tr key={quotationRequest.id} >
+                                <tr key={quotationRequest.id}>
                                     <td>{ quotationRequest.opportunity.intake.contact.fullName }</td>
                                     <td>{ quotationRequest.opportunity.intake.address.streetPostalCodeCity }</td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>{ quotationRequest.datePlanned ? moment(quotationRequest.datePlanned).format('L') : '' }</td>
+                                    <td>{ quotationRequest.dateRecorded ? moment(quotationRequest.dateRecorded).format('L') : '' }</td>
                                     <td>{ quotationRequest.opportunity.status.name }</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>{ quotationRequest.dateApprovedExternal ? moment(quotationRequest.dateApprovedExternal).format('L') : '' }</td>
+                                    <td>{ quotationRequest.dateReleased ? moment(quotationRequest.dateReleased).format('L') : '' }</td>
+                                    <td>{ quotationRequest.approvedProjectManager ? 'Ja' : 'Nee' }</td>
+                                    <td>{ quotationRequest.approvedClient ? 'Ja' : 'Nee' }</td>
+                                    <td>
+                                        <Link to={`/schouwen/${quotationRequest.id}`}>
+                                            Openen
+                                        </Link>
+                                    </td>
                                 </tr>
                             ))}
                             </tbody>
@@ -72,10 +80,10 @@ function ProjectList(props) {
     );
 }
 
-export default function ProjectListWithContext(props) {
+export default function InspectlistWithContext(props) {
     return (
         <PortalUserConsumer>
-            {({user}) => <ProjectList {...props} user={user}/>}
+            {({user}) => <Inspectlist {...props} user={user}/>}
         </PortalUserConsumer>
     );
 }

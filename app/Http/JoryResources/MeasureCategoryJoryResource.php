@@ -4,6 +4,7 @@ namespace App\Http\JoryResources;
 
 
 use App\Eco\Measure\MeasureCategory;
+use App\Http\Controllers\Api\Measure\MeasureCategoryController;
 use App\Http\JoryResources\Base\JoryResource;
 
 class MeasureCategoryJoryResource extends JoryResource
@@ -12,7 +13,8 @@ class MeasureCategoryJoryResource extends JoryResource
 
     protected function checkAuthorize(): void
     {
-        // TODO: Implement checkAuthorize() method.
+        $measureCategoryController = new MeasureCategoryController();
+        $measureCategoryController->authorize('view', MeasureCategory::class);
     }
 
     protected function configureForApp(): void

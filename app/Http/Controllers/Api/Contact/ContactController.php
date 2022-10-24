@@ -129,7 +129,7 @@ class ContactController extends Controller
     {
         $teamContactIds = Auth::user()->getTeamContactIds();
         if ($teamContactIds){
-            $contacts = Contact::select('id', 'full_name', 'number')->whereIn('id', $teamContactIds)->orderBy('full_name')->get();
+            $contacts = Contact::select('id', 'full_name', 'number')->whereIn('contacts.id', $teamContactIds)->orderBy('full_name')->get();
         }else{
             $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->get();
         }
@@ -146,9 +146,10 @@ class ContactController extends Controller
 
     public function search(Request $request)
     {
+        Log::info('hallo?');
         $teamContactIds = Auth::user()->getTeamContactIds();
         if ($teamContactIds){
-            $contacts = Contact::select('id', 'full_name', 'number')->with('addresses')->whereIn('id', $teamContactIds)->orderBy('full_name');
+            $contacts = Contact::select('id', 'full_name', 'number')->with('addresses')->whereIn('contacts.id', $teamContactIds)->orderBy('full_name');
         }else{
             $contacts = Contact::select('id', 'full_name', 'number')->with('addresses')->orderBy('full_name');
         }
@@ -178,7 +179,7 @@ class ContactController extends Controller
     {
         $teamContactIds = Auth::user()->getTeamContactIds();
         if ($teamContactIds){
-            $contacts = Contact::select('id', 'full_name', 'number')->with('addresses')->whereIn('id', $teamContactIds)->orderBy('full_name')->get();
+            $contacts = Contact::select('id', 'full_name', 'number')->with('addresses')->whereIn('contacts.id', $teamContactIds)->orderBy('full_name')->get();
         }else{
             $contacts = Contact::select('id', 'full_name', 'number')->with('addresses')->orderBy('full_name')->get();
         }

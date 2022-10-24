@@ -147,7 +147,6 @@ class ContactController extends Controller
 
     public function search(Request $request)
     {
-        Log::info('hallo?');
         $teamContactIds = Auth::user()->getTeamContactIds();
         if ($teamContactIds){
             $contacts = Contact::select('id', 'full_name', 'number')->with('addresses')->whereIn('contacts.id', $teamContactIds)->orderBy('full_name');

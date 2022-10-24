@@ -697,4 +697,9 @@ class Contact extends Model
             });
         });
     }
+
+    public function newEloquentBuilder($query)
+    {
+        return new ContactBuilder($query);
+    }
 }

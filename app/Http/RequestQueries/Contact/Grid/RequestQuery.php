@@ -8,13 +8,12 @@
 
 namespace App\Http\RequestQueries\Contact\Grid;
 
-
 use App\Eco\Contact\Contact;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
 {
-
     public function __construct(Request $request,
                                 Filter $filter,
                                 Sort $sort,
@@ -26,7 +25,9 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
 
     protected function baseQuery()
     {
-        return Contact::query()
-            ->select('contacts.*');
+            return Contact::query()
+                ->whereTeamContactIds(Auth::user())
+                ->select('contacts.*');
     }
+
 }

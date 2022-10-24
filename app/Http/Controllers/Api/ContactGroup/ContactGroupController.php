@@ -36,6 +36,8 @@ class ContactGroupController extends Controller
 
     public function grid(RequestQuery $query)
     {
+        $this->authorize('view', ContactGroup::class);
+
         $contactGroups = $query->get();
         $cooperation = Cooperation::first();
         $useLaposta = $cooperation ? $cooperation->use_laposta : false;

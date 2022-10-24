@@ -27,12 +27,16 @@ class QuotationRequestController
             'dateRecorded' => ['nullable', 'date'],
             'dateApprovedExternal' => ['nullable', 'date'],
             'dateReleased' => ['nullable', 'date'],
+            'approvedProjectManager' => ['boolean'],
+            'approvedClient' => ['boolean'],
         ]);
 
         $quotationRequest->date_planned = $request->input('datePlanned');
         $quotationRequest->date_recorded = $request->input('dateRecorded');
         $quotationRequest->date_approved_external = $request->input('dateApprovedExternal');
         $quotationRequest->date_released = $request->input('dateReleased');
+        $quotationRequest->approved_project_manager = $request->input('approvedProjectManager');
+        $quotationRequest->approved_client = $request->input('approvedClient');
         $quotationRequest->save();
     }
 

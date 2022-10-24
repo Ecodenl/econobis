@@ -19,14 +19,14 @@ function InspectDetails({match, history}) {
     const validationSchema = Yup.object().shape({});
 
     const handleSubmit = (values, actions) => {
-        actions.setSubmitting(true);
-
         QuotationRequestAPI.update({
             id: match.params.id,
             dateRecorded: values.dateRecorded,
             datePlanned: values.datePlanned,
             dateApprovedExternal: values.dateApprovedExternal,
             dateReleased: values.dateReleased,
+            approvedProjectManager: values.approvedProjectManager,
+            approvedClient: values.approvedClient,
         }).then((response) => {
             history.push('/schouwen');
         });
@@ -203,6 +203,55 @@ function InspectDetails({match, history}) {
                                                         />
                                                     </Col>
                                                 </Row>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col xs={12} md={12}>
+                                                <Field
+                                                    name="approvedProjectManager"
+                                                    render={({field}) => (
+                                                        <label className="w-checkbox checkbox-fld">
+                                                            <input
+                                                                type="checkbox"
+                                                                {...field}
+                                                                id="approved_project_manager"
+                                                                checked={values.approvedProjectManager}
+                                                                className="w-checkbox-input checkbox"
+                                                            />
+                                                            <span
+                                                                htmlFor="approved_project_manager"
+                                                                className="checkbox-label w-form-label"
+                                                            >
+                                                        Akkoord projectleider
+                                                    </span>
+                                                        </label>
+                                                    )}
+                                                />
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col xs={12} md={12}>
+                                                <Field
+                                                    name="approvedClient"
+                                                    render={({field}) => (
+                                                        <label className="w-checkbox checkbox-fld">
+                                                            <input
+                                                                type="checkbox"
+                                                                {...field}
+                                                                id="approved_client"
+                                                                checked={values.approvedClient}
+                                                                className="w-checkbox-input checkbox"
+                                                                onChange={() => setFieldValue('approvedClient', !values.approvedClient)}
+                                                            />
+                                                            <span
+                                                                htmlFor="approved_client"
+                                                                className="checkbox-label w-form-label"
+                                                            >
+                                                        Akkoord bewoner
+                                                    </span>
+                                                        </label>
+                                                    )}
+                                                />
                                             </Col>
                                         </Row>
                                         <Row>

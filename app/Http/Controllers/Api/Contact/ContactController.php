@@ -23,7 +23,7 @@ class ContactController extends Controller
 {
     public function show(Contact $contact, Request $request)
     {
-        $this->authorize('view', Contact::class);
+        $this->authorize('view', $contact);
         $this->checkContactTeamAutorized($contact);
 
         $contact->load(['addresses.addressEnergySuppliers.energySupplier', 'addresses.addressEnergySuppliers.energySupplyType', 'addresses.addressEnergySuppliers.energySupplyStatus', 'addresses.primaryAddressEnergySupplierElectricity', 'addresses.primaryAddressEnergySupplierElectricity.energySupplier', 'addresses.primaryAddressEnergySupplierGas', 'addresses.primaryAddressEnergySupplierGas.energySupplier', 'addresses.country', 'emailAddresses', 'phoneNumbers', 'createdBy', 'updatedBy', 'owner', 'portalUser', 'tasks', 'notes', 'financialOverviewContactsSend', 'documents', 'opportunities', 'participations', 'orders', 'invoices']);

@@ -19,21 +19,25 @@ class FinancialApp extends Component {
     }
 
     componentDidMount() {
-        this.props.fetchAdministrationDetails(this.props.params.id);
-        this.fetchTotalsInfoAdministration(this.props.params.id);
+        if (this.props.meDetails.permissions.manageFinancial) {
+            this.props.fetchAdministrationDetails(this.props.params.id);
+            this.fetchTotalsInfoAdministration(this.props.params.id);
+        }
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.params.id !== prevProps.params.id) {
+        if (this.props.meDetails.permissions.manageFinancial && this.props.params.id !== prevProps.params.id) {
             this.props.fetchAdministrationDetails(this.props.params.id);
             this.fetchTotalsInfoAdministration(this.props.params.id);
         }
     }
 
     fetchTotalsInfoAdministration = administrationId => {
-        AdministrationDetailsAPI.fetchTotalsInfoAdministration(administrationId).then(payload => {
-            this.setState({ totalsInfoAdministration: payload });
-        });
+        if (this.props.meDetails.permissions.manageFinancial) {
+            AdministrationDetailsAPI.fetchTotalsInfoAdministration(administrationId).then(payload => {
+                this.setState({ totalsInfoAdministration: payload });
+            });
+        }
     };
 
     render() {

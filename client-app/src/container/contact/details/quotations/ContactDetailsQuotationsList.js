@@ -14,8 +14,8 @@ const ContactDetailsQuotationsList = props => {
                 <div className="col-sm-2">Offerte uitgebracht</div>
                 <div className="col-sm-2">Contact</div>
             </div>
-            {props.organisationQuotationRequests.length > 0 ? (
-                props.organisationQuotationRequests.map(quotation => {
+            {props.quotationRequests.length > 0 ? (
+                props.quotationRequests.map(quotation => {
                     return <ContactDetailsQuotationItem key={quotation.id} quotation={quotation} />;
                 })
             ) : (
@@ -27,7 +27,7 @@ const ContactDetailsQuotationsList = props => {
 
 const mapStateToProps = state => {
     return {
-        organisationQuotationRequests: state.contactDetails.organisationQuotationRequests,
+        quotationRequests: state.contactDetails.quotationRequests,
     };
 };
 export default connect(mapStateToProps)(ContactDetailsQuotationsList);

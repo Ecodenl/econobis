@@ -29,10 +29,10 @@ class ContactController extends Controller
         $contact->contactNotes->load(['createdBy', 'updatedBy']);
         $contact->occupations->load(['occupation', 'primaryContact', 'contact']);
         $contact->primaryOccupations->load(['occupation', 'primaryContact', 'contact']);
+        $contact->load(['quotationRequests.opportunity.measureCategory', 'quotationRequests.opportunity.status']);
 
-        if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisationQuotationRequests.opportunity.measureCategory', 'organisationQuotationRequests.opportunity.status', 'organisation.campaigns', 'contactPerson.contact']);
+        if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisation.campaigns', 'contactPerson.contact']);
         if($contact->isPerson()) $contact->load(['person', 'person.title', 'person.organisation', 'person.type']);
-        if($contact->isCoach()) $contact->load(['coachQuotationRequests.opportunity.measureCategory', 'coachQuotationRequests.opportunity.status']);
 
         $contact->relatedEmailsInbox = $this->getRelatedEmails($contact, $contact->id, 'inbox');
         $contact->relatedEmailsSent = $this->getRelatedEmails($contact, $contact->id, 'sent');

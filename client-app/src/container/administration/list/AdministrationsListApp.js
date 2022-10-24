@@ -6,6 +6,7 @@ import AdministrationsList from './AdministrationsList';
 import AdministrationsListToolbar from './AdministrationsListToolbar';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+import ErrorUnauthorized from '../../global/ErrorUnauthorized';
 
 class AdministrationsListApp extends Component {
     constructor(props) {
@@ -13,7 +14,9 @@ class AdministrationsListApp extends Component {
     }
 
     componentDidMount() {
-        this.props.fetchAdministrations();
+        if (this.props.meDetails.permissions.manageFinancial) {
+            this.props.fetchAdministrations();
+        }
     }
 
     componentWillUnmount() {
@@ -26,6 +29,12 @@ class AdministrationsListApp extends Component {
     };
 
     render() {
+        const { permissions = {} } = this.props.meDetails;
+
+        if (!permissions.manageFinancial) {
+            return <ErrorUnauthorized />;
+        }
+
         return (
             <Panel>
                 <PanelBody>
@@ -47,6 +56,7 @@ class AdministrationsListApp extends Component {
 const mapStateToProps = state => {
     return {
         administrations: state.administrations,
+        meDetails: state.meDetails,
     };
 };
 

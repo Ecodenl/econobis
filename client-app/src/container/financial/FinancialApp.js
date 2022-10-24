@@ -8,6 +8,7 @@ import Panel from '../../components/panel/Panel';
 import PanelBody from '../../components/panel/PanelBody';
 import { fetchAdministrationDetails } from '../../actions/administration/AdministrationDetailsActions';
 import AdministrationDetailsAPI from '../../api/administration/AdministrationDetailsAPI';
+import ErrorUnauthorized from '../global/ErrorUnauthorized';
 
 class FinancialApp extends Component {
     constructor(props) {
@@ -36,6 +37,12 @@ class FinancialApp extends Component {
     };
 
     render() {
+        const { permissions = {} } = this.props.meDetails;
+
+        if (!permissions.manageFinancial) {
+            return <ErrorUnauthorized />;
+        }
+
         return (
             <div className="row">
                 <div className="col-md-3">
@@ -75,10 +82,16 @@ class FinancialApp extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        meDetails: state.meDetails,
+    };
+};
+
 const mapDispatchToProps = dispatch => ({
     fetchAdministrationDetails: id => {
         dispatch(fetchAdministrationDetails(id));
     },
 });
 
-export default connect(null, mapDispatchToProps)(FinancialApp);
+export default connect(mapStateToProps, mapDispatchToProps)(FinancialApp);

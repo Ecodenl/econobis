@@ -327,7 +327,7 @@ class ContactGroupController extends Controller
     }
 
     private function makeStatic(ContactGroup $contactGroup){
-        $dynamicContacts = $contactGroup->dynamic_contacts;
+        $dynamicContacts = $contactGroup->getDynamicContacts();
 
         foreach ($contactGroup->filters as $filter){
             $filter->delete();
@@ -449,10 +449,10 @@ class ContactGroupController extends Controller
                 $contactGroup->simulated_group_id = $contactGroupNew->id;
                 $contactGroup->save();
                 if($contactGroup->composed_of === 'contacts'){
-                    $contactGroupNew->contacts()->sync($contactGroup->dynamic_contacts->get()->pluck("id"));
+                    $contactGroupNew->contacts()->sync($contactGroup->getDynamicContacts()->get()->pluck("id"));
                 }
                 else if($contactGroup->composed_of === 'participants'){
-                    $contactGroupNew->contacts()->sync($contactGroup->dynamic_contacts->get()->pluck("contact_id"));
+                    $contactGroupNew->contacts()->sync($contactGroup->getDynamicContacts()->get()->pluck("contact_id"));
                 }
             //Van composed eerst een static groep maken
             } else if($contactGroup->type_id === 'composed' ){

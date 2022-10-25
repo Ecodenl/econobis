@@ -101,7 +101,7 @@ function InspectDetails({match, history}) {
                                                                 <InputText
                                                                     name="datePlanned"
                                                                     field={field}
-                                                                    type="date"
+                                                                    type="datetime-local"
                                                                     errors={errors}
                                                                     touched={touched}
                                                                     onChangeAction={setFieldValue}

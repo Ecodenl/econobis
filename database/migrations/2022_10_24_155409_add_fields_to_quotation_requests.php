@@ -14,7 +14,7 @@ class AddFieldsToQuotationRequests extends Migration
     public function up()
     {
         Schema::table('quotation_requests', function (Blueprint $table) {
-            $table->date('date_planned')->nullable()->default(null);
+            $table->dateTime('date_planned')->nullable()->default(null);
             $table->date('date_approved_external')->nullable()->default(null);
             $table->boolean('approved_project_manager')->default(false);
             $table->boolean('approved_client')->default(false);

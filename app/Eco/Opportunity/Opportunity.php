@@ -96,4 +96,9 @@ class Opportunity extends Model
     {
         return implode('-', $this->measures->pluck('name' )->toArray() );
     }
+
+    public function newEloquentBuilder($query)
+    {
+        return new OpportunityBuilder($query);
+    }
 }

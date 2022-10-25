@@ -65,4 +65,9 @@ class QuotationRequest extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function newEloquentBuilder($query)
+    {
+        return new QuotationRequestBuilder($query);
+    }
 }

@@ -9,9 +9,9 @@
 namespace App\Http\RequestQueries\QuotationRequest\Grid;
 
 
-use App\Eco\HousingFile\HousingFile;
 use App\Eco\QuotationRequest\QuotationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
 {
@@ -27,6 +27,7 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     protected function baseQuery()
     {
         return QuotationRequest::query()
+            ->whereTeamContactIds(Auth::user())
             ->select('quotation_requests.*');
     }
 }

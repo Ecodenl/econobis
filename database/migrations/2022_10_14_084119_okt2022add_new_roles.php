@@ -104,11 +104,11 @@ class Okt2022addNewRoles extends Migration
                 'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',
                 ],
             'Energiemanager' => [
-                'menu_contacts', 'menu_energy_saving', 'menu_email', 'menu_marketing', 'menu_tasks','menu_agenda','menu_documents',
+                'menu_contacts', 'menu_energy_saving', 'menu_email', 'menu_tasks','menu_agenda','menu_documents',
                 'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',
                 ],
             'Energiecoordinator' => [
-                'menu_contacts', 'menu_energy_saving', 'menu_email', 'menu_marketing', 'menu_tasks', 'menu_agenda', 'menu_documents',
+                'menu_contacts', 'menu_energy_saving', 'menu_email', 'menu_tasks', 'menu_agenda', 'menu_documents',
                 'menu_organisations', 'menu_persons', 'menu_housing_files', 'menu_intakes', 'menu_opportunities', 'menu_quotation_requests', 'menu_measures',
                 ],
         ];
@@ -167,8 +167,8 @@ class Okt2022addNewRoles extends Migration
 
         //make roles inzake menu permissions
         $newRolePermissions = [
-            'Energiemanager' => ['create_person', 'view_person', 'update_person', 'create_organisation', 'view_organisation', 'update_organisation', 'manage_opportunity', 'manage_task', 'manage_intake', 'manage_marketing', 'create_document', 'view_document', 'manage_housing_file', 'manage_quotation_request'],
-            'Energiecoordinator' => ['view_person', 'view_organisation', 'manage_opportunity', 'manage_task', 'manage_intake', 'manage_marketing', 'create_document', 'view_document', 'manage_housing_file', 'manage_quotation_request'],
+            'Energiemanager' => ['create_person', 'view_person', 'update_person', 'create_organisation', 'view_organisation', 'update_organisation', 'manage_opportunity', 'manage_task', 'manage_intake', 'create_document', 'view_document', 'manage_housing_file', 'manage_quotation_request'],
+            'Energiecoordinator' => ['view_person', 'view_organisation', 'manage_opportunity', 'manage_task', 'manage_intake', 'create_document', 'view_document', 'manage_housing_file', 'manage_quotation_request'],
         ];
         foreach($newRolePermissions as $newRolePermissionRoleName => $permissions) {
             $role =  \Spatie\Permission\Models\Role::findByName($newRolePermissionRoleName);

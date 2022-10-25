@@ -49,8 +49,7 @@ class QuotationRequestController
         $quotationRequest->save();
 
         if($sendMail){
-            \Log::info('Sending mail'); // Todo
-//            $this->sendMail($quotationRequest);
+            $this->sendInspectionPlannedMail($quotationRequest);
         }
     }
 
@@ -82,10 +81,10 @@ class QuotationRequestController
         ];
     }
 
-    private function sendMail(QuotationRequest $quotationRequest)
+    private function sendInspectionPlannedMail(QuotationRequest $quotationRequest)
     {
         $cooperation = Cooperation::first();
-        $emailTemplate = EmailTemplate::find($cooperation->inspectionPlannedEmailTemplate);
+        $emailTemplate = $cooperation->inspectionPlannedEmailTemplate;
 
         if(!$emailTemplate) {
             return;

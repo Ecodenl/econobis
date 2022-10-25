@@ -14,7 +14,7 @@ function Inspectlist(props) {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        QuotationRequestAPI.fetchByContactId(props.user.id).then((response) => {
+        QuotationRequestAPI.fetchAll(props.user.id).then((response) => {
             setQuotationRequestsArray(response.data);
 
             setIsLoading(false);

@@ -1,8 +1,8 @@
 import axiosInstance from '../default-setup/AxiosInstance';
 
 export default {
-    fetchByContactId: function(contactId) {
-        return axiosInstance.get('contact/' + contactId + '/quotation-request');
+    fetchAll: function() {
+        return axiosInstance.get('me/quotation-request');
     },
 
     fetchById: function(id) {

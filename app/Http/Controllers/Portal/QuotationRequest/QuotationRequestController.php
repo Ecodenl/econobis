@@ -2,32 +2,45 @@
 
 namespace App\Http\Controllers\Portal\QuotationRequest;
 
-use App\Eco\Contact\Contact;
 use App\Eco\Cooperation\Cooperation;
-use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class QuotationRequestController
 {
-    public function getByContact(Contact $contact)
+    public function index()
     {
-        return response()->json($contact->quotationRequests->map(function(QuotationRequest $quotationRequest){
+        $portalUser = Auth::user();
+
+        return response()->json($portalUser->contact->quotationRequests->map(function(QuotationRequest $quotationRequest){
             return $this->getJson($quotationRequest);
         }));
     }
 
     public function view(QuotationRequest $quotationRequest)
     {
+        $portalUser = Auth::user();
+
+        if(!$portalUser->contact->quotationRequests->contains($quotationRequest)){
+            abort(403, 'Geen toegang tot deze offerteaanvraag.');
+        }
+
         return response()->json($this->getJson($quotationRequest));
     }
 
     public function update(Request $request, QuotationRequest $quotationRequest)
     {
+        $portalUser = Auth::user();
+
+        if(!$portalUser->contact->quotationRequests->contains($quotationRequest)){
+            abort(403, 'Geen toegang tot deze offerteaanvraag.');
+        }
+
         $request->validate([
             'datePlanned' => ['nullable', 'date'],
             'dateRecorded' => ['nullable', 'date'],

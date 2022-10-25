@@ -178,13 +178,15 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </NavText>
                         </Nav>
                     )}
-                    <Nav id="marketing-sub">
-                        <NavText>
-                            <Link className="sidebar-link" to="campagnes">
-                                Marketing
-                            </Link>
-                        </NavText>
-                    </Nav>
+                    {permissions.menuMarketing && (
+                        <Nav id="marketing-sub">
+                            <NavText>
+                                <Link className="sidebar-link" to="campagnes">
+                                    Marketing
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
                 </Nav>
             )}
 

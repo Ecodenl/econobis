@@ -32,6 +32,8 @@ class CampaignController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', Campaign::class);
+
         $campaigns = $requestQuery->get();
 
         $campaigns->load(['type', 'status', 'responses']);
@@ -45,6 +47,8 @@ class CampaignController extends ApiController
 
     public function show(Campaign $campaign)
     {
+        $this->authorize('view', Campaign::class);
+
         $campaign->load([
             'measureCategories',
             'status',

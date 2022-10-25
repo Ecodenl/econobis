@@ -47,6 +47,7 @@ Route::namespace('Api')
         Route::get('/contact/chart-data', 'Contact\ContactController@chartData');
         Route::get('/contact/get-primary-email-addresses-id', 'Contact\ContactController@getPrimaryEmailAddressesId');
         Route::post('/contacts/delete', 'Contact\ContactController@destroyContacts');
+        Route::post('/contacts/merge', 'Contact\ContactController@mergeContacts');
         Route::post('/contact/validate-import', 'Contact\ContactController@validateImport');
         Route::post('/contact/import', 'Contact\ContactController@import');
         Route::post('contact/{contact}/owner/{user}/associate', 'Contact\ContactController@associateOwner');

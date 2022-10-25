@@ -47,6 +47,21 @@ export default {
             });
     },
 
+    mergeContacts: ids => {
+        const requestUrl = `${URL_API}/api/contacts/merge`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios
+            .post(requestUrl, { ids: ids })
+            .then(function(response) {
+                return response.data.data;
+            })
+            .catch(function(error) {
+                return error.response;
+            });
+    },
+
     getPerson: () => {
         const requestUrl = `${URL_API}/api/contact/peek`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');

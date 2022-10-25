@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api\Contact;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactStatus;
-use App\Eco\Cooperation\Cooperation;
 use App\Eco\User\User;
+use App\Helpers\Contact\ContactMerger;
 use App\Helpers\Delete\Models\DeleteContact;
 use App\Helpers\Hoomdossier\HoomdossierHelper;
 use App\Helpers\Import\ContactImportHelper;
@@ -233,5 +233,19 @@ class ContactController extends Controller
         $hoomdossierHelper = new HoomdossierHelper($contact);
 
         return $hoomdossierHelper->make();
+    }
+
+    public function mergeContacts(Request $request)
+    {
+        $request->validate([
+            'ids' => ['required', 'array', 'min:2', 'max:2'],
+        ]);
+
+        $ids = $request->input('ids');
+
+        $contact1 = Contact::find($ids[0]);
+        $contact2 = Contact::find($ids[1]);
+
+        (new ContactMerger($contact1, $contact2))->merge();
     }
 }

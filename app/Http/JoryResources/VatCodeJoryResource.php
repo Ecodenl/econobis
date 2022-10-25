@@ -3,6 +3,7 @@
 namespace App\Http\JoryResources;
 
 use \App\Eco\VatCode\VatCode;
+use App\Http\Controllers\Api\VatCode\VatCodeController;
 use App\Http\JoryResources\Base\JoryResource;
 
 class VatCodeJoryResource extends JoryResource
@@ -11,7 +12,8 @@ class VatCodeJoryResource extends JoryResource
 
     protected function checkAuthorize(): void
     {
-        // TODO: Implement checkAuthorize() method.
+        $ledgerController = new VatCodeController();
+        $ledgerController->authorize('view', VatCode::class);
     }
 
     protected function configureForApp(): void

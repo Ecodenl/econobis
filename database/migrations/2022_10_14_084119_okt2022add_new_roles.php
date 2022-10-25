@@ -35,7 +35,7 @@ class Okt2022addNewRoles extends Migration
             'view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview',
             'view_contact_general', 'view_contact_address', 'view_contact_email', 'view_contact_phone', 'view_contact_quotation', 'view_contact_coach_quotation', 'view_contact_campaign', 'view_contact_occupation',
             'view_contact_other', 'view_contact_portal_user', 'view_contact_note', 'view_contact_conclusion',
-            'view_project', 'view_jobs_log', 'view_twinfield_log',
+            'view_project', 'view_jobs_log', 'view_twinfield_log', 'view_financial', 'view_cooperation_settings', 'view_webform', 'view_email_template', 'view_user', 'view_email_team', 'create_email_template',
             'create_contact_address', 'create_contact_email', 'create_contact_phone', 'create_contact_occupation', 'create_contact_note',
             'update_contact_general', 'update_contact_address', 'update_contact_email', 'update_contact_phone', 'update_contact_occupation', 'update_contact_other', 'update_contact_portal_user', 'update_contact_note',
             'delete_contact_address', 'delete_contact_email', 'delete_contact_phone', 'delete_contact_occupation', 'delete_contact_portal_user', 'delete_contact_note'
@@ -122,35 +122,35 @@ class Okt2022addNewRoles extends Migration
         $newViewRoles = [
             'Medewerker' => [
                 'view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview',
-                'view_project', 'view_jobs_log', 'view_twinfield_log',
-            ],
+                'view_project', 'view_jobs_log', 'view_twinfield_log', 'view_financial', 'view_cooperation_settings', 'view_webform', 'view_email_template', 'view_user', 'view_email_team', 'create_email_template',
+                ],
             'Medewerker 2' => [
                 'view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview',
-                'view_project', 'view_jobs_log', 'view_twinfield_log',
-            ],
+                'view_project', 'view_jobs_log', 'view_twinfield_log', 'view_financial', 'view_cooperation_settings', 'view_webform', 'view_email_template', 'view_user', 'view_email_team', 'create_email_template',
+                ],
             'Projectmedewerker' => [
                 'view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview',
-                'view_project', 'view_jobs_log', 'view_twinfield_log',
+                'view_project', 'view_jobs_log', 'view_twinfield_log', 'view_financial', 'view_cooperation_settings', 'view_webform', 'view_email_template', 'view_user', 'view_email_team', 'create_email_template',
             ],
             'Financieel medewerker' => [
                 'view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview',
-                'view_project', 'view_jobs_log', 'view_twinfield_log',
+                'view_project', 'view_jobs_log', 'view_twinfield_log', 'view_financial', 'view_cooperation_settings', 'view_webform', 'view_email_template', 'view_user', 'view_email_team', 'create_email_template',
             ],
             'Financieel controller' => [
                 'view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview',
-                'view_project', 'view_jobs_log', 'view_twinfield_log',
+                'view_project', 'view_jobs_log', 'view_twinfield_log', 'view_financial', 'view_cooperation_settings', 'view_webform', 'view_email_template', 'view_user', 'view_email_team', 'create_email_template',
             ],
             'Participatie medewerker' => [
                 'view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview',
-                'view_project', 'view_jobs_log', 'view_twinfield_log',
+                'view_project', 'view_jobs_log', 'view_twinfield_log', 'view_financial', 'view_cooperation_settings', 'view_webform', 'view_email_template', 'view_user', 'view_email_team', 'create_email_template',
             ],
             'Energie adviseur' => [
                 'view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview',
-                'view_project', 'view_jobs_log', 'view_twinfield_log',
+                'view_project', 'view_jobs_log', 'view_twinfield_log', 'view_financial', 'view_cooperation_settings', 'view_webform', 'view_email_template', 'view_user', 'view_email_team', 'create_email_template',
             ],
             'Marketing medewerker' => [
                 'view_email', 'view_task', 'view_note', 'view_participation', 'view_intake', 'view_opportunity', 'view_housing_file', 'view_contact_group', 'view_order', 'view_invoice', 'view_financial_overview',
-                'view_project', 'view_jobs_log', 'view_twinfield_log',
+                'view_project', 'view_jobs_log', 'view_twinfield_log', 'view_financial', 'view_cooperation_settings', 'view_webform', 'view_email_template', 'view_user', 'view_email_team', 'create_email_template',
             ],
             'Energiemanager' => [
                 'view_email', 'view_task', 'view_note', 'view_intake', 'view_opportunity', 'view_housing_file',

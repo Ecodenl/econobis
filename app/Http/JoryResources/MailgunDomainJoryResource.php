@@ -3,6 +3,7 @@
 namespace App\Http\JoryResources;
 
 use App\Eco\Mailbox\MailgunDomain;
+use App\Http\Controllers\Api\Mailbox\MailgunDomainController;
 use App\Http\JoryResources\Base\JoryResource;
 
 class MailgunDomainJoryResource extends JoryResource
@@ -10,7 +11,8 @@ class MailgunDomainJoryResource extends JoryResource
 
     protected function checkAuthorize(): void
     {
-        // TODO: Implement checkAuthorize() method.
+        $mailgunDomainController = new MailgunDomainController();
+        $mailgunDomainController->authorize('view', MailgunDomain::class);
     }
     protected $modelClass = MailgunDomain::class;
 

@@ -459,27 +459,33 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </NavText>
                         </Nav>
                     )}
-                    <Nav id="email-templates">
-                        <NavText>
-                            <Link className="sidebar-link" to="email-templates">
-                                E-mail templates
-                            </Link>
-                        </NavText>
-                    </Nav>
-                    <Nav id="users">
-                        <NavText>
-                            <Link className="sidebar-link" to="gebruikers">
-                                Gebruikers
-                            </Link>
-                        </NavText>
-                    </Nav>
-                    <Nav id="team">
-                        <NavText>
-                            <Link className="sidebar-link" to="teams">
-                                Teams
-                            </Link>
-                        </NavText>
-                    </Nav>
+                    {permissions.viewEmailTemplate && (
+                        <Nav id="email-templates">
+                            <NavText>
+                                <Link className="sidebar-link" to="email-templates">
+                                    E-mail templates
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.viewUser && (
+                        <Nav id="users">
+                            <NavText>
+                                <Link className="sidebar-link" to="gebruikers">
+                                    Gebruikers
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.viewTeam && (
+                        <Nav id="team">
+                            <NavText>
+                                <Link className="sidebar-link" to="teams">
+                                    Teams
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
                     {permissions.viewMailbox && (
                         <Nav id="mailboxes">
                             <NavText>
@@ -510,13 +516,14 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </NavText>
                         </Nav>
                     )}
-                    <Nav id="postal-code-link">
-                        <NavText>
-                            <Link className="sidebar-link" to="postcoderoos">
-                                Postcoderoos
-                            </Link>
-                        </NavText>
-                    </Nav>
+                    {/* todo WM check: wordt niet meer gebruikt toch ?*/}
+                    {/*<Nav id="postal-code-link">*/}
+                    {/*    <NavText>*/}
+                    {/*        <Link className="sidebar-link" to="postcoderoos">*/}
+                    {/*            Postcoderoos*/}
+                    {/*        </Link>*/}
+                    {/*    </NavText>*/}
+                    {/*</Nav>*/}
                 </Nav>
             )}
 

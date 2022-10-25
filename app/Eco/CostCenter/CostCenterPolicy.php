@@ -9,6 +9,11 @@ class CostCenterPolicy
 {
     use HandlesAuthorization;
 
+    public function view(User $user)
+    {
+        return $user->hasPermissionTo('view_financial', 'api');
+    }
+
     public function manage(User $user)
     {
         return $user->hasPermissionTo('manage_financial', 'api');

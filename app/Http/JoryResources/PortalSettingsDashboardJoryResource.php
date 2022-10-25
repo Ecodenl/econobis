@@ -3,6 +3,7 @@
 namespace App\Http\JoryResources;
 
 use App\Eco\PortalSettingsDashboard\PortalSettingsDashboard;
+use App\Http\Controllers\Api\PortalSettingsDashboard\PortalSettingsDashboardController;
 use App\Http\JoryResources\Base\JoryResource;
 
 class PortalSettingsDashboardJoryResource extends JoryResource
@@ -11,7 +12,8 @@ class PortalSettingsDashboardJoryResource extends JoryResource
 
     protected function checkAuthorize(): void
     {
-        // TODO: Implement checkAuthorize() method.
+        $portalSettingsDashboardController = new PortalSettingsDashboardController();
+        $portalSettingsDashboardController->authorize('view', PortalSettingsDashboard::class);
     }
 
     protected function configureForApp(): void

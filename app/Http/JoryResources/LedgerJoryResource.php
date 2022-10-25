@@ -3,6 +3,7 @@
 namespace App\Http\JoryResources;
 
 use \App\Eco\Ledger\Ledger;
+use App\Http\Controllers\Api\Ledger\LedgerController;
 use App\Http\JoryResources\Base\JoryResource;
 
 class LedgerJoryResource extends JoryResource
@@ -12,7 +13,8 @@ class LedgerJoryResource extends JoryResource
 
     protected function checkAuthorize(): void
     {
-        // TODO: Implement checkAuthorize() method.
+        $ledgerController = new LedgerController();
+        $ledgerController->authorize('view', Ledger::class);
     }
 
     protected function configureForApp(): void

@@ -58,17 +58,26 @@ class MailFetcherMsOauth
 
         $moreAvailable = true;
 
-        while ($moreAvailable) {
+// todo
+// Dit werkt niet (schiet in lus) als er meer dan setPageSize messages zijn.
+// moet dus anders
+//        while ($moreAvailable) {
+
             try {
                 // Only request specific properties
                 $select = '$select=internetMessageId,sender,from,toRecipients,ccRecipients,bccRecipients,receivedDateTime,sentDateTime,subject,bodyPreview,body,isRead,hasAttachments';
                 // Sort by received time, newest first
                 $orderBy = '$orderBy=receivedDateTime DESC';
-                $requestUrl = '/users/' . $this->mailbox->gmailApiSettings->project_id. '/mailFolders/inbox/messages?'.$select.'&'.$orderBy;
+                $filter = '$filter=receivedDateTime ge ' . $dateLastFetched . 'T00:00:00Z';
+                $requestUrl = '/users/' . $this->mailbox->gmailApiSettings->project_id. '/mailFolders/inbox/messages?'.$select.'&'.$filter.'&'.$orderBy;
                 $messages = $this->appClient->createCollectionRequest('GET', $requestUrl)
                     ->setReturnType(Message::class)
-                    ->setPageSize(25);
+                    ->setPageSize(200);
+//                Log::info('Aantal messages: ' . $messages->count());
                 $moreAvailable = $this->processMessages($messages, $dateLastFetched);
+                if($moreAvailable){
+                    Log::error('Niet alle email ingelezen, totaal messages was: ' . $messages->count());
+                }
             } catch (Exception $e) {
                 Log::error('Error getting user\'s inbox: '.$e->getMessage());
                 $this->mailbox->start_fetch_mail = null;
@@ -77,7 +86,7 @@ class MailFetcherMsOauth
                 return $e->getMessage();
             }
 
-        }
+//        }
 
         $this->mailbox->date_last_fetched = Carbon::now();
         $this->mailbox->start_fetch_mail = null;
@@ -98,6 +107,7 @@ class MailFetcherMsOauth
                 if (!Email::whereMailboxId($this->mailbox->id)
                     ->whereGmailMessageId($msOauthMessageId)
                     ->exists()) {
+                    set_time_limit(180);
                     $this->fetchEmail($message);
                 }
             } else {

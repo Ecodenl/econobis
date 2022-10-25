@@ -27,7 +27,7 @@ const ContactDetailsCoachQuotationsList = props => {
 
 const mapStateToProps = state => {
     return {
-        quotationRequests: state.contactDetails.coachQuotationRequests,
+        quotationRequests: state.contactDetails.quotationRequests,
     };
 };
 export default connect(mapStateToProps)(ContactDetailsCoachQuotationsList);

@@ -4,6 +4,7 @@ namespace App\Http\JoryResources;
 
 
 use App\Eco\Opportunity\OpportunityStatus;
+use App\Http\Controllers\Api\Opportunity\OpportunityStatusController;
 use App\Http\JoryResources\Base\JoryResource;
 
 class OpportunityStatusJoryResource extends JoryResource
@@ -12,7 +13,8 @@ class OpportunityStatusJoryResource extends JoryResource
 
     protected function checkAuthorize(): void
     {
-        // TODO: Implement checkAuthorize() method.
+        $opportunityStatusController = new OpportunityStatusController();
+        $opportunityStatusController->authorize('view', OpportunityStatus::class);
     }
 
     protected function configureForApp(): void

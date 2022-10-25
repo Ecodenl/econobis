@@ -55,6 +55,8 @@ class User extends Authenticatable
         'alfresco_password'
     ];
 
+    protected $teamContactIds = null;
+
     public function lastNamePrefix()
     {
         return $this->belongsTo(LastNamePrefix::class);
@@ -103,6 +105,32 @@ class User extends Authenticatable
         }
         else{
             $this->notify(new MailResetPasswordToken($token, $this->email));
+        }
+    }
+
+    public function getTeamContactIds(){
+        if(!$this->teamContactids === null){
+            return $this->teamContactids;
+        } else {
+            if (!$this->teams){
+                $this->teamContactids =  false;
+            }
+
+            $teamContactIds = [];
+            $hasContactGroup = false;
+            foreach ($this->teams as $team){
+                foreach($team->contactGroups as $contactGroup){
+                    $hasContactGroup = true;
+                    $teamContactIds = array_unique(array_merge($teamContactIds, $contactGroup->getAllContacts()->pluck('id')->toArray()));
+                }
+            }
+            if($hasContactGroup && count($teamContactIds) == 0){
+                $this->teamContactids = [-1];
+            } else {
+                $this->teamContactids = $teamContactIds;
+            }
+
+            return $this->teamContactids;
         }
     }
 

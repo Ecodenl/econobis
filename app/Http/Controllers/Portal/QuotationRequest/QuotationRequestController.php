@@ -50,10 +50,10 @@ class QuotationRequestController
             'approvedClient' => ['boolean'],
         ]);
 
-        $quotationRequest->date_planned = $request->input('datePlanned');
-        $quotationRequest->date_recorded = $request->input('dateRecorded');
-        $quotationRequest->date_approved_external = $request->input('dateApprovedExternal');
-        $quotationRequest->date_released = $request->input('dateReleased');
+        $quotationRequest->date_planned = $request->input('datePlanned') ?: null;
+        $quotationRequest->date_recorded = $request->input('dateRecorded') ?: null;
+        $quotationRequest->date_approved_external = $request->input('dateApprovedExternal') ?: null;
+        $quotationRequest->date_released = $request->input('dateReleased') ?: null;
         $quotationRequest->approved_project_manager = $request->input('approvedProjectManager');
         $quotationRequest->approved_client = $request->input('approvedClient');
 

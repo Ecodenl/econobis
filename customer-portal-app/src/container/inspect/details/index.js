@@ -6,11 +6,11 @@ import LoadingView from '../../../components/general/LoadingView';
 import {Field, Form, Formik} from "formik";
 import FormLabel from "react-bootstrap/FormLabel";
 import * as Yup from "yup";
-import InputDate from "../../../components/form/InputDate";
 import QuotationRequestAPI from "../../../api/quotation-request/QuotationRequestAPI";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
 import {ClipLoader} from "react-spinners";
+import InputText from "../../../components/form/InputText";
 
 function InspectDetails({match, history}) {
     const [isLoading, setLoading] = useState(true);
@@ -98,12 +98,13 @@ function InspectDetails({match, history}) {
                                                         <Field
                                                             name="datePlanned"
                                                             render={({field}) => (
-                                                                <InputDate
-                                                                    {...field}
+                                                                <InputText
+                                                                    name="datePlanned"
+                                                                    field={field}
+                                                                    type="date"
                                                                     errors={errors}
                                                                     touched={touched}
                                                                     onChangeAction={setFieldValue}
-                                                                    manualInput={false}
                                                                     id="date_planned"
                                                                     placeholder={'Datum afspraak'}
                                                                 />
@@ -123,12 +124,13 @@ function InspectDetails({match, history}) {
                                                         <Field
                                                             name="dateRecorded"
                                                             render={({field}) => (
-                                                                <InputDate
-                                                                    {...field}
+                                                                <InputText
+                                                                    name="datePlanned"
+                                                                    field={field}
+                                                                    type="date"
                                                                     errors={errors}
                                                                     touched={touched}
                                                                     onChangeAction={setFieldValue}
-                                                                    manualInput={false}
                                                                     id="date_recorded"
                                                                     placeholder={'Datum opname'}
                                                                 />
@@ -165,12 +167,13 @@ function InspectDetails({match, history}) {
                                                         <Field
                                                             name="dateApprovedExternal"
                                                             render={({field}) => (
-                                                                <InputDate
-                                                                    {...field}
+                                                                <InputText
+                                                                    name="dateApprovedExternal"
+                                                                    field={field}
+                                                                    type="date"
                                                                     errors={errors}
                                                                     touched={touched}
                                                                     onChangeAction={setFieldValue}
-                                                                    manualInput={false}
                                                                     id="date_approved_external"
                                                                     placeholder={'Datum akkoord extern'}
                                                                 />
@@ -190,12 +193,13 @@ function InspectDetails({match, history}) {
                                                         <Field
                                                             name="dateReleased"
                                                             render={({field}) => (
-                                                                <InputDate
-                                                                    {...field}
+                                                                <InputText
+                                                                    name="dateReleased"
+                                                                    field={field}
+                                                                    type="date"
                                                                     errors={errors}
                                                                     touched={touched}
                                                                     onChangeAction={setFieldValue}
-                                                                    manualInput={false}
                                                                     id="date_released"
                                                                     placeholder={'Datum offerte'}
                                                                 />

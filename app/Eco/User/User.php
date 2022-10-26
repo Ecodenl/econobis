@@ -16,6 +16,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Hash;
 use Laracasts\Presenter\PresentableTrait;
 use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 use Venturecraft\Revisionable\RevisionableTrait;
 
@@ -56,6 +57,7 @@ class User extends Authenticatable
     ];
 
     protected $teamContactIds = null;
+    protected $DocumentCreatedFrom = null;
 
     public function lastNamePrefix()
     {
@@ -131,6 +133,25 @@ class User extends Authenticatable
             }
 
             return $this->teamContactids;
+        }
+    }
+    public function getDocumentCreatedFrom(){
+        if(!$this->documentCreatedFrom === null){
+            return $this->documentCreatedFrom;
+        } else {
+            $isEnergiemanager = $this->hasRole(Role::findByName('Energiemanager'));
+            $isEnergiecoordinator = $this->hasRole(Role::findByName('Energiecoordinator'));
+
+            if($isEnergiemanager || $isEnergiecoordinator){
+                $this->documentCreatedFrom = [
+                    'intake',
+                    'quotationrequest',
+                    'housingfile',
+                ];
+                return $this->documentCreatedFrom;
+            }
+
+            return false;
         }
     }
 

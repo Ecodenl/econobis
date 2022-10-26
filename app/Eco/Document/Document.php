@@ -119,4 +119,9 @@ class Document extends Model
     public function participant(){
         return $this->belongsTo(ParticipantProject::class, 'participation_project_id', 'id');
     }
+
+    public function newEloquentBuilder($query)
+    {
+        return new DocumentBuilder($query);
+    }
 }

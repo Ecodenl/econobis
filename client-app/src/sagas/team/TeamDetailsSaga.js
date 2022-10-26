@@ -31,14 +31,16 @@ export function* deleteTeamContactGroupSaga({ teamId, contactGroupId }) {
     }
 }
 
-export function* deleteTeamMailboxSaga({ teamId, mailboxId }) {
-    try {
-        yield call(TeamDetailsAPI.deleteTeamMailbox, { teamId, mailboxId });
-        yield put({ type: 'DELETE_TEAM_MAILBOX_SUCCESS', mailboxId });
-    } catch (error) {
-        yield put({ type: 'DELETE_TEAM_MAILBOX_ERROR', error });
-    }
-}
+// todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)
+// Wellicht hebben we later wel team_document_created_from nodig.
+// export function* deleteTeamMailboxSaga({ teamId, mailboxId }) {
+//     try {
+//         yield call(TeamDetailsAPI.deleteTeamMailbox, { teamId, mailboxId });
+//         yield put({ type: 'DELETE_TEAM_MAILBOX_SUCCESS', mailboxId });
+//     } catch (error) {
+//         yield put({ type: 'DELETE_TEAM_MAILBOX_ERROR', error });
+//     }
+// }
 
 // Update team details and switch to view callback
 export function* updateTeamDetailsSaga({ team, switchToView }) {

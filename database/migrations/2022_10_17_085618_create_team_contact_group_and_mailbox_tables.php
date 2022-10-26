@@ -21,14 +21,16 @@ class CreateTeamContactGroupAndMailboxTables extends Migration
             $table->unique(['contact_group_id','team_id']);
             $table->timestamps();
         });
-        Schema::create('team_mailbox', function (Blueprint $table) {
-            $table->integer('mailbox_id')->unsigned();
-            $table->foreign('mailbox_id')->references('id')->on('mailboxes');
-            $table->integer('team_id')->unsigned();
-            $table->foreign('team_id')->references('id')->on('teams');
-            $table->unique(['mailbox_id','team_id']);
-            $table->timestamps();
-        });
+// todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)
+// Wellicht hebben we later wel team_document_created_from nodig.
+//        Schema::create('team_mailbox', function (Blueprint $table) {
+//            $table->integer('mailbox_id')->unsigned();
+//            $table->foreign('mailbox_id')->references('id')->on('mailboxes');
+//            $table->integer('team_id')->unsigned();
+//            $table->foreign('team_id')->references('id')->on('teams');
+//            $table->unique(['mailbox_id','team_id']);
+//            $table->timestamps();
+//        });
 
     }
 
@@ -40,6 +42,8 @@ class CreateTeamContactGroupAndMailboxTables extends Migration
     public function down()
     {
         Schema::dropIfExists('team_contact_group');
-        Schema::dropIfExists('team_mailbox');
+// todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)
+// Wellicht hebben we later wel team_document_created_from nodig.
+//        Schema::dropIfExists('team_mailbox');
     }
 }

@@ -15,7 +15,7 @@ const TeamDetailsContactGroupsList = props => {
                     return <TeamDetailsContactGroupsItem key={contactGroup.id} contactGroup={contactGroup} />;
                 })
             ) : (
-                <div>Geen groepen gekoppeld.</div>
+                <div>Geen groepen gekoppeld. Gebruikers van dit team geautoriseerd voor alle contacten!</div>
             )}
         </div>
     );

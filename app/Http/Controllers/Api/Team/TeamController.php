@@ -33,8 +33,13 @@ class TeamController extends ApiController
 
         $teams = $requestQuery->get();
 
+// todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)
+// Wellicht hebben we later wel team_document_created_from nodig.
+//        $teams->load([
+//            'users', 'contactGroups', 'mailboxes'
+//        ]);
         $teams->load([
-            'users', 'contactGroups', 'mailboxes'
+            'users', 'contactGroups'
         ]);
 
         return FullTeam::collection($teams)
@@ -48,8 +53,13 @@ class TeamController extends ApiController
     {
         $this->authorize('view', Team::class);
 
+// todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)
+// Wellicht hebben we later wel team_document_created_from nodig.
+//        $team->load([
+//            'users', 'contactGroups', 'mailboxes'
+//        ]);
         $team->load([
-            'users', 'contactGroups', 'mailboxes'
+            'users', 'contactGroups'
         ]);
 
         return FullTeam::make($team);
@@ -108,14 +118,16 @@ class TeamController extends ApiController
         return ContactGroupPeek::make($contactGroup);
     }
 
-    public function attachMailbox(Team $team, Mailbox $mailbox)
-    {
-        $this->authorize('create', Team::class);
-
-        $team->mailboxes()->attach($mailbox->id);
-
-        return MailboxPeek::make($mailbox);
-    }
+// todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)
+// Wellicht hebben we later wel team_document_created_from nodig.
+//    public function attachMailbox(Team $team, Mailbox $mailbox)
+//    {
+//        $this->authorize('create', Team::class);
+//
+//        $team->mailboxes()->attach($mailbox->id);
+//
+//        return MailboxPeek::make($mailbox);
+//    }
 
     public function detachUser(Team $team, User $user)
     {
@@ -131,12 +143,14 @@ class TeamController extends ApiController
         $team->contactGroups()->detach($contactGroup->id);
     }
 
-    public function detachMailbox(Team $team, Mailbox $mailbox)
-    {
-        $this->authorize('create', Team::class);
-
-        $team->mailboxes()->detach($mailbox->id);
-    }
+// todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)
+// Wellicht hebben we later wel team_document_created_from nodig.
+//    public function detachMailbox(Team $team, Mailbox $mailbox)
+//    {
+//        $this->authorize('create', Team::class);
+//
+//        $team->mailboxes()->detach($mailbox->id);
+//    }
 
     public function destroy(Team $team)
     {

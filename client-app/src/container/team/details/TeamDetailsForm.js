@@ -6,7 +6,9 @@ import { fetchTeamDetails } from '../../../actions/team/TeamDetailsActions';
 import TeamDetailsFormGeneral from './general/TeamDetailsFormGeneral';
 import TeamDetailsUsers from './team-users/TeamDetailsUsers';
 import TeamDetailsContactGroups from './team-contact-groups/TeamDetailsContactGroups';
-import TeamDetailsMailboxes from './team-mailboxes/TeamDetailsMailboxes';
+// todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)
+// Wellicht hebben we later wel team_document_created_from nodig.
+// import TeamDetailsMailboxes from './team-mailboxes/TeamDetailsMailboxes';
 
 class TeamDetailsForm extends Component {
     constructor(props) {
@@ -34,7 +36,9 @@ class TeamDetailsForm extends Component {
                 <TeamDetailsFormGeneral />
                 <TeamDetailsUsers />
                 <TeamDetailsContactGroups />
-                <TeamDetailsMailboxes />
+                {/*todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)*/}
+                {/*Wellicht hebben we later wel team_document_created_from nodig.*/}
+                {/*<TeamDetailsMailboxes />*/}
             </div>
         );
     }

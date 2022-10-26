@@ -28,10 +28,12 @@ class Team extends Model
           return $this->belongsToMany(ContactGroup::class,  'team_contact_group');
     }
 
-    public function mailboxes()
-    {
-        return $this->belongsToMany(Mailbox::class,  'team_mailbox');
-    }
+// todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)
+// Wellicht hebben we later wel team_document_created_from nodig.
+//    public function mailboxes()
+//    {
+//        return $this->belongsToMany(Mailbox::class,  'team_mailbox');
+//    }
 
     public function tasks()
     {

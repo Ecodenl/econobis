@@ -213,11 +213,10 @@ class ContactController extends Controller
         $contact->save();
     }
 
-    public function getRelatedEmails(Contact $contact, $id, $folder)
+    protected function getRelatedEmails(Contact $contact, $id, $folder)
     {
-        $this->checkContactTeamAutorized($contact);
-
-        return $contact->emails()->where('contact_id', $id)->where('folder', $folder)->get();
+        $mailboxIds = Auth::user()->mailboxes()->pluck('mailbox_id');
+        return $contact->emails()->where('contact_id', $id)->where('folder', $folder)->whereIn('mailbox_id', $mailboxIds)->get();
     }
 
     // Data for dashboard chart

@@ -271,9 +271,9 @@ class IntakeController extends ApiController
     public function getAmountOfActiveIntakes(){
         return Intake::count();
     }
-
-    public function getRelatedEmails($id, $folder)
+    protected function getRelatedEmails($id, $folder)
     {
-        return Email::where('intake_id', $id)->where('folder', $folder)->get();
+        $mailboxIds = Auth::user()->mailboxes()->pluck('mailbox_id');
+        return Email::where('intake_id', $id)->where('folder', $folder)->whereIn('mailbox_id', $mailboxIds)->get();
     }
 }

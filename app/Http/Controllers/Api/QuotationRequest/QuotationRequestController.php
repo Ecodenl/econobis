@@ -23,6 +23,7 @@ use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\QuotationRequest\GridQuotationRequest;
 use App\Http\Resources\QuotationRequest\QuotationRequestPeek;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -216,9 +217,10 @@ class QuotationRequestController extends ApiController
         return QuotationRequestPeek::collection(QuotationRequest::orderBy('id')->get());
     }
 
-    public function getRelatedEmails($id, $folder)
+    protected function getRelatedEmails($id, $folder)
     {
-        return Email::where('quotation_request_id', $id)->where('folder', $folder)->get();
+        $mailboxIds = Auth::user()->mailboxes()->pluck('mailbox_id');
+        return Email::where('quotation_request_id', $id)->where('folder', $folder)->whereIn('mailbox_id', $mailboxIds)->get();
     }
 
     public function getAmountOfOpenQuotationRequests(){

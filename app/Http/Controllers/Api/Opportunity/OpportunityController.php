@@ -203,8 +203,9 @@ class OpportunityController extends ApiController
         return $this->show($opportunity);
     }
 
-    public function getRelatedEmails($id, $folder)
+    protected function getRelatedEmails($id, $folder)
     {
-        return Email::where('opportunity_id', $id)->where('folder', $folder)->get();
+        $mailboxIds = Auth::user()->mailboxes()->pluck('mailbox_id');
+        return Email::where('opportunity_id', $id)->where('folder', $folder)->whereIn('mailbox_id', $mailboxIds)->get();
     }
 }

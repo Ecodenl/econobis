@@ -102,9 +102,7 @@ import { fetchNotesSaga } from './task/NotesSaga';
 import { deleteTeamSaga, fetchTeamsSaga } from './team/TeamsSaga';
 import {
     deleteTeamContactGroupSaga,
-    // todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)
-    // Wellicht hebben we later wel team_document_created_from nodig.
-    // deleteTeamMailboxSaga,
+    deleteTeamDocumentCreatedFromSaga,
     deleteTeamUserSaga,
     fetchTeamDetailsSaga,
     updateTeamDetailsSaga,
@@ -262,9 +260,7 @@ export default function* watchSagas() {
     yield takeLatest('DELETE_TEAM', deleteTeamSaga);
     yield takeLatest('DELETE_TEAM_USER', deleteTeamUserSaga);
     yield takeLatest('DELETE_TEAM_CONTACT_GROUP', deleteTeamContactGroupSaga);
-    // todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)
-    // Wellicht hebben we later wel team_document_created_from nodig.
-    // yield takeLatest('DELETE_TEAM_MAILBOX', deleteTeamMailboxSaga);
+    yield takeLatest('DELETE_TEAM_DOCUMENT_CREATED_FROM', deleteTeamDocumentCreatedFromSaga);
     yield takeLatest('UPDATE_TEAM', updateTeamDetailsSaga);
 
     // Products

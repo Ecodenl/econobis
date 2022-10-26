@@ -3,23 +3,21 @@ import { connect } from 'react-redux';
 import validator from 'validator';
 
 import TeamDetailsAPI from '../../../../api/team/TeamDetailsAPI';
-import { newTeamMailbox } from '../../../../actions/team/TeamDetailsActions';
+import { newTeamDocumentCreatedFrom } from '../../../../actions/team/TeamDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from '../../../../components/form/InputSelect';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import MailboxAPI from '../../../../api/mailbox/MailboxAPI';
 
-class TeamDetailsMailboxesNew extends Component {
+class TeamDetailsDocumentCreatedFormsNew extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            mailboxId: '',
-            mailboxesToSelect: [],
+            documentCreatedFromId: '',
             errors: {
-                mailboxId: false,
+                documentCreatedFromId: false,
                 hasErrors: true,
             },
         };
@@ -32,38 +30,34 @@ class TeamDetailsMailboxesNew extends Component {
         const target = event.target;
         const value = target.value;
 
-        this.setState({ mailboxId: value });
+        this.setState({ documentCreatedFromId: value });
     }
 
-    componentDidMount() {
-        MailboxAPI.peekMailboxes().then(payload => {
-            this.setState({ mailboxesToSelect: payload.data.data });
-        });
-    }
+    componentDidMount() {}
 
     handleSubmit(event) {
         event.preventDefault();
 
-        const teamMailbox = {
+        const teamDocumentCreatedFrom = {
             teamId: this.props.teamId,
-            mailboxId: this.state.mailboxId,
+            documentCreatedFromId: this.state.documentCreatedFromId,
         };
 
         // Validation
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(teamMailbox.mailboxId)) {
-            errors.mailboxId = true;
+        if (validator.isEmpty(teamDocumentCreatedFrom.documentCreatedFromId)) {
+            errors.documentCreatedFromId = true;
             hasErrors = true;
         }
 
         this.setState({ ...this.state, errors: errors });
 
         if (!hasErrors) {
-            TeamDetailsAPI.newTeamMailbox(teamMailbox)
+            TeamDetailsAPI.newTeamDocumentCreatedFrom(teamDocumentCreatedFrom)
                 .then(payload => {
-                    this.props.newTeamMailbox(payload.data.data);
+                    this.props.newTeamDocumentCreatedFrom(payload.data.data);
                     this.props.toggleShowNew();
                 })
                 .catch(error => {
@@ -82,13 +76,13 @@ class TeamDetailsMailboxesNew extends Component {
                             <InputSelect
                                 label={'Groep'}
                                 size={'col-sm-6'}
-                                name={'mailboxId'}
-                                options={this.state.mailboxesToSelect}
+                                name={'documentCreatedFromId'}
+                                options={this.props.documentCreatedFroms}
                                 optionName={'name'}
-                                value={this.state.mailboxId}
+                                value={this.state.documentCreatedFromId}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
-                                error={this.state.errors.mailboxId}
+                                error={this.state.errors.documentCreatedFromId}
                             />
                         </div>
 
@@ -116,13 +110,14 @@ const mapStateToProps = state => {
     return {
         teamId: state.teamDetails.id,
         teamName: state.teamDetails.name,
+        documentCreatedFroms: state.systemData.documentCreatedFroms,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    newTeamMailbox: teamMailbox => {
-        dispatch(newTeamMailbox(teamMailbox));
+    newTeamDocumentCreatedFrom: teamDocumentCreatedFrom => {
+        dispatch(newTeamDocumentCreatedFrom(teamDocumentCreatedFrom));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsMailboxesNew);
+export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsDocumentCreatedFormsNew);

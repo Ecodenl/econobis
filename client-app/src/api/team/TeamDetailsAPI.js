@@ -59,23 +59,19 @@ export default {
         return axios.post(requestUrl);
     },
 
-    // todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)
-    // Wellicht hebben we later wel team_document_created_from nodig.
-    // newTeamMailbox: ({ teamId, mailboxId }) => {
-    //     const requestUrl = `${URL_TEAM}/${teamId}/${mailboxId}/attach-mailbox`;
-    //     const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-    //     axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-    //
-    //     return axios.post(requestUrl);
-    // },
+    newTeamDocumentCreatedFrom: ({ teamId, documentCreatedFromId }) => {
+        const requestUrl = `${URL_TEAM}/${teamId}/${documentCreatedFromId}/attach-document-created-from`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-    // todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)
-    // Wellicht hebben we later wel team_document_created_from nodig.
-    // deleteTeamMailbox: ({ teamId, mailboxId }) => {
-    //     const requestUrl = `${URL_TEAM}/${teamId}/${mailboxId}/detach-mailbox`;
-    //     const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-    //     axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-    //
-    //     return axios.post(requestUrl);
-    // },
+        return axios.post(requestUrl);
+    },
+
+    deleteTeamDocumentCreatedFrom: ({ teamId, documentCreatedFromId }) => {
+        const requestUrl = `${URL_TEAM}/${teamId}/${documentCreatedFromId}/detach-document-created-from`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl);
+    },
 };

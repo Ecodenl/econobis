@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
-import TeamDetailsMailboxesView from './TeamDetailsMailboxesView';
-import TeamDetailsMailboxesItemDelete from './TeamDetailsMailboxesDelete';
+import TeamDetailsDocumentCreatedFromsView from './TeamDetailsDocumentCreatedFormsView';
+import TeamDetailsDocumentCreatedFromsItemDelete from './TeamDetailsDocumentCreatedFormsDelete';
 
-class TeamDetailsMailboxesItem extends Component {
+class TeamDetailsDocumentCreatedFormsItem extends Component {
     constructor(props) {
         super(props);
 
@@ -13,7 +13,7 @@ class TeamDetailsMailboxesItem extends Component {
             highlightLine: '',
             showDelete: false,
 
-            mailbox: props.mailbox,
+            documentCreatedFrom: props.documentCreatedFrom,
         };
     }
 
@@ -38,18 +38,18 @@ class TeamDetailsMailboxesItem extends Component {
     render() {
         return (
             <div>
-                <TeamDetailsMailboxesView
+                <TeamDetailsDocumentCreatedFromsView
                     highlightLine={this.state.highlightLine}
                     showActionButtons={this.state.showActionButtons}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
                     toggleDelete={this.toggleDelete}
-                    mailbox={this.state.mailbox}
+                    documentCreatedFrom={this.state.documentCreatedFrom}
                 />
                 {this.state.showDelete && this.props.permissions.createTeam && (
-                    <TeamDetailsMailboxesItemDelete
+                    <TeamDetailsDocumentCreatedFromsItemDelete
                         toggleDelete={this.toggleDelete}
-                        mailboxId={this.state.mailbox.id}
+                        documentCreatedFromId={this.state.documentCreatedFrom.id}
                     />
                 )}
             </div>
@@ -63,4 +63,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(TeamDetailsMailboxesItem);
+export default connect(mapStateToProps)(TeamDetailsDocumentCreatedFormsItem);

@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../../components/modal/Modal';
-import { deleteTeamMailbox } from '../../../../actions/team/TeamDetailsActions';
+import { deleteTeamDocumentCreatedFrom } from '../../../../actions/team/TeamDetailsActions';
 
-const TeamDetailsMailboxesDelete = props => {
+const TeamDetailsDocumentCreatedFormsDelete = props => {
     const confirmAction = () => {
-        props.deleteTeamMailbox(props.teamId, props.mailboxId);
+        props.deleteTeamDocumentCreatedFrom(props.teamId, props.documentCreatedFromId);
         props.toggleDelete();
     };
 
@@ -18,7 +18,7 @@ const TeamDetailsMailboxesDelete = props => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            <p>Wil je deze mailbox ontkoppelen van dit team?</p>
+            <p>Wil je dit document ontkoppelen van dit team?</p>
         </Modal>
     );
 };
@@ -30,9 +30,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteTeamMailbox: (teamId, mailboxId) => {
-        dispatch(deleteTeamMailbox(teamId, mailboxId));
+    deleteTeamDocumentCreatedFrom: (teamId, documentCreatedFromId) => {
+        dispatch(deleteTeamDocumentCreatedFrom(teamId, documentCreatedFromId));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsMailboxesDelete);
+export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsDocumentCreatedFormsDelete);

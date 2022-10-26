@@ -25,23 +25,23 @@ export default function(state = [], action) {
                 ...state,
                 users: state.users.filter(user => user.id !== action.userId),
             };
-        // todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)
-        // Wellicht hebben we later wel team_document_created_from nodig.
-        // case 'NEW_TEAM_MAILBOX':
-        //     return {
-        //         ...state,
-        //         mailboxes: [
-        //             ...state.mailboxes,
-        //             {
-        //                 ...action.teamMailbox,
-        //             },
-        //         ],
-        //     };
-        // case 'DELETE_TEAM_MAILBOX_SUCCESS':
-        //     return {
-        //         ...state,
-        //         mailboxes: state.mailboxes.filter(mailbox => mailbox.id !== action.mailboxId),
-        //     };
+        case 'NEW_TEAM_DOCUMENT_CREATED_FROM':
+            return {
+                ...state,
+                documentCreatedFroms: [
+                    ...state.documentCreatedFroms,
+                    {
+                        ...action.teamDocumentCreatedFrom,
+                    },
+                ],
+            };
+        case 'DELETE_TEAM_DOCUMENT_CREATED_FROM_SUCCESS':
+            return {
+                ...state,
+                documentCreatedFroms: state.documentCreatedFroms.filter(
+                    documentCreatedFrom => documentCreatedFrom.id !== action.documentCreatedFromId
+                ),
+            };
         case 'NEW_TEAM_CONTACT_GROUP':
             return {
                 ...state,

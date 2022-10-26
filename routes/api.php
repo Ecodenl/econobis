@@ -320,10 +320,8 @@ Route::namespace('Api')
         Route::post('team/{team}/{user}/detach', 'Team\TeamController@detachUser');
         Route::post('team/{team}/{contactGroup}/attach-contact-group', 'Team\TeamController@attachContactGroup');
         Route::post('team/{team}/{contactGroup}/detach-contact-group', 'Team\TeamController@detachContactGroup');
-// todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)
-// Wellicht hebben we later wel team_document_created_from nodig.
-//        Route::post('team/{team}/{mailbox}/attach-mailbox', 'Team\TeamController@attachMailbox');
-//        Route::post('team/{team}/{mailbox}/detach-mailbox', 'Team\TeamController@detachMailbox');
+        Route::post('team/{team}/{documentCreatedFrom}/attach-document-created-from', 'Team\TeamController@attachDocumentCreatedFrom');
+        Route::post('team/{team}/{documentCreatedFrom}/detach-document-created-from', 'Team\TeamController@detachDocumentCreatedFrom');
 
         Route::get('/quotation-request/grid', 'QuotationRequest\QuotationRequestController@grid');
         Route::get('/quotation-request/peek', 'QuotationRequest\QuotationRequestController@peek');

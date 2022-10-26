@@ -9,7 +9,7 @@
 namespace App\Http\Controllers\Api\Team;
 
 use App\Eco\ContactGroup\ContactGroup;
-use App\Eco\Mailbox\Mailbox;
+use App\Eco\DocumentCreatedFrom\DocumentCreatedFrom;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
 use App\Helpers\Settings\PortalSettings;
@@ -17,7 +17,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Team\Grid\RequestQuery;
 
 use App\Http\Resources\ContactGroup\ContactGroupPeek;
-use App\Http\Resources\Mailbox\MailboxPeek;
+use App\Http\Resources\DocumentCreatedFrom\DocumentCreatedFromPeek;
 use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\Team\PeekTeam;
 use App\Http\Resources\User\UserPeek;
@@ -33,13 +33,8 @@ class TeamController extends ApiController
 
         $teams = $requestQuery->get();
 
-// todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)
-// Wellicht hebben we later wel team_document_created_from nodig.
-//        $teams->load([
-//            'users', 'contactGroups', 'mailboxes'
-//        ]);
         $teams->load([
-            'users', 'contactGroups'
+            'users', 'contactGroups', 'documentCreatedFroms'
         ]);
 
         return FullTeam::collection($teams)
@@ -53,13 +48,8 @@ class TeamController extends ApiController
     {
         $this->authorize('view', Team::class);
 
-// todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)
-// Wellicht hebben we later wel team_document_created_from nodig.
-//        $team->load([
-//            'users', 'contactGroups', 'mailboxes'
-//        ]);
         $team->load([
-            'users', 'contactGroups'
+            'users', 'contactGroups', 'documentCreatedFroms'
         ]);
 
         return FullTeam::make($team);
@@ -118,16 +108,14 @@ class TeamController extends ApiController
         return ContactGroupPeek::make($contactGroup);
     }
 
-// todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)
-// Wellicht hebben we later wel team_document_created_from nodig.
-//    public function attachMailbox(Team $team, Mailbox $mailbox)
-//    {
-//        $this->authorize('create', Team::class);
-//
-//        $team->mailboxes()->attach($mailbox->id);
-//
-//        return MailboxPeek::make($mailbox);
-//    }
+    public function attachDocumentCreatedFrom(Team $team, DocumentCreatedFrom $documentCreatedFrom)
+    {
+        $this->authorize('create', Team::class);
+
+        $team->documentCreatedFroms()->attach($documentCreatedFrom->id);
+
+        return DocumentCreatedFromPeek::make($documentCreatedFrom);
+    }
 
     public function detachUser(Team $team, User $user)
     {
@@ -143,14 +131,12 @@ class TeamController extends ApiController
         $team->contactGroups()->detach($contactGroup->id);
     }
 
-// todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)
-// Wellicht hebben we later wel team_document_created_from nodig.
-//    public function detachMailbox(Team $team, Mailbox $mailbox)
-//    {
-//        $this->authorize('create', Team::class);
-//
-//        $team->mailboxes()->detach($mailbox->id);
-//    }
+    public function detachDocumentCreatedFrom(Team $team, DocumentCreatedFrom $documentCreatedFrom)
+    {
+        $this->authorize('create', Team::class);
+
+        $team->documentCreatedFroms()->detach($documentCreatedFrom->id);
+    }
 
     public function destroy(Team $team)
     {

@@ -20,7 +20,7 @@ class DocumentCreatedFrom extends EnumWithIdAndName
      *
      * @return array
      */
-    protected static function seed()
+    protected static function seed(): array
     {
         return [
             new static('administration', 'Administratie'),

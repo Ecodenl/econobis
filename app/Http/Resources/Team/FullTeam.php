@@ -22,7 +22,7 @@ class FullTeam extends JsonResource
             'name' => $this->name,
             'users' => FullUser::collection($this->whenLoaded('users')),
             'contactGroups' => FullContactGroup::collection($this->whenLoaded('contactGroups')),
-            'mailboxes' => FullMailbox::collection($this->whenLoaded('mailboxes')),
+            'documentCreatedFroms' => FullDocumentCreatedFroms::collection($this->whenLoaded('documentCreatedFroms')),
         ];
     }
 }

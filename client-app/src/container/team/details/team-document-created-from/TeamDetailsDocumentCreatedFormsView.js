@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-const TeamDetailsMailboxesView = props => {
-    const { id, name } = props.mailbox;
+const TeamDetailsDocumentCreatedFormsView = props => {
+    const { id, name } = props.documentCreatedFrom;
 
     return (
         <div
@@ -30,4 +30,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(TeamDetailsMailboxesView);
+export default connect(mapStateToProps)(TeamDetailsDocumentCreatedFormsView);

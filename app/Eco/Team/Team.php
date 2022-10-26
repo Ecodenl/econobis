@@ -4,11 +4,11 @@ namespace App\Eco\Team;
 
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Email\Email;
-use App\Eco\Mailbox\Mailbox;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
+use App\Eco\Document\DocumentCreatedFrom;
 
 class Team extends Model
 {
@@ -28,12 +28,10 @@ class Team extends Model
           return $this->belongsToMany(ContactGroup::class,  'team_contact_group');
     }
 
-// todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)
-// Wellicht hebben we later wel team_document_created_from nodig.
-//    public function mailboxes()
-//    {
-//        return $this->belongsToMany(Mailbox::class,  'team_mailbox');
-//    }
+    public function documentCreatedFroms()
+    {
+        return $this->belongsToMany(DocumentCreatedFrom::class,  'team_document_created_from');
+    }
 
     public function tasks()
     {

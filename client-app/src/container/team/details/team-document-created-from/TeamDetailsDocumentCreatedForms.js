@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 
-import TeamDetailsMailboxesList from './TeamDetailsMailboxesList';
-import TeamDetailsMailboxesNew from './TeamDetailsMailboxesNew';
+import TeamDetailsDocumentCreatedFromsList from './TeamDetailsDocumentCreatedFormsList';
+import TeamDetailsDocumentCreatedFromsNew from './TeamDetailsDocumentCreatedFormsNew';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import { connect } from 'react-redux';
+import TeamDetailsDocumentCreatedFormsList from './TeamDetailsDocumentCreatedFormsList';
 
-class TeamDetailsMailboxes extends Component {
+class TeamDetailsDocumentCreatedForms extends Component {
     constructor(props) {
         super(props);
 
@@ -26,7 +27,7 @@ class TeamDetailsMailboxes extends Component {
         return (
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Gekoppelde mailboxen</span>
+                    <span className="h5 text-bold">Gekoppelde documenten</span>
                     {this.props.permissions.createTeam && (
                         <a role="button" className="pull-right" onClick={this.toggleShowNew}>
                             <span className="glyphicon glyphicon-plus" />
@@ -35,10 +36,12 @@ class TeamDetailsMailboxes extends Component {
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        <TeamDetailsMailboxesList />
+                        <TeamDetailsDocumentCreatedFormsList />
                     </div>
                     <div className="col-md-12 margin-10-top">
-                        {this.state.showNew && <TeamDetailsMailboxesNew toggleShowNew={this.toggleShowNew} />}
+                        {this.state.showNew && (
+                            <TeamDetailsDocumentCreatedFromsNew toggleShowNew={this.toggleShowNew} />
+                        )}
                     </div>
                 </PanelBody>
             </Panel>
@@ -52,4 +55,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(TeamDetailsMailboxes);
+export default connect(mapStateToProps)(TeamDetailsDocumentCreatedForms);

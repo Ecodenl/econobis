@@ -43,21 +43,17 @@ export const deleteTeamContactGroup = (teamId, contactGroupId) => {
     };
 };
 
-// todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)
-// Wellicht hebben we later wel team_document_created_from nodig.
-// export const newTeamMailbox = teamMailbox => {
-//     return {
-//         type: 'NEW_TEAM_MAILBOX',
-//         teamMailbox,
-//     };
-// };
+export const newTeamDocumentCreatedFrom = teamDocumentCreatedFrom => {
+    return {
+        type: 'NEW_TEAM_DOCUMENT_CREATED_FROM',
+        teamDocumentCreatedFrom,
+    };
+};
 
-// todo WM: team_mailbox niet nodig (autorisatie kan via mailbox_user)
-// Wellicht hebben we later wel team_document_created_from nodig.
-// export const deleteTeamMailbox = (teamId, mailboxId) => {
-//     return {
-//         type: 'DELETE_TEAM_MAILBOX',
-//         teamId,
-//         mailboxId,
-//     };
-// };
+export const deleteTeamDocumentCreatedFrom = (teamId, documentCreatedFromId) => {
+    return {
+        type: 'DELETE_TEAM_DOCUMENT_CREATED_FROM',
+        teamId,
+        documentCreatedFromId,
+    };
+};

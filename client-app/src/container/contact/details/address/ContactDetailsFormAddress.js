@@ -5,6 +5,7 @@ import ContactDetailsFormAddressNew from './ContactDetailsFormAddressNew';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
+import { connect } from 'react-redux';
 
 class ContactDetailsFormAddress extends Component {
     constructor(props) {
@@ -35,11 +36,12 @@ class ContactDetailsFormAddress extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Adres / Energieleverancier gegevens</span>
-                    {this.state.addressEnergySupplierNewOrEditOpen == false && (
-                        <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                            <span className="glyphicon glyphicon-plus" />
-                        </a>
-                    )}
+                    {this.props.permissions.createContactAddress &&
+                        this.state.addressEnergySupplierNewOrEditOpen == false && (
+                            <a role="button" className="pull-right" onClick={this.toggleShowNew}>
+                                <span className="glyphicon glyphicon-plus" />
+                            </a>
+                        )}
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
@@ -49,7 +51,9 @@ class ContactDetailsFormAddress extends Component {
                         />
                     </div>
                     <div className="col-md-12 margin-10-top">
-                        {this.state.showNew && <ContactDetailsFormAddressNew toggleShowNew={this.toggleShowNew} />}
+                        {this.props.permissions.createContactAddress && this.state.showNew && (
+                            <ContactDetailsFormAddressNew toggleShowNew={this.toggleShowNew} />
+                        )}
                     </div>
                 </PanelBody>
             </Panel>
@@ -57,4 +61,10 @@ class ContactDetailsFormAddress extends Component {
     }
 }
 
-export default ContactDetailsFormAddress;
+const mapStateToProps = state => {
+    return {
+        permissions: state.meDetails.permissions,
+    };
+};
+
+export default connect(mapStateToProps, null)(ContactDetailsFormAddress);

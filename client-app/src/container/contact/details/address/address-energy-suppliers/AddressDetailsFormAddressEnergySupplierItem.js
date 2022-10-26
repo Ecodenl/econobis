@@ -310,7 +310,8 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
                     addressEnergySupplier={this.state.addressEnergySupplier}
                     addressEnergySupplierNewOrEditOpen={this.props.addressEnergySupplierNewOrEditOpen}
                 />
-                {this.state.showEdit &&
+                {this.props.permissions.updateContactAddress &&
+                    this.state.showEdit &&
                     (this.props.permissions.updatePerson || this.props.permissions.updateOrganisation) && (
                         <AddressDetailsFormAddressEnergySupplierEdit
                             addressEnergySupplier={this.state.addressEnergySupplier}
@@ -321,7 +322,7 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
                             cancelEdit={this.cancelEdit}
                         />
                     )}
-                {this.state.showDelete && (
+                {this.props.permissions.deleteContactAddress && this.state.showDelete && (
                     <AddressDetailsFormAddressEnergySupplierDelete
                         closeDeleteItemModal={this.toggleDelete}
                         reloadContact={this.reloadContact}

@@ -79,7 +79,7 @@ const SidebarMenuSmall = ({ permissions, administrations }) => (
             </div>
         )}
         {/* Documenten */}
-        {permissions.menuDocuments && permissions.viewDocumentTemplate && (
+        {permissions.menuDocuments && permissions.viewDocument && (
             <div className="sidebar-menu-small-item">
                 <SvgIcon size={20} icon={documents} />
             </div>

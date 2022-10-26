@@ -78,23 +78,26 @@ const ContactDetailsFormAddressView = props => {
                 {props.showActionButtons
                     ? props.addressEnergySupplierNewOrEditOpen == false && (
                           <>
-                              {(props.numberOfAddressesNotOld > 0 || primary == true) && (
-                                  <>
-                                      <a role="button" onClick={props.openEdit}>
-                                          <span
-                                              className="glyphicon glyphicon-pencil mybtn-success"
-                                              title="Wijzigen adresgegevens"
-                                          />{' '}
-                                      </a>
-                                  </>
-                              )}
+                              {props.permissions.updateContactAddress &&
+                                  (props.numberOfAddressesNotOld > 0 || primary == true) && (
+                                      <>
+                                          <a role="button" onClick={props.openEdit}>
+                                              <span
+                                                  className="glyphicon glyphicon-pencil mybtn-success"
+                                                  title="Wijzigen adresgegevens"
+                                              />{' '}
+                                          </a>
+                                      </>
+                                  )}
                               <a role="button" onClick={props.openAddressEnergySupplier} title="Leveranciergegevens">
                                   {/*<span className="glyphicon glyphicon-cog mybtn-success" />*/}
                                   <FaRegLightbulb className="mybtn-success" size={'15px'} />
                               </a>
-                              <a role="button" onClick={props.toggleDelete} title="Verwijderen adres">
-                                  <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
-                              </a>
+                              {props.permissions.deleteContactAddress && (
+                                  <a role="button" onClick={props.toggleDelete} title="Verwijderen adres">
+                                      <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                                  </a>
+                              )}
                           </>
                       )
                     : ''}
@@ -105,6 +108,7 @@ const ContactDetailsFormAddressView = props => {
 
 const mapStateToProps = state => {
     return {
+        permissions: state.meDetails.permissions,
         addressTypes: state.systemData.addressTypes,
     };
 };

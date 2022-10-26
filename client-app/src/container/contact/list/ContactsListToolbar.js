@@ -99,11 +99,13 @@ class ContactsListToolbar extends Component {
                                 </ul>
                             </div>
                         )}
-                        <ButtonIcon
-                            iconName={'glyphicon-trash'}
-                            onClickAction={this.toggleShowDeleteSelectedItems}
-                            title="Verwijderen contact"
-                        />
+                        {permissions.deletePerson && (
+                            <ButtonIcon
+                                iconName={'glyphicon-trash'}
+                                onClickAction={this.toggleShowDeleteSelectedItems}
+                                title="Verwijderen contact"
+                            />
+                        )}
                         <ButtonIcon
                             iconName={'glyphicon-ok'}
                             onClickAction={this.props.toggleShowCheckboxList}

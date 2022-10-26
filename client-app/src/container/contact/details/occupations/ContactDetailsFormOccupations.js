@@ -6,6 +6,7 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import ContactsAPI from '../../../../api/contact/ContactsAPI';
+import { connect } from 'react-redux';
 
 class ContactDetailsFormOccupations extends Component {
     constructor(props) {
@@ -43,9 +44,11 @@ class ContactDetailsFormOccupations extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Verbindingen</span>
-                    <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                        <span className="glyphicon glyphicon-plus" />
-                    </a>
+                    {this.props.permissions.createContactOccupation && (
+                        <a role="button" className="pull-right" onClick={this.toggleShowNew}>
+                            <span className="glyphicon glyphicon-plus" />
+                        </a>
+                    )}
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
@@ -55,7 +58,9 @@ class ContactDetailsFormOccupations extends Component {
                         />
                     </div>
                     <div className="col-md-12 margin-10-top">
-                        {this.state.showNew && <ContactDetailsFormOccupationsNew toggleShowNew={this.toggleShowNew} />}
+                        {this.props.permissions.createContactOccupation && this.state.showNew && (
+                            <ContactDetailsFormOccupationsNew toggleShowNew={this.toggleShowNew} />
+                        )}
                     </div>
                 </PanelBody>
             </Panel>
@@ -63,4 +68,10 @@ class ContactDetailsFormOccupations extends Component {
     }
 }
 
-export default ContactDetailsFormOccupations;
+const mapStateToProps = state => {
+    return {
+        permissions: state.meDetails.permissions,
+    };
+};
+
+export default connect(mapStateToProps, null)(ContactDetailsFormOccupations);

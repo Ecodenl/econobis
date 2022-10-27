@@ -265,15 +265,22 @@ class IntakeController extends ApiController
 
     public function peek()
     {
-        return IntakePeek::collection(Intake::orderBy('id')->with('contact')->get());
+        $teamContactIds = Auth::user()->getTeamContactIds();
+        if ($teamContactIds){
+            $intakes = Intake::whereIn('contact_id', $teamContactIds)->orderBy('id')->with('contact')->get();
+        }else{
+            $intakes = Intake::orderBy('id')->with('contact')->get();
+        }
+
+        return IntakePeek::collection($intakes);
     }
 
     public function getAmountOfActiveIntakes(){
         return Intake::count();
     }
-
-    public function getRelatedEmails($id, $folder)
+    protected function getRelatedEmails($id, $folder)
     {
-        return Email::where('intake_id', $id)->where('folder', $folder)->get();
+        $mailboxIds = Auth::user()->mailboxes()->pluck('mailbox_id');
+        return Email::where('intake_id', $id)->where('folder', $folder)->whereIn('mailbox_id', $mailboxIds)->get();
     }
 }

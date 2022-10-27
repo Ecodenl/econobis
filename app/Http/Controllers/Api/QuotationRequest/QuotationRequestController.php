@@ -23,6 +23,7 @@ use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\QuotationRequest\GridQuotationRequest;
 use App\Http\Resources\QuotationRequest\QuotationRequestPeek;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -116,9 +117,6 @@ class QuotationRequestController extends ApiController
 
         //required
         $quotationRequest->contact_id = $data['organisationOrCoachId'];
-// todo: Deze hoeven we niet meer te bruiken toch? Nu hebben we contact_id
-// todo WM: opschonen
-//        $quotationRequest-organisation_id =  $data['organisationId'];
         $quotationRequest->opportunity_id = $data['opportunityId'];
         $quotationRequest->status_id = $data['statusId'];
 
@@ -158,9 +156,6 @@ class QuotationRequestController extends ApiController
 
         //required
         $quotationRequest->contact_id = $data['organisationOrCoachId'];
-// todo: Deze hoeven we niet meer te bruiken toch? Nu hebben we contact_id
-// todo WM: opschonen
-//        $quotationRequest->organisation_id = $data['organisationId'];
         $quotationRequest->opportunity_id = $data['opportunityId'];
         $quotationRequest->status_id = $data['statusId'];
 
@@ -213,12 +208,24 @@ class QuotationRequestController extends ApiController
 
     public function peek()
     {
-        return QuotationRequestPeek::collection(QuotationRequest::orderBy('id')->get());
+        $teamContactIds = Auth::user()->getTeamContactIds();
+        if ($teamContactIds){
+            $quotationRequests = QuotationRequest::whereHas('opportunity', function($query) use($teamContactIds){
+                $query->whereHas('intake', function($query) use($teamContactIds){
+                    $query->whereIn('contact_id', $teamContactIds);
+                });
+            })->orderBy('id')->get();
+        }else{
+            $quotationRequests = QuotationRequest::orderBy('id')->get();
+        }
+
+        return QuotationRequestPeek::collection($quotationRequests);
     }
 
-    public function getRelatedEmails($id, $folder)
+    protected function getRelatedEmails($id, $folder)
     {
-        return Email::where('quotation_request_id', $id)->where('folder', $folder)->get();
+        $mailboxIds = Auth::user()->mailboxes()->pluck('mailbox_id');
+        return Email::where('quotation_request_id', $id)->where('folder', $folder)->whereIn('mailbox_id', $mailboxIds)->get();
     }
 
     public function getAmountOfOpenQuotationRequests(){

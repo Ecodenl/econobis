@@ -35,6 +35,7 @@ class ContactDetailsForm extends Component {
 
     render() {
         const { typeId, isCoach } = this.props.contactDetails;
+        const { permissions } = this.props;
         let loadingText = '';
         let loading = true;
 
@@ -52,18 +53,20 @@ class ContactDetailsForm extends Component {
             <div>{loadingText}</div>
         ) : (
             <div>
-                <ContactDetailsFormGeneral />
-                <ContactDetailsFormAddress />
-                <ContactDetailsFormEmail />
-                <ContactDetailsFormPhone />
-                {isCoach ? <ContactDetailsCoachQuotations /> : null}
-                {typeId == 'organisation' && <ContactDetailsQuotations />}
-                {typeId == 'organisation' && <ContactDetailsCampaigns />}
-                <ContactDetailsFormOccupations />
-                {typeId == 'person' && <ContactDetailsFormOther />}
-                {typeId == 'person' && <ContactDetailsFormPortalUser />}
-                <ContactDetailsFormNote />
-                <ContactDetailsFormConclusion />
+                {permissions.viewContactGeneral ? <ContactDetailsFormGeneral /> : null}
+                {permissions.viewContactAddress ? <ContactDetailsFormAddress /> : null}
+                {permissions.viewContactEmail ? <ContactDetailsFormEmail /> : null}
+                {permissions.viewContactPhone ? <ContactDetailsFormPhone /> : null}
+                {permissions.viewContactCoachQuotation && isCoach ? <ContactDetailsCoachQuotations /> : null}
+                {permissions.viewContactQuotation && typeId == 'organisation' ? <ContactDetailsQuotations /> : null}
+                {permissions.viewContactCampaign && (isCoach || typeId == 'organisation') ? (
+                    <ContactDetailsCampaigns />
+                ) : null}
+                {permissions.viewContactOccupation ? <ContactDetailsFormOccupations /> : null}
+                {permissions.viewContactOther && typeId == 'person' ? <ContactDetailsFormOther /> : null}
+                {permissions.viewContactPortalUser && typeId == 'person' ? <ContactDetailsFormPortalUser /> : null}
+                {permissions.viewContactNote ? <ContactDetailsFormNote /> : null}
+                {permissions.viewContactConclusion ? <ContactDetailsFormConclusion /> : null}
             </div>
         );
     }
@@ -71,6 +74,7 @@ class ContactDetailsForm extends Component {
 
 const mapStateToProps = state => {
     return {
+        permissions: state.meDetails.permissions,
         contactDetails: state.contactDetails,
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,

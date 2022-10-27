@@ -4,11 +4,18 @@ namespace App\Http\JoryResources;
 
 
 use App\Eco\QuotationRequest\QuotationRequestStatus;
+use App\Http\Controllers\Api\QuotationRequest\QuotationRequestStatusController;
 use App\Http\JoryResources\Base\JoryResource;
 
 class QuotationRequestStatusJoryResource extends JoryResource
 {
     protected $modelClass = QuotationRequestStatus::class;
+
+    protected function checkAuthorize(): void
+    {
+        $quotationRequestStatusController = new QuotationRequestStatusController();
+        $quotationRequestStatusController->authorize('view', QuotationRequestStatus::class);
+    }
 
     protected function configureForApp(): void
     {

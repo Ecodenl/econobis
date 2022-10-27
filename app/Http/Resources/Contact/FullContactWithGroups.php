@@ -3,7 +3,7 @@
 namespace App\Http\Resources\Contact;
 
 use App\Http\Resources\Address\FullAddress;
-use App\Http\Resources\AddressEnergySupplier\FullAddressEnergySupplier;
+use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\ContactNote\FullContactNote;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\EmailAddress\FullEmailAddress;
@@ -13,7 +13,6 @@ use App\Http\Resources\Invoice\FullInvoice;
 use App\Http\Resources\Occupation\FullOccupationContact;
 use App\Http\Resources\Order\FullOrder;
 use App\Http\Resources\Organisation\FullOrganisation;
-use App\Http\Resources\ParticipantProject\FullParticipantProject;
 use App\Http\Resources\ParticipantProject\RelatedParticipantProjectToContact;
 use App\Http\Resources\Person\FullPerson;
 use App\Http\Resources\PhoneNumber\FullPhoneNumber;
@@ -33,6 +32,14 @@ class FullContactWithGroups extends JsonResource
      */
     public function toArray($request)
     {
+        $organisantionOrCoachCampaigns = null;
+        if($this->isCoach()){
+            $organisantionOrCoachCampaigns = FullCampaign::collection($this->whenLoaded('coachCampaigns'));
+        }
+        if($this->isOrganisation()){
+            $organisantionOrCoachCampaigns = FullCampaign::collection($this->organisation->campaigns);
+        }
+
         return [
             'id' => $this->id,
             'number' => $this->number,
@@ -107,6 +114,7 @@ class FullContactWithGroups extends JsonResource
             'isInCoachGroup' => $this->is_in_coach_group,
             'isCoach' => $this->is_coach,
             'quotationRequests' => FullQuotationRequest::collection($this->whenLoaded('quotationRequests')),
+            'organisantionOrCoachCampaigns' => $organisantionOrCoachCampaigns,
         ];
     }
 }

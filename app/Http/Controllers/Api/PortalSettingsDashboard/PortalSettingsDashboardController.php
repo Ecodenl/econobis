@@ -23,6 +23,7 @@ class PortalSettingsDashboardController extends Controller
     // Nog niet nodig. Per cooperatie is er altijd 1 record die bij installatie al wordt aangemaakt
     public function store(RequestInput $input, Request $request)
     {
+        $this->authorize('manage', PortalSettingsDashboard::class);
     }
 
     public function update(PortalSettingsDashboard $portalSettingsDashboard, RequestInput $input, Request $request)
@@ -53,5 +54,6 @@ class PortalSettingsDashboardController extends Controller
     // Nog niet nodig. Per cooperatie is er altijd 1 record die bij installatie al wordt aangemaakt
     public function destroy(PortalSettingsDashboard $portalSettingsDashboard)
     {
+        $this->authorize('manage', PortalSettingsDashboard::class);
     }
 }

@@ -9,6 +9,10 @@ class PortalSettingsLayoutPolicy
 {
     use HandlesAuthorization;
 
+    public function view(User $user)
+    {
+        return $user->hasPermissionTo('manage_portal_settings', 'api');
+    }
     public function manage(User $user)
     {
         return $user->hasPermissionTo('manage_portal_settings', 'api');

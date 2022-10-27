@@ -243,6 +243,7 @@ Route::namespace('Api')
         Route::post('measure-category/{measureCategory}', 'Measure\MeasureCategoryController@update');
 
         Route::get('mailbox/grid', 'Mailbox\MailboxController@grid');
+        Route::get('mailbox/peek', 'Mailbox\MailboxController@peek');
         Route::get('mailbox/logged-in/email-peek', 'Mailbox\MailboxController@loggedInEmailPeek');
         Route::get('mailbox/{mailbox}', 'Mailbox\MailboxController@show');
         Route::post('mailbox', 'Mailbox\MailboxController@store');
@@ -317,6 +318,10 @@ Route::namespace('Api')
         Route::post('team/{team}/delete', 'Team\TeamController@destroy');
         Route::post('team/{team}/{user}/attach', 'Team\TeamController@attachUser');
         Route::post('team/{team}/{user}/detach', 'Team\TeamController@detachUser');
+        Route::post('team/{team}/{contactGroup}/attach-contact-group', 'Team\TeamController@attachContactGroup');
+        Route::post('team/{team}/{contactGroup}/detach-contact-group', 'Team\TeamController@detachContactGroup');
+        Route::post('team/{team}/{documentCreatedFrom}/attach-document-created-from', 'Team\TeamController@attachDocumentCreatedFrom');
+        Route::post('team/{team}/{documentCreatedFrom}/detach-document-created-from', 'Team\TeamController@detachDocumentCreatedFrom');
 
         Route::get('/quotation-request/grid', 'QuotationRequest\QuotationRequestController@grid');
         Route::get('/quotation-request/peek', 'QuotationRequest\QuotationRequestController@peek');

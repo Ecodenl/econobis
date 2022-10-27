@@ -3,11 +3,18 @@
 namespace App\Http\JoryResources;
 
 use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
+use App\Http\Controllers\Api\PortalSettingsLayout\PortalSettingsLayoutController;
 use App\Http\JoryResources\Base\JoryResource;
 
 class PortalSettingsLayoutJoryResource extends JoryResource
 {
     protected $modelClass = PortalSettingsLayout::class;
+
+    protected function checkAuthorize(): void
+    {
+        $portalSettingsLayoutController = new PortalSettingsLayoutController();
+        $portalSettingsLayoutController->authorize('view', PortalSettingsLayout::class);
+    }
 
     protected function configureForApp(): void
     {

@@ -22,6 +22,7 @@ use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
@@ -36,6 +37,8 @@ class ContactGroupController extends Controller
 
     public function grid(RequestQuery $query)
     {
+        $this->authorize('view', ContactGroup::class);
+
         $contactGroups = $query->get();
         $cooperation = Cooperation::first();
         $useLaposta = $cooperation ? $cooperation->use_laposta : false;
@@ -50,7 +53,14 @@ class ContactGroupController extends Controller
 
     public function peek()
     {
-        return ContactGroupPeek::collection(ContactGroup::orderBy('name')->get());
+        $teamContactGroupIds = Auth::user()->getTeamContactGroupIds();
+        if($teamContactGroupIds){
+            $contactGroups = ContactGroup::whereIn('id', $teamContactGroupIds)->orderBy('name')->get();
+        } else {
+            $contactGroups = ContactGroup::orderBy('name')->get();
+        }
+
+        return ContactGroupPeek::collection($contactGroups);
     }
 
     public function peekStatic()
@@ -327,7 +337,7 @@ class ContactGroupController extends Controller
     }
 
     private function makeStatic(ContactGroup $contactGroup){
-        $dynamicContacts = $contactGroup->dynamic_contacts;
+        $dynamicContacts = $contactGroup->getDynamicContacts();
 
         foreach ($contactGroup->filters as $filter){
             $filter->delete();
@@ -449,10 +459,10 @@ class ContactGroupController extends Controller
                 $contactGroup->simulated_group_id = $contactGroupNew->id;
                 $contactGroup->save();
                 if($contactGroup->composed_of === 'contacts'){
-                    $contactGroupNew->contacts()->sync($contactGroup->dynamic_contacts->get()->pluck("id"));
+                    $contactGroupNew->contacts()->sync($contactGroup->getDynamicContacts()->get()->pluck("id"));
                 }
                 else if($contactGroup->composed_of === 'participants'){
-                    $contactGroupNew->contacts()->sync($contactGroup->dynamic_contacts->get()->pluck("contact_id"));
+                    $contactGroupNew->contacts()->sync($contactGroup->getDynamicContacts()->get()->pluck("contact_id"));
                 }
             //Van composed eerst een static groep maken
             } else if($contactGroup->type_id === 'composed' ){

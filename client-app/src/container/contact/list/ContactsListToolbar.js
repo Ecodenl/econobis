@@ -51,35 +51,37 @@ class ContactsListToolbar extends Component {
                             onClickAction={this.props.resetContactFilters}
                             title="Vernieuwen scherm"
                         />
-                        <div className="nav navbar-nav btn-group" role="group">
-                            <button
-                                className="btn btn-success btn-sm"
-                                data-toggle="dropdown"
-                                title="Toevoegen contact of groep"
-                            >
-                                <span className="glyphicon glyphicon-plus" />
-                            </button>
-                            <ul className="dropdown-menu">
-                                {permissions.createPerson && (
-                                    <li>
-                                        <Link to="contact/nieuw/persoon">Persoon</Link>
-                                    </li>
-                                )}
-                                {permissions.createOrganisation && (
-                                    <li>
-                                        <Link to="contact/nieuw/organisatie">Organisatie</Link>
-                                    </li>
-                                )}
-                                {permissions.manageGroup && (
-                                    <li>
-                                        <Link role="button" onClick={this.props.toggleSaveAsGroup}>
-                                            Groep
-                                        </Link>
-                                    </li>
-                                )}
-                            </ul>
-                        </div>
-                        {permissions.updatePerson && permissions.updateOrganisation && (
+                        {permissions.createPerson || permissions.createOrganisation || permissions.manageGroup ? (
+                            <div className="nav navbar-nav btn-group" role="group">
+                                <button
+                                    className="btn btn-success btn-sm"
+                                    data-toggle="dropdown"
+                                    title="Toevoegen contact of groep"
+                                >
+                                    <span className="glyphicon glyphicon-plus" />
+                                </button>
+                                <ul className="dropdown-menu">
+                                    {permissions.createPerson && (
+                                        <li>
+                                            <Link to="contact/nieuw/persoon">Persoon</Link>
+                                        </li>
+                                    )}
+                                    {permissions.createOrganisation && (
+                                        <li>
+                                            <Link to="contact/nieuw/organisatie">Organisatie</Link>
+                                        </li>
+                                    )}
+                                    {permissions.manageGroup && (
+                                        <li>
+                                            <Link role="button" onClick={this.props.toggleSaveAsGroup}>
+                                                Groep
+                                            </Link>
+                                        </li>
+                                    )}
+                                </ul>
+                            </div>
+                        ) : null}
+                        {permissions.updatePerson && permissions.updateOrganisation && permissions.manageGroup && (
                             <div className="nav navbar-nav btn-group" role="group">
                                 <button
                                     className="btn btn-success btn-sm"
@@ -97,26 +99,32 @@ class ContactsListToolbar extends Component {
                                 </ul>
                             </div>
                         )}
-                        <ButtonIcon
-                            iconName={'glyphicon-trash'}
-                            onClickAction={this.toggleShowDeleteSelectedItems}
-                            title="Verwijderen contact"
-                        />
-                        <ButtonIcon
-                            iconName={'glyphicon-ok'}
-                            onClickAction={this.props.toggleShowCheckboxList}
-                            title="Contactselectie voor groep maken"
-                        />
+                        {(permissions.deletePerson || permissions.deleteOrganisation) && (
+                            <ButtonIcon
+                                iconName={'glyphicon-trash'}
+                                onClickAction={this.toggleShowDeleteSelectedItems}
+                                title="Verwijderen geselecteerde contacten"
+                            />
+                        )}
+                        {(permissions.deletePerson || permissions.deleteOrganisation || permissions.manageGroup) && (
+                            <ButtonIcon
+                                iconName={'glyphicon-ok'}
+                                onClickAction={this.props.toggleShowCheckboxList}
+                                title="Contactselectie voor groep of verwijderen contacten maken"
+                            />
+                        )}
                         <ButtonIcon
                             iconName={'glyphicon-filter'}
                             onClickAction={this.props.toggleShowExtraFilters}
                             title="Contactfilters"
                         />
-                        <ButtonIcon
-                            iconName={'glyphicon-download-alt'}
-                            onClickAction={this.props.getCSV}
-                            title="Downloaden contacten naar CSV"
-                        />
+                        {permissions.downloadContact && (
+                            <ButtonIcon
+                                iconName={'glyphicon-download-alt'}
+                                onClickAction={this.props.getCSV}
+                                title="Downloaden contacten naar CSV"
+                            />
+                        )}
                         {permissions.import && (
                             <ButtonIcon
                                 iconName={'glyphicon-import'}
@@ -124,7 +132,7 @@ class ContactsListToolbar extends Component {
                                 title="Importeren contacten"
                             />
                         )}
-                        {meta.useExportAddressConsumption && (
+                        {permissions.downloadContactConsumption && meta.useExportAddressConsumption && (
                             <>
                                 <a
                                     role="button"

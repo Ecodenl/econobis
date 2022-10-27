@@ -9,6 +9,11 @@ class MailgunDomainPolicy
 {
     use HandlesAuthorization;
 
+    public function view(User $user)
+    {
+        return $user->hasPermissionTo('view_mailbox', 'api');
+    }
+
     public function create(User $user)
     {
         return $user->hasPermissionTo('manage_mailgun_domain', 'api');

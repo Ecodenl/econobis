@@ -5,6 +5,7 @@ import ContactDetailsFormNoteNew from './ContactDetailsFormNoteNew';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
+import { connect } from 'react-redux';
 
 class ContactDetailsFormNote extends Component {
     constructor(props) {
@@ -26,16 +27,20 @@ class ContactDetailsFormNote extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Opmerkingen</span>
-                    <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                        <span className="glyphicon glyphicon-plus" />
-                    </a>
+                    {this.props.permissions.createContactNote && (
+                        <a role="button" className="pull-right" onClick={this.toggleShowNew}>
+                            <span className="glyphicon glyphicon-plus" />
+                        </a>
+                    )}
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
                         <ContactDetailsFormNoteList />
                     </div>
                     <div className="col-md-12 margin-10-top">
-                        {this.state.showNew && <ContactDetailsFormNoteNew toggleShowNew={this.toggleShowNew} />}
+                        {this.props.permissions.createContactNote && this.state.showNew && (
+                            <ContactDetailsFormNoteNew toggleShowNew={this.toggleShowNew} />
+                        )}
                     </div>
                 </PanelBody>
             </Panel>
@@ -43,4 +48,10 @@ class ContactDetailsFormNote extends Component {
     }
 }
 
-export default ContactDetailsFormNote;
+const mapStateToProps = state => {
+    return {
+        permissions: state.meDetails.permissions,
+    };
+};
+
+export default connect(mapStateToProps, null)(ContactDetailsFormNote);

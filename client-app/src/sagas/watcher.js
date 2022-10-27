@@ -100,7 +100,13 @@ import { deleteTaskSaga, fetchTaskDetailsSaga } from './task/TaskDetailsSaga';
 import { fetchTasksSaga, setTaskFinishedSaga } from './task/TasksSaga';
 import { fetchNotesSaga } from './task/NotesSaga';
 import { deleteTeamSaga, fetchTeamsSaga } from './team/TeamsSaga';
-import { deleteTeamUserSaga, fetchTeamDetailsSaga, updateTeamDetailsSaga } from './team/TeamDetailsSaga';
+import {
+    deleteTeamContactGroupSaga,
+    deleteTeamDocumentCreatedFromSaga,
+    deleteTeamUserSaga,
+    fetchTeamDetailsSaga,
+    updateTeamDetailsSaga,
+} from './team/TeamDetailsSaga';
 import { fetchUserDetailsSaga, updateUserDetailsSaga } from './user/UserDetailsSaga';
 import { fetchUserSaga } from './user/UsersSaga';
 import { meDetailsSaga } from './general/MeDetailsSaga';
@@ -253,6 +259,8 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_TEAM_DETAILS', fetchTeamDetailsSaga);
     yield takeLatest('DELETE_TEAM', deleteTeamSaga);
     yield takeLatest('DELETE_TEAM_USER', deleteTeamUserSaga);
+    yield takeLatest('DELETE_TEAM_CONTACT_GROUP', deleteTeamContactGroupSaga);
+    yield takeLatest('DELETE_TEAM_DOCUMENT_CREATED_FROM', deleteTeamDocumentCreatedFromSaga);
     yield takeLatest('UPDATE_TEAM', updateTeamDetailsSaga);
 
     // Products

@@ -30,8 +30,6 @@ class FullQuotationRequest extends JsonResource
                 'quotationText' => $this->quotation_text,
                 'contact_id' => $this->contact_id,
                 'organisationOrCoach' => FullContact::make($this->whenLoaded('organisationOrCoach')),
-//todo WM: opschonen
-//                'organisation' => FullOrganisation::make($this->whenLoaded('organisation')),
                 'opportunity' => FullOpportunity::make($this->whenLoaded('opportunity')),
                 'status' => GenericResource::make($this->whenLoaded('status')),
                 'datePlannedToSendWfEmailStatus' => $this->date_planned_to_send_wf_email_status,

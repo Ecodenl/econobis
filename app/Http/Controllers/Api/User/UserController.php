@@ -19,11 +19,14 @@ class UserController extends Controller
 {
     public function me(Request $request)
     {
-        return $this->show($request->user());
+        $request->user()->load(['lastNamePrefix', 'title', 'administrations']);
+        return FullUser::make($request->user());
     }
 
     public function show(User $user)
     {
+        $this->authorize('view', User::class);
+
         $user->load(['lastNamePrefix', 'title', 'administrations']);
         return FullUser::make($user);
     }

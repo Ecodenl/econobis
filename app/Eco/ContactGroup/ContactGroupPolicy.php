@@ -9,6 +9,17 @@ class ContactGroupPolicy
     use HandlesAuthorization;
 
     /**
+     * Determine whether the user can view a group
+     *
+     * @param  \App\Eco\User\User  $user
+     * @return mixed
+     */
+    public function view(User $user)
+    {
+        return $user->hasPermissionTo('view_contact_group', 'api');
+    }
+
+    /**
      * Determine whether the user can create a group
      *
      * @param  \App\Eco\User\User  $user

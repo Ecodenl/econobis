@@ -1,43 +1,29 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 26-10-2017
- * Time: 11:55
- */
 
 namespace App\Eco\Document;
 
+use App\Eco\Team\Team;
+use Illuminate\Database\Eloquent\Model;
 
-use JosKolenberg\Enum\Enum;
-use JosKolenberg\Enum\EnumWithIdAndName;
-
-class DocumentCreatedFrom extends EnumWithIdAndName
+class DocumentCreatedFrom extends Model
 {
+    protected $table = 'document_created_froms';
 
     /**
-     * Seed the class with Enum instances
+     * The attributes that are mass assignable.
      *
-     * @return array
+     * @var array
      */
-    protected static function seed()
+    protected $guarded = [
+        'id', 'name', 'code_ref'
+    ];
+
+    public function documents()
     {
-        return [
-            new static('administration', 'Administratie'),
-            new static('campaign', 'Campagne'),
-            new static('contact', 'Contact'),
-            new static('contactgroup', 'Contactgroep'),
-            new static('participant', 'Deelnemer'),
-            new static('document', 'Document'),
-            new static('emailattachment', 'E-mail bijlage'),
-            new static('intake', 'Intake'),
-            new static('measure', 'Maatregel'),
-            new static('opportunity', 'Kans'),
-            new static('quotationrequest', 'Offerteverzoek'),
-            new static('order', 'Order'),
-            new static('project', 'Project'),
-            new static('task', 'Taak'),
-            new static('housingfile', 'Woningdossier'),
-        ];
+        return $this->hasMany(Document::class);
+    }
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class, 'team_document_created_from');
     }
 }

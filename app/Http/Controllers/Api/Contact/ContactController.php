@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Contact;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactStatus;
-use App\Eco\Cooperation\Cooperation;
 use App\Eco\User\User;
 use App\Helpers\Delete\Models\DeleteContact;
 use App\Helpers\Hoomdossier\HoomdossierHelper;
@@ -16,6 +15,7 @@ use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\Contact\FullContactWithGroups;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -24,6 +24,7 @@ class ContactController extends Controller
     public function show(Contact $contact, Request $request)
     {
         $this->authorize('view', $contact);
+        $this->checkContactTeamAutorized($contact);
 
         $contact->load(['addresses.addressEnergySuppliers.energySupplier', 'addresses.addressEnergySuppliers.energySupplyType', 'addresses.addressEnergySuppliers.energySupplyStatus', 'addresses.primaryAddressEnergySupplierElectricity', 'addresses.primaryAddressEnergySupplierElectricity.energySupplier', 'addresses.primaryAddressEnergySupplierGas', 'addresses.primaryAddressEnergySupplierGas.energySupplier', 'addresses.country', 'emailAddresses', 'phoneNumbers', 'createdBy', 'updatedBy', 'owner', 'portalUser', 'tasks', 'notes', 'financialOverviewContactsSend', 'documents', 'opportunities', 'participations', 'orders', 'invoices']);
         $contact->contactNotes->load(['createdBy', 'updatedBy']);
@@ -33,6 +34,7 @@ class ContactController extends Controller
 
         if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisation.campaigns', 'contactPerson.contact']);
         if($contact->isPerson()) $contact->load(['person', 'person.title', 'person.organisation', 'person.type']);
+        if($contact->isCoach()) $contact->load(['coachCampaigns']);
 
         $contact->relatedEmailsInbox = $this->getRelatedEmails($contact, $contact->id, 'inbox');
         $contact->relatedEmailsSent = $this->getRelatedEmails($contact, $contact->id, 'sent');
@@ -57,6 +59,7 @@ class ContactController extends Controller
     public function destroy(Contact $contact)
     {
         $this->authorize('delete', $contact);
+        $this->checkContactTeamAutorized($contact);
 
         try {
             DB::beginTransaction();
@@ -88,6 +91,8 @@ class ContactController extends Controller
 
     public function intakes(Contact $contact)
     {
+        $this->checkContactTeamAutorized($contact);
+
         $intakes = $contact->intakes;
 
         $result = [];
@@ -105,6 +110,8 @@ class ContactController extends Controller
 
     public function housingFiles(Contact $contact)
     {
+        $this->checkContactTeamAutorized($contact);
+
         $housingFiles = $contact->housingFiles;
 
         $result = [];
@@ -121,7 +128,12 @@ class ContactController extends Controller
 
     public function peek()
     {
-        $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->get();
+        $teamContactIds = Auth::user()->getTeamContactIds();
+        if ($teamContactIds){
+            $contacts = Contact::select('id', 'full_name', 'number')->whereIn('contacts.id', $teamContactIds)->orderBy('full_name')->get();
+        }else{
+            $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->get();
+        }
 
         return ContactPeek::collection($contacts);
     }
@@ -135,7 +147,13 @@ class ContactController extends Controller
 
     public function search(Request $request)
     {
-        $contacts = Contact::select('id', 'full_name', 'number')->with('addresses')->orderBy('full_name');
+        $teamContactIds = Auth::user()->getTeamContactIds();
+        if ($teamContactIds){
+            $contacts = Contact::select('id', 'full_name', 'number')->with('addresses')->whereIn('contacts.id', $teamContactIds)->orderBy('full_name');
+        }else{
+            $contacts = Contact::select('id', 'full_name', 'number')->with('addresses')->orderBy('full_name');
+        }
+
         foreach(explode(" ", $request->input('searchTerm')) as $searchTerm) {
             $contacts->where(function ($contacts) use ($searchTerm) {
                 $contacts->where('contacts.full_name', 'like', '%' . $searchTerm . '%')
@@ -149,6 +167,8 @@ class ContactController extends Controller
 
     public function getContactWithAddresses(Contact $contact, Request $request)
     {
+        $this->checkContactTeamAutorized($contact);
+
         $contact->load(['addressesWithoutOld']);
         $contact->select('id', 'full_name', 'number')->orderBy('full_name')->first();
 
@@ -157,13 +177,20 @@ class ContactController extends Controller
 
     public function peekWithAddress()
     {
-        $contacts = Contact::select('id', 'full_name', 'number')->with('addresses')->orderBy('full_name')->get();
+        $teamContactIds = Auth::user()->getTeamContactIds();
+        if ($teamContactIds){
+            $contacts = Contact::select('id', 'full_name', 'number')->with('addresses')->whereIn('contacts.id', $teamContactIds)->orderBy('full_name')->get();
+        }else{
+            $contacts = Contact::select('id', 'full_name', 'number')->with('addresses')->orderBy('full_name')->get();
+        }
 
         return ContactWithAddressPeek::collection($contacts);
     }
 
     public function groups(Contact $contact)
     {
+        $this->checkContactTeamAutorized($contact);
+
         $groups = $contact->groups()->select('name', 'id')->get();
 
         return $groups;
@@ -171,20 +198,25 @@ class ContactController extends Controller
 
     public function tasks(Contact $contact)
     {
+        $this->checkContactTeamAutorized($contact);
+
         return SidebarTask::collection($contact->tasks);
     }
 
     public function associateOwner(Contact $contact, User $user)
     {
+        $this->checkContactTeamAutorized($contact);
+
         $this->authorize('updateOwner', $contact);
 
         $contact->owner()->associate($user);
         $contact->save();
     }
 
-    public function getRelatedEmails(Contact $contact, $id, $folder)
+    protected function getRelatedEmails(Contact $contact, $id, $folder)
     {
-        return $contact->emails()->where('contact_id', $id)->where('folder', $folder)->get();
+        $mailboxIds = Auth::user()->mailboxes()->pluck('mailbox_id');
+        return $contact->emails()->where('contact_id', $id)->where('folder', $folder)->whereIn('mailbox_id', $mailboxIds)->get();
     }
 
     // Data for dashboard chart
@@ -239,8 +271,23 @@ class ContactController extends Controller
     }
 
     public function makeHoomdossier(Contact $contact) {
+        $this->checkContactTeamAutorized($contact);
+
         $hoomdossierHelper = new HoomdossierHelper($contact);
 
         return $hoomdossierHelper->make();
     }
+
+    /**
+     * @param Contact $contact
+     */
+    protected function checkContactTeamAutorized(Contact $contact): void
+    {
+        $teamContactIds = Auth::user()->getTeamContactIds();
+
+        if ($teamContactIds && !in_array($contact->id, $teamContactIds)) {
+            abort(403, 'Niet geautoriseerd.');
+        }
+    }
+
 }

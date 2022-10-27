@@ -9,7 +9,7 @@
 namespace App\Http\Controllers\Api\Team;
 
 use App\Eco\ContactGroup\ContactGroup;
-use App\Eco\DocumentCreatedFrom\DocumentCreatedFrom;
+use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
 use App\Helpers\Settings\PortalSettings;
@@ -17,12 +17,11 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Team\Grid\RequestQuery;
 
 use App\Http\Resources\ContactGroup\ContactGroupPeek;
-use App\Http\Resources\DocumentCreatedFrom\DocumentCreatedFromPeek;
+use App\Http\Resources\Document\FullDocumentCreatedFrom;
 use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\Team\PeekTeam;
 use App\Http\Resources\User\UserPeek;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 
 class TeamController extends ApiController
 {
@@ -114,7 +113,7 @@ class TeamController extends ApiController
 
         $team->documentCreatedFroms()->attach($documentCreatedFrom->id);
 
-        return DocumentCreatedFromPeek::make($documentCreatedFrom);
+        return FullDocumentCreatedFrom::make($documentCreatedFrom);
     }
 
     public function detachUser(Team $team, User $user)

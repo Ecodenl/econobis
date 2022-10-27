@@ -56,8 +56,9 @@ class User extends Authenticatable
         'alfresco_password'
     ];
 
+    protected $teamContactGroupids = null;
     protected $teamContactIds = null;
-    protected $DocumentCreatedFrom = null;
+    protected $teamDocumentCreatedFromIds = null;
 
     public function lastNamePrefix()
     {
@@ -110,6 +111,32 @@ class User extends Authenticatable
         }
     }
 
+    public function getTeamContactGroupIds(){
+        if(!$this->teamContactGroupids === null){
+            return $this->teamContactGroupids;
+        } else {
+            if (!$this->teams){
+                $this->teamContactGroupids =  false;
+            }
+
+            $teamContactGroupIds = [];
+            $hasContactGroup = false;
+            foreach ($this->teams as $team){
+                $teamContactGroupIds = $team->contactGroups->pluck('id')->toArray();
+                if(count($teamContactGroupIds) > 0) {
+                    $hasContactGroup = true;
+                }
+                $teamContactGroupIds = array_unique(array_merge($teamContactGroupIds, $team->contactGroups->pluck('id')->toArray()));
+            }
+            if($hasContactGroup && count($teamContactGroupIds) == 0){
+                $this->teamContactGroupids = [-1];
+            } else {
+                $this->teamContactGroupids = $teamContactGroupIds;
+            }
+
+            return $this->teamContactGroupids;
+        }
+    }
     public function getTeamContactIds(){
         if(!$this->teamContactids === null){
             return $this->teamContactids;
@@ -135,24 +162,29 @@ class User extends Authenticatable
             return $this->teamContactids;
         }
     }
-    public function getDocumentCreatedFrom(){
-        if(!$this->documentCreatedFrom === null){
-            return $this->documentCreatedFrom;
+    public function getDocumentCreatedFromIds(){
+        if(!$this->teamDocumentCreatedFromIds === null){
+            return $this->teamDocumentCreatedFromIds;
         } else {
-            $isEnergiemanager = $this->hasRole(Role::findByName('Energiemanager'));
-            $isEnergiecoordinator = $this->hasRole(Role::findByName('Energiecoordinator'));
-
-            if($isEnergiemanager || $isEnergiecoordinator){
-                $this->documentCreatedFrom = [
-                    'intake',
-                    'quotationrequest',
-                    'housingfile',
-                ];
-                return $this->documentCreatedFrom;
+            if (!$this->teams){
+                $this->teamDocumentCreatedFromIds =  false;
             }
 
-            return false;
+            $teamDocumentCreatedFromIds = [];
+            $hasDocumentCreatedFrom = false;
+            foreach ($this->teams as $team){
+                foreach($team->documentCreatedFroms as $documentCreatedFrom){
+                    $hasDocumentCreatedFrom = true;
+                    array_push($teamDocumentCreatedFromIds,$documentCreatedFrom->id);
+                }
+            }
+            if($hasDocumentCreatedFrom && count($teamDocumentCreatedFromIds) == 0){
+                $this->teamDocumentCreatedFromIds = [-1];
+            } else {
+                $this->teamDocumentCreatedFromIds = array_unique($teamDocumentCreatedFromIds);
+            }
+
+            return $this->teamDocumentCreatedFromIds;
         }
     }
-
 }

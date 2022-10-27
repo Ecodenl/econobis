@@ -33,42 +33,42 @@ class DocumentNewApp extends Component {
     constructor(props) {
         super(props);
 
-        let documentCreatedFrom = '';
+        let documentCreatedFromCodeRef = '';
         if (props.params.participantId) {
-            documentCreatedFrom = 'participant';
+            documentCreatedFromCodeRef = 'participant';
         } else if (props.params.opportunityId) {
-            documentCreatedFrom = 'opportunity';
+            documentCreatedFromCodeRef = 'opportunity';
         } else if (props.params.quotationRequestId) {
-            documentCreatedFrom = 'quotationrequest';
+            documentCreatedFromCodeRef = 'quotationrequest';
         } else if (props.params.housingFileId) {
-            documentCreatedFrom = 'housingfile';
+            documentCreatedFromCodeRef = 'housingfile';
         } else if (props.params.intakeId) {
-            documentCreatedFrom = 'intake';
+            documentCreatedFromCodeRef = 'intake';
         } else if (props.params.measureId) {
-            documentCreatedFrom = 'measure';
+            documentCreatedFromCodeRef = 'measure';
         } else if (props.params.administrationId) {
-            documentCreatedFrom = 'administration';
+            documentCreatedFromCodeRef = 'administration';
         } else if (props.params.campaignId) {
-            documentCreatedFrom = 'campaign';
+            documentCreatedFromCodeRef = 'campaign';
         } else if (props.params.taskId) {
-            documentCreatedFrom = 'task';
+            documentCreatedFromCodeRef = 'task';
         } else if (props.params.projectId) {
-            documentCreatedFrom = 'project';
+            documentCreatedFromCodeRef = 'project';
         } else if (props.params.orderId) {
-            documentCreatedFrom = 'order';
+            documentCreatedFromCodeRef = 'order';
         } else if (props.params.contactGroupId) {
-            documentCreatedFrom = 'contactgroup';
+            documentCreatedFromCodeRef = 'contactgroup';
         } else if (props.params.contactId) {
-            documentCreatedFrom = 'contact';
+            documentCreatedFromCodeRef = 'contact';
         } else if (props.params.emailAttachmentId) {
-            documentCreatedFrom = 'emailattachment';
+            documentCreatedFromCodeRef = 'emailattachment';
         } else {
-            documentCreatedFrom = 'document';
+            documentCreatedFromCodeRef = 'document';
         }
 
-        const documentCreatedFromName = this.props.documentCreatedFroms.find(item => {
-            return item.id == documentCreatedFrom;
-        }).name;
+        const documentCreatedFrom = this.props.documentCreatedFroms.find(item => {
+            return item.codeRef == documentCreatedFromCodeRef;
+        });
 
         this.state = {
             contactsGroups: [],
@@ -99,7 +99,6 @@ class DocumentNewApp extends Component {
                 participantId: this.props.params.participantId || '',
                 orderId: this.props.params.orderId || '',
                 documentCreatedFrom: documentCreatedFrom,
-                documentCreatedFromName: documentCreatedFromName,
                 documentType: this.props.params.type,
                 description: '',
                 documentGroup: '',
@@ -475,7 +474,7 @@ class DocumentNewApp extends Component {
             data.append('contactGroupId', contactGroupId);
             data.append('intakeId', intakeId);
             data.append('opportunityId', opportunityId);
-            data.append('documentCreatedFrom', documentCreatedFrom);
+            data.append('documentCreatedFromId', documentCreatedFrom.id);
             data.append('documentType', documentType);
             data.append('description', description);
             data.append('documentGroup', documentGroup);
@@ -518,13 +517,13 @@ class DocumentNewApp extends Component {
                             <PanelBody className="panel-small">
                                 <DocumentNewToolbar
                                     handleSubmit={this.handleSubmit}
-                                    documentCreatedFromName={this.state.document.documentCreatedFromName}
+                                    documentCreatedFromName={this.state.document.documentCreatedFrom.name}
                                 />
                             </PanelBody>
                         </Panel>
                     </div>
                     <div className="col-md-12">
-                        {this.state.document.documentCreatedFrom === 'project' ? (
+                        {this.state.document.documentCreatedFrom.codeRef === 'project' ? (
                             <DocumentNewFormProject
                                 document={this.state.document}
                                 templates={this.state.templates}
@@ -537,7 +536,7 @@ class DocumentNewApp extends Component {
                                 onDropAccepted={this.onDropAccepted}
                                 onDropRejected={this.onDropRejected}
                             />
-                        ) : this.state.document.documentCreatedFrom === 'administration' ? (
+                        ) : this.state.document.documentCreatedFrom.codeRef === 'administration' ? (
                             <DocumentNewFormAdministration
                                 document={this.state.document}
                                 templates={this.state.templates}
@@ -549,7 +548,7 @@ class DocumentNewApp extends Component {
                                 onDropAccepted={this.onDropAccepted}
                                 onDropRejected={this.onDropRejected}
                             />
-                        ) : this.state.document.documentCreatedFrom === 'participant' ? (
+                        ) : this.state.document.documentCreatedFrom.codeRef === 'participant' ? (
                             <DocumentNewFormParticipant
                                 document={this.state.document}
                                 templates={this.state.templates}

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import TeamDetailsDocumentCreatedFromsList from './TeamDetailsDocumentCreatedFormsList';
 import TeamDetailsDocumentCreatedFromsNew from './TeamDetailsDocumentCreatedFormsNew';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
@@ -27,7 +26,7 @@ class TeamDetailsDocumentCreatedForms extends Component {
         return (
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Gekoppelde documenten</span>
+                    <span className="h5 text-bold">Gekoppelde documenten gemaakt vanuit</span>
                     {this.props.permissions.createTeam && (
                         <a role="button" className="pull-right" onClick={this.toggleShowNew}>
                             <span className="glyphicon glyphicon-plus" />

@@ -18,7 +18,7 @@ const TeamDetailsDocumentCreatedFormsDelete = props => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            <p>Wil je dit document ontkoppelen van dit team?</p>
+            <p>Wil je dit document gemaakt vanuit ontkoppelen van dit team?</p>
         </Modal>
     );
 };

@@ -7,7 +7,7 @@ const TeamDetailsDocumentCreatedFormsList = props => {
     return (
         <div>
             <div className="row border header">
-                <div className="col-sm-11">Document naam</div>
+                <div className="col-sm-11">Document gemaakt vanuit</div>
                 <div className="col-sm-1" />
             </div>
             {props.documentCreatedFroms && props.documentCreatedFroms.length > 0 ? (
@@ -20,7 +20,10 @@ const TeamDetailsDocumentCreatedFormsList = props => {
                     );
                 })
             ) : (
-                <div>Geen documenten gekoppeld.</div>
+                <div>
+                    Geen documenten gemaakt vanuit gekoppeld. Gebruikers van dit team geautoriseerd voor alle documenten
+                    gemaakt vanuit!
+                </div>
             )}
         </div>
     );

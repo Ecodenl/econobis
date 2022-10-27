@@ -10,10 +10,10 @@ namespace App\Http\Controllers\Api\ParticipationProject;
 
 use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
-use App\Eco\Contact\ContactType;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactGroup\DynamicContactGroupFilter;
 use App\Eco\Document\Document;
+use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\FinancialOverview\FinancialOverviewProject;
@@ -751,8 +751,10 @@ class ParticipationProjectController extends ApiController
         {
             $time = Carbon::now();
 
+            $documentCreatedFromParticipantId = DocumentCreatedFrom::where('code_ref', 'participant')->first()->id;
+
             $document = new Document();
-            $document->document_created_from = 'participant';
+            $document->document_created_from_id = $documentCreatedFromParticipantId;
             $document->document_type = 'internal';
             $document->document_group = $documentTemplate->document_group;
             $document->contact_id = $contact->id;

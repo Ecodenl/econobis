@@ -47,7 +47,7 @@ class DocumentsListItem extends Component {
             createdAt,
             filename,
             contact,
-            documentCreatedFrom,
+            documentCreatedFromName,
             documentType,
             documentGroup,
         } = this.props;
@@ -62,7 +62,7 @@ class DocumentsListItem extends Component {
                 <td>{createdAt ? moment(createdAt).format('DD-MM-Y') : 'Onbekend'}</td>
                 <td>{filename}</td>
                 <td>{contact && contact.fullName}</td>
-                <td>{documentCreatedFrom}</td>
+                <td>{documentCreatedFromName}</td>
                 <td>{documentType}</td>
                 <td>{documentGroup}</td>
                 <td>

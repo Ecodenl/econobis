@@ -5,14 +5,13 @@ namespace App\Eco\Project;
 use App\Eco\Administration\Administration;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Document\Document;
+use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverviewProject;
 use App\Eco\ParticipantMutation\ParticipantMutation;
-use App\Eco\ParticipantMutation\ParticipantMutationStatus;
-use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\Task\Task;
@@ -65,11 +64,13 @@ class Project extends Model
     }
 
     public function documentsNotOnPortal(){
-        return $this->hasMany(Document::class)->where('document_created_from', 'project')->where('show_on_portal', false)->orderBy('documents.id', 'desc');
+        $documentCreatedFromProjectId = DocumentCreatedFrom::where('code_ref', 'project')->first()->id;
+        return $this->hasMany(Document::class)->where('document_created_from_id', $documentCreatedFromProjectId)->where('show_on_portal', false)->orderBy('documents.id', 'desc');
     }
 
     public function documentsOnPortal(){
-        return $this->hasMany(Document::class)->where('document_created_from', 'project')->where('show_on_portal', true)->orderBy('documents.id', 'desc');
+        $documentCreatedFromProjectId = DocumentCreatedFrom::where('code_ref', 'project')->first()->id;
+        return $this->hasMany(Document::class)->where('document_created_from_id', $documentCreatedFromProjectId)->where('show_on_portal', true)->orderBy('documents.id', 'desc');
     }
 
     public function emails()

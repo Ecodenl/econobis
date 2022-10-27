@@ -90,7 +90,8 @@ class DocumentDetailsFormEdit extends Component {
                 participantId: participantId || '',
                 orderId: orderId || '',
                 documentType: documentType && documentType.id,
-                documentCreatedFrom: documentCreatedFrom && documentCreatedFrom.id,
+                documentCreatedFromId: documentCreatedFrom.id,
+                documentCreatedFromCodeRef: documentCreatedFrom.codeRef,
                 description: description,
                 freeText1: freeText1,
                 freeText2: freeText2,
@@ -266,7 +267,6 @@ class DocumentDetailsFormEdit extends Component {
             errorMessage.description = 'Verplicht';
             hasErrors = true;
         }
-
         if (
             !validator.isEmpty(document.participantId + '') &&
             !validator.isEmpty(document.projectId + '') &&
@@ -282,7 +282,11 @@ class DocumentDetailsFormEdit extends Component {
             validator.isEmpty(document.measureId + '') &&
             validator.isEmpty(document.campaignId + '')
         ) {
-            document.documentCreatedFrom = 'participant';
+            const documentCreatedFromParticipant = this.props.documentCreatedFroms.find(item => {
+                return item.codeRef == 'participant';
+            });
+            document.documentCreatedFromId = documentCreatedFromParticipant.id;
+            document.documentCreatedFromCoderef = documentCreatedFromParticipant.codeRef;
         } else if (
             !validator.isEmpty(document.projectId + '') &&
             validator.isEmpty(document.participantId + '') &&
@@ -299,7 +303,11 @@ class DocumentDetailsFormEdit extends Component {
             validator.isEmpty(document.campaignId + '') &&
             document.documentGroup != 'revenue'
         ) {
-            document.documentCreatedFrom = 'project';
+            const documentCreatedFromProject = this.props.documentCreatedFroms.find(item => {
+                return item.codeRef == 'project';
+            });
+            document.documentCreatedFromId = documentCreatedFromProject.id;
+            document.documentCreatedFromCoderef = documentCreatedFromProject.codeRef;
         } else if (
             !validator.isEmpty(document.administrationId + '') &&
             validator.isEmpty(document.projectId + '') &&
@@ -316,7 +324,11 @@ class DocumentDetailsFormEdit extends Component {
             validator.isEmpty(document.campaignId + '') &&
             document.documentGroup != 'revenue'
         ) {
-            document.documentCreatedFrom = 'administration';
+            const documentCreatedFromAdministration = this.props.documentCreatedFroms.find(item => {
+                return item.codeRef == 'administration';
+            });
+            document.documentCreatedFromId = documentCreatedFromAdministration.id;
+            document.documentCreatedFromCoderef = documentCreatedFromAdministration.codeRef;
         }
 
         this.setState({ ...this.state, errors: errors, errorMessage: errorMessage });
@@ -347,7 +359,7 @@ class DocumentDetailsFormEdit extends Component {
             participants,
         } = this.state;
         const {
-            documentCreatedFrom,
+            documentCreatedFromCodeRef,
             administrationId,
             orderId,
             contactId,
@@ -445,7 +457,7 @@ class DocumentDetailsFormEdit extends Component {
                                 'quotationrequest',
                                 'housingfile',
                                 'participant',
-                            ].includes(documentCreatedFrom)}
+                            ].includes(documentCreatedFromCodeRef)}
                         />
                     </div>
                     <div className="row">
@@ -457,7 +469,7 @@ class DocumentDetailsFormEdit extends Component {
                             onChangeAction={this.handleInputChange}
                             required={oneOfFieldRequired && 'required'}
                             error={errors.docLinkedAtAny}
-                            readOnly={['contactgroup'].includes(documentCreatedFrom)}
+                            readOnly={['contactgroup'].includes(documentCreatedFromCodeRef)}
                         />
                         <InputSelect
                             label="Intake"
@@ -465,7 +477,9 @@ class DocumentDetailsFormEdit extends Component {
                             value={intakeId}
                             options={intakes}
                             onChangeAction={this.handleInputChange}
-                            readOnly={['intake', 'quotationrequest', 'opportunity'].includes(documentCreatedFrom)}
+                            readOnly={['intake', 'quotationrequest', 'opportunity'].includes(
+                                documentCreatedFromCodeRef
+                            )}
                             // required={oneOfFieldRequired && 'required'}
                             // error={errors.docLinkedAtAny}
                         />
@@ -477,7 +491,7 @@ class DocumentDetailsFormEdit extends Component {
                             value={opportunityId}
                             options={opportunities}
                             onChangeAction={this.handleInputChange}
-                            readOnly={['opportunity', 'quotationrequest'].includes(documentCreatedFrom)}
+                            readOnly={['opportunity', 'quotationrequest'].includes(documentCreatedFromCodeRef)}
                             // required={oneOfFieldRequired && 'required'}
                             // error={errors.docLinkedAtAny}
                         />
@@ -489,7 +503,7 @@ class DocumentDetailsFormEdit extends Component {
                             onChangeAction={this.handleInputChange}
                             required={oneOfFieldRequired && 'required'}
                             error={errors.docLinkedAtAny}
-                            readOnly={['task'].includes(documentCreatedFrom)}
+                            readOnly={['task'].includes(documentCreatedFromCodeRef)}
                         />
                     </div>
                     <div className="row">
@@ -499,7 +513,7 @@ class DocumentDetailsFormEdit extends Component {
                             value={quotationRequestId}
                             options={quotationRequests}
                             onChangeAction={this.handleInputChange}
-                            readOnly={['quotationrequest'].includes(documentCreatedFrom)}
+                            readOnly={['quotationrequest'].includes(documentCreatedFromCodeRef)}
                             // required={oneOfFieldRequired && 'required'}
                             // error={errors.docLinkedAtAny}
                         />
@@ -509,7 +523,7 @@ class DocumentDetailsFormEdit extends Component {
                             value={housingFileId}
                             options={housingFiles}
                             onChangeAction={this.handleInputChange}
-                            readOnly={['housingfile'].includes(documentCreatedFrom)}
+                            readOnly={['housingfile'].includes(documentCreatedFromCodeRef)}
                             // required={oneOfFieldRequired && 'required'}
                             // error={errors.docLinkedAtAny}
                         />
@@ -546,7 +560,7 @@ class DocumentDetailsFormEdit extends Component {
                             onChangeAction={this.handleInputChange}
                             required={oneOfFieldRequired && 'required'}
                             error={errors.docLinkedAtAny}
-                            readOnly={['order'].includes(documentCreatedFrom)}
+                            readOnly={['order'].includes(documentCreatedFromCodeRef)}
                         />
                         <InputSelect
                             label="Administratie"
@@ -568,7 +582,7 @@ class DocumentDetailsFormEdit extends Component {
                             onChangeAction={this.handleInputChange}
                             required={oneOfFieldRequired && 'required'}
                             error={errors.docLinkedAtAny}
-                            readOnly={['measure'].includes(documentCreatedFrom)}
+                            readOnly={['measure'].includes(documentCreatedFromCodeRef)}
                         />
                         <InputSelect
                             label="Campagne"
@@ -578,7 +592,7 @@ class DocumentDetailsFormEdit extends Component {
                             onChangeAction={this.handleInputChange}
                             required={oneOfFieldRequired && 'required'}
                             error={errors.docLinkedAtAny}
-                            readOnly={['campaign', 'quotationrequest'].includes(documentCreatedFrom)}
+                            readOnly={['campaign', 'quotationrequest'].includes(documentCreatedFromCodeRef)}
                         />
                     </div>
 
@@ -725,6 +739,7 @@ const mapStateToProps = state => {
     return {
         documentDetails: state.documentDetails,
         administrations: state.meDetails.administrations,
+        documentCreatedFroms: state.systemData.documentCreatedFroms,
     };
 };
 

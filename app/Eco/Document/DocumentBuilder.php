@@ -14,10 +14,10 @@ class DocumentBuilder extends Builder
         }
         return $this;
     }
-    public function whereDocumentCreatedFrom(User $user)
+    public function whereDocumentCreatedFromIds(User $user)
     {
-        if($user->getDocumentCreatedFrom()){
-            $this->whereIn('document_created_from', $user->getDocumentCreatedFrom());
+        if($user->getDocumentCreatedFromIds()){
+            $this->whereIn('document_created_from_id', $user->getDocumentCreatedFromIds());
         }
         return $this;
     }

@@ -79,6 +79,7 @@ use App\Eco\User\User;
 use App\Eco\VatCode\VatCode;
 use App\Http\Resources\Administration\AdministrationPeek;
 use App\Http\Resources\CostCenter\FullCostCenter;
+use App\Http\Resources\Document\FullDocumentCreatedFrom;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Industry\FullIndustry;
@@ -170,7 +171,7 @@ class SystemData extends JsonResource
             'countries' => GenericResource::collection(Country::all()),
             'documentGroups' => FullEnumWithIdAndName::collection(DocumentGroup::collection()),
             'documentTemplateTypes' => FullEnumWithIdAndName::collection(DocumentTemplateType::collection()),
-            'documentCreatedFroms' => FullEnumWithIdAndName::collection(DocumentCreatedFrom::collection()),
+            'documentCreatedFroms' => FullDocumentCreatedFrom::collection(DocumentCreatedFrom::all()),
             'documentTypes' => FullEnumWithIdAndName::collection(DocumentType::collection()),
             'emailAddressTypes' => FullEnumWithIdAndName::collection(EmailAddressType::collection()),
             'emailStatuses' => FullEnumWithIdAndName::collection(EmailStatus::collection()),

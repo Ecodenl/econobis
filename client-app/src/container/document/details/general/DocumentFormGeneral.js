@@ -59,20 +59,20 @@ class DocumentDetailsFormGeneral extends Component {
             >
                 <PanelBody>
                     {this.state.showEdit && this.props.permissions.createDocument ? (
-                        this.props.documentCreatedFrom.id === 'project' ? (
+                        this.props.documentCreatedFrom.codeRef === 'project' ? (
                             <DocumentDetailsFormProjectEdit switchToView={this.switchToView} />
-                        ) : this.props.documentCreatedFrom.id === 'participant' ? (
+                        ) : this.props.documentCreatedFrom.codeRef === 'participant' ? (
                             <DocumentDetailsFormParticipantEdit switchToView={this.switchToView} />
-                        ) : this.props.documentCreatedFrom.id === 'administration' ? (
+                        ) : this.props.documentCreatedFrom.codeRef === 'administration' ? (
                             <DocumentDetailsFormAdministrationEdit switchToView={this.switchToView} />
                         ) : (
                             <DocumentDetailsFormEdit switchToView={this.switchToView} />
                         )
-                    ) : this.props.documentCreatedFrom.id === 'project' ? (
+                    ) : this.props.documentCreatedFrom.codeRef === 'project' ? (
                         <DocumentDetailsFormProjectView switchToEdit={this.switchToEdit} />
-                    ) : this.props.documentCreatedFrom.id === 'participant' ? (
+                    ) : this.props.documentCreatedFrom.codeRef === 'participant' ? (
                         <DocumentDetailsFormParticipantView switchToEdit={this.switchToEdit} />
-                    ) : this.props.documentCreatedFrom.id === 'administration' ? (
+                    ) : this.props.documentCreatedFrom.codeRef === 'administration' ? (
                         <DocumentDetailsFormAdministrationView switchToEdit={this.switchToEdit} />
                     ) : (
                         <DocumentDetailsFormView switchToEdit={this.switchToEdit} />

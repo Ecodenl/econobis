@@ -28,7 +28,7 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     {
         return Document::query()
             ->whereTeamContactIds(Auth::user())
-            ->whereDocumentCreatedFrom(Auth::user())
+            ->whereDocumentCreatedFromIds(Auth::user())
             ->select('documents.*');
     }
 }

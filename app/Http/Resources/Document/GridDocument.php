@@ -9,7 +9,6 @@
 namespace App\Http\Resources\Document;
 
 use App\Http\Resources\Contact\FullContact;
-use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class GridDocument extends JsonResource
@@ -22,7 +21,7 @@ class GridDocument extends JsonResource
             'createdAt' => $this->created_at,
             'filename' => $this->filename,
             'contact' => FullContact::make($this->whenLoaded('contact')),
-            'documentCreatedFrom' => $this->getDocumentCreatedFrom() ? $this->getDocumentCreatedFrom()->name : '',
+            'documentCreatedFromName' => $this->documentCreatedFrom->name,
             'documentType' => $this->getDocumentType()->name,
             'documentGroup' => $this->getDocumentGroup()->name,
         ];

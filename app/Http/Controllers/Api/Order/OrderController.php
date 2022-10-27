@@ -26,6 +26,7 @@ use App\Http\Resources\Order\FullOrderProduct;
 use App\Http\Resources\Order\GridOrder;
 use App\Http\Resources\Order\OrderPeek;
 use App\Jobs\Order\CreateAllInvoices;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -313,7 +314,14 @@ class OrderController extends ApiController
 
     public function peek()
     {
-        return OrderPeek::collection(Order::all());
+        //        $this->authorize('view', Order::class);
+        if(Auth::user()->hasPermissionTo('view_order', 'api')){
+            $orders = Order::all();
+        } else {
+            $orders = new Collection();
+        }
+
+        return OrderPeek::collection($orders);
     }
 
     public function getContactInfoForOrder(Contact $contact)

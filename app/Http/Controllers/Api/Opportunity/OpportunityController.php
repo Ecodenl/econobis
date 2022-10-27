@@ -46,8 +46,6 @@ class OpportunityController extends ApiController
         $opportunity->load([
             'measureCategory',
             'quotationRequests.organisationOrCoach',
-//todo WM: opschonen
-//            'quotationRequests.organisation',
             'quotationRequests.createdBy',
             'quotationRequests.status',
             'status',
@@ -167,7 +165,16 @@ class OpportunityController extends ApiController
 
     public function peek()
     {
-        return OpportunityPeek::collection(Opportunity::orderBy('id')->get());
+        $teamContactIds = Auth::user()->getTeamContactIds();
+        if ($teamContactIds){
+            $opportunities = Opportunity::whereHas('intake', function($query) use($teamContactIds){
+                $query->whereIn('contact_id', $teamContactIds);
+            })->orderBy('id')->get();
+        }else{
+            $opportunities = Opportunity::orderBy('id')->get();
+        }
+
+        return OpportunityPeek::collection($opportunities);
     }
 
     // Data for dashboard chart

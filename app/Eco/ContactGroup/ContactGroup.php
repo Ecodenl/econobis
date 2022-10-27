@@ -167,7 +167,7 @@ class ContactGroup extends Model
         $request->replace(['filters' => $requestFilters, 'extraFilters' => $requestExtraFilters, 'filterType' => $this->dynamic_filter_type]);
 
         if ($this->composed_of === 'contacts') {
-        // todo WM: check, Hier schieten we dus dus een loop als we in RequestQuery teamContactIds gaan bepalen !!!
+        //todo WM: check, Hier schieten we dus dus een loop als we in RequestQuery teamContactIds gaan bepalen !!!
         // Vanuit hier, geen check op teamContactIds.
             $requestQuery = new \App\Http\RequestQueries\Contact\Grid\RequestQuery($request, new \App\Http\RequestQueries\Contact\Grid\Filter($request), new \App\Http\RequestQueries\Contact\Grid\Sort($request), new \App\Http\RequestQueries\Contact\Grid\Joiner(),
                 new \App\Http\RequestQueries\Contact\Grid\ExtraFilter($request), false);

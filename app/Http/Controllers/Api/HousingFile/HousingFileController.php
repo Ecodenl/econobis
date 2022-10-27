@@ -23,6 +23,7 @@ use App\Http\Resources\HousingFile\HousingFilePeek;
 use App\Http\Resources\HousingFile\IntakePeek;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -223,7 +224,16 @@ class HousingFileController extends ApiController
 
     public function peek()
     {
-        return HousingFilePeek::collection(HousingFile::orderBy('id')->get());
+        $teamContactIds = Auth::user()->getTeamContactIds();
+        if ($teamContactIds){
+            $housingFiles = HousingFile::whereHas('address', function($query) use($teamContactIds){
+                $query->whereIn('contact_id', $teamContactIds);
+            })->orderBy('id')->get();
+        }else{
+            $housingFiles = HousingFile::orderBy('id')->get();
+        }
+
+        return HousingFilePeek::collection($housingFiles);
     }
 
     public function getAmountOfActiveHousingFiles(){

@@ -249,7 +249,14 @@ class TaskController extends Controller
 
     public function peek()
     {
-        return TaskPeek::collection(Task::orderBy('id')->get());
+        $teamContactIds = Auth::user()->getTeamContactIds();
+        if ($teamContactIds){
+            $tasks = Task::whereIn('contact_id', $teamContactIds)->orderBy('id')->get();
+        }else{
+            $tasks = Task::orderBy('id')->get();
+        }
+
+        return TaskPeek::collection($tasks);
     }
 
     public function getRelatedEmails($id, $folder)

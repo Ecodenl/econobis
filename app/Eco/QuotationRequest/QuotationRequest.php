@@ -31,13 +31,6 @@ class QuotationRequest extends Model
         return $this->belongsTo(Contact::class, 'contact_id', 'id');
     }
 
-    // todo: Deze hoeven we niet meer te bruiken toch? Nu hebben we contact_id (zie relation organisationOrCoach hierboven).
-    // todo WM: opschonen
-//    public function organisation()
-//    {
-//        return $this->belongsTo(Organisation::class);
-//    }
-
     public function opportunity()
     {
         return $this->belongsTo(Opportunity::class);

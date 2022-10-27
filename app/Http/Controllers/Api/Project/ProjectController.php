@@ -19,7 +19,9 @@ use App\Http\Resources\Project\FullProject;
 use App\Http\Resources\Project\GridProject;
 use App\Http\Resources\Project\ProjectPeek;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -368,9 +370,12 @@ class ProjectController extends ApiController
 
     public function peek()
     {
-        $this->authorize('view', Project::class);
-
-        $projects = Project::orderBy('name')->orderBy('id')->get();
+//        $this->authorize('view', Project::class);
+        if(Auth::user()->hasPermissionTo('view_project', 'api')){
+            $projects = Project::orderBy('name')->orderBy('id')->get();
+        } else {
+            $projects = new Collection();
+        }
 
         $projects->load(['projectType']);
 

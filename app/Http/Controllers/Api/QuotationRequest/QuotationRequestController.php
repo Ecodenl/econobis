@@ -117,9 +117,6 @@ class QuotationRequestController extends ApiController
 
         //required
         $quotationRequest->contact_id = $data['organisationOrCoachId'];
-// todo: Deze hoeven we niet meer te bruiken toch? Nu hebben we contact_id
-// todo WM: opschonen
-//        $quotationRequest-organisation_id =  $data['organisationId'];
         $quotationRequest->opportunity_id = $data['opportunityId'];
         $quotationRequest->status_id = $data['statusId'];
 
@@ -159,9 +156,6 @@ class QuotationRequestController extends ApiController
 
         //required
         $quotationRequest->contact_id = $data['organisationOrCoachId'];
-// todo: Deze hoeven we niet meer te bruiken toch? Nu hebben we contact_id
-// todo WM: opschonen
-//        $quotationRequest->organisation_id = $data['organisationId'];
         $quotationRequest->opportunity_id = $data['opportunityId'];
         $quotationRequest->status_id = $data['statusId'];
 
@@ -214,7 +208,18 @@ class QuotationRequestController extends ApiController
 
     public function peek()
     {
-        return QuotationRequestPeek::collection(QuotationRequest::orderBy('id')->get());
+        $teamContactIds = Auth::user()->getTeamContactIds();
+        if ($teamContactIds){
+            $quotationRequests = QuotationRequest::whereHas('opportunity', function($query) use($teamContactIds){
+                $query->whereHas('intake', function($query) use($teamContactIds){
+                    $query->whereIn('contact_id', $teamContactIds);
+                });
+            })->orderBy('id')->get();
+        }else{
+            $quotationRequests = QuotationRequest::orderBy('id')->get();
+        }
+
+        return QuotationRequestPeek::collection($quotationRequests);
     }
 
     protected function getRelatedEmails($id, $folder)

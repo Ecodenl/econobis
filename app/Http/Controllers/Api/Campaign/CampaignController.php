@@ -24,6 +24,7 @@ use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\Campaign\GridCampaign;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -216,7 +217,16 @@ class CampaignController extends ApiController
 
     public function peek()
     {
-        return CampaignPeek::collection(Campaign::orderBy('id')->get());
+        $teamContactIds = Auth::user()->getTeamContactIds();
+        if ($teamContactIds){
+            $campaigns = Campaign::whereHas('intakes', function($query) use($teamContactIds){
+                $query->whereIn('contact_id', $teamContactIds);
+            })->orderBy('id')->get();
+        }else{
+            $campaigns = Campaign::orderBy('id')->get();
+        }
+
+        return CampaignPeek::collection($campaigns);
     }
 
     public function associateOwner(Campaign $campaign, User $user)

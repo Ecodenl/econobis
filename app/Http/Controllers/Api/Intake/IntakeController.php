@@ -265,7 +265,14 @@ class IntakeController extends ApiController
 
     public function peek()
     {
-        return IntakePeek::collection(Intake::orderBy('id')->with('contact')->get());
+        $teamContactIds = Auth::user()->getTeamContactIds();
+        if ($teamContactIds){
+            $intakes = Intake::whereIn('contact_id', $teamContactIds)->orderBy('id')->with('contact')->get();
+        }else{
+            $intakes = Intake::orderBy('id')->with('contact')->get();
+        }
+
+        return IntakePeek::collection($intakes);
     }
 
     public function getAmountOfActiveIntakes(){

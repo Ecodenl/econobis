@@ -22,6 +22,7 @@ use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
@@ -52,7 +53,14 @@ class ContactGroupController extends Controller
 
     public function peek()
     {
-        return ContactGroupPeek::collection(ContactGroup::orderBy('name')->get());
+        $teamContactGroupIds = Auth::user()->getTeamContactGroupIds();
+        if($teamContactGroupIds){
+            $contactGroups = ContactGroup::whereIn('id', $teamContactGroupIds)->orderBy('name')->get();
+        } else {
+            $contactGroups = ContactGroup::orderBy('name')->get();
+        }
+
+        return ContactGroupPeek::collection($contactGroups);
     }
 
     public function peekStatic()

@@ -17,7 +17,7 @@ class Okt2022addNewRoles2 extends Migration
     {
 
         $permissions = [
-            'update_contact_conclusion',
+            'update_contact_conclusion', 'download_contact', 'download_contact_consumption',
         ];
         foreach ($permissions as $permissionName) {
             \Spatie\Permission\Models\Permission::create([
@@ -33,34 +33,34 @@ class Okt2022addNewRoles2 extends Migration
         //make roles inzake contact details
         $newContactRolePermissions = [
             'Medewerker' => [
-                'view_contact_conclusion', 'update_contact_conclusion',
+                'view_contact_conclusion', 'update_contact_conclusion', 'download_contact', 'download_contact_consumption',
             ],
             'Medewerker 2' => [
-                'view_contact_conclusion', 'update_contact_conclusion',
+                'view_contact_conclusion', 'update_contact_conclusion', 'download_contact', 'download_contact_consumption',
             ],
             'Projectmedewerker' => [
-                'view_contact_conclusion', 'update_contact_conclusion',
+                'view_contact_conclusion', 'update_contact_conclusion', 'download_contact', 'download_contact_consumption',
             ],
             'Financieel medewerker' => [
-                'view_contact_conclusion', 'update_contact_conclusion',
+                'view_contact_conclusion', 'update_contact_conclusion', 'download_contact', 'download_contact_consumption',
             ],
             'Financieel controller' => [
-                'view_contact_conclusion', 'update_contact_conclusion',
+                'view_contact_conclusion', 'update_contact_conclusion', 'download_contact', 'download_contact_consumption',
             ],
             'Participatie medewerker' => [
-                'view_contact_conclusion', 'update_contact_conclusion',
+                'view_contact_conclusion', 'update_contact_conclusion', 'download_contact', 'download_contact_consumption',
             ],
             'Energie adviseur' => [
-                'view_contact_conclusion', 'update_contact_conclusion',
+                'view_contact_conclusion', 'update_contact_conclusion', 'download_contact', 'download_contact_consumption',
             ],
             'Marketing medewerker' => [
-                'view_contact_conclusion', 'update_contact_conclusion',
+                'view_contact_conclusion', 'update_contact_conclusion', 'download_contact', 'download_contact_consumption',
             ],
             'Energiemanager' => [
-                'view_contact_conclusion',
+                'view_contact_conclusion', 'download_contact_consumption',
             ],
             'Energiecoordinator' => [
-                'view_contact_conclusion',
+                'view_contact_conclusion', 'download_contact_consumption',
             ],
         ];
         foreach($newContactRolePermissions as $newContactRolePermissionName => $permissions) {

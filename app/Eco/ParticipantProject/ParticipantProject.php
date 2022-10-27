@@ -141,12 +141,12 @@ class ParticipantProject extends Model
 
     public function documentsNotOnPortal(){
         $documentCreatedFromParticipantId = DocumentCreatedFrom::where('code_ref', 'participant')->first()->id;
-        return $this->hasMany(Document::class, 'participation_project_id')->where('document_created_from', $documentCreatedFromParticipantId)->where('show_on_portal', false)->orderBy('documents.id', 'desc');
+        return $this->hasMany(Document::class, 'participation_project_id')->where('document_created_from_id', $documentCreatedFromParticipantId)->where('show_on_portal', false)->orderBy('documents.id', 'desc');
     }
 
     public function documentsOnPortal(){
         $documentCreatedFromParticipantId = DocumentCreatedFrom::where('code_ref', 'participant')->first()->id;
-        return $this->hasMany(Document::class, 'participation_project_id')->where('document_created_from', $documentCreatedFromParticipantId)->where('show_on_portal', true)->orderBy('documents.id', 'desc');
+        return $this->hasMany(Document::class, 'participation_project_id')->where('document_created_from_id', $documentCreatedFromParticipantId)->where('show_on_portal', true)->orderBy('documents.id', 'desc');
     }
 
     public function tasks()

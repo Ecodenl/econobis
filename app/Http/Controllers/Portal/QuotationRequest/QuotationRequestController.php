@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Portal\QuotationRequest;
 
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\QuotationRequest\QuotationRequest;
+use App\Eco\User\User;
 use App\Helpers\Email\EmailHelper;
+use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Illuminate\Http\Request;
@@ -41,6 +43,14 @@ class QuotationRequestController
             abort(403, 'Geen toegang tot deze offerteaanvraag.');
         }
 
+        $responsibleUserId = PortalSettings::get('responsibleUserId');
+        if (!$responsibleUserId) {
+            abort(501, 'Er is helaas een fout opgetreden (onbekende klanten portaal verantwoordelijke).');
+        }
+
+        // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu zetten we responisibleUserId in Auth user tbv observers die create_by en updated_by hiermee vastleggen
+        Auth::setUser(User::find($responsibleUserId));
+
         $request->validate([
             'datePlanned' => ['nullable', 'date'],
             'dateRecorded' => ['nullable', 'date'],
@@ -60,6 +70,9 @@ class QuotationRequestController
         $sendMail = ($quotationRequest->isDirty('date_planned') && !!$quotationRequest->date_planned);
 
         $quotationRequest->save();
+
+        // Voor zekerheid hierna weer even Auth user herstellen met portal user
+        Auth::setUser($portalUser);
 
         if($sendMail){
             $this->sendInspectionPlannedMail($quotationRequest);

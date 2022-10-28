@@ -33,7 +33,10 @@ class SettingController extends Controller
 
     public function multiple(Request $request)
     {
-        $this->authorize('view', PortalSettingsLayout::class);
+//todo WM: Hiervoor moet nog een aparte permission view_portal_settings komen
+// en in PortalSettingsLayoutPolicy moeten we dan wellicht ook nog rekening houden met verschil
+// User en PortalUser ?!
+//        $this->authorize('view', PortalSettingsLayout::class);
 
         $store = $this->getStore();
         $keys = $this->getWhitelistedKeys($request);

@@ -12,8 +12,11 @@ class PortalSettingsLayoutJoryResource extends JoryResource
 
     protected function checkAuthorize(): void
     {
-        $portalSettingsLayoutController = new PortalSettingsLayoutController();
-        $portalSettingsLayoutController->authorize('view', PortalSettingsLayout::class);
+//todo WM: Hiervoor moet nog een aparte permission view_portal_settings komen
+// en in PortalSettingsLayoutPolicy moeten we dan wellicht ook nog rekening houden met verschil
+// User en PortalUser ?!
+//        $portalSettingsLayoutController = new PortalSettingsLayoutController();
+//        $portalSettingsLayoutController->authorize('view', PortalSettingsLayout::class);
     }
 
     protected function configureForApp(): void

@@ -14,10 +14,10 @@ class AddFieldsToQuotationRequests extends Migration
     public function up()
     {
         Schema::table('quotation_requests', function (Blueprint $table) {
-            $table->dateTime('date_planned')->nullable()->default(null);
-            $table->date('date_approved_external')->nullable()->default(null);
-            $table->boolean('approved_project_manager')->default(false);
-            $table->boolean('approved_client')->default(false);
+            $table->dateTime('date_planned')->nullable()->default(null)->after('opportunity_id');
+            $table->date('date_approved_client')->nullable()->default(null)->after('date_released');;
+            $table->date('date_approved_project_manage')->nullable()->default(null)->after('date_released');;
+            $table->date('date_approved_external')->nullable()->default(null)->after('date_released');;
         });
     }
 
@@ -31,8 +31,8 @@ class AddFieldsToQuotationRequests extends Migration
         Schema::table('quotation_requests', function (Blueprint $table) {
             $table->dropColumn('date_planned');
             $table->dropColumn('date_approved_external');
-            $table->dropColumn('approved_project_manager');
-            $table->dropColumn('approved_client');
+            $table->dropColumn('date_approved_project_manage');
+            $table->dropColumn('date_approved_client');
         });
     }
 }

@@ -602,7 +602,7 @@ class TemplateVariableHelper
                 return $model->date_finished ? Carbon::parse($model->date_finished)->format('d/m/Y') : null;
                 break;
             case 'afgerond_door':
-                return optional($model->finishedBy)->present()->fullName;
+                return optional(optional($model->finishedBy)->present())->fullName;
                 break;
             default:
                 return '';

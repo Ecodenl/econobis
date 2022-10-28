@@ -34,8 +34,8 @@ class FullMeasure extends JsonResource
             'suppliers' => FullOrganisation::collection($this->whenLoaded('deliveredByOrganisations')),
             'opportunities' => FullOpportunity::collection($this->whenLoaded('opportunities')),
             'housingFileSpecifications' => FullHousingFileSpecification::collection($this->whenLoaded('housingFileSpecifications')),
-            'relatedDocuments' => $this->documents()->get(),
-            'documentCount' => $this->documents()->count(),
+            'relatedDocuments' => $this->relatedDocuments,
+            'documentCount' => $this->relatedDocuments ? $this->relatedDocuments->count() : 0,
         ];
     }
 }

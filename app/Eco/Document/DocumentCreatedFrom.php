@@ -15,8 +15,13 @@ class DocumentCreatedFrom extends Model
      * @var array
      */
     protected $guarded = [
-        'id', 'name', 'code_ref'
+        'id', 'code_ref'
     ];
+    protected $dates
+        = [
+            'created_at',
+            'updated_at',
+        ];
 
     public function documents()
     {

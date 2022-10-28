@@ -88,6 +88,13 @@ class IntakeController extends ApiController
 
         $intake->relatedEmailsSent = $this->getRelatedEmails($intake->id, 'sent');
 
+        $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
+        if($teamDocumentCreatedFromIds){
+            $intake->relatedDocuments = $intake->documents()->whereIn('document_created_from_id', $teamDocumentCreatedFromIds)->get();
+        } else{
+            $intake->relatedDocuments = $intake->documents()->get();
+        }
+
         return FullIntake::make($intake);
     }
 

@@ -16,7 +16,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Hash;
 use Laracasts\Presenter\PresentableTrait;
 use Laravel\Passport\HasApiTokens;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 use Venturecraft\Revisionable\RevisionableTrait;
 
@@ -112,11 +111,11 @@ class User extends Authenticatable
     }
 
     public function getTeamContactGroupIds(){
-        if(!$this->teamContactGroupids === null){
+        if(!$this->teamContactGroupids == null){
             return $this->teamContactGroupids;
         } else {
             if (!$this->teams){
-                $this->teamContactGroupids =  false;
+                return false;
             }
 
             $teamContactGroupIds = [];
@@ -138,11 +137,11 @@ class User extends Authenticatable
         }
     }
     public function getTeamContactIds(){
-        if(!$this->teamContactids === null){
+        if(!$this->teamContactids == null){
             return $this->teamContactids;
         } else {
             if (!$this->teams){
-                $this->teamContactids =  false;
+                return false;
             }
 
             $teamContactIds = [];
@@ -163,20 +162,21 @@ class User extends Authenticatable
         }
     }
     public function getDocumentCreatedFromIds(){
-        if(!$this->teamDocumentCreatedFromIds === null){
+        if(!$this->teamDocumentCreatedFromIds == null){
             return $this->teamDocumentCreatedFromIds;
         } else {
             if (!$this->teams){
-                $this->teamDocumentCreatedFromIds =  false;
+                return false;
             }
 
             $teamDocumentCreatedFromIds = [];
             $hasDocumentCreatedFrom = false;
             foreach ($this->teams as $team){
-                foreach($team->documentCreatedFroms as $documentCreatedFrom){
+                $teamDocumentCreatedFromIds = $team->documentCreatedFroms->pluck('id')->toArray();
+                if(count($teamDocumentCreatedFromIds) > 0) {
                     $hasDocumentCreatedFrom = true;
-                    array_push($teamDocumentCreatedFromIds,$documentCreatedFrom->id);
                 }
+                $teamDocumentCreatedFromIds = array_unique(array_merge($teamDocumentCreatedFromIds, $team->documentCreatedFroms->pluck('id')->toArray()));
             }
             if($hasDocumentCreatedFrom && count($teamDocumentCreatedFromIds) == 0){
                 $this->teamDocumentCreatedFromIds = [-1];

@@ -39,6 +39,13 @@ class ContactController extends Controller
         $contact->relatedEmailsInbox = $this->getRelatedEmails($contact, $contact->id, 'inbox');
         $contact->relatedEmailsSent = $this->getRelatedEmails($contact, $contact->id, 'sent');
 
+        $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
+        if($teamDocumentCreatedFromIds){
+            $contact->relatedDocuments = $contact->documents()->whereIn('document_created_from_id', $teamDocumentCreatedFromIds)->get();
+        } else{
+            $contact->relatedDocuments = $contact->documents()->get();
+        }
+
         return new FullContactWithGroups($contact);
     }
 

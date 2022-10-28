@@ -87,6 +87,7 @@ class FullContact extends JsonResource
             'relatedEmailsSent' => $this->relatedEmailsSent,
             'financialOverviewContactCount' => $this->financialOverviewContactsSend()->count(),
             'relatedFinancialOverviewContacts' => FullFinancialOverviewContact::collection($this->whenLoaded('financialOverviewContactsSend')),
+            //todo WM: nog wijzigen (zie bijv. FullIntake
             'documentCount' => $this->documents()->count(),
             'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
             'opportunityCount' => $this->opportunities()->count(),

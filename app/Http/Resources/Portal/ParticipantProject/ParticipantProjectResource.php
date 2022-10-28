@@ -24,6 +24,7 @@ class ParticipantProjectResource extends JsonResource
             'administrationName' => ($this->project && $this->project->administration) ? $this->project->administration->name : '',
             'portalSettingsLayoutAssigned' => ($this->project && $this->project->administration) ? $this->project->administration->portalSettingsLayoutAssigned : '',
         ];
+        //todo WM: nog wijzigen (zie bijv. FullIntake
         $documents = [
             'documentCountOnPortal' => $this->documentsOnPortal()->count(),
             'relatedDocumentsOnPortal' => FullDocument::collection($this->whenLoaded('documentsOnPortal')),

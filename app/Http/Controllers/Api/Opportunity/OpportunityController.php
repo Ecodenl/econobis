@@ -64,6 +64,13 @@ class OpportunityController extends ApiController
 
         $opportunity->relatedEmailsSent = $this->getRelatedEmails($opportunity->id, 'sent');
 
+        $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
+        if($teamDocumentCreatedFromIds){
+            $opportunity->relatedDocuments = $opportunity->documents()->whereIn('document_created_from_id', $teamDocumentCreatedFromIds)->get();
+        } else{
+            $opportunity->relatedDocuments = $opportunity->documents()->get();
+        }
+
         return FullOpportunity::make($opportunity);
     }
 

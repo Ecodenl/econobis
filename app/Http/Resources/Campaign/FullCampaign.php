@@ -44,6 +44,7 @@ class FullCampaign extends JsonResource
             'relatedTasks' => GridTask::collection($this->whenLoaded('tasks')),
             'noteCount' => $this->notes()->count(),
             'relatedNotes' => GridTask::collection($this->whenLoaded('notes')),
+            //todo WM: nog wijzigen (zie bijv. FullIntake
             'documentCount' => $this->documents()->count(),
             'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
             'numberOfIntakes' => $this->numberOfIntakes,

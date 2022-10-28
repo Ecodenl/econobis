@@ -92,6 +92,7 @@ class FullOrder extends JsonResource
                 'taskCount' => $this->tasks()->count(),
                 'relatedTasks' => FullTask::collection($this->whenLoaded('tasks')),
 
+                //todo WM: nog wijzigen (zie bijv. FullIntake
                 'documentCount' => $this->documents()->count(),
                 'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
 

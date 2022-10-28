@@ -81,6 +81,13 @@ class TaskController extends Controller
         $task->relatedEmailsInbox = $this->getRelatedEmails($task->id, 'inbox');
         $task->relatedEmailsSent = $this->getRelatedEmails($task->id, 'sent');
 
+        $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
+        if($teamDocumentCreatedFromIds){
+            $task->relatedDocuments = $task->documents()->whereIn('document_created_from_id', $teamDocumentCreatedFromIds)->get();
+        } else{
+            $task->relatedDocuments = $task->documents()->get();
+        }
+
         return FullTask::make($task);
     }
 

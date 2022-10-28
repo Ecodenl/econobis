@@ -69,6 +69,13 @@ class QuotationRequestController extends ApiController
 
         $quotationRequest->relatedEmailsSent = $this->getRelatedEmails($quotationRequest->id, 'sent');
 
+        $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
+        if($teamDocumentCreatedFromIds){
+            $quotationRequest->relatedDocuments = $quotationRequest->documents()->whereIn('document_created_from_id', $teamDocumentCreatedFromIds)->get();
+        } else{
+            $quotationRequest->relatedDocuments = $quotationRequest->documents()->get();
+        }
+
         return FullQuotationRequest::make($quotationRequest);
     }
 

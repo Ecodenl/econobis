@@ -18,6 +18,7 @@ use App\Http\RequestQueries\Measure\Grid\RequestQuery;
 use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\Measure\GridMeasure;
 use App\Http\Resources\Measure\MeasurePeek;
+use Illuminate\Support\Facades\Auth;
 
 class MeasureController extends ApiController
 {
@@ -45,6 +46,13 @@ class MeasureController extends ApiController
             'opportunities.intake.campaign',
             'opportunities.intake.contact',
         ]);
+
+        $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
+        if($teamDocumentCreatedFromIds){
+            $measure->relatedDocuments = $measure->documents()->whereIn('document_created_from_id', $teamDocumentCreatedFromIds)->get();
+        } else{
+            $measure->relatedDocuments = $measure->documents()->get();
+        }
 
         return FullMeasure::make($measure);
     }

@@ -73,6 +73,13 @@ class HousingFileController extends ApiController
             'documents'
         ]);
 
+        $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
+        if($teamDocumentCreatedFromIds){
+            $housingFile->relatedDocuments = $housingFile->documents()->whereIn('document_created_from_id', $teamDocumentCreatedFromIds)->get();
+        } else{
+            $housingFile->relatedDocuments = $housingFile->documents()->get();
+        }
+
         return FullHousingFile::make($housingFile);
     }
 

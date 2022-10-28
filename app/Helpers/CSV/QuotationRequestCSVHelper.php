@@ -8,8 +8,6 @@
 
 namespace App\Helpers\CSV;
 
-use App\Eco\EnergySupplier\EnergySupplier;
-use App\Eco\Project\ProjectRevenue;
 use Carbon\Carbon;
 use League\Csv\Reader;
 
@@ -32,7 +30,7 @@ class QuotationRequestCSVHelper
 
         foreach ($this->quotationRequests->chunk(500) as $chunk) {
             $chunk->load([
-                'organisation',
+                'organisationOrCoach',
                 'status',
                 'opportunity.intake.contact.person.title',
                 'opportunity.intake.campaign',
@@ -86,7 +84,7 @@ class QuotationRequestCSVHelper
 
             $csv = $this->csvExporter->build($chunk, [
                 'id' => '#',
-                'organisation.name' => 'Organisatie',
+                'organisationOrCoach.full_name' => 'Organisatie/Coach',
                 'date_recorded' => 'Datum opname',
                 'status.name' => 'Status',
                 'date_released' => 'Offerte uitgebracht',

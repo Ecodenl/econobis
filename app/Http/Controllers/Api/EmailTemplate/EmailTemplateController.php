@@ -36,7 +36,7 @@ class EmailTemplateController extends Controller
     {
         $this->authorize('view', EmailTemplate::class);
 
-        $emailTemplate->load('createdBy');
+        $emailTemplate->load('createdBy', 'defaultAttachmentDocument');
 
         return FullEmailTemplate::make($emailTemplate);
     }
@@ -62,6 +62,7 @@ class EmailTemplateController extends Controller
             ->string('name')->validate('required')->next()
             ->string('subject')->onEmpty(null)->next()
             ->string('htmlBody')->onEmpty(null)->alias('html_body')->next()
+            ->string('defaultAttachmentDocumentId')->onEmpty(null)->alias('default_attachment_document_id')->next()
             ->get();
 
         $emailTemplate = new EmailTemplate();
@@ -78,6 +79,7 @@ class EmailTemplateController extends Controller
             ->string('name')->validate('required')->next()
             ->string('subject')->onEmpty(null)->next()
             ->string('htmlBody')->onEmpty(null)->alias('html_body')->next()
+            ->string('default_attachment_document_id')->onEmpty(null)->alias('default_attachment_document_id')->next()
             ->get();
 
         $emailTemplate->fill($data);

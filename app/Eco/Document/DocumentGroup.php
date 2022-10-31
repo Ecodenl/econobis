@@ -38,6 +38,8 @@ class DocumentGroup extends EnumWithIdAndName
             new static('consultation', 'Verslag adviesgesprek'),
             new static('pre-registration', 'Voorinschrijving'),
             new static('financial-overview', 'Waardestaat'),
+            new static('financial-overview', 'Waardestaat'),
+            new static('default-email-attachment', 'Standaard E-mail bijlage'),
         ];
     }
 }

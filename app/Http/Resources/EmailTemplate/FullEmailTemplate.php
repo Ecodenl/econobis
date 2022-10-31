@@ -10,6 +10,7 @@ namespace App\Http\Resources\EmailTemplate;
 
 
 use App\Http\Resources\Contact\FullContact;
+use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Mailbox\FullMailbox;
@@ -25,6 +26,7 @@ class FullEmailTemplate extends JsonResource
             'name' => $this->name,
             'subject' => $this->subject,
             'htmlBody' => $this->html_body,
+            'defaultAttachmentDocument' => FullDocument::make($this->whenLoaded('defaultAttachmentDocument')),
             'createdById' => $this->created_by_id,
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
             'createdAt' => $this->created_at,

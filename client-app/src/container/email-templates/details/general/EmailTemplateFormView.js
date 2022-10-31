@@ -11,7 +11,7 @@ const createMarkup = value => {
 };
 
 const EmailTemplateFormView = props => {
-    const { name, subject, htmlBody, createdBy } = props.emailTemplate;
+    const { name, subject, htmlBody, defaultAttachmentDocument, createdBy } = props.emailTemplate;
 
     return (
         <div>
@@ -32,6 +32,17 @@ const EmailTemplateFormView = props => {
                             <label className="col-sm-12">Standaard onderwerp</label>
                         </div>
                         <div className="col-sm-9">{subject}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="row margin-10-top" onClick={props.switchToEdit}>
+                <div className="col-sm-12">
+                    <div className="row">
+                        <div className="col-sm-3">
+                            <label className="col-sm-12">Gekoppelde bijlage</label>
+                        </div>
+                        <div className="col-sm-9">{defaultAttachmentDocument.filename}</div>
                     </div>
                 </div>
             </div>

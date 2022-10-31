@@ -48,6 +48,11 @@ class DocumentController extends Controller
         return Document::select('id', 'filename')->get();
     }
 
+    public function defaultEmailDocumentsPeek(){
+        $this->authorize('view', Document::class);
+        return Document::select('id', 'filename')->where('document_group', 'default-email-attachment')->get();
+    }
+
     public function show(Document $document)
     {
         $this->authorize('view', Document::class);

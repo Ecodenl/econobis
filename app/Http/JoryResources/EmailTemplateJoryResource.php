@@ -26,6 +26,7 @@ class EmailTemplateJoryResource extends JoryResource
         $this->field('updated_at')->filterable()->sortable();
         $this->field('deleted_at')->filterable()->sortable();
         $this->field('html_body')->filterable()->sortable();
+        $this->field('default_attachment_document_id')->filterable()->sortable();
     }
 
     protected function configureForPortal(): void

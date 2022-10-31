@@ -8,10 +8,14 @@ import ViewText from '../../../../components/form/ViewText';
 const QuotationRequestDetailsFormGeneralView = props => {
     const {
         organisationOrCoach,
-        dateRecorded,
         status,
         datePlannedToSendWfEmailStatus,
+        dateRecorded,
         dateReleased,
+        datePlanned,
+        dateApprovedExternal,
+        dateApprovedProjectManager,
+        dateApprovedClient,
         quotationText,
         opportunity,
     } = props.quotationRequestDetails;
@@ -56,11 +60,10 @@ const QuotationRequestDetailsFormGeneralView = props => {
                     label={'Maatregelen specifiek'}
                     value={opportunity.measures && opportunity.measures.map(measure => measure.name).join(', ')}
                 />
-                <ViewText label={'Datum opname'} value={dateRecorded ? moment(dateRecorded).format('L') : ''} />
             </div>
 
             <div className="row">
-                <ViewText label={'Offerte status'} value={status && status.name} />
+                <ViewText label={'Status'} value={status && status.name} />
                 {status && status.usesWf ? (
                     <ViewText
                         label={'Datum workflow email'}
@@ -73,13 +76,31 @@ const QuotationRequestDetailsFormGeneralView = props => {
             </div>
 
             <div className="row">
-                <ViewText label={'Offerte uitgebracht'} value={dateReleased ? moment(dateReleased).format('L') : ''} />
+                <ViewText label={'Datum afspraak'} value={datePlanned ? moment(datePlanned).format('L HH:mm') : ''} />
+                <ViewText label={'Datum opname'} value={dateRecorded ? moment(dateRecorded).format('L') : ''} />
+            </div>
+            <div className="row">
+                <ViewText label={'Datum uitgebracht'} value={dateReleased ? moment(dateReleased).format('L') : ''} />
+                <ViewText
+                    label={'Datum akkoord extern'}
+                    value={dateApprovedExternal ? moment(dateApprovedExternal).format('L') : ''}
+                />
+            </div>
+            <div className="row">
+                <ViewText
+                    label={'Datum akkoord projectleider'}
+                    value={dateApprovedProjectManager ? moment(dateApprovedProjectManager).format('L') : ''}
+                />
+                <ViewText
+                    label={'Datum akkoord bewoner'}
+                    value={dateApprovedClient ? moment(dateApprovedClient).format('L ') : ''}
+                />
             </div>
 
             <div className="row">
                 <div className="col-sm-3">
                     <label htmlFor="quotationText" className="col-sm-12">
-                        Offerte omschrijving
+                        Omschrijving
                     </label>
                 </div>
                 <div className="col-sm-9" id="quotationText">

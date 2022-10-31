@@ -42,7 +42,8 @@ class QuotationRequestController extends ApiController
             'opportunity.intake.campaign',
             'opportunity.intake.contact',
             'status',
-        ]);
+            'opportunityAction',
+            ]);
 
         return GridQuotationRequest::collection($quotationRequests)
             ->additional(['meta' => [
@@ -63,6 +64,7 @@ class QuotationRequestController extends ApiController
             'opportunity.measures',
             'documents',
             'status',
+            'opportunityAction',
             'createdBy',
             'updatedBy'
         ]);
@@ -115,7 +117,12 @@ class QuotationRequestController extends ApiController
             'opportunityId' => 'required|exists:opportunities,id',
             'dateRecorded' => 'string',
             'dateReleased' => 'string',
+            'datePlanned' => 'string',
+            'dateApprovedClient' => 'string',
+            'dateApprovedProjectManager' => 'string',
+            'dateApprovedExternal' => 'string',
             'statusId' => 'required|exists:quotation_request_status,id',
+            'opportunityActionId' => 'required|exists:opportunity_actions,id',
             'quotationText' => 'string',
         ]);
 
@@ -126,6 +133,7 @@ class QuotationRequestController extends ApiController
         $quotationRequest->contact_id = $data['organisationOrCoachId'];
         $quotationRequest->opportunity_id = $data['opportunityId'];
         $quotationRequest->status_id = $data['statusId'];
+        $quotationRequest->opportunity_action_id = $data['opportunityActionId'];
 
         //optional
         if ($data['dateRecorded']) {
@@ -134,6 +142,22 @@ class QuotationRequestController extends ApiController
 
         if ($data['dateReleased']) {
             $quotationRequest->date_released = $data['dateReleased'];
+        }
+
+        if ($data['datePlanned']) {
+            $quotationRequest->date_planned = $data['datePlanned'];
+        }
+
+        if ($data['dateApprovedClient']) {
+            $quotationRequest->date_approved_client = $data['dateApprovedClient'];
+        }
+
+        if ($data['dateApprovedProjectManager']) {
+            $quotationRequest->date_approved_project_manager = $data['dateApprovedProjectManager'];
+        }
+
+        if ($data['dateApprovedExternal']) {
+            $quotationRequest->date_approved_external = $data['dateApprovedExternal'];
         }
 
         if (isset($data['quotationText'])) {
@@ -157,7 +181,12 @@ class QuotationRequestController extends ApiController
             'opportunityId' => 'required|exists:opportunities,id',
             'dateRecorded' => 'string',
             'dateReleased' => 'string',
+            'datePlanned' => 'string',
+            'dateApprovedClient' => 'string',
+            'dateApprovedProjectManager' => 'string',
+            'dateApprovedExternal' => 'string',
             'statusId' => 'required|exists:quotation_request_status,id',
+            'opportunityActionId' => 'required|exists:opportunity_actions,id',
             'quotationText' => 'string',
         ]);
 
@@ -165,6 +194,7 @@ class QuotationRequestController extends ApiController
         $quotationRequest->contact_id = $data['organisationOrCoachId'];
         $quotationRequest->opportunity_id = $data['opportunityId'];
         $quotationRequest->status_id = $data['statusId'];
+        $quotationRequest->opportunity_action_id = $data['opportunityActionId'];
 
         //optional
         if ($data['dateRecorded']) {
@@ -177,6 +207,22 @@ class QuotationRequestController extends ApiController
             $quotationRequest->date_released = $data['dateReleased'];
         } else {
             $quotationRequest->date_released = null;
+        }
+
+        if ($data['datePlanned']) {
+            $quotationRequest->date_planned = $data['datePlanned'];
+        }
+
+        if ($data['dateApprovedClient']) {
+            $quotationRequest->date_approved_client = $data['dateApprovedClient'];
+        }
+
+        if ($data['dateApprovedProjectManager']) {
+            $quotationRequest->date_approved_project_manager = $data['dateApprovedProjectManager'];
+        }
+
+        if ($data['dateApprovedExternal']) {
+            $quotationRequest->date_approved_external = $data['dateApprovedExternal'];
         }
 
         if (isset($data['quotationText'])) {

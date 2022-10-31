@@ -10,6 +10,18 @@ const QuotationRequestDetailsDelete = props => {
         props.closeDeleteItemModal();
     };
 
+    let opportunityActionName = props.opportunityAction ? props.opportunityAction.name : 'actie';
+    let measureCategoryName =
+        props.opportunity && props.opportunity && props.opportunity.measureCategory
+            ? props.opportunity.measureCategory.name
+            : '';
+    let fullName =
+        props.opportunity && props.opportunity.intake && props.opportunity.intake.contact
+            ? props.opportunity.intake.contact.fullName
+            : '';
+    let fullAddress = props.opportunity && props.opportunity.intake ? props.opportunity.intake.fullAddress : '';
+    let quotationDeleteText = `${opportunityActionName} ${measureCategoryName} voor ${fullName} op ${fullAddress}`;
+
     return (
         <Modal
             buttonConfirmText="Verwijder"
@@ -18,9 +30,7 @@ const QuotationRequestDetailsDelete = props => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            <p>
-                Verwijder offerteverzoek: <strong> {`${props.id}`} </strong>
-            </p>
+            <p>Verwijder {quotationDeleteText}</p>
         </Modal>
     );
 };

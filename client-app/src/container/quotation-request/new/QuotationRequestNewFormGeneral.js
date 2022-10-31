@@ -27,9 +27,14 @@ class QuotationRequestNewFormGeneral extends Component {
             quotationRequest: {
                 opportunityId: '',
                 organisationOrCoachId: '',
-                dateRecorded: '',
                 statusId: '5', //offerte aangevraagd, also alter componentwillmount when changing default!
+                opportunityActionId: props.opportunityActionId,
+                dateRecorded: '',
                 dateReleased: '',
+                datePlanned: '',
+                dateApprovedClient: '',
+                dateApprovedProjectManager: '',
+                dateApprovedExternal: '',
                 quotationText: '',
             },
             errors: {
@@ -54,9 +59,14 @@ class QuotationRequestNewFormGeneral extends Component {
                 quotationRequest: {
                     opportunityId: payload.id,
                     organisationOrCoachId: '',
-                    dateRecorded: '',
                     statusId: '5',
+                    opportunityActionId: this.props.opportunityActionId,
+                    dateRecorded: '',
                     dateReleased: '',
+                    datePlanned: '',
+                    dateApprovedClient: '',
+                    dateApprovedProjectManager: '',
+                    dateApprovedExternal: '',
                     quotationText: payload.quotationText ? payload.quotationText : '',
                 },
             });
@@ -118,9 +128,13 @@ class QuotationRequestNewFormGeneral extends Component {
     render() {
         const {
             organisationOrCoachId,
-            dateRecorded,
             statusId,
+            dateRecorded,
             dateReleased,
+            datePlanned,
+            dateApprovedClient,
+            dateApprovedProjectManager,
+            dateApprovedExternal,
             quotationText,
         } = this.state.quotationRequest;
         const {
@@ -177,6 +191,29 @@ class QuotationRequestNewFormGeneral extends Component {
                         onChange={() => {}}
                         readOnly={true}
                     />
+                </div>
+
+                <div className="row">
+                    <InputSelect
+                        label={'Status'}
+                        size={'col-sm-6'}
+                        name="statusId"
+                        value={statusId}
+                        options={this.props.quotationRequestStatus}
+                        onChangeAction={this.handleInputChange}
+                        required={'required'}
+                        error={this.state.errors.status}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputDate
+                        label="Datum afspraak"
+                        size={'col-sm-6'}
+                        name="datePlanned"
+                        value={datePlanned}
+                        onChangeAction={this.handleInputChangeDate}
+                    />
                     <InputDate
                         label="Datum opname"
                         size={'col-sm-6'}
@@ -187,28 +224,41 @@ class QuotationRequestNewFormGeneral extends Component {
                 </div>
 
                 <div className="row">
-                    <InputSelect
-                        label={'Offerte status'}
-                        size={'col-sm-6'}
-                        name="statusId"
-                        value={statusId}
-                        options={this.props.quotationRequestStatus}
-                        onChangeAction={this.handleInputChange}
-                        required={'required'}
-                        error={this.state.errors.status}
-                    />
                     <InputDate
-                        label="Offerte uitgebracht"
+                        label="Datum uitgebracht"
                         size={'col-sm-6'}
                         name="dateReleased"
                         value={dateReleased}
+                        onChangeAction={this.handleInputChangeDate}
+                    />
+                    <InputDate
+                        label="Datum akkoord extern"
+                        size={'col-sm-6'}
+                        name="dateApprovedExternal"
+                        value={dateApprovedExternal}
+                        onChangeAction={this.handleInputChangeDate}
+                    />
+                </div>
+                <div className="row">
+                    <InputDate
+                        label="Datum akkoord projectleider"
+                        size={'col-sm-6'}
+                        name="dateApprovedProjectManager"
+                        value={dateApprovedProjectManager}
+                        onChangeAction={this.handleInputChangeDate}
+                    />
+                    <InputDate
+                        label="Datum akkoord bewoner"
+                        size={'col-sm-6'}
+                        name="dateApprovedClient"
+                        value={dateApprovedClient}
                         onChangeAction={this.handleInputChangeDate}
                     />
                 </div>
 
                 <div className="row">
                     <InputTextArea
-                        label={'Offerte omschrijving'}
+                        label={'Omschrijving'}
                         name={'quotationText'}
                         value={quotationText}
                         onChangeAction={this.handleInputChange}

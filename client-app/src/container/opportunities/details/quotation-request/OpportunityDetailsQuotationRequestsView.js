@@ -4,7 +4,15 @@ import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 
 const OpportunityDetailsQuotationRequestsView = props => {
-    const { id, organisationOrCoach, createdAt, dateRecorded, status, dateReleased } = props.quotationRequest;
+    const {
+        id,
+        organisationOrCoach,
+        opportunityAction,
+        createdAt,
+        dateRecorded,
+        status,
+        dateReleased,
+    } = props.quotationRequest;
 
     return (
         <div
@@ -15,6 +23,7 @@ const OpportunityDetailsQuotationRequestsView = props => {
         >
             <div className="col-sm-2">{organisationOrCoach && organisationOrCoach.fullName}</div>
             <div className="col-sm-2">{createdAt ? moment(createdAt).format('L') : ''}</div>
+            <div className="col-sm-2">{opportunityAction ? opportunityAction.name : ''}</div>
             <div className="col-sm-2">{dateRecorded ? moment(dateRecorded).format('L') : ''}</div>
             <div className="col-sm-2">{status && status.name}</div>
             <div className="col-sm-2">{dateReleased ? moment(dateReleased).format('L') : ''}</div>

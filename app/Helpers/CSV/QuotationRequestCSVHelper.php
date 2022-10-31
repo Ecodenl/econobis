@@ -32,6 +32,7 @@ class QuotationRequestCSVHelper
             $chunk->load([
                 'organisationOrCoach',
                 'status',
+                'opportunityAction',
                 'opportunity.intake.contact.person.title',
                 'opportunity.intake.campaign',
                 'opportunity.measureCategory',

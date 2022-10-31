@@ -2,6 +2,7 @@
 
 namespace App\Eco\Opportunity;
 
+use App\Eco\QuotationRequest\QuotationRequest;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
@@ -24,5 +25,10 @@ class OpportunityAction extends Model
     public function campaigns()
     {
         return $this->hasMany(Campaign::class);
+    }
+
+    public function quotationRequests()
+    {
+        return $this->hasMany(QuotationRequest::class);
     }
 }

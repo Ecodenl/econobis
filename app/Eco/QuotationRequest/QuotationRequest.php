@@ -6,7 +6,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\Opportunity\Opportunity;
-use App\Eco\Organisation\Organisation;
+use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -39,6 +39,11 @@ class QuotationRequest extends Model
     public function status()
     {
         return $this->belongsTo(QuotationRequestStatus::class);
+    }
+
+    public function opportunityAction()
+    {
+        return $this->belongsTo(OpportunityAction::class);
     }
 
     public function documents(){

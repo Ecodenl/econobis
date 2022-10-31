@@ -34,13 +34,23 @@ class CreateCampaignOpportunityActionTables extends Migration
             $table->timestamps();
             $table->primary(['campaign_id', 'opportunity_action_id'], 'campaign_opportunity_action_primary');
         });
-//        $offerteverzoekAction = DB::table('opportunity_actions')
-//            ->where('name', 'Offerteverzoek')
-//            ->get();
+
+        Schema::table('quotation_requests', function (Blueprint $table) {
+            $table->unsignedInteger('opportunity_action_id')->nullable()->after('opportunity_id');
+            $table->foreign('opportunity_action_id')
+                ->references('id')->on('opportunity_actions')
+                ->onDelete('restrict');
+        });
+
         $offerteverzoekAction = OpportunityAction::where('name', 'Offerteverzoek')->first();
+
         foreach (Campaign::withTrashed()->get() as $campaign) {
             $campaign->opportunityActions()->sync([$offerteverzoekAction->id]);
         }
+
+        DB::table('quotation_requests')->update([
+            'opportunity_action_id' => $offerteverzoekAction->id
+        ]);
     }
 
     /**
@@ -50,6 +60,12 @@ class CreateCampaignOpportunityActionTables extends Migration
      */
     public function down()
     {
+        if (Schema::hasColumn('quotation_requests', 'opportunity_action_id')) {
+            Schema::table('quotation_requests', function (Blueprint $table) {
+                $table->dropForeign(['opportunity_action_id']);
+                $table->dropColumn('opportunity_action_id');
+            });
+        }
         Schema::dropIfExists('opportunity_actions');
         Schema::dropIfExists('campaign_opportunity_action');
     }

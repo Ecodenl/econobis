@@ -27,6 +27,7 @@ class GridQuotationRequest extends JsonResource
                'organisationOrCoach' => FullContact::make($this->whenLoaded('organisationOrCoach')),
                'opportunity' => OpportunityByQuotationRequest::make($this->whenLoaded('opportunity')),
                'status' => GenericResource::make($this->whenLoaded('status')),
+               'opportunityAction' => GenericResource::make($this->whenLoaded('opportunityAction')),
                'createdAt' => $this->created_at,
             ];
     }

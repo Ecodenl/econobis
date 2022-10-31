@@ -24,6 +24,14 @@ class CreateQuotationRequestActionsLogTable extends Migration
                 ->references('id')->on('contacts')
                 ->onDelete('restrict');
             $table->string('updated_with', 16)->nullable()->default(null);
+            $table->unsignedInteger('old_status_id')->nullable()->default(null);
+            $table->foreign('old_status_id')
+                ->references('id')->on('quotation_request_status')
+                ->onDelete('restrict');
+            $table->unsignedInteger('new_status_id')->nullable()->default(null);
+            $table->foreign('new_status_id')
+                ->references('id')->on('quotation_request_status')
+                ->onDelete('restrict');
             $table->timestamps();
         });
     }

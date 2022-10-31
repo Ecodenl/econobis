@@ -15,9 +15,7 @@ import DocumentsAPI from '../../../../api/document/DocumentsAPI';
 class EmailTemplateFormEdit extends Component {
     constructor(props) {
         super(props);
-        const { id, name, subject, htmlBody } = props.emailTemplate;
-
-        console.log(props);
+        const { id, name, subject, htmlBody, defaultAttachmentDocument } = props.emailTemplate;
 
         this.state = {
             defaultEmailDocuments: [],
@@ -26,6 +24,7 @@ class EmailTemplateFormEdit extends Component {
                 name,
                 subject: subject ? subject : '',
                 htmlBody: htmlBody ? htmlBody : '',
+                defaultAttachmentDocumentId: defaultAttachmentDocument.id ? defaultAttachmentDocument.id : '',
             },
             errors: {
                 name: false,
@@ -90,8 +89,8 @@ class EmailTemplateFormEdit extends Component {
     };
 
     render() {
-        const { name, subject, htmlBody } = this.state.emailTemplate;
-        const { createdBy, defaultAttachmentDocumentId } = this.props.emailTemplate;
+        const { name, subject, htmlBody, defaultAttachmentDocumentId } = this.state.emailTemplate;
+        const { createdBy } = this.props.emailTemplate;
 
         return (
             <div>
@@ -143,7 +142,6 @@ class EmailTemplateFormEdit extends Component {
                                     options={this.state.defaultEmailDocuments}
                                     optionName={'filename'}
                                     onChangeAction={this.handleInputChange}
-                                    placeholder={'Koppel een bijlage aan deze template'}
                                 />
                             </div>
                         </div>

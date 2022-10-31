@@ -62,7 +62,7 @@ const EmailTemplateNew = props => {
             <div className="row">
                 <div className="form-group col-sm-12">
                     <div className="row">
-                        <div className="col-sm-12">
+                        <div className="col-sm-9">
                             <InputSelect
                                 label="Standaard E-mail bijlage"
                                 name={'defaultAttachmentDocumentId'}

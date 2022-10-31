@@ -86,8 +86,9 @@ Route::namespace('Api')
         Route::post('/housing-file/{housingFile}/update', 'HousingFile\HousingFileController@update');
         Route::post('/housing-file/{housingFile}/delete', 'HousingFile\HousingFileController@destroy');
 
-        Route::post('/housing-file/measure-taken', 'HousingFile\HousingFileController@attachMeasureTaken');
-        Route::post('/housing-file/{address}/{measure}/detach', 'HousingFile\HousingFileController@detachMeasureTaken');
+        Route::post('/housing-file/housing-file-specification', 'HousingFile\HousingFileController@addHousingFileSpecification');
+        Route::post('/housing-file/housing-file-specification/{housingFileSpecification}/update', 'HousingFile\HousingFileController@updateHousingFileSpecification');
+        Route::post('/housing-file/housing-file-specification/{housingFileSpecification}/delete', 'HousingFile\HousingFileController@deleteHousingFileSpecification');
 
         Route::get('/housing-file/{housingFile}/notes', 'HousingFile\HousingFileController@notes');
         Route::get('/housing-file/{housingFile}/documents', 'HousingFile\HousingFileController@documents');
@@ -124,6 +125,8 @@ Route::namespace('Api')
         Route::post('/organisation', 'Organisation\OrganisationController@store');
         Route::post('/organisation/{organisation}', 'Organisation\OrganisationController@update');
         Route::get('/organisation/peek', 'Organisation\OrganisationController@peek');
+
+        Route::get('/coach/peek', 'Contact\ContactController@peekCoach');
 
         Route::post('/contact-note', 'ContactNote\ContactNoteController@store');
         Route::post('/contact-note/{contactNote}', 'ContactNote\ContactNoteController@update');
@@ -221,6 +224,8 @@ Route::namespace('Api')
         Route::post('campaign/{campaign}/response/{contact}/detach', 'Campaign\CampaignController@detachResponse');
         Route::post('campaign/{campaign}/organisation/{organisation}/attach', 'Campaign\CampaignController@attachOrganisation');
         Route::post('campaign/{campaign}/organisation/{organisation}/detach', 'Campaign\CampaignController@detachOrganisation');
+        Route::post('campaign/{campaign}/coach/{coach}/attach', 'Campaign\CampaignController@attachCoach');
+        Route::post('campaign/{campaign}/coach/{coach}/detach', 'Campaign\CampaignController@detachCoach');
 
         Route::get('measure/grid', 'Measure\MeasureController@grid');
         Route::get('measure/peek', 'Measure\MeasureController@peek');
@@ -239,6 +244,7 @@ Route::namespace('Api')
         Route::post('measure-category/{measureCategory}', 'Measure\MeasureCategoryController@update');
 
         Route::get('mailbox/grid', 'Mailbox\MailboxController@grid');
+        Route::get('mailbox/peek', 'Mailbox\MailboxController@peek');
         Route::get('mailbox/logged-in/email-peek', 'Mailbox\MailboxController@loggedInEmailPeek');
         Route::get('mailbox/{mailbox}', 'Mailbox\MailboxController@show');
         Route::post('mailbox', 'Mailbox\MailboxController@store');
@@ -313,6 +319,10 @@ Route::namespace('Api')
         Route::post('team/{team}/delete', 'Team\TeamController@destroy');
         Route::post('team/{team}/{user}/attach', 'Team\TeamController@attachUser');
         Route::post('team/{team}/{user}/detach', 'Team\TeamController@detachUser');
+        Route::post('team/{team}/{contactGroup}/attach-contact-group', 'Team\TeamController@attachContactGroup');
+        Route::post('team/{team}/{contactGroup}/detach-contact-group', 'Team\TeamController@detachContactGroup');
+        Route::post('team/{team}/{documentCreatedFrom}/attach-document-created-from', 'Team\TeamController@attachDocumentCreatedFrom');
+        Route::post('team/{team}/{documentCreatedFrom}/detach-document-created-from', 'Team\TeamController@detachDocumentCreatedFrom');
 
         Route::get('/quotation-request/grid', 'QuotationRequest\QuotationRequestController@grid');
         Route::get('/quotation-request/peek', 'QuotationRequest\QuotationRequestController@peek');

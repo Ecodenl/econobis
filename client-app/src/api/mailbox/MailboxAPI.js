@@ -63,6 +63,12 @@ export default {
         return axiosInstance.post(requestUrl, ignore);
     },
 
+    peekMailboxes: () => {
+        const requestUrl = `${URL_MAILBOX}/peek`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
     updateIgnore: ignore => {
         const requestUrl = `${URL_MAILBOX}/update-ignore/${ignore.id}`;
 

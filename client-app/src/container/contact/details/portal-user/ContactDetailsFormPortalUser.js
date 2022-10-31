@@ -63,7 +63,7 @@ class ContactDetailsFormPortalUser extends Component {
                                 <div>Niet geactiveerd</div>
                             </div>
                         </div>
-                    ) : this.state.showEdit ? (
+                    ) : this.props.permissions.updateContactPortalUser && this.state.showEdit ? (
                         <ContactDetailsFormPortalUserEdit switchToView={this.switchToView} />
                     ) : (
                         <ContactDetailsFormPortalUserView
@@ -75,7 +75,7 @@ class ContactDetailsFormPortalUser extends Component {
                             toggleDelete={this.toggleDelete}
                         />
                     )}
-                    {this.state.showDelete && (
+                    {this.props.permissions.deleteContactPortalUser && this.state.showDelete && (
                         <ContactDetailsFormPortalUserDelete closeDeleteItemModal={this.toggleDelete} />
                     )}
                 </PanelBody>
@@ -86,6 +86,7 @@ class ContactDetailsFormPortalUser extends Component {
 
 const mapStateToProps = state => {
     return {
+        permissions: state.meDetails.permissions,
         portalUser: state.contactDetails.portalUser,
     };
 };

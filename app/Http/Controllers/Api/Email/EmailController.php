@@ -373,7 +373,12 @@ class EmailController
     }
 
     public function peek(){
-        $contacts = Contact::select('id', 'full_name')->with('emailAddresses')->get();
+        $teamContactIds = Auth::user()->getTeamContactIds();
+        if ($teamContactIds){
+            $contacts = Contact::select('id', 'full_name')->with('emailAddresses')->whereIn('contacts.id', $teamContactIds)->orderBy('full_name')->get();
+        }else{
+            $contacts = Contact::select('id', 'full_name')->with('emailAddresses')->orderBy('full_name')->get();
+        }
 
         foreach($contacts as $contact) {
             foreach ($contact->emailAddresses as $emailAddress) {
@@ -400,7 +405,12 @@ class EmailController
 
     public function search(Request $request)
     {
-        $contacts = Contact::select(DB::raw("`email_addresses`.`id`, concat(`contacts`.`full_name`, ' (', `email_addresses`.`email`, ')') as name, `email_addresses`.`email` as email"));
+        $teamContactIds = Auth::user()->getTeamContactIds();
+        if ($teamContactIds){
+            $contacts = Contact::select(DB::raw("`email_addresses`.`id`, concat(`contacts`.`full_name`, ' (', `email_addresses`.`email`, ')') as name, `email_addresses`.`email` as email"))->whereIn('contacts.id', $teamContactIds);
+        }else{
+            $contacts = Contact::select(DB::raw("`email_addresses`.`id`, concat(`contacts`.`full_name`, ' (', `email_addresses`.`email`, ')') as name, `email_addresses`.`email` as email"));
+        }
         $contacts->join('email_addresses', function ($join) {
             $join->on('email_addresses.contact_id', '=', 'contacts.id')
                 ->whereNull('email_addresses.deleted_at');

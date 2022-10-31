@@ -58,6 +58,7 @@ class FullContactGroup extends JsonResource
             'lapostaListId' => $this->simulatedGroup ? $this->simulatedGroup->laposta_list_id : $this->laposta_list_id,
             'lapostaListCreatedAt' => $this->simulatedGroup ? $this->simulatedGroup->laposta_list_created_at : $this->laposta_list_created_at,
             'includeIntoExportGroupReport' => $this->include_into_export_group_report,
+            'isCoachGroup' => $this->is_coach_group,
         ];
     }
 }

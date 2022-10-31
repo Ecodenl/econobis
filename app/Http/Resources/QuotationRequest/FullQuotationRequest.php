@@ -28,7 +28,8 @@ class FullQuotationRequest extends JsonResource
                 'dateRecorded' => $this->date_recorded,
                 'dateReleased' => $this->date_released,
                 'quotationText' => $this->quotation_text,
-                'organisation' => FullOrganisation::make($this->whenLoaded('organisation')),
+                'contact_id' => $this->contact_id,
+                'organisationOrCoach' => FullContact::make($this->whenLoaded('organisationOrCoach')),
                 'opportunity' => FullOpportunity::make($this->whenLoaded('opportunity')),
                 'status' => GenericResource::make($this->whenLoaded('status')),
                 'datePlannedToSendWfEmailStatus' => $this->date_planned_to_send_wf_email_status,
@@ -38,8 +39,8 @@ class FullQuotationRequest extends JsonResource
                 'updatedAt' => $this->updated_at,
                 'emailSentCount' => $this->relatedEmailsSent ? $this->relatedEmailsSent->count() : 0,
                 'relatedEmailsSent' => $this->relatedEmailsSent,
-                'documentCount' => $this->documents()->count(),
-                'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
+                'documentCount' => $this->relatedDocuments ? $this->relatedDocuments->count() : 0,
+                'relatedDocuments' => $this->relatedDocuments,
                 'contact' => FullContact::make($this->opportunity->intake->contact),
             ];
     }

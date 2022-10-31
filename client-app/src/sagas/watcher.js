@@ -86,7 +86,7 @@ import {
 import { deleteIntakeMeasureRequestedSaga, deleteIntakeSaga, fetchIntakeDetailsSaga } from './intake/IntakeDetailsSaga';
 import { fetchIntakesSaga } from './intake/IntakesSaga';
 import {
-    deleteHousingFileMeasureTakenSaga,
+    deleteHousingFileSpecificationSaga,
     deleteHousingFileSaga,
     fetchHousingFileDetailsSaga,
 } from './housing-file/HousingFileDetailsSaga';
@@ -100,7 +100,13 @@ import { deleteTaskSaga, fetchTaskDetailsSaga } from './task/TaskDetailsSaga';
 import { fetchTasksSaga, setTaskFinishedSaga } from './task/TasksSaga';
 import { fetchNotesSaga } from './task/NotesSaga';
 import { deleteTeamSaga, fetchTeamsSaga } from './team/TeamsSaga';
-import { deleteTeamUserSaga, fetchTeamDetailsSaga, updateTeamDetailsSaga } from './team/TeamDetailsSaga';
+import {
+    deleteTeamContactGroupSaga,
+    deleteTeamDocumentCreatedFromSaga,
+    deleteTeamUserSaga,
+    fetchTeamDetailsSaga,
+    updateTeamDetailsSaga,
+} from './team/TeamDetailsSaga';
 import { fetchUserDetailsSaga, updateUserDetailsSaga } from './user/UserDetailsSaga';
 import { fetchUserSaga } from './user/UsersSaga';
 import { meDetailsSaga } from './general/MeDetailsSaga';
@@ -184,7 +190,7 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_HOUSING_FILES', fetchHousingFilesSaga);
     yield takeLatest('FETCH_HOUSING_FILE_DETAILS', fetchHousingFileDetailsSaga);
     yield takeLatest('DELETE_HOUSING_FILE', deleteHousingFileSaga);
-    yield takeLatest('DELETE_HOUSING_FILE_MEASURE_TAKEN', deleteHousingFileMeasureTakenSaga);
+    yield takeLatest('DELETE_HOUSING_FILE_SPECIFICATION', deleteHousingFileSpecificationSaga);
     // Quotation Requests
     yield takeLatest('FETCH_QUOTATION_REQUESTS', fetchQuotationRequestsSaga);
     yield takeLatest('FETCH_QUOTATION_REQUEST_DETAILS', fetchQuotationRequestDetailsSaga);
@@ -254,6 +260,8 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_TEAM_DETAILS', fetchTeamDetailsSaga);
     yield takeLatest('DELETE_TEAM', deleteTeamSaga);
     yield takeLatest('DELETE_TEAM_USER', deleteTeamUserSaga);
+    yield takeLatest('DELETE_TEAM_CONTACT_GROUP', deleteTeamContactGroupSaga);
+    yield takeLatest('DELETE_TEAM_DOCUMENT_CREATED_FROM', deleteTeamDocumentCreatedFromSaga);
     yield takeLatest('UPDATE_TEAM', updateTeamDetailsSaga);
 
     // Products

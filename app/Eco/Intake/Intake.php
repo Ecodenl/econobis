@@ -132,4 +132,9 @@ class Intake extends Model
 
         return $canUpdateStatus;
     }
+
+    public function newEloquentBuilder($query)
+    {
+        return new IntakeBuilder($query);
+    }
 }

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import ViewText from '../../../../components/form/ViewText';
 
 const MeasureFormView = props => {
-    const { name, number, description, measureCategory = {} } = props.measureDetails;
+    const { name, number, visible, description, measureCategory = {} } = props.measureDetails;
 
     return (
         <div>
@@ -15,6 +15,7 @@ const MeasureFormView = props => {
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Maatregel specifiek'} value={name} />
+                <ViewText label={'Zichtbaar'} value={visible ? 'Ja' : 'Nee'} />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>

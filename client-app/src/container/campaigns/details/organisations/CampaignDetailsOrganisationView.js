@@ -14,7 +14,7 @@ const CampaignDetailsOrganisationView = ({
     return (
         <div className={`row border ${highlightLine}`} onMouseEnter={onLineEnter} onMouseLeave={onLineLeave}>
             <div onClick={() => hashHistory.push(`/contact/${contactId}`)}>
-                <div className="col-sm-1">{contactId}</div>
+                <div className="col-sm-1">{contact.number}</div>
                 <div className="col-sm-2">{name}</div>
                 <div className="col-sm-2">{address?.city || ''}</div>
                 <div className="col-sm-2">{contact.contactPerson?.contact?.fullName || ''}</div>

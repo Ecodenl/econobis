@@ -32,6 +32,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
             sendEmailNewContactLink,
             emailTemplateIdNewContactLink,
             includeIntoExportGroupReport,
+            isCoachGroup,
         } = props.contactGroupDetails;
 
         this.state = {
@@ -53,6 +54,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                 sendEmailNewContactLink: sendEmailNewContactLink ? sendEmailNewContactLink : false,
                 emailTemplateIdNewContactLink: emailTemplateIdNewContactLink ? emailTemplateIdNewContactLink : '',
                 includeIntoExportGroupReport: includeIntoExportGroupReport ? includeIntoExportGroupReport : false,
+                isCoachGroup: isCoachGroup ? isCoachGroup : false,
             },
             errors: {
                 name: false,
@@ -219,6 +221,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
             lapostaListCreatedAt,
             emailTemplateIdNewContactLink,
             includeIntoExportGroupReport,
+            isCoachGroup,
         } = this.state.contactGroup;
 
         return (
@@ -427,7 +430,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                         />
                     )}
                 </div>
-                {/*todo WM: check of filter op static er niet af moet ?*/}
+                {/*todo WM: check of filter op static er niet af kan/moet voor Meenemen in export groep rapportage? Voorlopig niet */}
                 {this.props.contactGroupDetails.type.id === 'static' && (
                     <div className="row">
                         <InputToggle
@@ -437,6 +440,14 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                             onChangeAction={this.handleInputChange}
                             size={'col-sm-5'}
                             textToolTip={`Als je deze optie op "AAN" zet zal deze groep getoond worden in de export groepen rapportage op de "groepen beheer" pagina.`}
+                        />
+                        <InputToggle
+                            label={'Is coach groep'}
+                            name={'isCoachGroup'}
+                            value={isCoachGroup}
+                            onChangeAction={this.handleInputChange}
+                            size={'col-sm-5'}
+                            textToolTip={`Als dit aanstaat en een contact wordt aan deze groep toegevoegd dan wordt dat contact energie coach`}
                         />
                     </div>
                 )}

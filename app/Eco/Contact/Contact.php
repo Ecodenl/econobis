@@ -27,6 +27,7 @@ use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Portal\PortalUser;
+use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\Task\Task;
 use App\Eco\Twinfield\TwinfieldCustomerNumber;
@@ -170,6 +171,18 @@ class Contact extends Model
         return ($this->type_id == ContactType::ORGANISATION);
     }
 
+    public function isCoach()
+    {
+        return $this->is_coach;
+
+    }
+
+    public function getIsInCoachGroupAttribute()
+    {
+        return $this->groups()->where('is_coach_group', true)->exists();;
+    }
+
+
     public function getType()
     {
         if(!$this->type_id) return null;
@@ -187,6 +200,10 @@ class Contact extends Model
         return $this->hasManyThrough(Opportunity::class, Intake::class)->orderBy('opportunities.id', 'desc');
     }
 
+    public function quotationRequests(){
+        return $this->hasMany(QuotationRequest::class);
+    }
+
     // Only an unfinished task is a task
     public function tasks()
     {
@@ -199,8 +216,12 @@ class Contact extends Model
         return $this->hasMany(Task::class)->where('finished', true)->orderBy('tasks.id', 'desc');
     }
 
-    public function campaigns(){
-        return $this->belongsToMany(Campaign::class);
+// todo WM: opschonen, dit is volgens mij geen relation of wordt anders niet gebruikt
+//    public function campaigns(){
+//        return $this->belongsToMany(Campaign::class);
+//    }
+    public function coachCampaigns(){
+        return $this->belongsToMany(Campaign::class, 'campaign_coach');
     }
 
     public function responses(){
@@ -672,5 +693,10 @@ class Contact extends Model
                 $query->where('contact_id', $portalUser->contact_id);
             });
         });
+    }
+
+    public function newEloquentBuilder($query)
+    {
+        return new ContactBuilder($query);
     }
 }

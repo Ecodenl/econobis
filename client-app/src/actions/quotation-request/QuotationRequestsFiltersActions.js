@@ -1,6 +1,6 @@
-export const setQuotationRequestOrganisationFilter = organisation => ({
-    type: 'SET_FILTER_QUOTATION_REQUEST_ORGANISATION',
-    organisation,
+export const setQuotationRequestOrganisationOrCoachFilter = organisationOrCoach => ({
+    type: 'SET_FILTER_QUOTATION_REQUEST_ORGANISATION_OR_COACH',
+    organisationOrCoach,
 });
 
 export const setQuotationRequestContactFilter = contact => ({

@@ -20,14 +20,14 @@ const ContactDetailsFormEmailView = props => {
                 <div className="col-sm-2">{primary ? <span className="pull-right">Primair</span> : ''}</div>
             </div>
             <div className="col-sm-1">
-                {props.showActionButtons ? (
+                {props.permissions.updateContactEmail && props.showActionButtons ? (
                     <a role="button" onClick={props.openEdit}>
                         <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
                     </a>
                 ) : (
                     ''
                 )}
-                {props.showActionButtons ? (
+                {props.permissions.deleteContactEmail && props.showActionButtons ? (
                     <a role="button" onClick={props.toggleDelete}>
                         <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
                     </a>
@@ -41,6 +41,7 @@ const ContactDetailsFormEmailView = props => {
 
 const mapStateToProps = state => {
     return {
+        permissions: state.meDetails.permissions,
         emailAddressTypes: state.systemData.emailAddressTypes,
     };
 };

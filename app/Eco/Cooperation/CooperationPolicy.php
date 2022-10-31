@@ -9,6 +9,10 @@ class CooperationPolicy
 {
     use HandlesAuthorization;
 
+    public function view(User $user)
+    {
+        return $user->hasPermissionTo('manage_cooperation_settings', 'api');
+    }
     public function manage(User $user)
     {
         return $user->hasPermissionTo('manage_cooperation_settings', 'api');

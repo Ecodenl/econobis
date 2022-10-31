@@ -15,7 +15,7 @@ class Sort extends RequestSort
 {
 
     protected $fields = [
-        'organisation',
+        'organisationOrCoach',
         'contact',
         'address',
         'measure',
@@ -27,7 +27,7 @@ class Sort extends RequestSort
     ];
 
     protected $mapping = [
-        'organisation' => 'organisations.name',
+        'organisationOrCoach' => 'organisationOrCoaches.full_name',
         'contact' => 'contacts.full_name',
         'measure' => 'measure_categories.name',
         'campaign' => 'campaigns.name',
@@ -38,7 +38,7 @@ class Sort extends RequestSort
     ];
 
     protected $joins = [
-        'organisation' => 'organisation',
+        'organisationOrCoach' => 'organisationOrCoach',
         'contact' => 'contact',
         'address' => 'address',
         'measure' => 'measure',

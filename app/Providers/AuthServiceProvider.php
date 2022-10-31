@@ -24,6 +24,8 @@ use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\DocumentTemplate\DocumentTemplatePolicy;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailAddress\EmailAddressPolicy;
+use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\EmailTemplate\EmailTemplatePolicy;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverviewPolicy;
 use App\Eco\HousingFile\HousingFile;
@@ -32,6 +34,8 @@ use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakePolicy;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoicePolicy;
+use App\Eco\Jobs\JobsLog;
+use App\Eco\Jobs\JobsLogPolicy;
 use App\Eco\Ledger\Ledger;
 use App\Eco\Ledger\LedgerPolicy;
 use App\Eco\Mailbox\Mailbox;
@@ -90,6 +94,8 @@ use App\Eco\Task\TaskType;
 use App\Eco\Task\TaskTypePolicy;
 use App\Eco\Team\Team;
 use App\Eco\Team\TeamPolicy;
+use App\Eco\Twinfield\TwinfieldLog;
+use App\Eco\Twinfield\TwinfieldLogPolicy;
 use App\Eco\User\User;
 use App\Eco\User\UserPolicy;
 use App\Eco\VatCode\VatCode;
@@ -129,6 +135,7 @@ class AuthServiceProvider extends ServiceProvider
         MeasureCategory::class => MeasureCategoryPolicy::class,
         Document::class => DocumentPolicy::class,
         DocumentTemplate::class => DocumentTemplatePolicy::class,
+        EmailTemplate::class => EmailTemplatePolicy::class,
         AuditTrail::class => AuditTrailPolicy::class,
         Mailbox::class => MailboxPolicy::class,
         QuotationRequest::class => QuotationRequestPolicy::class,
@@ -156,6 +163,8 @@ class AuthServiceProvider extends ServiceProvider
         PortalSettingsLayout::class => PortalSettingsLayoutPolicy::class,
         PortalSettingsDashboard::class => PortalSettingsDashboardPolicy::class,
         Cooperation::class => CooperationPolicy::class,
+        JobsLog::class => JobsLogPolicy::class,
+        TwinfieldLog::class => TwinfieldLogPolicy::class,
     ];
 
     /**

@@ -3,11 +3,21 @@
 namespace App\Http\JoryResources;
 
 use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
+use App\Http\Controllers\Api\PortalSettingsLayout\PortalSettingsLayoutController;
 use App\Http\JoryResources\Base\JoryResource;
 
 class PortalSettingsLayoutJoryResource extends JoryResource
 {
     protected $modelClass = PortalSettingsLayout::class;
+
+    protected function checkAuthorize(): void
+    {
+//todo WM: Hiervoor moet nog een aparte permission view_portal_settings komen
+// en in PortalSettingsLayoutPolicy moeten we dan wellicht ook nog rekening houden met verschil
+// User en PortalUser ?!
+//        $portalSettingsLayoutController = new PortalSettingsLayoutController();
+//        $portalSettingsLayoutController->authorize('view', PortalSettingsLayout::class);
+    }
 
     protected function configureForApp(): void
     {

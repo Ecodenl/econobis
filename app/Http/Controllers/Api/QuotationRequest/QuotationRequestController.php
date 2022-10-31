@@ -10,6 +10,8 @@ namespace App\Http\Controllers\Api\QuotationRequest;
 
 
 use App\Eco\Email\Email;
+use App\Eco\Occupation\Occupation;
+use App\Eco\Occupation\OccupationContact;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Helpers\CSV\QuotationRequestCSVHelper;
@@ -33,7 +35,7 @@ class QuotationRequestController extends ApiController
         $quotationRequests = $requestQuery->get();
 
         $quotationRequests->load([
-            'organisation',
+            'organisationOrCoach',
             'opportunity.intake.address',
             'opportunity.measureCategory',
             'opportunity.measures',
@@ -52,10 +54,11 @@ class QuotationRequestController extends ApiController
     public function show(QuotationRequest $quotationRequest)
     {
         $quotationRequest->load([
-            'organisation.contact.contactPerson.contact',
+            'organisationOrCoach.contactPerson.contact',
             'opportunity.intake.contact',
             'opportunity.intake.campaign',
             'opportunity.intake.campaign.organisations',
+            'opportunity.intake.campaign.coaches',
             'opportunity.measureCategory',
             'opportunity.measures',
             'documents',
@@ -65,6 +68,13 @@ class QuotationRequestController extends ApiController
         ]);
 
         $quotationRequest->relatedEmailsSent = $this->getRelatedEmails($quotationRequest->id, 'sent');
+
+        $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
+        if($teamDocumentCreatedFromIds){
+            $quotationRequest->relatedDocuments = $quotationRequest->documents()->whereIn('document_created_from_id', $teamDocumentCreatedFromIds)->get();
+        } else{
+            $quotationRequest->relatedDocuments = $quotationRequest->documents()->get();
+        }
 
         return FullQuotationRequest::make($quotationRequest);
     }
@@ -90,6 +100,7 @@ class QuotationRequestController extends ApiController
             'measureCategory',
             'intake.contact',
             'intake.campaign.organisations',
+            'intake.campaign.coaches',
         ]);
 
         return FullOpportunity::make($opportunity);
@@ -100,7 +111,7 @@ class QuotationRequestController extends ApiController
         $this->authorize('manage', QuotationRequest::class);
 
         $data = $request->validate([
-            'organisationId' => 'required|exists:organisations,id',
+            'organisationOrCoachId' => 'required|exists:contacts,id',
             'opportunityId' => 'required|exists:opportunities,id',
             'dateRecorded' => 'string',
             'dateReleased' => 'string',
@@ -112,7 +123,7 @@ class QuotationRequestController extends ApiController
         $quotationRequest = new QuotationRequest();
 
         //required
-        $quotationRequest->organisation_id = $data['organisationId'];
+        $quotationRequest->contact_id = $data['organisationOrCoachId'];
         $quotationRequest->opportunity_id = $data['opportunityId'];
         $quotationRequest->status_id = $data['statusId'];
 
@@ -131,6 +142,8 @@ class QuotationRequestController extends ApiController
 
         $quotationRequest->save();
 
+        $this->creatEnergyCoachOccupation($quotationRequest);
+
         return $this->show($quotationRequest);
     }
 
@@ -140,7 +153,7 @@ class QuotationRequestController extends ApiController
         $this->authorize('manage', QuotationRequest::class);
 
         $data = $request->validate([
-            'organisationId' => 'required|exists:organisations,id',
+            'organisationOrCoachId' => 'required|exists:contacts,id',
             'opportunityId' => 'required|exists:opportunities,id',
             'dateRecorded' => 'string',
             'dateReleased' => 'string',
@@ -149,7 +162,7 @@ class QuotationRequestController extends ApiController
         ]);
 
         //required
-        $quotationRequest->organisation_id = $data['organisationId'];
+        $quotationRequest->contact_id = $data['organisationOrCoachId'];
         $quotationRequest->opportunity_id = $data['opportunityId'];
         $quotationRequest->status_id = $data['statusId'];
 
@@ -171,6 +184,8 @@ class QuotationRequestController extends ApiController
         }
 
         $quotationRequest->save();
+
+        $this->creatEnergyCoachOccupation($quotationRequest);
 
         return $this->show($quotationRequest);
     }
@@ -200,16 +215,47 @@ class QuotationRequestController extends ApiController
 
     public function peek()
     {
-        return QuotationRequestPeek::collection(QuotationRequest::orderBy('id')->get());
+        $teamContactIds = Auth::user()->getTeamContactIds();
+        if ($teamContactIds){
+            $quotationRequests = QuotationRequest::whereHas('opportunity', function($query) use($teamContactIds){
+                $query->whereHas('intake', function($query) use($teamContactIds){
+                    $query->whereIn('contact_id', $teamContactIds);
+                });
+            })->orderBy('id')->get();
+        }else{
+            $quotationRequests = QuotationRequest::orderBy('id')->get();
+        }
+
+        return QuotationRequestPeek::collection($quotationRequests);
     }
 
-    public function getRelatedEmails($id, $folder)
+    protected function getRelatedEmails($id, $folder)
     {
-        return Email::where('quotation_request_id', $id)->where('folder', $folder)->get();
+        $mailboxIds = Auth::user()->mailboxes()->pluck('mailbox_id');
+        return Email::where('quotation_request_id', $id)->where('folder', $folder)->whereIn('mailbox_id', $mailboxIds)->get();
     }
 
     public function getAmountOfOpenQuotationRequests(){
         return QuotationRequest::where('status_id', 1)->count();
+    }
+
+    protected function creatEnergyCoachOccupation(QuotationRequest $quotationRequest)
+    {
+        $organisationOrCoach = $quotationRequest->organisationOrCoach;
+        $resident = $quotationRequest->opportunity->intake->contact;
+        $energyCoachOccupation = Occupation::where('primary_occupation', 'LIKE', 'Energiecoach%')->first();
+        if($energyCoachOccupation && $resident && $organisationOrCoach->isCoach()){
+            // is coach, create occupation if not exits yet.
+            if (!OccupationContact::where('primary_contact_id', $organisationOrCoach->id)->where('contact_id', $resident->id)->where('occupation_id', $energyCoachOccupation->id)->exists()) {
+                // rol coach/resident doesn't exists yet.
+                OccupationContact::create([
+                    'occupation_id' => $energyCoachOccupation->id,
+                    'primary_contact_id' => $organisationOrCoach->id,
+                    'contact_id' => $resident->id,
+                    'primary' => true,
+                ]);
+            }
+        }
     }
 
 }

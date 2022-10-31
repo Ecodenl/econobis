@@ -4,6 +4,7 @@ namespace App\Eco\Administration;
 
 use App\Eco\Country\Country;
 use App\Eco\Document\Document;
+use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\Invoice\Invoice;
@@ -143,11 +144,13 @@ class Administration extends Model
     }
 
     public function documentsNotOnPortal(){
-        return $this->hasMany(Document::class)->where('document_created_from', 'administration')->where('show_on_portal', false)->orderBy('documents.id', 'desc');
+        $documentCreatedFromAdministrationId = DocumentCreatedFrom::where('code_ref', 'administration')->first()->id;
+        return $this->hasMany(Document::class)->where('document_created_from_id', $documentCreatedFromAdministrationId)->where('show_on_portal', false)->orderBy('documents.id', 'desc');
     }
 
     public function documentsOnPortal(){
-        return $this->hasMany(Document::class)->where('document_created_from', 'administration')->where('show_on_portal', true)->orderBy('documents.id', 'desc');
+        $documentCreatedFromAdministrationId = DocumentCreatedFrom::where('code_ref', 'administration')->first()->id;
+        return $this->hasMany(Document::class)->where('document_created_from_id', $documentCreatedFromAdministrationId)->where('show_on_portal', true)->orderBy('documents.id', 'desc');
     }
 
 

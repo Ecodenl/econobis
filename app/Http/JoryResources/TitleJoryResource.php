@@ -9,6 +9,11 @@ class TitleJoryResource extends JoryResource
 {
     protected $modelClass = Title::class;
 
+    protected function checkAuthorize(): void
+    {
+        // TODO: Implement checkAuthorize() method.
+    }
+
     protected function configureForApp(): void
     {
     }

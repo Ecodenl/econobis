@@ -22,18 +22,18 @@ class QuotationRequestNewFormGeneral extends Component {
                 fullName: '',
                 fullAddress: '',
                 measureName: '',
-                organisations: [],
+                organisationsOrCoaches: [],
             },
             quotationRequest: {
                 opportunityId: '',
-                organisationId: '',
+                organisationOrCoachId: '',
                 dateRecorded: '',
                 statusId: '5', //offerte aangevraagd, also alter componentwillmount when changing default!
                 dateReleased: '',
                 quotationText: '',
             },
             errors: {
-                organisation: false,
+                organisationOrCoach: false,
                 status: false,
             },
         };
@@ -46,14 +46,14 @@ class QuotationRequestNewFormGeneral extends Component {
                 opportunity: {
                     fullName: payload.intake.contact.fullName,
                     fullAddress: payload.intake.fullAddress,
-                    organisations:
-                        payload.intake && payload.intake.campaign ? payload.intake.campaign.organisations : '',
+                    organisationsOrCoaches:
+                        payload.intake && payload.intake.campaign ? payload.intake.campaign.organisationsOrCoaches : '',
                     measureNames: payload.measures && payload.measures.map(measure => measure.name).join(', '),
                     measureCategoryName: payload.measureCategory.name,
                 },
                 quotationRequest: {
                     opportunityId: payload.id,
-                    organisationId: '',
+                    organisationOrCoachId: '',
                     dateRecorded: '',
                     statusId: '5',
                     dateReleased: '',
@@ -62,6 +62,7 @@ class QuotationRequestNewFormGeneral extends Component {
             });
         });
     }
+
     handleInputChange = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -100,8 +101,8 @@ class QuotationRequestNewFormGeneral extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(quotationRequest.organisationId)) {
-            errors.organisation = true;
+        if (validator.isEmpty(quotationRequest.organisationOrCoachId)) {
+            errors.organisationOrCoach = true;
             hasErrors = true;
         }
 
@@ -115,17 +116,29 @@ class QuotationRequestNewFormGeneral extends Component {
     };
 
     render() {
-        const { organisationId, dateRecorded, statusId, dateReleased, quotationText } = this.state.quotationRequest;
-        const { fullName, fullAddress, organisations, measureNames, measureCategoryName } = this.state.opportunity;
+        const {
+            organisationOrCoachId,
+            dateRecorded,
+            statusId,
+            dateReleased,
+            quotationText,
+        } = this.state.quotationRequest;
+        const {
+            fullName,
+            fullAddress,
+            organisationsOrCoaches,
+            measureNames,
+            measureCategoryName,
+        } = this.state.opportunity;
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputSelect
-                        label={'Organisatie'}
+                        label={'Organisatie / Coach'}
                         size={'col-sm-6'}
-                        name="organisationId"
-                        value={organisationId}
-                        options={organisations}
+                        name="organisationOrCoachId"
+                        value={organisationOrCoachId}
+                        options={organisationsOrCoaches}
                         onChangeAction={this.handleInputChange}
                         required={'required'}
                         error={this.state.errors.organisation}

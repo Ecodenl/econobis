@@ -67,18 +67,16 @@ class Document extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function documentCreatedFrom()
+    {
+        return $this->belongsTo(DocumentCreatedFrom::class);
+    }
+
     public function getDocumentGroup()
     {
         if(!$this->document_group) return null;
 
         return DocumentGroup::get($this->document_group);
-    }
-
-    public function getDocumentCreatedFrom()
-    {
-        if(!$this->document_created_from) return null;
-
-        return DocumentCreatedFrom::get($this->document_created_from);
     }
 
     public function getDocumentType()
@@ -118,5 +116,10 @@ class Document extends Model
 
     public function participant(){
         return $this->belongsTo(ParticipantProject::class, 'participation_project_id', 'id');
+    }
+
+    public function newEloquentBuilder($query)
+    {
+        return new DocumentBuilder($query);
     }
 }

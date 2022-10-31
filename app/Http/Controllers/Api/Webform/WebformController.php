@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api\Webform;
 
 
+use App\Eco\Cooperation\Cooperation;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
@@ -27,6 +28,8 @@ class WebformController extends Controller
 
     public function grid()
     {
+        $this->authorize('view', Webform::class);
+
         $webforms = Webform::orderBy('created_at', 'desc')->get();
 
         return GenericResource::collection($webforms);
@@ -34,6 +37,8 @@ class WebformController extends Controller
 
     public function store(Request $request, RequestInput $input)
     {
+        $this->authorize('manage', Webform::class);
+
         $data = $input->string('name')->validate('required')->next()
             ->string('apiKey')->alias('api_key')->validate('required')->next()
             ->integer('maxRequestsPerMinute')->alias('max_requests_per_minute')->validate('required')->next()
@@ -52,6 +57,8 @@ class WebformController extends Controller
 
     public function update(Webform $webform, RequestInput $input)
     {
+        $this->authorize('manage', Webform::class);
+
         $data = $input->string('name')->validate('required')->next()
             ->string('apiKey')->alias('api_key')->validate('required')->next()
             ->integer('maxRequestsPerMinute')->alias('max_requests_per_minute')->validate('required')->next()
@@ -69,12 +76,16 @@ class WebformController extends Controller
 
     protected function show(Webform $webform)
     {
+        $this->authorize('view', Webform::class);
+
         $webform->load(['responsibleTeam', 'responsibleUser']);
         return FullWebform::make($webform);
     }
 
     protected function delete(Webform $webform)
     {
+        $this->authorize('manage', Webform::class);
+
         $webform->delete();
     }
 }

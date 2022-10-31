@@ -52,6 +52,11 @@ class ContactListAddPersonToGroup extends Component {
                         Na toevoegen zal er automatisch een email verzonden worden naar dit contact.
                     </div>
                 ) : null}
+                {this.props.isCoachGroup ? (
+                    <div className="alert alert-danger" role="alert">
+                        Na toevoegen wordt dit contact automatisch "Is coach".
+                    </div>
+                ) : null}
                 <form className="form-horizontal" onSubmit={this.handleSubmit}>
                     <div className="row">
                         <InputReactSelect

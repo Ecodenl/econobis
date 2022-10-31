@@ -13,6 +13,10 @@ use App\Eco\User\User;
 
 class WebformPolicy
 {
+    public function view(User $user)
+    {
+        return $user->hasPermissionTo('view_webform', 'api');
+    }
 
     public function manage(User $user)
     {

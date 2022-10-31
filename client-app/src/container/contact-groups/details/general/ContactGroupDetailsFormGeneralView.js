@@ -26,6 +26,7 @@ const ContactGroupDetailsFormGeneralView = props => {
         lapostaListCreatedAt,
         emailTemplateNewContactLink = {},
         includeIntoExportGroupReport,
+        isCoachGroup,
     } = props.contactGroupDetails;
 
     return (
@@ -97,7 +98,7 @@ const ContactGroupDetailsFormGeneralView = props => {
                 )}
             </div>
 
-            {/*todo WM: check of filter op static er niet af moet ?*/}
+            {/*todo WM: check of filter op static er niet af kan/moet voor Meenemen in export groep rapportage? Voorlopig niet */}
             {type.id === 'static' && (
                 <div className="row">
                     <ViewText
@@ -106,6 +107,13 @@ const ContactGroupDetailsFormGeneralView = props => {
                         size={'col-sm-5'}
                         name={'includeIntoExportGroupReport'}
                         textToolTip={`Als je deze optie op "AAN" zet zal deze groep getoond worden in de export groepen rapportage op de "groepen beheer" pagina.`}
+                    />
+                    <ViewText
+                        label={'Is coach groep'}
+                        value={isCoachGroup ? 'Ja' : 'Nee'}
+                        size={'col-sm-5'}
+                        name={'isCoachGroup'}
+                        textToolTip={`Als dit aanstaat en een contact wordt aan deze groep toegevoegd dan wordt dat contact energie coach`}
                     />
                 </div>
             )}

@@ -9,6 +9,11 @@ class FinancialOverviewProjectJoryResource extends JoryResource
 {
     protected $modelClass = FinancialOverviewProject::class;
 
+    protected function checkAuthorize(): void
+    {
+        // TODO: Implement checkAuthorize() method.
+    }
+
     protected function configureForApp(): void
     {
         // Fields

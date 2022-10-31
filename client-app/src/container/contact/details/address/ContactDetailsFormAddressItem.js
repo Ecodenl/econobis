@@ -228,7 +228,7 @@ class ContactDetailsFormAddressItem extends Component {
                     address={this.state.address}
                     addressEnergySupplierNewOrEditOpen={this.props.addressEnergySupplierNewOrEditOpen}
                 />
-                {this.state.showEdit && (
+                {this.props.permissions.updateContactAddress && this.state.showEdit && (
                     <ContactDetailsFormAddressEdit
                         numberOfAddresses={this.props.numberOfAddresses}
                         numberOfAddressesNotOld={this.props.numberOfAddressesNotOld}
@@ -255,7 +255,7 @@ class ContactDetailsFormAddressItem extends Component {
                     />
                 )}
 
-                {this.state.showDelete && (
+                {this.props.permissions.deleteContactAddress && this.state.showDelete && (
                     <ContactDetailsFormAddressDelete
                         closeDeleteItemModal={this.toggleDelete}
                         numberOfAddresses={this.props.numberOfAddresses}
@@ -279,6 +279,11 @@ class ContactDetailsFormAddressItem extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        permissions: state.meDetails.permissions,
+    };
+};
 const mapDispatchToProps = dispatch => ({
     updateAddress: id => {
         dispatch(updateAddress(id));
@@ -291,4 +296,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ContactDetailsFormAddressItem);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormAddressItem);

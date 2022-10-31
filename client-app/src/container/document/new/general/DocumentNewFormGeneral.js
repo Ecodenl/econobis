@@ -133,7 +133,7 @@ const DocumentNewFormGeneral = ({
                         'quotationrequest',
                         'housingfile',
                         'participant',
-                    ].includes(documentCreatedFrom)}
+                    ].includes(documentCreatedFrom.codeRef)}
                 />
             </div>
             <div className="row">
@@ -145,7 +145,7 @@ const DocumentNewFormGeneral = ({
                     onChangeAction={handleInputChange}
                     required={oneOfFieldRequired && 'required'}
                     error={errors.docLinkedAtAny}
-                    readOnly={['contactgroup'].includes(documentCreatedFrom)}
+                    readOnly={['contactgroup'].includes(documentCreatedFrom.codeRef)}
                 />
                 <InputSelect
                     label="Intake"
@@ -153,7 +153,7 @@ const DocumentNewFormGeneral = ({
                     value={intakeId}
                     options={intakes}
                     onChangeAction={handleInputChange}
-                    readOnly={['intake', 'quotationrequest', 'opportunity'].includes(documentCreatedFrom)}
+                    readOnly={['intake', 'quotationrequest', 'opportunity'].includes(documentCreatedFrom.codeRef)}
                     // required={oneOfFieldRequired && 'required'}
                     // error={errors.docLinkedAtAny}
                 />
@@ -165,7 +165,7 @@ const DocumentNewFormGeneral = ({
                     value={opportunityId}
                     options={opportunities}
                     onChangeAction={handleInputChange}
-                    readOnly={['opportunity', 'quotationrequest'].includes(documentCreatedFrom)}
+                    readOnly={['opportunity', 'quotationrequest'].includes(documentCreatedFrom.codeRef)}
                     // required={oneOfFieldRequired && 'required'}
                     // error={errors.docLinkedAtAny}
                 />
@@ -177,7 +177,7 @@ const DocumentNewFormGeneral = ({
                     onChangeAction={handleInputChange}
                     required={oneOfFieldRequired && 'required'}
                     error={errors.docLinkedAtAny}
-                    readOnly={['task'].includes(documentCreatedFrom)}
+                    readOnly={['task'].includes(documentCreatedFrom.codeRef)}
                 />
             </div>
             <div className="row">
@@ -187,7 +187,7 @@ const DocumentNewFormGeneral = ({
                     value={quotationRequestId}
                     options={quotationRequests}
                     onChangeAction={handleInputChange}
-                    readOnly={['quotationrequest'].includes(documentCreatedFrom)}
+                    readOnly={['quotationrequest'].includes(documentCreatedFrom.codeRef)}
                     // required={oneOfFieldRequired && 'required'}
                     // error={errors.docLinkedAtAny}
                 />
@@ -197,7 +197,7 @@ const DocumentNewFormGeneral = ({
                     value={housingFileId}
                     options={housingFiles}
                     onChangeAction={handleInputChange}
-                    readOnly={['housingfile'].includes(documentCreatedFrom)}
+                    readOnly={['housingfile'].includes(documentCreatedFrom.codeRef)}
                     // required={oneOfFieldRequired && 'required'}
                     // error={errors.docLinkedAtAny}
                 />
@@ -234,7 +234,7 @@ const DocumentNewFormGeneral = ({
                     onChangeAction={handleInputChange}
                     required={oneOfFieldRequired && 'required'}
                     error={errors.docLinkedAtAny}
-                    readOnly={['order'].includes(documentCreatedFrom)}
+                    readOnly={['order'].includes(documentCreatedFrom.codeRef)}
                 />
                 <InputSelect
                     label="Administratie"
@@ -256,7 +256,7 @@ const DocumentNewFormGeneral = ({
                     onChangeAction={handleInputChange}
                     required={oneOfFieldRequired && 'required'}
                     error={errors.docLinkedAtAny}
-                    readOnly={['measure'].includes(documentCreatedFrom)}
+                    readOnly={['measure'].includes(documentCreatedFrom.codeRef)}
                 />
                 <InputSelect
                     label="Campagne"
@@ -266,7 +266,7 @@ const DocumentNewFormGeneral = ({
                     onChangeAction={handleInputChange}
                     required={oneOfFieldRequired && 'required'}
                     error={errors.docLinkedAtAny}
-                    readOnly={['campaign', 'quotationrequest'].includes(documentCreatedFrom)}
+                    readOnly={['campaign', 'quotationrequest'].includes(documentCreatedFrom.codeRef)}
                 />
             </div>
 

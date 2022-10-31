@@ -32,6 +32,7 @@ class OrganisationController extends ApiController
             [
                 'ownerId' => 'exists:users,id',
                 'didAgreeAvg' => 'boolean',
+                'isCoach' => 'boolean',
                 'iban' => '',
                 'ibanAttn' => '',
                 'typeId' => 'exists:organisation_types,id',
@@ -59,6 +60,7 @@ class OrganisationController extends ApiController
                 'iban_attn' => $contactData['iban_attn'],
                 'owner_id' => $contactData['owner_id'],
                 'did_agree_avg' => $contactData['did_agree_avg'],
+                'is_coach' => $contactData['is_coach'],
             ];
 
         $organisationArray =
@@ -170,6 +172,7 @@ class OrganisationController extends ApiController
             'liable' => 'boolean',
             'liabilityAmount' => 'numeric',
             'didAgreeAvg' => 'boolean',
+            'isCoach' => 'boolean',
             'isCollectMandate' => 'boolean',
             'collectMandateCode' => '',
             'collectMandateSignatureDate' => 'date',

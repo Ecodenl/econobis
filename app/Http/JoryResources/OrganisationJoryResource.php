@@ -10,6 +10,11 @@ class OrganisationJoryResource extends JoryResource
 {
     protected $modelClass = Organisation::class;
 
+    protected function checkAuthorize(): void
+    {
+        // TODO: Implement checkAuthorize() method.
+    }
+
     protected function configureForApp(): void
     {
         $this->field('id')->filterable()->sortable();

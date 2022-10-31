@@ -52,7 +52,7 @@ class DocumentController extends Controller
     {
         $this->authorize('view', Document::class);
 
-        $document->load('administration', 'task', 'order', 'contact', 'intake', 'contactGroup', 'sentBy', 'createdBy', 'template', 'opportunity.measureCategory', 'opportunity.status', 'project', 'participant.contact', 'participant.project');
+        $document->load('administration', 'task', 'order', 'contact', 'intake', 'contactGroup', 'sentBy', 'createdBy', 'documentCreatedFrom', 'template', 'opportunity.measureCategory', 'opportunity.status', 'project', 'participant.contact', 'participant.project');
 
         return FullDocument::make($document);
     }
@@ -63,7 +63,7 @@ class DocumentController extends Controller
 
         $data = $requestInput
             ->string('description')->next()
-            ->string('documentCreatedFrom')->alias('document_created_from')->next()
+            ->integer('documentCreatedFromId')->alias('document_created_from_id')->next()
             ->string('documentType')->validate('required')->alias('document_type')->next()
             ->string('documentGroup')->validate('required')->alias('document_group')->next()
             ->string('filename')->next()
@@ -110,7 +110,7 @@ class DocumentController extends Controller
             $document->campaign && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->campaign->name)) . '_';
             $document->measure && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->measure->name)) . '_';
             $document->task && $name .= $document->task->id . '_';
-            $document->quotationRequest && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->quotationRequest->organisation->contact->full_name)) . '_';
+            $document->quotationRequest && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->quotationRequest->organisationOrCoach->full_name)) . '_';
             $document->project && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->project->name)) . '_';
             $document->participant && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->participant->contact->full_name)) . '_';
             $document->order && $name .= str_replace(' ', '', $document->order->number) . '_';
@@ -172,7 +172,7 @@ class DocumentController extends Controller
 
         $data = $requestInput
             ->string('description')->next()
-            ->string('documentCreatedFrom')->alias('document_created_from')->next()
+            ->integer('documentCreatedFromId')->alias('document_created_from_id')->next()
             ->string('documentType')->validate('required')->alias('document_type')->next()
             ->string('documentGroup')->validate('required')->alias('document_group')->next()
             ->string('freeText1')->alias('free_text_1')->next()
@@ -199,7 +199,7 @@ class DocumentController extends Controller
         $document->fill($data);
         $document->save();
 
-        $document->load('contact', 'intake', 'order', 'contactGroup', 'sentBy', 'createdBy', 'template', 'opportunity.measureCategory', 'opportunity.status', 'project', 'participant.contact', 'participant.project');
+        $document->load('contact', 'intake', 'order', 'contactGroup', 'sentBy', 'createdBy', 'documentCreatedFrom', 'template', 'opportunity.measureCategory', 'opportunity.status', 'project', 'participant.contact', 'participant.project');
 
         return FullDocument::make($document);
     }

@@ -26,8 +26,6 @@ function InspectDetails({ match, history }) {
             datePlanned: values.datePlanned,
             dateApprovedExternal: values.dateApprovedExternal,
             dateReleased: values.dateReleased,
-            dateApprovedProjectManager: values.dateApprovedProjectManager,
-            dateApprovedClient: values.dateApprovedClient,
         }).then(response => {
             history.push('/schouwen');
         });

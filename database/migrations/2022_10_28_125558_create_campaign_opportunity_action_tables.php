@@ -16,15 +16,18 @@ class CreateCampaignOpportunityActionTables extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('opportunity_actions');
+
         Schema::create('opportunity_actions', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->string('code_ref');
         });
 
         DB::table('opportunity_actions')->insert([
-                ['name' => 'Offerteverzoek'],
-                ['name' => 'Bezoek'],
-                ['name' => 'Subsidie aanvraag'],
+                ['name' => 'Offerteverzoek', 'code_ref' => 'quotation-request'],
+                ['name' => 'Bezoek', 'code_ref' => 'visit'],
+                ['name' => 'Subsidie aanvraag', 'code_ref' => 'subsidy-request'],
             ]
         );
 

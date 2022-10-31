@@ -11,7 +11,7 @@ const QuotationRequestNewForm = props => {
                 <PanelBody>
                     <QuotationRequestNewFormGeneral
                         opportunityId={props.opportunityId}
-                        opportunityActionId={props.opportunityActionId}
+                        opportunityAction={props.opportunityAction}
                     />
                 </PanelBody>
             </Panel>

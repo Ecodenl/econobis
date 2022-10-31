@@ -35,7 +35,13 @@ class QuotationRequestDetailsToolbar extends Component {
         let fullName = intake && intake.contact ? intake.contact.fullName : '';
         let fullAddress = intake ? intake.fullAddress : '';
 
-        let quotationToolbarText = `${opportunityActionName} ${measureCategoryName} voor ${fullName} op ${fullAddress}`;
+        let quotationToolbarText =
+            opportunityActionName != undefined &&
+            measureCategoryName != undefined &&
+            fullName != undefined &&
+            fullAddress != undefined
+                ? `${opportunityActionName} ${measureCategoryName} voor ${fullName} op ${fullAddress}`
+                : '';
 
         return (
             <div className="row">

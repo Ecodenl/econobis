@@ -9,6 +9,7 @@ const QuotationRequestDetailsFormGeneralView = props => {
     const {
         organisationOrCoach,
         status,
+        opportunityAction,
         datePlannedToSendWfEmailStatus,
         dateRecorded,
         dateReleased,
@@ -86,16 +87,20 @@ const QuotationRequestDetailsFormGeneralView = props => {
                     value={dateApprovedExternal ? moment(dateApprovedExternal).format('L') : ''}
                 />
             </div>
-            <div className="row">
-                <ViewText
-                    label={'Datum akkoord projectleider'}
-                    value={dateApprovedProjectManager ? moment(dateApprovedProjectManager).format('L') : ''}
-                />
-                <ViewText
-                    label={'Datum akkoord bewoner'}
-                    value={dateApprovedClient ? moment(dateApprovedClient).format('L ') : ''}
-                />
-            </div>
+            {opportunityAction.codeRef === 'subsidy-request' ? (
+                <>
+                    <div className="row">
+                        <ViewText
+                            label={'Datum akkoord projectleider'}
+                            value={dateApprovedProjectManager ? moment(dateApprovedProjectManager).format('L') : ''}
+                        />
+                        <ViewText
+                            label={'Datum akkoord bewoner'}
+                            value={dateApprovedClient ? moment(dateApprovedClient).format('L ') : ''}
+                        />
+                    </div>
+                </>
+            ) : null}
 
             <div className="row">
                 <div className="col-sm-3">

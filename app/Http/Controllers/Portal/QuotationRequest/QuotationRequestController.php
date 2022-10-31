@@ -79,6 +79,11 @@ class QuotationRequestController
     {
         return [
             'id' => $quotationRequest->id,
+            'opportunityAction' => [
+                'id' => $quotationRequest->opportunityAction->id,
+                'name' => $quotationRequest->opportunityAction->name,
+                'codeRef' => $quotationRequest->opportunityAction->code_ref,
+            ],
             'opportunity' => [
                 'intake' => [
                     'contact' => [

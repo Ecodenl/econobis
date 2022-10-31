@@ -2,10 +2,19 @@ import React, { Component } from 'react';
 
 import QuotationRequestNewForm from './QuotationRequestNewForm';
 import QuotationRequestNewToolbar from './QuotationRequestNewToolbar';
+import { connect } from 'react-redux';
 
 class QuotationRequestNewApp extends Component {
     constructor(props) {
         super(props);
+
+        const opportunityAction = props.opportunityActions.find(function(opportunityAction) {
+            return opportunityAction.id == props.params.opportunityActionId;
+        });
+
+        this.state = {
+            opportunityAction: opportunityAction,
+        };
     }
 
     render() {
@@ -13,13 +22,13 @@ class QuotationRequestNewApp extends Component {
             <div className="row">
                 <div className="col-md-9">
                     <div className="col-md-12 margin-10-top">
-                        <QuotationRequestNewToolbar opportunityActionId={this.props.params.opportunityActionId} />
+                        <QuotationRequestNewToolbar opportunityAction={this.state.opportunityAction} />
                     </div>
 
                     <div className="col-md-12 margin-10-top">
                         <QuotationRequestNewForm
                             opportunityId={this.props.params.opportunityId}
-                            opportunityActionId={this.props.params.opportunityActionId}
+                            opportunityAction={this.state.opportunityAction}
                         />
                     </div>
                 </div>
@@ -29,4 +38,10 @@ class QuotationRequestNewApp extends Component {
     }
 }
 
-export default QuotationRequestNewApp;
+const mapStateToProps = state => {
+    return {
+        opportunityActions: state.systemData.opportunityActions,
+    };
+};
+
+export default connect(mapStateToProps, null)(QuotationRequestNewApp);

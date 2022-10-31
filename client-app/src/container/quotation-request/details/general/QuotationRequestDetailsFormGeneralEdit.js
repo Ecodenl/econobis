@@ -145,6 +145,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             measureNames,
             measureCategoryName,
         } = this.state.opportunity;
+        const { opportunityAction } = this.props.quotationRequestDetails;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -252,23 +253,26 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         onChangeAction={this.handleInputChangeDate}
                     />
                 </div>
-                <div className="row">
-                    <InputDate
-                        label="Datum akkoord projectleider"
-                        size={'col-sm-6'}
-                        name="dateApprovedProjectManager"
-                        value={dateApprovedProjectManager}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
-                    <InputDate
-                        label="Datum akkoord bewoner"
-                        size={'col-sm-6'}
-                        name="dateApprovedClient"
-                        value={dateApprovedClient}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
-                </div>
-
+                {opportunityAction.codeRef === 'subsidy-request' ? (
+                    <>
+                        <div className="row">
+                            <InputDate
+                                label="Datum akkoord projectleider"
+                                size={'col-sm-6'}
+                                name="dateApprovedProjectManager"
+                                value={dateApprovedProjectManager}
+                                onChangeAction={this.handleInputChangeDate}
+                            />
+                            <InputDate
+                                label="Datum akkoord bewoner"
+                                size={'col-sm-6'}
+                                name="dateApprovedClient"
+                                value={dateApprovedClient}
+                                onChangeAction={this.handleInputChangeDate}
+                            />
+                        </div>
+                    </>
+                ) : null}
                 <div className="row">
                     <InputTextArea
                         label={'Omschrijving'}

@@ -23,6 +23,7 @@ export default {
                         'dateDidAgreeAvg',
                         'addressLines',
                         'portalSettingsLayoutAssigned',
+                        'isCoach',
                     ],
                     rlt: {
                         occupations: {

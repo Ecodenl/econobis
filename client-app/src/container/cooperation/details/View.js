@@ -99,6 +99,10 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
 {verbruik_electriciteit_vaste_kosten_hoog}<br/>
 {verbruik_electriciteit_vaste_kosten_laag}`}
                         />
+                        <ViewText
+                            label={'Schouwen gepland e-mail template'}
+                            value={formData.inspectionPlannedEmailTemplate && formData.inspectionPlannedEmailTemplate.name}
+                        />
                     </div>
                 </PanelBody>
             </Panel>

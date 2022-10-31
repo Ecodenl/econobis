@@ -1,0 +1,145 @@
+<?php
+
+namespace App\Http\Controllers\Portal\QuotationRequest;
+
+use App\Eco\Cooperation\Cooperation;
+use App\Eco\QuotationRequest\QuotationRequest;
+use App\Eco\User\User;
+use App\Helpers\Email\EmailHelper;
+use App\Helpers\Settings\PortalSettings;
+use App\Helpers\Template\TemplateVariableHelper;
+use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+
+class QuotationRequestController
+{
+    public function index()
+    {
+        $portalUser = Auth::user();
+
+        return response()->json($portalUser->contact->quotationRequests->map(function(QuotationRequest $quotationRequest){
+            return $this->getJson($quotationRequest);
+        }));
+    }
+
+    public function view(QuotationRequest $quotationRequest)
+    {
+        $portalUser = Auth::user();
+
+        if(!$portalUser->contact->quotationRequests->contains($quotationRequest)){
+            abort(403, 'Geen toegang tot deze offerteaanvraag.');
+        }
+
+        return response()->json($this->getJson($quotationRequest));
+    }
+
+    public function update(Request $request, QuotationRequest $quotationRequest)
+    {
+        $portalUser = Auth::user();
+
+        if(!$portalUser->contact->quotationRequests->contains($quotationRequest)){
+            abort(403, 'Geen toegang tot deze offerteaanvraag.');
+        }
+
+        $responsibleUserId = PortalSettings::get('responsibleUserId');
+        if (!$responsibleUserId) {
+            abort(501, 'Er is helaas een fout opgetreden (onbekende klanten portaal verantwoordelijke).');
+        }
+
+        // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu zetten we responisibleUserId in Auth user tbv observers die create_by en updated_by hiermee vastleggen
+        Auth::setUser(User::find($responsibleUserId));
+
+        $request->validate([
+            'datePlanned' => ['nullable', 'date'],
+            'dateRecorded' => ['nullable', 'date'],
+            'dateApprovedExternal' => ['nullable', 'date'],
+            'dateReleased' => ['nullable', 'date'],
+        ]);
+
+        $quotationRequest->date_planned = $request->input('datePlanned') ?: null;
+        $quotationRequest->date_recorded = $request->input('dateRecorded') ?: null;
+        $quotationRequest->date_approved_external = $request->input('dateApprovedExternal') ?: null;
+        $quotationRequest->date_released = $request->input('dateReleased') ?: null;
+
+        $sendMail = ($quotationRequest->isDirty('date_planned') && !!$quotationRequest->date_planned);
+
+        $quotationRequest->save();
+
+        // Voor zekerheid hierna weer even Auth user herstellen met portal user
+        Auth::setUser($portalUser);
+
+        if($sendMail){
+            $this->sendInspectionPlannedMail($quotationRequest);
+        }
+    }
+
+    private function getJson(QuotationRequest $quotationRequest)
+    {
+        return [
+            'id' => $quotationRequest->id,
+            'opportunity' => [
+                'intake' => [
+                    'contact' => [
+                        'id' => $quotationRequest->opportunity->intake->contact->id,
+                        'fullName' => $quotationRequest->opportunity->intake->contact->full_name,
+                    ],
+                    'address' => [
+                        'id' => $quotationRequest->opportunity->intake->address->id,
+                        'streetPostalCodeCity' => $quotationRequest->opportunity->intake->address->getStreetPostalCodeCityAttribute(),
+                    ],
+                ],
+                'status' => [
+                    'name' => $quotationRequest->opportunity->status->name,
+                ]
+            ],
+            'dateRecorded' => $quotationRequest->date_recorded,
+            'dateReleased' => $quotationRequest->date_released,
+            'datePlanned' => $quotationRequest->date_planned,
+            'dateApprovedExternal' => $quotationRequest->date_approved_external,
+            'dateApprovedProjectManager' => $quotationRequest->date_approved_project_manager,
+            'dateApprovedClient' => $quotationRequest->date_approved_client,
+        ];
+    }
+
+    private function sendInspectionPlannedMail(QuotationRequest $quotationRequest)
+    {
+        $cooperation = Cooperation::first();
+        $emailTemplate = $cooperation->inspectionPlannedEmailTemplate;
+
+        if(!$emailTemplate) {
+            return;
+        }
+
+        $contact = $quotationRequest->opportunity->intake->contact;
+
+        (new EmailHelper())->setConfigToDefaultMailbox();
+
+        $mail = Mail::to($contact->primaryEmailAddress);
+
+
+        $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Afspraak schouwen';
+        $htmlBody = $emailTemplate->html_body;
+
+        $subject = str_replace('{cooperatie_naam}', $cooperation->name, $subject);
+        $subject = str_replace('{contactpersoon}', $contact->full_name, $subject);
+        $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'contact', $contact);
+
+        $htmlBody = str_replace('{cooperatie_naam}', $cooperation->name, $htmlBody);
+        $htmlBody = str_replace('{contactpersoon}', $contact->full_name, $htmlBody);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'contact', $contact);
+
+        $htmlBody = TemplateVariableHelper::stripRemainingVariableTags($htmlBody);
+
+        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
+            . $subject . '</title></head>'
+            . $htmlBody . '</html>';
+
+
+        $mail->subject = $subject;
+        $mail->html_body = $htmlBody;
+
+        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody));
+    }
+}

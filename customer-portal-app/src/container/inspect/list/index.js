@@ -40,9 +40,9 @@ function Inspectlist(props) {
                                 <tr>
                                     <th>Naam</th>
                                     <th>Adres</th>
+                                    <th>Status</th>
                                     <th>Datum afspraak</th>
                                     <th>Datum opname</th>
-                                    <th>Status</th>
                                     <th>Datum akkoord extern</th>
                                     <th>Datum offerte</th>
                                     <th>Akkoord projectleider</th>
@@ -55,6 +55,7 @@ function Inspectlist(props) {
                                     <tr key={quotationRequest.id}>
                                         <td>{quotationRequest.opportunity.intake.contact.fullName}</td>
                                         <td>{quotationRequest.opportunity.intake.address.streetPostalCodeCity}</td>
+                                        <td>{quotationRequest.opportunity.status.name}</td>
                                         <td>
                                             {quotationRequest.datePlanned
                                                 ? moment(quotationRequest.datePlanned).format('L HH:mm')
@@ -65,7 +66,6 @@ function Inspectlist(props) {
                                                 ? moment(quotationRequest.dateRecorded).format('L')
                                                 : ''}
                                         </td>
-                                        <td>{quotationRequest.opportunity.status.name}</td>
                                         <td>
                                             {quotationRequest.dateApprovedExternal
                                                 ? moment(quotationRequest.dateApprovedExternal).format('L')

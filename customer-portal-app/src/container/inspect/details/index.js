@@ -99,6 +99,21 @@ function InspectDetails({ match, history }) {
                                         </Row>
                                         <Row>
                                             <Col xs={12} md={12}>
+                                                <FormLabel className={'field-label'}>Status</FormLabel>
+                                                <Row>
+                                                    <Col xs={12} sm={8} md={6}>
+                                                        <input
+                                                            type="text"
+                                                            className={`text-input w-input content`}
+                                                            value={initialQuotationRequest.opportunity.status.name}
+                                                            readOnly={true}
+                                                        />
+                                                    </Col>
+                                                </Row>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col xs={12} md={12}>
                                                 <FormLabel htmlFor="date_planned" className={'field-label'}>
                                                     Datum afspraak
                                                 </FormLabel>
@@ -144,21 +159,6 @@ function InspectDetails({ match, history }) {
                                                                     placeholder={'Datum opname'}
                                                                 />
                                                             )}
-                                                        />
-                                                    </Col>
-                                                </Row>
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            <Col xs={12} md={12}>
-                                                <FormLabel className={'field-label'}>Status</FormLabel>
-                                                <Row>
-                                                    <Col xs={12} sm={8} md={6}>
-                                                        <input
-                                                            type="text"
-                                                            className={`text-input w-input content`}
-                                                            value={initialQuotationRequest.opportunity.status.name}
-                                                            readOnly={true}
                                                         />
                                                     </Col>
                                                 </Row>
@@ -216,55 +216,62 @@ function InspectDetails({ match, history }) {
                                                 </Row>
                                             </Col>
                                         </Row>
-                                        <Row>
-                                            <Col xs={12} md={12}>
-                                                <FormLabel
-                                                    htmlFor="date_approved_project_manager"
-                                                    className={'field-label'}
-                                                >
-                                                    Datum akkoord projectleider
-                                                </FormLabel>
+                                        {initialQuotationRequest.opportunityAction.codeRef === 'subsidy-request' ? (
+                                            <>
                                                 <Row>
-                                                    <Col xs={12} sm={8} md={6}>
-                                                        <input
-                                                            type="text"
-                                                            className={`text-input w-input content`}
-                                                            value={
-                                                                initialQuotationRequest.dateApprovedProjectManager
-                                                                    ? moment(
-                                                                          initialQuotationRequest.dateApprovedProjectManager
-                                                                      ).format('L')
-                                                                    : ''
-                                                            }
-                                                            readOnly={true}
-                                                        />
+                                                    <Col xs={12} md={12}>
+                                                        <FormLabel
+                                                            htmlFor="date_approved_project_manager"
+                                                            className={'field-label'}
+                                                        >
+                                                            Datum akkoord projectleider
+                                                        </FormLabel>
+                                                        <Row>
+                                                            <Col xs={12} sm={8} md={6}>
+                                                                <input
+                                                                    type="text"
+                                                                    className={`text-input w-input content`}
+                                                                    value={
+                                                                        initialQuotationRequest.dateApprovedProjectManager
+                                                                            ? moment(
+                                                                                  initialQuotationRequest.dateApprovedProjectManager
+                                                                              ).format('L')
+                                                                            : ''
+                                                                    }
+                                                                    readOnly={true}
+                                                                />
+                                                            </Col>
+                                                        </Row>
                                                     </Col>
                                                 </Row>
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            <Col xs={12} md={12}>
-                                                <FormLabel htmlFor="date_approved_client" className={'field-label'}>
-                                                    Datum akkoord bewoner
-                                                </FormLabel>
                                                 <Row>
-                                                    <Col xs={12} sm={8} md={6}>
-                                                        <input
-                                                            type="text"
-                                                            className={`text-input w-input content`}
-                                                            value={
-                                                                initialQuotationRequest.dateApprovedClient
-                                                                    ? moment(
-                                                                          initialQuotationRequest.dateApprovedClient
-                                                                      ).format('L')
-                                                                    : ''
-                                                            }
-                                                            readOnly={true}
-                                                        />
+                                                    <Col xs={12} md={12}>
+                                                        <FormLabel
+                                                            htmlFor="date_approved_client"
+                                                            className={'field-label'}
+                                                        >
+                                                            Datum akkoord bewoner
+                                                        </FormLabel>
+                                                        <Row>
+                                                            <Col xs={12} sm={8} md={6}>
+                                                                <input
+                                                                    type="text"
+                                                                    className={`text-input w-input content`}
+                                                                    value={
+                                                                        initialQuotationRequest.dateApprovedClient
+                                                                            ? moment(
+                                                                                  initialQuotationRequest.dateApprovedClient
+                                                                              ).format('L')
+                                                                            : ''
+                                                                    }
+                                                                    readOnly={true}
+                                                                />
+                                                            </Col>
+                                                        </Row>
                                                     </Col>
                                                 </Row>
-                                            </Col>
-                                        </Row>
+                                            </>
+                                        ) : null}
                                         <Row>
                                             <Col xs={12} sm={8} md={6}>
                                                 <ButtonGroup className="float-right">

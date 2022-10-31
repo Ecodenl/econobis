@@ -31,6 +31,7 @@ use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\Task\Task;
 use App\Eco\Twinfield\TwinfieldCustomerNumber;
+use App\Eco\Twinfield\TwinfieldLog;
 use App\Eco\User\User;
 use App\Helpers\Settings\PortalSettings;
 use App\Http\Resources\ContactGroup\GridContactGroup;
@@ -65,7 +66,7 @@ class Contact extends Model
     //Per administratie heeft het contact een ander twinfield nummer
     public function twinfieldNumbers()
     {
-        return $this->hasMany(TwinfieldcustomerNumber::class);
+        return $this->hasMany(TwinfieldCustomerNumber::class);
     }
 
     public function addresses()
@@ -273,7 +274,10 @@ class Contact extends Model
 
     public function primaryOccupations()
     {
-        return $this->hasMany(OccupationContact::class, 'primary_contact_id')->join('contacts', 'contact_id', '=', 'contacts.id')->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')->orderBy('contacts.full_name');
+        return $this->hasMany(OccupationContact::class, 'primary_contact_id')
+            ->join('contacts', 'contact_id', '=', 'contacts.id')
+            ->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')
+            ->orderBy('contacts.full_name');
     }
 
     public function occupations()
@@ -281,7 +285,8 @@ class Contact extends Model
         return $this->hasMany(OccupationContact::class)
             ->join('contacts', 'primary_contact_id', '=', 'contacts.id')
             ->join('occupations', 'occupation_id', '=', 'occupations.id')
-            ->select('contacts.*', 'occupation_contact.*', 'occupations.occupation_for_portal', 'occupation_contact.id as ocid')->orderBy('contacts.full_name');
+            ->select('contacts.*', 'occupation_contact.*', 'occupations.occupation_for_portal', 'occupation_contact.id as ocid')
+            ->orderBy('contacts.full_name');
     }
 
     public function isPrimaryOccupant()
@@ -338,9 +343,15 @@ class Contact extends Model
     {
         return $this->hasMany(FinancialOverviewContact::class);
     }
+
     public function financialOverviewContactsSend()
     {
         return $this->hasMany(FinancialOverviewContact::class)->where('status_id', 'sent')->orderBy('date_sent', 'desc');
+    }
+
+    public function twinfieldLogs()
+    {
+        return $this->hasMany(TwinfieldLog::class);
     }
 
     //Returns addresses array as Type - Streetname - Number

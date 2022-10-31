@@ -38,6 +38,7 @@ class Organisation extends Model
     }
 
     public function quotationRequests(){
+        // 20221031; Jos; deze relatie bestaat niet meer?
         return $this->hasMany(QuotationRequest::class);
     }
 

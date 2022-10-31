@@ -26,11 +26,6 @@ class QuotationRequest extends Model
         'id'
     ];
 
-    protected $casts = [
-        'approved_project_manager' => 'boolean',
-        'approved_client' => 'boolean',
-    ];
-
    public function organisationOrCoach()
     {
         return $this->belongsTo(Contact::class, 'contact_id', 'id');

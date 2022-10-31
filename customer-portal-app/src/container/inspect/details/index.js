@@ -1,18 +1,19 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import LoadingView from '../../../components/general/LoadingView';
-import {Field, Form, Formik} from "formik";
-import FormLabel from "react-bootstrap/FormLabel";
-import * as Yup from "yup";
-import QuotationRequestAPI from "../../../api/quotation-request/QuotationRequestAPI";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
-import Button from "react-bootstrap/Button";
-import {ClipLoader} from "react-spinners";
-import InputText from "../../../components/form/InputText";
+import { Field, Form, Formik } from 'formik';
+import FormLabel from 'react-bootstrap/FormLabel';
+import * as Yup from 'yup';
+import QuotationRequestAPI from '../../../api/quotation-request/QuotationRequestAPI';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Button from 'react-bootstrap/Button';
+import { ClipLoader } from 'react-spinners';
+import InputText from '../../../components/form/InputText';
+import moment from 'moment';
 
-function InspectDetails({match, history}) {
+function InspectDetails({ match, history }) {
     const [isLoading, setLoading] = useState(true);
     const [initialQuotationRequest, setInitialQuotationRequest] = useState({});
 
@@ -25,15 +26,15 @@ function InspectDetails({match, history}) {
             datePlanned: values.datePlanned,
             dateApprovedExternal: values.dateApprovedExternal,
             dateReleased: values.dateReleased,
-            approvedProjectManager: values.approvedProjectManager,
-            approvedClient: values.approvedClient,
-        }).then((response) => {
+            dateApprovedProjectManager: values.dateApprovedProjectManager,
+            dateApprovedClient: values.dateApprovedClient,
+        }).then(response => {
             history.push('/schouwen');
         });
     };
 
     useEffect(() => {
-        QuotationRequestAPI.fetchById(match.params.id).then((response) => {
+        QuotationRequestAPI.fetchById(match.params.id).then(response => {
             setInitialQuotationRequest(response.data);
             setLoading(false);
         });
@@ -42,7 +43,7 @@ function InspectDetails({match, history}) {
     return (
         <Container className={'content-section'}>
             {isLoading ? (
-                <LoadingView/>
+                <LoadingView />
             ) : (
                 <>
                     <div>
@@ -51,20 +52,29 @@ function InspectDetails({match, history}) {
                             enableReinitialize={true}
                             validationSchema={validationSchema}
                             onSubmit={handleSubmit}
-                            render={({errors, touched, setFieldValue, isSubmitting, status, values, handleSubmit}) => {
+                            render={({
+                                errors,
+                                touched,
+                                setFieldValue,
+                                isSubmitting,
+                                status,
+                                values,
+                                handleSubmit,
+                            }) => {
                                 return (
                                     <Form>
                                         <Row>
                                             <Col xs={12} md={12}>
-                                                <FormLabel className={'field-label'}>
-                                                    Naam
-                                                </FormLabel>
+                                                <FormLabel className={'field-label'}>Naam</FormLabel>
                                                 <Row>
                                                     <Col xs={12} sm={8} md={6}>
                                                         <input
                                                             type="text"
                                                             className={`text-input w-input content`}
-                                                            value={initialQuotationRequest.opportunity.intake.contact.fullName}
+                                                            value={
+                                                                initialQuotationRequest.opportunity.intake.contact
+                                                                    .fullName
+                                                            }
                                                             readOnly={true}
                                                         />
                                                     </Col>
@@ -73,15 +83,16 @@ function InspectDetails({match, history}) {
                                         </Row>
                                         <Row>
                                             <Col xs={12} md={12}>
-                                                <FormLabel className={'field-label'}>
-                                                    Adres
-                                                </FormLabel>
+                                                <FormLabel className={'field-label'}>Adres</FormLabel>
                                                 <Row>
                                                     <Col xs={12} sm={8} md={6}>
                                                         <input
                                                             type="text"
                                                             className={`text-input w-input content`}
-                                                            value={initialQuotationRequest.opportunity.intake.address.streetPostalCodeCity}
+                                                            value={
+                                                                initialQuotationRequest.opportunity.intake.address
+                                                                    .streetPostalCodeCity
+                                                            }
                                                             readOnly={true}
                                                         />
                                                     </Col>
@@ -97,7 +108,7 @@ function InspectDetails({match, history}) {
                                                     <Col xs={12} sm={8} md={6}>
                                                         <Field
                                                             name="datePlanned"
-                                                            render={({field}) => (
+                                                            render={({ field }) => (
                                                                 <InputText
                                                                     name="datePlanned"
                                                                     field={field}
@@ -123,7 +134,7 @@ function InspectDetails({match, history}) {
                                                     <Col xs={12} sm={8} md={6}>
                                                         <Field
                                                             name="dateRecorded"
-                                                            render={({field}) => (
+                                                            render={({ field }) => (
                                                                 <InputText
                                                                     name="datePlanned"
                                                                     field={field}
@@ -142,9 +153,7 @@ function InspectDetails({match, history}) {
                                         </Row>
                                         <Row>
                                             <Col xs={12} md={12}>
-                                                <FormLabel className={'field-label'}>
-                                                    Status
-                                                </FormLabel>
+                                                <FormLabel className={'field-label'}>Status</FormLabel>
                                                 <Row>
                                                     <Col xs={12} sm={8} md={6}>
                                                         <input
@@ -166,7 +175,7 @@ function InspectDetails({match, history}) {
                                                     <Col xs={12} sm={8} md={6}>
                                                         <Field
                                                             name="dateApprovedExternal"
-                                                            render={({field}) => (
+                                                            render={({ field }) => (
                                                                 <InputText
                                                                     name="dateApprovedExternal"
                                                                     field={field}
@@ -192,7 +201,7 @@ function InspectDetails({match, history}) {
                                                     <Col xs={12} sm={8} md={6}>
                                                         <Field
                                                             name="dateReleased"
-                                                            render={({field}) => (
+                                                            render={({ field }) => (
                                                                 <InputText
                                                                     name="dateReleased"
                                                                     field={field}
@@ -211,51 +220,51 @@ function InspectDetails({match, history}) {
                                         </Row>
                                         <Row>
                                             <Col xs={12} md={12}>
-                                                <Field
-                                                    name="approvedProjectManager"
-                                                    render={({field}) => (
-                                                        <label className="w-checkbox checkbox-fld">
-                                                            <input
-                                                                type="checkbox"
-                                                                {...field}
-                                                                id="approved_project_manager"
-                                                                checked={values.approvedProjectManager}
-                                                                className="w-checkbox-input checkbox"
-                                                            />
-                                                            <span
-                                                                htmlFor="approved_project_manager"
-                                                                className="checkbox-label w-form-label"
-                                                            >
-                                                        Akkoord projectleider
-                                                    </span>
-                                                        </label>
-                                                    )}
-                                                />
+                                                <FormLabel
+                                                    htmlFor="date_approved_project_manager"
+                                                    className={'field-label'}
+                                                >
+                                                    Datum akkoord projectleider
+                                                </FormLabel>
+                                                <Row>
+                                                    <Col xs={12} sm={8} md={6}>
+                                                        <input
+                                                            type="text"
+                                                            className={`text-input w-input content`}
+                                                            value={
+                                                                initialQuotationRequest.dateApprovedProjectManager
+                                                                    ? moment(
+                                                                          initialQuotationRequest.dateApprovedProjectManager
+                                                                      ).format('L')
+                                                                    : ''
+                                                            }
+                                                            readOnly={true}
+                                                        />
+                                                    </Col>
+                                                </Row>
                                             </Col>
                                         </Row>
                                         <Row>
                                             <Col xs={12} md={12}>
-                                                <Field
-                                                    name="approvedClient"
-                                                    render={({field}) => (
-                                                        <label className="w-checkbox checkbox-fld">
-                                                            <input
-                                                                type="checkbox"
-                                                                {...field}
-                                                                id="approved_client"
-                                                                checked={values.approvedClient}
-                                                                className="w-checkbox-input checkbox"
-                                                                onChange={() => setFieldValue('approvedClient', !values.approvedClient)}
-                                                            />
-                                                            <span
-                                                                htmlFor="approved_client"
-                                                                className="checkbox-label w-form-label"
-                                                            >
-                                                        Akkoord bewoner
-                                                    </span>
-                                                        </label>
-                                                    )}
-                                                />
+                                                <FormLabel htmlFor="date_approved_client" className={'field-label'}>
+                                                    Datum akkoord bewoner
+                                                </FormLabel>
+                                                <Row>
+                                                    <Col xs={12} sm={8} md={6}>
+                                                        <input
+                                                            type="text"
+                                                            className={`text-input w-input content`}
+                                                            value={
+                                                                initialQuotationRequest.dateApprovedClient
+                                                                    ? moment(
+                                                                          initialQuotationRequest.dateApprovedClient
+                                                                      ).format('L')
+                                                                    : ''
+                                                            }
+                                                            readOnly={true}
+                                                        />
+                                                    </Col>
+                                                </Row>
                                             </Col>
                                         </Row>
                                         <Row>
@@ -264,7 +273,7 @@ function InspectDetails({match, history}) {
                                                     <Button
                                                         variant={'outline-dark'}
                                                         size="sm"
-                                                        onClick={function () {
+                                                        onClick={function() {
                                                             history.push(`/schouwen`);
                                                         }}
                                                     >
@@ -278,9 +287,9 @@ function InspectDetails({match, history}) {
                                                     >
                                                         {isSubmitting ? (
                                                             <span>
-                                                        <ClipLoader color={'white'} size={14}/>
-                                                        Bezig met opslaan
-                                                    </span>
+                                                                <ClipLoader color={'white'} size={14} />
+                                                                Bezig met opslaan
+                                                            </span>
                                                         ) : (
                                                             'Opslaan'
                                                         )}

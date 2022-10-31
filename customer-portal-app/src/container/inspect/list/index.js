@@ -76,8 +76,16 @@ function Inspectlist(props) {
                                                 ? moment(quotationRequest.dateReleased).format('L')
                                                 : ''}
                                         </td>
-                                        <td>{quotationRequest.approvedProjectManager ? 'Ja' : 'Nee'}</td>
-                                        <td>{quotationRequest.approvedClient ? 'Ja' : 'Nee'}</td>
+                                        <td>
+                                            {quotationRequest.dateApprovedProjectManager
+                                                ? moment(quotationRequest.dateApprovedProjectManager).format('L')
+                                                : ''}
+                                        </td>
+                                        <td>
+                                            {quotationRequest.dateApprovedClient
+                                                ? moment(quotationRequest.dateApprovedClient).format('L')
+                                                : ''}
+                                        </td>
                                         <td>
                                             <Link to={`/schouwen/${quotationRequest.id}`}>Openen</Link>
                                         </td>

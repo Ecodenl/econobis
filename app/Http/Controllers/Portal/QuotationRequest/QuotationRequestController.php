@@ -56,16 +56,12 @@ class QuotationRequestController
             'dateRecorded' => ['nullable', 'date'],
             'dateApprovedExternal' => ['nullable', 'date'],
             'dateReleased' => ['nullable', 'date'],
-            'approvedProjectManager' => ['boolean'],
-            'approvedClient' => ['boolean'],
         ]);
 
         $quotationRequest->date_planned = $request->input('datePlanned') ?: null;
         $quotationRequest->date_recorded = $request->input('dateRecorded') ?: null;
         $quotationRequest->date_approved_external = $request->input('dateApprovedExternal') ?: null;
         $quotationRequest->date_released = $request->input('dateReleased') ?: null;
-        $quotationRequest->approved_project_manager = $request->input('approvedProjectManager');
-        $quotationRequest->approved_client = $request->input('approvedClient');
 
         $sendMail = ($quotationRequest->isDirty('date_planned') && !!$quotationRequest->date_planned);
 
@@ -102,8 +98,8 @@ class QuotationRequestController
             'dateReleased' => $quotationRequest->date_released,
             'datePlanned' => $quotationRequest->date_planned,
             'dateApprovedExternal' => $quotationRequest->date_approved_external,
-            'approvedProjectManager' => $quotationRequest->approved_project_manager,
-            'approvedClient' => $quotationRequest->approved_client,
+            'dateApprovedProjectManager' => $quotationRequest->date_approved_project_manager,
+            'dateApprovedClient' => $quotationRequest->date_approved_client,
         ];
     }
 

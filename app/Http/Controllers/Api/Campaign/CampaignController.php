@@ -52,6 +52,7 @@ class CampaignController extends ApiController
 
         $campaign->load([
             'measureCategories',
+            'opportunityActions',
             'status',
             'type',
             'responses.contact.primaryAddress',
@@ -118,6 +119,14 @@ class CampaignController extends ApiController
 
         $campaign->measureCategories()->sync($measureCategoryIds);
 
+        $opportunityActionIds = explode(',', $request->opportunityActionIds);
+
+        if ($opportunityActionIds[0] == '') {
+            $opportunityActionIds = [];
+        }
+
+        $campaign->opportunityActions()->sync($opportunityActionIds);
+
         return FullCampaign::make($campaign->fresh());
     }
 
@@ -143,6 +152,14 @@ class CampaignController extends ApiController
         }
 
         $campaign->measureCategories()->sync($measureCategoryIds);
+
+        $opportunityActionIds = explode(',', $request->opportunityActionIds);
+
+        if ($opportunityActionIds[0] == '') {
+            $opportunityActionIds = [];
+        }
+
+        $campaign->opportunityActions()->sync($opportunityActionIds);
 
         $campaign->fill($data);
         $campaign->save();

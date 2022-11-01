@@ -4,7 +4,6 @@ namespace App\Helpers\Contact;
 
 use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
-use App\Helpers\Delete\Models\DeleteOrganisation;
 use Illuminate\Support\Facades\DB;
 
 class ContactMerger
@@ -196,6 +195,7 @@ class ContactMerger
         }
 
         foreach ($fromAddress->addressEnergySuppliers as $addressEnergySupplier) {
+            $addressEnergySupplier->is_current_supplier = false;
             $addressEnergySupplier->address_id = $toAddress->id;
             $addressEnergySupplier->save();
         }

@@ -47,9 +47,9 @@ export default {
             });
     },
 
-    mergeContacts: ids => {
+    mergeContacts: (toId, fromId) => {
         return axiosInstance
-            .post('contacts/merge', { ids: ids });
+            .post('contacts/merge', { toId, fromId });
     },
 
     getPerson: () => {

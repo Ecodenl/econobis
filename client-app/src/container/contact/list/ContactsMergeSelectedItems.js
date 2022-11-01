@@ -4,11 +4,14 @@ import ContactsAPI from '../../../api/contact/ContactsAPI';
 
 function ContactsMergeSelectedItems(props) {
     const confirmAction = () => {
-        let contactIds = [];
+        let contactIds = props.contacts.data
+            .filter(contact => contact.checked)
+            .sort((a, b) => {
+                return a.checkedAt - b.checkedAt;
+            })
+            .map((contact) => contact.id);
 
-        props.contacts.data.map(contact => contact.checked === true && contactIds.push(contact.id));
-
-        ContactsAPI.mergeContacts(contactIds)
+        ContactsAPI.mergeContacts(contactIds[0], contactIds[1])
             .then(function () {
                 props.fetchContactsData();
                 props.toggleShowMergeSelectedItems();

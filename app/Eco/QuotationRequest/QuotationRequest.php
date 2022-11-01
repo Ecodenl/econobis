@@ -28,7 +28,7 @@ class QuotationRequest extends Model
 
    public function organisationOrCoach()
     {
-        return $this->belongsTo(Contact::class, 'contact_id', 'id');
+        return $this->belongsTo(Contact::class, 'contact_id');
     }
 
     public function opportunity()

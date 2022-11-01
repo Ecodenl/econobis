@@ -44,12 +44,12 @@ class ContactMerger
 
     private function validate()
     {
-        if($this->toContact->type_id !== $this->fromContact->type_id){
-            throw new \Exception('Personen kunnen niet worden samengevoegd met organisaties.');
+        if ($this->toContact->type_id !== $this->fromContact->type_id) {
+            throw new ContactMergeException('Personen kunnen niet worden samengevoegd met organisaties.');
         }
 
-        if($this->toContact->twinfieldNumbers()->exists() && $this->fromContact->twinfieldNumbers()->exists()){
-            throw new \Exception('Contacten zijn beide gekoppeld via Twinfield, ontkoppel eerst een van de twee contacten handmatig van Twinfield.');
+        if ($this->toContact->twinfieldNumbers()->exists() && $this->fromContact->twinfieldNumbers()->exists()) {
+            throw new ContactMergeException('Contacten zijn beide gekoppeld via Twinfield, ontkoppel eerst een van de twee contacten handmatig van Twinfield.');
         }
     }
 
@@ -57,19 +57,19 @@ class ContactMerger
     {
         $this->mergeContact();
 
-        if($this->toContact->isPerson()){
+        if ($this->toContact->isPerson()) {
             $this->mergePerson();
         }
 
-        if($this->toContact->isOrganisation()){
+        if ($this->toContact->isOrganisation()) {
             $this->mergeOrganisation();
         }
 
         $this->mergeAddresses();
-        $this->mergeGroups();
         $this->mergeEmailAddresses();
         $this->mergePhoneNumbers();
-        $this->mergeGenericHasManyRelation('emails');
+        $this->mergeGenericBelongsToManyRelation('emails');
+        $this->mergeGenericBelongsToManyRelation('groups');
         $this->mergeGenericHasManyRelation('responses');
         $this->mergeGenericHasManyRelation('documents');
         $this->mergeGenericHasManyRelation('financialOverviewContacts');
@@ -82,12 +82,14 @@ class ContactMerger
         $this->mergeGenericHasManyRelation('tasks');
         $this->mergeGenericHasManyRelation('notes');
         $this->mergeGenericHasManyRelation('contactNotes');
-        $this->mergeGenericHasManyRelation('occupations');
-        $this->mergeGenericHasManyRelation('primaryOccupations');
+        $this->mergeOccupations();
         $this->mergeGenericHasManyRelation('twinfieldNumbers');
         $this->mergeGenericHasManyRelation('intakes');
         $this->mergeGenericHasManyRelation('revenueDistributionKwh');
         $this->mergeGenericHasManyRelation('twinfieldLogs');
+        $this->mergeGenericHasManyRelation('quotationRequests');
+
+        $this->fromContact->delete();
     }
 
     private function mergeContact()
@@ -107,16 +109,18 @@ class ContactMerger
             'iban_attn',
         ];
 
-        foreach ($mergeFields as $field){
-            if(!$this->toContact->$field && $this->fromContact->$field){
+        foreach ($mergeFields as $field) {
+            if (!$this->toContact->$field && $this->fromContact->$field) {
                 $this->toContact->$field = $this->fromContact->$field;
             }
         }
+
+        $this->toContact->save();
     }
 
     private function mergePerson()
     {
-        $this->fromContact->person->delete();
+        optional($this->fromContact->person)->delete();
     }
 
     private function mergeOrganisation()
@@ -124,22 +128,26 @@ class ContactMerger
         $fromOrganisation = $this->fromContact->organisation;
         $toOrganisation = $this->toContact->organisation;
 
-        foreach($fromOrganisation->people as $person){
+        if (!$fromOrganisation || !$toOrganisation) {
+            return;
+        }
+
+        foreach ($fromOrganisation->people as $person) {
             $person->organisation_id = $toOrganisation->id;
             $person->save();
         }
 
-        foreach($fromOrganisation->campaigns as $campaign){
+        foreach ($fromOrganisation->campaigns as $campaign) {
             $toOrganisation->campaigns()->attach($campaign);
             $fromOrganisation->campaigns()->detach($campaign);
         }
 
-        foreach($fromOrganisation->deliversMeasures as $measure){
+        foreach ($fromOrganisation->deliversMeasures as $measure) {
             $toOrganisation->deliversMeasures()->attach($measure);
             $fromOrganisation->deliversMeasures()->detach($measure);
         }
 
-        foreach($fromOrganisation->measureCategories as $measureCategory){
+        foreach ($fromOrganisation->measureCategories as $measureCategory) {
             $measureCategory->organisation_id_wf_create_quotation_request = $toOrganisation->id;
             $measureCategory->save();
         }
@@ -217,7 +225,7 @@ class ContactMerger
     {
         $foreignKey = $this->fromContact->{$relationName}()->getQualifiedForeignKeyName();
 
-        foreach($this->fromContact->$relationName as $relation){
+        foreach ($this->fromContact->$relationName as $relation) {
             $relation->$foreignKey = $this->toContact->id;
             $relation->save();
         }
@@ -227,26 +235,10 @@ class ContactMerger
     {
         $relation = $this->fromContact->$relationName;
 
-        if($relation){
+        if ($relation) {
             $relation->contact_id = $this->toContact->id;
             $relation->save();
         }
-    }
-
-    private function mergeGroups()
-    {
-        foreach ($this->fromContact->groups as $group) {
-            $existingGroup = $this->toContact->groups->where('id', $group->id)->first();
-
-            if ($existingGroup) {
-                continue;
-            }
-
-            $group->pivot->contact_id = $this->toContact->id;
-            $group->pivot->save();
-        }
-
-        $this->fromContact->groups()->detach();
     }
 
     private function mergeEmailAddresses()
@@ -278,6 +270,50 @@ class ContactMerger
             $phoneNumber->primary = false;
             $phoneNumber->contact_id = $this->toContact->id;
             $phoneNumber->save();
+        }
+    }
+
+    private function mergeGenericBelongsToManyRelation(string $relationName)
+    {
+        foreach ($this->fromContact->$relationName as $relation) {
+            $existingRelation = $this->toContact->$relationName->where('id', $relation->id)->first();
+
+            if ($existingRelation) {
+                continue;
+            }
+
+            $this->fromContact->$relationName()->updateExistingPivot($relation->id, [
+                'contact_id' => $this->toContact->id,
+            ]);
+        }
+
+        $this->fromContact->$relationName()->detach();
+    }
+
+    private function mergeOccupations()
+    {
+        foreach ($this->fromContact->occupations as $occupationContact) {
+            $occupationContact->contact_id = $this->toContact->id;
+
+            try {
+                $occupationContact->save();
+            } catch (\Throwable $e) {
+                // Dit kan gebeuren als er al een occupation is met deze combinatie van contact_id, primary_contact_id en occupation_id
+                // In dat geval verwijderen we het record, aangezien deze toch dubbel is.
+                $occupationContact->delete();
+            }
+        }
+
+        foreach ($this->fromContact->primaryOccupations as $occupationContact) {
+            $occupationContact->primary_contact_id = $this->toContact->id;
+
+            try {
+                $occupationContact->save();
+            } catch (\Throwable $e) {
+                // Dit kan gebeuren als er al een occupation is met deze combinatie van contact_id, primary_contact_id en occupation_id
+                // In dat geval verwijderen we het record, aangezien deze toch dubbel is.
+                $occupationContact->delete();
+            }
         }
     }
 }

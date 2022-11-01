@@ -34,8 +34,6 @@ class ContactMerger
     {
         $this->validate();
 
-        return;
-
         /**
          * We willen geen halve merge uitvoeren, dus de gehele merge in een transaction.
          * Als er ergens een fout ontstaat wordt de gehele merge teruggedraaid.
@@ -59,8 +57,15 @@ class ContactMerger
     private function doMerge()
     {
         $this->mergeContact();
-        $this->mergePerson();
-        $this->mergeOrganisation();
+
+        if($this->toContact->isPerson()){
+            $this->mergePerson();
+        }
+
+        if($this->toContact->isOrganisation()){
+            $this->mergeOrganisation();
+        }
+
         $this->mergeAddresses();
         $this->mergeGenericHasManyRelation('emails');
         $this->mergeGenericHasManyRelation('responses');
@@ -98,11 +103,30 @@ class ContactMerger
 
     private function mergeOrganisation()
     {
-        $errors = (new DeleteOrganisation($this->fromContact->organisation))->delete();
+        $fromOrganisation = $this->fromContact->organisation;
+        $toOrganisation = $this->toContact->organisation;
 
-        if ($errors) {
-            throw new \Exception('Organisatie kon niet worden verwijderd: ' . implode(', ', $errors));
+        foreach($fromOrganisation->people as $person){
+            $person->organisation_id = $toOrganisation->id;
+            $person->save();
         }
+
+        foreach($fromOrganisation->campaigns as $campaign){
+            $toOrganisation->campaigns()->attach($campaign);
+            $fromOrganisation->campaigns()->detach($campaign);
+        }
+
+        foreach($fromOrganisation->deliversMeasures as $measure){
+            $toOrganisation->deliversMeasures()->attach($measure);
+            $fromOrganisation->deliversMeasures()->detach($measure);
+        }
+
+        foreach($fromOrganisation->measureCategories as $measureCategory){
+            $measureCategory->organisation_id_wf_create_quotation_request = $toOrganisation->id;
+            $measureCategory->save();
+        }
+
+        $fromOrganisation->delete();
     }
 
     private function mergeAddresses()

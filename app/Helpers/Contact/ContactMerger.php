@@ -12,14 +12,14 @@ class ContactMerger
 
     /**
      * @var Contact $toContact
-     * Het contact waarin alle gegevens van contact2 worden samengevoegd.
+     * Het contact waarin alle gegevens van fromContact worden samengevoegd.
      * Dit contact blijft bestaan.
      */
     protected $toContact;
 
     /**
      * @var Contact $fromContact
-     * Het contact dat wordt samengevoegd in contact1.
+     * Het contact dat wordt samengevoegd in toContact.
      * Dit contact wordt verwijderd.
      */
     protected $fromContact;
@@ -67,6 +67,9 @@ class ContactMerger
         }
 
         $this->mergeAddresses();
+        $this->mergeGroups();
+        $this->mergeEmailAddresses();
+        $this->mergePhoneNumbers();
         $this->mergeGenericHasManyRelation('emails');
         $this->mergeGenericHasManyRelation('responses');
         $this->mergeGenericHasManyRelation('documents');
@@ -79,12 +82,9 @@ class ContactMerger
         $this->mergeGenericHasManyRelation('projectRevenueDistributions');
         $this->mergeGenericHasManyRelation('tasks');
         $this->mergeGenericHasManyRelation('notes');
-        $this->mergeGenericHasManyRelation('groups');
         $this->mergeGenericHasManyRelation('contactNotes');
-        $this->mergeGenericHasManyRelation('emailAddresses');
         $this->mergeGenericHasManyRelation('occupations');
         $this->mergeGenericHasManyRelation('primaryOccupations');
-        $this->mergeGenericHasManyRelation('phoneNumbers');
         $this->mergeGenericHasManyRelation('twinfieldNumbers');
         $this->mergeGenericHasManyRelation('intakes');
         $this->mergeGenericHasManyRelation('revenueDistributionKwh');
@@ -166,8 +166,9 @@ class ContactMerger
             }
 
             /**
-             * Dit adres bestaat nog niet bij contact1, dus verplaatsen we het adres.
+             * Dit adres bestaat nog niet bij toContact, dus verplaatsen we het adres.
              */
+            $address->primary = false;
             $address->contact_id = $this->toContact->id;
             $address->save();
         }
@@ -229,6 +230,54 @@ class ContactMerger
         if($relation){
             $relation->contact_id = $this->toContact->id;
             $relation->save();
+        }
+    }
+
+    private function mergeGroups()
+    {
+        foreach ($this->fromContact->groups as $group) {
+            $existingGroup = $this->toContact->groups->where('id', $group->id)->first();
+
+            if ($existingGroup) {
+                continue;
+            }
+
+            $group->pivot->contact_id = $this->toContact->id;
+            $group->pivot->save();
+        }
+
+        $this->fromContact->groups()->detach();
+    }
+
+    private function mergeEmailAddresses()
+    {
+        foreach ($this->fromContact->emailAddresses as $emailAddress) {
+            $existingEmailAddress = $this->toContact->emailAddresses->where('email', $emailAddress->email)->first();
+
+            if ($existingEmailAddress) {
+                $emailAddress->delete();
+                continue;
+            }
+
+            $emailAddress->primary = false;
+            $emailAddress->contact_id = $this->toContact->id;
+            $emailAddress->save();
+        }
+    }
+
+    private function mergePhoneNumbers()
+    {
+        foreach ($this->fromContact->phoneNumbers as $phoneNumber) {
+            $existingPhoneNumber = $this->toContact->phoneNumbers->where('number', $phoneNumber->number)->first();
+
+            if ($existingPhoneNumber) {
+                $phoneNumber->delete();
+                continue;
+            }
+
+            $phoneNumber->primary = false;
+            $phoneNumber->contact_id = $this->toContact->id;
+            $phoneNumber->save();
         }
     }
 }

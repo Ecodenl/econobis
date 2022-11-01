@@ -93,7 +93,26 @@ class ContactMerger
 
     private function mergeContact()
     {
-//        $this->toContact
+        /**
+         * Voor onderstaande velden geldt dat de waarde van fromContact alleen wordt overgenomen als deze in toContact leeg is.
+         */
+        $mergeFields = [
+            'portal_registration_code',
+            'collect_mandate_signature_date',
+            'collect_mandate_collection_schema',
+            'collect_mandate_first_run_date',
+            'collect_mandate_code',
+            'is_collect_mandate',
+            'hoom_account_id',
+            'iban',
+            'iban_attn',
+        ];
+
+        foreach ($mergeFields as $field){
+            if(!$this->toContact->$field && $this->fromContact->$field){
+                $this->toContact->$field = $this->fromContact->$field;
+            }
+        }
     }
 
     private function mergePerson()

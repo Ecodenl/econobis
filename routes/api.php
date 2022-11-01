@@ -130,6 +130,7 @@ Route::namespace('Api')
         Route::post('/contact-note/{contactNote}/delete', 'ContactNote\ContactNoteController@destroy');
         Route::post('/contact-portal-user/{portalUser}', 'PortalUser\PortalUserController@update');
         Route::post('/contact-portal-user/{portalUser}/delete', 'PortalUser\PortalUserController@destroy');
+        Route::post('/contact-portal-user/{portalUser}/reset-two-factor', 'PortalUser\PortalUserController@resetTwoFactor');
 
         Route::post('/address-energy-supplier', 'AddressEnergySupplier\AddressEnergySupplierController@store');
         Route::post('/address-energy-supplier/{addressEnergySupplier}', 'AddressEnergySupplier\AddressEnergySupplierController@update');

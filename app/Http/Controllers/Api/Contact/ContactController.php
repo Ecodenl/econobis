@@ -310,6 +310,12 @@ class ContactController extends Controller
         $contact1 = Contact::find($ids[0]);
         $contact2 = Contact::find($ids[1]);
 
-        (new ContactMerger($contact1, $contact2))->merge();
+        try{
+            (new ContactMerger($contact1, $contact2))->merge();
+        }catch (\Exception $e){
+            return response()->json(['message' => 'Contacten konden niet worden samengevoegd: ' . $e->getMessage()], 500);
+        }
+
+        return response()->json(['message' => 'Contacten zijn samengevoegd.'], 200);
     }
 }

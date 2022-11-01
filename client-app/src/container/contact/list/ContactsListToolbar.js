@@ -180,7 +180,7 @@ class ContactsListToolbar extends Component {
                     <ContactListAddContactsToGroup toggleAddGroup={this.toggleAddContactsToGroup} />
                 )}
                 {this.state.showMergeSelectedItems && (
-                    <ContactsMergeSelectedItems toggleShowMergeSelectedItems={this.toggleShowMergeSelectedItems} fetchContactsData={this.props.fetchContactsData} />
+                    <ContactsMergeSelectedItems toggleShowMergeSelectedItems={this.toggleShowMergeSelectedItems} contacts={this.props.contacts} fetchContactsData={this.props.fetchContactsData} />
                 )}
             </div>
         );

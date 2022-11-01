@@ -11,6 +11,8 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laracasts\Presenter\PresentableTrait;
+use Laravel\Fortify\Contracts\TwoFactorAuthenticationProvider;
+use Laravel\Fortify\Fortify;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
@@ -77,5 +79,18 @@ class PortalUser extends Authenticatable
     public function hasEnabledTwoFactorAuthentication()
     {
         return !!$this->two_factor_confirmed_at;
+    }
+
+    public function twoFactorQrCodeUrl()
+    {
+        /**
+         * Deze functie is overschreven zodat we naam 'Login <coop_naam>' als naam mee te kunnen geven voor de 2fa apps.
+         * Zo kunnen de codes in de 2fa app worden onderscheiden voor gebruikers die én Econobis én het portal gebruiken.
+         */
+        return app(TwoFactorAuthenticationProvider::class)->qrCodeUrl(
+            'Login ' . config('app.APP_COOP_NAME'),
+            $this->{Fortify::username()},
+            decrypt($this->two_factor_secret)
+        );
     }
 }

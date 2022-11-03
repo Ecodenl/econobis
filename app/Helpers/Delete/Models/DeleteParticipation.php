@@ -59,7 +59,7 @@ class DeleteParticipation implements DeleteInterface
     public function canDelete()
     {
         if($this->participation->mutations()->count() > 0){
-            array_push($this->errorMessage, "Er is nog een mutatie.");
+            array_push($this->errorMessage, "Er is nog een deelname in een project. Verwijder de deelname. Verwijder dan het contact opnieuw.");
         }
     }
 

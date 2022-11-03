@@ -23,6 +23,10 @@ class CreateQuotationRequestActionsLogTable extends Migration
             $table->foreign('contact_id')
                 ->references('id')->on('contacts')
                 ->onDelete('restrict');
+            $table->unsignedInteger('user_id')->nullable()->default(null);
+            $table->foreign('user_id')
+                ->references('id')->on('users')
+                ->onDelete('restrict');
             $table->string('updated_with', 16)->nullable()->default(null);
             $table->unsignedInteger('old_status_id')->nullable()->default(null);
             $table->foreign('old_status_id')

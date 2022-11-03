@@ -48,9 +48,6 @@ class QuotationRequestController
             abort(501, 'Er is helaas een fout opgetreden (onbekende klanten portaal verantwoordelijke).');
         }
 
-        // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu zetten we responisibleUserId in Auth user tbv observers die create_by en updated_by hiermee vastleggen
-        Auth::setUser(User::find($responsibleUserId));
-
         $request->validate([
             'datePlanned' => ['nullable', 'date'],
             'dateRecorded' => ['nullable', 'date'],
@@ -62,13 +59,11 @@ class QuotationRequestController
         $quotationRequest->date_recorded = $request->input('dateRecorded') ?: null;
         $quotationRequest->date_approved_external = $request->input('dateApprovedExternal') ?: null;
         $quotationRequest->date_released = $request->input('dateReleased') ?: null;
+        $quotationRequest->updated_by_id = $responsibleUserId;
 
         $sendMail = ($quotationRequest->isDirty('date_planned') && !!$quotationRequest->date_planned);
 
         $quotationRequest->save();
-
-        // Voor zekerheid hierna weer even Auth user herstellen met portal user
-        Auth::setUser($portalUser);
 
         if($sendMail){
             $this->sendInspectionPlannedMail($quotationRequest);

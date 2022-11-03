@@ -132,7 +132,7 @@ const QuotationRequestsListFilter = props => {
                     {props.quotationRequestStatus.map(status => {
                         return (
                             <option key={status.id} value={status.id}>
-                                {status.name}
+                                {status.opportunityActionName} - {status.name}
                             </option>
                         );
                     })}

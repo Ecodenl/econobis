@@ -121,11 +121,11 @@ class User extends Authenticatable
             $teamContactGroupIds = [];
             $hasContactGroup = false;
             foreach ($this->teams as $team){
-                $teamContactGroupIds = $team->contactGroups->pluck('id')->toArray();
+                $thisTeamContactGroupIds = $team->contactGroups->pluck('id')->toArray();
                 if(count($teamContactGroupIds) > 0) {
                     $hasContactGroup = true;
                 }
-                $teamContactGroupIds = array_unique(array_merge($teamContactGroupIds, $team->contactGroups->pluck('id')->toArray()));
+                $teamContactGroupIds = array_unique(array_merge($teamContactGroupIds, $thisTeamContactGroupIds));
             }
             if($hasContactGroup && count($teamContactGroupIds) == 0){
                 $this->teamContactGroupids = [-1];
@@ -172,11 +172,11 @@ class User extends Authenticatable
             $teamDocumentCreatedFromIds = [];
             $hasDocumentCreatedFrom = false;
             foreach ($this->teams as $team){
-                $teamDocumentCreatedFromIds = $team->documentCreatedFroms->pluck('id')->toArray();
+                $thisTeamDocumentCreatedFromIds = $team->documentCreatedFroms->pluck('id')->toArray();
                 if(count($teamDocumentCreatedFromIds) > 0) {
                     $hasDocumentCreatedFrom = true;
                 }
-                $teamDocumentCreatedFromIds = array_unique(array_merge($teamDocumentCreatedFromIds, $team->documentCreatedFroms->pluck('id')->toArray()));
+                $teamDocumentCreatedFromIds = array_unique(array_merge($teamDocumentCreatedFromIds, $thisTeamDocumentCreatedFromIds));
             }
             if($hasDocumentCreatedFrom && count($teamDocumentCreatedFromIds) == 0){
                 $this->teamDocumentCreatedFromIds = [-1];

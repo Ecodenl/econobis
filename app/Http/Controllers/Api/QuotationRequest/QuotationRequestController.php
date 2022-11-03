@@ -13,11 +13,14 @@ use App\Eco\Email\Email;
 use App\Eco\Occupation\Occupation;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Opportunity\Opportunity;
+use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\QuotationRequest\QuotationRequest;
+use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Helpers\CSV\QuotationRequestCSVHelper;
 use App\Helpers\Delete\Models\DeleteQuotationRequest;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\QuotationRequest\Grid\RequestQuery;
+use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\QuotationRequest\GridQuotationRequest;
@@ -42,7 +45,8 @@ class QuotationRequestController extends ApiController
             'opportunity.intake.campaign',
             'opportunity.intake.contact',
             'status',
-        ]);
+            'opportunityAction',
+            ]);
 
         return GridQuotationRequest::collection($quotationRequests)
             ->additional(['meta' => [
@@ -63,11 +67,14 @@ class QuotationRequestController extends ApiController
             'opportunity.measures',
             'documents',
             'status',
+            'opportunityAction',
             'createdBy',
             'updatedBy'
         ]);
 
         $quotationRequest->relatedEmailsSent = $this->getRelatedEmails($quotationRequest->id, 'sent');
+
+        $quotationRequest->relatedQuotationRequestsStatuses = $this->getRelatedQuotationRequestsStatuses($quotationRequest->opportunityAction);
 
         $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
         if($teamDocumentCreatedFromIds){
@@ -92,7 +99,7 @@ class QuotationRequestController extends ApiController
     /**
      * Geef de data die React nodig heeft om het scherm op te bouwen voor een nieuw offerteverzoek
      */
-    public function getStore(Opportunity $opportunity)
+    public function getStore(Opportunity $opportunity, OpportunityAction $opportunityAction)
     {
         $opportunity->load([
             'intake.address',
@@ -102,6 +109,8 @@ class QuotationRequestController extends ApiController
             'intake.campaign.organisations',
             'intake.campaign.coaches',
         ]);
+
+        $opportunity->relatedQuotationRequestsStatuses = $this->getRelatedQuotationRequestsStatuses($opportunityAction);
 
         return FullOpportunity::make($opportunity);
     }
@@ -115,7 +124,12 @@ class QuotationRequestController extends ApiController
             'opportunityId' => 'required|exists:opportunities,id',
             'dateRecorded' => 'string',
             'dateReleased' => 'string',
+            'datePlanned' => 'string',
+            'dateApprovedClient' => 'string',
+            'dateApprovedProjectManager' => 'string',
+            'dateApprovedExternal' => 'string',
             'statusId' => 'required|exists:quotation_request_status,id',
+            'opportunityActionId' => 'required|exists:opportunity_actions,id',
             'quotationText' => 'string',
         ]);
 
@@ -126,6 +140,7 @@ class QuotationRequestController extends ApiController
         $quotationRequest->contact_id = $data['organisationOrCoachId'];
         $quotationRequest->opportunity_id = $data['opportunityId'];
         $quotationRequest->status_id = $data['statusId'];
+        $quotationRequest->opportunity_action_id = $data['opportunityActionId'];
 
         //optional
         if ($data['dateRecorded']) {
@@ -134,6 +149,22 @@ class QuotationRequestController extends ApiController
 
         if ($data['dateReleased']) {
             $quotationRequest->date_released = $data['dateReleased'];
+        }
+
+        if ($data['datePlanned']) {
+            $quotationRequest->date_planned = $data['datePlanned'];
+        }
+
+        if ($data['dateApprovedClient']) {
+            $quotationRequest->date_approved_client = $data['dateApprovedClient'];
+        }
+
+        if ($data['dateApprovedProjectManager']) {
+            $quotationRequest->date_approved_project_manager = $data['dateApprovedProjectManager'];
+        }
+
+        if ($data['dateApprovedExternal']) {
+            $quotationRequest->date_approved_external = $data['dateApprovedExternal'];
         }
 
         if (isset($data['quotationText'])) {
@@ -157,7 +188,12 @@ class QuotationRequestController extends ApiController
             'opportunityId' => 'required|exists:opportunities,id',
             'dateRecorded' => 'string',
             'dateReleased' => 'string',
+            'datePlanned' => 'string',
+            'dateApprovedClient' => 'string',
+            'dateApprovedProjectManager' => 'string',
+            'dateApprovedExternal' => 'string',
             'statusId' => 'required|exists:quotation_request_status,id',
+            'opportunityActionId' => 'required|exists:opportunity_actions,id',
             'quotationText' => 'string',
         ]);
 
@@ -165,6 +201,7 @@ class QuotationRequestController extends ApiController
         $quotationRequest->contact_id = $data['organisationOrCoachId'];
         $quotationRequest->opportunity_id = $data['opportunityId'];
         $quotationRequest->status_id = $data['statusId'];
+        $quotationRequest->opportunity_action_id = $data['opportunityActionId'];
 
         //optional
         if ($data['dateRecorded']) {
@@ -177,6 +214,22 @@ class QuotationRequestController extends ApiController
             $quotationRequest->date_released = $data['dateReleased'];
         } else {
             $quotationRequest->date_released = null;
+        }
+
+        if ($data['datePlanned']) {
+            $quotationRequest->date_planned = $data['datePlanned'];
+        }
+
+        if ($data['dateApprovedClient']) {
+            $quotationRequest->date_approved_client = $data['dateApprovedClient'];
+        }
+
+        if ($data['dateApprovedProjectManager']) {
+            $quotationRequest->date_approved_project_manager = $data['dateApprovedProjectManager'];
+        }
+
+        if ($data['dateApprovedExternal']) {
+            $quotationRequest->date_approved_external = $data['dateApprovedExternal'];
         }
 
         if (isset($data['quotationText'])) {
@@ -234,6 +287,12 @@ class QuotationRequestController extends ApiController
         $mailboxIds = Auth::user()->mailboxes()->pluck('mailbox_id');
         return Email::where('quotation_request_id', $id)->where('folder', $folder)->whereIn('mailbox_id', $mailboxIds)->get();
     }
+
+    protected function getRelatedQuotationRequestsStatuses(OpportunityAction $opportunityAction)
+    {
+        return FullEnumWithIdAndName::collection(QuotationRequestStatus::where('opportunity_action_id', $opportunityAction->id)->orderBy('order')->get());
+    }
+
 
     public function getAmountOfOpenQuotationRequests(){
         return QuotationRequest::where('status_id', 1)->count();

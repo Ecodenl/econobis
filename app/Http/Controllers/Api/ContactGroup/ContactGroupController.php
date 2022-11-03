@@ -65,11 +65,18 @@ class ContactGroupController extends Controller
 
     public function peekStatic()
     {
-        return ContactGroupPeek::collection(ContactGroup::orderBy('name')->where('type_id', 'static')->get());
+        $teamContactGroupIds = Auth::user()->getTeamContactGroupIds();
+        if($teamContactGroupIds){
+            return ContactGroupPeek::collection(ContactGroup::whereIn('id', $teamContactGroupIds)->where('type_id', 'static')->orderBy('name')->get());
+        } else {
+            return ContactGroupPeek::collection(ContactGroup::orderBy('name')->where('type_id', 'static')->get());
+        }
     }
 
     public function show(ContactGroup $contactGroup)
     {
+        $this->authorize('view', ContactGroup::class);
+
         $contactGroup->load(['responsibleUser', 'createdBy', 'tasks', 'emailTemplateNewContactLink']);
         return FullContactGroup::make($contactGroup);
     }

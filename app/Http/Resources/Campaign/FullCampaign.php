@@ -34,6 +34,7 @@ class FullCampaign extends JsonResource
             'status' => GenericResource::make($this->whenLoaded('status')),
             'type' => GenericResource::make($this->whenLoaded('type')),
             'measureCategories' => GenericResource::collection($this->whenLoaded('measureCategories')),
+            'opportunityActions' => GenericResource::collection($this->whenLoaded('opportunityActions')),
             'responses' => FullCampaignResponse::collection($this->whenLoaded('responses')),
             'organisations' => FullOrganisation::collection($this->whenLoaded('organisations')),
             'coaches' => FullCoach::collection($this->whenLoaded('coaches')),

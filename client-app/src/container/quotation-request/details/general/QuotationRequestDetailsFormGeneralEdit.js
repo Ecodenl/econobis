@@ -21,13 +21,20 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
         const {
             id,
             organisationOrCoach,
-            dateRecorded,
             status,
+            opportunityAction,
             datePlannedToSendWfEmailStatus,
+            dateRecorded,
             dateReleased,
+            datePlanned,
+            dateApprovedExternal,
+            dateApprovedProjectManager,
+            dateApprovedClient,
             quotationText,
             opportunity,
+            relatedQuotationRequestsStatuses,
         } = props.quotationRequestDetails;
+
         this.state = {
             opportunity: {
                 fullName: opportunity.intake ? opportunity.intake.contact.fullName : '',
@@ -43,14 +50,22 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                 id,
                 opportunityId: opportunity.id,
                 organisationOrCoachId: organisationOrCoach.id,
-                dateRecorded: dateRecorded ? dateRecorded : '',
                 statusId: status.id,
+                opportunityActionId: opportunityAction.id,
                 statusUsesWf: status ? status.usesWf : false,
                 datePlannedToSendWfEmailStatus: datePlannedToSendWfEmailStatus
                     ? moment(datePlannedToSendWfEmailStatus).format('L')
                     : '',
+                dateRecorded: dateRecorded ? dateRecorded : '',
                 dateReleased: dateReleased ? dateReleased : '',
+                datePlanned: datePlanned ? datePlanned : '',
+                dateApprovedExternal: dateApprovedExternal ? dateApprovedExternal : '',
+                dateApprovedProjectManager: dateApprovedProjectManager ? dateApprovedProjectManager : '',
+                dateApprovedClient: dateApprovedClient ? dateApprovedClient : '',
                 quotationText: quotationText ? quotationText : '',
+                relatedQuotationRequestsStatuses: relatedQuotationRequestsStatuses
+                    ? relatedQuotationRequestsStatuses
+                    : [],
             },
             errors: {
                 organisationOrCoach: false,
@@ -116,12 +131,17 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
     render() {
         const {
             organisationOrCoachId,
-            dateRecorded,
             statusId,
             statusUsesWf,
             datePlannedToSendWfEmailStatus,
+            dateRecorded,
             dateReleased,
+            datePlanned,
+            dateApprovedExternal,
+            dateApprovedProjectManager,
+            dateApprovedClient,
             quotationText,
+            relatedQuotationRequestsStatuses,
         } = this.state.quotationRequest;
         const {
             fullName,
@@ -130,6 +150,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             measureNames,
             measureCategoryName,
         } = this.state.opportunity;
+        const { opportunityAction } = this.props.quotationRequestDetails;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -178,22 +199,15 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         onChange={() => {}}
                         readOnly={true}
                     />
-                    <InputDate
-                        label="Datum opname"
-                        size={'col-sm-6'}
-                        name="dateRecorded"
-                        value={dateRecorded}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
                 </div>
 
                 <div className="row">
                     <InputSelect
-                        label={'Offerte status'}
+                        label={'Status'}
                         size={'col-sm-6'}
                         name="statusId"
                         value={statusId}
-                        options={this.props.quotationRequestStatus}
+                        options={relatedQuotationRequestsStatuses}
                         onChangeAction={this.handleInputChange}
                         required={'required'}
                         error={this.state.errors.status}
@@ -213,17 +227,60 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
 
                 <div className="row">
                     <InputDate
-                        label="Offerte uitgebracht"
+                        label="Datum afspraak"
                         size={'col-sm-6'}
-                        name="dateReleased"
-                        value={dateReleased}
+                        name="datePlanned"
+                        value={datePlanned}
+                        onChangeAction={this.handleInputChangeDate}
+                    />
+                    <InputDate
+                        label="Datum opname"
+                        size={'col-sm-6'}
+                        name="dateRecorded"
+                        value={dateRecorded}
                         onChangeAction={this.handleInputChangeDate}
                     />
                 </div>
 
                 <div className="row">
+                    <InputDate
+                        label="Datum uitgebracht"
+                        size={'col-sm-6'}
+                        name="dateReleased"
+                        value={dateReleased}
+                        onChangeAction={this.handleInputChangeDate}
+                    />
+                    <InputDate
+                        label="Datum akkoord extern"
+                        size={'col-sm-6'}
+                        name="dateApprovedExternal"
+                        value={dateApprovedExternal}
+                        onChangeAction={this.handleInputChangeDate}
+                    />
+                </div>
+                {opportunityAction.codeRef === 'subsidy-request' ? (
+                    <>
+                        <div className="row">
+                            <InputDate
+                                label="Datum akkoord projectleider"
+                                size={'col-sm-6'}
+                                name="dateApprovedProjectManager"
+                                value={dateApprovedProjectManager}
+                                onChangeAction={this.handleInputChangeDate}
+                            />
+                            <InputDate
+                                label="Datum akkoord bewoner"
+                                size={'col-sm-6'}
+                                name="dateApprovedClient"
+                                value={dateApprovedClient}
+                                onChangeAction={this.handleInputChangeDate}
+                            />
+                        </div>
+                    </>
+                ) : null}
+                <div className="row">
                     <InputTextArea
-                        label={'Offerte omschrijving'}
+                        label={'Omschrijving'}
                         name={'quotationText'}
                         value={quotationText}
                         onChangeAction={this.handleInputChange}
@@ -242,7 +299,6 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
 
 const mapStateToProps = state => {
     return {
-        quotationRequestStatus: state.systemData.quotationRequestStatus,
         quotationRequestDetails: state.quotationRequestDetails,
     };
 };

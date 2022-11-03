@@ -328,7 +328,7 @@ Route::namespace('Api')
         Route::get('/quotation-request/peek', 'QuotationRequest\QuotationRequestController@peek');
         Route::get('/quotation-request/csv', 'QuotationRequest\QuotationRequestController@csv');
         Route::get('/quotation-request/amount-open', 'QuotationRequest\QuotationRequestController@getAmountOfOpenQuotationRequests');
-        Route::get('/opportunity/{opportunity}/quotation-request', 'QuotationRequest\QuotationRequestController@getStore');
+        Route::get('/opportunity/{opportunity}/{opportunityAction}/quotation-request', 'QuotationRequest\QuotationRequestController@getStore');
         Route::post('/quotation-request', 'QuotationRequest\QuotationRequestController@store');
         Route::get('/quotation-request/{quotationRequest}', 'QuotationRequest\QuotationRequestController@show');
         Route::post('/quotation-request/{quotationRequest}/update', 'QuotationRequest\QuotationRequestController@update');

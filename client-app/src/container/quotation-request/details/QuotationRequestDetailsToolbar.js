@@ -27,12 +27,21 @@ class QuotationRequestDetailsToolbar extends Component {
     };
 
     render() {
-        const { opportunity = {} } = this.props.quotationRequestDetails;
-        const { measure = {}, intake = {} } = opportunity;
+        const { opportunity = {}, opportunityAction } = this.props.quotationRequestDetails;
+        const { measureCategory = {}, intake = {} } = opportunity;
 
-        let measureName = measure.name || '';
+        let opportunityActionName = opportunityAction ? opportunityAction.name : 'actie';
+        let measureCategoryName = measureCategory ? measureCategory.name : '';
         let fullName = intake && intake.contact ? intake.contact.fullName : '';
-        let fullAddress = intake.fullAddress || '';
+        let fullAddress = intake ? intake.fullAddress : '';
+
+        let quotationToolbarText =
+            opportunityActionName != undefined &&
+            measureCategoryName != undefined &&
+            fullName != undefined &&
+            fullAddress != undefined
+                ? `${opportunityActionName} ${measureCategoryName} voor ${fullName} op ${fullAddress}`
+                : '';
 
         return (
             <div className="row">
@@ -52,14 +61,19 @@ class QuotationRequestDetailsToolbar extends Component {
                                 </div>
                             </div>
                             <div className="col-md-8">
-                                <h4 className="text-center">{`Offerteverzoek ${measureName} voor ${fullName} op ${fullAddress}`}</h4>
+                                <h4 className="text-center">{quotationToolbarText}</h4>
                             </div>
                             <div className="col-md-2" />
                         </PanelBody>
                     </Panel>
                 </div>
                 {this.state.showDelete && (
-                    <QuotationRequestDetailsDelete closeDeleteItemModal={this.toggleDelete} id={this.props.id} />
+                    <QuotationRequestDetailsDelete
+                        closeDeleteItemModal={this.toggleDelete}
+                        id={this.props.id}
+                        opportunity={opportunity}
+                        opportunityAction={opportunityAction}
+                    />
                 )}
             </div>
         );

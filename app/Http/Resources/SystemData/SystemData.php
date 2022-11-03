@@ -45,6 +45,7 @@ use App\Eco\Measure\Measure;
 use App\Eco\Mailbox\OutgoingServerType;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Occupation\Occupation;
+use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\Opportunity\OpportunityEvaluationStatus;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Order\OrderCollectionFrequency;
@@ -95,6 +96,7 @@ use App\Http\Resources\ParticipantMutation\FullParticipantMutationStatus;
 use App\Http\Resources\ParticipantMutation\FullParticipantMutationType;
 use App\Http\Resources\PersonType\FullPersonType;
 use App\Http\Resources\Product\FullProduct;
+use App\Http\Resources\QuotationRequest\FullQuotationRequestStatus;
 use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\Title\FullTitle;
 use App\Http\Resources\User\UserPeek;
@@ -160,6 +162,7 @@ class SystemData extends JsonResource
             'campaigns' => Campaign::select(['id', 'name'])->get(),
             'campaignStatuses' => FullEnumWithIdAndName::collection(CampaignStatus::all()),
             'campaignTypes' => FullEnumWithIdAndName::collection(CampaignType::all()),
+            'opportunityActions' => GenericResource::collection(OpportunityAction::all()),
             'energySupplierStatuses' => GenericResource::collection(EnergySupplierStatus::all()),
             'energySupplierTypes' => GenericResource::collection(EnergySupplierType::all()),
             'staticContactGroups' => ContactGroup::select(['id', 'name'])->where('type_id', 'static')->get(),
@@ -219,7 +222,7 @@ class SystemData extends JsonResource
             'projectStatus' => GenericResource::collection(ProjectStatus::orderBy('order')->get()),
             'projectTypes' => GenericResource::collection(ProjectType::all()),
             'projectTypesActive' => GenericResource::collection(ProjectType::where('is_active', true)->get()),
-            'quotationRequestStatus' => FullEnumWithIdAndName::collection(QuotationRequestStatus::orderBy('order')->get()),
+            'quotationRequestStatus' => FullQuotationRequestStatus::collection(QuotationRequestStatus::orderBy('opportunity_action_id')->orderBy('name')->get()),
             'roles' => Role::select(['id', 'name'])->get()->toArray(),
             'roofTypes' => FullEnumWithIdAndName::collection(RoofType::all()),
             'taskProperties' => GenericResource::collection(TaskProperty::all()),

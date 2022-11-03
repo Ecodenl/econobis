@@ -46,6 +46,10 @@ Route::middleware(['auth:api', 'scopes:use-portal'])
         Route::get('/contact/{contact}/contact-projects', 'Contact\ContactController@getContactProjects');
         Route::get('/contact/{contact}/{project}/contact-project-data', 'Contact\ContactController@getContactProjectData');
 
+        Route::get('me/quotation-request', 'QuotationRequest\QuotationRequestController@index');
+        Route::get('quotation-request/{quotationRequest}', 'QuotationRequest\QuotationRequestController@view');
+        Route::post('quotation-request/{quotationRequest}', 'QuotationRequest\QuotationRequestController@update');
+
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\' . JoryController::class . '@multiple');
         Route::get('jory/{uri}/count', '\\' . JoryController::class . '@count');

@@ -25,6 +25,8 @@ class CampaignNewApp extends Component {
                 typeId: '',
                 measureCategoryIds: '',
                 measureCategoryIdsSelected: [],
+                opportunityActionIds: '',
+                opportunityActionIdsSelected: [],
             },
             errors: {
                 name: false,
@@ -65,6 +67,18 @@ class CampaignNewApp extends Component {
                 ...this.state.campaign,
                 measureCategoryIds: measureCategoryIds,
                 measureCategoryIdsSelected: selectedOption,
+            },
+        });
+    };
+
+    handleOpportunityActionIds = selectedOption => {
+        const opportunityActionIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
+        this.setState({
+            ...this.state,
+            campaign: {
+                ...this.state.campaign,
+                opportunityActionIds: opportunityActionIds,
+                opportunityActionIdsSelected: selectedOption,
             },
         });
     };
@@ -113,6 +127,7 @@ class CampaignNewApp extends Component {
                                         handleInputChange={this.handleInputChange}
                                         handleInputChangeDate={this.handleInputChangeDate}
                                         handleMeasureCategoryIds={this.handleMeasureCategoryIds}
+                                        handleOpportunityActionIds={this.handleOpportunityActionIds}
                                         handleSubmit={this.handleSubmit}
                                     />
                                 </div>

@@ -404,7 +404,10 @@ const Routes = () => {
                     <Route path="woningdossier/:id" component={HousingFileDetailsApp} />
                     <Route path="woningdossiers" component={HousingFilesListApp} />
                     /* Quotation Request */
-                    <Route path="offerteverzoek/nieuw/kans/:opportunityId" component={QuotationRequestNewApp} />
+                    <Route
+                        path="offerteverzoek/nieuw/kans/:opportunityId/actie/:opportunityActionId"
+                        component={QuotationRequestNewApp}
+                    />
                     <Route path="offerteverzoek/:id" component={QuotationRequestDetailsApp} />
                     <Route path="offerteverzoeken" component={QuotationRequestsListApp} />
                     /* Intake */

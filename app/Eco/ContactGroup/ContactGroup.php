@@ -399,4 +399,8 @@ class ContactGroup extends Model
         return $numberOfLapostaMembers;
     }
 
+    public function newEloquentBuilder($query)
+    {
+        return new ContactGroupBuilder($query);
+    }
 }

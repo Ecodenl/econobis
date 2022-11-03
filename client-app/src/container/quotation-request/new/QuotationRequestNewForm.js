@@ -9,7 +9,10 @@ const QuotationRequestNewForm = props => {
         <div>
             <Panel>
                 <PanelBody>
-                    <QuotationRequestNewFormGeneral opportunityId={props.opportunityId} />
+                    <QuotationRequestNewFormGeneral
+                        opportunityId={props.opportunityId}
+                        opportunityAction={props.opportunityAction}
+                    />
                 </PanelBody>
             </Panel>
         </div>

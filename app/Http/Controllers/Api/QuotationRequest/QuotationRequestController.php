@@ -13,11 +13,14 @@ use App\Eco\Email\Email;
 use App\Eco\Occupation\Occupation;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Opportunity\Opportunity;
+use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\QuotationRequest\QuotationRequest;
+use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Helpers\CSV\QuotationRequestCSVHelper;
 use App\Helpers\Delete\Models\DeleteQuotationRequest;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\QuotationRequest\Grid\RequestQuery;
+use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\QuotationRequest\GridQuotationRequest;
@@ -71,6 +74,8 @@ class QuotationRequestController extends ApiController
 
         $quotationRequest->relatedEmailsSent = $this->getRelatedEmails($quotationRequest->id, 'sent');
 
+        $quotationRequest->relatedQuotationRequestsStatuses = $this->getRelatedQuotationRequestsStatuses($quotationRequest->opportunityAction);
+
         $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
         if($teamDocumentCreatedFromIds){
             $quotationRequest->relatedDocuments = $quotationRequest->documents()->whereIn('document_created_from_id', $teamDocumentCreatedFromIds)->get();
@@ -94,7 +99,7 @@ class QuotationRequestController extends ApiController
     /**
      * Geef de data die React nodig heeft om het scherm op te bouwen voor een nieuw offerteverzoek
      */
-    public function getStore(Opportunity $opportunity)
+    public function getStore(Opportunity $opportunity, OpportunityAction $opportunityAction)
     {
         $opportunity->load([
             'intake.address',
@@ -104,6 +109,8 @@ class QuotationRequestController extends ApiController
             'intake.campaign.organisations',
             'intake.campaign.coaches',
         ]);
+
+        $opportunity->relatedQuotationRequestsStatuses = $this->getRelatedQuotationRequestsStatuses($opportunityAction);
 
         return FullOpportunity::make($opportunity);
     }
@@ -280,6 +287,12 @@ class QuotationRequestController extends ApiController
         $mailboxIds = Auth::user()->mailboxes()->pluck('mailbox_id');
         return Email::where('quotation_request_id', $id)->where('folder', $folder)->whereIn('mailbox_id', $mailboxIds)->get();
     }
+
+    protected function getRelatedQuotationRequestsStatuses(OpportunityAction $opportunityAction)
+    {
+        return FullEnumWithIdAndName::collection(QuotationRequestStatus::where('opportunity_action_id', $opportunityAction->id)->orderBy('order')->get());
+    }
+
 
     public function getAmountOfOpenQuotationRequests(){
         return QuotationRequest::where('status_id', 1)->count();

@@ -47,6 +47,7 @@ class FullQuotationRequest extends JsonResource
                 'documentCount' => $this->relatedDocuments ? $this->relatedDocuments->count() : 0,
                 'relatedDocuments' => $this->relatedDocuments,
                 'contact' => FullContact::make($this->opportunity->intake->contact),
+                'relatedQuotationRequestsStatuses' => $this->relatedQuotationRequestsStatuses,
             ];
     }
 }

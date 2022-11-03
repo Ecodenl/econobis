@@ -28,7 +28,7 @@ class QuotationRequestNewFormGeneral extends Component {
                 opportunityId: '',
                 organisationOrCoachId: '',
                 statusId: '5', //offerte aangevraagd, also alter componentwillmount when changing default!
-                opportunityActionId: props.opportunityActionId,
+                opportunityActionId: props.opportunityAction.id,
                 dateRecorded: '',
                 dateReleased: '',
                 datePlanned: '',
@@ -37,6 +37,7 @@ class QuotationRequestNewFormGeneral extends Component {
                 dateApprovedExternal: '',
                 quotationText: '',
             },
+            quotationRequestStatuses: [],
             errors: {
                 organisationOrCoach: false,
                 status: false,
@@ -46,7 +47,10 @@ class QuotationRequestNewFormGeneral extends Component {
     }
 
     componentWillMount() {
-        QuotationRequestDetailsAPI.fetchNewQuotationRequest(this.props.opportunityId).then(payload => {
+        QuotationRequestDetailsAPI.fetchNewQuotationRequest(
+            this.props.opportunityId,
+            this.props.opportunityAction.id
+        ).then(payload => {
             this.setState({
                 opportunity: {
                     fullName: payload.intake.contact.fullName,
@@ -60,7 +64,7 @@ class QuotationRequestNewFormGeneral extends Component {
                     opportunityId: payload.id,
                     organisationOrCoachId: '',
                     statusId: '5',
-                    opportunityActionId: this.props.opportunityActionId,
+                    opportunityActionId: this.props.opportunityAction.id,
                     dateRecorded: '',
                     dateReleased: '',
                     datePlanned: '',
@@ -69,6 +73,9 @@ class QuotationRequestNewFormGeneral extends Component {
                     dateApprovedExternal: '',
                     quotationText: payload.quotationText ? payload.quotationText : '',
                 },
+                quotationRequestStatuses: payload.relatedQuotationRequestsStatuses
+                    ? payload.relatedQuotationRequestsStatuses
+                    : [],
             });
         });
     }
@@ -200,7 +207,7 @@ class QuotationRequestNewFormGeneral extends Component {
                         size={'col-sm-6'}
                         name="statusId"
                         value={statusId}
-                        options={this.props.quotationRequestStatus}
+                        options={this.state.quotationRequestStatuses}
                         onChangeAction={this.handleInputChange}
                         required={'required'}
                         error={this.state.errors.status}
@@ -279,10 +286,4 @@ class QuotationRequestNewFormGeneral extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        quotationRequestStatus: state.systemData.quotationRequestStatus,
-    };
-};
-
-export default connect(mapStateToProps, null)(QuotationRequestNewFormGeneral);
+export default QuotationRequestNewFormGeneral;

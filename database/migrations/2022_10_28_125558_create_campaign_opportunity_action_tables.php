@@ -45,6 +45,13 @@ class CreateCampaignOpportunityActionTables extends Migration
                 ->onDelete('restrict');
         });
 
+        Schema::table('quotation_request_status', function (Blueprint $table) {
+            $table->unsignedInteger('opportunity_action_id')->nullable()->after('name');
+            $table->foreign('opportunity_action_id')
+                ->references('id')->on('opportunity_actions')
+                ->onDelete('restrict');
+        });
+
         $offerteverzoekAction = OpportunityAction::where('name', 'Offerteverzoek')->first();
 
         foreach (Campaign::withTrashed()->get() as $campaign) {
@@ -54,6 +61,22 @@ class CreateCampaignOpportunityActionTables extends Migration
         DB::table('quotation_requests')->update([
             'opportunity_action_id' => $offerteverzoekAction->id
         ]);
+        DB::table('quotation_request_status')->update([
+            'opportunity_action_id' => $offerteverzoekAction->id
+        ]);
+
+        $bezoekAction = OpportunityAction::where('name', 'Bezoek')->first();
+        $subsidieAanvraagAction = OpportunityAction::where('name', 'Subsidie aanvraag')->first();
+        DB::table('quotation_request_status')->insert([
+                ['name' => 'Geen afspraak gemaakt', 'opportunity_action_id' => $bezoekAction->id, 'uses_wf' => 0, 'email_template_id_wf' => null, 'number_of_days_to_send_email' => 0, 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now(), 'order' => 1],
+                ['name' => 'Afspraak gemaakt', 'opportunity_action_id' => $bezoekAction->id, 'uses_wf' => 0, 'email_template_id_wf' => null, 'number_of_days_to_send_email' => 0, 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now(), 'order' => 2],
+                ['name' => 'Afspraak gedaan', 'opportunity_action_id' => $bezoekAction->id, 'uses_wf' => 0, 'email_template_id_wf' => null, 'number_of_days_to_send_email' => 0, 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now(), 'order' => 3],
+                ['name' => 'Subsidie aanvraag open', 'opportunity_action_id' => $subsidieAanvraagAction->id, 'uses_wf' => 0, 'email_template_id_wf' => null, 'number_of_days_to_send_email' => 0, 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now(), 'order' => 1],
+                ['name' => 'Subsidie aanvraag gemaakt', 'opportunity_action_id' => $subsidieAanvraagAction->id, 'uses_wf' => 0, 'email_template_id_wf' => null, 'number_of_days_to_send_email' => 0, 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now(), 'order' => 2],
+                ['name' => 'Subsidie aanvraag akkoord', 'opportunity_action_id' => $subsidieAanvraagAction->id, 'uses_wf' => 0, 'email_template_id_wf' => null, 'number_of_days_to_send_email' => 0, 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now(), 'order' => 3],
+                ['name' => 'Subsidie niet akkoord', 'opportunity_action_id' => $subsidieAanvraagAction->id, 'uses_wf' => 0, 'email_template_id_wf' => null, 'number_of_days_to_send_email' => 0, 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now(), 'order' => 4],
+            ]
+        );
     }
 
     /**
@@ -63,6 +86,15 @@ class CreateCampaignOpportunityActionTables extends Migration
      */
     public function down()
     {
+        $bezoekAction = OpportunityAction::where('name', 'Bezoek')->first();
+        $subsidieAanvraagAction = OpportunityAction::where('name', 'Subsidie aanvraag')->first();
+        DB::table('quotation_request_status')->whereIn('opportunity_action_id', [$bezoekAction->id, $subsidieAanvraagAction->id])->delete();
+        if (Schema::hasColumn('quotation_request_status', 'opportunity_action_id')) {
+            Schema::table('quotation_request_status', function (Blueprint $table) {
+                $table->dropForeign(['opportunity_action_id']);
+                $table->dropColumn('opportunity_action_id');
+            });
+        }
         if (Schema::hasColumn('quotation_requests', 'opportunity_action_id')) {
             Schema::table('quotation_requests', function (Blueprint $table) {
                 $table->dropForeign(['opportunity_action_id']);

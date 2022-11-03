@@ -16,8 +16,8 @@ const CampaignNew = props => {
         startDate,
         endDate,
         statusId,
-        measureCategoryIds,
         measureCategoryIdsSelected,
+        opportunityActionIdsSelected,
         typeId,
     } = props.campaign;
     return (
@@ -80,12 +80,24 @@ const CampaignNew = props => {
                     value={statusId}
                     onChangeAction={props.handleInputChange}
                 />
+            </div>
+
+            <div className="row">
                 <InputMultiSelect
                     label="Aangeboden maatregelen"
                     name="measureCategoryIds"
                     value={measureCategoryIdsSelected}
                     options={props.measureCategories}
                     onChangeAction={props.handleMeasureCategoryIds}
+                />
+            </div>
+            <div className="row">
+                <InputMultiSelect
+                    label="Acties voor kans"
+                    name="opportunityActionIds"
+                    value={opportunityActionIdsSelected}
+                    options={props.opportunityActions}
+                    onChangeAction={props.handleOpportunityActionIds}
                 />
             </div>
 
@@ -120,6 +132,7 @@ const mapStateToProps = state => {
         status: state.systemData.campaignStatuses,
         types: state.systemData.campaignTypes,
         measureCategories: state.systemData.measureCategories,
+        opportunityActions: state.systemData.opportunityActions,
     };
 };
 

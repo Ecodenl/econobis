@@ -30,6 +30,7 @@ const INITIAL_STATE = {
         useLaposta: false,
         lapostaKey: '',
         useExportAddressConsumption: false,
+        inspectionPlannedEmailTemplateId: '',
     },
     isLoading: true,
     showEdit: false,

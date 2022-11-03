@@ -45,6 +45,7 @@ use App\Eco\Measure\Measure;
 use App\Eco\Mailbox\OutgoingServerType;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Occupation\Occupation;
+use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\Opportunity\OpportunityEvaluationStatus;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Order\OrderCollectionFrequency;
@@ -160,6 +161,7 @@ class SystemData extends JsonResource
             'campaigns' => Campaign::select(['id', 'name'])->get(),
             'campaignStatuses' => FullEnumWithIdAndName::collection(CampaignStatus::all()),
             'campaignTypes' => FullEnumWithIdAndName::collection(CampaignType::all()),
+            'opportunityActions' => GenericResource::collection(OpportunityAction::all()),
             'energySupplierStatuses' => GenericResource::collection(EnergySupplierStatus::all()),
             'energySupplierTypes' => GenericResource::collection(EnergySupplierType::all()),
             'staticContactGroups' => ContactGroup::select(['id', 'name'])->where('type_id', 'static')->get(),

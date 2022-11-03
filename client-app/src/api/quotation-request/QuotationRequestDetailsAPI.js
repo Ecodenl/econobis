@@ -18,8 +18,8 @@ export default {
             });
     },
 
-    fetchNewQuotationRequest: opportunityId => {
-        const requestUrl = `${URL_API}/api/opportunity/${opportunityId}/quotation-request`;
+    fetchNewQuotationRequest: (opportunityId, opportunityActionId) => {
+        const requestUrl = `${URL_API}/api/opportunity/${opportunityId}/${opportunityActionId}/quotation-request`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

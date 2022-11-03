@@ -4,9 +4,9 @@ namespace App\Eco\Campaign;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
-use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Opportunity\Opportunity;
+use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Intake\Intake;
 use App\Eco\Task\Task;
@@ -52,6 +52,11 @@ class Campaign extends Model
     public function type()
     {
         return $this->belongsTo(CampaignType::class);
+    }
+
+    public function opportunityActions()
+    {
+        return $this->belongsToMany(OpportunityAction::class);
     }
 
     public function responses(){

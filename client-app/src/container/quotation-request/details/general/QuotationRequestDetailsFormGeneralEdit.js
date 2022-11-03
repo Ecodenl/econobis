@@ -32,6 +32,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             dateApprovedClient,
             quotationText,
             opportunity,
+            relatedQuotationRequestsStatuses,
         } = props.quotationRequestDetails;
 
         this.state = {
@@ -62,6 +63,9 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                 dateApprovedProjectManager: dateApprovedProjectManager ? dateApprovedProjectManager : '',
                 dateApprovedClient: dateApprovedClient ? dateApprovedClient : '',
                 quotationText: quotationText ? quotationText : '',
+                relatedQuotationRequestsStatuses: relatedQuotationRequestsStatuses
+                    ? relatedQuotationRequestsStatuses
+                    : [],
             },
             errors: {
                 organisationOrCoach: false,
@@ -137,6 +141,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             dateApprovedProjectManager,
             dateApprovedClient,
             quotationText,
+            relatedQuotationRequestsStatuses,
         } = this.state.quotationRequest;
         const {
             fullName,
@@ -202,7 +207,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         size={'col-sm-6'}
                         name="statusId"
                         value={statusId}
-                        options={this.props.quotationRequestStatus}
+                        options={relatedQuotationRequestsStatuses}
                         onChangeAction={this.handleInputChange}
                         required={'required'}
                         error={this.state.errors.status}
@@ -294,7 +299,6 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
 
 const mapStateToProps = state => {
     return {
-        quotationRequestStatus: state.systemData.quotationRequestStatus,
         quotationRequestDetails: state.quotationRequestDetails,
     };
 };

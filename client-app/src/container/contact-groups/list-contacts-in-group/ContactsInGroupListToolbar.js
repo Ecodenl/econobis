@@ -86,8 +86,8 @@ class ContactsInGroupListToolbar extends Component {
                             iconName={'glyphicon-refresh'}
                             onClickAction={this.props.refreshContactsInGroupData}
                         />
-                        {permissions.updatePerson &&
-                            permissions.updateOrganisation &&
+                        {(permissions.updateContactGroupMembers ||
+                            (permissions.updatePerson && permissions.updateOrganisation)) &&
                             contactGroupDetails.type &&
                             contactGroupDetails.type.id === 'static' && (
                                 <div className="nav navbar-nav btn-group">

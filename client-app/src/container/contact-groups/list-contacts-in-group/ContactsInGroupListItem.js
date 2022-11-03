@@ -105,8 +105,8 @@ class ContactsInGroupListItem extends Component {
                         ''
                     )}
                     {this.state.showActionButtons &&
-                    permissions.updatePerson &&
-                    permissions.updateOrganisation &&
+                    (permissions.updateContactGroupMembers ||
+                        (permissions.updatePerson && permissions.updateOrganisation)) &&
                     this.props.contactGroupType &&
                     this.props.contactGroupType.id === 'static' ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, fullName)}>

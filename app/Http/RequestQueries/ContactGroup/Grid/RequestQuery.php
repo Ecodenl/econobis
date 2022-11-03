@@ -10,6 +10,7 @@ namespace App\Http\RequestQueries\ContactGroup\Grid;
 
 use App\Eco\ContactGroup\ContactGroup;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
 {
@@ -26,6 +27,7 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     protected function baseQuery()
     {
         return ContactGroup::query()
+            ->whereTeamContactGroupIds(Auth::user())
             ->select('contact_groups.*')
             ->whereNotIn('type_id', ['simulated']);
     }

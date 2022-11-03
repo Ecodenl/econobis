@@ -16,9 +16,17 @@ class RecoveryCodeController extends Controller
      */
     public function index(Request $request)
     {
-        return response()->json(json_decode(decrypt(
+        if (! $request->user()->two_factor_secret ||
+            ! $request->user()->two_factor_recovery_codes) {
+            return [];
+        }
+
+        /**
+         * We geven altijd maar een enkele recovery code om verwarring bij gebruikers te voorkomen
+         */
+        return response()->json(array_slice(json_decode(decrypt(
             $request->user()->two_factor_recovery_codes
-        ), true));
+        ), true), 0, 1));
     }
 
     /**

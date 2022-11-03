@@ -9,30 +9,32 @@ export default {
 
     fetchTwoFactorQr: function (password) {
         return axiosInstance.get(`me/two-factor-qr-code`, {
-            params: {
-                password
+            headers: {
+                PasswordConfirmation: password,
             }
         });
     },
 
     fetchTwoFactorRecoveryCodes: function (password) {
         return axiosInstance.get(`me/two-factor-recovery-codes`, {
-            params: {
-                password
+            headers: {
+                PasswordConfirmation: password,
             }
         });
     },
 
     regenerateTwoFactorRecoveryCodes: function (password) {
-        return axiosInstance.post(`me/two-factor-recovery-codes`, {
-            password
+        return axiosInstance.post(`me/two-factor-recovery-codes`, {}, {
+            headers: {
+                PasswordConfirmation: password,
+            }
         });
     },
 
     checkPassword: function (password) {
         return axiosInstance.get(`me/check-password`, {
-            params: {
-                password
+            headers: {
+                PasswordConfirmation: password,
             }
         });
     },
@@ -42,15 +44,17 @@ export default {
     },
 
     enableTwoFactor: function (password) {
-        return axiosInstance.post(`me/two-factor-authentication`, {
-            password
+        return axiosInstance.post(`me/two-factor-authentication`, {}, {
+            headers: {
+                PasswordConfirmation: password,
+            }
         });
     },
 
     disableTwoFactor: function (password) {
         return axiosInstance.delete(`me/two-factor-authentication`, {
-            params: {
-                password
+            headers: {
+                PasswordConfirmation: password,
             }
         });
     },

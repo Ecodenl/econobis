@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api\PortalUser;
 
 use App\Eco\Portal\PortalUser;
 use App\Http\Controllers\Api\ApiController;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 
 class PortalUserController extends ApiController
 {
@@ -49,6 +51,15 @@ class PortalUserController extends ApiController
         }
     }
 
+    public function resetTwoFactor(PortalUser $portalUser, DisableTwoFactorAuthentication $disable)
+    {
+        $disable($portalUser);
 
+        $portalUser->two_factor_confirmed_at = null;
+        $portalUser->save();
 
+        $portalUser->twoFactorTokens()->delete();
+
+        return new JsonResponse('', 200);
+    }
 }

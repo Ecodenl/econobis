@@ -21,4 +21,10 @@ export default {
                 return error.response;
             });
     },
+
+    resetTwoFactor: (id) => {
+        const requestUrl = `${URL_CONTACT_PORTAL_USER}/${id}/reset-two-factor`;
+
+        return axiosInstance.post(requestUrl);
+    },
 };

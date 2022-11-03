@@ -4,33 +4,33 @@ import PanelBody from '../../../components/panel/PanelBody';
 import ViewText from '../../../components/form/ViewText';
 import PanelHeader from '../../../components/panel/PanelHeader';
 
-function CooperationDetailsFormView({ formData, toggleEdit }) {
+function CooperationDetailsFormView({formData, toggleEdit}) {
     return (
         <section className={'panel-hover'} onClick={toggleEdit}>
             <Panel>
                 <PanelBody>
                     <div className="row">
-                        <ViewText label={'Naam'} value={formData.name} />
-                        <ViewText label={'KvK'} value={formData.kvkNumber} />
+                        <ViewText label={'Naam'} value={formData.name}/>
+                        <ViewText label={'KvK'} value={formData.kvkNumber}/>
                     </div>
                     <div className="row">
-                        <ViewText label={'Adres'} value={formData.address} />
-                        <ViewText label={'Btw nummer'} value={formData.btwNumber} />
+                        <ViewText label={'Adres'} value={formData.address}/>
+                        <ViewText label={'Btw nummer'} value={formData.btwNumber}/>
                     </div>
                     <div className="row">
-                        <ViewText label={'Postcode'} value={formData.postalCode} />
-                        <ViewText label={'IBAN'} value={formData.iban} />
+                        <ViewText label={'Postcode'} value={formData.postalCode}/>
+                        <ViewText label={'IBAN'} value={formData.iban}/>
                     </div>
                     <div className="row">
-                        <ViewText label={'Plaats'} value={formData.city} />
-                        <ViewText label={'IBAN t.n.v.'} value={formData.ibanAttn} />
+                        <ViewText label={'Plaats'} value={formData.city}/>
+                        <ViewText label={'IBAN t.n.v.'} value={formData.ibanAttn}/>
                     </div>
                     <div className="row">
-                        <ViewText label={'Email'} value={formData.email} />
-                        <ViewText label={'Website'} value={formData.website} />
+                        <ViewText label={'Email'} value={formData.email}/>
+                        <ViewText label={'Website'} value={formData.website}/>
                     </div>
                     <div className="row">
-                        <ViewText label={'Logo'} value={formData.logoName} />
+                        <ViewText label={'Logo'} value={formData.logoName}/>
                     </div>
                 </PanelBody>
                 <PanelHeader>
@@ -38,15 +38,15 @@ function CooperationDetailsFormView({ formData, toggleEdit }) {
                 </PanelHeader>
                 <PanelBody>
                     <div className="row">
-                        <ViewText label={'Hoom link'} value={formData.hoomLink} />
-                        <ViewText label={'Hoom key'} value={formData.hoomKey} />
+                        <ViewText label={'Hoom link'} value={formData.hoomLink}/>
+                        <ViewText label={'Hoom key'} value={formData.hoomKey}/>
                     </div>
                     <div className="row">
                         <ViewText
                             label={'Hoom e-mail template'}
                             value={formData.hoomEmailTemplate && formData.hoomEmailTemplate.name}
                         />
-                        <ViewText label={'Hoom groep'} value={formData.hoomGroup && formData.hoomGroup.name} />
+                        <ViewText label={'Hoom groep'} value={formData.hoomGroup && formData.hoomGroup.name}/>
                     </div>
                     <div className="row">
                         <ViewText
@@ -60,8 +60,8 @@ function CooperationDetailsFormView({ formData, toggleEdit }) {
                 </PanelHeader>
                 <PanelBody>
                     <div className="row">
-                        <ViewText label={'Gebruik Laposta'} value={formData.useLaposta ? 'Ja' : 'Nee'} />
-                        <ViewText label={'Laposta key'} value={formData.lapostaKey} />
+                        <ViewText label={'Gebruik Laposta'} value={formData.useLaposta ? 'Ja' : 'Nee'}/>
+                        <ViewText label={'Laposta key'} value={formData.lapostaKey}/>
                     </div>
                 </PanelBody>
                 <PanelHeader>
@@ -69,7 +69,11 @@ function CooperationDetailsFormView({ formData, toggleEdit }) {
                 </PanelHeader>
                 <PanelBody>
                     <div className="row">
-                        <ViewText label={'Verplicht'} value={formData.requireTwoFactorAuthentication ? 'Ja' : 'Nee'} />
+                        <ViewText label={'Verplichten voor alle gebruikers'}
+                                  value={formData.requireTwoFactorAuthentication ? 'Ja' : 'Nee'}
+                                  size={'col-sm-5'}
+                                  textToolTip="Je kan voor individuele gebruikers 2 factor authenticatie afdwingen via instellingen > gebruikers"
+                        />
                     </div>
                 </PanelBody>
                 <PanelHeader>

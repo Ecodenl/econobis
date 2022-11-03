@@ -285,10 +285,12 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                     <PanelBody>
                         <div className="row">
                             <InputToggle
-                                label="Verplicht"
+                                label="Verplichten voor alle gebruikers"
                                 name={'requireTwoFactorAuthentication'}
                                 value={values.requireTwoFactorAuthentication}
                                 onChangeAction={handleRequireTwoFactorChange}
+                                size={'col-sm-5'}
+                                textToolTip="Je kan voor individuele gebruikers 2 factor authenticatie afdwingen via instellingen > gebruikers"
                             />
                         </div>
                     </PanelBody>

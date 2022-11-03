@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\CheckPasswordConfirmationHeader;
 use App\Http\Middleware\SetAppScope;
 use App\Http\Middleware\SetPortalScope;
 use App\Http\Middleware\VerifyPortalTwoFactorAuthentication;
@@ -69,8 +70,9 @@ class Kernel extends HttpKernel
     ];
 
     protected $middlewarePriority = [
-        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
-        'two-factor' => VerifyTwoFactorAuthentication::class,
-        'two-factor-portal' => VerifyPortalTwoFactorAuthentication::class,
+        \Illuminate\Auth\Middleware\Authenticate::class,
+        VerifyTwoFactorAuthentication::class,
+        VerifyPortalTwoFactorAuthentication::class,
+        CheckPasswordConfirmationHeader::class,
     ];
 }

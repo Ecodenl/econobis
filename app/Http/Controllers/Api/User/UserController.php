@@ -150,4 +150,14 @@ class UserController extends Controller
 
         $user->save();
     }
+
+    public function checkPassword()
+    {
+        /**
+         * Hoeven hier geen check te doen omdat de password check al in de CheckPasswordConfirmationHeader middleware gebeurt.
+         * Als we hier al komen is password dus altijd goed.
+         */
+
+        return response()->json(['message' => 'Wachtwoord is correct.']);
+    }
 }

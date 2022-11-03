@@ -52,7 +52,12 @@ class Login extends Component {
                     }
 
                     if(!payload.data.twoFactorActivated) {
-                        hashHistory.push('/two-factor/activate');
+                        /**
+                         * We geven het wachtwoord onderwater mee naar de two-factor activatie pagina.
+                         * Voor het aanroepen van activatie api is bevestiging van huidig wachtwoord verplicht via de header.
+                         * Omdat de gebruiker zojuist heeft ingelogd met zijn wachtwoord is het onzinnig om deze daar meteen nog eens te vragen.
+                         */
+                        hashHistory.push({pathname: '/two-factor/activate', state: {password: this.state.password}});
                         return;
                     }
 

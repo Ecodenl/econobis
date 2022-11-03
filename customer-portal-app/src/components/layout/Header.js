@@ -209,6 +209,14 @@ function Header({ location, history }) {
                                                                             Wijzig inloggegevens
                                                                         </Link>
                                                                     </Dropdown.Item>
+                                                                    <Dropdown.Item>
+                                                                        <Link
+                                                                            to={'/wijzig-inloggegevens'}
+                                                                            className={'dropdown-link'}
+                                                                        >
+                                                                            Twee factor authenticatie
+                                                                        </Link>
+                                                                    </Dropdown.Item>
                                                                     <Dropdown.Divider />
                                                                     <Dropdown.Item
                                                                         onClick={() => {

@@ -85,6 +85,23 @@ class ContactDetailsFormPortalUserEdit extends Component {
         this.setState({ showErrorModal: false, modalErrorMessage: '' });
     };
 
+    handleTwoFactorReset = event => {
+        event.preventDefault();
+
+        if(!confirm('Weet u zeker dat u de twee factor authenticatie wilt resetten voor deze portal gebruiker?')) {
+            return;
+        }
+
+        PortalUserAPI.resetTwoFactor(this.state.portalUser.id)
+            .then(() => {
+                this.props.dispatch(ContactDetailsActions.updatePortalUser({
+                    ...this.state.portalUser,
+                    hasTwoFactorEnabled: false,
+                }));
+                this.props.switchToView();
+            });
+    };
+
     render() {
         const { email } = this.state.portalUser;
 
@@ -102,6 +119,14 @@ class ContactDetailsFormPortalUserEdit extends Component {
                             required={'required'}
                             error={this.state.errors.email}
                         />
+
+                        <div className="col-sm-6">
+                            <label className="col-sm-6">Twee factor authenticatie</label>
+                            <div className="col-sm-3">{this.props.portalUser.hasTwoFactorEnabled ? 'Ja' : 'Nee'}</div>
+                            {this.props.portalUser.hasTwoFactorEnabled ? (
+                                <a href="#" className="col-sm-3" onClick={this.handleTwoFactorReset}>reset</a>
+                            ) : null }
+                        </div>
                     </div>
 
                     <PanelFooter>

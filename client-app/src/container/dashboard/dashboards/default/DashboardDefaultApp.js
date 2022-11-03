@@ -12,18 +12,9 @@ class DashboardDefaultApp extends Component {
         super(props);
 
         this.state = {
-            showTwoFactorNotification: false,
+            showTwoFactorNotification: props.meDetails.showTwoFactorNotification && !props.meDetails.requireTwoFactorAuthentication,
             twoFactorSettingsActive: false,
         };
-
-        /**
-         * Altijd laatste data ophalen ipv mapStateToProps gebruiken om te voorkomen dat de popup onterecht wordt getoond na activatie.
-         */
-        MeAPI.fetchMeDetails().then(response => {
-            this.setState({
-                showTwoFactorNotification: response.data.data.showTwoFactorNotification && !response.data.data.requireTwoFactorAuthentication,
-            });
-        });
 
         this.handleHideTwoFactorNotification = this.handleHideTwoFactorNotification.bind(this);
     }
@@ -45,9 +36,7 @@ class DashboardDefaultApp extends Component {
                                     <div className="alert alert-info"
                                          style={{display: 'flex', justifyContent: 'space-between'}} role="alert">
                                         <div style={{flex: '1 1 auto'}}><a href="#"
-                                                                           onClick={() => this.setState({twoFactorSettingsActive: true})}>Twee
-                                            factor authenticatie is uitgeschakeld, schakel dit nu in voor extra
-                                            beveiliging van uw account.</a></div>
+                                                                           onClick={() => this.setState({twoFactorSettingsActive: true})}>Om de toegang van Econobis beter te beveiligen kan je nu kiezen voor 2 factor authenticatie bij het inloggen op Econobis. Deze functie is optioneel. Als je 2 factor authenticatie wilt instellen klik dan op deze tekst. Wil je geen gebruik maken van 2 factor authenticatie klik dan op het kruisje. Als je later alsnog 2 factor authenticatie wilt instellen kan je rechtsboven op je naam klikken en de optie “2 factor authenticatie” aanklikken</a></div>
                                         <div>
                                             <a href="#" onClick={this.handleHideTwoFactorNotification}
                                                className="btn btn-sm">x</a>
@@ -73,4 +62,10 @@ class DashboardDefaultApp extends Component {
     }
 }
 
-export default DashboardDefaultApp;
+function mapStateToProps(state) {
+    return {
+        meDetails: state.meDetails,
+    };
+}
+
+export default connect(mapStateToProps, null)(DashboardDefaultApp);

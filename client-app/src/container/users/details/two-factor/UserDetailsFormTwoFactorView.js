@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 import ViewText from '../../../../components/form/ViewText';
 
@@ -12,11 +12,15 @@ const UserDetailsFormTwoFactorView = props => {
         <div onClick={props.switchToEdit}>
             <div className="row">
                 {props.requiredByCooperation ? (
-                    <ViewText label={'Verplicht'} value="Verplicht vanuit coöperatie" />
+                    <ViewText label={'Verplicht voor deze gebruiker'} value="Verplicht vanuit coöperatie"/>
                 ) : (
-                    <ViewText label={'Verplicht'} value={requireTwoFactorAuthentication ? 'Ja' : 'Nee'} />
+                    <ViewText label={'Verplicht voor deze gebruiker'}
+                              value={requireTwoFactorAuthentication ? 'Ja' : 'Nee'}
+                              textToolTip="Je kan 2 factor authenticatie voor alle gebruikers verplichten via instellingen > coöperatie"
+                              size={'col-sm-5'}
+                    />
                 )}
-                <ViewText label={'Geactiveerd'} value={props.userDetails.hasTwoFactorActivated ? 'Ja' : 'Nee'} />
+                <ViewText label={'Geactiveerd'} value={props.userDetails.hasTwoFactorActivated ? 'Ja' : 'Nee'}/>
             </div>
         </div>
     );

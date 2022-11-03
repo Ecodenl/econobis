@@ -13,9 +13,6 @@ class TwoFactorConfirm extends Component {
         };
     }
 
-    componentDidMount() {
-    }
-
     handleInputChange = event => {
         const target = event.target;
         const value = target.value;
@@ -30,15 +27,8 @@ class TwoFactorConfirm extends Component {
         event.preventDefault();
 
         MeAPI.confirmTwoFactor({code: this.state.twoFactorCode}).then(payload => {
-            if (payload.status == 200) {
-                localStorage.setItem('two_factor_token', payload.data.token);
-                hashHistory.push('/');
-            } else {
-                this.setState({
-                    twoFactorCode: '',
-                    errorMessage: 'Ongeldige code.',
-                });
-            }
+            localStorage.setItem('two_factor_token', payload.data.token);
+            hashHistory.push('/');
         }).catch(() => {
             this.setState({
                 twoFactorCode: '',

@@ -16,6 +16,7 @@ import CooperationUploadLogo from './UploadLogo';
 import InputToggle from '../../../components/form/InputToggle';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import { connect } from 'react-redux';
+import Modal from "../../../components/modal/Modal";
 
 function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchSystemData }) {
     const [emailTemplates, setEmailTemplates] = useState([]);
@@ -284,10 +285,12 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                     <PanelBody>
                         <div className="row">
                             <InputToggle
-                                label="Verplicht"
+                                label="Verplichten voor alle gebruikers"
                                 name={'requireTwoFactorAuthentication'}
                                 value={values.requireTwoFactorAuthentication}
                                 onChangeAction={handleRequireTwoFactorChange}
+                                size={'col-sm-5'}
+                                textToolTip="Je kan voor individuele gebruikers 2 factor authenticatie afdwingen via instellingen > gebruikers"
                             />
                         </div>
                     </PanelBody>

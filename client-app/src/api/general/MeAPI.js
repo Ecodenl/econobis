@@ -1,49 +1,64 @@
 import axiosInstance from "../default-setup/AxiosInstance";
 
 export default {
-    fetchMeDetails: function() {
-        const requestUrl = `${URL_API}/api/me`;
-
-        return axiosInstance.get(requestUrl);
+    fetchMeDetails: function () {
+        return axiosInstance.get(`me`);
     },
 
-    activateTwoFactor: function() {
-        const requestUrl = `${URL_API}/api/me/two-factor-authentication`;
-
-        return axiosInstance.post(requestUrl);
+    enableTwoFactor: function (password) {
+        return axiosInstance.post(`me/two-factor-authentication`, {}, {
+            headers: {
+                PasswordConfirmation: password,
+            }
+        });
     },
 
-    confirmTwoFactor: function(data) {
-        const requestUrl = `${URL_API}/api/me/confirmed-two-factor-authentication`;
-
-        return axiosInstance.post(requestUrl, data);
+    disableTwoFactor: function (password) {
+        return axiosInstance.delete(`me/two-factor-authentication`, {
+            headers: {
+                PasswordConfirmation: password,
+            }
+        });
     },
 
-    hideTwoFactorNotification: function() {
-        const requestUrl = `${URL_API}/api/me/hide-two-factor-notification`;
-
-        return axiosInstance.post(requestUrl);
+    confirmTwoFactor: function (data) {
+        return axiosInstance.post(`me/confirmed-two-factor-authentication`, data);
     },
 
-    recoverTwoFactor: function(data) {
-        const requestUrl = `${URL_API}/api/me/two-factor-challenge`;
-
-        return axiosInstance.post(requestUrl, data);
+    hideTwoFactorNotification: function () {
+        return axiosInstance.post(`me/hide-two-factor-notification`);
     },
 
-    fetchTwoFactorQr: function() {
-        const requestUrl = `${URL_API}/api/me/two-factor-qr-code`;
-
-        return axiosInstance.get(requestUrl);
+    recoverTwoFactor: function (data) {
+        return axiosInstance.post(`me/two-factor-challenge`, data);
     },
 
-    fetchTwoFactorRecoveryCodes: function() {
-        const requestUrl = `${URL_API}/api/me/two-factor-recovery-codes`;
-
-        return axiosInstance.get(requestUrl);
+    fetchTwoFactorQr: function (password) {
+        return axiosInstance.get(`me/two-factor-qr-code`, {
+            headers: {
+                PasswordConfirmation: password,
+            }
+        });
     },
 
-    fetchTwoFactorStatus: function() {
-        return axiosInstance.get(`${URL_API}/api/me/two-factor-status`);
+    fetchTwoFactorRecoveryCodes: function (password) {
+        return axiosInstance.get(`me/two-factor-recovery-codes`, {
+            headers: {
+                PasswordConfirmation: password,
+            }
+        });
     },
+
+    fetchTwoFactorStatus: function () {
+        return axiosInstance.get(`me/two-factor-status`);
+    },
+
+    checkPassword: function (password) {
+        return axiosInstance.get(`me/check-password`, {
+            headers: {
+                PasswordConfirmation: password,
+            }
+        });
+    },
+
 };

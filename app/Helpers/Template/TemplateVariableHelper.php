@@ -2324,7 +2324,7 @@ class TemplateVariableHelper
     }
 
     public static function getInvoiceVar($model, $varname){
-        $projectTypeCodeRef = $model->projectType->code_ref;
+        $projectTypeCodeRef = optional(optional(optional(optional($model->order)->participation)->project)->projectType)->code_ref;
 
         switch ($varname) {
             case 'mollie_link':
@@ -2346,13 +2346,13 @@ class TemplateVariableHelper
 
                 return $model->econobis_payment_link;
             case 'deelname_aantal_toegekend':
-                return optional($model->order->participation->participations_granted);
+                return optional(optional($model->order)->participation)->participations_granted;
             break;
             case 'deelname_bedrag_toegekend':
                 if ($projectTypeCodeRef == 'loan') {
-                    $amount = number_format( $model->amount_granted, 2, ',', '' );
+                    $amount = number_format( optional(optional($model->order)->participation)->amount_granted, 2, ',', '' );
                 } else {
-                    $amount = number_format(( $model->participations_granted * $model->project->currentBookWorth() ), 2, ',', '');
+                    $amount = number_format(( optional(optional($model->order)->participation)->participations_granted * optional(optional($model->order)->participation)->project->currentBookWorth() ), 2, ',', '');
                 }
                 return $amount;
             break;

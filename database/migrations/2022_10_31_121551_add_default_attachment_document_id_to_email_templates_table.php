@@ -30,7 +30,8 @@ class AddDefaultAttachmentDocumentIdToEmailTemplatesTable extends Migration
     public function down()
     {
         Schema::table('email_templates', function (Blueprint $table) {
-            //
+            $table->dropForeign(['default_attachment_document_id']);
+            $table->dropColumn('default_attachment_document_id');
         });
     }
 }

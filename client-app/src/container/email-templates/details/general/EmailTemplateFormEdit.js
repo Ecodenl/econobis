@@ -24,7 +24,7 @@ class EmailTemplateFormEdit extends Component {
                 name,
                 subject: subject ? subject : '',
                 htmlBody: htmlBody ? htmlBody : '',
-                defaultAttachmentDocumentId: defaultAttachmentDocument.id ? defaultAttachmentDocument.id : '',
+                defaultAttachmentDocumentId: defaultAttachmentDocument ? defaultAttachmentDocument.id : '',
             },
             errors: {
                 name: false,
@@ -132,20 +132,14 @@ class EmailTemplateFormEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <div className="form-group col-sm-12">
-                        <div className="row">
-                            <div className="col-sm-12">
-                                <InputSelect
-                                    label="Standaard E-mail bijlage"
-                                    name={'defaultAttachmentDocumentId'}
-                                    value={defaultAttachmentDocumentId}
-                                    options={this.state.defaultEmailDocuments}
-                                    optionName={'filename'}
-                                    onChangeAction={this.handleInputChange}
-                                />
-                            </div>
-                        </div>
-                    </div>
+                    <InputSelect
+                        label="Standaard E-mail bijlage"
+                        name={'defaultAttachmentDocumentId'}
+                        value={defaultAttachmentDocumentId}
+                        options={this.state.defaultEmailDocuments}
+                        optionName={'filename'}
+                        onChangeAction={this.handleInputChange}
+                    />
                 </div>
 
                 <div className="row">

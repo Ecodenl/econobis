@@ -9,11 +9,7 @@
 namespace App\Http\Resources\EmailTemplate;
 
 
-use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\Document\FullDocument;
-use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
-use App\Http\Resources\GenericResource;
-use App\Http\Resources\Mailbox\FullMailbox;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
 

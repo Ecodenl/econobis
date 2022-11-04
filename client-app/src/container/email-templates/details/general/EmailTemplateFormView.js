@@ -40,9 +40,11 @@ const EmailTemplateFormView = props => {
                 <div className="col-sm-12">
                     <div className="row">
                         <div className="col-sm-3">
-                            <label className="col-sm-12">Gekoppelde bijlage</label>
+                            <label className="col-sm-12">Standaard E-mail bijlage</label>
                         </div>
-                        <div className="col-sm-9">{defaultAttachmentDocument.filename}</div>
+                        <div className="col-sm-9">
+                            {defaultAttachmentDocument ? defaultAttachmentDocument.filename : ''}
+                        </div>
                     </div>
                 </div>
             </div>

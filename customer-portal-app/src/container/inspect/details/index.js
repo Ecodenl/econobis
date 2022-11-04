@@ -100,6 +100,42 @@ function InspectDetails({ match, history }) {
                                         </Row>
                                         <Row>
                                             <Col xs={12} md={12}>
+                                                <FormLabel className={'field-label'}>Telefoon</FormLabel>
+                                                <Row>
+                                                    <Col xs={12} sm={8} md={6}>
+                                                        <input
+                                                            type="text"
+                                                            className={`text-input w-input content`}
+                                                            value={
+                                                                initialQuotationRequest.opportunity.intake.contact
+                                                                    .primaryphoneNumber
+                                                            }
+                                                            readOnly={true}
+                                                        />
+                                                    </Col>
+                                                </Row>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col xs={12} md={12}>
+                                                <FormLabel className={'field-label'}>Email</FormLabel>
+                                                <Row>
+                                                    <Col xs={12} sm={8} md={6}>
+                                                        <input
+                                                            type="text"
+                                                            className={`text-input w-input content`}
+                                                            value={
+                                                                initialQuotationRequest.opportunity.intake.contact
+                                                                    .primaryEmailAddress
+                                                            }
+                                                            readOnly={true}
+                                                        />
+                                                    </Col>
+                                                </Row>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col xs={12} md={12}>
                                                 <FormLabel className={'field-label'}>Status</FormLabel>
                                                 <Row>
                                                     <Col xs={12} sm={8} md={6}>

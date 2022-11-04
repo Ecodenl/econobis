@@ -84,6 +84,8 @@ class QuotationRequestController
                     'contact' => [
                         'id' => $quotationRequest->opportunity->intake->contact->id,
                         'fullName' => $quotationRequest->opportunity->intake->contact->full_name,
+                        'primaryphoneNumber' => optional($quotationRequest->opportunity->intake->contact->primaryphoneNumber)->number,
+                        'primaryEmailAddress' => optional($quotationRequest->opportunity->intake->contact->primaryEmailAddress)->email,
                     ],
                     'address' => [
                         'id' => $quotationRequest->opportunity->intake->address->id,

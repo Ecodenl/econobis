@@ -54,6 +54,10 @@ class QuotationRequest extends Model
         return $this->hasMany(Email::class)->orderBy('emails.id', 'desc');
     }
 
+    public function actionsLog(){
+        return $this->hasMany(QuotationRequestActionsLog::class);
+    }
+
     public function createdBy()
     {
         return $this->belongsTo(User::class);

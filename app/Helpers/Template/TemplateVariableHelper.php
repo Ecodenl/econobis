@@ -2255,6 +2255,30 @@ class TemplateVariableHelper
             case 'gemaakt_door':
                 return optional(optional($model->createdBy)->present())->fullName();
                 break;
+            case 'datum_afspraak':
+                return $model->date_planned ? Carbon::parse($model->date_planned)->format('d/m/Y H:i') : null;
+                break;
+            case 'datum_opname':
+                return $model->date_recorded ? Carbon::parse($model->date_recorded)->format('d/m/Y') : null;
+                break;
+            case 'datum_uitgebracht':
+                return $model->date_released ? Carbon::parse($model->date_released)->format('d/m/Y') : null;
+                break;
+            case 'datum_akkoord_extern':
+                return $model->date_approved_external ? Carbon::parse($model->date_approved_external)->format('d/m/Y') : null;
+                break;
+            case 'datum_akkoord_projectleider':
+                return $model->date_approved_project_manager ? Carbon::parse($model->date_approved_project_manager)->format('d/m/Y') : null;
+                break;
+            case 'datum_akkoord_bewoner':
+                return $model->date_approved_client ? Carbon::parse($model->date_approved_client)->format('d/m/Y') : null;
+                break;
+            case 'status':
+                return $model->status ? $model->status->name : '';
+                break;
+            case 'actie_op_kans':
+                return $model->opportunityAction ? $model->opportunityAction->name : '';
+                break;
             default:
                 return '';
                 break;

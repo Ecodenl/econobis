@@ -129,6 +129,8 @@ class QuotationRequestController
         $htmlBody = str_replace('{cooperatie_naam}', $cooperation->name, $htmlBody);
         $htmlBody = str_replace('{contactpersoon}', $contact->full_name, $htmlBody);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'contact', $contact);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'offerteverzoek', $quotationRequest);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kans', $quotationRequest->opportunity);
 
         $htmlBody = TemplateVariableHelper::stripRemainingVariableTags($htmlBody);
 

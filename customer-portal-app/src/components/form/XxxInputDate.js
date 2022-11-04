@@ -5,7 +5,7 @@ import MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/momen
 import moment from 'moment';
 import { get } from 'lodash';
 
-const InputDate = ({
+const XxxInputDate = ({
     className,
     id,
     value,
@@ -78,7 +78,7 @@ const InputDate = ({
     );
 };
 
-InputDate.defaultProps = {
+XxxInputDate.defaultProps = {
     className: '',
     required: '',
     readOnly: false,
@@ -91,7 +91,7 @@ InputDate.defaultProps = {
     touched: {},
 };
 
-InputDate.propTypes = {
+XxxInputDate.propTypes = {
     type: PropTypes.string,
     className: PropTypes.string,
     id: PropTypes.string,
@@ -107,4 +107,4 @@ InputDate.propTypes = {
     touched: PropTypes.object,
 };
 
-export default InputDate;
+export default XxxInputDate;

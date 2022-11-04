@@ -12,6 +12,7 @@ import Button from 'react-bootstrap/Button';
 import { ClipLoader } from 'react-spinners';
 import InputText from '../../../components/form/InputText';
 import moment from 'moment';
+import InputTextDate from '../../../components/form/InputTextDate';
 
 function InspectDetails({ match, history }) {
     const [isLoading, setLoading] = useState(true);
@@ -122,7 +123,7 @@ function InspectDetails({ match, history }) {
                                                         <Field
                                                             name="datePlanned"
                                                             render={({ field }) => (
-                                                                <InputText
+                                                                <InputTextDate
                                                                     name="datePlanned"
                                                                     field={field}
                                                                     type="datetime-local"

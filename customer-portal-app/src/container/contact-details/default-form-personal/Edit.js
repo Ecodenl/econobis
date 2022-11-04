@@ -11,9 +11,9 @@ import FormLabel from 'react-bootstrap/FormLabel';
 import Row from 'react-bootstrap/Row';
 import TextBlock from '../../../components/general/TextBlock';
 import moment from 'moment';
-import InputDate from '../../../components/form/InputDate';
 import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
+import InputTextDate from '../../../components/form/InputTextDate';
 
 const DefaultContactPersonalEdit = function({
     portalSettings,
@@ -182,13 +182,14 @@ const DefaultContactPersonalEdit = function({
                         <Field
                             name="person.dateOfBirth"
                             render={({ field }) => (
-                                <InputDate
-                                    {...field}
+                                <InputTextDate
+                                    field={field}
+                                    type="date"
                                     errors={errors}
                                     touched={touched}
                                     onChangeAction={setFieldValue}
                                     id="date_of_birth"
-                                    placeholder={'Geboortedatum (dd-mm-jjjj)'}
+                                    placeholder={'Geboortedatum'}
                                 />
                             )}
                         />
@@ -752,14 +753,14 @@ const DefaultContactPersonalEdit = function({
                                         <Field
                                             name="primaryAddress.primaryAddressEnergySupplierElectricity.memberSince"
                                             render={({ field }) => (
-                                                <InputDate
-                                                    {...field}
+                                                <InputTextDate
+                                                    field={field}
+                                                    type="date"
                                                     errors={errors}
                                                     touched={touched}
                                                     onChangeAction={setFieldValue}
-                                                    disabledBefore={memberSinceDisabledBefore}
-                                                    disabledAfter={memberSinceDisabledAfter}
-                                                    manualInput={false}
+                                                    min={memberSinceDisabledBefore}
+                                                    max={memberSinceDisabledAfter}
                                                     id="member_since"
                                                     placeholder={'Klant sinds'}
                                                 />

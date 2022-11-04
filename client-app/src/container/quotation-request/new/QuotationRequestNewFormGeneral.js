@@ -12,6 +12,7 @@ import InputText from '../../../components/form/InputText';
 import InputDate from '../../../components/form/InputDate';
 import InputTextArea from '../../../components/form/InputTextArea';
 import validator from 'validator';
+import InputTime from '../../../components/form/InputTime';
 
 class QuotationRequestNewFormGeneral extends Component {
     constructor(props) {
@@ -32,6 +33,7 @@ class QuotationRequestNewFormGeneral extends Component {
                 dateRecorded: '',
                 dateReleased: '',
                 datePlanned: '',
+                timePlanned: '',
                 dateApprovedClient: '',
                 dateApprovedProjectManager: '',
                 dateApprovedExternal: '',
@@ -68,6 +70,7 @@ class QuotationRequestNewFormGeneral extends Component {
                     dateRecorded: '',
                     dateReleased: '',
                     datePlanned: '',
+                    timePlanned: '',
                     dateApprovedClient: '',
                     dateApprovedProjectManager: '',
                     dateApprovedExternal: '',
@@ -139,6 +142,7 @@ class QuotationRequestNewFormGeneral extends Component {
             dateRecorded,
             dateReleased,
             datePlanned,
+            timePlanned,
             dateApprovedClient,
             dateApprovedProjectManager,
             dateApprovedExternal,
@@ -227,6 +231,18 @@ class QuotationRequestNewFormGeneral extends Component {
                         size={'col-sm-6'}
                         name="dateRecorded"
                         value={dateRecorded}
+                        onChangeAction={this.handleInputChangeDate}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputTime
+                        label={'Tijd afspraak'}
+                        size={'col-sm-6'}
+                        name="timePlanned"
+                        value={timePlanned}
+                        start={'06:00'}
+                        end={'23:00'}
                         onChangeAction={this.handleInputChangeDate}
                     />
                 </div>

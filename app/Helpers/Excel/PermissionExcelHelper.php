@@ -26,17 +26,17 @@ class PermissionExcelHelper {
         $headerData = [];
         $headerData[0] = 'Role';
 
-        foreach ($permissions as $permission) {
-            $headerData[] = $permission->name;
+        $roles = Role::all();
+        foreach ($roles as $role) {
+            $headerData[] = $role->name;
         }
 
         $completeData[] = $headerData;
 
-        $roles = Role::all();
-        foreach ($roles as $role) {
+        foreach ($permissions as $permission) {
             $rowData = [];
-            $rowData[0] = $role->name;
-            foreach ($permissions as $permission) {
+            $rowData[0] = $permission->name;
+            foreach ($roles as $role) {
                 $rowData[] = $role->hasPermissionTo($permission) ? 'V' : '';
             }
             $completeData[] = $rowData;
@@ -55,7 +55,7 @@ class PermissionExcelHelper {
                 ->setAutoSize(true);
         }
 
-        $sheet->getStyle('A1:Z1')
+        $sheet->getStyle('A1:P1')
             ->applyFromArray([
                 'font' => [
                     'bold' => true,

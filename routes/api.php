@@ -93,6 +93,7 @@ Route::namespace('Api')
         Route::get('/housing-file/{housingFile}/documents', 'HousingFile\HousingFileController@documents');
 
         Route::get('/user/grid', 'User\GridController@index');
+        Route::get('/user/excel', 'User\UserController@excel');
         Route::post('/user', 'User\UserController@store');
         Route::get('/user/{user}', 'User\UserController@show');
         Route::post('/user/{user}', 'User\UserController@update');

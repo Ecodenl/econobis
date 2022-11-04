@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api\User;
 use App\Eco\User\User;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\Email\EmailHelper;
+use App\Helpers\Excel\PermissionExcelHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\RequestQueries\Intake\Grid\RequestQuery;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -125,5 +127,14 @@ class UserController extends Controller
         // Daarom hier eerst de emailconfiguratie overschrijven voordat we gaan verzenden.
         (new EmailHelper())->setConfigToDefaultMailbox();
         (new ForgotPasswordController())->sendResetLinkEmail($request);
+    }
+
+    public function excel(RequestQuery $requestQuery)
+    {
+        set_time_limit(0);
+
+        $usersExcelHelper = new PermissionExcelHelper();
+
+        return $usersExcelHelper->downloadExcel();
     }
 }

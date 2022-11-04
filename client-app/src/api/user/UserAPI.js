@@ -1,4 +1,5 @@
 import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_USER = `${URL_API}/api/user`;
 
@@ -48,5 +49,12 @@ export default {
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         return axios.post(requestUrl);
+    },
+
+    getExcel: () => {
+        const requestUrl = `${URL_USER}/excel`;
+        return axiosInstance.get(requestUrl, {
+            responseType: 'blob',
+        });
     },
 };

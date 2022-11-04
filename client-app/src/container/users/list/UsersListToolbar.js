@@ -16,6 +16,7 @@ const UsersListToolbar = props => {
             <div className="col-md-4">
                 <div className="btn-group" role="group">
                     <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={props.refreshContactsData} />
+                    <ButtonIcon iconName={'glyphicon-download-alt'} onClickAction={props.getExcel} />
                     {permissions.manageUser && <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newUser} />}
                 </div>
             </div>

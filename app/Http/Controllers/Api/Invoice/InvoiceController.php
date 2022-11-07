@@ -39,6 +39,8 @@ class InvoiceController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', Invoice::class);
+
         $invoices = $requestQuery->get();
 
         $onlyEmailInvoices = $requestQuery->getRequest()->onlyEmailInvoices == 'true';
@@ -145,6 +147,8 @@ class InvoiceController extends ApiController
 
     public function csv(RequestQuery $requestQuery)
     {
+        $this->authorize('view', Invoice::class);
+
         set_time_limit(0);
         $invoices = $requestQuery->getQueryNoPagination()->get();
 
@@ -157,6 +161,8 @@ class InvoiceController extends ApiController
 
     public function showFromTwinfield(Request $request)
     {
+        $this->authorize('view', Invoice::class);
+
         $invoice = null;
         if($request->input('twinfieldCode') && $request->input('twinfieldNumber')){
             $administration = Administration::where('twinfield_office_code', $request->input('twinfieldCode') )->first();
@@ -173,6 +179,8 @@ class InvoiceController extends ApiController
 
     public function show(Invoice $invoice)
     {
+        $this->authorize('view', Invoice::class);
+
         $invoice->load([
             'order.contact',
             'invoiceProducts',
@@ -292,16 +300,22 @@ class InvoiceController extends ApiController
 
     public function peek()
     {
+        $this->authorize('view', Invoice::class);
+
         return InvoicePeek::collection(Invoice::all());
     }
 
     public function sendNotification(Invoice $invoice)
     {
+        $this->authorize('manage', Invoice::class);
+
         SendInvoiceNotifications::dispatch($invoice, Auth::id());
     }
 
     public function sendNotificationPost(Invoice $invoice)
     {
+        $this->authorize('manage', Invoice::class);
+
         InvoiceHelper::sendNotification($invoice, Auth::id());
 
         $filePath = Storage::disk('administrations')->getDriver()
@@ -314,6 +328,8 @@ class InvoiceController extends ApiController
 
     public function sendNotifications(Request $request)
     {
+        $this->authorize('manage', Invoice::class);
+
         $invoices = Invoice::whereIn('id', $request->input('ids'))->get();
 
         foreach ($invoices as $invoice) {
@@ -323,6 +339,8 @@ class InvoiceController extends ApiController
 
     public function sendNotificationsPost(Request $request)
     {
+        $this->authorize('manage', Invoice::class);
+
         $invoices = Invoice::whereIn('id', $request->input('ids'))->get();
 
         $merger = new Merger;
@@ -350,6 +368,8 @@ class InvoiceController extends ApiController
 
     public function setIrrecoverable(Invoice $invoice)
     {
+        $this->authorize('manage', Invoice::class);
+
         $invoice->status_id = 'irrecoverable';
         $invoice->save();
         return $invoice;
@@ -536,6 +556,8 @@ class InvoiceController extends ApiController
 
     public function getEmailPreview(Invoice $invoice)
     {
+        $this->authorize('manage', Invoice::class);
+
         InvoiceHelper::createInvoiceDocument($invoice, true);
         return InvoiceHelper::send($invoice, true);
     }
@@ -572,6 +594,8 @@ class InvoiceController extends ApiController
 
     public function createSepaForInvoiceIds(Request $request)
     {
+        $this->authorize('manage', Invoice::class);
+
         $invoices = Invoice::whereIn('id', $request->input('ids'))->with(['order.contact', 'administration'])->get();
 
         // verwijder alle notas waar twinfield gebruikt wordt en geen ledgercode bekend is

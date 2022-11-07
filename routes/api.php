@@ -265,7 +265,6 @@ Route::namespace('Api')
         Route::get('email/{email}/reply-all', 'Email\EmailController@getReplyAll');
         Route::get('email/{email}/forward', 'Email\EmailController@getForward');
         Route::get('email/group/{contactGroup}', 'Email\EmailController@getEmailGroup');
-        Route::get('email/group/{contactGroup}', 'Email\EmailController@getEmailGroup');
         Route::post('email/{email}/move-to-folder', 'Email\EmailController@moveEmailToFolder');
         Route::post('email/{email}/delete', 'Email\EmailController@destroy');
         Route::post('email/{email}', 'Email\EmailController@update');

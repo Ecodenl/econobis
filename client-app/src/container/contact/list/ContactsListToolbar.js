@@ -7,6 +7,7 @@ import ContactsDeleteSelectedItems from './ContactsDeleteSelectedItems';
 import ContactListAddContactsToGroup from './ContactListAddContactsToGroup';
 import { FaRegLightbulb } from 'react-icons/fa';
 import { FaFire } from 'react-icons/fa';
+import ContactsMergeSelectedItems from "./ContactsMergeSelectedItems";
 
 class ContactsListToolbar extends Component {
     constructor(props) {
@@ -14,6 +15,7 @@ class ContactsListToolbar extends Component {
 
         this.state = {
             showDeleteSelectedItems: false,
+            showMergeSelectedItems: false,
             showAddContactsToGroup: false,
         };
     }
@@ -21,6 +23,12 @@ class ContactsListToolbar extends Component {
     toggleShowDeleteSelectedItems = () => {
         this.setState({
             showDeleteSelectedItems: !this.state.showDeleteSelectedItems,
+        });
+    };
+
+    toggleShowMergeSelectedItems = () => {
+        this.setState({
+            showMergeSelectedItems: !this.state.showMergeSelectedItems,
         });
     };
 
@@ -152,6 +160,11 @@ class ContactsListToolbar extends Component {
                                 </a>
                             </>
                         )}
+                        <ButtonIcon
+                            iconName={'glyphicon-resize-small'}
+                            onClickAction={this.toggleShowMergeSelectedItems}
+                            title="Contacten samenvoegen"
+                        />
                     </div>
                 </div>
                 <div className="col-md-4">
@@ -165,6 +178,9 @@ class ContactsListToolbar extends Component {
                 )}
                 {this.state.showAddContactsToGroup && (
                     <ContactListAddContactsToGroup toggleAddGroup={this.toggleAddContactsToGroup} />
+                )}
+                {this.state.showMergeSelectedItems && (
+                    <ContactsMergeSelectedItems toggleShowMergeSelectedItems={this.toggleShowMergeSelectedItems} contacts={this.props.contacts} fetchContactsData={this.props.fetchContactsData} />
                 )}
             </div>
         );

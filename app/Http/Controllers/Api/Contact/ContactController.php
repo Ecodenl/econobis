@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\Contact;
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactStatus;
 use App\Eco\User\User;
+use App\Helpers\Contact\ContactMergeException;
+use App\Helpers\Contact\ContactMerger;
 use App\Helpers\Delete\Models\DeleteContact;
 use App\Helpers\Hoomdossier\HoomdossierHelper;
 use App\Helpers\Import\ContactImportHelper;
@@ -297,4 +299,26 @@ class ContactController extends Controller
         }
     }
 
+
+    public function mergeContacts(Request $request)
+    {
+        $request->validate([
+            'toId' => ['required', 'integer', 'exists:contacts,id'],
+            'fromId' => ['required', 'integer', 'exists:contacts,id'],
+        ]);
+
+        $toContact = Contact::find($request->input('toId'));
+        $fromContact = Contact::find($request->input('fromId'));
+
+        try{
+            (new ContactMerger($toContact, $fromContact))->merge();
+        }catch (ContactMergeException $e){
+            return response()->json(['message' => 'Contacten konden niet worden samengevoegd: ' . $e->getMessage()], 500);
+        }catch (\Throwable $e){
+            Log::error($e); // Zorgen dat we de error evengoed kunnen debuggen vanuit het log.
+            return response()->json(['message' => 'Contacten konden niet worden samengevoegd, er is een onbekende fout opgetreden'], 500);
+        }
+
+        return response()->json(['message' => 'Contacten zijn samengevoegd.'], 200);
+    }
 }

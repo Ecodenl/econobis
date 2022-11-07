@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewParticipantProjectController;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ParticipantMutationController extends ApiController
 {
@@ -93,6 +94,8 @@ class ParticipantMutationController extends ApiController
 
     public function update(RequestInput $requestInput, ParticipantMutation $participantMutation)
     {
+        $this->calculationTransactionCosts($participantMutation);
+
         $this->authorize('manage', ParticipantMutation::class);
 
         $participantMutationOld = ParticipantMutation::find($participantMutation->id);
@@ -300,5 +303,59 @@ class ParticipantMutationController extends ApiController
             }
         }
         return true;
+    }
+
+    protected function calculationTransactionCosts($participantMutation)
+    {
+        $project = $participantMutation->participation->project;
+        $transactionCosts = 0;
+
+        switch ($project->projectType->code_ref) {
+
+        case 'amount-once':
+            $transactionCosts = $project->transactionCostsAmount;
+            break;
+        case 'amount':
+            if ( $project->projectType->code_ref === 'loan' ) {
+                $transactionCosts = $project->transactionCostsAmount;
+            } else {
+                $transactionCosts = $project->transactionCostsAmount * 0;
+            }
+            break;
+        case 'percentage':
+            $amount = 0;
+            if ( $project->projectType->code_ref === 'loan' ) {
+                $amount = 1;
+            } else {
+                $amount = 1 * $project->currentBookWorth;
+            }
+
+            if ( $amount != 0 ) {
+                if ( $project->transactionCostsAmount3 !== null && $amount >= $project->transactionsCostsAmount3) {
+                    $transactionCosts = floatval(((number_format($amount * $project->transactionCostsPercentage3 / 100))));
+                } else if ( $project->transactionCostsAmount2 !== null && $amount >= $project->transactionsCostsAmount2 ) {
+                    $transactionCosts = floatval(((number_format($amount * $project->transactionCostsPercentage2 / 100))));
+                } else if ( $project->transactionCostsAmount !== null && $amount >= $project->transactionsCostsAmount ) {
+                    $transactionCosts = floatval(((number_format($amount * $project->transactionCostsPercentage / 100))));
+                } else {
+                    $transactionCosts = 0;
+                }
+            }
+            break;
+            default:
+                $transactionCosts = 0;
+        }
+
+        if ( $project->transactionCostsCodeRef !== 'none' ) {
+            if ( $project->transactionCostsAmountMin !== null & $transactionCosts < $project->transactionCostsAmountMin ) {
+                $transactionCosts = $project->transactionCostsAmountMin;
+            }
+            if ( $project->transactionCostsAmountMax !== null && $transactionCosts >$project->transactionCostsAmountMax ) {
+                $transactionCosts = $project->transactionCostsAmountMax;
+            }
+        }
+
+        Log::info($transactionCosts);
+//        return $transactionCosts;
     }
 }

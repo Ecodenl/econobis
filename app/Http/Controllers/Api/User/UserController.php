@@ -12,6 +12,7 @@ use App\Http\RequestQueries\Intake\Grid\RequestQuery;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Permission;
@@ -129,12 +130,14 @@ class UserController extends Controller
         (new ForgotPasswordController())->sendResetLinkEmail($request);
     }
 
-    public function excel(RequestQuery $requestQuery)
+    public function rolesPermissionsExcel(RequestQuery $requestQuery)
     {
+        $this->authorize('update', Auth::user());
+
         set_time_limit(0);
 
-        $usersExcelHelper = new PermissionExcelHelper();
+        $permissionExcelHelper = new PermissionExcelHelper();
 
-        return $usersExcelHelper->downloadExcel();
+        return $permissionExcelHelper->downloadExcel();
     }
 }

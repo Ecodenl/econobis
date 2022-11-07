@@ -51,8 +51,8 @@ export default {
         return axios.post(requestUrl);
     },
 
-    getExcel: () => {
-        const requestUrl = `${URL_USER}/excel`;
+    getRolesPermissionsExcel: () => {
+        const requestUrl = `${URL_USER}/rolesPermissionsExcel`;
         return axiosInstance.get(requestUrl, {
             responseType: 'blob',
         });

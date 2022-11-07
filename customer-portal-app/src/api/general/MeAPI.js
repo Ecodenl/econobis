@@ -52,7 +52,7 @@ export default {
     },
 
     disableTwoFactor: function (password) {
-        return axiosInstance.delete(`me/two-factor-authentication`, {
+        return axiosInstance.post(`me/two-factor-authentication/delete`, {}, {
             headers: {
                 PasswordConfirmation: password,
             }

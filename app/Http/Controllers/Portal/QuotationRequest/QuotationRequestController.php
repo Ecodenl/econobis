@@ -84,6 +84,8 @@ class QuotationRequestController
                     'contact' => [
                         'id' => $quotationRequest->opportunity->intake->contact->id,
                         'fullName' => $quotationRequest->opportunity->intake->contact->full_name,
+                        'primaryphoneNumber' => optional($quotationRequest->opportunity->intake->contact->primaryphoneNumber)->number,
+                        'primaryEmailAddress' => optional($quotationRequest->opportunity->intake->contact->primaryEmailAddress)->email,
                     ],
                     'address' => [
                         'id' => $quotationRequest->opportunity->intake->address->id,
@@ -129,6 +131,8 @@ class QuotationRequestController
         $htmlBody = str_replace('{cooperatie_naam}', $cooperation->name, $htmlBody);
         $htmlBody = str_replace('{contactpersoon}', $contact->full_name, $htmlBody);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'contact', $contact);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'offerteverzoek', $quotationRequest);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kans', $quotationRequest->opportunity);
 
         $htmlBody = TemplateVariableHelper::stripRemainingVariableTags($htmlBody);
 

@@ -80,6 +80,9 @@ class DeleteQuotationRequest implements DeleteInterface
             $document->quotationRequest()->dissociate();
             $document->save();
         }
+        foreach ($this->quotationRequest->actionsLog as $actionsLog){
+            $actionsLog->delete();
+        }
     }
 
     /**

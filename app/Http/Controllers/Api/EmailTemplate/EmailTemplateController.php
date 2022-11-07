@@ -43,8 +43,6 @@ class EmailTemplateController extends Controller
 
     public function showWithUser(EmailTemplate $emailTemplate)
     {
-        $this->authorize('view', EmailTemplate::class);
-
         $emailTemplate->load('createdBy' , 'defaultAttachmentDocument');
 
         $user = Auth::user();

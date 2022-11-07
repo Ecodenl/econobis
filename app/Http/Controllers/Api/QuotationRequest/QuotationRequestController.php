@@ -25,6 +25,7 @@ use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\QuotationRequest\GridQuotationRequest;
 use App\Http\Resources\QuotationRequest\QuotationRequestPeek;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -125,6 +126,7 @@ class QuotationRequestController extends ApiController
             'dateRecorded' => 'string',
             'dateReleased' => 'string',
             'datePlanned' => 'string',
+            'timePlanned' => 'string',
             'dateApprovedClient' => 'string',
             'dateApprovedProjectManager' => 'string',
             'dateApprovedExternal' => 'string',
@@ -152,7 +154,15 @@ class QuotationRequestController extends ApiController
         }
 
         if ($data['datePlanned']) {
-            $quotationRequest->date_planned = $data['datePlanned'];
+            if ($data['timePlanned']) {
+                $datePlanned = Carbon::parse($request->get('datePlanned'))->format('Y-m-d');
+                $timePlanned = Carbon::parse($request->get('timePlanned'))->format('H:i');
+                $datePlannedMerged = Carbon::createFromFormat('Y-m-d H:i', $datePlanned . ' ' . $timePlanned);
+            } else {
+                $datePlanned = Carbon::parse($request->get('datePlanned'))->format('Y-m-d');
+                $datePlannedMerged = Carbon::createFromFormat('Y-m-d H:i', $datePlanned . ' 08:00');
+            }
+            $quotationRequest->date_planned = $datePlannedMerged;
         }
 
         if ($data['dateApprovedClient']) {
@@ -189,6 +199,7 @@ class QuotationRequestController extends ApiController
             'dateRecorded' => 'string',
             'dateReleased' => 'string',
             'datePlanned' => 'string',
+            'timePlanned' => 'string',
             'dateApprovedClient' => 'string',
             'dateApprovedProjectManager' => 'string',
             'dateApprovedExternal' => 'string',
@@ -217,7 +228,15 @@ class QuotationRequestController extends ApiController
         }
 
         if ($data['datePlanned']) {
-            $quotationRequest->date_planned = $data['datePlanned'];
+            if ($data['timePlanned']) {
+                $datePlanned = Carbon::parse($request->get('datePlanned'))->format('Y-m-d');
+                $timePlanned = Carbon::parse($request->get('timePlanned'))->format('H:i');
+                $datePlannedMerged = Carbon::createFromFormat('Y-m-d H:i', $datePlanned . ' ' . $timePlanned);
+            } else {
+                $datePlanned = Carbon::parse($request->get('datePlanned'))->format('Y-m-d');
+                $datePlannedMerged = Carbon::createFromFormat('Y-m-d H:i', $datePlanned . ' 08:00');
+            }
+            $quotationRequest->date_planned = $datePlannedMerged;
         }
 
         if ($data['dateApprovedClient']) {
@@ -235,7 +254,6 @@ class QuotationRequestController extends ApiController
         if (isset($data['quotationText'])) {
             $quotationRequest->quotation_text = $data['quotationText'];
         }
-
         $quotationRequest->save();
 
         $this->creatEnergyCoachOccupation($quotationRequest);

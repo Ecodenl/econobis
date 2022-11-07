@@ -12,6 +12,7 @@ import Button from 'react-bootstrap/Button';
 import { ClipLoader } from 'react-spinners';
 import InputText from '../../../components/form/InputText';
 import moment from 'moment';
+import InputTextDate from '../../../components/form/InputTextDate';
 
 function InspectDetails({ match, history }) {
     const [isLoading, setLoading] = useState(true);
@@ -99,6 +100,42 @@ function InspectDetails({ match, history }) {
                                         </Row>
                                         <Row>
                                             <Col xs={12} md={12}>
+                                                <FormLabel className={'field-label'}>Telefoon</FormLabel>
+                                                <Row>
+                                                    <Col xs={12} sm={8} md={6}>
+                                                        <input
+                                                            type="text"
+                                                            className={`text-input w-input content`}
+                                                            value={
+                                                                initialQuotationRequest.opportunity.intake.contact
+                                                                    .primaryphoneNumber
+                                                            }
+                                                            readOnly={true}
+                                                        />
+                                                    </Col>
+                                                </Row>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col xs={12} md={12}>
+                                                <FormLabel className={'field-label'}>Email</FormLabel>
+                                                <Row>
+                                                    <Col xs={12} sm={8} md={6}>
+                                                        <input
+                                                            type="text"
+                                                            className={`text-input w-input content`}
+                                                            value={
+                                                                initialQuotationRequest.opportunity.intake.contact
+                                                                    .primaryEmailAddress
+                                                            }
+                                                            readOnly={true}
+                                                        />
+                                                    </Col>
+                                                </Row>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col xs={12} md={12}>
                                                 <FormLabel className={'field-label'}>Status</FormLabel>
                                                 <Row>
                                                     <Col xs={12} sm={8} md={6}>
@@ -122,7 +159,7 @@ function InspectDetails({ match, history }) {
                                                         <Field
                                                             name="datePlanned"
                                                             render={({ field }) => (
-                                                                <InputText
+                                                                <InputTextDate
                                                                     name="datePlanned"
                                                                     field={field}
                                                                     type="datetime-local"

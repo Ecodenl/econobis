@@ -77,8 +77,11 @@ const QuotationRequestDetailsFormGeneralView = props => {
             </div>
 
             <div className="row">
-                <ViewText label={'Datum afspraak'} value={datePlanned ? moment(datePlanned).format('L HH:mm') : ''} />
+                <ViewText label={'Datum afspraak'} value={datePlanned ? moment(datePlanned).format('L') : ''} />
                 <ViewText label={'Datum opname'} value={dateRecorded ? moment(dateRecorded).format('L') : ''} />
+            </div>
+            <div className="row">
+                <ViewText label={'Tijd afspraak'} value={datePlanned ? moment(datePlanned).format('HH:mm') : ''} />
             </div>
             <div className="row">
                 <ViewText label={'Datum uitgebracht'} value={dateReleased ? moment(dateReleased).format('L') : ''} />

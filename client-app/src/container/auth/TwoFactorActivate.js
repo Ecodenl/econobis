@@ -114,7 +114,7 @@ class TwoFactorActivate extends Component {
                                         <ul style={{listStyleType: 'none', padding: 0}}>
                                             {this.state.recoveryCodes.map((code) => {
                                                 return (
-                                                    <li key={code}>{code}</li>
+                                                    <li key={code} style={{'font-family': 'courier'}}>{code}</li>
                                                 );
                                             })}
                                         </ul>

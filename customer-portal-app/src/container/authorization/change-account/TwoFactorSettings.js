@@ -114,7 +114,7 @@ const TwoFactorSettings = function () {
                                 <ul>
                                     {recoveryCodes.map((code) => {
                                         return (
-                                            <li key={code}>{code}</li>
+                                            <li key={code} style={{'font-family': 'courier'}}>{code}</li>
                                         );
                                     })}
                                 </ul>

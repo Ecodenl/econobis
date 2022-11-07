@@ -2245,7 +2245,8 @@ class TemplateVariableHelper
         }
     }
 
-    public static function getOrderVar($model, $varname){
+    public static function getOrderVar($model, $varname)
+    {
         switch ($varname) {
             case 'nummer':
                 return $model->number;
@@ -2275,39 +2276,35 @@ class TemplateVariableHelper
                 return $model->getCollectionFrequency() ? $model->getCollectionFrequency()->name : '';
                 break;
             case 'contact_naam':
-                if($model->contact->type_id == 'person'){
+                if ($model->contact->type_id == 'person') {
                     $prefix = $model->contact->person->last_name_prefix;
                     return $prefix ? $model->contact->person->first_name . ' ' . $prefix . ' ' . $model->contact->person->last_name : $model->contact->person->first_name . ' ' . $model->contact->person->last_name;
-                }
-                elseif($model->contact->type_id == 'organisation'){
+                } elseif ($model->contact->type_id == 'organisation') {
                     return $model->contact->full_name;
                 }
                 break;
             case 'contact_naam_officieel':
-                if($model->contact->type_id == 'person'){
-                    $initials = $model->contact->person->initials ? $model->contact->person->initials : ($model->contact->person->first_name ? substr($model->contact->person->first_name, 0, 1).".": "");
+                if ($model->contact->type_id == 'person') {
+                    $initials = $model->contact->person->initials ? $model->contact->person->initials : ($model->contact->person->first_name ? substr($model->contact->person->first_name, 0, 1) . "." : "");
                     $prefix = $model->contact->person->last_name_prefix;
                     return $prefix ? $initials . ' ' . $prefix . ' ' . $model->contact->person->last_name : $initials . ' ' . $model->contact->person->last_name;
-                }
-                elseif($model->contact->type_id == 'organisation'){
+                } elseif ($model->contact->type_id == 'organisation') {
                     return $model->contact->full_name;
                 }
                 break;
 
             case 'contact_voornaam':
-                if($model->contact->type_id == 'person'){
+                if ($model->contact->type_id == 'person') {
                     return $model->contact->person->first_name;
-                }
-                elseif($model->contact->type_id == 'organisation'){
+                } elseif ($model->contact->type_id == 'organisation') {
                     return '';
                 }
                 break;
             case 'contact_achternaam':
-                if($model->contact->type_id == 'person'){
+                if ($model->contact->type_id == 'person') {
                     $prefix = $model->contact->person->last_name_prefix;
                     return $prefix ? $prefix . ' ' . $model->contact->person->last_name : $model->contact->person->last_name;
-                }
-                elseif($model->contact->type_id == 'organisation'){
+                } elseif ($model->contact->type_id == 'organisation') {
                     return $model->contact->full_name;
                 }
                 break;
@@ -2327,6 +2324,8 @@ class TemplateVariableHelper
     }
 
     public static function getInvoiceVar($model, $varname){
+        $projectTypeCodeRef = optional(optional(optional(optional($model->order)->participation)->project)->projectType)->code_ref;
+
         switch ($varname) {
             case 'mollie_link':
                 if(!$model->exists){
@@ -2346,6 +2345,17 @@ class TemplateVariableHelper
                 }
 
                 return $model->econobis_payment_link;
+            case 'deelname_aantal_toegekend':
+                return optional(optional($model->order)->participation)->participations_granted;
+            break;
+            case 'deelname_bedrag_toegekend':
+                if ($projectTypeCodeRef == 'loan') {
+                    $amount = number_format( optional(optional($model->order)->participation)->amount_granted, 2, ',', '' );
+                } else {
+                    $amount = number_format(( optional(optional($model->order)->participation)->participations_granted * optional(optional($model->order)->participation)->project->currentBookWorth() ), 2, ',', '');
+                }
+                return $amount;
+            break;
             case 'nummer':
                 return $model->number;
             case 'betreft':

@@ -113,7 +113,7 @@ class Order extends Model
     }
 
     public function participation(){
-        $this->belongsTo(ParticipantProject::class, 'participation_id');
+        return $this->belongsTo(ParticipantProject::class, 'participation_id');
     }
 
     public function getCollectionFrequency()

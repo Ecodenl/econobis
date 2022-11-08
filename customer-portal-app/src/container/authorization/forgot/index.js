@@ -60,7 +60,9 @@ const Forgot = props => {
                             <Row className={'justify-content-center '}>
                                 <p className={'authorization-text'}>
                                     Vul het e-mailadres in waarmee je inlogt en dat bij ons bekend is. Je ontvangt van
-                                    ons een e-mail waarmee je een nieuw wachtwoord kunt instellen.
+                                    ons een e-mail waarmee je een nieuw wachtwoord kunt instellen. Let op: dit werkt
+                                    alleen als jouw online portal geactiveerd. Is deze nog niet geactiveerd? Neem dan
+                                    contact met ons op.
                                 </p>
                             </Row>
                             <Row className={'justify-content-center '}>

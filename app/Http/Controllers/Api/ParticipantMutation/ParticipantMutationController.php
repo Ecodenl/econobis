@@ -305,13 +305,8 @@ class ParticipantMutationController extends ApiController
         return true;
     }
 
-    /*<!--
-        Functionaliteit die de participatie kosten berekent
-    --!>*/
-
     protected function calculationTransactionCosts($participantMutation)
     {
-
         $project = $participantMutation->participation->project;
         $varAmount = 0;
         $varQuantity = 0;
@@ -348,7 +343,7 @@ class ParticipantMutationController extends ApiController
             break;
         }
 
-        switch ($project->transaction_costs_amount()) {
+        switch ($project->transaction_costs_amount) {
         case 'amount-once':
             $transactionCosts = $project->transaction_costs_amount;
             break;
@@ -359,7 +354,6 @@ class ParticipantMutationController extends ApiController
                 $transactionCosts = $project->transaction_costs_amount * 0;
             } break;
         case 'percentage':
-            $amount = 0;
             if ($project->projectType->code_ref === 'loan') {
                 $amount = $varAmount;
             } else {
@@ -392,7 +386,7 @@ class ParticipantMutationController extends ApiController
 
         Log::info($participantMutation->status->code_ref);
         Log::info($project->projectType->code_ref);
-        Log::info($project->transaction_costs_amount());
+        Log::info($project->transaction_costs_amount);
         return $transactionCosts;
     }
 }

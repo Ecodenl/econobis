@@ -1,21 +1,21 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import LoadingView from '../../../components/general/LoadingView';
-import {Field, Form, Formik} from 'formik';
+import { Field, Form, Formik } from 'formik';
 import FormLabel from 'react-bootstrap/FormLabel';
 import * as Yup from 'yup';
 import QuotationRequestAPI from '../../../api/quotation-request/QuotationRequestAPI';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
-import {ClipLoader} from 'react-spinners';
+import { ClipLoader } from 'react-spinners';
 import InputText from '../../../components/form/InputText';
 import moment from 'moment';
 import InputTextDate from '../../../components/form/InputTextDate';
-import fileDownload from "js-file-download";
+import fileDownload from 'js-file-download';
 
-function InspectDetails({match, history}) {
+function InspectDetails({ match, history }) {
     const [isLoading, setLoading] = useState(true);
     const [initialQuotationRequest, setInitialQuotationRequest] = useState({});
 
@@ -33,11 +33,11 @@ function InspectDetails({match, history}) {
         });
     };
 
-    const downloadDocument = (document) => {
+    const downloadDocument = document => {
         QuotationRequestAPI.downloadDocument(match.params.id, document.id).then(payload => {
             fileDownload(payload.data, document.filename);
         });
-    }
+    };
 
     useEffect(() => {
         QuotationRequestAPI.fetchById(match.params.id).then(response => {
@@ -49,7 +49,7 @@ function InspectDetails({match, history}) {
     return (
         <Container className={'content-section'}>
             {isLoading ? (
-                <LoadingView/>
+                <LoadingView />
             ) : (
                 <>
                     <div>
@@ -59,14 +59,14 @@ function InspectDetails({match, history}) {
                             validationSchema={validationSchema}
                             onSubmit={handleSubmit}
                             render={({
-                                         errors,
-                                         touched,
-                                         setFieldValue,
-                                         isSubmitting,
-                                         status,
-                                         values,
-                                         handleSubmit,
-                                     }) => {
+                                errors,
+                                touched,
+                                setFieldValue,
+                                isSubmitting,
+                                status,
+                                values,
+                                handleSubmit,
+                            }) => {
                                 return (
                                     <Form>
                                         <Row>
@@ -75,10 +75,7 @@ function InspectDetails({match, history}) {
                                                 <input
                                                     type="text"
                                                     className={`text-input w-input content`}
-                                                    value={
-                                                        initialQuotationRequest.opportunity.intake.contact
-                                                            .fullName
-                                                    }
+                                                    value={initialQuotationRequest.opportunity.intake.contact.fullName}
                                                     readOnly={true}
                                                 />
                                                 <FormLabel className={'field-label'}>Adres</FormLabel>
@@ -116,10 +113,10 @@ function InspectDetails({match, history}) {
                                                     type="text"
                                                     className={`text-input w-input content`}
                                                     value={
-                                                                initialQuotationRequest.opportunityAction.name +
-                                                                ' - ' +
-                                                                initialQuotationRequest.opportunity.status.name
-                                                            }
+                                                        initialQuotationRequest.opportunityAction.name +
+                                                        ' - ' +
+                                                        initialQuotationRequest.opportunity.status.name
+                                                    }
                                                     readOnly={true}
                                                 />
                                                 <FormLabel htmlFor="date_planned" className={'field-label'}>
@@ -141,7 +138,8 @@ function InspectDetails({match, history}) {
                                                         />
                                                     )}
                                                 />
-                                                {initialQuotationRequest.opportunityAction.codeRef === 'quotation-request' ? (
+                                                {initialQuotationRequest.opportunityAction.codeRef ===
+                                                'quotation-request' ? (
                                                     <>
                                                         <FormLabel htmlFor="date_recorded" className={'field-label'}>
                                                             Datum opname
@@ -169,7 +167,7 @@ function InspectDetails({match, history}) {
                                                 </FormLabel>
                                                 <Field
                                                     name="dateApprovedExternal"
-                                                    render={({field}) => (
+                                                    render={({ field }) => (
                                                         <InputText
                                                             name="dateApprovedExternal"
                                                             field={field}
@@ -187,7 +185,7 @@ function InspectDetails({match, history}) {
                                                 </FormLabel>
                                                 <Field
                                                     name="dateReleased"
-                                                    render={({field}) => (
+                                                    render={({ field }) => (
                                                         <InputText
                                                             name="dateReleased"
                                                             field={field}
@@ -200,7 +198,8 @@ function InspectDetails({match, history}) {
                                                         />
                                                     )}
                                                 />
-                                                {initialQuotationRequest.opportunityAction.codeRef === 'subsidy-request' ? (
+                                                {initialQuotationRequest.opportunityAction.codeRef ===
+                                                'subsidy-request' ? (
                                                     <>
                                                         <FormLabel
                                                             htmlFor="date_approved_project_manager"
@@ -214,8 +213,8 @@ function InspectDetails({match, history}) {
                                                             value={
                                                                 initialQuotationRequest.dateApprovedProjectManager
                                                                     ? moment(
-                                                                        initialQuotationRequest.dateApprovedProjectManager
-                                                                    ).format('L')
+                                                                          initialQuotationRequest.dateApprovedProjectManager
+                                                                      ).format('L')
                                                                     : ''
                                                             }
                                                             readOnly={true}
@@ -232,8 +231,8 @@ function InspectDetails({match, history}) {
                                                             value={
                                                                 initialQuotationRequest.dateApprovedClient
                                                                     ? moment(
-                                                                        initialQuotationRequest.dateApprovedClient
-                                                                    ).format('L')
+                                                                          initialQuotationRequest.dateApprovedClient
+                                                                      ).format('L')
                                                                     : ''
                                                             }
                                                             readOnly={true}
@@ -242,21 +241,20 @@ function InspectDetails({match, history}) {
                                                 ) : null}
                                             </Col>
                                             <Col xs={12} sm={8} md={6}>
-                                                <FormLabel>
-                                                    Bestanden
-                                                </FormLabel>
+                                                <FormLabel>Bestanden</FormLabel>
                                                 <ul>
-                                                    {
-                                                        initialQuotationRequest.documents.map((document) => {
-                                                            return (
-                                                                <li key={document.id}>
-                                                                    <a role="button" onClick={() => downloadDocument(document)}>
-                                                                        {document.filename}
-                                                                    </a>
-                                                                </li>
-                                                            );
-                                                        })
-                                                    }
+                                                    {initialQuotationRequest.documents.map(document => {
+                                                        return (
+                                                            <li key={document.id}>
+                                                                <a
+                                                                    role="button"
+                                                                    onClick={() => downloadDocument(document)}
+                                                                >
+                                                                    {document.filename}
+                                                                </a>
+                                                            </li>
+                                                        );
+                                                    })}
                                                 </ul>
                                             </Col>
                                         </Row>
@@ -266,7 +264,7 @@ function InspectDetails({match, history}) {
                                                     <Button
                                                         variant={'outline-dark'}
                                                         size="sm"
-                                                        onClick={function () {
+                                                        onClick={function() {
                                                             history.push(`/schouwen`);
                                                         }}
                                                     >
@@ -280,7 +278,7 @@ function InspectDetails({match, history}) {
                                                     >
                                                         {isSubmitting ? (
                                                             <span>
-                                                                <ClipLoader color={'white'} size={14}/>
+                                                                <ClipLoader color={'white'} size={14} />
                                                                 Bezig met opslaan
                                                             </span>
                                                         ) : (

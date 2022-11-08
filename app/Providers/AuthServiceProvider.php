@@ -22,6 +22,8 @@ use App\Eco\Document\Document;
 use App\Eco\Document\DocumentPolicy;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\DocumentTemplate\DocumentTemplatePolicy;
+use App\Eco\Email\Email;
+use App\Eco\Email\EmailPolicy;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailAddress\EmailAddressPolicy;
 use App\Eco\EmailTemplate\EmailTemplate;
@@ -135,6 +137,7 @@ class AuthServiceProvider extends ServiceProvider
         MeasureCategory::class => MeasureCategoryPolicy::class,
         Document::class => DocumentPolicy::class,
         DocumentTemplate::class => DocumentTemplatePolicy::class,
+        Email::class => EmailPolicy::class,
         EmailTemplate::class => EmailTemplatePolicy::class,
         AuditTrail::class => AuditTrailPolicy::class,
         Mailbox::class => MailboxPolicy::class,

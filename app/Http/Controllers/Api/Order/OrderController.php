@@ -38,6 +38,7 @@ class OrderController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', Order::class);
 
         $orders = $requestQuery->get();
 
@@ -53,6 +54,8 @@ class OrderController extends ApiController
 
     public function csv(RequestQuery $requestQuery)
     {
+        $this->authorize('view', Order::class);
+
         set_time_limit(0);
         $orders = $requestQuery->getQueryNoPagination()->get();
 
@@ -65,6 +68,8 @@ class OrderController extends ApiController
 
     public function show(Order $order)
     {
+        $this->authorize('view', Order::class);
+
         $order->load([
             'administration.products',
             'orderProducts.product',
@@ -314,14 +319,9 @@ class OrderController extends ApiController
 
     public function peek()
     {
-        //        $this->authorize('view', Order::class);
-        if(Auth::user()->hasPermissionTo('view_order', 'api')){
-            $orders = Order::all();
-        } else {
-            $orders = new Collection();
-        }
+        $this->authorize('view', Order::class);
 
-        return OrderPeek::collection($orders);
+        return OrderPeek::collection(Order::all());
     }
 
     public function getContactInfoForOrder(Contact $contact)

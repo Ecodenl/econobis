@@ -12,4 +12,8 @@ export default {
     update: function(quotationRequest) {
         return axiosInstance.post('quotation-request/' + quotationRequest.id, quotationRequest);
     },
+
+    downloadDocument: function(quotationRequestId, documentId) {
+        return axiosInstance.get('quotation-request/' + quotationRequestId + '/document/' + documentId + '/download');
+    },
 };

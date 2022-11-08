@@ -124,6 +124,7 @@ class QuotationRequestController extends ApiController
             'organisationOrCoachId' => 'required|exists:contacts,id',
             'opportunityId' => 'required|exists:opportunities,id',
             'dateRecorded' => 'string',
+            'timeRecorded' => 'string',
             'dateReleased' => 'string',
             'datePlanned' => 'string',
             'timePlanned' => 'string',
@@ -146,7 +147,15 @@ class QuotationRequestController extends ApiController
 
         //optional
         if ($data['dateRecorded']) {
-            $quotationRequest->date_recorded = $data['dateRecorded'];
+            if ($data['timeRecorded']) {
+                $dateRecorded = Carbon::parse($request->get('dateRecorded'))->format('Y-m-d');
+                $timeRecorded = Carbon::parse($request->get('timeRecorded'))->format('H:i');
+                $dateRecordedMerged = Carbon::createFromFormat('Y-m-d H:i', $dateRecorded . ' ' . $timeRecorded);
+            } else {
+                $dateRecorded = Carbon::parse($request->get('dateRecorded'))->format('Y-m-d');
+                $dateRecordedMerged = Carbon::createFromFormat('Y-m-d H:i', $dateRecorded . ' 08:00');
+            }
+            $quotationRequest->date_recorded = $dateRecordedMerged;
         }
 
         if ($data['dateReleased']) {
@@ -197,6 +206,7 @@ class QuotationRequestController extends ApiController
             'organisationOrCoachId' => 'required|exists:contacts,id',
             'opportunityId' => 'required|exists:opportunities,id',
             'dateRecorded' => 'string',
+            'timeRecorded' => 'string',
             'dateReleased' => 'string',
             'datePlanned' => 'string',
             'timePlanned' => 'string',
@@ -216,7 +226,19 @@ class QuotationRequestController extends ApiController
 
         //optional
         if ($data['dateRecorded']) {
-            $quotationRequest->date_recorded = $data['dateRecorded'];
+            if ($data['timeRecorded']) {
+                Log::info('timeRecorded');
+                Log::info($data['timeRecorded']);
+                $dateRecorded = Carbon::parse($request->get('dateRecorded'))->format('Y-m-d');
+                $timeRecorded = Carbon::parse($request->get('timeRecorded'))->format('H:i');
+                Log::info($timeRecorded);
+                $dateRecordedMerged = Carbon::createFromFormat('Y-m-d H:i', $dateRecorded . ' ' . $timeRecorded);
+                Log::info($dateRecordedMerged);
+            } else {
+                $dateRecorded = Carbon::parse($request->get('dateRecorded'))->format('Y-m-d');
+                $dateRecordedMerged = Carbon::createFromFormat('Y-m-d H:i', $dateRecorded . ' 08:00');
+            }
+            $quotationRequest->date_recorded = $dateRecordedMerged;
         } else {
             $quotationRequest->date_recorded = null;
         }

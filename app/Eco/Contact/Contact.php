@@ -152,7 +152,12 @@ class Contact extends Model
 
     public function groups()
     {
-        return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since')->orderBy('contact_groups.id', 'desc');
+        $teamContactGroupIds = Auth::user()->getTeamContactGroupIds();
+        if ($teamContactGroupIds){
+            return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->whereIn('contact_groups.id', $teamContactGroupIds)->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since')->orderBy('contact_groups.id', 'desc');
+        }else{
+            return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since')->orderBy('contact_groups.id', 'desc');
+        }
     }
     public function selectedGroups()
     {

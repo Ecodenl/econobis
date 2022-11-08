@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Portal\QuotationRequest;
 
 use App\Eco\Cooperation\Cooperation;
+use App\Eco\Document\Document;
+use App\Eco\Portal\PortalUser;
 use App\Eco\QuotationRequest\QuotationRequest;
-use App\Eco\User\User;
+use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
@@ -19,7 +21,7 @@ class QuotationRequestController
     {
         $portalUser = Auth::user();
 
-        return response()->json($portalUser->contact->quotationRequests->map(function(QuotationRequest $quotationRequest){
+        return response()->json($portalUser->contact->quotationRequests->map(function (QuotationRequest $quotationRequest) {
             return $this->getJson($quotationRequest);
         }));
     }
@@ -28,20 +30,16 @@ class QuotationRequestController
     {
         $portalUser = Auth::user();
 
-        if(!$portalUser->contact->quotationRequests->contains($quotationRequest)){
-            abort(403, 'Geen toegang tot deze offerteaanvraag.');
-        }
+        $this->authorizeQuotationRequest($portalUser, $quotationRequest);
 
-        return response()->json($this->getJson($quotationRequest));
+        return response()->json($this->getDetailJson($quotationRequest));
     }
 
     public function update(Request $request, QuotationRequest $quotationRequest)
     {
         $portalUser = Auth::user();
 
-        if(!$portalUser->contact->quotationRequests->contains($quotationRequest)){
-            abort(403, 'Geen toegang tot deze offerteaanvraag.');
-        }
+        $this->authorizeQuotationRequest($portalUser, $quotationRequest);
 
         $responsibleUserId = PortalSettings::get('responsibleUserId');
         if (!$responsibleUserId) {
@@ -65,9 +63,30 @@ class QuotationRequestController
 
         $quotationRequest->save();
 
-        if($sendMail){
+        if ($sendMail) {
             $this->sendInspectionPlannedMail($quotationRequest);
         }
+    }
+
+    public function downloadDocument(QuotationRequest $quotationRequest, Document $document)
+    {
+        $portalUser = Auth::user();
+
+        $this->authorizeQuotationRequest($portalUser, $quotationRequest);
+
+        $documents = $this->getPortalDocuments($quotationRequest);
+
+        if (!$documents->contains($document)) {
+            abort(403, 'Geen toegang tot dit document.');
+        }
+
+        if (\Config::get('app.ALFRESCO_COOP_USERNAME') == 'local') {
+            return null;
+        }
+
+        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+
+        return $alfrescoHelper->downloadFile($document->alfresco_node_id);
     }
 
     private function getJson(QuotationRequest $quotationRequest)
@@ -105,12 +124,34 @@ class QuotationRequestController
         ];
     }
 
+    private function getDetailJson(QuotationRequest $quotationRequest)
+    {
+        $data = $this->getJson($quotationRequest);
+
+        $data['documents'] = $this->getPortalDocuments($quotationRequest)->map(function (Document $document) {
+            return [
+                'id' => $document->id,
+                'filename' => $document->filename,
+            ];
+        });
+
+        return $data;
+    }
+
+    private function getPortalDocuments(QuotationRequest $quotationRequest)
+    {
+        $documents = $quotationRequest->documents()->where('show_on_portal', true)->get();
+        $documents->merge($quotationRequest->opportunity->documents()->where('show_on_portal', true)->get());
+
+        return $documents;
+    }
+
     private function sendInspectionPlannedMail(QuotationRequest $quotationRequest)
     {
         $cooperation = Cooperation::first();
         $emailTemplate = $cooperation->inspectionPlannedEmailTemplate;
 
-        if(!$emailTemplate) {
+        if (!$emailTemplate) {
             return;
         }
 
@@ -126,11 +167,11 @@ class QuotationRequestController
 
         $subject = str_replace('{cooperatie_naam}', $cooperation->name, $subject);
         $subject = str_replace('{contactpersoon}', $contact->full_name, $subject);
-        $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'contact', $contact);
+        $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'contact', $contact);
 
         $htmlBody = str_replace('{cooperatie_naam}', $cooperation->name, $htmlBody);
         $htmlBody = str_replace('{contactpersoon}', $contact->full_name, $htmlBody);
-        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'contact', $contact);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $contact);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'offerteverzoek', $quotationRequest);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kans', $quotationRequest->opportunity);
 
@@ -145,5 +186,12 @@ class QuotationRequestController
         $mail->html_body = $htmlBody;
 
         $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody));
+    }
+
+    private function authorizeQuotationRequest(PortalUser $portalUser, QuotationRequest $quotationRequest)
+    {
+        if (!$portalUser->contact->quotationRequests->contains($quotationRequest)) {
+            abort(403, 'Geen toegang tot deze offerteaanvraag.');
+        }
     }
 }

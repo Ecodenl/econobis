@@ -293,7 +293,6 @@ class ContactController extends Controller
     protected function checkContactTeamAutorized(Contact $contact): void
     {
         $teamContactIds = Auth::user()->getTeamContactIds();
-
         if ($teamContactIds && !in_array($contact->id, $teamContactIds)) {
             abort(403, 'Niet geautoriseerd.');
         }

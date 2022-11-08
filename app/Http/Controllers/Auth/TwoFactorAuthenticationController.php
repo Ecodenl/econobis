@@ -17,9 +17,10 @@ class TwoFactorAuthenticationController extends Controller
     public function status(Request $request)
     {
         $token = $request->header('TwoFactorToken');
+        $cooperation =  Cooperation::first();
 
         return response()->json([
-            'cooperationRequiresTwoFactorAuthentication' => Cooperation::first()->require_two_factor_authentication,
+            'cooperationRequiresTwoFactorAuthentication' => $cooperation ? $cooperation->require_two_factor_authentication : false,
             'requireTwoFactorAuthentication' => $request->user()->requiresTwoFactorAuthentication(),
             'twoFactorActivated' => !!$request->user()->hasTwoFactorActivated(),
             'hasValidToken' => $request->user()->hasValidTwoFactorToken($token),
@@ -54,6 +55,9 @@ class TwoFactorAuthenticationController extends Controller
     public function destroy(Request $request, DisableTwoFactorAuthentication $disable)
     {
         $cooperation = Cooperation::first();
+        if(!$cooperation){
+            return response()->json(['message' => 'No cooperation found.'], 422);
+        }
 
         if($cooperation->require_two_factor_authentication){
             return response()->json(['message' => 'Two factor authentication is required by the cooperation.'], 422);

@@ -58,6 +58,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                     ? moment(datePlannedToSendWfEmailStatus).format('L')
                     : '',
                 dateRecorded: dateRecorded ? dateRecorded : '',
+                timeRecorded: dateRecorded ? moment(dateRecorded).format('HH:mm') : '08:00',
                 dateReleased: dateReleased ? dateReleased : '',
                 datePlanned: datePlanned ? datePlanned : '',
                 timePlanned: datePlanned ? moment(datePlanned).format('HH:mm') : '08:00',
@@ -137,6 +138,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             statusUsesWf,
             datePlannedToSendWfEmailStatus,
             dateRecorded,
+            timeRecorded,
             dateReleased,
             datePlanned,
             timePlanned,
@@ -236,13 +238,15 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         value={datePlanned}
                         onChangeAction={this.handleInputChangeDate}
                     />
-                    <InputDate
-                        label="Datum opname"
-                        size={'col-sm-6'}
-                        name="dateRecorded"
-                        value={dateRecorded}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
+                    {opportunityAction.codeRef === 'quotation-request' ? (
+                        <InputDate
+                            label="Datum opname"
+                            size={'col-sm-6'}
+                            name="dateRecorded"
+                            value={dateRecorded}
+                            onChangeAction={this.handleInputChangeDate}
+                        />
+                    ) : null}
                 </div>
 
                 <div className="row">
@@ -255,6 +259,17 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         end={'23:00'}
                         onChangeAction={this.handleInputChangeDate}
                     />
+                    {opportunityAction.codeRef === 'quotation-request' ? (
+                        <InputTime
+                            label={'Tijd opname'}
+                            size={'col-sm-6'}
+                            name="timeRecorded"
+                            value={timeRecorded}
+                            start={'06:00'}
+                            end={'23:00'}
+                            onChangeAction={this.handleInputChangeDate}
+                        />
+                    ) : null}
                 </div>
 
                 <div className="row">

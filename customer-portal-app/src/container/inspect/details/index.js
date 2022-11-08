@@ -185,10 +185,10 @@ function InspectDetails({ match, history }) {
                                                         <Field
                                                             name="dateRecorded"
                                                             render={({ field }) => (
-                                                                <InputText
-                                                                    name="datePlanned"
+                                                                <InputTextDate
+                                                                    name="dateRecorded"
                                                                     field={field}
-                                                                    type="date"
+                                                                    type="datetime-local"
                                                                     errors={errors}
                                                                     touched={touched}
                                                                     onChangeAction={setFieldValue}

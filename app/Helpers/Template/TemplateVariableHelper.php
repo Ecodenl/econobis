@@ -2259,7 +2259,7 @@ class TemplateVariableHelper
                 return $model->date_planned ? Carbon::parse($model->date_planned)->format('d/m/Y H:i') : null;
                 break;
             case 'datum_opname':
-                return $model->date_recorded ? Carbon::parse($model->date_recorded)->format('d/m/Y') : null;
+                return $model->date_recorded ? Carbon::parse($model->date_recorded)->format('d/m/Y H:i') : null;
                 break;
             case 'datum_uitgebracht':
                 return $model->date_released ? Carbon::parse($model->date_released)->format('d/m/Y') : null;

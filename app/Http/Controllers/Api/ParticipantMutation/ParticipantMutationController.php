@@ -346,7 +346,7 @@ class ParticipantMutationController extends ApiController
             break;
         }
 
-        switch ($project->transaction_costs_amount) {
+        switch ($project->getTransactionCostsCodeRef()) {
             case 'amount-once':
                 $transactionCosts = $project->transaction_costs_amount;
             break;
@@ -387,11 +387,6 @@ class ParticipantMutationController extends ApiController
                 $transactionCosts = $project->transaction_costs_amount_max;
             }
         }
-
-        Log::info($amount);
-        Log::info($transactionCosts); /* blijft op 0 staan */
-        Log::info($varAmount); /* wordt gevuld met bedrag */
-        Log::info($varQuantity); /* blijft op 0 staan, omdat varAmount gevuld wordt */
 
         return $transactionCosts;
     }

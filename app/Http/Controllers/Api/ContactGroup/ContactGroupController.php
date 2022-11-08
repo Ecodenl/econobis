@@ -55,9 +55,9 @@ class ContactGroupController extends Controller
     {
         $teamContactGroupIds = Auth::user()->getTeamContactGroupIds();
         if($teamContactGroupIds){
-            $contactGroups = ContactGroup::whereIn('id', $teamContactGroupIds)->orderBy('name')->get();
+            $contactGroups = ContactGroup::whereNotIn('type_id', ['simulated'])->whereIn('contact_groups.id', $teamContactGroupIds)->orderBy('name')->get();
         } else {
-            $contactGroups = ContactGroup::orderBy('name')->get();
+            $contactGroups = ContactGroup::whereNotIn('type_id', ['simulated'])->orderBy('name')->get();
         }
 
         return ContactGroupPeek::collection($contactGroups);
@@ -67,7 +67,7 @@ class ContactGroupController extends Controller
     {
         $teamContactGroupIds = Auth::user()->getTeamContactGroupIds();
         if($teamContactGroupIds){
-            return ContactGroupPeek::collection(ContactGroup::whereIn('id', $teamContactGroupIds)->where('type_id', 'static')->orderBy('name')->get());
+            return ContactGroupPeek::collection(ContactGroup::whereIn('contact_groups.id', $teamContactGroupIds)->where('type_id', 'static')->orderBy('name')->get());
         } else {
             return ContactGroupPeek::collection(ContactGroup::orderBy('name')->where('type_id', 'static')->get());
         }

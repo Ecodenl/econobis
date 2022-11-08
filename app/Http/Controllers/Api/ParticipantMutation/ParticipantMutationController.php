@@ -305,57 +305,94 @@ class ParticipantMutationController extends ApiController
         return true;
     }
 
+    /*<!--
+        Functionaliteit die de participatie kosten berekent
+    --!>*/
+
     protected function calculationTransactionCosts($participantMutation)
     {
+
         $project = $participantMutation->participation->project;
+        $varAmount = 0;
+        $varQuantity = 0;
         $transactionCosts = 0;
 
-        switch ($project->projectType->code_ref) {
+        switch ($participantMutation->status->code_ref) {
+            case 'interest':
+                if ($project->projectType->code_ref === 'loan' ) {
+                    $varAmount = $participantMutation->amount_interest;
+                } else {
+                    $varQuantity = $participantMutation->quantity_interest;
+                }
+            break;
+            case 'option':
+                if ($project->projectType->code_ref === 'loan' ) {
+                    $varAmount = $participantMutation->amount_option;
+                } else {
+                    $varQuantity = $participantMutation->quantity_option;
+                }
+            break;
+            case 'granted':
+                if ($project->projectType->code_ref === 'loan' ) {
+                    $varAmount = $participantMutation->amount_granted;
+                } else {
+                    $varQuantity = $participantMutation->quantity_granted;
+                }
+            break;
+            case 'final':
+                if ($project->projectType->code_ref === 'loan' ) {
+                    $varAmount = $participantMutation->amount_final;
+                } else {
+                    $varQuantity = $participantMutation->quantity_final;
+                }
+            break;
+        }
 
+        switch ($project->transaction_costs_amount()) {
         case 'amount-once':
-            $transactionCosts = $project->transactionCostsAmount;
+            $transactionCosts = $project->transaction_costs_amount;
             break;
         case 'amount':
-            if ( $project->projectType->code_ref === 'loan' ) {
-                $transactionCosts = $project->transactionCostsAmount;
+            if ($project->projectType->code_ref === 'loan') {
+                $transactionCosts = $project->transaction_costs_amount;
             } else {
-                $transactionCosts = $project->transactionCostsAmount * 0;
-            }
-            break;
+                $transactionCosts = $project->transaction_costs_amount * 0;
+            } break;
         case 'percentage':
             $amount = 0;
-            if ( $project->projectType->code_ref === 'loan' ) {
-                $amount = 1;
+            if ($project->projectType->code_ref === 'loan') {
+                $amount = $varAmount;
             } else {
-                $amount = 1 * $project->currentBookWorth;
+                $amount = $varQuantity * $project->current_book_worth;
             }
 
-            if ( $amount != 0 ) {
-                if ( $project->transactionCostsAmount3 !== null && $amount >= $project->transactionsCostsAmount3) {
-                    $transactionCosts = floatval(((number_format($amount * $project->transactionCostsPercentage3 / 100))));
-                } else if ( $project->transactionCostsAmount2 !== null && $amount >= $project->transactionsCostsAmount2 ) {
-                    $transactionCosts = floatval(((number_format($amount * $project->transactionCostsPercentage2 / 100))));
-                } else if ( $project->transactionCostsAmount !== null && $amount >= $project->transactionsCostsAmount ) {
-                    $transactionCosts = floatval(((number_format($amount * $project->transactionCostsPercentage / 100))));
-                } else {
-                    $transactionCosts = 0;
-                }
+        if ($amount != 0) {
+            if ($project->transaction_costs_amount_3 !== null && $amount >= $project->transaction_costs_amount_3) {
+                $transactionCosts = (($amount * $project->transaction_costs_amount_3 / 100));
+            } else if ($project->transaction_costs_amount_2 !== null && $amount >= $project->transaction_costs_amount_2) {
+                $transactionCosts = ((($amount * $project->transaction_costs_amount_2 / 100)));
+            } else if ($project->transaction_costs_amount !== null && $amount >= $project->transaction_costs_amount) {
+                $transactionCosts = (($amount * $project->transaction_costs_amount / 100));
+            } else {
+                $transactionCosts = 0;
             }
-            break;
+        } break;
             default:
                 $transactionCosts = 0;
         }
 
-        if ( $project->transactionCostsCodeRef !== 'none' ) {
-            if ( $project->transactionCostsAmountMin !== null & $transactionCosts < $project->transactionCostsAmountMin ) {
-                $transactionCosts = $project->transactionCostsAmountMin;
+        if ($project->transaction_costs_code_ref !== 'none') {
+            if ($project->transaction_costs_amount_min !== null && $transactionCosts < $project->transaction_costs_amount_min) {
+                $transactionCosts = $project->transaction_costs_amount_min;
             }
-            if ( $project->transactionCostsAmountMax !== null && $transactionCosts >$project->transactionCostsAmountMax ) {
-                $transactionCosts = $project->transactionCostsAmountMax;
+            if ($project->transaction_costs_amount_max !== null && $transactionCosts > $project->transaction_costs_amount_max) {
+                $transactionCosts = $project->transaction_costs_amount_max;
             }
         }
 
-        Log::info($transactionCosts);
-//        return $transactionCosts;
+        Log::info($participantMutation->status->code_ref);
+        Log::info($project->projectType->code_ref);
+        Log::info($project->transaction_costs_amount());
+        return $transactionCosts;
     }
 }

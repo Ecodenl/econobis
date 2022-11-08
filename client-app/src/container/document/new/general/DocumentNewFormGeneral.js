@@ -276,7 +276,6 @@ const DocumentNewFormGeneral = ({
                     name={'showOnPortal'}
                     value={showOnPortal}
                     onChangeAction={handleInputChange}
-                    disabled={true}
                 />
             </div>
 

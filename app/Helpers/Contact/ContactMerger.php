@@ -51,6 +51,12 @@ class ContactMerger
         if ($this->toContact->twinfieldNumbers()->exists() && $this->fromContact->twinfieldNumbers()->exists()) {
             throw new ContactMergeException('Contacten zijn beide gekoppeld via Twinfield, ontkoppel eerst een van de twee contacten handmatig van Twinfield.');
         }
+
+        $toIban = $this->toContact->iban;
+        $fromIban = $this->fromContact->iban;
+        if ($toIban && $fromIban && $toIban !== $fromIban) {
+            throw new ContactMergeException('Contacten hebben een verschillende IBAN, verwijder eerst één van de twee IBAN\'s handmatig.');
+        }
     }
 
     private function doMerge()

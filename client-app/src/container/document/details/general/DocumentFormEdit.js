@@ -602,7 +602,6 @@ class DocumentDetailsFormEdit extends Component {
                             name={'showOnPortal'}
                             value={showOnPortal}
                             onChangeAction={this.handleInputChange}
-                            disabled={true}
                         />
                     </div>
                     <div className="row">

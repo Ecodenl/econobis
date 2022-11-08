@@ -5,7 +5,7 @@ import UserDetailsFormTwoFactorEdit from './UserDetailsFormTwoFactorEdit';
 import UserDetailsFormTwoFactorView from './UserDetailsFormTwoFactorView';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import PanelHeader from "../../../../components/panel/PanelHeader";
+import PanelHeader from '../../../../components/panel/PanelHeader';
 
 class UserDetailsFormTwoFactor extends Component {
     constructor(props) {
@@ -57,9 +57,23 @@ class UserDetailsFormTwoFactor extends Component {
                 </PanelHeader>
                 <PanelBody>
                     {this.state.showEdit && permissions.manageUser ? (
-                        <UserDetailsFormTwoFactorEdit switchToView={this.switchToView} requiredByCooperation={this.props.cooperation.require_two_factor_authentication} />
+                        <UserDetailsFormTwoFactorEdit
+                            switchToView={this.switchToView}
+                            requiredByCooperation={
+                                this.props.cooperation
+                                    ? this.props.cooperation.require_two_factor_authentication
+                                    : false
+                            }
+                        />
                     ) : (
-                        <UserDetailsFormTwoFactorView switchToEdit={this.switchToEdit} requiredByCooperation={this.props.cooperation.require_two_factor_authentication} />
+                        <UserDetailsFormTwoFactorView
+                            switchToEdit={this.switchToEdit}
+                            requiredByCooperation={
+                                this.props.cooperation
+                                    ? this.props.cooperation.require_two_factor_authentication
+                                    : false
+                            }
+                        />
                     )}
                 </PanelBody>
             </Panel>

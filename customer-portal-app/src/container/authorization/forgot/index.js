@@ -42,11 +42,16 @@ const Forgot = props => {
                             </Row>
                             <Row className={'justify-content-center '}>
                                 <p className={'authorization-text'}>
-                                    Als het e-mailadres bij ons bekend is, dan ontvang je binnen enkele minuten een
+                                    Heb je een account voor jouw online portal? Dan ontvang je binnen enkele minuten een
                                     e-mail met een persoonlijke link. Via deze link kun je een nieuw wachtwoord
                                     instellen.
                                     <br />
-                                    Het kan zijn dat de mail door een spamfilter is geblokkeerd. Spamfilters van
+                                    <br />
+                                    Is jouw online portal nog niet geactiveerd? Dan ontvang je ook geen e-mail. Neem
+                                    hiervoor contact op met ons.
+                                    <br />
+                                    <br />
+                                    Let op: het kan zijn dat de mail door een spamfilter is geblokkeerd. Spamfilters van
                                     bijvoorbeeld Gmail en Hotmail staan erg "scherp". Kijk even bij de Spam/Reclame of
                                     je onze mail daar terug vindt.
                                 </p>

@@ -51,6 +51,12 @@ class ContactMerger
         if ($this->toContact->twinfieldNumbers()->exists() && $this->fromContact->twinfieldNumbers()->exists()) {
             throw new ContactMergeException('Contacten zijn beide gekoppeld via Twinfield, ontkoppel eerst een van de twee contacten handmatig van Twinfield.');
         }
+
+        $toIban = $this->toContact->iban;
+        $fromIban = $this->fromContact->iban;
+        if ($toIban && $fromIban && $toIban !== $fromIban) {
+            throw new ContactMergeException('Contacten hebben een verschillende IBAN, verwijder eerst één van de twee IBAN\'s handmatig.');
+        }
     }
 
     private function doMerge()
@@ -89,6 +95,13 @@ class ContactMerger
         $this->mergeGenericHasManyRelation('twinfieldLogs');
         $this->mergeGenericHasManyRelation('quotationRequests');
 
+        /**
+         * Totalen van obligations_current, etc herberekenen.
+         * Op een of andere manier werkt dit niet vanuit ParticipantProjectObserver (of wordt later weer overschreven?).
+         * Voor nu als quickfix hier nog maar een keer uitvoeren.
+         */
+        $this->toContact->fresh()->calculateParticipationTotals()->save();
+
         $this->fromContact->delete();
     }
 
@@ -120,7 +133,32 @@ class ContactMerger
 
     private function mergePerson()
     {
-        optional($this->fromContact->person)->delete();
+        $toPerson = $this->toContact->person;
+        $fromPerson = $this->fromContact->person;
+
+        if(!$toPerson || !$fromPerson){
+            // Voor het geval dat... Zou niet moeten voorkomen.
+            return;
+        }
+
+        /**
+         * Voor onderstaande velden geldt dat de waarde van fromPerson alleen wordt overgenomen als deze in toPerson leeg is.
+         */
+        $mergeFields = [
+            'date_of_birth',
+            'first_name_partner',
+            'last_name_partner',
+            'date_of_birth_partner',
+        ];
+
+        foreach ($mergeFields as $field) {
+            if (!$toPerson->$field && $fromPerson->$field) {
+                $toPerson->$field = $fromPerson->$field;
+            }
+        }
+
+        $toPerson->save();
+        $fromPerson->delete();
     }
 
     private function mergeOrganisation()

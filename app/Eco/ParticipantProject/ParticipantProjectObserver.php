@@ -33,34 +33,7 @@ class ParticipantProjectObserver
     {
         $contact = Contact::find($participantProject->contact_id);
 
-        $obligations = 0;
-        $participations = 0;
-        $pcr = 0;
-        $loan = 0;
-
-        foreach ($contact->participations as $participation){
-            $projectCodeRef = $participation->project->projectType->code_ref;
-            switch ($projectCodeRef) {
-                case 'obligation':
-                    $obligations += $participation->participations_definitive;
-                    break;
-                case 'capital':
-                    $participations += $participation->participations_definitive;
-                    break;
-                case 'postalcode_link_capital':
-                    $pcr += $participation->participations_definitive;
-                    break;
-                case 'loan':
-                    $loan += $participation->amount_definitive;
-                    break;
-            }
-        }
-
-        $contact->obligations_current = $obligations;
-        $contact->participations_current = $participations;
-        $contact->postalcode_link_capital_current = $pcr;
-        $contact->loan_current = $loan;
-        $contact->save();
+        $contact->calculateParticipationTotals()->save();
 
         // When participations are definitive then add participant to project revenue distribution if available
         if($participantProject->isDirty('participations_definitive') || $participantProject->isDirty('amount_definitive')) {

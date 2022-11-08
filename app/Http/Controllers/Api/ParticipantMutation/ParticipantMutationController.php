@@ -344,35 +344,36 @@ class ParticipantMutationController extends ApiController
         }
 
         switch ($project->transaction_costs_amount) {
-        case 'amount-once':
-            $transactionCosts = $project->transaction_costs_amount;
-            break;
-        case 'amount':
-            if ($project->projectType->code_ref === 'loan') {
+            case 'amount-once':
                 $transactionCosts = $project->transaction_costs_amount;
-            } else {
-                $transactionCosts = $project->transaction_costs_amount * 0;
-            } break;
-        case 'percentage':
-            if ($project->projectType->code_ref === 'loan') {
-                $amount = $varAmount;
-            } else {
-                $amount = $varQuantity * $project->current_book_worth;
-            }
+            break;
+            case 'amount':
+                if ($project->projectType->code_ref === 'loan') {
+                    $transactionCosts = $project->transaction_costs_amount;
+                } else {
+                    $transactionCosts = $project->transaction_costs_amount * 0;
+                }
+            break;
+            case 'percentage':
+                if ($project->projectType->code_ref === 'loan') {
+                    $amount = $varAmount;
+                } else {
+                    $amount = $varQuantity * $project->current_book_worth;
+                }
 
-        if ($amount != 0) {
-            if ($project->transaction_costs_amount_3 !== null && $amount >= $project->transaction_costs_amount_3) {
-                $transactionCosts = (($amount * $project->transaction_costs_amount_3 / 100));
-            } else if ($project->transaction_costs_amount_2 !== null && $amount >= $project->transaction_costs_amount_2) {
-                $transactionCosts = ((($amount * $project->transaction_costs_amount_2 / 100)));
-            } else if ($project->transaction_costs_amount !== null && $amount >= $project->transaction_costs_amount) {
-                $transactionCosts = (($amount * $project->transaction_costs_amount / 100));
-            } else {
-                $transactionCosts = 0;
+            if ($amount != 0) {
+                if ($project->transaction_costs_amount_3 !== null && $amount >= $project->transaction_costs_amount_3) {
+                    $transactionCosts = (($amount * $project->transaction_costs_amount_3 / 100));
+                } else if ($project->transaction_costs_amount_2 !== null && $amount >= $project->transaction_costs_amount_2) {
+                    $transactionCosts = ((($amount * $project->transaction_costs_amount_2 / 100)));
+                } else if ($project->transaction_costs_amount !== null && $amount >= $project->transaction_costs_amount) {
+                    $transactionCosts = (($amount * $project->transaction_costs_amount / 100));
+                } else {
+                    $transactionCosts = 0;
+                }
             }
-        } break;
-            default:
-                $transactionCosts = 0;
+            break;
+            default: $transactionCosts = 0;
         }
 
         if ($project->transaction_costs_code_ref !== 'none') {
@@ -383,10 +384,6 @@ class ParticipantMutationController extends ApiController
                 $transactionCosts = $project->transaction_costs_amount_max;
             }
         }
-
-        Log::info($participantMutation->status->code_ref);
-        Log::info($project->projectType->code_ref);
-        Log::info($project->transaction_costs_amount);
         return $transactionCosts;
     }
 }

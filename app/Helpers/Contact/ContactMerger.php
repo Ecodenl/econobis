@@ -95,6 +95,13 @@ class ContactMerger
         $this->mergeGenericHasManyRelation('twinfieldLogs');
         $this->mergeGenericHasManyRelation('quotationRequests');
 
+        /**
+         * Totalen van obligations_current, etc herberekenen.
+         * Op een of andere manier werkt dit niet vanuit ParticipantProjectObserver (of wordt later weer overschreven?).
+         * Voor nu als quickfix hier nog maar een keer uitvoeren.
+         */
+        $this->toContact->fresh()->calculateParticipationTotals()->save();
+
         $this->fromContact->delete();
     }
 

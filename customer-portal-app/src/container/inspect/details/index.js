@@ -133,6 +133,7 @@ function InspectDetails({match, history}) {
                                                             onChangeAction={setFieldValue}
                                                             id="date_planned"
                                                             placeholder={'Datum afspraak'}
+                                                            step="900"
                                                         />
                                                     )}
                                                 />

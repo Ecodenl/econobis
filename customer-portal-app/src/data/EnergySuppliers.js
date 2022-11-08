@@ -57,6 +57,7 @@ export default [
     { id: 31, name: 'Sepa Green' },
     { id: 32, name: 'Servicehouse' },
     { id: 67, name: 'Shell Energie' },
+    { id: 70, name: 'Tibber' },
     { id: 34, name: 'Total' },
     { id: 22, name: 'United Consumers' },
     { id: 17, name: 'VanDeBron' },

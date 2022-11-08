@@ -94,8 +94,6 @@ class ParticipantMutationController extends ApiController
 
     public function update(RequestInput $requestInput, ParticipantMutation $participantMutation)
     {
-        $this->calculationTransactionCosts($participantMutation);
-
         $this->authorize('manage', ParticipantMutation::class);
 
         $participantMutationOld = ParticipantMutation::find($participantMutation->id);
@@ -133,6 +131,8 @@ class ParticipantMutationController extends ApiController
             ->get();
 
         $participantMutation->fill($data);
+
+        $participantMutation->transaction_costs_amount = $this->calculationTransactionCosts($participantMutation);
 
         $result = $this->checkMutationAllowed($participantMutation);
 
@@ -308,8 +308,11 @@ class ParticipantMutationController extends ApiController
     protected function calculationTransactionCosts($participantMutation)
     {
         $project = $participantMutation->participation->project;
+
         $varAmount = 0;
         $varQuantity = 0;
+
+        $amount = 0;
         $transactionCosts = 0;
 
         switch ($participantMutation->status->code_ref) {
@@ -363,11 +366,11 @@ class ParticipantMutationController extends ApiController
 
             if ($amount != 0) {
                 if ($project->transaction_costs_amount_3 !== null && $amount >= $project->transaction_costs_amount_3) {
-                    $transactionCosts = (($amount * $project->transaction_costs_amount_3 / 100));
+                    $transactionCosts = floatval($amount * $project->transaction_costs_percentage_3 / 100);
                 } else if ($project->transaction_costs_amount_2 !== null && $amount >= $project->transaction_costs_amount_2) {
-                    $transactionCosts = ((($amount * $project->transaction_costs_amount_2 / 100)));
+                    $transactionCosts = floatval($amount * $project->transaction_costs_percentage_2 / 100);
                 } else if ($project->transaction_costs_amount !== null && $amount >= $project->transaction_costs_amount) {
-                    $transactionCosts = (($amount * $project->transaction_costs_amount / 100));
+                    $transactionCosts = floatval($amount * $project->transaction_costs_percentage / 100);
                 } else {
                     $transactionCosts = 0;
                 }
@@ -384,6 +387,12 @@ class ParticipantMutationController extends ApiController
                 $transactionCosts = $project->transaction_costs_amount_max;
             }
         }
+
+        Log::info($amount);
+        Log::info($transactionCosts); /* blijft op 0 staan */
+        Log::info($varAmount); /* wordt gevuld met bedrag */
+        Log::info($varQuantity); /* blijft op 0 staan, omdat varAmount gevuld wordt */
+
         return $transactionCosts;
     }
 }

@@ -142,7 +142,11 @@ function InspectDetails({ match, history }) {
                                                         <input
                                                             type="text"
                                                             className={`text-input w-input content`}
-                                                            value={initialQuotationRequest.opportunity.status.name}
+                                                            value={
+                                                                initialQuotationRequest.opportunityAction.name +
+                                                                ' - ' +
+                                                                initialQuotationRequest.opportunity.status.name
+                                                            }
                                                             readOnly={true}
                                                         />
                                                     </Col>
@@ -175,32 +179,34 @@ function InspectDetails({ match, history }) {
                                                 </Row>
                                             </Col>
                                         </Row>
-                                        <Row>
-                                            <Col xs={12} md={12}>
-                                                <FormLabel htmlFor="date_recorded" className={'field-label'}>
-                                                    Datum opname
-                                                </FormLabel>
-                                                <Row>
-                                                    <Col xs={12} sm={8} md={6}>
-                                                        <Field
-                                                            name="dateRecorded"
-                                                            render={({ field }) => (
-                                                                <InputTextDate
-                                                                    name="dateRecorded"
-                                                                    field={field}
-                                                                    type="datetime-local"
-                                                                    errors={errors}
-                                                                    touched={touched}
-                                                                    onChangeAction={setFieldValue}
-                                                                    id="date_recorded"
-                                                                    placeholder={'Datum opname'}
-                                                                />
-                                                            )}
-                                                        />
-                                                    </Col>
-                                                </Row>
-                                            </Col>
-                                        </Row>
+                                        {initialQuotationRequest.opportunityAction.codeRef === 'quotation-request' ? (
+                                            <Row>
+                                                <Col xs={12} md={12}>
+                                                    <FormLabel htmlFor="date_recorded" className={'field-label'}>
+                                                        Datum opname
+                                                    </FormLabel>
+                                                    <Row>
+                                                        <Col xs={12} sm={8} md={6}>
+                                                            <Field
+                                                                name="dateRecorded"
+                                                                render={({ field }) => (
+                                                                    <InputTextDate
+                                                                        name="dateRecorded"
+                                                                        field={field}
+                                                                        type="datetime-local"
+                                                                        errors={errors}
+                                                                        touched={touched}
+                                                                        onChangeAction={setFieldValue}
+                                                                        id="date_recorded"
+                                                                        placeholder={'Datum opname'}
+                                                                    />
+                                                                )}
+                                                            />
+                                                        </Col>
+                                                    </Row>
+                                                </Col>
+                                            </Row>
+                                        ) : null}
                                         <Row>
                                             <Col xs={12} md={12}>
                                                 <FormLabel htmlFor="date_approved_external" className={'field-label'}>

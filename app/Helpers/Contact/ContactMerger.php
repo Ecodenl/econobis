@@ -126,7 +126,32 @@ class ContactMerger
 
     private function mergePerson()
     {
-        optional($this->fromContact->person)->delete();
+        $toPerson = $this->toContact->person;
+        $fromPerson = $this->fromContact->person;
+
+        if(!$toPerson || !$fromPerson){
+            // Voor het geval dat... Zou niet moeten voorkomen.
+            return;
+        }
+
+        /**
+         * Voor onderstaande velden geldt dat de waarde van fromPerson alleen wordt overgenomen als deze in toPerson leeg is.
+         */
+        $mergeFields = [
+            'date_of_birth',
+            'first_name_partner',
+            'last_name_partner',
+            'date_of_birth_partner',
+        ];
+
+        foreach ($mergeFields as $field) {
+            if (!$toPerson->$field && $fromPerson->$field) {
+                $toPerson->$field = $fromPerson->$field;
+            }
+        }
+
+        $toPerson->save();
+        $fromPerson->delete();
     }
 
     private function mergeOrganisation()

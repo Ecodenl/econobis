@@ -23,7 +23,6 @@ class SeedNewFieldsEnergySuppliers extends Migration
         DB::table('energy_suppliers')->where('name', 'Greenchoice')->update(['excel_template_id' => 2, 'abbreviation' => 'GC', 'file_format_id' => null, 'order' => 3 ]);
         DB::table('energy_suppliers')->where('name', 'Holland Wind')->update(['excel_template_id' => 2, 'abbreviation' => 'HW', 'file_format_id' => null, 'order' => null ]);
         DB::table('energy_suppliers')->where('name', 'Main energie')->update(['excel_template_id' => 2, 'abbreviation' => 'ME', 'file_format_id' => null, 'order' => null ]);
-        DB::table('energy_suppliers')->where('name', 'NL Energie')->update(['excel_template_id' => 2, 'abbreviation' => 'NLE', 'file_format_id' => null, 'order' => null ]);
         DB::table('energy_suppliers')->where('name', 'Vattenfall')->update(['excel_template_id' => 4, 'abbreviation' => 'VF', 'file_format_id' => null, 'order' => null ]);
         DB::table('energy_suppliers')->where('name', 'Oxxio')->update(['excel_template_id' => 3, 'abbreviation' => 'OX', 'file_format_id' => null, 'order' => null ]);
         DB::table('energy_suppliers')->where('name', 'Pure energy')->update(['excel_template_id' => 6, 'abbreviation' => 'PE', 'file_format_id' => null, 'order' => null ]);

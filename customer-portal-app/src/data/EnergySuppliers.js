@@ -42,7 +42,6 @@ export default [
     { id: 65, name: 'Mijn Domein Energie' },
     { id: 61, name: 'Nieuw Hollands Energiebedrijf' },
     { id: 38, name: 'NieuweStroom' },
-    { id: 12, name: 'NL Energie' },
     { id: 1, name: 'OM' },
     { id: 18, name: 'Overig' },
     { id: 14, name: 'Oxxio' },

@@ -32,7 +32,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         Dashboard
                     </Link>
                 </NavText>
-                {permissions.manageQuotationRequest && (
+                {permissions.menuEnergySaving && (
                     <Nav id="dashboard-energy-saving">
                         <NavText>
                             <Link className="sidebar-link" to="dashboard/energie-besparing">
@@ -133,7 +133,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         <SvgIcon size={20} icon={home} />
                     </NavIcon>
                     <NavText> Energiebesparing </NavText>
-                    {permissions.menuHousingFile && (
+                    {permissions.menuHousingFiles && (
                         <Nav id="home-files">
                             <NavText>
                                 <Link className="sidebar-link" to="woningdossiers">

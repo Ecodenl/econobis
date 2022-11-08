@@ -725,4 +725,37 @@ class Contact extends Model
     {
         return new ContactBuilder($query);
     }
+
+    public function calculateParticipationTotals()
+    {
+        $obligations = 0;
+        $participations = 0;
+        $pcr = 0;
+        $loan = 0;
+
+        foreach ($this->participations as $participation){
+            $projectCodeRef = $participation->project->projectType->code_ref;
+            switch ($projectCodeRef) {
+                case 'obligation':
+                    $obligations += $participation->participations_definitive;
+                    break;
+                case 'capital':
+                    $participations += $participation->participations_definitive;
+                    break;
+                case 'postalcode_link_capital':
+                    $pcr += $participation->participations_definitive;
+                    break;
+                case 'loan':
+                    $loan += $participation->amount_definitive;
+                    break;
+            }
+        }
+
+        $this->obligations_current = $obligations;
+        $this->participations_current = $participations;
+        $this->postalcode_link_capital_current = $pcr;
+        $this->loan_current = $loan;
+
+        return $this;
+    }
 }

@@ -43,9 +43,22 @@ class DocumentController extends Controller
 
     public function peek(){
         $this->authorize('view', Document::class);
-//  todo: WM navragen of alle documenten opgehaald moeten worden of alleen bepaalde type of group?
-//        return Document::select('id', 'filename')->where('document_type', 'upload')->get();
-        return Document::select('id', 'filename')->get();
+
+        $documents = Document::select('id', 'filename');
+        $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
+        if($teamDocumentCreatedFromIds){
+            $documents->whereIn('document_created_from_id', $teamDocumentCreatedFromIds);
+        }
+        $teamContactIds = Auth::user()->getTeamContactIds();
+        if ($teamContactIds){
+            $documents->where(function ($documents) use($teamContactIds) {
+                $documents->whereIn('documents.contact_id', $teamContactIds);
+                $documents->orWhereNull('documents.contact_id');
+            });
+
+        }
+
+        return $documents->get();
     }
 
     public function defaultEmailDocumentsPeek(){
@@ -55,6 +68,7 @@ class DocumentController extends Controller
     public function show(Document $document)
     {
         $this->authorize('view', Document::class);
+        $this->checkDocumentAutorized($document);
 
         $document->load('administration', 'task', 'order', 'contact', 'intake', 'contactGroup', 'sentBy', 'createdBy', 'documentCreatedFrom', 'template', 'opportunity.measureCategory', 'opportunity.status', 'project', 'participant.contact', 'participant.project');
 
@@ -261,6 +275,7 @@ class DocumentController extends Controller
     public function download(Document $document){
 
         $this->authorize('view', Document::class);
+        $this->checkDocumentAutorized($document);
 
         $user = Auth::user();
 
@@ -280,5 +295,23 @@ class DocumentController extends Controller
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 
         return $field;
+    }
+
+    /**
+     * @param Document $document
+     */
+    protected function checkDocumentAutorized(Document $document): void
+    {
+        $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
+        if ($teamDocumentCreatedFromIds && !in_array($document->document_created_from_id, $teamDocumentCreatedFromIds)) {
+            abort(403, 'Niet geautoriseerd.');
+        }
+        if($document->contact){
+            $teamContactIds = Auth::user()->getTeamContactIds();
+            if ($teamContactIds && !in_array($document->contact_id, $teamContactIds)) {
+                abort(403, 'Niet geautoriseerd.');
+            }
+        }
+
     }
 }

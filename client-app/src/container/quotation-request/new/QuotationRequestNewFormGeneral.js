@@ -31,6 +31,7 @@ class QuotationRequestNewFormGeneral extends Component {
                 statusId: '5', //offerte aangevraagd, also alter componentwillmount when changing default!
                 opportunityActionId: props.opportunityAction.id,
                 dateRecorded: '',
+                timeRecorded: '',
                 dateReleased: '',
                 datePlanned: '',
                 timePlanned: '',
@@ -68,6 +69,7 @@ class QuotationRequestNewFormGeneral extends Component {
                     statusId: '5',
                     opportunityActionId: this.props.opportunityAction.id,
                     dateRecorded: '',
+                    timeRecorded: '',
                     dateReleased: '',
                     datePlanned: '',
                     timePlanned: '',
@@ -140,6 +142,7 @@ class QuotationRequestNewFormGeneral extends Component {
             organisationOrCoachId,
             statusId,
             dateRecorded,
+            timeRecorded,
             dateReleased,
             datePlanned,
             timePlanned,
@@ -226,13 +229,15 @@ class QuotationRequestNewFormGeneral extends Component {
                         value={datePlanned}
                         onChangeAction={this.handleInputChangeDate}
                     />
-                    <InputDate
-                        label="Datum opname"
-                        size={'col-sm-6'}
-                        name="dateRecorded"
-                        value={dateRecorded}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
+                    {this.props.opportunityAction.codeRef === 'quotation-request' ? (
+                        <InputDate
+                            label="Datum opname"
+                            size={'col-sm-6'}
+                            name="datec"
+                            value={dateRecorded}
+                            onChangeAction={this.handleInputChangeDate}
+                        />
+                    ) : null}
                 </div>
 
                 <div className="row">
@@ -245,6 +250,17 @@ class QuotationRequestNewFormGeneral extends Component {
                         end={'23:00'}
                         onChangeAction={this.handleInputChangeDate}
                     />
+                    {this.props.opportunityAction.codeRef === 'quotation-request' ? (
+                        <InputTime
+                            label={'Tijd opname'}
+                            size={'col-sm-6'}
+                            name="timeRecorded"
+                            value={timeRecorded}
+                            start={'06:00'}
+                            end={'23:00'}
+                            onChangeAction={this.handleInputChangeDate}
+                        />
+                    ) : null}
                 </div>
 
                 <div className="row">

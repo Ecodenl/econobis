@@ -7,6 +7,7 @@ const InputTextDate = ({
     type,
     min,
     max,
+    step,
     className,
     id,
     readOnly,
@@ -38,6 +39,7 @@ const InputTextDate = ({
                 disabled={disabled}
                 min={min}
                 max={max}
+                step={step}
             />
         </>
     );
@@ -52,6 +54,7 @@ InputTextDate.defaultProps = {
     classNameErrorMessage: 'text-danger',
     min: '1900-01-01',
     max: '2099-12-31',
+    step: '60',
     errors: {},
     touched: {},
 };
@@ -67,6 +70,7 @@ InputTextDate.propTypes = {
     placeholder: PropTypes.string,
     min: PropTypes.string,
     max: PropTypes.string,
+    step: PropTypes.string,
     errors: PropTypes.object,
     touched: PropTypes.object,
 };

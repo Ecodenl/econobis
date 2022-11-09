@@ -49,6 +49,7 @@ Route::middleware(['auth:api', 'scopes:use-portal'])
         Route::get('me/quotation-request', 'QuotationRequest\QuotationRequestController@index');
         Route::get('quotation-request/{quotationRequest}', 'QuotationRequest\QuotationRequestController@view');
         Route::post('quotation-request/{quotationRequest}', 'QuotationRequest\QuotationRequestController@update');
+        Route::get('quotation-request/{quotationRequest}/document/{document}/download', 'QuotationRequest\QuotationRequestController@downloadDocument');
 
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\' . JoryController::class . '@multiple');

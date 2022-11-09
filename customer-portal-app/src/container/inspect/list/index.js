@@ -47,14 +47,17 @@ function Inspectlist(props) {
                                     <th>Datum offerte</th>
                                     <th>Akkoord projectleider</th>
                                     <th>Akkoord bewoner</th>
-                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {quotationRequestsArray.map(quotationRequest => (
                                     <tr key={quotationRequest.id}>
                                         <td>{quotationRequest.opportunity.intake.contact.fullName}</td>
-                                        <td>{quotationRequest.opportunity.intake.address.streetPostalCodeCity}</td>
+                                        <td>
+                                            <Link to={`/schouwen/${quotationRequest.id}`}>
+                                                {quotationRequest.opportunity.intake.address.streetPostalCodeCity}
+                                            </Link>
+                                        </td>
                                         <td>{quotationRequest.opportunity.status.name}</td>
                                         <td>
                                             {quotationRequest.datePlanned
@@ -63,7 +66,7 @@ function Inspectlist(props) {
                                         </td>
                                         <td>
                                             {quotationRequest.dateRecorded
-                                                ? moment(quotationRequest.dateRecorded).format('L')
+                                                ? moment(quotationRequest.dateRecorded).format('L HH:mm')
                                                 : ''}
                                         </td>
                                         <td>
@@ -85,9 +88,6 @@ function Inspectlist(props) {
                                             {quotationRequest.dateApprovedClient
                                                 ? moment(quotationRequest.dateApprovedClient).format('L')
                                                 : ''}
-                                        </td>
-                                        <td>
-                                            <Link to={`/schouwen/${quotationRequest.id}`}>Openen</Link>
                                         </td>
                                     </tr>
                                 ))}

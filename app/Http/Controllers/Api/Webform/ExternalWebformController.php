@@ -1850,7 +1850,14 @@ class ExternalWebformController extends Controller
             $rofeType = null;
         }
 
-        $measures = Measure::whereIn('id', explode(',', $data['measure_ids']))->get();
+//        $measures = Measure::whereIn('id', explode(',', $data['measure_ids']))->get();
+        $measures = [];
+        $measuresIds = explode(',', $data['measure_ids']);
+        if($measuresIds) {
+            foreach ($measuresIds as $measuresId){
+                $measures[] = Measure::find($measuresId);
+            }
+        }
         $measureDates = explode(',', $data['measure_dates']);
         $measureAnswers = explode(',', $data['measure_answers']);
         $measureStatusIds = explode(',', $data['measure_status_ids']);
@@ -1916,6 +1923,7 @@ class ExternalWebformController extends Controller
                         'side_id' => $measureSidesid,
                         'type_brand' => $measureTypeBrand,
                     ]);
+//                    $this->log("Woondossier met id " . $housingFile->id . " en maatregel met id " . $measure->id . " nieuw aangemaakt met id: " . $housingFileSpecification->id . ".");
                 }
             } else {
                 $this->log("Er zijn geen maatregelen opgenomen voor woondossier.");
@@ -1942,31 +1950,32 @@ class ExternalWebformController extends Controller
 
             if(isset($measures)){
                 foreach ($measures as $key=>$measure) {
-                    if(!HousingFileSpecification::where('housing_file_id', $housingFile)->where('measure_id', $measure->id)->exists()) {
-                        $measureDate = null;
-                        $measureAnswer = null;
-                        $measureStatusId = null;
-                        $measureFloorId = null;
-                        $measureSidesid = null;
-                        $measureTypeBrand = null;
-                        if (isset($measureDates[$key]) && !empty($measureDates[$key])) {
-                            $measureDate = $measureDates[$key];
-                        }
-                        if (isset($measureAnswers[$key]) && !empty($measureAnswers[$key])) {
-                            $measureAnswer = $measureAnswers[$key];
-                        }
-                        if (isset($measureStatusIds[$key]) && !empty($measureStatusIds[$key])) {
-                            $measureStatusId = $measureStatusIds[$key];
-                        }
-                        if (isset($measureFloorsIds[$key]) && !empty($measureFloorsIds[$key])) {
-                            $measureFloorId = $measureFloorsIds[$key];
-                        }
-                        if (isset($measureSidesids[$key]) && !empty($measureSidesids[$key])) {
-                            $measureSidesid = $measureSidesids[$key];
-                        }
-                        if (isset($measureTypeBrands[$key]) && !empty($measureTypeBrands[$key])) {
-                            $measureTypeBrand = $measureTypeBrands[$key];
-                        }
+                    $measureDate = null;
+                    $measureAnswer = null;
+                    $measureStatusId = null;
+                    $measureFloorId = null;
+                    $measureSidesid = null;
+                    $measureTypeBrand = null;
+                    if (isset($measureDates[$key]) && !empty($measureDates[$key])) {
+                        $measureDate = $measureDates[$key];
+                    }
+                    if (isset($measureAnswers[$key]) && !empty($measureAnswers[$key])) {
+                        $measureAnswer = $measureAnswers[$key];
+                    }
+                    if (isset($measureStatusIds[$key]) && !empty($measureStatusIds[$key])) {
+                        $measureStatusId = $measureStatusIds[$key];
+                    }
+                    if (isset($measureFloorsIds[$key]) && !empty($measureFloorsIds[$key])) {
+                        $measureFloorId = $measureFloorsIds[$key];
+                    }
+                    if (isset($measureSidesids[$key]) && !empty($measureSidesids[$key])) {
+                        $measureSidesid = $measureSidesids[$key];
+                    }
+                    if (isset($measureTypeBrands[$key]) && !empty($measureTypeBrands[$key])) {
+                        $measureTypeBrand = $measureTypeBrands[$key];
+                    }
+                    $housingFileSpecification = HousingFileSpecification::where('housing_file_id', $housingFile->id)->where('measure_id', $measure->id)->first();
+                    if(!$housingFileSpecification) {
                         $housingFileSpecification = HousingFileSpecification::create([
                             'housing_file_id' => $housingFile->id,
                             'measure_id' => $measure->id,
@@ -1977,6 +1986,17 @@ class ExternalWebformController extends Controller
                             'side_id' => $measureSidesid,
                             'type_brand' => $measureTypeBrand,
                         ]);
+//                        $this->log("Woondossier met id " . $housingFile->id . " en maatregel met id " . $measure->id . " nieuw aangemaakt met id: " . $housingFileSpecification->id . ".");
+                    } else {
+                        $housingFileSpecification->update([
+                            'measure_date' => $measureDate,
+                            'answer' => $measureAnswer,
+                            'status_id' => $measureStatusId,
+                            'floor_id' => $measureFloorId,
+                            'side_id' => $measureSidesid,
+                            'type_brand' => $measureTypeBrand,
+                        ]);
+//                        $this->log("Woondossier met id " . $housingFile->id . " en maatregel met id " . $measure->id . " gewijzigd voor specification id: " . $housingFileSpecification->id . ".");
                     }
                 }
             } else {

@@ -94,6 +94,7 @@ Route::namespace('Api')
         Route::get('/housing-file/{housingFile}/documents', 'HousingFile\HousingFileController@documents');
 
         Route::get('/user/grid', 'User\GridController@index');
+        Route::get('/user/rolesPermissionsExcel', 'User\UserController@rolesPermissionsExcel');
         Route::post('/user', 'User\UserController@store');
         Route::get('/user/{user}', 'User\UserController@show');
         Route::post('/user/{user}', 'User\UserController@update');
@@ -290,6 +291,7 @@ Route::namespace('Api')
 
         Route::get('document/grid', 'Document\DocumentController@grid');
         Route::get('document/peek', 'Document\DocumentController@peek');
+        Route::get('document/default-email-documents-peek', 'Document\DocumentController@defaultEmailDocumentsPeek');
         Route::get('document/{document}', 'Document\DocumentController@show');
         Route::get('document/{document}/download', 'Document\DocumentController@download');
         Route::post('document/{document}/delete', 'Document\DocumentController@destroy');

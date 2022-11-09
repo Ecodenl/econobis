@@ -3,34 +3,28 @@
 namespace App\Http\Resources\FinancialOverview\Templates;
 
 use App\Eco\Email\Email;
-use App\Eco\Email\EmailAttachment;
 use App\Mail\ConfigurableMailable;
-use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\Storage;
 
 class FinancialOverviewContactMail extends ConfigurableMailable
 {
-//    use Queueable, SerializesModels;
-
     public $html_body;
     public $subject;
     public $document_path;
     public $document_name;
+    public $defaultAttachmentDocumentId;
 
     /**
      * Create a new message instance.
      *
      * @param Email $email
      */
-    public function __construct($email, $html_body, $document_path, $document_name)
+    public function __construct($email, $html_body, $document_path, $document_name, $defaultAttachmentDocumentId = null)
     {
         $this->email = $email;
         $this->html_body = $html_body;
         $this->document_path = $document_path;
         $this->document_name = $document_name;
+        $this->defaultAttachmentDocumentId = $defaultAttachmentDocumentId;
     }
 
     /**
@@ -46,6 +40,16 @@ class FinancialOverviewContactMail extends ConfigurableMailable
         $mail->attach($this->document_path, [
             'as' => $this->document_name
         ]);
+
+        if($this->defaultAttachmentDocumentId != null){
+            $defaultAttachmentDocument = Document::find($this->defaultAttachmentDocumentId);
+            if($defaultAttachmentDocument){
+                $documentController = new DocumentController();
+                $mail->attachData($documentController->downLoadRawDocument($defaultAttachmentDocument), $defaultAttachmentDocument->filename, [
+                    'as' => $defaultAttachmentDocument->filename
+                ]);
+            }
+        }
 
         return $mail;
     }

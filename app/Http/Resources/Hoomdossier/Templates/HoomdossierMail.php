@@ -2,23 +2,26 @@
 
 namespace App\Http\Resources\Hoomdossier\Templates;
 
-use App\Eco\Email\Email;
+use App\Eco\Document\Document;
+use App\Http\Controllers\Api\Document\DocumentController;
 use App\Mail\ConfigurableMailable;
 
 class HoomdossierMail extends ConfigurableMailable
 {
     public $html_body;
     public $subject;
+    public $defaultAttachmentDocumentId;
 
     /**
      * Create a new message instance.
      *
-     * @param Email $email
+     * @param Mail $mail
      */
-    public function __construct($email, $html_body)
+    public function __construct($mail, $html_body, $defaultAttachmentDocumentId = null)
     {
-        $this->email = $email;
+        $this->mail = $mail;
         $this->html_body = $html_body;
+        $this->defaultAttachmentDocumentId = $defaultAttachmentDocumentId;
     }
 
     /**
@@ -28,7 +31,17 @@ class HoomdossierMail extends ConfigurableMailable
      */
     public function build()
     {
-        $mail = $this->subject($this->email->subject)->view('emails.generic')->text('emails.genericText');;
+        $mail = $this->subject($this->mail->subject)->view('emails.generic')->text('emails.genericText');
+
+        if($this->defaultAttachmentDocumentId != null){
+            $defaultAttachmentDocument = Document::find($this->defaultAttachmentDocumentId);
+            if($defaultAttachmentDocument){
+                $documentController = new DocumentController();
+                $mail->attachData($documentController->downLoadRawDocument($defaultAttachmentDocument), $defaultAttachmentDocument->filename, [
+                    'as' => $defaultAttachmentDocument->filename
+                ]);
+            }
+        }
 
         return $mail;
     }

@@ -202,11 +202,12 @@ class FinancialOverviewHelper
         $htmlBody .= $financialOverviewContact->financialOverview->administration->name;
 
         $emailTemplate = $financialOverviewContact->financialOverview->administration->emailTemplateFinancialOverview;
+        $defaultAttachmentDocumentId = null;
         if ($emailTemplate) {
             $subject = $emailTemplate->subject
                 ? $emailTemplate->subject : $subject;
             $htmlBody = $emailTemplate->html_body;
-
+            $defaultAttachmentDocumentId = $emailTemplate->default_attachment_document_id;
         }
 
         $subject = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $subject);
@@ -262,7 +263,7 @@ class FinancialOverviewHelper
             $mail->send(new FinancialOverviewContactMail($mail, $htmlBody,
                 Storage::disk('administrations')->getDriver()->getAdapter()
                     ->applyPathPrefix($financialOverviewContact->filename),
-                $financialOverviewContact->name));
+                $financialOverviewContact->name, $defaultAttachmentDocumentId));
 
             $financialOverviewContact->emailed_to = $contactInfo['email'];
             $financialOverviewContact->save();

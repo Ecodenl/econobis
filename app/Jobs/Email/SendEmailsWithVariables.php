@@ -137,7 +137,7 @@ class SendEmailsWithVariables implements ShouldQueue {
             $htmlBodyWithVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithVariables);
 
             try {
-                $mail->send(new GenericMail($email, $htmlBodyWithVariables));
+                $mail->send(new GenericMail($email, $htmlBodyWithVariables, null));
                 $amountOfEmailsSend++;
 
                 if ($amountOfEmailsSend === 1) {
@@ -251,7 +251,7 @@ class SendEmailsWithVariables implements ShouldQueue {
                  * Execute
                  */
                 try {
-                    $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
+                    $mail->send(new GenericMail($email, $htmlBodyWithContactVariables, null));
                     $amountOfEmailsSend++;
 
                     if ($amountOfEmailsSend === 1) {

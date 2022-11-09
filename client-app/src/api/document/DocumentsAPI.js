@@ -32,4 +32,19 @@ export default {
                 console.log(error);
             });
     },
+
+    fetchDefaultEmailDocumentsPeek: () => {
+        const requestUrl = `${URL_DOCUMENT}/default-email-documents-peek`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
+                return response.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    },
 };

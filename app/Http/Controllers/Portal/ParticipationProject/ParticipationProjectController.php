@@ -352,7 +352,7 @@ class ParticipationProjectController extends Controller
 
 
             $email->send(new ParticipantReportMail($email, $fromEmail, $fromName,
-                $htmlBodyWithContactVariables, $document));
+                $htmlBodyWithContactVariables, $document, $emailTemplate->default_attachment_document_id));
         }
 
         //delete file on server, still saved on alfresco.

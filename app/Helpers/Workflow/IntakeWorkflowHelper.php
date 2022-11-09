@@ -126,10 +126,12 @@ class IntakeWorkflowHelper
         $subject = str_replace('{cooperatie_naam}', $this->cooperativeName, $subject);
         if($organisationContactperson) {
             $subject = str_replace('{contactpersoon}', $organisationContactperson->full_name, $subject);
+            $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'contact', $organisationContactperson);
             $htmlBody = str_replace('{contactpersoon}', $organisationContactperson->full_name, $htmlBody);
             $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $organisationContactperson);
         }
         if($this->intake) {
+            $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'intake', $this->intake);
             $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'intake', $this->intake);
         }
         if($this->opportunity) {
@@ -154,7 +156,7 @@ class IntakeWorkflowHelper
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
 
-        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody));
+        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
     }
 
 }

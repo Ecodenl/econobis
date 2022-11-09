@@ -185,7 +185,7 @@ class QuotationRequestController
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
 
-        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody));
+        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
     }
 
     private function authorizeQuotationRequest(PortalUser $portalUser, QuotationRequest $quotationRequest)

@@ -27,6 +27,10 @@ const filtersReducerDefaultState = {
         field: 'createdAtEnd',
         data: '',
     },
+    datePlanned: {
+        field: 'datePlanned',
+        data: '',
+    },
     dateRecorded: {
         field: 'dateRecorded',
         data: '',
@@ -97,6 +101,14 @@ export default (state = filtersReducerDefaultState, action) => {
                 createdAtEnd: {
                     ...state.createdAtEnd,
                     data: action.createdAtEnd,
+                },
+            };
+        case 'SET_FILTER_QUOTATION_REQUEST_DATE_PLANNED':
+            return {
+                ...state,
+                datePlanned: {
+                    ...state.datePlanned,
+                    data: action.datePlanned,
                 },
             };
         case 'SET_FILTER_QUOTATION_REQUEST_DATE_RECORDED':

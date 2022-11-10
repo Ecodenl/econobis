@@ -49,7 +49,7 @@ class QuotationRequestsList extends Component {
                     <DataTableBody>
                         {loading ? (
                             <tr>
-                                <td colSpan={10}>{loadingText}</td>
+                                <td colSpan={11}>{loadingText}</td>
                             </tr>
                         ) : (
                             data.map(quotationRequest => {

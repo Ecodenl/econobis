@@ -132,6 +132,7 @@ class QuotationRequestController
             return [
                 'id' => $document->id,
                 'filename' => $document->filename,
+                'description' => $document->description,
             ];
         });
 

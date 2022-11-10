@@ -13,7 +13,9 @@ export default {
         return axiosInstance.post('quotation-request/' + quotationRequest.id, quotationRequest);
     },
 
-    downloadDocument: function(quotationRequestId, documentId) {
-        return axiosInstance.get('quotation-request/' + quotationRequestId + '/document/' + documentId + '/download');
+    quotationRequestDownloadDocument: function(quotationRequestId, id) {
+        const requestUrl = `quotation-request/${quotationRequestId}/document/${id}/download`;
+
+        return axiosInstance.get(requestUrl, { responseType: 'blob' });
     },
 };

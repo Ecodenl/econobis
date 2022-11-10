@@ -13,7 +13,7 @@ import { ClipLoader } from 'react-spinners';
 import InputText from '../../../components/form/InputText';
 import moment from 'moment';
 import InputTextDate from '../../../components/form/InputTextDate';
-import fileDownload from 'js-file-download';
+import InspectDetailsDocumentTable from './document-table';
 
 function InspectDetails({ match, history }) {
     const [isLoading, setLoading] = useState(true);
@@ -30,12 +30,6 @@ function InspectDetails({ match, history }) {
             dateReleased: values.dateReleased,
         }).then(response => {
             history.push('/schouwen');
-        });
-    };
-
-    const downloadDocument = document => {
-        QuotationRequestAPI.downloadDocument(match.params.id, document.id).then(payload => {
-            fileDownload(payload.data, document.filename);
         });
     };
 
@@ -70,7 +64,7 @@ function InspectDetails({ match, history }) {
                                 return (
                                     <Form>
                                         <Row>
-                                            <Col xs={12} sm={8} md={6}>
+                                            <Col>
                                                 <FormLabel className={'field-label'}>Naams</FormLabel>
                                                 <input
                                                     type="text"
@@ -240,26 +234,9 @@ function InspectDetails({ match, history }) {
                                                     </>
                                                 ) : null}
                                             </Col>
-                                            <Col xs={12} sm={8} md={6}>
-                                                <FormLabel>Bestanden</FormLabel>
-                                                <ul>
-                                                    {initialQuotationRequest.documents.map(document => {
-                                                        return (
-                                                            <li key={document.id}>
-                                                                <a
-                                                                    role="button"
-                                                                    onClick={() => downloadDocument(document)}
-                                                                >
-                                                                    {document.filename}
-                                                                </a>
-                                                            </li>
-                                                        );
-                                                    })}
-                                                </ul>
-                                            </Col>
                                         </Row>
                                         <Row>
-                                            <Col xs={12} sm={8} md={6}>
+                                            <Col>
                                                 <ButtonGroup className="float-right">
                                                     <Button
                                                         variant={'outline-dark'}
@@ -293,6 +270,10 @@ function InspectDetails({ match, history }) {
                             }}
                         />
                     </div>
+                    <InspectDetailsDocumentTable
+                        quotationRequestId={match.params.id}
+                        documents={initialQuotationRequest.documents}
+                    />
                 </>
             )}
         </Container>

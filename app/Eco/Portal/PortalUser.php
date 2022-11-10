@@ -58,4 +58,17 @@ class PortalUser extends Authenticatable
         (new EmailHelper())->setConfigToDefaultMailbox();
         $this->notify(new MailAccountActivated($this->contact->full_name));
     }
+
+    public function getTeamContactGroupIds(){
+        return false;
+    }
+
+    public function getTeamContactIds(){
+        return false;
+    }
+
+    public function getDocumentCreatedFromIds(){
+        return false;
+    }
+
 }

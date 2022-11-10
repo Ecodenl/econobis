@@ -14,6 +14,7 @@ use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class QuotationRequestController
 {
@@ -81,7 +82,15 @@ class QuotationRequestController
         }
 
         if (\Config::get('app.ALFRESCO_COOP_USERNAME') == 'local') {
-            return null;
+            if($document->alfresco_node_id == null){
+                $filePath = Storage::disk('documents')->getDriver()
+                    ->getAdapter()->applyPathPrefix($document->filename);
+                header('X-Filename:' . $document->filename);
+                header('Access-Control-Expose-Headers: X-Filename');
+                return response()->download($filePath, $document->filename);
+            } else {
+                return null;
+            }
         }
 
         $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
@@ -132,6 +141,7 @@ class QuotationRequestController
             return [
                 'id' => $document->id,
                 'filename' => $document->filename,
+                'description' => $document->description,
             ];
         });
 

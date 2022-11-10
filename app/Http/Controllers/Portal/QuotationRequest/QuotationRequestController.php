@@ -151,7 +151,7 @@ class QuotationRequestController
     private function getPortalDocuments(QuotationRequest $quotationRequest)
     {
         $documents = $quotationRequest->documents()->where('show_on_portal', true)->get();
-        $documents->merge($quotationRequest->opportunity->documents()->where('show_on_portal', true)->get());
+        $documents = $documents->merge($quotationRequest->opportunity->documents()->where('show_on_portal', true)->get());
 
         return $documents;
     }

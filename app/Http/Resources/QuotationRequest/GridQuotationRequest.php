@@ -21,6 +21,7 @@ class GridQuotationRequest extends JsonResource
     {
            return [
                'id' => $this->id,
+               'datePlanned' => $this->date_planned,
                'dateRecorded' => $this->date_recorded,
                'dateReleased' => $this->date_released,
                'quotationText' => $this->quotation_text,

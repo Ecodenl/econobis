@@ -33,6 +33,11 @@ export const setQuotationRequestCreatedAtEndFilter = createdAtEnd => ({
     createdAtEnd,
 });
 
+export const setQuotationRequestDatePlannedFilter = datePlanned => ({
+    type: 'SET_FILTER_QUOTATION_REQUEST_DATE_PLANNED',
+    datePlanned,
+});
+
 export const setQuotationRequestDateRecordedFilter = dateRecorded => ({
     type: 'SET_FILTER_QUOTATION_REQUEST_DATE_RECORDED',
     dateRecorded,

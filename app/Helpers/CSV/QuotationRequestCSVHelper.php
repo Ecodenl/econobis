@@ -38,15 +38,19 @@ class QuotationRequestCSVHelper
                 'opportunity.measureCategory',
                 'opportunity.measures',
                 'updatedBy',
-                'updatedBy',
-
             ]);
 
             $this->csvExporter->beforeEach(function ($quotationRequest) {
 
-                $quotationRequest->date_recorded = $this->formatDate($quotationRequest->date_recorded);
+                $quotationRequest->date_recorded = $this->formatDateTime($quotationRequest->date_recorded);
+                $quotationRequest->date_planned = $this->formatDateTime($quotationRequest->date_planned);
                 $quotationRequest->date_released = $this->formatDate($quotationRequest->date_released);
+                $quotationRequest->date_approved_external = $this->formatDate($quotationRequest->date_approved_external);
+                $quotationRequest->date_approved_project_manager = $this->formatDate($quotationRequest->date_approved_project_manager);
+                $quotationRequest->date_approved_client = $this->formatDate($quotationRequest->date_approved_client);
                 $quotationRequest->measures = '';
+
+                $quotationRequest->opportunityActionName = $quotationRequest->opportunityAction->name;
 
                 $measures = [];
                 foreach ($quotationRequest->opportunity->measures as $measure){
@@ -86,9 +90,14 @@ class QuotationRequestCSVHelper
             $csv = $this->csvExporter->build($chunk, [
                 'id' => '#',
                 'organisationOrCoach.full_name' => 'Organisatie/Coach',
-                'date_recorded' => 'Datum opname',
+                'opportunityActionName' => 'Actie op kans',
                 'status.name' => 'Status',
-                'date_released' => 'Offerte uitgebracht',
+                'date_planned' => 'Datum afspraak',
+                'date_recorded' => 'Datum opname',
+                'date_released' => 'Datum uitgebracht',
+                'date_approved_external' => 'Datum akkoord extern',
+                'date_approved_project_manager' => 'Datum akkoord projectleider',
+                'date_approved_client' => 'Datum akkoord bewoner',
                 'quotation_text' => 'Offerte omschrijving',
                 'opportunity.intake.contact.full_name' => 'Contact',
                 'title.name' => 'Persoon titel',
@@ -120,5 +129,9 @@ class QuotationRequestCSVHelper
     private function formatDate($date) {
         $formatDate = $date ? new Carbon($date) : false;
         return $formatDate ? $formatDate->format('d-m-Y') : '';
+    }
+    private function formatDateTime($date) {
+        $formatDate = $date ? new Carbon($date) : false;
+        return $formatDate ? $formatDate->format('d-m-Y H:i') : '';
     }
 }

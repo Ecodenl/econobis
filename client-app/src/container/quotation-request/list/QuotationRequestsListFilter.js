@@ -12,6 +12,7 @@ import {
     setQuotationRequestContactFilter,
     setQuotationRequestCreatedAtStartFilter,
     setQuotationRequestCreatedAtEndFilter,
+    setQuotationRequestDatePlannedFilter,
     setQuotationRequestDateRecordedFilter,
     setQuotationRequestDateReleasedFilter,
     setQuotationRequestMeasureFilter,
@@ -53,6 +54,14 @@ const QuotationRequestsListFilter = props => {
             props.setQuotationRequestCreatedAtEndFilter('');
         } else {
             props.setQuotationRequestCreatedAtEndFilter(moment(selectedDay).format('Y-MM-DD'));
+        }
+    };
+
+    const onQuotationRequestDatePlannedChange = selectedDay => {
+        if (selectedDay === undefined) {
+            props.setQuotationRequestDatePlannedFilter('');
+        } else {
+            props.setQuotationRequestDatePlannedFilter(moment(selectedDay).format('Y-MM-DD'));
         }
     };
 
@@ -122,6 +131,10 @@ const QuotationRequestsListFilter = props => {
                 onChangeActionEnd={onQuotationRequestCreatedAtEndChange}
             />
             <DataTableFilterDate
+                value={props.filters.datePlanned.data && props.filters.datePlanned.data}
+                onChangeAction={onQuotationRequestDatePlannedChange}
+            />
+            <DataTableFilterDate
                 value={props.filters.dateRecorded.data && props.filters.dateRecorded.data}
                 onChangeAction={onQuotationRequestDateRecordedChange}
             />
@@ -171,6 +184,7 @@ const mapDispatchToProps = dispatch => {
             setQuotationRequestContactFilter,
             setQuotationRequestCreatedAtStartFilter,
             setQuotationRequestCreatedAtEndFilter,
+            setQuotationRequestDatePlannedFilter,
             setQuotationRequestDateRecordedFilter,
             setQuotationRequestDateReleasedFilter,
             setQuotationRequestMeasureFilter,

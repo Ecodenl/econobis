@@ -112,5 +112,5 @@ return [
         ],
     ],
 
-    'two_factor_token_ttl' => env('TWO_FACTOR_TOKEN_TTL', 60 * 24 * 7),
+    'two_factor_token_ttl' => env('TWO_FACTOR_TOKEN_TTL', 60 * 24),
 ];

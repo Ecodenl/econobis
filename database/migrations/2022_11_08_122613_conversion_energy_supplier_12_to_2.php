@@ -22,8 +22,10 @@ class ConversionEnergySupplier12To2 extends Migration
 
         $addressEnergySuppliers = DB::table('address_energy_suppliers')->where('energy_supplier_id', 12)->get();
         foreach ($addressEnergySuppliers as $addressEnergySupplier){
-            $addressEnergySupplier->energy_supplier_id = 2;
+//            $addressEnergySupplier->energy_supplier_id = 2;
 //            $addressEnergySupplier->save();
+            DB::table('address_energy_suppliers')->where('id', $addressEnergySupplier->id)
+                ->update(['energy_supplier_id' => 2]);
             Log::info('addressEnergySupplier ' . $addressEnergySupplier->id . ' omgezet');
         }
         $projectRevenueDistributions = ProjectRevenueDistribution::where('es_id', 12)->get();
@@ -34,7 +36,7 @@ class ConversionEnergySupplier12To2 extends Migration
             } else {
                 Log::error('Naam projectRevenueDistribution ' . $projectRevenueDistribution->id . ' NIET gewijzigd');
             }
-//            $projectRevenueDistribution->save();
+            $projectRevenueDistribution->save();
             Log::info('projectRevenueDistribution ' . $projectRevenueDistribution->id . ' omgezet');
         }
         $revenueDistributionPartsKwhs = RevenueDistributionPartsKwh::where('es_id', 12)->get();
@@ -45,12 +47,12 @@ class ConversionEnergySupplier12To2 extends Migration
             } else {
                 Log::error('Naam revenueDistributionPartsKwh ' . $revenueDistributionPartsKwh->id . ' NIET gewijzigd');
             }
-//            $revenueDistributionPartsKwh->save();
+            $revenueDistributionPartsKwh->save();
             Log::info('revenueDistributionPartsKwh ' . $revenueDistributionPartsKwh->id . ' omgezet');
         }
 
-//        $energySupplier12 = EnergySupplier::find(12);
-//        $energySupplier12->delete();
+        $energySupplier12 = EnergySupplier::find(12);
+        $energySupplier12->delete();
 
     }
 

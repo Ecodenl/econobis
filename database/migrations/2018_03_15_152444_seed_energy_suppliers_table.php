@@ -27,6 +27,7 @@ class SeedEnergySuppliersTable extends Migration
             'Holland Wind' => 0,
             'Mainz' => 0,
             'N.E.M.' => 0,
+            'NL Energie' => 0,
             'Nuon' => 0,
             'Oxxio' => 0,
             'Pure energy' => 0,

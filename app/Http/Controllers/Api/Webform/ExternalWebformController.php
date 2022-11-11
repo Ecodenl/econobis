@@ -797,8 +797,12 @@ class ExternalWebformController extends Controller
                             . $data['address_number'] . $data['address_addition'] . ' en naam '
                             . $data['first_name'] . ' ' . $data['last_name']);
                         // add emailaddress + taak
-                        $this->log('Nieuw emailadres toevoegen + taak ');
-                        $this->contactActie = "NET";
+                        if($data['email_address'] && $data['email_address'] != ''){
+                            $this->log('Nieuw emailadres toevoegen + taak ');
+                            $this->contactActie = "NET";
+                        } else {
+                            $this->contactActie = "GEEN";
+                        }
                         return $contactNameQuery->first();
                     } else {
                         // Gevonden op adres, niet op emailcontact en niet op naam (voornaam + achternaam).
@@ -822,8 +826,12 @@ class ExternalWebformController extends Controller
                                     . $data['address_number'] . $data['address_addition'] . ' en achternaam '
                                     . $data['last_name'] . ( !empty($data['initials']) ? ' en voorletters: ' . $data['initials'] :  ' en voorletter voornaam: ' . substr($data['first_name'], 0, 1) ) );
                                 // add emailaddress + taak
-                                $this->log('Nieuw emailadres toevoegen + taak ');
-                                $this->contactActie = "NET";
+                                if($data['email_address'] && $data['email_address'] != ''){
+                                    $this->log('Nieuw emailadres toevoegen + taak ');
+                                    $this->contactActie = "NET";
+                                } else {
+                                    $this->contactActie = "GEEN";
+                                }
                                 return $contactNameInitialsQuery->first();
                             } else {
                                 // Persoon Gevonden op adres maar niet op email of naam.
@@ -1359,12 +1367,9 @@ class ExternalWebformController extends Controller
         if ($data['organisation_name']) {
             $this->log('Er is een organisatienaam meegegeven; organisatie bijwerken.');
 
-            $iban = $this->checkIban($data['iban'], 'organisatie.');
             $contact->update([
                 'type_id' => 'organisation',
                 'updated_with' => 'webform',
-                'iban' => $iban,
-                'iban_attn' => $data['iban_attn'],
                 'did_agree_avg' => (bool)$data['did_agree_avg'],
                 'date_did_agree_avg' => $data['date_did_agree_avg'] ? Carbon::make($data['date_did_agree_avg']): null,
                 'is_collect_mandate' => $isCollectMandate,
@@ -1373,6 +1378,17 @@ class ExternalWebformController extends Controller
                 'collect_mandate_first_run_date' => $isCollectMandate ? Carbon::make($data['collect_mandate_first_run_date']): null,
                 'collect_mandate_collection_schema' => $isCollectMandate ? 'core' : '',
             ]);
+            $iban = $this->checkIban($data['iban'], 'organisatie.');
+            if($iban != ''){
+                $contact->update([
+                    'iban' => $iban,
+                ]);
+            }
+            if($data['iban_attn'] != '') {
+                $contact->update([
+                    'iban_attn' => $data['iban_attn'],
+                ]);
+            }
 
             $contact->organisation->update([
                 'name' => $data['organisation_name'],
@@ -1425,11 +1441,8 @@ class ExternalWebformController extends Controller
         // Als we hier komen is er geen bedrijfsnaam meegegeven, dan maken we alleen een persoon aan
         $this->log('Er is geen organisatienaam meegegeven; persoon bijwerken.');
 
-        $iban = $this->checkIban($data['iban'], 'persoon.');
         $contact->update([
             'updated_with' => 'webform',
-            'iban' => $iban,
-            'iban_attn' => $data['iban_attn'],
             'did_agree_avg' => (bool)$data['did_agree_avg'],
             'date_did_agree_avg' => $data['date_did_agree_avg'] ? Carbon::make($data['date_did_agree_avg']): null,
             'is_collect_mandate' => (bool)$data['is_collect_mandate'],
@@ -1438,6 +1451,17 @@ class ExternalWebformController extends Controller
             'collect_mandate_first_run_date' => $data['is_collect_mandate'] ? Carbon::make($data['collect_mandate_first_run_date']): null,
             'collect_mandate_collection_schema' => $data['is_collect_mandate'] ? 'core' : '',
         ]);
+        $iban = $this->checkIban($data['iban'], 'persoon.');
+        if($iban != ''){
+            $contact->update([
+                'iban' => $iban,
+            ]);
+        }
+        if($data['iban_attn'] != '') {
+            $contact->update([
+                'iban_attn' => $data['iban_attn'],
+            ]);
+        }
 
         $lastName = $data['last_name'];
         if (!$lastName) {
@@ -2445,8 +2469,6 @@ class ExternalWebformController extends Controller
                 $this->log('Geen bekende waarde voor betaalwijze meegegeven, default naar betaalwijze van product.');
                 $paymentTypeId = $product->payment_type_id;
             }
-
-//            $iban = $this->checkIban($data['iban'], 'order.');
 
             $dateNextInvoice = Carbon::make($data['date_next_invoice']);
             if (!$dateNextInvoice) {

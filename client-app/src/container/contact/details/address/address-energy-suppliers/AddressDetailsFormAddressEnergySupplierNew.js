@@ -418,7 +418,7 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
                                 <br /> <br />
                                 {'Contacten/adressen met dezelfde klantnummer leverancier zijn:'} <br />
                                 <ul>
-                                    {this.state.doubleEsNumberArray.map(item => (
+                                    {this.state.messageDoubleEsNumberArray.map(item => (
                                         <li>
                                             Contact: {item.contactName} ({item.contactNumber}) met adres:{' '}
                                             {item.addressStreetPostalCodeCity}
@@ -451,7 +451,8 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
                                         : {}
                                 }
                             >
-                                Beëindigde adres/energieleverancier komt voor bij deelnames in volgende projecten: <br />
+                                Beëindigde adres/energieleverancier komt voor bij deelnames in volgende projecten:{' '}
+                                <br />
                                 <ul>
                                     {this.state.messageHasParticipationsProjectsArray.map(item => (
                                         <li>{item.projectMessage}</li>

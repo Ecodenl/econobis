@@ -52,8 +52,8 @@ class ConversionEnergySupplier12To2 extends Migration
             Log::info('revenueDistributionPartsKwh ' . $revenueDistributionPartsKwh->id . ' omgezet');
         }
 
-        $energySupplier33 = EnergySupplier::find(12);
-        $energySupplier33->delete();
+        $energySupplier12 = EnergySupplier::find(12);
+        $energySupplier12->delete();
     }
 
     /**

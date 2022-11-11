@@ -21,23 +21,20 @@ class ConversionEnergySupplier12To2 extends Migration
         Log::info('AddressEnergySupplier 12 (NL Energie) -> AddressEnergySupplier 2 (Budget Energie).');
 
         $addressEnergySuppliers = DB::table('address_energy_suppliers')->where('energy_supplier_id', 12)->get();
-
         foreach ($addressEnergySuppliers as $addressEnergySupplier){
             $addressEnergySupplier->energy_supplier_id = 2;
 //            $addressEnergySupplier->save();
             Log::info('addressEnergySupplier ' . $addressEnergySupplier->id . ' omgezet');
         }
-
         $projectRevenueDistributions = ProjectRevenueDistribution::where('es_id', 12)->get();
         foreach ($projectRevenueDistributions as $projectRevenueDistribution){
             $projectRevenueDistribution->es_id = 2;
-
             if($projectRevenueDistribution->energy_supplier_name == 'NL Energie' ){
                 $projectRevenueDistribution->energy_supplier_name = 'Budget Energie';
             } else {
                 Log::error('Naam projectRevenueDistribution ' . $projectRevenueDistribution->id . ' NIET gewijzigd');
             }
-            $projectRevenueDistribution->save();
+//            $projectRevenueDistribution->save();
             Log::info('projectRevenueDistribution ' . $projectRevenueDistribution->id . ' omgezet');
         }
         $revenueDistributionPartsKwhs = RevenueDistributionPartsKwh::where('es_id', 12)->get();
@@ -48,12 +45,13 @@ class ConversionEnergySupplier12To2 extends Migration
             } else {
                 Log::error('Naam revenueDistributionPartsKwh ' . $revenueDistributionPartsKwh->id . ' NIET gewijzigd');
             }
-            $revenueDistributionPartsKwh->save();
+//            $revenueDistributionPartsKwh->save();
             Log::info('revenueDistributionPartsKwh ' . $revenueDistributionPartsKwh->id . ' omgezet');
         }
 
-        $energySupplier12 = EnergySupplier::find(12);
-        $energySupplier12->delete();
+//        $energySupplier12 = EnergySupplier::find(12);
+//        $energySupplier12->delete();
+
     }
 
     /**
@@ -63,8 +61,6 @@ class ConversionEnergySupplier12To2 extends Migration
      */
     public function down()
     {
-        Schema::table('2', function (Blueprint $table) {
-            //
-        });
+        //
     }
 }

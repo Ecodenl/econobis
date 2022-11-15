@@ -2,8 +2,11 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\CheckPasswordConfirmationHeader;
 use App\Http\Middleware\SetAppScope;
 use App\Http\Middleware\SetPortalScope;
+use App\Http\Middleware\VerifyPortalTwoFactorAuthentication;
+use App\Http\Middleware\VerifyTwoFactorAuthentication;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -62,5 +65,14 @@ class Kernel extends HttpKernel
         'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,
         'scope.app' => SetAppScope::class,
         'scope.portal' => SetPortalScope::class,
+        'two-factor' => VerifyTwoFactorAuthentication::class,
+        'two-factor-portal' => VerifyPortalTwoFactorAuthentication::class,
+    ];
+
+    protected $middlewarePriority = [
+        \Illuminate\Auth\Middleware\Authenticate::class,
+        VerifyTwoFactorAuthentication::class,
+        VerifyPortalTwoFactorAuthentication::class,
+        CheckPasswordConfirmationHeader::class,
     ];
 }

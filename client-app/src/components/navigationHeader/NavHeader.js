@@ -50,6 +50,9 @@ const NavHeader = props => {
                                 <li onClick={props.toggleChangePassword}>
                                     <Link>Wachtwoord wijzigen</Link>
                                 </li>
+                                <li onClick={props.toggleTwoFactorSettings}>
+                                    <Link>Twee factor instellingen</Link>
+                                </li>
                                 <li>
                                     <Link>{props.versionNumber}</Link>
                                 </li>

@@ -107,6 +107,13 @@ class PortalUserController extends Controller
 //        }
     }
 
+    public function checkPassword(Request $request)
+    {
+        /**
+         * Hoeven hier geen check te doen omdat de password check al in de CheckPasswordConfirmation middleware gebeurt.
+         * Als we hier al komen is password dus altijd goed.
+         */
 
-
+        return response()->json(['message' => 'Wachtwoord is correct.'], 200);
+    }
 }

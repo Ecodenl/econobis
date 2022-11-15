@@ -1,4 +1,3 @@
-import axios from 'axios';
 import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_CONTACTDETAILS = `${URL_API}/api/contact`;
@@ -6,10 +5,8 @@ const URL_CONTACTDETAILS = `${URL_API}/api/contact`;
 export default {
     getContactDetails: id => {
         const requestUrl = `${URL_CONTACTDETAILS}/${id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -21,10 +18,8 @@ export default {
 
     getContactDetailsWithAddresses: id => {
         const requestUrl = `${URL_CONTACTDETAILS}/${id}/addresses`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -36,10 +31,8 @@ export default {
 
     updateContactOwner: (contactId, userId) => {
         const requestUrl = `${URL_CONTACTDETAILS}/${contactId}/owner/${userId}/associate`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => {

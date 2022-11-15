@@ -16,6 +16,7 @@ use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Project\Project;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laracasts\Presenter\PresentableTrait;
@@ -24,7 +25,7 @@ use Carbon\Carbon;
 
 class Task extends Model
 {
-    use RevisionableTrait, PresentableTrait, SoftDeletes;
+    use RevisionableTrait, PresentableTrait, SoftDeletes, HasFactory;
 
     protected $presenter = TaskPresenter::class;
 

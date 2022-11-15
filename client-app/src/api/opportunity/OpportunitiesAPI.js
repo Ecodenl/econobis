@@ -1,14 +1,12 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_OPPORTUNITY = `${URL_API}/api/opportunity`;
 
 export default {
     fetchOpportunities: ({ filters, sorts, pagination }) => {
         const requestUrl = `${URL_OPPORTUNITY}/grid`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.get(requestUrl, {
+        return axiosInstance.get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
@@ -20,10 +18,8 @@ export default {
 
     peekOpportunities: () => {
         const requestUrl = `${URL_OPPORTUNITY}/peek`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -35,10 +31,8 @@ export default {
 
     getAmountActive: () => {
         const requestUrl = `${URL_OPPORTUNITY}/amount-active`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(response => response.data)
             .catch(error => {
@@ -48,18 +42,14 @@ export default {
 
     getChartData: () => {
         const requestUrl = `${URL_OPPORTUNITY}/chart-data`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.get(requestUrl);
+        return axiosInstance.get(requestUrl);
     },
 
     getCSV: ({ filters, sorts }) => {
         const requestUrl = `${URL_OPPORTUNITY}/csv`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl, {
+        return axiosInstance.get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),

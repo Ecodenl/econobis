@@ -15,7 +15,9 @@ axiosInstance.interceptors.request.use(
         checkTokenExpiration();
         // Do something before request is sent
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem(localStorageToken);
+        const TWO_FACTOR_TOKEN = localStorage.getItem('portal_two_factor_token');
         config.headers.Authorization = AUTH_TOKEN;
+        config.headers.TwoFactorToken = TWO_FACTOR_TOKEN;
         return config;
     },
     function(error) {

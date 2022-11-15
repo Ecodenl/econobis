@@ -22,6 +22,7 @@ const AuthProvider = function(props) {
     function logout() {
         window.localStorage.removeItem(localStorageToken);
         window.localStorage.removeItem(localStorageLastActivity);
+        window.localStorage.removeItem('portal_two_factor_token');
         setAuth(false);
     }
 

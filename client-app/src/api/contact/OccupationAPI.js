@@ -1,14 +1,12 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_OCCUPATION = `${URL_API}/api/occupation`;
 
 export default {
     newOccupation: occupation => {
         const requestUrl = `${URL_OCCUPATION}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, occupation)
             .then(function(response) {
                 return response.data.data;
@@ -20,10 +18,8 @@ export default {
 
     updateOccupation: occupation => {
         const requestUrl = `${URL_OCCUPATION}/${occupation.id}/update`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, occupation)
             .then(function(response) {
                 return response.data.data;
@@ -35,10 +31,8 @@ export default {
 
     deleteOccupation: occupation => {
         const requestUrl = `${URL_OCCUPATION}/delete`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, occupation)
             .then(function(response) {
                 return response.data.data;

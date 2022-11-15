@@ -9,10 +9,8 @@ let cancelToken;
 export default {
     fetchContacts: ({ filters, extraFilters, sorts, pagination, filterType }) => {
         const requestUrl = `${URL_API}/api/contact/grid`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl, {
+        return axiosInstance.get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
@@ -26,18 +24,14 @@ export default {
 
     deleteContact: id => {
         const requestUrl = `${URL_API}/api/contact/${id}/delete`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl);
+        return axiosInstance.post(requestUrl);
     },
 
     deleteContacts: ids => {
         const requestUrl = `${URL_API}/api/contacts/delete`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, { ids: ids })
             .then(function(response) {
                 return response.data.data;
@@ -49,10 +43,8 @@ export default {
 
     getPerson: () => {
         const requestUrl = `${URL_API}/api/contact/peek`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -64,10 +56,8 @@ export default {
 
     getContactsPeek: () => {
         const requestUrl = `${URL_API}/api/contact/peek`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -78,10 +68,8 @@ export default {
     },
     getContactsAddressesPeek: () => {
         const requestUrl = `${URL_API}/api/contact/address/peek`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -109,10 +97,8 @@ export default {
 
     getCSV: ({ filters, extraFilters, sorts }) => {
         const requestUrl = `${URL_API}/api/contact/csv`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl, {
+        return axiosInstance.get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
@@ -153,10 +139,8 @@ export default {
 
     saveAsGroup: ({ filters, extraFilters, filterType }) => {
         const requestUrl = `${URL_API}/api/contact/save-as-group`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl, {
+        return axiosInstance.get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
@@ -167,25 +151,19 @@ export default {
 
     validateImport: csv => {
         const requestUrl = `${URL_API}/api/contact/validate-import`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, csv);
+        return axiosInstance.post(requestUrl, csv);
     },
 
     import: csv => {
         const requestUrl = `${URL_API}/api/contact/import`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, csv);
+        return axiosInstance.post(requestUrl, csv);
     },
 
     getChartData: () => {
         const requestUrl = `${URL_API}/api/contact/chart-data`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.get(requestUrl);
+        return axiosInstance.get(requestUrl);
     },
 };

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ChangePassword from './ChangePassword';
+import TwoFactorSettings from './TwoFactorSettings';
 import ErrorModal from '../../components/modal/ErrorModal';
 import { clearError } from '../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
@@ -16,6 +17,7 @@ class Content extends Component {
             <div>
                 {this.props.children}
                 {this.props.changePasswordActive && <ChangePassword closeModal={this.props.toggleChangePassword} />}
+                <TwoFactorSettings active={this.props.twoFactorSettingsActive} closeModal={this.props.toggleTwoFactorSettings} />
 
                 {this.props.showAboutUs && <AboutUs closeModal={this.props.toggleAboutUs} />}
                 {!isEmpty(this.props.error) && (

@@ -1,4 +1,3 @@
-import axios from 'axios';
 import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_CONTACT_GROUP = `${URL_API}/api/contact-group`;
@@ -6,10 +5,8 @@ const URL_CONTACT_GROUP = `${URL_API}/api/contact-group`;
 export default {
     fetchContactGroups: ({ filters, sorts, pagination }) => {
         const requestUrl = `${URL_CONTACT_GROUP}/grid`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.get(requestUrl, {
+        return axiosInstance.get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
@@ -21,18 +18,14 @@ export default {
 
     deleteContactGroup: id => {
         const requestUrl = `${URL_CONTACT_GROUP}/${id}/delete`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl);
+        return axiosInstance.post(requestUrl);
     },
 
     fetchGroupsByContact: contactId => {
         const requestUrl = `${URL_API}/api/contact/${contactId}/groups`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(response => response.data)
             .catch(error => {
@@ -42,10 +35,8 @@ export default {
 
     addContactToGroup: ({ groupId, contactId }) => {
         const requestUrl = `${URL_CONTACT_GROUP}/${groupId}/contacts/add/${contactId}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => error.response);
@@ -53,10 +44,8 @@ export default {
 
     newContactGroup: contactGroup => {
         const requestUrl = `${URL_CONTACT_GROUP}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, contactGroup)
             .then(function(response) {
                 return response.data.data;
@@ -68,10 +57,8 @@ export default {
 
     updateContactGroup: contactGroup => {
         const requestUrl = `${URL_CONTACT_GROUP}/${contactGroup.id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, contactGroup)
             .then(function(response) {
                 return response.data.data;
@@ -83,10 +70,8 @@ export default {
 
     fetchContactGroupDetails: id => {
         const requestUrl = `${URL_CONTACT_GROUP}/${id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -98,10 +83,8 @@ export default {
 
     fetchContactGroup: id => {
         const requestUrl = `${URL_CONTACT_GROUP}/${id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -113,10 +96,8 @@ export default {
 
     deleteContactFromGroup: (groupId, contactId) => {
         const requestUrl = `${URL_CONTACT_GROUP}/${groupId}/contacts/remove/${contactId}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl)
             .then(function(response) {
                 return response.data;
@@ -128,10 +109,8 @@ export default {
 
     addManyContactsToGroup: (contactIds, groupId) => {
         const requestUrl = `${URL_CONTACT_GROUP}/${groupId}/contacts/add-many`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, contactIds)
             .then(function(response) {
                 return response.data;
@@ -143,10 +122,8 @@ export default {
 
     peekContactGroups: () => {
         const requestUrl = `${URL_API}/api/contact-group/peek`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -158,10 +135,8 @@ export default {
 
     peekStaticContactGroups: () => {
         const requestUrl = `${URL_API}/api/contact-group/peek/static`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -173,10 +148,8 @@ export default {
 
     getCsv: groupId => {
         const requestUrl = `${URL_CONTACT_GROUP}/${groupId}/csv`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl);
+        return axiosInstance.get(requestUrl);
     },
 
     getExcelExportGroupReport: () => {
@@ -187,10 +160,8 @@ export default {
 
     deleteComposedGroup: ({ contactGroupId, contactGroupToDetachId }) => {
         const requestUrl = `${URL_CONTACT_GROUP}/composed/${contactGroupId}/${contactGroupToDetachId}/detach`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => error.response);
@@ -198,10 +169,8 @@ export default {
 
     attachComposedGroup: ({ contactGroupId, contactGroupToAttachId }) => {
         const requestUrl = `${URL_CONTACT_GROUP}/composed/${contactGroupId}/${contactGroupToAttachId}/attach`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => error.response);
@@ -209,10 +178,8 @@ export default {
 
     deleteComposedExceptGroup: ({ contactGroupId, contactGroupToDetachId }) => {
         const requestUrl = `${URL_CONTACT_GROUP}/composed/${contactGroupId}/${contactGroupToDetachId}/detach/except`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => error.response);
@@ -220,10 +187,8 @@ export default {
 
     attachComposedExceptGroup: ({ contactGroupId, contactGroupToAttachId }) => {
         const requestUrl = `${URL_CONTACT_GROUP}/composed/${contactGroupId}/${contactGroupToAttachId}/attach/except`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => error.response);

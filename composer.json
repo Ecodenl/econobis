@@ -9,20 +9,21 @@
         "barryvdh/laravel-dompdf": "^0.8.1",
         "cmpayments/iban": "^1.1",
         "doctrine/dbal": "^2.6",
-        "ecodenl/pico-wrapper": "dev-master",
+        "ecodenl/pico-wrapper": "^1.0",
         "fruitcake/laravel-cors": "^2.0",
         "google/apiclient": "^2.0",
-        "guzzlehttp/guzzle": "^6.5.5",
+        "guzzlehttp/guzzle": "^7.0.1",
         "iio/libmergepdf": "^4.0",
         "joskolenberg/enum": "^1.2",
         "joskolenberg/laravel-jory": "^3.1",
         "laposta/laposta-api-php": "^1.5",
         "laracasts/presenter": "^0.2.1",
-        "laravel/framework": "^7.0",
+        "laravel/fortify": "^1.13",
+        "laravel/framework": "^8.0",
         "laravel/helpers": "^1.1",
-        "laravel/passport": "^9.3",
+        "laravel/passport": "^10.0",
         "laravel/tinker": "~2.0",
-        "laravel/ui": "^2.0",
+        "laravel/ui": "^3.0",
         "league/oauth2-client": "^2.4",
         "microsoft/microsoft-graph": "^1.67",
         "mollie/laravel-mollie": "^2.14",
@@ -39,17 +40,19 @@
         "barryvdh/laravel-ide-helper": "^2.4",
         "filp/whoops": "~2.0",
         "fzaninotto/faker": "~1.4",
-        "laravel/telescope": "^3.0",
+        "laravel/telescope": "^4.0",
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~8.5"
+        "phpunit/phpunit": "^9.0"
     },
     "autoload": {
         "classmap": [
-            "database/seeds",
+            "database/seeders",
             "database/factories"
         ],
         "psr-4": {
-            "App\\": "app/"
+            "App\\": "app/",
+            "Databases\\Factories\\": "database/factories/",
+            "Databases\\Seeders\\": "database/seeders/"
         }
     },
     "autoload-dev": {

@@ -223,6 +223,9 @@ const OpportunityStatusDetailsApp = React.lazy(() =>
 const ProcessesListApp = React.lazy(() => import('./container/processes/list'));
 const TwinfieldListApp = React.lazy(() => import('./container/twinfield/list'));
 const CooperationDetailsApp = React.lazy(() => import('./container/cooperation/details'));
+const TwoFactorActivate = React.lazy(() => import('./container/auth/TwoFactorActivate'));
+const TwoFactorConfirm = React.lazy(() => import('./container/auth/TwoFactorConfirm'));
+const TwoFactorRecover = React.lazy(() => import('./container/auth/TwoFactorRecover'));
 
 const Routes = () => {
     return (
@@ -232,6 +235,9 @@ const Routes = () => {
                 <Route path="loguit" component={Logout} />
                 <Route path="wachtwoord-vergeten" component={Forgot} />
                 <Route path="wachtwoord-wijzig/:token/:email" component={Reset} />
+                <Route path="two-factor/activate" component={TwoFactorActivate} />
+                <Route path="two-factor/confirm" component={TwoFactorConfirm} />
+                <Route path="two-factor/recover" component={TwoFactorRecover} />
                 <Route path="/" component={RequireAuth(Main)}>
                     <IndexRoute component={DashboardDefaultApp} />
                     /* Dashboards */

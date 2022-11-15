@@ -1,14 +1,12 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_INVOICE = `${URL_API}/api/invoice`;
 
 export default {
     fetchInvoiceDetails: function(id) {
         const requestUrl = `${URL_INVOICE}/${id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -20,10 +18,8 @@ export default {
 
     fetchInvoiceFromTwinfieldDetails: function(twinfieldCode, twinfieldNumber) {
         const requestUrl = `${URL_INVOICE}/from-twinfield?twinfieldCode=${twinfieldCode}&twinfieldNumber=${twinfieldNumber}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -35,10 +31,8 @@ export default {
 
     newInvoice: invoice => {
         const requestUrl = `${URL_INVOICE}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, invoice)
             .then(function(response) {
                 return response.data;
@@ -50,10 +44,8 @@ export default {
 
     updateInvoice: invoice => {
         const requestUrl = `${URL_INVOICE}/${invoice.id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, invoice)
             .then(function(response) {
                 return response.data;
@@ -65,12 +57,10 @@ export default {
 
     setInvoicesPaid: (invoiceIds, datePaid, paymentReference) => {
         const requestUrl = `${URL_INVOICE}/set-multiple-paid`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         document.body.style.cursor = 'wait';
 
-        let response = axios.post(requestUrl, {
+        let response = axiosInstance.post(requestUrl, {
             ids: invoiceIds,
             datePaid: datePaid,
             paymentReference: paymentReference,
@@ -83,10 +73,8 @@ export default {
 
     sendNotification: invoiceId => {
         const requestUrl = `${URL_INVOICE}/${invoiceId}/send-notification`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl)
             .then(function(response) {
                 return response.data;
@@ -98,10 +86,8 @@ export default {
 
     sendNotifications: invoiceIds => {
         const requestUrl = `${URL_INVOICE}/send-notifications`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, { ids: invoiceIds })
             .then(function(response) {
                 return response.data;
@@ -113,32 +99,26 @@ export default {
 
     sendNotificationsPost: invoiceIds => {
         const requestUrl = `${URL_INVOICE}/send-notifications-post`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         document.body.style.cursor = 'wait';
-        let response = axios.post(requestUrl, { ids: invoiceIds }, { responseType: 'blob' });
+        let response = axiosInstance.post(requestUrl, { ids: invoiceIds }, { responseType: 'blob' });
         document.body.style.cursor = 'default';
         return response;
     },
 
     sendNotificationPost: invoiceId => {
         const requestUrl = `${URL_INVOICE}/${invoiceId}/send-notification-post`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         document.body.style.cursor = 'wait';
-        let response = axios.post(requestUrl, {}, { responseType: 'blob' });
+        let response = axiosInstance.post(requestUrl, {}, { responseType: 'blob' });
         document.body.style.cursor = 'default';
         return response;
     },
 
     setIrrecoverable: invoiceId => {
         const requestUrl = `${URL_INVOICE}/${invoiceId}/irrecoverable`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl)
             .then(function(response) {
                 return response.data;
@@ -150,12 +130,10 @@ export default {
 
     sendAll: (invoiceIds, dateCollection) => {
         const requestUrl = `${URL_INVOICE}/send-all`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         document.body.style.cursor = 'wait';
 
-        let response = axios.post(
+        let response = axiosInstance.post(
             requestUrl,
             { ids: invoiceIds, dateCollection: dateCollection },
             { responseType: 'blob' }
@@ -168,11 +146,9 @@ export default {
 
     sendAllPost: (invoiceIds, dateCollection) => {
         const requestUrl = `${URL_INVOICE}/send-all-post`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         document.body.style.cursor = 'wait';
-        let response = axios.post(
+        let response = axiosInstance.post(
             requestUrl,
             { ids: invoiceIds, dateCollection: dateCollection },
             { responseType: 'blob' }
@@ -183,21 +159,17 @@ export default {
 
     createSepaForInvoiceIds: invoiceIds => {
         const requestUrl = `${URL_INVOICE}/create-sepa-for-invoice-ids`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         document.body.style.cursor = 'wait';
-        let response = axios.post(requestUrl, { ids: invoiceIds }, { responseType: 'blob' });
+        let response = axiosInstance.post(requestUrl, { ids: invoiceIds }, { responseType: 'blob' });
         document.body.style.cursor = 'default';
         return response;
     },
 
     newPayment: payment => {
         const requestUrl = `${URL_INVOICE}/${payment.invoiceId}/payment/new`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, payment)
             .then(function(response) {
                 return response.data;
@@ -209,10 +181,8 @@ export default {
 
     updatePayment: payment => {
         const requestUrl = `${URL_INVOICE}/${payment.id}/payment/update`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, payment)
             .then(function(response) {
                 return response.data;
@@ -224,10 +194,8 @@ export default {
 
     deletePayment: paymentId => {
         const requestUrl = `${URL_INVOICE}/payment/${paymentId}/delete`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl)
             .then(function(response) {
                 return response.data;
@@ -239,10 +207,8 @@ export default {
 
     deleteInvoiceProduct: invoiceProductId => {
         const requestUrl = `${URL_INVOICE}/invoice-product/${invoiceProductId}/delete`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl)
             .then(function(response) {
                 return response.data;
@@ -254,18 +220,14 @@ export default {
 
     download: id => {
         const requestUrl = `${URL_INVOICE}/${id}/download`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl, { responseType: 'blob' });
+        return axiosInstance.get(requestUrl, { responseType: 'blob' });
     },
 
     getEmailPreview: id => {
         const requestUrl = `${URL_INVOICE}/${id}/email-preview`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data;
@@ -277,33 +239,25 @@ export default {
 
     newInvoiceProduct: invoiceProduct => {
         const requestUrl = `${URL_INVOICE}/invoice-product`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, invoiceProduct);
+        return axiosInstance.post(requestUrl, invoiceProduct);
     },
 
     newProductAndInvoiceProduct: (invoiceProduct, product) => {
         const requestUrl = `${URL_INVOICE}/product-and-invoice-product`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, { invoiceProduct: invoiceProduct, product: product });
+        return axiosInstance.post(requestUrl, { invoiceProduct: invoiceProduct, product: product });
     },
 
     updateInvoiceProduct: invoiceProduct => {
         const requestUrl = `${URL_INVOICE}/invoice-product/${invoiceProduct.id}/update`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, invoiceProduct);
+        return axiosInstance.post(requestUrl, invoiceProduct);
     },
 
     deleteInvoice: id => {
         const requestUrl = `${URL_INVOICE}/${id}/delete`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl);
+        return axiosInstance.post(requestUrl);
     },
 };

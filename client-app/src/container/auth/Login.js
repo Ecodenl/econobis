@@ -6,6 +6,7 @@ import { authSuccess } from '../../actions/general/AuthActions';
 import AuthAPI from '../../api/general/AuthAPI';
 import Logo from '../../components/logo/Logo';
 import moment from 'moment';
+import MeAPI from "../../api/general/MeAPI";
 
 class Login extends Component {
     constructor(props) {
@@ -44,7 +45,29 @@ class Login extends Component {
 
                 this.props.authSuccess();
 
-                hashHistory.push('/');
+                MeAPI.fetchTwoFactorStatus().then(payload => {
+                    if (!payload.data.requireTwoFactorAuthentication) {
+                        hashHistory.push('/');
+                        return;
+                    }
+
+                    if(!payload.data.twoFactorActivated) {
+                        /**
+                         * We geven het wachtwoord onderwater mee naar de two-factor activatie pagina.
+                         * Voor het aanroepen van activatie api is bevestiging van huidig wachtwoord verplicht via de header.
+                         * Omdat de gebruiker zojuist heeft ingelogd met zijn wachtwoord is het onzinnig om deze daar meteen nog eens te vragen.
+                         */
+                        hashHistory.push({pathname: '/two-factor/activate', state: {password: this.state.password}});
+                        return;
+                    }
+
+                    if(payload.data.hasValidToken) {
+                        hashHistory.push('/');
+                        return;
+                    }
+
+                    hashHistory.push('/two-factor/confirm');
+                })
             } else {
                 this.setState({
                     username: '',

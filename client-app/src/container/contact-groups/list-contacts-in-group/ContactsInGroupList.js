@@ -117,6 +117,8 @@ class ContactsInGroupList extends Component {
                                 </tr>
                             ) : (
                                 this.props.contactsInGroup.map(contactInGroup => {
+                                    console.log(contactInGroup);
+
                                     return (
                                         <ContactsInGroupListItem
                                             key={contactInGroup.id}

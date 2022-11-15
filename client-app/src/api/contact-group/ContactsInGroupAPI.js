@@ -1,14 +1,12 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_CONTACT_GROUP = `${URL_API}/api/contact-group`;
 
 export default {
     fetchContactsInGroup: contactGroup => {
         const requestUrl = `${URL_CONTACT_GROUP}/${contactGroup}/contacts/grid`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -18,10 +16,8 @@ export default {
 
     deleteContactInGroup: (contactGroup, id) => {
         const requestUrl = `${URL_CONTACT_GROUP}/${contactGroup}/contacts/remove/${id}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => error.response);
@@ -29,10 +25,8 @@ export default {
 
     updateContactInGroup: (contactGroup, id, memberToGroupSince) => {
         const requestUrl = `${URL_CONTACT_GROUP}/${contactGroup}/contacts/update/${id}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, memberToGroupSince)
             .then(response => response.data.data)
             .catch(error => error.response);

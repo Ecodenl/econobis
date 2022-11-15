@@ -79,15 +79,15 @@ return [
         // afhankelijk van hoe je vagrant/homestead hebt ingericht.
         'public_portal_local' => [
             'driver' => 'local',
-            'root' => '/home/vagrant/code/econobis/public/portal',
+            'root' => base_path('public/portal'),
         ],
         'customer_portal_app_build_local' => [
             'driver' => 'local',
-            'root' => '/home/vagrant/code/econobis/customer-portal-app/build',
+            'root' => base_path('customer-portal-app/build'),
         ],
         'customer_portal_app_public_local' => [
             'driver' => 'local',
-            'root' => '/home/vagrant/code/econobis/customer-portal-app/public',
+            'root' => base_path('customer-portal-app/public'),
         ],
 
         'public_portal' => [

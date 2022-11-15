@@ -1,30 +1,24 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_PERSON = `${URL_API}/api/person`;
 
 export default {
     newPerson: person => {
         const requestUrl = `${URL_PERSON}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, person);
+        return axiosInstance.post(requestUrl, person);
     },
 
     updatePerson: person => {
         const requestUrl = `${URL_PERSON}/${person.id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, person);
+        return axiosInstance.post(requestUrl, person);
     },
 
     getPersonPeek: () => {
         const requestUrl = `${URL_PERSON}/peek`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -36,10 +30,8 @@ export default {
 
     makePrimary: person => {
         const requestUrl = `${URL_PERSON}/${person.id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .post(requestUrl, person)
             .then(function(response) {
                 return response.data.data;

@@ -12,7 +12,6 @@ import ContactDetailsFormEmailView from './ContactDetailsFormEmailView';
 import ContactDetailsFormEmailEdit from './ContactDetailsFormEmailEdit';
 import ContactDetailsFormEmailDelete from './ContactDetailsFormEmailDelete';
 import { isEqual } from 'lodash';
-import ContactDetailsFormAddressDelete from '../address/ContactDetailsFormAddressItem';
 
 class ContactDetailsFormEmailItem extends Component {
     constructor(props) {
@@ -138,7 +137,7 @@ class ContactDetailsFormEmailItem extends Component {
                     toggleDelete={this.toggleDelete}
                     emailAddress={this.state.emailAddress}
                 />
-                {this.state.showEdit && (
+                {this.props.permissions.updateContactEmail && this.state.showEdit && (
                     <ContactDetailsFormEmailEdit
                         emailAddress={this.state.emailAddress}
                         handleInputChange={this.handleInputChange}
@@ -148,7 +147,7 @@ class ContactDetailsFormEmailItem extends Component {
                         cancelEdit={this.cancelEdit}
                     />
                 )}
-                {this.state.showDelete && (
+                {this.props.permissions.deleteContactEmail && this.state.showDelete && (
                     <ContactDetailsFormEmailDelete
                         closeDeleteItemModal={this.toggleDelete}
                         numberOfEmailAddresses={this.props.numberOfEmailAddresses}
@@ -160,6 +159,11 @@ class ContactDetailsFormEmailItem extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        permissions: state.meDetails.permissions,
+    };
+};
 const mapDispatchToProps = dispatch => ({
     updateEmailAddress: id => {
         dispatch(updateEmailAddress(id));
@@ -169,4 +173,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ContactDetailsFormEmailItem);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormEmailItem);

@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 
 import TeamDetailsFormGeneralEdit from './TeamDetailsFormGeneralEdit';
 import TeamDetailsFormGeneralView from './TeamDetailsFormGeneralView';
-import Panel from '../../../../components/panel/Panel';
-import PanelBody from '../../../../components/panel/PanelBody';
 
 class TeamDetailsFormGeneral extends Component {
     constructor(props) {

@@ -28,6 +28,7 @@ class DocumentGroup extends EnumWithIdAndName
             new static('participation', 'Deelname'),
             new static('registration', 'Inschrijvingsbevestiging'),
             new static('infrared', 'Infraroodopnames'),
+            new static('cost-estimate', 'Kostenraming'),
             new static('membership', 'Lidmaatschap'),
             new static('invoice', 'Nota'),
             new static('quotation', 'Offerte'),
@@ -38,6 +39,7 @@ class DocumentGroup extends EnumWithIdAndName
             new static('consultation', 'Verslag adviesgesprek'),
             new static('pre-registration', 'Voorinschrijving'),
             new static('financial-overview', 'Waardestaat'),
+            new static('default-email-attachment', 'Standaard E-mail bijlage'),
         ];
     }
 }

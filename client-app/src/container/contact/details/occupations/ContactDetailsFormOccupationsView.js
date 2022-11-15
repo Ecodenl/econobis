@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment/moment';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
 moment.locale('nl');
 
 const ContactDetailsFormOccupationsView = props => {
@@ -32,14 +33,14 @@ const ContactDetailsFormOccupationsView = props => {
                 <div className="col-sm-2">{primary ? <span className="pull-right">Primair</span> : ''}</div>
             </div>
             <div className="col-sm-1">
-                {props.showActionButtons ? (
+                {props.permissions.updateContactOccupation && props.showActionButtons ? (
                     <a role="button" onClick={props.openEdit}>
                         <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
                     </a>
                 ) : (
                     ''
                 )}
-                {props.showActionButtons ? (
+                {props.permissions.deleteContactOccupation && props.showActionButtons ? (
                     <a role="button" onClick={props.toggleDelete}>
                         <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
                     </a>
@@ -51,4 +52,10 @@ const ContactDetailsFormOccupationsView = props => {
     );
 };
 
-export default ContactDetailsFormOccupationsView;
+const mapStateToProps = state => {
+    return {
+        permissions: state.meDetails.permissions,
+    };
+};
+
+export default connect(mapStateToProps, null)(ContactDetailsFormOccupationsView);

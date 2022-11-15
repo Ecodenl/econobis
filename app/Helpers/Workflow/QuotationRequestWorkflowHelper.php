@@ -63,10 +63,16 @@ class QuotationRequestWorkflowHelper
         $subject = str_replace('{cooperatie_naam}', $this->cooperativeName, $subject);
         if($this->contact) {
             $subject = str_replace('{contactpersoon}', $this->contact->full_name, $subject);
+            $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'contact', $this->contact);
             $htmlBody = str_replace('{contactpersoon}', $this->contact->full_name, $htmlBody);
             $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $this->contact);
-            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'offerteverzoek', $this->quotationRequest);
-            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kans', $this->quotationRequest->opportunity);
+            if($this->quotationRequest) {
+                $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'offerteverzoek', $this->quotationRequest);
+                $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'offerteverzoek', $this->quotationRequest);
+                if($this->quotationRequest->opportunity) {
+                    $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kans', $this->quotationRequest->opportunity);
+                }
+            }
         }
 
 //todo toevoegen custom-portal branch
@@ -83,7 +89,7 @@ class QuotationRequestWorkflowHelper
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
 
-        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody));
+        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
     }
 
 }

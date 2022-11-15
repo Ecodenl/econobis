@@ -149,6 +149,9 @@ class EmailNewApp extends Component {
                     htmlBody: payload.htmlBody ? payload.htmlBody : this.state.email.htmlBody,
                 },
             });
+            if (payload.defaultAttachmentDocument) {
+                this.addDocumentAsAttachment(payload.defaultAttachmentDocument.id);
+            }
         });
     }
 

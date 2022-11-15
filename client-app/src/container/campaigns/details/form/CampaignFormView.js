@@ -1,11 +1,12 @@
 import React from 'react';
 import moment from 'moment';
 import ViewText from '../../../../components/form/ViewText';
+import ViewText_3_9 from '../../../../components/form/ViewText_3_9';
 
 moment.locale('nl');
 
 const CampaignFormView = ({
-    campaign: { name, number, description, startDate, endDate, status, measureCategories, type },
+    campaign: { name, number, description, startDate, endDate, status, measureCategories, opportunityActions, type },
     switchToEdit,
 }) => {
     return (
@@ -33,10 +34,23 @@ const CampaignFormView = ({
 
             <div className="row" onClick={switchToEdit}>
                 <ViewText label={'Status'} value={status?.name || ''} />
-                <ViewText
+            </div>
+
+            <div className="row" onClick={switchToEdit}>
+                <ViewText_3_9
                     label={'Aangeboden maatregelen'}
                     value={
                         measureCategories && measureCategories.map(measureCategory => measureCategory.name).join(', ')
+                    }
+                />
+            </div>
+
+            <div className="row" onClick={switchToEdit}>
+                <ViewText_3_9
+                    label={'Acties voor kans'}
+                    value={
+                        opportunityActions &&
+                        opportunityActions.map(opportunityAction => opportunityAction.name).join(', ')
                     }
                 />
             </div>

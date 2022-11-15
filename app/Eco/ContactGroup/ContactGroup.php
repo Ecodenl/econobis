@@ -8,6 +8,7 @@ use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Task\Task;
+use App\Eco\Team\Team;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -137,7 +138,11 @@ class ContactGroup extends Model
         return $this->hasMany(Email::class);
     }
 
-    public function getDynamicContactsAttribute()
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class, 'team_contact_group');
+    }
+    public function getDynamicContacts()
     {
         $requestQuery = '';
 
@@ -163,8 +168,10 @@ class ContactGroup extends Model
         $request->replace(['filters' => $requestFilters, 'extraFilters' => $requestExtraFilters, 'filterType' => $this->dynamic_filter_type]);
 
         if ($this->composed_of === 'contacts') {
+        //todo WM: check, Hier schieten we dus dus een loop als we in RequestQuery teamContactIds gaan bepalen !!!
+        // Vanuit hier, geen check op teamContactIds.
             $requestQuery = new \App\Http\RequestQueries\Contact\Grid\RequestQuery($request, new \App\Http\RequestQueries\Contact\Grid\Filter($request), new \App\Http\RequestQueries\Contact\Grid\Sort($request), new \App\Http\RequestQueries\Contact\Grid\Joiner(),
-                new \App\Http\RequestQueries\Contact\Grid\ExtraFilter($request));
+                new \App\Http\RequestQueries\Contact\Grid\ExtraFilter($request), false);
         }
         else if ($this->composed_of === 'participants') {
             $requestQuery = new \App\Http\RequestQueries\ParticipantProject\Grid\RequestQuery($request, new \App\Http\RequestQueries\ParticipantProject\Grid\Filter($request), new \App\Http\RequestQueries\ParticipantProject\Grid\Sort($request), new \App\Http\RequestQueries\ParticipantProject\Grid\Joiner(),
@@ -298,10 +305,10 @@ class ContactGroup extends Model
             }
         } elseif ($this->type_id === 'dynamic') {
             if ($this->composed_of === 'contacts') {
-                return $this->dynamic_contacts->get();
+                return $this->getDynamicContacts()->get();
             } else {
                 if ($this->composed_of === 'participants') {
-                    $participants = $this->dynamic_contacts->get();
+                    $participants = $this->getDynamicContacts()->get();
 
                     $participants->load(['contact']);
 
@@ -393,4 +400,8 @@ class ContactGroup extends Model
         return $numberOfLapostaMembers;
     }
 
+    public function newEloquentBuilder($query)
+    {
+        return new ContactGroupBuilder($query);
+    }
 }

@@ -306,7 +306,7 @@ class NewAccountController extends Controller
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
 
-        $mail->send(new PortalMail($mail, $htmlBody));
+        $mail->send(new PortalMail($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
 
         return true;
     }

@@ -50,6 +50,7 @@ export default function(state = { isLoading: false }, action) {
                         return {
                             ...contact,
                             checked: !contact.checked,
+                            checkedAt: new Date().getTime(), // Timestamp toevoegen; Zo kunnen we bij het aanroepen van de merge functie bepalen welk contact als eerst was aangevinkt.
                         };
                     } else {
                         return contact;

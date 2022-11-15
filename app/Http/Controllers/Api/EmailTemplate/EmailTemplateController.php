@@ -12,6 +12,7 @@ use App\Eco\EmailTemplate\EmailTemplate;
 use App\Helpers\Delete\Models\DeleteEmailTemplate;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Template\TemplateVariableHelper;
+use App\Http\Controllers\Controller;
 use App\Http\Resources\EmailTemplate\EmailTemplatePeek;
 use App\Http\Resources\EmailTemplate\FullEmailTemplate;
 use App\Http\Resources\EmailTemplate\GridEmailTemplate;
@@ -19,11 +20,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class EmailTemplateController
+class EmailTemplateController extends Controller
 {
 
     public function grid()
     {
+        $this->authorize('view', EmailTemplate::class);
+
         $emailTemplates = EmailTemplate::with('createdBy')->orderBy('name')->get();
 
         return GridEmailTemplate::collection($emailTemplates);
@@ -31,14 +34,16 @@ class EmailTemplateController
 
     public function show(EmailTemplate $emailTemplate)
     {
-        $emailTemplate->load('createdBy');
+        $this->authorize('view', EmailTemplate::class);
+
+        $emailTemplate->load('createdBy', 'defaultAttachmentDocument');
 
         return FullEmailTemplate::make($emailTemplate);
     }
 
     public function showWithUser(EmailTemplate $emailTemplate)
     {
-        $emailTemplate->load('createdBy');
+        $emailTemplate->load('createdBy' , 'defaultAttachmentDocument');
 
         $user = Auth::user();
 
@@ -49,10 +54,13 @@ class EmailTemplateController
 
     public function store(RequestInput $requestInput)
     {
+        $this->authorize('create', EmailTemplate::class);
+
         $data = $requestInput
             ->string('name')->validate('required')->next()
             ->string('subject')->onEmpty(null)->next()
             ->string('htmlBody')->onEmpty(null)->alias('html_body')->next()
+            ->integer('defaultAttachmentDocumentId')->onEmpty(null)->alias('default_attachment_document_id')->next()
             ->get();
 
         $emailTemplate = new EmailTemplate();
@@ -63,11 +71,13 @@ class EmailTemplateController
     }
 
     public function update(RequestInput $requestInput, EmailTemplate $emailTemplate) {
+        $this->authorize('create', EmailTemplate::class);
 
         $data = $requestInput
             ->string('name')->validate('required')->next()
             ->string('subject')->onEmpty(null)->next()
             ->string('htmlBody')->onEmpty(null)->alias('html_body')->next()
+            ->integer('defaultAttachmentDocumentId')->onEmpty(null)->alias('default_attachment_document_id')->next()
             ->get();
 
         $emailTemplate->fill($data);
@@ -78,6 +88,8 @@ class EmailTemplateController
 
     public function destroy(EmailTemplate $emailTemplate)
     {
+        $this->authorize('create', EmailTemplate::class);
+
         try {
             DB::beginTransaction();
 

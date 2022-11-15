@@ -212,6 +212,7 @@ class InvoiceHelper
         $htmlBody .= $invoice->administration->name;
 
         $emailTemplate = null;
+        $defaultAttachmentDocumentId = null;
 
         if ($invoice->payment_type_id === 'collection') {
             $emailTemplate = $invoice->order->emailTemplateCollection;
@@ -223,7 +224,7 @@ class InvoiceHelper
             $subject = $emailTemplate->subject
                 ? $emailTemplate->subject : $subject;
             $htmlBody = $emailTemplate->html_body;
-
+            $defaultAttachmentDocumentId = $emailTemplate->default_attachment_document_id;
         }
 
         $user = Auth::user();
@@ -270,7 +271,7 @@ class InvoiceHelper
             $mail->send(new InvoiceMail($mail, $htmlBody,
                 Storage::disk('administrations')->getDriver()->getAdapter()
                     ->applyPathPrefix($invoice->document->filename),
-                $invoice->document->name));
+                $invoice->document->name, $defaultAttachmentDocumentId));
 
             $invoice->emailed_to = $contactInfo['email'];
             $invoice->save();
@@ -345,9 +346,11 @@ class InvoiceHelper
             $htmlBody .= 'Met vriendelijke groet,';
             $htmlBody .= '<p></p>';
             $htmlBody .= $invoice->administration->name;
+            $defaultAttachmentDocumentId = null;
         } else {
             $subject = $emailTemplate->subject ? $emailTemplate->subject : $subject;
             $htmlBody = $emailTemplate->html_body;
+            $defaultAttachmentDocumentId = $emailTemplate->default_attachment_document_id;
         }
 
         $user = User::find($userId);
@@ -374,7 +377,7 @@ class InvoiceHelper
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
 
-        $mail->send(new InvoiceMail($mail, $htmlBody, Storage::disk('administrations')->getDriver()->getAdapter()->applyPathPrefix($invoice->document->filename), $invoice->document->name));
+        $mail->send(new InvoiceMail($mail, $htmlBody, Storage::disk('administrations')->getDriver()->getAdapter()->applyPathPrefix($invoice->document->filename), $invoice->document->name, $defaultAttachmentDocumentId));
 
         return true;
     }

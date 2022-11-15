@@ -242,4 +242,9 @@ class Task extends Model
 
         return $datePlanned;
     }
+
+    public function newEloquentBuilder($query)
+    {
+        return new TaskBuilder($query);
+    }
 }

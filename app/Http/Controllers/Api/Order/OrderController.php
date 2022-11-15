@@ -26,6 +26,7 @@ use App\Http\Resources\Order\FullOrderProduct;
 use App\Http\Resources\Order\GridOrder;
 use App\Http\Resources\Order\OrderPeek;
 use App\Jobs\Order\CreateAllInvoices;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -37,6 +38,7 @@ class OrderController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', Order::class);
 
         $orders = $requestQuery->get();
 
@@ -52,6 +54,8 @@ class OrderController extends ApiController
 
     public function csv(RequestQuery $requestQuery)
     {
+        $this->authorize('view', Order::class);
+
         set_time_limit(0);
         $orders = $requestQuery->getQueryNoPagination()->get();
 
@@ -64,6 +68,8 @@ class OrderController extends ApiController
 
     public function show(Order $order)
     {
+        $this->authorize('view', Order::class);
+
         $order->load([
             'administration.products',
             'orderProducts.product',
@@ -313,6 +319,8 @@ class OrderController extends ApiController
 
     public function peek()
     {
+        $this->authorize('view', Order::class);
+
         return OrderPeek::collection(Order::all());
     }
 

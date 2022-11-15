@@ -5,6 +5,7 @@ import ContactDetailsFormPhoneNew from './ContactDetailsFormPhoneNew';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
+import { connect } from 'react-redux';
 
 class ContactDetailsFormPhone extends Component {
     constructor(props) {
@@ -26,16 +27,20 @@ class ContactDetailsFormPhone extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Telefoon gegevens</span>
-                    <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                        <span className="glyphicon glyphicon-plus" />
-                    </a>
+                    {this.props.permissions.createContactPhone && (
+                        <a role="button" className="pull-right" onClick={this.toggleShowNew}>
+                            <span className="glyphicon glyphicon-plus" />
+                        </a>
+                    )}
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
                         <ContactDetailsFormPhoneList />
                     </div>
                     <div className="col-md-12 margin-10-top">
-                        {this.state.showNew && <ContactDetailsFormPhoneNew toggleShowNew={this.toggleShowNew} />}
+                        {this.props.permissions.createContactPhone && this.state.showNew && (
+                            <ContactDetailsFormPhoneNew toggleShowNew={this.toggleShowNew} />
+                        )}
                     </div>
                 </PanelBody>
             </Panel>
@@ -43,4 +48,10 @@ class ContactDetailsFormPhone extends Component {
     }
 }
 
-export default ContactDetailsFormPhone;
+const mapStateToProps = state => {
+    return {
+        permissions: state.meDetails.permissions,
+    };
+};
+
+export default connect(mapStateToProps, null)(ContactDetailsFormPhone);

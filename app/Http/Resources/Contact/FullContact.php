@@ -87,6 +87,7 @@ class FullContact extends JsonResource
             'relatedEmailsSent' => $this->relatedEmailsSent,
             'financialOverviewContactCount' => $this->financialOverviewContactsSend()->count(),
             'relatedFinancialOverviewContacts' => FullFinancialOverviewContact::collection($this->whenLoaded('financialOverviewContactsSend')),
+            //todo WM: nog wijzigen (zie bijv. FullIntake
             'documentCount' => $this->documents()->count(),
             'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
             'opportunityCount' => $this->opportunities()->count(),
@@ -98,6 +99,7 @@ class FullContact extends JsonResource
             'collectMandateSignatureDate' => $this->collect_mandate_signature_date,
             'collectMandateFirstRunDate' => $this->collect_mandate_first_run_date,
             'collectMandateCollectionSchema' => $this->collect_mandate_collection_schema,
+            'isCoach' =>  $this->is_coach,
         ];
     }
 }

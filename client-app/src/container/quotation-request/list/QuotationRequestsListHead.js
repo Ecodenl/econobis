@@ -16,21 +16,22 @@ const QuotationRequestsListHead = props => {
     return (
         <tr className="thead-title">
             <DataTableHeadTitleAndSort
-                sortColumn={'organisation'}
-                title={'Organisatie'}
+                sortColumn={'organisationOrCoach'}
+                title={'Organisatie/Coach'}
                 width={'10%'}
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort sortColumn={'contact'} title={'Contact'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'15%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'measure'} title={'Maatregel'} width={'10%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'10%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'dateRecorded'} title={'Opname'} width={'10%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'8%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'datePlanned'} title={'Afspraak'} width={'8%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'dateRecorded'} title={'Opname'} width={'8%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status'} width={'8%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'dateReleased'}
                 title={'Uitgebracht'}
-                width={'10%'}
+                width={'8%'}
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort sortColumn={'campaign'} title={'Campagne'} width={'10%'} setSorts={setSorts} />

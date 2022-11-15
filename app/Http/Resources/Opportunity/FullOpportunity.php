@@ -48,10 +48,11 @@ class FullOpportunity extends JsonResource
             'relatedTasks' => GridTask::collection($this->whenLoaded('tasks')),
             'noteCount' => $this->notes()->count(),
             'relatedNotes' => GridTask::collection($this->whenLoaded('notes')),
-            'documentCount' => $this->documents()->count(),
-            'relatedDocuments' => $this->documents()->get(),
+            'documentCount' => $this->relatedDocuments ? $this->relatedDocuments->count() : 0,
+            'relatedDocuments' => $this->relatedDocuments,
             'emailSentCount' => $this->relatedEmailsSent ? $this->relatedEmailsSent->count() : 0,
             'relatedEmailsSent' => $this->relatedEmailsSent,
+            'relatedQuotationRequestsStatuses' => $this->relatedQuotationRequestsStatuses,
         ];
     }
 }

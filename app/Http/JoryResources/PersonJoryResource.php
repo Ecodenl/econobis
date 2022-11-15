@@ -10,6 +10,11 @@ class PersonJoryResource extends JoryResource
 {
     protected $modelClass = Person::class;
 
+    protected function checkAuthorize(): void
+    {
+        // TODO: Implement checkAuthorize() method.
+    }
+
     protected function configureForApp(): void
     {
     }

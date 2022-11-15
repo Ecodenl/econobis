@@ -14,7 +14,7 @@ class ContactDetailsQuotations extends Component {
         return (
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Offertes</span>
+                    <span className="h5 text-bold">Offertes organisatie</span>
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">

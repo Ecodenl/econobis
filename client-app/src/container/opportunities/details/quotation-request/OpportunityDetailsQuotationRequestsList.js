@@ -7,11 +7,12 @@ const OpportunityDetailsQuotationRequestsList = props => {
     return (
         <div>
             <div className="row border header">
-                <div className="col-sm-2">Organisatie</div>
+                <div className="col-sm-2">Organisatie/Coach</div>
                 <div className="col-sm-2">Datum aanvraag</div>
+                <div className="col-sm-2">Actie</div>
                 <div className="col-sm-2">Datum opname</div>
-                <div className="col-sm-2">Offerte status</div>
-                <div className="col-sm-2">Offerte uitgebracht</div>
+                <div className="col-sm-2">Status</div>
+                <div className="col-sm-2">Uitgebracht</div>
             </div>
             {props.quotationRequests.length > 0 ? (
                 props.quotationRequests.map(quotationRequest => {

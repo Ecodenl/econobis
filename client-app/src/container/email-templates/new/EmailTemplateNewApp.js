@@ -8,12 +8,14 @@ import EmailTemplateNewToolbar from './EmailTemplateNewToolbar';
 import EmailTemplateNew from './EmailTemplateNew';
 
 import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
+import DocumentsAPI from '../../../api/document/DocumentsAPI';
 
 class EmailTemplateNewApp extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            defaultEmailDocuments: [],
             emailTemplate: {
                 name: '',
                 subject: '',
@@ -28,6 +30,13 @@ class EmailTemplateNewApp extends Component {
         this.handleTextChange = this.handleTextChange.bind(this);
     }
 
+    componentDidMount() {
+        DocumentsAPI.fetchDefaultEmailDocumentsPeek().then(payload => {
+            this.setState({
+                defaultEmailDocuments: payload,
+            });
+        });
+    }
     handleInputChange = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -86,6 +95,7 @@ class EmailTemplateNewApp extends Component {
                                 emailTemplate={this.state.emailTemplate}
                                 errors={this.state.errors}
                                 handleInputChange={this.handleInputChange}
+                                defaultEmailDocuments={this.state.defaultEmailDocuments}
                                 handleTextChange={this.handleTextChange}
                                 handleSubmit={this.handleSubmit}
                             />

@@ -27,6 +27,9 @@ use App\Eco\FinancialOverview\FinancialOverviewContactStatus;
 use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\HousingFile\EnergyLabelStatus;
+use App\Eco\HousingFile\HousingFileSpecificationFloor;
+use App\Eco\HousingFile\HousingFileSpecificationSide;
+use App\Eco\HousingFile\HousingFileSpecificationStatus;
 use App\Eco\HousingFile\RoofType;
 use App\Eco\Industry\Industry;
 use App\Eco\Intake\IntakeReason;
@@ -42,6 +45,7 @@ use App\Eco\Measure\Measure;
 use App\Eco\Mailbox\OutgoingServerType;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Occupation\Occupation;
+use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\Opportunity\OpportunityEvaluationStatus;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Order\OrderCollectionFrequency;
@@ -76,6 +80,7 @@ use App\Eco\User\User;
 use App\Eco\VatCode\VatCode;
 use App\Http\Resources\Administration\AdministrationPeek;
 use App\Http\Resources\CostCenter\FullCostCenter;
+use App\Http\Resources\Document\FullDocumentCreatedFrom;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Industry\FullIndustry;
@@ -91,6 +96,7 @@ use App\Http\Resources\ParticipantMutation\FullParticipantMutationStatus;
 use App\Http\Resources\ParticipantMutation\FullParticipantMutationType;
 use App\Http\Resources\PersonType\FullPersonType;
 use App\Http\Resources\Product\FullProduct;
+use App\Http\Resources\QuotationRequest\FullQuotationRequestStatus;
 use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\Title\FullTitle;
 use App\Http\Resources\User\UserPeek;
@@ -156,6 +162,7 @@ class SystemData extends JsonResource
             'campaigns' => Campaign::select(['id', 'name'])->get(),
             'campaignStatuses' => FullEnumWithIdAndName::collection(CampaignStatus::all()),
             'campaignTypes' => FullEnumWithIdAndName::collection(CampaignType::all()),
+            'opportunityActions' => GenericResource::collection(OpportunityAction::all()),
             'energySupplierStatuses' => GenericResource::collection(EnergySupplierStatus::all()),
             'energySupplierTypes' => GenericResource::collection(EnergySupplierType::all()),
             'staticContactGroups' => ContactGroup::select(['id', 'name'])->where('type_id', 'static')->get(),
@@ -167,7 +174,7 @@ class SystemData extends JsonResource
             'countries' => GenericResource::collection(Country::all()),
             'documentGroups' => FullEnumWithIdAndName::collection(DocumentGroup::collection()),
             'documentTemplateTypes' => FullEnumWithIdAndName::collection(DocumentTemplateType::collection()),
-            'documentCreatedFroms' => FullEnumWithIdAndName::collection(DocumentCreatedFrom::collection()),
+            'documentCreatedFroms' => FullDocumentCreatedFrom::collection(DocumentCreatedFrom::all()),
             'documentTypes' => FullEnumWithIdAndName::collection(DocumentType::collection()),
             'emailAddressTypes' => FullEnumWithIdAndName::collection(EmailAddressType::collection()),
             'emailStatuses' => FullEnumWithIdAndName::collection(EmailStatus::collection()),
@@ -175,6 +182,9 @@ class SystemData extends JsonResource
             'energyLabelStatus' => FullEnumWithIdAndName::collection(EnergyLabelStatus::all()),
             'energySuppliers' => GenericResource::collection($sortedEnergySuppliers),
             'financialOverviewContactStatuses' => FullEnumWithIdAndName::collection(FinancialOverviewContactStatus::collection()),
+            'housingFileSpecificationStatuses' => HousingFileSpecificationStatus::select(['id', 'name'])->orderBy('name')->get(),
+            'housingFileSpecificationFloors' => HousingFileSpecificationFloor::select(['id', 'name'])->orderBy('name')->get(),
+            'housingFileSpecificationSides' => HousingFileSpecificationSide::select(['id', 'name'])->orderBy('name')->get(),
             'industries' => FullIndustry::collection(Industry::all()),
             'intakeSources' => IntakeSource::select(['id', 'name'])->get(),
             'intakeStatuses' => IntakeStatus::select(['id', 'name'])->get(),
@@ -212,7 +222,7 @@ class SystemData extends JsonResource
             'projectStatus' => GenericResource::collection(ProjectStatus::orderBy('order')->get()),
             'projectTypes' => GenericResource::collection(ProjectType::all()),
             'projectTypesActive' => GenericResource::collection(ProjectType::where('is_active', true)->get()),
-            'quotationRequestStatus' => FullEnumWithIdAndName::collection(QuotationRequestStatus::orderBy('order')->get()),
+            'quotationRequestStatus' => FullQuotationRequestStatus::collection(QuotationRequestStatus::orderBy('opportunity_action_id')->orderBy('name')->get()),
             'roles' => Role::select(['id', 'name'])->get()->toArray(),
             'roofTypes' => FullEnumWithIdAndName::collection(RoofType::all()),
             'taskProperties' => GenericResource::collection(TaskProperty::all()),

@@ -10,6 +10,7 @@ namespace App\Http\RequestQueries\Document\Grid;
 
 use App\Eco\Document\Document;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
 {
@@ -26,6 +27,8 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     protected function baseQuery()
     {
         return Document::query()
+            ->whereTeamContactIds(Auth::user())
+            ->whereDocumentCreatedFromIds(Auth::user())
             ->select('documents.*');
     }
 }

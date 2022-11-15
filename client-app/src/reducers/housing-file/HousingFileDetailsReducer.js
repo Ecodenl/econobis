@@ -10,22 +10,22 @@ export default function(state = {}, action) {
                 ...state,
                 ...action.housingFileDetails,
             };
-        case 'NEW_HOUSING_FILE_MEASURE_TAKEN':
+        case 'ADD_HOUSING_FILE_SPECIFICATION':
             return {
                 ...state,
-                address: {
-                    ...action.address,
-                },
+                housingFileSpecifications: [
+                    ...state.housingFileSpecifications,
+                    {
+                        ...action.housingFileSpecification,
+                    },
+                ],
             };
-        case 'DELETE_HOUSING_FILE_MEASURE_TAKEN_SUCCESS':
+        case 'DELETE_HOUSING_FILE_SPECIFICATION_SUCCESS':
             return {
                 ...state,
-                address: {
-                    ...state.address,
-                    measuresTaken: state.address.measuresTaken.filter(
-                        measureTaken => measureTaken.id !== action.measureId
-                    ),
-                },
+                housingFileSpecifications: state.housingFileSpecifications.filter(
+                    housingFileSpecification => housingFileSpecification.id !== action.housingFileSpecificationId
+                ),
             };
         default:
             return state;

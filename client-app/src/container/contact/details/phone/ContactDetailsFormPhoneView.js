@@ -20,14 +20,14 @@ const ContactDetailsFormPhoneView = props => {
                 <div className="col-sm-2 push">{primary ? <span className="pull-right">Primair</span> : ''}</div>
             </div>
             <div className="col-sm-1">
-                {props.showActionButtons ? (
+                {props.permissions.updateContactPhone && props.showActionButtons ? (
                     <a role="button" onClick={props.openEdit}>
                         <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
                     </a>
                 ) : (
                     ''
                 )}
-                {props.showActionButtons ? (
+                {props.permissions.deleteContactPhone && props.showActionButtons ? (
                     <a role="button" onClick={props.toggleDelete}>
                         <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
                     </a>
@@ -41,6 +41,7 @@ const ContactDetailsFormPhoneView = props => {
 
 const mapStateToProps = state => {
     return {
+        permissions: state.meDetails.permissions,
         phoneNumberTypes: state.systemData.phoneNumberTypes,
     };
 };

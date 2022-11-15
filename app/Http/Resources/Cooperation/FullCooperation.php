@@ -46,6 +46,8 @@ class FullCooperation extends JsonResource
             'createdBy' => ['fullName' => $this->updatedBy->present()->fullName()],
             'updatedById' => $this->updated_by_id,
             'updatedBy' => ['fullName' => $this->updatedBy->present()->fullName()],
+            'inspectionPlannedEmailTemplateId' => $this->inspection_planned_email_template_id ? $this->inspection_planned_email_template_id : '',
+            'inspectionPlannedEmailTemplate' => ['name' => $this->inspectionPlannedEmailTemplate ? $this->inspectionPlannedEmailTemplate->name : ''],
         ];
     }
 }

@@ -297,6 +297,7 @@ class ContactsListApp extends Component {
                                 toggleSaveAsGroup={this.toggleSaveAsGroup}
                                 saveAsGroup={this.saveAsGroup}
                                 toggleShowExtraFilters={this.toggleShowExtraFilters}
+                                fetchContactsData={this.fetchContactsData}
                             />
                         </div>
 

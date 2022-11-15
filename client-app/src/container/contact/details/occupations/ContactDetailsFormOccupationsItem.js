@@ -191,7 +191,7 @@ class ContactDetailsFormOccupationsItem extends Component {
                     occupation={this.state.occupation}
                     primaryOccupation={this.props.primaryOccupation}
                 />
-                {this.state.showEdit && (
+                {this.props.permissions.updateContactOccupation && this.state.showEdit && (
                     <ContactDetailsFormOccupationsEdit
                         occupation={this.state.occupation}
                         handleInputChange={this.handleInputChange}
@@ -207,7 +207,7 @@ class ContactDetailsFormOccupationsItem extends Component {
                         primaryOccupation={this.props.primaryOccupation}
                     />
                 )}
-                {this.state.showDelete && (
+                {this.props.permissions.deleteContactOccupation && this.state.showDelete && (
                     <ContactDetailsFormOccupationsDelete
                         closeDeleteItemModal={this.toggleDelete}
                         deleteOccupation={this.deleteOccupation}
@@ -222,6 +222,7 @@ class ContactDetailsFormOccupationsItem extends Component {
 
 const mapStateToProps = state => {
     return {
+        permissions: state.meDetails.permissions,
         id: state.contactDetails.id,
     };
 };

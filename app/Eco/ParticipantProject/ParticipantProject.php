@@ -6,6 +6,7 @@ use App\Eco\Address\Address;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
+use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
@@ -139,11 +140,13 @@ class ParticipantProject extends Model
     }
 
     public function documentsNotOnPortal(){
-        return $this->hasMany(Document::class, 'participation_project_id')->where('document_created_from', 'participant')->where('show_on_portal', false)->orderBy('documents.id', 'desc');
+        $documentCreatedFromParticipantId = DocumentCreatedFrom::where('code_ref', 'participant')->first()->id;
+        return $this->hasMany(Document::class, 'participation_project_id')->where('document_created_from_id', $documentCreatedFromParticipantId)->where('show_on_portal', false)->orderBy('documents.id', 'desc');
     }
 
     public function documentsOnPortal(){
-        return $this->hasMany(Document::class, 'participation_project_id')->where('document_created_from', 'participant')->where('show_on_portal', true)->orderBy('documents.id', 'desc');
+        $documentCreatedFromParticipantId = DocumentCreatedFrom::where('code_ref', 'participant')->first()->id;
+        return $this->hasMany(Document::class, 'participation_project_id')->where('document_created_from_id', $documentCreatedFromParticipantId)->where('show_on_portal', true)->orderBy('documents.id', 'desc');
     }
 
     public function tasks()

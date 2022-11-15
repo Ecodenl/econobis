@@ -16,8 +16,8 @@ export default {
             });
     },
 
-    fetchNewQuotationRequest: opportunityId => {
-        const requestUrl = `${URL_API}/api/opportunity/${opportunityId}/quotation-request`;
+    fetchNewQuotationRequest: (opportunityId, opportunityActionId) => {
+        const requestUrl = `${URL_API}/api/opportunity/${opportunityId}/${opportunityActionId}/quotation-request`;
 
         return axiosInstance
             .get(requestUrl)

@@ -10,6 +10,11 @@ class ParticipantMutationStatusJoryResource extends JoryResource
 {
     protected $modelClass = ParticipantMutationStatus::class;
 
+    protected function checkAuthorize(): void
+    {
+        // TODO: Implement checkAuthorize() method.
+    }
+
     /**
      * Configure the JoryResource.
      *

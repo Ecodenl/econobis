@@ -10,6 +10,11 @@ class OccupationJoryResource extends JoryResource
 {
     protected $modelClass = Occupation::class;
 
+    protected function checkAuthorize(): void
+    {
+        // TODO: Implement checkAuthorize() method.
+    }
+
     protected function configureForApp(): void
     {
     }

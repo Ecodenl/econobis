@@ -15,30 +15,32 @@ use Carbon\Carbon;
 class Filter extends RequestFilter
 {
     protected $fields = [
-        'organisation',
+        'organisationOrCoach',
         'contact',
         'address',
         'campaign',
         'measure',
         'createdAtStart',
         'createdAtEnd',
+        'datePlanned',
         'dateRecorded',
         'statusId',
         'dateReleased',
     ];
 
     protected $mapping = [
-        'organisation' => 'organisations.name',
+        'organisationOrCoach' => 'organisationOrCoaches.full_name',
         'contact' => 'contacts.full_name',
         'campaign' => 'campaigns.name',
         'measure' => 'measure_categories.name',
+        'datePlanned' => 'quotation_requests.date_planned',
         'dateRecorded' => 'quotation_requests.date_recorded',
         'statusId' => 'quotation_requests.status_id',
         'dateReleased' => 'quotation_requests.date_released',
     ];
 
     protected $joins = [
-        'organisation' => 'organisation',
+        'organisationOrCoach' => 'organisationOrCoach',
         'contact' => 'contact',
         'address' => 'address',
         'campaign' => 'campaign',

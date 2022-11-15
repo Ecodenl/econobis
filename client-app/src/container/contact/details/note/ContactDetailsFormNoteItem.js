@@ -99,7 +99,7 @@ class ContactDetailsFormNoteItem extends Component {
                     openEdit={this.openEdit}
                     toggleDelete={this.toggleDelete}
                 />
-                {this.state.showEdit && (
+                {this.props.permissions.updateContactNote && this.state.showEdit && (
                     <ContactDetailsFormNoteEdit
                         note={this.state.note}
                         handleInputChange={this.handleInputChange}
@@ -108,7 +108,7 @@ class ContactDetailsFormNoteItem extends Component {
                         cancelEdit={this.cancelEdit}
                     />
                 )}
-                {this.state.showDelete && (
+                {this.props.permissions.deleteContactNote && this.state.showDelete && (
                     <ContactDetailsFormNoteDelete closeDeleteItemModal={this.toggleDelete} {...this.props.note} />
                 )}
             </div>
@@ -116,4 +116,9 @@ class ContactDetailsFormNoteItem extends Component {
     }
 }
 
-export default connect()(ContactDetailsFormNoteItem);
+const mapStateToProps = state => {
+    return {
+        permissions: state.meDetails.permissions,
+    };
+};
+export default connect(mapStateToProps, null)(ContactDetailsFormNoteItem);

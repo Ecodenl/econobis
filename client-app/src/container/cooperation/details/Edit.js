@@ -331,6 +331,14 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
 {verbruik_electriciteit_vaste_kosten_hoog}<br/>
 {verbruik_electriciteit_vaste_kosten_laag}`}
                             />
+                        <InputReactSelect
+                            label={'Schouwen gepland e-mail template'}
+                            name={'inspectionPlannedEmailTemplateId'}
+                            options={emailTemplates}
+                            value={values.inspectionPlannedEmailTemplateId}
+                            onChangeAction={(value, name) => setFieldValue(name, value)}
+                            isLoading={isLoading}
+                        />
                         </div>
                     </PanelBody>
 

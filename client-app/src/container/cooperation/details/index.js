@@ -6,6 +6,7 @@ import CooperationDetailsAPI from '../../../api/cooperation/CooperationDetailsAP
 import CooperationDetailsFormEdit from './Edit';
 import CooperationDetailsFormView from './View';
 import { connect } from 'react-redux';
+import ErrorUnauthorized from '../../global/ErrorUnauthorized';
 
 const INITIAL_STATE = {
     result: {
@@ -30,6 +31,7 @@ const INITIAL_STATE = {
         lapostaKey: '',
         useExportAddressConsumption: false,
         requireTwoFactorAuthentication: false,
+        inspectionPlannedEmailTemplateId: '',
     },
     isLoading: true,
     showEdit: false,
@@ -62,18 +64,20 @@ function CooperationDetailsApp({ permissions }) {
 
     useEffect(
         function() {
-            setIsLoading(true);
-            CooperationDetailsAPI.fetchDetails()
-                .then(function(payload) {
-                    if (payload.data && payload.data.data && payload.data.data.id) {
-                        updateResult(payload.data.data);
-                    }
-                    setIsLoading(false);
-                })
-                .catch(function(error) {
-                    alert('Er is iets misgegaan met het laden van de gegevens. Herlaad de pagina.');
-                    setIsLoading(false);
-                });
+            if (permissions.manageCooperationSettings) {
+                setIsLoading(true);
+                CooperationDetailsAPI.fetchDetails()
+                    .then(function(payload) {
+                        if (payload.data && payload.data.data && payload.data.data.id) {
+                            updateResult(payload.data.data);
+                        }
+                        setIsLoading(false);
+                    })
+                    .catch(function(error) {
+                        alert('Er is iets misgegaan met het laden van de gegevens. Herlaad de pagina.');
+                        setIsLoading(false);
+                    });
+            }
         },
         [state.filter]
     );
@@ -102,7 +106,9 @@ function CooperationDetailsApp({ permissions }) {
     return (
         <div className="row">
             <div className="col-md-9">
-                {state.isLoading ? (
+                {!permissions.manageCooperationSettings ? (
+                    <ErrorUnauthorized />
+                ) : state.isLoading ? (
                     'Laden...'
                 ) : (
                     <>

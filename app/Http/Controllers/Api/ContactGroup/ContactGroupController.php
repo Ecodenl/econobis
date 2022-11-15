@@ -22,6 +22,7 @@ use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
@@ -36,6 +37,8 @@ class ContactGroupController extends Controller
 
     public function grid(RequestQuery $query)
     {
+        $this->authorize('view', ContactGroup::class);
+
         $contactGroups = $query->get();
         $cooperation = Cooperation::first();
         $useLaposta = $cooperation ? $cooperation->use_laposta : false;
@@ -50,16 +53,30 @@ class ContactGroupController extends Controller
 
     public function peek()
     {
-        return ContactGroupPeek::collection(ContactGroup::orderBy('name')->get());
+        $teamContactGroupIds = Auth::user()->getTeamContactGroupIds();
+        if($teamContactGroupIds){
+            $contactGroups = ContactGroup::whereNotIn('type_id', ['simulated'])->whereIn('contact_groups.id', $teamContactGroupIds)->orderBy('name')->get();
+        } else {
+            $contactGroups = ContactGroup::whereNotIn('type_id', ['simulated'])->orderBy('name')->get();
+        }
+
+        return ContactGroupPeek::collection($contactGroups);
     }
 
     public function peekStatic()
     {
-        return ContactGroupPeek::collection(ContactGroup::orderBy('name')->where('type_id', 'static')->get());
+        $teamContactGroupIds = Auth::user()->getTeamContactGroupIds();
+        if($teamContactGroupIds){
+            return ContactGroupPeek::collection(ContactGroup::whereIn('contact_groups.id', $teamContactGroupIds)->where('type_id', 'static')->orderBy('name')->get());
+        } else {
+            return ContactGroupPeek::collection(ContactGroup::orderBy('name')->where('type_id', 'static')->get());
+        }
     }
 
     public function show(ContactGroup $contactGroup)
     {
+        $this->authorize('view', ContactGroup::class);
+
         $contactGroup->load(['responsibleUser', 'createdBy', 'tasks', 'emailTemplateNewContactLink']);
         return FullContactGroup::make($contactGroup);
     }
@@ -84,6 +101,7 @@ class ContactGroupController extends Controller
             ->boolean('sendEmailNewContactLink')->validate('boolean')->alias('send_email_new_contact_link')->whenMissing(false)->next()
             ->integer('emailTemplateIdNewContactLink')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_new_contact_link')->next()
             ->boolean('includeIntoExportGroupReport')->validate('boolean')->alias('include_into_export_group_report')->whenMissing(false)->next()
+            ->boolean('isCoachGroup')->validate('boolean')->alias('is_coach_group')->whenMissing(false)->next()
             ->get();
 
         $contactGroupIds = explode(',', $request->contactGroupIds);
@@ -131,6 +149,7 @@ class ContactGroupController extends Controller
             ->boolean('sendEmailNewContactLink')->validate('boolean')->alias('send_email_new_contact_link')->whenMissing(false)->next()
             ->integer('emailTemplateIdNewContactLink')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_new_contact_link')->next()
             ->boolean('includeIntoExportGroupReport')->validate('boolean')->alias('include_into_export_group_report')->whenMissing(false)->next()
+            ->boolean('isCoachGroup')->validate('boolean')->alias('is_coach_group')->whenMissing(false)->next()
             ->get();
 
         //Van dynamisch een statische groep maken
@@ -215,6 +234,10 @@ class ContactGroupController extends Controller
             if($contactGroup->send_email_new_contact_link){
                 $contactGroupHelper = new ContactGroupHelper($contactGroup, $contact);
                 $contactGroupHelper->processEmailNewContactToGroup();
+            }
+            if($contactGroup->is_coach_group){
+                $contact->is_coach = true;
+                $contact->save();
             }
         }
     }
@@ -321,7 +344,7 @@ class ContactGroupController extends Controller
     }
 
     private function makeStatic(ContactGroup $contactGroup){
-        $dynamicContacts = $contactGroup->dynamic_contacts;
+        $dynamicContacts = $contactGroup->getDynamicContacts();
 
         foreach ($contactGroup->filters as $filter){
             $filter->delete();
@@ -443,10 +466,10 @@ class ContactGroupController extends Controller
                 $contactGroup->simulated_group_id = $contactGroupNew->id;
                 $contactGroup->save();
                 if($contactGroup->composed_of === 'contacts'){
-                    $contactGroupNew->contacts()->sync($contactGroup->dynamic_contacts->get()->pluck("id"));
+                    $contactGroupNew->contacts()->sync($contactGroup->getDynamicContacts()->get()->pluck("id"));
                 }
                 else if($contactGroup->composed_of === 'participants'){
-                    $contactGroupNew->contacts()->sync($contactGroup->dynamic_contacts->get()->pluck("contact_id"));
+                    $contactGroupNew->contacts()->sync($contactGroup->getDynamicContacts()->get()->pluck("contact_id"));
                 }
             //Van composed eerst een static groep maken
             } else if($contactGroup->type_id === 'composed' ){

@@ -9,6 +9,11 @@ class DocumentTemplateJoryResource extends JoryResource
 {
     protected $modelClass = DocumentTemplate::class;
 
+    protected function checkAuthorize(): void
+    {
+        // TODO: Implement checkAuthorize() method.
+    }
+
     protected function configureForApp(): void
     {
         // Fields

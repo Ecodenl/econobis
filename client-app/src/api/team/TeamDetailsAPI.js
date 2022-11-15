@@ -32,4 +32,36 @@ export default {
 
         return axiosInstance.post(requestUrl);
     },
+
+    newTeamContactGroup: ({ teamId, contactGroupId }) => {
+        const requestUrl = `${URL_TEAM}/${teamId}/${contactGroupId}/attach-contact-group`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl);
+    },
+
+    deleteTeamContactGroup: ({ teamId, contactGroupId }) => {
+        const requestUrl = `${URL_TEAM}/${teamId}/${contactGroupId}/detach-contact-group`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl);
+    },
+
+    newTeamDocumentCreatedFrom: ({ teamId, documentCreatedFromId }) => {
+        const requestUrl = `${URL_TEAM}/${teamId}/${documentCreatedFromId}/attach-document-created-from`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl);
+    },
+
+    deleteTeamDocumentCreatedFrom: ({ teamId, documentCreatedFromId }) => {
+        const requestUrl = `${URL_TEAM}/${teamId}/${documentCreatedFromId}/detach-document-created-from`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl);
+    },
 };

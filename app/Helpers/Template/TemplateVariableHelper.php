@@ -602,7 +602,7 @@ class TemplateVariableHelper
                 return $model->date_finished ? Carbon::parse($model->date_finished)->format('d/m/Y') : null;
                 break;
             case 'afgerond_door':
-                return optional($model->finishedBy)->present()->fullName;
+                return optional(optional($model->finishedBy)->present())->fullName;
                 break;
             default:
                 return '';
@@ -2131,43 +2131,59 @@ class TemplateVariableHelper
     public static function getQuotationRequestVar($model, $varname){
         switch ($varname) {
             case 'organisatie_naam':
-                return $model->organisation->name;
+                return optional($model->organisationOrCoach->organisation)->name;
                 break;
             case 'organisatie_statutaire_naam':
-                return optional($model->organisation)->statutory_name;
+                return optional($model->organisationOrCoach->organisation)->statutory_name;
                 break;
             case 'organisatie_adres':
-                return optional($model->organisation->contact->primaryAddress)->street . ' ' . optional($model->organisation->contact->primaryAddress)->number . (optional($model->organisation->contact->primaryAddress)->addition ? ('-' . optional($model->organisation->contact->primaryAddress)->addition) : '');
+                return optional($model->organisationOrCoach->primaryAddress)->street . ' ' . optional($model->organisationOrCoach->primaryAddress)->number . (optional($model->organisationOrCoach->primaryAddress)->addition ? ('-' . optional($model->organisationOrCoach->primaryAddress)->addition) : '');
                 break;
             case 'organisatie_plaats':
-                return optional($model->organisation->contact->primaryAddress)->city;
+                return optional($model->organisationOrCoach->primaryAddress)->city;
                 break;
             case 'organisatie_email':
-                return optional($model->organisation->contact->primaryEmailAddress)->email;
+                return optional($model->organisationOrCoach->primaryEmailAddress)->email;
                 break;
             case 'organisatie_telefoonnummer':
-                return optional($model->organisation->contact->primaryPhoneNumber)->number;
+                return optional($model->organisationOrCoach->primaryPhoneNumber)->number;
                 break;
             case 'organisatie_primair_contact':
-                return optional(optional($model->organisation->contact->contactPerson)->contact)->full_name;
+                return optional(optional($model->organisationOrCoach->contactPerson)->contact)->full_name;
                 break;
             case 'organisatie_primair_contact_voornaam':
-                if(optional(optional($model->organisation->contact->contactPerson)->contact)->type_id == 'person'){
-                    return optional(optional($model->organisation->contact->contactPerson)->contact)->person->first_name;
+                if(optional(optional($model->organisationOrCoach->contactPerson)->contact)->type_id == 'person'){
+                    return optional(optional($model->organisationOrCoach->contactPerson)->contact)->person->first_name;
                 }
-                elseif(optional(optional($model->organisation->contact->contactPerson)->contact)->type_id == 'organisation'){
+                elseif(optional(optional($model->organisationOrCoach->contactPerson)->contact)->type_id == 'organisation'){
                     return '';
                 }
                 break;
             case 'organisatie_primair_contact_achternaam':
-                if(optional(optional($model->organisation->contact->contactPerson)->contact)->type_id == 'person'){
-                    $prefix = optional(optional($model->organisation->contact->contactPerson)->contact)->person->last_name_prefix;
-                    return $prefix ? $prefix . ' ' . optional(optional($model->organisation->contact->contactPerson)->contact)->person->last_name : optional(optional($model->organisation->contact->contactPerson)->contact)->person->last_name;
+                if(optional(optional($model->organisationOrCoach->contactPerson)->contact)->type_id == 'person'){
+                    $prefix = optional(optional($model->organisationOrCoach->contactPerson)->contact)->person->last_name_prefix;
+                    return $prefix ? $prefix . ' ' . optional(optional($model->organisationOrCoach->contactPerson)->contact)->person->last_name : optional(optional($model->organisationOrCoach->contactPerson)->contact)->person->last_name;
                 }
-                elseif(optional(optional($model->organisation->contact->contactPerson)->contact)->type_id == 'organisation'){
-                    return optional(optional($model->organisation->contact->contactPerson)->contact)->full_name;
+                elseif(optional(optional($model->organisationOrCoach->contactPerson)->contact)->type_id == 'organisation'){
+                    return optional(optional($model->organisationOrCoach->contactPerson)->contact)->full_name;
                 }
                 break;
+            case 'organisatie_of_coach_naam':
+                return optional($model->organisationOrCoach)->full_name;
+                break;
+            case 'organisatie_of_coach_adres':
+                return optional($model->organisationOrCoach->primaryAddress)->street . ' ' . optional($model->organisationOrCoach->primaryAddress)->number . (optional($model->organisationOrCoach->primaryAddress)->addition ? ('-' . optional($model->organisationOrCoach->primaryAddress)->addition) : '');
+                break;
+            case 'organisatie_of_coach_plaats':
+                return optional($model->organisationOrCoach->primaryAddress)->city;
+                break;
+            case 'organisatie_of_coach_email':
+                return optional($model->organisationOrCoach->primaryEmailAddress)->email;
+                break;
+            case 'organisatie_of_coach_telefoonnummer':
+                return optional($model->organisationOrCoach->primaryPhoneNumber)->number;
+                break;
+
             case 'contact_naam':
             case 'verzoek_voor_naam':
                 return optional(optional($model->opportunity)->intake)->contact->full_name;
@@ -2238,6 +2254,30 @@ class TemplateVariableHelper
                 break;
             case 'gemaakt_door':
                 return optional(optional($model->createdBy)->present())->fullName();
+                break;
+            case 'datum_afspraak':
+                return $model->date_planned ? Carbon::parse($model->date_planned)->format('d/m/Y H:i') : null;
+                break;
+            case 'datum_opname':
+                return $model->date_recorded ? Carbon::parse($model->date_recorded)->format('d/m/Y H:i') : null;
+                break;
+            case 'datum_uitgebracht':
+                return $model->date_released ? Carbon::parse($model->date_released)->format('d/m/Y') : null;
+                break;
+            case 'datum_akkoord_extern':
+                return $model->date_approved_external ? Carbon::parse($model->date_approved_external)->format('d/m/Y') : null;
+                break;
+            case 'datum_akkoord_projectleider':
+                return $model->date_approved_project_manager ? Carbon::parse($model->date_approved_project_manager)->format('d/m/Y') : null;
+                break;
+            case 'datum_akkoord_bewoner':
+                return $model->date_approved_client ? Carbon::parse($model->date_approved_client)->format('d/m/Y') : null;
+                break;
+            case 'status':
+                return $model->status ? $model->status->name : '';
+                break;
+            case 'actie_op_kans':
+                return $model->opportunityAction ? $model->opportunityAction->name : '';
                 break;
             default:
                 return '';

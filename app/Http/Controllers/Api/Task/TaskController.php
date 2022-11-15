@@ -81,6 +81,13 @@ class TaskController extends Controller
         $task->relatedEmailsInbox = $this->getRelatedEmails($task->id, 'inbox');
         $task->relatedEmailsSent = $this->getRelatedEmails($task->id, 'sent');
 
+        $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
+        if($teamDocumentCreatedFromIds){
+            $task->relatedDocuments = $task->documents()->whereIn('document_created_from_id', $teamDocumentCreatedFromIds)->get();
+        } else{
+            $task->relatedDocuments = $task->documents()->get();
+        }
+
         return FullTask::make($task);
     }
 
@@ -249,7 +256,14 @@ class TaskController extends Controller
 
     public function peek()
     {
-        return TaskPeek::collection(Task::orderBy('id')->get());
+        $teamContactIds = Auth::user()->getTeamContactIds();
+        if ($teamContactIds){
+            $tasks = Task::whereIn('contact_id', $teamContactIds)->orderBy('id')->get();
+        }else{
+            $tasks = Task::orderBy('id')->get();
+        }
+
+        return TaskPeek::collection($tasks);
     }
 
     public function getRelatedEmails($id, $folder)

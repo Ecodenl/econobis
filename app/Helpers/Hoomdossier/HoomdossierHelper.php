@@ -189,7 +189,7 @@ class HoomdossierHelper
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
 
-        $mail->send(new HoomdossierMail($mail, $htmlBody));
+        $mail->send(new HoomdossierMail($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
 
         return true;
     }

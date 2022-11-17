@@ -1,14 +1,12 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_COACH = `${URL_API}/api/coach`;
 
 export default {
     getCoachPeek: () => {
         const requestUrl = `${URL_COACH}/peek`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;

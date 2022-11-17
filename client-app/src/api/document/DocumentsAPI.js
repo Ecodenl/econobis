@@ -31,10 +31,8 @@ export default {
 
     fetchDefaultEmailDocumentsPeek: () => {
         const requestUrl = `${URL_DOCUMENT}/default-email-documents-peek`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data;

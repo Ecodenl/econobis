@@ -73,6 +73,7 @@ class MailFetcherMsOauth
                 $messages = $this->appClient->createCollectionRequest('GET', $requestUrl)
                     ->setReturnType(Message::class)
                     ->setPageSize(200);
+//                Log::info('dateLastFetched: ' . $dateLastFetched);
 //                Log::info('Aantal messages: ' . $messages->count());
                 $moreAvailable = $this->processMessages($messages, $dateLastFetched);
                 if($moreAvailable){
@@ -96,16 +97,19 @@ class MailFetcherMsOauth
     private function processMessages(GraphCollectionRequest $listMessages, $dateLastFetched): bool
     {
         foreach ($listMessages->getPage() as $message) {
-            $msOauthMessageId = $message->getId();
-//            Log::info('msOauthMessageId: '.$msOauthMessageId);
-//            Log::info('subject: '. ($message->getSubject() ?: ''));
+//            $msOauthMessageId = $message->getId();
+            $messageId = $message->getInternetMessageId();
+
+//            Log::info('Mailbox ' . $this->mailbox->id . ' getInternetMessageId: '.$message->getInternetMessageId());
+//            Log::info('Mailbox ' . $this->mailbox->id . ' subject: '. ($message->getSubject() ?: ''));
             $receivedDateTime = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::parse( $message->getReceivedDateTime())->format('Y-m-d H:i:s'), 'UTC');
             $receivedDateTime->setTimezone(date_default_timezone_get());
+//            Log::info('Mailbox ' . $this->mailbox->id . ' | receivedDateTime ' . $receivedDateTime . ' | msOauthMessageId: '.$msOauthMessageId);
 //            Log::info('receivedDateTime: '. $receivedDateTime);
 //            Log::info('dateLastFetched: '. $dateLastFetched);
             if($receivedDateTime >= $dateLastFetched) {
                 if (!Email::whereMailboxId($this->mailbox->id)
-                    ->whereGmailMessageId($msOauthMessageId)
+                    ->whereMessageId($messageId)
                     ->exists()) {
                     set_time_limit(180);
                     $this->fetchEmail($message);

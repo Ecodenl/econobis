@@ -32,6 +32,7 @@ const INITIAL_STATE = {
         useExportAddressConsumption: false,
         requireTwoFactorAuthentication: false,
         inspectionPlannedEmailTemplateId: '',
+        inspectionRecordedEmailTemplateId: '',
     },
     isLoading: true,
     showEdit: false,

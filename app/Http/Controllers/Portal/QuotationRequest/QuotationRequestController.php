@@ -60,12 +60,16 @@ class QuotationRequestController
         $quotationRequest->date_released = $request->input('dateReleased') ?: null;
         $quotationRequest->updated_by_id = $responsibleUserId;
 
-        $sendMail = ($quotationRequest->isDirty('date_planned') && !!$quotationRequest->date_planned);
+        $sendMailPlanned = ($quotationRequest->isDirty('date_planned') && !!$quotationRequest->date_planned);
+        $sendMailRecorded = ($quotationRequest->isDirty('date_recorded') && !!$quotationRequest->date_recorded);
 
         $quotationRequest->save();
 
-        if ($sendMail) {
+        if ($sendMailPlanned) {
             $this->sendInspectionPlannedMail($quotationRequest);
+        }
+        if ($sendMailRecorded) {
+            $this->sendInspectionRecordedMail($quotationRequest);
         }
     }
 
@@ -173,6 +177,48 @@ class QuotationRequestController
 
 
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Afspraak schouwen';
+        $htmlBody = $emailTemplate->html_body;
+
+        $subject = str_replace('{cooperatie_naam}', $cooperation->name, $subject);
+        $subject = str_replace('{contactpersoon}', $contact->full_name, $subject);
+        $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'contact', $contact);
+
+        $htmlBody = str_replace('{cooperatie_naam}', $cooperation->name, $htmlBody);
+        $htmlBody = str_replace('{contactpersoon}', $contact->full_name, $htmlBody);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $contact);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'offerteverzoek', $quotationRequest);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kans', $quotationRequest->opportunity);
+
+        $htmlBody = TemplateVariableHelper::stripRemainingVariableTags($htmlBody);
+
+        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
+            . $subject . '</title></head>'
+            . $htmlBody . '</html>';
+
+
+        $mail->subject = $subject;
+        $mail->html_body = $htmlBody;
+
+        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
+    }
+
+    private function sendInspectionRecordedMail(QuotationRequest $quotationRequest)
+    {
+        $cooperation = Cooperation::first();
+        $emailTemplate = $cooperation->inspectionRecordedEmailTemplate;
+
+        if (!$emailTemplate) {
+            return;
+        }
+
+        $contact = $quotationRequest->opportunity->intake->contact;
+
+        (new EmailHelper())->setConfigToDefaultMailbox();
+
+        $mail = Mail::to($contact->primaryEmailAddress);
+
+
+        $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Opname schouwen';
         $htmlBody = $emailTemplate->html_body;
 
         $subject = str_replace('{cooperatie_naam}', $cooperation->name, $subject);

@@ -54,4 +54,9 @@ class Cooperation extends Model
     {
         return $this->belongsTo(EmailTemplate::class, 'inspection_planned_email_template_id');
     }
+
+    public function inspectionRecordedEmailTemplate()
+    {
+        return $this->belongsTo(EmailTemplate::class, 'inspection_recorded_email_template_id');
+    }
 }

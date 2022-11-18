@@ -47,6 +47,7 @@ class UpdateCooperation extends FormRequest
             'useExportAddressConsumption' => [''],
             'requireTwoFactorAuthentication' => [''],
             'inspectionPlannedEmailTemplateId' => [''],
+            'inspectionRecordedEmailTemplateId' => [''],
         ];
     }
 }

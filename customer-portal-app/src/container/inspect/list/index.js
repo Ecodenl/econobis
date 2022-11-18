@@ -43,10 +43,10 @@ function Inspectlist(props) {
                                     <th>Status</th>
                                     <th>Datum afspraak</th>
                                     <th>Datum opname</th>
-                                    <th>Datum akkoord extern</th>
-                                    <th>Datum offerte</th>
                                     <th>Akkoord projectleider</th>
+                                    <th>Datum uitgebracht</th>
                                     <th>Akkoord bewoner</th>
+                                    <th>Datum akkoord extern</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -70,8 +70,8 @@ function Inspectlist(props) {
                                                 : ''}
                                         </td>
                                         <td>
-                                            {quotationRequest.dateApprovedExternal
-                                                ? moment(quotationRequest.dateApprovedExternal).format('L')
+                                            {quotationRequest.dateApprovedProjectManager
+                                                ? moment(quotationRequest.dateApprovedProjectManager).format('L')
                                                 : ''}
                                         </td>
                                         <td>
@@ -80,13 +80,13 @@ function Inspectlist(props) {
                                                 : ''}
                                         </td>
                                         <td>
-                                            {quotationRequest.dateApprovedProjectManager
-                                                ? moment(quotationRequest.dateApprovedProjectManager).format('L')
+                                            {quotationRequest.dateApprovedClient
+                                                ? moment(quotationRequest.dateApprovedClient).format('L')
                                                 : ''}
                                         </td>
                                         <td>
-                                            {quotationRequest.dateApprovedClient
-                                                ? moment(quotationRequest.dateApprovedClient).format('L')
+                                            {quotationRequest.dateApprovedExternal
+                                                ? moment(quotationRequest.dateApprovedExternal).format('L')
                                                 : ''}
                                         </td>
                                     </tr>

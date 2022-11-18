@@ -27,20 +27,36 @@ const InputTextDate = ({
             {get(errors, field.name, '') && get(touched, field.name, '') && showErrorMessage ? (
                 <small className={`${classNameErrorMessage}`}>{get(errors, field.name, '')}</small>
             ) : null}
-            <input
-                type={type}
-                className={`text-input w-input ${className} ${
-                    Boolean(get(errors, field.name, '') && get(touched, field.name, '')) ? 'has-error mb-0' : ''
-                } `}
-                id={id}
-                {...field}
-                readOnly={readOnly}
-                placeholder={placeholder}
-                disabled={disabled}
-                min={min}
-                max={max}
-                step={step}
-            />
+            {step ? (
+                <input
+                    type={type}
+                    className={`text-input w-input ${className} ${
+                        Boolean(get(errors, field.name, '') && get(touched, field.name, '')) ? 'has-error mb-0' : ''
+                    } `}
+                    id={id}
+                    {...field}
+                    readOnly={readOnly}
+                    placeholder={placeholder}
+                    disabled={disabled}
+                    min={min}
+                    max={max}
+                    step={step}
+                />
+            ) : (
+                <input
+                    type={type}
+                    className={`text-input w-input ${className} ${
+                        Boolean(get(errors, field.name, '') && get(touched, field.name, '')) ? 'has-error mb-0' : ''
+                    } `}
+                    id={id}
+                    {...field}
+                    readOnly={readOnly}
+                    placeholder={placeholder}
+                    disabled={disabled}
+                    min={min}
+                    max={max}
+                />
+            )}
         </>
     );
 };

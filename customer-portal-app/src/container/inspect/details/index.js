@@ -156,42 +156,6 @@ function InspectDetails({ match, history }) {
                                                         />
                                                     </>
                                                 ) : null}
-                                                <FormLabel htmlFor="date_approved_external" className={'field-label'}>
-                                                    Datum akkoord extern
-                                                </FormLabel>
-                                                <Field
-                                                    name="dateApprovedExternal"
-                                                    render={({ field }) => (
-                                                        <InputText
-                                                            name="dateApprovedExternal"
-                                                            field={field}
-                                                            type="date"
-                                                            errors={errors}
-                                                            touched={touched}
-                                                            onChangeAction={setFieldValue}
-                                                            id="date_approved_external"
-                                                            placeholder={'Datum akkoord extern'}
-                                                        />
-                                                    )}
-                                                />
-                                                <FormLabel htmlFor="date_released" className={'field-label'}>
-                                                    Datum offerte
-                                                </FormLabel>
-                                                <Field
-                                                    name="dateReleased"
-                                                    render={({ field }) => (
-                                                        <InputText
-                                                            name="dateReleased"
-                                                            field={field}
-                                                            type="date"
-                                                            errors={errors}
-                                                            touched={touched}
-                                                            onChangeAction={setFieldValue}
-                                                            id="date_released"
-                                                            placeholder={'Datum offerte'}
-                                                        />
-                                                    )}
-                                                />
                                                 {initialQuotationRequest.opportunityAction.codeRef ===
                                                 'subsidy-request' ? (
                                                     <>
@@ -213,6 +177,39 @@ function InspectDetails({ match, history }) {
                                                             }
                                                             readOnly={true}
                                                         />
+                                                    </>
+                                                ) : null}
+                                                <FormLabel htmlFor="date_released" className={'field-label'}>
+                                                    Datum uitgebracht
+                                                </FormLabel>
+                                                <Field
+                                                    name="dateReleased"
+                                                    render={({ field }) => (
+                                                        // <InputTextDate
+                                                        //     name="dateReleased"
+                                                        //     field={field}
+                                                        //     type="date"
+                                                        //     errors={errors}
+                                                        //     touched={touched}
+                                                        //     onChangeAction={setFieldValue}
+                                                        //     id="date_released"
+                                                        //     placeholder={'Datum uitgebracht'}
+                                                        // />
+                                                        <InputText
+                                                            name="dateReleased"
+                                                            field={field}
+                                                            type="date"
+                                                            errors={errors}
+                                                            touched={touched}
+                                                            onChangeAction={setFieldValue}
+                                                            id="date_released"
+                                                            placeholder={'Datum uitgebracht'}
+                                                        />
+                                                    )}
+                                                />
+                                                {initialQuotationRequest.opportunityAction.codeRef ===
+                                                'subsidy-request' ? (
+                                                    <>
                                                         <FormLabel
                                                             htmlFor="date_approved_client"
                                                             className={'field-label'}
@@ -233,6 +230,36 @@ function InspectDetails({ match, history }) {
                                                         />
                                                     </>
                                                 ) : null}
+                                                <FormLabel htmlFor="date_approved_external" className={'field-label'}>
+                                                    Datum akkoord extern
+                                                </FormLabel>
+                                                <input
+                                                    type="text"
+                                                    className={`text-input w-input content`}
+                                                    value={
+                                                        initialQuotationRequest.dateApprovedExternal
+                                                            ? moment(
+                                                                  initialQuotationRequest.dateApprovedExternal
+                                                              ).format('L')
+                                                            : ''
+                                                    }
+                                                    readOnly={true}
+                                                />
+                                                {/*<Field*/}
+                                                {/*    name="dateApprovedExternal"*/}
+                                                {/*    render={({ field }) => (*/}
+                                                {/*        <InputText*/}
+                                                {/*            name="dateApprovedExternal"*/}
+                                                {/*            field={field}*/}
+                                                {/*            type="date"*/}
+                                                {/*            errors={errors}*/}
+                                                {/*            touched={touched}*/}
+                                                {/*            onChangeAction={setFieldValue}*/}
+                                                {/*            id="date_approved_external"*/}
+                                                {/*            placeholder={'Datum akkoord extern'}*/}
+                                                {/*        />*/}
+                                                {/*    )}*/}
+                                                {/*/>*/}
                                             </Col>
                                         </Row>
                                         <Row>

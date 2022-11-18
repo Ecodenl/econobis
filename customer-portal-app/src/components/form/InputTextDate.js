@@ -27,20 +27,38 @@ const InputTextDate = ({
             {get(errors, field.name, '') && get(touched, field.name, '') && showErrorMessage ? (
                 <small className={`${classNameErrorMessage}`}>{get(errors, field.name, '')}</small>
             ) : null}
-            <input
-                type={type}
-                className={`text-input w-input ${className} ${
-                    Boolean(get(errors, field.name, '') && get(touched, field.name, '')) ? 'has-error mb-0' : ''
-                } `}
-                id={id}
-                {...field}
-                readOnly={readOnly}
-                placeholder={placeholder}
-                disabled={disabled}
-                min={min}
-                max={max}
-                step={step}
-            />
+            {type == 'datetime-local' ? (
+                <input
+                    type={type}
+                    className={`text-input w-input ${className} ${
+                        Boolean(get(errors, field.name, '') && get(touched, field.name, '')) ? 'has-error mb-0' : ''
+                    } `}
+                    id={id}
+                    {...field}
+                    readOnly={readOnly}
+                    placeholder={placeholder}
+                    disabled={disabled}
+                    min={min}
+                    max={max}
+                    step={step}
+                    style={{ width: '200px' }}
+                />
+            ) : (
+                <input
+                    type={type}
+                    className={`text-input w-input ${className} ${
+                        Boolean(get(errors, field.name, '') && get(touched, field.name, '')) ? 'has-error mb-0' : ''
+                    } `}
+                    id={id}
+                    {...field}
+                    readOnly={readOnly}
+                    placeholder={placeholder}
+                    disabled={disabled}
+                    min={min}
+                    max={max}
+                    style={{ width: '200px' }}
+                />
+            )}
         </>
     );
 };

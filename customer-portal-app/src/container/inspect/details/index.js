@@ -185,17 +185,7 @@ function InspectDetails({ match, history }) {
                                                 <Field
                                                     name="dateReleased"
                                                     render={({ field }) => (
-                                                        // <InputTextDate
-                                                        //     name="dateReleased"
-                                                        //     field={field}
-                                                        //     type="date"
-                                                        //     errors={errors}
-                                                        //     touched={touched}
-                                                        //     onChangeAction={setFieldValue}
-                                                        //     id="date_released"
-                                                        //     placeholder={'Datum uitgebracht'}
-                                                        // />
-                                                        <InputText
+                                                        <InputTextDate
                                                             name="dateReleased"
                                                             field={field}
                                                             type="date"
@@ -245,21 +235,6 @@ function InspectDetails({ match, history }) {
                                                     }
                                                     readOnly={true}
                                                 />
-                                                {/*<Field*/}
-                                                {/*    name="dateApprovedExternal"*/}
-                                                {/*    render={({ field }) => (*/}
-                                                {/*        <InputText*/}
-                                                {/*            name="dateApprovedExternal"*/}
-                                                {/*            field={field}*/}
-                                                {/*            type="date"*/}
-                                                {/*            errors={errors}*/}
-                                                {/*            touched={touched}*/}
-                                                {/*            onChangeAction={setFieldValue}*/}
-                                                {/*            id="date_approved_external"*/}
-                                                {/*            placeholder={'Datum akkoord extern'}*/}
-                                                {/*        />*/}
-                                                {/*    )}*/}
-                                                {/*/>*/}
                                             </Col>
                                         </Row>
                                         <Row>

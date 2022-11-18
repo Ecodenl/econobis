@@ -27,7 +27,7 @@ const InputTextDate = ({
             {get(errors, field.name, '') && get(touched, field.name, '') && showErrorMessage ? (
                 <small className={`${classNameErrorMessage}`}>{get(errors, field.name, '')}</small>
             ) : null}
-            {step ? (
+            {type == 'datetime-local' ? (
                 <input
                     type={type}
                     className={`text-input w-input ${className} ${
@@ -41,6 +41,7 @@ const InputTextDate = ({
                     min={min}
                     max={max}
                     step={step}
+                    style={{ width: '200px' }}
                 />
             ) : (
                 <input
@@ -55,6 +56,7 @@ const InputTextDate = ({
                     disabled={disabled}
                     min={min}
                     max={max}
+                    style={{ width: '200px' }}
                 />
             )}
         </>

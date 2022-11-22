@@ -24,12 +24,16 @@ class MailgunStoreMailRequest extends FormRequest
 
     public function getMailbox()
     {
-        return Mailbox::whereIn('email', $this->getTo())->first(); // Todo; nog ergens mailadres vandaan halen waar vanuit deze is doorgestuurd?
+        return Mailbox::where('inbound_mailgun_post_token', $this->route('mailgunPostToken'))->first();
     }
 
     public function getHtmlBody()
     {
         $html = $this->input('body-html');
+
+        if(!$html) {
+            $html = nl2br($this->input('body-plain'));
+        }
 
         if (strlen($html) <= 250000) {
             return $html;

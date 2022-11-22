@@ -7,6 +7,8 @@ use App\Eco\Email\EmailAttachment;
 use App\Http\Requests\MailgunStoreMailRequest;
 use App\Http\Traits\Email\EmailRelations;
 use App\Http\Traits\Email\Storage;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class MailgunMailController
 {
@@ -14,6 +16,16 @@ class MailgunMailController
 
     public function store(MailgunStoreMailRequest $request)
     {
+        /**
+         * Log alle input om te kunnen debuggen voor alle mogelijke inkomende varianten.
+         */
+        Log::info([
+            'info' =>'Mail ontvangen via mailgun:',
+            'input' => $request->all(),
+            'headers' => $request->headers->all(),
+            'files' => $request->files->all(),
+        ]);
+
         $mailbox = $request->getMailbox();
 
         if(!$mailbox) {
@@ -24,11 +36,11 @@ class MailgunMailController
             'mailbox_id' => $mailbox->id,
             'from' => $request->input('From'), // alleen emailadres
             'to' => $request->getTo(), // array met mailadressen
-//            'cc' => $request->input('Cc'), // todo; array met mailadressen
+            'cc' => [],
             'bcc' => [],
             'subject' => $request->input('subject'),
             'html_body' => $request->getHtmlBody(),
-//            'date_sent' => $request->input('Date'), // todo
+            'date_sent' => Carbon::now(),
             'folder' => 'inbox',
             'imap_id' => null,
             'gmail_message_id' => null,

@@ -90,7 +90,7 @@ class EmailAnswerApp extends Component {
                     cc: payload.cc ? payload.cc.join(',') : '',
                     bcc: payload.bcc ? payload.bcc.join(',') : '',
                     subject: payload.subject ? payload.subject : '',
-                    htmlBody: payload.htmlBody ? payload.htmlBody : '',
+                    htmlBody: payload.htmlBodyWithEmbeddedImages ? payload.htmlBodyWithEmbeddedImages : '',
                     attachments: payload.attachments ? payload.attachments : '',
                 },
                 emailAddressesToSelected: payload.emailAddressesToSelected,

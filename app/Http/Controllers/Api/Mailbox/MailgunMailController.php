@@ -58,11 +58,18 @@ class MailgunMailController
         foreach ($request->allFiles() as $key => $file){
             $filePathAndName = \Illuminate\Support\Facades\Storage::disk('mail_attachments')->putFile('mailbox_' . $email->mailbox_id .'/inbox', $file);
 
+            /**
+             * De cid's zijn de verwijzingen in de html van images.
+             * Ook overige bijlages (excel bijv.) krijgen een cid, zet hem voor deze bijlages op null.
+             * Op die manier kunnen we afbeeldingen die in de html staan verbergen als bijlage.
+             */
+            $cid = $request->getCidForAttachment($key);
+
             $emailAttachment = new EmailAttachment([
                 'filename' => $filePathAndName,
                 'name' => $file->getClientOriginalName(),
                 'email_id' => $email->id,
-                'cid' => $request->getCidForAttachment($key),
+                'cid' => str_contains($email->html_body, $cid) ? $cid : null,
             ]);
             $emailAttachment->save();
         }

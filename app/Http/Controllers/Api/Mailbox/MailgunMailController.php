@@ -34,9 +34,9 @@ class MailgunMailController
 
         $email = new Email([
             'mailbox_id' => $mailbox->id,
-            'from' => $request->input('From'), // alleen emailadres
-            'to' => $request->getTo(), // array met mailadressen
-            'cc' => [],
+            'from' => $request->getFrom(),
+            'to' => $request->getTo(),
+            'cc' => $request->getCc(),
             'bcc' => [],
             'subject' => $request->input('subject'),
             'html_body' => $request->getHtmlBody(),

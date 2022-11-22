@@ -17,9 +17,29 @@ class MailgunStoreMailRequest extends FormRequest
         return [];
     }
 
+    public function getFrom()
+    {
+        $from = $this->input('from');
+
+        return $this->stripEmail($from);
+    }
+
     public function getTo()
     {
-        return [$this->input('Delivered-To')];
+        $to = explode(',', $this->input('To'));
+
+        return array_map(function($item){
+            return $this->stripEmail($item);
+        }, $to);
+    }
+
+    public function getCc()
+    {
+        $to = explode(',', $this->input('Cc'));
+
+        return array_map(function($item){
+            return $this->stripEmail($item);
+        }, $to);
     }
 
     public function getMailbox()
@@ -53,5 +73,18 @@ class MailgunStoreMailRequest extends FormRequest
         }
 
         return str_replace(['<', '>'], '', $cid);
+    }
+
+    /**
+     * Haal het emailadres uit een string met emailadres en naam. (bijv. "Econobis" <info@econobis.nl>)
+     */
+    private function stripEmail($email)
+    {
+        if (strpos($email, '<') !== false) {
+            $email = substr($email, strpos($email, '<') + 1);
+            $email = substr($email, 0, strpos($email, '>'));
+        }
+
+        return trim($email);
     }
 }

@@ -131,4 +131,15 @@ class Email extends Model
     {
         return $this->belongsTo(Team::class);
     }
+
+    public function getHtmlBodyWithEmbeddedImages()
+    {
+        $html = $this->html_body;
+
+        foreach($this->attachments()->whereNotNull('cid')->get() as $attachment){
+            $html = str_replace('cid:' . $attachment->cid, $attachment->getBase64Image(), $html);
+        }
+
+        return $html;
+    }
 }

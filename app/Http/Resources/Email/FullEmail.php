@@ -109,6 +109,7 @@ class FullEmail extends JsonResource
             'bcc' => $this->bcc,
             'subject' => $this->subject,
             'htmlBody' => $this->html_body,
+            'htmlBodyWithEmbeddedImages' => $this->getHtmlBodyWithEmbeddedImages(),
             'sentByUser' => FullUser::make(User::find($this->sent_by_user_id)),
             'dateSent' => $this->date_sent,
             'folder' => $this->folder,

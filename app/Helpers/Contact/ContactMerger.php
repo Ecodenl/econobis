@@ -145,6 +145,8 @@ class ContactMerger
          * Voor onderstaande velden geldt dat de waarde van fromPerson alleen wordt overgenomen als deze in toPerson leeg is.
          */
         $mergeFields = [
+            'initials',
+            'first_name',
             'date_of_birth',
             'first_name_partner',
             'last_name_partner',
@@ -195,6 +197,8 @@ class ContactMerger
 
     private function mergeAddresses()
     {
+        $contactAlreadyHasPrimaryAddress = $this->toContact->primaryAddress()->exists();
+
         foreach ($this->fromContact->addresses as $address) {
             $existingAddress = $this->toContact->addresses->where('postal_code', $address->postal_code)
                 ->where('number', $address->number)
@@ -213,7 +217,9 @@ class ContactMerger
             /**
              * Dit adres bestaat nog niet bij toContact, dus verplaatsen we het adres.
              */
-            $address->primary = false;
+            if($contactAlreadyHasPrimaryAddress){
+                $address->primary = false;
+            }
             $address->contact_id = $this->toContact->id;
             $address->save();
         }
@@ -281,6 +287,8 @@ class ContactMerger
 
     private function mergeEmailAddresses()
     {
+        $contactAlreadyHasPrimaryEmailAddress = $this->toContact->primaryEmailAddress()->exists();
+
         foreach ($this->fromContact->emailAddresses as $emailAddress) {
             $existingEmailAddress = $this->toContact->emailAddresses->where('email', $emailAddress->email)->first();
 
@@ -289,7 +297,9 @@ class ContactMerger
                 continue;
             }
 
-            $emailAddress->primary = false;
+            if($contactAlreadyHasPrimaryEmailAddress) {
+                $emailAddress->primary = false;
+            }
             $emailAddress->contact_id = $this->toContact->id;
             $emailAddress->save();
         }
@@ -297,6 +307,8 @@ class ContactMerger
 
     private function mergePhoneNumbers()
     {
+        $contactAlreadyHasPrimaryPhoneNumber = $this->toContact->primaryphoneNumber()->exists();
+
         foreach ($this->fromContact->phoneNumbers as $phoneNumber) {
             $existingPhoneNumber = $this->toContact->phoneNumbers->where('number', $phoneNumber->number)->first();
 
@@ -305,7 +317,9 @@ class ContactMerger
                 continue;
             }
 
-            $phoneNumber->primary = false;
+            if($contactAlreadyHasPrimaryPhoneNumber) {
+                $phoneNumber->primary = false;
+            }
             $phoneNumber->contact_id = $this->toContact->id;
             $phoneNumber->save();
         }

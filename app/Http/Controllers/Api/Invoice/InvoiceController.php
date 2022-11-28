@@ -300,9 +300,11 @@ class InvoiceController extends ApiController
 
     public function peek()
     {
-        $this->authorize('view', Invoice::class);
-
-        return InvoicePeek::collection(Invoice::all());
+        if(Auth::user()->hasPermissionTo('view_invoice', 'api')){
+            return InvoicePeek::collection(Invoice::all());
+        } else {
+            return InvoicePeek::collection(new Collection());
+        }
     }
 
     public function sendNotification(Invoice $invoice)

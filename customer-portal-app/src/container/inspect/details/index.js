@@ -188,12 +188,13 @@ function InspectDetails({ match, history }) {
                                                         <InputTextDate
                                                             name="dateReleased"
                                                             field={field}
-                                                            type="date"
+                                                            type="datetime-local"
                                                             errors={errors}
                                                             touched={touched}
                                                             onChangeAction={setFieldValue}
                                                             id="date_released"
                                                             placeholder={'Datum uitgebracht'}
+                                                            step="900"
                                                         />
                                                     )}
                                                 />

@@ -95,6 +95,9 @@ const QuotationRequestDetailsFormGeneralView = props => {
                     value={dateApprovedExternal ? moment(dateApprovedExternal).format('L') : ''}
                 />
             </div>
+            <div className="row">
+                <ViewText label={'Tijd uitgebracht'} value={dateReleased ? moment(dateReleased).format('HH:mm') : ''} />
+            </div>
             {opportunityAction.codeRef === 'subsidy-request' ? (
                 <>
                     <div className="row">

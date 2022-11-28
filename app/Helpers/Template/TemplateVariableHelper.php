@@ -2188,6 +2188,21 @@ class TemplateVariableHelper
             case 'verzoek_voor_naam':
                 return optional(optional($model->opportunity)->intake)->contact->full_name;
                 break;
+            case 'verzoek_voor_titel':
+                return optional(optional(optional($model->opportunity->intake->contact)->person)->title)->name;
+                break;
+            case 'verzoek_voor_voornaam':
+                return optional(optional($model->opportunity->intake->contact)->person)->first_name;
+                break;
+            case 'verzoek_voor_achternaam':
+                if(optional($model->opportunity->intake->contact)->type_id == 'person'){
+                    $prefix = $model->opportunity->intake->contact->person->last_name_prefix;
+                    return $prefix ? $prefix . ' ' . $model->opportunity->intake->contact->person->last_name : $model->opportunity->intake->contact->person->last_name;
+                }
+                elseif($model->type_id == 'organisation'){
+                    return optional($model->opportunity->intake->contact)->full_name;
+                }
+                break;
             case 'contact_adres':
             case 'verzoek_voor_adres':
                 return optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->street . ' ' . optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->number . (optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->addition ? ('-' . optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->addition) : '');

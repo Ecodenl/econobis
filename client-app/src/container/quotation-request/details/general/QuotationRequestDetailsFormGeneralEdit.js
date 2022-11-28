@@ -60,6 +60,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                 dateRecorded: dateRecorded ? dateRecorded : '',
                 timeRecorded: dateRecorded ? moment(dateRecorded).format('HH:mm') : '08:00',
                 dateReleased: dateReleased ? dateReleased : '',
+                timeReleased: dateReleased ? moment(dateReleased).format('HH:mm') : '08:00',
                 datePlanned: datePlanned ? datePlanned : '',
                 timePlanned: datePlanned ? moment(datePlanned).format('HH:mm') : '08:00',
                 dateApprovedExternal: dateApprovedExternal ? dateApprovedExternal : '',
@@ -140,6 +141,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             dateRecorded,
             timeRecorded,
             dateReleased,
+            timeReleased,
             datePlanned,
             timePlanned,
             dateApprovedExternal,
@@ -285,6 +287,18 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         size={'col-sm-6'}
                         name="dateApprovedExternal"
                         value={dateApprovedExternal}
+                        onChangeAction={this.handleInputChangeDate}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputTime
+                        label={'Tijd uitgebracht'}
+                        size={'col-sm-6'}
+                        name="timeReleased"
+                        value={timeReleased}
+                        start={'06:00'}
+                        end={'23:00'}
                         onChangeAction={this.handleInputChangeDate}
                     />
                 </div>

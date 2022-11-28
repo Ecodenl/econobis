@@ -33,6 +33,7 @@ class QuotationRequestNewFormGeneral extends Component {
                 dateRecorded: '',
                 timeRecorded: '',
                 dateReleased: '',
+                timeReleased: '',
                 datePlanned: '',
                 timePlanned: '',
                 dateApprovedClient: '',
@@ -71,6 +72,7 @@ class QuotationRequestNewFormGeneral extends Component {
                     dateRecorded: '',
                     timeRecorded: '',
                     dateReleased: '',
+                    timeReleased: '',
                     datePlanned: '',
                     timePlanned: '',
                     dateApprovedClient: '',
@@ -144,6 +146,7 @@ class QuotationRequestNewFormGeneral extends Component {
             dateRecorded,
             timeRecorded,
             dateReleased,
+            timeReleased,
             datePlanned,
             timePlanned,
             dateApprovedClient,
@@ -279,6 +282,15 @@ class QuotationRequestNewFormGeneral extends Component {
                         onChangeAction={this.handleInputChangeDate}
                     />
                 </div>
+                <InputTime
+                    label={'Tijd uitgebracht'}
+                    size={'col-sm-6'}
+                    name="timeReleased"
+                    value={timeReleased}
+                    start={'06:00'}
+                    end={'23:00'}
+                    onChangeAction={this.handleInputChangeDate}
+                />
                 {this.props.opportunityAction.codeRef === 'subsidy-request' ? (
                     <>
                         <div className="row">

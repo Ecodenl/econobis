@@ -66,6 +66,10 @@ class MailgunStoreMailRequest extends FormRequest
     {
         $cidMapping = json_decode($this->input('content-id-map'), true);
 
+        if(!$cidMapping){
+            return null;
+        }
+
         $cid = array_search($attachmentKey, $cidMapping);
 
         if(!$cid) {

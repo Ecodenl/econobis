@@ -3,7 +3,9 @@ import React from 'react';
 import EmailAnswerAttachmentsItem from './EmailAnswerAttachmentsItem';
 
 const EmailAnswerAttachmentsList = props => {
-    const { attachments, deleteAttachment } = props;
+    let { attachments, deleteAttachment } = props;
+
+    attachments = attachments.filter(a => !a.cid);
 
     return (
         <div>

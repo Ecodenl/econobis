@@ -340,6 +340,8 @@ class EmailController
         $data = $requestInput
             ->string('subject')->onEmpty(null)->next()
             ->string('htmlBody')->onEmpty('')->alias('html_body')->next()
+            ->string('htmlBody')->onEmpty('')->alias('html_body')->next()
+            ->integer('oldEmailId')->onEmpty(null)->alias('old_email_id')->next()
             ->get();
 
         $email = (new StoreConceptEmail($mailbox, $data))->handle();
@@ -461,6 +463,8 @@ class EmailController
             ->get();
 
         $email->fill($data);
+
+        $email->inlineImagesService()->convertInlineImagesToCid();
 
         $email->save();
 

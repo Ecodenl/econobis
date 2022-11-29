@@ -76,7 +76,7 @@ function Inspectlist(props) {
                                         </td>
                                         <td>
                                             {quotationRequest.dateReleased
-                                                ? moment(quotationRequest.dateReleased).format('L')
+                                                ? moment(quotationRequest.dateReleased).format('L HH:mm')
                                                 : ''}
                                         </td>
                                         <td>

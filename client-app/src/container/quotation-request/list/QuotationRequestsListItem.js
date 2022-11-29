@@ -57,7 +57,7 @@ class QuotationRequestsListItem extends Component {
                 <td>{datePlanned && moment(datePlanned).format('DD-MM-Y HH:mm')}</td>
                 <td>{dateRecorded && moment(dateRecorded).format('DD-MM-Y HH:mm')}</td>
                 <td>{status ? status.name : 'Onbekend'}</td>
-                <td>{dateReleased && moment(dateReleased).format('DD-MM-Y')}</td>
+                <td>{dateReleased && moment(dateReleased).format('DD-MM-Y HH:mm')}</td>
                 <td>{opportunity && opportunity.intake.campaign.name}</td>
                 <td>
                     {this.state.showActionButtons ? (

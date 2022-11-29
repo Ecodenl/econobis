@@ -6,7 +6,6 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\User\User;
-use App\Http\Resources\Mailbox\MailboxPeek;
 use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;

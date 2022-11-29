@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddInspectionPlannedMailboxToAdministration extends Migration
+class AddInspectionPlannedMailboxToCooperation extends Migration
 {
     /**
      * Run the migrations.
@@ -33,11 +33,9 @@ class AddInspectionPlannedMailboxToAdministration extends Migration
      */
     public function down()
     {
-        Schema::table('administrations', function (Blueprint $table) {
-     /*
+        Schema::table('cooperations', function (Blueprint $table) {
             $table->dropForeign(['inspection_planned_mailbox_id']);
             $table->dropColumn('inspection_planned_mailbox_id');
-     */
         });
     }
 }

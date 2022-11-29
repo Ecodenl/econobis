@@ -159,12 +159,6 @@ class QuotationRequestController extends ApiController
             $quotationRequest->date_recorded = $dateRecordedMerged;
         }
 
-/*
-        if ($data['dateReleased']) {
-            $quotationRequest->date_released = $data['dateReleased'];
-        }
-*/
-
         if ($data['dateReleased']) {
             if ($data['timeReleased']) {
                 $dateReleased = Carbon::parse($request->get('dateReleased'))->format('Y-m-d');
@@ -243,13 +237,9 @@ class QuotationRequestController extends ApiController
         //optional
         if ($data['dateRecorded']) {
             if ($data['timeRecorded']) {
-                Log::info('timeRecorded');
-                Log::info($data['timeRecorded']);
                 $dateRecorded = Carbon::parse($request->get('dateRecorded'))->format('Y-m-d');
                 $timeRecorded = Carbon::parse($request->get('timeRecorded'))->format('H:i');
-                Log::info($timeRecorded);
                 $dateRecordedMerged = Carbon::createFromFormat('Y-m-d H:i', $dateRecorded . ' ' . $timeRecorded);
-                Log::info($dateRecordedMerged);
             } else {
                 $dateRecorded = Carbon::parse($request->get('dateRecorded'))->format('Y-m-d');
                 $dateRecordedMerged = Carbon::createFromFormat('Y-m-d H:i', $dateRecorded . ' 08:00');
@@ -258,12 +248,6 @@ class QuotationRequestController extends ApiController
         } else {
             $quotationRequest->date_recorded = null;
         }
-
-//        if ($data['dateReleased']) {
-//            $quotationRequest->date_released = $data['dateReleased'];
-//        } else {
-//            $quotationRequest->date_released = null;
-//        }
 
         if ($data['dateReleased']) {
             if ($data['timeReleased']) {

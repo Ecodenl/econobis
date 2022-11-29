@@ -96,7 +96,7 @@ const StyledWrapper = styled.div`
     & .DayPickerInput-Overlay {
         width: 600px;
     }
-    .InputFromTo-to .DayPickerInput-Overlay {
-        margin-left: -198px;
-    }
+    // .InputFromTo-to .DayPickerInput-Overlay {
+    //     margin-left: -198px;
+    // }
 `;

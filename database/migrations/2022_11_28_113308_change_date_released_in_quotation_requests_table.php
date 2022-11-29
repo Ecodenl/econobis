@@ -17,17 +17,16 @@ class ChangeDateReleasedInQuotationRequestsTable extends Migration
     {
         Schema::table('quotation_requests', function (Blueprint $table) {
             $table->dateTime('date_released')->change();
+        });
 
-            $quotationRequests = DB::table('quotation_requests')->whereNotNull('date_released')->get();
-            foreach ($quotationRequests as $quotationRequest) {
+        $quotationRequests = DB::table('quotation_requests')->whereNotNull('date_released')->get();
+        foreach ($quotationRequests as $quotationRequest) {
             $dateReleased = Carbon::parse($quotationRequest->date_released)->format('Y-m-d');
-            $dateRecordedMerged = Carbon::createFromFormat('Y-m-d H:i', $dateReleased . ' 08:00');
-                DB::table('quotation_requests')
-                    ->where('id',$quotationRequest->id)
-                    ->update(['date_released' => $dateRecordedMerged]);
-                }
-            }
-        );
+            $dateReleasedMerged = Carbon::createFromFormat('Y-m-d H:i', $dateReleased . ' 08:00');
+            DB::table('quotation_requests')
+                ->where('id',$quotationRequest->id)
+                ->update(['date_released' => $dateReleasedMerged]);
+        }
     }
 
     /**
@@ -38,7 +37,7 @@ class ChangeDateReleasedInQuotationRequestsTable extends Migration
     public function down()
     {
         Schema::table('quotation_requests', function (Blueprint $table) {
-            //
+            $table->date('date_released')->change();
         });
     }
 }

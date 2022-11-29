@@ -33,21 +33,6 @@ class DocumentController
         return $alfrescoHelper->downloadFile($document->alfresco_node_id);
     }
 
-    public function downLoadRawDocument(Document $document)
-    {
-        if (\Config::get('app.ALFRESCO_COOP_USERNAME') == 'local') {
-            if ($document->alfresco_node_id == null) {
-                return Storage::disk('documents')->get($document->filename);
-            } else {
-                return null;
-            }
-        }
-
-        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-
-        return $alfrescoHelper->downloadFile($document->alfresco_node_id);
-    }
-
     private function authorizeDocument(PortalUser $portalUser, Document $document)
     {
 //        if (!$portalUser->contact->quotationRequests->contains($quotationRequest)) {

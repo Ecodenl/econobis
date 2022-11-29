@@ -5,6 +5,10 @@ import fileDownload from 'js-file-download';
 import { FaFileDownload, FiZoomIn, FiZoomOut } from 'react-icons/all';
 import DocumentAPI from '../../api/document/DocumentAPI';
 import PdfViewer from '../../components/pdf/PdfViewer';
+import { Button } from 'react-bootstrap';
+import Col from 'react-bootstrap/Col';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Row from 'react-bootstrap/Row';
 
 function DocumentPreview({ match, history }) {
     const [isLoading, setLoading] = useState(true);
@@ -20,24 +24,25 @@ function DocumentPreview({ match, history }) {
             console.log(initialDocument);
         });
 
+        getFile();
+
+        setLoading(false);
+        // });
+    }, []);
+
+    function getFile(i = 0) {
         DocumentAPI.downloadDocument(match.params.id).then(payload => {
-            setFile(payload);
-            console.log('download document');
+            setFile(payload.data);
         });
         // .catch(() => {
         //     if (i < 2) {
         //         setTimeout(() => {
-        //             this.downloadFile(i);
+        //             getFile(i);
         //         }, 500);
         //     }
         //     i++;
         // });
-
-        // DocumentAPI.fetchById(match.params.id).then(response => {
-        //     setInitialDocument(response.data);
-        setLoading(false);
-        // });
-    }, []);
+    }
 
     function zoomIn() {
         setScale(scale + 0.2);
@@ -65,25 +70,33 @@ function DocumentPreview({ match, history }) {
                 <LoadingView />
             ) : (
                 <>
-                    <div className="row">
-                        <div className="col-md-12">
-                            <div className="col-md-12 margin-10-top">
-                                <a href="#" onClick={e => zoomIn()}>
-                                    <FiZoomIn /> inzoomen
-                                </a>
-                                <a href="#" onClick={e => zoomOut()}>
-                                    <FiZoomOut /> uitzoomen
-                                </a>
-                                <a href="#" onClick={e => downloadFile(e)}>
-                                    <FaFileDownload /> downloaden
-                                </a>
-                            </div>
-
-                            <div className="col-md-12 margin-10-top">
-                                <PdfViewer file={file} scale={scale} />
-                            </div>
-                        </div>
-                    </div>
+                    {file && initialDocument.filename && initialDocument.filename.toLowerCase().endsWith('.pdf') ? (
+                        <>
+                            <Row className={'mb-1'}>
+                                <Col xs={12} md={10}>
+                                    <ButtonGroup aria-label="document-preview" className="w-button-group-left">
+                                        <Button className={'w-button btn-sm'} onClick={() => zoomIn()}>
+                                            <FiZoomIn />
+                                            &nbsp;Inzoomen
+                                        </Button>
+                                        <Button className={'w-button btn-sm'} onClick={() => zoomOut()}>
+                                            <FiZoomOut />
+                                            &nbsp;Uitzoomen
+                                        </Button>
+                                        <Button className={'w-button btn-sm'} onClick={e => downloadFile(e)}>
+                                            <FaFileDownload />
+                                            &nbsp;Downloaden
+                                        </Button>
+                                    </ButtonGroup>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col xs={12} md={10}>
+                                    <PdfViewer file={file} scale={scale} />
+                                </Col>
+                            </Row>
+                        </>
+                    ) : null}
                 </>
             )}
         </Container>

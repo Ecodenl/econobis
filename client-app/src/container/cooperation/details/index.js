@@ -33,6 +33,7 @@ const INITIAL_STATE = {
         requireTwoFactorAuthentication: false,
         inspectionPlannedEmailTemplateId: '',
         inspectionRecordedEmailTemplateId: '',
+        inspectionPlannedMailboxId: '',
     },
     isLoading: true,
     showEdit: false,

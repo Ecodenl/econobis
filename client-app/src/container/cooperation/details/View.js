@@ -115,7 +115,7 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Schouwen gepland e-mail template'}
+                            label={'Schouwen afspraak e-mail template'}
                             value={
                                 formData.inspectionPlannedEmailTemplate && formData.inspectionPlannedEmailTemplate.name
                             }
@@ -126,6 +126,12 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
                                 formData.inspectionRecordedEmailTemplate &&
                                 formData.inspectionRecordedEmailTemplate.name
                             }
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Mailbox afspraak bevestigingen'}
+                            value={formData.inspectionPlannedMailbox && formData.inspectionPlannedMailbox.name}
                         />
                     </div>
                 </PanelBody>

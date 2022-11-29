@@ -46,6 +46,7 @@ class CreateCooperation extends FormRequest
             'useExportAddressConsumption' => [''],
             'requireTwoFactorAuthentication' => [''],
             'inspectionPlannedEmailTemplateId' => [''],
+            'inspectionPlannedMailboxId' => [''],
             'inspectionRecordedEmailTemplateId' => [''],
         ];
     }

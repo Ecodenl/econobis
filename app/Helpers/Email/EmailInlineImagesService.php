@@ -43,10 +43,13 @@ class EmailInlineImagesService
     }
 
     /**
-     * Als een mail is gebaseerd op een andere mail (reply of forward) dan kunnen er inline images aanwezig zijn.
-     * Aan de voorkant tonen we deze dmv base64 inline images, maar bij opslaan moet dit een bijlage zijn waarbij er een verwijzing dmv cid in de html staat.
+     * Vervang embedded images in html door cid verwijzingen.
      *
-     * Als dit de eerste keer is dat de mail wordt opgeslagen moeten de afbeeldingen ook worden gekopieerd van de mail waar deze op is gebaseeerd.
+     * Als een mail is gebaseerd op een andere mail (reply of forward) dan kunnen er inline images aanwezig zijn.
+     * Aan de voorkant tonen we deze dmv base64 inline images en voegen we data-cid tag toe om de cid van de afbeelding in deze functie terug te kunnen herleiden
+     * Bij opslaan willen we de inline afbeeldingen weer opslaan als bijlage en de cid verwijzingen in de html zetten.
+     *
+     * Als dit de eerste keer is dat de mail wordt opgeslagen moeten de afbeeldingen ook worden gekopieerd van de mail waar deze op is gebaseerd.
      */
     public function convertInlineImagesToCid()
     {
@@ -54,7 +57,7 @@ class EmailInlineImagesService
 
         /**
          * Haal een array met alle img tags met "data-cid" uit de html.
-         * "data-cid" is een attribuut dat we zelf hebben toegevoegd in getHtmlBodyWithCidsConvertedToEmbeddedImages(), overige afbeeldoingen zijn links naar internet afbeeldingen en hoeven we dus niets mee te doen.
+         * "data-cid" is een attribuut dat we zelf hebben toegevoegd in getHtmlBodyWithCidsConvertedToEmbeddedImages(), overige afbeeldingen zijn links naar internet afbeeldingen en hoeven we dus niets mee te doen.
          *
          * $imageTags = [
          *     0 => '<img data-cid="cid:1234567890" src="..." />',
@@ -79,14 +82,14 @@ class EmailInlineImagesService
 
             if(!$attachment){
                 /**
-                 * Als er geen bijlage is met deze cid code, dan is deze afbeelding afkomstig van de mail waar deze op is gebaseerd.
+                 * Als er geen bijlage is met deze cid code, dan is deze afbeelding afkomstig van de mail waar deze op is gebaseerd. (forward of reply)
                  * Deze afbeelding moet dus worden gekopieerd naar de nieuwe mail.
                  */
                 $this->copyAttachmentFromOldEmail($cid);
             }
 
             /**
-             * Verwijderen het originele src attribuut.
+             * Verwijder het originele src attribuut.
              */
             $newImageTag = preg_replace('/src="[^"]*"/i', '', $imageTag);
 
@@ -105,11 +108,13 @@ class EmailInlineImagesService
     }
 
     /**
-     * Maak gebruik van Laravel's embed() functie om inline afbeeldingen te mailen.
+     * Maak gebruik van Laravel's embed() functie om inline afbeeldingen te mailen. (https://laravel.com/docs/9.x/mail#inline-attachments)
+     *
+     * De $message variabele is een variabele die Laravel automatisch meegeeft naar de blade template van de mail.
+     * Daarom moeten we deze functie vanuit de blade template aanroepen.
      */
     public function embedCidImagesForSending(string $html, Message $message)
     {
-        \Log::info('service: ' . $html);
         foreach($this->email->attachments()->whereNotNull('cid')->get() as $attachment){
             $search = 'src="cid:' . $attachment->cid . '"';
 
@@ -140,6 +145,9 @@ class EmailInlineImagesService
             return;
         }
 
+        /**
+         * Kopiëren van bijlages gebeurt altijd voor forwards of replies, daarom opslaan in "outbox".
+         */
         $newFilename = 'mailbox_' . $this->email->mailbox_id . '/outbox' . '/' . Str::random(40) . '.' . pathinfo($attachmentFromOldEmail->filename, PATHINFO_EXTENSION);
         Storage::disk('mail_attachments')->copy($attachmentFromOldEmail->filename, $newFilename);
 

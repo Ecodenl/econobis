@@ -12,10 +12,4 @@ export default {
             },
         });
     },
-
-    downloadDocument: function(id) {
-        const requestUrl = `document/${id}/download`;
-
-        return axiosInstance.get(requestUrl, { responseType: 'blob' });
-    },
 };

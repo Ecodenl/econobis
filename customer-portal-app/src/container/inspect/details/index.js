@@ -10,7 +10,6 @@ import QuotationRequestAPI from '../../../api/quotation-request/QuotationRequest
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import { ClipLoader } from 'react-spinners';
-import InputText from '../../../components/form/InputText';
 import moment from 'moment';
 import InputTextDate from '../../../components/form/InputTextDate';
 import InspectDetailsDocumentTable from './document-table';
@@ -31,6 +30,11 @@ function InspectDetails({ match, history }) {
         }).then(response => {
             history.push('/schouwen');
         });
+    };
+
+    const previewDocument = (event, documentId) => {
+        event.preventDefault();
+        history.push(`/schouwen/${match.params.id}/document/${documentId}`);
     };
 
     useEffect(() => {
@@ -275,6 +279,7 @@ function InspectDetails({ match, history }) {
                     <InspectDetailsDocumentTable
                         quotationRequestId={match.params.id}
                         documents={initialQuotationRequest.documents}
+                        previewDocument={previewDocument}
                     />
                 </>
             )}

@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
-import LoadingView from '../../components/general/LoadingView';
+import LoadingView from '../../../../components/general/LoadingView';
 import fileDownload from 'js-file-download';
 import { FaFileDownload, FiZoomIn, FiZoomOut } from 'react-icons/all';
-import DocumentAPI from '../../api/document/DocumentAPI';
-import PdfViewer from '../../components/pdf/PdfViewer';
+import DocumentAPI from '../../../../api/document/DocumentAPI';
+import PdfViewer from '../../../../components/pdf/PdfViewer';
 import { Button } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Row from 'react-bootstrap/Row';
+import QuotationRequestAPI from '../../../../api/quotation-request/QuotationRequestAPI';
 
 function DocumentPreview({ match, history }) {
     const [isLoading, setLoading] = useState(true);
@@ -17,32 +18,32 @@ function DocumentPreview({ match, history }) {
     const [initialDocument, setInitialDocument] = useState({});
 
     useEffect(() => {
-        DocumentAPI.fetchDocumentDetails(match.params.id).then(payload => {
-            console.log('fetch document');
-            console.log(payload);
-            setInitialDocument(payload.data.data);
-            console.log(initialDocument);
-        });
-
-        getFile();
+        DocumentAPI.fetchDocumentDetails(match.params.id)
+            .then(payload => {
+                setInitialDocument(payload.data.data);
+            })
+            .catch(error => {
+                if (error.response.status === 403) {
+                    alert('Niet geautoriseerd voor dit document.');
+                } else {
+                    alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuwd.');
+                }
+            });
+        QuotationRequestAPI.quotationRequestDownloadDocument(match.params.quotationRequestId, match.params.id)
+            .then(payload => {
+                setFile(payload.data);
+            })
+            .catch(error => {
+                if (error.response.status === 403) {
+                    alert('Niet geautoriseerd voor dit document.');
+                } else {
+                    alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuwd.');
+                }
+            });
 
         setLoading(false);
         // });
     }, []);
-
-    function getFile(i = 0) {
-        DocumentAPI.downloadDocument(match.params.id).then(payload => {
-            setFile(payload.data);
-        });
-        // .catch(() => {
-        //     if (i < 2) {
-        //         setTimeout(() => {
-        //             getFile(i);
-        //         }, 500);
-        //     }
-        //     i++;
-        // });
-    }
 
     function zoomIn() {
         setScale(scale + 0.2);
@@ -55,7 +56,7 @@ function DocumentPreview({ match, history }) {
     function downloadFile(e) {
         e.preventDefault();
 
-        DocumentAPI.downloadDocument(match.params.id)
+        QuotationRequestAPI.quotationRequestDownloadDocument(match.params.quotationRequestId, match.params.id)
             .then(payload => {
                 fileDownload(payload.data, initialDocument.filename);
             })

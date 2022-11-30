@@ -19,10 +19,19 @@ const AuthProvider = function(props) {
         cbRedirect();
     }
 
-    function logout() {
+    function logout(force = false) {
         window.localStorage.removeItem(localStorageToken);
         window.localStorage.removeItem(localStorageLastActivity);
-        window.localStorage.removeItem('portal_two_factor_token');
+
+        /**
+         * De "force" parameter wordt meegegeven bij handmatig uitloggen door gebruiker.
+         * Op dat moment willen we ook dat bij volgende keer inloggen de twee factor code opnieuw moet worden ingevoerd.
+         * Als gebruiker wordt uitgelogd doordat de sessie is verlopen komt de code hier ook langs maar willen we niet dat de two factor code opnieuw moet worden ingevoerd bij volgende login.
+         */
+        if(force) {
+            window.localStorage.removeItem('portal_two_factor_token');
+        }
+
         setAuth(false);
     }
 

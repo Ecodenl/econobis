@@ -64,7 +64,7 @@ export default props => {
                 toggleError(false);
                 login(payload.data, () => {
                     MeAPI.fetchTwoFactorStatus().then(payload => {
-                        if(payload.data.hasTwoFactorEnabled) {
+                        if(payload.data.hasTwoFactorEnabled && !payload.data.hasValidToken) {
                             history.push('/two-factor/confirm');
                             return;
                         }

@@ -220,7 +220,7 @@ function Header({ location, history }) {
                                                                     <Dropdown.Divider />
                                                                     <Dropdown.Item
                                                                         onClick={() => {
-                                                                            logout();
+                                                                            logout(true);
                                                                             resetCurrentUserToDefault();
                                                                         }}
                                                                     >

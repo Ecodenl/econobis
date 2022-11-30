@@ -68,6 +68,9 @@ class CooperationController extends ApiController
         if($cooperation->hoom_group_id == '') {
             $cooperation->hoom_group_id = null;
         }
+        if($cooperation->inspection_planned_mailbox_id == '') {
+            $cooperation->inspection_planned_mailbox_id = null;
+        }
         $cooperation->send_email = $request->boolean('sendEmail');
         $cooperation->use_laposta = $request->boolean('useLaposta');
         $cooperation->use_export_address_consumption = $request->boolean('useExportAddressConsumption');

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import ViewText from '../../../components/form/ViewText';
 import PanelHeader from '../../../components/panel/PanelHeader';
 import InputText from '../../../components/form/InputText';
 import ButtonText from '../../../components/button/ButtonText';
@@ -17,10 +16,12 @@ import InputToggle from '../../../components/form/InputToggle';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import { connect } from 'react-redux';
 import Modal from '../../../components/modal/Modal';
+import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 
 function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchSystemData }) {
     const [emailTemplates, setEmailTemplates] = useState([]);
     const [staticContactGroups, setStaticContactGroups] = useState([]);
+    const [mailboxAddresses, setMailboxAddresses] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showUploadLogo, setShowUploadLogo] = useState(false);
     const [attachment, setAttachment] = useState(null);
@@ -35,13 +36,20 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
     });
 
     useEffect(function() {
-        axios.all([EmailTemplateAPI.fetchEmailTemplatesPeek(), ContactGroupAPI.peekStaticContactGroups()]).then(
-            axios.spread((emailTemplates, staticContactGroups) => {
-                setEmailTemplates(emailTemplates);
-                setStaticContactGroups(staticContactGroups);
-                setIsLoading(false);
-            })
-        );
+        axios
+            .all([
+                EmailTemplateAPI.fetchEmailTemplatesPeek(),
+                MailboxAPI.fetchMailboxesLoggedInUserPeek(),
+                ContactGroupAPI.peekStaticContactGroups(),
+            ])
+            .then(
+                axios.spread((emailTemplates, mailboxAddresses, staticContactGroups) => {
+                    setMailboxAddresses(mailboxAddresses.data.data);
+                    setEmailTemplates(emailTemplates);
+                    setStaticContactGroups(staticContactGroups);
+                    setIsLoading(false);
+                })
+            );
     }, []);
 
     function processSubmit(values) {
@@ -333,7 +341,7 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
                         </div>
                         <div className="row">
                             <InputReactSelect
-                                label={'Schouwen gepland e-mail template'}
+                                label={'Schouwen afspraak e-mail template'}
                                 name={'inspectionPlannedEmailTemplateId'}
                                 options={emailTemplates}
                                 value={values.inspectionPlannedEmailTemplateId}
@@ -345,6 +353,17 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
                                 name={'inspectionRecordedEmailTemplateId'}
                                 options={emailTemplates}
                                 value={values.inspectionRecordedEmailTemplateId}
+                                onChangeAction={(value, name) => setFieldValue(name, value)}
+                                isLoading={isLoading}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputReactSelect
+                                label={'Mailbox afspraak bevestigingen'}
+                                name={'inspectionPlannedMailboxId'}
+                                options={mailboxAddresses}
+                                optionName={'email'}
+                                value={values.inspectionPlannedMailboxId}
                                 onChangeAction={(value, name) => setFieldValue(name, value)}
                                 isLoading={isLoading}
                             />

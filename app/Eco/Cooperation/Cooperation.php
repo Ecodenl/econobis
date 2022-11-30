@@ -4,6 +4,7 @@ namespace App\Eco\Cooperation;
 
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\Mailbox\Mailbox;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
@@ -58,5 +59,10 @@ class Cooperation extends Model
     public function inspectionRecordedEmailTemplate()
     {
         return $this->belongsTo(EmailTemplate::class, 'inspection_recorded_email_template_id');
+    }
+
+    public function inspectionPlannedMailbox()
+    {
+        return $this->belongsTo(Mailbox::class, 'inspection_planned_mailbox_id');
     }
 }

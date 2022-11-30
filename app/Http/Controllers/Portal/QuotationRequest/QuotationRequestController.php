@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Portal\QuotationRequest;
 
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Document\Document;
+use App\Eco\Mailbox\Mailbox;
 use App\Eco\Portal\PortalUser;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Helpers\Alfresco\AlfrescoHelper;
@@ -171,7 +172,12 @@ class QuotationRequestController
 
         $contact = $quotationRequest->opportunity->intake->contact;
 
-        (new EmailHelper())->setConfigToDefaultMailbox();
+        if($cooperation->inspection_planned_mailbox_id){
+            $inspectionPlannedMailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
+            (new EmailHelper())->setConfigToMailbox($inspectionPlannedMailbox);
+        }else{
+            (new EmailHelper())->setConfigToDefaultMailbox();
+        }
 
         $mail = Mail::to($contact->primaryEmailAddress);
 

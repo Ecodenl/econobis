@@ -12,8 +12,15 @@ class Logout extends Component {
         localStorage.removeItem('userId');
         localStorage.removeItem('userName');
         localStorage.removeItem('last_activity');
-        localStorage.removeItem('last_activity');
-        localStorage.removeItem('two_factor_token');
+
+        /**
+         * De "force" parameter wordt meegegeven bij handmatig uitloggen door gebruiker.
+         * Op dat moment willen we ook dat bij volgende keer inloggen de twee factor code opnieuw moet worden ingevoerd.
+         * Als gebruiker wordt uitgelogd doordat de sessie is verlopen komt de code hier ook langs maar willen we niet dat de two factor code opnieuw moet worden ingevoerd bij volgende login.
+         */
+        if(this.props.location.query.force === '1'){
+            localStorage.removeItem('two_factor_token');
+        }
 
         this.props.authLogout();
 

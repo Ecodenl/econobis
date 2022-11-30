@@ -319,9 +319,11 @@ class OrderController extends ApiController
 
     public function peek()
     {
-        $this->authorize('view', Order::class);
-
-        return OrderPeek::collection(Order::all());
+        if(Auth::user()->hasPermissionTo('view_order', 'api')){
+            return OrderPeek::collection(Order::all());
+        } else {
+            return OrderPeek::collection(new Collection());
+        }
     }
 
     public function getContactInfoForOrder(Contact $contact)

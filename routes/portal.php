@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\PortalSettingsDashboard\PortalSettingsDashboardController;
 use App\Http\Controllers\Api\Setting\SettingController;
 use App\Http\Controllers\Portal\ParticipationProject\ParticipantMutationMolliePaymentController;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;

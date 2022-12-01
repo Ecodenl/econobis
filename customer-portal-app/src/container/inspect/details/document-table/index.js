@@ -2,11 +2,11 @@ import React from 'react';
 import Table from 'react-bootstrap/Table';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { FaFileDownload } from 'react-icons/all';
+import { FaFileDownload, FiZoomIn } from 'react-icons/all';
 import fileDownload from 'js-file-download';
 import QuotationRequestAPI from '../../../../api/quotation-request/QuotationRequestAPI';
 
-function InspectDetailsDocumentTable({ quotationRequestId, documents }) {
+function InspectDetailsDocumentTable({ quotationRequestId, documents, previewDocument }) {
     function downloadFile(e, id, filename) {
         e.preventDefault();
 
@@ -41,6 +41,14 @@ function InspectDetailsDocumentTable({ quotationRequestId, documents }) {
                                 <td>{item.filename}</td>
                                 <td>{item.description}</td>
                                 <td>
+                                    {item.filename && item.filename.toLowerCase().endsWith('.pdf') ? (
+                                        <>
+                                            <a href="#" onClick={e => previewDocument(e, item.id)}>
+                                                <FiZoomIn /> preview
+                                            </a>
+                                            <br />
+                                        </>
+                                    ) : null}
                                     <a href="#" onClick={e => downloadFile(e, item.id, item.filename)}>
                                         <FaFileDownload /> downloaden
                                     </a>

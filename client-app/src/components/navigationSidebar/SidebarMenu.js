@@ -32,7 +32,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         Dashboard
                     </Link>
                 </NavText>
-                {permissions.manageQuotationRequest && (
+                {permissions.menuEnergySaving && (
                     <Nav id="dashboard-energy-saving">
                         <NavText>
                             <Link className="sidebar-link" to="dashboard/energie-besparing">
@@ -60,216 +60,260 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                     </Nav>
                 )}
             </Nav>
-            <Nav id="contacten">
-                <NavIcon>
-                    <SvgIcon size={20} icon={ic_contacts} />
-                </NavIcon>
-                <NavText>
-                    <Link className="sidebar-link-header" to="contacten">
-                        Contacten
-                    </Link>
-                </NavText>
-                <Nav id="alle-organisaties">
+
+            {permissions.menuContacts && (
+                <Nav id="contacten">
+                    <NavIcon>
+                        <SvgIcon size={20} icon={ic_contacts} />
+                    </NavIcon>
                     <NavText>
-                        <Link className="sidebar-link" to="contacten/type/organisation">
-                            Alle organisaties
+                        <Link className="sidebar-link-header" to="contacten">
+                            Contacten
                         </Link>
                     </NavText>
+                    {permissions.menuOrganisations && (
+                        <Nav id="alle-organisaties">
+                            <NavText>
+                                <Link className="sidebar-link" to="contacten/type/organisation">
+                                    Alle organisaties
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.menuPersons && (
+                        <Nav id="alle-personen">
+                            <NavText>
+                                <Link className="sidebar-link" to="contacten/type/person">
+                                    Alle personen
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
                 </Nav>
-                <Nav id="alle-personen">
-                    <NavText>
-                        <Link className="sidebar-link" to="contacten/type/person">
-                            Alle personen
-                        </Link>
-                    </NavText>
-                </Nav>
-            </Nav>
-            <Nav id="projecten">
-                <NavIcon>
-                    <SvgIcon size={20} icon={drawer} />
-                </NavIcon>
-                <NavText>
-                    <Link className="sidebar-link-header">Projecten</Link>
-                </NavText>
+            )}
+
+            {permissions.menuProjects && (
                 <Nav id="projecten">
+                    <NavIcon>
+                        <SvgIcon size={20} icon={drawer} />
+                    </NavIcon>
                     <NavText>
-                        <Link className="sidebar-link" to="projecten">
-                            Projecten
-                        </Link>
+                        <Link className="sidebar-link-header">Projecten</Link>
                     </NavText>
-                </Nav>
-                <Nav id="deelnemers">
-                    <NavText>
-                        <Link className="sidebar-link" to="deelnemers">
-                            Deelnemers
-                        </Link>
-                    </NavText>
-                </Nav>
-                {permissions.manageFinancial && (
-                    <Nav id="waardestaten">
+                    <Nav id="projecten">
                         <NavText>
-                            <Link className="sidebar-link" to="waardestaten">
-                                Waardestaten
+                            <Link className="sidebar-link" to="projecten">
+                                Projecten
                             </Link>
                         </NavText>
                     </Nav>
-                )}
-            </Nav>
-            <Nav id="energy-saving">
-                <NavIcon>
-                    <SvgIcon size={20} icon={home} />
-                </NavIcon>
-                <NavText> Energiebesparing </NavText>
-                <Nav id="home-files">
+
+                    <Nav id="deelnemers">
+                        <NavText>
+                            <Link className="sidebar-link" to="deelnemers">
+                                Deelnemers
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    {permissions.manageFinancial && (
+                        <Nav id="waardestaten">
+                            <NavText>
+                                <Link className="sidebar-link" to="waardestaten">
+                                    Waardestaten
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                </Nav>
+            )}
+
+            {permissions.menuEnergySaving && (
+                <Nav id="energy-saving">
+                    <NavIcon>
+                        <SvgIcon size={20} icon={home} />
+                    </NavIcon>
+                    <NavText> Energiebesparing </NavText>
+                    {permissions.menuHousingFiles && (
+                        <Nav id="home-files">
+                            <NavText>
+                                <Link className="sidebar-link" to="woningdossiers">
+                                    Woningdossiers
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.menuIntakes && (
+                        <Nav id="intakes">
+                            <NavText>
+                                <Link className="sidebar-link" to="intakes">
+                                    Intakes
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.menuOpportunities && (
+                        <Nav id="opportunities">
+                            <NavText>
+                                <Link className="sidebar-link" to="kansen">
+                                    Kansen
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.menuQuotationRequests && (
+                        <Nav id="quotation-requests">
+                            <NavText>
+                                <Link className="sidebar-link" to="offerteverzoeken">
+                                    Offerteverzoeken
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.menuMeasures && (
+                        <Nav id="measures">
+                            <NavText>
+                                <Link className="sidebar-link" to="maatregelen">
+                                    Maatregelen
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.menuMarketing && (
+                        <Nav id="marketing-sub">
+                            <NavText>
+                                <Link className="sidebar-link" to="campagnes">
+                                    Marketing
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                </Nav>
+            )}
+
+            {permissions.menuContactGroups && (
+                <Nav id="contact-groups">
+                    <NavIcon>
+                        <SvgIcon size={20} icon={ic_aspect_ratio} />
+                    </NavIcon>
                     <NavText>
-                        <Link className="sidebar-link" to="woningdossiers">
-                            Woningdossiers
+                        <Link className="sidebar-link-header" to="contact-groepen">
+                            Groepen beheer
                         </Link>
                     </NavText>
                 </Nav>
-                <Nav id="intakes">
+            )}
+
+            {permissions.menuEmail && (
+                <Nav id="email">
+                    <NavIcon>
+                        <SvgIcon size={20} icon={ic_email} />
+                    </NavIcon>
                     <NavText>
-                        <Link className="sidebar-link" to="intakes">
-                            Intakes
+                        <Link className="sidebar-link-header" to="emails/inbox">
+                            E-mail
                         </Link>
                     </NavText>
+                    <Nav id="inbox">
+                        <NavText>
+                            <Link className="sidebar-link" to="emails/inbox">
+                                Ontvangen
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="sent">
+                        <NavText>
+                            <Link className="sidebar-link" to="emails/sent">
+                                Verzonden
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="concepts">
+                        <NavText>
+                            <Link className="sidebar-link" to="emails/concept">
+                                Concepten
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="removed">
+                        <NavText>
+                            <Link className="sidebar-link" to="emails/removed">
+                                Verwijderd
+                            </Link>
+                        </NavText>
+                    </Nav>
                 </Nav>
-                <Nav id="opportunities">
+            )}
+
+            {permissions.menuMarketing && (
+                <Nav id="marketing">
+                    <NavIcon>
+                        <SvgIcon size={20} icon={speech_bubbles} />
+                    </NavIcon>
                     <NavText>
-                        <Link className="sidebar-link" to="kansen">
-                            Kansen
-                        </Link>
-                    </NavText>
-                </Nav>
-                <Nav id="quotation-requests">
-                    <NavText>
-                        <Link className="sidebar-link" to="offerteverzoeken">
-                            Offerteverzoeken
-                        </Link>
-                    </NavText>
-                </Nav>
-                <Nav id="measures">
-                    <NavText>
-                        <Link className="sidebar-link" to="maatregelen">
-                            Maatregelen
-                        </Link>
-                    </NavText>
-                </Nav>
-                <Nav id="marketing-sub">
-                    <NavText>
-                        <Link className="sidebar-link" to="campagnes">
+                        <Link className="sidebar-link-header" to="campagnes">
                             Marketing
                         </Link>
                     </NavText>
                 </Nav>
-            </Nav>
+            )}
 
-            <Nav id="contact-groups">
-                <NavIcon>
-                    <SvgIcon size={20} icon={ic_aspect_ratio} />
-                </NavIcon>
-                <NavText>
-                    <Link className="sidebar-link-header" to="contact-groepen">
-                        Groepen beheer
-                    </Link>
-                </NavText>
-            </Nav>
-            <Nav id="email">
-                <NavIcon>
-                    <SvgIcon size={20} icon={ic_email} />
-                </NavIcon>
-                <NavText>
-                    <Link className="sidebar-link-header" to="emails/inbox">
-                        E-mail
-                    </Link>
-                </NavText>
-                <Nav id="inbox">
+            {permissions.menuTasks && (
+                <Nav id="taken">
+                    <NavIcon>
+                        <SvgIcon size={20} icon={ic_business} />
+                    </NavIcon>
                     <NavText>
-                        <Link className="sidebar-link" to="emails/inbox">
-                            Ontvangen
+                        <Link className="sidebar-link-header" to="taken">
+                            Taken
+                        </Link>
+                    </NavText>
+                    <Nav id="notities">
+                        <NavText>
+                            <Link className="sidebar-link" to="notities">
+                                Notities
+                            </Link>
+                        </NavText>
+                    </Nav>
+                </Nav>
+            )}
+
+            {permissions.menuAgenda && (
+                <Nav id="agenda">
+                    <NavIcon>
+                        <SvgIcon size={20} icon={calendar} />
+                    </NavIcon>
+                    <NavText>
+                        <Link className="sidebar-link-header" to="agenda">
+                            Agenda
                         </Link>
                     </NavText>
                 </Nav>
-                <Nav id="sent">
-                    <NavText>
-                        <Link className="sidebar-link" to="emails/sent">
-                            Verzonden
-                        </Link>
-                    </NavText>
+            )}
+
+            {permissions.menuProcesses && (
+                <Nav id="processen">
+                    <NavIcon>
+                        <SvgIcon size={20} icon={stopwatch} />
+                    </NavIcon>
+                    <NavText>Logs</NavText>
+                    <Nav key={'nav-processen'} id={`processen`}>
+                        <NavText>
+                            <Link className="sidebar-link-header" to="processen">
+                                Processen
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav key={'nav-twinfield'} id={`twinfield`}>
+                        <NavText>
+                            <Link className="sidebar-link-header" to="twinfield">
+                                Twinfield
+                            </Link>
+                        </NavText>
+                    </Nav>
                 </Nav>
-                <Nav id="concepts">
-                    <NavText>
-                        <Link className="sidebar-link" to="emails/concept">
-                            Concepten
-                        </Link>
-                    </NavText>
-                </Nav>
-                <Nav id="removed">
-                    <NavText>
-                        <Link className="sidebar-link" to="emails/removed">
-                            Verwijderd
-                        </Link>
-                    </NavText>
-                </Nav>
-            </Nav>
-            <Nav id="marketing">
-                <NavIcon>
-                    <SvgIcon size={20} icon={speech_bubbles} />
-                </NavIcon>
-                <NavText>
-                    <Link className="sidebar-link-header" to="campagnes">
-                        Marketing
-                    </Link>
-                </NavText>
-            </Nav>
-            <Nav id="taken">
-                <NavIcon>
-                    <SvgIcon size={20} icon={ic_business} />
-                </NavIcon>
-                <NavText>
-                    <Link className="sidebar-link-header" to="taken">
-                        Taken
-                    </Link>
-                </NavText>
-                <Nav id="notities">
-                    <NavText>
-                        <Link className="sidebar-link" to="notities">
-                            Notities
-                        </Link>
-                    </NavText>
-                </Nav>
-            </Nav>
-            <Nav id="agenda">
-                <NavIcon>
-                    <SvgIcon size={20} icon={calendar} />
-                </NavIcon>
-                <NavText>
-                    <Link className="sidebar-link-header" to="agenda">
-                        Agenda
-                    </Link>
-                </NavText>
-            </Nav>
-            <Nav id="processen">
-                <NavIcon>
-                    <SvgIcon size={20} icon={stopwatch} />
-                </NavIcon>
-                <NavText>Logs</NavText>
-                <Nav key={'nav-processen'} id={`processen`}>
-                    <NavText>
-                        <Link className="sidebar-link-header" to="processen">
-                            Processen
-                        </Link>
-                    </NavText>
-                </Nav>
-                <Nav key={'nav-twinfield'} id={`twinfield`}>
-                    <NavText>
-                        <Link className="sidebar-link-header" to="twinfield">
-                            Twinfield
-                        </Link>
-                    </NavText>
-                </Nav>
-            </Nav>
-            {permissions.viewDocument && (
+            )}
+
+            {permissions.menuDocuments && permissions.viewDocument && (
                 <Nav id="documenten">
                     <NavIcon>
                         <SvgIcon size={20} icon={documents} />
@@ -281,7 +325,8 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                     </NavText>
                 </Nav>
             )}
-            {permissions.manageFinancial && administrations.length > 0 && (
+
+            {permissions.menuFinancial && permissions.manageFinancial && administrations.length > 0 && (
                 <Nav id="financial">
                     <NavIcon>
                         <SvgIcon size={20} icon={ic_business_center} />
@@ -301,7 +346,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                 </Nav>
             )}
 
-            {permissions.manageFinancial && (
+            {permissions.menuWorkflow && permissions.manageFinancial && (
                 <Nav id="workflow">
                     <NavIcon>
                         <SvgIcon size={20} icon={forward} />
@@ -337,143 +382,154 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                     </Nav>
                 </Nav>
             )}
-            <Nav id="instellingen">
-                <NavIcon>
-                    <SvgIcon size={20} icon={cog} />
-                </NavIcon>
-                <NavText className={mailboxesInvalid ? 'sidebar__alert' : ''}> Instellingen </NavText>
-                {permissions.manageFinancial && (
-                    <Nav id="administration">
-                        <NavText>
-                            <Link className="sidebar-link" to="administraties">
-                                Administraties
-                            </Link>
-                        </NavText>
-                    </Nav>
-                )}
-                {permissions.manageCooperationSettings && (
-                    <Nav id="cooperation">
-                        <NavText>
-                            <Link className="sidebar-link" to="cooperatie">
-                                Coöperatie
-                            </Link>
-                        </NavText>
-                    </Nav>
-                )}
-                {permissions.manageWebform && (
-                    <Nav id="webforms">
-                        <NavText>
-                            <Link className="sidebar-link" to="webformulieren">
-                                Webformulieren
-                            </Link>
-                        </NavText>
-                    </Nav>
-                )}
-                {permissions.manageFinancial && (
-                    <Nav id="products">
-                        <NavText>
-                            <Link className="sidebar-link" to="producten">
-                                Producten
-                            </Link>
-                        </NavText>
-                    </Nav>
-                )}
-                {permissions.manageFinancial && (
-                    <Nav id="btw-codes">
-                        <NavText>
-                            <Link className="sidebar-link" to="btw-codes">
-                                BTW codes
-                            </Link>
-                        </NavText>
-                    </Nav>
-                )}
-                {permissions.manageFinancial && (
-                    <Nav id="grootboekrekeningen">
-                        <NavText>
-                            <Link className="sidebar-link" to="grootboekrekeningen">
-                                Grootboekrekeningen
-                            </Link>
-                        </NavText>
-                    </Nav>
-                )}
-                {permissions.manageFinancial && (
-                    <Nav id="kostenplaatsen">
-                        <NavText>
-                            <Link className="sidebar-link" to="kostenplaatsen">
-                                Kostenplaatsen
-                            </Link>
-                        </NavText>
-                    </Nav>
-                )}
-                {permissions.viewDocumentTemplate && (
-                    <Nav id="documents">
-                        <NavText>
-                            <Link className="sidebar-link" to="document-templates">
-                                Document templates
-                            </Link>
-                        </NavText>
-                    </Nav>
-                )}
-                <Nav id="email-templates">
-                    <NavText>
-                        <Link className="sidebar-link" to="email-templates">
-                            E-mail templates
-                        </Link>
-                    </NavText>
+
+            {permissions.menuGeneralSettings && (
+                <Nav id="instellingen">
+                    <NavIcon>
+                        <SvgIcon size={20} icon={cog} />
+                    </NavIcon>
+                    <NavText className={mailboxesInvalid ? 'sidebar__alert' : ''}> Instellingen </NavText>
+                    {permissions.manageFinancial && (
+                        <Nav id="administration">
+                            <NavText>
+                                <Link className="sidebar-link" to="administraties">
+                                    Administraties
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.manageCooperationSettings && (
+                        <Nav id="cooperation">
+                            <NavText>
+                                <Link className="sidebar-link" to="cooperatie">
+                                    Coöperatie
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.manageWebform && (
+                        <Nav id="webforms">
+                            <NavText>
+                                <Link className="sidebar-link" to="webformulieren">
+                                    Webformulieren
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.manageFinancial && (
+                        <Nav id="products">
+                            <NavText>
+                                <Link className="sidebar-link" to="producten">
+                                    Producten
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.manageFinancial && (
+                        <Nav id="btw-codes">
+                            <NavText>
+                                <Link className="sidebar-link" to="btw-codes">
+                                    BTW codes
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.manageFinancial && (
+                        <Nav id="grootboekrekeningen">
+                            <NavText>
+                                <Link className="sidebar-link" to="grootboekrekeningen">
+                                    Grootboekrekeningen
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.manageFinancial && (
+                        <Nav id="kostenplaatsen">
+                            <NavText>
+                                <Link className="sidebar-link" to="kostenplaatsen">
+                                    Kostenplaatsen
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.viewDocumentTemplate && (
+                        <Nav id="documents">
+                            <NavText>
+                                <Link className="sidebar-link" to="document-templates">
+                                    Document templates
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.viewEmailTemplate && (
+                        <Nav id="email-templates">
+                            <NavText>
+                                <Link className="sidebar-link" to="email-templates">
+                                    E-mail templates
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.viewUser && (
+                        <Nav id="users">
+                            <NavText>
+                                <Link className="sidebar-link" to="gebruikers">
+                                    Gebruikers
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.viewTeam && (
+                        <Nav id="team">
+                            <NavText>
+                                <Link className="sidebar-link" to="teams">
+                                    Teams
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.viewMailbox && (
+                        <Nav id="mailboxes">
+                            <NavText>
+                                <Link
+                                    className={`sidebar-link  ${mailboxesInvalid ? 'sidebar__alert' : ''}`}
+                                    to="mailboxen"
+                                >
+                                    Mailboxen
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.manageMailgunDomain && (
+                        <Nav id="mailboxgun-domains">
+                            <NavText>
+                                <Link className="sidebar-link" to="mailgun-domeinen">
+                                    Mailgun domeinen
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.viewAuditTrail && (
+                        <Nav id="audit-trail">
+                            <NavText>
+                                <Link className="sidebar-link" to="audit-trail">
+                                    Audit trail
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {/* todo WM check: wordt niet meer gebruikt toch ?*/}
+                    {/*<Nav id="postal-code-link">*/}
+                    {/*    <NavText>*/}
+                    {/*        <Link className="sidebar-link" to="postcoderoos">*/}
+                    {/*            Postcoderoos*/}
+                    {/*        </Link>*/}
+                    {/*    </NavText>*/}
+                    {/*</Nav>*/}
                 </Nav>
-                <Nav id="users">
-                    <NavText>
-                        <Link className="sidebar-link" to="gebruikers">
-                            Gebruikers
-                        </Link>
-                    </NavText>
-                </Nav>
-                <Nav id="team">
-                    <NavText>
-                        <Link className="sidebar-link" to="teams">
-                            Teams
-                        </Link>
-                    </NavText>
-                </Nav>
-                {permissions.viewMailbox && (
-                    <Nav id="mailboxes">
-                        <NavText>
-                            <Link
-                                className={`sidebar-link  ${mailboxesInvalid ? 'sidebar__alert' : ''}`}
-                                to="mailboxen"
-                            >
-                                Mailboxen
-                            </Link>
-                        </NavText>
-                    </Nav>
-                )}
-                {permissions.manageMailgunDomain && (
-                    <Nav id="mailboxgun-domains">
-                        <NavText>
-                            <Link className="sidebar-link" to="mailgun-domeinen">
-                                Mailgun domeinen
-                            </Link>
-                        </NavText>
-                    </Nav>
-                )}
-                {permissions.viewAuditTrail && (
-                    <Nav id="audit-trail">
-                        <NavText>
-                            <Link className="sidebar-link" to="audit-trail">
-                                Audit trail
-                            </Link>
-                        </NavText>
-                    </Nav>
-                )}
-                <Nav id="postal-code-link">
-                    <NavText>
-                        <Link className="sidebar-link" to="postcoderoos">
-                            Postcoderoos
-                        </Link>
-                    </NavText>
-                </Nav>
-            </Nav>
-            {permissions.managePortalSettings && (
+            )}
+
+            {permissions.menuPortalSettings && permissions.managePortalSettings && (
                 <Nav id="portalSettings">
                     <NavIcon>
                         <SvgIcon size={20} icon={road} />

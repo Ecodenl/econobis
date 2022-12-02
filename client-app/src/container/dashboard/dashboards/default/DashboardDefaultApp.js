@@ -68,13 +68,11 @@ class DashboardDefaultApp extends Component {
                     </>
                 ) : null}
                 <div className={'row'}>
-                    <ButtonEmails size={'col-xs-3'} />
-                    <ButtonTasks size={'col-xs-3'} />
+                    {this.props.meDetails.permissions.viewEmail ? <ButtonEmails size={'col-xs-3'} /> : null}
+                    {this.props.meDetails.permissions.viewTask ? <ButtonTasks size={'col-xs-3'} /> : null}
                 </div>
                 {/*<DashboardMain/>*/}
-                <div className={'row'}>
-                    <JobLogs size={'col-xs-6'} />
-                </div>
+                <div className={'row'}>{this.props.meDetails.permissions.viewJobsLog ? <JobLogs size={'col-xs-6'} /> : null}</div>
             </div>
         );
     }

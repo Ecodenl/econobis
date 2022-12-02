@@ -41,6 +41,11 @@ export default {
             });
     },
 
+    mergeContacts: (toId, fromId) => {
+        return axiosInstance
+            .post('contacts/merge', { toId, fromId });
+    },
+
     getPerson: () => {
         const requestUrl = `${URL_API}/api/contact/peek`;
 

@@ -55,7 +55,7 @@ class ContactDetailsFormOther extends Component {
                     <span className="h5 text-bold">Overige gegevens</span>
                 </PanelHeader>
                 <PanelBody>
-                    {this.state.showEdit ? (
+                    {this.props.permissions.updateContactOther && this.state.showEdit ? (
                         <ContactDetailsFormOtherEdit switchToView={this.switchToView} />
                     ) : (
                         <ContactDetailsFormOtherView switchToEdit={this.switchToEdit} />
@@ -68,6 +68,7 @@ class ContactDetailsFormOther extends Component {
 
 const mapStateToProps = state => {
     return {
+        permissions: state.meDetails.permissions,
         typeId: state.contactDetails.typeId,
     };
 };

@@ -12,7 +12,9 @@ const QuotationRequestNewToolbar = props => {
                 </div>
             </div>
             <div className="col-md-4">
-                <h4 className="text-center">Nieuw offerteverzoek</h4>
+                <h4 className="text-center">
+                    Nieuw {props.opportunityAction ? props.opportunityAction.name : 'actie'}
+                </h4>
             </div>
             <div className="col-md-4" />
         </div>

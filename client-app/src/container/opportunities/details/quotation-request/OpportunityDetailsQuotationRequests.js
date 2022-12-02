@@ -12,20 +12,53 @@ class OpportunityDetailsQuotationRequests extends Component {
         super(props);
     }
 
-    newQuotationRequest = () => {
-        hashHistory.push(`/offerteverzoek/nieuw/kans/${this.props.opportunityId}`);
-    };
-
     render() {
+        const { opportunityActions, opportunityId } = this.props;
+
         return (
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Offerteverzoek</span>
-                    {this.props.permissions.manageQuotationRequest && (
-                        <a role="button" className="pull-right" onClick={this.newQuotationRequest}>
+                    <span className="h5 text-bold">Acties</span>
+                    {this.props.permissions.manageQuotationRequest && opportunityActions.length == 1 ? (
+                        <a
+                            role="button"
+                            className="pull-right"
+                            onClick={() =>
+                                hashHistory.push(
+                                    `/offerteverzoek/nieuw/kans/${opportunityId}/actie/${opportunityActions[0].id}`
+                                )
+                            }
+                        >
                             <span className="glyphicon glyphicon-plus" />
                         </a>
-                    )}
+                    ) : null}
+
+                    {this.props.permissions.manageQuotationRequest && opportunityActions.length > 1 ? (
+                        <div className="nav navbar-nav btn-group pull-right" role="group">
+                            <button className="btn btn-link" data-toggle="dropdown">
+                                <span className="glyphicon glyphicon-plus" />
+                            </button>
+                            <ul className="dropdown-menu">
+                                {opportunityActions.map((opportunityAction, i) => {
+                                    return (
+                                        <li>
+                                            <a
+                                                role={'button'}
+                                                title={opportunityAction.name}
+                                                onClick={() =>
+                                                    hashHistory.push(
+                                                        `/offerteverzoek/nieuw/kans/${opportunityId}/actie/${opportunityAction.id}`
+                                                    )
+                                                }
+                                            >
+                                                {opportunityAction.name}
+                                            </a>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </div>
+                    ) : null}
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
@@ -41,6 +74,7 @@ const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
         opportunityId: state.opportunityDetails.id,
+        opportunityActions: state.opportunityDetails.intake.campaign.opportunityActions,
     };
 };
 

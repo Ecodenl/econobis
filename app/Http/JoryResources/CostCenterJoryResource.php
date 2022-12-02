@@ -3,11 +3,18 @@
 namespace App\Http\JoryResources;
 
 use \App\Eco\CostCenter\CostCenter;
+use App\Http\Controllers\Api\CostCenter\CostCenterController;
 use App\Http\JoryResources\Base\JoryResource;
 
 class CostCenterJoryResource extends JoryResource
 {
     protected $modelClass = CostCenter::class;
+
+    protected function checkAuthorize(): void
+    {
+        $costCenterController = new CostCenterController();
+        $costCenterController->authorize('view', CostCenter::class);
+    }
 
     protected function configureForApp(): void
     {

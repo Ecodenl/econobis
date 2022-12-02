@@ -47,6 +47,7 @@ Route::namespace('Api')
         Route::get('/contact/chart-data', 'Contact\ContactController@chartData');
         Route::get('/contact/get-primary-email-addresses-id', 'Contact\ContactController@getPrimaryEmailAddressesId');
         Route::post('/contacts/delete', 'Contact\ContactController@destroyContacts');
+        Route::post('/contacts/merge', 'Contact\ContactController@mergeContacts');
         Route::post('/contact/validate-import', 'Contact\ContactController@validateImport');
         Route::post('/contact/import', 'Contact\ContactController@import');
         Route::post('contact/{contact}/owner/{user}/associate', 'Contact\ContactController@associateOwner');
@@ -85,13 +86,15 @@ Route::namespace('Api')
         Route::post('/housing-file/{housingFile}/update', 'HousingFile\HousingFileController@update');
         Route::post('/housing-file/{housingFile}/delete', 'HousingFile\HousingFileController@destroy');
 
-        Route::post('/housing-file/measure-taken', 'HousingFile\HousingFileController@attachMeasureTaken');
-        Route::post('/housing-file/{address}/{measure}/detach', 'HousingFile\HousingFileController@detachMeasureTaken');
+        Route::post('/housing-file/housing-file-specification', 'HousingFile\HousingFileController@addHousingFileSpecification');
+        Route::post('/housing-file/housing-file-specification/{housingFileSpecification}/update', 'HousingFile\HousingFileController@updateHousingFileSpecification');
+        Route::post('/housing-file/housing-file-specification/{housingFileSpecification}/delete', 'HousingFile\HousingFileController@deleteHousingFileSpecification');
 
         Route::get('/housing-file/{housingFile}/notes', 'HousingFile\HousingFileController@notes');
         Route::get('/housing-file/{housingFile}/documents', 'HousingFile\HousingFileController@documents');
 
         Route::get('/user/grid', 'User\GridController@index');
+        Route::get('/user/rolesPermissionsExcel', 'User\UserController@rolesPermissionsExcel');
         Route::post('/user', 'User\UserController@store');
         Route::get('/user/{user}', 'User\UserController@show');
         Route::post('/user/{user}', 'User\UserController@update');
@@ -124,6 +127,8 @@ Route::namespace('Api')
         Route::post('/organisation', 'Organisation\OrganisationController@store');
         Route::post('/organisation/{organisation}', 'Organisation\OrganisationController@update');
         Route::get('/organisation/peek', 'Organisation\OrganisationController@peek');
+
+        Route::get('/coach/peek', 'Contact\ContactController@peekCoach');
 
         Route::post('/contact-note', 'ContactNote\ContactNoteController@store');
         Route::post('/contact-note/{contactNote}', 'ContactNote\ContactNoteController@update');
@@ -222,6 +227,8 @@ Route::namespace('Api')
         Route::post('campaign/{campaign}/response/{contact}/detach', 'Campaign\CampaignController@detachResponse');
         Route::post('campaign/{campaign}/organisation/{organisation}/attach', 'Campaign\CampaignController@attachOrganisation');
         Route::post('campaign/{campaign}/organisation/{organisation}/detach', 'Campaign\CampaignController@detachOrganisation');
+        Route::post('campaign/{campaign}/coach/{coach}/attach', 'Campaign\CampaignController@attachCoach');
+        Route::post('campaign/{campaign}/coach/{coach}/detach', 'Campaign\CampaignController@detachCoach');
 
         Route::get('measure/grid', 'Measure\MeasureController@grid');
         Route::get('measure/peek', 'Measure\MeasureController@peek');
@@ -240,6 +247,7 @@ Route::namespace('Api')
         Route::post('measure-category/{measureCategory}', 'Measure\MeasureCategoryController@update');
 
         Route::get('mailbox/grid', 'Mailbox\MailboxController@grid');
+        Route::get('mailbox/peek', 'Mailbox\MailboxController@peek');
         Route::get('mailbox/logged-in/email-peek', 'Mailbox\MailboxController@loggedInEmailPeek');
         Route::get('mailbox/{mailbox}', 'Mailbox\MailboxController@show');
         Route::post('mailbox', 'Mailbox\MailboxController@store');
@@ -260,7 +268,6 @@ Route::namespace('Api')
         Route::get('email/{email}/reply', 'Email\EmailController@getReply');
         Route::get('email/{email}/reply-all', 'Email\EmailController@getReplyAll');
         Route::get('email/{email}/forward', 'Email\EmailController@getForward');
-        Route::get('email/group/{contactGroup}', 'Email\EmailController@getEmailGroup');
         Route::get('email/group/{contactGroup}', 'Email\EmailController@getEmailGroup');
         Route::post('email/{email}/move-to-folder', 'Email\EmailController@moveEmailToFolder');
         Route::post('email/{email}/delete', 'Email\EmailController@destroy');
@@ -286,6 +293,7 @@ Route::namespace('Api')
 
         Route::get('document/grid', 'Document\DocumentController@grid');
         Route::get('document/peek', 'Document\DocumentController@peek');
+        Route::get('document/default-email-documents-peek', 'Document\DocumentController@defaultEmailDocumentsPeek');
         Route::get('document/{document}', 'Document\DocumentController@show');
         Route::get('document/{document}/download', 'Document\DocumentController@download');
         Route::post('document/{document}/delete', 'Document\DocumentController@destroy');
@@ -314,12 +322,16 @@ Route::namespace('Api')
         Route::post('team/{team}/delete', 'Team\TeamController@destroy');
         Route::post('team/{team}/{user}/attach', 'Team\TeamController@attachUser');
         Route::post('team/{team}/{user}/detach', 'Team\TeamController@detachUser');
+        Route::post('team/{team}/{contactGroup}/attach-contact-group', 'Team\TeamController@attachContactGroup');
+        Route::post('team/{team}/{contactGroup}/detach-contact-group', 'Team\TeamController@detachContactGroup');
+        Route::post('team/{team}/{documentCreatedFrom}/attach-document-created-from', 'Team\TeamController@attachDocumentCreatedFrom');
+        Route::post('team/{team}/{documentCreatedFrom}/detach-document-created-from', 'Team\TeamController@detachDocumentCreatedFrom');
 
         Route::get('/quotation-request/grid', 'QuotationRequest\QuotationRequestController@grid');
         Route::get('/quotation-request/peek', 'QuotationRequest\QuotationRequestController@peek');
         Route::get('/quotation-request/csv', 'QuotationRequest\QuotationRequestController@csv');
         Route::get('/quotation-request/amount-open', 'QuotationRequest\QuotationRequestController@getAmountOfOpenQuotationRequests');
-        Route::get('/opportunity/{opportunity}/quotation-request', 'QuotationRequest\QuotationRequestController@getStore');
+        Route::get('/opportunity/{opportunity}/{opportunityAction}/quotation-request', 'QuotationRequest\QuotationRequestController@getStore');
         Route::post('/quotation-request', 'QuotationRequest\QuotationRequestController@store');
         Route::get('/quotation-request/{quotationRequest}', 'QuotationRequest\QuotationRequestController@show');
         Route::post('/quotation-request/{quotationRequest}/update', 'QuotationRequest\QuotationRequestController@update');

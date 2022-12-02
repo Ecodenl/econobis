@@ -3,7 +3,7 @@
 namespace App\Http\Resources\Contact;
 
 use App\Http\Resources\Address\FullAddress;
-use App\Http\Resources\AddressEnergySupplier\FullAddressEnergySupplier;
+use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\ContactNote\FullContactNote;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\EmailAddress\FullEmailAddress;
@@ -13,11 +13,11 @@ use App\Http\Resources\Invoice\FullInvoice;
 use App\Http\Resources\Occupation\FullOccupationContact;
 use App\Http\Resources\Order\FullOrder;
 use App\Http\Resources\Organisation\FullOrganisation;
-use App\Http\Resources\ParticipantProject\FullParticipantProject;
 use App\Http\Resources\ParticipantProject\RelatedParticipantProjectToContact;
 use App\Http\Resources\Person\FullPerson;
 use App\Http\Resources\PhoneNumber\FullPhoneNumber;
 use App\Http\Resources\PortalUser\FullPortalUser;
+use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\Task\GridTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -32,6 +32,14 @@ class FullContactWithGroups extends JsonResource
      */
     public function toArray($request)
     {
+        $organisantionOrCoachCampaigns = null;
+        if($this->isCoach()){
+            $organisantionOrCoachCampaigns = FullCampaign::collection($this->whenLoaded('coachCampaigns'));
+        }
+        if($this->isOrganisation()){
+            $organisantionOrCoachCampaigns = FullCampaign::collection($this->organisation->campaigns);
+        }
+
         return [
             'id' => $this->id,
             'number' => $this->number,
@@ -89,8 +97,8 @@ class FullContactWithGroups extends JsonResource
             'relatedEmailsSent' => $this->relatedEmailsSent,
             'financialOverviewContactCount' => $this->financialOverviewContactsSend()->count(),
             'relatedFinancialOverviewContacts' => FullFinancialOverviewContact::collection($this->whenLoaded('financialOverviewContactsSend')),
-            'documentCount' => $this->documents()->count(),
-            'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
+            'documentCount' => $this->relatedDocuments ? $this->relatedDocuments->count() : 0,
+            'relatedDocuments' => $this->relatedDocuments,
             'opportunityCount' => $this->opportunities()->count(),
             'relatedOpportunities' => $this->opportunities()->with('measureCategory')->get(),
             'participationCount' => $this->participations()->count(),
@@ -103,6 +111,10 @@ class FullContactWithGroups extends JsonResource
             'collectMandateCollectionSchema' => $this->collect_mandate_collection_schema,
             'hoomAccountId' => $this->hoom_account_id,
             'isParticipantPcrProject' => $this->is_participant_pcr_project,
+            'isInCoachGroup' => $this->is_in_coach_group,
+            'isCoach' => $this->is_coach,
+            'quotationRequests' => FullQuotationRequest::collection($this->whenLoaded('quotationRequests')),
+            'organisantionOrCoachCampaigns' => $organisantionOrCoachCampaigns,
         ];
     }
 }

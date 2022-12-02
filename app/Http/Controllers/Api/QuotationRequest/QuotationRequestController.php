@@ -10,16 +10,22 @@ namespace App\Http\Controllers\Api\QuotationRequest;
 
 
 use App\Eco\Email\Email;
+use App\Eco\Occupation\Occupation;
+use App\Eco\Occupation\OccupationContact;
 use App\Eco\Opportunity\Opportunity;
+use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\QuotationRequest\QuotationRequest;
+use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Helpers\CSV\QuotationRequestCSVHelper;
 use App\Helpers\Delete\Models\DeleteQuotationRequest;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\QuotationRequest\Grid\RequestQuery;
+use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\QuotationRequest\GridQuotationRequest;
 use App\Http\Resources\QuotationRequest\QuotationRequestPeek;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -33,14 +39,15 @@ class QuotationRequestController extends ApiController
         $quotationRequests = $requestQuery->get();
 
         $quotationRequests->load([
-            'organisation',
+            'organisationOrCoach',
             'opportunity.intake.address',
             'opportunity.measureCategory',
             'opportunity.measures',
             'opportunity.intake.campaign',
             'opportunity.intake.contact',
             'status',
-        ]);
+            'opportunityAction',
+            ]);
 
         return GridQuotationRequest::collection($quotationRequests)
             ->additional(['meta' => [
@@ -52,19 +59,30 @@ class QuotationRequestController extends ApiController
     public function show(QuotationRequest $quotationRequest)
     {
         $quotationRequest->load([
-            'organisation.contact.contactPerson.contact',
+            'organisationOrCoach.contactPerson.contact',
             'opportunity.intake.contact',
             'opportunity.intake.campaign',
             'opportunity.intake.campaign.organisations',
+            'opportunity.intake.campaign.coaches',
             'opportunity.measureCategory',
             'opportunity.measures',
             'documents',
             'status',
+            'opportunityAction',
             'createdBy',
             'updatedBy'
         ]);
 
         $quotationRequest->relatedEmailsSent = $this->getRelatedEmails($quotationRequest->id, 'sent');
+
+        $quotationRequest->relatedQuotationRequestsStatuses = $this->getRelatedQuotationRequestsStatuses($quotationRequest->opportunityAction);
+
+        $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
+        if($teamDocumentCreatedFromIds){
+            $quotationRequest->relatedDocuments = $quotationRequest->documents()->whereIn('document_created_from_id', $teamDocumentCreatedFromIds)->get();
+        } else{
+            $quotationRequest->relatedDocuments = $quotationRequest->documents()->get();
+        }
 
         return FullQuotationRequest::make($quotationRequest);
     }
@@ -82,7 +100,7 @@ class QuotationRequestController extends ApiController
     /**
      * Geef de data die React nodig heeft om het scherm op te bouwen voor een nieuw offerteverzoek
      */
-    public function getStore(Opportunity $opportunity)
+    public function getStore(Opportunity $opportunity, OpportunityAction $opportunityAction)
     {
         $opportunity->load([
             'intake.address',
@@ -90,7 +108,10 @@ class QuotationRequestController extends ApiController
             'measureCategory',
             'intake.contact',
             'intake.campaign.organisations',
+            'intake.campaign.coaches',
         ]);
+
+        $opportunity->relatedQuotationRequestsStatuses = $this->getRelatedQuotationRequestsStatuses($opportunityAction);
 
         return FullOpportunity::make($opportunity);
     }
@@ -100,11 +121,19 @@ class QuotationRequestController extends ApiController
         $this->authorize('manage', QuotationRequest::class);
 
         $data = $request->validate([
-            'organisationId' => 'required|exists:organisations,id',
+            'organisationOrCoachId' => 'required|exists:contacts,id',
             'opportunityId' => 'required|exists:opportunities,id',
             'dateRecorded' => 'string',
+            'timeRecorded' => 'string',
             'dateReleased' => 'string',
+            'timeReleased' => 'string',
+            'datePlanned' => 'string',
+            'timePlanned' => 'string',
+            'dateApprovedClient' => 'string',
+            'dateApprovedProjectManager' => 'string',
+            'dateApprovedExternal' => 'string',
             'statusId' => 'required|exists:quotation_request_status,id',
+            'opportunityActionId' => 'required|exists:opportunity_actions,id',
             'quotationText' => 'string',
         ]);
 
@@ -112,17 +141,58 @@ class QuotationRequestController extends ApiController
         $quotationRequest = new QuotationRequest();
 
         //required
-        $quotationRequest->organisation_id = $data['organisationId'];
+        $quotationRequest->contact_id = $data['organisationOrCoachId'];
         $quotationRequest->opportunity_id = $data['opportunityId'];
         $quotationRequest->status_id = $data['statusId'];
+        $quotationRequest->opportunity_action_id = $data['opportunityActionId'];
 
         //optional
         if ($data['dateRecorded']) {
-            $quotationRequest->date_recorded = $data['dateRecorded'];
+            if ($data['timeRecorded']) {
+                $dateRecorded = Carbon::parse($request->get('dateRecorded'))->format('Y-m-d');
+                $timeRecorded = Carbon::parse($request->get('timeRecorded'))->format('H:i');
+                $dateRecordedMerged = Carbon::createFromFormat('Y-m-d H:i', $dateRecorded . ' ' . $timeRecorded);
+            } else {
+                $dateRecorded = Carbon::parse($request->get('dateRecorded'))->format('Y-m-d');
+                $dateRecordedMerged = Carbon::createFromFormat('Y-m-d H:i', $dateRecorded . ' 08:00');
+            }
+            $quotationRequest->date_recorded = $dateRecordedMerged;
         }
 
         if ($data['dateReleased']) {
-            $quotationRequest->date_released = $data['dateReleased'];
+            if ($data['timeReleased']) {
+                $dateReleased = Carbon::parse($request->get('dateReleased'))->format('Y-m-d');
+                $timeReleased = Carbon::parse($request->get('timeReleased'))->format('H:i');
+                $dateReleasedMerged = Carbon::createFromFormat('Y-m-d H:i', $dateReleased . ' ' . $timeReleased);
+            } else {
+                $dateReleased = Carbon::parse($request->get('dateReleased'))->format('Y-m-d');
+                $dateReleasedMerged = Carbon::createFromFormat('Y-m-d H:i', $dateReleased . ' 08:00');
+            }
+            $quotationRequest->date_released = $dateReleasedMerged;
+        }
+
+        if ($data['datePlanned']) {
+            if ($data['timePlanned']) {
+                $datePlanned = Carbon::parse($request->get('datePlanned'))->format('Y-m-d');
+                $timePlanned = Carbon::parse($request->get('timePlanned'))->format('H:i');
+                $datePlannedMerged = Carbon::createFromFormat('Y-m-d H:i', $datePlanned . ' ' . $timePlanned);
+            } else {
+                $datePlanned = Carbon::parse($request->get('datePlanned'))->format('Y-m-d');
+                $datePlannedMerged = Carbon::createFromFormat('Y-m-d H:i', $datePlanned . ' 08:00');
+            }
+            $quotationRequest->date_planned = $datePlannedMerged;
+        }
+
+        if ($data['dateApprovedClient']) {
+            $quotationRequest->date_approved_client = $data['dateApprovedClient'];
+        }
+
+        if ($data['dateApprovedProjectManager']) {
+            $quotationRequest->date_approved_project_manager = $data['dateApprovedProjectManager'];
+        }
+
+        if ($data['dateApprovedExternal']) {
+            $quotationRequest->date_approved_external = $data['dateApprovedExternal'];
         }
 
         if (isset($data['quotationText'])) {
@@ -130,6 +200,8 @@ class QuotationRequestController extends ApiController
         }
 
         $quotationRequest->save();
+
+        $this->creatEnergyCoachOccupation($quotationRequest);
 
         return $this->show($quotationRequest);
     }
@@ -140,37 +212,85 @@ class QuotationRequestController extends ApiController
         $this->authorize('manage', QuotationRequest::class);
 
         $data = $request->validate([
-            'organisationId' => 'required|exists:organisations,id',
+            'organisationOrCoachId' => 'required|exists:contacts,id',
             'opportunityId' => 'required|exists:opportunities,id',
             'dateRecorded' => 'string',
+            'timeRecorded' => 'string',
             'dateReleased' => 'string',
+            'timeReleased' => 'string',
+            'datePlanned' => 'string',
+            'timePlanned' => 'string',
+            'dateApprovedClient' => 'string',
+            'dateApprovedProjectManager' => 'string',
+            'dateApprovedExternal' => 'string',
             'statusId' => 'required|exists:quotation_request_status,id',
+            'opportunityActionId' => 'required|exists:opportunity_actions,id',
             'quotationText' => 'string',
         ]);
 
         //required
-        $quotationRequest->organisation_id = $data['organisationId'];
+        $quotationRequest->contact_id = $data['organisationOrCoachId'];
         $quotationRequest->opportunity_id = $data['opportunityId'];
         $quotationRequest->status_id = $data['statusId'];
+        $quotationRequest->opportunity_action_id = $data['opportunityActionId'];
 
         //optional
         if ($data['dateRecorded']) {
-            $quotationRequest->date_recorded = $data['dateRecorded'];
+            if ($data['timeRecorded']) {
+                $dateRecorded = Carbon::parse($request->get('dateRecorded'))->format('Y-m-d');
+                $timeRecorded = Carbon::parse($request->get('timeRecorded'))->format('H:i');
+                $dateRecordedMerged = Carbon::createFromFormat('Y-m-d H:i', $dateRecorded . ' ' . $timeRecorded);
+            } else {
+                $dateRecorded = Carbon::parse($request->get('dateRecorded'))->format('Y-m-d');
+                $dateRecordedMerged = Carbon::createFromFormat('Y-m-d H:i', $dateRecorded . ' 08:00');
+            }
+            $quotationRequest->date_recorded = $dateRecordedMerged;
         } else {
             $quotationRequest->date_recorded = null;
         }
 
         if ($data['dateReleased']) {
-            $quotationRequest->date_released = $data['dateReleased'];
-        } else {
-            $quotationRequest->date_released = null;
+            if ($data['timeReleased']) {
+                $dateReleased = Carbon::parse($request->get('dateReleased'))->format('Y-m-d');
+                $timeReleased = Carbon::parse($request->get('timeReleased'))->format('H:i');
+                $dateReleasedMerged = Carbon::createFromFormat('Y-m-d H:i', $dateReleased . ' ' . $timeReleased);
+            } else {
+                $dateReleased = Carbon::parse($request->get('dateReleased'))->format('Y-m-d');
+                $dateReleasedMerged = Carbon::createFromFormat('Y-m-d H:i', $dateReleased . ' 08:00');
+            }
+            $quotationRequest->date_released = $dateReleasedMerged;
+        }
+
+        if ($data['datePlanned']) {
+            if ($data['timePlanned']) {
+                $datePlanned = Carbon::parse($request->get('datePlanned'))->format('Y-m-d');
+                $timePlanned = Carbon::parse($request->get('timePlanned'))->format('H:i');
+                $datePlannedMerged = Carbon::createFromFormat('Y-m-d H:i', $datePlanned . ' ' . $timePlanned);
+            } else {
+                $datePlanned = Carbon::parse($request->get('datePlanned'))->format('Y-m-d');
+                $datePlannedMerged = Carbon::createFromFormat('Y-m-d H:i', $datePlanned . ' 08:00');
+            }
+            $quotationRequest->date_planned = $datePlannedMerged;
+        }
+
+        if ($data['dateApprovedClient']) {
+            $quotationRequest->date_approved_client = $data['dateApprovedClient'];
+        }
+
+        if ($data['dateApprovedProjectManager']) {
+            $quotationRequest->date_approved_project_manager = $data['dateApprovedProjectManager'];
+        }
+
+        if ($data['dateApprovedExternal']) {
+            $quotationRequest->date_approved_external = $data['dateApprovedExternal'];
         }
 
         if (isset($data['quotationText'])) {
             $quotationRequest->quotation_text = $data['quotationText'];
         }
-
         $quotationRequest->save();
+
+        $this->creatEnergyCoachOccupation($quotationRequest);
 
         return $this->show($quotationRequest);
     }
@@ -200,16 +320,53 @@ class QuotationRequestController extends ApiController
 
     public function peek()
     {
-        return QuotationRequestPeek::collection(QuotationRequest::orderBy('id')->get());
+        $teamContactIds = Auth::user()->getTeamContactIds();
+        if ($teamContactIds){
+            $quotationRequests = QuotationRequest::whereHas('opportunity', function($query) use($teamContactIds){
+                $query->whereHas('intake', function($query) use($teamContactIds){
+                    $query->whereIn('contact_id', $teamContactIds);
+                });
+            })->orderBy('id')->get();
+        }else{
+            $quotationRequests = QuotationRequest::orderBy('id')->get();
+        }
+
+        return QuotationRequestPeek::collection($quotationRequests);
     }
 
-    public function getRelatedEmails($id, $folder)
+    protected function getRelatedEmails($id, $folder)
     {
-        return Email::where('quotation_request_id', $id)->where('folder', $folder)->get();
+        $mailboxIds = Auth::user()->mailboxes()->pluck('mailbox_id');
+        return Email::where('quotation_request_id', $id)->where('folder', $folder)->whereIn('mailbox_id', $mailboxIds)->get();
     }
+
+    protected function getRelatedQuotationRequestsStatuses(OpportunityAction $opportunityAction)
+    {
+        return FullEnumWithIdAndName::collection(QuotationRequestStatus::where('opportunity_action_id', $opportunityAction->id)->orderBy('order')->get());
+    }
+
 
     public function getAmountOfOpenQuotationRequests(){
         return QuotationRequest::where('status_id', 1)->count();
+    }
+
+    protected function creatEnergyCoachOccupation(QuotationRequest $quotationRequest)
+    {
+        $organisationOrCoach = $quotationRequest->organisationOrCoach;
+        $resident = $quotationRequest->opportunity->intake->contact;
+        $energyCoachOccupation = Occupation::where('primary_occupation', 'LIKE', 'Energiecoach%')->first();
+        if($energyCoachOccupation && $resident && $organisationOrCoach->isCoach()){
+            // is coach, create occupation if not exits yet.
+            if (!OccupationContact::where('primary_contact_id', $organisationOrCoach->id)->where('contact_id', $resident->id)->where('occupation_id', $energyCoachOccupation->id)->exists()) {
+                // rol coach/resident doesn't exists yet.
+                OccupationContact::create([
+                    'occupation_id' => $energyCoachOccupation->id,
+                    'primary_contact_id' => $organisationOrCoach->id,
+                    'contact_id' => $resident->id,
+                    'primary' => true,
+                ]);
+            }
+        }
     }
 
 }

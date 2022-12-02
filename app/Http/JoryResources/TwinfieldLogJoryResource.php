@@ -3,11 +3,18 @@
 namespace App\Http\JoryResources;
 
 use App\Eco\Twinfield\TwinfieldLog;
+use App\Http\Controllers\Api\TwinfieldLog\TwinfieldLogController;
 use App\Http\JoryResources\Base\JoryResource;
 
 class TwinfieldLogJoryResource extends JoryResource
 {
     protected $modelClass = TwinfieldLog::class;
+
+    protected function checkAuthorize(): void
+    {
+        $jobsLogController = new TwinfieldLogController();
+        $jobsLogController->authorize('view', TwinfieldLog::class);
+    }
 
     protected function configureForApp(): void
     {

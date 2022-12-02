@@ -55,6 +55,11 @@ class HousingFile extends Model
         return $this->belongsTo(EnergyLabelStatus::class);
     }
 
+    public function housingFileSpecifications()
+    {
+        return $this->hasMany(HousingFileSpecification::class);
+    }
+
     public function tasks()
     {
         return $this->hasMany(Task::class)->where('finished', false)->orderBy('tasks.id', 'desc');

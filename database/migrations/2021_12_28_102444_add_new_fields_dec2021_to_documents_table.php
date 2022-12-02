@@ -14,9 +14,7 @@ class AddNewFieldsDec2021ToDocumentsTable extends Migration
     public function up()
     {
         Schema::table('documents', function (Blueprint $table) {
-            Schema::table('documents', function (Blueprint $table) {
-                $table->string('document_created_from')->nullable()->after('sent_by_id');
-            });
+            $table->string('document_created_from')->nullable()->after('sent_by_id');
         });
 
         $documents = \App\Eco\Document\Document::withTrashed()->get();

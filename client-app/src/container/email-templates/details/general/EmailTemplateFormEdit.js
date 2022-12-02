@@ -9,19 +9,22 @@ import { fetchEmailTemplate } from '../../../../actions/email-templates/EmailTem
 import InputTinyMCE from '../../../../components/form/InputTinyMCE';
 import validator from 'validator';
 import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
+import InputSelect from '../../../../components/form/InputSelect';
+import DocumentsAPI from '../../../../api/document/DocumentsAPI';
 
 class EmailTemplateFormEdit extends Component {
     constructor(props) {
         super(props);
-
-        const { id, name, subject, htmlBody } = props.emailTemplate;
+        const { id, name, subject, htmlBody, defaultAttachmentDocument } = props.emailTemplate;
 
         this.state = {
+            defaultEmailDocuments: [],
             emailTemplate: {
                 id,
                 name,
                 subject: subject ? subject : '',
                 htmlBody: htmlBody ? htmlBody : '',
+                defaultAttachmentDocumentId: defaultAttachmentDocument ? defaultAttachmentDocument.id : '',
             },
             errors: {
                 name: false,
@@ -29,6 +32,14 @@ class EmailTemplateFormEdit extends Component {
         };
 
         this.handleTextChange = this.handleTextChange.bind(this);
+    }
+
+    componentDidMount() {
+        DocumentsAPI.fetchDefaultEmailDocumentsPeek().then(payload => {
+            this.setState({
+                defaultEmailDocuments: payload,
+            });
+        });
     }
 
     handleInputChange = event => {
@@ -78,8 +89,9 @@ class EmailTemplateFormEdit extends Component {
     };
 
     render() {
-        const { name, subject, htmlBody } = this.state.emailTemplate;
+        const { name, subject, htmlBody, defaultAttachmentDocumentId } = this.state.emailTemplate;
         const { createdBy } = this.props.emailTemplate;
+
         return (
             <div>
                 <div className="row">
@@ -118,6 +130,18 @@ class EmailTemplateFormEdit extends Component {
                         </div>
                     </div>
                 </div>
+
+                <div className="row">
+                    <InputSelect
+                        label="Standaard E-mail bijlage"
+                        name={'defaultAttachmentDocumentId'}
+                        value={defaultAttachmentDocumentId}
+                        options={this.state.defaultEmailDocuments}
+                        optionName={'filename'}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
+
                 <div className="row">
                     <div className="form-group col-sm-12">
                         <div className="row">

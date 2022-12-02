@@ -51,8 +51,10 @@ class ContactDetailsFormConclusion extends Component {
                 onMouseLeave={() => this.onDivLeave()}
             >
                 <PanelBody>
-                    {(this.state.showEdit && type.id === 'person' && this.props.permissions.updatePerson) ||
-                    (this.state.showEdit && type.id === 'organisation' && this.props.permissions.updateOrganisation) ? (
+                    {this.props.permissions.updateContactConclusion &&
+                    this.state.showEdit &&
+                    ((type.id === 'person' && this.props.permissions.updatePerson) ||
+                        (type.id === 'organisation' && this.props.permissions.updateOrganisation)) ? (
                         <ContactDetailsConclusionEdit switchToView={this.switchToView} />
                     ) : (
                         <ContactDetailsConclusionView switchToEdit={this.switchToEdit} />

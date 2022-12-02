@@ -63,6 +63,10 @@ class User extends Authenticatable
         'alfresco_password'
     ];
 
+    protected $teamContactGroupids = null;
+    protected $teamContactIds = null;
+    protected $teamDocumentCreatedFromIds = null;
+
     public function lastNamePrefix()
     {
         return $this->belongsTo(LastNamePrefix::class);
@@ -154,5 +158,82 @@ class User extends Authenticatable
             $this->{Fortify::username()},
             decrypt($this->two_factor_secret)
         );
+    }
+    public function getTeamContactGroupIds(){
+        if(!$this->teamContactGroupids == null){
+            return $this->teamContactGroupids;
+        } else {
+            if (!$this->teams){
+                return false;
+            }
+
+            $teamContactGroupIds = [];
+            $hasContactGroup = false;
+            foreach ($this->teams as $team){
+                $thisTeamContactGroupIds = $team->contactGroups->pluck('id')->toArray();
+                if(count($teamContactGroupIds) > 0) {
+                    $hasContactGroup = true;
+                }
+                $teamContactGroupIds = array_unique(array_merge($teamContactGroupIds, $thisTeamContactGroupIds));
+            }
+            if($hasContactGroup && count($teamContactGroupIds) == 0){
+                $this->teamContactGroupids = [-1];
+            } else {
+                $this->teamContactGroupids = $teamContactGroupIds;
+            }
+
+            return $this->teamContactGroupids;
+        }
+    }
+    public function getTeamContactIds(){
+        if(!$this->teamContactids == null){
+            return $this->teamContactids;
+        } else {
+            if (!$this->teams){
+                return false;
+            }
+
+            $teamContactIds = [];
+            $hasContactGroup = false;
+            foreach ($this->teams as $team){
+                foreach($team->contactGroups as $contactGroup){
+                    $hasContactGroup = true;
+                    $teamContactIds = array_unique(array_merge($teamContactIds, $contactGroup->getAllContacts()->pluck('id')->toArray()));
+                }
+            }
+            if($hasContactGroup && count($teamContactIds) == 0){
+                $this->teamContactids = [-1];
+            } else {
+                $this->teamContactids = $teamContactIds;
+            }
+
+            return $this->teamContactids;
+        }
+    }
+    public function getDocumentCreatedFromIds(){
+        if(!$this->teamDocumentCreatedFromIds == null){
+            return $this->teamDocumentCreatedFromIds;
+        } else {
+            if (!$this->teams){
+                return false;
+            }
+
+            $teamDocumentCreatedFromIds = [];
+            $hasDocumentCreatedFrom = false;
+            foreach ($this->teams as $team){
+                $thisTeamDocumentCreatedFromIds = $team->documentCreatedFroms->pluck('id')->toArray();
+                if(count($teamDocumentCreatedFromIds) > 0) {
+                    $hasDocumentCreatedFrom = true;
+                }
+                $teamDocumentCreatedFromIds = array_unique(array_merge($teamDocumentCreatedFromIds, $thisTeamDocumentCreatedFromIds));
+            }
+            if($hasDocumentCreatedFrom && count($teamDocumentCreatedFromIds) == 0){
+                $this->teamDocumentCreatedFromIds = [-1];
+            } else {
+                $this->teamDocumentCreatedFromIds = array_unique($teamDocumentCreatedFromIds);
+            }
+
+            return $this->teamDocumentCreatedFromIds;
+        }
     }
 }

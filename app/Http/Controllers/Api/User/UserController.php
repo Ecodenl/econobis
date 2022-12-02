@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Api\User;
 use App\Eco\User\User;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\Email\EmailHelper;
+use App\Helpers\Excel\PermissionExcelHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\RequestQueries\Intake\Grid\RequestQuery;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
@@ -21,11 +24,14 @@ class UserController extends Controller
 {
     public function me(Request $request)
     {
-        return $this->show($request->user());
+        $request->user()->load(['lastNamePrefix', 'title', 'administrations']);
+        return FullUser::make($request->user());
     }
 
     public function show(User $user)
     {
+        $this->authorize('view', User::class);
+
         $user->load(['lastNamePrefix', 'title', 'administrations']);
         return FullUser::make($user);
     }
@@ -159,5 +165,16 @@ class UserController extends Controller
          */
 
         return response()->json(['message' => 'Wachtwoord is correct.']);
+    }
+
+    public function rolesPermissionsExcel(RequestQuery $requestQuery)
+    {
+        $this->authorize('update', Auth::user());
+
+        set_time_limit(0);
+
+        $permissionExcelHelper = new PermissionExcelHelper();
+
+        return $permissionExcelHelper->downloadExcel();
     }
 }

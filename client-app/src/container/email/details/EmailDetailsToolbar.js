@@ -27,45 +27,49 @@ const EmailDetailsToolbar = ({ email, id, removeEmail }) => {
                             <div className="btn-group margin-small margin-10-right" role="group">
                                 <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
                             </div>
-                            <div className="btn-group margin-small" role="group">
-                                <button
-                                    type="button"
-                                    title="Beantwoorden"
-                                    className={'btn btn-success btn-sm'}
-                                    onClick={() => {
-                                        hashHistory.push(`/email/${id}/beantwoorden`);
-                                    }}
-                                >
-                                    <Icon icon={mailReply} size={13} />
-                                </button>
-                                <button
-                                    type="button"
-                                    title="Allen beantwoorden"
-                                    className={'btn btn-success btn-sm'}
-                                    onClick={() => {
-                                        hashHistory.push(`/email/${id}/allenbeantwoorden`);
-                                    }}
-                                >
-                                    <Icon icon={mailReplyAll} size={13} />
-                                </button>
-                                <button
-                                    type="button"
-                                    title="Doorsturen"
-                                    className={'btn btn-success btn-sm'}
-                                    onClick={() => {
-                                        hashHistory.push(`/email/${id}/doorsturen`);
-                                    }}
-                                >
-                                    <Icon icon={mailForward} size={13} />
-                                </button>
-                            </div>
-                            <div className="btn-group margin-small margin-10-left" role="group">
-                                <ButtonIcon
-                                    iconName={'glyphicon-trash'}
-                                    onClickAction={removeEmail}
-                                    buttonClassName={removeButtonClass}
-                                />
-                            </div>
+                            {email.id ? (
+                                <>
+                                    <div className="btn-group margin-small" role="group">
+                                        <button
+                                            type="button"
+                                            title="Beantwoorden"
+                                            className={'btn btn-success btn-sm'}
+                                            onClick={() => {
+                                                hashHistory.push(`/email/${id}/beantwoorden`);
+                                            }}
+                                        >
+                                            <Icon icon={mailReply} size={13} />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            title="Allen beantwoorden"
+                                            className={'btn btn-success btn-sm'}
+                                            onClick={() => {
+                                                hashHistory.push(`/email/${id}/allenbeantwoorden`);
+                                            }}
+                                        >
+                                            <Icon icon={mailReplyAll} size={13} />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            title="Doorsturen"
+                                            className={'btn btn-success btn-sm'}
+                                            onClick={() => {
+                                                hashHistory.push(`/email/${id}/doorsturen`);
+                                            }}
+                                        >
+                                            <Icon icon={mailForward} size={13} />
+                                        </button>
+                                    </div>
+                                    <div className="btn-group margin-small margin-10-left" role="group">
+                                        <ButtonIcon
+                                            iconName={'glyphicon-trash'}
+                                            onClickAction={removeEmail}
+                                            buttonClassName={removeButtonClass}
+                                        />
+                                    </div>
+                                </>
+                            ) : null}
                         </div>
                         <div className="col-md-4">
                             <h4 className="text-center text-success margin-small">

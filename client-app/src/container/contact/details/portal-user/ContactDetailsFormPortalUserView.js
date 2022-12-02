@@ -18,14 +18,14 @@ const ContactDetailsFormPortalUserView = props => {
                     <ViewText className={'col-sm-12'} label="Twee factor authenticatie" value={hasTwoFactorEnabled ? 'Ja' : 'Nee'} />
                 </div>
                 <div className="col-sm-1">
-                    {props.showActionButtons ? (
+                    {props.permissions.updateContactPortalUser && props.showActionButtons ? (
                         <a role="button" onClick={props.switchToEdit}>
                             <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
                         </a>
                     ) : (
                         ''
                     )}
-                    {props.showActionButtons ? (
+                    {props.permissions.deleteContactPortalUser && props.showActionButtons ? (
                         <a role="button" onClick={props.toggleDelete}>
                             <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
                         </a>
@@ -40,6 +40,7 @@ const ContactDetailsFormPortalUserView = props => {
 
 const mapStateToProps = state => {
     return {
+        permissions: state.meDetails.permissions,
         portalUser: state.contactDetails.portalUser,
     };
 };

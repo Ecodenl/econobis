@@ -88,6 +88,7 @@ class FullProject extends JsonResource
                 'amountOfParticipants' => $this->participantsProject()->count(),
                 'taskCount' => $this->tasks()->count(),
                 'relatedTasks' => GridTask::collection($this->whenLoaded('tasks')),
+                //todo WM: nog wijzigen (zie bijv. FullIntake
                 'documentCountNotOnPortal' => $this->documentsNotOnPortal()->count(),
                 'documentCountOnPortal' => $this->documentsOnPortal()->count(),
                 'relatedDocumentsNotOnPortal' => FullDocument::collection($this->whenLoaded('documentsNotOnPortal')),

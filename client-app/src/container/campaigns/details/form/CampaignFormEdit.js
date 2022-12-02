@@ -13,7 +13,15 @@ import InputMultiSelect from '../../../../components/form/InputMultiSelect';
 
 moment.locale('nl');
 
-function CampaignFormEdit({ campaign, fetchCampaignData, switchToView, status, types, measureCategories }) {
+function CampaignFormEdit({
+    campaign,
+    fetchCampaignData,
+    switchToView,
+    status,
+    types,
+    measureCategories,
+    opportunityActions,
+}) {
     const [formState, setFormState] = useState({
         ...campaign,
         description: campaign.description || '',
@@ -21,6 +29,8 @@ function CampaignFormEdit({ campaign, fetchCampaignData, switchToView, status, t
         typeId: campaign.type?.id || '',
         measureCategoryIds: campaign.measureCategories?.map(item => item.id).join(','),
         measureCategoryIdsSelected: campaign.measureCategories ? campaign.measureCategories : [],
+        opportunityActionIds: campaign.opportunityActions?.map(item => item.id).join(','),
+        opportunityActionIdsSelected: campaign.opportunityActions ? campaign.opportunityActions : [],
     });
     const [errors, setErrors] = useState({
         name: false,
@@ -53,6 +63,15 @@ function CampaignFormEdit({ campaign, fetchCampaignData, switchToView, status, t
             ...formState,
             measureCategoryIds: measureCategoryIds,
             measureCategoryIdsSelected: selectedOption,
+        });
+    }
+
+    function handleOpportunityActionIds(selectedOption) {
+        const opportunityActionIds = selectedOption ? selectedOption.map(item => item.id).join(',') : '';
+        setFormState({
+            ...formState,
+            opportunityActionIds: opportunityActionIds,
+            opportunityActionIdsSelected: selectedOption,
         });
     }
 
@@ -147,12 +166,25 @@ function CampaignFormEdit({ campaign, fetchCampaignData, switchToView, status, t
                     value={formState.statusId}
                     onChangeAction={handleInputChange}
                 />
+            </div>
+
+            <div className="row">
                 <InputMultiSelect
                     label="Aangeboden maatregelen"
                     name="measureCategoryIds"
                     value={formState.measureCategoryIdsSelected}
                     options={measureCategories}
                     onChangeAction={handleMeasureCategoryIds}
+                />
+            </div>
+
+            <div className="row">
+                <InputMultiSelect
+                    label="Acties voor kans"
+                    name="opportunityActionIds"
+                    value={formState.opportunityActionIdsSelected}
+                    options={opportunityActions}
+                    onChangeAction={handleOpportunityActionIds}
                 />
             </div>
 
@@ -183,6 +215,7 @@ const mapStateToProps = state => {
         status: state.systemData.campaignStatuses,
         types: state.systemData.campaignTypes,
         measureCategories: state.systemData.measureCategories,
+        opportunityActions: state.systemData.opportunityActions,
     };
 };
 

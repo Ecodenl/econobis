@@ -26,6 +26,9 @@ import FinancialOverviewDocuments from './container/financial-overview-documents
 import { ThemeSettingsProvider } from './context/ThemeSettingsContext';
 import AboutUsAdministration from './container/about-us/details';
 import ProjectMollieRedirectWithContext from './container/register/mollie-redirect';
+import CoachInspectList from './container/inspect/list';
+import CoachInspectDetails from './container/inspect/details';
+import DocumentPreview from './container/inspect/details/document';
 
 function App() {
     return (
@@ -51,6 +54,12 @@ function App() {
                             <ProtectedRoute path="/wijzig-inloggegevens" component={ChangeAccount} />
                             <ProtectedRoute path="/over-ons" component={AboutUs} />
                             <ProtectedRoute path="/over-ons-organisatie/:id" component={AboutUsAdministration} />
+                            <ProtectedRoute
+                                path="/schouwen/:quotationRequestId/document/:id"
+                                component={DocumentPreview}
+                            />
+                            <ProtectedRoute path="/schouwen/:id" component={CoachInspectDetails} />
+                            <ProtectedRoute path="/schouwen" component={CoachInspectList} />
                             <PublicRoute path="/login" component={Login} />
                             <PublicRoute path="/two-factor/confirm" component={TwoFactorConfirm} />
                             <PublicRoute path="/two-factor/recover" component={TwoFactorRecover} />

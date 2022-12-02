@@ -36,12 +36,20 @@ const AddressDetailsFormAddressEnergySupplierView = props => {
                 props.addressEnergySupplierNewOrEditOpen == false &&
                 (props.permissions.updatePerson || props.permissions.updateOrganisation) ? (
                     <>
-                        <a role="button" onClick={props.openEdit} title="Wijzigen Leveranciergegevens">
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
-                        </a>
-                        <a role="button" onClick={props.toggleDelete} title="Verwijderen Leveranciergegevens">
-                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
-                        </a>
+                        {props.permissions.updateContactAddress ? (
+                            <a role="button" onClick={props.openEdit} title="Wijzigen Leveranciergegevens">
+                                <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            </a>
+                        ) : (
+                            ''
+                        )}
+                        {props.permissions.deleteContactAddress ? (
+                            <a role="button" onClick={props.toggleDelete} title="Verwijderen Leveranciergegevens">
+                                <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                            </a>
+                        ) : (
+                            ''
+                        )}
                     </>
                 ) : (
                     ''

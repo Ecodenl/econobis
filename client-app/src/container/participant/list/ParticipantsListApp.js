@@ -482,7 +482,7 @@ class ParticipantsListApp extends Component {
                             toggleParticipantCheck={this.toggleParticipantCheck}
                             participantIds={this.state.participantIds}
                             toggleCheckedAll={this.toggleCheckedAll}
-                            projects={this.state.projects}
+                            projects={this.state.projects ? this.state.projects : []}
                         />
                     </div>
                 </PanelBody>

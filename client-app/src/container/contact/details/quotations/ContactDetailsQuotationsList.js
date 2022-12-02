@@ -27,7 +27,7 @@ const ContactDetailsQuotationsList = props => {
 
 const mapStateToProps = state => {
     return {
-        quotationRequests: state.contactDetails.organisation.quotationRequests,
+        quotationRequests: state.contactDetails.quotationRequests,
     };
 };
 export default connect(mapStateToProps)(ContactDetailsQuotationsList);

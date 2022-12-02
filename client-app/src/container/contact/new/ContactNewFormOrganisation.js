@@ -43,6 +43,7 @@ class ContactNewFormOrganisation extends Component {
                 ibanAttn: '',
                 ownerId: props.userId,
                 didAgreeAvg: false,
+                isCoach: false,
             },
             address: {
                 street: '',
@@ -347,6 +348,7 @@ class ContactNewFormOrganisation extends Component {
             ibanAttn,
             ownerId,
             didAgreeAvg,
+            isCoach,
         } = this.state.organisation;
 
         return (
@@ -449,6 +451,16 @@ class ContactNewFormOrganisation extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
+
+                {/* vooralsnog alleen bij persons, organisations kunnen al gekoppeld worden aan offerteverzoeken */}
+                {/*<div className="row">*/}
+                {/*    <InputToggle*/}
+                {/*        label="Is coach"*/}
+                {/*        name="isCoach"*/}
+                {/*        value={isCoach}*/}
+                {/*        onChangeAction={this.handleInputChange}*/}
+                {/*    />*/}
+                {/*</div>*/}
 
                 <div className="margin-10-top">
                     <PanelHeader>

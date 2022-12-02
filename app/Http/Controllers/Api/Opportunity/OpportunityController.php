@@ -45,9 +45,10 @@ class OpportunityController extends ApiController
     {
         $opportunity->load([
             'measureCategory',
-            'quotationRequests.organisation',
+            'quotationRequests.organisationOrCoach',
             'quotationRequests.createdBy',
             'quotationRequests.status',
+            'quotationRequests.opportunityAction',
             'status',
             'evaluationRealised',
             'evaluationStatisfied',
@@ -56,6 +57,7 @@ class OpportunityController extends ApiController
             'updatedBy',
             'intake.contact',
             'intake.campaign',
+            'intake.campaign.opportunityActions',
             'tasks',
             'notes',
             'documents',
@@ -63,6 +65,13 @@ class OpportunityController extends ApiController
         ]);
 
         $opportunity->relatedEmailsSent = $this->getRelatedEmails($opportunity->id, 'sent');
+
+        $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
+        if($teamDocumentCreatedFromIds){
+            $opportunity->relatedDocuments = $opportunity->documents()->whereIn('document_created_from_id', $teamDocumentCreatedFromIds)->get();
+        } else{
+            $opportunity->relatedDocuments = $opportunity->documents()->get();
+        }
 
         return FullOpportunity::make($opportunity);
     }
@@ -165,7 +174,16 @@ class OpportunityController extends ApiController
 
     public function peek()
     {
-        return OpportunityPeek::collection(Opportunity::orderBy('id')->get());
+        $teamContactIds = Auth::user()->getTeamContactIds();
+        if ($teamContactIds){
+            $opportunities = Opportunity::whereHas('intake', function($query) use($teamContactIds){
+                $query->whereIn('contact_id', $teamContactIds);
+            })->orderBy('id')->get();
+        }else{
+            $opportunities = Opportunity::orderBy('id')->get();
+        }
+
+        return OpportunityPeek::collection($opportunities);
     }
 
     // Data for dashboard chart
@@ -201,8 +219,9 @@ class OpportunityController extends ApiController
         return $this->show($opportunity);
     }
 
-    public function getRelatedEmails($id, $folder)
+    protected function getRelatedEmails($id, $folder)
     {
-        return Email::where('opportunity_id', $id)->where('folder', $folder)->get();
+        $mailboxIds = Auth::user()->mailboxes()->pluck('mailbox_id');
+        return Email::where('opportunity_id', $id)->where('folder', $folder)->whereIn('mailbox_id', $mailboxIds)->get();
     }
 }

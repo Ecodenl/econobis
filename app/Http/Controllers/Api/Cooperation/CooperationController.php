@@ -20,7 +20,7 @@ class CooperationController extends ApiController
 {
     public function show()
     {
-        $this->authorize('manage', Cooperation::class);
+        $this->authorize('view', Cooperation::class);
 
         if(Cooperation::doesntExist()) return null;
 
@@ -33,6 +33,8 @@ class CooperationController extends ApiController
 
     public function store(CreateCooperation $request)
     {
+        $this->authorize('manage', Cooperation::class);
+
         $cooperation = new Cooperation($request->validatedSnake());
         if($cooperation->hoom_email_template_id == '') {
             $cooperation->hoom_email_template_id = null;
@@ -57,12 +59,17 @@ class CooperationController extends ApiController
 
     public function update(UpdateCooperation $request, Cooperation $cooperation)
     {
+        $this->authorize('manage', Cooperation::class);
+
         $cooperation->fill($request->validatedSnake());
         if($cooperation->hoom_email_template_id == '') {
             $cooperation->hoom_email_template_id = null;
         }
         if($cooperation->hoom_group_id == '') {
             $cooperation->hoom_group_id = null;
+        }
+        if($cooperation->inspection_planned_mailbox_id == '') {
+            $cooperation->inspection_planned_mailbox_id = null;
         }
         $cooperation->send_email = $request->boolean('sendEmail');
         $cooperation->use_laposta = $request->boolean('useLaposta');
@@ -91,6 +98,8 @@ class CooperationController extends ApiController
 
     private function storeLogo($attachment, $cooperation)
     {
+        $this->authorize('manage', Cooperation::class);
+
         if (!$attachment->isValid()) {
             abort('422', 'Error uploading file');
         }

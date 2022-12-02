@@ -31,7 +31,7 @@ class MeasuresListItem extends Component {
     }
 
     render() {
-        const { id, number, measureCategory, name } = this.props;
+        const { id, number, measureCategory, name, visible } = this.props;
         return (
             <tr
                 className={this.state.highlightRow}
@@ -42,6 +42,7 @@ class MeasuresListItem extends Component {
                 <td>{number}</td>
                 <td>{measureCategory && measureCategory.name}</td>
                 <td>{name}</td>
+                <td>{visible ? 'Ja' : 'Nee'}</td>
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>

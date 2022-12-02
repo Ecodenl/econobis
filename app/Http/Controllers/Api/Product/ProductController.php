@@ -27,6 +27,8 @@ class ProductController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', Product::class);
+
         $products = $requestQuery->get();
 
         $products->load(['priceHistory', 'administration']);
@@ -40,6 +42,8 @@ class ProductController extends ApiController
 
     public function show(Product $product)
     {
+        $this->authorize('view', Product::class);
+
         $product->load([
             'priceHistory',
             'createdBy',

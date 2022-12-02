@@ -403,7 +403,7 @@ class ExtraFilter extends RequestExtraFilter
             || $type == 'gt'
             || $type == 'gte'
         ){
-            RequestFilter::applyFilterWhereRaw($query, 'cast(created_at as date)', $type, "'" . $data . "'");
+            RequestFilter::applyFilterWhereRaw($query, 'cast(`contacts`.`created_at` as date)', $type, "'" . $data . "'");
         } else {
             RequestFilter::applyFilter($query, 'created_at', $type, $data);
         }
@@ -731,7 +731,7 @@ class ExtraFilter extends RequestExtraFilter
                                 static::applyFilter($query, 'created_at', $intakeDateStartFilter['type'], $intakeDateStartFilter['data']);
                             } else {
                                 if($intakeDateStartFilter['data']) {
-                                    static::applyFilterWhereRaw($query, 'cast(created_at as date)', $intakeDateStartFilter['type'], "'" . $intakeDateStartFilter['data'] . "'");
+                                    static::applyFilterWhereRaw($query, 'cast(`intakes`.`created_at` as date)', $intakeDateStartFilter['type'], "'" . $intakeDateStartFilter['data'] . "'");
                                 }
                             }
                         }
@@ -740,7 +740,7 @@ class ExtraFilter extends RequestExtraFilter
                                 static::applyFilter($query, 'created_at', $intakeDateFinishFilter['type'], $intakeDateFinishFilter['data']);
                             } else {
                                 if($intakeDateFinishFilter['data']){
-                                    static::applyFilterWhereRaw($query, 'cast(created_at as date)', $intakeDateFinishFilter['type'], "'" . $intakeDateFinishFilter['data'] . "'");
+                                    static::applyFilterWhereRaw($query, 'cast(`intakes`.`created_at` as date)', $intakeDateFinishFilter['type'], "'" . $intakeDateFinishFilter['data'] . "'");
                                 }
                             }
                         }
@@ -782,7 +782,7 @@ class ExtraFilter extends RequestExtraFilter
                                 static::applyFilter($query, 'created_at', $intakeDateStartFilter['type'], $intakeDateStartFilter['data']);
                             } else {
                                 if($intakeDateStartFilter['data']) {
-                                    static::applyFilterWhereRaw($query, 'cast(created_at as date)', $intakeDateStartFilter['type'], "'" . $intakeDateStartFilter['data'] . "'");
+                                    static::applyFilterWhereRaw($query, 'cast(`intakes`.`created_at` as date)', $intakeDateStartFilter['type'], "'" . $intakeDateStartFilter['data'] . "'");
                                 }
                             }
                         }
@@ -791,7 +791,7 @@ class ExtraFilter extends RequestExtraFilter
                                 static::applyFilter($query, 'created_at', $intakeDateFinishFilter['type'], $intakeDateFinishFilter['data']);
                             } else {
                                 if($intakeDateFinishFilter['data']) {
-                                    static::applyFilterWhereRaw($query, 'cast(created_at as date)', $intakeDateFinishFilter['type'], "'" . $intakeDateFinishFilter['data'] . "'");
+                                    static::applyFilterWhereRaw($query, 'cast(`intakes`.`created_at` as date)', $intakeDateFinishFilter['type'], "'" . $intakeDateFinishFilter['data'] . "'");
                                 }
                             }
                         }

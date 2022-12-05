@@ -243,6 +243,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                                 value={values.hoomEmailTemplateId}
                                 onChangeAction={(value, name) => setFieldValue(name, value)}
                                 isLoading={isLoading}
+                                clearable={true}
                             />
                             <InputReactSelect
                                 label={'Hoom groep'}
@@ -251,6 +252,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                                 value={values.hoomGroupId}
                                 onChangeAction={(value, name) => setFieldValue(name, value)}
                                 isLoading={isLoading}
+                                clearable={true}
                             />
                         </div>
                         <div className="row">
@@ -347,17 +349,8 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
                                 value={values.inspectionPlannedEmailTemplateId}
                                 onChangeAction={(value, name) => setFieldValue(name, value)}
                                 isLoading={isLoading}
+                                clearable={true}
                             />
-                            <InputReactSelect
-                                label={'Schouwen opname e-mail template'}
-                                name={'inspectionRecordedEmailTemplateId'}
-                                options={emailTemplates}
-                                value={values.inspectionRecordedEmailTemplateId}
-                                onChangeAction={(value, name) => setFieldValue(name, value)}
-                                isLoading={isLoading}
-                            />
-                        </div>
-                        <div className="row">
                             <InputReactSelect
                                 label={'Mailbox afspraak bevestigingen'}
                                 name={'inspectionPlannedMailboxId'}
@@ -366,6 +359,29 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
                                 value={values.inspectionPlannedMailboxId}
                                 onChangeAction={(value, name) => setFieldValue(name, value)}
                                 isLoading={isLoading}
+                                clearable={true}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputReactSelect
+                                label={'Schouwen opname e-mail template'}
+                                name={'inspectionRecordedEmailTemplateId'}
+                                options={emailTemplates}
+                                value={values.inspectionRecordedEmailTemplateId}
+                                onChangeAction={(value, name) => setFieldValue(name, value)}
+                                isLoading={isLoading}
+                                clearable={true}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputReactSelect
+                                label={'Schouwen uitgebracht e-mail template'}
+                                name={'inspectionReleasedEmailTemplateId'}
+                                options={emailTemplates}
+                                value={values.inspectionReleasedEmailTemplateId}
+                                onChangeAction={(value, name) => setFieldValue(name, value)}
+                                isLoading={isLoading}
+                                clearable={true}
                             />
                         </div>
                     </PanelBody>

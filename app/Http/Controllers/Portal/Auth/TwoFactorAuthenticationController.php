@@ -16,8 +16,11 @@ class TwoFactorAuthenticationController extends Controller
      */
     public function status(Request $request)
     {
+        $token = $request->header('TwoFactorToken');
+
         return response()->json([
             'hasTwoFactorEnabled' => $request->user()->hasEnabledTwoFactorAuthentication(),
+            'hasValidToken' => $request->user()->hasValidTwoFactorToken($token),
         ]);
     }
 

@@ -1913,7 +1913,6 @@ class ExternalWebformController extends Controller
                 $this->log('Aantal woondossier maatregelen type merken (' . count($measureTypeBrands) . ') komt niet overeen met aantal maatregelen ids (' . count($measuresIds) . ').');
             }
         }
-        if($measureAnswers)
         $housingFile = HousingFile::where('address_id', $address->id)->orderBy('id', 'desc')->first();
         // Nog geen woondossier op adres, nieuw aanmaken
         if (!$housingFile) {

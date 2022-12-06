@@ -5,7 +5,7 @@ import EmailAnswerAttachmentsItem from './EmailAnswerAttachmentsItem';
 const EmailAnswerAttachmentsList = props => {
     let { attachments, deleteAttachment } = props;
 
-    attachments = attachments.filter(a => !a.cid);
+    attachments = attachments && attachments.filter(a => !a.cid);
 
     return (
         <div>

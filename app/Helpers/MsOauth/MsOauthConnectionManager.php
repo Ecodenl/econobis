@@ -44,8 +44,8 @@ class MsOauthConnectionManager extends Controller
         if ($token != null) {
 //todo oauth WM: opschonen
 //
-            Log::info('Token in connect: ');
-            Log::info(json_decode($token, true));
+//            Log::info('Token in connect: ');
+//            Log::info(json_decode($token, true));
 
             $this->appClient = new Graph();
             $this->appClient->setAccessToken($token);
@@ -72,8 +72,8 @@ class MsOauthConnectionManager extends Controller
         $providedState = $request->query('state');
 // todo WM oauth: opschonen
 //
-        Log::info('expectedState: ' . $expectedState);
-        Log::info('providedState: ' . $providedState);
+//        Log::info('expectedState: ' . $expectedState);
+//        Log::info('providedState: ' . $providedState);
 
         if (!isset($expectedState)) {
             // If there is no expected state in the session,
@@ -116,10 +116,10 @@ class MsOauthConnectionManager extends Controller
                 ]);
 // todo WM oauth: nog testen en opschonen
 //
-                Log::info('accessToken (full): ' . $accessToken);
-                Log::info('accessToken: ' . $accessToken->getToken());
-                Log::info('refreshToken: ' . $accessToken->getRefreshToken());
-                Log::info('tokenExpires: ' . $accessToken->getExpires());
+//                Log::info('accessToken (full): ' . $accessToken);
+//                Log::info('accessToken: ' . $accessToken->getToken());
+//                Log::info('refreshToken: ' . $accessToken->getRefreshToken());
+//                Log::info('tokenExpires: ' . $accessToken->getExpires());
 
                 $this->appClient = new Graph();
                 $this->appClient->setAccessToken(json_encode($accessToken));

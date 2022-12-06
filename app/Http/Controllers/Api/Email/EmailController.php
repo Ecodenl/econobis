@@ -14,7 +14,7 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 use App\Eco\EmailAddress\EmailAddress;
-use App\Helpers\Settings\PortalSettings;
+use App\Http\Controllers\Controller;
 use App\Jobs\Email\SendEmailsWithVariables;
 use App\Eco\Email\Jobs\StoreConceptEmail;
 use App\Eco\Mailbox\Mailbox;
@@ -31,13 +31,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-class EmailController
+class EmailController extends Controller
 {
 
     public function grid(RequestQuery $requestQuery, $folder)
     {
-        $user = Auth::user();
+        $this->authorize('view', Email::class);
 
+        $user = Auth::user();
         $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
 
         $queryBuilderPagination = $requestQuery->getQuery();
@@ -78,6 +79,9 @@ class EmailController
     }
 
     public function show(Email $email){
+        $this->authorize('view', Email::class);
+        $this->checkMailboxAutorized($email->mailbox_id);
+
         $email->load('contacts', 'attachments', 'closedBy', 'removedBy', 'intake', 'task', 'quotationRequest', 'measure', 'opportunity', 'order', 'invoice', 'responsibleUser',
             'responsibleTeam');
 
@@ -85,6 +89,9 @@ class EmailController
     }
 
     public function getReply(Email $email){
+        $this->authorize('view', Email::class);
+        $this->checkMailboxAutorized($email->mailbox_id);
+
         //attachments niet laden!
         $email->load('contacts');
 
@@ -114,6 +121,9 @@ class EmailController
     }
 
     public function getReplyAll(Email $email){
+        $this->authorize('view', Email::class);
+        $this->checkMailboxAutorized($email->mailbox_id);
+
         //attachments niet laden!
         $email->load('contacts');
 
@@ -165,6 +175,9 @@ class EmailController
     }
 
     public function getForward(Email $email){
+        $this->authorize('view', Email::class);
+        $this->checkMailboxAutorized($email->mailbox_id);
+
         $email->load('contacts', 'attachments');
 
         //Forward logic:
@@ -194,11 +207,16 @@ class EmailController
     }
 
     public function getEmailGroup(ContactGroup $contactGroup){
+        $this->authorize('view', Email::class);
+
         return $contactGroup->name . ' (' . $contactGroup->all_contacts->count() . ')';
     }
 
     public function update(Email $email, RequestInput $input, Request $request)
     {
+        $this->authorize('view', Email::class);
+        $this->checkMailboxAutorized($email->mailbox_id);
+
         $data = $input
             ->integer('intakeId')->validate('exists:intakes,id')->onEmpty(null)->alias('intake_id')->next()
             ->integer('quotationRequestId')->validate('exists:quotation_requests,id')->onEmpty(null)->alias('quotation_request_id')->next()
@@ -267,6 +285,9 @@ class EmailController
 
     public function send(Mailbox $mailbox, Email $email, Request $request)
     {
+        $this->authorize('view', Email::class);
+        $this->checkMailboxAutorized($mailbox->id);
+
         set_time_limit(0);
         $sanitizedData = $this->getEmailData($request, true);
         $email->to = $sanitizedData['to'];
@@ -337,6 +358,9 @@ class EmailController
 
     public function storeConcept(Mailbox $mailbox, RequestInput $requestInput)
     {
+        $this->authorize('view', Email::class);
+        $this->checkMailboxAutorized($mailbox->id);
+
         $data = $requestInput
             ->string('subject')->onEmpty(null)->next()
             ->string('htmlBody')->onEmpty('')->alias('html_body')->next()
@@ -350,6 +374,9 @@ class EmailController
 
     public function storeConcept2(Mailbox $mailbox, Email $email, Request $request)
     {
+        $this->authorize('view', Email::class);
+        $this->checkMailboxAutorized($mailbox->id);
+
         $this->updateConcept2($email, $request);
 
         $this->checkStorageDir($mailbox->id);
@@ -374,7 +401,12 @@ class EmailController
     }
 
     public function peek(){
-        $contacts = Contact::select('id', 'full_name')->with('emailAddresses')->get();
+        $teamContactIds = Auth::user()->getTeamContactIds();
+        if ($teamContactIds){
+            $contacts = Contact::select('id', 'full_name')->with('emailAddresses')->whereIn('contacts.id', $teamContactIds)->orderBy('full_name')->get();
+        }else{
+            $contacts = Contact::select('id', 'full_name')->with('emailAddresses')->orderBy('full_name')->get();
+        }
 
         foreach($contacts as $contact) {
             foreach ($contact->emailAddresses as $emailAddress) {
@@ -401,7 +433,12 @@ class EmailController
 
     public function search(Request $request)
     {
-        $contacts = Contact::select(DB::raw("`email_addresses`.`id`, concat(`contacts`.`full_name`, ' (', `email_addresses`.`email`, ')') as name, `email_addresses`.`email` as email"));
+        $teamContactIds = Auth::user()->getTeamContactIds();
+        if ($teamContactIds){
+            $contacts = Contact::select(DB::raw("`email_addresses`.`id`, concat(`contacts`.`full_name`, ' (', `email_addresses`.`email`, ')') as name, `email_addresses`.`email` as email"))->whereIn('contacts.id', $teamContactIds);
+        }else{
+            $contacts = Contact::select(DB::raw("`email_addresses`.`id`, concat(`contacts`.`full_name`, ' (', `email_addresses`.`email`, ')') as name, `email_addresses`.`email` as email"));
+        }
         $contacts->join('email_addresses', function ($join) {
             $join->on('email_addresses.contact_id', '=', 'contacts.id')
                 ->whereNull('email_addresses.deleted_at');
@@ -420,6 +457,9 @@ class EmailController
 
     public function downloadEmailAttachment(EmailAttachment $emailAttachment)
     {
+        $this->authorize('view', Email::class);
+        $this->checkMailboxAutorized($emailAttachment->email->mailbox_id);
+
         $filePath = Storage::disk('mail_attachments')->getDriver()->getAdapter()->applyPathPrefix($emailAttachment->filename);
 
         $contactId = '';
@@ -434,6 +474,9 @@ class EmailController
 
     public function storeEmailAttachment(Email $email, Request $request)
     {
+        $this->authorize('view', Email::class);
+        $this->checkMailboxAutorized($email->mailbox_id);
+
         //get attachment
         $attachments = $request->file('attachments') ? $request->file('attachments') : [];
 
@@ -444,6 +487,9 @@ class EmailController
 
     public function deleteEmailAttachment(EmailAttachment $emailAttachment)
     {
+        $this->authorize('view', Email::class);
+        $this->checkMailboxAutorized($emailAttachment->email->mailbox_id);
+
         //delete real file (only when count on filename is 1, otherwise this attachment is also in use in another email because of a reply or send through)
         $countAttachment = EmailAttachment::where('filename', $emailAttachment->filename)->count();
         if($countAttachment == 1){
@@ -455,6 +501,8 @@ class EmailController
     }
 
     public function updateConcept(Email $email, RequestInput $requestInput){
+        $this->authorize('view', Email::class);
+        $this->checkMailboxAutorized($email->mailbox_id);
 
         $data = $requestInput
             ->string('subject')->onEmpty(null)->next()
@@ -471,6 +519,9 @@ class EmailController
     }
 
     public function updateConcept2(Email $email, Request $request){
+        $this->authorize('view', Email::class);
+        $this->checkMailboxAutorized($email->mailbox_id);
+
         $sanitizedData = $this->getEmailData($request, false);
         $email->to = $sanitizedData['to'];
         $email->cc = $sanitizedData['cc'];
@@ -486,13 +537,96 @@ class EmailController
     }
 
     public function sendConcept(Email $email, Request $request){
+        $this->authorize('view', Email::class);
+        $this->checkMailboxAutorized($email->mailbox_id);
+
         $mailbox = Mailbox::find($email->mailbox->id);
         $this->send($mailbox, $email, $request);
 
         return FullEmail::make($email);
     }
 
-    public function getEmailData(Request $request, $forSend = false){
+    public function setEmailStatus(Email $email, $emailStatusId){
+        $this->authorize('view', Email::class);
+        $this->checkMailboxAutorized($email->mailbox_id);
+
+        //als hij van afgehandeld terug wordt gezet
+        if($email->status === 'closed' && $emailStatusId != 'closed'){
+            $email->closedBy()->dissociate();
+            $email->date_closed = null;
+        }
+
+        $email->status = $emailStatusId;
+
+        if($emailStatusId == 'closed'){
+            $email->closedBy()->associate(Auth::user());
+            $email->date_closed = new Carbon();
+        }
+
+        $email->save();
+
+        return FullEmail::make($email);
+    }
+
+    public function moveEmailToFolder(Request $request, Email $email)
+    {
+        $this->authorize('view', Email::class);
+        $this->checkMailboxAutorized($email->mailbox_id);
+
+        $folder = $request->input('folder');
+
+        if($folder != 'inbox' && $folder != 'sent' && $folder != 'removed'){
+            abort(406, 'Map niet toegestaan.');
+        }
+        if($folder == 'removed'){
+            $email->removedBy()->associate(Auth::user());
+            $email->date_removed = new Carbon();
+        }
+        if($folder != 'removed'){
+            $email->removedBy()->dissociate();
+            $email->date_removed = null;
+        }
+
+        $email->folder = $folder;
+
+        $email->save();
+
+        return FullEmail::make($email);
+    }
+
+    public function destroy(Email $email){
+        $this->authorize('view', Email::class);
+        $this->checkMailboxAutorized($email->mailbox_id);
+
+        $email->delete();
+    }
+
+    public function getAmountOfOpenEmails(){
+        $this->authorize('view', Email::class);
+
+        $user = Auth::user();
+        $userId = Auth::id();
+
+        $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
+
+        $teamIds = [];
+
+        foreach($user->teams as $team){
+            array_push($teamIds, $team->id);
+        }
+
+        $query = Email::whereIn('mailbox_id', $mailboxIds)->where('status', '!=', 'closed')->where('folder', 'inbox');
+
+        $query->where(function($query) use ($userId, $teamIds) {
+            $query->where('emails.responsible_user_id', $userId);
+            $query->orWhereIn('emails.responsible_team_id', $teamIds);
+
+        });
+
+        return $query->count();
+    }
+
+    protected function getEmailData(Request $request, $forSend = false){
         //Get all basic mail info
         $data = $request->validate([
             'to' => 'required',
@@ -617,7 +751,7 @@ class EmailController
         return $sanitizedData;
     }
 
-    public function createEmailContactRelations(Email $email, Request $request)
+    protected function createEmailContactRelations(Email $email, Request $request)
     {
         $contactIds = [];
         $oldEmailContactIds = [];
@@ -674,7 +808,7 @@ class EmailController
         $email->contacts()->sync(array_unique(array_merge($contactIds, $oldEmailContactIds)));
     }
 
-    public function storeEmailAttachments($attachments, $mailbox_id, $email_id){
+    protected function storeEmailAttachments($attachments, $mailbox_id, $email_id){
         //store attachments
         foreach ($attachments as $attachment) {
             if(!$attachment->isValid()) abort('422', 'Error uploading file');
@@ -689,83 +823,13 @@ class EmailController
         }
     }
 
-    public function checkStorageDir($mailbox_id){
+    protected function checkStorageDir($mailbox_id){
         //Check if storage map exists
         $storageDir = Storage::disk('mail_attachments')->getDriver()->getAdapter()->getPathPrefix() . DIRECTORY_SEPARATOR . 'mailbox_' . $mailbox_id . DIRECTORY_SEPARATOR . 'outbox';
 
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);
         }
-    }
-
-    public function setEmailStatus(Email $email, $emailStatusId){
-        //als hij van afgehandeld terug wordt gezet
-
-        if($email->status === 'closed' && $emailStatusId != 'closed'){
-            $email->closedBy()->dissociate();
-            $email->date_closed = null;
-        }
-
-        $email->status = $emailStatusId;
-
-        if($emailStatusId == 'closed'){
-            $email->closedBy()->associate(Auth::user());
-            $email->date_closed = new Carbon();
-        }
-
-        $email->save();
-
-        return FullEmail::make($email);
-    }
-
-    public function moveEmailToFolder(Request $request, Email $email)
-    {
-        $folder = $request->input('folder');
-
-        if($folder != 'inbox' && $folder != 'sent' && $folder != 'removed'){
-            abort(406, 'Map niet toegestaan.');
-        }
-        if($folder == 'removed'){
-            $email->removedBy()->associate(Auth::user());
-            $email->date_removed = new Carbon();
-        }
-        if($folder != 'removed'){
-            $email->removedBy()->dissociate();
-            $email->date_removed = null;
-        }
-
-        $email->folder = $folder;
-
-        $email->save();
-
-        return FullEmail::make($email);
-    }
-
-    public function destroy(Email $email){
-        $email->delete();
-    }
-
-    public function getAmountOfOpenEmails(){
-        $user = Auth::user();
-        $userId = Auth::id();
-
-        $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
-
-        $teamIds = [];
-
-        foreach($user->teams as $team){
-            array_push($teamIds, $team->id);
-        }
-
-        $query = Email::whereIn('mailbox_id', $mailboxIds)->where('status', '!=', 'closed')->where('folder', 'inbox');
-
-        $query->where(function($query) use ($userId, $teamIds) {
-            $query->where('emails.responsible_user_id', $userId);
-            $query->orWhereIn('emails.responsible_team_id', $teamIds);
-
-        });
-
-        return $query->count();
     }
 
     /**
@@ -787,5 +851,16 @@ class EmailController
         $body .= '<strong>Onderwerp: </strong>' . $email->subject . '<br />
         </p>' . $email->html_body;
         return $body;
+    }
+
+    /**
+     * @param Email $email
+     */
+    protected function checkMailboxAutorized($mailboxId): void
+    {
+        $user = Auth::user();
+        if (!$user->mailboxes()->where('mailboxes.id', $mailboxId)->exists()) {
+            abort(403, 'Niet geautoriseerd.');
+        }
     }
 }

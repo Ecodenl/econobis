@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
+import { connect } from 'react-redux';
 import TeamDetailsUsersView from './TeamDetailsUsersView';
 import TeamDetailsUsersItemDelete from './TeamDetailsUsersDelete';
-import { connect } from 'react-redux';
 
 class TeamDetailsUsersItem extends Component {
     constructor(props) {

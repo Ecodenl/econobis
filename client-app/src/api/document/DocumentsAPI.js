@@ -28,4 +28,17 @@ export default {
                 console.log(error);
             });
     },
+
+    fetchDefaultEmailDocumentsPeek: () => {
+        const requestUrl = `${URL_DOCUMENT}/default-email-documents-peek`;
+
+        return axiosInstance
+            .get(requestUrl)
+            .then(function(response) {
+                return response.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    },
 };

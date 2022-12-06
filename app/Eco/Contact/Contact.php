@@ -27,9 +27,11 @@ use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Portal\PortalUser;
+use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\Task\Task;
 use App\Eco\Twinfield\TwinfieldCustomerNumber;
+use App\Eco\Twinfield\TwinfieldLog;
 use App\Eco\User\User;
 use App\Helpers\Settings\PortalSettings;
 use App\Http\Resources\ContactGroup\GridContactGroup;
@@ -51,6 +53,7 @@ class Contact extends Model
 
     protected $casts = [
         'liable' => 'boolean',
+        'is_coach' => 'boolean',
     ];
 
     protected $dates = [
@@ -65,7 +68,7 @@ class Contact extends Model
     //Per administratie heeft het contact een ander twinfield nummer
     public function twinfieldNumbers()
     {
-        return $this->hasMany(TwinfieldcustomerNumber::class);
+        return $this->hasMany(TwinfieldCustomerNumber::class);
     }
 
     public function addresses()
@@ -150,7 +153,12 @@ class Contact extends Model
 
     public function groups()
     {
-        return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since')->orderBy('contact_groups.id', 'desc');
+        $teamContactGroupIds = Auth::user()->getTeamContactGroupIds();
+        if ($teamContactGroupIds){
+            return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->whereIn('contact_groups.id', $teamContactGroupIds)->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since')->orderBy('contact_groups.id', 'desc');
+        }else{
+            return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since')->orderBy('contact_groups.id', 'desc');
+        }
     }
     public function selectedGroups()
     {
@@ -171,6 +179,18 @@ class Contact extends Model
         return ($this->type_id == ContactType::ORGANISATION);
     }
 
+    public function isCoach()
+    {
+        return $this->is_coach;
+
+    }
+
+    public function getIsInCoachGroupAttribute()
+    {
+        return $this->groups()->where('is_coach_group', true)->exists();;
+    }
+
+
     public function getType()
     {
         if(!$this->type_id) return null;
@@ -188,6 +208,10 @@ class Contact extends Model
         return $this->hasManyThrough(Opportunity::class, Intake::class)->orderBy('opportunities.id', 'desc');
     }
 
+    public function quotationRequests(){
+        return $this->hasMany(QuotationRequest::class);
+    }
+
     // Only an unfinished task is a task
     public function tasks()
     {
@@ -200,8 +224,12 @@ class Contact extends Model
         return $this->hasMany(Task::class)->where('finished', true)->orderBy('tasks.id', 'desc');
     }
 
-    public function campaigns(){
-        return $this->belongsToMany(Campaign::class);
+// todo WM: opschonen, dit is volgens mij geen relation of wordt anders niet gebruikt
+//    public function campaigns(){
+//        return $this->belongsToMany(Campaign::class);
+//    }
+    public function coachCampaigns(){
+        return $this->belongsToMany(Campaign::class, 'campaign_coach');
     }
 
     public function responses(){
@@ -253,7 +281,10 @@ class Contact extends Model
 
     public function primaryOccupations()
     {
-        return $this->hasMany(OccupationContact::class, 'primary_contact_id')->join('contacts', 'contact_id', '=', 'contacts.id')->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')->orderBy('contacts.full_name');
+        return $this->hasMany(OccupationContact::class, 'primary_contact_id')
+            ->join('contacts', 'contact_id', '=', 'contacts.id')
+            ->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')
+            ->orderBy('contacts.full_name');
     }
 
     public function occupations()
@@ -261,7 +292,8 @@ class Contact extends Model
         return $this->hasMany(OccupationContact::class)
             ->join('contacts', 'primary_contact_id', '=', 'contacts.id')
             ->join('occupations', 'occupation_id', '=', 'occupations.id')
-            ->select('contacts.*', 'occupation_contact.*', 'occupations.occupation_for_portal', 'occupation_contact.id as ocid')->orderBy('contacts.full_name');
+            ->select('contacts.*', 'occupation_contact.*', 'occupations.occupation_for_portal', 'occupation_contact.id as ocid')
+            ->orderBy('contacts.full_name');
     }
 
     public function isPrimaryOccupant()
@@ -318,9 +350,15 @@ class Contact extends Model
     {
         return $this->hasMany(FinancialOverviewContact::class);
     }
+
     public function financialOverviewContactsSend()
     {
         return $this->hasMany(FinancialOverviewContact::class)->where('status_id', 'sent')->orderBy('date_sent', 'desc');
+    }
+
+    public function twinfieldLogs()
+    {
+        return $this->hasMany(TwinfieldLog::class);
     }
 
     //Returns addresses array as Type - Streetname - Number
@@ -414,11 +452,21 @@ class Contact extends Model
 
     public function getVisibleGroups(){
 
+        $teamContactGroupIds = Auth::user()->getTeamContactGroupIds();
+
         //statische groepen
-        $staticGroups = $this->groups()->where('show_contact_form', true)->get();
+        if($teamContactGroupIds){
+            $staticGroups = $this->groups()->where('show_contact_form', true)->whereIn('contact_groups.id', $teamContactGroupIds)->get();
+        } else{
+            $staticGroups = $this->groups()->where('show_contact_form', true)->get();
+        }
 
         //dynamische groepen
-        $dynamicGroups = ContactGroup::where('show_contact_form', true)->where('type_id', 'dynamic')->get();
+        if($teamContactGroupIds){
+            $dynamicGroups = ContactGroup::where('show_contact_form', true)->where('type_id', 'dynamic')->whereIn('contact_groups.id', $teamContactGroupIds)->get();
+        } else{
+            $dynamicGroups = ContactGroup::where('show_contact_form', true)->where('type_id', 'dynamic')->get();
+        }
 
         $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
             foreach ($dynamicGroup->all_contacts as $dynamic_contact){
@@ -432,7 +480,11 @@ class Contact extends Model
         $allGroups = $staticGroups->merge($dynamicGroupsForContact);
 
         //samengestelde groepen
-        $composedGroups = ContactGroup::where('show_contact_form', true)->where('type_id', 'composed')->get();
+        if($teamContactGroupIds){
+            $composedGroups = ContactGroup::where('show_contact_form', true)->where('type_id', 'composed')->get()->whereIn('contact_groups.id', $teamContactGroupIds);
+        } else{
+            $composedGroups = ContactGroup::where('show_contact_form', true)->where('type_id', 'composed')->get();
+        }
 
         $composedGroupsForContact = $composedGroups->filter(function ($composedGroup) {
             foreach ($composedGroup->all_contacts as $composed_contact){
@@ -673,5 +725,43 @@ class Contact extends Model
                 $query->where('contact_id', $portalUser->contact_id);
             });
         });
+    }
+
+    public function newEloquentBuilder($query)
+    {
+        return new ContactBuilder($query);
+    }
+
+    public function calculateParticipationTotals()
+    {
+        $obligations = 0;
+        $participations = 0;
+        $pcr = 0;
+        $loan = 0;
+
+        foreach ($this->participations as $participation){
+            $projectCodeRef = $participation->project->projectType->code_ref;
+            switch ($projectCodeRef) {
+                case 'obligation':
+                    $obligations += $participation->participations_definitive;
+                    break;
+                case 'capital':
+                    $participations += $participation->participations_definitive;
+                    break;
+                case 'postalcode_link_capital':
+                    $pcr += $participation->participations_definitive;
+                    break;
+                case 'loan':
+                    $loan += $participation->amount_definitive;
+                    break;
+            }
+        }
+
+        $this->obligations_current = $obligations;
+        $this->participations_current = $participations;
+        $this->postalcode_link_capital_current = $pcr;
+        $this->loan_current = $loan;
+
+        return $this;
     }
 }

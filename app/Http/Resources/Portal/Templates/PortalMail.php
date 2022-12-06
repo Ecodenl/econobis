@@ -2,30 +2,26 @@
 
 namespace App\Http\Resources\Portal\Templates;
 
-use App\Eco\Email\Email;
 use App\Mail\ConfigurableMailable;
-use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
 
 class PortalMail extends ConfigurableMailable
 {
-//    use Queueable, SerializesModels;
-
     public $html_body;
     public $subject;
     public $document_path;
     public $document_name;
+    public $defaultAttachmentDocumentId;
 
     /**
      * Create a new message instance.
      *
-     * @param Email $email
+     * @param Mail $mail
      */
-    public function __construct($email, $html_body)
+    public function __construct($mail, $html_body, $defaultAttachmentDocumentId = null)
     {
-        $this->email = $email;
+        $this->mail = $mail;
         $this->html_body = $html_body;
+        $this->defaultAttachmentDocumentId = $defaultAttachmentDocumentId;
     }
 
     /**
@@ -35,8 +31,17 @@ class PortalMail extends ConfigurableMailable
      */
     public function build()
     {
+        $mail = $this->subject($this->mail->subject)->view('emails.generic')->text('emails.genericText');
 
-        $mail = $this->subject($this->email->subject)->view('emails.generic')->text('emails.genericText');;
+        if($this->defaultAttachmentDocumentId != null){
+            $defaultAttachmentDocument = Document::find($this->defaultAttachmentDocumentId);
+            if($defaultAttachmentDocument){
+                $documentController = new DocumentController();
+                $mail->attachData($documentController->downLoadRawDocument($defaultAttachmentDocument), $defaultAttachmentDocument->filename, [
+                    'as' => $defaultAttachmentDocument->filename
+                ]);
+            }
+        }
 
         return $mail;
     }

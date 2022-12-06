@@ -14,9 +14,9 @@ use App\Helpers\RequestQuery\RequestJoiner;
 class Joiner extends RequestJoiner
 {
 
-    protected function applyOrganisationJoin($query)
+    protected function applyOrganisationOrCoachJoin($query)
     {
-        $query->join('organisations', 'quotation_requests.organisation_id', '=', 'organisations.id');
+        $query->join('contacts as organisationOrCoaches', 'quotation_requests.contact_id', '=', 'organisationOrCoaches.id');
     }
 
     protected function applyContactJoin($query)

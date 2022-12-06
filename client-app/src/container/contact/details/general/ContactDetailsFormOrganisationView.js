@@ -18,6 +18,7 @@ const ContactDetailsFormOrganisationView = props => {
         collectMandateSignatureDate,
         collectMandateFirstRunDate,
         collectMandateCollectionSchema,
+        isCoach,
     } = props.contactDetails;
 
     return (
@@ -77,6 +78,11 @@ const ContactDetailsFormOrganisationView = props => {
                     }
                 />
             </div>
+
+            {/* vooralsnog alleen bij persons, organisations kunnen al gekoppeld worden aan offerteverzoeken */}
+            {/*<div className="row">*/}
+            {/*    <ViewText className={'col-xs-12'} label={'Is coach'} value={isCoach ? 'Ja' : 'Nee'} />*/}
+            {/*</div>*/}
 
             <div className="row">
                 <ViewText

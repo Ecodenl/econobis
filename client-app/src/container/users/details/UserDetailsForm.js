@@ -14,6 +14,8 @@ class UserDetailsForm extends Component {
     }
 
     render() {
+        const { permissions = {} } = this.props.meDetails;
+
         let loadingText = '';
         let loading = true;
 
@@ -32,7 +34,7 @@ class UserDetailsForm extends Component {
         ) : (
             <div>
                 <UserDetailsFormGeneral />
-                <UserDetailsFormTwoFactor />
+                {permissions.manageCooperationSettings ? <UserDetailsFormTwoFactor /> : null};
                 <UserDetailsFormRoles />
                 <UserDetailsFormLog />
             </div>
@@ -42,6 +44,7 @@ class UserDetailsForm extends Component {
 
 const mapStateToProps = state => {
     return {
+        meDetails: state.meDetails,
         userDetails: state.userDetails,
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,

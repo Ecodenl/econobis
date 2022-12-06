@@ -10,6 +10,11 @@ class EmailAddressJoryResource extends JoryResource
 {
     protected $modelClass = EmailAddress::class;
 
+    protected function checkAuthorize(): void
+    {
+        // TODO: Implement checkAuthorize() method.
+    }
+
     protected function configureForApp(): void
     {
     }

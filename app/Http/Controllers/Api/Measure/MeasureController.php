@@ -18,6 +18,7 @@ use App\Http\RequestQueries\Measure\Grid\RequestQuery;
 use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\Measure\GridMeasure;
 use App\Http\Resources\Measure\MeasurePeek;
+use Illuminate\Support\Facades\Auth;
 
 class MeasureController extends ApiController
 {
@@ -38,16 +39,20 @@ class MeasureController extends ApiController
         $measure->load([
             'faqs',
             'deliveredByOrganisations.contact.primaryAddress',
-            'addresses.housingFile',
-            'addresses.contact',
             'createdBy',
             'updatedBy',
-            'addresses',
             'measureCategory',
             'documents',
             'opportunities.intake.campaign',
             'opportunities.intake.contact',
         ]);
+
+        $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
+        if($teamDocumentCreatedFromIds){
+            $measure->relatedDocuments = $measure->documents()->whereIn('document_created_from_id', $teamDocumentCreatedFromIds)->get();
+        } else{
+            $measure->relatedDocuments = $measure->documents()->get();
+        }
 
         return FullMeasure::make($measure);
     }
@@ -59,6 +64,7 @@ class MeasureController extends ApiController
 
         $data = $requestInput
             ->string('description')->onEmpty(null)->next()
+            ->boolean('visible')->validate('boolean')->onEmpty(false)->whenMissing(false)->next()
             ->get();
 
         $measure->fill($data);

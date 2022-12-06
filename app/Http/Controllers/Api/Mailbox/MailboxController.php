@@ -27,6 +27,7 @@ use App\Http\Resources\Mailbox\FullMailbox;
 use App\Http\Resources\Mailbox\FullMailboxIgnore;
 use App\Http\Resources\Mailbox\GridMailbox;
 use App\Http\Resources\Mailbox\LoggedInEmailPeek;
+use App\Http\Resources\Mailbox\MailboxPeek;
 use App\Http\Resources\User\UserPeek;
 use Illuminate\Http\Request;
 use Illuminate\Session\Middleware\StartSession;
@@ -210,6 +211,11 @@ class MailboxController extends Controller
         $this->authorize('create', Mailbox::class);
 
         $mailbox->users()->detach($user);
+    }
+
+    public function peek()
+    {
+        return MailboxPeek::collection(Mailbox::orderBy('name')->get());
     }
 
     public function receive(Mailbox $mailbox)

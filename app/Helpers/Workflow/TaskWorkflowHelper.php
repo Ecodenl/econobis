@@ -137,7 +137,6 @@ class TaskWorkflowHelper
 
     public function mailWorkflow($emailTemplate, $mail)
     {
-//        $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Bericht van Econobis';
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Bericht van ' . $this->cooperativeName;
         $htmlBody = $emailTemplate->html_body;
 
@@ -148,10 +147,12 @@ class TaskWorkflowHelper
         }
         if($this->contact) {
             $subject = str_replace('{contactpersoon}', $this->contact->full_name, $subject);
+            $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'contact', $this->contact);
             $htmlBody = str_replace('{contactpersoon}', $this->contact->full_name, $htmlBody);
             $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $this->contact);
         }
         if($this->task) {
+            $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'taak', $this->task);
             $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'taak', $this->task);
         }
 
@@ -170,7 +171,7 @@ class TaskWorkflowHelper
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
 
-        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody));
+        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
     }
 
 }

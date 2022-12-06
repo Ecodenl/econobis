@@ -138,7 +138,7 @@ class ContactDetailsFormPhoneItem extends Component {
                     toggleDelete={this.toggleDelete}
                     phoneNumber={this.state.phoneNumber}
                 />
-                {this.state.showEdit && (
+                {this.props.permissions.updateContactPhone && this.state.showEdit && (
                     <ContactDetailsFormPhoneEdit
                         phoneNumber={this.state.phoneNumber}
                         handleInputChange={this.handleInputChange}
@@ -148,7 +148,7 @@ class ContactDetailsFormPhoneItem extends Component {
                         cancelEdit={this.cancelEdit}
                     />
                 )}
-                {this.state.showDelete && (
+                {this.props.permissions.deleteContactPhone && this.state.showDelete && (
                     <ContactDetailsFormPhoneDelete
                         closeDeleteItemModal={this.toggleDelete}
                         numberOfPhoneNumbers={this.props.numberOfPhoneNumbers}
@@ -160,6 +160,11 @@ class ContactDetailsFormPhoneItem extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        permissions: state.meDetails.permissions,
+    };
+};
 const mapDispatchToProps = dispatch => ({
     updatePhoneNumber: id => {
         dispatch(updatePhoneNumber(id));
@@ -169,4 +174,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ContactDetailsFormPhoneItem);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormPhoneItem);

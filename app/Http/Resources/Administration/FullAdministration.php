@@ -73,6 +73,7 @@ class FullAdministration extends JsonResource
 
                 'sepas' => FullSepa::collection($this->whenLoaded('sepas')),
 
+                //todo WM: nog wijzigen (zie bijv. FullIntake
                 'documentCountNotOnPortal' => $this->documentsNotOnPortal()->count(),
                 'documentCountOnPortal' => $this->documentsOnPortal()->count(),
                 'relatedDocumentsNotOnPortal' => FullDocument::collection($this->whenLoaded('documentsNotOnPortal')),

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Project;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
+use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
@@ -811,8 +812,10 @@ class ProjectRevenueController extends ApiController
             {
                 $time = Carbon::now();
 
+                $documentCreatedFromParticipantId = DocumentCreatedFrom::where('code_ref', 'participant')->first()->id;
+
                 $document = new Document();
-                $document->document_created_from = 'participant';
+                $document->document_created_from_id = $documentCreatedFromParticipantId;
                 $document->document_type = 'internal';
                 $document->document_group = 'revenue';
                 $document->contact_id = $contact->id;

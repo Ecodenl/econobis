@@ -48,14 +48,14 @@ export default {
         return axiosInstance.post(requestUrl);
     },
 
-    attachMeasureTaken: measureTaken => {
-        const requestUrl = `${URL_HOUSING_FILE}/measure-taken`;
+    addHousingFileSpecification: housingFileSpecification => {
+        const requestUrl = `${URL_HOUSING_FILE}/housing-file-specification`;
 
-        return axiosInstance.post(requestUrl, measureTaken);
+        return axiosInstance.post(requestUrl, housingFileSpecification);
     },
 
-    detachMeasureTaken: (addressId, measureId) => {
-        const requestUrl = `${URL_HOUSING_FILE}/${addressId}/${measureId}/detach`;
+    deleteSpecification: housingFileSpecificationId => {
+        const requestUrl = `${URL_HOUSING_FILE}/housing-file-specification/${housingFileSpecificationId}/delete`;
 
         return axiosInstance
             .post(requestUrl)

@@ -10,6 +10,11 @@ class MeasureJoryResource extends JoryResource
 {
     protected $modelClass = Measure::class;
 
+    protected function checkAuthorize(): void
+    {
+        // TODO: Implement checkAuthorize() method.
+    }
+
     protected function configureForApp(): void
     {
         $this->field('id')->filterable()->sortable();

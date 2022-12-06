@@ -12,10 +12,11 @@ import {
     setQuotationRequestContactFilter,
     setQuotationRequestCreatedAtStartFilter,
     setQuotationRequestCreatedAtEndFilter,
+    setQuotationRequestDatePlannedFilter,
     setQuotationRequestDateRecordedFilter,
     setQuotationRequestDateReleasedFilter,
     setQuotationRequestMeasureFilter,
-    setQuotationRequestOrganisationFilter,
+    setQuotationRequestOrganisationOrCoachFilter,
 } from '../../../actions/quotation-request/QuotationRequestsFiltersActions';
 import DataTableFilterDateStartEnd from '../../../components/dataTable/DataTableFilterDateStartEnd';
 import DataTableFilterDate from '../../../components/dataTable/DataTableFilterDate';
@@ -56,6 +57,14 @@ const QuotationRequestsListFilter = props => {
         }
     };
 
+    const onQuotationRequestDatePlannedChange = selectedDay => {
+        if (selectedDay === undefined) {
+            props.setQuotationRequestDatePlannedFilter('');
+        } else {
+            props.setQuotationRequestDatePlannedFilter(moment(selectedDay).format('Y-MM-DD'));
+        }
+    };
+
     const onQuotationRequestDateRecordedChange = selectedDay => {
         if (selectedDay === undefined) {
             props.setQuotationRequestDateRecordedFilter('');
@@ -76,8 +85,8 @@ const QuotationRequestsListFilter = props => {
         props.setQuotationRequestMeasureFilter(e.target.value);
     };
 
-    const onOrganisationChange = e => {
-        props.setQuotationRequestOrganisationFilter(e.target.value);
+    const onOrganisationOrCoachChange = e => {
+        props.setQuotationRequestOrganisationOrCoachFilter(e.target.value);
     };
 
     return (
@@ -86,8 +95,8 @@ const QuotationRequestsListFilter = props => {
                 <input
                     type="text"
                     className="form-control input-sm"
-                    value={props.filters.organisation.data}
-                    onChange={onOrganisationChange}
+                    value={props.filters.organisationOrCoach.data}
+                    onChange={onOrganisationOrCoachChange}
                 />
             </th>
             <th>
@@ -122,6 +131,10 @@ const QuotationRequestsListFilter = props => {
                 onChangeActionEnd={onQuotationRequestCreatedAtEndChange}
             />
             <DataTableFilterDate
+                value={props.filters.datePlanned.data && props.filters.datePlanned.data}
+                onChangeAction={onQuotationRequestDatePlannedChange}
+            />
+            <DataTableFilterDate
                 value={props.filters.dateRecorded.data && props.filters.dateRecorded.data}
                 onChangeAction={onQuotationRequestDateRecordedChange}
             />
@@ -132,7 +145,7 @@ const QuotationRequestsListFilter = props => {
                     {props.quotationRequestStatus.map(status => {
                         return (
                             <option key={status.id} value={status.id}>
-                                {status.name}
+                                {status.opportunityActionName} - {status.name}
                             </option>
                         );
                     })}
@@ -171,10 +184,11 @@ const mapDispatchToProps = dispatch => {
             setQuotationRequestContactFilter,
             setQuotationRequestCreatedAtStartFilter,
             setQuotationRequestCreatedAtEndFilter,
+            setQuotationRequestDatePlannedFilter,
             setQuotationRequestDateRecordedFilter,
             setQuotationRequestDateReleasedFilter,
             setQuotationRequestMeasureFilter,
-            setQuotationRequestOrganisationFilter,
+            setQuotationRequestOrganisationOrCoachFilter,
         },
         dispatch
     );

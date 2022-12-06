@@ -15,11 +15,21 @@ class QuotationRequestDetailsForm extends Component {
         let loading = true;
 
         if (this.props.hasError) {
-            loadingText = 'Fout bij het ophalen van offerteverzoek.';
+            loadingText =
+                'Fout bij het ophalen van ' +
+                (this.props.quotationRequestDetails.opportunityAction
+                    ? this.props.quotationRequestDetails.opportunityAction.name
+                    : '') +
+                '.';
         } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
         } else if (isEmpty(this.props.quotationRequestDetails)) {
-            loadingText = 'Geen offerteverzoek gevonden!';
+            loadingText =
+                'Geen ' +
+                (this.props.quotationRequestDetails.opportunityAction
+                    ? this.props.quotationRequestDetails.opportunityAction.name
+                    : '') +
+                ' gevonden!';
         } else {
             loading = false;
         }

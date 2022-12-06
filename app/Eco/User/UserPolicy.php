@@ -16,9 +16,9 @@ class UserPolicy
      * @param  \App\Eco\User\User  $model
      * @return mixed
      */
-    public function view(User $user, User $model)
+    public function view(User $user)
     {
-        return $user->hasPermissionTo('manage_user', 'api');
+        return $user->hasPermissionTo('view_user', 'api');
     }
 
     /**

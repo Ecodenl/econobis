@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Campaign;
 
+use App\Eco\Contact\Contact;
+use App\Http\Resources\Contact\FullCoach;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Organisation\FullOrganisation;
@@ -19,6 +21,8 @@ class FullCampaign extends JsonResource
      */
     public function toArray($request)
     {
+        $organisationsOrCoaches = Contact::whereIn('id', $this->organisationsOrCoachesIds())->orderBy('full_name')->get();
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -30,16 +34,19 @@ class FullCampaign extends JsonResource
             'status' => GenericResource::make($this->whenLoaded('status')),
             'type' => GenericResource::make($this->whenLoaded('type')),
             'measureCategories' => GenericResource::collection($this->whenLoaded('measureCategories')),
+            'opportunityActions' => GenericResource::collection($this->whenLoaded('opportunityActions')),
             'responses' => FullCampaignResponse::collection($this->whenLoaded('responses')),
             'organisations' => FullOrganisation::collection($this->whenLoaded('organisations')),
+            'coaches' => FullCoach::collection($this->whenLoaded('coaches')),
+            'organisationsOrCoaches' => FullCoach::collection($organisationsOrCoaches),
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
             'ownedBy' => FullUser::make($this->whenLoaded('ownedBy')),
             'taskCount' => $this->tasks()->count(),
             'relatedTasks' => GridTask::collection($this->whenLoaded('tasks')),
             'noteCount' => $this->notes()->count(),
             'relatedNotes' => GridTask::collection($this->whenLoaded('notes')),
+            //todo WM: nog wijzigen (zie bijv. FullIntake
             'documentCount' => $this->documents()->count(),
-            'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
             'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
             'numberOfIntakes' => $this->numberOfIntakes,
         ];

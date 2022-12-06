@@ -37,6 +37,8 @@ class AdministrationController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', Administration::class);
+
         $administrations = $requestQuery->get();
 
         $administrations->load(['country']);

@@ -4,11 +4,10 @@
 namespace App\Http\Controllers\Portal\ParticipationProject;
 
 
-use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
-use App\Eco\Contact\ContactType;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Document\Document;
+use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Mailbox\Mailbox;
@@ -232,8 +231,10 @@ class ParticipationProjectController extends Controller
         // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu zetten we responisibleUserId in Auth user tbv observers die create_by en updated_by hiermee vastleggen
         Auth::setUser(User::find($responsibleUserId));
 
+        $documentCreatedFromParticipantId = DocumentCreatedFrom::where('code_ref', 'participant')->first()->id;
+
         $document = new Document();
-        $document->document_created_from = 'participant';
+        $document->document_created_from_id = $documentCreatedFromParticipantId;
         $document->document_type = 'internal';
         $document->document_group = 'registration';
         $document->show_on_portal = true;
@@ -351,7 +352,7 @@ class ParticipationProjectController extends Controller
 
 
             $email->send(new ParticipantReportMail($email, $fromEmail, $fromName,
-                $htmlBodyWithContactVariables, $document));
+                $htmlBodyWithContactVariables, $document, $emailTemplate->default_attachment_document_id));
         }
 
         //delete file on server, still saved on alfresco.

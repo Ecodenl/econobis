@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\Setting;
 
 
 use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
+use App\Http\Controllers\Controller;
 use App\Jobs\Portal\GeneratePortalCss;
 use Config;
 use Exception;
@@ -13,7 +15,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Valuestore\Valuestore;
 
-class SettingController
+class SettingController extends Controller
 {
 
     public function get(Request $request)
@@ -31,6 +33,11 @@ class SettingController
 
     public function multiple(Request $request)
     {
+//todo WM: Hiervoor moet nog een aparte permission view_portal_settings komen
+// en in PortalSettingsLayoutPolicy moeten we dan wellicht ook nog rekening houden met verschil
+// User en PortalUser ?!
+//        $this->authorize('view', PortalSettingsLayout::class);
+
         $store = $this->getStore();
         $keys = $this->getWhitelistedKeys($request);
 
@@ -45,6 +52,8 @@ class SettingController
 
     public function store(Request $request)
     {
+        $this->authorize('manage', PortalSettingsLayout::class);
+
         $store = $this->getStore();
         if(empty($store->get('portalUrl'))){
             if(empty($request['defaultContactGroupMemberId'])){

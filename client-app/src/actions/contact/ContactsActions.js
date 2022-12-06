@@ -42,3 +42,10 @@ export const deleteSelectedContacts = contactIds => {
         contactIds,
     };
 };
+
+export const mergeSelectedContacts = contactIds => {
+    return {
+        type: 'MERGE_SELECTED_CONTACTS',
+        contactIds,
+    };
+};

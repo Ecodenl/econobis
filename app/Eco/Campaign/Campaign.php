@@ -4,9 +4,9 @@ namespace App\Eco\Campaign;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
-use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Opportunity\Opportunity;
+use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Intake\Intake;
 use App\Eco\Task\Task;
@@ -55,12 +55,28 @@ class Campaign extends Model
         return $this->belongsTo(CampaignType::class);
     }
 
+    public function opportunityActions()
+    {
+        return $this->belongsToMany(OpportunityAction::class);
+    }
+
     public function responses(){
         return $this->hasMany(CampaignResponse::class);
     }
 
     public function organisations(){
         return $this->belongsToMany(Organisation::class);
+    }
+
+    public function coaches(){
+        return $this->belongsToMany(Contact::class, 'campaign_coach');
+    }
+
+    public function organisationsOrCoachesIds(){
+        $contactIdsOrganisations = $this->organisations()->get()->pluck('contact_id')->toArray();
+        $contactIdsCoaches = $this->coaches()->get()->pluck('id')->toArray();
+
+        return array_unique(array_merge($contactIdsOrganisations, $contactIdsCoaches));
     }
 
     public function createdBy(){

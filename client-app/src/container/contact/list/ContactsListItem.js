@@ -42,6 +42,7 @@ class ContactsListItem extends Component {
             checked,
             id,
             number,
+            typeId,
             typeName,
             fullName,
             streetAndNumber,
@@ -51,6 +52,7 @@ class ContactsListItem extends Component {
             phoneNumber,
             statusName,
             createdAt,
+            permissions,
         } = this.props;
 
         return (
@@ -83,9 +85,18 @@ class ContactsListItem extends Component {
                         ''
                     )}
                     {this.state.showActionButtons ? (
-                        <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, fullName)}>
-                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
-                        </a>
+                        <>
+                            {typeId === 'organisation' && permissions && permissions.deleteOrganisation && (
+                                <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, fullName)}>
+                                    <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                                </a>
+                            )}
+                            {typeId === 'person' && permissions && permissions.deletePerson && (
+                                <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, fullName)}>
+                                    <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                                </a>
+                            )}
+                        </>
                     ) : (
                         ''
                     )}
@@ -99,6 +110,7 @@ function mapStateToProps(state) {
     return {
         statuses: state.statuses,
         types: state.types,
+        permissions: state.meDetails.permissions,
     };
 }
 

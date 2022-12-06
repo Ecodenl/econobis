@@ -40,6 +40,7 @@ class PersonController extends ApiController
             [
                 'ownerId' => 'exists:users,id',
                 'didAgreeAvg' => 'boolean',
+                'isCoach' => 'boolean',
                 'initials' => '',
                 'firstName' => '',
                 'lastName' => '',
@@ -64,6 +65,7 @@ class PersonController extends ApiController
             [
                 'owner_id' => $contactData['owner_id'],
                 'did_agree_avg' => $contactData['did_agree_avg'],
+                'is_coach' => $contactData['is_coach'],
             ];
 
         $lnp = null;
@@ -220,6 +222,7 @@ class PersonController extends ApiController
             'liabilityAmount' => 'numeric',
             'ownerId' => 'exists:users,id',
             'didAgreeAvg' => 'boolean',
+            'isCoach' => 'boolean',
             'isCollectMandate' => 'boolean',
             'collectMandateCode' => '',
             'collectMandateSignatureDate' => 'date',

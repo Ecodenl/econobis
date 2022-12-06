@@ -10,10 +10,10 @@ namespace App\Http\Controllers\Api\ParticipationProject;
 
 use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
-use App\Eco\Contact\ContactType;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactGroup\DynamicContactGroupFilter;
 use App\Eco\Document\Document;
+use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\FinancialOverview\FinancialOverviewProject;
@@ -62,6 +62,8 @@ class ParticipationProjectController extends ApiController
 {
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', ParticipantProject::class);
+
         $participantProject = $requestQuery->get();
         $participantProject->load([
             'address.primaryAddressEnergySupplierElectricity.energySupplier',
@@ -80,6 +82,8 @@ class ParticipationProjectController extends ApiController
 
     public function saveAsGroup(Request $request)
     {
+        $this->authorize('manage', ParticipantProject::class);
+
         $filters = json_decode($request->input('filters'));
         $extraFilters = json_decode($request->input('extraFilters'));
 
@@ -132,31 +136,10 @@ class ParticipationProjectController extends ApiController
         return FullContactGroup::make($contactGroup);
     }
 
-    private function getModelByField(String $field){
-        switch ($field){
-            case 'contactType':
-                return 'App\Eco\Contact\ContactType';
-                break;
-            case 'statusId':
-                return 'App\Eco\Contact\ContactStatus';
-                break;
-            case 'participationStatusId':
-                return 'App\Eco\ParticipantProject\ParticipantProjectStatus';
-                break;
-            case 'energySupplierId':
-                return 'App\Eco\EnergySupplier\EnergySupplier';
-                break;
-            case 'projectId':
-                return 'App\Eco\Project\Project';
-                break;
-            case 'giftedByContactId':
-                return Contact::class;
-                break;
-        }
-    }
-
     public function excel(RequestQuery $requestQuery, Request $request)
     {
+        $this->authorize('view', ParticipantProject::class);
+
         set_time_limit(0);
 
         $filterProjectId = $request->input('filterProjectId');
@@ -196,6 +179,8 @@ class ParticipationProjectController extends ApiController
 
     public function excelParticipants(RequestQuery $requestQuery, Request $request)
     {
+        $this->authorize('view', ParticipantProject::class);
+
         set_time_limit(0);
 
         $filterProjectId = $request->input('filterProjectId');
@@ -224,6 +209,8 @@ class ParticipationProjectController extends ApiController
 
     public function show(ParticipantProject $participantProject)
     {
+        $this->authorize('view', ParticipantProject::class);
+
         $participantProject->load([
             'mutations' => function($query){
                 $query->orderBy('id', 'desc');
@@ -259,6 +246,7 @@ class ParticipationProjectController extends ApiController
     public function store(RequestInput $requestInput)
     {
         $this->authorize('manage', ParticipantProject::class);
+
         // TODO clean up store inputs
         $data = $requestInput
             ->integer('contactId')->validate('required|exists:contacts,id')->alias('contact_id')->next()
@@ -550,84 +538,8 @@ class ParticipationProjectController extends ApiController
         return ParticipantProjectPeek::collection($sortedParticipants);
     }
 
-    public function validatePostalCode(&$message, Project $project, Contact $contact, Address $address)
-    {
-        $checkText = 'Postcode check: ';
-        if(!$address){
-            $message[] = $checkText . 'Deelnemer heeft geen (geldig) adres.';
-            return false;
-        }
-        $postalCodeAreaContact = substr($address->postal_code, 0 , 4);
-        if(!($postalCodeAreaContact > 999 && $postalCodeAreaContact < 9999)){
-            $message[] = $checkText . 'Deelnemer heeft geen geldige postcode op zijn gekoppeld adres ' . $address->street_postal_code_city. '.';
-            return false;
-        }
-        if(!$project->postalcode_link){
-            $message[] = $checkText . 'Project heeft geen deelnemende postcode(s) in postcoderoos.';
-            return false;
-        }
-
-        // Check address
-        $addressHelper = new AddressHelper($contact, $address);
-        $checkAddressOk = $addressHelper->checkAddress($project->id, false);
-        if(!$checkAddressOk){
-            $message[] = $checkText . implode(';', $addressHelper->messages);
-            return false;
-        }
-    }
-
-    public function validateUsage(&$message, Project $project, ParticipantProject $participant)
-    {
-        $checkText = 'Gebruik check: ';
-
-        if(!$project->power_kw_available){
-            $message[] = $checkText . 'Project heeft nog geen opgesteld vermogen.';
-            return false;
-        }
-
-        if(!$project->total_participations){
-            $message[] = $checkText . 'Project heeft nog geen totaal aantal participaties.';
-            return false;
-        }
-
-        if(!$participant->power_kwh_consumption){
-            $message[] = $checkText . 'Participant heeft nog geen jaarlijks verbruik.';
-            return false;
-        }
-
-        if(!$participant->participations_requested){
-            $message[] = $checkText . 'Participant heeft nog geen participaties aangevraagd.';
-            return false;
-        }
-
-        $participant =  (($project->power_kw_available /  $project->total_participations) * $participant->participations_requested) * 0.8;
-
-        if($participant > $participant->power_kwh_consumption){
-            $message[] = $checkText . 'Participant produceert ' . round($participant, 2) . ' dit is meer dan hij consumeert: ' . round($participant->power_kwh_consumption, 2) . '.';
-            return false;
-        }
-    }
-
-    public function validateEnergySupplier(&$message, Address $address)
-    {
-        $checkText = 'Energieleverancier check: ';
-
-        $primaryAddressEnergySupplierElectricity = $address ? $address->primaryAddressEnergySupplierElectricity : null;
-
-        if(!$primaryAddressEnergySupplierElectricity){
-            $message[] = $checkText . 'Contact heeft nog geen energieleverancier.';
-            return false;
-        }
-
-        $energySupplier = $primaryAddressEnergySupplierElectricity->energySupplier;
-
-        if(!$energySupplier->does_postal_code_links){
-            $message[] = $checkText . 'Energieleverancier van contact doet niet mee aan postcoderoos.';
-            return false;
-        }
-    }
-
     public function previewPDF(Request $request, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate) {
+        $this->authorize('view', ParticipantProject::class);
 
         $participantIds = $request->input('participantIds');
 
@@ -679,6 +591,8 @@ class ParticipationProjectController extends ApiController
     }
 
     public function previewEmail(Request $request, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate) {
+        $this->authorize('view', ParticipantProject::class);
+
         $participantIds = $request->input('participantIds');
         $subject = $request->input('subject');
         $portalName = PortalSettings::get('portalName');
@@ -766,6 +680,8 @@ class ParticipationProjectController extends ApiController
 
     public function createParticipantReport(Request $request, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate)
     {
+        $this->authorize('manage', ParticipantProject::class);
+
         set_time_limit(0);
         $participantIds = $request->input('participantIds');
         $subject = $request->input('subject');
@@ -780,6 +696,8 @@ class ParticipationProjectController extends ApiController
 
     public function createParticipantProjectReport($subject, $participantId, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate, $showOnPortal)
     {
+        $this->authorize('manage', ParticipantProject::class);
+
         $portalName = PortalSettings::get('portalName');
         $cooperativeName = PortalSettings::get('cooperativeName');
         $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
@@ -833,8 +751,10 @@ class ParticipationProjectController extends ApiController
         {
             $time = Carbon::now();
 
+            $documentCreatedFromParticipantId = DocumentCreatedFrom::where('code_ref', 'participant')->first()->id;
+
             $document = new Document();
-            $document->document_created_from = 'participant';
+            $document->document_created_from_id = $documentCreatedFromParticipantId;
             $document->document_type = 'internal';
             $document->document_group = $documentTemplate->document_group;
             $document->contact_id = $contact->id;
@@ -958,7 +878,7 @@ class ParticipationProjectController extends ApiController
      * @param ParticipantProject $participantProject
      * @param $project
      */
-    public function storeFirstMutation(RequestInput $requestInput, ParticipantProject $participantProject, Project $project): void
+    private function storeFirstMutation(RequestInput $requestInput, ParticipantProject $participantProject, Project $project): void
     {
         $status = $requestInput
             ->integer('statusId')->validate('required|exists:participant_mutation_statuses,id')->alias('status_id')->next()
@@ -1058,6 +978,106 @@ class ParticipationProjectController extends ApiController
             $participantMutation->participation->project->calculator()->run()->save();
         });
 
+    }
+
+    private function getModelByField(String $field){
+        switch ($field){
+            case 'contactType':
+                return 'App\Eco\Contact\ContactType';
+                break;
+            case 'statusId':
+                return 'App\Eco\Contact\ContactStatus';
+                break;
+            case 'participationStatusId':
+                return 'App\Eco\ParticipantProject\ParticipantProjectStatus';
+                break;
+            case 'energySupplierId':
+                return 'App\Eco\EnergySupplier\EnergySupplier';
+                break;
+            case 'projectId':
+                return 'App\Eco\Project\Project';
+                break;
+            case 'giftedByContactId':
+                return Contact::class;
+                break;
+        }
+    }
+
+    private function validatePostalCode(&$message, Project $project, Contact $contact, Address $address)
+    {
+        $checkText = 'Postcode check: ';
+        if(!$address){
+            $message[] = $checkText . 'Deelnemer heeft geen (geldig) adres.';
+            return false;
+        }
+        $postalCodeAreaContact = substr($address->postal_code, 0 , 4);
+        if(!($postalCodeAreaContact > 999 && $postalCodeAreaContact < 9999)){
+            $message[] = $checkText . 'Deelnemer heeft geen geldige postcode op zijn gekoppeld adres ' . $address->street_postal_code_city. '.';
+            return false;
+        }
+        if(!$project->postalcode_link){
+            $message[] = $checkText . 'Project heeft geen deelnemende postcode(s) in postcoderoos.';
+            return false;
+        }
+
+        // Check address
+        $addressHelper = new AddressHelper($contact, $address);
+        $checkAddressOk = $addressHelper->checkAddress($project->id, false);
+        if(!$checkAddressOk){
+            $message[] = $checkText . implode(';', $addressHelper->messages);
+            return false;
+        }
+    }
+
+    private function validateUsage(&$message, Project $project, ParticipantProject $participant)
+    {
+        $checkText = 'Gebruik check: ';
+
+        if(!$project->power_kw_available){
+            $message[] = $checkText . 'Project heeft nog geen opgesteld vermogen.';
+            return false;
+        }
+
+        if(!$project->total_participations){
+            $message[] = $checkText . 'Project heeft nog geen totaal aantal participaties.';
+            return false;
+        }
+
+        if(!$participant->power_kwh_consumption){
+            $message[] = $checkText . 'Participant heeft nog geen jaarlijks verbruik.';
+            return false;
+        }
+
+        if(!$participant->participations_requested){
+            $message[] = $checkText . 'Participant heeft nog geen participaties aangevraagd.';
+            return false;
+        }
+
+        $participant =  (($project->power_kw_available /  $project->total_participations) * $participant->participations_requested) * 0.8;
+
+        if($participant > $participant->power_kwh_consumption){
+            $message[] = $checkText . 'Participant produceert ' . round($participant, 2) . ' dit is meer dan hij consumeert: ' . round($participant->power_kwh_consumption, 2) . '.';
+            return false;
+        }
+    }
+
+    private function validateEnergySupplier(&$message, Address $address)
+    {
+        $checkText = 'Energieleverancier check: ';
+
+        $primaryAddressEnergySupplierElectricity = $address ? $address->primaryAddressEnergySupplierElectricity : null;
+
+        if(!$primaryAddressEnergySupplierElectricity){
+            $message[] = $checkText . 'Contact heeft nog geen energieleverancier.';
+            return false;
+        }
+
+        $energySupplier = $primaryAddressEnergySupplierElectricity->energySupplier;
+
+        if(!$energySupplier->does_postal_code_links){
+            $message[] = $checkText . 'Energieleverancier van contact doet niet mee aan postcoderoos.';
+            return false;
+        }
     }
 
     /**

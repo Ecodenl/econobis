@@ -3,11 +3,20 @@
 namespace App\Http\JoryResources;
 
 use \App\Eco\FinancialOverview\FinancialOverview;
+use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewController;
 use App\Http\JoryResources\Base\JoryResource;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class FinancialOverviewJoryResource extends JoryResource
 {
     protected $modelClass = FinancialOverview::class;
+
+    protected function checkAuthorize(): void
+    {
+        $financialOverviewController = new FinancialOverviewController();
+        $financialOverviewController->authorize('view', FinancialOverview::class);
+    }
 
     protected function configureForApp(): void
     {
@@ -36,4 +45,5 @@ class FinancialOverviewJoryResource extends JoryResource
     protected function configureForPortal(): void
     {
     }
+
 }

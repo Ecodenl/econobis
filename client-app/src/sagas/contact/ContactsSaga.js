@@ -40,3 +40,13 @@ export function* deleteSelectedContactsSaga({ contactIds }) {
         yield put({ type: 'DELETE_CONTACT_ERROR', error });
     }
 }
+
+export function* mergeSelectedContactsSaga({ contactIds }) {
+    try {
+        yield call(ContactsAPI.mergeContacts, contactIds);
+        yield put({ type: 'MERGE_CONTACT_SUCCESS', contactIds });
+    } catch (error) {
+        yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
+        yield put({ type: 'MERGE_CONTACT_ERROR', error });
+    }
+}

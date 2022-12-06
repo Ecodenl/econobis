@@ -43,6 +43,7 @@ class ContactNewFormPersonal extends Component {
                 dateOfBirth: '',
                 ownerId: props.userId,
                 didAgreeAvg: false,
+                isCoach: false,
             },
             address: {
                 street: '',
@@ -354,6 +355,7 @@ class ContactNewFormPersonal extends Component {
             dateOfBirth,
             ownerId,
             didAgreeAvg,
+            isCoach,
         } = this.state.person;
 
         return (
@@ -445,6 +447,15 @@ class ContactNewFormPersonal extends Component {
                         label={'Akkoord privacybeleid'}
                         name={'didAgreeAvg'}
                         value={didAgreeAvg}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputToggle
+                        label="Is coach"
+                        name="isCoach"
+                        value={isCoach}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

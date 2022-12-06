@@ -9,7 +9,12 @@ class CampaignPolicy
 {
     use HandlesAuthorization;
 
-        public function manage(User $user)
+    public function view(User $user)
+    {
+        return $user->hasPermissionTo('manage_marketing', 'api');
+    }
+
+    public function manage(User $user)
     {
         return $user->hasPermissionTo('manage_marketing', 'api');
     }

@@ -9,23 +9,21 @@
 namespace App\Http\Controllers\Api\HousingFile;
 
 
-use App\Eco\Address\Address;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Contact\Contact;
-use App\Eco\Measure\Measure;
+use App\Eco\HousingFile\HousingFileSpecification;
 use App\Helpers\Delete\Models\DeleteHousingFile;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\HousingFile\Grid\RequestQuery;
-use App\Http\Resources\Address\FullAddress;
-use App\Http\Resources\GenericResource;
 use App\Http\Resources\HousingFile\FullHousingFile;
+use App\Http\Resources\HousingFile\FullHousingFileSpecification;
 use App\Http\Resources\HousingFile\GridHousingFile;
 use App\Http\Resources\HousingFile\HousingFilePeek;
 use App\Http\Resources\HousingFile\IntakePeek;
-use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -59,7 +57,12 @@ class HousingFileController extends ApiController
     {
         $housingFile->load([
             'address.contact',
-            'address.measuresTaken',
+            'housingFileSpecifications',
+            'housingFileSpecifications.measure',
+            'housingFileSpecifications.measure.measureCategory',
+            'housingFileSpecifications.status',
+            'housingFileSpecifications.floor',
+            'housingFileSpecifications.side',
             'buildingType',
             'roofType',
             'energyLabel',
@@ -69,6 +72,13 @@ class HousingFileController extends ApiController
             'notes',
             'documents'
         ]);
+
+        $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
+        if($teamDocumentCreatedFromIds){
+            $housingFile->relatedDocuments = $housingFile->documents()->whereIn('document_created_from_id', $teamDocumentCreatedFromIds)->get();
+        } else{
+            $housingFile->relatedDocuments = $housingFile->documents()->get();
+        }
 
         return FullHousingFile::make($housingFile);
     }
@@ -125,31 +135,65 @@ class HousingFileController extends ApiController
     }
 
 
-    public function attachMeasureTaken(RequestInput $requestInput)
+    public function addHousingFileSpecification(RequestInput $requestInput)
     {
         $this->authorize('manage', HousingFile::class);
 
         $data = $requestInput
-            ->integer('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
+            ->integer('housingFileId')->validate('required|exists:housing_files,id')->alias('housing_file_id')->next()
             ->integer('measureId')->validate('required|exists:measures,id')->alias('measure_id')->next()
             ->string('measureDate')->whenMissing(null)->onEmpty(null)->alias('measure_date')->next()
+            ->string('answer')->whenMissing(null)->onEmpty(null)->alias('answer')->next()
+            ->integer('statusId')->validate('nullable|exists:housing_file_specification_statuses,id')->whenMissing(null)->onEmpty(null)->alias('status_id')->next()
+            ->integer('floorId')->validate('nullable|exists:housing_file_specification_floors,id')->whenMissing(null)->onEmpty(null)->alias('floor_id')->next()
+            ->integer('sideId')->validate('nullable|exists:housing_file_specification_sides,id')->whenMissing(null)->onEmpty(null)->alias('side_id')->next()
+            ->string('typeBrand')->whenMissing(null)->onEmpty(null)->alias('type_brand')->next()
             ->get();
 
-        $address = Address::find($data['address_id']);
-        $address->measuresTaken()->attach($data['measure_id'], ['measure_date' => $data['measure_date']]);
+        $housingFileSpecification = new HousingFileSpecification($data);
+        $housingFileSpecification->save();
 
-        $address->load('measuresTaken', 'contact');
+        $housingFileSpecification->load([
+            'measure',
+            'measure.measureCategory',
+            'status',
+            'floor',
+            'side',
+        ]);
+        return FullHousingFileSpecification::make($housingFileSpecification);
+   }
 
-        return FullAddress::make($address);
-    }
-
-    public function detachMeasureTaken(Address $address, Measure $measure)
+    public function updateHousingFileSpecification(RequestInput $requestInput, HousingFileSpecification $housingFileSpecification)
     {
         $this->authorize('manage', HousingFile::class);
 
-        $address->measuresTaken()->detach($measure->id);
+        $data = $requestInput
+            ->string('measureDate')->whenMissing(null)->onEmpty(null)->alias('measure_date')->next()
+            ->string('answer')->whenMissing(null)->onEmpty(null)->alias('answer')->next()
+            ->integer('statusId')->validate('nullable|exists:housing_file_specification_statuses,id')->whenMissing(null)->onEmpty(null)->alias('status_id')->next()
+            ->integer('floorId')->validate('nullable|exists:housing_file_specification_floors,id')->whenMissing(null)->onEmpty(null)->alias('floor_id')->next()
+            ->integer('sideId')->validate('nullable|exists:housing_file_specification_sides,id')->whenMissing(null)->onEmpty(null)->alias('side_id')->next()
+            ->string('typeBrand')->whenMissing(null)->onEmpty(null)->alias('type_brand')->next()
+            ->get();
 
-        return GenericResource::make($measure);
+        $housingFileSpecification->fill($data);
+        $housingFileSpecification->save();
+
+        $housingFileSpecification->load([
+            'measure',
+            'measure.measureCategory',
+            'status',
+            'floor',
+            'side',
+        ]);
+        return FullHousingFileSpecification::make($housingFileSpecification);
+    }
+
+    public function deleteHousingFileSpecification(HousingFileSpecification $housingFileSpecification)
+    {
+        $this->authorize('manage', HousingFile::class);
+
+       $housingFileSpecification->delete();
     }
 
     public function destroy(HousingFile $housingFile)
@@ -187,7 +231,16 @@ class HousingFileController extends ApiController
 
     public function peek()
     {
-        return HousingFilePeek::collection(HousingFile::orderBy('id')->get());
+        $teamContactIds = Auth::user()->getTeamContactIds();
+        if ($teamContactIds){
+            $housingFiles = HousingFile::whereHas('address', function($query) use($teamContactIds){
+                $query->whereIn('contact_id', $teamContactIds);
+            })->orderBy('id')->get();
+        }else{
+            $housingFiles = HousingFile::orderBy('id')->get();
+        }
+
+        return HousingFilePeek::collection($housingFiles);
     }
 
     public function getAmountOfActiveHousingFiles(){

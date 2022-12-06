@@ -93,4 +93,17 @@ class PortalUser extends Authenticatable
             decrypt($this->two_factor_secret)
         );
     }
+
+    public function getTeamContactGroupIds(){
+        return false;
+    }
+
+    public function getTeamContactIds(){
+        return false;
+    }
+
+    public function getDocumentCreatedFromIds(){
+        return false;
+    }
+
 }

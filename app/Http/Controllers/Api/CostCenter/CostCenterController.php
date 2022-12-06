@@ -16,6 +16,8 @@ class CostCenterController extends Controller
 
     public function jory()
     {
+        $this->authorize('view', CostCenter::class);
+
         return Jory::on(CostCenter::class);
     }
 

@@ -10,6 +10,7 @@
     "ibantools": "^2.2.0",
     "js-file-download": "^0.4.12",
     "lodash": "^4.17.15",
+    "mgr-pdf-viewer-react": "^1.0.1",
     "moment": "^2.24.0",
     "react": "^16.8.6",
     "react-bootstrap": "^1.0.0-beta.12",

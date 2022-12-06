@@ -9,6 +9,7 @@
 namespace App\Http\Resources\QuotationRequest;
 
 
+use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Opportunity\OpportunityByQuotationRequest;
 use App\Http\Resources\Organisation\FullOrganisation;
@@ -20,12 +21,14 @@ class GridQuotationRequest extends JsonResource
     {
            return [
                'id' => $this->id,
+               'datePlanned' => $this->date_planned,
                'dateRecorded' => $this->date_recorded,
                'dateReleased' => $this->date_released,
                'quotationText' => $this->quotation_text,
-               'organisation' => FullOrganisation::make($this->whenLoaded('organisation')),
+               'organisationOrCoach' => FullContact::make($this->whenLoaded('organisationOrCoach')),
                'opportunity' => OpportunityByQuotationRequest::make($this->whenLoaded('opportunity')),
                'status' => GenericResource::make($this->whenLoaded('status')),
+               'opportunityAction' => GenericResource::make($this->whenLoaded('opportunityAction')),
                'createdAt' => $this->created_at,
             ];
     }

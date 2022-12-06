@@ -95,8 +95,8 @@ class FullTask extends JsonResource
                 'relatedEmailsInbox' => $this->relatedEmailsInbox,
                 'emailSentCount' => $this->relatedEmailsSent ? $this->relatedEmailsSent->count() : 0,
                 'relatedEmailsSent' => $this->relatedEmailsSent,
-                'documentCount' => $this->documents()->count(),
-                'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
+                'documentCount' => $this->relatedDocuments ? $this->relatedDocuments->count() : 0,
+                'relatedDocuments' => $this->relatedDocuments,
             ];
     }
 }

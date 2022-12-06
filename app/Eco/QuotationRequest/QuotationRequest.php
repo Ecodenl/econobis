@@ -2,12 +2,11 @@
 
 namespace App\Eco\QuotationRequest;
 
-use App\Eco\Address\Address;
+use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
-use App\Eco\Measure\Measure;
 use App\Eco\Opportunity\Opportunity;
-use App\Eco\Organisation\Organisation;
+use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -27,9 +26,9 @@ class QuotationRequest extends Model
         'id'
     ];
 
-    public function organisation()
+   public function organisationOrCoach()
     {
-        return $this->belongsTo(Organisation::class);
+        return $this->belongsTo(Contact::class, 'contact_id');
     }
 
     public function opportunity()
@@ -42,12 +41,21 @@ class QuotationRequest extends Model
         return $this->belongsTo(QuotationRequestStatus::class);
     }
 
+    public function opportunityAction()
+    {
+        return $this->belongsTo(OpportunityAction::class);
+    }
+
     public function documents(){
         return $this->hasMany(Document::class)->orderBy('documents.id', 'desc');
     }
 
     public function emails(){
         return $this->hasMany(Email::class)->orderBy('emails.id', 'desc');
+    }
+
+    public function actionsLog(){
+        return $this->hasMany(QuotationRequestActionsLog::class);
     }
 
     public function createdBy()
@@ -58,5 +66,10 @@ class QuotationRequest extends Model
     public function updatedBy()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function newEloquentBuilder($query)
+    {
+        return new QuotationRequestBuilder($query);
     }
 }

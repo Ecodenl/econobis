@@ -1,6 +1,7 @@
 import React from 'react';
 
 import ViewText from '../../../../components/form/ViewText';
+import { connect } from 'react-redux';
 
 const ContactDetailsFormNoteView = props => {
     const { note, createdAt, createdBy } = props.note;
@@ -15,14 +16,14 @@ const ContactDetailsFormNoteView = props => {
                 {note}
             </div>
             <div className="col-sm-1">
-                {props.showActionButtons ? (
+                {props.permissions.updateContactNote && props.showActionButtons ? (
                     <a role="button" onClick={props.openEdit}>
                         <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
                     </a>
                 ) : (
                     ''
                 )}
-                {props.showActionButtons ? (
+                {props.permissions.deleteContactNote && props.showActionButtons ? (
                     <a role="button" onClick={props.toggleDelete}>
                         <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
                     </a>
@@ -36,4 +37,9 @@ const ContactDetailsFormNoteView = props => {
     );
 };
 
-export default ContactDetailsFormNoteView;
+const mapStateToProps = state => {
+    return {
+        permissions: state.meDetails.permissions,
+    };
+};
+export default connect(mapStateToProps, null)(ContactDetailsFormNoteView);

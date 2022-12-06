@@ -63,10 +63,12 @@ class OpportunityWorkflowHelper
         $subject = str_replace('{cooperatie_naam}', $this->cooperativeName, $subject);
         if($this->contact) {
             $subject = str_replace('{contactpersoon}', $this->contact->full_name, $subject);
+            $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'contact', $this->contact);
             $htmlBody = str_replace('{contactpersoon}', $this->contact->full_name, $htmlBody);
             $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $this->contact);
         }
         if($this->opportunity) {
+            $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'kans', $this->opportunity);
             $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kans', $this->opportunity);
             if($this->opportunity->intake) {
                 $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'intake',
@@ -92,7 +94,7 @@ class OpportunityWorkflowHelper
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
 
-        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody));
+        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
     }
 
 }

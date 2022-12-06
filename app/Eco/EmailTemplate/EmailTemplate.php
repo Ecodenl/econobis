@@ -2,6 +2,7 @@
 
 namespace App\Eco\EmailTemplate;
 
+use App\Eco\Document\Document;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,6 +16,10 @@ class EmailTemplate extends Model
     public function createdBy()
     {
         return $this->belongsTo(User::class);
+    }
+    public function defaultAttachmentDocument()
+    {
+        return $this->belongsTo(Document::class);
     }
 
 }

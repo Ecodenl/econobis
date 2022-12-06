@@ -4,11 +4,18 @@ namespace App\Http\JoryResources;
 
 
 use App\Eco\Task\TaskType;
+use App\Http\Controllers\Api\Task\TaskTypeController;
 use App\Http\JoryResources\Base\JoryResource;
 
 class TaskTypeJoryResource extends JoryResource
 {
     protected $modelClass = TaskType::class;
+
+    protected function checkAuthorize(): void
+    {
+        $taskTypeController = new TaskTypeController();
+        $taskTypeController->authorize('view', TaskType::class);
+    }
 
     protected function configureForApp(): void
     {

@@ -164,93 +164,119 @@ class ContactDetailsHarmonica extends Component {
     render() {
         return (
             <div className="margin-10-top">
-                <EmailInboxHarmonica
-                    toggleShowList={() => this.toggleShowList('emailsInbox')}
-                    showEmailsInboxList={this.state.toggleShowList.emailsInbox}
-                    newEmail={this.newEmail}
-                    emailInboxCount={this.props.contactDetails.emailInboxCount}
-                />
+                {this.props.permissions.viewEmail ? (
+                    <>
+                        <EmailInboxHarmonica
+                            toggleShowList={() => this.toggleShowList('emailsInbox')}
+                            showEmailsInboxList={this.state.toggleShowList.emailsInbox}
+                            newEmail={this.newEmail}
+                            emailInboxCount={this.props.contactDetails.emailInboxCount}
+                        />
 
-                <EmailSentHarmonica
-                    toggleShowList={() => this.toggleShowList('emailsSent')}
-                    showEmailsSentList={this.state.toggleShowList.emailsSent}
-                    newEmail={this.newEmail}
-                    emailSentCount={this.props.contactDetails.emailSentCount}
-                />
+                        <EmailSentHarmonica
+                            toggleShowList={() => this.toggleShowList('emailsSent')}
+                            showEmailsSentList={this.state.toggleShowList.emailsSent}
+                            newEmail={this.newEmail}
+                            emailSentCount={this.props.contactDetails.emailSentCount}
+                        />
+                    </>
+                ) : null}
 
-                <TaskHarmonica
-                    toggleShowList={() => this.toggleShowList('tasks')}
-                    showTasksList={this.state.toggleShowList.tasks}
-                    taskCount={this.props.contactDetails.taskCount}
-                    newTask={this.newTask}
-                />
+                {this.props.permissions.viewTask ? (
+                    <TaskHarmonica
+                        toggleShowList={() => this.toggleShowList('tasks')}
+                        showTasksList={this.state.toggleShowList.tasks}
+                        taskCount={this.props.contactDetails.taskCount}
+                        newTask={this.newTask}
+                    />
+                ) : null}
 
-                <NoteHarmonica
-                    toggleShowList={() => this.toggleShowList('notes')}
-                    showNotesList={this.state.toggleShowList.notes}
-                    noteCount={this.props.contactDetails.noteCount}
-                    newNote={this.newNote}
-                />
+                {this.props.permissions.viewNote ? (
+                    <NoteHarmonica
+                        toggleShowList={() => this.toggleShowList('notes')}
+                        showNotesList={this.state.toggleShowList.notes}
+                        noteCount={this.props.contactDetails.noteCount}
+                        newNote={this.newNote}
+                    />
+                ) : null}
 
-                <ParticipationHarmonica
-                    toggleShowList={() => this.toggleShowList('participations')}
-                    showParticipationsList={this.state.toggleShowList.participations}
-                    participationCount={this.props.contactDetails.participationCount}
-                    newParticipation={this.newParticipation}
-                />
+                {this.props.permissions.viewParticipation ? (
+                    <ParticipationHarmonica
+                        toggleShowList={() => this.toggleShowList('participations')}
+                        showParticipationsList={this.state.toggleShowList.participations}
+                        participationCount={this.props.contactDetails.participationCount}
+                        newParticipation={this.newParticipation}
+                    />
+                ) : null}
 
-                <IntakeHarmonica
-                    toggleShowList={() => this.toggleShowList('intakes')}
-                    showIntakesList={this.state.toggleShowList.intakes}
-                    intakeCount={this.props.contactDetails.intakeCount}
-                    newIntake={this.newIntake}
-                />
+                {this.props.permissions.viewIntake ? (
+                    <IntakeHarmonica
+                        toggleShowList={() => this.toggleShowList('intakes')}
+                        showIntakesList={this.state.toggleShowList.intakes}
+                        intakeCount={this.props.contactDetails.intakeCount}
+                        newIntake={this.newIntake}
+                    />
+                ) : null}
 
-                <OpportunityHarmonica
-                    toggleShowList={() => this.toggleShowList('opportunities')}
-                    showOpportunitiesList={this.state.toggleShowList.opportunities}
-                    opportunityCount={this.props.contactDetails.opportunityCount}
-                />
+                {this.props.permissions.viewOpportunity ? (
+                    <OpportunityHarmonica
+                        toggleShowList={() => this.toggleShowList('opportunities')}
+                        showOpportunitiesList={this.state.toggleShowList.opportunities}
+                        opportunityCount={this.props.contactDetails.opportunityCount}
+                    />
+                ) : null}
 
-                <HousingFileHarmonica
-                    toggleShowList={() => this.toggleShowList('housingFiles')}
-                    showHousingFilesList={this.state.toggleShowList.housingFiles}
-                    housingFileCount={this.props.contactDetails.housingFileCount}
-                    newHousingFile={this.newHousingFile}
-                />
+                {this.props.permissions.viewHousingFile ? (
+                    <HousingFileHarmonica
+                        toggleShowList={() => this.toggleShowList('housingFiles')}
+                        showHousingFilesList={this.state.toggleShowList.housingFiles}
+                        housingFileCount={this.props.contactDetails.housingFileCount}
+                        newHousingFile={this.newHousingFile}
+                    />
+                ) : null}
 
-                <ContactGroupHarmonica
-                    toggleShowList={() => this.toggleShowList('contactGroups')}
-                    showContactGroupsList={this.state.toggleShowList.contactGroups}
-                    toggleAddGroup={this.toggleAddGroup}
-                    groupCount={this.props.contactDetails.groupCount}
-                />
+                {this.props.permissions.viewContactGroup ? (
+                    <ContactGroupHarmonica
+                        toggleShowList={() => this.toggleShowList('contactGroups')}
+                        showContactGroupsList={this.state.toggleShowList.contactGroups}
+                        toggleAddGroup={this.toggleAddGroup}
+                        groupCount={this.props.contactDetails.groupCount}
+                    />
+                ) : null}
 
-                <OrderHarmonica
-                    toggleShowList={() => this.toggleShowList('orders')}
-                    showOrdersList={this.state.toggleShowList.orders}
-                    orderCount={this.props.contactDetails.orderCount}
-                    newOrder={this.newOrder}
-                />
+                {this.props.permissions.viewOrder ? (
+                    <OrderHarmonica
+                        toggleShowList={() => this.toggleShowList('orders')}
+                        showOrdersList={this.state.toggleShowList.orders}
+                        orderCount={this.props.contactDetails.orderCount}
+                        newOrder={this.newOrder}
+                    />
+                ) : null}
 
-                <InvoiceHarmonica
-                    toggleShowList={() => this.toggleShowList('invoices')}
-                    showInvoicesList={this.state.toggleShowList.invoices}
-                    invoiceCount={this.props.contactDetails.invoiceCount}
-                />
+                {this.props.permissions.viewInvoice ? (
+                    <InvoiceHarmonica
+                        toggleShowList={() => this.toggleShowList('invoices')}
+                        showInvoicesList={this.state.toggleShowList.invoices}
+                        invoiceCount={this.props.contactDetails.invoiceCount}
+                    />
+                ) : null}
 
-                <FinancialOverviewContactHarmonica
-                    toggleShowList={() => this.toggleShowList('financialOverviewContacts')}
-                    showFinancialOverviewContactList={this.state.toggleShowList.financialOverviewContacts}
-                    financialOverviewContactCount={this.props.contactDetails.financialOverviewContactCount}
-                />
+                {this.props.permissions.viewFinancialOverview ? (
+                    <FinancialOverviewContactHarmonica
+                        toggleShowList={() => this.toggleShowList('financialOverviewContacts')}
+                        showFinancialOverviewContactList={this.state.toggleShowList.financialOverviewContacts}
+                        financialOverviewContactCount={this.props.contactDetails.financialOverviewContactCount}
+                    />
+                ) : null}
 
-                <DocumentHarmonica
-                    toggleShowList={() => this.toggleShowList('documents')}
-                    showDocumentsList={this.state.toggleShowList.documents}
-                    newDocument={this.newDocument}
-                    documentCount={this.props.contactDetails.documentCount}
-                />
+                {this.props.permissions.viewDocument ? (
+                    <DocumentHarmonica
+                        toggleShowList={() => this.toggleShowList('documents')}
+                        showDocumentsList={this.state.toggleShowList.documents}
+                        newDocument={this.newDocument}
+                        documentCount={this.props.contactDetails.documentCount}
+                    />
+                ) : null}
 
                 {this.state.showModalError && (
                     <ErrorModal

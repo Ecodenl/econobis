@@ -28,6 +28,7 @@ use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\HousingFile;
+use App\Eco\HousingFile\HousingFileSpecification;
 use App\Eco\HousingFile\RoofType;
 use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakeReason;
@@ -486,6 +487,11 @@ class ExternalWebformController extends Controller
                 'woondossier_momument' => 'is_monument',
                 'woondossier_maatregelen_ids' => 'measure_ids',
                 'woondossier_maatregelen_datums_realisatie' => 'measure_dates',
+                'woondossier_maatregelen_antwoorden' => 'measure_answers',
+                'woondossier_maatregelen_status_ids' => 'measure_status_ids',
+                'woondossier_maatregelen_verdieping_ids' => 'measure_floors_ids',
+                'woondossier_maatregelen_zijde_ids' => 'measure_sides_ids',
+                'woondossier_maatregelen_type_merken' => 'measure_type_brands',
                 'woondossier_aantal_bewoners' => 'number_of_residents',
                 'woondossier_opbrengst_zonnepanelen' => 'revenue_solar_panels',
                 'woondossier_opmerking' => 'remark',
@@ -1809,6 +1815,11 @@ class ExternalWebformController extends Controller
             && $data['is_monument'] == ''
             && $data['measure_ids'] == ''
             && $data['measure_dates'] == ''
+            && $data['measure_answers'] == ''
+            && $data['measure_status_ids'] == ''
+            && $data['measure_floors_ids'] == ''
+            && $data['measure_sides_ids'] == ''
+            && $data['measure_type_brands'] == ''
             && $data['number_of_residents'] == ''
             && $data['revenue_solar_panels'] == ''
             && $data['remark'] == ''
@@ -1863,9 +1874,45 @@ class ExternalWebformController extends Controller
             $rofeType = null;
         }
 
-        $measures = Measure::whereIn('id', explode(',', $data['measure_ids']))->get();
-        $measureDates = explode(',', $data['measure_dates']);
+//        $measures = Measure::whereIn('id', explode(',', $data['measure_ids']))->get();
+        $measures = [];
+        $measuresIds = $data['measure_ids'] ? explode(',', $data['measure_ids']) : null;
+        if($measuresIds) {
+            foreach ($measuresIds as $measuresId){
+                $measures[] = Measure::find($measuresId);
+            }
+        }
+        $measureDates = $data['measure_dates'] ? explode(',', $data['measure_dates']) : null;
+        $measureAnswers = $data['measure_answers'] ? explode(',', $data['measure_answers']) : null;
+        $measureStatusIds = $data['measure_status_ids'] ? explode(',', $data['measure_status_ids']) : null;
+        $measureFloorsIds = $data['measure_floors_ids'] ? explode(',', $data['measure_floors_ids']) : null;
+        $measureSidesids = $data['measure_sides_ids'] ? explode(',', $data['measure_sides_ids']) : null;
+        $measureTypeBrands = $data['measure_type_brands'] ? explode(',', $data['measure_type_brands']) : null;
 
+        if(!$measuresIds){
+            if($measureDates || $measureAnswers || $measureStatusIds || $measureFloorsIds || $measureSidesids || $measureTypeBrands){
+                $this->log('Wel woondossier maatregelen gegevens meegegeven, maar maatregel ids ontbreken, maatregelen gegevens worden niet verwerkt.');
+            }
+        } else {
+            if($measureDates && count($measureDates) != count($measuresIds)){
+                $this->log('Aantal woondossier maatregelen datums realisatie (' . count($measureDates) . ') komt niet overeen met aantal maatregelen ids (' . count($measuresIds) . ').');
+            }
+            if($measureAnswers && count($measureAnswers) != count($measuresIds)){
+                $this->log('Aantal woondossier maatregelen antwoorden (' . count($measureAnswers) . ') komt niet overeen met aantal maatregelen ids (' . count($measuresIds) . ').');
+            }
+            if($measureStatusIds && count($measureStatusIds) != count($measuresIds)){
+                $this->log('Aantal woondossier maatregelen status ids (' . count($measureStatusIds) . ') komt niet overeen met aantal maatregelen ids (' . count($measuresIds) . ').');
+            }
+            if($measureFloorsIds && count($measureFloorsIds) != count($measuresIds)){
+                $this->log('Aantal woondossier maatregelen verdieping ids (' . count($measureFloorsIds) . ') komt niet overeen met aantal maatregelen ids (' . count($measuresIds) . ').');
+            }
+            if($measureSidesids && count($measureSidesids) != count($measuresIds)){
+                $this->log('Aantal woondossier maatregelen zijde ids (' . count($measureSidesids) . ') komt niet overeen met aantal maatregelen ids (' . count($measuresIds) . ').');
+            }
+            if($measureTypeBrands && count($measureTypeBrands) != count($measuresIds)){
+                $this->log('Aantal woondossier maatregelen type merken (' . count($measureTypeBrands) . ') komt niet overeen met aantal maatregelen ids (' . count($measuresIds) . ').');
+            }
+        }
         $housingFile = HousingFile::where('address_id', $address->id)->orderBy('id', 'desc')->first();
         // Nog geen woondossier op adres, nieuw aanmaken
         if (!$housingFile) {
@@ -1889,16 +1936,42 @@ class ExternalWebformController extends Controller
             $this->log("Woondossier met id " . $housingFile->id . " aangemaakt en gekoppeld aan adres id " . $address->id . ".");
 
             if($measures){
-                if(!$data['measure_dates'] || !isset($data['measure_dates']) ){
-                    $this->log('Er zijn geen datum(s) realisaties meegegeven.');
-                }
-
                 foreach ($measures as $key=>$measure) {
-                    if(!$data['measure_dates'] || !isset($data['measure_dates']) ){
-                        $address->measuresTaken()->attach($measure->id, ['measure_date' => null]);
-                    }else{
-                        $address->measuresTaken()->attach($measure->id, ['measure_date' => $measureDates[$key]]);
+                    $measureDate = null;
+                    $measureAnswer = null;
+                    $measureStatusId = null;
+                    $measureFloorId = null;
+                    $measureSidesid = null;
+                    $measureTypeBrand = null;
+                    if (isset($measureDates[$key]) && !empty($measureDates[$key])) {
+                        $measureDate = $measureDates[$key];
                     }
+                    if (isset($measureAnswers[$key]) && !empty($measureAnswers[$key])) {
+                        $measureAnswer = $measureAnswers[$key];
+                    }
+                    if (isset($measureStatusIds[$key]) && !empty($measureStatusIds[$key])) {
+                        $measureStatusId = $measureStatusIds[$key];
+                    }
+                    if (isset($measureFloorsIds[$key]) && !empty($measureFloorsIds[$key])) {
+                        $measureFloorId = $measureFloorsIds[$key];
+                    }
+                    if (isset($measureSidesids[$key]) && !empty($measureSidesids[$key])) {
+                        $measureSidesid = $measureSidesids[$key];
+                    }
+                    if (isset($measureTypeBrands[$key]) && !empty($measureTypeBrands[$key])) {
+                        $measureTypeBrand = $measureTypeBrands[$key];
+                    }
+                    $housingFileSpecification = HousingFileSpecification::create([
+                        'housing_file_id' => $housingFile->id,
+                        'measure_id' => $measure->id,
+                        'measure_date' => $measureDate,
+                        'answer' => $measureAnswer,
+                        'status_id' => $measureStatusId,
+                        'floor_id' => $measureFloorId,
+                        'side_id' => $measureSidesid,
+                        'type_brand' => $measureTypeBrand,
+                    ]);
+//                    $this->log("Woondossier met id " . $housingFile->id . " en maatregel met id " . $measure->id . " nieuw aangemaakt met id: " . $housingFileSpecification->id . ".");
                 }
             } else {
                 $this->log("Er zijn geen maatregelen opgenomen voor woondossier.");
@@ -1924,16 +1997,54 @@ class ExternalWebformController extends Controller
             $this->log("Woondossier met id " . $housingFile->id . " is gewijzigd voor adres id " . $address->id . ".");
 
             if(isset($measures)){
-                if(!$data['measure_dates'] || !isset($data['measure_dates']) ){
-                    $this->log('Er zijn geen datum(s) realisaties meegegeven.');
-                }
                 foreach ($measures as $key=>$measure) {
-                    if(!$address->measuresTaken()->where('measure_id', $measure->id)->exists()){
-                        if(!$data['measure_dates'] || !isset($data['measure_dates']) ){
-                            $address->measuresTaken()->attach($measure->id, ['measure_date' => null]);
-                        }else{
-                            $address->measuresTaken()->attach($measure->id, ['measure_date' => $measureDates[$key]]);
-                        }
+                    $measureDate = null;
+                    $measureAnswer = null;
+                    $measureStatusId = null;
+                    $measureFloorId = null;
+                    $measureSidesid = null;
+                    $measureTypeBrand = null;
+                    if (isset($measureDates[$key]) && !empty($measureDates[$key])) {
+                        $measureDate = $measureDates[$key];
+                    }
+                    if (isset($measureAnswers[$key]) && !empty($measureAnswers[$key])) {
+                        $measureAnswer = $measureAnswers[$key];
+                    }
+                    if (isset($measureStatusIds[$key]) && !empty($measureStatusIds[$key])) {
+                        $measureStatusId = $measureStatusIds[$key];
+                    }
+                    if (isset($measureFloorsIds[$key]) && !empty($measureFloorsIds[$key])) {
+                        $measureFloorId = $measureFloorsIds[$key];
+                    }
+                    if (isset($measureSidesids[$key]) && !empty($measureSidesids[$key])) {
+                        $measureSidesid = $measureSidesids[$key];
+                    }
+                    if (isset($measureTypeBrands[$key]) && !empty($measureTypeBrands[$key])) {
+                        $measureTypeBrand = $measureTypeBrands[$key];
+                    }
+                    $housingFileSpecification = HousingFileSpecification::where('housing_file_id', $housingFile->id)->where('measure_id', $measure->id)->first();
+                    if(!$housingFileSpecification) {
+                        $housingFileSpecification = HousingFileSpecification::create([
+                            'housing_file_id' => $housingFile->id,
+                            'measure_id' => $measure->id,
+                            'measure_date' => $measureDate,
+                            'answer' => $measureAnswer,
+                            'status_id' => $measureStatusId,
+                            'floor_id' => $measureFloorId,
+                            'side_id' => $measureSidesid,
+                            'type_brand' => $measureTypeBrand,
+                        ]);
+//                        $this->log("Woondossier met id " . $housingFile->id . " en maatregel met id " . $measure->id . " nieuw aangemaakt met id: " . $housingFileSpecification->id . ".");
+                    } else {
+                        $housingFileSpecification->update([
+                            'measure_date' => $measureDate,
+                            'answer' => $measureAnswer,
+                            'status_id' => $measureStatusId,
+                            'floor_id' => $measureFloorId,
+                            'side_id' => $measureSidesid,
+                            'type_brand' => $measureTypeBrand,
+                        ]);
+//                        $this->log("Woondossier met id " . $housingFile->id . " en maatregel met id " . $measure->id . " gewijzigd voor specification id: " . $housingFileSpecification->id . ".");
                     }
                 }
             } else {
@@ -2157,6 +2268,10 @@ class ExternalWebformController extends Controller
                     $this->contactIdToEmailNewContactToGroup = $contact->id;
                     $this->processEmailNewContactToGroup = true;
                 }
+                if($contactGroup->is_coach_group){
+                    $contact->is_coach = true;
+                    $contact->save();
+                }
             }
         }
 
@@ -2187,6 +2302,10 @@ class ExternalWebformController extends Controller
                             if ($contactGroup->send_email_new_contact_link) {
                                 $this->contactIdToEmailNewContactToGroup = $contact->id;
                                 $this->processEmailNewContactToGroup = true;
+                            }
+                            if($contactGroup->is_coach_group){
+                                $contact->is_coach = true;
+                                $contact->save();
                             }
                         }
                     }

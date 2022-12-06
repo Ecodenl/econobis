@@ -1,6 +1,6 @@
 const filtersReducerDefaultState = {
-    organisation: {
-        field: 'organisation',
+    organisationOrCoach: {
+        field: 'organisationOrCoach',
         data: '',
     },
     contact: {
@@ -27,6 +27,10 @@ const filtersReducerDefaultState = {
         field: 'createdAtEnd',
         data: '',
     },
+    datePlanned: {
+        field: 'datePlanned',
+        data: '',
+    },
     dateRecorded: {
         field: 'dateRecorded',
         data: '',
@@ -43,12 +47,12 @@ const filtersReducerDefaultState = {
 
 export default (state = filtersReducerDefaultState, action) => {
     switch (action.type) {
-        case 'SET_FILTER_QUOTATION_REQUEST_ORGANISATION':
+        case 'SET_FILTER_QUOTATION_REQUEST_ORGANISATION_OR_COACH':
             return {
                 ...state,
-                organisation: {
-                    ...state.organisation,
-                    data: action.organisation,
+                organisationOrCoach: {
+                    ...state.organisationOrCoach,
+                    data: action.organisationOrCoach,
                 },
             };
         case 'SET_FILTER_QUOTATION_REQUEST_CONTACT':
@@ -97,6 +101,14 @@ export default (state = filtersReducerDefaultState, action) => {
                 createdAtEnd: {
                     ...state.createdAtEnd,
                     data: action.createdAtEnd,
+                },
+            };
+        case 'SET_FILTER_QUOTATION_REQUEST_DATE_PLANNED':
+            return {
+                ...state,
+                datePlanned: {
+                    ...state.datePlanned,
+                    data: action.datePlanned,
                 },
             };
         case 'SET_FILTER_QUOTATION_REQUEST_DATE_RECORDED':

@@ -10,6 +10,7 @@ namespace App\Http\RequestQueries\Task\Grid;
 
 use App\Eco\Task\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TaskRequestQuery extends \App\Helpers\RequestQuery\RequestQuery
 {
@@ -25,6 +26,7 @@ class TaskRequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     protected function baseQuery()
     {
         return Task::query()
+            ->whereTeamContactIds(Auth::user())
             ->where('tasks.finished', false)
             ->select('tasks.*');
     }

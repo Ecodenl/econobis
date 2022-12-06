@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Project;
 
 use App\Eco\Document\Document;
+use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\EnergySupplier\EnergySupplier;
@@ -205,8 +206,10 @@ class RevenuePartsKwhController extends ApiController
             abort(412, 'Geen geldige excel template gevonden.');
         }
 
+        $documentCreatedFromProjectId = DocumentCreatedFrom::where('code_ref', 'project')->first()->id;
+
         $document = new Document();
-        $document->document_created_from = 'project';
+        $document->document_created_from_id = $documentCreatedFromProjectId;
         $document->document_type = 'internal';
         $document->document_group = 'revenue';
         $document->project_id = $revenuePartsKwh->revenuesKwh->project->id;

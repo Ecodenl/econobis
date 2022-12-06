@@ -43,16 +43,34 @@ class DocumentController extends Controller
 
     public function peek(){
         $this->authorize('view', Document::class);
-//  todo: WM navragen of alle documenten opgehaald moeten worden of alleen bepaalde type of group?
-//        return Document::select('id', 'filename')->where('document_type', 'upload')->get();
-        return Document::select('id', 'filename')->get();
+
+        $documents = Document::select('id', 'filename');
+        $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
+        if($teamDocumentCreatedFromIds){
+            $documents->whereIn('document_created_from_id', $teamDocumentCreatedFromIds);
+        }
+        $teamContactIds = Auth::user()->getTeamContactIds();
+        if ($teamContactIds){
+            $documents->where(function ($documents) use($teamContactIds) {
+                $documents->whereIn('documents.contact_id', $teamContactIds);
+                $documents->orWhereNull('documents.contact_id');
+            });
+
+        }
+
+        return $documents->get();
+    }
+
+    public function defaultEmailDocumentsPeek(){
+        return Document::select('id', 'filename')->where('document_group', 'default-email-attachment')->get();
     }
 
     public function show(Document $document)
     {
         $this->authorize('view', Document::class);
+        $this->checkDocumentAutorized($document);
 
-        $document->load('administration', 'task', 'order', 'contact', 'intake', 'contactGroup', 'sentBy', 'createdBy', 'template', 'opportunity.measureCategory', 'opportunity.status', 'project', 'participant.contact', 'participant.project');
+        $document->load('administration', 'task', 'order', 'contact', 'intake', 'contactGroup', 'sentBy', 'createdBy', 'documentCreatedFrom', 'template', 'opportunity.measureCategory', 'opportunity.status', 'project', 'participant.contact', 'participant.project');
 
         return FullDocument::make($document);
     }
@@ -63,7 +81,7 @@ class DocumentController extends Controller
 
         $data = $requestInput
             ->string('description')->next()
-            ->string('documentCreatedFrom')->alias('document_created_from')->next()
+            ->integer('documentCreatedFromId')->alias('document_created_from_id')->next()
             ->string('documentType')->validate('required')->alias('document_type')->next()
             ->string('documentGroup')->validate('required')->alias('document_group')->next()
             ->string('filename')->next()
@@ -110,7 +128,7 @@ class DocumentController extends Controller
             $document->campaign && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->campaign->name)) . '_';
             $document->measure && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->measure->name)) . '_';
             $document->task && $name .= $document->task->id . '_';
-            $document->quotationRequest && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->quotationRequest->organisation->contact->full_name)) . '_';
+            $document->quotationRequest && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->quotationRequest->organisationOrCoach->full_name)) . '_';
             $document->project && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->project->name)) . '_';
             $document->participant && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->participant->contact->full_name)) . '_';
             $document->order && $name .= str_replace(' ', '', $document->order->number) . '_';
@@ -138,8 +156,7 @@ class DocumentController extends Controller
             if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
                 Storage::disk('documents')->delete($document->filename);
             }
-        }
-        else{
+        }else{
             $file = $request->file('attachment');
 
             if($file == null || !$file->isValid()) abort('422', 'Error uploading file');
@@ -152,15 +169,19 @@ class DocumentController extends Controller
                 $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
                 $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $file->getClientOriginalName(), $document->getDocumentGroup()->name);
                 $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+            } else {
+                $tmpFileName = str_replace('\\', '/', $filePath_tmp);
+                $pos = strrpos($tmpFileName, '/');
+                $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
+                Storage::disk('documents')->copy($tmpFileName,$file->getClientOriginalName() );
+                $document->alfresco_node_id = null;
             }
 
             $document->filename = $file->getClientOriginalName();
             $document->save();
 
             //delete file on server, still saved on alfresco.
-            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                Storage::disk('documents')->delete($file_tmp);
-            }
+            Storage::disk('documents')->delete($file_tmp);
         }
 
         return FullDocument::make($document->fresh());
@@ -172,7 +193,7 @@ class DocumentController extends Controller
 
         $data = $requestInput
             ->string('description')->next()
-            ->string('documentCreatedFrom')->alias('document_created_from')->next()
+            ->integer('documentCreatedFromId')->alias('document_created_from_id')->next()
             ->string('documentType')->validate('required')->alias('document_type')->next()
             ->string('documentGroup')->validate('required')->alias('document_group')->next()
             ->string('freeText1')->alias('free_text_1')->next()
@@ -199,7 +220,7 @@ class DocumentController extends Controller
         $document->fill($data);
         $document->save();
 
-        $document->load('contact', 'intake', 'order', 'contactGroup', 'sentBy', 'createdBy', 'template', 'opportunity.measureCategory', 'opportunity.status', 'project', 'participant.contact', 'participant.project');
+        $document->load('contact', 'intake', 'order', 'contactGroup', 'sentBy', 'createdBy', 'documentCreatedFrom', 'template', 'opportunity.measureCategory', 'opportunity.status', 'project', 'participant.contact', 'participant.project');
 
         return FullDocument::make($document);
     }
@@ -257,11 +278,33 @@ class DocumentController extends Controller
     public function download(Document $document){
 
         $this->authorize('view', Document::class);
-
-        $user = Auth::user();
+        $this->checkDocumentAutorized($document);
 
         if(\Config::get('app.ALFRESCO_COOP_USERNAME') == 'local') {
-            return null;
+            if($document->alfresco_node_id == null){
+                $filePath = Storage::disk('documents')->getDriver()
+                    ->getAdapter()->applyPathPrefix($document->filename);
+                header('X-Filename:' . $document->filename);
+                header('Access-Control-Expose-Headers: X-Filename');
+                return response()->download($filePath, $document->filename);
+            } else {
+                return null;
+            }
+        }
+
+        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+
+        return $alfrescoHelper->downloadFile($document->alfresco_node_id);
+    }
+
+    public function downLoadRawDocument(Document $document)
+    {
+        if (\Config::get('app.ALFRESCO_COOP_USERNAME') == 'local') {
+            if ($document->alfresco_node_id == null) {
+                return Storage::disk('documents')->get($document->filename);
+            } else {
+                return null;
+            }
         }
 
         $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
@@ -276,5 +319,23 @@ class DocumentController extends Controller
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 
         return $field;
+    }
+
+    /**
+     * @param Document $document
+     */
+    protected function checkDocumentAutorized(Document $document): void
+    {
+        $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
+        if ($teamDocumentCreatedFromIds && !in_array($document->document_created_from_id, $teamDocumentCreatedFromIds)) {
+            abort(403, 'Niet geautoriseerd.');
+        }
+        if($document->contact){
+            $teamContactIds = Auth::user()->getTeamContactIds();
+            if ($teamContactIds && !in_array($document->contact_id, $teamContactIds)) {
+                abort(403, 'Niet geautoriseerd.');
+            }
+        }
+
     }
 }

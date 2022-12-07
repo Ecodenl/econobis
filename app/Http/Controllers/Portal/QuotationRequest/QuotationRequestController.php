@@ -63,6 +63,7 @@ class QuotationRequestController
 
         $sendMailPlanned = ($quotationRequest->isDirty('date_planned') && !!$quotationRequest->date_planned);
         $sendMailRecorded = ($quotationRequest->isDirty('date_recorded') && !!$quotationRequest->date_recorded);
+        $sendMailReleased = ($quotationRequest->isDirty('date_released') && !!$quotationRequest->date_released);
 
         $quotationRequest->save();
 
@@ -71,6 +72,9 @@ class QuotationRequestController
         }
         if ($sendMailRecorded) {
             $this->sendInspectionRecordedMail($quotationRequest);
+        }
+        if ($sendMailReleased) {
+            $this->sendInspectionReleasedMail($quotationRequest);
         }
     }
 
@@ -181,31 +185,8 @@ class QuotationRequestController
 
         $mail = Mail::to($contact->primaryEmailAddress);
 
-
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Afspraak schouwen';
-        $htmlBody = $emailTemplate->html_body;
-
-        $subject = str_replace('{cooperatie_naam}', $cooperation->name, $subject);
-        $subject = str_replace('{contactpersoon}', $contact->full_name, $subject);
-        $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'contact', $contact);
-
-        $htmlBody = str_replace('{cooperatie_naam}', $cooperation->name, $htmlBody);
-        $htmlBody = str_replace('{contactpersoon}', $contact->full_name, $htmlBody);
-        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $contact);
-        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'offerteverzoek', $quotationRequest);
-        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kans', $quotationRequest->opportunity);
-
-        $htmlBody = TemplateVariableHelper::stripRemainingVariableTags($htmlBody);
-
-        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
-            . $subject . '</title></head>'
-            . $htmlBody . '</html>';
-
-
-        $mail->subject = $subject;
-        $mail->html_body = $htmlBody;
-
-        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
+        $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail);
     }
 
     private function sendInspectionRecordedMail(QuotationRequest $quotationRequest)
@@ -223,8 +204,39 @@ class QuotationRequestController
 
         $mail = Mail::to($contact->primaryEmailAddress);
 
-
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Opname schouwen';
+        $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail);
+    }
+
+    private function sendInspectionReleasedMail(QuotationRequest $quotationRequest)
+    {
+        $cooperation = Cooperation::first();
+        $emailTemplate = $cooperation->inspectionReleasedEmailTemplate;
+
+        if (!$emailTemplate) {
+            return;
+        }
+
+        $contact = $quotationRequest->opportunity->intake->contact;
+
+        (new EmailHelper())->setConfigToDefaultMailbox();
+
+        $mail = Mail::to($contact->primaryEmailAddress);
+        $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Opname schouwen';
+
+        $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail);
+    }
+
+    /**
+     * @param $emailTemplate
+     * @param $cooperation
+     * @param string $subject
+     * @param $contact
+     * @param QuotationRequest $quotationRequest
+     * @param \Illuminate\Mail\PendingMail $mail
+     */
+    private function sendInspectionMailToContact($emailTemplate, $cooperation, string $subject, $contact, QuotationRequest $quotationRequest, \Illuminate\Mail\PendingMail $mail): void
+    {
         $htmlBody = $emailTemplate->html_body;
 
         $subject = str_replace('{cooperatie_naam}', $cooperation->name, $subject);

@@ -1876,19 +1876,43 @@ class ExternalWebformController extends Controller
 
 //        $measures = Measure::whereIn('id', explode(',', $data['measure_ids']))->get();
         $measures = [];
-        $measuresIds = explode(',', $data['measure_ids']);
+        $measuresIds = $data['measure_ids'] ? explode(',', $data['measure_ids']) : null;
         if($measuresIds) {
             foreach ($measuresIds as $measuresId){
                 $measures[] = Measure::find($measuresId);
             }
         }
-        $measureDates = explode(',', $data['measure_dates']);
-        $measureAnswers = explode(',', $data['measure_answers']);
-        $measureStatusIds = explode(',', $data['measure_status_ids']);
-        $measureFloorsIds = explode(',', $data['measure_floors_ids']);
-        $measureSidesids = explode(',', $data['measure_sides_ids']);
-        $measureTypeBrands = explode(',', $data['measure_type_brands']);
+        $measureDates = $data['measure_dates'] ? explode(',', $data['measure_dates']) : null;
+        $measureAnswers = $data['measure_answers'] ? explode(',', $data['measure_answers']) : null;
+        $measureStatusIds = $data['measure_status_ids'] ? explode(',', $data['measure_status_ids']) : null;
+        $measureFloorsIds = $data['measure_floors_ids'] ? explode(',', $data['measure_floors_ids']) : null;
+        $measureSidesids = $data['measure_sides_ids'] ? explode(',', $data['measure_sides_ids']) : null;
+        $measureTypeBrands = $data['measure_type_brands'] ? explode(',', $data['measure_type_brands']) : null;
 
+        if(!$measuresIds){
+            if($measureDates || $measureAnswers || $measureStatusIds || $measureFloorsIds || $measureSidesids || $measureTypeBrands){
+                $this->log('Wel woondossier maatregelen gegevens meegegeven, maar maatregel ids ontbreken, maatregelen gegevens worden niet verwerkt.');
+            }
+        } else {
+            if($measureDates && count($measureDates) != count($measuresIds)){
+                $this->log('Aantal woondossier maatregelen datums realisatie (' . count($measureDates) . ') komt niet overeen met aantal maatregelen ids (' . count($measuresIds) . ').');
+            }
+            if($measureAnswers && count($measureAnswers) != count($measuresIds)){
+                $this->log('Aantal woondossier maatregelen antwoorden (' . count($measureAnswers) . ') komt niet overeen met aantal maatregelen ids (' . count($measuresIds) . ').');
+            }
+            if($measureStatusIds && count($measureStatusIds) != count($measuresIds)){
+                $this->log('Aantal woondossier maatregelen status ids (' . count($measureStatusIds) . ') komt niet overeen met aantal maatregelen ids (' . count($measuresIds) . ').');
+            }
+            if($measureFloorsIds && count($measureFloorsIds) != count($measuresIds)){
+                $this->log('Aantal woondossier maatregelen verdieping ids (' . count($measureFloorsIds) . ') komt niet overeen met aantal maatregelen ids (' . count($measuresIds) . ').');
+            }
+            if($measureSidesids && count($measureSidesids) != count($measuresIds)){
+                $this->log('Aantal woondossier maatregelen zijde ids (' . count($measureSidesids) . ') komt niet overeen met aantal maatregelen ids (' . count($measuresIds) . ').');
+            }
+            if($measureTypeBrands && count($measureTypeBrands) != count($measuresIds)){
+                $this->log('Aantal woondossier maatregelen type merken (' . count($measureTypeBrands) . ') komt niet overeen met aantal maatregelen ids (' . count($measuresIds) . ').');
+            }
+        }
         $housingFile = HousingFile::where('address_id', $address->id)->orderBy('id', 'desc')->first();
         // Nog geen woondossier op adres, nieuw aanmaken
         if (!$housingFile) {

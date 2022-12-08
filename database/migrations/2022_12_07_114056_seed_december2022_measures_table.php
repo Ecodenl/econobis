@@ -30,7 +30,8 @@ class SeedDecember2022MeasuresTable extends Migration
                 DB::table('measures')->insertGetId(
                     ['name'=> $measure,
                         'measure_category_id' => $catId,
-                        'number' => 'M2022-' . $id ]
+                        'number' => 'M2022-' . $id,
+                        'visible' => 0 ]
                 );
                 $id++;
             }

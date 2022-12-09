@@ -2277,7 +2277,7 @@ class TemplateVariableHelper
                 return $model->date_recorded ? Carbon::parse($model->date_recorded)->format('d/m/Y H:i') : null;
                 break;
             case 'datum_uitgebracht':
-                return $model->date_released ? Carbon::parse($model->date_released)->format('d/m/Y') : null;
+                return $model->date_released ? Carbon::parse($model->date_released)->format('d/m/Y H:i') : null;
                 break;
             case 'datum_akkoord_extern':
                 return $model->date_approved_external ? Carbon::parse($model->date_approved_external)->format('d/m/Y') : null;

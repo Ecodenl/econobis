@@ -78,40 +78,42 @@ const QuotationRequestDetailsFormGeneralView = props => {
 
             <div className="row">
                 <ViewText label={'Datum afspraak'} value={datePlanned ? moment(datePlanned).format('L') : ''} />
-                {opportunityAction.codeRef === 'quotation-request' ? (
-                    <ViewText label={'Datum opname'} value={dateRecorded ? moment(dateRecorded).format('L') : ''} />
-                ) : null}
-            </div>
-            <div className="row">
                 <ViewText label={'Tijd afspraak'} value={datePlanned ? moment(datePlanned).format('HH:mm') : ''} />
-                {opportunityAction.codeRef === 'quotation-request' ? (
-                    <ViewText label={'Tijd opname'} value={dateRecorded ? moment(dateRecorded).format('HH:mm') : ''} />
-                ) : null}
             </div>
+
+            {opportunityAction.codeRef === 'quotation-request' ? (
+                <div className="row">
+                    <ViewText label={'Datum opname'} value={dateRecorded ? moment(dateRecorded).format('L') : ''} />
+                    <ViewText label={'Tijd opname'} value={dateRecorded ? moment(dateRecorded).format('HH:mm') : ''} />
+                </div>
+            ) : null}
+
             <div className="row">
                 <ViewText label={'Datum uitgebracht'} value={dateReleased ? moment(dateReleased).format('L') : ''} />
+                <ViewText label={'Tijd uitgebracht'} value={dateReleased ? moment(dateReleased).format('HH:mm') : ''} />
+            </div>
+            {opportunityAction.codeRef === 'subsidy-request' ? (
+                <div className="row">
+                    <ViewText
+                        label={'Datum akkoord bewoner'}
+                        value={dateApprovedClient ? moment(dateApprovedClient).format('L ') : ''}
+                    />
+                </div>
+            ) : null}
+            {opportunityAction.codeRef === 'subsidy-request' ? (
+                <div className="row">
+                    <ViewText
+                        label={'Datum akkoord projectleider'}
+                        value={dateApprovedProjectManager ? moment(dateApprovedProjectManager).format('L') : ''}
+                    />
+                </div>
+            ) : null}
+            <div className="row">
                 <ViewText
                     label={'Datum akkoord extern'}
                     value={dateApprovedExternal ? moment(dateApprovedExternal).format('L') : ''}
                 />
             </div>
-            <div className="row">
-                <ViewText label={'Tijd uitgebracht'} value={dateReleased ? moment(dateReleased).format('HH:mm') : ''} />
-            </div>
-            {opportunityAction.codeRef === 'subsidy-request' ? (
-                <>
-                    <div className="row">
-                        <ViewText
-                            label={'Datum akkoord projectleider'}
-                            value={dateApprovedProjectManager ? moment(dateApprovedProjectManager).format('L') : ''}
-                        />
-                        <ViewText
-                            label={'Datum akkoord bewoner'}
-                            value={dateApprovedClient ? moment(dateApprovedClient).format('L ') : ''}
-                        />
-                    </div>
-                </>
-            ) : null}
 
             <div className="row">
                 <div className="col-sm-3">

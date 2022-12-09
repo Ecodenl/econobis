@@ -160,29 +160,6 @@ function InspectDetails({ match, history }) {
                                                         />
                                                     </>
                                                 ) : null}
-                                                {initialQuotationRequest.opportunityAction.codeRef ===
-                                                'subsidy-request' ? (
-                                                    <>
-                                                        <FormLabel
-                                                            htmlFor="date_approved_project_manager"
-                                                            className={'field-label'}
-                                                        >
-                                                            Datum akkoord projectleider
-                                                        </FormLabel>
-                                                        <input
-                                                            type="text"
-                                                            className={`text-input w-input content`}
-                                                            value={
-                                                                initialQuotationRequest.dateApprovedProjectManager
-                                                                    ? moment(
-                                                                          initialQuotationRequest.dateApprovedProjectManager
-                                                                      ).format('L')
-                                                                    : ''
-                                                            }
-                                                            readOnly={true}
-                                                        />
-                                                    </>
-                                                ) : null}
                                                 <FormLabel htmlFor="date_released" className={'field-label'}>
                                                     Datum uitgebracht
                                                 </FormLabel>
@@ -218,6 +195,29 @@ function InspectDetails({ match, history }) {
                                                                 initialQuotationRequest.dateApprovedClient
                                                                     ? moment(
                                                                           initialQuotationRequest.dateApprovedClient
+                                                                      ).format('L')
+                                                                    : ''
+                                                            }
+                                                            readOnly={true}
+                                                        />
+                                                    </>
+                                                ) : null}
+                                                {initialQuotationRequest.opportunityAction.codeRef ===
+                                                'subsidy-request' ? (
+                                                    <>
+                                                        <FormLabel
+                                                            htmlFor="date_approved_project_manager"
+                                                            className={'field-label'}
+                                                        >
+                                                            Datum akkoord projectleider
+                                                        </FormLabel>
+                                                        <input
+                                                            type="text"
+                                                            className={`text-input w-input content`}
+                                                            value={
+                                                                initialQuotationRequest.dateApprovedProjectManager
+                                                                    ? moment(
+                                                                          initialQuotationRequest.dateApprovedProjectManager
                                                                       ).format('L')
                                                                     : ''
                                                             }

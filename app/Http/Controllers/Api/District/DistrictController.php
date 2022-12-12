@@ -49,4 +49,9 @@ class DistrictController
         $district->name = $request->name;
         $district->save();
     }
+
+    public function delete(District $district)
+    {
+        $district->delete();
+    }
 }

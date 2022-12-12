@@ -24,4 +24,8 @@ export default {
     updateDistrict: district => {
         return axiosInstance.post(`${BASE_URL}/${district.id}`, district);
     },
+
+    deleteDistrict: district => {
+        return axiosInstance.post(`${BASE_URL}/${district.id}/delete`);
+    }
 };

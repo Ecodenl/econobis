@@ -81,7 +81,7 @@ export default function DistrictsListApp() {
                                 </tr>
                             ) : (
                                 districts.map(district => {
-                                    return <DistrictListItem key={district.id} district={district}/>;
+                                    return <DistrictListItem key={district.id} district={district} onDelete={fetch}/>;
                                 })
                             )}
                         </DataTableBody>

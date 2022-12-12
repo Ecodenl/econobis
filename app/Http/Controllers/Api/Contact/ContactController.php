@@ -149,7 +149,7 @@ class ContactController extends Controller
 
     public function peekCoach(Request $request)
     {
-        $coaches = Contact::where('is_coach', true)->select('id', 'full_name')->orderBy('full_name', 'asc')->get();
+        $coaches = Contact::where('inspection_person_type_id', 'coach')->select('id', 'full_name')->orderBy('full_name', 'asc')->get();
 
         return ContactPeekCoach::collection($coaches);
     }

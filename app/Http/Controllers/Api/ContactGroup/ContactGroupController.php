@@ -101,7 +101,7 @@ class ContactGroupController extends Controller
             ->boolean('sendEmailNewContactLink')->validate('boolean')->alias('send_email_new_contact_link')->whenMissing(false)->next()
             ->integer('emailTemplateIdNewContactLink')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_new_contact_link')->next()
             ->boolean('includeIntoExportGroupReport')->validate('boolean')->alias('include_into_export_group_report')->whenMissing(false)->next()
-            ->boolean('isCoachGroup')->validate('boolean')->alias('is_coach_group')->whenMissing(false)->next()
+            ->string('inspectionPersonTypeId')->validate('string')->alias('inspection_person_type_id')->whenMissing(null)->onEmpty(null)->next()
             ->get();
 
         $contactGroupIds = explode(',', $request->contactGroupIds);
@@ -149,7 +149,7 @@ class ContactGroupController extends Controller
             ->boolean('sendEmailNewContactLink')->validate('boolean')->alias('send_email_new_contact_link')->whenMissing(false)->next()
             ->integer('emailTemplateIdNewContactLink')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_new_contact_link')->next()
             ->boolean('includeIntoExportGroupReport')->validate('boolean')->alias('include_into_export_group_report')->whenMissing(false)->next()
-            ->boolean('isCoachGroup')->validate('boolean')->alias('is_coach_group')->whenMissing(false)->next()
+            ->string('inspectionPersonTypeId')->validate('string')->alias('inspection_person_type_id')->whenMissing(null)->onEmpty(null)->next()
             ->get();
 
         //Van dynamisch een statische groep maken
@@ -235,8 +235,8 @@ class ContactGroupController extends Controller
                 $contactGroupHelper = new ContactGroupHelper($contactGroup, $contact);
                 $contactGroupHelper->processEmailNewContactToGroup();
             }
-            if($contactGroup->is_coach_group){
-                $contact->is_coach = true;
+            if($contactGroup->inspection_person_type_id !== null){
+                $contact->inspection_person_type_id = $contactGroup->inspection_person_type_id;
                 $contact->save();
             }
         }

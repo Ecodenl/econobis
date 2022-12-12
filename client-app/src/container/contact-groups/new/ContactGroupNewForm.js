@@ -14,6 +14,7 @@ import InputMultiSelect from '../../../components/form/InputMultiSelect';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import InputReactSelect from '../../../components/form/InputReactSelect';
 import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
+import ViewText from '../../../components/form/ViewText';
 
 class ContactGroupNewForm extends Component {
     constructor(props) {
@@ -22,6 +23,7 @@ class ContactGroupNewForm extends Component {
         this.state = {
             contactsWithPermission: [],
             contactGroups: [],
+            inspectionPersonTypes: [],
             emailTemplates: [],
             contactGroup: {
                 id: '',
@@ -39,7 +41,7 @@ class ContactGroupNewForm extends Component {
                 contactGroupComposedType: '',
                 sendEmailNewContactLink: false,
                 emailTemplateIdNewContactLink: '',
-                isCoachGroup: false,
+                inspectionPersonTypeId: '',
             },
             errors: {
                 name: false,
@@ -205,7 +207,7 @@ class ContactGroupNewForm extends Component {
             contactGroupIdsSelected,
             sendEmailNewContactLink,
             emailTemplateIdNewContactLink,
-            isCoachGroup,
+            inspectionPersonTypeId,
         } = this.state.contactGroup;
 
         return (
@@ -337,13 +339,16 @@ class ContactGroupNewForm extends Component {
                 </div>
 
                 <div className="row">
-                    <InputToggle
-                        label={'Is coach groep'}
-                        name={'isCoachGroup'}
-                        value={isCoachGroup}
-                        onChangeAction={this.handleInputChange}
+                    <InputReactSelect
+                        label={'Type schouwen groep'}
+                        divSize={'col-sm-6'}
+                        name={'inspectionPersonTypeId'}
+                        options={this.props.inspectionPersonTypes}
+                        value={inspectionPersonTypeId}
+                        onChangeAction={this.handleReactSelectChange}
+                        clearable={true}
                         size={'col-sm-5'}
-                        textToolTip={`Als dit aanstaat en een contact wordt aan deze groep toegevoegd dan wordt dat contact energie coach`}
+                        textToolTip={`Contact die worden toegevoegd aan deze groep krijgen dezelfde waarde als type schouwen persoon`}
                     />
                 </div>
 
@@ -423,6 +428,7 @@ const mapStateToProps = state => {
     return {
         meDetails: state.meDetails,
         permissions: state.systemData.permissions,
+        inspectionPersonTypes: state.systemData.inspectionPersonTypes,
     };
 };
 

@@ -86,6 +86,8 @@ const MailboxDetailsApp = React.lazy(() => import('./container/mailbox/details/M
 const MailboxNewApp = React.lazy(() => import('./container/mailbox/new/MailboxNewApp'));
 const MailboxesListApp = React.lazy(() => import('./container/mailbox/list/MailboxesListApp'));
 const DistrictsListApp = React.lazy(() => import('./container/district/list/DistrictsListApp'));
+const DistrictNewApp = React.lazy(() => import('./container/district/new/DistrictNewApp'));
+const DistrictDetailsApp = React.lazy(() => import('./container/district/details/DistrictDetailsApp'));
 const MailgunDomainsListApp = React.lazy(() => import('./container/mailgun-domain/list/MailgunDomainsListApp'));
 const MailgunDomainNewApp = React.lazy(() => import('./container/mailgun-domain/new/MailgunDomainNewApp'));
 const MailgunDomainDetailsApp = React.lazy(() => import('./container/mailgun-domain/details/MailgunDomainDetailsApp'));
@@ -404,8 +406,8 @@ const Routes = () => {
                     <Route path="mailbox/:id" component={MailboxDetailsApp} />
                     <Route path="mailboxen" component={MailboxesListApp} />
                     /* Districts */
-                    {/*<Route path="mailbox/nieuw" component={MailboxNewApp} />*/}
-                    {/*<Route path="mailbox/:id" component={MailboxDetailsApp} />*/}
+                    <Route path="wijk/nieuw" component={DistrictNewApp} />
+                    <Route path="wijk/:id" component={DistrictDetailsApp} />
                     <Route path="wijken" component={DistrictsListApp} />
                     /* Housing File */
                     <Route

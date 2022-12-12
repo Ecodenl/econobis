@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {hashHistory} from 'react-router';
 
-export default function districtListItem({district}) {
+export default function DistrictListItem({district}) {
     const [showActionButtons, setShowActionButtons] = useState(false);
     const [highlightRow, setHighlightRow] = useState('');
     const onRowEnter = () => {
@@ -15,7 +15,7 @@ export default function districtListItem({district}) {
     }
 
     const openItem = () => {
-        hashHistory.push(`/district/${district.id}`);
+        hashHistory.push(`/wijk/${district.id}`);
     }
 
     return (

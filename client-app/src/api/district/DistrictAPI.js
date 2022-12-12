@@ -4,8 +4,24 @@ const BASE_URL = 'district';
 
 export default {
     fetchDistricts: () => {
-        return axiosInstance.get(`${BASE_URL}/grid`).then(response => {
+        return axiosInstance.get(BASE_URL).then(response => {
             return response.data;
         });
+    },
+
+    fetchDistrictDetails: id => {
+        return axiosInstance.get(`${BASE_URL}/${id}`).then(response => {
+            return response.data;
+        });
+    },
+
+    newDistrict: district => {
+        return axiosInstance.post(BASE_URL, district).then(response => {
+            return response.data;
+        });
+    },
+
+    updateDistrict: district => {
+        return axiosInstance.post(`${BASE_URL}/${district.id}`, district);
     },
 };

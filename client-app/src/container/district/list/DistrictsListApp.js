@@ -8,8 +8,9 @@ import DataTableHead from "../../../components/dataTable/DataTableHead";
 import DataTableHeadTitle from "../../../components/dataTable/DataTableHeadTitle";
 import DataTableBody from "../../../components/dataTable/DataTableBody";
 import DistrictListItem from "./DistrictListItem";
+import {hashHistory} from "react-router";
 
-export default function districtsListApp() {
+export default function DistrictsListApp() {
     const [isLoading, setLoading] = useState(true);
     const [districts, setDistricts] = useState([]);
     const [errorText, setErrorText] = useState('');
@@ -53,13 +54,15 @@ export default function districtsListApp() {
                     <div className="row">
                         <div className="col-md-4">
                             <div className="btn-group" role="group">
-                                <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={fetch} />
+                                <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={fetch}/>
+                                <ButtonIcon iconName={'glyphicon-plus'}
+                                            onClickAction={() => hashHistory.push(`/wijk/nieuw`)}/>
                             </div>
                         </div>
                         <div className="col-md-4">
                             <h3 className="text-center table-title">Wijken</h3>
                         </div>
-                        <div className="col-md-4" />
+                        <div className="col-md-4"/>
                     </div>
                 </div>
 
@@ -67,8 +70,8 @@ export default function districtsListApp() {
                     <DataTable>
                         <DataTableHead>
                             <tr className="thead-title">
-                                <DataTableHeadTitle title={'Naam'} width={'95%'} />
-                                <DataTableHeadTitle title={''} width={'5%'} />
+                                <DataTableHeadTitle title={'Naam'} width={'95%'}/>
+                                <DataTableHeadTitle title={''} width={'5%'}/>
                             </tr>
                         </DataTableHead>
                         <DataTableBody>
@@ -78,7 +81,7 @@ export default function districtsListApp() {
                                 </tr>
                             ) : (
                                 districts.map(district => {
-                                    return <DistrictListItem key={district.id} district={district} />;
+                                    return <DistrictListItem key={district.id} district={district}/>;
                                 })
                             )}
                         </DataTableBody>

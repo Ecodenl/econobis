@@ -261,6 +261,11 @@ Route::namespace('Api')
         Route::get('mailbox/receive/from-mailboxes-user', 'Mailbox\MailboxController@receiveMailFromMailboxesUser');
         Route::get('mailbox/{mailbox}/make-primary', 'Mailbox\MailboxController@makePrimary');
 
+        /**
+         * Districts
+         */
+        Route::get('district/grid', [\App\Http\Controllers\Api\District\DistrictController::class, 'grid']);
+
         Route::get('email/grid/in-folder/{folder}', 'Email\EmailController@grid');
         Route::get('email/search', 'Email\EmailController@search');
         Route::get('email/amount-open', 'Email\EmailController@getAmountOfOpenEmails');

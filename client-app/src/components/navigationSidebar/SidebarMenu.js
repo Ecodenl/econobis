@@ -282,11 +282,21 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                     <NavIcon>
                         <SvgIcon size={20} icon={calendar} />
                     </NavIcon>
-                    <NavText>
-                        <Link className="sidebar-link-header" to="agenda">
-                            Agenda
-                        </Link>
-                    </NavText>
+                    <NavText>Planning</NavText>
+                    <Nav key={'nav-agenda'} id={`agenda`}>
+                        <NavText>
+                            <Link className="sidebar-link-header" to="agenda">
+                                Kalender
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav key={'nav-wijk'} id={`wijk`}>
+                        <NavText>
+                            <Link className="sidebar-link-header" to="wijken">
+                                Wijk/Agenda
+                            </Link>
+                        </NavText>
+                    </Nav>
                 </Nav>
             )}
 

@@ -227,6 +227,12 @@ class Contact extends Model
     public function quotationRequests(){
         return $this->hasMany(QuotationRequest::class);
     }
+    public function quotationRequestsAsProjectManager(){
+        return $this->hasMany(QuotationRequest::class, 'project_manager_id');
+    }
+    public function quotationRequestsAsExternalParty(){
+        return $this->hasMany(QuotationRequest::class, 'external_party_id');
+    }
 
     // Only an unfinished task is a task
     public function tasks()

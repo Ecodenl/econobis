@@ -23,7 +23,15 @@ class QuotationRequestController
     {
         $portalUser = Auth::user();
 
-        return response()->json($portalUser->contact->quotationRequests->map(function (QuotationRequest $quotationRequest) {
+        if ($portalUser->contact->isExternalParty()) {
+            $quotationRequests = $portalUser->contact->quotationRequestsAsExternalParty;
+        } elseif ($portalUser->contact->isProjectManager()) {
+            $quotationRequests = $portalUser->contact->quotationRequestsAsProjectManager;
+        } else {
+            $quotationRequests = $portalUser->contact->quotationRequests;
+        }
+
+        return response()->json($quotationRequests->map(function (QuotationRequest $quotationRequest) {
             return $this->getJson($quotationRequest);
         }));
     }
@@ -266,7 +274,15 @@ class QuotationRequestController
 
     private function authorizeQuotationRequest(PortalUser $portalUser, QuotationRequest $quotationRequest)
     {
-        if (!$portalUser->contact->quotationRequests->contains($quotationRequest)) {
+        if ($portalUser->contact->isExternalParty()) {
+            $quotationRequests = $portalUser->contact->quotationRequestsAsExternalParty;
+        } elseif ($portalUser->contact->isProjectManager()) {
+            $quotationRequests = $portalUser->contact->quotationRequestsAsProjectManager;
+        } else {
+            $quotationRequests = $portalUser->contact->quotationRequests;
+        }
+
+        if (!$quotationRequests->contains($quotationRequest)) {
             abort(403, 'Geen toegang tot deze offerteaanvraag.');
         }
     }

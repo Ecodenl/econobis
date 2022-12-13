@@ -88,6 +88,8 @@ const MailboxesListApp = React.lazy(() => import('./container/mailbox/list/Mailb
 const DistrictsListApp = React.lazy(() => import('./container/district/list/DistrictsListApp'));
 const DistrictNewApp = React.lazy(() => import('./container/district/new/DistrictNewApp'));
 const DistrictDetailsApp = React.lazy(() => import('./container/district/details/DistrictDetailsApp'));
+const ContactAvailabilityListApp = React.lazy(() => import('./container/contact-availability/list/ContactAvailabilityListApp'));
+const ContactAvailabilityDetailsApp = React.lazy(() => import('./container/contact-availability/details/ContactAvailabilityDetailsApp'));
 const MailgunDomainsListApp = React.lazy(() => import('./container/mailgun-domain/list/MailgunDomainsListApp'));
 const MailgunDomainNewApp = React.lazy(() => import('./container/mailgun-domain/new/MailgunDomainNewApp'));
 const MailgunDomainDetailsApp = React.lazy(() => import('./container/mailgun-domain/details/MailgunDomainDetailsApp'));
@@ -409,6 +411,9 @@ const Routes = () => {
                     <Route path="wijk/nieuw" component={DistrictNewApp} />
                     <Route path="wijk/:id" component={DistrictDetailsApp} />
                     <Route path="wijken" component={DistrictsListApp} />
+                    /* Availabilities */
+                    <Route path="beschikbaarheid/:id" component={ContactAvailabilityDetailsApp} />
+                    <Route path="beschikbaarheid" component={ContactAvailabilityListApp} />
                     /* Housing File */
                     <Route
                         path="woningdossier/nieuw/contact/:contactId/adres/:addressId"

@@ -297,6 +297,13 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </Link>
                         </NavText>
                     </Nav>
+                    <Nav key={'nav-beschikbaarheid'} id={`wijk`}>
+                        <NavText>
+                            <Link className="sidebar-link-header" to="beschikbaarheid">
+                                Beschikbaarheden
+                            </Link>
+                        </NavText>
+                    </Nav>
                 </Nav>
             )}
 

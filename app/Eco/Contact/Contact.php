@@ -206,6 +206,10 @@ class Contact extends Model
         return $this->groups()->whereNotNull('inspection_person_type_id')->exists();;
     }
 
+    public function availabilities()
+    {
+        return $this->hasMany(ContactAvailability::class);
+    }
 
     public function getType()
     {

@@ -8,18 +8,26 @@ import TableDragSelect from "./TableDragSelect"
 import "./style.css";
 import moment from "moment/moment";
 import InputSelect from "../../../components/form/InputSelect";
+import ContactAvailabilityAPI from "../../../api/contact/ContactAvailabilityAPI";
 
 export default function ContactAvailabilityDetailsApp(props) {
     const intervalMinutes = 30;
     const [days, setDays] = useState([]);
     const [timeslots, setTimeslots] = useState([]);
     const [currentWeek, setCurrentWeek] = useState(null);
+    const [availabilities, setAvailabilities] = useState([]);
 
     useEffect(() => {
         setCurrentWeek(moment().startOf('isoWeek').format('YYYY-MM-DD'));
     }, []);
 
     useEffect(() => {
+        if(!currentWeek){
+            return;
+        }
+        ContactAvailabilityAPI.fetchContactAvailabilitiesByWeek(props.params.id, currentWeek).then(data => {
+            setAvailabilities(data);
+        });
         initDays();
         initTimeslots();
     }, [currentWeek]);
@@ -48,43 +56,60 @@ export default function ContactAvailabilityDetailsApp(props) {
         timeslots.map(timeslot => {
             let subCells = [];
             days.map(day => {
-                subCells.push(false);
+                subCells.push(getTimeslotValue(day, timeslot));
             });
             cells.push(subCells);
         });
         return cells;
     }
 
+    const getTimeslotValue = (day, timeslot) => {
+        if(!availabilities) {
+            return false;
+        }
+
+        return availabilities.some(availability => {
+            return moment(availability.from) <= moment(day).add(timeslot, 'minutes') && moment(availability.to) >= moment(day).add(timeslot + intervalMinutes, 'minutes');
+        });
+    }
+
     const saveTableDragSelectCells = (values) => {
-        let result = [];
+        let availabilities = [];
 
         for (let i = 0; i < days.length; i++) {
             let firstActiveIndex = false;
             for (let j = 0; j < timeslots.length; j++) {
                 if(values[j][i]) {
-                    if(!firstActiveIndex) {
+                    if(firstActiveIndex === false) {
                         firstActiveIndex = j;
                     }
                 }else{
-                    if(firstActiveIndex) {
-                        result.push({
-                            from: days[i].format('YYYY-MM-DD') + ' ' + formatMinutesToTime(timeslots[firstActiveIndex]),
-                            to: days[i].format('YYYY-MM-DD') + ' ' + formatMinutesToTime(timeslots[j - 1] + intervalMinutes),
+                    if(firstActiveIndex !== false) {
+                        availabilities.push({
+                            day: i,
+                            from: formatMinutesToTime(timeslots[firstActiveIndex]),
+                            to: formatMinutesToTime(timeslots[j - 1] + intervalMinutes),
                         });
                         firstActiveIndex = false;
                     }
                 }
 
                 if(j === timeslots.length - 1 && firstActiveIndex) {
-                    result.push({
-                        from: days[i].format('YYYY-MM-DD') + ' ' + formatMinutesToTime(timeslots[firstActiveIndex]),
-                        to: days[i].format('YYYY-MM-DD') + ' ' + formatMinutesToTime(timeslots[j] + intervalMinutes),
+                    availabilities.push({
+                        day: i,
+                        from: formatMinutesToTime(timeslots[firstActiveIndex]),
+                        to: formatMinutesToTime(timeslots[j] + intervalMinutes),
                     });
                 }
             }
         }
 
-        console.log(result);
+        ContactAvailabilityAPI.updateContactAvailabilities(props.params.id, {
+            startOfWeek: currentWeek,
+            availabilities: availabilities,
+        }).catch(() => {
+            alert('Er is iets misgegaan met opslaan, probeer het opnieuw.');
+        });
     }
 
     const formatMinutesToTime = (minutes) => {

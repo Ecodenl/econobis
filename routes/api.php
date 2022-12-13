@@ -278,6 +278,12 @@ Route::namespace('Api')
         Route::post('district/{district}/coaches/{coach}/detach', [\App\Http\Controllers\Api\District\DistrictController::class, 'detachCoach']);
         Route::post('district/{district}/coaches/{coach}/attach', [\App\Http\Controllers\Api\District\DistrictController::class, 'attachCoach']);
 
+        /**
+         * Contact Availabilities
+         */
+        Route::get('contact/{contact}/availability/by-week', [\App\Http\Controllers\Api\Contact\ContactAvailabilityController::class, 'getByWeek']);
+        Route::post('contact/{contact}/availability', [\App\Http\Controllers\Api\Contact\ContactAvailabilityController::class, 'update']);
+
         Route::get('email/grid/in-folder/{folder}', 'Email\EmailController@grid');
         Route::get('email/search', 'Email\EmailController@search');
         Route::get('email/amount-open', 'Email\EmailController@getAmountOfOpenEmails');

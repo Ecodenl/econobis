@@ -71,7 +71,7 @@ function InspectDetails({ match, history, user }) {
                                     <Form>
                                         <Row>
                                             <Col>
-                                                <FormLabel className={'field-label'}>Naams</FormLabel>
+                                                <FormLabel className={'field-label'}>Naam</FormLabel>
                                                 <input
                                                     type="text"
                                                     className={`text-input w-input content`}

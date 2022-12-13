@@ -5,7 +5,15 @@ import moment from 'moment';
 import ViewText from '../../../../components/form/ViewText';
 
 const ContactDetailsFormPersonalView = props => {
-    const { number, createdAt, person, didAgreeAvg, dateDidAgreeAvg, portalUser, isCoach } = props.contactDetails;
+    const {
+        number,
+        createdAt,
+        person,
+        didAgreeAvg,
+        dateDidAgreeAvg,
+        portalUser,
+        inspectionPersonType,
+    } = props.contactDetails;
 
     return (
         <div>
@@ -62,7 +70,11 @@ const ContactDetailsFormPersonalView = props => {
             </div>
 
             <div className="row">
-                <ViewText className={'col-xs-12'} label={'Is coach'} value={isCoach ? 'Ja' : 'Nee'} />
+                <ViewText
+                    className={'col-xs-12'}
+                    label={'Type schouwen persoon'}
+                    value={inspectionPersonType ? inspectionPersonType.name : ''}
+                />
             </div>
 
             <div className="row">
@@ -75,10 +87,6 @@ const ContactDetailsFormPersonalView = props => {
 const mapStateToProps = state => {
     return {
         contactDetails: state.contactDetails,
-        statuses: state.statuses,
-        types: state.types,
-        lastNamePrefixes: state.systemData.lastNamePrefixes,
-        personTypes: state.systemData.personTypes,
     };
 };
 

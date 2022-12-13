@@ -32,6 +32,7 @@ use App\Eco\HousingFile\HousingFileSpecificationSide;
 use App\Eco\HousingFile\HousingFileSpecificationStatus;
 use App\Eco\HousingFile\RoofType;
 use App\Eco\Industry\Industry;
+use App\Eco\InspectionPersonType\InspectionPersonType;
 use App\Eco\Intake\IntakeReason;
 use App\Eco\Intake\IntakeSource;
 use App\Eco\Intake\IntakeStatus;
@@ -186,6 +187,7 @@ class SystemData extends JsonResource
             'housingFileSpecificationFloors' => HousingFileSpecificationFloor::select(['id', 'name'])->orderBy('name')->get(),
             'housingFileSpecificationSides' => HousingFileSpecificationSide::select(['id', 'name'])->orderBy('name')->get(),
             'industries' => FullIndustry::collection(Industry::all()),
+            'inspectionPersonTypes' => FullEnumWithIdAndName::collection(InspectionPersonType::collection()),
             'intakeSources' => IntakeSource::select(['id', 'name'])->get(),
             'intakeStatuses' => IntakeStatus::select(['id', 'name'])->get(),
             'intakeReasons' => IntakeReason::select(['id', 'name'])->get(),

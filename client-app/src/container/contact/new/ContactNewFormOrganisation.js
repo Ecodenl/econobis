@@ -16,6 +16,7 @@ import ContactNewFormAddress from './ContactNewFormAddress';
 import ContactNewFormEmail from './ContactNewFormEmail';
 import ContactNewFormPhone from './ContactNewFormPhone';
 import AddressAPI from '../../../api/contact/AddressAPI';
+import InputReactSelect from '../../../components/form/InputReactSelect';
 
 class ContactNewFormOrganisation extends Component {
     constructor(props) {
@@ -43,7 +44,7 @@ class ContactNewFormOrganisation extends Component {
                 ibanAttn: '',
                 ownerId: props.userId,
                 didAgreeAvg: false,
-                isCoach: false,
+                inspectionPersonTypeId: '',
             },
             address: {
                 street: '',
@@ -348,7 +349,7 @@ class ContactNewFormOrganisation extends Component {
             ibanAttn,
             ownerId,
             didAgreeAvg,
-            isCoach,
+            inspectionPersonTypeId,
         } = this.state.organisation;
 
         return (
@@ -362,7 +363,6 @@ class ContactNewFormOrganisation extends Component {
                         readOnly={true}
                     />
                 </div>
-
                 <div className="row">
                     <InputText
                         label="Naam"
@@ -373,7 +373,6 @@ class ContactNewFormOrganisation extends Component {
                         error={this.state.errors.name}
                     />
                 </div>
-
                 <div className="row">
                     <InputText
                         label="Statutaire naam"
@@ -383,7 +382,6 @@ class ContactNewFormOrganisation extends Component {
                         error={this.state.errors.statutoryName}
                     />
                 </div>
-
                 <div className="row">
                     <InputText
                         label="KvK"
@@ -393,7 +391,6 @@ class ContactNewFormOrganisation extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
-
                 <div className="row">
                     <InputText
                         label="Btw nummer"
@@ -402,7 +399,6 @@ class ContactNewFormOrganisation extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
-
                 <div className="row">
                     <InputText
                         label="IBAN"
@@ -412,7 +408,6 @@ class ContactNewFormOrganisation extends Component {
                         error={this.state.errors.iban}
                     />
                 </div>
-
                 <div className="row">
                     <InputText
                         label="IBAN t.n.v."
@@ -421,7 +416,6 @@ class ContactNewFormOrganisation extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
-
                 <div className="row">
                     <InputText
                         label={'Website'}
@@ -430,7 +424,6 @@ class ContactNewFormOrganisation extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
-
                 <div className="row">
                     <InputSelect
                         label={'Eigenaar'}
@@ -442,7 +435,6 @@ class ContactNewFormOrganisation extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
-
                 <div className="row">
                     <InputToggle
                         label={'Akkoord privacybeleid'}
@@ -451,17 +443,17 @@ class ContactNewFormOrganisation extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
-
                 {/* vooralsnog alleen bij persons, organisations kunnen al gekoppeld worden aan offerteverzoeken */}
-                {/*<div className="row">*/}
-                {/*    <InputToggle*/}
-                {/*        label="Is coach"*/}
-                {/*        name="isCoach"*/}
-                {/*        value={isCoach}*/}
-                {/*        onChangeAction={this.handleInputChange}*/}
-                {/*    />*/}
+                {/*<div className="row">*/} {/*<InputReactSelect*/}
+                {/*    label={'Type schouwen organisatie'}*/}
+                {/*    divSize={'col-sm-6'}*/}
+                {/*    name={'inspectionPersonTypeId'}*/}
+                {/*    options={this.props.inspectionPersonTypes}*/}
+                {/*    value={inspectionPersonTypeId}*/}
+                {/*    onChangeAction={this.handleReactSelectChange}*/}
+                {/*    clearable={true}*/}
+                {/*/>*/}
                 {/*</div>*/}
-
                 <div className="margin-10-top">
                     <PanelHeader>
                         <div className="row" onClick={this.toggleAddress}>
@@ -483,7 +475,6 @@ class ContactNewFormOrganisation extends Component {
                         />
                     )}
                 </div>
-
                 <div className="margin-10-top">
                     <PanelHeader>
                         <div className="row" onClick={this.toggleEmail}>
@@ -503,7 +494,6 @@ class ContactNewFormOrganisation extends Component {
                         />
                     )}
                 </div>
-
                 <div className="margin-10-top">
                     <PanelHeader>
                         <div className="row" onClick={this.togglePhone}>
@@ -523,7 +513,6 @@ class ContactNewFormOrganisation extends Component {
                         />
                     )}
                 </div>
-
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText

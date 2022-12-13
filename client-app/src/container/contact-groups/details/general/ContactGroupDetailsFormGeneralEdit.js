@@ -32,7 +32,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
             sendEmailNewContactLink,
             emailTemplateIdNewContactLink,
             includeIntoExportGroupReport,
-            isCoachGroup,
+            inspectionPersonType,
         } = props.contactGroupDetails;
 
         this.state = {
@@ -54,7 +54,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                 sendEmailNewContactLink: sendEmailNewContactLink ? sendEmailNewContactLink : false,
                 emailTemplateIdNewContactLink: emailTemplateIdNewContactLink ? emailTemplateIdNewContactLink : '',
                 includeIntoExportGroupReport: includeIntoExportGroupReport ? includeIntoExportGroupReport : false,
-                isCoachGroup: isCoachGroup ? isCoachGroup : false,
+                inspectionPersonTypeId: inspectionPersonType ? inspectionPersonType.id : '',
             },
             errors: {
                 name: false,
@@ -221,7 +221,8 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
             lapostaListCreatedAt,
             emailTemplateIdNewContactLink,
             includeIntoExportGroupReport,
-            isCoachGroup,
+            numberOfContacts,
+            inspectionPersonTypeId,
         } = this.state.contactGroup;
 
         return (
@@ -441,13 +442,17 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                             size={'col-sm-5'}
                             textToolTip={`Als je deze optie op "AAN" zet zal deze groep getoond worden in de export groepen rapportage op de "groepen beheer" pagina.`}
                         />
-                        <InputToggle
-                            label={'Is coach groep'}
-                            name={'isCoachGroup'}
-                            value={isCoachGroup}
-                            onChangeAction={this.handleInputChange}
+                        <InputReactSelect
+                            label={'Type schouwen groep'}
+                            divSize={'col-sm-6'}
+                            name={'inspectionPersonTypeId'}
+                            options={this.props.inspectionPersonTypes}
+                            value={inspectionPersonTypeId}
+                            onChangeAction={this.handleReactSelectChange}
+                            clearable={true}
+                            disabled={numberOfContacts > 0}
                             size={'col-sm-5'}
-                            textToolTip={`Als dit aanstaat en een contact wordt aan deze groep toegevoegd dan wordt dat contact energie coach`}
+                            textToolTip={`Contact die worden toegevoegd aan deze groep krijgen dezelfde waarde als type schouwen persoon`}
                         />
                     </div>
                 )}
@@ -510,6 +515,7 @@ const mapStateToProps = state => {
         meDetails: state.meDetails,
         contactGroupDetails: state.contactGroupDetails,
         permissions: state.systemData.permissions,
+        inspectionPersonTypes: state.systemData.inspectionPersonTypes,
     };
 };
 

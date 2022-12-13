@@ -19,7 +19,7 @@ class ContactDetailsFormPersonalEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { number, createdAt, person, didAgreeAvg, dateDidAgreeAvg, isCoach } = props.contactDetails;
+        const { number, createdAt, person, didAgreeAvg, dateDidAgreeAvg, inspectionPersonType } = props.contactDetails;
 
         this.state = {
             lastNamePrefixes: props.lastNamePrefixes,
@@ -42,7 +42,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                 dateOfBirth: person.dateOfBirth ? moment(person.dateOfBirth).format('Y-MM-DD') : '',
                 didAgreeAvg: didAgreeAvg,
                 dateDidAgreeAvg: dateDidAgreeAvg ? moment(dateDidAgreeAvg).format('Y-MM-DD') : '',
-                isCoach: isCoach,
+                inspectionPersonTypeId: inspectionPersonType ? inspectionPersonType.id : '',
             },
             errors: {
                 name: false,
@@ -160,10 +160,10 @@ class ContactDetailsFormPersonalEdit extends Component {
             didAgreeAvg,
             dateDidAgreeAvg,
             lastNamePrefix,
-            isCoach,
+            inspectionPersonTypeId,
         } = this.state.person;
 
-        const { isInCoachGroup } = this.props.contactDetails;
+        const { isInInspectionPersonTypeGroup } = this.props.contactDetails;
 
         return (
             <React.Fragment>
@@ -291,13 +291,14 @@ class ContactDetailsFormPersonalEdit extends Component {
                     </div>
 
                     <div className="row">
-                        <InputToggle
-                            label="Is coach"
-                            divSize={'col-xs-12'}
-                            name="isCoach"
-                            value={isCoach}
-                            disabled={Boolean(isInCoachGroup)}
+                        <InputSelect
+                            label={'Type schouwen persoon'}
+                            size={'col-xs-12'}
+                            name={'inspectionPersonTypeId'}
+                            options={this.props.inspectionPersonTypes}
+                            value={inspectionPersonTypeId}
                             onChangeAction={this.handleInputChange}
+                            readOnly={Boolean(isInInspectionPersonTypeGroup)}
                         />
                     </div>
 
@@ -335,6 +336,7 @@ const mapStateToProps = state => {
         contactDetails: state.contactDetails,
         lastNamePrefixes: state.systemData.lastNamePrefixes,
         titles: state.systemData.titles,
+        inspectionPersonTypes: state.systemData.inspectionPersonTypes,
     };
 };
 

@@ -13,6 +13,7 @@ import * as ibantools from 'ibantools';
 import InputToggle from '../../../../components/form/InputToggle';
 import ErrorModal from '../../../../components/modal/ErrorModal';
 import ViewText from '../../../../components/form/ViewText';
+// import InputSelect from '../../../../components/form/InputSelect';
 
 class ContactDetailsFormOrganisationEdit extends Component {
     constructor(props) {
@@ -31,7 +32,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
             collectMandateSignatureDate,
             collectMandateFirstRunDate,
             collectMandateCollectionSchema,
-            isCoach,
+            inspectionPersonTypeId,
         } = props.contactDetails;
 
         this.state = {
@@ -50,7 +51,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 didAgreeAvg: didAgreeAvg,
                 dateDidAgreeAvg: dateDidAgreeAvg ? moment(dateDidAgreeAvg).format('Y-MM-DD') : '',
                 isCollectMandate,
-                isCoach: isCoach,
+                inspectionPersonTypeId: inspectionPersonTypeId,
                 collectMandateCode: collectMandateCode ? collectMandateCode : '',
                 collectMandateSignatureDate: collectMandateSignatureDate
                     ? moment(collectMandateSignatureDate).format('Y-MM-DD')
@@ -186,7 +187,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
             collectMandateSignatureDate,
             collectMandateFirstRunDate,
             collectMandateCollectionSchema,
-            isCoach,
+            inspectionPersonTypeId,
         } = this.state.organisation;
 
         return (
@@ -323,13 +324,15 @@ class ContactDetailsFormOrganisationEdit extends Component {
 
                     {/* vooralsnog alleen bij persons, organisations kunnen al gekoppeld worden aan offerteverzoeken */}
                     {/*<div className="row">*/}
-                    {/*    <InputToggle*/}
-                    {/*        label="Is coach"*/}
-                    {/*        divSize={'col-xs-12'}*/}
-                    {/*        name="isCoach"*/}
-                    {/*        value={isCoach}*/}
-                    {/*        onChangeAction={this.handleInputChange}*/}
-                    {/*    />*/}
+                    {/*<InputSelect*/}
+                    {/*    label={'Type schouwen organisatie'}*/}
+                    {/*    size={'col-xs-12'}*/}
+                    {/*    name={'inspectionPersonTypeId'}*/}
+                    {/*    options={this.props.inspectionPersonTypes}*/}
+                    {/*    value={inspectionPersonTypeId}*/}
+                    {/*    onChangeAction={this.handleInputChange}*/}
+                    {/*    readOnly={Boolean(isInInspectionPersonTypeGroup)}*/}
+                    {/*/>*/}
                     {/*</div>*/}
 
                     <div className="row">

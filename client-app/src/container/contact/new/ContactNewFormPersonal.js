@@ -17,12 +17,17 @@ import ContactNewFormEmail from './ContactNewFormEmail';
 import ContactNewFormPhone from './ContactNewFormPhone';
 import AddressAPI from '../../../api/contact/AddressAPI';
 import ContactNewFormPersonalDuplicateModal from './ContactNewFormPersonalDuplicateModal';
+import InputReactSelect from '../../../components/form/InputReactSelect';
 
 class ContactNewFormPersonal extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            lastNamePrefixes: [],
+            users: [],
+            titles: [],
+            inspectionPersonTypes: [],
             buttonLoading: false,
             showAddress: true,
             showEmail: true,
@@ -43,7 +48,7 @@ class ContactNewFormPersonal extends Component {
                 dateOfBirth: '',
                 ownerId: props.userId,
                 didAgreeAvg: false,
-                isCoach: false,
+                inspectionPersonTypeId: '',
             },
             address: {
                 street: '',
@@ -355,7 +360,7 @@ class ContactNewFormPersonal extends Component {
             dateOfBirth,
             ownerId,
             didAgreeAvg,
-            isCoach,
+            inspectionPersonTypeId,
         } = this.state.person;
 
         return (
@@ -452,11 +457,14 @@ class ContactNewFormPersonal extends Component {
                 </div>
 
                 <div className="row">
-                    <InputToggle
-                        label="Is coach"
-                        name="isCoach"
-                        value={isCoach}
-                        onChangeAction={this.handleInputChange}
+                    <InputReactSelect
+                        label={'Type schouwen persoon'}
+                        divSize={'col-sm-6'}
+                        name={'inspectionPersonTypeId'}
+                        options={this.props.inspectionPersonTypes}
+                        value={inspectionPersonTypeId}
+                        onChangeAction={this.handleReactSelectChange}
+                        clearable={true}
                     />
                 </div>
 
@@ -550,9 +558,9 @@ class ContactNewFormPersonal extends Component {
 const mapStateToProps = state => {
     return {
         lastNamePrefixes: state.systemData.lastNamePrefixes,
-        occupations: state.systemData.occupations,
         users: state.systemData.users,
         titles: state.systemData.titles,
+        inspectionPersonTypes: state.systemData.inspectionPersonTypes,
         userId: state.meDetails.id,
     };
 };

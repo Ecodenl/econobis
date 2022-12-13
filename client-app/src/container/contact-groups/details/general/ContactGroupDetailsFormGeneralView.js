@@ -26,7 +26,7 @@ const ContactGroupDetailsFormGeneralView = props => {
         lapostaListCreatedAt,
         emailTemplateNewContactLink = {},
         includeIntoExportGroupReport,
-        isCoachGroup,
+        inspectionPersonType,
     } = props.contactGroupDetails;
 
     return (
@@ -109,11 +109,11 @@ const ContactGroupDetailsFormGeneralView = props => {
                         textToolTip={`Als je deze optie op "AAN" zet zal deze groep getoond worden in de export groepen rapportage op de "groepen beheer" pagina.`}
                     />
                     <ViewText
-                        label={'Is coach groep'}
-                        value={isCoachGroup ? 'Ja' : 'Nee'}
+                        label={'Type schouwen groep'}
+                        value={inspectionPersonType ? inspectionPersonType.name + ' groep' : ''}
                         size={'col-sm-5'}
-                        name={'isCoachGroup'}
-                        textToolTip={`Als dit aanstaat en een contact wordt aan deze groep toegevoegd dan wordt dat contact energie coach`}
+                        name={'inspectionPersonType'}
+                        textToolTip={`Contact die worden toegevoegd aan deze groep krijgen dezelfde waarde als type schouwen persoon`}
                     />
                 </div>
             )}

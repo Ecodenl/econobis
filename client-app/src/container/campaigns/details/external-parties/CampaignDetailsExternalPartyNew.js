@@ -7,49 +7,51 @@ import InputSelect from '../../../../components/form/InputSelect';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 
-function CampaignDetailsCoachNew({ campaignId, campaignName, fetchCampaignData, toggleShowNew }) {
-    const [coaches, setCoaches] = useState([]);
-    const [coachId, setCoachId] = useState('');
+function CampaignDetailsExternalPartyNew({ campaignId, campaignName, fetchCampaignData, toggleShowNew }) {
+    const [externalParties, setExternalParties] = useState([]);
+    const [externalPartyId, setExternalPartyId] = useState('');
     const [errors, setErrors] = useState({
-        coach: false,
+        externalParty: false,
         hasErrors: false,
     });
 
     useEffect(function() {
-        (async function fetchCoach() {
+        (async function fetchExternalParty() {
             try {
-                const response = await InspectionPersonAPI.getCoachPeek();
+                const response = await InspectionPersonAPI.getExternalPartyPeek();
 
-                setCoaches(response);
+                setExternalParties(response);
             } catch (error) {
-                alert('Er is iets misgegaan met ophalen van de coaches! Herlaad de pagina en probeer het nogmaals.');
+                alert(
+                    'Er is iets misgegaan met ophalen van de externe partijen! Herlaad de pagina en probeer het nogmaals.'
+                );
             }
         })();
     }, []);
 
-    function handleCoachChange(event) {
-        setCoachId(event.target.value);
+    function handleExternalPartyChange(event) {
+        setExternalPartyId(event.target.value);
     }
 
     async function handleSubmit(event) {
         event.preventDefault();
 
-        if (!coachId) {
+        if (!externalPartyId) {
             setErrors({
-                coach: true,
+                externalParty: true,
                 hasErrors: true,
             });
         }
 
         if (!errors.hasErrors) {
             try {
-                await CampaignDetailsAPI.attachCoach(campaignId, coachId);
+                await CampaignDetailsAPI.attachExternalParty(campaignId, externalPartyId);
 
                 fetchCampaignData();
                 toggleShowNew();
             } catch (error) {
                 alert(
-                    'Er is iets misgegaan met het toevoegen van de coach. Herlaad de pagina en probeer het nogmaals.'
+                    'Er is iets misgegaan met het toevoegen van de externe partij. Herlaad de pagina en probeer het nogmaals.'
                 );
             }
         }
@@ -62,14 +64,14 @@ function CampaignDetailsCoachNew({ campaignId, campaignName, fetchCampaignData, 
                     <div className="row">
                         <InputText label={'Campagne'} name={'campaign'} value={campaignName} readOnly={true} />
                         <InputSelect
-                            label={'Coach'}
+                            label={'Externe partij'}
                             size={'col-sm-6'}
-                            name={'coachId'}
-                            options={coaches}
-                            value={coachId}
-                            onChangeAction={handleCoachChange}
+                            name={'externalPartyId'}
+                            options={externalParties}
+                            value={externalPartyId}
+                            onChangeAction={handleExternalPartyChange}
                             required={'required'}
-                            error={errors.coach}
+                            error={errors.externalParty}
                         />
                     </div>
 
@@ -92,4 +94,4 @@ function CampaignDetailsCoachNew({ campaignId, campaignName, fetchCampaignData, 
     );
 }
 
-export default CampaignDetailsCoachNew;
+export default CampaignDetailsExternalPartyNew;

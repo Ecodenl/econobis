@@ -1,15 +1,15 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {PortalUserConsumer} from '../../context/PortalUserContext';
+import React, { useEffect, useRef, useState } from 'react';
+import { PortalUserConsumer } from '../../context/PortalUserContext';
 import LoadingView from '../../components/general/LoadingView';
-import {Col, Row} from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 import ContactAPI from '../../api/contact/ContactAPI';
 import rebaseContact from '../../helpers/RebaseContact';
 import DashboardWidget from './widget';
-import {ContactDetailsDashboardWidget, SwitchContactDashboardWidget} from './widget/default';
+import { ContactDetailsDashboardWidget, SwitchContactDashboardWidget } from './widget/default';
 import DashboardSettingsAPI from '../../api/dashboard/DashboardSettingsAPI';
-import {isEmpty} from 'lodash';
+import { isEmpty } from 'lodash';
 
-const Dashboard = function (props) {
+const Dashboard = function(props) {
     const [isLoading, setLoading] = useState(true);
     const [contact, setContact] = useState({});
     const [dashboardSettings, setDashboardSettings] = useState({});
@@ -76,7 +76,7 @@ const Dashboard = function (props) {
     return (
         <div className="content-section">
             {isLoading ? (
-                <LoadingView/>
+                <LoadingView />
             ) : (
                 <div className="content-container w-container">
                     <Row>
@@ -85,7 +85,7 @@ const Dashboard = function (props) {
                                 <h1 className="content-heading mt-0 text-center">{dashboardSettings.welcomeTitle}</h1>
                             ) : null}
                             {!isEmpty(dashboardSettings.welcomeMessage) ? (
-                                <p className={'text-center'} style={{whiteSpace: 'break-spaces'}}>
+                                <p className={'text-center'} style={{ whiteSpace: 'break-spaces' }}>
                                     {dashboardSettings.welcomeMessage}
                                 </p>
                             ) : null}
@@ -119,7 +119,7 @@ const Dashboard = function (props) {
                             />
                         </Col>
                         <PortalUserConsumer>
-                            {({user, currentSelectedContact, switchCurrentContact}) => {
+                            {({ user, currentSelectedContact, switchCurrentContact }) => {
                                 if (user.occupations && user.occupations.length > 0) {
                                     return (
                                         <Col md={6}>
@@ -142,7 +142,7 @@ const Dashboard = function (props) {
     );
 };
 
-const CoachDashboard = function (props) {
+const CoachDashboard = function(props) {
     return (
         <div className="content-section">
             <div className="content-container w-container">
@@ -170,15 +170,85 @@ const CoachDashboard = function (props) {
     );
 };
 
+const ProjectManagerDashboard = function(props) {
+    return (
+        <div className="content-section">
+            <div className="content-container w-container">
+                <Row>
+                    <Col>
+                        <h1 className="content-heading mt-0 text-center">Projectmanager dashboard</h1>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={6}>
+                        <DashboardWidget
+                            id="coach-dashboard-widget-1"
+                            image={props.user.portalSettingsLayoutAssigned.portal_image_bg_file_name_header}
+                            title="Schouwen"
+                            text="Bekijk de te schouwen woningen"
+                            buttonText="Schouwen"
+                            buttonLink="/schouwen"
+                            backgroundColorUsed="#ffffff"
+                            textColorUsed="#000000"
+                        />
+                    </Col>
+                </Row>
+            </div>
+        </div>
+    );
+};
+
+const ExternalPartyDashboard = function(props) {
+    return (
+        <div className="content-section">
+            <div className="content-container w-container">
+                <Row>
+                    <Col>
+                        <h1 className="content-heading mt-0 text-center">Externe partij dashboard</h1>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={6}>
+                        <DashboardWidget
+                            id="coach-dashboard-widget-1"
+                            image={props.user.portalSettingsLayoutAssigned.portal_image_bg_file_name_header}
+                            title="Schouwen"
+                            text="Bekijk de te schouwen woningen"
+                            buttonText="Schouwen"
+                            buttonLink="/schouwen"
+                            backgroundColorUsed="#ffffff"
+                            textColorUsed="#000000"
+                        />
+                    </Col>
+                </Row>
+            </div>
+        </div>
+    );
+};
+
 export default function DashboardWithContext(props) {
     return (
         <PortalUserConsumer>
-            {({user, currentSelectedContact, updateNameSelectedContact}) => (
+            {({ user, currentSelectedContact, updateNameSelectedContact }) => (
                 <>
                     {user.id > 0 && (
                         <>
-                            {user.isCoach ? (
+                            {user.inspectionPersonTypeId === 'coach' ? (
                                 <CoachDashboard
+                                    {...props}
+                                    user={user}
+                                    currentSelectedContact={currentSelectedContact}
+                                    updateNameSelectedContact={updateNameSelectedContact}
+                                />
+                            ) : user.inspectionPersonTypeId === 'projectmanager' ? (
+                                <ProjectManagerDashboard
+                                    {...props}
+                                    user={user}
+                                    currentSelectedContact={currentSelectedContact}
+                                    updateNameSelectedContact={updateNameSelectedContact}
+                                />
+                            ) : user.inspectionPersonTypeId === 'externalparty' ? (
+                                <ExternalPartyDashboard
                                     {...props}
                                     user={user}
                                     currentSelectedContact={currentSelectedContact}

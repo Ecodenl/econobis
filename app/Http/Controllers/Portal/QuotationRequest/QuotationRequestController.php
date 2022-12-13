@@ -51,14 +51,16 @@ class QuotationRequestController
         $request->validate([
             'datePlanned' => ['nullable', 'date'],
             'dateRecorded' => ['nullable', 'date'],
-            'dateApprovedExternal' => ['nullable', 'date'],
             'dateReleased' => ['nullable', 'date'],
+            'dateApprovedProjectManager' => ['nullable', 'date'],
+            'dateApprovedExternal' => ['nullable', 'date'],
         ]);
 
         $quotationRequest->date_planned = $request->input('datePlanned') ?: null;
         $quotationRequest->date_recorded = $request->input('dateRecorded') ?: null;
-        $quotationRequest->date_approved_external = $request->input('dateApprovedExternal') ?: null;
         $quotationRequest->date_released = $request->input('dateReleased') ?: null;
+        $quotationRequest->date_approved_external = $request->input('dateApprovedExternal') ?: null;
+        $quotationRequest->date_approved_project_manager = $request->input('dateApprovedProjectManager') ?: null;
         $quotationRequest->updated_by_id = $responsibleUserId;
 
         $sendMailPlanned = ($quotationRequest->isDirty('date_planned') && !!$quotationRequest->date_planned);

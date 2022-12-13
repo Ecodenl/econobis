@@ -113,7 +113,7 @@ class ContactsInGroupListToolbar extends Component {
                         addPersonToGroup={this.addPersonToGroup}
                         groupName={contactGroupDetails.name}
                         sendEmailNewContactLink={contactGroupDetails.sendEmailNewContactLink}
-                        isCoachGroup={contactGroupDetails.isCoachGroup}
+                        inspectionPersonTypeId={contactGroupDetails.inspectionPersonTypeId}
                     />
                 )}
             </div>

@@ -2184,6 +2184,38 @@ class TemplateVariableHelper
                 return optional($model->organisationOrCoach->primaryPhoneNumber)->number;
                 break;
 
+            case 'projectmanager_naam':
+                return optional($model->projectManager)->full_name;
+                break;
+            case 'projectmanager_adres':
+                return optional($model->projectManager->primaryAddress)->street . ' ' . optional($model->organisationOrCoach->primaryAddress)->number . (optional($model->organisationOrCoach->primaryAddress)->addition ? ('-' . optional($model->organisationOrCoach->primaryAddress)->addition) : '');
+                break;
+            case 'projectmanager_plaats':
+                return optional($model->projectManager->primaryAddress)->city;
+                break;
+            case 'projectmanagerh_email':
+                return optional($model->projectManager->primaryEmailAddress)->email;
+                break;
+            case 'projectmanager_telefoonnummer':
+                return optional($model->projectManager->primaryPhoneNumber)->number;
+                break;
+
+            case 'externe_partij_naam':
+                return optional($model->externalParty)->full_name;
+                break;
+            case 'externe_partij_adres':
+                return optional($model->externalParty->primaryAddress)->street . ' ' . optional($model->organisationOrCoach->primaryAddress)->number . (optional($model->organisationOrCoach->primaryAddress)->addition ? ('-' . optional($model->organisationOrCoach->primaryAddress)->addition) : '');
+                break;
+            case 'externe_partij_plaats':
+                return optional($model->externalParty->primaryAddress)->city;
+                break;
+            case 'externe_partij_email':
+                return optional($model->externalParty->primaryEmailAddress)->email;
+                break;
+            case 'externe_partij_telefoonnummer':
+                return optional($model->externalParty->primaryPhoneNumber)->number;
+                break;
+
             case 'contact_naam':
             case 'verzoek_voor_naam':
                 return optional(optional($model->opportunity)->intake)->contact->full_name;

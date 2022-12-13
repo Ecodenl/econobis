@@ -18,7 +18,7 @@ const HousingFileSpecificationList = props => {
                     return <HousingFileSpecificationItem key={i} housingFileSpecification={housingFileSpecification} />;
                 })
             ) : (
-                <div>Geen interesses bekend.</div>
+                <div>Geen specificaties bekend.</div>
             )}
         </div>
     );

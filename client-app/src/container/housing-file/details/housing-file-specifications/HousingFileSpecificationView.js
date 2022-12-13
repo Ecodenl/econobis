@@ -57,7 +57,7 @@ const HousingFileSpecificationView = props => {
                     <div>
                         <div className="col-sm-1">&nbsp;</div>
                         <div className="col-sm-2">Verdieping:</div>
-                        <div className="col-sm-8">{floor}</div>
+                        <div className="col-sm-8">{floor ? floor.name : ''}</div>
                         <div className="col-sm-1">&nbsp;</div>
                     </div>
                 </div>
@@ -71,7 +71,7 @@ const HousingFileSpecificationView = props => {
                     <div>
                         <div className="col-sm-1">&nbsp;</div>
                         <div className="col-sm-2">Zijde:</div>
-                        <div className="col-sm-8">{side}</div>
+                        <div className="col-sm-8">{side ? side.name : ''}</div>
                         <div className="col-sm-1">&nbsp;</div>
                     </div>
                 </div>

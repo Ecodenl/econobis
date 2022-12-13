@@ -8,6 +8,8 @@ import ViewText from '../../../../components/form/ViewText';
 const QuotationRequestDetailsFormGeneralView = props => {
     const {
         organisationOrCoach,
+        projectManager,
+        externalParty,
         status,
         opportunityAction,
         datePlannedToSendWfEmailStatus,
@@ -31,6 +33,21 @@ const QuotationRequestDetailsFormGeneralView = props => {
                 />
                 <ViewText label={'Verzoek voor'} value={opportunity.intake && opportunity.intake.contact.fullName} />
             </div>
+            <div className="row">
+                <ViewText
+                    label={'Projectleider'}
+                    value={projectManager && projectManager.fullName}
+                    link={projectManager ? 'contact/' + projectManager.id : ''}
+                />
+                <ViewText label={'Adres voor'} value={opportunity.intake && opportunity.intake.fullAddress} />
+            </div>
+            <div className="row">
+                <ViewText
+                    label={'Externe Partij'}
+                    value={externalParty && externalParty.fullName}
+                    link={externalParty ? 'contact/' + externalParty.id : ''}
+                />
+            </div>
 
             {organisationOrCoach.typeId === 'organisation' && (
                 <div className="row">
@@ -49,7 +66,6 @@ const QuotationRequestDetailsFormGeneralView = props => {
             )}
 
             <div className="row">
-                <ViewText label={'Adres voor'} value={opportunity.intake && opportunity.intake.fullAddress} />
                 <ViewText
                     label={'Maatregel categorie'}
                     value={opportunity.measureCategory && opportunity.measureCategory.name}

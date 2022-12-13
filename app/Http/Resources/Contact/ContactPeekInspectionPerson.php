@@ -11,7 +11,7 @@ namespace App\Http\Resources\Contact;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ContactPeekCoach extends JsonResource
+class ContactPeekInspectionPerson extends JsonResource
 {
     public function toArray($request)
     {

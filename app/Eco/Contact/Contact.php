@@ -240,12 +240,16 @@ class Contact extends Model
         return $this->hasMany(Task::class)->where('finished', true)->orderBy('tasks.id', 'desc');
     }
 
-// todo WM: opschonen, dit is volgens mij geen relation of wordt anders niet gebruikt
-//    public function campaigns(){
-//        return $this->belongsToMany(Campaign::class);
-//    }
     public function coachCampaigns(){
         return $this->belongsToMany(Campaign::class, 'campaign_coach');
+    }
+
+    public function projectManagerCampaigns(){
+        return $this->belongsToMany(Campaign::class, 'campaign_project_manager');
+    }
+
+    public function externalPartyCampaigns(){
+        return $this->belongsToMany(Campaign::class, 'campaign_external_party');
     }
 
     public function responses(){

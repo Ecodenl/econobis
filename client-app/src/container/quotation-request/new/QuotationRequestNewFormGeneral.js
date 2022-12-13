@@ -24,10 +24,14 @@ class QuotationRequestNewFormGeneral extends Component {
                 fullAddress: '',
                 measureName: '',
                 organisationsOrCoaches: [],
+                projectManagers: [],
+                externalParties: [],
             },
             quotationRequest: {
                 opportunityId: '',
                 organisationOrCoachId: '',
+                projectManagerId: '',
+                externalPartyId: '',
                 statusId: '5', //offerte aangevraagd, also alter componentwillmount when changing default!
                 opportunityActionId: props.opportunityAction.id,
                 dateRecorded: '',
@@ -44,6 +48,8 @@ class QuotationRequestNewFormGeneral extends Component {
             quotationRequestStatuses: [],
             errors: {
                 organisationOrCoach: false,
+                projectManager: false,
+                externalParty: false,
                 status: false,
             },
         };
@@ -61,12 +67,18 @@ class QuotationRequestNewFormGeneral extends Component {
                     fullAddress: payload.intake.fullAddress,
                     organisationsOrCoaches:
                         payload.intake && payload.intake.campaign ? payload.intake.campaign.organisationsOrCoaches : '',
+                    projectManagers:
+                        payload.intake && payload.intake.campaign ? payload.intake.campaign.projectManagers : '',
+                    externalParties:
+                        payload.intake && payload.intake.campaign ? payload.intake.campaign.externalParties : '',
                     measureNames: payload.measures && payload.measures.map(measure => measure.name).join(', '),
                     measureCategoryName: payload.measureCategory.name,
                 },
                 quotationRequest: {
                     opportunityId: payload.id,
                     organisationOrCoachId: '',
+                    projectManagerId: '',
+                    externalPartyId: '',
                     statusId: '5',
                     opportunityActionId: this.props.opportunityAction.id,
                     dateRecorded: '',
@@ -142,6 +154,8 @@ class QuotationRequestNewFormGeneral extends Component {
     render() {
         const {
             organisationOrCoachId,
+            projectManagerId,
+            externalPartyId,
             statusId,
             dateRecorded,
             timeRecorded,
@@ -158,6 +172,8 @@ class QuotationRequestNewFormGeneral extends Component {
             fullName,
             fullAddress,
             organisationsOrCoaches,
+            projectManagers,
+            externalParties,
             measureNames,
             measureCategoryName,
         } = this.state.opportunity;
@@ -183,8 +199,17 @@ class QuotationRequestNewFormGeneral extends Component {
                         readOnly={true}
                     />
                 </div>
-
                 <div className="row">
+                    <InputSelect
+                        label={'ProjectLeider'}
+                        size={'col-sm-6'}
+                        name="projectManagerId"
+                        value={projectManagerId}
+                        options={projectManagers}
+                        onChangeAction={this.handleInputChange}
+                        required={'required'}
+                        error={this.state.errors.projectManagerId}
+                    />
                     <InputText
                         label={'Adres voor'}
                         name={'address'}
@@ -192,6 +217,21 @@ class QuotationRequestNewFormGeneral extends Component {
                         onChange={() => {}}
                         readOnly={true}
                     />
+                </div>
+                <div className="row">
+                    <InputSelect
+                        label={'Externe partij'}
+                        size={'col-sm-6'}
+                        name="externalPartyId"
+                        value={externalPartyId}
+                        options={externalParties}
+                        onChangeAction={this.handleInputChange}
+                        required={'required'}
+                        error={this.state.errors.externalPartyId}
+                    />
+                </div>
+
+                <div className="row">
                     <InputText
                         label={'Maatregel - categorie'}
                         name={'measureCategory'}

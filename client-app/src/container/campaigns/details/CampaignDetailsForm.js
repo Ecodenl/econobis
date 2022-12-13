@@ -8,6 +8,8 @@ import CampaignDetailsIntakes from './intakes/CampaignDetailsIntakes';
 import CampaignDetailsOpportunities from './opportunities/CampaignDetailsOpportunities';
 import CampaignDetailsResponses from './responses/CampaignDetailsResponses';
 import CampaignDetailsCoaches from './coaches/CampaignDetailsCoaches';
+import CampaignDetailsProjectManagers from './project-managers/CampaignDetailsProjectManagers';
+import CampaignDetailsExternalParties from './external-parties/CampaignDetailsExternalParties';
 
 function CampaignDetailsForm({ campaign, isLoading, hasError, fetchCampaignData }) {
     if (hasError) return <div>Fout bij het ophalen van campagne.</div>;
@@ -29,6 +31,18 @@ function CampaignDetailsForm({ campaign, isLoading, hasError, fetchCampaignData 
                 campaignId={campaign.id}
                 campaignName={campaign.name}
                 coaches={campaign.coaches}
+                fetchCampaignData={fetchCampaignData}
+            />
+            <CampaignDetailsProjectManagers
+                campaignId={campaign.id}
+                campaignName={campaign.name}
+                projectManagers={campaign.projectManagers}
+                fetchCampaignData={fetchCampaignData}
+            />
+            <CampaignDetailsExternalParties
+                campaignId={campaign.id}
+                campaignName={campaign.name}
+                externalParties={campaign.externalParties}
                 fetchCampaignData={fetchCampaignData}
             />
             <CampaignDetailsIntakes campaignId={campaign.id} />

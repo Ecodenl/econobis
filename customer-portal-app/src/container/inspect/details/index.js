@@ -313,13 +313,11 @@ function InspectDetails({ match, history, user }) {
                         />
                     </div>
 
-                    {user.inspectionPersonTypeId === 'coach' ? (
-                        <InspectDetailsDocumentTable
-                            quotationRequestId={match.params.id}
-                            documents={initialQuotationRequest.documents}
-                            previewDocument={previewDocument}
-                        />
-                    ) : null}
+                    <InspectDetailsDocumentTable
+                        quotationRequestId={match.params.id}
+                        documents={initialQuotationRequest.documents}
+                        previewDocument={previewDocument}
+                    />
                 </>
             )}
         </Container>

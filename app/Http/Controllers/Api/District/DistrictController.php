@@ -66,4 +66,9 @@ class DistrictController
     {
         $district->coaches()->detach($coach->id);
     }
+
+    public function attachCoach(District $district, Contact $coach)
+    {
+        $district->coaches()->attach($coach->id);
+    }
 }

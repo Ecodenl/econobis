@@ -276,6 +276,7 @@ Route::namespace('Api')
         Route::post('district/{district}', [\App\Http\Controllers\Api\District\DistrictController::class, 'update']);
         Route::post('district/{district}/delete', [\App\Http\Controllers\Api\District\DistrictController::class, 'delete']);
         Route::post('district/{district}/coaches/{coach}/detach', [\App\Http\Controllers\Api\District\DistrictController::class, 'detachCoach']);
+        Route::post('district/{district}/coaches/{coach}/attach', [\App\Http\Controllers\Api\District\DistrictController::class, 'attachCoach']);
 
         Route::get('email/grid/in-folder/{folder}', 'Email\EmailController@grid');
         Route::get('email/search', 'Email\EmailController@search');

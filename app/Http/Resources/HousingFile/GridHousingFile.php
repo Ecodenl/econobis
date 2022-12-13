@@ -19,6 +19,8 @@ class GridHousingFile extends JsonResource
                 'id' => $this->id,
                 'createdAt' => $this->created_at,
                 'fullAddress' => $this->address->present()->streetAndNumber(),
+                'postalCode' => $this->address->present()->postalCode(),
+                'city' => $this->address->present()->city(),
                 'fullName' => $this->address->contact()->value('full_name'),
                 'buildingType' => optional($this->buildingType)->name,
                 'energyLabel' => optional($this->energyLabel)->name,

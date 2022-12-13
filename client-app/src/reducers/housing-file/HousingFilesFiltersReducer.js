@@ -11,6 +11,14 @@ const filtersReducerDefaultState = {
         field: 'address',
         data: '',
     },
+    postalCode: {
+        field: 'postalCode',
+        data: '',
+    },
+    city: {
+        field: 'city',
+        data: '',
+    },
     buildingTypeId: {
         field: 'buildingTypeId',
         data: '',
@@ -45,6 +53,22 @@ export default (state = filtersReducerDefaultState, action) => {
                 address: {
                     ...state.address,
                     data: action.address,
+                },
+            };
+        case 'SET_FILTER_POSTAL_CODE':
+            return {
+                ...state,
+                postalCode: {
+                    ...state.postalCode,
+                    data: action.postalCode,
+                },
+            };
+        case 'SET_FILTER_CITY':
+            return {
+                ...state,
+                city: {
+                    ...state.city,
+                    data: action.city,
                 },
             };
         case 'SET_FILTER_HOUSING_FILE_BUILDING_TYPE':

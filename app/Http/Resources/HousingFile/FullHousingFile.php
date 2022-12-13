@@ -32,6 +32,8 @@ class FullHousingFile extends JsonResource
                 'id' => $this->id,
                 'address' => FullAddress::make($this->whenLoaded('address')),
                 'fullAddress' => $this->address->present()->streetAndNumber(),
+                'postalCode' => $this->address->present()->postalCode(),
+                'city' => $this->address->present()->city(),
                 'buildingType' => GenericResource::make($this->whenLoaded('buildingType')),
                 'buildYear' => $this->build_year,
                 'isHouseForSale' => $this->is_house_for_sale,

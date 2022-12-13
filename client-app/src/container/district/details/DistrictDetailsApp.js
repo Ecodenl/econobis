@@ -5,9 +5,10 @@ import ButtonIcon from "../../../components/button/ButtonIcon";
 import {browserHistory} from "react-router";
 import DistrictAPI from "../../../api/district/DistrictAPI";
 import DistrictDetailsGeneral from "./DistrictDetailsGeneral";
+import DistrictDetailsCoaches from "./DistrictDetailsCoaches";
 
 export default function DistrictDetailsApp(props) {
-    const [district, setDistrict] = useState({});
+    const [district, setDistrict] = useState({coaches: []});
 
     useEffect(() => {
         fetch();
@@ -47,6 +48,7 @@ export default function DistrictDetailsApp(props) {
 
                 <div className="col-md-12 margin-10-top">
                     <DistrictDetailsGeneral district={district} onSave={fetch}/>
+                    <DistrictDetailsCoaches district={district} onChange={fetch}/>
                 </div>
             </div>
             <div className="col-md-3"/>

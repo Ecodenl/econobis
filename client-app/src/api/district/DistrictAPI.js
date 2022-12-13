@@ -27,5 +27,13 @@ export default {
 
     deleteDistrict: district => {
         return axiosInstance.post(`${BASE_URL}/${district.id}/delete`);
+    },
+
+    detachDistrictCoach: ({ districtId, coachId }) => {
+        return axiosInstance.post(`${BASE_URL}/${districtId}/coaches/${coachId}/detach`);
+    },
+
+    attachDistrictCoach: ({ districtId, coachId }) => {
+        return axiosInstance.post(`${BASE_URL}/${districtId}/coaches/${coachId}/attach`);
     }
 };

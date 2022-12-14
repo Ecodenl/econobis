@@ -86,6 +86,8 @@ class LapostaMemberHelper
         }
 
         // update member to Laposta
+        // (unset relation contact->groups first, gives an error on function getTeamContactGroupIds() when busy with load model in job
+        unset($this->contact['groups']);
         UpdateMemberToLaposta::dispatch($this->cooperation->laposta_key, $this->contactGroup, $this->contact, $this->contactGroupsPivot->laposta_member_id, Auth::id());
     }
 

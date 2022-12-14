@@ -343,4 +343,11 @@ class ContactController extends Controller
 
         return response()->json(['message' => 'Contacten zijn samengevoegd.'], 200);
     }
+
+    public function getSummary(Contact $contact)
+    {
+        return [
+            'fullName' => $contact->full_name,
+        ];
+    }
 }

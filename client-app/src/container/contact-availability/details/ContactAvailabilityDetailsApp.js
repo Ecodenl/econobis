@@ -1,14 +1,24 @@
-import React, {useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from "../../../components/button/ButtonIcon";
 import {browserHistory} from "react-router";
 import "./style.css";
 import ContactAvailabilityDetailsPlanningPanel from "./ContactAvailabilityDetailsPlanningPanel";
+import ContactDetailsAPI from "../../../api/contact/ContactDetailsAPI";
 
 export default function ContactAvailabilityDetailsApp(props) {
+    const [contact, setContact] = useState(null);
+
     useEffect(() => {
+        ContactDetailsAPI.getContactSummary(props.params.id).then(data => {
+            setContact(data);
+        });
     }, []);
+
+    if (!contact) {
+        return null;
+    }
 
     return (
         <div className="row">
@@ -24,7 +34,7 @@ export default function ContactAvailabilityDetailsApp(props) {
                                     </div>
                                 </div>
                                 <div className="col-md-4">
-                                    <h4 className="text-center">Beschikbaarheid: test</h4>
+                                    <h4 className="text-center">Beschikbaarheid: {contact.fullName}</h4>
                                 </div>
                                 <div className="col-md-4"/>
                             </div>
@@ -33,11 +43,10 @@ export default function ContactAvailabilityDetailsApp(props) {
                 </div>
 
                 <div className="col-md-12 margin-10-top">
-                    <ContactAvailabilityDetailsPlanningPanel contactId={props.params.id} />
+                    <ContactAvailabilityDetailsPlanningPanel contactId={props.params.id}/>
                 </div>
             </div>
             <div className="col-md-3"/>
         </div>
-    )
-        ;
+    );
 }

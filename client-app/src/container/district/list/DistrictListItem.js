@@ -5,6 +5,8 @@ import DistrictListItemDeleteModal from "./DistrictListItemDeleteModal";
 export default function DistrictListItem({district, onDelete}) {
     const [showActionButtons, setShowActionButtons] = useState(false);
     const [highlightRow, setHighlightRow] = useState('');
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+
     const onRowEnter = () => {
         setShowActionButtons(true);
         setHighlightRow('highlight-row');
@@ -28,13 +30,13 @@ export default function DistrictListItem({district, onDelete}) {
         >
             <td>{district.name}</td>
             <td>
-                {showActionButtons && (
+                {(showActionButtons || showDeleteModal) && (
                     <>
                         <a role="button" onClick={openItem}>
                             <span className="glyphicon glyphicon-pencil mybtn-success"/>
                         </a>
                         {' '}
-                        <DistrictListItemDeleteModal district={district} onDelete={onDelete}/>
+                        <DistrictListItemDeleteModal district={district} onDelete={onDelete} setShowDeleteModal={setShowDeleteModal} showDeleteModal={showDeleteModal}/>
                     </>
                 )}
             </td>

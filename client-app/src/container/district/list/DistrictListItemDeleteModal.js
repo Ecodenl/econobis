@@ -2,8 +2,7 @@ import React, {useState} from 'react';
 import Modal from '../../../components/modal/Modal';
 import DistrictAPI from "../../../api/district/DistrictAPI";
 
-export default function DistrictListItemDeleteModal({district, onDelete}) {
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
+export default function DistrictListItemDeleteModal({district, onDelete, showDeleteModal, setShowDeleteModal}) {
     const confirmAction = () => {
         DistrictAPI.deleteDistrict(district).then(() => {
             setShowDeleteModal(false);

@@ -286,14 +286,14 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                     <Nav key={'nav-agenda'} id={`agenda`}>
                         <NavText>
                             <Link className="sidebar-link-header" to="agenda">
-                                Kalender
+                                Agenda
                             </Link>
                         </NavText>
                     </Nav>
                     <Nav key={'nav-wijk'} id={`wijk`}>
                         <NavText>
                             <Link className="sidebar-link-header" to="wijken">
-                                Wijk/Agenda
+                                Afspraak kalenders
                             </Link>
                         </NavText>
                     </Nav>

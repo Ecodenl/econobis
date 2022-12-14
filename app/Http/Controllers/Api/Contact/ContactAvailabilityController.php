@@ -50,4 +50,33 @@ class ContactAvailabilityController
             ]);
         }
     }
+
+    public function copyWeeks(Contact $contact, Request $request)
+    {
+        $request->validate([
+            'copyFromWeek' => ['required', 'date'],
+            'copyToWeek' => ['required', 'date'],
+            'numberOfWeeks' => ['required', 'integer', 'min:1'],
+        ]);
+
+        $startOfWeekToCopyFrom = Carbon::make($request->copyFromWeek);
+        $availabilitiesToBeCopied = $contact->availabilities()
+            ->whereBetween('from', [$startOfWeekToCopyFrom, $startOfWeekToCopyFrom->copy()->endOfWeek()])
+            ->get();
+
+        $numberOfWeeks = $request->numberOfWeeks;
+
+        $startOfWeekToCopyTo = Carbon::make($request->copyToWeek);
+        $diffInWeeks = $startOfWeekToCopyTo->diffInWeeks($startOfWeekToCopyFrom);
+        $contact->availabilities()->whereBetween('from', [$startOfWeekToCopyTo, $startOfWeekToCopyTo->copy()->addWeeks($numberOfWeeks - 1)->endOfWeek()])->delete();
+
+        for ($i = 0; $i < $numberOfWeeks; $i++) {
+            foreach ($availabilitiesToBeCopied as $availabilityToBeCopied) {
+                $copy = $availabilityToBeCopied->replicate();
+                $copy->from = Carbon::make($copy->from)->addWeeks($diffInWeeks + $i);
+                $copy->to = Carbon::make($copy->to)->addWeeks($diffInWeeks + $i);
+                $copy->save();
+            }
+        }
+    }
 }

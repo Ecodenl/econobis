@@ -16,4 +16,8 @@ export default {
     updateContactAvailabilities: (contactId, data) => {
         return axiosInstance.post(`${BASE_URL}/${contactId}/availability`, data);
     },
+
+    copyAvailabilities: (contactId, data) => {
+        return axiosInstance.post(`${BASE_URL}/${contactId}/availability/copy-weeks`, data);
+    },
 };

@@ -7,6 +7,7 @@ import "./style.css";
 import moment from "moment/moment";
 import ContactAvailabilityAPI from "../../../api/contact/ContactAvailabilityAPI";
 import ButtonIcon from "../../../components/button/ButtonIcon";
+import ContactAvailabilityDetailsPlanningCopyModal from "./ContactAvailabilityDetailsPlanningCopyModal";
 
 export default function ContactAvailabilityDetailsPlanningPanel({contactId}) {
     const intervalMinutes = 30;
@@ -240,7 +241,7 @@ export default function ContactAvailabilityDetailsPlanningPanel({contactId}) {
                         </select>
                     </div>
                     <div className={'col-sm-4'} style={{textAlign: 'right'}}>
-                        <ButtonIcon disabled={!getNextWeek()} iconName={'glyphicon-duplicate'} buttonClassName="btn-default btn-sm" onClickAction={() => setCurrentWeek(getNextWeek())}/>
+                        <ContactAvailabilityDetailsPlanningCopyModal weekOptions={getWeekOptions()} copyFromWeek={currentWeek} contactId={contactId}/>
                         {' '}
                         <ButtonIcon disabled={!getNextWeek()} iconName={'glyphicon-arrow-right'} buttonClassName="btn-default btn-sm" onClickAction={() => setCurrentWeek(getNextWeek())}/>
                     </div>

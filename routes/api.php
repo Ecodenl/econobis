@@ -59,6 +59,7 @@ Route::namespace('Api')
         Route::post('/contact/{contact}/delete', 'Contact\ContactController@destroy');
         Route::get('/contact/{contact}/tasks', 'Contact\ContactController@tasks');
         Route::get('/contact/{contact}/make-hoomdossier', 'Contact\ContactController@makeHoomdossier');
+        Route::get('/contact/{contact}/summary', 'Contact\ContactController@getSummary');
 
         Route::get('/intake/grid', 'Intake\IntakeController@grid');
         Route::get('/intake/amount-active', 'Intake\IntakeController@getAmountOfActiveIntakes');
@@ -283,6 +284,7 @@ Route::namespace('Api')
          */
         Route::get('contact/{contact}/availability/by-week', [\App\Http\Controllers\Api\Contact\ContactAvailabilityController::class, 'getByWeek']);
         Route::post('contact/{contact}/availability', [\App\Http\Controllers\Api\Contact\ContactAvailabilityController::class, 'update']);
+        Route::post('contact/{contact}/availability/copy-weeks', [\App\Http\Controllers\Api\Contact\ContactAvailabilityController::class, 'copyWeeks']);
 
         Route::get('email/grid/in-folder/{folder}', 'Email\EmailController@grid');
         Route::get('email/search', 'Email\EmailController@search');

@@ -45,4 +45,15 @@ export default {
 
         return axiosInstance.get(requestUrl);
     },
+
+    getContactSummary: id => {
+        const requestUrl = `${URL_CONTACTDETAILS}/${id}/summary`;
+
+        return axiosInstance
+            .get(requestUrl)
+            .then(function(response) {
+                return response.data;
+            });
+    },
+
 };

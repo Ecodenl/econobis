@@ -205,7 +205,7 @@ class ParticipantProject extends Model
     public function getParticipantInConfirmedRevenueAttribute()
     {
         $projectRevenueDistributions = $this->projectRevenueDistributions()->whereIn('status', ['confirmed']);
-        $revenueDistributionKwh = $this->revenueDistributionKwh()->whereNotIn('status', ['confirmed']);
+        $revenueDistributionKwh = $this->revenueDistributionKwh()->whereIn('status', ['confirmed']);
         return $projectRevenueDistributions->count() > 0 || $revenueDistributionKwh->count() > 0;
     }
 

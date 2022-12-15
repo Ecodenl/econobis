@@ -71,7 +71,7 @@ const ParticipantDetailsTerminate = ({
 
     return (
         <>
-            {/*{participantProject.participantInConfirmedRevenue ? (*/}
+            {/*{participantProject.participantInDefinitiveRevenue ? (*/}
             {/*    <Modal*/}
             {/*        buttonConfirmText="Deelname beëindigen"*/}
             {/*        buttonClassName={'btn-danger'}*/}

@@ -57,7 +57,7 @@ class FullProjectRevenue extends JsonResource
                 'project' => FullProject::make($this->whenLoaded('project')),
                 'distribution' => FullProjectRevenueDistribution::collection($this->whenLoaded('distribution')),
                 'payoutKwh' => $this->payout_kwh,
-                'participantInConfirmedRevenue' => $this->participant ? $this->participant->participantInConfirmedRevenue : false,
+                'participantInDefinitiveRevenue' => $this->participant ? $this->participant->participantInDefinitiveRevenue : false,
             ];
     }
 }

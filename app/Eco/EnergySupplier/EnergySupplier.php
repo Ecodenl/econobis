@@ -3,6 +3,7 @@
 namespace App\Eco\EnergySupplier;
 
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
+use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
 use App\Eco\RevenuesKwh\RevenuePartsKwh;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -20,9 +21,9 @@ class EnergySupplier extends Model
         return $this->hasMany(AddressEnergySupplier::class);
     }
 
-    public function revenuePartsKwh()
+    public function distributionPartsKwh()
     {
-        return $this->hasMany(RevenuePartsKwh::class, 'es_id');
+        return $this->hasMany(RevenueDistributionPartsKwh::class, 'es_id');
     }
 
 

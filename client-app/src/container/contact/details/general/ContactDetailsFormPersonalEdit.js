@@ -292,7 +292,7 @@ class ContactDetailsFormPersonalEdit extends Component {
 
                     <div className="row">
                         <InputSelect
-                            label={'Type schouwen persoon'}
+                            label={'Rol in besparingsreis'}
                             size={'col-xs-12'}
                             name={'inspectionPersonTypeId'}
                             options={this.props.inspectionPersonTypes}

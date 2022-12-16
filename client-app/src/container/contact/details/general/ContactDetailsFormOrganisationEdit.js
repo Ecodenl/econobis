@@ -325,7 +325,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
                     {/* vooralsnog alleen bij persons, organisations kunnen al gekoppeld worden aan offerteverzoeken */}
                     {/*<div className="row">*/}
                     {/*<InputSelect*/}
-                    {/*    label={'Type schouwen organisatie'}*/}
+                    {/*    label={'Rol in besparingsreis'}*/}
                     {/*    size={'col-xs-12'}*/}
                     {/*    name={'inspectionPersonTypeId'}*/}
                     {/*    options={this.props.inspectionPersonTypes}*/}

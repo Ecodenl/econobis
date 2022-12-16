@@ -109,11 +109,11 @@ const ContactGroupDetailsFormGeneralView = props => {
                         textToolTip={`Als je deze optie op "AAN" zet zal deze groep getoond worden in de export groepen rapportage op de "groepen beheer" pagina.`}
                     />
                     <ViewText
-                        label={'Type schouwen groep'}
+                        label={'Rol in besparingsreis'}
                         value={inspectionPersonType ? inspectionPersonType.name + ' groep' : ''}
                         size={'col-sm-5'}
                         name={'inspectionPersonType'}
-                        textToolTip={`Contact die worden toegevoegd aan deze groep krijgen dezelfde waarde als type schouwen persoon`}
+                        textToolTip={`Contact die worden toegevoegd aan deze groep krijgen dezelfde waarde als Rol in besparingsreis`}
                     />
                 </div>
             )}

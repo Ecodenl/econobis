@@ -82,11 +82,11 @@ const ContactDetailsFormOrganisationView = props => {
             {/* vooralsnog alleen bij persons, organisations kunnen al gekoppeld worden aan offerteverzoeken */}
             {/*<div className="row">*/}
             {/*<ViewText*/}
-            {/*    label={'Type schouwen organisatie'}*/}
+            {/*    label={'Rol in besparingsreis'}*/}
             {/*    value={inspectionPersonType ? inspectionPersonType.name + ' groep' : ''}*/}
             {/*    size={'col-sm-5'}*/}
             {/*    name={'inspectionPersonType'}*/}
-            {/*    textToolTip={`Contact die worden toegevoegd aan deze groep krijgen dezelfde waarde als type schouwen persoon`}*/}
+            {/*    textToolTip={`Contact die worden toegevoegd aan deze groep krijgen dezelfde waarde als Rol in besparingsreis`}*/}
             {/*/>*/}
             {/*</div>*/}
 

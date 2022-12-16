@@ -72,7 +72,7 @@ const ContactDetailsFormPersonalView = props => {
             <div className="row">
                 <ViewText
                     className={'col-xs-12'}
-                    label={'Type schouwen persoon'}
+                    label={'Rol in besparingsreis'}
                     value={inspectionPersonType ? inspectionPersonType.name : ''}
                 />
             </div>

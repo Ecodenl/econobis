@@ -445,7 +445,7 @@ class ContactNewFormOrganisation extends Component {
                 </div>
                 {/* vooralsnog alleen bij persons, organisations kunnen al gekoppeld worden aan offerteverzoeken */}
                 {/*<div className="row">*/} {/*<InputReactSelect*/}
-                {/*    label={'Type schouwen organisatie'}*/}
+                {/*    label={'Rol in besparingsreis'}*/}
                 {/*    divSize={'col-sm-6'}*/}
                 {/*    name={'inspectionPersonTypeId'}*/}
                 {/*    options={this.props.inspectionPersonTypes}*/}

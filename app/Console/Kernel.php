@@ -79,7 +79,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-// Time is CET. So when scheduled for 06:00 it is run at 04:00 Amsterdam time.
+// Time is CET. So when scheduled for 06:00 it is run at 08:00 Amsterdam time (summertime).
+// Time is CET. So when scheduled for 06:00 it is run at 07:00 Amsterdam time (wintertime).
         $schedule->command('email:getAllEmail')->everyTenMinutes()->between('06:00', '23:30');
         $schedule->command('email:checkMailboxes')->dailyAt('05:58');
         $schedule->command('email:checkMailboxes')->dailyAt('08:58');
@@ -99,6 +100,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('workflow:processWorkflowEmailExpiredTask')->dailyAt('05:05');
         $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->dailyAt('05:10');
         $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->dailyAt('05:15');
+
+        $schedule->command('onetimecheck:findWrongDistributionParts')->dailyAt('22:00');
     }
 
     /**

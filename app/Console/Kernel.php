@@ -30,6 +30,7 @@ use App\Console\Commands\setDaysLastReminderInvoice;
 use App\Console\Commands\setDaysToExpireInvoice;
 use App\Console\Commands\createTaskAtEndDateAddress;
 use App\Console\Commands\setIsCurrentSupplier;
+use App\Console\Commands\OneTimeChecks\findWrongDistributionParts;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -69,6 +70,7 @@ class Kernel extends ConsoleKernel
         conversionParticipationsToMutationsDefault::class,
         conversionPortalRegistrationCode::class,
         recoveryJobsLog::class,
+        findWrongDistributionParts::class,
     ];
 
     /**

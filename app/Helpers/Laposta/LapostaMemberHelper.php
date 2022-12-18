@@ -68,6 +68,8 @@ class LapostaMemberHelper
         $this->contactGroup->contacts()->updateExistingPivot($this->contact->id, ['laposta_member_state' => 'inprogress']);
 
         // create member(s) to Laposta
+        // (unset relation contact->groups first, gives an error on function getTeamContactGroupIds() when busy with load model in job
+        unset($this->contact['groups']);
         CreateMemberToLaposta::dispatch($this->cooperation->laposta_key, $this->contactGroup, $this->contact, Auth::id());
     }
 
@@ -100,6 +102,8 @@ class LapostaMemberHelper
         }
 
         // update member to Laposta
+        // (unset relation contact->groups first, gives an error on function getTeamContactGroupIds() when busy with load model in job
+        unset($this->contact['groups']);
         DeleteMemberToLaposta::dispatch($this->cooperation->laposta_key, $this->contactGroup, $this->contact, $this->contactGroupsPivot->laposta_member_id, Auth::id());
     }
 

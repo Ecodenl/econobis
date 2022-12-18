@@ -58,7 +58,7 @@ class findWrongDistributionParts extends Command
                 ->where('status', 'processed')
                 ->whereNotNull('date_energy_supplier_report');
             foreach($revenueDistributionPartsKwh as $partKwh) {
-                $checkDate = Carbon::parse($partKwh->partsKwh->date_begin)->subDay(1)->format('Y-m-d');
+                $checkDate = Carbon::parse($partKwh->partsKwh->date_begin)->format('Y-m-d');
                 $previousDistributionPartNotProcessed = RevenueDistributionPartsKwh::where('revenue_id', $partKwh->revenue_id)
                     ->where('distribution_id', $partKwh->distribution_id)
                     ->whereHas('partsKwh', function ($query) use($checkDate) {

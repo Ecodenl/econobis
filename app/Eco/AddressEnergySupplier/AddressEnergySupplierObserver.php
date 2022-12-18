@@ -10,7 +10,6 @@ namespace App\Eco\AddressEnergySupplier;
 
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class AddressEnergySupplierObserver
 {

@@ -4,7 +4,6 @@ namespace App\Eco\EnergySupplier;
 
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
-use App\Eco\RevenuesKwh\RevenuePartsKwh;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 

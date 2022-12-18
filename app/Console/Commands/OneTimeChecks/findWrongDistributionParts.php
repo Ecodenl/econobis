@@ -52,7 +52,6 @@ class findWrongDistributionParts extends Command
         DB::table('_wrong_distribution_parts_data')
             ->delete();
 
-//        Loop door tabel _orders_to_end.
         $revenuesKwh = RevenuesKwh::all();
         foreach($revenuesKwh as $revenueKwh) {
             $revenueDistributionPartsKwh = $revenueKwh->distributionPartsKwh

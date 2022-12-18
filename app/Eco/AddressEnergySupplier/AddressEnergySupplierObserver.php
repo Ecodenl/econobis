@@ -66,4 +66,26 @@ class AddressEnergySupplierObserver
             }
         }
     }
+
+    public function deleted(AddressEnergySupplier $addressEnergySupplier)
+    {
+        $aesMemberSince = $addressEnergySupplier->member_since ? Carbon::parse($addressEnergySupplier->member_since)->format('Y-m-d') : '1900-01-01';
+        $aesEndDate = $addressEnergySupplier->end_date ? Carbon::parse($addressEnergySupplier->end_date)->format('Y-m-d') : '9999-12-31';
+
+        $participations = $addressEnergySupplier->address->participations;
+        foreach($participations as $participation) {
+            $distributionsKwh = $participation->revenueDistributionKwh->whereIn('status', ['concept', 'confirmed']);
+            foreach($distributionsKwh as $distributionKwh) {
+                $distributionPartsKwh = $distributionKwh->distributionPartsKwh->whereIn('status', ['concept', 'confirmed']);
+                foreach($distributionPartsKwh as $distributionPartKwh) {
+                    if ($distributionPartKwh->partsKwh->date_begin >= $aesMemberSince && $distributionPartKwh->partsKwh->date_begin <= $aesEndDate) {
+                        $distributionPartKwh->energy_supplier_name = "";
+                        $distributionPartKwh->energy_supplier_number = "";
+                        $distributionPartKwh->es_id = null;
+                        $distributionPartKwh->save();
+                    }
+                }
+            }
+        }
+    }
 }

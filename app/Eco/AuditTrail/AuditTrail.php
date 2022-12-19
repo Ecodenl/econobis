@@ -25,8 +25,8 @@ class AuditTrail extends Model
 
     public function getOldValueAttribute($value)
     {
-        // Indien IBAN of twinfield_password leeg is, dan niet ge-encrypte waarde tonen
-        if(($this->key == 'iban' || $this->key == 'IBAN' || $this->key == 'twinfield_password') && trim(Crypt::decrypt($value)) == '' ) {
+        // Indien IBAN leeg is, dan niet ge-encrypte waarde tonen
+        if(($this->key == 'iban' || $this->key == 'IBAN') && trim(Crypt::decrypt($value)) == '' ) {
             return '';
         }
 //        try {
@@ -41,8 +41,8 @@ class AuditTrail extends Model
 
     public function getNewValueAttribute($value)
     {
-        // Indien IBAN of twinfield_password leeg is, dan niet ge-encrypte waarde tonen
-        if(($this->key == 'iban' || $this->key == 'IBAN' || $this->key == 'twinfield_password') && trim(Crypt::decrypt($value)) == '' ) {
+        // Indien IBAN leeg is, dan niet ge-encrypte waarde tonen
+        if(($this->key == 'iban' || $this->key == 'IBAN') && trim(Crypt::decrypt($value)) == '' ) {
             return '';
         }
 //        try {

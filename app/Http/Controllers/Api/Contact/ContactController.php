@@ -344,10 +344,20 @@ class ContactController extends Controller
         return response()->json(['message' => 'Contacten zijn samengevoegd.'], 200);
     }
 
-    public function getSummary(Contact $contact)
+    public function getCoachAttributes(Contact $contact)
     {
         return [
+            'id' => $contact->id,
             'fullName' => $contact->full_name,
+            'coachMaxAppointmentsPerWeek' => $contact->coach_max_appointments_per_week,
+            'coachMinMinutesBetweenAppointments' => $contact->coach_min_minutes_between_appointments,
         ];
+    }
+
+    public function updateCoachAttributes(Contact $contact, Request $request)
+    {
+        $contact->coach_max_appointments_per_week = $request->input('coachMaxAppointmentsPerWeek') ?: 0;
+        $contact->coach_min_minutes_between_appointments = $request->input('coachMinMinutesBetweenAppointments') ?: 0;
+        $contact->save();
     }
 }

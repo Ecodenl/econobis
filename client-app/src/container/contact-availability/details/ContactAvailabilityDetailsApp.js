@@ -6,15 +6,20 @@ import {browserHistory} from "react-router";
 import "./style.css";
 import ContactAvailabilityDetailsPlanningPanel from "./ContactAvailabilityDetailsPlanningPanel";
 import ContactDetailsAPI from "../../../api/contact/ContactDetailsAPI";
+import ContactAvailabilityDetailsGeneral from "./ContactAvailabilityDetailsGeneral";
 
 export default function ContactAvailabilityDetailsApp(props) {
     const [contact, setContact] = useState(null);
 
     useEffect(() => {
-        ContactDetailsAPI.getContactSummary(props.params.id).then(data => {
+        fetch();
+    }, []);
+
+    const fetch = () => {
+        ContactDetailsAPI.getCoachAttributes(props.params.id).then(data => {
             setContact(data);
         });
-    }, []);
+    }
 
     if (!contact) {
         return null;
@@ -40,6 +45,10 @@ export default function ContactAvailabilityDetailsApp(props) {
                             </div>
                         </PanelBody>
                     </Panel>
+                </div>
+
+                <div className="col-md-12 margin-10-top">
+                    <ContactAvailabilityDetailsGeneral contact={contact} onSave={fetch}/>
                 </div>
 
                 <div className="col-md-12 margin-10-top">

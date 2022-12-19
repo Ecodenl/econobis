@@ -9,8 +9,7 @@ export default function DistrictDetailsGeneral({district, onSave}) {
     return (
         <div className={divClass} onMouseEnter={() => setDivClass('panel-grey')} onMouseLeave={() => setDivClass('')}>
             {showEdit ? (
-                <DistrictDetailsGeneralEdit district={district} switchToView={() => setShowEdit(false)} onSave={onSave}
-                                            ca/>
+                <DistrictDetailsGeneralEdit district={district} switchToView={() => setShowEdit(false)} onSave={onSave}/>
             ) : (
                 <DistrictDetailsGeneralView district={district} switchToEdit={() => setShowEdit(true)}/>
             )}

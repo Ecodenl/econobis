@@ -59,7 +59,8 @@ Route::namespace('Api')
         Route::post('/contact/{contact}/delete', 'Contact\ContactController@destroy');
         Route::get('/contact/{contact}/tasks', 'Contact\ContactController@tasks');
         Route::get('/contact/{contact}/make-hoomdossier', 'Contact\ContactController@makeHoomdossier');
-        Route::get('/contact/{contact}/summary', 'Contact\ContactController@getSummary');
+        Route::get('/contact/{contact}/coach-attributes', 'Contact\ContactController@getCoachAttributes');
+        Route::post('/contact/{contact}/coach-attributes', 'Contact\ContactController@updateCoachAttributes');
 
         Route::get('/intake/grid', 'Intake\IntakeController@grid');
         Route::get('/intake/amount-active', 'Intake\IntakeController@getAmountOfActiveIntakes');

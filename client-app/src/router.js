@@ -408,9 +408,9 @@ const Routes = () => {
                     <Route path="mailbox/:id" component={MailboxDetailsApp} />
                     <Route path="mailboxen" component={MailboxesListApp} />
                     /* Districts */
-                    <Route path="wijk/nieuw" component={DistrictNewApp} />
-                    <Route path="wijk/:id" component={DistrictDetailsApp} />
-                    <Route path="wijken" component={DistrictsListApp} />
+                    <Route path="afspraak-kalender/nieuw" component={DistrictNewApp} />
+                    <Route path="afspraak-kalender/:id" component={DistrictDetailsApp} />
+                    <Route path="afspraak-kalenders" component={DistrictsListApp} />
                     /* Availabilities */
                     <Route path="beschikbaarheid/:id" component={ContactAvailabilityDetailsApp} />
                     <Route path="beschikbaarheid" component={ContactAvailabilityListApp} />

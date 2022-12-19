@@ -41,8 +41,8 @@ export default function DistrictDetailsCoachesNew({district, onCreate, onHide}) 
                 <PanelBody>
                     <div className="row">
                         <InputText
-                            label={'Wijk'}
-                            name={'wijk'}
+                            label={'Afspraak Kalender'}
+                            name={'afspraakKalender'}
                             value={district.name}
                             readOnly={true}
                         />

@@ -10,7 +10,7 @@ export default function DistrictNewApp() {
     const handleSubmit = (values, {setSubmitting}) => {
         DistrictAPI.newDistrict(values)
             .then(district => {
-                hashHistory.push(`/wijk/${district.id}`);
+                hashHistory.push(`/afspraak-kalender/${district.id}`);
             })
             .catch(() => {
                 setSubmitting(false);
@@ -32,7 +32,7 @@ export default function DistrictNewApp() {
                                     </div>
                                 </div>
                                 <div className="col-md-4">
-                                    <h4 className="text-center margin-small">Nieuwe wijk</h4>
+                                    <h4 className="text-center margin-small">Nieuwe Afspraak Kalender</h4>
                                 </div>
                                 <div className="col-md-4"/>
                             </div>

@@ -26,7 +26,7 @@ export default function DistrictsListApp() {
             setDistricts(data);
             setLoading(false);
         }).catch(() => {
-            setErrorText('Er is iets misgegaan met ophalen van de wijken.');
+            setErrorText('Er is iets misgegaan met ophalen van de afspraak kalenders.');
             setLoading(false);
         });
     };
@@ -41,7 +41,7 @@ export default function DistrictsListApp() {
         }
 
         if (districts.length === 0) {
-            return 'Geen wijken gevonden!';
+            return 'Geen afspraak kalenders gevonden!';
         }
 
         return '';
@@ -56,11 +56,11 @@ export default function DistrictsListApp() {
                             <div className="btn-group" role="group">
                                 <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={fetch}/>
                                 <ButtonIcon iconName={'glyphicon-plus'}
-                                            onClickAction={() => hashHistory.push(`/wijk/nieuw`)}/>
+                                            onClickAction={() => hashHistory.push(`/afspraak-kalender/nieuw`)}/>
                             </div>
                         </div>
                         <div className="col-md-4">
-                            <h3 className="text-center table-title">Wijken</h3>
+                            <h3 className="text-center table-title">Afspraak Kalenders</h3>
                         </div>
                         <div className="col-md-4"/>
                     </div>

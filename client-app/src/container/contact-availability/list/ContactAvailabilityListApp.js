@@ -25,7 +25,7 @@ export default function ContactAvailabilityListApp() {
             setContacts(data);
             setLoading(false);
         }).catch(() => {
-            setErrorText('Er is iets misgegaan met ophalen van de wijken.');
+            setErrorText('Er is iets misgegaan met ophalen van de afspraak kalenders.');
             setLoading(false);
         });
     };

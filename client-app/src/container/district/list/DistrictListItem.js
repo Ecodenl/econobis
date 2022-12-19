@@ -18,7 +18,7 @@ export default function DistrictListItem({district, onDelete}) {
     }
 
     const openItem = () => {
-        hashHistory.push(`/wijk/${district.id}`);
+        hashHistory.push(`/afspraak-kalender/${district.id}`);
     }
 
     return (

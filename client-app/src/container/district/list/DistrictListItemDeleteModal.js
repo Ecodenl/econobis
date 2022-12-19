@@ -8,7 +8,7 @@ export default function DistrictListItemDeleteModal({district, onDelete, showDel
             setShowDeleteModal(false);
             onDelete();
         }).catch(() => {
-            alert("Er is iets misgegaan met het verwijderen van de wijk.");
+            alert("Er is iets misgegaan met het verwijderen van de afspraak kalender.");
         });
     };
 
@@ -21,7 +21,7 @@ export default function DistrictListItemDeleteModal({district, onDelete, showDel
                 confirmAction={() => confirmAction()}
                 title="Verwijderen"
             >
-                Verwijder wijk: <strong> {district.name} </strong>
+                Verwijder afspraak kalender: <strong> {district.name} </strong>
             </Modal>
         );
     }

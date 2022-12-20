@@ -207,7 +207,6 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         value={projectManagerId}
                         options={projectManagers}
                         onChangeAction={this.handleInputChange}
-                        required={'required'}
                         error={this.state.errors.projectManager}
                     />
                     <InputText
@@ -226,7 +225,6 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         value={externalPartyId}
                         options={externalParties}
                         onChangeAction={this.handleInputChange}
-                        required={'required'}
                         error={this.state.errors.externalParty}
                     />
                 </div>

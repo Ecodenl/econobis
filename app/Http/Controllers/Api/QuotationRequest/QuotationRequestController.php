@@ -265,12 +265,8 @@ class QuotationRequestController extends ApiController
         $quotationRequest->opportunity_action_id = $data['opportunityActionId'];
 
         //optional
-        if ($data['projectManagerId']) {
-            $quotationRequest->project_manager_id = $data['projectManagerId'];
-        }
-        if ($data['externalPartyId']) {
-            $quotationRequest->external_party_id = $data['externalPartyId'];
-        }
+        $quotationRequest->project_manager_id = $request->input('projectManagerId') ?: null;
+        $quotationRequest->external_party_id = $request->input('externalPartyId') ?: null;
 
         if ($data['dateRecorded']) {
             if ($data['timeRecorded']) {

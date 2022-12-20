@@ -20,4 +20,14 @@ export default {
     copyAvailabilities: (contactId, data) => {
         return axiosInstance.post(`${BASE_URL}/${contactId}/availability/copy-weeks`, data);
     },
+
+    fetchDistrictAvailabilitiesByWeek: ({districtId, startOfWeek}) => {
+        return axiosInstance.get(`${URL_API}/api/district/${districtId}/availability/by-week`, {
+            params: {
+                startOfWeek,
+            },
+        }).then(payload => {
+            return payload.data;
+        });
+    },
 };

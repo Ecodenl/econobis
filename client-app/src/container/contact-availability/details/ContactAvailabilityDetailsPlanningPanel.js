@@ -105,7 +105,7 @@ export default function ContactAvailabilityDetailsPlanningPanel({contactId}) {
     const getTimeslotValue = (day, timeslot) => {
         return availabilities.some(availability => {
             /**
-             * Kijk of ereen availability is waar het timeslot volledig binnen valt.
+             * Kijk of er een availability is waar het timeslot volledig binnen valt.
              * availabilties kunnen niet aansluitend zijn in de database (dan zouden ze samengevoegd moeten worden), dus het is niet nodig om te kijken of het timeslot door meerdere availabilities wordt gedekt.
              */
             return moment(availability.from) <= moment(day).add(timeslot, 'minutes')

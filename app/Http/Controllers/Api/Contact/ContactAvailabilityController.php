@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Contact;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactAvailability;
+use App\Eco\District\District;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -22,11 +23,47 @@ class ContactAvailabilityController
             ->get()
             ->map(function(ContactAvailability $availability){
                return [
-                   'from' => $availability->from,
-                   'to' => $availability->to,
+                   'from' => $availability->from->format('Y-m-d H:i:s'),
+                   'to' => $availability->to->format('Y-m-d H:i:s'),
                ];
             });
     }
+
+    public function getDistrictAvailabilityByWeek(District $district, Request $request)
+    {
+        $startOfWeek = Carbon::make($request->input('startOfWeek'))->startOfWeek();
+
+        return $district->getAvailableCoachesInWeek($startOfWeek)
+            ->load(['availabilities' => function($query) use ($startOfWeek, $request){
+                $endOfWeek = $startOfWeek->copy()->endOfWeek();
+                $query->whereBetween('from', [$startOfWeek, $endOfWeek]);
+            }])
+            ->load(['quotationRequests' => function($query) use ($startOfWeek, $request){
+                $endOfWeek = $startOfWeek->copy()->endOfWeek();
+                $query->whereBetween('date_planned', [$startOfWeek, $endOfWeek]);
+            }])
+            ->map(function(Contact $coach){
+                return [
+                    'id' => $coach->id,
+                    'fullName' => $coach->full_name,
+                    'availabilities' => $coach->availabilities
+                        ->map(function(ContactAvailability $availability){
+                            return [
+                                'from' => $availability->from->format('Y-m-d H:i:s'),
+                                'to' => $availability->to->format('Y-m-d H:i:s'),
+                            ];
+                        }),
+                    'quotationRequests' => $coach->quotationRequests
+                        ->map(function($quotationRequest){
+                            return [
+                                'datePlanned' => $quotationRequest->date_planned,
+                                'durationMinutes' => $quotationRequest->duration_minutes,
+                            ];
+                        }),
+                ];
+            });
+    }
+
     public function update(Contact $contact, Request $request)
     {
         $request->validate([

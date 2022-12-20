@@ -189,6 +189,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         onChangeAction={this.handleInputChange}
                         required={'required'}
                         error={this.state.errors.organisationOrCoach}
+                        readOnly={this.props.quotationRequestDetails.usesPlanning}
                     />
                     <InputText
                         label={'Verzoek voor'}
@@ -281,6 +282,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         name="datePlanned"
                         value={datePlanned}
                         onChangeAction={this.handleInputChangeDate}
+                        readOnly={this.props.quotationRequestDetails.usesPlanning}
                     />
                     <InputTime
                         label={'Tijd afspraak'}
@@ -290,6 +292,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         start={'06:00'}
                         end={'23:00'}
                         onChangeAction={this.handleInputChangeDate}
+                        readOnly={this.props.quotationRequestDetails.usesPlanning}
                     />
                 </div>
 

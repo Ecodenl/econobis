@@ -284,6 +284,7 @@ Route::namespace('Api')
          * Contact Availabilities
          */
         Route::get('contact/{contact}/availability/by-week', [\App\Http\Controllers\Api\Contact\ContactAvailabilityController::class, 'getByWeek']);
+        Route::get('district/{district}/availability/by-week', [\App\Http\Controllers\Api\Contact\ContactAvailabilityController::class, 'getDistrictAvailabilityByWeek']);
         Route::post('contact/{contact}/availability', [\App\Http\Controllers\Api\Contact\ContactAvailabilityController::class, 'update']);
         Route::post('contact/{contact}/availability/copy-weeks', [\App\Http\Controllers\Api\Contact\ContactAvailabilityController::class, 'copyWeeks']);
 

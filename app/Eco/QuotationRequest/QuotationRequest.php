@@ -26,6 +26,11 @@ class QuotationRequest extends Model
         'id'
     ];
 
+    protected $casts = [
+        'duration_minutes' => 'integer',
+        'uses_planning' => 'boolean',
+    ];
+
    public function organisationOrCoach()
     {
         return $this->belongsTo(Contact::class, 'contact_id');

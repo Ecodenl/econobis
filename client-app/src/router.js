@@ -76,6 +76,7 @@ const QuotationRequestDetailsApp = React.lazy(() =>
     import('./container/quotation-request/details/QuotationRequestDetailsApp')
 );
 const QuotationRequestNewApp = React.lazy(() => import('./container/quotation-request/new/QuotationRequestNewApp'));
+const QuotationRequestPlanNewApp = React.lazy(() => import('./container/quotation-request/plan/QuotationRequestPlanNewApp'));
 const QuotationRequestsListApp = React.lazy(() =>
     import('./container/quotation-request/list/QuotationRequestsListApp')
 );
@@ -425,6 +426,10 @@ const Routes = () => {
                     <Route
                         path="offerteverzoek/nieuw/kans/:opportunityId/actie/:opportunityActionId"
                         component={QuotationRequestNewApp}
+                    />
+                    <Route
+                        path="offerteverzoek/nieuw/kans/:opportunityId/plan/:districtId"
+                        component={QuotationRequestPlanNewApp}
                     />
                     <Route path="offerteverzoek/:id" component={QuotationRequestDetailsApp} />
                     <Route path="offerteverzoeken" component={QuotationRequestsListApp} />

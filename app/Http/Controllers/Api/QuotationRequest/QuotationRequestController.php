@@ -30,6 +30,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class QuotationRequestController extends ApiController
 {
@@ -143,8 +144,11 @@ class QuotationRequestController extends ApiController
             'dateApprovedProjectManager' => 'string',
             'dateApprovedExternal' => 'string',
             'statusId' => 'required|exists:quotation_request_status,id',
-            'opportunityActionId' => 'required|exists:opportunity_actions,id',
+            'opportunityActionId' => [Rule::requiredIf(!$request->has('opportunityActionCodeRef')), 'exists:opportunity_actions,id'],
             'quotationText' => 'string',
+            'durationMinutes' => 'integer',
+            'usesPlanning' => 'boolean',
+            'opportunityActionCodeRef' => 'string',
         ]);
 
         //basic QuotationRequest
@@ -154,7 +158,7 @@ class QuotationRequestController extends ApiController
         $quotationRequest->contact_id = $data['organisationOrCoachId'];
         $quotationRequest->opportunity_id = $data['opportunityId'];
         $quotationRequest->status_id = $data['statusId'];
-        $quotationRequest->opportunity_action_id = $data['opportunityActionId'];
+        $quotationRequest->opportunity_action_id = $data['opportunityActionId'] ?? null;
 
         //optional
         if ($data['projectManagerId']) {
@@ -214,6 +218,13 @@ class QuotationRequestController extends ApiController
 
         if (isset($data['quotationText'])) {
             $quotationRequest->quotation_text = $data['quotationText'];
+        }
+
+        $quotationRequest->duration_minutes = $request->input('durationMinutes');
+        $quotationRequest->uses_planning = $request->input('usesPlanning', false);
+
+        if($request->has('opportunityActionCodeRef')){
+            $quotationRequest->opportunity_action_id = OpportunityAction::firstWhere(['code_ref' => $request->input('opportunityActionCodeRef')])->id;
         }
 
         $quotationRequest->save();

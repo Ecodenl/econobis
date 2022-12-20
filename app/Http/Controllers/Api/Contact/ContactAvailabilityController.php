@@ -40,12 +40,14 @@ class ContactAvailabilityController
             }])
             ->load(['quotationRequests' => function($query) use ($startOfWeek, $request){
                 $endOfWeek = $startOfWeek->copy()->endOfWeek();
-                $query->whereBetween('date_planned', [$startOfWeek, $endOfWeek]);
+                $query->whereBetween('date_planned', [$startOfWeek, $endOfWeek])
+                    ->where('uses_planning', true);
             }])
             ->map(function(Contact $coach){
                 return [
                     'id' => $coach->id,
                     'fullName' => $coach->full_name,
+                    'coachMinMinutesBetweenAppointments' => $coach->coach_min_minutes_between_appointments,
                     'availabilities' => $coach->availabilities
                         ->map(function(ContactAvailability $availability){
                             return [

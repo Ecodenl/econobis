@@ -51,18 +51,26 @@ export default function QuotationRequestPlanNewPlanningPanel({districtId, opport
         ContactAvailabilityAPI.fetchDistrictAvailabilitiesByWeek({
             districtId,
             startOfWeek: currentWeek,
-            // interval: intervalMinutes,
-            // duration: durationMinutes,
         }).then(coachAvailabilities => {
-            setAvailabilities(transformCoachavailabiltiesToAvailabilities(coachAvailabilities));
+            setAvailabilities(transformCoachAvailabilitiesToAvailabilities(coachAvailabilities));
         });
 
         initDays();
     }, [currentWeek]);
 
-    const transformCoachavailabiltiesToAvailabilities = (coachAvailabilities) => {
+    const transformCoachAvailabilitiesToAvailabilities = (coachAvailabilities) => {
         return coachAvailabilities.reduce((acc, coach) => {
-            coach.availabilities.forEach(av => {
+            coach.availabilities = coach.availabilities.map(availability => {
+                return {
+                    ...availability,
+                    from: moment(availability.from),
+                    to: moment(availability.to),
+                }
+            });
+
+            let filteredAvailabilities = filterAvailabilitiesByPlannedQuotationRequests(coach);
+
+            filteredAvailabilities.forEach(av => {
                 acc.push({
                     ...av,
                     coach: {
@@ -74,6 +82,80 @@ export default function QuotationRequestPlanNewPlanningPanel({districtId, opport
 
             return acc;
         }, []);
+    }
+
+    const filterAvailabilitiesByPlannedQuotationRequests = (coach) => {
+        let blockedTimeslots = coach.quotationRequests.map(qr => {
+            return {
+                from: moment(qr.datePlanned).subtract(coach.coachMinMinutesBetweenAppointments, 'minutes'),
+                to: moment(qr.datePlanned).add(qr.durationMinutes, 'minutes').add(coach.coachMinMinutesBetweenAppointments, 'minutes'),
+            }
+        });
+
+
+        let availabilities = coach.availabilities;
+        for (let i = 0; i < blockedTimeslots.length; i++) {
+            let timeslot = blockedTimeslots[i];
+
+            availabilities = availabilities.reduce((acc, availability) => {
+                /**
+                 * Het geblokkeerde slot valt volledig binnen de beschikbaarheid;
+                 * de beschikbaarheid moet dus in twee stukken worden gesplitst.
+                 */
+                if(availability.from.isBefore(timeslot.from) && availability.to.isAfter(timeslot.to)) {
+                    acc.push({
+                        ...availability,
+                        from: availability.from,
+                        to: timeslot.from,
+                    });
+                    acc.push({
+                        ...availability,
+                        from: timeslot.to,
+                        to: availability.to,
+                    });
+
+                    return acc;
+                }
+
+                /**
+                 * Het geblokkeerde slot start in de beschikbaarheid, maar eindigt buiten de beschikbaarheid.
+                 * De beschikbaarheid moet dus worden ingekort.
+                 */
+                if(availability.from.isBefore(timeslot.from) && availability.to.isAfter(timeslot.from)) {
+                    acc.push({
+                        ...availability,
+                        from: availability.from,
+                        to: timeslot.from,
+                    });
+
+                    return acc;
+                }
+
+                /**
+                 * Het geblokkeerde slot start voor de beschikbaarheid, maar eindigt in de beschikbaarheid.
+                 * De beschikbaarheid moet dus worden ingekort.
+                 */
+                if(availability.from.isBefore(timeslot.to) && availability.to.isAfter(timeslot.to)) {
+                    acc.push({
+                        ...availability,
+                        from: timeslot.to,
+                        to: availability.to,
+                    });
+
+                    return acc;
+                }
+
+                /**
+                 * Het geblokkeerde slot valt volledig buiten de beschikbaarheid;
+                 * de beschikbaarheid blijft ongewijzigd.
+                 */
+                acc.push(availability);
+
+                return acc;
+            }, []);
+        }
+
+        return availabilities;
     }
 
     useEffect(() => {
@@ -161,8 +243,8 @@ export default function QuotationRequestPlanNewPlanningPanel({districtId, opport
              * Kijk of er een availability is waar het timeslot volledig binnen valt.
              * availabilties kunnen niet aansluitend zijn in de database (dan zouden ze samengevoegd moeten worden), dus het is niet nodig om te kijken of het timeslot door meerdere availabilities wordt gedekt.
              */
-            return moment(availability.from) <= moment(day).add(timeslot, 'minutes')
-                && moment(availability.to) >= moment(day).add(timeslot + durationMinutes, 'minutes');
+            return availability.from <= moment(day).add(timeslot, 'minutes')
+                && availability.to >= moment(day).add(timeslot + durationMinutes, 'minutes');
         });
     }
 

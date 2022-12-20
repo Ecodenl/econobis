@@ -4,13 +4,13 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import EmailSentList from './EmailsSentList';
 
-const EmailSentHarmonica = ({ toggleShowList, showEmailsSentList, newEmail, emailSentCount }) => {
+const ContactEmailSentHarmonica = ({ toggleShowList, showEmailsSentList, newEmail, emailSentCount }) => {
     return (
         <Panel className={'harmonica-button'}>
             <PanelBody>
                 <div className="col-sm-10" onClick={toggleShowList} role="button">
                     <span onClick={toggleShowList} className="">
-                        E-MAIL ORGANISATIE / COACH <span className="badge">{emailSentCount}</span>
+                        E-MAIL CONTACTPERSOON <span className="badge">{emailSentCount}</span>
                     </span>
                 </div>
                 <div className={'col-sm-2'}>
@@ -24,4 +24,4 @@ const EmailSentHarmonica = ({ toggleShowList, showEmailsSentList, newEmail, emai
     );
 };
 
-export default EmailSentHarmonica;
+export default ContactEmailSentHarmonica;

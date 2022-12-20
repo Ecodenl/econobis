@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {hashHistory} from 'react-router';
+import {connect} from 'react-redux';
 
 import DocumentHarmonica from './DocumentHarmonica';
 import EmailSentHarmonica from './EmailSentHarmonica';
+import ContactEmailSentHarmonica from "./ContactEmailSentHarmonica";
 
 class HousingFileDetailsHarmonica extends Component {
     constructor(props) {
@@ -13,18 +14,25 @@ class HousingFileDetailsHarmonica extends Component {
             toggleShowList: {
                 documents: false,
                 emailsSent: false,
+                contactEmailsSent: false,
             },
         };
 
         this.newDocument = this.newDocument.bind(this);
         this.newEmail = this.newEmail.bind(this);
+        this.newContactEmail = this.newContactEmail.bind(this);
         this.toggleShowList = this.toggleShowList.bind(this);
     }
 
     newEmail() {
-        console.log(this.props.quotationRequestDetails);
         hashHistory.push(
             `/email/nieuw/offerteverzoek/${this.props.id}/${this.props.quotationRequestDetails.organisationOrCoach.id}`
+        );
+    }
+
+    newContactEmail() {
+        hashHistory.push(
+            `/email/nieuw/offerteverzoek/${this.props.id}/${this.props.quotationRequestDetails.contact.id}`
         );
     }
 
@@ -48,7 +56,13 @@ class HousingFileDetailsHarmonica extends Component {
                     toggleShowList={() => this.toggleShowList('emailsSent')}
                     showEmailsSentList={this.state.toggleShowList.emailsSent}
                     newEmail={this.newEmail}
-                    emailSentCount={this.props.quotationRequestDetails.emailSentCount}
+                    emailSentCount={this.props.quotationRequestDetails.relatedCoachEmailsSentCount}
+                />
+                <ContactEmailSentHarmonica
+                    toggleShowList={() => this.toggleShowList('contactEmailsSent')}
+                    showEmailsSentList={this.state.toggleShowList.contactEmailsSent}
+                    newEmail={this.newContactEmail}
+                    emailSentCount={this.props.quotationRequestDetails.relatedContactEmailsSentCount}
                 />
                 <DocumentHarmonica
                     toggleShowList={() => this.toggleShowList('documents')}

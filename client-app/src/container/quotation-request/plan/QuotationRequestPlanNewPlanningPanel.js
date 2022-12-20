@@ -102,7 +102,7 @@ export default function QuotationRequestPlanNewPlanningPanel({districtId, opport
                  * Het geblokkeerde slot valt volledig binnen de beschikbaarheid;
                  * de beschikbaarheid moet dus in twee stukken worden gesplitst.
                  */
-                if(availability.from.isBefore(timeslot.from) && availability.to.isAfter(timeslot.to)) {
+                if (availability.from.isBefore(timeslot.from) && availability.to.isAfter(timeslot.to)) {
                     acc.push({
                         ...availability,
                         from: availability.from,
@@ -121,7 +121,7 @@ export default function QuotationRequestPlanNewPlanningPanel({districtId, opport
                  * Het geblokkeerde slot start in de beschikbaarheid, maar eindigt buiten de beschikbaarheid.
                  * De beschikbaarheid moet dus worden ingekort.
                  */
-                if(availability.from.isBefore(timeslot.from) && availability.to.isAfter(timeslot.from)) {
+                if (availability.from.isBefore(timeslot.from) && availability.to.isAfter(timeslot.from)) {
                     acc.push({
                         ...availability,
                         from: availability.from,
@@ -135,7 +135,7 @@ export default function QuotationRequestPlanNewPlanningPanel({districtId, opport
                  * Het geblokkeerde slot start voor de beschikbaarheid, maar eindigt in de beschikbaarheid.
                  * De beschikbaarheid moet dus worden ingekort.
                  */
-                if(availability.from.isBefore(timeslot.to) && availability.to.isAfter(timeslot.to)) {
+                if (availability.from.isBefore(timeslot.to) && availability.to.isAfter(timeslot.to)) {
                     acc.push({
                         ...availability,
                         from: timeslot.to,
@@ -165,9 +165,33 @@ export default function QuotationRequestPlanNewPlanningPanel({districtId, opport
     const initTimeslots = () => {
         /**
          * De tijdsblokken in het huidige overzicht in integers met minuten vanaf middernacht, dus 0, 30, 60, 90, etc.
+         *
+         * Get the availability with the earliest start time and the availability with the latest end time.
          */
+        let earliestMinute = availabilities.reduce((acc, availability) => {
+            if (!acc || availability.from.get('hour') * 60 + availability.from.get('minute') < acc) {
+                return availability.from.get('hour') * 60 + availability.from.get('minute');
+            }
+
+            return acc;
+        }, null);
+
+        let latestMinute = availabilities.reduce((acc, availability) => {
+            if (!acc || availability.to.get('hour') * 60 + availability.to.get('minute') > acc) {
+                return availability.to.get('hour') * 60 + availability.to.get('minute');
+            }
+
+            return acc;
+        }, null);
+
+        if (!earliestMinute || !latestMinute) {
+            setTimeslots([]);
+        }
+
+        earliestMinute = Math.floor(earliestMinute / intervalMinutes) * intervalMinutes;
+
         let temp = [];
-        for (let i = 0; i < 24 * 60 - durationMinutes; i = i + intervalMinutes) {
+        for (let i = earliestMinute; i <= latestMinute - durationMinutes; i = i + intervalMinutes) {
             temp.push(i);
         }
         setTimeslots(temp);
@@ -336,36 +360,41 @@ export default function QuotationRequestPlanNewPlanningPanel({districtId, opport
                             </thead>
                             <tbody>
                             {
-                                timeslots.map((timeslot, i) => {
-                                    return (
-                                        <tr key={i}>
-                                            {
-                                                days.map((day, j) => {
-                                                    let isAvailable = getAvailabilitiesForTimeslot(day, timeslot).length > 0;
-
-                                                    if (!isAvailable) {
-                                                        return (
-                                                            <td key={j} style={{textAlign: 'center'}}></td>
-                                                        );
-                                                    }
-
-                                                    return (
-                                                        <td key={j}
-                                                            style={{
-                                                                textAlign: 'center',
-                                                                padding: '3px',
-                                                            }}>
-                                                            <button className="btn btn-sm" style={{width: '100%'}}
-                                                                    onClick={() => handleTimeslotClick(day, timeslot)}>
-                                                                {formatMinutesToTime(timeslot)} - {formatMinutesToTime(timeslot + durationMinutes)}
-                                                            </button>
-                                                        </td>
-                                                    );
-                                                })
-                                            }
+                                timeslots.length === 0 ? (
+                                        <tr>
+                                            <td colSpan={7} style={{ textAlign: 'center'}}>Geen beschikbare data gevonden</td>
                                         </tr>
-                                    );
-                                })
+                                    ) :
+                                    timeslots.map((timeslot, i) => {
+                                        return (
+                                            <tr key={i}>
+                                                {
+                                                    days.map((day, j) => {
+                                                        let isAvailable = getAvailabilitiesForTimeslot(day, timeslot).length > 0;
+
+                                                        if (!isAvailable) {
+                                                            return (
+                                                                <td key={j} style={{textAlign: 'center'}}></td>
+                                                            );
+                                                        }
+
+                                                        return (
+                                                            <td key={j}
+                                                                style={{
+                                                                    textAlign: 'center',
+                                                                    padding: '3px',
+                                                                }}>
+                                                                <button className="btn btn-sm" style={{width: '100%'}}
+                                                                        onClick={() => handleTimeslotClick(day, timeslot)}>
+                                                                    {formatMinutesToTime(timeslot)} - {formatMinutesToTime(timeslot + durationMinutes)}
+                                                                </button>
+                                                            </td>
+                                                        );
+                                                    })
+                                                }
+                                            </tr>
+                                        );
+                                    })
                             }
                             </tbody>
                         </table>
@@ -373,7 +402,10 @@ export default function QuotationRequestPlanNewPlanningPanel({districtId, opport
                 </div>
             </PanelBody>
             {selectedTimeslot !== null && (
-                <QuotationRequestPlanNewSelectCoachModal coaches={getAvailabilitiesForTimeslot(selectedTimeslot.day, selectedTimeslot.timeslot).map(av => av.coach)} onSelectCoach={coachId => createQuotationRequest(selectedTimeslot.day, selectedTimeslot.timeslot, coachId)} onCancel={() => setSelectedTimeslot(null)} />
+                <QuotationRequestPlanNewSelectCoachModal
+                    coaches={getAvailabilitiesForTimeslot(selectedTimeslot.day, selectedTimeslot.timeslot).map(av => av.coach)}
+                    onSelectCoach={coachId => createQuotationRequest(selectedTimeslot.day, selectedTimeslot.timeslot, coachId)}
+                    onCancel={() => setSelectedTimeslot(null)}/>
             )}
         </Panel>
     );

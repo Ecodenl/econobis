@@ -11,7 +11,7 @@ use App\Helpers\Delete\Models\DeleteContact;
 use App\Helpers\Hoomdossier\HoomdossierHelper;
 use App\Helpers\Import\ContactImportHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Contact\ContactPeekCoach;
+use App\Http\Resources\Contact\ContactPeekInspectionPerson;
 use App\Http\Resources\Contact\ContactWithAddressPeek;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\Contact\FullContactWithGroups;
@@ -149,9 +149,23 @@ class ContactController extends Controller
 
     public function peekCoach(Request $request)
     {
-        $coaches = Contact::where('is_coach', true)->select('id', 'full_name')->orderBy('full_name', 'asc')->get();
+        $coaches = Contact::where('inspection_person_type_id', 'coach')->select('id', 'full_name')->orderBy('full_name', 'asc')->get();
 
-        return ContactPeekCoach::collection($coaches);
+        return ContactPeekInspectionPerson::collection($coaches);
+    }
+
+    public function peekProjectManager(Request $request)
+    {
+        $projectmanagers = Contact::where('inspection_person_type_id', 'projectmanager')->select('id', 'full_name')->orderBy('full_name', 'asc')->get();
+
+        return ContactPeekInspectionPerson::collection($projectmanagers);
+    }
+
+    public function peekExternalParty(Request $request)
+    {
+        $externalParties = Contact::where('inspection_person_type_id', 'externalparty')->select('id', 'full_name')->orderBy('full_name', 'asc')->get();
+
+        return ContactPeekInspectionPerson::collection($externalParties);
     }
 
     public function search(Request $request)

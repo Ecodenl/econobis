@@ -23,7 +23,15 @@ class QuotationRequestController
     {
         $portalUser = Auth::user();
 
-        return response()->json($portalUser->contact->quotationRequests->map(function (QuotationRequest $quotationRequest) {
+        if ($portalUser->contact->isExternalParty()) {
+            $quotationRequests = $portalUser->contact->quotationRequestsAsExternalParty;
+        } elseif ($portalUser->contact->isProjectManager()) {
+            $quotationRequests = $portalUser->contact->quotationRequestsAsProjectManager;
+        } else {
+            $quotationRequests = $portalUser->contact->quotationRequests;
+        }
+
+        return response()->json($quotationRequests->map(function (QuotationRequest $quotationRequest) {
             return $this->getJson($quotationRequest);
         }));
     }
@@ -51,14 +59,16 @@ class QuotationRequestController
         $request->validate([
             'datePlanned' => ['nullable', 'date'],
             'dateRecorded' => ['nullable', 'date'],
-            'dateApprovedExternal' => ['nullable', 'date'],
             'dateReleased' => ['nullable', 'date'],
+            'dateApprovedProjectManager' => ['nullable', 'date'],
+            'dateApprovedExternal' => ['nullable', 'date'],
         ]);
 
         $quotationRequest->date_planned = $request->input('datePlanned') ?: null;
         $quotationRequest->date_recorded = $request->input('dateRecorded') ?: null;
-        $quotationRequest->date_approved_external = $request->input('dateApprovedExternal') ?: null;
         $quotationRequest->date_released = $request->input('dateReleased') ?: null;
+        $quotationRequest->date_approved_external = $request->input('dateApprovedExternal') ?: null;
+        $quotationRequest->date_approved_project_manager = $request->input('dateApprovedProjectManager') ?: null;
         $quotationRequest->updated_by_id = $responsibleUserId;
 
         $sendMailPlanned = ($quotationRequest->isDirty('date_planned') && !!$quotationRequest->date_planned);
@@ -264,7 +274,15 @@ class QuotationRequestController
 
     private function authorizeQuotationRequest(PortalUser $portalUser, QuotationRequest $quotationRequest)
     {
-        if (!$portalUser->contact->quotationRequests->contains($quotationRequest)) {
+        if ($portalUser->contact->isExternalParty()) {
+            $quotationRequests = $portalUser->contact->quotationRequestsAsExternalParty;
+        } elseif ($portalUser->contact->isProjectManager()) {
+            $quotationRequests = $portalUser->contact->quotationRequestsAsProjectManager;
+        } else {
+            $quotationRequests = $portalUser->contact->quotationRequests;
+        }
+
+        if (!$quotationRequests->contains($quotationRequest)) {
             abort(403, 'Geen toegang tot deze offerteaanvraag.');
         }
     }

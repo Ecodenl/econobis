@@ -7,49 +7,51 @@ import InputSelect from '../../../../components/form/InputSelect';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 
-function CampaignDetailsCoachNew({ campaignId, campaignName, fetchCampaignData, toggleShowNew }) {
-    const [coaches, setCoaches] = useState([]);
-    const [coachId, setCoachId] = useState('');
+function CampaignDetailsProjectManagerNew({ campaignId, campaignName, fetchCampaignData, toggleShowNew }) {
+    const [projectManagers, setProjectManagers] = useState([]);
+    const [projectManagerId, setProjectManagerId] = useState('');
     const [errors, setErrors] = useState({
-        coach: false,
+        projectManager: false,
         hasErrors: false,
     });
 
     useEffect(function() {
-        (async function fetchCoach() {
+        (async function fetchProjectManager() {
             try {
-                const response = await InspectionPersonAPI.getCoachPeek();
+                const response = await InspectionPersonAPI.getProjectManagerPeek();
 
-                setCoaches(response);
+                setProjectManagers(response);
             } catch (error) {
-                alert('Er is iets misgegaan met ophalen van de coaches! Herlaad de pagina en probeer het nogmaals.');
+                alert(
+                    'Er is iets misgegaan met ophalen van de projectmanagers! Herlaad de pagina en probeer het nogmaals.'
+                );
             }
         })();
     }, []);
 
-    function handleCoachChange(event) {
-        setCoachId(event.target.value);
+    function handleProjectManagerChange(event) {
+        setProjectManagerId(event.target.value);
     }
 
     async function handleSubmit(event) {
         event.preventDefault();
 
-        if (!coachId) {
+        if (!projectManagerId) {
             setErrors({
-                coach: true,
+                projectManager: true,
                 hasErrors: true,
             });
         }
 
         if (!errors.hasErrors) {
             try {
-                await CampaignDetailsAPI.attachCoach(campaignId, coachId);
+                await CampaignDetailsAPI.attachProjectManager(campaignId, projectManagerId);
 
                 fetchCampaignData();
                 toggleShowNew();
             } catch (error) {
                 alert(
-                    'Er is iets misgegaan met het toevoegen van de coach. Herlaad de pagina en probeer het nogmaals.'
+                    'Er is iets misgegaan met het toevoegen van de projectmanager. Herlaad de pagina en probeer het nogmaals.'
                 );
             }
         }
@@ -62,14 +64,14 @@ function CampaignDetailsCoachNew({ campaignId, campaignName, fetchCampaignData, 
                     <div className="row">
                         <InputText label={'Campagne'} name={'campaign'} value={campaignName} readOnly={true} />
                         <InputSelect
-                            label={'Coach'}
+                            label={'Projectmanager'}
                             size={'col-sm-6'}
-                            name={'coachId'}
-                            options={coaches}
-                            value={coachId}
-                            onChangeAction={handleCoachChange}
+                            name={'projectManagerId'}
+                            options={projectManagers}
+                            value={projectManagerId}
+                            onChangeAction={handleProjectManagerChange}
                             required={'required'}
-                            error={errors.coach}
+                            error={errors.projectManager}
                         />
                     </div>
 
@@ -92,4 +94,4 @@ function CampaignDetailsCoachNew({ campaignId, campaignName, fetchCampaignData, 
     );
 }
 
-export default CampaignDetailsCoachNew;
+export default CampaignDetailsProjectManagerNew;

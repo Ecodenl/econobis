@@ -60,6 +60,10 @@ class CampaignController extends ApiController
             'organisations.contact.contactPerson.contact',
             'coaches',
             'coaches.primaryAddress',
+            'projectManagers',
+            'projectManagers.primaryAddress',
+            'externalParties',
+            'externalParties.primaryAddress',
             'createdBy',
             'ownedBy',
             'tasks',
@@ -230,6 +234,30 @@ class CampaignController extends ApiController
     {
         $this->authorize('manage', Campaign::class);
         $campaign->coaches()->detach($coach);
+    }
+
+    public function attachProjectManager(Campaign $campaign, Contact $projectManager)
+    {
+        $this->authorize('manage', Campaign::class);
+        $campaign->projectManagers()->attach($projectManager);
+    }
+
+    public function detachProjectManager(Campaign $campaign, Contact $projectManager)
+    {
+        $this->authorize('manage', Campaign::class);
+        $campaign->projectManagers()->detach($projectManager);
+    }
+
+    public function attachExternalParty(Campaign $campaign, Contact $externalParty)
+    {
+        $this->authorize('manage', Campaign::class);
+        $campaign->externalParties()->attach($externalParty);
+    }
+
+    public function detachExternalParty(Campaign $campaign, Contact $externalParty)
+    {
+        $this->authorize('manage', Campaign::class);
+        $campaign->externalParties()->detach($externalParty);
     }
 
     public function peek()

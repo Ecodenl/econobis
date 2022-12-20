@@ -34,7 +34,7 @@ class ContactDetailsForm extends Component {
     }
 
     render() {
-        const { typeId, isCoach } = this.props.contactDetails;
+        const { typeId, inspectionPersonTypeId } = this.props.contactDetails;
         const { permissions } = this.props;
         let loadingText = '';
         let loading = true;
@@ -57,9 +57,11 @@ class ContactDetailsForm extends Component {
                 {permissions.viewContactAddress ? <ContactDetailsFormAddress /> : null}
                 {permissions.viewContactEmail ? <ContactDetailsFormEmail /> : null}
                 {permissions.viewContactPhone ? <ContactDetailsFormPhone /> : null}
-                {permissions.viewContactCoachQuotation && isCoach ? <ContactDetailsCoachQuotations /> : null}
+                {permissions.viewContactCoachQuotation && inspectionPersonTypeId == 'coach' ? (
+                    <ContactDetailsCoachQuotations />
+                ) : null}
                 {permissions.viewContactQuotation && typeId == 'organisation' ? <ContactDetailsQuotations /> : null}
-                {permissions.viewContactCampaign && (isCoach || typeId == 'organisation') ? (
+                {permissions.viewContactCampaign && (inspectionPersonTypeId == 'coach' || typeId == 'organisation') ? (
                     <ContactDetailsCampaigns />
                 ) : null}
                 {permissions.viewContactOccupation ? <ContactDetailsFormOccupations /> : null}

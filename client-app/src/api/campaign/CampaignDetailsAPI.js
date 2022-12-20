@@ -75,6 +75,30 @@ export default {
         return axiosInstance.post(requestUrl);
     },
 
+    attachProjectManager: (campaignId, projectManagerId) => {
+        const requestUrl = `${URL_CAMPAIGN}/${campaignId}/projectManager/${projectManagerId}/attach`;
+
+        return axiosInstance.post(requestUrl);
+    },
+
+    detachProjectManager: (campaignId, projectManagerId) => {
+        const requestUrl = `${URL_CAMPAIGN}/${campaignId}/projectManager/${projectManagerId}/detach`;
+
+        return axiosInstance.post(requestUrl);
+    },
+
+    attachExternalParty: (campaignId, externalPartyId) => {
+        const requestUrl = `${URL_CAMPAIGN}/${campaignId}/externalParty/${externalPartyId}/attach`;
+
+        return axiosInstance.post(requestUrl);
+    },
+
+    detachExternalParty: (campaignId, externalPartyId) => {
+        const requestUrl = `${URL_CAMPAIGN}/${campaignId}/externalParty/${externalPartyId}/detach`;
+
+        return axiosInstance.post(requestUrl);
+    },
+
     updateCampaignOwner: (campaignId, userId) => {
         const requestUrl = `${URL_CAMPAIGN}/${campaignId}/owner/${userId}/associate`;
 

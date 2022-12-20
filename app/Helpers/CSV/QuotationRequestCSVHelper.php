@@ -31,6 +31,8 @@ class QuotationRequestCSVHelper
         foreach ($this->quotationRequests->chunk(500) as $chunk) {
             $chunk->load([
                 'organisationOrCoach',
+                'projectManager',
+                'externalParty',
                 'status',
                 'opportunityAction',
                 'opportunity.intake.contact.person.title',
@@ -86,18 +88,19 @@ class QuotationRequestCSVHelper
                 }
             });
 
-
             $csv = $this->csvExporter->build($chunk, [
                 'id' => '#',
                 'organisationOrCoach.full_name' => 'Organisatie/Coach',
+                'projectManager.full_name' => 'Projectleider',
+                'externalParty.full_name' => 'Externe partij',
                 'opportunityActionName' => 'Actie op kans',
                 'status.name' => 'Status',
                 'date_planned' => 'Datum afspraak',
                 'date_recorded' => 'Datum opname',
                 'date_released' => 'Datum uitgebracht',
-                'date_approved_external' => 'Datum akkoord extern',
-                'date_approved_project_manager' => 'Datum akkoord projectleider',
                 'date_approved_client' => 'Datum akkoord bewoner',
+                'date_approved_project_manager' => 'Datum akkoord projectleider',
+                'date_approved_external' => 'Datum akkoord extern',
                 'quotation_text' => 'Offerte omschrijving',
                 'opportunity.intake.contact.full_name' => 'Contact',
                 'title.name' => 'Persoon titel',

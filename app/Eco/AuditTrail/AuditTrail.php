@@ -25,6 +25,10 @@ class AuditTrail extends Model
 
     public function getOldValueAttribute($value)
     {
+        // Indien IBAN leeg is, dan niet ge-encrypte waarde tonen
+        if(($this->key == 'iban' || $this->key == 'IBAN') && trim(Crypt::decrypt($value)) == '' ) {
+            return '';
+        }
 //        try {
 //            if($value) {
 //                $value = Crypt::decrypt($value);
@@ -37,6 +41,10 @@ class AuditTrail extends Model
 
     public function getNewValueAttribute($value)
     {
+        // Indien IBAN leeg is, dan niet ge-encrypte waarde tonen
+        if(($this->key == 'iban' || $this->key == 'IBAN') && trim(Crypt::decrypt($value)) == '' ) {
+            return '';
+        }
 //        try {
 //            if($value) {
 //                $value = Crypt::decrypt($value);

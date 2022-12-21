@@ -6,9 +6,7 @@ use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplier;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 use Venturecraft\Revisionable\RevisionableTrait;
-use function Symfony\Component\String\b;
 
 class RevenueDistributionPartsKwh extends Model
 {

@@ -8,16 +8,14 @@
 
 namespace App\Eco\AddressEnergySupplier;
 
-use App\Helpers\Project\RevenuesKwhHelper;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class AddressEnergySupplierObserver
 {
     public function saved(AddressEnergySupplier $addressEnergySupplier)
     {
+        $oldAddressEnergySupplierId =$addressEnergySupplier->getOriginal('id');
         $aesMemberSince = $addressEnergySupplier->member_since ? Carbon::parse($addressEnergySupplier->member_since)->format('Y-m-d') : '1900-01-01';
         $aesMemberSinceOriginal = $addressEnergySupplier->getOriginal('member_since') ? Carbon::parse($addressEnergySupplier->getOriginal('member_since'))->format('Y-m-d') : '1900-01-01';
         $aesEndDate = $addressEnergySupplier->end_date ? Carbon::parse($addressEnergySupplier->end_date)->format('Y-m-d') : '9999-12-31';
@@ -33,12 +31,17 @@ class AddressEnergySupplierObserver
                 foreach($distributionsKwh as $distributionKwh) {
                     $distributionPartsKwh = $distributionKwh->distributionPartsKwh->whereIn('status', ['concept', 'confirmed']);
                     foreach($distributionPartsKwh as $distributionPartKwh) {
+                        // Als datum klant sinds of eind datum gewijzigd:
+                        // Voor de distributie perioden waar deze addressEnergySupplier op betrekking hebben (date_begin ligt tussen aangepaste datum klant sinds en/of aangepaste eind datum):
+                        // Aanpassen: es_id, es_number en energysupplier name.
                         if ($distributionPartKwh->partsKwh->date_begin >= $aesMemberSince && $distributionPartKwh->partsKwh->date_begin <= $aesEndDate) {
                             $distributionPartKwh->es_id = $addressEnergySupplier->energySupplier->id;
                             $distributionPartKwh->energy_supplier_number = $addressEnergySupplier->es_number;
                             $distributionPartKwh->energy_supplier_name = $addressEnergySupplier->energySupplier->name;
                             $distributionPartKwh->save();
-                        } elseif ($distributionPartKwh->partsKwh->date_begin >= $aesMemberSinceOriginal && $distributionPartKwh->partsKwh->date_begin <= $aesEndDateOriginal) {
+                        } elseif ($oldAddressEnergySupplierId > 0 && $distributionPartKwh->partsKwh->date_begin >= $aesMemberSinceOriginal && $distributionPartKwh->partsKwh->date_begin <= $aesEndDateOriginal) {
+                        // Voor de distributie perioden waar deze addressEnergySupplier geen betrekking meer op hebben, maar wel hadden (date_begin ligt nog wel tussen originele datum klant sinds en/of originele eind datum):
+                        // Aanpassen: es_id, es_number en energysupplier name leeg maken.
                             $distributionPartKwh->energy_supplier_name = "";
                             $distributionPartKwh->energy_supplier_number = "";
                             $distributionPartKwh->es_id = null;
@@ -59,6 +62,28 @@ class AddressEnergySupplierObserver
                 foreach($distributionPartsKwh as $distributionPartKwh) {
                     $distributionPartKwh->energy_supplier_number = $addressEnergySupplier->es_number;
                     $distributionPartKwh->save();
+                }
+            }
+        }
+    }
+
+    public function deleted(AddressEnergySupplier $addressEnergySupplier)
+    {
+        $aesMemberSince = $addressEnergySupplier->member_since ? Carbon::parse($addressEnergySupplier->member_since)->format('Y-m-d') : '1900-01-01';
+        $aesEndDate = $addressEnergySupplier->end_date ? Carbon::parse($addressEnergySupplier->end_date)->format('Y-m-d') : '9999-12-31';
+
+        $participations = $addressEnergySupplier->address->participations;
+        foreach($participations as $participation) {
+            $distributionsKwh = $participation->revenueDistributionKwh->whereIn('status', ['concept', 'confirmed']);
+            foreach($distributionsKwh as $distributionKwh) {
+                $distributionPartsKwh = $distributionKwh->distributionPartsKwh->whereIn('status', ['concept', 'confirmed']);
+                foreach($distributionPartsKwh as $distributionPartKwh) {
+                    if ($distributionPartKwh->partsKwh->date_begin >= $aesMemberSince && $distributionPartKwh->partsKwh->date_begin <= $aesEndDate) {
+                        $distributionPartKwh->energy_supplier_name = "";
+                        $distributionPartKwh->energy_supplier_number = "";
+                        $distributionPartKwh->es_id = null;
+                        $distributionPartKwh->save();
+                    }
                 }
             }
         }

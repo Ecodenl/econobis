@@ -201,14 +201,6 @@ class ParticipantProject extends Model
         return $projectRevenueDistributions->count() > 0 || $revenueDistributionKwh->count() > 0;
     }
 
-    // Return if projectparicipant already has a link in a confirmed revenue distribution
-    public function getParticipantInConfirmedRevenueAttribute()
-    {
-        $projectRevenueDistributions = $this->projectRevenueDistributions()->whereIn('status', ['confirmed']);
-        $revenueDistributionKwh = $this->revenueDistributionKwh()->whereNotIn('status', ['confirmed']);
-        return $projectRevenueDistributions->count() > 0 || $revenueDistributionKwh->count() > 0;
-    }
-
     public function getHasNotConfirmedRevenuesKwh(){
 
         if($this->project->projectType->code_ref == 'postalcode_link_capital') {

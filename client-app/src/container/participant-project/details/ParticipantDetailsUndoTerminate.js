@@ -35,7 +35,7 @@ const ParticipantDetailsUndoTerminate = ({
 
     return (
         <>
-            {participantProject.participantInConfirmedRevenue ? (
+            {participantProject.participantInDefinitiveRevenue ? (
                 <Modal
                     buttonConfirmText="Deelname beëindiging ongedaan maken"
                     buttonClassName={'btn-danger'}

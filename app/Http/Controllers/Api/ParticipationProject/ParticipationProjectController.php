@@ -517,7 +517,7 @@ class ParticipationProjectController extends ApiController
         $this->authorize('manage', ParticipantProject::class);
 
         $data = $requestInput
-            ->date('dateTerminated')->validate('nullable|date')->alias('date_terminated')->next()
+            ->date('dateTerminated')->validate('nullable|date')->alias('date_terminated')->whenMissing(null)->next()
             ->get();
 
         // Set terminated date

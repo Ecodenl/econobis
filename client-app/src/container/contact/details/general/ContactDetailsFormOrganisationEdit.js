@@ -32,7 +32,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
             collectMandateSignatureDate,
             collectMandateFirstRunDate,
             collectMandateCollectionSchema,
-            inspectionPersonTypeId,
+            inspectionPersonType,
         } = props.contactDetails;
 
         this.state = {
@@ -51,7 +51,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 didAgreeAvg: didAgreeAvg,
                 dateDidAgreeAvg: dateDidAgreeAvg ? moment(dateDidAgreeAvg).format('Y-MM-DD') : '',
                 isCollectMandate,
-                inspectionPersonTypeId: inspectionPersonTypeId,
+                inspectionPersonTypeId: inspectionPersonType ? inspectionPersonType.id : '',
                 collectMandateCode: collectMandateCode ? collectMandateCode : '',
                 collectMandateSignatureDate: collectMandateSignatureDate
                     ? moment(collectMandateSignatureDate).format('Y-MM-DD')
@@ -417,6 +417,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
 const mapStateToProps = state => {
     return {
         contactDetails: state.contactDetails,
+        // inspectionPersonTypes: state.systemData.inspectionPersonTypes,
     };
 };
 

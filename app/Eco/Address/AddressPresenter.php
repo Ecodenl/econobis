@@ -14,12 +14,4 @@ class AddressPresenter extends \Laracasts\Presenter\Presenter
     public function streetAndNumber() {
         return $this->entity->street . ' ' . ( $this->entity->addition ? $this->entity->number . '-' . $this->entity->addition : $this->entity->number );
     }
-
-    public function postalCode() {
-        return $this->entity->postal_code;
-    }
-
-    public function city() {
-        return $this->entity->city;
-    }
 }

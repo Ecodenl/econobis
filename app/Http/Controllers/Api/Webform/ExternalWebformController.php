@@ -506,6 +506,7 @@ class ExternalWebformController extends Controller
         $mapping['task']['taak_einddatum'] = 'date_planned_finish';
         $mapping['task']['taak_dagen_einddatum'] = 'days_planned_finish';
         $mapping['task']['taak_afgehandeld'] = 'finished';
+        $mapping['task']['taak_campagne_id'] = 'campaign_id';
 
         $mapping['task']['taak_opmerkingen'] = 'note';
 
@@ -2472,6 +2473,7 @@ class ExternalWebformController extends Controller
             'finished' => $data['finished'] ? (bool)$data['finished'] : false,
             'date_planned_start' => (new Carbon())->startOfDay(),
             'date_planned_finish' => $datePlannedFinish,
+            'campaign_id' => $data['campaign_id'] ? $data['campaign_id'] : null,
             'responsible_user_id' => $responsibleUserId,
             'responsible_team_id' => $responsibleTeamId,
             'intake_id' => $intake ? $intake->id : null,
@@ -2500,7 +2502,7 @@ class ExternalWebformController extends Controller
             $finished_by_user = User::find($responsibleIds['responsible_user_id'] ? $responsibleIds['responsible_user_id'] : $webform->responsible_user_id );
             $task->finished_by_id = $finished_by_user ? $finished_by_user->id : null;
             $task->save();
-            $this->log('Taak met id ' . $task->id . ' automatisch gereed op ' . Carbon::parse($task->finished)->format('d-m-Y') . ' door verantwoordelijke: ' . $finished_by_user->fullname);
+            $this->log('Taak met id ' . $task->id . ' automatisch gereed op ' . Carbon::parse($task->date_finished)->format('d-m-Y') . ' door verantwoordelijke: ' . $finished_by_user->fullname);
         }
 
         $this->log('Taak met id ' . $task->id . ' aangemaakt.');

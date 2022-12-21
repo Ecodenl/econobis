@@ -2,15 +2,15 @@ import React from 'react';
 
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import ContactEmailsSentList from "./ContactEmailsSentList";
+import CoachEmailsSentList from "./CoachEmailsSentList";
 
-const ContactEmailSentHarmonica = ({ toggleShowList, showEmailsSentList, newEmail, emailSentCount }) => {
+const CoachEmailSentHarmonica = ({ toggleShowList, showEmailsSentList, newEmail, emailSentCount }) => {
     return (
         <Panel className={'harmonica-button'}>
             <PanelBody>
                 <div className="col-sm-10" onClick={toggleShowList} role="button">
                     <span onClick={toggleShowList} className="">
-                        E-MAIL CONTACTPERSOON <span className="badge">{emailSentCount}</span>
+                        E-MAIL ORGANISATIE/COACH <span className="badge">{emailSentCount}</span>
                     </span>
                 </div>
                 <div className={'col-sm-2'}>
@@ -18,10 +18,10 @@ const ContactEmailSentHarmonica = ({ toggleShowList, showEmailsSentList, newEmai
                         <span className="glyphicon glyphicon-plus glyphicon-white" />
                     </a>
                 </div>
-                <div className="col-sm-12">{showEmailsSentList && <ContactEmailsSentList />}</div>
+                <div className="col-sm-12">{showEmailsSentList && <CoachEmailsSentList />}</div>
             </PanelBody>
         </Panel>
     );
 };
 
-export default ContactEmailSentHarmonica;
+export default CoachEmailSentHarmonica;

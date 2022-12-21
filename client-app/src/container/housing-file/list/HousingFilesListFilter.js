@@ -7,6 +7,8 @@ import {
     setFilterBuildingType,
     clearFilterHousingFiles,
     setFilterFullName,
+    setFilterPostalCode,
+    setFilterCity,
     setFilterHousingFileAddress,
     setFilterHousingFileEnergyLabel,
     setHousingFileDateFilter,
@@ -32,6 +34,22 @@ const HousingFilesListFilter = props => {
 
     const onFullNameChange = e => {
         props.setFilterFullName(e.target.value);
+    };
+
+    const onPostalCodeChange = e => {
+        props.setFilterPostalCode(e.target.value);
+
+        setTimeout(() => {
+            props.onSubmitFilter();
+        }, 100);
+    };
+
+    const onCityChange = e => {
+        props.setFilterCity(e.target.value);
+
+        setTimeout(() => {
+            props.onSubmitFilter();
+        }, 100);
     };
 
     const onBuildingTypeChange = e => {
@@ -63,6 +81,22 @@ const HousingFilesListFilter = props => {
                     className="form-control input-sm"
                     value={props.filters.address.data}
                     onChange={onAddressChange}
+                />
+            </th>
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.postalCode.data}
+                    onChange={onPostalCodeChange}
+                />
+            </th>
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.city.data}
+                    onChange={onCityChange}
                 />
             </th>
             <th>
@@ -125,6 +159,8 @@ const mapDispatchToProps = dispatch => {
             setFilterBuildingType,
             clearFilterHousingFiles,
             setFilterFullName,
+            setFilterPostalCode,
+            setFilterCity,
             setFilterHousingFileAddress,
             setFilterHousingFileEnergyLabel,
             setHousingFileDateFilter,

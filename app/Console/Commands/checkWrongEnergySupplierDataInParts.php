@@ -46,8 +46,8 @@ class checkWrongEnergySupplierDataInParts extends Command
     public function handle()
     {
 
-        Log::info($this->description);
-        Log::info('-----------------------------');
+//        Log::info($this->description);
+//        Log::info('-----------------------------');
 
         // legen tabel, vullen we altijd opnieuw met actuele checks
         DB::table('_wrong_energy_supplier_data_in_parts')
@@ -85,8 +85,7 @@ class checkWrongEnergySupplierDataInParts extends Command
                             $comment .= ' - distributionPartKwh energy_supplier_name: ' . $distributionPartKwh->energy_supplier_name;
                             $comment .= " \n";
                             $comment .= ' - distributionPartKwh energy_supplier_number: ' . $distributionPartKwh->energy_supplier_number;
-//                            $comment .= " \n";
-                            Log::info($comment);
+//                            Log::info($comment);
                             $wrongEnergySupplierDataInPartsData = [
                                 'revenue_id' => $revenueKwh->id,
                                 'revenue_date_begin' => $revenueKwh->date_begin,
@@ -129,10 +128,7 @@ class checkWrongEnergySupplierDataInParts extends Command
                             $comment .= " \n";
                             $comment .= ' - distributionPartKwh energy_supplier_number: ' . $distributionPartKwh->energy_supplier_number;
                             $comment .= ' - addressEnergySupplier es_number: ' . $addressEnergySupplier->es_number;
-                            Log::info($comment);
-//                            Log::info('distributionPartKwh es_id: ' . $distributionPartKwh->es_id . ' - addressEnergySupplier energy_supplier_id: ' . $addressEnergySupplier->energy_supplier_id);
-//                            Log::info('distributionPartKwh energy_supplier_name: ' . $distributionPartKwh->energy_supplier_name . ' - addressEnergySupplier name: ' . $addressEnergySupplier->energySupplier->name);
-//                            Log::info('distributionPartKwh energy_supplier_number: ' . $distributionPartKwh->energy_supplier_number . ' - addressEnergySupplier es_number: ' . $addressEnergySupplier->es_number);
+//                            Log::info($comment);
                             $wrongEnergySupplierDataInPartsData = [
                                 'revenue_id' => $revenueKwh->id,
                                 'revenue_date_begin' => $revenueKwh->date_begin,

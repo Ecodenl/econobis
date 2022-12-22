@@ -67,18 +67,8 @@ class findWrongDistributionParts extends Command
                     ->where('delivered_kwh', '!=', 0 )
                     ->whereNotIn('status', ['processed']);
 
-//if($partKwh->id == 269){
-//    Log::info('Wrong distribution parts ! - Revenue id: ' . $revenueKwh->id . ' periode ' . Carbon::parse($revenueKwh->date_begin)->format('d-m-Y') . ' t/m ' . Carbon::parse($revenueKwh->date_end)->format('d-m-Y') );
-//    Log::info('Part id: ' . $partKwh->id . ' Dist id: ' . $partKwh->distribution_id . ' periode ' . Carbon::parse($partKwh->partsKwh->date_begin)->format('d-m-Y') . ' t/m ' . Carbon::parse($partKwh->partsKwh->date_end)->format('d-m-Y') );
-//    Log::info('checkDate: ' . $checkDate );
-//}
-
                 if($previousDistributionPartNotProcessed->exists()){
                     $previousIds = $previousDistributionPartNotProcessed->pluck('id')->toArray();
-//                    Log::info('Wrong distribution parts ! - Revenue id: ' . $revenueKwh->id . ' periode ' . Carbon::parse($revenueKwh->date_begin)->format('d-m-Y') . ' t/m ' . Carbon::parse($revenueKwh->date_end)->format('d-m-Y') );
-//                    Log::info('Part id: ' . $partKwh->id . ' Dist id: ' . $partKwh->distribution_id . ' periode ' . Carbon::parse($partKwh->partsKwh->date_begin)->format('d-m-Y') . ' t/m ' . Carbon::parse($partKwh->partsKwh->date_end)->format('d-m-Y') );
-//                    Log::info('ids: ' . implode(', ',$previousIds) );
-
                         $wrongDistributionPartsData = [
                             'revenue_id' => $revenueKwh->id,
                             'revenue_date_begin' => $revenueKwh->date_begin,

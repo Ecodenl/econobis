@@ -64,6 +64,7 @@ class findWrongDistributionParts extends Command
                     ->whereHas('partsKwh', function ($query) use($checkDate) {
                         $query->where('date_end', '<', $checkDate);
                     })
+                    ->where('delivered_kwh', '!=', 0 )
                     ->whereNotIn('status', ['processed']);
 
 //if($partKwh->id == 269){
@@ -99,7 +100,7 @@ class findWrongDistributionParts extends Command
         $wrongDistributionPartsRevenues = DB::table('_wrong_distribution_parts_data')->pluck('revenue_id')->toArray();
         $NumberOfwrongDistributionPartsRevenues = count(array_unique($wrongDistributionPartsRevenues));
         if($wrongDistributionParts->count() > 0){
-            $subject = 'Wrong distribution parts ! (' . $NumberOfwrongDistributionPartsRevenues . '/' . $NumberOfwrongDistributionParts . ') - ' . \Config::get('app.name');
+            $subject = 'Wrong distribution parts ! (' . $NumberOfwrongDistributionPartsRevenues . '/' . $NumberOfwrongDistributionParts . ') - ' . \Config::get('app.APP_COOP_NAME');
             Log::info($subject);
             $this->sendMail($subject);
         }
@@ -111,8 +112,7 @@ class findWrongDistributionParts extends Command
         (new EmailHelper())->setConfigToDefaultMailbox();
 
         $mail = Mail::to('wim.mosman@xaris.nl');
-        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
-            . $subject . '</title></head><body>'. $subject . '</body></html>';
+        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>Wrong distribution parts</title></head><body><p>'. $subject . '</p><p>' . \Config::get("app.name") .'</p></body></html>';
 
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;

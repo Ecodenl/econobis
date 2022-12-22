@@ -55,7 +55,7 @@ class checkWrongEnergySupplierDataInParts extends Command
 
         $revenuesKwh = RevenuesKwh::all();
         foreach($revenuesKwh as $revenueKwh) {
-            // niet verwerkte parts controlleren
+            // niet verwerkte parts controleren
             $revenueDistributionPartsKwh = $revenueKwh->distributionPartsKwh
                 ->where('status', '!=', 'processed');
             foreach($revenueDistributionPartsKwh as $distributionPartKwh) {
@@ -63,7 +63,10 @@ class checkWrongEnergySupplierDataInParts extends Command
                 if ($address) {
                     $addressEnergySupplier = $this->getAddressEnergySupplierInAPeriod($address->id, $distributionPartKwh->partsKwh->date_begin, $distributionPartKwh->partsKwh->date_end);
                     if(!$addressEnergySupplier){
-                        if($distributionPartKwh->es_id != null || $distributionPartKwh->energy_supplier_name != null || $distributionPartKwh->energy_supplier_number != null){
+                        if ($distributionPartKwh->es_id != null
+                            || ($distributionPartKwh->energy_supplier_name != null && $distributionPartKwh->energy_supplier_name != '')
+                            || ($distributionPartKwh->energy_supplier_number != null && $distributionPartKwh->energy_supplier_number != '')
+                        ){
                             $comment = 'Geen adres/energieleverancier data gevonden bij deelperiode data:';
                             $comment .= " \n";
                             $comment .= ' - Project: ' . $revenueKwh->project_id . ' ' . $revenueKwh->project->name;
@@ -103,7 +106,8 @@ class checkWrongEnergySupplierDataInParts extends Command
                     } else {
                         if($distributionPartKwh->es_id != $addressEnergySupplier->energy_supplier_id
                             || $distributionPartKwh->energy_supplier_number != $addressEnergySupplier->es_number
-                            || $distributionPartKwh->energy_supplier_name != $addressEnergySupplier->energySupplier->name) {
+                            || $distributionPartKwh->energy_supplier_name != $addressEnergySupplier->energySupplier->name
+                        ) {
                             $comment = 'Verschil adres/energieleverancier data met deelperiode data:';
                             $comment .= " \n";
                             $comment .= ' - Project: ' . $revenueKwh->project_id . ' ' . $revenueKwh->project->name;

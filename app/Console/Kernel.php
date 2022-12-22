@@ -30,7 +30,7 @@ use App\Console\Commands\setDaysLastReminderInvoice;
 use App\Console\Commands\setDaysToExpireInvoice;
 use App\Console\Commands\createTaskAtEndDateAddress;
 use App\Console\Commands\setIsCurrentSupplier;
-use App\Console\Commands\OneTimeChecks\findWrongDistributionParts;
+use App\Console\Commands\checkWrongDistributionParts;
 use App\Console\Commands\checkWrongEnergySupplierDataInParts;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -71,7 +71,7 @@ class Kernel extends ConsoleKernel
         conversionParticipationsToMutationsDefault::class,
         conversionPortalRegistrationCode::class,
         recoveryJobsLog::class,
-        findWrongDistributionParts::class,
+        checkWrongDistributionParts::class,
         checkWrongEnergySupplierDataInParts::class,
     ];
 
@@ -105,7 +105,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->dailyAt('05:10');
         $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->dailyAt('05:15');
 
-        $schedule->command('onetimecheck:findWrongDistributionParts')->dailyAt('21:00');
+        $schedule->command('revenue:findWrongDistributionParts')->dailyAt('21:00');
         $schedule->command('revenue:checkWrongEnergySupplierDataInParts')->dailyAt('21:05');
     }
 

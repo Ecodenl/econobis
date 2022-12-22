@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\OneTimeChecks;
+namespace App\Console\Commands;
 
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
@@ -12,14 +12,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
-class findWrongDistributionParts extends Command
+class checkWrongDistributionParts extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'onetimecheck:findWrongDistributionParts';
+    protected $signature = 'revenue:checkWrongDistributionParts';
 
     /**
      * The console command description.
@@ -46,14 +46,16 @@ class findWrongDistributionParts extends Command
     public function handle()
     {
 
-//        Log::info('Find wrong distribution parts');
+//        Log::info($this->description);
 //        Log::info('-----------------------------');
 
+        // legen tabel, vullen we altijd opnieuw met actuele checks
         DB::table('_wrong_distribution_parts_data')
             ->delete();
 
         $revenuesKwh = RevenuesKwh::all();
         foreach($revenuesKwh as $revenueKwh) {
+            // verwerkte parts controleren waar ook al energy supplier report voor is gemaakt
             $revenueDistributionPartsKwh = $revenueKwh->distributionPartsKwh
                 ->where('status', 'processed')
                 ->whereNotNull('date_energy_supplier_report');

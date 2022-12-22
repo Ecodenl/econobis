@@ -258,11 +258,11 @@ class ParticipantProject extends Model
                     })
                     ->orWhereNull('member_since');
             })
-            ->where(function ($addressEnergySupplier) use ($dateEnd) {
+            ->where(function ($addressEnergySupplier) use ($dateBegin) {
                 $addressEnergySupplier
-                    ->where(function ($addressEnergySupplier) use ($dateEnd) {
+                    ->where(function ($addressEnergySupplier) use ($dateBegin) {
                         $addressEnergySupplier->whereNotNull('end_date')
-                            ->where('end_date', '>=', $dateEnd);
+                            ->where('end_date', '>=', $dateBegin);
                     })
                     ->orWhereNull('end_date');
             })->first();

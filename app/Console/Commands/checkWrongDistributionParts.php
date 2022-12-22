@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\OneTimeChecks;
+namespace App\Console\Commands;
 
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
@@ -12,14 +12,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
-class findWrongDistributionParts extends Command
+class checkWrongDistributionParts extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'onetimecheck:findWrongDistributionParts';
+    protected $signature = 'revenue:checkWrongDistributionParts';
 
     /**
      * The console command description.
@@ -46,14 +46,16 @@ class findWrongDistributionParts extends Command
     public function handle()
     {
 
-//        Log::info('Find wrong distribution parts');
+//        Log::info($this->description);
 //        Log::info('-----------------------------');
 
+        // legen tabel, vullen we altijd opnieuw met actuele checks
         DB::table('_wrong_distribution_parts_data')
             ->delete();
 
         $revenuesKwh = RevenuesKwh::all();
         foreach($revenuesKwh as $revenueKwh) {
+            // verwerkte parts controleren waar ook al energy supplier report voor is gemaakt
             $revenueDistributionPartsKwh = $revenueKwh->distributionPartsKwh
                 ->where('status', 'processed')
                 ->whereNotNull('date_energy_supplier_report');
@@ -64,20 +66,11 @@ class findWrongDistributionParts extends Command
                     ->whereHas('partsKwh', function ($query) use($checkDate) {
                         $query->where('date_end', '<', $checkDate);
                     })
+                    ->where('delivered_kwh', '!=', 0 )
                     ->whereNotIn('status', ['processed']);
-
-//if($partKwh->id == 269){
-//    Log::info('Wrong distribution parts ! - Revenue id: ' . $revenueKwh->id . ' periode ' . Carbon::parse($revenueKwh->date_begin)->format('d-m-Y') . ' t/m ' . Carbon::parse($revenueKwh->date_end)->format('d-m-Y') );
-//    Log::info('Part id: ' . $partKwh->id . ' Dist id: ' . $partKwh->distribution_id . ' periode ' . Carbon::parse($partKwh->partsKwh->date_begin)->format('d-m-Y') . ' t/m ' . Carbon::parse($partKwh->partsKwh->date_end)->format('d-m-Y') );
-//    Log::info('checkDate: ' . $checkDate );
-//}
 
                 if($previousDistributionPartNotProcessed->exists()){
                     $previousIds = $previousDistributionPartNotProcessed->pluck('id')->toArray();
-//                    Log::info('Wrong distribution parts ! - Revenue id: ' . $revenueKwh->id . ' periode ' . Carbon::parse($revenueKwh->date_begin)->format('d-m-Y') . ' t/m ' . Carbon::parse($revenueKwh->date_end)->format('d-m-Y') );
-//                    Log::info('Part id: ' . $partKwh->id . ' Dist id: ' . $partKwh->distribution_id . ' periode ' . Carbon::parse($partKwh->partsKwh->date_begin)->format('d-m-Y') . ' t/m ' . Carbon::parse($partKwh->partsKwh->date_end)->format('d-m-Y') );
-//                    Log::info('ids: ' . implode(', ',$previousIds) );
-
                         $wrongDistributionPartsData = [
                             'revenue_id' => $revenueKwh->id,
                             'revenue_date_begin' => $revenueKwh->date_begin,
@@ -99,7 +92,7 @@ class findWrongDistributionParts extends Command
         $wrongDistributionPartsRevenues = DB::table('_wrong_distribution_parts_data')->pluck('revenue_id')->toArray();
         $NumberOfwrongDistributionPartsRevenues = count(array_unique($wrongDistributionPartsRevenues));
         if($wrongDistributionParts->count() > 0){
-            $subject = 'Wrong distribution parts ! (' . $NumberOfwrongDistributionPartsRevenues . '/' . $NumberOfwrongDistributionParts . ') - ' . \Config::get('app.name');
+            $subject = 'Wrong distribution parts ! (' . $NumberOfwrongDistributionPartsRevenues . '/' . $NumberOfwrongDistributionParts . ') - ' . \Config::get('app.APP_COOP_NAME');
             Log::info($subject);
             $this->sendMail($subject);
         }
@@ -111,8 +104,7 @@ class findWrongDistributionParts extends Command
         (new EmailHelper())->setConfigToDefaultMailbox();
 
         $mail = Mail::to('wim.mosman@xaris.nl');
-        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
-            . $subject . '</title></head><body>'. $subject . '</body></html>';
+        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>Wrong distribution parts</title></head><body><p>'. $subject . '</p><p>' . \Config::get("app.name") .'</p></body></html>';
 
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;

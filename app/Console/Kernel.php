@@ -105,7 +105,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->dailyAt('05:10');
         $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->dailyAt('05:15');
 
-        $schedule->command('revenue:findWrongDistributionParts')->dailyAt('21:00');
+        $schedule->command('revenue:checkWrongDistributionParts')->dailyAt('21:00');
         $schedule->command('revenue:checkWrongEnergySupplierDataInParts')->dailyAt('21:05');
     }
 

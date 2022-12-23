@@ -210,7 +210,12 @@ class QuotationRequestController
 
         $contact = $quotationRequest->opportunity->intake->contact;
 
-        (new EmailHelper())->setConfigToDefaultMailbox();
+        if($cooperation->inspection_planned_mailbox_id){
+            $inspectionPlannedMailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
+            (new EmailHelper())->setConfigToMailbox($inspectionPlannedMailbox);
+        }else{
+            (new EmailHelper())->setConfigToDefaultMailbox();
+        }
 
         $mail = Mail::to($contact->primaryEmailAddress);
 
@@ -229,7 +234,12 @@ class QuotationRequestController
 
         $contact = $quotationRequest->opportunity->intake->contact;
 
-        (new EmailHelper())->setConfigToDefaultMailbox();
+        if($cooperation->inspection_planned_mailbox_id){
+            $inspectionPlannedMailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
+            (new EmailHelper())->setConfigToMailbox($inspectionPlannedMailbox);
+        }else{
+            (new EmailHelper())->setConfigToDefaultMailbox();
+        }
 
         $mail = Mail::to($contact->primaryEmailAddress);
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Opname schouwen';

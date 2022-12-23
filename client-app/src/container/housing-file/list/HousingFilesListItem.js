@@ -31,7 +31,7 @@ class HousingFilesListItem extends Component {
     }
 
     render() {
-        const { id, fullName, createdAt, fullAddress, buildingType, energyLabel } = this.props;
+        const { id, fullName, createdAt, fullAddress, postalCode, city, buildingType, energyLabel } = this.props;
 
         return (
             <tr
@@ -42,6 +42,8 @@ class HousingFilesListItem extends Component {
             >
                 <td>{moment(createdAt).format('DD-MM-Y')}</td>
                 <td>{fullAddress}</td>
+                <td>{postalCode}</td>
+                <td>{city}</td>
                 <td>{fullName}</td>
                 <td>{buildingType ? buildingType : ''}</td>
                 <td>{energyLabel ? energyLabel : ''}</td>

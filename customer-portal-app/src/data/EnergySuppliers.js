@@ -29,6 +29,7 @@ export default [
     { id: 35, name: 'Fenor energie' },
     { id: 71, name: 'Frank energie' },
     { id: 60, name: 'Gazprom' },
+    { id: 72, name: 'Gewoon Energie' },
     { id: 56, name: 'Gezinsenergie' },
     { id: 8, name: 'Greenchoice' },
     { id: 43, name: 'GreenNL' },

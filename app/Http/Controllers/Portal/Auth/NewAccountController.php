@@ -109,22 +109,27 @@ class NewAccountController extends Controller
             abort(404, 'Er bestaat al een account met het e-mailadres dat je hebt ingevuld. Je kunt met dit e-mailadres inloggen als bestaand contact. Wil je een nieuw account aanmaken? Gebruik dan alsjeblieft een ander e-mailadres.');
         }
 
-        if(EmailAddress::where('email', $request->input('email'))->whereHas('contact', function($query) use($request) {
+        $emailAddressCount = EmailAddress::where('email', $request->input('email'))
+            ->whereHas('contact', function($query) use($request) {
                 $query->whereHas('person', function($query) use($request) {
                     $query->where('first_name', $request->input('personFirstName'));
                 });
-            }
-        )->whereHas('contact', function($query) use($request) {
+            })
+            ->whereHas('contact', function($query) use($request) {
                 $query->whereHas('person', function($query) use($request) {
                     $query->where('last_name', $request->input('personLastName'));
                 });
-            }
-        )->where('primary', true)->count() !== 0) {
-            if(RegisterController::where('portal_registration_code', $request->input('email')->whereDoesntHave('portal_registration_code'))){
-                abort(405, 'Er bestaat al een contact met het e-mailadres, voornaam en achternaam dat je hebt ingevuld. 
-                       Wil je een nieuw account aanmaken? Gebruik dan alsjeblieft een ander e-mailadres, voornaam of achternaam.'
-                );
-            }
+            })
+            ->whereHas('contact', function($query) use($request) {
+                $query->whereNull('portal_registration_code');
+            })
+            ->where('primary', true)
+            ->count();
+
+        if($emailAddressCount !== 0) {
+            abort(405, 'Er bestaat al een contact met het e-mailadres, voornaam en achternaam dat je hebt ingevuld. 
+                   Wil je een nieuw account aanmaken? Gebruik dan alsjeblieft een ander e-mailadres, voornaam of achternaam.'
+            );
         }
     }
 

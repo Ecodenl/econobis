@@ -25,26 +25,39 @@ class AuditTrail extends Model
 
     public function getOldValueAttribute($value)
     {
-//        try {
-//            if($value) {
-//                $value = Crypt::decrypt($value);
-//                return $value;
-//            }
-//        } catch (DecryptException $e) {
-            return $value;
-//        }
+        $decryptedValue = $value;
+        try {
+            if($value) {
+                $decryptedValue = Crypt::decrypt($value);
+            }
+        } catch (DecryptException $e) {
+            $decryptedValue = $value;
+        }
+
+        // Indien IBAN leeg is, dan niet ge-encrypte waarde tonen
+        if(($this->key == 'iban' || $this->key == 'IBAN') && trim($decryptedValue) == '' ) {
+            return '';
+        }
+
+        return $value;
     }
 
     public function getNewValueAttribute($value)
     {
-//        try {
-//            if($value) {
-//                $value = Crypt::decrypt($value);
-//                return $value;
-//            }
-//        } catch (DecryptException $e) {
-            return $value;
-//        }
+        $decryptedValue = $value;
+        try {
+            if($value) {
+                $decryptedValue = Crypt::decrypt($value);
+            }
+        } catch (DecryptException $e) {
+            $decryptedValue = $value;
+        }
+
+        // Indien IBAN leeg is, dan niet ge-encrypte waarde tonen
+        if(($this->key == 'iban' || $this->key == 'IBAN') && trim($decryptedValue) == '' ) {
+            return '';
+        }
+        return $value;
     }
 
 }

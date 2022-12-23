@@ -25,34 +25,39 @@ class AuditTrail extends Model
 
     public function getOldValueAttribute($value)
     {
+        $decryptedValue = $value;
+        try {
+            if($value) {
+                $decryptedValue = Crypt::decrypt($value);
+            }
+        } catch (DecryptException $e) {
+            $decryptedValue = $value;
+        }
+
         // Indien IBAN leeg is, dan niet ge-encrypte waarde tonen
-        if(($this->key == 'iban' || $this->key == 'IBAN') && trim(Crypt::decrypt($value)) == '' ) {
+        if(($this->key == 'iban' || $this->key == 'IBAN') && trim($decryptedValue) == '' ) {
             return '';
         }
-//        try {
-//            if($value) {
-//                $value = Crypt::decrypt($value);
-//                return $value;
-//            }
-//        } catch (DecryptException $e) {
-            return $value;
-//        }
+
+        return $value;
     }
 
     public function getNewValueAttribute($value)
     {
+        $decryptedValue = $value;
+        try {
+            if($value) {
+                $decryptedValue = Crypt::decrypt($value);
+            }
+        } catch (DecryptException $e) {
+            $decryptedValue = $value;
+        }
+
         // Indien IBAN leeg is, dan niet ge-encrypte waarde tonen
-        if(($this->key == 'iban' || $this->key == 'IBAN') && trim(Crypt::decrypt($value)) == '' ) {
+        if(($this->key == 'iban' || $this->key == 'IBAN') && trim($decryptedValue) == '' ) {
             return '';
         }
-//        try {
-//            if($value) {
-//                $value = Crypt::decrypt($value);
-//                return $value;
-//            }
-//        } catch (DecryptException $e) {
-            return $value;
-//        }
+        return $value;
     }
 
 }

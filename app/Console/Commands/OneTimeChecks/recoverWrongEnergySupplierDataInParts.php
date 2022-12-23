@@ -63,10 +63,10 @@ class recoverWrongEnergySupplierDataInParts extends Command
                             || ($distributionPartKwh->energy_supplier_name != null && $distributionPartKwh->energy_supplier_name != '')
                             || ($distributionPartKwh->energy_supplier_number != null  && $distributionPartKwh->energy_supplier_number != '')
                         ) {
-//                            $distributionPartKwh->energy_supplier_name = "";
-//                            $distributionPartKwh->energy_supplier_number = "";
-//                            $distributionPartKwh->es_id = null;
-//                            $distributionPartKwh->save();
+                            $distributionPartKwh->energy_supplier_name = "";
+                            $distributionPartKwh->energy_supplier_number = "";
+                            $distributionPartKwh->es_id = null;
+                            $distributionPartKwh->save();
                         }
                     } else {
                         if ($distributionPartKwh->es_id != $addressEnergySupplier->energy_supplier_id

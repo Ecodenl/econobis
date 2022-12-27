@@ -13,6 +13,16 @@ export const setFilterFullName = fullName => ({
     fullName,
 });
 
+export const setFilterPostalCode = postalCode => ({
+    type: 'SET_FILTER_POSTAL_CODE',
+    postalCode,
+});
+
+export const setFilterCity = city => ({
+    type: 'SET_FILTER_CITY',
+    city,
+});
+
 export const setFilterBuildingType = buildingTypeId => ({
     type: 'SET_FILTER_HOUSING_FILE_BUILDING_TYPE',
     buildingTypeId,

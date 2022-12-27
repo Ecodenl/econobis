@@ -37,6 +37,30 @@ class NewAccountController extends Controller
     public function createNewAccount(Request $request)
     {
         $this->validateEmail($request);
+
+        // Hier gekomen, dan zijn de validaties ok.
+
+        $existingContactIds = EmailAddress::where('email', $request->input('email'))
+            ->whereHas('contact', function($query) use($request) {
+                $query->whereHas('person', function($query) use($request) {
+                    $query->where('first_name', $request->input('personFirstName'));
+                });
+            })
+            ->whereHas('contact', function($query) use($request) {
+                $query->whereHas('person', function($query) use($request) {
+                    $query->where('last_name', $request->input('personLastName'));
+                });
+            })
+            ->where('primary', true)
+            ->pluck('contact_id')->toArray();
+
+        $contact = null;
+        if(!empty($existingContactIds)){
+            $contact = Contact::whereIn('id', $existingContactIds)
+                ->orderBy('created_at', 'asc')->first();
+        }
+
+
         $url = config('services.google.re_captcha_server_side_url');
         $data = [
             'secret' => config('services.google.re_captcha_server_side_key'),
@@ -73,10 +97,13 @@ class NewAccountController extends Controller
             $responsibleUser->occupation = '@portal-update@';
             Auth::setUser($responsibleUser);
 
-            DB::transaction(function () use ($request, $responsibleUserId, $emailTemplateNewAccountId) {
+            DB::transaction(function () use ($request, $contact, $responsibleUserId, $emailTemplateNewAccountId) {
 
                 $data = $this->getDataFromRequest($request);
-                $contact = $this->addContact($data['contact']);
+
+                if(!$contact){
+                    $contact = $this->addContact($data['contact']);
+                }
                 if ($contact) {
                     $contact = Contact::find($contact->id);
                     $organisationName = null;
@@ -101,26 +128,35 @@ class NewAccountController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return void
      */
-    protected function validateEmail(Request $request)
-    {
+    protected function validateEmail(Request $request) {
+
         $this->validate($request, ['email' => 'required|email']);
 
-        if(PortalUser::where('email', $request->input('email'))->count() !== 0){
+        if(PortalUser::where('email', $request->input('email'))->count() !== 0) {
             abort(404, 'Er bestaat al een account met het e-mailadres dat je hebt ingevuld. Je kunt met dit e-mailadres inloggen als bestaand contact. Wil je een nieuw account aanmaken? Gebruik dan alsjeblieft een ander e-mailadres.');
         }
 
-        if(EmailAddress::where('email', $request->input('email'))
-                ->whereHas('contact', function($query) use($request){
-                    $query->whereHas('person', function($query) use($request){
-                        $query->where('first_name', $request->input('personFirstName'));})
-                    ;})
-                ->whereHas('contact', function($query) use($request){
-                    $query->whereHas('person', function($query) use($request){
-                        $query->where('last_name', $request->input('personLastName'));})
-                    ;})
-                ->where('primary', true)->count() !== 0)
-        {
-            abort(405, 'Er bestaat al een contact met het e-mailadres, voornaam en achternaam dat je hebt ingevuld. Wil je een nieuw account aanmaken? Gebruik dan alsjeblieft een ander e-mailadres, voornaam of achternaam.');
+        $emailAddressCount = EmailAddress::where('email', $request->input('email'))
+            ->whereHas('contact', function($query) use($request) {
+                $query->whereHas('person', function($query) use($request) {
+                    $query->where('first_name', $request->input('personFirstName'));
+                });
+            })
+            ->whereHas('contact', function($query) use($request) {
+                $query->whereHas('person', function($query) use($request) {
+                    $query->where('last_name', $request->input('personLastName'));
+                });
+            })
+            ->whereHas('contact', function($query) use($request) {
+                $query->whereNull('portal_registration_code');
+            })
+            ->where('primary', true)
+            ->count();
+
+        if($emailAddressCount !== 0) {
+            abort(405, 'Er bestaat al een contact met het e-mailadres, voornaam en achternaam dat je hebt ingevuld. 
+                   Wil je een nieuw account aanmaken? Gebruik dan alsjeblieft een ander e-mailadres, voornaam of achternaam.'
+            );
         }
     }
 

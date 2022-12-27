@@ -56,14 +56,23 @@ class AddressEnergySupplierObserver
         {
             // Check if any linked revenue distribution part is present with status concept or confirmed
             // If so, then change energy supplier data
-            if($addressEnergySupplier->energySupplier->distributionPartsKwh){
-                $distributionPartsKwh = $addressEnergySupplier->energySupplier->distributionPartsKwh
-                    ->whereIn('status', ['concept', 'confirmed']);
-                foreach($distributionPartsKwh as $distributionPartKwh) {
-                    $distributionPartKwh->energy_supplier_number = $addressEnergySupplier->es_number;
-                    $distributionPartKwh->save();
+            $participations = $addressEnergySupplier->address->participations;
+            foreach($participations as $participation) {
+                $distributionsKwh = $participation->revenueDistributionKwh->whereIn('status', ['concept', 'confirmed']);
+                foreach($distributionsKwh as $distributionKwh) {
+                    $distributionPartsKwh = $distributionKwh->distributionPartsKwh->whereIn('status', ['concept', 'confirmed']);
+                    foreach($distributionPartsKwh as $distributionPartKwh) {
+                        // Als klantnummer gewijzigd:
+                        // Voor de distributie perioden waar deze addressEnergySupplier op betrekking hebben (date_begin ligt tussen datum klant sinds en eind datum):
+                        // Aanpassen: es_id, es_number en energysupplier name.
+                        if ($distributionPartKwh->partsKwh->date_begin >= $aesMemberSince && $distributionPartKwh->partsKwh->date_begin <= $aesEndDate) {
+                            $distributionPartKwh->energy_supplier_number = $addressEnergySupplier->es_number;
+                            $distributionPartKwh->save();
+                        }
+                    }
                 }
             }
+
         }
     }
 

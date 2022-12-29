@@ -47,6 +47,8 @@ class ProjectController extends ApiController
 
     public function show(Project $project)
     {
+        set_time_limit(60);
+
         $this->authorize('view', Project::class);
 
         $project->load([

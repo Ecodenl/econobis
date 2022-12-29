@@ -5,15 +5,15 @@ import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 
 const ViewText = props => {
-    const { label, className, id, value, link, hidden, name, textToolTip } = props;
+    const { label, className, id, value, link, hidden, name, textToolTip, labelSize, valueSize } = props;
 
     if (link.length > 0) {
         return (
             <div className={className} style={hidden ? { display: 'none' } : {}}>
-                <label htmlFor={id} className="col-sm-6">
+                <label htmlFor={id} className={labelSize}>
                     {label}
                 </label>
-                <div className="col-sm-6" id={id} onClick={null}>
+                <div className={valueSize} id={id} onClick={null}>
                     <Link to={link} className="link-underline">
                         {value}
                     </Link>{' '}
@@ -40,10 +40,10 @@ const ViewText = props => {
     } else {
         return (
             <div className={className} style={hidden ? { display: 'none' } : {}}>
-                <label htmlFor={id} className="col-sm-6">
+                <label htmlFor={id} className={labelSize}>
                     {label}
                 </label>
-                <div className="col-sm-6" id={id}>
+                <div className={valueSize} id={id}>
                     {value}{' '}
                     {textToolTip && (
                         <span>
@@ -71,6 +71,8 @@ const ViewText = props => {
 ViewText.defaultProps = {
     label: '',
     className: 'col-sm-6',
+    labelSize: 'col-sm-6',
+    valueSize: 'col-sm-6',
     value: '',
     name: '',
     textToolTip: '',
@@ -81,6 +83,8 @@ ViewText.defaultProps = {
 ViewText.propTypes = {
     label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     className: PropTypes.string,
+    labelSize: PropTypes.string,
+    valueSize: PropTypes.string,
     id: PropTypes.string,
     name: PropTypes.string,
     textToolTip: PropTypes.string,

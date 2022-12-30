@@ -4,7 +4,7 @@ namespace App\Http\Resources\ParticipantMutation;
 
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\ParticipantProject\FullParticipantProject;
-use App\Http\Resources\User\FullUser;
+use App\Http\Resources\User\UserPeek;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class FullParticipantMutation extends JsonResource
@@ -56,8 +56,8 @@ class FullParticipantMutation extends JsonResource
                 'updatedAt' => $this->updated_at,
                 'createdWith' => $this->created_with,
                 'updatedWith' => $this->updated_with,
-                'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
-                'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
+                'createdBy' => UserPeek::make($this->whenLoaded('createdBy')),
+                'updatedBy' => UserPeek::make($this->whenLoaded('updatedBy')),
                 'statusLogs' => FullParticipantMutationStatusLog::collection($this->whenLoaded('statusLog')),
                 'molliePayments' => GenericResource::collection($this->whenLoaded('molliePayments')),
                 'isPaidByMollie' => $this->is_paid_by_mollie,

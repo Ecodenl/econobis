@@ -31,7 +31,7 @@ class CreateRevenuePartsKwhReportApp extends Component {
 
     componentDidMount() {
         this.setState({ isLoading: true });
-        RevenuePartsKwhAPI.fetchRevenuePartsKwh(this.props.params.id)
+        RevenuePartsKwhAPI.fetchRevenuePartsKwhForReport(this.props.params.id)
             .then(payload => {
                 this.setState({
                     distribution: payload,

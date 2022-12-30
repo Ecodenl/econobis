@@ -21,6 +21,7 @@ use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\RevenueDistributionPartsKwhCSVHelper;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Excel\EnergySupplierExcelHelper;
+use App\Helpers\Project\RevenueDistributionKwhHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Settings\PortalSettings;
@@ -31,6 +32,7 @@ use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Resources\ParticipantProject\Templates\ParticipantReportMail;
 use App\Http\Resources\Project\FullRevenueDistributionPartsKwh;
 use App\Http\Resources\Project\FullRevenuePartsKwh;
+use App\Http\Resources\Project\FullRevenuePartsKwhForReport;
 use App\Jobs\RevenueKwh\CreateRevenuePartsKwhReport;
 use App\Jobs\RevenueKwh\ProcessRevenuesKwh;
 use App\Jobs\RevenueKwh\ReportEnergySupplierExcel;
@@ -49,11 +51,14 @@ class RevenuePartsKwhController extends ApiController
 {
     public function show(RevenuePartsKwh $revenuePartsKwh)
     {
-//        $revenuePartsKwh->load([
-//            'distributionPartsKwh',
-//        ]);
-
+        set_time_limit(60);
         return FullRevenuePartsKwh::make($revenuePartsKwh);
+    }
+
+    public function showForReport(RevenuePartsKwh $revenuePartsKwh)
+    {
+        set_time_limit(60);
+        return FullRevenuePartsKwhForReport::make($revenuePartsKwh);
     }
 
     public function csv(RevenuePartsKwh $revenuePartsKwh)
@@ -167,19 +172,30 @@ class RevenuePartsKwhController extends ApiController
         $upToPartsKwhIds
     )
     {
-        $distributionsKwh = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $revenuePartsKwh->getDistributionsForReportEnergySupplierIds())->get();
+        set_time_limit(180);
+        $revenueDistributionKwhHelper = new RevenueDistributionKwhHelper();
+        $distributionsKwh = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $revenueDistributionKwhHelper->getDistributionForReportEnergySupplierIds($revenuePartsKwh) )->get();
         foreach ($distributionsKwh as $distributionKwh) {
             $distributionsPartsKwh = $distributionKwh->distributionPartsKwh->whereIn('parts_id', $upToPartsKwhIds)->where('es_id', $energySupplier->id);
             foreach ($distributionsPartsKwh as $distributionPartsKwh) {
                 if ($distributionPartsKwh->status === 'confirmed') {
-                    $distributionPartsKwh->status = 'in-progress-report';
+                    if($distributionPartsKwh->delivered_kwh_from_till_visible == 0) {
+                        $distributionPartsKwh->status = 'processed';
+                    } else {
+                        $distributionPartsKwh->status = 'in-progress-report';
+                    }
                     $distributionPartsKwh->save();
-                }
-                $distributionsValuesKwh = $distributionKwh->distributionValuesKwh->where('parts_id', $distributionPartsKwh->partsKwh->id)->where('distribution_id', $distributionKwh->id);
-                foreach ($distributionsValuesKwh as $distributionValuesKwh) {
-                    if ($distributionValuesKwh->status === 'confirmed') {
-                        $distributionValuesKwh->status = 'in-progress-report';
-                        $distributionValuesKwh->save();
+
+                    $distributionsValuesKwh = $distributionKwh->distributionValuesKwh->where('parts_id', $distributionPartsKwh->partsKwh->id)->where('distribution_id', $distributionKwh->id);
+                    foreach ($distributionsValuesKwh as $distributionValuesKwh) {
+                        if ($distributionValuesKwh->status === 'confirmed') {
+                            if($distributionPartsKwh->delivered_kwh_from_till_visible == 0) {
+                                $distributionValuesKwh->status = 'processed';
+                            } else {
+                                $distributionValuesKwh->status = 'in-progress-report';
+                            }
+                            $distributionValuesKwh->save();
+                        }
                     }
                 }
             }
@@ -201,54 +217,53 @@ class RevenuePartsKwhController extends ApiController
             set_time_limit(0);
             $excelHelper = new EnergySupplierExcelHelper($energySupplier, $revenuePartsKwh, $templateId, $fileName);
             $excel = $excelHelper->getExcel();
-            if(!$excel) return;
         }else{
             abort(412, 'Geen geldige excel template gevonden.');
         }
 
-        $documentCreatedFromProjectId = DocumentCreatedFrom::where('code_ref', 'project')->first()->id;
+        if($excel){
+            $documentCreatedFromProjectId = DocumentCreatedFrom::where('code_ref', 'project')->first()->id;
 
-        $document = new Document();
-        $document->document_created_from_id = $documentCreatedFromProjectId;
-        $document->document_type = 'internal';
-        $document->document_group = 'revenue';
-        $document->project_id = $revenuePartsKwh->revenuesKwh->project->id;
+            $document = new Document();
+            $document->document_created_from_id = $documentCreatedFromProjectId;
+            $document->document_type = 'internal';
+            $document->document_group = 'revenue';
+            $document->project_id = $revenuePartsKwh->revenuesKwh->project->id;
 
-        $document->filename = $fileName;
+            $document->filename = $fileName;
 
-        $document->save();
+            $document->save();
 
-        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR
-            . $document->filename));
+            $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR
+                . $document->filename));
 
-        switch ($energySupplier->file_format_id){
-            case 1:
-                $writer = new Xls($excel);
-                break;
-            default:
-                $writer = new Xlsx($excel);
-                break;
-        }
-        $writer->save($filePath);
+            switch ($energySupplier->file_format_id){
+                case 1:
+                    $writer = new Xls($excel);
+                    break;
+                default:
+                    $writer = new Xlsx($excel);
+                    break;
+            }
+            $writer->save($filePath);
 
-//        die("stop hier maar even voor testdoeleinden Excel (behoud file.xlsx in storage/app/documents)");
+            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local')
+            {
+                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
-        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local')
-        {
-            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+                $alfrescoResponse = $alfrescoHelper->createFile($filePath,
+                    $document->filename, $document->getDocumentGroup()->name);
+                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+            }else{
+                $alfrescoResponse = null;
+            }
 
-            $alfrescoResponse = $alfrescoHelper->createFile($filePath,
-            $document->filename, $document->getDocumentGroup()->name);
-            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-        }else{
-            $alfrescoResponse = null;
-        }
+            $document->save();
 
-        $document->save();
-
-        //delete file on server, still saved on alfresco.
-        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-            Storage::disk('documents')->delete($document->filename);
+            //delete file on server, still saved on alfresco.
+            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+                Storage::disk('documents')->delete($document->filename);
+            }
         }
 
         foreach ($distributionsKwh as $distributionKwh) {
@@ -263,18 +278,27 @@ class RevenuePartsKwhController extends ApiController
 
                 foreach($distributionsPartsKwh as $distributionPartsKwh) {
                     if ($distributionPartsKwh->status === 'in-progress-report') {
-                        $deliveredTotal = $deliveredTotal + $distributionPartsKwh->delivered_kwh;
-                        $kwhReturn = $kwhReturn + $distributionPartsKwh->kwh_return_this_part;
-                        $distributionPartsKwh->date_energy_supplier_report = Carbon::now()->format('Y-m-d');
-                        $distributionPartsKwh->status = 'processed';
+                        // Geen excel gemaakt, dan terug naar status confirmed
+                        if(!$excel){
+                            $distributionPartsKwh->status = 'confirmed';
+                        } else {
+                            $deliveredTotal = $deliveredTotal + $distributionPartsKwh->delivered_kwh;
+                            $kwhReturn = $kwhReturn + $distributionPartsKwh->kwh_return_this_part;
+                            $distributionPartsKwh->date_energy_supplier_report = Carbon::now()->format('Y-m-d');
+                            $distributionPartsKwh->status = 'processed';
+                        }
                         $distributionPartsKwh->save();
-                    }
-
-                    $distributionsValuesKwh = $distributionKwh->distributionValuesKwh->where('parts_id', $distributionPartsKwh->partsKwh->id)->where('distribution_id', $distributionKwh->id);
-                    foreach($distributionsValuesKwh as $distributionValuesKwh) {
-                        if ($distributionValuesKwh->status === 'in-progress-report') {
-                            $distributionValuesKwh->status = 'processed';
-                            $distributionValuesKwh->save();
+                        $distributionsValuesKwh = $distributionKwh->distributionValuesKwh->where('parts_id', $distributionPartsKwh->partsKwh->id)->where('distribution_id', $distributionKwh->id);
+                        foreach($distributionsValuesKwh as $distributionValuesKwh) {
+                            if ($distributionValuesKwh->status === 'in-progress-report') {
+                                // Geen excel gemaakt, dan terug naar status confirmed
+                                if(!$excel){
+                                    $distributionValuesKwh->status = 'confirmed';
+                                } else {
+                                    $distributionValuesKwh->status = 'processed';
+                                }
+                                $distributionValuesKwh->save();
+                            }
                         }
                     }
                 }
@@ -283,6 +307,46 @@ class RevenuePartsKwhController extends ApiController
                     $this->createParticipantMutationForRevenueKwh($distributionKwh->participation_id, $revenuePartsKwh->payout_kwh, $revenuePartsKwh->date_payout, $deliveredTotal, $kwhReturn, $energySupplierName);
                 }
 
+            }
+
+        }
+
+    }
+
+    public function setProcessedEnergySupplierJob(
+        RevenuePartsKwh $revenuePartsKwh,
+        $energySupplier,
+        $upToPartsKwhIds
+    )
+    {
+        set_time_limit(180);
+
+        $revenueDistributionKwhHelper = new RevenueDistributionKwhHelper();
+        $distributionsKwh = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $revenueDistributionKwhHelper->getDistributionSetProcessedEnergySupplierIds($revenuePartsKwh) )->get();
+        foreach ($distributionsKwh as $distributionKwh) {
+
+            //status moet nu onderhanden zijn (in-progress-set-processed zijn)
+            if ($distributionKwh->status === 'in-progress-set-processed')
+            {
+                if($energySupplier){
+                    $distributionsPartsKwh = $distributionKwh->distributionPartsKwh->whereIn('parts_id', $upToPartsKwhIds)->where('es_id', $energySupplier->id);
+                } else {
+                    $distributionsPartsKwh = $distributionKwh->distributionPartsKwh->whereIn('parts_id', $upToPartsKwhIds)->whereNull('es_id');
+                }
+                foreach($distributionsPartsKwh as $distributionPartsKwh) {
+                    if ($distributionPartsKwh->status === 'confirmed') {
+                        $distributionPartsKwh->status = 'processed';
+                        $distributionPartsKwh->save();
+
+                        $distributionsValuesKwh = $distributionKwh->distributionValuesKwh->where('parts_id', $distributionPartsKwh->partsKwh->id)->where('distribution_id', $distributionKwh->id);
+                        foreach($distributionsValuesKwh as $distributionValuesKwh) {
+                            if ($distributionValuesKwh->status === 'confirmed') {
+                                $distributionValuesKwh->status = 'processed';
+                                $distributionValuesKwh->save();
+                            }
+                        }
+                    }
+                }
             }
 
         }
@@ -753,7 +817,7 @@ class RevenuePartsKwhController extends ApiController
         $dateConfirmed = $revenuePartsKwh->date_confirmed;
         $datePayout = $revenuePartsKwh->date_payout;
         $revenueId = $revenuePartsKwh->revenue_id;
-        $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $revenueId)->where('date_begin', '<=', $revenuePartsKwh->date_begin)->where('status', '!=', 'processed')->pluck('id')->toArray();
+        $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $revenueId)->where('date_begin', '<=', $revenuePartsKwh->date_begin)->where('status', '!=', 'processed')->orderBy('date_begin')->pluck('id')->toArray();
 
         ProcessRevenuesKwh::dispatch($distributionsKwhIds, $dateConfirmed, $datePayout, $upToPartsKwhIds, Auth::id());
     }

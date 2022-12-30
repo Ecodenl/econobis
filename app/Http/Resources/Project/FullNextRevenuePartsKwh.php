@@ -4,7 +4,7 @@ namespace App\Http\Resources\Project;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullRevenuePartsKwh extends JsonResource
+class FullNextRevenuePartsKwh extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -35,7 +35,6 @@ class FullRevenuePartsKwh extends JsonResource
                 'isLastRevenuePartsKwh' => $this->is_last_revenue_parts_kwh,
                 'isEndOfYearRevenuePartsKwh' => $this->is_end_of_year_revenue_parts_kwh,
                 'dateBeginRevenuesKwh' => $this->revenuesKwh->date_begin,
-                'nextRevenuePartsKwh' => FullNextRevenuePartsKwh::make($this->next_revenue_parts_kwh),
             ];
     }
 }

@@ -10,7 +10,6 @@ use App\Http\Resources\GenericResource;
 use App\Http\Resources\Order\FullOrder;
 use App\Http\Resources\ParticipantMutation\FullParticipantMutation;
 use App\Http\Resources\Project\FullProject;
-//use App\Http\Resources\Project\GridProjectRevenue;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
 

@@ -12,6 +12,10 @@ class ContactAvailabilityController
 {
     public function getByWeek(Contact $contact, Request $request)
     {
+        if(!auth()->user()->hasPermissionTo('manage_coach_planning', 'api')) {
+            abort(403);
+        }
+
         $request->validate([
             'startOfWeek' => ['required', 'date'],
         ]);
@@ -31,6 +35,10 @@ class ContactAvailabilityController
 
     public function getDistrictAvailabilityByWeek(District $district, Request $request)
     {
+        if(!auth()->user()->hasPermissionTo('manage_coach_planning', 'api')) {
+            abort(403);
+        }
+
         $startOfWeek = Carbon::make($request->input('startOfWeek'))->startOfWeek();
 
         return $district->getAvailableCoachesInWeek($startOfWeek)
@@ -68,6 +76,10 @@ class ContactAvailabilityController
 
     public function update(Contact $contact, Request $request)
     {
+        if(!auth()->user()->hasPermissionTo('manage_coach_planning', 'api')) {
+            abort(403);
+        }
+
         $request->validate([
             'startOfWeek' => ['required', 'date'],
             'availabilities' => ['array'],
@@ -92,6 +104,10 @@ class ContactAvailabilityController
 
     public function copyWeeks(Contact $contact, Request $request)
     {
+        if(!auth()->user()->hasPermissionTo('manage_coach_planning', 'api')) {
+            abort(403);
+        }
+
         $request->validate([
             'copyFromWeek' => ['required', 'date'],
             'copyToWeek' => ['required', 'date'],

@@ -11,6 +11,10 @@ class DistrictController
 {
     public function index()
     {
+        if(!auth()->user()->hasPermissionTo('manage_coach_planning', 'api')) {
+            abort(403);
+        }
+
         return District::all()->map(function ($district) {
             return [
                 'id' => $district->id,
@@ -21,6 +25,10 @@ class DistrictController
 
     public function show(District $district)
     {
+        if(!auth()->user()->hasPermissionTo('manage_coach_planning', 'api')) {
+            abort(403);
+        }
+
         return [
             'id' => $district->id,
             'name' => $district->name,
@@ -35,6 +43,10 @@ class DistrictController
 
     public function getCalendarItems(District $district, Request $request)
     {
+        if(!auth()->user()->hasPermissionTo('manage_coach_planning', 'api')) {
+            abort(403);
+        }
+
         $startDate = $request->get('startDate');
         $endDate = $request->get('endDate');
 
@@ -79,6 +91,10 @@ class DistrictController
 
     public function create(Request $request)
     {
+        if(!auth()->user()->hasPermissionTo('manage_coach_planning', 'api')) {
+            abort(403);
+        }
+
         $request->validate([
             'name' => 'required',
         ]);
@@ -94,6 +110,10 @@ class DistrictController
 
     public function update(Request $request, District $district)
     {
+        if(!auth()->user()->hasPermissionTo('manage_coach_planning', 'api')) {
+            abort(403);
+        }
+
         $request->validate([
             'name' => 'required',
         ]);
@@ -104,16 +124,28 @@ class DistrictController
 
     public function delete(District $district)
     {
+        if(!auth()->user()->hasPermissionTo('manage_coach_planning', 'api')) {
+            abort(403);
+        }
+
         $district->delete();
     }
 
     public function detachCoach(District $district, Contact $coach)
     {
+        if(!auth()->user()->hasPermissionTo('manage_coach_planning', 'api')) {
+            abort(403);
+        }
+
         $district->coaches()->detach($coach->id);
     }
 
     public function attachCoach(District $district, Contact $coach)
     {
+        if(!auth()->user()->hasPermissionTo('manage_coach_planning', 'api')) {
+            abort(403);
+        }
+
         $district->coaches()->attach($coach->id);
     }
 }

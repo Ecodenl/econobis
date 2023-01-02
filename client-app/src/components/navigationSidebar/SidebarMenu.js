@@ -277,7 +277,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                 </Nav>
             )}
 
-            {permissions.menuAgenda && (
+            {(permissions.menuAgenda || permissions.manageCoachPlanning) && (
                 <Nav id="agenda">
                     <NavIcon>
                         <SvgIcon size={20} icon={calendar} />
@@ -290,20 +290,24 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </Link>
                         </NavText>
                     </Nav>
-                    <Nav key={'nav-afspraak-kalender'} id={`afspraak-kalender`}>
-                        <NavText>
-                            <Link className="sidebar-link-header" to="afspraak-kalenders">
-                                Afspraak kalenders
-                            </Link>
-                        </NavText>
-                    </Nav>
-                    <Nav key={'nav-beschikbaarheid'} id={`beschikbaarheid`}>
-                        <NavText>
-                            <Link className="sidebar-link-header" to="beschikbaarheid">
-                                Beschikbaarheden
-                            </Link>
-                        </NavText>
-                    </Nav>
+                    {(permissions.manageCoachPlanning) && (
+                        <Nav key={'nav-afspraak-kalender'} id={`afspraak-kalender`}>
+                            <NavText>
+                                <Link className="sidebar-link-header" to="afspraak-kalenders">
+                                    Afspraak kalenders
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {(permissions.manageCoachPlanning) && (
+                        <Nav key={'nav-beschikbaarheid'} id={`beschikbaarheid`}>
+                            <NavText>
+                                <Link className="sidebar-link-header" to="beschikbaarheid">
+                                    Beschikbaarheden
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
                 </Nav>
             )}
 

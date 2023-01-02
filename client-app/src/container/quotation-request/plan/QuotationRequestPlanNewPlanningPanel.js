@@ -11,7 +11,7 @@ import QuotationRequestPlanNewSelectCoachModal from "./QuotationRequestPlanNewSe
 
 export default function QuotationRequestPlanNewPlanningPanel({districtId, opportunityId}) {
     const intervalMinutes = 30;
-    const durationMinutes = 60;
+    const durationMinutes = 90;
 
     /**
      * De 7 dagen van de week in het huidige overzicht in moment objecten.
@@ -295,7 +295,8 @@ export default function QuotationRequestPlanNewPlanningPanel({districtId, opport
             timePlanned: formatMinutesToTime(timeslot),
             durationMinutes: durationMinutes,
             usesPlanning: true,
-            statusId: 8, // "Afspraak gemaakt" todo; id ophalen?
+            districtId: districtId,
+            statusId: 8, // "Afspraak gemaakt"
             opportunityActionCodeRef: 'visit',
             projectManagerId: null,
             externalPartyId: null,

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\District;
 
 use App\Eco\Contact\Contact;
 use App\Eco\District\District;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class DistrictController
@@ -29,6 +30,50 @@ class DistrictController
                     'fullName' => $coach->full_name,
                 ];
             }),
+        ];
+    }
+
+    public function getCalendarItems(District $district, Request $request)
+    {
+        $startDate = $request->get('startDate');
+        $endDate = $request->get('endDate');
+
+        $quotationRequests = $district->quotationRequests()
+            ->where('date_planned', '>=', $startDate)
+            ->where('date_planned', '<=', Carbon::make($endDate)->endOfDay())
+            ->get();
+
+        return [
+            'quotationRequests' => $quotationRequests->map(function ($quotationRequest) {
+                return [
+                    'id' => $quotationRequest->id,
+                    'coach' => [
+                        'id' => $quotationRequest->organisationOrCoach->id,
+                        'fullName' => $quotationRequest->organisationOrCoach->full_name,
+                    ],
+                    'datePlanned' => $quotationRequest->date_planned,
+                    'durationMinutes' => $quotationRequest->duration_minutes,
+                ];
+            }),
+            'availabilities' => $district->coaches->reduce(function ($carry, $coach) use ($startDate, $endDate) {
+                $availabilities = $coach->availabilities
+                    ->where('from', '>=', $startDate)
+                    ->where('from', '<=', Carbon::make($endDate)->endOfDay());
+
+                $availabilities->each(function ($availability) use (&$carry, $coach) {
+                    $carry[] = [
+                        'id' => $availability->id,
+                        'coach' => [
+                            'id' => $coach->id,
+                            'fullName' => $coach->full_name,
+                        ],
+                        'from' => $availability->from->format('Y-m-d H:i:s'),
+                        'to' => $availability->to->format('Y-m-d H:i:s'),
+                    ];
+                });
+
+                return $carry;
+            }, []),
         ];
     }
 

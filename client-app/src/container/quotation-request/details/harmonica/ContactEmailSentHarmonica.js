@@ -10,7 +10,7 @@ const ContactEmailSentHarmonica = ({ toggleShowList, showEmailsSentList, newEmai
             <PanelBody>
                 <div className="col-sm-10" onClick={toggleShowList} role="button">
                     <span onClick={toggleShowList} className="">
-                        E-MAIL CONTACTPERSOON <span className="badge">{emailSentCount}</span>
+                        E-MAIL BEWONER <span className="badge">{emailSentCount}</span>
                     </span>
                 </div>
                 <div className={'col-sm-2'}>

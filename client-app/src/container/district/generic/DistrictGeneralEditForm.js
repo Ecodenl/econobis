@@ -5,6 +5,7 @@ import InputText from "../../../components/form/InputText";
 import {useFormik} from "formik";
 import * as Yup from "yup";
 import ButtonText from "../../../components/button/ButtonText";
+import ViewText from "../../../components/form/ViewText";
 
 export default function DistrictGeneralEditForm({initialValues, onSubmit, cancelAction}) {
     const {values, errors, touched, handleChange, handleSubmit, handleBlur, isSubmitting} = useFormik({
@@ -32,7 +33,8 @@ export default function DistrictGeneralEditForm({initialValues, onSubmit, cancel
                             error={errors.name && touched.name}
                             errorMessage={errors.name}
                         />
-                        <div className="col-md-3"/>
+                        {/* Standaardtijd voor nu hardcoded, deze staat nu ook hardcoded in QuotationRequestPlanNewPlanningPanel en wordt later misschien nog dynamisch */}
+                        <ViewText label={'Standaard tijd'} value="90 minuten"/>
                     </div>
                 </PanelBody>
 

@@ -274,6 +274,7 @@ Route::namespace('Api')
          */
         Route::get('district', [\App\Http\Controllers\Api\District\DistrictController::class, 'index']);
         Route::get('district/{district}', [\App\Http\Controllers\Api\District\DistrictController::class, 'show']);
+        Route::get('district/{district}/calendar-items', [\App\Http\Controllers\Api\District\DistrictController::class, 'getCalendarItems']);
         Route::post('district', [\App\Http\Controllers\Api\District\DistrictController::class, 'create']);
         Route::post('district/{district}', [\App\Http\Controllers\Api\District\DistrictController::class, 'update']);
         Route::post('district/{district}/delete', [\App\Http\Controllers\Api\District\DistrictController::class, 'delete']);

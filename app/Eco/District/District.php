@@ -3,6 +3,7 @@
 namespace App\Eco\District;
 
 use App\Eco\Contact\Contact;
+use App\Eco\QuotationRequest\QuotationRequest;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,6 +12,11 @@ class District extends Model
     public function coaches()
     {
         return $this->belongsToMany(Contact::class, 'district_has_coaches', 'district_id', 'contact_id');
+    }
+
+    public function quotationRequests()
+    {
+        return $this->hasMany(QuotationRequest::class);
     }
 
     public function getAvailableCoachesInWeek(Carbon $startDate)

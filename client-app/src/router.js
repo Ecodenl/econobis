@@ -89,6 +89,7 @@ const MailboxesListApp = React.lazy(() => import('./container/mailbox/list/Mailb
 const DistrictsListApp = React.lazy(() => import('./container/district/list/DistrictsListApp'));
 const DistrictNewApp = React.lazy(() => import('./container/district/new/DistrictNewApp'));
 const DistrictDetailsApp = React.lazy(() => import('./container/district/details/DistrictDetailsApp'));
+const DistrictCalendarApp = React.lazy(() => import('./container/district/calendar/DistrictCalendarApp'));
 const ContactAvailabilityListApp = React.lazy(() => import('./container/contact-availability/list/ContactAvailabilityListApp'));
 const ContactAvailabilityDetailsApp = React.lazy(() => import('./container/contact-availability/details/ContactAvailabilityDetailsApp'));
 const MailgunDomainsListApp = React.lazy(() => import('./container/mailgun-domain/list/MailgunDomainsListApp'));
@@ -412,6 +413,7 @@ const Routes = () => {
                     /* Districts */
                     <Route path="afspraak-kalender/nieuw" component={DistrictNewApp} />
                     <Route path="afspraak-kalender/:id" component={DistrictDetailsApp} />
+                    <Route path="afspraak-kalender/:id/kalender" component={DistrictCalendarApp} />
                     <Route path="afspraak-kalenders" component={DistrictsListApp} />
                     /* Availabilities */
                     <Route path="beschikbaarheid/:id" component={ContactAvailabilityDetailsApp} />

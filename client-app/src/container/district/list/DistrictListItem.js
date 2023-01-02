@@ -21,10 +21,14 @@ export default function DistrictListItem({district, onDelete}) {
         hashHistory.push(`/afspraak-kalender/${district.id}`);
     }
 
+    const openCalender = () => {
+        hashHistory.push(`/afspraak-kalender/${district.id}/kalender`);
+    }
+
     return (
         <tr
             className={highlightRow}
-            onDoubleClick={openItem}
+            onDoubleClick={openCalender}
             onMouseEnter={onRowEnter}
             onMouseLeave={onRowLeave}
         >
@@ -32,6 +36,10 @@ export default function DistrictListItem({district, onDelete}) {
             <td>
                 {(showActionButtons || showDeleteModal) && (
                     <>
+                        <a role="button" onClick={openCalender}>
+                            <span className="glyphicon glyphicon-calendar mybtn-success"/>
+                        </a>
+                        {' '}
                         <a role="button" onClick={openItem}>
                             <span className="glyphicon glyphicon-pencil mybtn-success"/>
                         </a>

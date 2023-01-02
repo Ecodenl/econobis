@@ -157,6 +157,7 @@ class QuotationRequestController extends ApiController
             'quotationText' => 'string',
             'durationMinutes' => 'integer',
             'usesPlanning' => 'boolean',
+            'districtId' => 'nullable',
             'opportunityActionCodeRef' => 'string',
         ]);
 
@@ -231,6 +232,7 @@ class QuotationRequestController extends ApiController
 
         $quotationRequest->duration_minutes = $request->input('durationMinutes');
         $quotationRequest->uses_planning = $request->input('usesPlanning', false);
+        $quotationRequest->district_id = $request->input('districtId', null);
 
         if($request->has('opportunityActionCodeRef')){
             $quotationRequest->opportunity_action_id = OpportunityAction::firstWhere(['code_ref' => $request->input('opportunityActionCodeRef')])->id;

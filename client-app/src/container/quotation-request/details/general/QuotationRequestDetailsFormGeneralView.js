@@ -52,7 +52,7 @@ const QuotationRequestDetailsFormGeneralView = props => {
             {organisationOrCoach.typeId === 'organisation' && (
                 <div className="row">
                     <ViewText
-                        label={'Organisatie contactpersoon'}
+                        label={'Contactpersoon'}
                         value={
                             organisationOrCoach.contactPerson ? organisationOrCoach.contactPerson.contact.fullName : ''
                         }

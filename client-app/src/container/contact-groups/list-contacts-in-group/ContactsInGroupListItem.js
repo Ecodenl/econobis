@@ -45,6 +45,8 @@ class ContactsInGroupListItem extends Component {
             isUsedInLaposta,
         } = this.props;
 
+        // Possible states in laposta: active, unsubscribed, unconfirmed of cleaned
+        // Possible states in econobis: unknown, inprogress, [emptyString]
         let lapostaMemberStatus = '';
         switch (lapostaMemberState) {
             case 'active':
@@ -52,6 +54,12 @@ class ContactsInGroupListItem extends Component {
                 break;
             case 'unsubscribed':
                 lapostaMemberStatus = 'Uitgeschreven';
+                break;
+            case 'unconfirmed':
+                lapostaMemberStatus = 'Niet bevestigd';
+                break;
+            case 'cleaned':
+                lapostaMemberStatus = 'Opgeschoond';
                 break;
             case 'unknown':
                 lapostaMemberStatus = 'Niet bekend in Laposta';

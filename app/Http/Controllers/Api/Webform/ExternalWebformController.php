@@ -611,13 +611,13 @@ class ExternalWebformController extends Controller
 
         if ($contact) {
             // Person of organisatie is gevonden, uitvoeren acties
-            // contactActie = "GEEN" ->geen acties op contact naw of email
+            // contactActie = "UPC" -> update contact
             // contactActie = "NAT" -> Nieuw adres + taak
             // contactActie = "NET" -> Nieuw emailadres + taak
             // contactActie = "BCB" -> Bewoner contact bijwerken + taak
             // contactActie = "CCT" -> Controle contact taak
             switch($this->contactActie){
-                case 'GEEN' :
+                case 'UPC' :
                     $contact = $this->updateContact($contact, $data, $ownerAndResponsibleUser);
                     $address = $contact->addresses()
                         ->where('postal_code', $data['address_postal_code'])
@@ -767,14 +767,16 @@ class ExternalWebformController extends Controller
                     $this->log('Nieuw contact maken ');
                     return null;
                 }
-                // Gevonden op adres, check op specifiek contact of anders op email
+                // Gevonden op adres, check op specifiek contact of anders op email (niet bij organisatie)
             } else {
 
-                $checkContactForBewoner = $contactAddressQuery->first();
-                if($checkContactForBewoner && str_contains( strtolower($checkContactForBewoner->person->last_name), 'bewoner') ){
-                    $this->contactActie = "BCB";
-                    $this->log('Contact "bewoner" gevonden op basis van adres, naam en email bijwerken');
-                    return $checkContactForBewoner;
+                if(!$data['organisation_name']){
+                    $checkContactForBewoner = $contactAddressQuery->first();
+                    if($checkContactForBewoner && str_contains( strtolower($checkContactForBewoner->person->last_name), 'bewoner') ){
+                        $this->contactActie = "BCB";
+                        $this->log('Contact "bewoner" gevonden op basis van adres, naam en email bijwerken');
+                        return $checkContactForBewoner;
+                    }
                 }
 
                 $this->log($contactAddressQuery->count() . ' contacten gevonden op adres: ' . $data['address_postal_code']
@@ -808,7 +810,7 @@ class ExternalWebformController extends Controller
                             $this->log('Nieuw emailadres toevoegen + taak ');
                             $this->contactActie = "NET";
                         } else {
-                            $this->contactActie = "GEEN";
+                            $this->contactActie = "UPC";
                         }
                         return $contactNameQuery->first();
                     } else {
@@ -837,7 +839,7 @@ class ExternalWebformController extends Controller
                                     $this->log('Nieuw emailadres toevoegen + taak ');
                                     $this->contactActie = "NET";
                                 } else {
-                                    $this->contactActie = "GEEN";
+                                    $this->contactActie = "UPC";
                                 }
                                 return $contactNameInitialsQuery->first();
                             } else {
@@ -878,7 +880,7 @@ class ExternalWebformController extends Controller
                             . $data['address_number'] . $data['address_addition'] . ' en emailadres ' . $data['email_address'] .
                             ' en naam ' . $data['first_name'] . ' ' . $data['last_name']);
                         // geen actie inzake contact, adres en/of email
-                        $this->contactActie = "GEEN";
+                        $this->contactActie = "UPC";
                         return $contactNameQuery->first();
                     } else {
                         // Gevonden op adres en emailcontact, niet op naam (voornaam + achternaam).
@@ -901,7 +903,7 @@ class ExternalWebformController extends Controller
                                 $this->log($contactNameInitialsQuery->count() . ' contacten gevonden op adres: ' . $data['address_postal_code']
                                     . $data['address_number'] . $data['address_addition']. ' en emailadres ' . $data['email_address'] . ' en achternaam '
                                     . $data['last_name'] . ( !empty($data['initials']) ? ' en voorletters: ' . $data['initials'] :  ' en voorletter voornaam :' . substr($data['first_name'], 0, 1) ) );
-                                $this->contactActie = "GEEN";
+                                $this->contactActie = "UPC";
                                 return $contactNameInitialsQuery->first();
                             } else {
                                 // Persoon Gevonden op adres en email, maar niet op naam.
@@ -948,7 +950,7 @@ class ExternalWebformController extends Controller
         if ($person) {
             $this->log('Persoon ' . $person->contact->full_name . ' gevonden op basis van naam en emailadres');
             // Geen taak nodig
-            $this->contactActie = "GEEN";
+            $this->contactActie = "UPC";
             return $person->contact;
         } else {
             // Kijken of er een persoon gematcht kan worden op basis van alleen email
@@ -991,7 +993,7 @@ class ExternalWebformController extends Controller
         if ($organisation) {
             $this->log('Organisatie ' . $organisation->contact->full_name . ' gevonden op basis van naam en emailadres');
             // Geen taak nodig
-            $this->contactActie = "GEEN";
+            $this->contactActie = "UPC";
             return $organisation->contact;
         } else {
             $this->log('Geen organisatie gevonden op basis van naam en emailadres');
@@ -1355,46 +1357,53 @@ class ExternalWebformController extends Controller
             return null;
         };
 
-        $isCollectMandate = (bool)$data['is_collect_mandate'];
-        if($isCollectMandate){
-            if($data['collect_mandate_code'] == '') {
-                $data['collect_mandate_code'] = '';
-            }
-            if($data['collect_mandate_signature_date'] == '') {
-                $data['collect_mandate_signature_date'] = Carbon::now();
-            }
-            if($data['collect_mandate_first_run_date'] == '') {
-                $data['collect_mandate_first_run_date'] = Carbon::now()->addMonth(1)->startOfMonth();
-            }
-            if($data['collect_mandate_collection_schema'] == '') {
-                $data['collect_mandate_collection_schema'] = 'core';
+        $isCollectMandate = false;
+        if($data['is_collect_mandate']) {
+            $isCollectMandate = (bool)$data['is_collect_mandate'];
+            if ($isCollectMandate) {
+                if ($data['collect_mandate_signature_date'] == '') {
+                    $data['collect_mandate_signature_date'] = Carbon::now();
+                }
+                if ($data['collect_mandate_first_run_date'] == '') {
+                    $data['collect_mandate_first_run_date'] = Carbon::now()->addMonth(1)->startOfMonth();
+                }
+                if ($data['collect_mandate_collection_schema'] == '') {
+                    $data['collect_mandate_collection_schema'] = 'core';
+                }
             }
         }
 
         if ($data['organisation_name']) {
             $this->log('Er is een organisatienaam meegegeven; organisatie bijwerken.');
 
-            $contact->update([
-                'type_id' => 'organisation',
-                'updated_with' => 'webform',
-                'did_agree_avg' => (bool)$data['did_agree_avg'],
-                'date_did_agree_avg' => $data['date_did_agree_avg'] ? Carbon::make($data['date_did_agree_avg']): null,
-                'is_collect_mandate' => $isCollectMandate,
-                'collect_mandate_code' => $isCollectMandate ? $data['collect_mandate_code'] : '',
-                'collect_mandate_signature_date' => $isCollectMandate ? Carbon::make($data['collect_mandate_signature_date']): null,
-                'collect_mandate_first_run_date' => $isCollectMandate ? Carbon::make($data['collect_mandate_first_run_date']): null,
-                'collect_mandate_collection_schema' => $isCollectMandate ? 'core' : '',
-            ]);
-            $iban = $this->checkIban($data['iban'], 'organisatie.');
+            $contactUpdateArray = [];
+
+            if($data['did_agree_avg']){
+                $contactUpdateArray['did_agree_avg'] = (bool)$data['did_agree_avg'];
+            }
+            if($data['date_did_agree_avg']){
+                $contactUpdateArray['date_did_agree_avg'] = Carbon::make($data['date_did_agree_avg']);
+            }
+            if($data['is_collect_mandate']){
+                $contactUpdateArray['is_collect_mandate'] = $isCollectMandate;
+                $contactUpdateArray['collect_mandate_code'] = $isCollectMandate ? $data['collect_mandate_code'] : '';
+                $contactUpdateArray['collect_mandate_signature_date'] = $isCollectMandate ? Carbon::make($data['collect_mandate_signature_date']): null;
+                $contactUpdateArray['collect_mandate_first_run_date'] = $isCollectMandate ? Carbon::make($data['collect_mandate_first_run_date']): null;
+                $contactUpdateArray['collect_mandate_collection_schema'] = $isCollectMandate ? 'core' : '';
+            }
+
+            $iban = $this->checkIban($data['iban'], 'persoon.');
             if($iban != ''){
-                $contact->update([
-                    'iban' => $iban,
-                ]);
+                $contactUpdateArray['iban'] = $iban;
             }
             if($data['iban_attn'] != '') {
-                $contact->update([
-                    'iban_attn' => $data['iban_attn'],
-                ]);
+                $contactUpdateArray['iban_attn'] = $data['iban_attn'];
+            }
+
+            if(count($contactUpdateArray) > 0){
+                $this->log(count($contactUpdateArray). ' contact velden bijgewerkt: ' . implode(', ', array_keys($contactUpdateArray)));
+                $contactUpdateArray['updated_with'] = 'webform';
+                $contact->update($contactUpdateArray);
             }
 
             $contact->organisation->update([
@@ -1404,87 +1413,80 @@ class ExternalWebformController extends Controller
                 'vat_number' => $data['vat_number'],
             ]);
             $this->log('Organisatie met id ' . $contact->organisation->id . ' bijgewerkt.');
-//
-//        if ($data['first_name'] || $data['last_name']) {
-//            $contactPerson = Contact::create([
-//                'type_id' => 'person',
-//                'status_id' => 'webform',
-//                'created_with' => 'webform',
-//                'owner_id' => $ownerAndResponsibleUser->id,
-//            ]);
-//
-//            $person = Person::create([
-//                'contact_id' => $contactPerson->id,
-//                'title_id' => $titleValidator($data['title_id']),
-//                'initials' => $data['initials'],
-//                'first_name' => $data['first_name'],
-//                'last_name' => $data['last_name'],
-//                'last_name_prefix' => $data['last_name_prefix'],
-//                'organisation_id' => $organisation->id,
-//                'date_of_birth' => $data['date_of_birth'] ?: null,
-//            ]);
-//
-//            OccupationContact::create([
-//                'occupation_id' => 14, // Relatie type "medewerker"
-//                'primary_contact_id' => $organisation->contact_id,
-//                'contact_id' => $person->contact_id,
-//                'primary' => true,
-//            ]);
-//
-//            $this->log('Persoon met id ' . $person->id
-//                . ' aangemaakt en gekoppeld aan organisatie als medewerker.');
-//
-//        }
-//
+
             // Overige gegevens aan organisation hangen
             $this->addEmailToContact($data, $contact);
             $this->addPhoneNumberToContact($data, $contact);
             $this->addContactNotesToContact($data, $contact);
             $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
-//
+
             return $contact;
         }
 
-        // Als we hier komen is er geen bedrijfsnaam meegegeven, dan maken we alleen een persoon aan
+        // Als we hier komen is er geen bedrijfsnaam meegegeven, dan werken we alleen een persoon bij
         $this->log('Er is geen organisatienaam meegegeven; persoon bijwerken.');
 
-        $contact->update([
-            'updated_with' => 'webform',
-            'did_agree_avg' => (bool)$data['did_agree_avg'],
-            'date_did_agree_avg' => $data['date_did_agree_avg'] ? Carbon::make($data['date_did_agree_avg']): null,
-            'is_collect_mandate' => (bool)$data['is_collect_mandate'],
-            'collect_mandate_code' => $data['is_collect_mandate'] ? $data['collect_mandate_code'] : '',
-            'collect_mandate_signature_date' => $data['is_collect_mandate'] ? Carbon::make($data['collect_mandate_signature_date']): null,
-            'collect_mandate_first_run_date' => $data['is_collect_mandate'] ? Carbon::make($data['collect_mandate_first_run_date']): null,
-            'collect_mandate_collection_schema' => $data['is_collect_mandate'] ? 'core' : '',
-        ]);
-        $iban = $this->checkIban($data['iban'], 'persoon.');
-        if($iban != ''){
-            $contact->update([
-                'iban' => $iban,
-            ]);
+        $contactUpdateArray = [];
+
+        if($data['did_agree_avg']){
+            $contactUpdateArray['did_agree_avg'] = (bool)$data['did_agree_avg'];
         }
-        if($data['iban_attn'] != '') {
-            $contact->update([
-                'iban_attn' => $data['iban_attn'],
-            ]);
+        if($data['date_did_agree_avg']){
+            $contactUpdateArray['date_did_agree_avg'] = Carbon::make($data['date_did_agree_avg']);
+        }
+        if($data['is_collect_mandate']){
+            $contactUpdateArray['is_collect_mandate'] = $isCollectMandate;
+            $contactUpdateArray['collect_mandate_code'] = $isCollectMandate ? $data['collect_mandate_code'] : '';
+            $contactUpdateArray['collect_mandate_signature_date'] = $isCollectMandate ? Carbon::make($data['collect_mandate_signature_date']): null;
+            $contactUpdateArray['collect_mandate_first_run_date'] = $isCollectMandate ? Carbon::make($data['collect_mandate_first_run_date']): null;
+            $contactUpdateArray['collect_mandate_collection_schema'] = $isCollectMandate ? 'core' : '';
         }
 
-        $lastName = $data['last_name'];
-        if (!$lastName) {
-            $emailParts = explode('@', $data['email_address']);
-            $lastName = $emailParts[0];
-            if ($lastName) $this->log('Geen achternaam meegegeven, achternaam ' . $lastName . ' uit emailadres gehaald.');
-            else $this->log('Geen achternaam meegegeven, ook geen achternaam uit emailadres kunnen halen.');
+        $iban = $this->checkIban($data['iban'], 'persoon.');
+        if($iban != ''){
+            $contactUpdateArray['iban'] = $iban;
         }
-        $contact->person->update([
-            'title_id' => $titleValidator($data['title_id']),
-            'initials' => $data['initials'],
-            'first_name' => $data['first_name'],
-            'last_name' => $lastName,
-            'last_name_prefix' => $data['last_name_prefix'],
-            'date_of_birth' => $data['date_of_birth'] ?: null,
-        ]);
+        if($data['iban_attn'] != '') {
+            $contactUpdateArray['iban_attn'] = $data['iban_attn'];
+        }
+
+        if(count($contactUpdateArray) > 0){
+            $this->log(count($contactUpdateArray). ' contact velden bijgewerkt: ' . implode(', ', array_keys($contactUpdateArray)));
+            $contactUpdateArray['updated_with'] = 'webform';
+            $contact->update($contactUpdateArray);
+        }
+
+        $contactPersonUpdateArray = [];
+
+        if($data['title_id']){
+            $contactPersonUpdateArray['title_id'] = $titleValidator($data['title_id']);
+        }
+
+        if($data['initials']){
+            $contactPersonUpdateArray['initials'] = $data['initials'];
+        }
+
+        if($data['first_name'] || $data['last_name'] || $data['last_name_prefix']){
+            $lastName = $data['last_name'];
+            if (!$lastName) {
+                $emailParts = explode('@', $data['email_address']);
+                $lastName = $emailParts[0];
+                if ($lastName) $this->log('Geen achternaam meegegeven, achternaam ' . $lastName . ' uit emailadres gehaald.');
+                else $this->log('Geen achternaam meegegeven, ook geen achternaam uit emailadres kunnen halen.');
+            }
+            $contactPersonUpdateArray['first_name'] = $data['first_name'];
+            $contactPersonUpdateArray['last_name_prefix'] = $data['last_name_prefix'];
+            $contactPersonUpdateArray['last_name'] = $lastName;
+        }
+
+        if($data['date_of_birth']){
+            $contactPersonUpdateArray['date_of_birth'] = $data['date_of_birth'];
+        }
+
+        if(count($contactPersonUpdateArray) > 0){
+            $this->log(count($contactPersonUpdateArray). ' persoon velden bijgewerkt: ' . implode(', ', array_keys($contactPersonUpdateArray)));
+            $contact->person->update($contactPersonUpdateArray);
+        }
 
         // contact opnieuw ophalen tbv contactwijzigingen via PersonObserver
         $contact = Contact::find($contact->id);

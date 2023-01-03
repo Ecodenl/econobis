@@ -2,7 +2,7 @@
 
 namespace App\Eco\RevenuesKwh;
 
-use App\Http\Resources\Project\RevenueDistributionKwhPeek;
+use App\Helpers\Project\RevenueDistributionKwhHelper;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -163,73 +163,12 @@ class RevenuePartsKwh extends Model
         return RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_begin', $dateRegistrationDayAfterEnd)->first();
     }
 
-// todo WM: opschonen
-//
-//    public function getDistributionKwhForReportEnergySupplierIdsAttribute()
-//    {
-//        $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_end', '<=', $this->date_end)->pluck('id')->toArray();
-//        $distributionKwhIds = RevenueDistributionPartsKwh::whereIn('parts_id', $upToPartsKwhIds)->where('is_visible', 1)->whereNull('date_energy_supplier_report')->whereNotNull('es_id')->where('delivered_kwh', '!=', 0)->pluck('distribution_id')->toArray();
-//
-//        return $distributionKwhIds;
-//    }
-    public function getDistributionsForReportEnergySupplierIds()
+    public function getDistributionForReportEnergySupplier()
     {
-        $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_end', '<=', $this->date_end)->pluck('id')->toArray();
-// todo WM: opschonen
-//
-//        $distributionKwhIds = RevenueDistributionPartsKwh::whereIn('parts_id', $upToPartsKwhIds)->where('is_visible', 1)->whereNull('date_energy_supplier_report')->whereNotNull('es_id')->where('delivered_kwh', '!=', 0)->pluck('distribution_id')->toArray();
-        $distributionKwhCollection = RevenueDistributionPartsKwh::whereIn('parts_id', $upToPartsKwhIds)->where('is_visible', 1)->whereNull('date_energy_supplier_report')->whereNotNull('es_id')->get();
-        $distributionKwhIds = $distributionKwhCollection->filter(function($model){
-            return $model->delivered_kwh_from_till_visible != 0;
-        })
-            ->pluck('distribution_id')->toArray();
+        $revenueDistributionKwhHelper = new RevenueDistributionKwhHelper();
+        $distributionsForReportAndSetProcessed = array_merge($revenueDistributionKwhHelper->getDistributionSetProcessedEnergySupplier($this), $revenueDistributionKwhHelper->getDistributionForReportEnergySupplier($this));
 
-        return $distributionKwhIds;
-    }
-// todo WM: opschonen
-//
-//    public function getDistributionKwhForReportEnergySupplierAttribute()
-//    {
-//        $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_end', '<=', $this->date_end)->pluck('id')->toArray();
-////        $distributionKwhIds = RevenueDistributionPartsKwh::whereIn('parts_id', $upToPartsKwhIds)->where('is_visible', 1)->whereNull('date_energy_supplier_report')->whereNotNull('es_id')->where('delivered_kwh', '!=', 0)->pluck('distribution_id')->toArray();
-//
-//// todo WM: Werkt wel, maar hierdoor wordt hij nu 10x zo traag !!!
-//        $distributionKwhCollection = RevenueDistributionPartsKwh::whereIn('parts_id', $upToPartsKwhIds)->where('is_visible', 1)->whereNull('date_energy_supplier_report')->whereNotNull('es_id')->get();
-//        $distributionKwhIds = $distributionKwhCollection->filter(function($model){
-//            return $model->delivered_kwh_from_till_visible != 0;
-//        })
-//            ->pluck('distribution_id')->toArray();
-//
-//        if(count($distributionKwhIds) == 0){
-//            return null;
-//        }
-//
-//        $distributions = new RevenueDistributionKwh();
-//        foreach(array_chunk($distributionKwhIds,900) as $chunk){
-//            $distributions = $distributions->orWhereIn('id', $chunk);
-//        }
-//        return RevenueDistributionKwhPeek::collection($distributions->get());
-//    }
-
-    public function getDistributionsForReportEnergySupplier()
-    {
-        $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_end', '<=', $this->date_end)->pluck('id')->toArray();
-//        $distributionKwhIds = RevenueDistributionPartsKwh::whereIn('parts_id', $upToPartsKwhIds)->where('is_visible', 1)->whereNull('date_energy_supplier_report')->whereNotNull('es_id')->where('delivered_kwh', '!=', 0)->pluck('distribution_id')->toArray();
-        $distributionKwhCollection = RevenueDistributionPartsKwh::whereIn('parts_id', $upToPartsKwhIds)->where('is_visible', 1)->whereNull('date_energy_supplier_report')->whereNotNull('es_id')->get();
-        $distributionKwhIds = $distributionKwhCollection->filter(function($model){
-            return $model->delivered_kwh_from_till_visible != 0;
-        })
-            ->pluck('distribution_id')->toArray();
-
-        if(count($distributionKwhIds) == 0){
-            return null;
-        }
-
-        $distributions = new RevenueDistributionKwh();
-        foreach(array_chunk($distributionKwhIds,900) as $chunk){
-            $distributions = $distributions->orWhereIn('id', $chunk);
-        }
-        return RevenueDistributionKwhPeek::collection($distributions->get());
+        return $distributionsForReportAndSetProcessed;
     }
 
     public function calculator()

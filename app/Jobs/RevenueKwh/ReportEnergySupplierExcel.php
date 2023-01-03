@@ -13,6 +13,7 @@ use App\Eco\Jobs\JobsLog;
 use App\Eco\RevenuesKwh\RevenuePartsKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\User\User;
+use App\Helpers\Project\RevenueDistributionKwhHelper;
 use App\Http\Controllers\Api\Project\RevenuePartsKwhController;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -29,7 +30,8 @@ class ReportEnergySupplierExcel implements ShouldQueue
     private $revenuesKwh;
     private $revenuePartsKwh;
     private $upToPartsKwhIds;
-    private $distributions;
+    private $distributionsForReport;
+    private $distributionsSetProcessed;
     private $templateId;
     private $documentName;
     private $counter;
@@ -48,9 +50,12 @@ class ReportEnergySupplierExcel implements ShouldQueue
         $this->upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_end', '<=', $revenuePartsKwh->date_end)->pluck('id')->toArray();
 
         $this->revenuesKwh = $revenuePartsKwh->revenuesKwh;
-        $this->distributions = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $revenuePartsKwh->getDistributionsForReportEnergySupplierIds())->get();
+        $revenueDistributionKwhHelper = new RevenueDistributionKwhHelper();
 
-        if($this->distributions->count() == 0){
+        $this->distributionsForReport = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $revenueDistributionKwhHelper->getDistributionForReportEnergySupplierIds($revenuePartsKwh))->get();
+        $this->distributionsSetProcessed = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $revenueDistributionKwhHelper->getDistributionSetProcessedEnergySupplierIds($revenuePartsKwh))->get();
+
+        if($this->distributionsForReport->count() == 0 && $this->distributionsSetProcessed->count() == 0){
             return;
         }
 
@@ -61,13 +66,19 @@ class ReportEnergySupplierExcel implements ShouldQueue
                 $partKwh->save();
             }
         }
-        foreach ($this->distributions as $distributionKwh) {
+        foreach ($this->distributionsForReport as $distributionKwh) {
             if ($distributionKwh->status === 'concept') {
                 $distributionKwh->status = 'in-progress-report-concept';
                 $distributionKwh->save();
             }
             if ($distributionKwh->status === 'confirmed') {
                 $distributionKwh->status = 'in-progress-report';
+                $distributionKwh->save();
+            }
+        }
+       foreach ($this->distributionsSetProcessed as $distributionKwh) {
+            if ($distributionKwh->status === 'confirmed') {
+                $distributionKwh->status = 'in-progress-set-processed';
                 $distributionKwh->save();
             }
         }
@@ -84,55 +95,82 @@ class ReportEnergySupplierExcel implements ShouldQueue
         //user voor observer
         Auth::setUser(User::find($this->userId));
 
-        $upToRevenuePartsKwh = RevenuePartsKwh::where('revenue_id', $this->revenuePartsKwh->revenue_id)->where('date_end', '<=', $this->revenuePartsKwh->date_end)->get();
-
-        $energySupplierIds = [];
+        $upToRevenuePartsKwh = RevenuePartsKwh::where('revenue_id', $this->revenuePartsKwh->revenue_id)->where('date_end', '<=', $this->revenuePartsKwh->date_end)->orderBy('date_begin')->get();
+        $createReportEnergySupplierIds = [];
         foreach ($upToRevenuePartsKwh as $partItem){
-// todo WM: opschonen
-//
-//            $partItemEnergySupplierIds = $partItem->distributionPartsKwh()->whereNull('date_energy_supplier_report')->where('is_visible', 1)->whereNotNull('es_id')->where('delivered_kwh', '!=', 0)->pluck('es_id')->toArray();
-            $distributionKwhCollection   = $partItem->distributionPartsKwh()->whereNull('date_energy_supplier_report')->where('is_visible', 1)->whereNotNull('es_id')->get();
-            $partItemEnergySupplierIds = $distributionKwhCollection->filter(function($model){
+            $distributionKwhCollectionForCreateReport = $partItem->distributionPartsKwh()->whereNull('date_energy_supplier_report')->where('is_visible', 1)->whereNotNull('es_id')->where('status', '!=', 'processed')->get();
+            $partItemEnergySupplierForCreateReportIds = $distributionKwhCollectionForCreateReport->filter(function($model){
                 return $model->delivered_kwh_from_till_visible != 0;
             })
                 ->pluck('es_id')->toArray();
-            $energySupplierIds = array_merge($partItemEnergySupplierIds, $energySupplierIds);
+            $createReportEnergySupplierIds = array_merge($partItemEnergySupplierForCreateReportIds, $createReportEnergySupplierIds);
         }
-
         $revenuepartsKwhController = new RevenuePartsKwhController();
 
-        $energySupplierIds = array_unique($energySupplierIds);
-
-        foreach ($energySupplierIds as $energySupplierId) {
+        $createReportEnergySupplierIds = array_unique($createReportEnergySupplierIds);
+        foreach ($createReportEnergySupplierIds as $energySupplierId) {
             $energySupplier = EnergySupplier::find($energySupplierId);
-
             $revenuepartsKwhController->reportEnergySupplierJob($this->documentName, $this->revenuePartsKwh, $energySupplier, $this->upToPartsKwhIds);
         }
 
-        foreach ($this->distributions as $distributionKwh) {
-            if ($distributionKwh->revenuesKwh->partsKwh->where('status', '==', 'new')->count() > 0) {
-                $distributionKwh->status = 'concept';
+        $setProcessedEnergySupplierIds = [];
+        $isLastPart = $this->revenuePartsKwh->date_end && $this->revenuePartsKwh->date_end == $this->revenuePartsKwh->revenuesKwh->date_end;
+        foreach ($upToRevenuePartsKwh as $partItem){
+            $distributionKwhCollectionToSetProcessed = $partItem->distributionPartsKwh()->whereNull('date_energy_supplier_report')->where('is_visible', 1)->where('status', '!=', 'processed')->get();
+            $partItemEnergySupplierToSetProcessedIds = $distributionKwhCollectionToSetProcessed->filter(function($model) use($isLastPart){
+                return ($model->delivered_kwh_from_till_visible == 0 && $isLastPart );
+            })
+                ->pluck('es_id')->toArray();
+            $setProcessedEnergySupplierIds = array_merge($partItemEnergySupplierToSetProcessedIds, $setProcessedEnergySupplierIds);
+        }
+
+        $setProcessedEnergySupplierIds = array_unique($setProcessedEnergySupplierIds);
+        foreach ($setProcessedEnergySupplierIds as $energySupplierId) {
+            $energySupplier = EnergySupplier::find($energySupplierId);
+            $revenuepartsKwhController->setProcessedEnergySupplierJob($this->revenuePartsKwh, $energySupplier, $this->upToPartsKwhIds);
+        }
+
+        foreach ($this->distributionsForReport as $distributionKwh) {
+//            if ($distributionKwh->revenuesKwh->partsKwh->where('status', '==', 'new')->count() > 0) {
+//                $distributionKwh->status = 'concept';
+//            } else {
+            if ($distributionKwh->distributionValuesKwh->whereIn('status', ['in-progress-report', 'in-progress-report-concept'])->count() > 0){
+                // doe niets
+            } elseif ($distributionKwh->distributionValuesKwh->where('status', '!=', 'processed')->count() == 0
+                && $distributionKwh->distributionValuesKwh->where('status', '==', 'processed')->count() > 0
+            ) {
+                $distributionKwh->status = 'processed';
             } else {
-                if ($distributionKwh->distributionValuesKwh->where('status', '!=', 'processed')->count() == 0
-                    && $distributionKwh->distributionValuesKwh->where('status', '==', 'processed')->count() > 0
+                if ($distributionKwh->distributionValuesKwh->whereNotIn('status', ['confirmed', 'processed'])->count() == 0
+                    && $distributionKwh->distributionValuesKwh->where('status', '==', 'confirmed')->count() > 0
                 ) {
-                    $distributionKwh->status = 'processed';
+                    $distributionKwh->status = 'confirmed';
                 } else {
-                    if ($distributionKwh->distributionValuesKwh->whereNotIn('status', ['confirmed', 'processed'])->count() == 0
-                        && $distributionKwh->distributionValuesKwh->where('status', '==', 'confirmed')->count() > 0
-                    ) {
-                        $distributionKwh->status = 'confirmed';
-                    } else {
-                        $distributionKwh->status = 'concept';
-                    }
+                    $distributionKwh->status = 'concept';
+                }
+            }
+//            }
+            $distributionKwh->save();
+        }
+        foreach ($this->distributionsSetProcessed as $distributionKwh) {
+            if ($distributionKwh->distributionValuesKwh->where('status', '!=', 'processed')->count() == 0
+                && $distributionKwh->distributionValuesKwh->where('status', '==', 'processed')->count() > 0
+            ) {
+                $distributionKwh->status = 'processed';
+            } else {
+                if ($distributionKwh->distributionValuesKwh->whereNotIn('status', ['confirmed', 'processed'])->count() == 0
+                    && $distributionKwh->distributionValuesKwh->where('status', '==', 'confirmed')->count() > 0
+                ) {
+                    $distributionKwh->status = 'confirmed';
                 }
             }
             $distributionKwh->save();
         }
+
         $partsKwh = RevenuePartsKwh::whereIn('id', $this->upToPartsKwhIds)->get();
         foreach ($partsKwh as $partKwh) {
 
-            if ($partKwh->status === 'in-progress-report') {
+            if ($partKwh->status === 'in-progress-report' || $partKwh->status === 'in-progress-set-processed') {
 
                 if($partKwh->distributionPartsKwh->where('status', '!=', 'processed')->count() == 0
                     && $partKwh->distributionPartsKwh->where('status', '==', 'processed')->count() > 0

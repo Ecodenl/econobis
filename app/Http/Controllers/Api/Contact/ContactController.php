@@ -255,7 +255,7 @@ class ContactController extends Controller
         if (is_array($contactIds)) {
             foreach ($contactIds as $contactId) {
                 $contact = Contact::find($contactId);
-                if ($contact->primaryEmailAddress) {
+                if ($contact && $contact->primaryEmailAddress) {
                     array_push($emailIds, $contact->primaryEmailAddress->id);
                     $emailAddressesToSelected[] = [
                         'id' => $contact->primaryEmailAddress->id,
@@ -266,7 +266,7 @@ class ContactController extends Controller
             }
         } else {
             $contact = Contact::find($contactIds);
-            if ($contact->primaryEmailAddress) {
+            if ($contact && $contact->primaryEmailAddress) {
                 array_push($emailIds, $contact->primaryEmailAddress->id);
                 $emailAddressesToSelected[] = [
                     'id' => $contact->primaryEmailAddress->id,

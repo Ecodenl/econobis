@@ -6,6 +6,7 @@ moment.locale('nl');
 
 const HousingFileSpecificationView = props => {
     const { id, measure, status, measureDate, answer, floor, side, typeBrand } = props.housingFileSpecification;
+    const { showEdit } = props;
 
     return (
         <>
@@ -14,18 +15,21 @@ const HousingFileSpecificationView = props => {
                 onMouseEnter={() => props.onLineEnter()}
                 onMouseLeave={() => props.onLineLeave()}
             >
-                <div>
+                <div onClick={props.openEdit}>
                     <div className="col-sm-3">{measure.name}</div>
                     <div className="col-sm-3">{measure.measureCategory && measure.measureCategory.name}</div>
                     <div className="col-sm-3">{status ? status.name : ''}</div>
                     <div className="col-sm-2">{measureDate && moment(measureDate).format('L')}</div>
-                    {/*<div className="col-sm-2">{answer ? answer : ''}</div>*/}
-                    {/*<div className="col-sm-1">{floor ? floor.name : ''}</div>*/}
-                    {/*<div className="col-sm-1">{side ? side.name : ''}</div>*/}
-                    {/*<div className="col-sm-1">{typeBrand ? typeBrand : ''}</div>*/}
                 </div>
                 <div className="col-sm-1">
-                    {props.permissions.manageHousingFile && props.showActionButtons ? (
+                    {props.showActionButtons && props.permissions.manageHousingFile ? (
+                        <a role="button" onClick={props.openEdit}>
+                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                        </a>
+                    ) : (
+                        ''
+                    )}
+                    {props.showActionButtons && props.permissions.manageHousingFile ? (
                         <a role="button" onClick={props.toggleDelete}>
                             <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
                         </a>
@@ -34,8 +38,9 @@ const HousingFileSpecificationView = props => {
                     )}
                 </div>
             </div>
-            {answer ? (
+            {!showEdit && answer ? (
                 <div
+                    onClick={props.openEdit}
                     className={`row border ${props.highlightLine}`}
                     onMouseEnter={() => props.onLineEnter()}
                     onMouseLeave={() => props.onLineLeave()}
@@ -48,8 +53,9 @@ const HousingFileSpecificationView = props => {
                     </div>
                 </div>
             ) : null}
-            {floor ? (
+            {!showEdit && floor ? (
                 <div
+                    onClick={props.openEdit}
                     className={`row border ${props.highlightLine}`}
                     onMouseEnter={() => props.onLineEnter()}
                     onMouseLeave={() => props.onLineLeave()}
@@ -62,8 +68,9 @@ const HousingFileSpecificationView = props => {
                     </div>
                 </div>
             ) : null}
-            {side ? (
+            {!showEdit && side ? (
                 <div
+                    onClick={props.openEdit}
                     className={`row border ${props.highlightLine}`}
                     onMouseEnter={() => props.onLineEnter()}
                     onMouseLeave={() => props.onLineLeave()}
@@ -76,8 +83,9 @@ const HousingFileSpecificationView = props => {
                     </div>
                 </div>
             ) : null}
-            {typeBrand ? (
+            {!showEdit && typeBrand ? (
                 <div
+                    onClick={props.openEdit}
                     className={`row border ${props.highlightLine}`}
                     onMouseEnter={() => props.onLineEnter()}
                     onMouseLeave={() => props.onLineLeave()}

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import HousingFileSpecificationView from './HousingFileSpecificationView';
 import HousingFileSpecificationDelete from './HousingFileSpecificationDelete';
+import HousingFileSpecificationEdit from './HousingFileSpecificationEdit';
 import { isEqual } from 'lodash';
 
 class HousingFileSpecificationItem extends Component {
@@ -19,6 +20,7 @@ class HousingFileSpecificationItem extends Component {
         };
     }
 
+    //todo wm: check of deze er niet uit kan?
     componentWillReceiveProps(nextProps) {
         if (!isEqual(this.state.housingFileSpecification, nextProps.housingFileSpecification)) {
             this.setState({
@@ -47,6 +49,27 @@ class HousingFileSpecificationItem extends Component {
         this.setState({ showDelete: !this.state.showDelete });
     };
 
+    openEdit = () => {
+        if (this.props.permissions.manageHousingFile) {
+            this.setState({ showEdit: true });
+        }
+    };
+
+    closeEdit = () => {
+        this.setState({ showEdit: false });
+    };
+
+    cancelEdit = () => {
+        this.setState({
+            ...this.state,
+            housingFileSpecification: {
+                ...this.props.housingFileSpecification,
+            },
+        });
+
+        this.closeEdit();
+    };
+
     render() {
         return (
             <div>
@@ -57,7 +80,17 @@ class HousingFileSpecificationItem extends Component {
                     onLineLeave={this.onLineLeave}
                     toggleDelete={this.toggleDelete}
                     housingFileSpecification={this.state.housingFileSpecification}
+                    showEdit={this.state.showEdit}
+                    openEdit={this.openEdit}
                 />
+                {this.state.showEdit && (
+                    <HousingFileSpecificationEdit
+                        housingFileSpecification={this.state.housingFileSpecification}
+                        setInputChange={this.setInputChange}
+                        cancelEdit={this.cancelEdit}
+                        closeEdit={this.closeEdit}
+                    />
+                )}
                 {this.state.showDelete && (
                     <HousingFileSpecificationDelete
                         closeDeleteItemModal={this.toggleDelete}

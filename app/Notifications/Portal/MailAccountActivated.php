@@ -43,11 +43,15 @@ class MailAccountActivated extends Notification
      */
     public function toMail($notifiable)
     {
-        $name = explode(',', $this->name);
-
         return (new MailMessage)
             ->subject("Account geactiveerd")
-            ->line($name[1] . " " . $name[0] . ", je account is succesvol geactiveerd.")
-            ->action('Inloggen', 'https://' . PortalSettings::get("portalUrl") . '/#/login');
+            ->greeting(" ")
+            ->line('<p style="text-align:center">
+            <a href="' . PortalSettings::get("portalUrl") . '" style="box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif, \'Apple Color Emoji\', \'Segoe UI Emoji\', \'Segoe UI Symbol\'; position: relative; color: #3d4852; font-size: 19px; font-weight: bold; text-decoration: none; display: inline-block;" target="_blank">
+' . PortalSettings::get("portalName")  . '</a></p>')
+            ->line("<h1>Beste " . $this->name . ",</h1>")
+            ->line("Je account is succesvol geactiveerd.")
+            ->action('Inloggen', 'https://' . PortalSettings::get("portalUrl") . '/#/login')
+            ->salutation(' ');
     }
 }

@@ -39,7 +39,8 @@ class FullParticipantContact extends JsonResource
             'primaryAddress' => FullAddress::make($this->whenLoaded('primaryAddress')),
             'emailAddresses' => FullEmailAddress::collection($this->whenLoaded('emailAddresses')),
             'primaryEmailAddress' => FullEmailAddress::make($this->whenLoaded('primaryEmailAddress')),
-            'isCoach' =>  $this->is_coach,
+            'inspectionPersonTypeId' =>  $this->inspection_person_type_id,
+            'inspectionPersonType' =>  FullEnumWithIdAndName::make($this->getInspectionPersonType()),
         ];
     }
 }

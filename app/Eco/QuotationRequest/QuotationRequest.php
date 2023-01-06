@@ -31,6 +31,16 @@ class QuotationRequest extends Model
         return $this->belongsTo(Contact::class, 'contact_id');
     }
 
+   public function projectManager()
+    {
+        return $this->belongsTo(Contact::class, 'project_manager_id');
+    }
+
+   public function externalParty()
+    {
+        return $this->belongsTo(Contact::class, 'external_party_id');
+    }
+
     public function opportunity()
     {
         return $this->belongsTo(Opportunity::class);

@@ -92,7 +92,13 @@ function Header({ location, history }) {
                     <div className="profile-pic">
                         <PortalUserConsumer>
                             {({ user, currentSelectedContact, switchCurrentContact, resetCurrentUserToDefault }) => {
-                                if (user.isCoach || !user.occupations || user.occupations.length < 1) {
+                                if (
+                                    user.inspectionPersonTypeId === 'coach' ||
+                                    user.inspectionPersonTypeId === 'projectmanager' ||
+                                    user.inspectionPersonTypeId === 'externalparty' ||
+                                    !user.occupations ||
+                                    user.occupations.length < 1
+                                ) {
                                     return <>{ReactHtmlParser(formatProfilePicName(currentSelectedContact))}</>;
                                 }
 

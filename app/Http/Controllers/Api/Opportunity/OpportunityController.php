@@ -46,6 +46,8 @@ class OpportunityController extends ApiController
         $opportunity->load([
             'measureCategory',
             'quotationRequests.organisationOrCoach',
+            'quotationRequests.projectManager',
+            'quotationRequests.externalParty',
             'quotationRequests.createdBy',
             'quotationRequests.status',
             'quotationRequests.opportunityAction',

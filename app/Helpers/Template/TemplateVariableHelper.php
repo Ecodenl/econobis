@@ -2172,16 +2172,48 @@ class TemplateVariableHelper
                 return optional($model->organisationOrCoach)->full_name;
                 break;
             case 'organisatie_of_coach_adres':
-                return optional($model->organisationOrCoach->primaryAddress)->street . ' ' . optional($model->organisationOrCoach->primaryAddress)->number . (optional($model->organisationOrCoach->primaryAddress)->addition ? ('-' . optional($model->organisationOrCoach->primaryAddress)->addition) : '');
+                return optional(optional($model->organisationOrCoach)->primaryAddress)->street . ' ' . optional(optional($model->organisationOrCoach)->primaryAddress)->number . (optional(optional($model->organisationOrCoach)->primaryAddress)->addition ? ('-' . optional(optional($model->organisationOrCoach)->primaryAddress)->addition) : '');
                 break;
             case 'organisatie_of_coach_plaats':
-                return optional($model->organisationOrCoach->primaryAddress)->city;
+                return optional(optional($model->organisationOrCoach)->primaryAddress)->city;
                 break;
             case 'organisatie_of_coach_email':
-                return optional($model->organisationOrCoach->primaryEmailAddress)->email;
+                return optional(optional($model->organisationOrCoach)->primaryEmailAddress)->email;
                 break;
             case 'organisatie_of_coach_telefoonnummer':
-                return optional($model->organisationOrCoach->primaryPhoneNumber)->number;
+                return optional(optional($model->organisationOrCoach)->primaryPhoneNumber)->number;
+                break;
+
+            case 'projectmanager_naam':
+                return optional($model->projectManager)->full_name;
+                break;
+            case 'projectmanager_adres':
+                return optional(optional($model->projectManager)->primaryAddress)->street . ' ' . optional(optional($model->projectManager)->primaryAddress)->number . (optional(optional($model->projectManager)->primaryAddress)->addition ? ('-' . optional(optional($model->projectManager)->primaryAddress)->addition) : '');
+                break;
+            case 'projectmanager_plaats':
+                return optional(optional($model->projectManager)->primaryAddress)->city;
+                break;
+            case 'projectmanagerh_email':
+                return optional(optional($model->projectManager)->primaryEmailAddress)->email;
+                break;
+            case 'projectmanager_telefoonnummer':
+                return optional(optional($model->projectManager)->primaryPhoneNumber)->number;
+                break;
+
+            case 'externe_partij_naam':
+                return optional($model->externalParty)->full_name;
+                break;
+            case 'externe_partij_adres':
+                return optional(optional($model->externalParty)->primaryAddress)->street . ' ' . optional(optional($model->externalParty)->primaryAddress)->number . (optional(optional($model->externalParty)->primaryAddress)->addition ? ('-' . optional(optional($model->externalParty)->primaryAddress)->addition) : '');
+                break;
+            case 'externe_partij_plaats':
+                return optional(optional($model->externalParty)->primaryAddress)->city;
+                break;
+            case 'externe_partij_email':
+                return optional(optional($model->externalParty)->primaryEmailAddress)->email;
+                break;
+            case 'externe_partij_telefoonnummer':
+                return optional(optional($model->externalParty)->primaryPhoneNumber)->number;
                 break;
 
             case 'contact_naam':
@@ -2277,7 +2309,7 @@ class TemplateVariableHelper
                 return $model->date_recorded ? Carbon::parse($model->date_recorded)->format('d/m/Y H:i') : null;
                 break;
             case 'datum_uitgebracht':
-                return $model->date_released ? Carbon::parse($model->date_released)->format('d/m/Y') : null;
+                return $model->date_released ? Carbon::parse($model->date_released)->format('d/m/Y H:i') : null;
                 break;
             case 'datum_akkoord_extern':
                 return $model->date_approved_external ? Carbon::parse($model->date_approved_external)->format('d/m/Y') : null;

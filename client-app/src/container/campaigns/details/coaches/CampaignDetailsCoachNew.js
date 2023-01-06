@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import CoachAPI from '../../../../api/contact/CoachAPI';
+import InspectionPersonAPI from '../../../../api/contact/InspectionPersonAPI';
 import CampaignDetailsAPI from '../../../../api/campaign/CampaignDetailsAPI';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
@@ -18,7 +18,7 @@ function CampaignDetailsCoachNew({ campaignId, campaignName, fetchCampaignData, 
     useEffect(function() {
         (async function fetchCoach() {
             try {
-                const response = await CoachAPI.getCoachPeek();
+                const response = await InspectionPersonAPI.getCoachPeek();
 
                 setCoaches(response);
             } catch (error) {
@@ -49,7 +49,7 @@ function CampaignDetailsCoachNew({ campaignId, campaignName, fetchCampaignData, 
                 toggleShowNew();
             } catch (error) {
                 alert(
-                    'Er is iets misgegaan met het toevoegen van de coaches. Herlaad de pagina en probeer het nogmaals.'
+                    'Er is iets misgegaan met het toevoegen van de coach. Herlaad de pagina en probeer het nogmaals.'
                 );
             }
         }

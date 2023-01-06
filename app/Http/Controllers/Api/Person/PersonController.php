@@ -40,7 +40,7 @@ class PersonController extends ApiController
             [
                 'ownerId' => 'exists:users,id',
                 'didAgreeAvg' => 'boolean',
-                'isCoach' => 'boolean',
+                'inspectionPersonTypeId' => 'string',
                 'initials' => '',
                 'firstName' => '',
                 'lastName' => '',
@@ -52,6 +52,7 @@ class PersonController extends ApiController
         $contactData = $this->sanitizeData($request['person'], [
             'statusId' => 'nullable',
             'ownerId' => 'nullable',
+            'inspectionPersonTypeId' => 'nullable',
             'liable' => 'boolean',
             'lastNamePrefixId' => 'nullable',
             'titleId' => 'nullable',
@@ -65,7 +66,7 @@ class PersonController extends ApiController
             [
                 'owner_id' => $contactData['owner_id'],
                 'did_agree_avg' => $contactData['did_agree_avg'],
-                'is_coach' => $contactData['is_coach'],
+                'inspection_person_type_id' => $contactData['inspection_person_type_id'],
             ];
 
         $lnp = null;
@@ -222,7 +223,7 @@ class PersonController extends ApiController
             'liabilityAmount' => 'numeric',
             'ownerId' => 'exists:users,id',
             'didAgreeAvg' => 'boolean',
-            'isCoach' => 'boolean',
+            'inspectionPersonTypeId' => 'string',
             'isCollectMandate' => 'boolean',
             'collectMandateCode' => '',
             'collectMandateSignatureDate' => 'date',
@@ -251,6 +252,7 @@ class PersonController extends ApiController
         $contactData = $this->sanitizeData($contactData, [
             'statusId' => 'nullable',
             'ownerId' => 'nullable',
+            'inspectionPersonTypeId' => 'nullable',
             'memberSince' => 'nullable',
             'memberUntil' => 'nullable',
             'liable' => 'boolean',

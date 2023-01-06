@@ -2271,8 +2271,8 @@ class ExternalWebformController extends Controller
                     $this->contactIdToEmailNewContactToGroup = $contact->id;
                     $this->processEmailNewContactToGroup = true;
                 }
-                if($contactGroup->is_coach_group){
-                    $contact->is_coach = true;
+                if($contactGroup->inspection_person_type_id != null){
+                    $contact->inspection_person_type_id = $contactGroup->inspection_person_type_id;
                     $contact->save();
                 }
             }
@@ -2306,8 +2306,8 @@ class ExternalWebformController extends Controller
                                 $this->contactIdToEmailNewContactToGroup = $contact->id;
                                 $this->processEmailNewContactToGroup = true;
                             }
-                            if($contactGroup->is_coach_group){
-                                $contact->is_coach = true;
+                            if($contactGroup->inspection_person_type_id != null){
+                                $contact->inspection_person_type_id = $contactGroup->inspection_person_type_id;
                                 $contact->save();
                             }
                         }

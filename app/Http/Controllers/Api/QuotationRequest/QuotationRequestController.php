@@ -40,6 +40,8 @@ class QuotationRequestController extends ApiController
 
         $quotationRequests->load([
             'organisationOrCoach',
+            'projectManager',
+            'externalParty',
             'opportunity.intake.address',
             'opportunity.measureCategory',
             'opportunity.measures',
@@ -60,10 +62,14 @@ class QuotationRequestController extends ApiController
     {
         $quotationRequest->load([
             'organisationOrCoach.contactPerson.contact',
+            'projectManager',
+            'externalParty',
             'opportunity.intake.contact',
             'opportunity.intake.campaign',
             'opportunity.intake.campaign.organisations',
             'opportunity.intake.campaign.coaches',
+            'opportunity.intake.campaign.projectManagers',
+            'opportunity.intake.campaign.externalParties',
             'opportunity.measureCategory',
             'opportunity.measures',
             'documents',
@@ -109,6 +115,8 @@ class QuotationRequestController extends ApiController
             'intake.contact',
             'intake.campaign.organisations',
             'intake.campaign.coaches',
+            'intake.campaign.projectManagers',
+            'intake.campaign.externalParties',
         ]);
 
         $opportunity->relatedQuotationRequestsStatuses = $this->getRelatedQuotationRequestsStatuses($opportunityAction);
@@ -122,6 +130,8 @@ class QuotationRequestController extends ApiController
 
         $data = $request->validate([
             'organisationOrCoachId' => 'required|exists:contacts,id',
+            'projectManagerId' => 'nullable|exists:contacts,id',
+            'externalPartyId' => 'nullable|exists:contacts,id',
             'opportunityId' => 'required|exists:opportunities,id',
             'dateRecorded' => 'string',
             'timeRecorded' => 'string',
@@ -147,6 +157,13 @@ class QuotationRequestController extends ApiController
         $quotationRequest->opportunity_action_id = $data['opportunityActionId'];
 
         //optional
+        if ($data['projectManagerId']) {
+            $quotationRequest->project_manager_id = $data['projectManagerId'];
+        }
+        if ($data['externalPartyId']) {
+            $quotationRequest->external_party_id = $data['externalPartyId'];
+        }
+
         if ($data['dateRecorded']) {
             if ($data['timeRecorded']) {
                 $dateRecorded = Carbon::parse($request->get('dateRecorded'))->format('Y-m-d');
@@ -213,6 +230,8 @@ class QuotationRequestController extends ApiController
 
         $data = $request->validate([
             'organisationOrCoachId' => 'required|exists:contacts,id',
+            'projectManagerId' => 'nullable|exists:contacts,id',
+            'externalPartyId' => 'nullable|exists:contacts,id',
             'opportunityId' => 'required|exists:opportunities,id',
             'dateRecorded' => 'string',
             'timeRecorded' => 'string',
@@ -235,6 +254,13 @@ class QuotationRequestController extends ApiController
         $quotationRequest->opportunity_action_id = $data['opportunityActionId'];
 
         //optional
+        if ($data['projectManagerId']) {
+            $quotationRequest->project_manager_id = $data['projectManagerId'];
+        }
+        if ($data['externalPartyId']) {
+            $quotationRequest->external_party_id = $data['externalPartyId'];
+        }
+
         if ($data['dateRecorded']) {
             if ($data['timeRecorded']) {
                 $dateRecorded = Carbon::parse($request->get('dateRecorded'))->format('Y-m-d');

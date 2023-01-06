@@ -78,6 +78,41 @@ function CooperationDetailsFormView({ formData, toggleEdit }) {
                     </div>
                 </PanelBody>
                 <PanelHeader>
+                    <span className="h5 text-bold">Schouwen</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <ViewText
+                            label={'Schouwen afspraak e-mail template'}
+                            value={
+                                formData.inspectionPlannedEmailTemplate && formData.inspectionPlannedEmailTemplate.name
+                            }
+                        />
+                        <ViewText
+                            label={'Mailbox afspraak/opname/uitgebracht bevestigingen'}
+                            value={formData.inspectionPlannedMailbox && formData.inspectionPlannedMailbox.name}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Schouwen opname e-mail template'}
+                            value={
+                                formData.inspectionRecordedEmailTemplate &&
+                                formData.inspectionRecordedEmailTemplate.name
+                            }
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Schouwen uitgebracht e-mail template'}
+                            value={
+                                formData.inspectionReleasedEmailTemplate &&
+                                formData.inspectionReleasedEmailTemplate.name
+                            }
+                        />
+                    </div>
+                </PanelBody>
+                <PanelHeader>
                     <span className="h5 text-bold">Overig</span>
                 </PanelHeader>
                 <PanelBody>
@@ -111,36 +146,6 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
 {verbruik_electriciteit_variabele_kosten_laag}<br/>
 {verbruik_electriciteit_vaste_kosten_hoog}<br/>
 {verbruik_electriciteit_vaste_kosten_laag}`}
-                        />
-                    </div>
-                    <div className="row">
-                        <ViewText
-                            label={'Schouwen afspraak e-mail template'}
-                            value={
-                                formData.inspectionPlannedEmailTemplate && formData.inspectionPlannedEmailTemplate.name
-                            }
-                        />
-                        <ViewText
-                            label={'Mailbox afspraak bevestigingen'}
-                            value={formData.inspectionPlannedMailbox && formData.inspectionPlannedMailbox.name}
-                        />
-                    </div>
-                    <div className="row">
-                        <ViewText
-                            label={'Schouwen opname e-mail template'}
-                            value={
-                                formData.inspectionRecordedEmailTemplate &&
-                                formData.inspectionRecordedEmailTemplate.name
-                            }
-                        />
-                    </div>
-                    <div className="row">
-                        <ViewText
-                            label={'Schouwen uitgebracht e-mail template'}
-                            value={
-                                formData.inspectionReleasedEmailTemplate &&
-                                formData.inspectionReleasedEmailTemplate.name
-                            }
                         />
                     </div>
                 </PanelBody>

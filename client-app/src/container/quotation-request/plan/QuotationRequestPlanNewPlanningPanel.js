@@ -29,6 +29,11 @@ export default function QuotationRequestPlanNewPlanningPanel({districtId, opport
     const [currentWeek, setCurrentWeek] = useState('');
 
     /**
+     * Het ingestelde coach filter.
+     */
+    const [currentCoachId, setCurrentCoachId] = useState('');
+
+    /**
      * De contact_availabilities database records van de huidige geselecteerde week/contact.
      * Het "to" in de database is "tot" (en dus niet "tot en met"), dus als je tijdslot 8:00 hebt geselecteerd, dan is het "from" 8:00 en "to" 8:30.
      */
@@ -241,6 +246,24 @@ export default function QuotationRequestPlanNewPlanningPanel({districtId, opport
         return options;
     }
 
+    /**
+     * Geef de opties voor het coach filter.
+     */
+    const getCoachOptions = () => {
+        return availabilities.reduce((acc, availability) => {
+            if (!acc.find(coach => coach.id === availability.coach.id)) {
+                acc.push(availability.coach);
+            }
+
+            return acc;
+        }, []).map(coach => {
+            return {
+                value: coach.id,
+                text: coach.fullName,
+            };
+        });
+    }
+
     const getPreviousWeek = () => {
         let currentIndex = getWeekOptions().findIndex((option) => {
             return option.value === currentWeek;
@@ -261,8 +284,21 @@ export default function QuotationRequestPlanNewPlanningPanel({districtId, opport
         }
     }
 
-    const getAvailabilitiesForTimeslot = (day, timeslot) => {
+    /**
+     * Geef de beschikbaarheden na toepassen van coach filter.
+     */
+    const getFilteredAvailabilities = () => {
+        if(!currentCoachId) {
+            return availabilities;
+        }
+
         return availabilities.filter(availability => {
+            return availability.coach.id === parseInt(currentCoachId);
+        });
+    }
+
+    const getAvailabilitiesForTimeslot = (day, timeslot) => {
+        return getFilteredAvailabilities().filter(availability => {
             /**
              * Kijk of er een availability is waar het timeslot volledig binnen valt.
              * availabilties kunnen niet aansluitend zijn in de database (dan zouden ze samengevoegd moeten worden), dus het is niet nodig om te kijken of het timeslot door meerdere availabilities wordt gedekt.
@@ -321,13 +357,29 @@ export default function QuotationRequestPlanNewPlanningPanel({districtId, opport
                                     buttonClassName="btn-default btn-sm"
                                     onClickAction={() => setCurrentWeek(getPreviousWeek())}/>
                     </div>
-                    <div className={'col-sm-4'}>
+                    <div className={'col-sm-2'}>
                         <select
                             className="form-control input-sm"
                             value={currentWeek}
                             onChange={(event) => setCurrentWeek(event.target.value)}
                         >
                             {getWeekOptions().map(option => {
+                                return (
+                                    <option key={option.value} value={option.value}>
+                                        {option.text}
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    </div>
+                    <div className={'col-sm-2'}>
+                        <select
+                            className="form-control input-sm"
+                            value={currentCoachId}
+                            onChange={(event) => setCurrentCoachId(event.target.value)}
+                        >
+                            <option value={''}>Alle coaches</option>
+                            {getCoachOptions().map(option => {
                                 return (
                                     <option key={option.value} value={option.value}>
                                         {option.text}

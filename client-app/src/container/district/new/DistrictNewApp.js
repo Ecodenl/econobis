@@ -32,7 +32,7 @@ export default function DistrictNewApp() {
                                     </div>
                                 </div>
                                 <div className="col-md-4">
-                                    <h4 className="text-center margin-small">Nieuwe Afspraak Kalender</h4>
+                                    <h4 className="text-center margin-small">Nieuwe Afspraakkalender</h4>
                                 </div>
                                 <div className="col-md-4"/>
                             </div>

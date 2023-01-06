@@ -41,7 +41,7 @@ export default function DistrictDetailsCoachesListItem({district, coach, onDetac
                         confirmAction={() => detach()}
                         title="Verwijderen"
                     >
-                        <p>Wil je deze coach ontkoppelen van deze afspraak kalender?</p>
+                        <p>Wil je deze coach ontkoppelen van deze afspraakkalender?</p>
                     </Modal>
                 )
             }

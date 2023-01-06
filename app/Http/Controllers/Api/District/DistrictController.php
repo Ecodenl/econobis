@@ -15,7 +15,7 @@ class DistrictController
             abort(403);
         }
 
-        return District::all()->map(function ($district) {
+        return District::orderBy('name')->get()->map(function ($district) {
             return [
                 'id' => $district->id,
                 'name' => $district->name,
@@ -56,6 +56,9 @@ class DistrictController
             ->get();
 
         return [
+            'district' => [
+                'name' => $district->name,
+            ],
             'quotationRequests' => $quotationRequests->map(function ($quotationRequest) {
                 return [
                     'id' => $quotationRequest->id,

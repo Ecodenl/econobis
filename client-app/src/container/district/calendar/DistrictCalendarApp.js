@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import BigCalendar from "react-big-calendar";
 import moment from "moment";
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import './DistrictCalendar.css';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from "../../../components/button/ButtonIcon";
@@ -18,6 +19,7 @@ const DistrictCalendarApp = (props) => {
     const [events, setEvents] = useState([]);
     const [showAvailabilities, setShowAvailabilities] = useState(false);
     const [filterCoachId, setFilterCoachId] = useState(null);
+    const [district, setDistrict] = useState({});
 
     useEffect(() => {
         loadCalendarEvents();
@@ -65,6 +67,7 @@ const DistrictCalendarApp = (props) => {
             });
 
             setEvents(quotationRequests.concat(availabilities));
+            setDistrict(data.district);
         });
     }
 
@@ -76,15 +79,15 @@ const DistrictCalendarApp = (props) => {
     }
 
     const eventPropGetter = (event) => {
-        return { style: { backgroundColor: getBackgroundColor(event) } }
+        return {className: getEventClass(event)};
     }
 
-    const getBackgroundColor = (event) => {
+    const getEventClass = (event) => {
         switch (event.type) {
             case 'quotationRequest':
-                return '#265985';
+                return 'quotation-request';
             case 'availability':
-                return '#5cb85c';
+                return 'availability';
         }
     }
 
@@ -130,7 +133,7 @@ const DistrictCalendarApp = (props) => {
                         </div>
                     </div>
                     <div className="col-md-4">
-                        <h3 className="text-center table-title">Agenda</h3>
+                        <h3 className="text-center table-title">Afspraakkalender {district.name}</h3>
                     </div>
                     <div className="col-md-4">
                         <div style={{display: 'flex', flexDirection: 'column'}}>
@@ -169,6 +172,7 @@ const DistrictCalendarApp = (props) => {
                         time: 'Tijd',
                         showMore: total => `+${total} meer`,
                     }}
+                    min={new Date('2018-01-01 06:00:00')}
                 />
             </PanelBody>
         </Panel>

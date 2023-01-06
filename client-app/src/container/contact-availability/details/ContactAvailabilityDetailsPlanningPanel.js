@@ -191,7 +191,7 @@ export default function ContactAvailabilityDetailsPlanningPanel({contactId}) {
         for (let i = 0; i < 52; i++) {
             options.push({
                 value: current.format('YYYY-MM-DD'),
-                text: 'Week ' + current.format('W') + ' (' + current.format('DD-MM') + ')',
+                text: 'Week ' + current.format('W') + ' (' + current.format('DD-MM-YY') + ')',
             });
             current.add(1, 'w');
         }
@@ -257,7 +257,7 @@ export default function ContactAvailabilityDetailsPlanningPanel({contactId}) {
                                     days.map((day, j) => {
                                         return (
                                             <th key={j}
-                                                style={{textAlign: 'center'}}>{day.format('dd DD-MM')}</th>
+                                                style={{textAlign: 'center'}}>{day.format('dd DD-MM-YY')}</th>
                                         );
                                     })
                                 }

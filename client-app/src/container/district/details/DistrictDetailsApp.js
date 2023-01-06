@@ -20,7 +20,7 @@ export default function DistrictDetailsApp(props) {
                 setDistrict(data);
             })
             .catch(() => {
-                alert('Er is iets misgegaan met ophalen van de afspraak kalender.');
+                alert('Er is iets misgegaan met ophalen van de afspraakkalender.');
             });
     }
 
@@ -38,7 +38,7 @@ export default function DistrictDetailsApp(props) {
                                     </div>
                                 </div>
                                 <div className="col-md-4">
-                                    <h4 className="text-center">Afspraak Kalender: {district.name}</h4>
+                                    <h4 className="text-center">Instellingen Afspraakkalender: {district.name}</h4>
                                 </div>
                                 <div className="col-md-4"/>
                             </div>

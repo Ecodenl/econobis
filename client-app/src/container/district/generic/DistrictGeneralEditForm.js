@@ -24,7 +24,7 @@ export default function DistrictGeneralEditForm({initialValues, onSubmit, cancel
                 <PanelBody>
                     <div className="row">
                         <InputText
-                            label="Weergave Naam"
+                            label="Weergavenaam"
                             name={'name'}
                             value={values.name}
                             onChangeAction={handleChange}
@@ -34,7 +34,7 @@ export default function DistrictGeneralEditForm({initialValues, onSubmit, cancel
                             errorMessage={errors.name}
                         />
                         {/* Standaardtijd voor nu hardcoded, deze staat nu ook hardcoded in QuotationRequestPlanNewPlanningPanel en wordt later misschien nog dynamisch */}
-                        <ViewText label={'Standaard tijd'} value="90 minuten"/>
+                        <ViewText label={'Standaard duur afspraak'} value="90 minuten"/>
                     </div>
                 </PanelBody>
 

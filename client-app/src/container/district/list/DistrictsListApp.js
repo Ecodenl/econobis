@@ -26,7 +26,7 @@ export default function DistrictsListApp() {
             setDistricts(data);
             setLoading(false);
         }).catch(() => {
-            setErrorText('Er is iets misgegaan met ophalen van de afspraak kalenders.');
+            setErrorText('Er is iets misgegaan met ophalen van de afspraakkalenders.');
             setLoading(false);
         });
     };
@@ -41,7 +41,7 @@ export default function DistrictsListApp() {
         }
 
         if (districts.length === 0) {
-            return 'Geen afspraak kalenders gevonden!';
+            return 'Geen afspraakkalenders gevonden!';
         }
 
         return '';
@@ -60,7 +60,7 @@ export default function DistrictsListApp() {
                             </div>
                         </div>
                         <div className="col-md-4">
-                            <h3 className="text-center table-title">Afspraak Kalenders</h3>
+                            <h3 className="text-center table-title">Afspraakkalenders</h3>
                         </div>
                         <div className="col-md-4"/>
                     </div>

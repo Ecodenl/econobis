@@ -17,7 +17,7 @@ export default function QuotationRequestPlanNewSelectCoachModal({coaches, onSele
             buttonConfirmText="Plannen"
             closeModal={onCancel}
             confirmAction={confirmAction}
-            title="Bezoek plannen"
+            title="Afspraak plannen"
         >
             Er zijn meerdere coaches beschikbaar, selecteer een coach:
             <select

@@ -20,7 +20,7 @@ export default function QuotationRequestPlanNewApp(props) {
                                     </div>
                                 </div>
                                 <div className="col-md-4">
-                                    <h4 className="text-center">Afspraak inplannen</h4>
+                                    <h4 className="text-center">Afspraak plannen</h4>
                                 </div>
                                 <div className="col-md-4"/>
                             </div>

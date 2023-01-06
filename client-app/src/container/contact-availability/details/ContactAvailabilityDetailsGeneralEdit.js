@@ -29,26 +29,28 @@ export default function ContactAvailabilityDetailsGeneralEdit({contact, switchTo
                 <PanelBody>
                     <div className="row">
                         <InputText
-                            type="number"
-                            label="Max afspraken per week"
+                            type="text"
+                            label="Max. aantal afspraken per week"
                             name={'coachMaxAppointmentsPerWeek'}
                             value={values.coachMaxAppointmentsPerWeek}
-                            onChangeAction={handleChange}
+                            onChangeAction={(e) => {e.target.value = e.target.value.replace(/[^0-9.]/g, ''); handleChange(e)}} // only allow numbers
                             onBlurAction={handleBlur}
                             required={'required'}
                             error={errors.coachMaxAppointmentsPerWeek && touched.coachMaxAppointmentsPerWeek}
                             errorMessage={errors.coachMaxAppointmentsPerWeek}
+                            allowZero={true}
                         />
                         <InputText
-                            type="number"
-                            label="Min tijd tussen afspraken (minuten)"
+                            type="text"
+                            label="Min. tijd tussen afspraken (minuten)"
                             name={'coachMinMinutesBetweenAppointments'}
                             value={values.coachMinMinutesBetweenAppointments}
-                            onChangeAction={handleChange}
+                            onChangeAction={(e) => {e.target.value = e.target.value.replace(/[^0-9.]/g, ''); handleChange(e)}} // only allow numbers
                             onBlurAction={handleBlur}
                             required={'required'}
                             error={errors.coachMinMinutesBetweenAppointments && touched.coachMinMinutesBetweenAppointments}
                             errorMessage={errors.coachMinMinutesBetweenAppointments}
+                            allowZero={true}
                         />
                     </div>
                 </PanelBody>

@@ -294,7 +294,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         <Nav key={'nav-afspraak-kalender'} id={`afspraak-kalender`}>
                             <NavText>
                                 <Link className="sidebar-link-header" to="afspraak-kalenders">
-                                    Afspraak kalenders
+                                    Afspraakkalenders
                                 </Link>
                             </NavText>
                         </Nav>

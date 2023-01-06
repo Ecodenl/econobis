@@ -10,8 +10,8 @@ export default function ContactAvailabilityDetailsGeneralView({contact, switchTo
             <Panel>
                 <PanelBody>
                     <div className="row">
-                        <ViewText label={'Max afspraken per week'} value={contact.coachMaxAppointmentsPerWeek}/>
-                        <ViewText label={'Min tijd tussen afspraken'} value={contact.coachMinMinutesBetweenAppointments + ' min'}/>
+                        <ViewText label={'Max. aantal afspraken per week'} value={contact.coachMaxAppointmentsPerWeek}/>
+                        <ViewText label={'Min. tijd tussen afspraken'} value={contact.coachMinMinutesBetweenAppointments + ' minuten'}/>
                     </div>
                 </PanelBody>
             </Panel>

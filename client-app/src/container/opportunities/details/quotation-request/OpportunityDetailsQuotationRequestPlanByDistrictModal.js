@@ -20,9 +20,9 @@ export default function OpportunityDetailsQuotationRequestPlanByDistrictModal({d
             buttonConfirmText="Doorgaan"
             closeModal={onCancel}
             confirmAction={confirmAction}
-            title="Bezoek plannen"
+            title="Afspraak plannen"
         >
-            Selecteer afspraak kalender:
+            Selecteer afspraakkalender:
             <select
                 className="form-control input-sm"
                 value={districtId}

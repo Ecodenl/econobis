@@ -1,10 +1,22 @@
 import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_REVENUE_PARTS_KWH = `project/revenue-parts-kwh`;
+const URL_REVENUE_PARTS_KWH_FOR_REPORT = `project/revenue-parts-kwh-for-report`;
 
 export default {
     fetchRevenuePartsKwh: id => {
         const requestUrl = `${URL_REVENUE_PARTS_KWH}/${id}`;
+
+        return axiosInstance
+            .get(requestUrl)
+            .then(response => response.data.data)
+            .catch(error => {
+                console.log(error);
+            });
+    },
+
+    fetchRevenuePartsKwhForReport: id => {
+        const requestUrl = `${URL_REVENUE_PARTS_KWH_FOR_REPORT}/${id}`;
 
         return axiosInstance
             .get(requestUrl)

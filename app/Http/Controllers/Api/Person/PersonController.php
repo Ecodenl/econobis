@@ -157,6 +157,7 @@ class PersonController extends ApiController
                     ->where('people.last_name', $person->last_name)
                     ->where('addresses.number', $address->number)
                     ->where('addresses.postal_code', $address->postal_code)
+                    ->whereNull('contacts.deleted_at')
                     ->exists();
                 if ($exists) {
                     abort(409, 'Contact met achternaam ' . $person->last_name
@@ -174,6 +175,7 @@ class PersonController extends ApiController
                         'email_addresses.contact_id')
                     ->where('people.last_name', $person->last_name)
                     ->where('email_addresses.email', $emailAddress->email)
+                    ->whereNull('contacts.deleted_at')
                     ->exists();
                 if ($exists) {
                     abort(409, 'Contact met achternaam ' . $person->last_name

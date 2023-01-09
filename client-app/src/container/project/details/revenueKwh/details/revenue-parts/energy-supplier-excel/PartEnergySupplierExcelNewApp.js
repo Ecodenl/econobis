@@ -7,12 +7,6 @@ import PartEnergySupplierExcelNew from './PartEnergySupplierExcelNew';
 
 import Panel from '../../../../../../../components/panel/Panel';
 import PanelBody from '../../../../../../../components/panel/PanelBody';
-import { connect } from 'react-redux';
-import {
-    clearEnergySupplierExcelReportKwh,
-    fetchRevenuePartsKwh,
-} from '../../../../../../../actions/project/ProjectDetailsActions';
-import ProjectsAPI from '../../../../../../../api/project/ProjectsAPI';
 import RevenuePartsKwhAPI from '../../../../../../../api/project/RevenuePartsKwhAPI';
 
 class PartEnergySupplierExcelNewApp extends Component {
@@ -20,6 +14,7 @@ class PartEnergySupplierExcelNewApp extends Component {
         super(props);
 
         this.state = {
+            revenuePartsKwhForReport: {},
             excel: {
                 revenuePartId: props.params.revenuePartId,
                 documentName: '',
@@ -30,16 +25,26 @@ class PartEnergySupplierExcelNewApp extends Component {
                 energySupplierId: false,
                 documentName: false,
             },
+            errorMessage: {
+                energySupplierId: '',
+                documentName: '',
+            },
         };
     }
 
     componentDidMount() {
         this.setState({ isLoading: true });
-        this.props.fetchRevenuePartsKwh(this.props.params.revenuePartId);
-    }
 
-    componentWillUnmount() {
-        this.props.clearEnergySupplierExcelReportKwh();
+        RevenuePartsKwhAPI.fetchRevenuePartsKwhForReport(this.props.params.revenuePartId)
+            .then(payload => {
+                this.setState({
+                    revenuePartsKwhForReport: payload,
+                    isLoading: false,
+                });
+            })
+            .catch(error => {
+                this.setState({ isLoading: false });
+            });
     }
 
     handleInputChange = event => {
@@ -58,7 +63,7 @@ class PartEnergySupplierExcelNewApp extends Component {
     cancel = event => {
         event.preventDefault();
         hashHistory.push(
-            `project/opbrengst-kwh/${this.props.revenuePartsKwh.revenueId}/deelperiode/${this.props.params.revenuePartId}`
+            `project/opbrengst-kwh/${this.state.revenuePartsKwhForReport.revenueId}/deelperiode/${this.props.params.revenuePartId}`
         );
     };
 
@@ -68,20 +73,28 @@ class PartEnergySupplierExcelNewApp extends Component {
         const { excel } = this.state;
 
         let errors = {};
+        let errorMessage = {};
         let hasErrors = false;
 
         if (validator.isEmpty(excel.documentName + '')) {
             errors.documentName = true;
+            errorMessage.documentName = 'Bestandsnaam mag niet leeg zijn';
             hasErrors = true;
         }
 
-        this.setState({ ...this.state, isCreating: true, errors: errors });
-
-        !hasErrors &&
-            RevenuePartsKwhAPI.createEnergySupplierExcel(excel.revenuePartId, excel.documentName).then(payload => {
-                this.setState({ ...this.state, isCreating: false });
-                hashHistory.push(`/documenten`);
-            });
+        if (!hasErrors) {
+            this.setState({ ...this.state, isCreating: true, errors: errors, errorMessage: errorMessage });
+            RevenuePartsKwhAPI.createEnergySupplierExcel(excel.revenuePartId, excel.documentName)
+                .then(payload => {
+                    this.setState({ ...this.state, isCreating: false });
+                    hashHistory.push(`/documenten`);
+                })
+                .catch(error => {
+                    this.setState({ isCreating: false });
+                });
+        } else {
+            this.setState({ ...this.state, errors: errors, errorMessage: errorMessage });
+        }
     };
 
     render() {
@@ -96,13 +109,17 @@ class PartEnergySupplierExcelNewApp extends Component {
                         <>
                             {this.state.isCreating ? (
                                 <div>Bezig met verwerken...</div>
+                            ) : this.state.isLoading ? (
+                                <div>Bezig met laden...</div>
                             ) : (
                                 <Panel>
                                     <PanelBody>
                                         <div className="col-md-12">
                                             <PartEnergySupplierExcelNew
+                                                revenuePartsKwhForReport={this.state.revenuePartsKwhForReport}
                                                 documentName={this.state.excel.documentName}
                                                 errors={this.state.errors}
+                                                errorMessage={this.state.errorMessage}
                                                 handleInputChange={this.handleInputChange}
                                                 handleSubmit={this.handleSubmit}
                                                 cancel={this.cancel}
@@ -120,20 +137,4 @@ class PartEnergySupplierExcelNewApp extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        revenuePartsKwh: state.revenuePartsKwh,
-        reportEnergySupplierExcel: state.revenuesKwhReportEnergySupplierExcel,
-    };
-};
-
-const mapDispatchToProps = dispatch => ({
-    fetchRevenuePartsKwh: id => {
-        dispatch(fetchRevenuePartsKwh(id));
-    },
-    clearEnergySupplierExcelReportKwh: () => {
-        dispatch(clearEnergySupplierExcelReportKwh());
-    },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(PartEnergySupplierExcelNewApp);
+export default PartEnergySupplierExcelNewApp;

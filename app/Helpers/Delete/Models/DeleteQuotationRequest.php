@@ -56,7 +56,8 @@ class DeleteQuotationRequest implements DeleteInterface
      */
     public function canDelete()
     {
-        if(!($this->quotationRequest->status_id === 2 || $this->quotationRequest->status_id === 3 || $this->quotationRequest->status_id === 4)){
+        //
+        if($this->quotationRequest->status->is_pending_status){
             array_push($this->errorMessage, "Er is nog een open offerteverzoek.");
         }
     }

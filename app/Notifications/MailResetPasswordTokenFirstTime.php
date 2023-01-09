@@ -44,7 +44,11 @@ class MailResetPasswordTokenFirstTime extends Notification
         $url = url('/#/wachtwoord-vergeten');
         return (new MailMessage)
             ->subject("Welkom bij Econobis")
-            ->greeting("Hallo! Welkom bij Econobis")
+            ->greeting(" ")
+            ->line('<p style="text-align:center">
+            <a href="' . config('app.url') . '" style="box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif, \'Apple Color Emoji\', \'Segoe UI Emoji\', \'Segoe UI Symbol\'; position: relative; color: #3d4852; font-size: 19px; font-weight: bold; text-decoration: none; display: inline-block;" target="_blank">
+' . config('app.name')  . '</a></p>')
+            ->line("<h1>Hallo! Welkom bij Econobis</h1>")
             ->line("Er is een account voor je aangemaakt op de Econobis-omgeving van jouw organisatie. Dit account bestaat uit:")
             ->line("<ul>")
             ->line("<li><p>Gebruikersnaam: je e-mailadres</p></li>")

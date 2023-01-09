@@ -65,7 +65,7 @@ class PortalUser extends Authenticatable
         // Emails moeten vanuit de default mailbox worden verstuurd ipv de mail instellingen in .env
         // Daarom hier eerst de emailconfiguratie overschrijven voordat we gaan verzenden.
         (new EmailHelper())->setConfigToDefaultMailbox();
-        $this->notify(new MailAccountActivated($this->contact->full_name));
+        $this->notify(new MailAccountActivated($this->contact->full_name_fnf));
     }
 
     public function hasValidTwoFactorToken($token)

@@ -188,7 +188,7 @@ export default function ContactAvailabilityDetailsPlanningPanel({contactId}) {
     const getWeekOptions = () => {
         let current = moment().startOf('isoWeek');
         let options = [];
-        for (let i = 0; i < 52; i++) {
+        for (let i = 0; i < 78; i++) {
             options.push({
                 value: current.format('YYYY-MM-DD'),
                 text: 'Week ' + current.format('W') + ' (' + current.format('DD-MM-YY') + ')',

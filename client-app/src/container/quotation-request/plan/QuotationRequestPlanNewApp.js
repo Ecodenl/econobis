@@ -1,11 +1,20 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from "../../../components/button/ButtonIcon";
 import {browserHistory} from "react-router";
 import QuotationRequestPlanNewPlanningPanel from "./QuotationRequestPlanNewPlanningPanel";
+import DistrictAPI from "../../../api/district/DistrictAPI";
 
 export default function QuotationRequestPlanNewApp(props) {
+    const [district, setDistrict] = useState(false);
+
+    useEffect(() => {
+        DistrictAPI.fetchDistrictDetails(props.params.districtId).then(district => {
+            setDistrict(district);
+        });
+    }, []);
+
     return (
         <div className="row">
             <div className="col-md-9">
@@ -20,7 +29,7 @@ export default function QuotationRequestPlanNewApp(props) {
                                     </div>
                                 </div>
                                 <div className="col-md-4">
-                                    <h4 className="text-center">Afspraak plannen</h4>
+                                    <h4 className="text-center">Afspraak plannen {district.name}</h4>
                                 </div>
                                 <div className="col-md-4"/>
                             </div>

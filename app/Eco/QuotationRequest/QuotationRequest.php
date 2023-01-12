@@ -9,11 +9,12 @@ use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class QuotationRequest extends Model
 {
-    use RevisionableTrait;
+    use RevisionableTrait, SoftDeletes;
 
     protected $table = 'quotation_requests';
 

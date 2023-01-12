@@ -135,6 +135,20 @@ class DeleteContact implements DeleteInterface
             $deleteIntake = new DeleteIntake($intake);
             $this->errorMessage = array_merge($this->errorMessage, $deleteIntake->delete());
         }
+
+        foreach ($this->quotationRequests as $quotationRequest){
+            $deleteQuotationRequest = new DeleteQuotationRequest($quotationRequest);
+            $this->errorMessage = array_merge($this->errorMessage, $deleteQuotationRequest->delete());
+        }
+        foreach ($this->quotationRequestsAsProjectManager as $quotationRequest){
+            $deleteQuotationRequest = new DeleteQuotationRequest($quotationRequest);
+            $this->errorMessage = array_merge($this->errorMessage, $deleteQuotationRequest->delete());
+        }
+        foreach ($this->quotationRequestsAsExternalParty as $quotationRequest){
+            $deleteQuotationRequest = new DeleteQuotationRequest($quotationRequest);
+            $this->errorMessage = array_merge($this->errorMessage, $deleteQuotationRequest->delete());
+        }
+
     }
 
     /** The relations which should be dissociated

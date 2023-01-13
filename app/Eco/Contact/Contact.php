@@ -600,6 +600,20 @@ class Contact extends Model
         return $addressLines;
     }
 
+    public function getNumberOfActionsAttribute()
+    {
+        if($this->isOrganisation() || $this->isCoach()){
+            return $this->quotationRequests ? $this->quotationRequests->count() : 0;
+        }
+        if($this->isProjectManager()){
+            return $this->quotationRequestsAsProjectManager ? $this->quotationRequestsAsProjectManager->count() : 0;
+        }
+        if($this->isExternalParty()){
+            return $this->quotationRequestsAsExternalParty ? $this->quotationRequestsAsExternalParty->count() : 0;
+        }
+        return 0;
+    }
+
     public function getIsParticipantAttribute()
     {
         return( $this->participations && $this->participations->count() > 0 );

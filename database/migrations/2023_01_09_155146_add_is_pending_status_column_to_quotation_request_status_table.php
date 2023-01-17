@@ -23,7 +23,6 @@ class AddIsPendingStatusColumnToQuotationRequestStatusTable extends Migration
                 || $quotationRequestStatus->id == 3
                 || $quotationRequestStatus->id == 4
                 || $quotationRequestStatus->name == "Geen afspraak gemaakt"
-                || $quotationRequestStatus->name == "Afspraak gemaakt"
                 || $quotationRequestStatus->name == "Afspraak gedaan"
                 || $quotationRequestStatus->name == "Subsidie aanvraag gemaakt"
                 || $quotationRequestStatus->name == "Subsidie aanvraag akkoord"

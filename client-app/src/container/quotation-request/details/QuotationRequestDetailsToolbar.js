@@ -27,10 +27,11 @@ class QuotationRequestDetailsToolbar extends Component {
     };
 
     render() {
-        const { opportunity = {}, opportunityAction } = this.props.quotationRequestDetails;
+        const { opportunity = {}, status, opportunityAction } = this.props.quotationRequestDetails;
         const { measureCategory = {}, intake = {} } = opportunity;
 
         let opportunityActionName = opportunityAction ? opportunityAction.name : 'actie';
+        let isPendingStatus = status ? status.isPendingStatus : true;
         let measureCategoryName = measureCategory ? measureCategory.name : '';
         let fullName = intake && intake.contact ? intake.contact.fullName : '';
         let fullAddress = intake ? intake.fullAddress : '';
@@ -54,7 +55,7 @@ class QuotationRequestDetailsToolbar extends Component {
                                         iconName={'glyphicon-arrow-left'}
                                         onClickAction={browserHistory.goBack}
                                     />
-                                    {this.props.permissions.manageQuotationRequest && (
+                                    {this.props.permissions.manageQuotationRequest && !isPendingStatus && (
                                         <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
                                     )}
                                     <ButtonIcon iconName={'glyphicon-envelope'} onClickAction={this.sendMail} />

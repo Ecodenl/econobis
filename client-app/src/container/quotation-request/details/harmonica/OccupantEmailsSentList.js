@@ -3,7 +3,7 @@ import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-class ContactEmailsSentList extends Component {
+class OccupantEmailsSentList extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -46,8 +46,8 @@ class ContactEmailsSentList extends Component {
 
 const mapStateToProps = state => {
     return {
-        relatedEmailsSent: state.quotationRequestDetails.relatedContactEmailsSent,
+        relatedEmailsSent: state.quotationRequestDetails.relatedOccupantEmailsSent,
     };
 };
 
-export default connect(mapStateToProps)(ContactEmailsSentList);
+export default connect(mapStateToProps)(OccupantEmailsSentList);

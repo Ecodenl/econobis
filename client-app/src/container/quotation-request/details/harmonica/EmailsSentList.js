@@ -46,7 +46,7 @@ class EmailsSentList extends Component {
 
 const mapStateToProps = state => {
     return {
-        relatedEmailsSent: state.quotationRequestDetails.relatedCoachAndContactEmailsSent,
+        relatedEmailsSent: state.quotationRequestDetails.relatedCoachAndOccupantEmailsSent,
     };
 };
 

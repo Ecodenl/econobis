@@ -2,9 +2,9 @@ import React from 'react';
 
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import ContactEmailsSentList from "./ContactEmailsSentList";
+import ContactEmailsSentList from './OccupantEmailsSentList';
 
-const ContactEmailSentHarmonica = ({ toggleShowList, showEmailsSentList, newEmail, emailSentCount }) => {
+const OccupantEmailSentHarmonica = ({ toggleShowList, showEmailsSentList, newEmail, emailSentCount }) => {
     return (
         <Panel className={'harmonica-button'}>
             <PanelBody>
@@ -24,4 +24,4 @@ const ContactEmailSentHarmonica = ({ toggleShowList, showEmailsSentList, newEmai
     );
 };
 
-export default ContactEmailSentHarmonica;
+export default OccupantEmailSentHarmonica;

@@ -76,7 +76,9 @@ const QuotationRequestDetailsApp = React.lazy(() =>
     import('./container/quotation-request/details/QuotationRequestDetailsApp')
 );
 const QuotationRequestNewApp = React.lazy(() => import('./container/quotation-request/new/QuotationRequestNewApp'));
-const QuotationRequestPlanNewApp = React.lazy(() => import('./container/quotation-request/plan/QuotationRequestPlanNewApp'));
+const QuotationRequestPlanNewApp = React.lazy(() =>
+    import('./container/quotation-request/plan/QuotationRequestPlanNewApp')
+);
 const QuotationRequestsListApp = React.lazy(() =>
     import('./container/quotation-request/list/QuotationRequestsListApp')
 );
@@ -90,8 +92,12 @@ const DistrictsListApp = React.lazy(() => import('./container/district/list/Dist
 const DistrictNewApp = React.lazy(() => import('./container/district/new/DistrictNewApp'));
 const DistrictDetailsApp = React.lazy(() => import('./container/district/details/DistrictDetailsApp'));
 const DistrictCalendarApp = React.lazy(() => import('./container/district/calendar/DistrictCalendarApp'));
-const ContactAvailabilityListApp = React.lazy(() => import('./container/contact-availability/list/ContactAvailabilityListApp'));
-const ContactAvailabilityDetailsApp = React.lazy(() => import('./container/contact-availability/details/ContactAvailabilityDetailsApp'));
+const ContactAvailabilityListApp = React.lazy(() =>
+    import('./container/contact-availability/list/ContactAvailabilityListApp')
+);
+const ContactAvailabilityDetailsApp = React.lazy(() =>
+    import('./container/contact-availability/details/ContactAvailabilityDetailsApp')
+);
 const MailgunDomainsListApp = React.lazy(() => import('./container/mailgun-domain/list/MailgunDomainsListApp'));
 const MailgunDomainNewApp = React.lazy(() => import('./container/mailgun-domain/new/MailgunDomainNewApp'));
 const MailgunDomainDetailsApp = React.lazy(() => import('./container/mailgun-domain/details/MailgunDomainDetailsApp'));
@@ -335,7 +341,11 @@ const Routes = () => {
                     <Route path="email/nieuw/document/:documentId" component={EmailNewApp} />
                     <Route path="email/nieuw/kans/:opportunityId/:contactId" component={EmailNewApp} />
                     <Route path="email/nieuw/offerteverzoek/:quotationRequestId/:contactId" component={EmailNewApp} />
-                    <Route path="email/nieuw/offerteverzoek/:quotationRequestId/contacts/:contactIds" component={EmailNewApp} />
+                    {/*<Route path="email/nieuw/offerteverzoek/:quotationRequestId/contacts/:contactIds" component={EmailNewApp} />*/}
+                    <Route
+                        path="email/nieuw/offerteverzoek/:quotationRequestId/:contactId/occupant/:occupantId"
+                        component={EmailNewApp}
+                    />
                     <Route path="email/nieuw/intake/:intakeId/contact/:contactId" component={EmailNewApp} />
                     <Route path="email/nieuw/taak/:taskId" component={EmailNewApp} />
                     <Route path="email/nieuw/taak/:taskId/contact/:contactId" component={EmailNewApp} />

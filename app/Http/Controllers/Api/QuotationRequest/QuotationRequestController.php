@@ -84,10 +84,10 @@ class QuotationRequestController extends ApiController
         $quotationRequest->relatedCoachEmailsSent = $quotationRequest->relatedEmailsSent->filter(function (Email $email) use ($quotationRequest) {
             return in_array(optional($quotationRequest->organisationOrCoach->primaryEmailAddress)->email, $email->to);
         })->values();
-        $quotationRequest->relatedContactEmailsSent = $quotationRequest->relatedEmailsSent->filter(function (Email $email) use ($quotationRequest) {
+        $quotationRequest->relatedOccupantEmailsSent = $quotationRequest->relatedEmailsSent->filter(function (Email $email) use ($quotationRequest) {
             return in_array(optional($quotationRequest->opportunity->intake->contact->primaryEmailAddress)->email, $email->to);
         })->values();
-        $quotationRequest->relatedCoachAndContactEmailsSent = $quotationRequest->relatedEmailsSent->filter(function (Email $email) use ($quotationRequest) {
+        $quotationRequest->relatedCoachAndOccupantEmailsSent = $quotationRequest->relatedEmailsSent->filter(function (Email $email) use ($quotationRequest) {
             return in_array(optional($quotationRequest->organisationOrCoach->primaryEmailAddress)->email, $email->to) && in_array(optional($quotationRequest->opportunity->intake->contact->primaryEmailAddress)->email, $email->to);
         })->values();
 

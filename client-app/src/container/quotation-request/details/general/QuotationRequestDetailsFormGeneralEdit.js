@@ -192,7 +192,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         readOnly={this.props.quotationRequestDetails.usesPlanning}
                     />
                     <InputText
-                        label={'Verzoek voor'}
+                        label={'Verzoek voor bewoner'}
                         name={'fullName'}
                         value={fullName}
                         onChange={() => {}}
@@ -376,6 +376,11 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
 
                 <div className="panel-footer">
                     <div className="pull-right btn-group" role="group">
+                        <ButtonText
+                            buttonClassName={'btn-default'}
+                            buttonText={'Annuleren'}
+                            onClickAction={this.props.switchToView}
+                        />
                         <ButtonText buttonText={'Opslaan'} onClickAction={this.handleSubmit} />
                     </div>
                 </div>

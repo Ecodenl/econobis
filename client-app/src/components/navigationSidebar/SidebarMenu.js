@@ -277,16 +277,37 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                 </Nav>
             )}
 
-            {permissions.menuAgenda && (
+            {(permissions.menuAgenda || permissions.manageCoachPlanning) && (
                 <Nav id="agenda">
                     <NavIcon>
                         <SvgIcon size={20} icon={calendar} />
                     </NavIcon>
-                    <NavText>
-                        <Link className="sidebar-link-header" to="agenda">
-                            Agenda
-                        </Link>
-                    </NavText>
+                    <NavText>Planning</NavText>
+                    <Nav key={'nav-agenda'} id={`agenda`}>
+                        <NavText>
+                            <Link className="sidebar-link-header" to="agenda">
+                                Agenda
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    {(permissions.manageCoachPlanning) && (
+                        <Nav key={'nav-afspraak-kalender'} id={`afspraak-kalender`}>
+                            <NavText>
+                                <Link className="sidebar-link-header" to="afspraak-kalenders">
+                                    Afspraakkalenders
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {(permissions.manageCoachPlanning) && (
+                        <Nav key={'nav-beschikbaarheid'} id={`beschikbaarheid`}>
+                            <NavText>
+                                <Link className="sidebar-link-header" to="beschikbaarheid">
+                                    Beschikbaarheden
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
                 </Nav>
             )}
 

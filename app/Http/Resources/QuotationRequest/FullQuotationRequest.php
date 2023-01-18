@@ -52,6 +52,10 @@ class FullQuotationRequest extends JsonResource
                 'relatedDocuments' => $this->relatedDocuments,
                 'contact' => FullContact::make($this->opportunity->intake->contact),
                 'relatedQuotationRequestsStatuses' => $this->relatedQuotationRequestsStatuses,
+                'usesPlanning' => $this->uses_planning,
+                'relatedCoachEmailsSent' => $this->relatedCoachEmailsSent,
+                'relatedContactEmailsSent' => $this->relatedContactEmailsSent,
+                'relatedCoachAndContactEmailsSent' => $this->relatedCoachAndContactEmailsSent,
             ];
     }
 }

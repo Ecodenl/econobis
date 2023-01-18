@@ -77,6 +77,18 @@ class EmailNewApp extends Component {
                 });
             });
         }
+        if (this.props.params.contactIds) {
+            EmailAddressAPI.fetchPrimaryEmailAddressId(this.props.params.contactIds.split(',')).then(payload => {
+                this.setState({
+                    ...this.state,
+                    email: {
+                        ...this.state.email,
+                        to: payload['emailIds'].join(','),
+                    },
+                    emailAddressesToSelected: payload['emailAddressesToSelected'],
+                });
+            });
+        }
         if (this.props.params.contactGroupId) {
             EmailAPI.fetchEmailGroup(this.props.params.contactGroupId).then(payload => {
                 this.setState({

@@ -4,7 +4,7 @@ import TimePicker from 'react-bootstrap-time-picker';
 import moment from 'moment';
 
 const InputTime = props => {
-    const { label, size, id, name, value, onChangeAction, start, end, step } = props;
+    const { label, size, id, name, value, onChangeAction, start, end, step, readOnly } = props;
 
     const onTimeChange = timeInSeconds => {
         // Workaround for converting seconds to HH:mm:ss
@@ -21,16 +21,28 @@ const InputTime = props => {
                 {label}
             </label>
             <div className={`${size}`}>
-                <TimePicker
-                    name={name}
-                    value={value}
-                    onChange={onTimeChange}
-                    start={start}
-                    end={end}
-                    step={step}
-                    format={24}
-                    className={'input-sm'}
-                />
+                {!readOnly ? (
+                        <TimePicker
+                            name={name}
+                            value={value}
+                            onChange={onTimeChange}
+                            start={start}
+                            end={end}
+                            step={step}
+                            format={24}
+                            className={'input-sm'}
+                        />
+                    )
+                    : (
+                        <input
+                            name={name}
+                            value={value}
+                            className={'form-control input-sm'}
+                            readOnly={true}
+                            disabled={true}
+                        />
+                    )
+                }
             </div>
         </div>
     );
@@ -43,6 +55,7 @@ InputTime.defaultProps = {
     start: '08:00',
     end: '23:00',
     step: 15,
+    readOnly: false,
 };
 
 InputTime.propTypes = {
@@ -54,6 +67,7 @@ InputTime.propTypes = {
     start: PropTypes.string,
     end: PropTypes.string,
     step: PropTypes.number,
+    readOnly: PropTypes.bool,
 };
 
 export default InputTime;

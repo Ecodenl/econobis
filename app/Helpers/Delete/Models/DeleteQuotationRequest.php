@@ -56,8 +56,13 @@ class DeleteQuotationRequest implements DeleteInterface
      */
     public function canDelete()
     {
-        if(!($this->quotationRequest->status_id === 2 || $this->quotationRequest->status_id === 3 || $this->quotationRequest->status_id === 4)){
-            array_push($this->errorMessage, "Er is nog een open offerteverzoek.");
+        // Rewrite if to in_array check
+        if(!in_array($this->quotationRequest->status_id, [2, 3, 4, 7, 8])) {
+            if($this->quotationRequest->status_id === 9) {
+                array_push($this->errorMessage, "Een bezoek met status \"Afspraak gedaan\" kan niet verwijderd worden.");
+            } else {
+                array_push($this->errorMessage, "Er is nog een open offerteverzoek.");
+            }
         }
     }
 

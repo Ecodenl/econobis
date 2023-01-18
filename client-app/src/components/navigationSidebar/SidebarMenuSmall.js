@@ -67,7 +67,7 @@ const SidebarMenuSmall = ({ permissions, administrations }) => (
             </div>
         )}
         {/* Agenda */}
-        {permissions.menuAgenda && (
+        {(permissions.menuAgenda || permissions.manageCoachPlanning) && (
             <div className="sidebar-menu-small-item">
                 <SvgIcon size={20} icon={calendar} />
             </div>

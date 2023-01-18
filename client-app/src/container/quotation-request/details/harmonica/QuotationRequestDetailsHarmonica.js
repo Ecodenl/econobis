@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {hashHistory} from 'react-router';
+import {connect} from 'react-redux';
 
 import DocumentHarmonica from './DocumentHarmonica';
 import EmailSentHarmonica from './EmailSentHarmonica';
+import ContactEmailSentHarmonica from "./ContactEmailSentHarmonica";
+import CoachEmailSentHarmonica from "./CoachEmailSentHarmonica";
 
 class HousingFileDetailsHarmonica extends Component {
     constructor(props) {
@@ -13,16 +15,30 @@ class HousingFileDetailsHarmonica extends Component {
             toggleShowList: {
                 documents: false,
                 emailsSent: false,
+                contactEmailsSent: false,
             },
         };
 
         this.newDocument = this.newDocument.bind(this);
         this.newEmail = this.newEmail.bind(this);
+        this.newContactEmail = this.newContactEmail.bind(this);
+        this.newCoachEmail = this.newCoachEmail.bind(this);
         this.toggleShowList = this.toggleShowList.bind(this);
     }
 
     newEmail() {
-        console.log(this.props.quotationRequestDetails);
+        hashHistory.push(
+            `/email/nieuw/offerteverzoek/${this.props.id}/contacts/${this.props.quotationRequestDetails.organisationOrCoach.id},${this.props.quotationRequestDetails.contact.id}`
+        );
+    }
+
+    newContactEmail() {
+        hashHistory.push(
+            `/email/nieuw/offerteverzoek/${this.props.id}/${this.props.quotationRequestDetails.contact.id}`
+        );
+    }
+
+    newCoachEmail() {
         hashHistory.push(
             `/email/nieuw/offerteverzoek/${this.props.id}/${this.props.quotationRequestDetails.organisationOrCoach.id}`
         );
@@ -44,11 +60,23 @@ class HousingFileDetailsHarmonica extends Component {
     render() {
         return (
             <div className="col-md-12 margin-10-top">
+                <CoachEmailSentHarmonica
+                    toggleShowList={() => this.toggleShowList('coachEmailsSent')}
+                    showEmailsSentList={this.state.toggleShowList.coachEmailsSent}
+                    newEmail={this.newCoachEmail}
+                    emailSentCount={this.props.quotationRequestDetails.relatedCoachEmailsSent?.length}
+                />
+                <ContactEmailSentHarmonica
+                    toggleShowList={() => this.toggleShowList('contactEmailsSent')}
+                    showEmailsSentList={this.state.toggleShowList.contactEmailsSent}
+                    newEmail={this.newContactEmail}
+                    emailSentCount={this.props.quotationRequestDetails.relatedContactEmailsSent?.length}
+                />
                 <EmailSentHarmonica
-                    toggleShowList={() => this.toggleShowList('emailsSent')}
-                    showEmailsSentList={this.state.toggleShowList.emailsSent}
+                    toggleShowList={() => this.toggleShowList('coachAndContactEmailsSent')}
+                    showEmailsSentList={this.state.toggleShowList.coachAndContactEmailsSent}
                     newEmail={this.newEmail}
-                    emailSentCount={this.props.quotationRequestDetails.emailSentCount}
+                    emailSentCount={this.props.quotationRequestDetails.relatedCoachAndContactEmailsSent?.length}
                 />
                 <DocumentHarmonica
                     toggleShowList={() => this.toggleShowList('documents')}

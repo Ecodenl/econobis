@@ -11,6 +11,7 @@ const OpportunityDetailsQuotationRequestsList = props => {
                 <div className="col-sm-2">Datum aanvraag</div>
                 <div className="col-sm-2">Actie</div>
                 <div className="col-sm-2">Datum opname</div>
+                <div className="col-sm-2">Datum afspraak</div>
                 <div className="col-sm-2">Status</div>
                 <div className="col-sm-2">Uitgebracht</div>
             </div>

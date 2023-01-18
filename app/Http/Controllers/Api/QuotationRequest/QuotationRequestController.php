@@ -30,6 +30,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class QuotationRequestController extends ApiController
 {
@@ -80,6 +81,15 @@ class QuotationRequestController extends ApiController
         ]);
 
         $quotationRequest->relatedEmailsSent = $this->getRelatedEmails($quotationRequest->id, 'sent');
+        $quotationRequest->relatedCoachEmailsSent = $quotationRequest->relatedEmailsSent->filter(function (Email $email) use ($quotationRequest) {
+            return in_array(optional($quotationRequest->organisationOrCoach->primaryEmailAddress)->email, $email->to);
+        })->values();
+        $quotationRequest->relatedContactEmailsSent = $quotationRequest->relatedEmailsSent->filter(function (Email $email) use ($quotationRequest) {
+            return in_array(optional($quotationRequest->opportunity->intake->contact->primaryEmailAddress)->email, $email->to);
+        })->values();
+        $quotationRequest->relatedCoachAndContactEmailsSent = $quotationRequest->relatedEmailsSent->filter(function (Email $email) use ($quotationRequest) {
+            return in_array(optional($quotationRequest->organisationOrCoach->primaryEmailAddress)->email, $email->to) && in_array(optional($quotationRequest->opportunity->intake->contact->primaryEmailAddress)->email, $email->to);
+        })->values();
 
         $quotationRequest->relatedQuotationRequestsStatuses = $this->getRelatedQuotationRequestsStatuses($quotationRequest->opportunityAction);
 
@@ -143,8 +153,12 @@ class QuotationRequestController extends ApiController
             'dateApprovedProjectManager' => 'string',
             'dateApprovedExternal' => 'string',
             'statusId' => 'required|exists:quotation_request_status,id',
-            'opportunityActionId' => 'required|exists:opportunity_actions,id',
+            'opportunityActionId' => [Rule::requiredIf(!$request->has('opportunityActionCodeRef')), 'exists:opportunity_actions,id'],
             'quotationText' => 'string',
+            'durationMinutes' => 'integer',
+            'usesPlanning' => 'boolean',
+            'districtId' => 'nullable',
+            'opportunityActionCodeRef' => 'string',
         ]);
 
         //basic QuotationRequest
@@ -154,7 +168,7 @@ class QuotationRequestController extends ApiController
         $quotationRequest->contact_id = $data['organisationOrCoachId'];
         $quotationRequest->opportunity_id = $data['opportunityId'];
         $quotationRequest->status_id = $data['statusId'];
-        $quotationRequest->opportunity_action_id = $data['opportunityActionId'];
+        $quotationRequest->opportunity_action_id = $data['opportunityActionId'] ?? null;
 
         //optional
         if ($data['projectManagerId']) {
@@ -216,6 +230,14 @@ class QuotationRequestController extends ApiController
             $quotationRequest->quotation_text = $data['quotationText'];
         }
 
+        $quotationRequest->duration_minutes = $request->input('durationMinutes');
+        $quotationRequest->uses_planning = $request->input('usesPlanning', false);
+        $quotationRequest->district_id = $request->input('districtId', null);
+
+        if($request->has('opportunityActionCodeRef')){
+            $quotationRequest->opportunity_action_id = OpportunityAction::firstWhere(['code_ref' => $request->input('opportunityActionCodeRef')])->id;
+        }
+
         $quotationRequest->save();
 
         $this->creatEnergyCoachOccupation($quotationRequest);
@@ -254,12 +276,8 @@ class QuotationRequestController extends ApiController
         $quotationRequest->opportunity_action_id = $data['opportunityActionId'];
 
         //optional
-        if ($data['projectManagerId']) {
-            $quotationRequest->project_manager_id = $data['projectManagerId'];
-        }
-        if ($data['externalPartyId']) {
-            $quotationRequest->external_party_id = $data['externalPartyId'];
-        }
+        $quotationRequest->project_manager_id = $request->input('projectManagerId') ?: null;
+        $quotationRequest->external_party_id = $request->input('externalPartyId') ?: null;
 
         if ($data['dateRecorded']) {
             if ($data['timeRecorded']) {

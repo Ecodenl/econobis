@@ -192,7 +192,7 @@ class QuotationRequestNewFormGeneral extends Component {
                         error={this.state.errors.organisation}
                     />
                     <InputText
-                        label={'Verzoek voor'}
+                        label={'Verzoek voor bewoner'}
                         name={'fullName'}
                         value={fullName}
                         onChange={() => {}}

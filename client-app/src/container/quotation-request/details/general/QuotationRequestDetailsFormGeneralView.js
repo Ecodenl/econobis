@@ -32,7 +32,7 @@ const QuotationRequestDetailsFormGeneralView = props => {
                     link={organisationOrCoach ? 'contact/' + organisationOrCoach.id : ''}
                 />
                 <ViewText
-                    label={'Verzoek voor'}
+                    label={'Verzoek voor bewoner'}
                     value={opportunity.intake && opportunity.intake.contact.fullName}
                     link={'contact/' + opportunity.intake.contact.id}
                 />
@@ -56,7 +56,7 @@ const QuotationRequestDetailsFormGeneralView = props => {
             {organisationOrCoach.typeId === 'organisation' && (
                 <div className="row">
                     <ViewText
-                        label={'Contactpersoon'}
+                        label={'Organisatie contactpersoon'}
                         value={
                             organisationOrCoach.contactPerson ? organisationOrCoach.contactPerson.contact.fullName : ''
                         }

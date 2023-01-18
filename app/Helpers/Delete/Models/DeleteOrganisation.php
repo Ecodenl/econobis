@@ -61,13 +61,13 @@ class DeleteOrganisation implements DeleteInterface
      */
     public function deleteModels()
     {
-        foreach ($this->organisation->quotationRequests as $quotationRequest){
-            /**
-             * 20221031; Jos; Deze relatie bestaat niet meer?
-             */
-            $deleteQuotationRequest = new DeleteQuotationRequest($quotationRequest);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteQuotationRequest->delete());
-        }
+//        foreach ($this->organisation->quotationRequests as $quotationRequest){
+//            /**
+//             * 20221031; Jos; Deze relatie bestaat niet meer?
+//             */
+//            $deleteQuotationRequest = new DeleteQuotationRequest($quotationRequest);
+//            $this->errorMessage = array_merge($this->errorMessage, $deleteQuotationRequest->delete());
+//        }
     }
 
     /** The relations which should be dissociated

@@ -18,7 +18,9 @@ const ContactsDeleteItem = props => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            Verwijder contact: <strong> {props.fullName} </strong>
+            <p>
+                Verwijder contact: <strong> {props.fullName} </strong>
+            </p>
         </Modal>
     );
 };

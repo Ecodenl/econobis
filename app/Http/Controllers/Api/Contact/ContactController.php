@@ -25,6 +25,8 @@ class ContactController extends Controller
 {
     public function show(Contact $contact, Request $request)
     {
+//        set_time_limit(180);
+
         $this->authorize('view', $contact);
         $this->checkContactTeamAutorized($contact);
 

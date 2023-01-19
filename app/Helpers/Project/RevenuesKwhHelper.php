@@ -608,23 +608,6 @@ class RevenuesKwhHelper
                 $newDistributionPartsKwh = $distributionPartsKwh->replicate();
                 $newDistributionPartsKwh->parts_id = $newRevenuePartsKwh->id;
                 $newDistributionPartsKwh->delivered_kwh = 0;
-//                if ($addressEnergySupplier) {
-//                    Log::info('Hier ging het fout!');
-//                    Log::info('Splitsing voor participant id: ' . $participant->id);
-//                    Log::info('- distributionPartsKwh id : ' . $distributionPartsKwh->id);
-//                    Log::info('- distributionPartsKwh distribution_id : ' . $distributionPartsKwh->distribution_id);
-//                    Log::info('- distributionKwh participant id : ' . $distributionPartsKwh->distributionKwh->participation_id);
-//                    Log::info('- distributionPartsKwh es_id : ' . $distributionPartsKwh->es_id);
-//                    Log::info('- distributionPartsKwh energy_supplier_name : ' . $distributionPartsKwh->energy_supplier_name);
-//                    Log::info('- distributionPartsKwh energy_supplier_number : ' . $distributionPartsKwh->energy_supplier_number);
-//
-//                    if ($distributionPartsKwh->distributionKwh->participation_id == $participant->id) {
-//                        Log::info('Hier moet alleen energie leverancier gegevens gewijzigd worden!');
-//                    } else {
-//                        Log::info('Deze energie leverancier gegevens moeten ongewijzigd blijven!');
-//                    }
-//                }
-
                 if ($addressEnergySupplier && $distributionPartsKwh->distributionKwh->participation_id ==$participant->id) {
                     $newDistributionPartsKwh->es_id = $addressEnergySupplier ? $addressEnergySupplier->energy_supplier_id : null;
                     $newDistributionPartsKwh->energy_supplier_name = $addressEnergySupplier ? $addressEnergySupplier->energySupplier->name : null;

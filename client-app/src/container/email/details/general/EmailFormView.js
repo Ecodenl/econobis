@@ -29,7 +29,7 @@ const EmailFormView = props => {
         measure,
         opportunity,
         subject,
-        htmlBody,
+        htmlBodyWithEmbeddedImages,
         createdAt,
         dateSent,
         sentByUser,
@@ -177,7 +177,7 @@ const EmailFormView = props => {
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewHtmlAsText label={'Tekst'} value={htmlBody} />
+                <ViewHtmlAsText label={'Tekst'} value={htmlBodyWithEmbeddedImages} />
             </div>
             {folder == 'inbox' && (
                 <div>

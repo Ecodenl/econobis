@@ -46,6 +46,9 @@ class StoreConceptEmail
 
         $email->save();
 
+        $email->inlineImagesService()->convertInlineImagesToCid();
+        $email->save();
+
         return $email;
     }
 }

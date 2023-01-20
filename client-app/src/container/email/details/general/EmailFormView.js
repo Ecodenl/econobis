@@ -137,7 +137,7 @@ const EmailFormView = props => {
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Taak'} value={task ? task.noteSummary : ''} link={task ? 'taak/' + task.id : ''} />
                 <ViewText
-                    label={'Offerteverzoek'}
+                    label={'Kansactie'}
                     value={quotationRequest ? quotationRequest.name : ''}
                     link={quotationRequest ? 'offerteverzoek/' + quotationRequest.id : ''}
                 />

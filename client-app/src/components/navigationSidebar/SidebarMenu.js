@@ -245,19 +245,6 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                 </Nav>
             )}
 
-            {permissions.menuMarketing && (
-                <Nav id="marketing">
-                    <NavIcon>
-                        <SvgIcon size={20} icon={speech_bubbles} />
-                    </NavIcon>
-                    <NavText>
-                        <Link className="sidebar-link-header" to="campagnes">
-                            Marketing
-                        </Link>
-                    </NavText>
-                </Nav>
-            )}
-
             {permissions.menuTasks && (
                 <Nav id="taken">
                     <NavIcon>

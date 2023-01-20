@@ -669,7 +669,10 @@ class RevenuePartsKwhController extends ApiController
             {
                 $time = Carbon::now();
 
+                $documentCreatedFromParticipantId = DocumentCreatedFrom::where('code_ref', 'participant')->first()->id;
+
                 $document = new Document();
+                $document->document_created_from_id = $documentCreatedFromParticipantId;
                 $document->document_type = 'internal';
                 $document->document_group = 'revenue';
                 $document->contact_id = $contact->id;

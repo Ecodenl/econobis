@@ -337,8 +337,7 @@ class RevenuesKwhHelper
                 'quantity_multiply_by_days' => $participationsQuantity * $daysOfPeriod,
                 'delivered_kwh' => 0
         ]);
-
-}
+    }
 
     public function checkRevenuePartsKwh(ParticipantProject $participant, $splitDate, AddressEnergySupplier $addressEnergySupplier = null)
     {
@@ -601,7 +600,7 @@ class RevenuesKwhHelper
             //  4 Doorlezen distributionPartsKwh van originele distributionPartsKwh en nieuwe aanmaken met:
             //    parts_id = (id_new).
             //    delivered_kwh op 0.
-            //    address energy supplier data uit binnenkomende parm mits meegegeven.
+            //    address energy supplier data uit binnenkomende parm mits meegegeven en alleen voor participant waar we mee bezig zijn !!!
             //    overige gegevens overnemen originele distributionPartsKwh.
             //
             $dateBeginRevenues = Carbon::parse($revenuePartsKwh->revenuesKwh->date_begin)->format('Y-m-d');
@@ -609,7 +608,7 @@ class RevenuesKwhHelper
                 $newDistributionPartsKwh = $distributionPartsKwh->replicate();
                 $newDistributionPartsKwh->parts_id = $newRevenuePartsKwh->id;
                 $newDistributionPartsKwh->delivered_kwh = 0;
-                if ($addressEnergySupplier) {
+                if ($addressEnergySupplier && $distributionPartsKwh->distributionKwh->participation_id ==$participant->id) {
                     $newDistributionPartsKwh->es_id = $addressEnergySupplier ? $addressEnergySupplier->energy_supplier_id : null;
                     $newDistributionPartsKwh->energy_supplier_name = $addressEnergySupplier ? $addressEnergySupplier->energySupplier->name : null;
                     $newDistributionPartsKwh->energy_supplier_number = $addressEnergySupplier ? $addressEnergySupplier->es_number : null;

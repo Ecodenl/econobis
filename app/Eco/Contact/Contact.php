@@ -14,6 +14,7 @@ use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\HousingFile\HousingFile;
+use App\Eco\InspectionPersonType\InspectionPersonType;
 use App\Eco\Intake\Intake;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Occupation\OccupationContact;
@@ -53,7 +54,6 @@ class Contact extends Model
 
     protected $casts = [
         'liable' => 'boolean',
-        'is_coach' => 'boolean',
     ];
 
     protected $dates = [
@@ -143,6 +143,13 @@ class Contact extends Model
         return ContactStatus::get($this->status_id);
     }
 
+    public function getInspectionPersonType()
+    {
+        if(!$this->inspection_person_type_id) return null;
+
+        return InspectionPersonType::get($this->inspection_person_type_id);
+    }
+
     public function createdBy(){
         return $this->belongsTo(User::class);
     }
@@ -181,13 +188,22 @@ class Contact extends Model
 
     public function isCoach()
     {
-        return $this->is_coach;
-
+        return $this->inspection_person_type_id == 'coach';
     }
 
-    public function getIsInCoachGroupAttribute()
+    public function isProjectManager()
     {
-        return $this->groups()->where('is_coach_group', true)->exists();;
+        return $this->inspection_person_type_id == 'projectmanager';
+    }
+
+    public function isExternalParty()
+    {
+        return $this->inspection_person_type_id == 'externalparty';
+    }
+
+    public function getIsInInspectionPersonTypeGroupAttribute()
+    {
+        return $this->groups()->whereNotNull('inspection_person_type_id')->exists();;
     }
 
 
@@ -211,6 +227,12 @@ class Contact extends Model
     public function quotationRequests(){
         return $this->hasMany(QuotationRequest::class);
     }
+    public function quotationRequestsAsProjectManager(){
+        return $this->hasMany(QuotationRequest::class, 'project_manager_id');
+    }
+    public function quotationRequestsAsExternalParty(){
+        return $this->hasMany(QuotationRequest::class, 'external_party_id');
+    }
 
     // Only an unfinished task is a task
     public function tasks()
@@ -224,12 +246,16 @@ class Contact extends Model
         return $this->hasMany(Task::class)->where('finished', true)->orderBy('tasks.id', 'desc');
     }
 
-// todo WM: opschonen, dit is volgens mij geen relation of wordt anders niet gebruikt
-//    public function campaigns(){
-//        return $this->belongsToMany(Campaign::class);
-//    }
     public function coachCampaigns(){
         return $this->belongsToMany(Campaign::class, 'campaign_coach');
+    }
+
+    public function projectManagerCampaigns(){
+        return $this->belongsToMany(Campaign::class, 'campaign_project_manager');
+    }
+
+    public function externalPartyCampaigns(){
+        return $this->belongsToMany(Campaign::class, 'campaign_external_party');
     }
 
     public function responses(){

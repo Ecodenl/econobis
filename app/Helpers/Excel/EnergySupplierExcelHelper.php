@@ -3,9 +3,9 @@
 namespace App\Helpers\Excel;
 
 use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
 use App\Eco\RevenuesKwh\RevenuePartsKwh;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -36,7 +36,13 @@ class EnergySupplierExcelHelper
         $this->upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_end', '<=', $revenuePartsKwh->date_end)->pluck('id')->toArray();
 
         $this->revenuesKwh = $revenuePartsKwh->revenuesKwh;
-        $this->distributions = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $revenuePartsKwh->getDistributionsForReportEnergySupplierIds() )->get();
+
+        $distributionKwhCollection = RevenueDistributionPartsKwh::whereIn('parts_id', $this->upToPartsKwhIds)->where('is_visible', 1)->whereNull('date_energy_supplier_report')->where('es_id', $energySupplier->id)->where('status', 'in-progress-report')->get();
+        $distributionKwhIds = $distributionKwhCollection->filter(function($model){
+            return ($model->delivered_kwh_from_till_visible != 0 || $model->partsKwh->date_end == $model->partsKwh->revenuesKwh->date_end);
+        })
+            ->pluck('distribution_id')->toArray();
+        $this->distributions = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $distributionKwhIds )->get();
     }
 
     public function getExcel()
@@ -159,16 +165,19 @@ class EnergySupplierExcelHelper
                     ->first();
                 if (Carbon::parse($dateBegin)->year == Carbon::parse($this->revenuePartsKwh->date_end)->year) {
                     $dateEndEndOfYear = $partsEndOfYear ? $partsEndOfYear->date_end : $this->revenuePartsKwh->date_end;
-//                    $dateEndNextYear = $dateEndEndOfYear;
+                    $dateEndNextYear = $dateEndEndOfYear;
+                    if($dateEndEndOfYear != Carbon::parse($dateBegin)->endOfYear()->format('Y-m-d')){
+                        $deliveredTotalEsEndOfYear = 0;
+                    }
                 }else{
                     $dateEndEndOfYear = $partsEndOfYear ? $partsEndOfYear->date_end : Carbon::parse($dateBegin)->endOfYear()->format('Y-m-d');
-//                    $partsNextYear = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
-//                        ->join('revenue_parts_kwh', 'revenue_distribution_parts_kwh.parts_id', '=', 'revenue_parts_kwh.id')
-//                        ->where('revenue_distribution_parts_kwh.es_id', $this->energySupplier->id)
-//                        ->whereYear('revenue_parts_kwh.date_begin', '>', $dateBeginYear)
-//                        ->orderBy('revenue_parts_kwh.date_end', 'desc')
-//                        ->first();
-//                    $dateEndNextYear = $partsNextYear ? $partsNextYear->date_end : $this->revenuePartsKwh->date_end;
+                    $partsNextYear = $distribution->distributionPartsKwh()->whereIn('parts_id', $this->upToPartsKwhIds)->whereNull('date_energy_supplier_report')
+                        ->join('revenue_parts_kwh', 'revenue_distribution_parts_kwh.parts_id', '=', 'revenue_parts_kwh.id')
+                        ->where('revenue_distribution_parts_kwh.es_id', $this->energySupplier->id)
+                        ->whereYear('revenue_parts_kwh.date_begin', '>', $dateBeginYear)
+                        ->orderBy('revenue_parts_kwh.date_end', 'desc')
+                        ->first();
+                    $dateEndNextYear = $partsNextYear ? $partsNextYear->date_end : $this->revenuePartsKwh->date_end;
                 }
 
                 if($deliveredTotalEs != 0
@@ -204,7 +213,7 @@ class EnergySupplierExcelHelper
                         ? $distribution->contact->primaryphoneNumber->number : '';
                     $rowData[] = $this->formatDate($dateBegin);
                     $rowData[] = round($deliveredTotalEsEndOfYear, 2);
-                    $rowData[] = $this->formatDate($dateEndEndOfYear);
+                    $rowData[] = $this->formatDate($dateEndNextYear);
                     $rowData[] = $distribution->participations_quantity;
                     $rowData[] = $esNumbers;
                     $rowData[] = '';

@@ -3,7 +3,7 @@
 namespace App\Http\Resources\Campaign;
 
 use App\Eco\Contact\Contact;
-use App\Http\Resources\Contact\FullCoach;
+use App\Http\Resources\Contact\FullInspectionPerson;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Organisation\FullOrganisation;
@@ -37,8 +37,10 @@ class FullCampaign extends JsonResource
             'opportunityActions' => GenericResource::collection($this->whenLoaded('opportunityActions')),
             'responses' => FullCampaignResponse::collection($this->whenLoaded('responses')),
             'organisations' => FullOrganisation::collection($this->whenLoaded('organisations')),
-            'coaches' => FullCoach::collection($this->whenLoaded('coaches')),
-            'organisationsOrCoaches' => FullCoach::collection($organisationsOrCoaches),
+            'coaches' => FullInspectionPerson::collection($this->whenLoaded('coaches')),
+            'organisationsOrCoaches' => FullInspectionPerson::collection($organisationsOrCoaches),
+            'projectManagers' => FullInspectionPerson::collection($this->whenLoaded('projectManagers')),
+            'externalParties' => FullInspectionPerson::collection($this->whenLoaded('externalParties')),
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
             'ownedBy' => FullUser::make($this->whenLoaded('ownedBy')),
             'taskCount' => $this->tasks()->count(),

@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import moment from 'moment';
 
 moment.locale('nl');
@@ -19,38 +18,54 @@ const PartEnergySupplierExcelNew = props => {
                     onChangeAction={props.handleInputChange}
                     required={'required'}
                     error={props.errors.documentName}
+                    errorMessage={props.errorMessage.documentName}
                 />
                 (Bestandsnaam wordt aangevuld met afkorting leverancier en ingestelde bestandsformaat)
             </div>
 
             <div className="row">
-                {props.revenuePartsKwh &&
-                props.revenuePartsKwh.distributionKwhForReportEnergySupplier &&
-                props.revenuePartsKwh.distributionKwhForReportEnergySupplier.length == 0 &&
-                    props.revenuePartsKwh.distributionKwhForReportEnergySupplier.length > 100 ? (
+                {props.revenuePartsKwhForReport &&
+                props.revenuePartsKwhForReport.distributionForReportEnergySupplier &&
+                props.revenuePartsKwhForReport.distributionForReportEnergySupplier.length == 0 &&
+                props.revenuePartsKwhForReport.distributionForReportEnergySupplier.length > 100 ? (
                     <>
                         <ViewText
                             className={'form-group col-sm-6'}
                             label={'Rapportage voor deelnames'}
                             value={
                                 'Alle (aantal: ' +
-                                props.revenuePartsKwh.distributionKwhForReportEnergySupplier.length +
+                                props.revenuePartsKwhForReport.distributionForReportEnergySupplier.length +
                                 ')'
                             }
                         />
                     </>
-                ) : props.revenuePartsKwh &&
-                  props.revenuePartsKwh.distributionKwhForReportEnergySupplier &&
-                  props.revenuePartsKwh.distributionKwhForReportEnergySupplier.length > 0 ? (
+                ) : props.revenuePartsKwhForReport &&
+                  props.revenuePartsKwhForReport.distributionForReportEnergySupplier &&
+                  props.revenuePartsKwhForReport.distributionForReportEnergySupplier.length > 0 ? (
                     <>
                         <ViewText
-                            className={'form-group col-sm-6'}
+                            className={'form-group col-sm-12'}
+                            labelSize={'col-sm-3'}
+                            valueSize={'col-sm-9'}
                             label={'Rapportage voor deelnames'}
-                            value={props.revenuePartsKwh.distributionKwhForReportEnergySupplier.map(
+                            value={props.revenuePartsKwhForReport.distributionForReportEnergySupplier.map(
                                 (distribution, i) => {
                                     return (
                                         <>
-                                            {distribution.contactName}
+                                            <strong>{distribution.contactName}</strong>
+                                            {distribution.deliveredKwhUpTo != 0 ? (
+                                                <>
+                                                    {' kWh te verwerken:  '}
+                                                    {distribution.deliveredKwhUpTo.toLocaleString('nl', {
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2,
+                                                    })}
+                                                </>
+                                            ) : distribution.isLastPart ? (
+                                                ' (Op verwerkt zetten)'
+                                            ) : (
+                                                ''
+                                            )}
                                             <br />
                                         </>
                                     );
@@ -84,10 +99,4 @@ const PartEnergySupplierExcelNew = props => {
     );
 };
 
-const mapStateToProps = state => {
-    return {
-        revenuePartsKwh: state.revenuePartsKwh,
-    };
-};
-
-export default connect(mapStateToProps)(PartEnergySupplierExcelNew);
+export default PartEnergySupplierExcelNew;

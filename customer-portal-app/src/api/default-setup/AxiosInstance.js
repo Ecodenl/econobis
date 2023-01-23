@@ -34,7 +34,7 @@ function checkTokenExpiration() {
         !localStorage.getItem(localStorageLastActivity) ||
         lastActivity.add('30', 'minutes').format() < moment().format()
     ) {
-        if (window.location.hash !== '#/login' && window.location.hash !== '#/loguit') {
+        if (!window.location.hash.startsWith('#/login') && !window.location.hash.startsWith('#/loguit')) {
             setTimeout(() => {
                 localStorage.removeItem(localStorageToken);
                 localStorage.removeItem(localStorageLastActivity);

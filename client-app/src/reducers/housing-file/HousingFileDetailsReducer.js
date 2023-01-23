@@ -10,6 +10,20 @@ export default function(state = {}, action) {
                 ...state,
                 ...action.housingFileDetails,
             };
+        case 'UPDATE_HOUSING_FILE_SPECIFICATION':
+            return {
+                ...state,
+                housingFileSpecifications: [
+                    ...state.housingFileSpecifications.map(housingFileSpecification => {
+                        if (housingFileSpecification.id == action.housingFileSpecification.id) {
+                            housingFileSpecification = action.housingFileSpecification;
+                            return housingFileSpecification;
+                        } else {
+                            return housingFileSpecification;
+                        }
+                    }),
+                ],
+            };
         case 'ADD_HOUSING_FILE_SPECIFICATION':
             return {
                 ...state,

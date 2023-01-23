@@ -41,7 +41,11 @@ class MailNewAccountAlfresco extends Notification
     {
         return (new MailMessage)
             ->subject("Bevestiging gebruik Econobis en Alfresco")
-            ->greeting("Hallo! Je bent nu gebruiker van Econobis en Alfresco")
+            ->greeting(" ")
+            ->line('<p style="text-align:center">
+            <a href="' . config('app.url') . '" style="box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif, \'Apple Color Emoji\', \'Segoe UI Emoji\', \'Segoe UI Symbol\'; position: relative; color: #3d4852; font-size: 19px; font-weight: bold; text-decoration: none; display: inline-block;" target="_blank">
+' . config('app.name')  . '</a></p>')
+            ->line("<h1>Hallo! Je bent nu gebruiker van Econobis en Alfresco</h1>")
             ->line("Je bent nu gebruiker van de Econobis van " . \Config::get('app.name') . ". Met jouw account bestaande uit je gebruikersnaam " . $this->emailAddress . " en je aangemaakte wachtwoord, kun je inloggen op de Econobis-omgeving van je organisatie:")
             ->line(\Config::get('app.url'))
             ->line('Met dezelfde gegevens kan je ook inloggen op <a href="https://alfresco.econobis.nl/share/page/">Alfresco</a>, het documentmanagementsysteem dat gebruikt wordt door Econobis.')

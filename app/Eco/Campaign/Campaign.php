@@ -72,6 +72,14 @@ class Campaign extends Model
         return $this->belongsToMany(Contact::class, 'campaign_coach');
     }
 
+    public function projectManagers(){
+        return $this->belongsToMany(Contact::class, 'campaign_project_manager');
+    }
+
+    public function externalParties(){
+        return $this->belongsToMany(Contact::class, 'campaign_external_party');
+    }
+
     public function organisationsOrCoachesIds(){
         $contactIdsOrganisations = $this->organisations()->get()->pluck('contact_id')->toArray();
         $contactIdsCoaches = $this->coaches()->get()->pluck('id')->toArray();

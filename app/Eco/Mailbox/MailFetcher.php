@@ -140,6 +140,7 @@ class MailFetcher
                 $dateSentStrip = str_replace(" (West-Europa (standaardtijd))", "", $dateSentStrip);
                 $dateSentStrip = str_replace(" (West-Europa (zomertijd))", "", $dateSentStrip);
                 $dateSentStrip = str_replace(" (W. Europe Daylight Time)", "", $dateSentStrip);
+                $dateSentStrip = str_replace(" (W. Europe Standard Time)", "", $dateSentStrip);
                 $dateSent = Carbon::parse( $dateSentStrip );
             } catch(\Exception $ex2) {
                 Log::error("Failed to retrieve date sent (" . $emailData->date . ") from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex2->getMessage());

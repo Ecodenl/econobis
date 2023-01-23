@@ -26,6 +26,13 @@ export const addHousingFileSpecificationToState = housingFileSpecification => {
     };
 };
 
+export const updateHousingFileSpecificationToState = housingFileSpecification => {
+    return {
+        type: 'UPDATE_HOUSING_FILE_SPECIFICATION',
+        housingFileSpecification,
+    };
+};
+
 export const deleteHousingFileSpecification = housingFileSpecificationId => {
     return {
         type: 'DELETE_HOUSING_FILE_SPECIFICATION',

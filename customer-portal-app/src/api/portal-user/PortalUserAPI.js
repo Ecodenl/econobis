@@ -23,7 +23,7 @@ export default {
                         'dateDidAgreeAvg',
                         'addressLines',
                         'portalSettingsLayoutAssigned',
-                        'isCoach',
+                        'inspectionPersonTypeId',
                     ],
                     rlt: {
                         occupations: {

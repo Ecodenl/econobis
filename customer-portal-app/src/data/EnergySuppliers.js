@@ -27,7 +27,9 @@ export default [
     { id: 6, name: 'Engie' },
     { id: 7, name: 'Essent' },
     { id: 35, name: 'Fenor energie' },
+    { id: 71, name: 'Frank energie' },
     { id: 60, name: 'Gazprom' },
+    { id: 72, name: 'Gewoon Energie' },
     { id: 56, name: 'Gezinsenergie' },
     { id: 8, name: 'Greenchoice' },
     { id: 43, name: 'GreenNL' },
@@ -64,5 +66,6 @@ export default [
     { id: 64, name: 'Vrij Op Naam' },
     { id: 47, name: 'Welkom Energie' },
     { id: 41, name: 'Windcentrale' },
+    { id: 73, name: 'Zonneplan' },
     { id: 57, name: 'Onbekend' },
 ];

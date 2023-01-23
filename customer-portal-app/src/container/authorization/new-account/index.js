@@ -7,7 +7,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import NewAccountFormPersonal from './NewAccountFormPersonal';
 import NewAccountFormOrganisation from './NewAccountFormOrganisation';
-import { Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { Button, ButtonToolbar } from 'react-bootstrap';
 import ButtonText from '../../../components/button/ButtonText';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
@@ -38,7 +38,13 @@ const NewAccount = props => {
                 toggleError(true);
                 if (error.response && error.response.status === 404) {
                     setErrorMessage(
-                        'Er bestaat al een account met het e-mailadres dat je hebt ingevuld. Je kunt met dit e-mailadres inloggen als bestaand contact. Wil je een nieuw account aanmaken? Gebruik dan alsjeblieft een ander e-mailadres.'
+                        <p>
+                            {'U heeft al een account, klik op '}
+                            <Link to={'/wachtwoord-vergeten'} className="authorization-link">
+                                wachtwoord vergeten?
+                            </Link>
+                            {' om een nieuwe wachtwoord aan te vragen.'}
+                        </p>
                     );
                 } else if (error.response && error.response.status === 405) {
                     setErrorMessage(

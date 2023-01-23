@@ -54,6 +54,12 @@ export default {
         return axiosInstance.post(requestUrl, housingFileSpecification);
     },
 
+    updateHousingFileSpecification: housingFileSpecification => {
+        const requestUrl = `${URL_HOUSING_FILE}/housing-file-specification/${housingFileSpecification.id}/update`;
+
+        return axiosInstance.post(requestUrl, housingFileSpecification);
+    },
+
     deleteSpecification: housingFileSpecificationId => {
         const requestUrl = `${URL_HOUSING_FILE}/housing-file-specification/${housingFileSpecificationId}/delete`;
 

@@ -128,7 +128,9 @@ Route::namespace('Api')
         Route::post('/organisation/{organisation}', 'Organisation\OrganisationController@update');
         Route::get('/organisation/peek', 'Organisation\OrganisationController@peek');
 
-        Route::get('/coach/peek', 'Contact\ContactController@peekCoach');
+        Route::get('/coach-peek', 'Contact\ContactController@peekCoach');
+        Route::get('/project-manager-peek', 'Contact\ContactController@peekProjectManager');
+        Route::get('/external-party-peek', 'Contact\ContactController@peekExternalParty');
 
         Route::post('/contact-note', 'ContactNote\ContactNoteController@store');
         Route::post('/contact-note/{contactNote}', 'ContactNote\ContactNoteController@update');
@@ -229,6 +231,10 @@ Route::namespace('Api')
         Route::post('campaign/{campaign}/organisation/{organisation}/detach', 'Campaign\CampaignController@detachOrganisation');
         Route::post('campaign/{campaign}/coach/{coach}/attach', 'Campaign\CampaignController@attachCoach');
         Route::post('campaign/{campaign}/coach/{coach}/detach', 'Campaign\CampaignController@detachCoach');
+        Route::post('campaign/{campaign}/projectManager/{projectManager}/attach', 'Campaign\CampaignController@attachProjectManager');
+        Route::post('campaign/{campaign}/projectManager/{projectManager}/detach', 'Campaign\CampaignController@detachProjectManager');
+        Route::post('campaign/{campaign}/externalParty/{externalParty}/attach', 'Campaign\CampaignController@attachExternalParty');
+        Route::post('campaign/{campaign}/externalParty/{externalParty}/detach', 'Campaign\CampaignController@detachExternalParty');
 
         Route::get('measure/grid', 'Measure\MeasureController@grid');
         Route::get('measure/peek', 'Measure\MeasureController@peek');
@@ -357,6 +363,7 @@ Route::namespace('Api')
         Route::post('project/revenues-kwh/{revenuesKwh}/delete', 'Project\RevenuesKwhController@destroy');
 
         Route::get('project/revenue-parts-kwh/{revenuePartsKwh}', 'Project\RevenuePartsKwhController@show');
+        Route::get('project/revenue-parts-kwh-for-report/{revenuePartsKwh}', 'Project\RevenuePartsKwhController@showForReport');
         Route::get('project/revenue-parts-kwh/{revenuePartsKwh}/csv', 'Project\RevenuePartsKwhController@csv');
         Route::post('project/revenue-parts-kwh/{revenuePartsKwh}/distribution-parts-kwh', 'Project\RevenuePartsKwhController@getRevenueDistributionParts');
 

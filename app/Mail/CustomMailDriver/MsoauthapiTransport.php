@@ -85,6 +85,8 @@ class MsoauthapiTransport extends Transport
 //                Log::info($child->toString());
                 if ($child->getHeaders() && $child->getHeaders()->get('content-disposition')) {
                     $filename = str_replace('attachment; filename=', null, $child->getHeaders()->get('content-disposition')->getFieldBody());
+                    $filename = str_replace('"', '', $filename);
+//                    Log::info('filename');
 //                    Log::info($filename);
                     $attachment = new FileAttachment();
                     $attachment->setName($filename);

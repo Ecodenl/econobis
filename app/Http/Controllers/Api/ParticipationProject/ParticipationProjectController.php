@@ -209,6 +209,8 @@ class ParticipationProjectController extends ApiController
 
     public function show(ParticipantProject $participantProject)
     {
+        set_time_limit(60);
+
         $this->authorize('view', ParticipantProject::class);
 
         $participantProject->load([
@@ -517,7 +519,7 @@ class ParticipationProjectController extends ApiController
         $this->authorize('manage', ParticipantProject::class);
 
         $data = $requestInput
-            ->date('dateTerminated')->validate('nullable|date')->alias('date_terminated')->next()
+            ->date('dateTerminated')->validate('nullable|date')->alias('date_terminated')->whenMissing(null)->next()
             ->get();
 
         // Set terminated date

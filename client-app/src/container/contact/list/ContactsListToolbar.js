@@ -118,7 +118,7 @@ class ContactsListToolbar extends Component {
                             <ButtonIcon
                                 iconName={'glyphicon-ok'}
                                 onClickAction={this.props.toggleShowCheckboxList}
-                                title="Contactselectie voor groep of verwijderen contacten maken"
+                                title="Contactselectie maken"
                             />
                         )}
                         <ButtonIcon

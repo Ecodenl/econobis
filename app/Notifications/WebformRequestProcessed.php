@@ -33,8 +33,12 @@ class WebformRequestProcessed extends Notification
     public function toMail($notifiable)
     {
         $mail = (new MailMessage)
-                    ->subject('Webformulier log')
-                    ->greeting('Webformulier log');
+            ->subject('Webformulier log')
+            ->greeting(" ")
+            ->line('<p style="text-align:center">
+            <a href="' . config('app.url') . '" style="box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif, \'Apple Color Emoji\', \'Segoe UI Emoji\', \'Segoe UI Symbol\'; position: relative; color: #3d4852; font-size: 19px; font-weight: bold; text-decoration: none; display: inline-block;" target="_blank">
+' . config('app.name')  . '</a></p>')
+            ->line("<h1>Webformulier log</h1>");
 
         $webformName = $this->webform ? $this->webform->name : 'Onbekend webformulier';
         if($this->success) $mail->line('Er is een aanroep naar webformulier ' . $webformName . ' succesvol verwerkt.');

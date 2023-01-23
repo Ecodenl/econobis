@@ -32,7 +32,7 @@ class OrganisationController extends ApiController
             [
                 'ownerId' => 'exists:users,id',
                 'didAgreeAvg' => 'boolean',
-                'isCoach' => 'boolean',
+                'inspectionPersonTypeId' => 'string',
                 'iban' => '',
                 'ibanAttn' => '',
                 'typeId' => 'exists:organisation_types,id',
@@ -47,6 +47,7 @@ class OrganisationController extends ApiController
 
         $contactData = $this->sanitizeData($request['organisation'], [
             'ownerId' => 'nullable',
+            'inspectionPersonTypeId' => 'nullable',
             'liable' => 'boolean',
             'typeId' => 'nullable',
             'industryId' => 'nullable',
@@ -60,7 +61,7 @@ class OrganisationController extends ApiController
                 'iban_attn' => $contactData['iban_attn'],
                 'owner_id' => $contactData['owner_id'],
                 'did_agree_avg' => $contactData['did_agree_avg'],
-                'is_coach' => $contactData['is_coach'],
+                'inspection_person_type_id' => isset($contactData['inspection_person_type_id']) ? $contactData['inspection_person_type_id'] : null,
             ];
 
         $organisationArray =
@@ -73,6 +74,7 @@ class OrganisationController extends ApiController
             ];
 
         $contact = new Contact($contactArray);
+
         $organisation = new Organisation($organisationArray);
 
         $emailAddress = null;
@@ -167,12 +169,12 @@ class OrganisationController extends ApiController
         $this->authorize('update', $organisation);
 
         $contactData = $request->validate([
+            'inspectionPersonTypeId' => 'string',
             'iban' => '',
             'ibanAttn' => '',
             'liable' => 'boolean',
             'liabilityAmount' => 'numeric',
             'didAgreeAvg' => 'boolean',
-            'isCoach' => 'boolean',
             'isCollectMandate' => 'boolean',
             'collectMandateCode' => '',
             'collectMandateSignatureDate' => 'date',
@@ -193,6 +195,7 @@ class OrganisationController extends ApiController
 
         $contactData = $this->sanitizeData($contactData, [
             'ownerId' => 'nullable',
+            'inspectionPersonTypeId' => 'nullable',
             'liable' => 'boolean',
             'isCollectMandate' => 'boolean',
             'collectMandateSignatureDate' => 'nullable',
@@ -204,6 +207,7 @@ class OrganisationController extends ApiController
         if(isset($contactData['iban']) && $contact->iban != $contactData['iban']) $this->authorize('updateIban', $contact);
 
         $contact->fill($this->arrayKeysToSnakeCase($contactData));
+        $contact->inspection_person_type_id = isset($contactData['inspection_person_type_id']) ? $contactData['inspection_person_type_id'] : null;
 
         $contact->save();
 

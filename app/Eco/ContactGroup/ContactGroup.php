@@ -6,6 +6,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\InspectionPersonType\InspectionPersonType;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Task\Task;
 use App\Eco\Team\Team;
@@ -111,6 +112,13 @@ class ContactGroup extends Model
         }
 
         return ContactGroupType::get($this->type_id);
+    }
+
+    public function getInspectionPersonType()
+    {
+        if(!$this->inspection_person_type_id) return null;
+
+        return InspectionPersonType::get($this->inspection_person_type_id);
     }
 
     public function filters()

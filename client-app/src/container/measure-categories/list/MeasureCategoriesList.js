@@ -27,8 +27,8 @@ const MeasureCategoriesLists = ({ measureCategories, hasError, isLoading }) => {
                     <tr className="thead-title">
                         <DataTableHeadTitle title={'Omschrijving'} width={'30%'} />
                         <DataTableHeadTitle title={'Maak kans'} width={'20%'} />
-                        <DataTableHeadTitle title={'Maak Offerteverzoek'} width={'20%'} />
-                        <DataTableHeadTitle title={'Email Offerteverzoek'} width={'20%'} />
+                        <DataTableHeadTitle title={'Maak Kansactie'} width={'20%'} />
+                        <DataTableHeadTitle title={'Email Kansactie'} width={'20%'} />
                         <DataTableHeadTitle title={''} width={'10%'} />
                     </tr>
                 </DataTableHead>

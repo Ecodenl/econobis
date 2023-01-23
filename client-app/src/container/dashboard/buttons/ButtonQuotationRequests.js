@@ -25,7 +25,7 @@ class ButtonQuotationRequests extends Component {
             <div className={this.props.size} onClick={() => hashHistory.push(`/offerteverzoeken`)}>
                 <div className="panel panel-default" id="dashboardbutton-5">
                     <div className="panel-body">
-                        <h4 className="text-center text-bold">OFFERTE VERZOEKEN</h4>
+                        <h4 className="text-center text-bold">Kansacties</h4>
                         <h4 className="text-center text-bold">{this.state.amountActiveQuotationsRequests}</h4>
                     </div>
                 </div>

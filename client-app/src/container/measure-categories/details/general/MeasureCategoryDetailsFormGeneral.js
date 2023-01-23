@@ -54,7 +54,7 @@ class MeasureCategoryDetailsFormGeneral extends Component {
         );
         const explanationWfEmailQuotationRequest = (
             <span>
-                Er zal automatisch een email verstuurd worden naar de verantwoordelijke als nieuwe offerte verzoek wordt
+                Er zal automatisch een email verstuurd worden naar de verantwoordelijke als nieuwe kansactie wordt
                 aangemaakt.
             </span>
         );

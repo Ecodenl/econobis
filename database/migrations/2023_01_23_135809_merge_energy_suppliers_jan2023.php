@@ -51,18 +51,7 @@ class MergeEnergySuppliersJan2023 extends Migration
                 ->update(['energy_supplier_id' => $energySupplierIdMergeTo]);
             Log::info('addressEnergySupplier ' . $addressEnergySupplier->id . ' omgezet');
         }
-        $projectRevenueDistributions = ProjectRevenueDistribution::where('es_id', $energySupplierIdMergeFrom)->get();
-        foreach ($projectRevenueDistributions as $projectRevenueDistribution) {
-            $projectRevenueDistribution->es_id = $energySupplierIdMergeTo;
-            if ($projectRevenueDistribution->energy_supplier_name == $energySupplierNameMergeFrom) {
-                $projectRevenueDistribution->energy_supplier_name = $energySupplierNameMergeTo;
-            } else {
-                Log::error('Naam projectRevenueDistribution ' . $projectRevenueDistribution->id . ' NIET gewijzigd');
-            }
-            $projectRevenueDistribution->save();
-            Log::info('projectRevenueDistribution ' . $projectRevenueDistribution->id . ' omgezet');
-        }
-        $revenueDistributionPartsKwhs = RevenueDistributionPartsKwh::where('es_id', $energySupplierIdMergeFrom)->get();
+        $revenueDistributionPartsKwhs = RevenueDistributionPartsKwh::where('es_id', $energySupplierIdMergeFrom)->where('status', '!=', 'processed')->get();
         foreach ($revenueDistributionPartsKwhs as $revenueDistributionPartsKwh) {
             $revenueDistributionPartsKwh->es_id = $energySupplierIdMergeTo;
             if ($revenueDistributionPartsKwh->energy_supplier_name == $energySupplierNameMergeFrom) {

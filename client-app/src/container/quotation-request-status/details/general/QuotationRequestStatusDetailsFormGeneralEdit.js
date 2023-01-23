@@ -145,7 +145,7 @@ class QuotationRequestStatusDetailsFormGeneralEdit extends Component {
                                 </div>
                                 <div className="row">
                                     <InputReactSelect
-                                        label={'Template email bij deze status'}
+                                        label={'Template e-mail bij deze status'}
                                         divSize={'col-sm-10'}
                                         name={'emailTemplateIdWf'}
                                         options={this.state.emailTemplates}
@@ -158,7 +158,7 @@ class QuotationRequestStatusDetailsFormGeneralEdit extends Component {
                                 </div>
                                 <div className="row">
                                     <InputText
-                                        label={'Aantal dagen email na deze status'}
+                                        label={'Aantal dagen e-mail na deze status'}
                                         divSize={'col-sm-10'}
                                         type={'number'}
                                         id={'numberOfDaysToSendEmail'}

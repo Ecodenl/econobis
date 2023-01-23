@@ -51,7 +51,7 @@ class QuotationRequestStatusDetailsFormGeneral extends Component {
                 <br />
                 De verzenddatum wordt dan bepaald, rekening houdend met het opgegeven aantal dagen.
                 <br />
-                Bij aantal dagen 0 zal de email direct verzonden worden.
+                Bij aantal dagen 0 zal de e-mail direct verzonden worden.
             </span>
         );
 

@@ -371,7 +371,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                     <Nav id="offerte-verzoek-statussen">
                         <NavText>
                             <Link className="sidebar-link" to="offerte-verzoek-statussen">
-                                Offerte verzoek statussen
+                                Kansactie statussen
                             </Link>
                         </NavText>
                     </Nav>

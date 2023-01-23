@@ -180,7 +180,7 @@ function CampaignFormEdit({
 
             <div className="row">
                 <InputMultiSelect
-                    label="Acties voor kans"
+                    label="Aangeboden kansacties"
                     name="opportunityActionIds"
                     value={formState.opportunityActionIdsSelected}
                     options={opportunityActions}

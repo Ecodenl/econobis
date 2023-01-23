@@ -162,7 +162,7 @@ class SystemData extends JsonResource
             'buildingTypes' => BuildingType::select(['id', 'name'])->get(),
             'campaigns' => Campaign::select(['id', 'name'])->get(),
             'campaignStatuses' => FullEnumWithIdAndName::collection(CampaignStatus::all()),
-            'campaignTypes' => FullEnumWithIdAndName::collection(CampaignType::all()),
+            'campaignTypes' => FullEnumWithIdAndName::collection(CampaignType::orderBy('name')->get()),
             'opportunityActions' => GenericResource::collection(OpportunityAction::all()),
             'energySupplierStatuses' => GenericResource::collection(EnergySupplierStatus::all()),
             'energySupplierTypes' => GenericResource::collection(EnergySupplierType::all()),

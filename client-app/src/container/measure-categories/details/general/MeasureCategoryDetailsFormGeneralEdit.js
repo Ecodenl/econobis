@@ -223,7 +223,7 @@ class MeasureCategoryDetailsFormGeneralEdit extends Component {
 
                                 <div className="row">
                                     <InputToggle
-                                        label={'Maak offerte verzoek'}
+                                        label={'Maak kansactie'}
                                         divSize={'col-sm-10'}
                                         name={'usesWfCreateQuotationRequest'}
                                         value={usesWfCreateQuotationRequest}
@@ -235,7 +235,7 @@ class MeasureCategoryDetailsFormGeneralEdit extends Component {
                                     <React.Fragment>
                                         <div className="row">
                                             <ViewText
-                                                label={'Uitleg workflow maak offerte verzoek'}
+                                                label={'Uitleg workflow maak kansactie'}
                                                 divSize={'col-sm-10'}
                                                 value={this.props.explanationWfCreateQuotationRequest}
                                                 className={'col-sm-10 form-group'}
@@ -243,7 +243,7 @@ class MeasureCategoryDetailsFormGeneralEdit extends Component {
                                         </div>
                                         <div className="row">
                                             <InputReactSelect
-                                                label={'Offerte verzoek voor'}
+                                                label={'Kansactie voor'}
                                                 divSize={'col-sm-10'}
                                                 name={'organisationIdWfCreateQuotationRequest'}
                                                 options={this.state.organisations}
@@ -256,7 +256,7 @@ class MeasureCategoryDetailsFormGeneralEdit extends Component {
                                         </div>
                                         <div className="row">
                                             <InputToggle
-                                                label={'Stuur offerte verzoek mail'}
+                                                label={'Stuur kansactie mail'}
                                                 divSize={'col-sm-10'}
                                                 name={'usesWfEmailQuotationRequest'}
                                                 value={usesWfEmailQuotationRequest}
@@ -268,7 +268,7 @@ class MeasureCategoryDetailsFormGeneralEdit extends Component {
                                             <React.Fragment>
                                                 <div className="row">
                                                     <ViewText
-                                                        label={'Uitleg workflow stuur offerte verzoek mail'}
+                                                        label={'Uitleg workflow stuur kansactie mail'}
                                                         divSize={'col-sm-10'}
                                                         value={this.props.explanationWfEmailQuotationRequest}
                                                         className={'col-sm-10 form-group'}
@@ -276,7 +276,7 @@ class MeasureCategoryDetailsFormGeneralEdit extends Component {
                                                 </div>
                                                 <div className="row">
                                                     <InputReactSelect
-                                                        label={'Email template Offerte verzoek'}
+                                                        label={'Email template kansactie'}
                                                         divSize={'col-sm-10'}
                                                         name={'emailTemplateIdWfCreateQuotationRequest'}
                                                         options={this.state.emailTemplates}

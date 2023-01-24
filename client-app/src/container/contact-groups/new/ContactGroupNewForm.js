@@ -340,7 +340,7 @@ class ContactGroupNewForm extends Component {
 
                 <div className="row">
                     <InputReactSelect
-                        label={'Rol in besparingsreis'}
+                        label={'Rol in buurtaanpak'}
                         divSize={'col-sm-6'}
                         name={'inspectionPersonTypeId'}
                         options={this.props.inspectionPersonTypes}
@@ -348,7 +348,7 @@ class ContactGroupNewForm extends Component {
                         onChangeAction={this.handleReactSelectChange}
                         clearable={true}
                         size={'col-sm-5'}
-                        textToolTip={`Contact die worden toegevoegd aan deze groep krijgen dezelfde waarde als Rol in besparingsreis`}
+                        textToolTip={`Contact die worden toegevoegd aan deze groep krijgen dezelfde waarde als Rol in buurtaanpak`}
                     />
                 </div>
 

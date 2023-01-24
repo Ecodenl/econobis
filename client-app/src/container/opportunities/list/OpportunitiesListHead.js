@@ -38,10 +38,10 @@ const OpportunitiesListHead = props => {
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort sortColumn={'campaign'} title={'Campagne'} width={'10%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status kans'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'amountOfQuotationRequests'}
-                title={'Aantal offertes'}
+                title={'Aantal kansacties'}
                 width={'9%'}
                 setSorts={setSorts}
             />

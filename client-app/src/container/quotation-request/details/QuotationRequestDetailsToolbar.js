@@ -33,7 +33,7 @@ class QuotationRequestDetailsToolbar extends Component {
         let opportunityActionName = opportunityAction ? opportunityAction.name : 'actie';
         let isPendingStatus = status ? status.isPendingStatus : true;
         let measureCategoryName = measureCategory ? measureCategory.name : '';
-        let fullName = intake && intake.contact ? intake.contact.fullName : '';
+        let fullName = intake && intake.contact ? intake.contact.fullNameFnf : '';
         let fullAddress = intake ? intake.fullAddress : '';
 
         let quotationToolbarText =
@@ -41,7 +41,7 @@ class QuotationRequestDetailsToolbar extends Component {
             measureCategoryName != undefined &&
             fullName != undefined &&
             fullAddress != undefined
-                ? `${opportunityActionName} ${measureCategoryName} voor ${fullName} op ${fullAddress}`
+                ? `Kansactie ${opportunityActionName} ${measureCategoryName} voor ${fullName} op ${fullAddress}`
                 : '';
 
         return (

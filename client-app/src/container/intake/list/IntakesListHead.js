@@ -25,7 +25,7 @@ const IntakesListHead = props => {
                 width={'15%'}
                 setSorts={setSorts}
             />
-            <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status'} width={'15%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status intakes'} width={'15%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'campaign'} title={'Campagne'} width={'10%'} setSorts={setSorts} />
             <th width="5%" />
         </tr>

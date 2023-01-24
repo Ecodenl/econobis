@@ -13,7 +13,6 @@ const OpportunityDetailsQuotationRequestsList = props => {
                 <div className="col-sm-2">Datum opname</div>
                 <div className="col-sm-2">Datum afspraak</div>
                 <div className="col-sm-2">Status</div>
-                <div className="col-sm-2">Uitgebracht</div>
             </div>
             {props.quotationRequests.length > 0 ? (
                 props.quotationRequests.map(quotationRequest => {
@@ -25,7 +24,7 @@ const OpportunityDetailsQuotationRequestsList = props => {
                     );
                 })
             ) : (
-                <div>Geen offerteverzoeken bekend.</div>
+                <div>Geen kansacties bekend.</div>
             )}
         </div>
     );

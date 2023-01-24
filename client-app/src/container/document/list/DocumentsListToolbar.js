@@ -60,7 +60,7 @@ Voor Groepen : Menu > Groepen beheer > Open groep<br/>
 Voor Administratie: Menu > Instellingen > Administraties<br/>
 Voor Campagne: Menu > Marketing > Open campagne<br/>
 Voor Kans : Menu > Energie besparing > Kansen > Open kans<br/>
-Voor Offerteverzoek : Menu > Energie besparing > kansacties > Open verzoek<br/>
+Voor Offerteverzoek : Menu > Energie besparing > Kansacties > Open verzoek<br/>
 Voor Project : Menu > Projecten > Open project<br/>
 Voor Deelnemer Project: Menu > Projecten > Open project > Open deelnemer<br/>
 Voor Order: Menu > Financieel > Kies administratie > Open order<br/>

@@ -37,7 +37,7 @@ class DocumentGroup extends EnumWithIdAndName
             new static('privacy', 'Privacyverklaring'),
             new static('quickscan', 'Quickscan'),
             new static('consultation', 'Rapportage coach'),
-            new static('grant-application', 'Subsidie aanvraag'),
+            new static('budget-request', 'Budgetaanvraag'),
             new static('pre-registration', 'Voorinschrijving'),
             new static('financial-overview', 'Waardestaat'),
             new static('default-email-attachment', 'Standaard E-mail bijlage'),

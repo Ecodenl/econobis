@@ -457,13 +457,13 @@ class ContactNewFormPersonal extends Component {
                 </div>
 
                 <div className="row">
-                    <InputReactSelect
+                    <InputSelect
                         label={'Rol in besparingsreis'}
-                        divSize={'col-sm-6'}
+                        size={'col-xs-6'}
                         name={'inspectionPersonTypeId'}
                         options={this.props.inspectionPersonTypes}
                         value={inspectionPersonTypeId}
-                        onChangeAction={this.handleReactSelectChange}
+                        onChangeAction={this.handleInputChange}
                         clearable={true}
                     />
                 </div>

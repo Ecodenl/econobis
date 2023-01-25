@@ -291,7 +291,6 @@ class QuotationRequestNewFormGeneral extends Component {
                             value={dateRecorded}
                             onChangeAction={this.handleInputChangeDate}
                         />
-                        ) : null}
                         <InputTime
                             label={'Tijd opname'}
                             size={'col-sm-6'}

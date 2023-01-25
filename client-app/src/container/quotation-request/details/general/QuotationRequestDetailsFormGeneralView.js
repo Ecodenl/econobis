@@ -49,21 +49,23 @@ const QuotationRequestDetailsFormGeneralView = props => {
                 />
             </div>
 
-            {organisationOrCoach.typeId === 'organisation' && (
-                <div className="row">
-                    <ViewText
-                        label={'Organisatie contactpersoon'}
-                        value={
-                            organisationOrCoach.contactPerson ? organisationOrCoach.contactPerson.contact.fullName : ''
-                        }
-                        link={
-                            organisationOrCoach.contactPerson
-                                ? 'contact/' + organisationOrCoach.contactPerson.contact.id
-                                : ''
-                        }
-                    />
-                </div>
-            )}
+
+                {organisationOrCoach && organisationOrCoach.typeId === 'organisation' && (
+                    <div className="row">
+                        <ViewText
+                            label={'Organisatie contactpersoon'}
+                            value={
+                                organisationOrCoach.contactPerson ? organisationOrCoach.contactPerson.contact.fullName : ''
+                            }
+                            link={
+                                organisationOrCoach.contactPerson
+                                    ? 'contact/' + organisationOrCoach.contactPerson.contact.id
+                                    : ''
+                            }
+                        />
+                    </div>
+                )}
+
 
             <div className="row">
                 <ViewText

@@ -129,7 +129,7 @@ class QuotationRequestController extends ApiController
         $this->authorize('manage', QuotationRequest::class);
 
         $data = $request->validate([
-            'organisationOrCoachId' => 'required|exists:contacts,id',
+            'organisationOrCoachId' => 'nullable|exists:contacts,id',
             'projectManagerId' => 'nullable|exists:contacts,id',
             'externalPartyId' => 'nullable|exists:contacts,id',
             'opportunityId' => 'required|exists:opportunities,id',
@@ -151,12 +151,14 @@ class QuotationRequestController extends ApiController
         $quotationRequest = new QuotationRequest();
 
         //required
-        $quotationRequest->contact_id = $data['organisationOrCoachId'];
         $quotationRequest->opportunity_id = $data['opportunityId'];
         $quotationRequest->status_id = $data['statusId'];
         $quotationRequest->opportunity_action_id = $data['opportunityActionId'];
 
         //optional
+        if ($data['organisationOrCoachId']) {
+            $quotationRequest->contact_id = $data['organisationOrCoachId'];
+        }
         if ($data['projectManagerId']) {
             $quotationRequest->project_manager_id = $data['projectManagerId'];
         }
@@ -229,7 +231,7 @@ class QuotationRequestController extends ApiController
         $this->authorize('manage', QuotationRequest::class);
 
         $data = $request->validate([
-            'organisationOrCoachId' => 'required|exists:contacts,id',
+            'organisationOrCoachId' => 'nullable|exists:contacts,id',
             'projectManagerId' => 'nullable|exists:contacts,id',
             'externalPartyId' => 'nullable|exists:contacts,id',
             'opportunityId' => 'required|exists:opportunities,id',
@@ -248,12 +250,14 @@ class QuotationRequestController extends ApiController
         ]);
 
         //required
-        $quotationRequest->contact_id = $data['organisationOrCoachId'];
         $quotationRequest->opportunity_id = $data['opportunityId'];
         $quotationRequest->status_id = $data['statusId'];
         $quotationRequest->opportunity_action_id = $data['opportunityActionId'];
 
         //optional
+        if ($data['organisationOrCoachId']) {
+            $quotationRequest->contact_id = $data['organisationOrCoachId'];
+        }
         if ($data['projectManagerId']) {
             $quotationRequest->project_manager_id = $data['projectManagerId'];
         }

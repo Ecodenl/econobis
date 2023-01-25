@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
-import BigCalendar from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
 moment.locale('nl');
 
-const localizer = BigCalendar.momentLocalizer(moment);
-
 import TasksAPI from '../../api/task/TasksAPI';
 import { setSelectedView, setSelectedDate } from '../../actions/calendar/CalendarActions';
+import { Calendar } from 'react-big-calendar';
 
-class Calendar extends Component {
+const localizer = Calendar.momentLocalizer(moment);
+
+class CalendarBody extends Component {
     constructor(props) {
         super(props);
 
@@ -110,7 +110,7 @@ class Calendar extends Component {
         };
 
         return (
-            <BigCalendar
+            <Calendar
                 date={new Date(this.state.selectedDate)}
                 defaultView={this.state.selectedView}
                 endAccessor="end"
@@ -147,4 +147,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Calendar);
+export default connect(mapStateToProps, mapDispatchToProps)(CalendarBody);

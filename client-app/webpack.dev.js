@@ -1,5 +1,5 @@
 const webpack = require('webpack');
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const common = require('./webpack.common.js');
 const path = require('path');
@@ -14,8 +14,7 @@ module.exports = merge(common, {
     },
     devtool: 'source-map',
     devServer: {
-        contentBase: './dist',
-        hot: true,
+        static: './dist',
     },
     plugins: [
         new HtmlWebpackPlugin({

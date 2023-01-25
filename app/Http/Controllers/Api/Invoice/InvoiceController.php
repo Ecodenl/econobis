@@ -23,7 +23,7 @@ use App\Http\Resources\Invoice\InvoicePeek;
 use App\Http\Resources\Invoice\SendInvoice;
 use App\Jobs\Invoice\SendAllInvoices;
 use App\Jobs\Invoice\SendInvoiceNotifications;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;

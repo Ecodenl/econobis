@@ -37,7 +37,7 @@ use App\Jobs\RevenueKwh\CreateRevenuePartsKwhReport;
 use App\Jobs\RevenueKwh\ProcessRevenuesKwh;
 use App\Jobs\RevenueKwh\ReportEnergySupplierExcel;
 use App\Jobs\RevenueKwh\UpdateRevenuePartsKwh;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

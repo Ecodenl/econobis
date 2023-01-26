@@ -178,6 +178,14 @@ class ContactGroupNewForm extends Component {
                 ...this.state.contactGroup,
                 contactGroupIds: contactGroupIds,
                 contactGroupIdsSelected: selectedOption,
+                sendEmailNewContactLink:
+                    selectedOption && selectedOption.length > 0
+                        ? false
+                        : this.state.contactGroup.sendEmailNewContactLink,
+                emailTemplateIdNewContactLink:
+                    selectedOption && selectedOption.length > 0
+                        ? ''
+                        : this.state.contactGroup.emailTemplateIdNewContactLink,
             },
         });
     };
@@ -320,8 +328,13 @@ class ContactGroupNewForm extends Component {
                     <InputToggle
                         label={'Verstuur e-mail bij nieuwe contactkoppeling'}
                         name={'sendEmailNewContactLink'}
-                        value={sendEmailNewContactLink}
+                        value={
+                            contactGroupIdsSelected && contactGroupIdsSelected.length > 0
+                                ? false
+                                : sendEmailNewContactLink
+                        }
                         onChangeAction={this.handleInputChange}
+                        disabled={contactGroupIdsSelected && contactGroupIdsSelected.length > 0}
                     />
                     {sendEmailNewContactLink == true && (
                         <InputReactSelect
@@ -375,32 +388,30 @@ class ContactGroupNewForm extends Component {
                         value={contactGroupIdsSelected}
                         onChangeAction={this.handleContactGroupIds}
                     />
-                    {contactGroupIds && (
-                        <div className={'col-xs-6'}>
-                            <div className={'row'}>
-                                <div className={'col-xs-6'}>
-                                    <input
-                                        onChange={() => this.handleChangeComposedGroupType('one')}
-                                        type="radio"
-                                        name="composedGroupType"
-                                        value="one"
-                                        defaultChecked={true}
-                                    />
-                                    In één van de groepen
-                                </div>
-                                <div className={'col-xs-6'}>
-                                    <input
-                                        onChange={() => this.handleChangeComposedGroupType('all')}
-                                        type="radio"
-                                        name="composedGroupType"
-                                        value="all"
-                                    />
-                                    In alle groepen
-                                </div>
-                            </div>
-                        </div>
-                    )}
                 </div>
+                {contactGroupIdsSelected && contactGroupIdsSelected.length > 1 && (
+                    <div className={'row'}>
+                        <div className={'col-sm-3'}></div>
+                        <div className={'col-sm-9'}>
+                            <input
+                                onChange={() => this.handleChangeComposedGroupType('one')}
+                                type="radio"
+                                name="composedGroupType"
+                                value="one"
+                                defaultChecked={true}
+                            />{' '}
+                            In één van de groepen
+                            <br />
+                            <input
+                                onChange={() => this.handleChangeComposedGroupType('all')}
+                                type="radio"
+                                name="composedGroupType"
+                                value="all"
+                            />{' '}
+                            In alle groepen
+                        </div>
+                    </div>
+                )}
 
                 {this.state.errorMessage && (
                     <div className={'row'}>

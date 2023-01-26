@@ -101,6 +101,7 @@ use App\Http\Resources\QuotationRequest\FullQuotationRequestStatus;
 use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\Title\FullTitle;
 use App\Http\Resources\User\UserPeek;
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\App;
 use Spatie\Permission\Models\Permission;
@@ -145,7 +146,7 @@ class SystemData extends JsonResource
          * en dan de rest op alfabetische volgorde
          */
 
-        $sortedEnergySuppliers = EnergySupplier::all()->sortBy(function ($energySupplier) {
+        $sortedEnergySuppliers = EnergySupplier::whereNull('end_date')->get()->sortBy(function ($energySupplier) {
             if($energySupplier->order){
                 return $energySupplier->order;
             }

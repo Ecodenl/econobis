@@ -249,7 +249,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                                         defaultChecked={
                                             this.props.contactGroupDetails.contactGroupComposedType === 'one'
                                         }
-                                    />
+                                    />{' '}
                                     <label htmlFor="one">In één van de groepen</label>
                                 </div>
                                 <div className={'col-xs-6'}>
@@ -262,8 +262,8 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                                         defaultChecked={
                                             this.props.contactGroupDetails.contactGroupComposedType === 'all'
                                         }
-                                    />
-                                    <label htmlFor="all">In alle groepen</label>
+                                    />{' '}
+                                    <label htmlFor="all"> In alle groepen</label>
                                 </div>
                             </div>
                         </div>
@@ -410,51 +410,53 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                     )}
                 </div>
 
-                <div className="row">
-                    <InputToggle
-                        label={'Verstuur e-mail bij nieuwe contactkoppeling'}
-                        name={'sendEmailNewContactLink'}
-                        value={sendEmailNewContactLink}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    {sendEmailNewContactLink == true && (
-                        <InputReactSelect
-                            label={'Template email nieuwe contactkoppeling'}
-                            divSize={'col-sm-6'}
-                            name={'emailTemplateIdNewContactLink'}
-                            options={this.state.emailTemplates}
-                            value={emailTemplateIdNewContactLink}
-                            onChangeAction={this.handleReactSelectChange}
-                            isLoading={this.state.peekLoading.emailTemplates}
-                            required={sendEmailNewContactLink ? 'required' : ''}
-                            error={this.state.errors.emailTemplateIdNewContactLink}
-                        />
-                    )}
-                </div>
-                {/*todo WM: check of filter op static er niet af kan/moet voor Meenemen in export groep rapportage? Voorlopig niet */}
                 {this.props.contactGroupDetails.type.id === 'static' && (
-                    <div className="row">
-                        <InputToggle
-                            label={'Meenemen in export groep rapportage'}
-                            name={'includeIntoExportGroupReport'}
-                            value={includeIntoExportGroupReport}
-                            onChangeAction={this.handleInputChange}
-                            size={'col-sm-5'}
-                            textToolTip={`Als je deze optie op "AAN" zet zal deze groep getoond worden in de export groepen rapportage op de "groepen beheer" pagina.`}
-                        />
-                        <InputReactSelect
-                            label={'Rol in besparingsreis'}
-                            divSize={'col-sm-6'}
-                            name={'inspectionPersonTypeId'}
-                            options={this.props.inspectionPersonTypes}
-                            value={inspectionPersonTypeId}
-                            onChangeAction={this.handleReactSelectChange}
-                            clearable={true}
-                            disabled={numberOfContacts > 0}
-                            size={'col-sm-5'}
-                            textToolTip={`Contact die worden toegevoegd aan deze groep krijgen dezelfde waarde als Rol in besparingsreis`}
-                        />
-                    </div>
+                    <>
+                        <div className="row">
+                            <InputToggle
+                                label={'Verstuur e-mail bij nieuwe contactkoppeling'}
+                                name={'sendEmailNewContactLink'}
+                                value={sendEmailNewContactLink}
+                                onChangeAction={this.handleInputChange}
+                            />
+                            {sendEmailNewContactLink == true && (
+                                <InputReactSelect
+                                    label={'Template email nieuwe contactkoppeling'}
+                                    divSize={'col-sm-6'}
+                                    name={'emailTemplateIdNewContactLink'}
+                                    options={this.state.emailTemplates}
+                                    value={emailTemplateIdNewContactLink}
+                                    onChangeAction={this.handleReactSelectChange}
+                                    isLoading={this.state.peekLoading.emailTemplates}
+                                    required={sendEmailNewContactLink ? 'required' : ''}
+                                    error={this.state.errors.emailTemplateIdNewContactLink}
+                                />
+                            )}
+                        </div>
+                        <div className="row">
+                            {/*todo WM: check of filter op static er niet af kan/moet voor Meenemen in export groep rapportage? Voorlopig niet */}
+                            <InputToggle
+                                label={'Meenemen in export groep rapportage'}
+                                name={'includeIntoExportGroupReport'}
+                                value={includeIntoExportGroupReport}
+                                onChangeAction={this.handleInputChange}
+                                size={'col-sm-5'}
+                                textToolTip={`Als je deze optie op "AAN" zet zal deze groep getoond worden in de export groepen rapportage op de "groepen beheer" pagina.`}
+                            />
+                            <InputReactSelect
+                                label={'Rol in buurtaanpak'}
+                                divSize={'col-sm-6'}
+                                name={'inspectionPersonTypeId'}
+                                options={this.props.inspectionPersonTypes}
+                                value={inspectionPersonTypeId}
+                                onChangeAction={this.handleReactSelectChange}
+                                clearable={true}
+                                disabled={numberOfContacts > 0}
+                                size={'col-sm-5'}
+                                textToolTip={`Contact die worden toegevoegd aan deze groep krijgen dezelfde waarde als Rol in buurtaanpak`}
+                            />
+                        </div>
+                    </>
                 )}
 
                 <div className="row">

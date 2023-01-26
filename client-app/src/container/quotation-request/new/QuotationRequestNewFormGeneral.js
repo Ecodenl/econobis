@@ -186,7 +186,7 @@ class QuotationRequestNewFormGeneral extends Component {
                         error={this.state.errors.organisation}
                     />
                     <InputText
-                        label={'Verzoek voor'}
+                        label={'Verzoek voor bewoner'}
                         name={'fullName'}
                         value={fullName}
                         onChange={() => {}}
@@ -201,7 +201,6 @@ class QuotationRequestNewFormGeneral extends Component {
                         value={projectManagerId}
                         options={projectManagers}
                         onChangeAction={this.handleInputChange}
-                        required={'required'}
                         error={this.state.errors.projectManagerId}
                     />
                     <InputText
@@ -220,7 +219,6 @@ class QuotationRequestNewFormGeneral extends Component {
                         value={externalPartyId}
                         options={externalParties}
                         onChangeAction={this.handleInputChange}
-                        required={'required'}
                         error={this.state.errors.externalPartyId}
                     />
                 </div>

@@ -443,9 +443,9 @@ class ContactNewFormOrganisation extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
-                {/* vooralsnog alleen bij persons, organisations kunnen al gekoppeld worden aan offerteverzoeken */}
+                {/* vooralsnog alleen bij persons, organisations kunnen al gekoppeld worden aan kansactie */}
                 {/*<div className="row">*/} {/*<InputReactSelect*/}
-                {/*    label={'Rol in besparingsreis'}*/}
+                {/*    label={'Rol in buurtaanpak'}*/}
                 {/*    divSize={'col-sm-6'}*/}
                 {/*    name={'inspectionPersonTypeId'}*/}
                 {/*    options={this.props.inspectionPersonTypes}*/}

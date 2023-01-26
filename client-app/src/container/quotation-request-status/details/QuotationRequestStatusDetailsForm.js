@@ -8,11 +8,11 @@ const QuotationRequestStatusDetailsForm = ({ quotationRequestStatus, hasError, i
     let loading = true;
 
     if (hasError) {
-        loadingText = 'Fout bij het ophalen van offerte verzoek status.';
+        loadingText = 'Fout bij het ophalen van kansactie status.';
     } else if (isLoading) {
         loadingText = 'Gegevens aan het laden.';
     } else if (isEmpty(quotationRequestStatus)) {
-        loadingText = 'Geen offerte verzoek status gevonden!';
+        loadingText = 'Geen kansactie status gevonden!';
     } else {
         loading = false;
     }

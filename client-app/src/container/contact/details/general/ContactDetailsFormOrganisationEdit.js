@@ -322,10 +322,10 @@ class ContactDetailsFormOrganisationEdit extends Component {
                         )}
                     </div>
 
-                    {/* vooralsnog alleen bij persons, organisations kunnen al gekoppeld worden aan offerteverzoeken */}
+                    {/* vooralsnog alleen bij persons, organisations kunnen al gekoppeld worden aan kansactie */}
                     {/*<div className="row">*/}
                     {/*<InputSelect*/}
-                    {/*    label={'Rol in besparingsreis'}*/}
+                    {/*    label={'Rol in buurtaanpak'}*/}
                     {/*    size={'col-xs-12'}*/}
                     {/*    name={'inspectionPersonTypeId'}*/}
                     {/*    options={this.props.inspectionPersonTypes}*/}

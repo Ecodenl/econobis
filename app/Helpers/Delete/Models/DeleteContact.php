@@ -85,6 +85,19 @@ class DeleteContact implements DeleteInterface
             array_push($this->errorMessage, "Organisatie is nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de organisatie als betrokken bedrijf bij campagne(s) en verwijder dan het contact opnieuw.");
         }
 
+        if($this->contact->coachCampaigns->count() > 0){
+            $campaignNumbers = $this->contact->coachCampaigns->pluck('number')->toArray();
+            array_push($this->errorMessage, "Persoon is als coach nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de persoon als betrokken coach bij campagne(s) en verwijder dan het contact opnieuw.");
+        }
+        if($this->contact->projectManagerCampaigns->count() > 0){
+            $campaignNumbers = $this->contact->projectManagerCampaigns->pluck('number')->toArray();
+            array_push($this->errorMessage, "Persoon is als projectleider nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de persoon als betrokken projectleider bij campagne(s) en verwijder dan het contact opnieuw.");
+        }
+        if($this->contact->externalPartyCampaigns->count() > 0){
+            $campaignNumbers = $this->contact->externalPartyCampaigns->pluck('number')->toArray();
+            array_push($this->errorMessage, "Persoon is als externe partij nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de persoon als betrokken externe partij bij campagne(s) en verwijder dan het contact opnieuw.");
+        }
+
     }
 
     /** Deletes models recursive
@@ -135,6 +148,20 @@ class DeleteContact implements DeleteInterface
             $deleteIntake = new DeleteIntake($intake);
             $this->errorMessage = array_merge($this->errorMessage, $deleteIntake->delete());
         }
+
+        foreach ($this->contact->quotationRequests as $quotationRequest){
+            $deleteQuotationRequest = new DeleteQuotationRequest($quotationRequest);
+            $this->errorMessage = array_merge($this->errorMessage, $deleteQuotationRequest->delete());
+        }
+        foreach ($this->contact->quotationRequestsAsProjectManager as $quotationRequest){
+            $quotationRequest->project_manager_id = null;
+            $quotationRequest->save();
+        }
+        foreach ($this->contact->quotationRequestsAsExternalParty as $quotationRequest){
+            $quotationRequest->external_party_id = null;
+            $quotationRequest->save();
+        }
+
     }
 
     /** The relations which should be dissociated

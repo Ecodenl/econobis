@@ -11,7 +11,7 @@ const QuotationRequestStatusDetailsToolbar = ({ name }) => (
             </div>
         </div>
         <div className="col-md-4">
-            <h4 className="text-center">Offerte verzoek status: {name}</h4>
+            <h4 className="text-center">Kansactie status: {name}</h4>
         </div>
         <div className="col-md-4" />
     </div>

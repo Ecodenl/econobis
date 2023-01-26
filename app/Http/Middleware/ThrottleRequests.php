@@ -17,8 +17,8 @@ class ThrottleRequests extends LaravelThrottleRequests
 
         $maxAttempts = $this->resolveMaxAttempts($request, $maxAttempts);
 
-        if ($this->limiter->tooManyAttempts($key, $maxAttempts, $decayMinutes)) {
-            throw $this->buildException($key, $maxAttempts);
+        if ($this->limiter->tooManyAttempts($key, $maxAttempts)) {
+            throw $this->buildException($request, $key, $maxAttempts);
         }
 
         $this->limiter->hit($key, $decayMinutes);

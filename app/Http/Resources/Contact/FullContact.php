@@ -41,6 +41,7 @@ class FullContact extends JsonResource
             'person' => FullPerson::make($this->whenLoaded('person')),
             'organisation' => FullOrganisation::make($this->whenLoaded('organisation')),
             'fullName' => $this->full_name,
+            'fullNameFnf' => $this->full_name_fnf,
             'memberSince' => $this->member_since,
             'memberUntil' => $this->member_until,
             'didAgreeAvg' => $this->did_agree_avg,

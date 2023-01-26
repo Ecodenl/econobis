@@ -79,14 +79,14 @@ const ContactDetailsFormOrganisationView = props => {
                 />
             </div>
 
-            {/* vooralsnog alleen bij persons, organisations kunnen al gekoppeld worden aan offerteverzoeken */}
+            {/* vooralsnog alleen bij persons, organisations kunnen al gekoppeld worden aan kansactie */}
             {/*<div className="row">*/}
             {/*<ViewText*/}
-            {/*    label={'Rol in besparingsreis'}*/}
+            {/*    label={'Rol in buurtaanpak'}*/}
             {/*    value={inspectionPersonType ? inspectionPersonType.name + ' groep' : ''}*/}
             {/*    size={'col-sm-5'}*/}
             {/*    name={'inspectionPersonType'}*/}
-            {/*    textToolTip={`Contact die worden toegevoegd aan deze groep krijgen dezelfde waarde als Rol in besparingsreis`}*/}
+            {/*    textToolTip={`Contact die worden toegevoegd aan deze groep krijgen dezelfde waarde als Rol in buurtaanpak`}*/}
             {/*/>*/}
             {/*</div>*/}
 

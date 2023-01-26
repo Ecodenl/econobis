@@ -20,7 +20,7 @@ class Seed26January2023MeasuresTable extends Migration
             ],
         ];
 
-        $id = 141;
+        $id = 142;
         foreach ($categorizedMeasures as $category => $measures) {
             // Get the category
             $catId = DB::table('measure_categories')->where('name', $category)->first()->id;

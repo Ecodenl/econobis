@@ -133,15 +133,6 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         <SvgIcon size={20} icon={home} />
                     </NavIcon>
                     <NavText> Energiebesparing </NavText>
-                    {permissions.menuHousingFiles && (
-                        <Nav id="home-files">
-                            <NavText>
-                                <Link className="sidebar-link" to="woningdossiers">
-                                    Woningdossiers
-                                </Link>
-                            </NavText>
-                        </Nav>
-                    )}
                     {permissions.menuIntakes && (
                         <Nav id="intakes">
                             <NavText>
@@ -164,7 +155,25 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         <Nav id="quotation-requests">
                             <NavText>
                                 <Link className="sidebar-link" to="offerteverzoeken">
-                                    Offerteverzoeken
+                                    Kansacties
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.menuHousingFiles && (
+                        <Nav id="home-files">
+                            <NavText>
+                                <Link className="sidebar-link" to="woningdossiers">
+                                    Woningdossiers
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.menuMarketing && (
+                        <Nav id="marketing-sub">
+                            <NavText>
+                                <Link className="sidebar-link" to="campagnes">
+                                    Campagnes
                                 </Link>
                             </NavText>
                         </Nav>
@@ -178,15 +187,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </NavText>
                         </Nav>
                     )}
-                    {permissions.menuMarketing && (
-                        <Nav id="marketing-sub">
-                            <NavText>
-                                <Link className="sidebar-link" to="campagnes">
-                                    Marketing
-                                </Link>
-                            </NavText>
-                        </Nav>
-                    )}
+
                 </Nav>
             )}
 
@@ -244,19 +245,6 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                 </Nav>
             )}
 
-            {permissions.menuMarketing && (
-                <Nav id="marketing">
-                    <NavIcon>
-                        <SvgIcon size={20} icon={speech_bubbles} />
-                    </NavIcon>
-                    <NavText>
-                        <Link className="sidebar-link-header" to="campagnes">
-                            Marketing
-                        </Link>
-                    </NavText>
-                </Nav>
-            )}
-
             {permissions.menuTasks && (
                 <Nav id="taken">
                     <NavIcon>
@@ -277,16 +265,37 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                 </Nav>
             )}
 
-            {permissions.menuAgenda && (
+            {(permissions.menuAgenda || permissions.manageCoachPlanning) && (
                 <Nav id="agenda">
                     <NavIcon>
                         <SvgIcon size={20} icon={calendar} />
                     </NavIcon>
-                    <NavText>
-                        <Link className="sidebar-link-header" to="agenda">
-                            Agenda
-                        </Link>
-                    </NavText>
+                    <NavText>Planning</NavText>
+                    <Nav key={'nav-agenda'} id={`agenda`}>
+                        <NavText>
+                            <Link className="sidebar-link-header" to="agenda">
+                                Agenda
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    {(permissions.manageCoachPlanning) && (
+                        <Nav key={'nav-afspraak-kalender'} id={`afspraak-kalender`}>
+                            <NavText>
+                                <Link className="sidebar-link-header" to="afspraak-kalenders">
+                                    Afspraakkalenders
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {(permissions.manageCoachPlanning) && (
+                        <Nav key={'nav-beschikbaarheid'} id={`beschikbaarheid`}>
+                            <NavText>
+                                <Link className="sidebar-link-header" to="beschikbaarheid">
+                                    Beschikbaarheden
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
                 </Nav>
             )}
 
@@ -362,7 +371,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                     <Nav id="offerte-verzoek-statussen">
                         <NavText>
                             <Link className="sidebar-link" to="offerte-verzoek-statussen">
-                                Offerte verzoek statussen
+                                Kansactie statussen
                             </Link>
                         </NavText>
                     </Nav>

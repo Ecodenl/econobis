@@ -42,7 +42,7 @@ class QuotationRequestsListApp extends Component {
 
             QuotationRequestAPI.getCSV({ filters, sorts })
                 .then(payload => {
-                    fileDownload(payload.data, 'Offerteverzoeken-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
+                    fileDownload(payload.data, 'kansacties-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
                     this.props.unblockUI();
                 })
                 .catch(error => {

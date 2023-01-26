@@ -93,7 +93,7 @@ const CampaignNew = props => {
             </div>
             <div className="row">
                 <InputMultiSelect
-                    label="Acties voor kans"
+                    label="Aangeboden kansacties"
                     name="opportunityActionIds"
                     value={opportunityActionIdsSelected}
                     options={props.opportunityActions}

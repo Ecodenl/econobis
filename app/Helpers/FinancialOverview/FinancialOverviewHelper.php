@@ -14,7 +14,7 @@ use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewContactController;
 use App\Http\Resources\FinancialOverview\Templates\FinancialOverviewContactMail;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;

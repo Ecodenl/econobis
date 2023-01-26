@@ -326,7 +326,7 @@ function EmailFormEdit(props) {
                     onChangeAction={handleInputChange}
                 />
                 <InputSelect
-                    label={'Offerteverzoek'}
+                    label={'Kansactie'}
                     size={'col-sm-6'}
                     name={'quotationRequestId'}
                     options={quotationRequests}

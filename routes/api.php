@@ -59,6 +59,8 @@ Route::namespace('Api')
         Route::post('/contact/{contact}/delete', 'Contact\ContactController@destroy');
         Route::get('/contact/{contact}/tasks', 'Contact\ContactController@tasks');
         Route::get('/contact/{contact}/make-hoomdossier', 'Contact\ContactController@makeHoomdossier');
+        Route::get('/contact/{contact}/coach-attributes', 'Contact\ContactController@getCoachAttributes');
+        Route::post('/contact/{contact}/coach-attributes', 'Contact\ContactController@updateCoachAttributes');
 
         Route::get('/intake/grid', 'Intake\IntakeController@grid');
         Route::get('/intake/amount-active', 'Intake\IntakeController@getAmountOfActiveIntakes');
@@ -266,6 +268,26 @@ Route::namespace('Api')
         Route::get('mailbox/{mailbox}/receive', 'Mailbox\MailboxController@receive');
         Route::get('mailbox/receive/from-mailboxes-user', 'Mailbox\MailboxController@receiveMailFromMailboxesUser');
         Route::get('mailbox/{mailbox}/make-primary', 'Mailbox\MailboxController@makePrimary');
+
+        /**
+         * Districts
+         */
+        Route::get('district', [\App\Http\Controllers\Api\District\DistrictController::class, 'index']);
+        Route::get('district/{district}', [\App\Http\Controllers\Api\District\DistrictController::class, 'show']);
+        Route::get('district/{district}/calendar-items', [\App\Http\Controllers\Api\District\DistrictController::class, 'getCalendarItems']);
+        Route::post('district', [\App\Http\Controllers\Api\District\DistrictController::class, 'create']);
+        Route::post('district/{district}', [\App\Http\Controllers\Api\District\DistrictController::class, 'update']);
+        Route::post('district/{district}/delete', [\App\Http\Controllers\Api\District\DistrictController::class, 'delete']);
+        Route::post('district/{district}/coaches/{coach}/detach', [\App\Http\Controllers\Api\District\DistrictController::class, 'detachCoach']);
+        Route::post('district/{district}/coaches/{coach}/attach', [\App\Http\Controllers\Api\District\DistrictController::class, 'attachCoach']);
+
+        /**
+         * Contact Availabilities
+         */
+        Route::get('contact/{contact}/availability/by-week', [\App\Http\Controllers\Api\Contact\ContactAvailabilityController::class, 'getByWeek']);
+        Route::get('district/{district}/availability/by-week', [\App\Http\Controllers\Api\Contact\ContactAvailabilityController::class, 'getDistrictAvailabilityByWeek']);
+        Route::post('contact/{contact}/availability', [\App\Http\Controllers\Api\Contact\ContactAvailabilityController::class, 'update']);
+        Route::post('contact/{contact}/availability/copy-weeks', [\App\Http\Controllers\Api\Contact\ContactAvailabilityController::class, 'copyWeeks']);
 
         Route::get('email/grid/in-folder/{folder}', 'Email\EmailController@grid');
         Route::get('email/search', 'Email\EmailController@search');

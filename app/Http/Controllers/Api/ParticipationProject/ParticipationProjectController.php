@@ -37,7 +37,7 @@ use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewParticipantProje
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Jobs\ParticipationProject\CreateParticipantReport;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Project\Project;
 use App\Helpers\Delete\Models\DeleteParticipation;

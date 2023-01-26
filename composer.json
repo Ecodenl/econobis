@@ -5,8 +5,8 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=7.4.0",
-        "barryvdh/laravel-dompdf": "^0.8.1",
+        "php": "^8.0.0",
+        "barryvdh/laravel-dompdf": "^2.0.0",
         "cmpayments/iban": "^1.1",
         "doctrine/dbal": "^2.6",
         "ecodenl/pico-wrapper": "^1.0",

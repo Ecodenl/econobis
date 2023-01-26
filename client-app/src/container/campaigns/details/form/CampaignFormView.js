@@ -47,7 +47,7 @@ const CampaignFormView = ({
 
             <div className="row" onClick={switchToEdit}>
                 <ViewText_3_9
-                    label={'Acties voor kans'}
+                    label={'Aangeboden kansacties'}
                     value={
                         opportunityActions &&
                         opportunityActions.map(opportunityAction => opportunityAction.name).join(', ')

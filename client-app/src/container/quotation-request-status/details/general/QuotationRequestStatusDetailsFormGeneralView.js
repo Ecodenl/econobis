@@ -45,7 +45,7 @@ const QuotationRequestStatusDetailsFormGeneralView = ({
                             </div>
                             <div className="row">
                                 <ViewText
-                                    label={'Template email bij deze status'}
+                                    label={'Template e-mail bij deze status'}
                                     divSize={'col-sm-10'}
                                     value={emailTemplateWorkflow ? emailTemplateWorkflow.name : ''}
                                     className={'col-sm-10 form-group'}
@@ -53,7 +53,7 @@ const QuotationRequestStatusDetailsFormGeneralView = ({
                             </div>
                             <div className="row">
                                 <ViewText
-                                    label={'Aantal dagen email na deze status'}
+                                    label={'Aantal dagen e-mail na deze status'}
                                     divSize={'col-sm-10'}
                                     value={numberOfDaysToSendEmail}
                                     className={'col-sm-10 form-group'}

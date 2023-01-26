@@ -458,7 +458,7 @@ class ContactNewFormPersonal extends Component {
 
                 <div className="row">
                     <InputReactSelect
-                        label={'Rol in besparingsreis'}
+                        label={'Rol in buurtaanpak'}
                         divSize={'col-sm-6'}
                         name={'inspectionPersonTypeId'}
                         options={this.props.inspectionPersonTypes}

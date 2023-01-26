@@ -270,9 +270,11 @@ const ProjectFormViewGeneral = ({
                     <div className="row">
                         <ViewText
                             label={
-                                'Blokkeer wijzigen naam via contacten portal. Voor contacten die ook in een project. waarbij "naam wijzigen" wel is toegestaan, deelnemen geldt dit dan ook.'
+                                'Blokkeer wijzigen naam via contactenportal.'
                             }
                             value={disableChangeContactNameOnPortal ? 'Ja' : 'Nee'}
+                            textToolTip={`Als deze instelling actief is kunnen contacten die deelnemen in dit project hun naam niet wijzigen via de contactenportal. In verband met customer due diligence (voorkomen fraude en witwassen) zijn extra controles wenselijk bij naamswijziging of overdracht. Daarom kun je met deze instelling naamswijziging door contacten in het portal blokkeren.`}
+
                         />
                     </div>
                     <hr />

@@ -1,0 +1,12 @@
+.quotation-request {
+    background-color: #265985;
+}
+
+.quotation-request .rbc-event-content:hover{
+    text-decoration: underline;
+}
+
+.availability{
+    background-color: #5cb85c;
+    cursor: default;
+}

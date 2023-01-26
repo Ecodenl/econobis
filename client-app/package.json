@@ -34,7 +34,7 @@
     "babel-jest": "^24.8.0",
     "babel-loader": "^8.2.3",
     "babel-polyfill": "^6.26.0",
-    "bootstrap-sass": "^3.4.0",
+    "bootstrap-sass": "3.4.1",
     "chart.js": "^2.9.4",
     "clean-webpack-plugin": "^0.1.19",
     "css-loader": "^0.28.11",

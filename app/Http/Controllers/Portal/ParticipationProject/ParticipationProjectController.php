@@ -32,7 +32,7 @@ use App\Http\Controllers\Api\Document\DocumentController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ParticipantProject\Templates\ParticipantReportMail;
 use App\Http\Resources\Portal\ParticipantProject\ParticipantProjectResource;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Config;
 use DB;

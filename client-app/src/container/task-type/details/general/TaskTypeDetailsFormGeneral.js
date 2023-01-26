@@ -46,19 +46,19 @@ class TaskTypeDetailsFormGeneral extends Component {
 
         const explanationWfExpiredTask = (
             <span>
-                Er zal automatisch eenmalig een email verstuurd worden naar de verantwoordelijke als deze taak is
+                Er zal automatisch eenmalig een e-mail verstuurd worden naar de verantwoordelijke als deze taak is
                 verlopen.
             </span>
         );
         const explanationWfCompletedTask = (
             <span>
-                Er zal automatisch eenmalig een email verstuurd worden naar contact taak als deze taak is afgehandeld
+                Er zal automatisch eenmalig een e-mail verstuurd worden naar contact taak als deze taak is afgehandeld
                 is, rekening houdend met het opgegeven aantal dagen.
             </span>
         );
         const explanationWfNewTask = (
             <span>
-                Er zal automatisch een email verstuurd worden naar de verantwoordelijke als de nieuwe taak wordt
+                Er zal automatisch een e-mail verstuurd worden naar de verantwoordelijke als de nieuwe taak wordt
                 opgeslagen.
             </span>
         );

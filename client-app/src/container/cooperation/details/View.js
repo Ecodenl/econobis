@@ -78,24 +78,24 @@ function CooperationDetailsFormView({ formData, toggleEdit }) {
                     </div>
                 </PanelBody>
                 <PanelHeader>
-                    <span className="h5 text-bold">Schouwen</span>
+                    <span className="h5 text-bold">Buurtaanpak</span>
                 </PanelHeader>
                 <PanelBody>
                     <div className="row">
                         <ViewText
-                            label={'Schouwen afspraak e-mail template'}
+                            label={'Buurtaanpak afspraak e-mail template'}
                             value={
                                 formData.inspectionPlannedEmailTemplate && formData.inspectionPlannedEmailTemplate.name
                             }
                         />
                         <ViewText
-                            label={'Mailbox afspraak/opname/uitgebracht bevestigingen'}
+                            label={'Mailbox buurtaanpak e-mail bevestigingen'}
                             value={formData.inspectionPlannedMailbox && formData.inspectionPlannedMailbox.name}
                         />
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Schouwen opname e-mail template'}
+                            label={'Buurtaanpak opname e-mail template'}
                             value={
                                 formData.inspectionRecordedEmailTemplate &&
                                 formData.inspectionRecordedEmailTemplate.name
@@ -104,7 +104,7 @@ function CooperationDetailsFormView({ formData, toggleEdit }) {
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Schouwen uitgebracht e-mail template'}
+                            label={'Buurtaanpak uitgebracht e-mail template'}
                             value={
                                 formData.inspectionReleasedEmailTemplate &&
                                 formData.inspectionReleasedEmailTemplate.name

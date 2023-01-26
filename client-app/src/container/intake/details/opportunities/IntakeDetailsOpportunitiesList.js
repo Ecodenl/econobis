@@ -12,7 +12,7 @@ const IntakeDetailsOpportunitiesList = props => {
                 <div className="col-sm-2">Maatregel</div>
                 <div className="col-sm-2">Maatregel specifiek</div>
                 <div className="col-sm-2">Status</div>
-                <div className="col-sm-2">Aantal offertes</div>
+                <div className="col-sm-2">Aantal kansacties</div>
             </div>
             {props.opportunities.length > 0 ? (
                 props.opportunities.map(opportunity => {

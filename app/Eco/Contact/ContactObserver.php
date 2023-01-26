@@ -35,9 +35,15 @@ class ContactObserver
 
         $number = \Config::get('app.APP_CONTACT_NUMBER_FORMAT');
 
+        $numberOfHashTags = substr_count($number, '#');
+        if($numberOfHashTags > 0){
+            $contactIdWithLeadingZeros = str_pad($contact->id, $numberOfHashTags, '0', STR_PAD_LEFT);
+            $hashTagsString = "{" . str_repeat('#', $numberOfHashTags) . "}";
+            $number = str_replace($hashTagsString, $contactIdWithLeadingZeros, $number);
+        }
+
         $number = str_replace('{year}', $year, $number);
         $number = str_replace('{id}', $contact->id, $number);
-
 
         if(!$number) {
             $contact->number = 'C' . Carbon::now()->year . '-' . $contact->id;

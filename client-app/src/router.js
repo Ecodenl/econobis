@@ -76,6 +76,9 @@ const QuotationRequestDetailsApp = React.lazy(() =>
     import('./container/quotation-request/details/QuotationRequestDetailsApp')
 );
 const QuotationRequestNewApp = React.lazy(() => import('./container/quotation-request/new/QuotationRequestNewApp'));
+const QuotationRequestPlanNewApp = React.lazy(() =>
+    import('./container/quotation-request/plan/QuotationRequestPlanNewApp')
+);
 const QuotationRequestsListApp = React.lazy(() =>
     import('./container/quotation-request/list/QuotationRequestsListApp')
 );
@@ -85,6 +88,16 @@ const Logout = React.lazy(() => import('./container/auth/Logout'));
 const MailboxDetailsApp = React.lazy(() => import('./container/mailbox/details/MailboxDetailsApp'));
 const MailboxNewApp = React.lazy(() => import('./container/mailbox/new/MailboxNewApp'));
 const MailboxesListApp = React.lazy(() => import('./container/mailbox/list/MailboxesListApp'));
+const DistrictsListApp = React.lazy(() => import('./container/district/list/DistrictsListApp'));
+const DistrictNewApp = React.lazy(() => import('./container/district/new/DistrictNewApp'));
+const DistrictDetailsApp = React.lazy(() => import('./container/district/details/DistrictDetailsApp'));
+const DistrictCalendarApp = React.lazy(() => import('./container/district/calendar/DistrictCalendarApp'));
+const ContactAvailabilityListApp = React.lazy(() =>
+    import('./container/contact-availability/list/ContactAvailabilityListApp')
+);
+const ContactAvailabilityDetailsApp = React.lazy(() =>
+    import('./container/contact-availability/details/ContactAvailabilityDetailsApp')
+);
 const MailgunDomainsListApp = React.lazy(() => import('./container/mailgun-domain/list/MailgunDomainsListApp'));
 const MailgunDomainNewApp = React.lazy(() => import('./container/mailgun-domain/new/MailgunDomainNewApp'));
 const MailgunDomainDetailsApp = React.lazy(() => import('./container/mailgun-domain/details/MailgunDomainDetailsApp'));
@@ -328,6 +341,11 @@ const Routes = () => {
                     <Route path="email/nieuw/document/:documentId" component={EmailNewApp} />
                     <Route path="email/nieuw/kans/:opportunityId/:contactId" component={EmailNewApp} />
                     <Route path="email/nieuw/offerteverzoek/:quotationRequestId/:contactId" component={EmailNewApp} />
+                    {/*<Route path="email/nieuw/offerteverzoek/:quotationRequestId/contacts/:contactIds" component={EmailNewApp} />*/}
+                    <Route
+                        path="email/nieuw/offerteverzoek/:quotationRequestId/:contactId/occupant/:occupantId"
+                        component={EmailNewApp}
+                    />
                     <Route path="email/nieuw/intake/:intakeId/contact/:contactId" component={EmailNewApp} />
                     <Route path="email/nieuw/taak/:taskId" component={EmailNewApp} />
                     <Route path="email/nieuw/taak/:taskId/contact/:contactId" component={EmailNewApp} />
@@ -402,6 +420,14 @@ const Routes = () => {
                     <Route path="mailbox/nieuw" component={MailboxNewApp} />
                     <Route path="mailbox/:id" component={MailboxDetailsApp} />
                     <Route path="mailboxen" component={MailboxesListApp} />
+                    /* Districts */
+                    <Route path="afspraak-kalender/nieuw" component={DistrictNewApp} />
+                    <Route path="afspraak-kalender/:id" component={DistrictDetailsApp} />
+                    <Route path="afspraak-kalender/:id/kalender" component={DistrictCalendarApp} />
+                    <Route path="afspraak-kalenders" component={DistrictsListApp} />
+                    /* Availabilities */
+                    <Route path="beschikbaarheid/:id" component={ContactAvailabilityDetailsApp} />
+                    <Route path="beschikbaarheid" component={ContactAvailabilityListApp} />
                     /* Housing File */
                     <Route
                         path="woningdossier/nieuw/contact/:contactId/adres/:addressId"
@@ -413,6 +439,10 @@ const Routes = () => {
                     <Route
                         path="offerteverzoek/nieuw/kans/:opportunityId/actie/:opportunityActionId"
                         component={QuotationRequestNewApp}
+                    />
+                    <Route
+                        path="offerteverzoek/nieuw/kans/:opportunityId/plan/:districtId"
+                        component={QuotationRequestPlanNewApp}
                     />
                     <Route path="offerteverzoek/:id" component={QuotationRequestDetailsApp} />
                     <Route path="offerteverzoeken" component={QuotationRequestsListApp} />

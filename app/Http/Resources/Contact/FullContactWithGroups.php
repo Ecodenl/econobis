@@ -110,6 +110,8 @@ class FullContactWithGroups extends JsonResource
             'collectMandateFirstRunDate' => $this->collect_mandate_first_run_date,
             'collectMandateCollectionSchema' => $this->collect_mandate_collection_schema,
             'hoomAccountId' => $this->hoom_account_id,
+            'isOrganisationOrCoach' => ($this->isOrganisation() || $this->isCoach()),
+            'numberOfActions' => $this->number_of_actions,
             'isParticipantPcrProject' => $this->is_participant_pcr_project,
             'isInInspectionPersonTypeGroup' => $this->is_in_inspection_person_type_group,
             'inspectionPersonTypeId' => $this->inspection_person_type_id,

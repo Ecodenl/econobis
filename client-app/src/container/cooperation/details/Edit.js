@@ -305,12 +305,12 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                     </PanelBody>
 
                     <PanelHeader>
-                        <span className="h5 text-bold">Schouwen</span>
+                        <span className="h5 text-bold">Buurtaanpak</span>
                     </PanelHeader>
                     <PanelBody>
                         <div className="row">
                             <InputReactSelect
-                                label={'Schouwen afspraak e-mail template'}
+                                label={'Buurtaanpak afspraak e-mail template'}
                                 name={'inspectionPlannedEmailTemplateId'}
                                 options={emailTemplates}
                                 value={values.inspectionPlannedEmailTemplateId}
@@ -331,7 +331,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                         </div>
                         <div className="row">
                             <InputReactSelect
-                                label={'Schouwen opname e-mail template'}
+                                label={'Buurtaanpak opname e-mail template'}
                                 name={'inspectionRecordedEmailTemplateId'}
                                 options={emailTemplates}
                                 value={values.inspectionRecordedEmailTemplateId}
@@ -342,7 +342,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                         </div>
                         <div className="row">
                             <InputReactSelect
-                                label={'Schouwen uitgebracht e-mail template'}
+                                label={'Buurtaanpak uitgebracht e-mail template'}
                                 name={'inspectionReleasedEmailTemplateId'}
                                 options={emailTemplates}
                                 value={values.inspectionReleasedEmailTemplateId}

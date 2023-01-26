@@ -28,11 +28,11 @@ class QuotationRequestsList extends Component {
         let loading = true;
 
         if (this.props.hasError) {
-            loadingText = 'Fout bij het ophalen van offerteverzoeken / bezoeken / subsidie aanvragen.';
+            loadingText = 'Fout bij het ophalen van kansacties.';
         } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
         } else if (data.length === 0) {
-            loadingText = 'Geen offerteverzoeken / bezoeken / subsidie aanvragen gevonden!';
+            loadingText = 'Geen kansacties gevonden!';
         } else {
             loading = false;
         }

@@ -27,7 +27,7 @@ const QuotationRequestsListHead = props => {
             <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'8%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'datePlanned'} title={'Afspraak'} width={'8%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'dateRecorded'} title={'Opname'} width={'8%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status'} width={'8%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status kansactie'} width={'8%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'dateReleased'}
                 title={'Uitgebracht'}

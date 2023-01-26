@@ -4,8 +4,10 @@ import { connect } from 'react-redux';
 
 import DocumentHarmonica from './DocumentHarmonica';
 import EmailSentHarmonica from './EmailSentHarmonica';
+import OccupantEmailSentHarmonica from './OccupantEmailSentHarmonica';
+import CoachEmailSentHarmonica from './CoachEmailSentHarmonica';
 
-class HousingFileDetailsHarmonica extends Component {
+class QuotationRequestDetailsHarmonica extends Component {
     constructor(props) {
         super(props);
 
@@ -13,18 +15,32 @@ class HousingFileDetailsHarmonica extends Component {
             toggleShowList: {
                 documents: false,
                 emailsSent: false,
+                occupantEmailsSent: false,
             },
         };
 
         this.newDocument = this.newDocument.bind(this);
         this.newEmail = this.newEmail.bind(this);
+        this.newOccupantEmail = this.newOccupantEmail.bind(this);
+        this.newCoachEmail = this.newCoachEmail.bind(this);
         this.toggleShowList = this.toggleShowList.bind(this);
     }
 
     newEmail() {
-        console.log(this.props.quotationRequestDetails);
         hashHistory.push(
-            `/email/nieuw/offerteverzoek/${this.props.id}/${this.props.quotationRequestDetails.organisationOrCoach.id}`
+            `/email/nieuw/offerteverzoek/${this.props.id}/${this.props.quotationRequestDetails.organisationOrCoachId}/occupant/${this.props.quotationRequestDetails.occupantId}`
+        );
+    }
+
+    newOccupantEmail() {
+        hashHistory.push(
+            `/email/nieuw/offerteverzoek/${this.props.id}/${this.props.quotationRequestDetails.occupantId}`
+        );
+    }
+
+    newCoachEmail() {
+        hashHistory.push(
+            `/email/nieuw/offerteverzoek/${this.props.id}/${this.props.quotationRequestDetails.organisationOrCoachId}`
         );
     }
 
@@ -42,13 +58,34 @@ class HousingFileDetailsHarmonica extends Component {
         });
     }
     render() {
+        const organisationOrCoachId = this.props.quotationRequestDetails.organisationOrCoachId;
+        const occupantId = this.props.quotationRequestDetails.occupantId;
+        // const projectManagerId = this.props.quotationRequestDetails.projectManagerId;
+        // const externalPartyId = this.props.quotationRequestDetails.externalPartyId;
+
         return (
             <div className="col-md-12 margin-10-top">
+                {organisationOrCoachId && (
+                    <CoachEmailSentHarmonica
+                        toggleShowList={() => this.toggleShowList('coachEmailsSent')}
+                        showEmailsSentList={this.state.toggleShowList.coachEmailsSent}
+                        newEmail={this.newCoachEmail}
+                        emailSentCount={this.props.quotationRequestDetails.relatedCoachEmailsSent?.length}
+                    />
+                )}
+                {occupantId && (
+                    <OccupantEmailSentHarmonica
+                        toggleShowList={() => this.toggleShowList('occupantEmailsSent')}
+                        showEmailsSentList={this.state.toggleShowList.occupantEmailsSent}
+                        newEmail={this.newOccupantEmail}
+                        emailSentCount={this.props.quotationRequestDetails.relatedOccupantEmailsSent?.length}
+                    />
+                )}
                 <EmailSentHarmonica
-                    toggleShowList={() => this.toggleShowList('emailsSent')}
-                    showEmailsSentList={this.state.toggleShowList.emailsSent}
+                    toggleShowList={() => this.toggleShowList('coachAndOccupantEmailsSent')}
+                    showEmailsSentList={this.state.toggleShowList.coachAndOccupantEmailsSent}
                     newEmail={this.newEmail}
-                    emailSentCount={this.props.quotationRequestDetails.emailSentCount}
+                    emailSentCount={this.props.quotationRequestDetails.relatedCoachAndOccupantEmailsSent?.length}
                 />
                 <DocumentHarmonica
                     toggleShowList={() => this.toggleShowList('documents')}
@@ -68,4 +105,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(HousingFileDetailsHarmonica);
+export default connect(mapStateToProps)(QuotationRequestDetailsHarmonica);

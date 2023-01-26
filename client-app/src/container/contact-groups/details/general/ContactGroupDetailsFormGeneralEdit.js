@@ -443,7 +443,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                             textToolTip={`Als je deze optie op "AAN" zet zal deze groep getoond worden in de export groepen rapportage op de "groepen beheer" pagina.`}
                         />
                         <InputReactSelect
-                            label={'Rol in besparingsreis'}
+                            label={'Rol in buurtaanpak'}
                             divSize={'col-sm-6'}
                             name={'inspectionPersonTypeId'}
                             options={this.props.inspectionPersonTypes}
@@ -452,7 +452,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                             clearable={true}
                             disabled={numberOfContacts > 0}
                             size={'col-sm-5'}
-                            textToolTip={`Contact die worden toegevoegd aan deze groep krijgen dezelfde waarde als Rol in besparingsreis`}
+                            textToolTip={`Contact die worden toegevoegd aan deze groep krijgen dezelfde waarde als Rol in buurtaanpak`}
                         />
                     </div>
                 )}

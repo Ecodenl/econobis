@@ -65,8 +65,8 @@ class EmailNewApp extends Component {
     }
 
     componentDidMount() {
-        if (this.props.params.contactId) {
-            EmailAddressAPI.fetchPrimaryEmailAddressId(this.props.params.contactId).then(payload => {
+        if (this.props.params.occupantId) {
+            EmailAddressAPI.fetchPrimaryEmailAddressId(this.props.params.occupantId).then(payload => {
                 this.setState({
                     ...this.state,
                     email: {
@@ -76,6 +76,31 @@ class EmailNewApp extends Component {
                     emailAddressesToSelected: payload['emailAddressesToSelected'],
                 });
             });
+            if (this.props.params.contactId) {
+                EmailAddressAPI.fetchPrimaryEmailAddressId(this.props.params.contactId).then(payload => {
+                    this.setState({
+                        ...this.state,
+                        email: {
+                            ...this.state.email,
+                            cc: payload['emailIds'].join(','),
+                        },
+                        emailAddressesCcSelected: payload['emailAddressesToSelected'],
+                    });
+                });
+            }
+        } else {
+            if (this.props.params.contactId) {
+                EmailAddressAPI.fetchPrimaryEmailAddressId(this.props.params.contactId).then(payload => {
+                    this.setState({
+                        ...this.state,
+                        email: {
+                            ...this.state.email,
+                            to: payload['emailIds'].join(','),
+                        },
+                        emailAddressesToSelected: payload['emailAddressesToSelected'],
+                    });
+                });
+            }
         }
         if (this.props.params.contactGroupId) {
             EmailAPI.fetchEmailGroup(this.props.params.contactGroupId).then(payload => {

@@ -182,7 +182,7 @@ const DocumentNewFormGeneral = ({
             </div>
             <div className="row">
                 <InputSelect
-                    label="Offerteverzoek"
+                    label="Kansactie"
                     name={'quotationRequestId'}
                     value={quotationRequestId}
                     options={quotationRequests}

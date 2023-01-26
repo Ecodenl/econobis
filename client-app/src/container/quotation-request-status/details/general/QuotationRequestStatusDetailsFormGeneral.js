@@ -46,12 +46,12 @@ class QuotationRequestStatusDetailsFormGeneral extends Component {
 
         const explanationWf = (
             <span>
-                Als gebruik workflow bij deze status is aangezet, dan zal er automatisch eenmalig een email verstuurd
-                gaan worden naar contact (verzoek voor) als offerteverzoek op deze status is gezet.
+                Als gebruik workflow bij deze status is aangezet, dan zal er automatisch eenmalig een e-mail verstuurd
+                gaan worden naar contact (verzoek voor bewoner) als kansactie op deze status is gezet.
                 <br />
                 De verzenddatum wordt dan bepaald, rekening houdend met het opgegeven aantal dagen.
                 <br />
-                Bij aantal dagen 0 zal de email direct verzonden worden.
+                Bij aantal dagen 0 zal de e-mail direct verzonden worden.
             </span>
         );
 

@@ -17,7 +17,7 @@ use App\Http\Controllers\Controller;
 use App\Http\RequestQueries\Document\Grid\RequestQuery;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\Document\GridDocument;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

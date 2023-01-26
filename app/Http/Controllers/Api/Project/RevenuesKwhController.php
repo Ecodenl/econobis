@@ -32,7 +32,7 @@ use App\Http\Resources\ParticipantProject\Templates\ParticipantReportMail;
 use App\Http\Resources\Project\FullRevenueDistributionKwh;
 use App\Http\Resources\Project\FullRevenuesKwh;
 use App\Jobs\RevenueKwh\CreateRevenuesKwhReport;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

@@ -11,7 +11,18 @@ import ContactDetailsDelete from './ContactDetailsDelete';
 import ButtonText from '../../../components/button/ButtonText';
 import ContactDetailsHoomdossier from './ContactDetailsHoomdossier';
 
-function ContactDetailsToolbar({ permissions, type, fullName, id, hoomAccountId, cooperation, isLoading }) {
+function ContactDetailsToolbar({
+    permissions,
+    type,
+    fullName,
+    id,
+    hoomAccountId,
+    isOrganisationOrCoach,
+    inspectionPersonTypeId,
+    numberOfActions,
+    cooperation,
+    isLoading,
+}) {
     const [showDelete, setShowDelete] = useState(false);
     const [showMakeHoomdossier, setShowMakeHoomdossier] = useState(false);
 
@@ -67,7 +78,17 @@ function ContactDetailsToolbar({ permissions, type, fullName, id, hoomAccountId,
                 </Panel>
             </div>
 
-            {showDelete && <ContactDetailsDelete closeDeleteItemModal={toggleDelete} fullName={fullName} id={id} />}
+            {showDelete && (
+                <ContactDetailsDelete
+                    closeDeleteItemModal={toggleDelete}
+                    type={type}
+                    fullName={fullName}
+                    id={id}
+                    isOrganisationOrCoach={isOrganisationOrCoach}
+                    inspectionPersonTypeId={inspectionPersonTypeId}
+                    numberOfActions={numberOfActions}
+                />
+            )}
             {showMakeHoomdossier && <ContactDetailsHoomdossier closeModal={toggleShowMakeHoomdossier} />}
         </div>
     );
@@ -79,6 +100,9 @@ const mapStateToProps = state => {
         id: state.contactDetails.id,
         type: state.contactDetails.type,
         hoomAccountId: state.contactDetails.hoomAccountId,
+        isOrganisationOrCoach: state.contactDetails.isOrganisationOrCoach,
+        inspectionPersonTypeId: state.contactDetails.inspectionPersonTypeId,
+        numberOfActions: state.contactDetails.numberOfActions,
         cooperation: state.systemData.cooperation,
         permissions: state.meDetails.permissions,
         isLoading: state.loadingData.isLoading,

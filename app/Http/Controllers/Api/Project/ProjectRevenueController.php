@@ -40,7 +40,7 @@ use App\Http\Resources\Project\FullProjectRevenueDistribution;
 use App\Http\Resources\Project\ProjectRevenueDistributionPeek;
 use App\Jobs\Revenue\CreatePaymentInvoices;
 use App\Jobs\Revenue\CreateRevenueReport;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

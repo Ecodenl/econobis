@@ -58,7 +58,7 @@ const DocumentDetailsFormView = props => {
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <div className="row">
-                    <ViewText label={'Offerteverzoek'} value={quotationRequest && quotationRequest.name} />
+                    <ViewText label={'Kansactie'} value={quotationRequest && quotationRequest.name} />
                     <ViewText label={'Woningdossier'} value={housingFile && housingFiles.name} />
                 </div>
             </div>

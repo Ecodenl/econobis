@@ -74,7 +74,7 @@ const MeasureCategoryDetailsFormGeneralView = ({
 
                             <div className="row">
                                 <ViewText
-                                    label={'Maak offerte verzoek'}
+                                    label={'Maak kansactie'}
                                     divSize={'col-sm-10'}
                                     value={usesWfCreateQuotationRequest ? 'Ja' : 'Nee'}
                                     className={'col-sm-10 form-group'}
@@ -85,7 +85,7 @@ const MeasureCategoryDetailsFormGeneralView = ({
                                 <React.Fragment>
                                     <div className="row">
                                         <ViewText
-                                            label={'Uitleg workflow maak offerte verzoek'}
+                                            label={'Uitleg workflow maak kansactie'}
                                             divSize={'col-sm-10'}
                                             value={explanationWfCreateQuotationRequest}
                                             className={'col-sm-10 form-group'}
@@ -93,7 +93,7 @@ const MeasureCategoryDetailsFormGeneralView = ({
                                     </div>
                                     <div className="row">
                                         <ViewText
-                                            label={'Offerte verzoek voor'}
+                                            label={'Kansactie voor'}
                                             divSize={'col-sm-10'}
                                             value={
                                                 organisationWorkflowCreateQuotationRequest
@@ -105,7 +105,7 @@ const MeasureCategoryDetailsFormGeneralView = ({
                                     </div>
                                     <div className="row">
                                         <ViewText
-                                            label={'Stuur offerte verzoek mail'}
+                                            label={'Stuur kansactie mail'}
                                             divSize={'col-sm-10'}
                                             value={usesWfEmailQuotationRequest ? 'Ja' : 'Nee'}
                                             className={'col-sm-10 form-group'}
@@ -116,7 +116,7 @@ const MeasureCategoryDetailsFormGeneralView = ({
                                         <React.Fragment>
                                             <div className="row">
                                                 <ViewText
-                                                    label={'Uitleg workflow stuur offerte verzoek mail'}
+                                                    label={'Uitleg workflow stuur kansactie mail'}
                                                     divSize={'col-sm-10'}
                                                     value={explanationWfEmailQuotationRequest}
                                                     className={'col-sm-10 form-group'}
@@ -124,7 +124,7 @@ const MeasureCategoryDetailsFormGeneralView = ({
                                             </div>
                                             <div className="row">
                                                 <ViewText
-                                                    label={'Email template Offerte verzoek'}
+                                                    label={'Email template kansactie'}
                                                     divSize={'col-sm-10'}
                                                     value={
                                                         emailTemplateWorkflowCreateQuotationRequest

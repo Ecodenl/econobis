@@ -77,7 +77,7 @@ class DeleteEmailTemplate implements DeleteInterface
         }
         $quotationRequestStatusNames = QuotationRequestStatus::where('email_template_id_wf', $this->emailTemplate->id)->pluck('name')->toArray();
         if($quotationRequestStatusNames){
-            array_push($this->errorMessage,'Ontkoppel template eerst in de volgende Offerte verzoek statussen: ' . implode(', ', $quotationRequestStatusNames));
+            array_push($this->errorMessage,'Ontkoppel template eerst in de volgende kansactie statussen: ' . implode(', ', $quotationRequestStatusNames));
         }
         $opportunityStatusNames = OpportunityStatus::where('email_template_id_wf', $this->emailTemplate->id)->pluck('name')->toArray();
         if($opportunityStatusNames){

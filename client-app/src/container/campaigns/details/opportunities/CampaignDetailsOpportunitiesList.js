@@ -15,7 +15,7 @@ const CampaignDetailsOpportunitiesList = ({ data, meta, page, setPage, isLoading
                 <div className="col-sm-3">Naam</div>
                 <div className="col-sm-3">Maatregel categorie</div>
                 <div className="col-sm-1">Status</div>
-                <div className="col-sm-2">Aantal offertes</div>
+                <div className="col-sm-2">Aantal kansacties</div>
             </div>
             <div>
                 {isLoading ? (

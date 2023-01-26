@@ -16,7 +16,7 @@ use App\Helpers\Email\EmailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Resources\Invoice\Templates\InvoiceMail;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;

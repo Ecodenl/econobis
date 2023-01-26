@@ -34,6 +34,7 @@ const InputText = props => {
         autoComplete,
         disabled,
         attribute,
+        allowZero, // Prevent zero's from being transformed to empty string
     } = props;
 
     return (
@@ -50,7 +51,7 @@ const InputText = props => {
                     id={id}
                     placeholder={placeholder}
                     name={name}
-                    value={value ? value : ''}
+                    value={value ? value : (allowZero && value === 0 ? 0 : '')}
                     onClick={onClickAction}
                     onChange={onChangeAction}
                     onBlur={onBlurAction}
@@ -134,6 +135,7 @@ InputText.defaultProps = {
     errorMessage: '',
     autoComplete: 'off',
     disabled: false,
+    allowZero: false,
     onBlurAction: () => {},
     onClickAction: () => {},
     onChangeAction: () => {},
@@ -167,6 +169,7 @@ InputText.propTypes = {
     errorMessage: PropTypes.string,
     autoComplete: PropTypes.string,
     disabled: PropTypes.bool,
+    allowZero: PropTypes.bool,
 };
 
 export default InputText;

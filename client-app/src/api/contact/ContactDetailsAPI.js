@@ -45,4 +45,22 @@ export default {
 
         return axiosInstance.get(requestUrl);
     },
+
+    getCoachAttributes: id => {
+        const requestUrl = `${URL_CONTACTDETAILS}/${id}/coach-attributes`;
+
+        return axiosInstance
+            .get(requestUrl)
+            .then(function(response) {
+                return response.data;
+            });
+    },
+
+    updateCoachAttributes: contact => {
+        const requestUrl = `${URL_CONTACTDETAILS}/${contact.id}/coach-attributes`;
+
+        return axiosInstance
+            .post(requestUrl, contact);
+    },
+
 };

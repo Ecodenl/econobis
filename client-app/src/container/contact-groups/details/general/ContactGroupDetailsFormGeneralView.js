@@ -84,38 +84,40 @@ const ContactGroupDetailsFormGeneralView = props => {
                 <ViewText label={'Type'} value={type ? type.name : ''} />
             </div>
 
-            <div className="row">
-                <ViewText
-                    label={'Verstuur e-mail bij nieuwe contactkoppeling'}
-                    value={sendEmailNewContactLink ? 'Ja' : 'Nee'}
-                />
-
-                {sendEmailNewContactLink == true && (
-                    <ViewText
-                        label={'Template email nieuwe contactkoppeling'}
-                        value={emailTemplateNewContactLink ? emailTemplateNewContactLink.name : ''}
-                    />
-                )}
-            </div>
-
-            {/*todo WM: check of filter op static er niet af kan/moet voor Meenemen in export groep rapportage? Voorlopig niet */}
             {type.id === 'static' && (
-                <div className="row">
-                    <ViewText
-                        label={'Meenemen in export groep rapportage'}
-                        value={includeIntoExportGroupReport ? 'Ja' : 'Nee'}
-                        size={'col-sm-5'}
-                        name={'includeIntoExportGroupReport'}
-                        textToolTip={`Als je deze optie op "AAN" zet zal deze groep getoond worden in de export groepen rapportage op de "groepen beheer" pagina.`}
-                    />
-                    <ViewText
-                        label={'Rol in besparingsreis'}
-                        value={inspectionPersonType ? inspectionPersonType.name + ' groep' : ''}
-                        size={'col-sm-5'}
-                        name={'inspectionPersonType'}
-                        textToolTip={`Contact die worden toegevoegd aan deze groep krijgen dezelfde waarde als Rol in besparingsreis`}
-                    />
-                </div>
+                <>
+                    <div className="row">
+                        <ViewText
+                            label={'Verstuur e-mail bij nieuwe contactkoppeling'}
+                            value={sendEmailNewContactLink ? 'Ja' : 'Nee'}
+                        />
+
+                        {sendEmailNewContactLink == true && (
+                            <ViewText
+                                label={'Template email nieuwe contactkoppeling'}
+                                value={emailTemplateNewContactLink ? emailTemplateNewContactLink.name : ''}
+                            />
+                        )}
+                    </div>
+
+                    <div className="row">
+                        {/*todo WM: check of filter op static er niet af kan/moet voor Meenemen in export groep rapportage? Voorlopig niet */}
+                        <ViewText
+                            label={'Meenemen in export groep rapportage'}
+                            value={includeIntoExportGroupReport ? 'Ja' : 'Nee'}
+                            size={'col-sm-5'}
+                            name={'includeIntoExportGroupReport'}
+                            textToolTip={`Als je deze optie op "AAN" zet zal deze groep getoond worden in de export groepen rapportage op de "groepen beheer" pagina.`}
+                        />
+                        <ViewText
+                            label={'Rol in buurtaanpak'}
+                            value={inspectionPersonType ? inspectionPersonType.name + ' groep' : ''}
+                            size={'col-sm-5'}
+                            name={'inspectionPersonType'}
+                            textToolTip={`Contact die worden toegevoegd aan deze groep krijgen dezelfde waarde als Rol in buurtaanpak`}
+                        />
+                    </div>
+                </>
             )}
 
             <div className="row">

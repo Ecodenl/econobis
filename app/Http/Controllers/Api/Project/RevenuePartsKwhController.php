@@ -37,7 +37,7 @@ use App\Jobs\RevenueKwh\CreateRevenuePartsKwhReport;
 use App\Jobs\RevenueKwh\ProcessRevenuesKwh;
 use App\Jobs\RevenueKwh\ReportEnergySupplierExcel;
 use App\Jobs\RevenueKwh\UpdateRevenuePartsKwh;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -669,7 +669,10 @@ class RevenuePartsKwhController extends ApiController
             {
                 $time = Carbon::now();
 
+                $documentCreatedFromParticipantId = DocumentCreatedFrom::where('code_ref', 'participant')->first()->id;
+
                 $document = new Document();
+                $document->document_created_from_id = $documentCreatedFromParticipantId;
                 $document->document_type = 'internal';
                 $document->document_group = 'revenue';
                 $document->contact_id = $contact->id;

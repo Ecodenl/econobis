@@ -54,6 +54,8 @@ class Contact extends Model
 
     protected $casts = [
         'liable' => 'boolean',
+        'coach_max_appointments_per_week' => 'integer',
+        'coach_min_minutes_between_appointments' => 'integer',
     ];
 
     protected $dates = [
@@ -206,6 +208,10 @@ class Contact extends Model
         return $this->groups()->whereNotNull('inspection_person_type_id')->exists();;
     }
 
+    public function availabilities()
+    {
+        return $this->hasMany(ContactAvailability::class);
+    }
 
     public function getType()
     {
@@ -598,6 +604,20 @@ class Contact extends Model
         $addressLines['country'] = $address->country ? $address->country->name : '';
 
         return $addressLines;
+    }
+
+    public function getNumberOfActionsAttribute()
+    {
+        if($this->isOrganisation() || $this->isCoach()){
+            return $this->quotationRequests ? $this->quotationRequests->count() : 0;
+        }
+        if($this->isProjectManager()){
+            return $this->quotationRequestsAsProjectManager ? $this->quotationRequestsAsProjectManager->count() : 0;
+        }
+        if($this->isExternalParty()){
+            return $this->quotationRequestsAsExternalParty ? $this->quotationRequestsAsExternalParty->count() : 0;
+        }
+        return 0;
     }
 
     public function getIsParticipantAttribute()

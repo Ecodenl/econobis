@@ -19,6 +19,7 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactNote\ContactNote;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Country\Country;
+use App\Eco\Document\Document;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplierStatus;
@@ -63,6 +64,7 @@ use App\Eco\Title\Title;
 use App\Eco\User\User;
 use App\Eco\Webform\Webform;
 use App\Helpers\Address\AddressHelper;
+use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Workflow\IntakeWorkflowHelper;
@@ -78,6 +80,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 
 class ExternalWebformController extends Controller
 {
@@ -473,6 +476,7 @@ class ExternalWebformController extends Controller
                 'intake_aanmeldingsbron_ids' => 'source_ids',
                 'intake_status_id' => 'status_id',
                 'intake_opmerkingen_bewoner' => 'note',
+                'intake_kans_bijlage' => 'intake_opportunity_attachment',
             ],
             'housing_file' => [
                 // HousingFile
@@ -1740,11 +1744,16 @@ class ExternalWebformController extends Controller
             $this->log("Intake gekoppeld aan interesses: " . $measureCategories->implode('name', ', '));
 
             $statusIdClosedWithOpportunity = IntakeStatus::where('name', 'Afgesloten met kans')->first()->id;
-
             // Intake maatregelen meegegeven, aanmaken kansen (per intake maatregel)
+            $firstOpportunity = true;
+            $saveOpportunity = null;
             foreach ($intakeMeasures as $intakeMeasure) {
                 $this->log("Intake maatregelen meegegeven. Kans voor intake maatregel specifiek '" . $intakeMeasure->name . "' aanmaken (status Actief)");
                 $opportunity = $this->addOpportunity($intakeMeasure, $intake);
+                if($firstOpportunity){
+                    $saveOpportunity = clone $opportunity;
+                    $firstOpportunity = false;
+                }
             }
             // precies 1 intake maatregel, dan aangemaakte kans straks koppelen aan taak.
             if(count($intakeMeasures) == 1 && $opportunity != null){
@@ -1755,6 +1764,9 @@ class ExternalWebformController extends Controller
             if($measure && $intakeStatus->id == $statusIdClosedWithOpportunity){
                 $this->log("Intake status 'Afgesloten met kans' meegegeven. Kans voor maatregel specifiek '" . $measure->name . "' aanmaken (status Actief)");
                 $opportunity = $this->addOpportunity($measure, $intake);
+                if($firstOpportunity){
+                    $saveOpportunity = clone $opportunity;
+                }
                 // deze aangemaakte kans straks koppelen aan taak (overschrijft dus evt. de "los" meegegeven intake maatregel.
                 if($opportunity != null){
                     $this->opportunityForTask = $opportunity;
@@ -1774,13 +1786,65 @@ class ExternalWebformController extends Controller
                     }
                 }
             }
+
+            // Indien kans bijlage url meegegeven deze als document opslaan
+            if($data['intake_opportunity_attachment']){
+                $this->addIntakeOpportunityAttachment($intake, $saveOpportunity, $data['intake_opportunity_attachment']);
+            }
+
             return $intake;
         } else {
             $this->log('Er is geen campagne meegegeven, intake niet aanmaken.');
         }
     }
+    protected function addIntakeOpportunityAttachment($intake, $opportunity, $intakeOpportunityAttachmentUrl) {
+        $fileName = basename($intakeOpportunityAttachmentUrl);
 
-    /**
+        $document = new Document();
+        $document->description = 'Test';
+        $document->document_type = 'upload';
+        $document->document_group = 'general';
+        $document->filename = $fileName;
+        $document->contact_id = $intake->contact_id;
+        $document->intake_id = $intake->id;
+        // todo WM: dit moet nog anders !!!
+        if($opportunity){
+            $document->document_created_from_id = 10;
+            $document->opportunity_id = $opportunity->id;
+        } else {
+            $document->document_created_from_id = 8;
+        }
+//        $document->templateId = ??;
+//        $document->campaignId = ??;
+//        $document->housingFileId = ??;
+//        $document->quotationRequestId = ??;
+//        $document->measureId = ??;
+
+        $document->save();
+
+        $contents = file_get_contents($intakeOpportunityAttachmentUrl);
+        $filePath_tmp = Storage::disk('documents')->getDriver()->getAdapter()->applyPathPrefix($fileName);
+        Storage::disk('documents')->put(DIRECTORY_SEPARATOR . $fileName, $contents);
+
+        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+            $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $fileName, $document->getDocumentGroup()->name);
+            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+
+            //delete file on server, still saved on alfresco.
+            Storage::disk('documents')->delete($filePath_tmp);
+        } else {
+            $tmpFileName = str_replace('\\', '/', $filePath_tmp);
+            $pos = strrpos($tmpFileName, '/');
+            $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
+
+            $document->alfresco_node_id = null;
+        }
+
+        $document->save();
+}
+
+/**
      * @param $measure
      * @param $intake
      */

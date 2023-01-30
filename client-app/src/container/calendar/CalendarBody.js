@@ -7,9 +7,9 @@ moment.locale('nl');
 
 import TasksAPI from '../../api/task/TasksAPI';
 import { setSelectedView, setSelectedDate } from '../../actions/calendar/CalendarActions';
-import { Calendar } from 'react-big-calendar';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
 
-const localizer = Calendar.momentLocalizer(moment);
+const localizer = momentLocalizer(moment);
 
 class CalendarBody extends Component {
     constructor(props) {

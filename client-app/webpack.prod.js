@@ -4,8 +4,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const common = require('./webpack.common.js');
 const path = require('path');
 
-// const { HtmlWebpackPlugin } = require('html-webpack-plugin');
-
 require('dotenv').config({ path: '.env.production' });
 
 module.exports = merge(common, {

@@ -20,6 +20,7 @@ use App\Eco\ContactNote\ContactNote;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Country\Country;
 use App\Eco\Document\Document;
+use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplierStatus;
@@ -81,6 +82,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ExternalWebformController extends Controller
 {
@@ -1797,8 +1799,10 @@ class ExternalWebformController extends Controller
             $this->log('Er is geen campagne meegegeven, intake niet aanmaken.');
         }
     }
+
     protected function addIntakeOpportunityAttachment($intake, $opportunity, $intakeOpportunityAttachmentUrl) {
         $fileName = basename($intakeOpportunityAttachmentUrl);
+        $tmpFileName = Str::random(9) . '-' . $fileName;
 
         $document = new Document();
         $document->description = 'Test';
@@ -1809,11 +1813,16 @@ class ExternalWebformController extends Controller
         $document->intake_id = $intake->id;
         // todo WM: dit moet nog anders !!!
         if($opportunity){
-            $document->document_created_from_id = 10;
+            $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'opportunity')->first()->id;
+            $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'opportunity')->first()->name;
             $document->opportunity_id = $opportunity->id;
         } else {
-            $document->document_created_from_id = 8;
+            $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'intake')->first()->id;
+            $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'intake')->first()->name;
         }
+        $document->document_created_from_id = $documentCreatedFromId;
+
+        // voor alsnog deze Ids niet vullen
 //        $document->templateId = ??;
 //        $document->campaignId = ??;
 //        $document->housingFileId = ??;
@@ -1823,8 +1832,12 @@ class ExternalWebformController extends Controller
         $document->save();
 
         $contents = file_get_contents($intakeOpportunityAttachmentUrl);
-        $filePath_tmp = Storage::disk('documents')->getDriver()->getAdapter()->applyPathPrefix($fileName);
-        Storage::disk('documents')->put(DIRECTORY_SEPARATOR . $fileName, $contents);
+        $filePath_tmp = Storage::disk('documents')->getDriver()->getAdapter()->applyPathPrefix($tmpFileName);
+        $tmpFileName = str_replace('\\', '/', $filePath_tmp);
+        $pos = strrpos($tmpFileName, '/');
+        $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
+
+        Storage::disk('documents')->put(DIRECTORY_SEPARATOR . $tmpFileName, $contents);
 
         if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
             $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
@@ -1832,19 +1845,19 @@ class ExternalWebformController extends Controller
             $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
 
             //delete file on server, still saved on alfresco.
-            Storage::disk('documents')->delete($filePath_tmp);
-        } else {
-            $tmpFileName = str_replace('\\', '/', $filePath_tmp);
-            $pos = strrpos($tmpFileName, '/');
-            $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
+            Storage::disk('documents')->delete($tmpFileName);
+            $this->log('Intake kans bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Alfresco');
 
+        } else {
+            $document->filename = $tmpFileName;
             $document->alfresco_node_id = null;
+            $this->log('Intake kans bijlage ' . $tmpFileName . ' opgeslagen als ' . $documentCreatedFromName . ' document lokaal in documents storage map');
         }
 
         $document->save();
-}
+    }
 
-/**
+    /**
      * @param $measure
      * @param $intake
      */
@@ -1946,7 +1959,12 @@ class ExternalWebformController extends Controller
         $measuresIds = $data['measure_ids'] ? explode(',', $data['measure_ids']) : null;
         if($measuresIds) {
             foreach ($measuresIds as $measuresId){
-                $measures[] = Measure::find($measuresId);
+                $measureFound = Measure::find($measuresId);
+                if($measureFound){
+                    $measures[] = $measureFound;
+                } else {
+                    $this->log('Woondossier maatregel id ' . $measuresId . ' niet gevonden!');
+                }
             }
         }
         $measureDates = $data['measure_dates'] ? explode(',', $data['measure_dates']) : null;

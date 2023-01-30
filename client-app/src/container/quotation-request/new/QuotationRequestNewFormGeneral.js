@@ -137,11 +137,6 @@ class QuotationRequestNewFormGeneral extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(quotationRequest.organisationOrCoachId)) {
-            errors.organisationOrCoach = true;
-            hasErrors = true;
-        }
-
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
@@ -188,7 +183,6 @@ class QuotationRequestNewFormGeneral extends Component {
                         value={organisationOrCoachId}
                         options={organisationsOrCoaches}
                         onChangeAction={this.handleInputChange}
-                        required={'required'}
                         error={this.state.errors.organisation}
                     />
                     <InputText

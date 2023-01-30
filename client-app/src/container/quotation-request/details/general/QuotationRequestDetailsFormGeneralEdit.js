@@ -60,7 +60,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             quotationRequest: {
                 id,
                 opportunityId: opportunity.id,
-                organisationOrCoachId: organisationOrCoach.id,
+                organisationOrCoachId: organisationOrCoach ? organisationOrCoach.id : '',
                 projectManagerId: projectManager ? projectManager.id : '',
                 externalPartyId: externalParty ? externalParty.id : '',
                 statusId: status.id,
@@ -131,11 +131,6 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(quotationRequest.organisationOrCoachId + '')) {
-            errors.organisationOrCoach = true;
-            hasErrors = true;
-        }
-
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
@@ -187,7 +182,6 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         value={organisationOrCoachId}
                         options={organisationsOrCoaches}
                         onChangeAction={this.handleInputChange}
-                        required={'required'}
                         error={this.state.errors.organisationOrCoach}
                         readOnly={this.props.quotationRequestDetails.usesPlanning}
                     />

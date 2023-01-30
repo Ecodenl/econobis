@@ -22,8 +22,11 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
         const {
             id,
             organisationOrCoach,
+            organisationsOrCoachesToSelect,
             projectManager,
+            projectManagersToSelect,
             externalParty,
+            externalPartiesToSelect,
             status,
             opportunityAction,
             datePlannedToSendWfEmailStatus,
@@ -44,25 +47,16 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                 fullAddress: opportunity.intake ? opportunity.intake.fullAddress : '',
                 measureNames: opportunity.measures && opportunity.measures.map(measure => measure.name).join(', '),
                 measureCategoryName: opportunity.measureCategory.name,
-                organisationsOrCoaches:
-                    opportunity.intake && opportunity.intake.campaign
-                        ? opportunity.intake.campaign.organisationsOrCoaches
-                        : '',
-                projectManagers:
-                    opportunity.intake && opportunity.intake.campaign
-                        ? opportunity.intake.campaign.projectManagers
-                        : '',
-                externalParties:
-                    opportunity.intake && opportunity.intake.campaign
-                        ? opportunity.intake.campaign.externalParties
-                        : '',
             },
             quotationRequest: {
                 id,
                 opportunityId: opportunity.id,
                 organisationOrCoachId: organisationOrCoach ? organisationOrCoach.id : '',
+                organisationsOrCoaches: organisationsOrCoachesToSelect ? organisationsOrCoachesToSelect : '',
                 projectManagerId: projectManager ? projectManager.id : '',
+                projectManagers: projectManagersToSelect ? projectManagersToSelect : '',
                 externalPartyId: externalParty ? externalParty.id : '',
+                externalParties: externalPartiesToSelect ? externalPartiesToSelect : '',
                 statusId: status.id,
                 opportunityActionId: opportunityAction.id,
                 statusUsesWf: status ? status.usesWf : false,
@@ -144,8 +138,11 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
     render() {
         const {
             organisationOrCoachId,
+            organisationsOrCoaches,
             projectManagerId,
+            projectManagers,
             externalPartyId,
+            externalParties,
             statusId,
             statusUsesWf,
             datePlannedToSendWfEmailStatus,
@@ -161,15 +158,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             quotationText,
             relatedQuotationRequestsStatuses,
         } = this.state.quotationRequest;
-        const {
-            fullName,
-            fullAddress,
-            organisationsOrCoaches,
-            projectManagers,
-            externalParties,
-            measureNames,
-            measureCategoryName,
-        } = this.state.opportunity;
+        const { fullName, fullAddress, measureNames, measureCategoryName } = this.state.opportunity;
         const { opportunityAction } = this.props.quotationRequestDetails;
 
         return (

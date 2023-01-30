@@ -3,10 +3,9 @@
 namespace App\Http\Resources\QuotationRequest;
 
 use App\Http\Resources\Contact\FullContact;
-use App\Http\Resources\Document\FullDocument;
+use App\Http\Resources\Contact\FullInspectionPerson;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Opportunity\FullOpportunity;
-use App\Http\Resources\Organisation\FullOrganisation;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -34,10 +33,13 @@ class FullQuotationRequest extends JsonResource
                 'quotationText' => $this->quotation_text,
                 'organisationOrCoachId' => $this->contact_id,
                 'organisationOrCoach' => FullContact::make($this->whenLoaded('organisationOrCoach')),
+                'organisationsOrCoachesToSelect' => FullInspectionPerson::collection($this->getOrganisastionsOrCoachsToSelect()),
                 'projectManagerId' => $this->project_manager_id,
                 'projectManager' => FullContact::make($this->whenLoaded('projectManager')),
+                'projectManagersToSelect' => FullInspectionPerson::collection($this->getProjectManagersToSelect()),
                 'externalPartyId' => $this->external_party_id,
                 'externalParty' => FullContact::make($this->whenLoaded('externalParty')),
+                'externalPartiesToSelect' => FullInspectionPerson::collection($this->getExternalPartiesToSelect()),
                 'opportunity' => FullOpportunity::make($this->whenLoaded('opportunity')),
                 'status' => GenericResource::make($this->whenLoaded('status')),
                 'opportunityAction' => GenericResource::make($this->whenLoaded('opportunityAction')),

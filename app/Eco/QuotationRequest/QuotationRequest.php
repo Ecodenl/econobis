@@ -84,6 +84,22 @@ class QuotationRequest extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function getOrganisastionsOrCoachsToSelect()
+    {
+        return Contact::whereIn('id', $this->opportunity->intake->campaign->organisationsOrCoachesIds())
+            ->orWhere('id', $this->contact_id)->orderBy('full_name')->get();
+    }
+    public function getProjectManagersToSelect()
+    {
+        return Contact::whereIn('id', $this->opportunity->intake->campaign->projectManagersIds())
+            ->orWhere('id', $this->project_manager_id)->orderBy('full_name')->get();
+    }
+    public function getExternalPartiesToSelect()
+    {
+        return Contact::whereIn('id', $this->opportunity->intake->campaign->externalPartiesIds())
+            ->orWhere('id', $this->external_party_id)->orderBy('full_name')->get();
+    }
+
     public function newEloquentBuilder($query)
     {
         return new QuotationRequestBuilder($query);

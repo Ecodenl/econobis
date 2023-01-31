@@ -4,6 +4,7 @@
   "description": "Econobis react",
   "main": "index.js",
   "scripts": {
+    "prestart": "nvm use 14.15.0",
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
     "lint": "eslint **/*.{js,jsx} --quiet",
     "serve": "webpack serve --open --config webpack.dev.js",

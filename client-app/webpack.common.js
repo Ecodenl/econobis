@@ -30,6 +30,7 @@ module.exports = {
                 use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
             },
             {
+                // test: /.png$|.woff$|.woff2$|.ttf$|.eot$|.svg$|.jpg$|.gif$/,
                 test: /\.(png|woff|woff2|eot|ttf|svg|jpg|gif)$/,
                 use: [
                     {

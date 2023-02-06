@@ -8,10 +8,10 @@ require('dotenv').config({ path: '.env.development' });
 
 module.exports = merge(common, {
     mode: 'development',
-    output: {
-        path: path.join(__dirname, 'dist'),
-        chunkFilename: '[name].js',
-    },
+    // output: {
+    // path: path.join(__dirname, 'dist'),
+    // chunkFilename: '[name].js',
+    // },
     devtool: 'source-map',
     devServer: {
         static: './dist',

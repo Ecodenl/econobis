@@ -2149,7 +2149,7 @@ class TemplateVariableHelper
                 return optional($model->organisationOrCoach->primaryPhoneNumber)->number;
                 break;
             case 'organisatie_primair_contact':
-                return optional(optional($model->organisationOrCoach->contactPerson)->contact)->full_name;
+                return optional(optional($model->organisationOrCoach->contactPerson)->contact)->full_name_fnf;
                 break;
             case 'organisatie_primair_contact_voornaam':
                 if(optional(optional($model->organisationOrCoach->contactPerson)->contact)->type_id == 'person'){
@@ -2169,7 +2169,7 @@ class TemplateVariableHelper
                 }
                 break;
             case 'organisatie_of_coach_naam':
-                return optional($model->organisationOrCoach)->full_name;
+                return optional($model->organisationOrCoach)->full_name_fnf;
                 break;
             case 'organisatie_of_coach_adres':
                 return optional(optional($model->organisationOrCoach)->primaryAddress)->street . ' ' . optional(optional($model->organisationOrCoach)->primaryAddress)->number . (optional(optional($model->organisationOrCoach)->primaryAddress)->addition ? ('-' . optional(optional($model->organisationOrCoach)->primaryAddress)->addition) : '');

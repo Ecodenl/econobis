@@ -11,7 +11,7 @@ export default function DistrictDetailsGeneralView({district, switchToEdit}) {
                 <PanelBody>
                     <div className="row">
                         <ViewText label={'Weergavenaam'} value={district.name}/>
-                        <ViewText label={'Standaard duur afspraak'} value="90 minuten"/>
+                        <ViewText label={'Standaard duur afspraak'} value={district.defaultDurationMinutes + ' minuten'}/>
                     </div>
                 </PanelBody>
             </Panel>

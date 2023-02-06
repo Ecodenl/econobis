@@ -32,6 +32,7 @@ class DistrictController
         return [
             'id' => $district->id,
             'name' => $district->name,
+            'defaultDurationMinutes' => $district->default_duration_minutes,
             'coaches' => $district->coaches->map(function ($coach) {
                 return [
                     'id' => $coach->id,
@@ -100,10 +101,12 @@ class DistrictController
 
         $request->validate([
             'name' => 'required',
+            'defaultDurationMinutes' => [],
         ]);
 
         $district = new District();
         $district->name = $request->name;
+        $district->default_duration_minutes = $request->defaultDurationMinutes;
         $district->save();
 
         return [
@@ -119,9 +122,11 @@ class DistrictController
 
         $request->validate([
             'name' => 'required',
+            'defaultDurationMinutes' => [],
         ]);
 
         $district->name = $request->name;
+        $district->default_duration_minutes = $request->defaultDurationMinutes;
         $district->save();
     }
 

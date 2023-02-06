@@ -5,7 +5,7 @@ import InputText from "../../../components/form/InputText";
 import {useFormik} from "formik";
 import * as Yup from "yup";
 import ButtonText from "../../../components/button/ButtonText";
-import ViewText from "../../../components/form/ViewText";
+import InputSelect from "../../../components/form/InputSelect";
 
 export default function DistrictGeneralEditForm({initialValues, onSubmit, cancelAction}) {
     const {values, errors, touched, handleChange, handleSubmit, handleBlur, isSubmitting} = useFormik({
@@ -17,6 +17,12 @@ export default function DistrictGeneralEditForm({initialValues, onSubmit, cancel
             onSubmit(values, setSubmitting);
         },
     });
+
+    const durationOptions = [];
+
+    for (let i = 30; i <= (60 * 3); i += 15) {
+        durationOptions.push({id: i, name: i + ' minuten'});
+    }
 
     return (
         <form className="form-horizontal" onSubmit={handleSubmit}>
@@ -33,8 +39,14 @@ export default function DistrictGeneralEditForm({initialValues, onSubmit, cancel
                             error={errors.name && touched.name}
                             errorMessage={errors.name}
                         />
-                        {/* Standaardtijd voor nu hardcoded, deze staat nu ook hardcoded in QuotationRequestPlanNewPlanningPanel en wordt later misschien nog dynamisch */}
-                        <ViewText label={'Standaard duur afspraak'} value="90 minuten"/>
+                        <InputSelect
+                            label="Standaard duur afspraak"
+                            name={'defaultDurationMinutes'}
+                            value={values.defaultDurationMinutes}
+                            options={durationOptions}
+                            onChangeAction={handleChange}
+                            emptyOption={false}
+                        />
                     </div>
                 </PanelBody>
 

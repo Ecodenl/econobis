@@ -3,14 +3,21 @@
 namespace App\Eco\District;
 
 use App\Eco\Contact\Contact;
+use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\QuotationRequest\QuotationRequest;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class District extends Model
 {
+    protected $guarded = ['id'];
+
     protected $casts = [
         'default_duration_minutes' => 'integer',
+        'send_email_to_contact_when_planned' => 'boolean',
+        'email_to_contact_template_id' => 'integer',
+        'send_email_to_coach_when_planned' => 'boolean',
+        'email_to_coach_template_id' => 'integer',
     ];
 
     public function coaches()
@@ -21,6 +28,16 @@ class District extends Model
     public function quotationRequests()
     {
         return $this->hasMany(QuotationRequest::class);
+    }
+
+    public function emailToContactTemplate()
+    {
+        return $this->belongsTo(EmailTemplate::class, 'email_to_contact_template_id');
+    }
+
+    public function emailToCoachTemplate()
+    {
+        return $this->belongsTo(EmailTemplate::class, 'email_to_coach_template_id');
     }
 
     public function getAvailableCoachesInWeek(Carbon $startDate)

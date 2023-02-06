@@ -244,6 +244,8 @@ class QuotationRequestController extends ApiController
 
         $this->creatEnergyCoachOccupation($quotationRequest);
 
+        $quotationRequest->sendPlannedInDistrictMails();
+
         return $this->show($quotationRequest);
     }
 

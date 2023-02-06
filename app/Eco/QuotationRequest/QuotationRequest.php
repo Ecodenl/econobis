@@ -152,7 +152,7 @@ class QuotationRequest extends Model
             $email->sent_by_user_id = Auth::id();
             $email->save();
 
-            SendEmailsWithVariables::dispatch($email, $email->to, Auth::id());
+            SendEmailsWithVariables::dispatch($email, [$mail['contact']->id], Auth::id());
         }
     }
 }

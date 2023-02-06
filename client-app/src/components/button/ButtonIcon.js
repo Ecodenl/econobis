@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Icon from 'react-icons-kit';
+import { copy } from 'react-icons-kit/fa/copy';
 
 const ButtonIcon = props => {
     const { buttonClassName, iconName, onClickAction, title, disabled } = props;
@@ -12,7 +14,7 @@ const ButtonIcon = props => {
             disabled={disabled}
             title={title}
         >
-            <span className={`glyphicon ${iconName}`} />
+            {iconName === 'copy' ? <Icon size={12} icon={copy} /> : <span className={`glyphicon ${iconName}`} />}
         </button>
     );
 };

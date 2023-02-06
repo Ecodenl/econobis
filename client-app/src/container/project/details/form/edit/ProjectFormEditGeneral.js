@@ -8,6 +8,9 @@ import InputMultiSelect from '../../../../../components/form/InputMultiSelect';
 import ViewText from '../../../../../components/form/ViewText';
 import InputTextLong from '../../../../../components/form/InputTextLong';
 import InputReactSelectLong from '../../../../../components/form/InputReactSelectLong';
+import Icon from 'react-icons-kit';
+import { angleRight } from 'react-icons-kit/fa/angleRight';
+import { angleDown } from 'react-icons-kit/fa/angleDown';
 
 const ProjectFormEditGeneral = ({
     showCustomerPortalSettings,
@@ -458,9 +461,9 @@ const ProjectFormEditGeneral = ({
             <hr />
             <h4 onClick={() => toggleCustomerPortalSettings(!showCustomerPortalSettings)}>
                 {showCustomerPortalSettings ? (
-                    <span className="glyphicon glyphicon-menu-down" />
+                    <Icon size={21} icon={angleDown} />
                 ) : (
-                    <span className="glyphicon glyphicon-menu-right" />
+                    <Icon size={21} icon={angleRight} />
                 )}
                 &nbsp;Contacten portal instellingen
             </h4>

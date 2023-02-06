@@ -18,6 +18,9 @@ import ContactNewFormPhone from './ContactNewFormPhone';
 import AddressAPI from '../../../api/contact/AddressAPI';
 import ContactNewFormPersonalDuplicateModal from './ContactNewFormPersonalDuplicateModal';
 import InputReactSelect from '../../../components/form/InputReactSelect';
+import Icon from 'react-icons-kit';
+import { angleRight } from 'react-icons-kit/fa/angleRight';
+import { angleDown } from 'react-icons-kit/fa/angleDown';
 
 class ContactNewFormPersonal extends Component {
     constructor(props) {
@@ -472,9 +475,9 @@ class ContactNewFormPersonal extends Component {
                     <PanelHeader>
                         <div className="row" onClick={this.toggleAddress}>
                             {this.state.showAddress ? (
-                                <span className="glyphicon glyphicon-menu-down" />
+                                <Icon size={21} icon={angleDown} />
                             ) : (
-                                <span className="glyphicon glyphicon-menu-right" />
+                                <Icon size={21} icon={angleRight} />
                             )}
                             <span className="h5">Adres</span>
                         </div>
@@ -494,9 +497,9 @@ class ContactNewFormPersonal extends Component {
                     <PanelHeader>
                         <div className="row" onClick={this.toggleEmail}>
                             {this.state.showEmail ? (
-                                <span className="glyphicon glyphicon-menu-down" />
+                                <Icon size={21} icon={angleDown} />
                             ) : (
-                                <span className="glyphicon glyphicon-menu-right" />
+                                <Icon size={21} icon={angleRight} />
                             )}
                             <span className="h5">E-mail</span>
                         </div>
@@ -514,9 +517,9 @@ class ContactNewFormPersonal extends Component {
                     <PanelHeader>
                         <div className="row" onClick={this.togglePhone}>
                             {this.state.showPhone ? (
-                                <span className="glyphicon glyphicon-menu-down" />
+                                <Icon size={21} icon={angleDown} />
                             ) : (
-                                <span className="glyphicon glyphicon-menu-right" />
+                                <Icon size={21} icon={angleRight} />
                             )}
                             <span className="h5">Telefoonnummer</span>
                         </div>

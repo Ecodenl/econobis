@@ -33,7 +33,7 @@ class DocumentTemplateDetailsToolbar extends Component {
                     <div className="btn-group" role="group">
                         <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
                         {permissions.createDocumentTemplate && (
-                            <ButtonIcon iconName={'glyphicon-duplicate'} onClickAction={this.toggleDuplicate} />
+                            <ButtonIcon iconName={'copy'} onClickAction={this.toggleDuplicate} />
                         )}
                         {permissions.createDocumentTemplate && (
                             <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />

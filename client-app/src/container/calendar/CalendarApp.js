@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Calendar from './Calendar';
+import CalendarBody from './CalendarBody';
 import Panel from '../../components/panel/Panel';
 import PanelBody from '../../components/panel/PanelBody';
 import CalendarToolbar from './CalendarToolbar';
@@ -10,7 +10,7 @@ const CalendarApp = props => {
         <Panel>
             <PanelBody>
                 <CalendarToolbar />
-                <Calendar />
+                <CalendarBody />
             </PanelBody>
         </Panel>
     );

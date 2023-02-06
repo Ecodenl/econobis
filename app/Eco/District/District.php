@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class District extends Model
 {
+    protected $casts = [
+        'default_duration_minutes' => 'integer',
+    ];
+
     public function coaches()
     {
         return $this->belongsToMany(Contact::class, 'district_has_coaches', 'district_id', 'contact_id');

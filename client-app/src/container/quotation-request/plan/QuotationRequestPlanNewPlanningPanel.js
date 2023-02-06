@@ -9,9 +9,17 @@ import QuotationRequestDetailsAPI from "../../../api/quotation-request/Quotation
 import {hashHistory} from "react-router";
 import QuotationRequestPlanNewSelectCoachModal from "./QuotationRequestPlanNewSelectCoachModal";
 
-export default function QuotationRequestPlanNewPlanningPanel({districtId, opportunityId}) {
+export default function QuotationRequestPlanNewPlanningPanel({district, opportunityId}) {
+    if(!district) {
+        return null;
+    }
+
     const intervalMinutes = 30;
-    const durationMinutes = 90;
+
+    /**
+     * De 7 dagen van de week in het huidige overzicht in moment objecten.
+     */
+    const [durationMinutes, setDurationMinutes] = useState(90);
 
     /**
      * De 7 dagen van de week in het huidige overzicht in moment objecten.
@@ -46,6 +54,8 @@ export default function QuotationRequestPlanNewPlanningPanel({districtId, opport
          * Bij laden de weekinstelling op de huidige instellen
          */
         setCurrentWeek(moment().startOf('isoWeek').format('YYYY-MM-DD'));
+
+        setDurationMinutes(district.defaultDurationMinutes);
     }, []);
 
     useEffect(() => {
@@ -54,7 +64,7 @@ export default function QuotationRequestPlanNewPlanningPanel({districtId, opport
         }
 
         ContactAvailabilityAPI.fetchDistrictAvailabilitiesByWeek({
-            districtId,
+            districtId: district.id,
             startOfWeek: currentWeek,
         }).then(coachAvailabilities => {
             setAvailabilities(transformCoachAvailabilitiesToAvailabilities(coachAvailabilities));
@@ -165,7 +175,7 @@ export default function QuotationRequestPlanNewPlanningPanel({districtId, opport
 
     useEffect(() => {
         initTimeslots();
-    }, [availabilities]);
+    }, [availabilities, durationMinutes]);
 
     const initTimeslots = () => {
         /**
@@ -264,6 +274,17 @@ export default function QuotationRequestPlanNewPlanningPanel({districtId, opport
         });
     }
 
+    const getDurationMinutesOptions = () => {
+        let options = [];
+        for (let i = 30; i <= (60 * 3); i = i+15) {
+            options.push({
+                value: i,
+                text: i + ' minuten',
+            });
+        }
+        return options;
+    }
+
     const getPreviousWeek = () => {
         let currentIndex = getWeekOptions().findIndex((option) => {
             return option.value === currentWeek;
@@ -301,7 +322,7 @@ export default function QuotationRequestPlanNewPlanningPanel({districtId, opport
         return getFilteredAvailabilities().filter(availability => {
             /**
              * Kijk of er een availability is waar het timeslot volledig binnen valt.
-             * availabilties kunnen niet aansluitend zijn in de database (dan zouden ze samengevoegd moeten worden), dus het is niet nodig om te kijken of het timeslot door meerdere availabilities wordt gedekt.
+             * availabilities kunnen niet aansluitend zijn in de database (dan zouden ze samengevoegd moeten worden), dus het is niet nodig om te kijken of het timeslot door meerdere availabilities wordt gedekt.
              */
             return availability.from <= moment(day).add(timeslot, 'minutes')
                 && availability.to >= moment(day).add(timeslot + durationMinutes, 'minutes');
@@ -331,7 +352,7 @@ export default function QuotationRequestPlanNewPlanningPanel({districtId, opport
             timePlanned: formatMinutesToTime(timeslot),
             durationMinutes: durationMinutes,
             usesPlanning: true,
-            districtId: districtId,
+            districtId: district.id,
             statusId: 8, // "Afspraak gemaakt"
             opportunityActionCodeRef: 'visit',
             projectManagerId: null,
@@ -352,7 +373,7 @@ export default function QuotationRequestPlanNewPlanningPanel({districtId, opport
         <Panel>
             <PanelHeader>
                 <div className="row">
-                    <div className={'col-sm-4'}>
+                    <div className={'col-sm-3'}>
                         <ButtonIcon disabled={!getPreviousWeek()} iconName={'glyphicon-arrow-left'}
                                     buttonClassName="btn-default btn-sm"
                                     onClickAction={() => setCurrentWeek(getPreviousWeek())}/>
@@ -388,7 +409,22 @@ export default function QuotationRequestPlanNewPlanningPanel({districtId, opport
                             })}
                         </select>
                     </div>
-                    <div className={'col-sm-4'} style={{textAlign: 'right'}}>
+                    <div className={'col-sm-2'}>
+                        <select
+                            className="form-control input-sm"
+                            value={durationMinutes}
+                            onChange={(event) => setDurationMinutes(parseInt(event.target.value))}
+                        >
+                            {getDurationMinutesOptions().map(option => {
+                                return (
+                                    <option key={option.value} value={option.value}>
+                                        {option.text}
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    </div>
+                    <div className={'col-sm-3'} style={{textAlign: 'right'}}>
                         <ButtonIcon disabled={!getNextWeek()} iconName={'glyphicon-arrow-right'}
                                     buttonClassName="btn-default btn-sm"
                                     onClickAction={() => setCurrentWeek(getNextWeek())}/>

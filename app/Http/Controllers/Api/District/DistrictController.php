@@ -33,6 +33,16 @@ class DistrictController
             'id' => $district->id,
             'name' => $district->name,
             'defaultDurationMinutes' => $district->default_duration_minutes,
+            'sendEmailToContactWhenPlanned' => $district->send_email_to_contact_when_planned,
+            'emailToContactTemplateId' => $district->email_to_contact_template_id,
+            'sendEmailToCoachWhenPlanned' => $district->send_email_to_coach_when_planned,
+            'emailToCoachTemplateId' => $district->email_to_coach_template_id,
+            'emailToContactTemplate' => $district->emailToContactTemplate ? [
+                'name' => $district->emailToContactTemplate->name,
+            ] : null,
+            'emailToCoachTemplate' => $district->emailToCoachTemplate ? [
+                'name' => $district->emailToCoachTemplate->name,
+            ] : null,
             'coaches' => $district->coaches->map(function ($coach) {
                 return [
                     'id' => $coach->id,
@@ -102,11 +112,19 @@ class DistrictController
         $request->validate([
             'name' => 'required',
             'defaultDurationMinutes' => [],
+            'sendEmailToContactWhenPlanned' => ['boolean'],
+            'emailToContactTemplateId' => [],
+            'sendEmailToCoachWhenPlanned' => ['boolean'],
+            'emailToCoachTemplateId' => [],
         ]);
 
         $district = new District();
         $district->name = $request->name;
         $district->default_duration_minutes = $request->defaultDurationMinutes;
+        $district->send_email_to_contact_when_planned = $request->sendEmailToContactWhenPlanned;
+        $district->email_to_contact_template_id = $request->emailToContactTemplateId;
+        $district->send_email_to_coach_when_planned = $request->sendEmailToCoachWhenPlanned;
+        $district->email_to_coach_template_id = $request->emailToCoachTemplateId;
         $district->save();
 
         return [
@@ -123,10 +141,18 @@ class DistrictController
         $request->validate([
             'name' => 'required',
             'defaultDurationMinutes' => [],
+            'sendEmailToContactWhenPlanned' => ['boolean'],
+            'emailToContactTemplateId' => [],
+            'sendEmailToCoachWhenPlanned' => ['boolean'],
+            'emailToCoachTemplateId' => [],
         ]);
 
         $district->name = $request->name;
         $district->default_duration_minutes = $request->defaultDurationMinutes;
+        $district->send_email_to_contact_when_planned = $request->sendEmailToContactWhenPlanned;
+        $district->email_to_contact_template_id = $request->emailToContactTemplateId;
+        $district->send_email_to_coach_when_planned = $request->sendEmailToCoachWhenPlanned;
+        $district->email_to_coach_template_id = $request->emailToCoachTemplateId;
         $district->save();
     }
 

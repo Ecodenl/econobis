@@ -43,6 +43,8 @@ export default function DistrictNewApp() {
                 <div className="col-md-12 margin-10-top">
                     <DistrictGeneralEditForm initialValues={{
                         defaultDurationMinutes: 90,
+                        sendEmailToContactWhenPlanned: false,
+                        sendEmailToCoachWhenPlanned: false,
                     }} onSubmit={handleSubmit}/>
                 </div>
             </div>

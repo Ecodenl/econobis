@@ -5,6 +5,7 @@ namespace App\Eco\District;
 use App\Eco\Contact\Contact;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\QuotationRequest\QuotationRequest;
+use App\Eco\QuotationRequest\QuotationRequestStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -49,11 +50,12 @@ class District extends Model
         })->get();
 
         $coaches->loadCount(['quotationRequests' => function($query) use ($endDate, $startDate) {
-            $query->whereBetween('date_planned', [$startDate, $endDate]);
+            $query->whereBetween('date_planned', [$startDate, $endDate])
+                ->where('status_id', '!=', QuotationRequestStatus::STATUS_VISIT_CANCELLED_ID);
         }]);
 
         return $coaches->filter(function(Contact $contact){
             return $contact->quotation_requests_count < $contact->coach_max_appointments_per_week;
-        });
+        })->values();
     }
 }

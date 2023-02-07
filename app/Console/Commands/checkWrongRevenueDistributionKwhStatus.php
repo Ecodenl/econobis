@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Helpers\Email\EmailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
@@ -137,16 +136,16 @@ class checkWrongRevenueDistributionKwhStatus extends Command
 
     private function sendMail($subject)
     {
-//        (new EmailHelper())->setConfigToDefaultMailbox();
-//
-//        $mail = Mail::to('wim.mosman@xaris.nl');
+        (new EmailHelper())->setConfigToDefaultMailbox();
+
+        $mail = Mail::to('wim.mosman@xaris.nl');
         $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>Wrong revenue distribution kwh status</title></head><body><p>'. $subject . '</p><p>' . \Config::get("app.name") .'</p></body></html>';
-Log::info($subject);
-Log::info($htmlBody);
-//        $mail->subject = $subject;
-//        $mail->html_body = $htmlBody;
-//
-//        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody));
+//        Log::info($subject);
+//        Log::info($htmlBody);
+        $mail->subject = $subject;
+        $mail->html_body = $htmlBody;
+
+        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody));
     }
 }
 

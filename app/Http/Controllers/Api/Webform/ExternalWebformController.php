@@ -56,6 +56,7 @@ use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\Product\Product;
 use App\Eco\Project\Project;
+use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\Task\Task;
 use App\Eco\Task\TaskProperty;
 use App\Eco\Task\TaskPropertyValue;
@@ -229,6 +230,7 @@ class ExternalWebformController extends Controller
             }
         }
 
+        $this->updateLatestQuotationRequestVisitStatus($data['quotation_request_visit']);
 
         $this->logInfo();
         return Response::json($this->logs);
@@ -502,6 +504,9 @@ class ExternalWebformController extends Controller
                 'woondossier_opbrengst_zonnepanelen' => 'revenue_solar_panels',
                 'woondossier_opmerking' => 'remark',
             ],
+            'quotation_request_visit' => [
+                'kansactie_update_afspraak_status' => 'status_id',
+            ]
         ];
 
         // Task properties toevoegen met prefix 'taak_'
@@ -2858,4 +2863,47 @@ class ExternalWebformController extends Controller
         }
     }
 
+    /**
+     * Status van laatste offerteverzoek van type "Bezoek" kunnen bijwerken.
+     */
+    private function updateLatestQuotationRequestVisitStatus($data)
+    {
+        if(!$data['status_id']){
+            return;
+        }
+
+        $latestQuotationRequestVisit = QuotationRequest::whereHas('opportunityAction', function ($query) {
+            $query->where('code_ref', 'visit');
+        })->whereHas('opportunity.intake', function ($query) {
+            $query->where('contact_id', $this->contact->id);
+        })->orderBy('created_at', 'desc')->first();
+
+        if(!$latestQuotationRequestVisit){
+            $this->log('Geen kansactie bezoek gevonden voor contact, status kan niet worden bijgewerkt.');
+            return;
+        }
+
+        $oldStatus = $latestQuotationRequestVisit->status;
+
+        switch ($data['status_id']) {
+            case 1:
+                $latestQuotationRequestVisit->status_id = 7; // Geen afspraak gemaakt
+                break;
+            case 2:
+                $latestQuotationRequestVisit->status_id = 8; // Afspraak gemaakt
+                break;
+            case 3:
+                $latestQuotationRequestVisit->status_id = 9; // Afspraak gedaan
+                break;
+            case 4:
+                $latestQuotationRequestVisit->status_id = 14; // Afspraak afgezegd
+                break;
+            default:
+                break;
+        }
+
+        $latestQuotationRequestVisit->save();
+
+        $this->log('Kansactie bezoek gevonden voor contact, status bijgewerkt van ' . $oldStatus->name . ' naar ' . $latestQuotationRequestVisit->status()->first()->name);
+    }
 }

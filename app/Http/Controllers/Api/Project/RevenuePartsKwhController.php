@@ -855,8 +855,10 @@ class RevenuePartsKwhController extends ApiController
             }
         }
 
+        $revenuePartsKwhHasNotConfirmed = ($distributionsKwh->first())->revenuesKwh->partsKwh()->where('confirmed', false)->exists();
+
         foreach ($distributionsKwh as $distributionKwh) {
-            //status moet nu onderhanden zijn (in-progress-process zijn)
+            //status moet nu onderhanden zijn (in-progress-process zijn)0
 //todo WM: opschonen
 // Indien status confirmed, dan hoeven we niets meer te doen voor betreffende partKwh
 // Onderscheid tussen confirmed en concept voor in-progress-process dan ook niet meer nodig
@@ -877,17 +879,18 @@ class RevenuePartsKwhController extends ApiController
                         $distributionValuesKwh->save();
                     }
                 }
-                if($distributionKwh->revenuesKwh->partsKwh->where('status', '==', 'new')->count() > 0){
-                    $distributionKwh->status = 'concept';
-                } else {
+// todo WM: opschonen (vervangen door $revenuePartsKwhHasNotConfirmed == false check)
+//                if($distributionKwh->revenuesKwh->partsKwh->where('status', '==', 'new')->count() > 0){
+//                    $distributionKwh->status = 'concept';
+//                } else {
                     if($distributionKwh->distributionValuesKwh->whereNotIn('status', ['confirmed', 'processed'])->count() == 0
                         && $distributionKwh->distributionValuesKwh->where('status', '==', 'confirmed')->count() > 0
-                    ){
+                        && $revenuePartsKwhHasNotConfirmed == false) {
                         $distributionKwh->status = 'confirmed';
                     } else {
                         $distributionKwh->status = 'concept';
                     }
-                }
+//                }
                 $distributionKwh->save();
             }
 

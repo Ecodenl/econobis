@@ -54,7 +54,7 @@ class checkWrongRevenueDistributionKwhStatus extends Command
 
         $revenuesKwh = RevenuesKwh::all();
         foreach($revenuesKwh as $revenueKwh) {
-            $revenuePartsKwhHasNotProcessed = $revenueKwh->partsKwh()->where('status', '!=', 'processed')->exists();
+//            $revenuePartsKwhHasNotProcessed = $revenueKwh->partsKwh()->where('status', '!=', 'processed')->exists();
             $revenuePartsKwhHasNotConfirmed = $revenueKwh->partsKwh()->where('confirmed', false)->exists();
 
             // verwerkte distributions controleren
@@ -64,7 +64,7 @@ class checkWrongRevenueDistributionKwhStatus extends Command
             foreach($revenueDistributionsKwhProcessed as $distributionKwhProcessed) {
                 // indien er niet verwerkte parts zijn, dan fout
 
-                if ($revenuePartsKwhHasNotProcessed) {
+                if ($revenuePartsKwhHasNotConfirmed) {
                     $comment = 'Niet verwerkte deelperiode(n) aanwezig, maar deze deelnemer staat al wel op verwerkt, dat is niet juist:';
                     $comment .= " \n";
                     $comment .= ' - Project: ' . $revenueKwh->project_id . ' ' . $revenueKwh->project->name;

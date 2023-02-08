@@ -129,7 +129,7 @@ class ReportEnergySupplierExcel implements ShouldQueue
             $revenuepartsKwhController->setProcessedEnergySupplierJob($this->revenuePartsKwh, $energySupplier, $this->upToPartsKwhIds);
         }
 
-        $revenuePartsKwhHasNotProcessed = $this->revenuesKwh->partsKwh()->where('status', '!=', 'processed')->exists();
+//        $revenuePartsKwhHasNotProcessed = $this->revenuesKwh->partsKwh()->where('status', '!=', 'processed')->exists();
         $revenuePartsKwhHasNotConfirmed = $this->revenuesKwh->partsKwh()->where('confirmed', false)->exists();
 
         foreach ($this->distributionsForReport as $distributionKwh) {
@@ -140,7 +140,7 @@ class ReportEnergySupplierExcel implements ShouldQueue
                 // doe niets
             } elseif ($distributionKwh->distributionValuesKwh->where('status', '!=', 'processed')->count() == 0
                 && $distributionKwh->distributionValuesKwh->where('status', '==', 'processed')->count() > 0
-                && $revenuePartsKwhHasNotProcessed == false
+                && $revenuePartsKwhHasNotConfirmed == false
             ) {
                 $distributionKwh->status = 'processed';
             } else {

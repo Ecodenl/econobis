@@ -143,6 +143,8 @@ class ExternalWebformController extends Controller
 
     private $newTaskToEmail = [];
     private $processWorkflowEmailNewTask = false;
+    private $createOpportunityToEmail = [];
+    private $processWorkflowCreateOpportunity = false;
 
     public function post(string $apiKey, Request $request)
     {
@@ -151,6 +153,8 @@ class ExternalWebformController extends Controller
         $this->responsibleIds = $data['responsible_ids'];
         $this->newTaskToEmail = [];
         $this->processWorkflowEmailNewTask = false;
+        $this->createOpportunityToEmail = [];
+        $this->processWorkflowCreateOpportunity = false;
 
         try {
             \DB::transaction(function () use ($request, $apiKey, $data ) {
@@ -226,6 +230,25 @@ class ExternalWebformController extends Controller
                     }
                 }
 
+            }
+        }
+
+        // evt nog processWorkflowCreateOpportunity uitvoeren
+        if ($this->processWorkflowCreateOpportunity) {
+            foreach ($this->createOpportunityToEmail as $measureCategoryId){
+                $measureCategory = MeasureCategory::find($measureCategoryId);
+                if ($this->intake && $measureCategory && $measureCategory->uses_wf_create_opportunity) {
+                    $this->log("Intake interesse (maatregel categorie) '" . $measureCategory->name . "' heeft workflow kans maken. Deze uitvoeren");
+                    $intakeWorkflowHelper = new IntakeWorkflowHelper($this->intake, $measureCategory);
+                    $processed = $intakeWorkflowHelper->processWorkflowCreateOpportunity();
+
+                    if($processed)
+                    {
+                        $this->log('Workflow kans maken uitgevoerd.');
+                    } else {
+                        $this->log('Workflow kans maken NIET uitgevoerd.');
+                    }
+                }
             }
         }
 
@@ -1782,9 +1805,8 @@ class ExternalWebformController extends Controller
                 // check workflow maak kans voor interesses (maatregel categorieen). indien aan, maak kans (en vandaar uit wellicht ook nog offerteverzoek)
                 foreach ($measureCategories as $measureCategory) {
                     if ($measureCategory->uses_wf_create_opportunity) {
-                        $this->log("Intake interesse (maatregel categorie) '" . $measureCategory->name . " heeft workflow kans maken. Deze uitvoeren");
-                        $intakeWorkflowHelper = new IntakeWorkflowHelper($intake, $measureCategory);
-                        $intakeWorkflowHelper->processWorkflowCreateOpportunity();
+                        $this->createOpportunityToEmail [] = $measureCategory->id;
+                        $this->processWorkflowCreateOpportunity = true;
                     }
                 }
             }

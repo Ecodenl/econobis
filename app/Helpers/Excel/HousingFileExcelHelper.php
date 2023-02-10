@@ -62,12 +62,12 @@ class HousingFileExcelHelper
                 $rowData[3] = $housingFile->address->addition;
                 $rowData[4] = $housingFile->address->postal_code;
                 $rowData[5] = $housingFile->address->city;
-                $rowData[6] = $housingFile->buildingType->name;
+                $rowData[6] = $housingFile->buildingType ? $housingFile->buildingType->name : '';
                 $rowData[7] = $housingFile->surface;
                 $rowData[8] = $housingFile->build_year;
-                $rowData[9] = $housingFile->roofType->name;
-                $rowData[10] = $housingFile->energyLabel->name;
-                $rowData[11] = $housingFile->energyLabelStatus->name;
+                $rowData[9] = $housingFile->roofType ? $housingFile->roofType->name : '';
+                $rowData[10] = $housingFile->energyLabel ? $housingFile->energyLabel->name : '';
+                $rowData[11] = $housingFile->energyLabelStatus ? $housingFile->energyLabelStatus->name : '';
                 $rowData[12] = $housingFile->floors;
                 $rowData[13] = $housingFile->is_monument;
 

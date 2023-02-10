@@ -201,6 +201,8 @@ class RevenuePartsKwhController extends ApiController
             }
         }
 
+        $excel = null;
+
         // Als documentnaam (prefix bestandsnaam) @geen@ is opgegeven, dan geen document aanmaken.
         if($documentName != '@geen@'){
 
@@ -284,7 +286,7 @@ class RevenuePartsKwhController extends ApiController
                 foreach($distributionsPartsKwh as $distributionPartsKwh) {
                     if ($distributionPartsKwh->status === 'in-progress-report') {
                         // Geen excel gemaakt, dan terug naar status confirmed
-                        if(!$excel){
+                        if(!$excel && $documentName != '@geen@'){
                             $distributionPartsKwh->status = 'confirmed';
                         } else {
                             $deliveredTotal = $deliveredTotal + $distributionPartsKwh->delivered_kwh;
@@ -300,7 +302,7 @@ class RevenuePartsKwhController extends ApiController
                         foreach($distributionsValuesKwh as $distributionValuesKwh) {
                             if ($distributionValuesKwh->status === 'in-progress-report') {
                                 // Geen excel gemaakt, dan terug naar status confirmed
-                                if(!$excel){
+                                if(!$excel && $documentName != '@geen@'){
                                     $distributionValuesKwh->status = 'confirmed';
                                 } else {
                                     $distributionValuesKwh->status = 'processed';

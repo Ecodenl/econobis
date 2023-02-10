@@ -201,69 +201,74 @@ class RevenuePartsKwhController extends ApiController
             }
         }
 
-        switch ($energySupplier->file_format_id){
+        // Als documentnaam (prefix bestandsnaam) @geen@ is opgegeven, dan geen document aanmaken.
+        if($documentName != '@geen@'){
+
+            switch ($energySupplier->file_format_id){
             case 1:
                 $fileFormat = '.xls';
                 break;
             default:
                 $fileFormat = '.xlsx';
                 break;
-        }
-
-        $fileName = $this->translateToValidCharacterSet($documentName) . '-' . $energySupplier->abbreviation . $fileFormat;
-        $templateId = $energySupplier->excel_template_id;
-
-        if ($templateId) {
-            set_time_limit(0);
-            $excelHelper = new EnergySupplierExcelHelper($energySupplier, $revenuePartsKwh, $templateId, $fileName);
-            $excel = $excelHelper->getExcel();
-        }else{
-            abort(412, 'Geen geldige excel template gevonden.');
-        }
-
-        if($excel){
-            $documentCreatedFromProjectId = DocumentCreatedFrom::where('code_ref', 'project')->first()->id;
-
-            $document = new Document();
-            $document->document_created_from_id = $documentCreatedFromProjectId;
-            $document->document_type = 'internal';
-            $document->document_group = 'revenue';
-            $document->project_id = $revenuePartsKwh->revenuesKwh->project->id;
-
-            $document->filename = $fileName;
-
-            $document->save();
-
-            $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR
-                . $document->filename));
-
-            switch ($energySupplier->file_format_id){
-                case 1:
-                    $writer = new Xls($excel);
-                    break;
-                default:
-                    $writer = new Xlsx($excel);
-                    break;
             }
-            $writer->save($filePath);
 
-            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local')
-            {
-                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+            $fileName = $this->translateToValidCharacterSet($documentName) . '-' . $energySupplier->abbreviation . $fileFormat;
+            $templateId = $energySupplier->excel_template_id;
 
-                $alfrescoResponse = $alfrescoHelper->createFile($filePath,
-                    $document->filename, $document->getDocumentGroup()->name);
-                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+            if ($templateId) {
+                set_time_limit(0);
+                $excelHelper = new EnergySupplierExcelHelper($energySupplier, $revenuePartsKwh, $templateId, $fileName);
+                $excel = $excelHelper->getExcel();
             }else{
-                $alfrescoResponse = null;
+                abort(412, 'Geen geldige excel template gevonden.');
             }
 
-            $document->save();
+            if($excel){
+                $documentCreatedFromProjectId = DocumentCreatedFrom::where('code_ref', 'project')->first()->id;
 
-            //delete file on server, still saved on alfresco.
-            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                Storage::disk('documents')->delete($document->filename);
+                $document = new Document();
+                $document->document_created_from_id = $documentCreatedFromProjectId;
+                $document->document_type = 'internal';
+                $document->document_group = 'revenue';
+                $document->project_id = $revenuePartsKwh->revenuesKwh->project->id;
+
+                $document->filename = $fileName;
+
+                $document->save();
+
+                $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR
+                    . $document->filename));
+
+                switch ($energySupplier->file_format_id){
+                    case 1:
+                        $writer = new Xls($excel);
+                        break;
+                    default:
+                        $writer = new Xlsx($excel);
+                        break;
+                }
+                $writer->save($filePath);
+
+                if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local')
+                {
+                    $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+
+                    $alfrescoResponse = $alfrescoHelper->createFile($filePath,
+                        $document->filename, $document->getDocumentGroup()->name);
+                    $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+                }else{
+                    $alfrescoResponse = null;
+                }
+
+                $document->save();
+
+                //delete file on server, still saved on alfresco.
+                if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+                    Storage::disk('documents')->delete($document->filename);
+                }
             }
+
         }
 
         foreach ($distributionsKwh as $distributionKwh) {
@@ -284,7 +289,10 @@ class RevenuePartsKwhController extends ApiController
                         } else {
                             $deliveredTotal = $deliveredTotal + $distributionPartsKwh->delivered_kwh;
                             $kwhReturn = $kwhReturn + $distributionPartsKwh->kwh_return_this_part;
-                            $distributionPartsKwh->date_energy_supplier_report = Carbon::now()->format('Y-m-d');
+                            // Als documentnaam (prefix bestandsnaam) @geen@ is opgegeven, dan is er geen document aangemaakt en werken we date_energy_supplier_report ook niet bij.
+                            if($documentName != '@geen@') {
+                                $distributionPartsKwh->date_energy_supplier_report = Carbon::now()->format('Y-m-d');
+                            }
                             $distributionPartsKwh->status = 'processed';
                         }
                         $distributionPartsKwh->save();

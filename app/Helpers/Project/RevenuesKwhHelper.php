@@ -679,7 +679,7 @@ class RevenuesKwhHelper
 
                 $newTotalDeliveredKwh = RevenueDistributionValuesKwh::where('revenue_id', $newRevenuePartsKwh->revenue_id)->where('distribution_id', $newDistributionPartsKwh->distribution_id)->where('parts_id', $newRevenuePartsKwh->id)->sum('delivered_kwh');
                 $newDistributionPartsKwh->delivered_kwh = $newTotalDeliveredKwh;
-                $newDistributionPartsKwh->is_visible = empty($distributionPartsKwh->remarks) ? false : true;
+                $newDistributionPartsKwh->is_visible = empty($newDistributionPartsKwh->remarks) ? false : true;
                 $newDistributionPartsKwh->save();
             }
             $revenuePartsKwhForRecalculate = RevenuePartsKwh::find($revenuePartsKwh->id);

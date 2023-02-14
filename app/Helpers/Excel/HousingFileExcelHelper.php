@@ -46,6 +46,7 @@ class HousingFileExcelHelper
         $headerData[] = 'Status energielabel';
         $headerData[] = 'Aantal bouwlagen';
         $headerData[] = 'Monument';
+        $headerData[] = 'Koophuis';
 
         $completeData[] = $headerData;
 
@@ -69,7 +70,8 @@ class HousingFileExcelHelper
                 $rowData[10] = $housingFile->energyLabel ? $housingFile->energyLabel->name : '';
                 $rowData[11] = $housingFile->energyLabelStatus ? $housingFile->energyLabelStatus->name : '';
                 $rowData[12] = $housingFile->floors;
-                $rowData[13] = $housingFile->is_monument;
+                $rowData[13] = $housingFile->is_monument ? 'Ja' : 'Nee';
+                $rowData[14] = $housingFile->is_house_for_sale ? 'Ja' : 'Nee';
 
                 $completeData[] = $rowData;
             }
@@ -81,13 +83,13 @@ class HousingFileExcelHelper
         // Load all data in worksheet
         $sheet->fromArray($completeData);
 
-        for ($col = 'A'; $col !== 'Y'; $col++) {
+        for ($col = 'A'; $col !== 'P'; $col++) {
             $spreadsheet->getActiveSheet()
                 ->getColumnDimension($col)
                 ->setAutoSize(true);
         }
 
-        $sheet->getStyle('A1:Z1')
+        $sheet->getStyle('A1:O1')
             ->applyFromArray([
                 'font' => [
                     'bold' => true,

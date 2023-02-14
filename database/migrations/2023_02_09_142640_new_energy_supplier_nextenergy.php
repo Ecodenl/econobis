@@ -18,7 +18,7 @@ class NewEnergySupplierNextenergy  extends Migration
         $newEnergieSuppliers = [
             [
                 'name' => 'NextEnergy',
-                'doesPCR' => 1,
+                'doesPCR' => 0,
                 'excelTemplateId' => 2,
                 'abbreviation' => 'NEG'
             ],

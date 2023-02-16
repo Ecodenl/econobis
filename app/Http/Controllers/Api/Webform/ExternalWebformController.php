@@ -502,6 +502,8 @@ class ExternalWebformController extends Controller
                 'intake_status_id' => 'status_id',
                 'intake_opmerkingen_bewoner' => 'note',
                 'intake_kans_bijlage' => 'intake_opportunity_attachment',
+                'intake_kans_bijlage2' => 'intake_opportunity_attachment_2',
+                'intake_kans_bijlage3' => 'intake_opportunity_attachment_3',
             ],
             'housing_file' => [
                 // HousingFile
@@ -1814,6 +1816,12 @@ class ExternalWebformController extends Controller
             // Indien kans bijlage url meegegeven deze als document opslaan
             if($data['intake_opportunity_attachment']){
                 $this->addIntakeOpportunityAttachment($intake, $saveOpportunity, $data['intake_opportunity_attachment']);
+            }
+            if($data['intake_opportunity_attachment_2']){
+                $this->addIntakeOpportunityAttachment($intake, $saveOpportunity, $data['intake_opportunity_attachment_2']);
+            }
+            if($data['intake_opportunity_attachment_3']){
+                $this->addIntakeOpportunityAttachment($intake, $saveOpportunity, $data['intake_opportunity_attachment_3']);
             }
 
             return $intake;

@@ -17,7 +17,6 @@ import InputTime from '../../../components/form/InputTime';
 class QuotationRequestNewFormGeneral extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             opportunity: {
                 fullName: '',
@@ -32,7 +31,7 @@ class QuotationRequestNewFormGeneral extends Component {
                 organisationOrCoachId: '',
                 projectManagerId: '',
                 externalPartyId: '',
-                statusId: '1', //offerte aangevraagd, also alter componentwillmount when changing default!
+                statusId: '',
                 opportunityActionId: props.opportunityAction.id,
                 dateRecorded: '',
                 timeRecorded: '',
@@ -79,7 +78,7 @@ class QuotationRequestNewFormGeneral extends Component {
                     organisationOrCoachId: '',
                     projectManagerId: '',
                     externalPartyId: '',
-                    statusId: '1',
+                    statusId: payload.defaultStatusId, // default status id!
                     opportunityActionId: this.props.opportunityAction.id,
                     dateRecorded: '',
                     timeRecorded: '',
@@ -243,34 +242,18 @@ class QuotationRequestNewFormGeneral extends Component {
                     />
                 </div>
 
-                {/* indien kans actie budgetaanvraag is zetten we de default waarde van status op budgetaanvraag open */}
-                {this.props.opportunityAction.name === 'Budgetaanvraag' || this.props.opportunityAction.id === 3 ? (
-                    <div className="row">
-                        <InputSelect
-                            label={'Status'}
-                            size={'col-sm-6'}
-                            name="statusId"
-                            value={statusId}
-                            options={this.state.quotationRequestStatuses}
-                            onChangeAction={this.handleInputChange}
-                            required={'required'}
-                            error={this.state.errors.status}
-                        />
-                    </div>
-                ) : (
-                    <div className="row">
-                        <InputSelect
-                            label={'Status'}
-                            size={'col-sm-6'}
-                            name="statusId"
-                            value={statusId}
-                            options={this.state.quotationRequestStatuses}
-                            onChangeAction={this.handleInputChange}
-                            required={'required'}
-                            error={this.state.errors.status}
-                        />
-                    </div>
-                )}
+                <div className="row">
+                    <InputSelect
+                        label={'Status'}
+                        size={'col-sm-6'}
+                        name="statusId"
+                        value={statusId}
+                        options={this.state.quotationRequestStatuses}
+                        onChangeAction={this.handleInputChange}
+                        required={'required'}
+                        error={this.state.errors.status}
+                    />
+                </div>
 
                 <div className="row">
                     <InputDate

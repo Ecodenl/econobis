@@ -39,6 +39,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             quotationText,
             opportunity,
             relatedQuotationRequestsStatuses,
+            externalpartyNote,
         } = props.quotationRequestDetails;
 
         this.state = {
@@ -73,6 +74,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                 dateApprovedProjectManager: dateApprovedProjectManager ? dateApprovedProjectManager : '',
                 dateApprovedClient: dateApprovedClient ? dateApprovedClient : '',
                 quotationText: quotationText ? quotationText : '',
+                externalpartyNote: externalpartyNote ? externalpartyNote : '',
                 relatedQuotationRequestsStatuses: relatedQuotationRequestsStatuses
                     ? relatedQuotationRequestsStatuses
                     : [],
@@ -156,6 +158,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             dateApprovedProjectManager,
             dateApprovedClient,
             quotationText,
+            externalpartyNote,
             relatedQuotationRequestsStatuses,
         } = this.state.quotationRequest;
         const { fullName, fullAddress, measureNames, measureCategoryName } = this.state.opportunity;
@@ -355,6 +358,17 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         value={quotationText}
                         onChangeAction={this.handleInputChange}
                     />
+                </div>
+
+                <div className="row">
+                    <div className="col-sm-3">
+                        <label htmlFor="externalpartyNote" className="col-sm-12">
+                            Opmerkingen externe partij
+                        </label>
+                    </div>
+                    <div className="col-sm-9" id="externalpartyNote">
+                        {externalpartyNote}
+                    </div>
                 </div>
 
                 <div className="panel-footer">

@@ -21,6 +21,7 @@ const QuotationRequestDetailsFormGeneralView = props => {
         dateApprovedClient,
         quotationText,
         opportunity,
+        externalpartyNote,
     } = props.quotationRequestDetails;
 
     return (
@@ -145,6 +146,17 @@ const QuotationRequestDetailsFormGeneralView = props => {
                 </div>
                 <div className="col-sm-9" id="quotationText">
                     {quotationText}
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-sm-3">
+                    <label htmlFor="externalpartyNote" className="col-sm-12">
+                        Opmerkingen externe partij
+                    </label>
+                </div>
+                <div className="col-sm-9" id="externalpartyNote">
+                    {externalpartyNote}
                 </div>
             </div>
         </div>

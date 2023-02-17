@@ -563,7 +563,7 @@ class RevenuesKwhHelper
         $newEndDateOriginalPartsKwh = Carbon::parse($splitDate)->subDay()->format('Y-m-d');
         $revenuePartsKwh->date_end = $newEndDateOriginalPartsKwh;
 
-        if($revenuePartsKwh->status == 'concept'){
+        if($revenuePartsKwh->status == 'new' || $revenuePartsKwh->status == 'concept'){
             $revenuePartsKwh->delivered_total_concept = 0;
             $revenuePartsKwh->delivered_total_confirmed = 0;
             $revenuePartsKwh->delivered_total_processed = 0;
@@ -587,7 +587,7 @@ class RevenuesKwhHelper
         $newRevenuePartsKwh->date_begin = $splitDateString;
         $newRevenuePartsKwh->date_end = $oldEndDateOriginalPartsKwh;
 
-        if($newRevenuePartsKwh->status == 'concept'){
+        if($newRevenuePartsKwh->status == 'new' || $newRevenuePartsKwh->status == 'concept'){
             $newRevenuePartsKwh->delivered_total_concept = 0;
             $newRevenuePartsKwh->delivered_total_confirmed = 0;
             $newRevenuePartsKwh->delivered_total_processed = 0;

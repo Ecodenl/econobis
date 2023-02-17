@@ -506,6 +506,8 @@ class ExternalWebformController extends Controller
             ],
             'quotation_request_visit' => [
                 'kansactie_update_afspraak_status' => 'status_id',
+                'kansactie_update_afspraak_campagne' => 'campaign_id',
+                'kansactie_update_afspraak_coach' => 'coach_id',
             ]
         ];
 
@@ -2876,10 +2878,17 @@ class ExternalWebformController extends Controller
             $query->where('code_ref', 'visit');
         })->whereHas('opportunity.intake', function ($query) {
             $query->where('contact_id', $this->contact->id);
-        })->orderBy('created_at', 'desc')->first();
+        })->when($data['coach_id'], function ($query) use ($data) {
+            $query->where('contact_id', $data['coach_id']);
+        })->when($data['campaign_id'], function ($query) use ($data) {
+            $query->whereHas('opportunity.intake', function ($query) use ($data) {
+                $query->where('campaign_id', $data['campaign_id']);
+            });
+        })->orderBy('created_at', 'desc')
+            ->first();
 
-        if(!$latestQuotationRequestVisit){
-            $this->log('Geen kansactie bezoek gevonden voor contact, status kan niet worden bijgewerkt.');
+        if (!$latestQuotationRequestVisit) {
+            $this->log('Geen kansactie bezoek gevonden voor contact, coach en campagne, status kan niet worden bijgewerkt.');
             return;
         }
 
@@ -2904,6 +2913,6 @@ class ExternalWebformController extends Controller
 
         $latestQuotationRequestVisit->save();
 
-        $this->log('Kansactie bezoek gevonden voor contact, status bijgewerkt van ' . $oldStatus->name . ' naar ' . $latestQuotationRequestVisit->status()->first()->name);
+        $this->log('Kansactie bezoek gevonden voor contact, coach en campagne. Status bijgewerkt van ' . $oldStatus->name . ' naar ' . $latestQuotationRequestVisit->status()->first()->name);
     }
 }

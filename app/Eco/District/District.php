@@ -19,6 +19,7 @@ class District extends Model
         'email_to_contact_template_id' => 'integer',
         'send_email_to_coach_when_planned' => 'boolean',
         'email_to_coach_template_id' => 'integer',
+        'closed' => 'boolean',
     ];
 
     public function coaches()

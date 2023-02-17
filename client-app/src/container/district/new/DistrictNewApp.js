@@ -45,6 +45,7 @@ export default function DistrictNewApp() {
                         defaultDurationMinutes: 90,
                         sendEmailToContactWhenPlanned: false,
                         sendEmailToCoachWhenPlanned: false,
+                        closed: false,
                     }} onSubmit={handleSubmit}/>
                 </div>
             </div>

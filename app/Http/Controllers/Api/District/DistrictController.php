@@ -19,6 +19,7 @@ class DistrictController
             return [
                 'id' => $district->id,
                 'name' => $district->name,
+                'closed' => $district->closed,
             ];
         });
     }
@@ -49,6 +50,7 @@ class DistrictController
                     'fullName' => $coach->full_name,
                 ];
             }),
+            'closed' => $district->closed,
         ];
     }
 
@@ -125,6 +127,7 @@ class DistrictController
         $district->email_to_contact_template_id = $request->emailToContactTemplateId;
         $district->send_email_to_coach_when_planned = $request->sendEmailToCoachWhenPlanned;
         $district->email_to_coach_template_id = $request->emailToCoachTemplateId;
+        $district->closed = $request->closed;
         $district->save();
 
         return [
@@ -152,7 +155,7 @@ class DistrictController
         $district->send_email_to_contact_when_planned = $request->sendEmailToContactWhenPlanned;
         $district->email_to_contact_template_id = $request->emailToContactTemplateId;
         $district->send_email_to_coach_when_planned = $request->sendEmailToCoachWhenPlanned;
-        $district->email_to_coach_template_id = $request->emailToCoachTemplateId;
+        $district->closed = $request->closed;
         $district->save();
     }
 

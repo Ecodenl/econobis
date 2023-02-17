@@ -49,6 +49,11 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
 
     const [selectedTimeslot, setSelectedTimeslot] = useState(null);
 
+    /**
+     * We setten een isSaving flag om te voorkomen dat dit dubbel wordt uitgevoerd bij dubbelklikken.
+     */
+    const [isSaving, setIsSaving] = useState(false);
+
     useEffect(() => {
         /**
          * Bij laden de weekinstelling op de huidige instellen
@@ -345,6 +350,12 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
     }
 
     const createQuotationRequest = (day, timeslot, coachId) => {
+        if(isSaving){
+            return;
+        }
+
+        setIsSaving(true);
+
         QuotationRequestDetailsAPI.newQuotationRequest({
             organisationOrCoachId: coachId,
             opportunityId: opportunityId,

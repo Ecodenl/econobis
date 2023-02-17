@@ -142,6 +142,8 @@ class QuotationRequest extends Model
             $email->mailbox_id = $mailbox->id;
             $email->from = $mailbox->email;
             $email->to = [$mail['contact']->primaryEmailAddress->email];
+            $email->cc = [];
+            $email->bcc = [];
             $email->subject = $mail['template']->subject;
             $email->folder = 'concept';
             $email->quotation_request_id = $this->id;

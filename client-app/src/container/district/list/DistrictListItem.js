@@ -33,6 +33,7 @@ export default function DistrictListItem({district, onDelete}) {
             onMouseLeave={onRowLeave}
         >
             <td>{district.name}</td>
+            <td>{district.closed ? 'Gesloten' : 'Open'}</td>
             <td>
                 {(showActionButtons || showDeleteModal) && (
                     <>

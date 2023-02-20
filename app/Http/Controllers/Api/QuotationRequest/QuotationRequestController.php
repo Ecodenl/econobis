@@ -152,6 +152,7 @@ class QuotationRequestController extends ApiController
             'dateApprovedClient' => 'string',
             'dateApprovedProjectManager' => 'string',
             'dateApprovedExternal' => 'string',
+            'dateUnderReview' => 'string',
             'statusId' => 'required|exists:quotation_request_status,id',
             'opportunityActionId' => [Rule::requiredIf(!$request->has('opportunityActionCodeRef')), 'exists:opportunity_actions,id'],
             'quotationText' => 'string',
@@ -228,6 +229,10 @@ class QuotationRequestController extends ApiController
             $quotationRequest->date_approved_external = $data['dateApprovedExternal'];
         }
 
+        if ($data['dateUnderReview']) {
+            $quotationRequest->date_under_review = $data['dateUnderReview'];
+        }
+
         if (isset($data['quotationText'])) {
             $quotationRequest->quotation_text = $data['quotationText'];
         }
@@ -268,6 +273,7 @@ class QuotationRequestController extends ApiController
             'dateApprovedClient' => 'string',
             'dateApprovedProjectManager' => 'string',
             'dateApprovedExternal' => 'string',
+            'dateUnderReview' => 'string',
             'statusId' => 'required|exists:quotation_request_status,id',
             'opportunityActionId' => 'required|exists:opportunity_actions,id',
             'quotationText' => 'string',
@@ -337,6 +343,10 @@ class QuotationRequestController extends ApiController
 
         if ($data['dateApprovedExternal']) {
             $quotationRequest->date_approved_external = $data['dateApprovedExternal'];
+        }
+
+        if ($data['dateUnderReview']) {
+            $quotationRequest->date_under_review = $data['dateUnderReview'];
         }
 
         if (isset($data['quotationText'])) {

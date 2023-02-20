@@ -30,6 +30,7 @@ class FullQuotationRequest extends JsonResource
                 'dateApprovedClient' => $this->date_approved_client,
                 'dateApprovedProjectManager' => $this->date_approved_project_manager,
                 'dateApprovedExternal' => $this->date_approved_external,
+                'dateUnderReview' => $this->date_under_review,
                 'quotationText' => $this->quotation_text,
                 'organisationOrCoachId' => $this->contact_id,
                 'organisationOrCoach' => FullContact::make($this->whenLoaded('organisationOrCoach')),

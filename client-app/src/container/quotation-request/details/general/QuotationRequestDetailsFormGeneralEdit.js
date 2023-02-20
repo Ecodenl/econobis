@@ -34,6 +34,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             dateReleased,
             datePlanned,
             dateApprovedExternal,
+            dateUnderReview,
             dateApprovedProjectManager,
             dateApprovedClient,
             quotationText,
@@ -71,6 +72,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                 datePlanned: datePlanned ? datePlanned : '',
                 timePlanned: datePlanned ? moment(datePlanned).format('HH:mm') : '08:00',
                 dateApprovedExternal: dateApprovedExternal ? dateApprovedExternal : '',
+                dateUnderReview: dateUnderReview ? dateUnderReview : '',
                 dateApprovedProjectManager: dateApprovedProjectManager ? dateApprovedProjectManager : '',
                 dateApprovedClient: dateApprovedClient ? dateApprovedClient : '',
                 quotationText: quotationText ? quotationText : '',
@@ -155,6 +157,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             datePlanned,
             timePlanned,
             dateApprovedExternal,
+            dateUnderReview,
             dateApprovedProjectManager,
             dateApprovedClient,
             quotationText,
@@ -348,6 +351,15 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         size={'col-sm-6'}
                         name="dateApprovedExternal"
                         value={dateApprovedExternal}
+                        onChangeAction={this.handleInputChangeDate}
+                    />
+                </div>
+                <div className="row">
+                    <InputDate
+                        label="Datum in behandeling"
+                        size={'col-sm-6'}
+                        name="dateUnderReview"
+                        value={dateUnderReview}
                         onChangeAction={this.handleInputChangeDate}
                     />
                 </div>

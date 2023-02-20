@@ -4,6 +4,7 @@ namespace App\Helpers\Project;
 
 
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
+use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
@@ -13,7 +14,6 @@ use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\RevenuesKwh\RevenueValuesKwh;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
-use Illuminate\Support\Facades\Log;
 
 class RevenuesKwhHelper
 {
@@ -253,12 +253,21 @@ class RevenuesKwhHelper
         $distributionPartsKwh->distributionKwh->newOrConceptDistributionValuesKwh()->where('parts_id', $revenuePartsKwh->id)->delete();
         $this->saveDistributionValuesKwh($partDateBegin, $partDateEnd, $distributionPartsKwh);
 
+        $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
         $distributionPartsKwh->delivered_kwh = 0;
-        $distributionPartsKwh->es_id = $addressEnergySupplier ? $addressEnergySupplier->energy_supplier_id : null;
-        $distributionPartsKwh->energy_supplier_name = $addressEnergySupplier ? $addressEnergySupplier->energySupplier->name : null;
-        $distributionPartsKwh->energy_supplier_number = $addressEnergySupplier ? $addressEnergySupplier->es_number: null;
-
-        $distributionPartsKwh->is_visible = empty($distributionPartsKwh->remarks) ? false : true;
+        if($addressEnergySupplier){
+            $distributionPartsKwh->es_id = $addressEnergySupplier ? $addressEnergySupplier->energy_supplier_id : null;
+            $distributionPartsKwh->energy_supplier_name = $addressEnergySupplier ? $addressEnergySupplier->energySupplier->name : null;
+            $distributionPartsKwh->energy_supplier_number = $addressEnergySupplier ? $addressEnergySupplier->es_number: null;
+            $distributionPartsKwh->is_visible = empty($distributionPartsKwh->remarks) ? false : true;
+        } else {
+            if($energySupplierUnknown){
+                $distributionPartsKwh->es_id = $energySupplierUnknown->id;
+                $distributionPartsKwh->energy_supplier_name = $energySupplierUnknown->name;
+                $distributionPartsKwh->energy_supplier_number = '';
+                $distributionPartsKwh->is_visible = 1;
+            }
+        }
         $distributionPartsKwh->save();
     }
 

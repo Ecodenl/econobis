@@ -57,6 +57,8 @@ class IntakeExcelHelper
         $headerData[] = 'Kans status';
         $headerData[] = 'Kans datum uitvoering';
         $headerData[] = 'Kans datum evaluatie';
+        $headerData[] = 'Opmerking';
+        $headerData[] = 'Motivatie';
 
         $completeData[] = $headerData;
 
@@ -78,6 +80,7 @@ class IntakeExcelHelper
                 foreach ($intake->sources as $source) {
                     array_push($sources, $source->name);
                 }
+
                 if (count($sources) > 0) {
                     $intake->sources_string = implode(', ', $sources);
                 }
@@ -134,6 +137,8 @@ class IntakeExcelHelper
                             $rowData[21] = $opportunity->status ? $opportunity->status->name : '';
                             $rowData[22] = $this->formatDate($opportunity->desired_date);
                             $rowData[23] = $this->formatDate($opportunity->evaluation_agreed_date);
+                            $rowData[24] = $intake->note ?? '';
+                            $rowData[25] = implode(', ', $intake->reasons->pluck('name')->toArray());
                         }
 
                         $completeData[] = $rowData;
@@ -145,6 +150,8 @@ class IntakeExcelHelper
                     $rowData[21] = '';
                     $rowData[22] = '';
                     $rowData[23] = '';
+                    $rowData[24] = $intake->note ?? '';
+                    $rowData[25] = implode(', ', $intake->reasons->pluck('name')->toArray());
                     $completeData[] = $rowData;
                 }
             }
@@ -156,7 +163,7 @@ class IntakeExcelHelper
         // Load all data in worksheet
         $sheet->fromArray($completeData);
 
-        for ($col = 'A'; $col !== 'Y'; $col++) {
+        for ($col = 'A'; $col !== 'Z'; $col++) {
             $spreadsheet->getActiveSheet()
                 ->getColumnDimension($col)
                 ->setAutoSize(true);

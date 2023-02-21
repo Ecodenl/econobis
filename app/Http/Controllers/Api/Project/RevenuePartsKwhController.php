@@ -332,7 +332,12 @@ class RevenuePartsKwhController extends ApiController
         set_time_limit(180);
 
         $revenueDistributionKwhHelper = new RevenueDistributionKwhHelper();
-        $distributionsKwh = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $revenueDistributionKwhHelper->getDistributionSetProcessedEnergySupplierIds($revenuePartsKwh) )->get();
+        $distributionsForReportIds = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $revenueDistributionKwhHelper->getDistributionForReportEnergySupplierIds($revenuePartsKwh))->get()->pluck('id')->toArray();;
+        $distributionsKwh = $revenuePartsKwh->revenuesKwh
+            ->distributionKwh()
+            ->whereIn('id', $revenueDistributionKwhHelper->getDistributionSetProcessedEnergySupplierIds($revenuePartsKwh) )
+            ->whereNotin('id', $distributionsForReportIds)
+            ->get();
         foreach ($distributionsKwh as $distributionKwh) {
 
             //status moet nu onderhanden zijn (in-progress-set-processed zijn)

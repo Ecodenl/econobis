@@ -1,5 +1,6 @@
 <?php
 
+use App\Eco\Opportunity\OpportunityAction;
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;

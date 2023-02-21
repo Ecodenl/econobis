@@ -224,7 +224,7 @@ class Project extends Model
     public function currentTransferWorth()
     {
         $activeProjectValueCourse = $this->projectValueCourses()->where('active', 1)->first();
-        if(!$activeProjectValueCourse) return null;
+        if(!$activeProjectValueCourse) return 0;
 
         return $activeProjectValueCourse->transfer_worth;
     }

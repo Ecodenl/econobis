@@ -42,7 +42,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                 dateOfBirth: person.dateOfBirth ? moment(person.dateOfBirth).format('Y-MM-DD') : '',
                 didAgreeAvg: didAgreeAvg,
                 dateDidAgreeAvg: dateDidAgreeAvg ? moment(dateDidAgreeAvg).format('Y-MM-DD') : '',
-                inspectionPersonTypeId: inspectionPersonType ? inspectionPersonType.id : '',
+                inspectionPersonTypeName: inspectionPersonType ? inspectionPersonType.name : '',
             },
             errors: {
                 name: false,
@@ -160,7 +160,7 @@ class ContactDetailsFormPersonalEdit extends Component {
             didAgreeAvg,
             dateDidAgreeAvg,
             lastNamePrefix,
-            inspectionPersonTypeId,
+            inspectionPersonTypeName,
         } = this.state.person;
 
         const { isInInspectionPersonTypeGroup } = this.props.contactDetails;
@@ -291,14 +291,10 @@ class ContactDetailsFormPersonalEdit extends Component {
                     </div>
 
                     <div className="row">
-                        <InputSelect
-                            label={'Rol in buurtaanpak'}
-                            size={'col-xs-12'}
-                            name={'inspectionPersonTypeId'}
-                            options={this.props.inspectionPersonTypes}
-                            value={inspectionPersonTypeId}
-                            onChangeAction={this.handleInputChange}
-                            readOnly={Boolean(isInInspectionPersonTypeGroup)}
+                        <ViewText
+                            label={"Rol in buurtaanpak"}
+                            className={'form-group col-xs-12'}
+                            value={inspectionPersonTypeName ? inspectionPersonTypeName : ''}
                         />
                     </div>
 
@@ -335,8 +331,7 @@ const mapStateToProps = state => {
     return {
         contactDetails: state.contactDetails,
         lastNamePrefixes: state.systemData.lastNamePrefixes,
-        titles: state.systemData.titles,
-        inspectionPersonTypes: state.systemData.inspectionPersonTypes,
+        titles: state.systemData.titles
     };
 };
 

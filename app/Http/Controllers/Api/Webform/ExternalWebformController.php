@@ -19,6 +19,8 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactNote\ContactNote;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Country\Country;
+use App\Eco\Document\Document;
+use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplierStatus;
@@ -63,6 +65,7 @@ use App\Eco\Title\Title;
 use App\Eco\User\User;
 use App\Eco\Webform\Webform;
 use App\Helpers\Address\AddressHelper;
+use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Workflow\IntakeWorkflowHelper;
@@ -78,6 +81,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ExternalWebformController extends Controller
 {
@@ -138,6 +143,8 @@ class ExternalWebformController extends Controller
 
     private $newTaskToEmail = [];
     private $processWorkflowEmailNewTask = false;
+    private $createOpportunityToEmail = [];
+    private $processWorkflowCreateOpportunity = false;
 
     public function post(string $apiKey, Request $request)
     {
@@ -146,6 +153,8 @@ class ExternalWebformController extends Controller
         $this->responsibleIds = $data['responsible_ids'];
         $this->newTaskToEmail = [];
         $this->processWorkflowEmailNewTask = false;
+        $this->createOpportunityToEmail = [];
+        $this->processWorkflowCreateOpportunity = false;
 
         try {
             \DB::transaction(function () use ($request, $apiKey, $data ) {
@@ -221,6 +230,25 @@ class ExternalWebformController extends Controller
                     }
                 }
 
+            }
+        }
+
+        // evt nog processWorkflowCreateOpportunity uitvoeren
+        if ($this->processWorkflowCreateOpportunity) {
+            foreach ($this->createOpportunityToEmail as $measureCategoryId){
+                $measureCategory = MeasureCategory::find($measureCategoryId);
+                if ($this->intake && $measureCategory && $measureCategory->uses_wf_create_opportunity) {
+                    $this->log("Intake interesse (maatregel categorie) '" . $measureCategory->name . "' heeft workflow kans maken. Deze uitvoeren");
+                    $intakeWorkflowHelper = new IntakeWorkflowHelper($this->intake, $measureCategory);
+                    $processed = $intakeWorkflowHelper->processWorkflowCreateOpportunity();
+
+                    if($processed)
+                    {
+                        $this->log('Workflow kans maken uitgevoerd.');
+                    } else {
+                        $this->log('Workflow kans maken NIET uitgevoerd.');
+                    }
+                }
             }
         }
 
@@ -473,6 +501,9 @@ class ExternalWebformController extends Controller
                 'intake_aanmeldingsbron_ids' => 'source_ids',
                 'intake_status_id' => 'status_id',
                 'intake_opmerkingen_bewoner' => 'note',
+                'intake_kans_bijlage' => 'intake_opportunity_attachment',
+                'intake_kans_bijlage2' => 'intake_opportunity_attachment_2',
+                'intake_kans_bijlage3' => 'intake_opportunity_attachment_3',
             ],
             'housing_file' => [
                 // HousingFile
@@ -1740,11 +1771,16 @@ class ExternalWebformController extends Controller
             $this->log("Intake gekoppeld aan interesses: " . $measureCategories->implode('name', ', '));
 
             $statusIdClosedWithOpportunity = IntakeStatus::where('name', 'Afgesloten met kans')->first()->id;
-
             // Intake maatregelen meegegeven, aanmaken kansen (per intake maatregel)
+            $firstOpportunity = true;
+            $saveOpportunity = null;
             foreach ($intakeMeasures as $intakeMeasure) {
                 $this->log("Intake maatregelen meegegeven. Kans voor intake maatregel specifiek '" . $intakeMeasure->name . "' aanmaken (status Actief)");
                 $opportunity = $this->addOpportunity($intakeMeasure, $intake);
+                if($firstOpportunity){
+                    $saveOpportunity = clone $opportunity;
+                    $firstOpportunity = false;
+                }
             }
             // precies 1 intake maatregel, dan aangemaakte kans straks koppelen aan taak.
             if(count($intakeMeasures) == 1 && $opportunity != null){
@@ -1755,6 +1791,9 @@ class ExternalWebformController extends Controller
             if($measure && $intakeStatus->id == $statusIdClosedWithOpportunity){
                 $this->log("Intake status 'Afgesloten met kans' meegegeven. Kans voor maatregel specifiek '" . $measure->name . "' aanmaken (status Actief)");
                 $opportunity = $this->addOpportunity($measure, $intake);
+                if($firstOpportunity){
+                    $saveOpportunity = clone $opportunity;
+                }
                 // deze aangemaakte kans straks koppelen aan taak (overschrijft dus evt. de "los" meegegeven intake maatregel.
                 if($opportunity != null){
                     $this->opportunityForTask = $opportunity;
@@ -1768,16 +1807,84 @@ class ExternalWebformController extends Controller
                 // check workflow maak kans voor interesses (maatregel categorieen). indien aan, maak kans (en vandaar uit wellicht ook nog offerteverzoek)
                 foreach ($measureCategories as $measureCategory) {
                     if ($measureCategory->uses_wf_create_opportunity) {
-                        $this->log("Intake interesse (maatregel categorie) '" . $measureCategory->name . " heeft workflow kans maken. Deze uitvoeren");
-                        $intakeWorkflowHelper = new IntakeWorkflowHelper($intake, $measureCategory);
-                        $intakeWorkflowHelper->processWorkflowCreateOpportunity();
+                        $this->createOpportunityToEmail [] = $measureCategory->id;
+                        $this->processWorkflowCreateOpportunity = true;
                     }
                 }
             }
+
+            // Indien kans bijlage url meegegeven deze als document opslaan
+            if($data['intake_opportunity_attachment']){
+                $this->addIntakeOpportunityAttachment($intake, $saveOpportunity, $data['intake_opportunity_attachment']);
+            }
+            if($data['intake_opportunity_attachment_2']){
+                $this->addIntakeOpportunityAttachment($intake, $saveOpportunity, $data['intake_opportunity_attachment_2']);
+            }
+            if($data['intake_opportunity_attachment_3']){
+                $this->addIntakeOpportunityAttachment($intake, $saveOpportunity, $data['intake_opportunity_attachment_3']);
+            }
+
             return $intake;
         } else {
             $this->log('Er is geen campagne meegegeven, intake niet aanmaken.');
         }
+    }
+
+    protected function addIntakeOpportunityAttachment($intake, $opportunity, $intakeOpportunityAttachmentUrl) {
+        $fileName = basename($intakeOpportunityAttachmentUrl);
+        $tmpFileName = Str::random(9) . '-' . $fileName;
+
+        $document = new Document();
+        $document->description = 'Test';
+        $document->document_type = 'upload';
+        $document->document_group = 'general';
+        $document->filename = $fileName;
+        $document->contact_id = $intake->contact_id;
+        $document->intake_id = $intake->id;
+        // todo WM: dit moet nog anders !!!
+        if($opportunity){
+            $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'opportunity')->first()->id;
+            $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'opportunity')->first()->name;
+            $document->opportunity_id = $opportunity->id;
+        } else {
+            $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'intake')->first()->id;
+            $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'intake')->first()->name;
+        }
+        $document->document_created_from_id = $documentCreatedFromId;
+
+        // voor alsnog deze Ids niet vullen
+//        $document->templateId = ??;
+//        $document->campaignId = ??;
+//        $document->housingFileId = ??;
+//        $document->quotationRequestId = ??;
+//        $document->measureId = ??;
+
+        $document->save();
+
+        $contents = file_get_contents($intakeOpportunityAttachmentUrl);
+        $filePath_tmp = Storage::disk('documents')->getDriver()->getAdapter()->applyPathPrefix($tmpFileName);
+        $tmpFileName = str_replace('\\', '/', $filePath_tmp);
+        $pos = strrpos($tmpFileName, '/');
+        $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
+
+        Storage::disk('documents')->put(DIRECTORY_SEPARATOR . $tmpFileName, $contents);
+
+        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+            $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $fileName, $document->getDocumentGroup()->name);
+            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+
+            //delete file on server, still saved on alfresco.
+            Storage::disk('documents')->delete($tmpFileName);
+            $this->log('Intake kans bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Alfresco');
+
+        } else {
+            $document->filename = $tmpFileName;
+            $document->alfresco_node_id = null;
+            $this->log('Intake kans bijlage ' . $tmpFileName . ' opgeslagen als ' . $documentCreatedFromName . ' document lokaal in documents storage map');
+        }
+
+        $document->save();
     }
 
     /**
@@ -1882,7 +1989,12 @@ class ExternalWebformController extends Controller
         $measuresIds = $data['measure_ids'] ? explode(',', $data['measure_ids']) : null;
         if($measuresIds) {
             foreach ($measuresIds as $measuresId){
-                $measures[] = Measure::find($measuresId);
+                $measureFound = Measure::find($measuresId);
+                if($measureFound){
+                    $measures[] = $measureFound;
+                } else {
+                    $this->log('Woondossier maatregel id ' . $measuresId . ' niet gevonden!');
+                }
             }
         }
         $measureDates = $data['measure_dates'] ? explode(',', $data['measure_dates']) : null;

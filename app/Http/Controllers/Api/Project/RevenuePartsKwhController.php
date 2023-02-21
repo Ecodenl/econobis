@@ -201,69 +201,76 @@ class RevenuePartsKwhController extends ApiController
             }
         }
 
-        switch ($energySupplier->file_format_id){
+        $excel = null;
+
+        // Als documentnaam (prefix bestandsnaam) @geen@ is opgegeven, dan geen document aanmaken.
+        if($documentName != '@geen@'){
+
+            switch ($energySupplier->file_format_id){
             case 1:
                 $fileFormat = '.xls';
                 break;
             default:
                 $fileFormat = '.xlsx';
                 break;
-        }
-
-        $fileName = $this->translateToValidCharacterSet($documentName) . '-' . $energySupplier->abbreviation . $fileFormat;
-        $templateId = $energySupplier->excel_template_id;
-
-        if ($templateId) {
-            set_time_limit(0);
-            $excelHelper = new EnergySupplierExcelHelper($energySupplier, $revenuePartsKwh, $templateId, $fileName);
-            $excel = $excelHelper->getExcel();
-        }else{
-            abort(412, 'Geen geldige excel template gevonden.');
-        }
-
-        if($excel){
-            $documentCreatedFromProjectId = DocumentCreatedFrom::where('code_ref', 'project')->first()->id;
-
-            $document = new Document();
-            $document->document_created_from_id = $documentCreatedFromProjectId;
-            $document->document_type = 'internal';
-            $document->document_group = 'revenue';
-            $document->project_id = $revenuePartsKwh->revenuesKwh->project->id;
-
-            $document->filename = $fileName;
-
-            $document->save();
-
-            $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR
-                . $document->filename));
-
-            switch ($energySupplier->file_format_id){
-                case 1:
-                    $writer = new Xls($excel);
-                    break;
-                default:
-                    $writer = new Xlsx($excel);
-                    break;
             }
-            $writer->save($filePath);
 
-            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local')
-            {
-                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+            $fileName = $this->translateToValidCharacterSet($documentName) . '-' . $energySupplier->abbreviation . $fileFormat;
+            $templateId = $energySupplier->excel_template_id;
 
-                $alfrescoResponse = $alfrescoHelper->createFile($filePath,
-                    $document->filename, $document->getDocumentGroup()->name);
-                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+            if ($templateId) {
+                set_time_limit(0);
+                $excelHelper = new EnergySupplierExcelHelper($energySupplier, $revenuePartsKwh, $templateId, $fileName);
+                $excel = $excelHelper->getExcel();
             }else{
-                $alfrescoResponse = null;
+                abort(412, 'Geen geldige excel template gevonden.');
             }
 
-            $document->save();
+            if($excel){
+                $documentCreatedFromProjectId = DocumentCreatedFrom::where('code_ref', 'project')->first()->id;
 
-            //delete file on server, still saved on alfresco.
-            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                Storage::disk('documents')->delete($document->filename);
+                $document = new Document();
+                $document->document_created_from_id = $documentCreatedFromProjectId;
+                $document->document_type = 'internal';
+                $document->document_group = 'revenue';
+                $document->project_id = $revenuePartsKwh->revenuesKwh->project->id;
+
+                $document->filename = $fileName;
+
+                $document->save();
+
+                $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR
+                    . $document->filename));
+
+                switch ($energySupplier->file_format_id){
+                    case 1:
+                        $writer = new Xls($excel);
+                        break;
+                    default:
+                        $writer = new Xlsx($excel);
+                        break;
+                }
+                $writer->save($filePath);
+
+                if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local')
+                {
+                    $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+
+                    $alfrescoResponse = $alfrescoHelper->createFile($filePath,
+                        $document->filename, $document->getDocumentGroup()->name);
+                    $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+                }else{
+                    $alfrescoResponse = null;
+                }
+
+                $document->save();
+
+                //delete file on server, still saved on alfresco.
+                if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+                    Storage::disk('documents')->delete($document->filename);
+                }
             }
+
         }
 
         foreach ($distributionsKwh as $distributionKwh) {
@@ -279,12 +286,15 @@ class RevenuePartsKwhController extends ApiController
                 foreach($distributionsPartsKwh as $distributionPartsKwh) {
                     if ($distributionPartsKwh->status === 'in-progress-report') {
                         // Geen excel gemaakt, dan terug naar status confirmed
-                        if(!$excel){
+                        if(!$excel && $documentName != '@geen@'){
                             $distributionPartsKwh->status = 'confirmed';
                         } else {
                             $deliveredTotal = $deliveredTotal + $distributionPartsKwh->delivered_kwh;
                             $kwhReturn = $kwhReturn + $distributionPartsKwh->kwh_return_this_part;
-                            $distributionPartsKwh->date_energy_supplier_report = Carbon::now()->format('Y-m-d');
+                            // Als documentnaam (prefix bestandsnaam) @geen@ is opgegeven, dan is er geen document aangemaakt en werken we date_energy_supplier_report ook niet bij.
+                            if($documentName != '@geen@') {
+                                $distributionPartsKwh->date_energy_supplier_report = Carbon::now()->format('Y-m-d');
+                            }
                             $distributionPartsKwh->status = 'processed';
                         }
                         $distributionPartsKwh->save();
@@ -292,7 +302,7 @@ class RevenuePartsKwhController extends ApiController
                         foreach($distributionsValuesKwh as $distributionValuesKwh) {
                             if ($distributionValuesKwh->status === 'in-progress-report') {
                                 // Geen excel gemaakt, dan terug naar status confirmed
-                                if(!$excel){
+                                if(!$excel && $documentName != '@geen@'){
                                     $distributionValuesKwh->status = 'confirmed';
                                 } else {
                                     $distributionValuesKwh->status = 'processed';
@@ -322,7 +332,12 @@ class RevenuePartsKwhController extends ApiController
         set_time_limit(180);
 
         $revenueDistributionKwhHelper = new RevenueDistributionKwhHelper();
-        $distributionsKwh = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $revenueDistributionKwhHelper->getDistributionSetProcessedEnergySupplierIds($revenuePartsKwh) )->get();
+        $distributionsForReportIds = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $revenueDistributionKwhHelper->getDistributionForReportEnergySupplierIds($revenuePartsKwh))->get()->pluck('id')->toArray();;
+        $distributionsKwh = $revenuePartsKwh->revenuesKwh
+            ->distributionKwh()
+            ->whereIn('id', $revenueDistributionKwhHelper->getDistributionSetProcessedEnergySupplierIds($revenuePartsKwh) )
+            ->whereNotin('id', $distributionsForReportIds)
+            ->get();
         foreach ($distributionsKwh as $distributionKwh) {
 
             //status moet nu onderhanden zijn (in-progress-set-processed zijn)
@@ -855,8 +870,10 @@ class RevenuePartsKwhController extends ApiController
             }
         }
 
+        $revenuePartsKwhHasNotConfirmed = ($distributionsKwh->first())->revenuesKwh->partsKwh()->where('confirmed', false)->exists();
+
         foreach ($distributionsKwh as $distributionKwh) {
-            //status moet nu onderhanden zijn (in-progress-process zijn)
+            //status moet nu onderhanden zijn (in-progress-process zijn)0
 //todo WM: opschonen
 // Indien status confirmed, dan hoeven we niets meer te doen voor betreffende partKwh
 // Onderscheid tussen confirmed en concept voor in-progress-process dan ook niet meer nodig
@@ -877,17 +894,18 @@ class RevenuePartsKwhController extends ApiController
                         $distributionValuesKwh->save();
                     }
                 }
-                if($distributionKwh->revenuesKwh->partsKwh->where('status', '==', 'new')->count() > 0){
-                    $distributionKwh->status = 'concept';
-                } else {
+// todo WM: opschonen (vervangen door $revenuePartsKwhHasNotConfirmed == false check)
+//                if($distributionKwh->revenuesKwh->partsKwh->where('status', '==', 'new')->count() > 0){
+//                    $distributionKwh->status = 'concept';
+//                } else {
                     if($distributionKwh->distributionValuesKwh->whereNotIn('status', ['confirmed', 'processed'])->count() == 0
                         && $distributionKwh->distributionValuesKwh->where('status', '==', 'confirmed')->count() > 0
-                    ){
+                        && $revenuePartsKwhHasNotConfirmed == false) {
                         $distributionKwh->status = 'confirmed';
                     } else {
                         $distributionKwh->status = 'concept';
                     }
-                }
+//                }
                 $distributionKwh->save();
             }
 

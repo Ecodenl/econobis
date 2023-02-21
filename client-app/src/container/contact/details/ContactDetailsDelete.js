@@ -31,7 +31,7 @@ const ContactDetailsDelete = props => {
                     <p>
                         <span className="error-span">
                             {props.isOrganisationOrCoach
-                                ? `Deze gekoppelde Acties op kans zullen ook verwijderd worden!`
+                                ? `Deze gekoppelde Acties op kans zullen ontkoppeld worden!`
                                 : props.inspectionPersonTypeId === 'projectmanager'
                                 ? `Contact is projectleider bij deze Acties op kans en zal hiervan ontkoppeld worden.`
                                 : props.inspectionPersonTypeId === 'externalparty'

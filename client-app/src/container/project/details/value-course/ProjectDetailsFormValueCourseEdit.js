@@ -70,7 +70,7 @@ const ProjectDetailsFormValueCourseEdit = ({
                             label={'Overdrachtswaarde'}
                             id={'transferWorth'}
                             name={'transferWorth'}
-                            value={transferWorth ? transferWorth : ''}
+                            value={transferWorth}
                             onChangeAction={handleInputChange}
                             error={errors.transferWorth}
                         />

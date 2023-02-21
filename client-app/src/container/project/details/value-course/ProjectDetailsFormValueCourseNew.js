@@ -20,8 +20,8 @@ class ProjectDetailsFormValueCourseNew extends Component {
             valueCourse: {
                 projectId: this.props.id,
                 date: '',
-                bookWorth: '',
-                transferWorth: '',
+                bookWorth: 0,
+                transferWorth: 0,
                 active: false,
             },
             errors: {

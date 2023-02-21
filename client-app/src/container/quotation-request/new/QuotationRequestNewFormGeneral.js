@@ -17,7 +17,6 @@ import InputTime from '../../../components/form/InputTime';
 class QuotationRequestNewFormGeneral extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             opportunity: {
                 fullName: '',
@@ -32,7 +31,7 @@ class QuotationRequestNewFormGeneral extends Component {
                 organisationOrCoachId: '',
                 projectManagerId: '',
                 externalPartyId: '',
-                statusId: '5', //offerte aangevraagd, also alter componentwillmount when changing default!
+                statusId: '',
                 opportunityActionId: props.opportunityAction.id,
                 dateRecorded: '',
                 timeRecorded: '',
@@ -79,7 +78,7 @@ class QuotationRequestNewFormGeneral extends Component {
                     organisationOrCoachId: '',
                     projectManagerId: '',
                     externalPartyId: '',
-                    statusId: '5',
+                    statusId: payload.defaultStatusId, // default status id!
                     opportunityActionId: this.props.opportunityAction.id,
                     dateRecorded: '',
                     timeRecorded: '',

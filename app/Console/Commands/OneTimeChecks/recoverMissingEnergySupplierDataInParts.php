@@ -50,7 +50,7 @@ class recoverMissingEnergySupplierDataInParts extends Command
 
             // niet verwerkte parts controleren
             $revenuePartsKwh = $revenueKwh->partsKwh
-                ->whereIn('status', ['concept', 'confirmed']);
+                ->whereIn('status', ['new', 'concept', 'concept-to-update', 'confirmed']);
             foreach($revenuePartsKwh as $partKwh) {
                 $dateBegin = Carbon::parse($partKwh->date_begin)->format('Y-m-d');
                 $dateEnd = Carbon::parse($partKwh->date_end)->format('Y-m-d');

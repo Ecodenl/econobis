@@ -110,7 +110,7 @@ class DeleteEmailTemplate implements DeleteInterface
         }
 
         foreach (Administration::where('email_template_id_transfer', $this->emailTemplate->id)->get() as $administration) {
-            $administration->emailTemplatTransfer()->dissociate();
+            $administration->emailTemplateTransfer()->dissociate();
             $administration->save();
         }
 

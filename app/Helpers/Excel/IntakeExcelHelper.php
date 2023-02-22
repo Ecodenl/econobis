@@ -22,9 +22,8 @@ class IntakeExcelHelper
         $this->intakes = $intakes;
     }
 
-    public function downloadExcel()
+    public function downloadExcel($withOpportunities = "true")
     {
-
         if($this->intakes->count() === 0){
             abort(403, 'Geen intakes aanwezig in selectie');
         }
@@ -113,7 +112,7 @@ class IntakeExcelHelper
                 $rowData[17] = $this->formatDate($intake->created_at);
                 $rowData[18] = $intake->createdBy ? $intake->createdBy->present()->fullName() : '' ;
 
-                if (count($intake->measuresRequested)>0) {
+                if (count($intake->measuresRequested)>0 AND $withOpportunities == "true") {
 
                     // measuresRequested
                     foreach ($intake->measuresRequested as $measure) {

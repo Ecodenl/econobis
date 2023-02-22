@@ -12,8 +12,10 @@ use App\Eco\RevenuesKwh\RevenueDistributionValuesKwh;
 use App\Eco\RevenuesKwh\RevenuePartsKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\RevenuesKwh\RevenueValuesKwh;
+use App\Jobs\RevenueKwh\UpdateRevenuePartsKwh;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Illuminate\Support\Facades\Auth;
 
 class RevenuesKwhHelper
 {
@@ -692,9 +694,17 @@ class RevenuesKwhHelper
                 $newDistributionPartsKwh->save();
             }
             $revenuePartsKwhForRecalculate = RevenuePartsKwh::find($revenuePartsKwh->id);
-            $revenuePartsKwhForRecalculate->calculator()->runCountingsRevenuesKwh();
+            if($revenuePartsKwhForRecalculate->status == 'concept'){
+                UpdateRevenuePartsKwh::dispatch($revenuePartsKwhForRecalculate, Auth::id());
+            } else {
+                $revenuePartsKwhForRecalculate->calculator()->runCountingsRevenuesKwh();
+            }
             $newRevenuePartsKwhForRecalculate = RevenuePartsKwh::find($newRevenuePartsKwh->id);
-            $newRevenuePartsKwhForRecalculate->calculator()->runCountingsRevenuesKwh();
+            if($newRevenuePartsKwhForRecalculate->status == 'concept'){
+                UpdateRevenuePartsKwh::dispatch($newRevenuePartsKwhForRecalculate, Auth::id());
+            } else {
+                $newRevenuePartsKwhForRecalculate->calculator()->runCountingsRevenuesKwh();
+            }
         }
         return $revenuePartsKwh;
     }

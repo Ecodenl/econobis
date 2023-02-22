@@ -131,7 +131,7 @@ class QuotationRequestNewFormGeneral extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(quotationRequest.statusId)) {
+        if (validator.isEmpty(quotationRequest.statusId + '')) {
             errors.status = true;
             hasErrors = true;
         }

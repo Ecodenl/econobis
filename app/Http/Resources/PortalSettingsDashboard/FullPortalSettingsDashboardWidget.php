@@ -31,7 +31,9 @@ class FullPortalSettingsDashboardWidget
             'backgroundColorUsed' => $this->background_color_used,
             'textColorUsed' => $this->text_color_used,
             'showGroupId' => $this->show_group_id,
+            'hideGroupId' => $this->hide_group_id,
             'contactGroup' => ContactGroupPeek::make($this->whenLoaded('contactGroup')),
+            'hideForContactGroup' => ContactGroupPeek::make($this->whenLoaded('hideForContactGroup')),
         ];
     }
 }

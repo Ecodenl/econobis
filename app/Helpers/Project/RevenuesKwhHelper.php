@@ -4,6 +4,7 @@ namespace App\Helpers\Project;
 
 
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
+use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
@@ -13,7 +14,6 @@ use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\RevenuesKwh\RevenueValuesKwh;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
-use Illuminate\Support\Facades\Log;
 
 class RevenuesKwhHelper
 {
@@ -253,12 +253,21 @@ class RevenuesKwhHelper
         $distributionPartsKwh->distributionKwh->newOrConceptDistributionValuesKwh()->where('parts_id', $revenuePartsKwh->id)->delete();
         $this->saveDistributionValuesKwh($partDateBegin, $partDateEnd, $distributionPartsKwh);
 
+        $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
         $distributionPartsKwh->delivered_kwh = 0;
-        $distributionPartsKwh->es_id = $addressEnergySupplier ? $addressEnergySupplier->energy_supplier_id : null;
-        $distributionPartsKwh->energy_supplier_name = $addressEnergySupplier ? $addressEnergySupplier->energySupplier->name : null;
-        $distributionPartsKwh->energy_supplier_number = $addressEnergySupplier ? $addressEnergySupplier->es_number: null;
-
-        $distributionPartsKwh->is_visible = empty($distributionPartsKwh->remarks) ? false : true;
+        if($addressEnergySupplier){
+            $distributionPartsKwh->es_id = $addressEnergySupplier ? $addressEnergySupplier->energy_supplier_id : null;
+            $distributionPartsKwh->energy_supplier_name = $addressEnergySupplier ? $addressEnergySupplier->energySupplier->name : null;
+            $distributionPartsKwh->energy_supplier_number = $addressEnergySupplier ? $addressEnergySupplier->es_number: null;
+            $distributionPartsKwh->is_visible = empty($distributionPartsKwh->remarks) ? false : true;
+        } else {
+            if($energySupplierUnknown){
+                $distributionPartsKwh->es_id = $energySupplierUnknown->id;
+                $distributionPartsKwh->energy_supplier_name = $energySupplierUnknown->name;
+                $distributionPartsKwh->energy_supplier_number = '';
+                $distributionPartsKwh->is_visible = 1;
+            }
+        }
         $distributionPartsKwh->save();
     }
 
@@ -563,7 +572,7 @@ class RevenuesKwhHelper
         $newEndDateOriginalPartsKwh = Carbon::parse($splitDate)->subDay()->format('Y-m-d');
         $revenuePartsKwh->date_end = $newEndDateOriginalPartsKwh;
 
-        if($revenuePartsKwh->status == 'concept'){
+        if($revenuePartsKwh->status == 'new' || $revenuePartsKwh->status == 'concept'){
             $revenuePartsKwh->delivered_total_concept = 0;
             $revenuePartsKwh->delivered_total_confirmed = 0;
             $revenuePartsKwh->delivered_total_processed = 0;
@@ -587,7 +596,7 @@ class RevenuesKwhHelper
         $newRevenuePartsKwh->date_begin = $splitDateString;
         $newRevenuePartsKwh->date_end = $oldEndDateOriginalPartsKwh;
 
-        if($newRevenuePartsKwh->status == 'concept'){
+        if($newRevenuePartsKwh->status == 'new' || $newRevenuePartsKwh->status == 'concept'){
             $newRevenuePartsKwh->delivered_total_concept = 0;
             $newRevenuePartsKwh->delivered_total_confirmed = 0;
             $newRevenuePartsKwh->delivered_total_processed = 0;
@@ -679,7 +688,7 @@ class RevenuesKwhHelper
 
                 $newTotalDeliveredKwh = RevenueDistributionValuesKwh::where('revenue_id', $newRevenuePartsKwh->revenue_id)->where('distribution_id', $newDistributionPartsKwh->distribution_id)->where('parts_id', $newRevenuePartsKwh->id)->sum('delivered_kwh');
                 $newDistributionPartsKwh->delivered_kwh = $newTotalDeliveredKwh;
-                $newDistributionPartsKwh->is_visible = empty($distributionPartsKwh->remarks) ? false : true;
+                $newDistributionPartsKwh->is_visible = empty($newDistributionPartsKwh->remarks) ? false : true;
                 $newDistributionPartsKwh->save();
             }
             $revenuePartsKwhForRecalculate = RevenuePartsKwh::find($revenuePartsKwh->id);

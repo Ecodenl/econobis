@@ -82,13 +82,13 @@ class QuotationRequestController extends ApiController
 
         $quotationRequest->relatedEmailsSent = $this->getRelatedEmails($quotationRequest->id, 'sent');
         $quotationRequest->relatedCoachEmailsSent = $quotationRequest->relatedEmailsSent->filter(function (Email $email) use ($quotationRequest) {
-            return in_array(optional($quotationRequest->organisationOrCoach->primaryEmailAddress)->email, $email->to);
+            return in_array(optional(optional($quotationRequest->organisationOrCoach)->primaryEmailAddress)->email, $email->to);
         })->values();
         $quotationRequest->relatedOccupantEmailsSent = $quotationRequest->relatedEmailsSent->filter(function (Email $email) use ($quotationRequest) {
             return in_array(optional($quotationRequest->opportunity->intake->contact->primaryEmailAddress)->email, $email->to);
         })->values();
         $quotationRequest->relatedCoachAndOccupantEmailsSent = $quotationRequest->relatedEmailsSent->filter(function (Email $email) use ($quotationRequest) {
-            return in_array(optional($quotationRequest->organisationOrCoach->primaryEmailAddress)->email, $email->to) && in_array(optional($quotationRequest->opportunity->intake->contact->primaryEmailAddress)->email, $email->to);
+            return in_array(optional(optional($quotationRequest->organisationOrCoach)->primaryEmailAddress)->email, $email->to) && in_array(optional($quotationRequest->opportunity->intake->contact->primaryEmailAddress)->email, $email->to);
         })->values();
 
         $quotationRequest->relatedQuotationRequestsStatuses = $this->getRelatedQuotationRequestsStatuses($quotationRequest->opportunityAction);

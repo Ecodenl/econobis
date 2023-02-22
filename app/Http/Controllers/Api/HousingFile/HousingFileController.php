@@ -13,6 +13,7 @@ use App\Eco\HousingFile\HousingFile;
 use App\Eco\Contact\Contact;
 use App\Eco\HousingFile\HousingFileSpecification;
 use App\Helpers\Delete\Models\DeleteHousingFile;
+use App\Helpers\Excel\HousingFileExcelHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\HousingFile\Grid\RequestQuery;
@@ -20,7 +21,6 @@ use App\Http\Resources\HousingFile\FullHousingFile;
 use App\Http\Resources\HousingFile\FullHousingFileSpecification;
 use App\Http\Resources\HousingFile\GridHousingFile;
 use App\Http\Resources\HousingFile\HousingFilePeek;
-use App\Http\Resources\HousingFile\IntakePeek;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -81,6 +81,16 @@ class HousingFileController extends ApiController
         }
 
         return FullHousingFile::make($housingFile);
+    }
+
+    public function excel(RequestQuery $requestQuery)
+    {
+        set_time_limit(0);
+        $housingFiles = $requestQuery->getQueryNoPagination()->get();
+
+        $housingFileExcelHelper = new HousingFileExcelHelper($housingFiles);
+
+        return $housingFileExcelHelper->downloadExcel();
     }
 
     public function store(Request $request, RequestInput $requestInput)

@@ -5,6 +5,7 @@ namespace App\Eco\RevenuesKwh;
 use App\Helpers\Project\RevenueDistributionKwhHelper;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class RevenuePartsKwh extends Model
@@ -53,9 +54,10 @@ class RevenuePartsKwh extends Model
     //Appended fields
 
     public function conceptSimulatedValuesKwh(){
+        Log::info('conceptSimulatedValuesKwh');
         $partDateBegin =  Carbon::parse($this->date_begin)->format('Y-m-d');
         $partDateEnd =  Carbon::parse($this->date_end)->format('Y-m-d');
-
+        Log::info($partDateBegin . ' t/m ' . $partDateEnd);
         return RevenueValuesKwh::where('revenue_id', $this->revenue_id)->whereBetween('date_registration', [$partDateBegin, $partDateEnd])->where('is_simulated', true)->where('status', 'concept');
     }
     public function conceptValuesKwh(){

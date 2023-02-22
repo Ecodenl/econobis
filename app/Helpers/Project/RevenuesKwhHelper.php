@@ -16,6 +16,7 @@ use App\Jobs\RevenueKwh\UpdateRevenuePartsKwh;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class RevenuesKwhHelper
 {
@@ -74,6 +75,8 @@ class RevenuesKwhHelper
      */
     public function createOrUpdateRevenueValuesKwh($valuesKwhData = null, RevenuePartsKwh $revenuePartsKwh, $alwaysRecalculate): void
     {
+        Log::info('createOrUpdateRevenueValuesKwh part: ' . $revenuePartsKwh->id);
+
         if($valuesKwhData != null) {
 
             $partDateBegin = Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d');
@@ -82,6 +85,11 @@ class RevenuesKwhHelper
 
             $beginRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $partDateBegin)->first();
             $endRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
+
+            Log::info('beginRevenueValuesKwh');
+            Log::info($beginRevenueValuesKwh);
+            Log::info('endRevenueValuesKwh');
+            Log::info($endRevenueValuesKwh);
 
             if($alwaysRecalculate
                 || $beginRevenueValuesKwh->kwh_start_high != $valuesKwhData['kwhStartHigh']
@@ -93,19 +101,34 @@ class RevenuesKwhHelper
                 // Delete bestaande gesimuleerde values kwh
                 $revenuePartsKwh->conceptSimulatedValuesKwh()->delete();
 
+                $beginRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $partDateBegin)->first();
+                $endRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
+
+                Log::info('beginRevenueValuesKwh 2');
+                Log::info($beginRevenueValuesKwh);
+                Log::info('endRevenueValuesKwh 2');
+                Log::info($endRevenueValuesKwh);
+
                 // Bijwerken of aanmaken start values kwh.
                 if ($beginRevenueValuesKwh) {
+                    Log::info('we hebben beginRevenueValuesKwh');
+
                     if (in_array($beginRevenueValuesKwh->status, ['confirmed', 'processed'])) {
+                        Log::info('verkeerde status!');
                         return;
                     }
                     $beginRevenueValuesKwh->kwh_start = $valuesKwhData['kwhStart'];
                     $beginRevenueValuesKwh->kwh_start_high = $valuesKwhData['kwhStartHigh'];
                     $beginRevenueValuesKwh->kwh_start_low = $valuesKwhData['kwhStartLow'];
                     $beginRevenueValuesKwh->save();
+                    Log::info('bijgewerkt beginRevenueValuesKwh!');
+                    Log::info($beginRevenueValuesKwh);
+
                 } else {
-                    RevenueValuesKwh::create([
+                    Log::info('we hebben Geen beginRevenueValuesKwh');
+                    $beginRevenueValuesKwh = RevenueValuesKwh::create([
                         'revenue_id' => $revenuePartsKwh->revenue_id,
-                        'date_registration' => $beginRevenueValuesKwh,
+                        'date_registration' => $partDateBegin,
                         'is_simulated' => false,
                         'kwh_start' => $valuesKwhData['kwhStart'],
                         'kwh_start_high' => $valuesKwhData['kwhStartHigh'],
@@ -113,19 +136,26 @@ class RevenuesKwhHelper
                         'status' => 'concept',
                         'delivered_kwh' => 0
                     ]);
+                    Log::info('new beginRevenueValuesKwh!');
+                    Log::info($beginRevenueValuesKwh);
                 }
 
                 // Bijwerken of aanmaken end values kwh (deze plaatsen we in start values kwh 1 dag na einddatum.
                 if ($endRevenueValuesKwh) {
+                    Log::info('we hebben endRevenueValuesKwh');
                     if (in_array($endRevenueValuesKwh->status, ['confirmed', 'processed'])) {
+                        Log::info('verkeerde status!');
                         return;
                     }
                     $endRevenueValuesKwh->kwh_start = $valuesKwhData['kwhEnd'];
                     $endRevenueValuesKwh->kwh_start_high = $valuesKwhData['kwhEndHigh'];
                     $endRevenueValuesKwh->kwh_start_low = $valuesKwhData['kwhEndLow'];
                     $endRevenueValuesKwh->save();
+                    Log::info('bijgewerkt endRevenueValuesKwh!');
+                    Log::info($endRevenueValuesKwh);
                 } else {
-                    RevenueValuesKwh::create([
+                    Log::info('we hebben Geen endRevenueValuesKwh');
+                    $endRevenueValuesKwh = RevenueValuesKwh::create([
                         'revenue_id' => $revenuePartsKwh->revenue_id,
                         'date_registration' => $dateRegistrationDayAfterEnd,
                         'is_simulated' => false,
@@ -135,6 +165,8 @@ class RevenuesKwhHelper
                         'status' => 'concept',
                         'delivered_kwh' => 0
                     ]);
+                    Log::info('new endRevenueValuesKwh!');
+                    Log::info($endRevenueValuesKwh);
                 }
 
                 // Opnieuw aanmaken simulated values kwh tussen begin en eind datum.
@@ -152,6 +184,14 @@ class RevenuesKwhHelper
         $daysOfPeriod = Carbon::parse($dateRegistrationDayAfterEnd)->diffInDays(Carbon::parse($partDateBegin));
         $beginRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenueId)->where('date_registration', $partDateBegin)->first();
         $endRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenueId)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
+        Log::info('partDateBegin');
+        Log::info($partDateBegin);
+        Log::info('beginRevenueValuesKwh');
+        Log::info($beginRevenueValuesKwh);
+        Log::info('dateRegistrationDayAfterEnd');
+        Log::info($dateRegistrationDayAfterEnd);
+        Log::info('endRevenueValuesKwh');
+        Log::info($endRevenueValuesKwh);
 
         $deliveredHighPerDay = round((($endRevenueValuesKwh->kwh_start_high - $beginRevenueValuesKwh->kwh_start_high) / $daysOfPeriod), 6);
         $deliveredLowPerDay = round((($endRevenueValuesKwh->kwh_start_low - $beginRevenueValuesKwh->kwh_start_low) / $daysOfPeriod), 6);

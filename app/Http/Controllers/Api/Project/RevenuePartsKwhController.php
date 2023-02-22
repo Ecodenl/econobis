@@ -114,34 +114,50 @@ class RevenuePartsKwhController extends ApiController
 
         if(!$revenuePartsKwh->confirmed && $revenuePartsKwh->status == 'concept') {
             $valuesKwhData = $request->get("valuesKwh");
-            $recalculateNextPart = false;
 
-            if ($revenuePartsKwh->next_revenue_parts_kwh) {
-                $dateRegistrationDayAfterEnd = Carbon::parse($revenuePartsKwh->date_end)->addDay()->format('Y-m-d');
-                $revenueValuesKwhEnd = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
-                if ($revenueValuesKwhEnd
-                    && ($revenueValuesKwhEnd->kwh_start != $valuesKwhData['kwhEnd']
-                        || $revenueValuesKwhEnd->kwh_start_high != $valuesKwhData['kwhEndHigh']
-                        || $revenueValuesKwhEnd->kwh_start_low != $valuesKwhData['kwhEndLow'])
-                ) {
-                    $recalculateNextPart = true;
-                }
-            }
             $revenuesKwhHelper = new RevenuesKwhHelper();
             $revenuesKwhHelper->createOrUpdateRevenueValuesKwh($valuesKwhData, $revenuePartsKwh, false);
             UpdateRevenuePartsKwh::dispatch($revenuePartsKwh, Auth::id());
+
+            $nextRevenuePartsKwh = RevenuePartsKwh::find($revenuePartsKwh->next_revenue_parts_kwh->id);
+            $recalculateNextPart = false;
+            if ($nextRevenuePartsKwh) {
+                Log::info('next_revenue_parts_kwh id: ' . $nextRevenuePartsKwh->id);
+                Log::info('next_revenue_parts_kwh status: ' . $nextRevenuePartsKwh->status);
+
+//                if($nextRevenuePartsKwh->status == 'concept-to-update'){
+//                    Log::info('next_revenue_parts_kwh naar concept ?');
+//                    $nextRevenuePartsKwh->status = 'concept';
+//                    $nextRevenuePartsKwh->save();
+//                    $recalculateNextPart = true;
+//                } else {
+                    Log::info('status niet concept-to-update');
+                    $dateRegistrationDayAfterEnd = Carbon::parse($revenuePartsKwh->date_end)->addDay()->format('Y-m-d');
+                    $revenueValuesKwhEnd = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
+                    if ($revenueValuesKwhEnd
+                        && ($revenueValuesKwhEnd->kwh_start != $valuesKwhData['kwhEnd']
+                            || $revenueValuesKwhEnd->kwh_start_high != $valuesKwhData['kwhEndHigh']
+                            || $revenueValuesKwhEnd->kwh_start_low != $valuesKwhData['kwhEndLow'])
+                    ) {
+                        Log::info('eindwaarden gewijzigd');
+                        $recalculateNextPart = true;
+                    }
+//                }
+            }
+
             if ($recalculateNextPart) {
+                Log::info('recalculateNextPart ?');
                 $valuesKwhDataNext = [
-                    'kwhStart' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_start['kwhStart'],
-                    'kwhStartHigh' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_start['kwhStartHigh'],
-                    'kwhStartLow' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_start['kwhStartLow'],
-                    'kwhEnd' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_end['kwhEnd'],
-                    'kwhEndHigh' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_end['kwhEndHigh'],
-                    'kwhEndLow' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_end['kwhEndLow'],
+                    'kwhStart' => $nextRevenuePartsKwh->values_kwh_start['kwhStart'],
+                    'kwhStartHigh' => $nextRevenuePartsKwh->values_kwh_start['kwhStartHigh'],
+                    'kwhStartLow' => $nextRevenuePartsKwh->values_kwh_start['kwhStartLow'],
+                    'kwhEnd' => $nextRevenuePartsKwh->values_kwh_end['kwhEnd'],
+                    'kwhEndHigh' => $nextRevenuePartsKwh->values_kwh_end['kwhEndHigh'],
+                    'kwhEndLow' => $nextRevenuePartsKwh->values_kwh_end['kwhEndLow'],
                 ];
                 $revenuesKwhHelper = new RevenuesKwhHelper();
-                $revenuesKwhHelper->createOrUpdateRevenueValuesKwh($valuesKwhDataNext, $revenuePartsKwh->next_revenue_parts_kwh, true);
-                UpdateRevenuePartsKwh::dispatch($revenuePartsKwh->next_revenue_parts_kwh, Auth::id());
+                $revenuesKwhHelper->createOrUpdateRevenueValuesKwh($valuesKwhDataNext, $nextRevenuePartsKwh, true);
+                UpdateRevenuePartsKwh::dispatch($nextRevenuePartsKwh, Auth::id());
             }
         }
 

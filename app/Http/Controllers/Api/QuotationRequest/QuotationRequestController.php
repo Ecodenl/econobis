@@ -229,7 +229,7 @@ class QuotationRequestController extends ApiController
             $quotationRequest->date_approved_external = $data['dateApprovedExternal'];
         }
 
-        if ($data['dateUnderReview']) {
+        if (isset($data['dateUnderReview']) && $data['dateUnderReview']) {
             $quotationRequest->date_under_review = $data['dateUnderReview'];
         }
 

@@ -365,25 +365,25 @@ function InspectDetails({match, history, user}) {
                                                             {user.inspectionPersonTypeId === 'externalparty' ? (
                                                                 <div>
                                                                     <Button
-                                                                        variant={parseInt(values.status?.id) === 12 ? 'dark' : 'outline-dark'}
+                                                                        variant={parseInt(values.status?.id) === 17 ? 'dark' : 'outline-dark'}
                                                                         size="sm"
                                                                         onClick={() => {
-                                                                            setFieldValue('status.id', 12);
+                                                                            setFieldValue('status.id', 17);
                                                                             setFieldValue('dateApprovedExternal', moment().format('YYYY-MM-DD'));
                                                                         }}
                                                                     >
-                                                                        {parseInt(values.status?.id) === 12 ? 'Goedgekeurd' : 'Goedkeuren'}
+                                                                        {parseInt(values.status?.id) === 17 ? 'Goedgekeurd' : 'Goedkeuren'}
                                                                     </Button>
 
                                                                     <Button
-                                                                        variant={parseInt(values.status?.id) === 13 ? 'dark' : 'outline-dark'}
+                                                                        variant={parseInt(values.status?.id) === 18 ? 'dark' : 'outline-dark'}
                                                                         size="sm"
                                                                         onClick={() => {
-                                                                            setFieldValue('status.id', 13);
+                                                                            setFieldValue('status.id', 18);
                                                                             setFieldValue('dateApprovedExternal', '');
                                                                         }}
                                                                     >
-                                                                        {parseInt(values.status?.id) === 13 ? 'Afgekeurd' : 'Niet Goedkeuren'}
+                                                                        {parseInt(values.status?.id) === 18 ? 'Afgekeurd' : 'Niet Goedkeuren'}
                                                                     </Button>
                                                                 </div>
                                                             ) : null}

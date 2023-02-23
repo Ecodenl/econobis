@@ -107,7 +107,7 @@ class InvoiceToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                         <ButtonIcon iconName={'glyphicon-eye-open'} onClickAction={this.view} />
                         {(this.props.invoiceDetails.statusId === 'to-send' ||
                             this.props.invoiceDetails.statusId === 'error-sending') &&
@@ -143,9 +143,9 @@ class InvoiceToolbar extends Component {
                             this.props.invoiceDetails.statusId !== 'irrecoverable' && (
                                 <ButtonIcon iconName={'glyphicon-remove'} onClickAction={this.showSetIrrecoverable} />
                             )}
-                        <ButtonIcon iconName={'glyphicon-download-alt'} onClickAction={this.download} />
+                        <ButtonIcon iconName={'download'} onClickAction={this.download} />
                         {this.props.invoiceDetails.statusId === 'to-send' && (
-                            <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.showDelete} />
+                            <ButtonIcon iconName={'trash'} onClickAction={this.showDelete} />
                         )}
                     </div>
                 </div>

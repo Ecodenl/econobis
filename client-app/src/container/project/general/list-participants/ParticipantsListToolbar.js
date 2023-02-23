@@ -12,7 +12,7 @@ const ParticipantsListToolbar = props => {
         <div className="row">
             <div className="col-md-2">
                 <div className="btn-group btn-group-flex" role="group">
-                    <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={props.resetParticipantProjectFilters} />
+                    <ButtonIcon iconName={'refresh'} onClickAction={props.resetParticipantProjectFilters} />
                     {props.permissions.manageParticipation && (
                         <ButtonIcon
                             iconName={'glyphicon-plus'}

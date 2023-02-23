@@ -54,8 +54,8 @@ export default function DistrictsListApp() {
                     <div className="row">
                         <div className="col-md-4">
                             <div className="btn-group" role="group">
-                                <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={fetch}/>
-                                <ButtonIcon iconName={'glyphicon-plus'}
+                                <ButtonIcon iconName={'refresh'} onClickAction={fetch}/>
+                                <ButtonIcon iconName={'plus'}
                                             onClickAction={() => hashHistory.push(`/afspraak-kalender/nieuw`)}/>
                             </div>
                         </div>

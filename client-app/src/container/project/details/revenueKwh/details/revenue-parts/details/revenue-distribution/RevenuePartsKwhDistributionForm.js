@@ -307,7 +307,7 @@ class RevenuePartsKwhDistributionForm extends Component {
                 <PanelHeader>
                     <span className="h5 text-bold">Opbrengstverdeling deelnemers</span>
                     <div className="btn-group pull-right">
-                        <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={this.reloadDistributions} />
+                        <ButtonIcon iconName={'refresh'} onClickAction={this.reloadDistributions} />
                         {this.props.revenuePartsKwh &&
                         this.props.revenuePartsKwh.confirmed == 1 &&
                         (this.props.revenuePartsKwh.status == 'confirmed' ||

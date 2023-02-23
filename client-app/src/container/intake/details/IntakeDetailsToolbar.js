@@ -42,7 +42,7 @@ class IntakeDetailsToolbar extends Component {
                                         onClickAction={browserHistory.goBack}
                                     />
                                     {this.props.permissions.manageIntake && (
-                                        <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                     )}
                                 </div>
                             </div>

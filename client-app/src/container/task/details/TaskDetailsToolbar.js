@@ -44,7 +44,7 @@ class TaskDetailsToolbar extends Component {
                                         <ButtonIcon iconName={'copy'} onClickAction={this.toggleDuplicate} />
                                     )}
                                     {this.props.permissions.manageTask && (
-                                        <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                     )}
                                 </div>
                             </div>

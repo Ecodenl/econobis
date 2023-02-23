@@ -337,7 +337,7 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
             <div className="row">
                 <div className="col-md-6">
                     <div className="btn-group btn-group-flex" role="group">
-                        <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={refreshFinancialOverviewContacts} />
+                        <ButtonIcon iconName={'refresh'} onClickAction={refreshFinancialOverviewContacts} />
                         {financialOverview.definitive &&
                         financialOverview.statusId === 'definitive' &&
                         (totalsInfo.totalFinancialOverviewContactsToSend > 0 ||

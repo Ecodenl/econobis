@@ -96,7 +96,7 @@ class ContactsInGroupListToolbar extends Component {
                                     </button>
                                 </div>
                             )}
-                        <ButtonIcon iconName={'glyphicon-download-alt'} onClickAction={this.getCSV} />
+                        <ButtonIcon iconName={'download'} onClickAction={this.getCSV} />
                         <ButtonIcon iconName={'glyphicon-envelope'} onClickAction={this.sendEmail} />
                     </div>
                 </div>

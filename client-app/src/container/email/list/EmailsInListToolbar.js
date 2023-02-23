@@ -20,7 +20,7 @@ const EmailsInListToolbar = props => {
                         onClickAction={props.refreshData}
                         title={'Alle mappen verzenden/ontvangen'}
                     />
-                    <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newMailbox} title={'Nieuwe e-mail'} />
+                    <ButtonIcon iconName={'plus'} onClickAction={newMailbox} title={'Nieuwe e-mail'} />
                 </div>
             </div>
             <div className="col-md-4">

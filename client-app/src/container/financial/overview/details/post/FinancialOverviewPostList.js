@@ -18,7 +18,7 @@ function FinancialOverviewPostList({
             <div className="row">
                 <div className="col-md-6">
                     <div className="btn-group btn-group-flex" role="group">
-                        <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={refreshFinancialOverviewPosts} />
+                        <ButtonIcon iconName={'refresh'} onClickAction={refreshFinancialOverviewPosts} />
                     </div>
                 </div>
                 <div className="col-md-6">

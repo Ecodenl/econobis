@@ -57,7 +57,7 @@ class RevenuePartsKwhDetailsToolbar extends Component {
                                         iconName={'glyphicon-arrow-left'}
                                         onClickAction={browserHistory.goBack}
                                     />
-                                    <ButtonIcon iconName={'glyphicon-download-alt'} onClickAction={this.getCSV} />
+                                    <ButtonIcon iconName={'download'} onClickAction={this.getCSV} />
                                 </div>
                             </div>
                             <div className="col-md-8">

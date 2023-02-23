@@ -35,7 +35,7 @@ class ProjectDetailsToolbar extends Component {
                                         onClickAction={browserHistory.goBack}
                                     />
                                     {this.props.permissions.manageProject && (
-                                        <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                     )}
                                 </div>
                             </div>

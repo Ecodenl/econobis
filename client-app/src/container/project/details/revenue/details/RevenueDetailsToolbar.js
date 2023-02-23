@@ -58,9 +58,9 @@ class RevenueDetailsToolbar extends Component {
                                         onClickAction={browserHistory.goBack}
                                     />
                                     {this.props.permissions.manageFinancial && !this.props.revenue.confirmed && (
-                                        <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                     )}
-                                    <ButtonIcon iconName={'glyphicon-download-alt'} onClickAction={this.getCSV} />
+                                    <ButtonIcon iconName={'download'} onClickAction={this.getCSV} />
                                 </div>
                             </div>
                             <div className="col-md-8">

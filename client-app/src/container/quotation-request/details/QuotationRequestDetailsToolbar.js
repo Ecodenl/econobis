@@ -56,7 +56,7 @@ class QuotationRequestDetailsToolbar extends Component {
                                         onClickAction={browserHistory.goBack}
                                     />
                                     {this.props.permissions.manageQuotationRequest && !isPendingStatus && (
-                                        <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                     )}
                                     <ButtonIcon iconName={'glyphicon-envelope'} onClickAction={this.sendMail} />
                                 </div>

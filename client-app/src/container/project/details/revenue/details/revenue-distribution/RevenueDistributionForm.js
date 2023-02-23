@@ -421,7 +421,7 @@ class RevenueDistributionForm extends Component {
                 <PanelHeader>
                     <span className="h5 text-bold">Opbrengstverdeling deelnemers</span>
                     <div className="btn-group pull-right">
-                        <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={this.reloadDistributions} />
+                        <ButtonIcon iconName={'refresh'} onClickAction={this.reloadDistributions} />
                         {this.props.projectRevenue.confirmed == 1 &&
                             administrationIds.includes(this.props.projectRevenue.project.administrationId) &&
                             (this.state.createType === '' ? (

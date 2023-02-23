@@ -26,7 +26,7 @@ class IntakesListToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
-                        <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={this.props.resetIntakeFilters} />
+                        <ButtonIcon iconName={'refresh'} onClickAction={this.props.resetIntakeFilters} />
                         <div className="nav navbar-nav btn-group" role="group">
                             <button className="btn btn-success btn-sm" data-toggle="dropdown">
                                 <span className="glyphicon glyphicon-share-alt" />
@@ -38,7 +38,7 @@ class IntakesListToolbar extends Component {
                             </ul>
                         </div>
                         <ButtonIcon iconName={'glyphicon-ok'} onClickAction={this.props.toggleShowCheckboxList} />
-                        <ButtonIcon iconName={'glyphicon-download-alt'} onClickAction={this.props.getExcel} />
+                        <ButtonIcon iconName={'download'} onClickAction={this.props.getExcel} />
                     </div>
                 </div>
                 <div className="col-md-4">

@@ -39,7 +39,7 @@ class OpportunityDetailsToolbar extends Component {
                                         onClickAction={browserHistory.goBack}
                                     />
                                     {this.props.permissions.manageOpportunity && (
-                                        <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                     )}
                                     <ButtonIcon iconName={'glyphicon-envelope'} onClickAction={this.sendMail} />
                                 </div>

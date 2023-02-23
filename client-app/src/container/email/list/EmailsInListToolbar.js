@@ -16,7 +16,7 @@ const EmailsInListToolbar = props => {
             <div className="col-md-4">
                 <div className="btn-group" role="group">
                     <ButtonIcon
-                        iconName={'glyphicon-refresh'}
+                        iconName={'refresh'}
                         onClickAction={props.refreshData}
                         title={'Alle mappen verzenden/ontvangen'}
                     />

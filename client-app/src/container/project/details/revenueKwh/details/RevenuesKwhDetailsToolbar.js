@@ -53,7 +53,7 @@ class RevenuesKwhdetailsToolbar extends Component {
                             <div className="col-md-2">
                                 <div className="btn-group btn-group-flex margin-small" role="group">
                                     <ButtonIcon
-                                        iconName={'glyphicon-arrow-left'}
+                                        iconName={'arrowLeft'}
                                         onClickAction={browserHistory.goBack}
                                     />
                                     {this.props.permissions.manageFinancial && !this.props.revenuesKwh.confirmed ? (

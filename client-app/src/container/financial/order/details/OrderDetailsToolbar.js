@@ -37,7 +37,7 @@ class OrderToolbar extends Component {
                     <div className="btn-group btn-group-flex margin-small" role="group">
                         <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                         {!this.props.orderDetails.canCreateInvoice && (
-                            <ButtonIcon iconName={'glyphicon-eye-open'} onClickAction={this.preview} />
+                            <ButtonIcon iconName={'eye'} onClickAction={this.preview} />
                         )}
                         {this.props.orderDetails.canCreateInvoice && (
                             <ButtonText buttonText={'Preview concept nota'} onClickAction={this.newInvoice} />

@@ -63,7 +63,7 @@ const RevenuesListForm = ({
                                 }
                                 disabled={disabled || revenueDisabledEuro}
                                 title={revenueTitleEuro}
-                                iconName={'glyphicon-plus'}
+                                iconName={'plus'}
                             />
                         ) : (
                             ''

@@ -52,7 +52,7 @@ class FinancialOverviewDetailsToolbar extends Component {
                         <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                         {!definitive && statusId === 'concept' ? (
                             <ButtonIcon
-                                iconName={'glyphicon-trash'}
+                                iconName={'trash'}
                                 onClickAction={this.showDeleteItemModal.bind(this, id, description)}
                             />
                         ) : null}

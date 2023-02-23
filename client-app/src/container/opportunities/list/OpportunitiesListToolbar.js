@@ -35,7 +35,7 @@ class OpportunitiesListToolbar extends Component {
                     <div className="btn-group" role="group">
                         <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                         <ButtonIcon
-                            iconName={'glyphicon-refresh'}
+                            iconName={'refresh'}
                             onClickAction={this.props.resetOpportunitiesFilters}
                         />
                         <div className="nav navbar-nav btn-group" role="group">
@@ -48,7 +48,7 @@ class OpportunitiesListToolbar extends Component {
                                 </li>
                             </ul>
                         </div>
-                        <ButtonIcon iconName={'glyphicon-ok'} onClickAction={this.props.toggleShowCheckboxList} />
+                        <ButtonIcon iconName={'check'} onClickAction={this.props.toggleShowCheckboxList} />
                         <ButtonIcon iconName={'download'} onClickAction={this.props.getCSV} />
                     </div>
                 </div>

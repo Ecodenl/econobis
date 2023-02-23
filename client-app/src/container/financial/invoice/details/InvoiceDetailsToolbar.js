@@ -108,30 +108,30 @@ class InvoiceToolbar extends Component {
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
                         <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
-                        <ButtonIcon iconName={'glyphicon-eye-open'} onClickAction={this.view} />
+                        <ButtonIcon iconName={'eye'} onClickAction={this.view} />
                         {(this.props.invoiceDetails.statusId === 'to-send' ||
                             this.props.invoiceDetails.statusId === 'error-sending') &&
                             this.props.invoiceDetails.emailToAddress !== 'Geen e-mail bekend' &&
                             !compatibleStatus && (
-                                <ButtonIcon iconName={'glyphicon-envelope'} onClickAction={this.showSend} />
+                                <ButtonIcon iconName={'envelopeO'} onClickAction={this.showSend} />
                             )}
                         {(this.props.invoiceDetails.statusId === 'to-send' ||
                             this.props.invoiceDetails.statusId === 'error-sending') &&
                             this.props.invoiceDetails.emailToAddress === 'Geen e-mail bekend' &&
                             !compatibleStatus && (
-                                <ButtonIcon iconName={'glyphicon-envelope'} onClickAction={this.showSendPost} />
+                                <ButtonIcon iconName={'envelopeO'} onClickAction={this.showSendPost} />
                             )}
                         {!this.props.invoiceDetails.invoiceInTwinfield &&
                             !this.props.invoiceDetails.invoicePaidInTwinfield &&
                             (this.props.invoiceDetails.statusId === 'sent' ||
                                 this.props.invoiceDetails.statusId === 'exported') && (
-                                <ButtonIcon iconName={'glyphicon-euro'} onClickAction={this.showSetPaid} />
+                                <ButtonIcon iconName={'euro'} onClickAction={this.showSetPaid} />
                             )}
                         {(this.props.invoiceDetails.statusId === 'sent' ||
                             this.props.invoiceDetails.statusId === 'exported') &&
                             !this.props.invoiceDetails.dateExhortation &&
                             !this.props.invoiceDetails.isPaidByMollie && (
-                                <ButtonIcon iconName={'glyphicon-bullhorn'} onClickAction={this.showSendNotification} />
+                                <ButtonIcon iconName={'bullhorn'} onClickAction={this.showSendNotification} />
                             )}
                         {this.props.invoiceDetails.statusId !== 'to-send' &&
                             this.props.invoiceDetails.statusId !== 'in-progress' &&
@@ -141,7 +141,7 @@ class InvoiceToolbar extends Component {
                             this.props.invoiceDetails.statusId !== 'is-resending' &&
                             this.props.invoiceDetails.statusId !== 'paid' &&
                             this.props.invoiceDetails.statusId !== 'irrecoverable' && (
-                                <ButtonIcon iconName={'glyphicon-remove'} onClickAction={this.showSetIrrecoverable} />
+                                <ButtonIcon iconName={'remove'} onClickAction={this.showSetIrrecoverable} />
                             )}
                         <ButtonIcon iconName={'download'} onClickAction={this.download} />
                         {this.props.invoiceDetails.statusId === 'to-send' && (

@@ -37,7 +37,7 @@ class IntakesListToolbar extends Component {
                                 </li>
                             </ul>
                         </div>
-                        <ButtonIcon iconName={'glyphicon-ok'} onClickAction={this.props.toggleShowCheckboxList} />
+                        <ButtonIcon iconName={'check'} onClickAction={this.props.toggleShowCheckboxList} />
                         <ButtonIcon iconName={'download'} onClickAction={this.props.getExcel} />
                     </div>
                 </div>

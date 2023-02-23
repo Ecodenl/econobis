@@ -55,7 +55,7 @@ class ContactsListToolbar extends Component {
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
                         <ButtonIcon
-                            iconName={'glyphicon-refresh'}
+                            iconName={'refresh'}
                             onClickAction={this.props.resetContactFilters}
                             title="Vernieuwen scherm"
                         />
@@ -109,33 +109,33 @@ class ContactsListToolbar extends Component {
                         )}
                         {(permissions.deletePerson || permissions.deleteOrganisation) && (
                             <ButtonIcon
-                                iconName={'glyphicon-trash'}
+                                iconName={'trash'}
                                 onClickAction={this.toggleShowDeleteSelectedItems}
                                 title="Verwijderen geselecteerde contacten"
                             />
                         )}
                         {(permissions.deletePerson || permissions.deleteOrganisation || permissions.manageGroup) && (
                             <ButtonIcon
-                                iconName={'glyphicon-ok'}
+                                iconName={'check'}
                                 onClickAction={this.props.toggleShowCheckboxList}
                                 title="Contactselectie maken"
                             />
                         )}
                         <ButtonIcon
-                            iconName={'glyphicon-filter'}
+                            iconName={'filter'}
                             onClickAction={this.props.toggleShowExtraFilters}
                             title="Contactfilters"
                         />
                         {permissions.downloadContact && (
                             <ButtonIcon
-                                iconName={'glyphicon-download-alt'}
+                                iconName={'download'}
                                 onClickAction={this.props.getCSV}
                                 title="Downloaden contacten naar CSV"
                             />
                         )}
                         {permissions.import && (
                             <ButtonIcon
-                                iconName={'glyphicon-import'}
+                                iconName={'upload'}
                                 onClickAction={this.importContacts}
                                 title="Importeren contacten"
                             />
@@ -161,7 +161,7 @@ class ContactsListToolbar extends Component {
                             </>
                         )}
                         <ButtonIcon
-                            iconName={'glyphicon-resize-small'}
+                            iconName={'compress'}
                             onClickAction={this.toggleShowMergeSelectedItems}
                             title="Contacten samenvoegen"
                         />

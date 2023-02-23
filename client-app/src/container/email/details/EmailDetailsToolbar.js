@@ -63,7 +63,7 @@ const EmailDetailsToolbar = ({ email, id, removeEmail }) => {
                                     </div>
                                     <div className="btn-group margin-small margin-10-left" role="group">
                                         <ButtonIcon
-                                            iconName={'glyphicon-trash'}
+                                            iconName={'trash'}
                                             onClickAction={removeEmail}
                                             buttonClassName={removeButtonClass}
                                         />

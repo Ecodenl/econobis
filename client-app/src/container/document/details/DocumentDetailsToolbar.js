@@ -30,12 +30,12 @@ class DocumentDetailsToolbar extends Component {
                         <ButtonIcon iconName={'download'} onClickAction={this.props.download} />
                         {documentFilename.toLowerCase().endsWith('.pdf') && (
                             <ButtonIcon
-                                iconName={'glyphicon-eye-open'}
+                                iconName={'eye'}
                                 onClickAction={() => hashHistory.push(`/document/inzien/${this.props.documentId}`)}
                             />
                         )}
                         <ButtonIcon
-                            iconName={'glyphicon-envelope'}
+                            iconName={'envelopeO'}
                             onClickAction={() => hashHistory.push(`/email/nieuw/document/${this.props.documentId}`)}
                         />
                         <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />

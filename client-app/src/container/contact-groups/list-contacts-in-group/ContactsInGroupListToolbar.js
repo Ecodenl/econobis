@@ -83,7 +83,7 @@ class ContactsInGroupListToolbar extends Component {
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
                         <ButtonIcon
-                            iconName={'glyphicon-refresh'}
+                            iconName={'refresh'}
                             onClickAction={this.props.refreshContactsInGroupData}
                         />
                         {(permissions.updateContactGroupMembers ||
@@ -97,7 +97,7 @@ class ContactsInGroupListToolbar extends Component {
                                 </div>
                             )}
                         <ButtonIcon iconName={'download'} onClickAction={this.getCSV} />
-                        <ButtonIcon iconName={'glyphicon-envelope'} onClickAction={this.sendEmail} />
+                        <ButtonIcon iconName={'envelopeO'} onClickAction={this.sendEmail} />
                     </div>
                 </div>
                 <div className="col-md-4">

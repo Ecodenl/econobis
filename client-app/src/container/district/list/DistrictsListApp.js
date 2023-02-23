@@ -107,7 +107,7 @@ export default function DistrictsListApp() {
                                 </tr>
                             ) : (
                                 getFilteredDistricts().map(district => {
-                                    return <DistrictListItem key={district.id} district={district} onDelete={fetch}/>;
+                                    return <DistrictListItem key={district.id} district={district}/>;
                                 })
                             )}
                         </DataTableBody>

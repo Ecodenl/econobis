@@ -1,31 +1,24 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-// import PDFViewer from 'mgr-pdf-viewer-react';
-import CustomNavigation from './CustomNavigation';
+import React, { useState } from 'react';
+import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';
 
-const PdfViewer = props => {
+function PdfViewer(props) {
+    const [numPages, setNumPages] = useState(null);
+    const [pageNumber, setPageNumber] = useState(1);
     const { file, scale } = props;
+
+    function onDocumentLoadSuccess({ numPages }) {
+        setNumPages(numPages);
+    }
+
     return (
-        <div className={`panel-heading`}>
-            {/*<PDFViewer*/}
-            {/*    document={{*/}
-            {/*        file: file,*/}
-            {/*    }}*/}
-            {/*    navigation={CustomNavigation}*/}
-            {/*    scale={scale}*/}
-            {/*/>*/}
+        <div>
+            <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+                <Page pageNumber={pageNumber} renderTextLayer={false} />
+            </Document>
+            <p>
+                Page {pageNumber} of {numPages}
+            </p>
         </div>
     );
-};
-
-PDFViewer.defaultProps = {
-    file: '',
-    scale: 1,
-};
-
-PDFViewer.propTypes = {
-    file: PropTypes.string,
-    scale: PropTypes.number,
-};
-
+}
 export default PdfViewer;

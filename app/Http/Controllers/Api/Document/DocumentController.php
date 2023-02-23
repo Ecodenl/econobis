@@ -128,7 +128,7 @@ class DocumentController extends Controller
             $document->campaign && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->campaign->name)) . '_';
             $document->measure && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->measure->name)) . '_';
             $document->task && $name .= $document->task->id . '_';
-            $document->quotationRequest && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->quotationRequest->organisationOrCoach->full_name)) . '_';
+            $document->quotationRequest && $document->quotationRequest->organisationOrCoach && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->quotationRequest->organisationOrCoach->full_name)) . '_';
             $document->project && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->project->name)) . '_';
             $document->participant && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->participant->contact->full_name)) . '_';
             $document->order && $name .= str_replace(' ', '', $document->order->number) . '_';

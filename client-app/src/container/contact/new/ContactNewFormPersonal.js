@@ -459,18 +459,6 @@ class ContactNewFormPersonal extends Component {
                     />
                 </div>
 
-                <div className="row">
-                    <InputSelect
-                        label={'Rol in buurtaanpak'}
-                        size={'col-xs-6'}
-                        name={'inspectionPersonTypeId'}
-                        options={this.props.inspectionPersonTypes}
-                        value={inspectionPersonTypeId}
-                        onChangeAction={this.handleInputChange}
-                        clearable={true}
-                    />
-                </div>
-
                 <div className="margin-10-top">
                     <PanelHeader>
                         <div className="row" onClick={this.toggleAddress}>

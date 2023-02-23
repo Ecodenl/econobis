@@ -107,6 +107,8 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('revenue:checkWrongDistributionParts')->dailyAt('21:00');
         $schedule->command('revenue:checkWrongEnergySupplierDataInParts')->dailyAt('21:05');
+        $schedule->command('revenue:checkMissingEnergySupplierDataInParts')->dailyAt('21:10');
+        $schedule->command('revenue:checkWrongRevenueDistributionKwhStatus')->dailyAt('21:15');
     }
 
     /**

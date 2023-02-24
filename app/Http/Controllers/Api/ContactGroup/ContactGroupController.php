@@ -264,6 +264,11 @@ class ContactGroupController extends Controller
         }
 
         $contactGroup->contacts()->detach($contact);
+
+        if($contact->groups()->count() == 0) {
+            $contact->inspection_person_type_id = null;
+            $contact->save();
+        }
     }
 
     public function updateContact(ContactGroup $contactGroup, Contact $contact, Request $request)

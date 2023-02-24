@@ -66,6 +66,7 @@ class QuotationRequestController
             'externalpartyNote' => ['nullable', 'string'],
             'statusId' => ['integer'],
             'dateUnderReview' => ['nullable', 'date'],
+            'quotationText' => ['nullable', 'string'],
         ]);
 
         $quotationRequest->date_planned = $request->input('datePlanned') ?: null;
@@ -75,6 +76,7 @@ class QuotationRequestController
         $quotationRequest->date_approved_project_manager = $request->input('dateApprovedProjectManager') ?: null;
         $quotationRequest->updated_by_id = $responsibleUserId;
         $quotationRequest->externalparty_note = $request->input('externalpartyNote');
+        $quotationRequest->quotation_text = $request->input('quotationText');
         $quotationRequest->status_id = $request->input('statusId');
         $quotationRequest->date_under_review = $request->input('dateUnderReview');
 

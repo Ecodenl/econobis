@@ -11,7 +11,7 @@ const ParticipantsListToolbar = props => {
         <div className="row">
             <div className="col-md-2">
                 <div className="btn-group btn-group-flex" role="group">
-                    <ButtonIcon iconName="glyphicon-refresh" onClickAction={props.resetParticipantProjectFilters} />
+                    <ButtonIcon iconName="refresh" onClickAction={props.resetParticipantProjectFilters} />
                     {/*Filter hier voorlopig even uitgezet op verzoek*/}
                     {/*<ButtonIcon iconName="glyphicon-filter" onClickAction={props.toggleShowExtraFilters} />*/}
                     <ButtonIcon iconName="download" onClickAction={props.getExcel} />

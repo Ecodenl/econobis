@@ -1,7 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { arrows_vertical } from 'react-icons-kit/ikons/arrows_vertical';
+
 import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+import { trash } from 'react-icons-kit/fa/trash';
+
 import { Image } from 'react-bootstrap';
 import { hashHistory } from 'react-router';
 import PortalSettingsDashboardWidgetDeleteItem from './details/PortalSettingsDashboardWidgetDeleteItem';
@@ -141,12 +145,13 @@ const PortalDashboardWidgetOrderRow = ({
                                                     hashHistory.push(`/portal-instellingen-dashboard-widget/${row.id}`)
                                                 }
                                             >
-                                                <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                                                <Icon class="mybtn-success" size={14} icon={pencil} />
                                             </a>
                                         )}
+                                        &nbsp;
                                         {!staticWidgets.includes(cell.value) && showActionButtons ? (
                                             <a role="button" onClick={() => setShowDelete(true)}>
-                                                <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                                                <Icon class="mybtn-danger" size={14} icon={trash} />
                                             </a>
                                         ) : null}
                                     </td>

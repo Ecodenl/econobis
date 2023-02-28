@@ -13,6 +13,9 @@ import DataTableDateFilter from './DataTableDateFilter';
 import DataTableCustomFilterSelectDropdownHas from './DataTableCustomFilterSelectDropdownHas';
 import DataTableCustomFilterSelectDropdownRelations from './DataTableCustomFilterSelectDropdownRelations';
 
+import Icon from 'react-icons-kit';
+import { trash } from 'react-icons-kit/fa/trash';
+
 moment.locale('nl');
 
 const DataTableCustomFilter = props => {
@@ -249,7 +252,7 @@ const DataTableCustomFilter = props => {
                 <td />
             ) : (
                 <td className="col-md-1">
-                    <span className="glyphicon glyphicon-trash mybtn-danger" role="button" onClick={deleteRow} />
+                    <Icon class="mybtn-danger" size={14} icon={trash} role="button" onClick={deleteRow} />
                 </td>
             )}
         </tr>

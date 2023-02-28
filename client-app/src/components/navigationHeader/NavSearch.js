@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import GeneralSearchAPI from '../../api/general/GeneralSearchAPI';
 import GeneralSearchModal from '../../container/general-search/list/GeneralSearchModal';
 
+import Icon from 'react-icons-kit';
+import { search } from 'react-icons-kit/fa/search';
+
 class NavSearch extends Component {
     constructor(props) {
         super(props);
@@ -50,7 +53,7 @@ class NavSearch extends Component {
             <form onSubmit={this.searchText}>
                 <div className="input-group">
                     <span className="input-group-addon" id="basic-addon1">
-                        <span className="glyphicon glyphicon-search" aria-hidden="true" />
+                        <Icon size={14} icon={search} aria-hidden="true" />
                     </span>
                     <input
                         type="text"

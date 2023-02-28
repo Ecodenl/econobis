@@ -1,6 +1,11 @@
 import React from 'react';
 import moment from 'moment/moment';
 import { connect } from 'react-redux';
+
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+import { trash } from 'react-icons-kit/fa/trash';
+
 moment.locale('nl');
 
 const ObligationNumberFormView = props => {
@@ -18,14 +23,15 @@ const ObligationNumberFormView = props => {
             <div className="col-sm-1">
                 {props.showActionButtons && props.permissions.manageFinancial ? (
                     <a role="button" onClick={props.openEdit}>
-                        <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                        <Icon class="mybtn-success" size={14} icon={pencil} />
                     </a>
                 ) : (
                     ''
                 )}
+                &nbsp;
                 {props.showActionButtons && props.permissions.manageFinancial ? (
                     <a role="button" onClick={props.toggleDelete}>
-                        <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                        <Icon class="mybtn-danger" size={14} icon={trash} />
                     </a>
                 ) : (
                     ''

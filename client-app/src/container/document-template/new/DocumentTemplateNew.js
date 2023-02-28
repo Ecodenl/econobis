@@ -17,6 +17,7 @@ const DocumentTemplateNew = props => {
         roleIdsSelected,
         characteristic,
         htmlBody,
+        initialHtmlBody,
         baseTemplateId,
         headerTemplateId,
         footerTemplateId,
@@ -80,7 +81,12 @@ const DocumentTemplateNew = props => {
             <div className="row">
                 <div className="form-group col-sm-12">
                     <div className="row">
-                        <InputTinyMCE label={'Tekst'} value={htmlBody} onChangeAction={props.handleTextChange} />
+                        <InputTinyMCE
+                            label={'Tekst'}
+                            initialValue={initialHtmlBody}
+                            value={htmlBody}
+                            onChangeAction={props.handleTextChange}
+                        />
                     </div>
                 </div>
             </div>

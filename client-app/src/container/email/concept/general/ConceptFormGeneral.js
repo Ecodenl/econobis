@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import PanelBody from '../../../../components/panel/PanelBody';
-import InputTinyMCE from '../../../../components/form/InputTinyMCE';
-import InputText from '../../../../components/form/InputText';
+import InputTinyMCEUpdateable from '../../../../components/form/InputTinyMCEUpdateable';
 import * as PropTypes from 'prop-types';
 import EmailAddressAPI from '../../../../api/contact/EmailAddressAPI';
 import AsyncSelectSet from '../../../../components/form/AsyncSelectSet';
@@ -28,9 +27,12 @@ function ConceptFormGeneral(props) {
         handleCcIds,
         handleBccIds,
         handleInputChange,
-        handleTextChange,
     } = props;
-    const { from, to, cc, bcc, subject, htmlBody, contactGroupId } = email;
+    const { from, to, cc, bcc, subject, contactGroupId } = email;
+    const initialHtmlBody = email.htmlBody;
+    const [htmlBody, setValueHtmlBody] = useState(htmlBody ?? '');
+
+    useEffect(() => setValueHtmlBody(htmlBody ?? ''), [htmlBody]);
 
     useEffect(() => {
         setValueSelectedTo(getSelectedTo());
@@ -276,7 +278,12 @@ function ConceptFormGeneral(props) {
                 <div className="form-group col-sm-12">
                     <div className="row">
                         {hasLoaded && (
-                            <InputTinyMCE label={'Tekst'} value={htmlBody} onChangeAction={handleTextChange} />
+                            <InputTinyMCEUpdateable
+                                label={'Tekst'}
+                                initialValue={initialHtmlBody}
+                                value={htmlBody}
+                                onChangeAction={(newValueHtmlBody, editor) => setValueHtmlBody(newValueHtmlBody)}
+                            />
                         )}
                     </div>
                 </div>
@@ -296,7 +303,6 @@ ConceptFormGeneral.propTypes = {
     handleCcIds: PropTypes.any,
     handleBccIds: PropTypes.any,
     handleInputChange: PropTypes.any,
-    handleTextChange: PropTypes.any,
     hasLoaded: PropTypes.bool,
 };
 

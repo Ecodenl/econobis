@@ -7,7 +7,11 @@ import ContactsDeleteSelectedItems from './ContactsDeleteSelectedItems';
 import ContactListAddContactsToGroup from './ContactListAddContactsToGroup';
 import { FaRegLightbulb } from 'react-icons/fa';
 import { FaFire } from 'react-icons/fa';
+import { plus } from 'react-icons-kit/fa/plus';
+import { share } from 'react-icons-kit/fa/share';
+
 import ContactsMergeSelectedItems from "./ContactsMergeSelectedItems";
+import Icon from "react-icons-kit";
 
 class ContactsListToolbar extends Component {
     constructor(props) {
@@ -66,7 +70,7 @@ class ContactsListToolbar extends Component {
                                     data-toggle="dropdown"
                                     title="Toevoegen contact of groep"
                                 >
-                                    <span className="glyphicon glyphicon-plus" />
+                                    <Icon size={14} icon={plus} />
                                 </button>
                                 <ul className="dropdown-menu">
                                     {permissions.createPerson && (
@@ -96,7 +100,7 @@ class ContactsListToolbar extends Component {
                                     data-toggle="dropdown"
                                     title="Contactselectie toevoegen aan groep"
                                 >
-                                    <span className="glyphicon glyphicon-share-alt" />
+                                    <Icon size={14} icon={share} />
                                 </button>
                                 <ul className="dropdown-menu">
                                     <li>

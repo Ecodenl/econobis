@@ -10,6 +10,10 @@ import DistrictAPI from "../../../../api/district/DistrictAPI";
 import OpportunityDetailsQuotationRequestPlanByDistrictModal
     from "./OpportunityDetailsQuotationRequestPlanByDistrictModal";
 
+import Icon from 'react-icons-kit';
+import { calendar } from 'react-icons-kit/fa/calendar';
+import { plus } from 'react-icons-kit/fa/plus';
+
 class OpportunityDetailsQuotationRequests extends Component {
     constructor(props) {
         super(props);
@@ -41,7 +45,7 @@ class OpportunityDetailsQuotationRequests extends Component {
                                         <button className="btn btn-link"
                                                 onClick={() => this.setState({setShowPlanByDistrictModal: true})}
                                         >
-                                            <span className="glyphicon glyphicon-calendar"/>
+                                            <Icon size={14} icon={calendar} />
                                         </button>
                                     </>
                                 )}
@@ -52,13 +56,13 @@ class OpportunityDetailsQuotationRequests extends Component {
                                         )
                                     }
                                     >
-                                        <span className="glyphicon glyphicon-plus"/>
+                                        <Icon size={14} icon={plus} />
                                     </button>
                                 ) : null}
                                 {this.props.permissions.manageQuotationRequest && opportunityActions.length > 1 ? (
                                     <div className="nav navbar-nav btn-group pull-right" role="group">
                                         <button className="btn btn-link" data-toggle="dropdown">
-                                            <span className="glyphicon glyphicon-plus"/>
+                                            <Icon size={14} icon={plus} />
                                         </button>
                                         <ul className="dropdown-menu">
                                             {opportunityActions.map((opportunityAction, i) => {

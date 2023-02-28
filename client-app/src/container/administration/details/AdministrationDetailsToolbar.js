@@ -64,11 +64,7 @@ class AdministrationToolbar extends Component {
                                         loadText={'Aan het synchroniseren'}
                                         buttonText={
                                             <span>
-                                                <span
-                                                    className="glyphicon glyphicon-refresh"
-                                                    title="Contacten naar Twinfield synchroniseren"
-                                                />
-                                                &nbsp;Contacten
+                                                Contacten
                                             </span>
                                         }
                                         onClickAction={this.syncContactsToTwinfield}
@@ -78,11 +74,7 @@ class AdministrationToolbar extends Component {
                                         loadText={'Aan het synchroniseren'}
                                         buttonText={
                                             <span>
-                                                <span
-                                                    className="glyphicon glyphicon-refresh"
-                                                    title="Nota's naar Twinfield synchroniseren"
-                                                />
-                                                &nbsp;Nota's
+                                                Nota's
                                             </span>
                                         }
                                         onClickAction={this.syncInvoicesToTwinfield}
@@ -92,11 +84,7 @@ class AdministrationToolbar extends Component {
                                         loadText={'Betalingen aan het ophalen'}
                                         buttonText={
                                             <span>
-                                                <span
-                                                    className="glyphicon glyphicon-refresh"
-                                                    title="Betalingen van Twinfield ophalen"
-                                                />
-                                                &nbsp;Betalingen
+                                                Betalingen
                                             </span>
                                         }
                                         onClickAction={this.syncInvoicesFromTwinfield}

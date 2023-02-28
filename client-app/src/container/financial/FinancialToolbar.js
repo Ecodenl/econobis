@@ -109,10 +109,6 @@ class FinancialToolbar extends Component {
                                     loadText={'Aan het synchroniseren'}
                                     buttonText={
                                         <span>
-                                            <span
-                                                className="glyphicon glyphicon-refresh"
-                                                title="Nota's naar Twinfield synchroniseren"
-                                            />
                                             &nbsp;Nota's
                                         </span>
                                     }
@@ -126,10 +122,6 @@ class FinancialToolbar extends Component {
                                     loadText={'Betalingen aan het ophalen'}
                                     buttonText={
                                         <span>
-                                            <span
-                                                className="glyphicon glyphicon-refresh"
-                                                title="Betalingen van Twinfield ophalen"
-                                            />
                                             &nbsp;Betalingen
                                         </span>
                                     }

@@ -14,7 +14,7 @@ const ParticipantsListToolbar = props => {
                     <ButtonIcon iconName="glyphicon-refresh" onClickAction={props.resetParticipantProjectFilters} />
                     {/*Filter hier voorlopig even uitgezet op verzoek*/}
                     {/*<ButtonIcon iconName="glyphicon-filter" onClickAction={props.toggleShowExtraFilters} />*/}
-                    <ButtonIcon iconName="glyphicon-download-alt" onClickAction={props.getExcel} />
+                    <ButtonIcon iconName="download" onClickAction={props.getExcel} />
                     <ButtonText buttonText="Rapportage" onClickAction={props.toggleShowCheckboxList} />
                 </div>
             </div>

@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+import { trash } from 'react-icons-kit/fa/trash';
+
 class ProductsListItem extends Component {
     constructor(props) {
         super(props);
@@ -82,14 +86,14 @@ class ProductsListItem extends Component {
                 <td>
                     {this.state.showActionButtons && this.props.permissions.manageFinancial ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <Icon class="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons && this.props.permissions.manageFinancial ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}>
-                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                            <Icon class="mybtn-danger" size={14} icon={trash} />
                         </a>
                     ) : (
                         ''

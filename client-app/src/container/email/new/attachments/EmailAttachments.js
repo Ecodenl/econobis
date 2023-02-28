@@ -8,6 +8,9 @@ import { connect } from 'react-redux';
 import Panel from '../../../../components/panel/Panel';
 import EmailAttachmentsDocument from './EmailAttachmentsDocument';
 
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
+
 class EmailAttachments extends Component {
     constructor(props) {
         super(props);
@@ -37,7 +40,7 @@ class EmailAttachments extends Component {
                     <span className="h5 text-bold">Bijlagen</span>
                     <div className="nav navbar-nav btn-group pull-right" role="group">
                         <button className="btn btn-link" data-toggle="dropdown">
-                            <span className="glyphicon glyphicon-plus" />
+                            <Icon size={14} icon={plus} />
                         </button>
                         <ul className="dropdown-menu">
                             <li>

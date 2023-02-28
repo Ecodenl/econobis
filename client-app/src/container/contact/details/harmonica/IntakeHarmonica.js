@@ -5,6 +5,9 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import IntakesList from './IntakesList';
 
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
+
 const IntakeHarmonica = ({ toggleShowList, showIntakesList, newIntake, intakeCount, permissions }) => {
     return (
         <Panel className={'harmonica-button'}>
@@ -17,7 +20,7 @@ const IntakeHarmonica = ({ toggleShowList, showIntakesList, newIntake, intakeCou
                 <div className="col-sm-2">
                     {permissions.manageIntake && (
                         <a role="button" className="pull-right" onClick={newIntake}>
-                            <span className="glyphicon glyphicon-plus glyphicon-white" />
+                            <Icon class="harmonica-button" size={14} icon={plus} />
                         </a>
                     )}
                 </div>

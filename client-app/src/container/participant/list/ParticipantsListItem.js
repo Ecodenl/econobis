@@ -3,6 +3,10 @@ import { hashHistory } from 'react-router';
 import moment from 'moment';
 import validator from 'validator';
 import MoneyPresenter from '../../../helpers/MoneyPresenter';
+
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+
 moment.locale('nl');
 
 class ParticipantsListItem extends Component {
@@ -113,7 +117,7 @@ class ParticipantsListItem extends Component {
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <Icon class="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''

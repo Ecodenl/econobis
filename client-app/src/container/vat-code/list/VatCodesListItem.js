@@ -3,6 +3,9 @@ import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+
 class VatCodesListItem extends Component {
     constructor(props) {
         super(props);
@@ -47,7 +50,7 @@ class VatCodesListItem extends Component {
                 <td>
                     {this.state.showActionButtons && permissions.manageFinancial ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <Icon class="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''

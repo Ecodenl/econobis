@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { browserHistory } from 'react-router';
 
+import Icon from 'react-icons-kit';
+import { share } from 'react-icons-kit/fa/share';
+
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import { setBulkEmailToContactIds } from '../../../actions/email/BulkMailActions';
 
@@ -40,7 +43,7 @@ class OpportunitiesListToolbar extends Component {
                         />
                         <div className="nav navbar-nav btn-group" role="group">
                             <button className="btn btn-success btn-sm" data-toggle="dropdown">
-                                <span className="glyphicon glyphicon-share-alt" />
+                                <Icon size={14} icon={share} />
                             </button>
                             <ul className="dropdown-menu">
                                 <li>

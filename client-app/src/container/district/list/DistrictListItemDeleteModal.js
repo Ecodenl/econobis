@@ -2,6 +2,9 @@ import React, {useState} from 'react';
 import Modal from '../../../components/modal/Modal';
 import DistrictAPI from "../../../api/district/DistrictAPI";
 
+import Icon from 'react-icons-kit';
+import { trash } from 'react-icons-kit/fa/trash';
+
 export default function DistrictListItemDeleteModal({district, onDelete, showDeleteModal, setShowDeleteModal}) {
     const confirmAction = () => {
         DistrictAPI.deleteDistrict(district).then(() => {
@@ -28,7 +31,7 @@ export default function DistrictListItemDeleteModal({district, onDelete, showDel
 
     return (
         <a role="button" onClick={() => setShowDeleteModal(true)}>
-            <span className="glyphicon glyphicon-trash mybtn-danger"/>
+            <Icon class="mybtn-danger" size={14} icon={trash} />
         </a>
     );
 }

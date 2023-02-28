@@ -1,6 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import Icon from 'react-icons-kit';
+import { trash } from 'react-icons-kit/fa/trash';
+
 const MailboxDetailsIgnoresView = props => {
     const { value, type } = props.ignore;
 
@@ -15,7 +18,7 @@ const MailboxDetailsIgnoresView = props => {
             <div className="col-sm-1">
                 {props.showActionButtons && props.permissions.createMailbox ? (
                     <a role="button" onClick={props.toggleDelete}>
-                        <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                        <Icon class="mybtn-danger" size={14} icon={trash} />
                     </a>
                 ) : (
                     ''

@@ -3,6 +3,9 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 
+import Icon from 'react-icons-kit';
+import { calendar } from 'react-icons-kit/fa/calendar';
+
 const OpportunityDetailsQuotationRequestsView = props => {
     const {
         id,
@@ -25,7 +28,7 @@ const OpportunityDetailsQuotationRequestsView = props => {
         >
             <div className="col-sm-2">{organisationOrCoach && organisationOrCoach.fullName}</div>
             <div className="col-sm-2">{createdAt ? moment(createdAt).format('L') : ''}</div>
-            <div className="col-sm-2">{opportunityAction ? opportunityAction.name : ''} { usesPlanning && (<span className="glyphicon glyphicon-calendar"/>) }</div>
+            <div className="col-sm-2">{opportunityAction ? opportunityAction.name : ''} { usesPlanning && (<Icon size={14} icon={calendar} />) }</div>
             <div className="col-sm-2">{dateRecorded ? moment(dateRecorded).format('L') : ''}</div>
             <div className="col-sm-2">{datePlanned ? moment(datePlanned).format('L') : ''}</div>
             <div className="col-sm-2">{status && status.name}</div>

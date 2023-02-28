@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import { hashHistory } from 'react-router';
 import { setBulkEmailToContactIds } from '../../../actions/email/BulkMailActions';
+import Icon from "react-icons-kit";
+import { share } from 'react-icons-kit/fa/share';
 
 class IntakesListToolbar extends Component {
     constructor(props) {
@@ -29,7 +31,7 @@ class IntakesListToolbar extends Component {
                         <ButtonIcon iconName={'refresh'} onClickAction={this.props.resetIntakeFilters} />
                         <div className="nav navbar-nav btn-group" role="group">
                             <button className="btn btn-success btn-sm" data-toggle="dropdown">
-                                <span className="glyphicon glyphicon-share-alt" />
+                                <Icon size={12} icon={share} />
                             </button>
                             <ul className="dropdown-menu">
                                 <li>

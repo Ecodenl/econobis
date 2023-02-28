@@ -34,6 +34,9 @@ class QuotationRequestStatusJoryResource extends JoryResource
 
     protected function configureForPortal(): void
     {
-        // TODO: Implement configureForPortal() method.
+        $this->field('id')->filterable()->sortable();
+        $this->field('name')->filterable()->sortable();
+        $this->field('opportunity_action_id')->filterable()->sortable();
+        $this->field('order')->filterable()->sortable();
     }
 }

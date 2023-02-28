@@ -34,11 +34,13 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             dateReleased,
             datePlanned,
             dateApprovedExternal,
+            dateUnderReview,
             dateApprovedProjectManager,
             dateApprovedClient,
             quotationText,
             opportunity,
             relatedQuotationRequestsStatuses,
+            externalpartyNote,
         } = props.quotationRequestDetails;
 
         this.state = {
@@ -70,9 +72,11 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                 datePlanned: datePlanned ? datePlanned : '',
                 timePlanned: datePlanned ? moment(datePlanned).format('HH:mm') : '08:00',
                 dateApprovedExternal: dateApprovedExternal ? dateApprovedExternal : '',
+                dateUnderReview: dateUnderReview ? dateUnderReview : '',
                 dateApprovedProjectManager: dateApprovedProjectManager ? dateApprovedProjectManager : '',
                 dateApprovedClient: dateApprovedClient ? dateApprovedClient : '',
                 quotationText: quotationText ? quotationText : '',
+                externalpartyNote: externalpartyNote ? externalpartyNote : '',
                 relatedQuotationRequestsStatuses: relatedQuotationRequestsStatuses
                     ? relatedQuotationRequestsStatuses
                     : [],
@@ -153,9 +157,11 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             datePlanned,
             timePlanned,
             dateApprovedExternal,
+            dateUnderReview,
             dateApprovedProjectManager,
             dateApprovedClient,
             quotationText,
+            externalpartyNote,
             relatedQuotationRequestsStatuses,
         } = this.state.quotationRequest;
         const { fullName, fullAddress, measureNames, measureCategoryName } = this.state.opportunity;
@@ -349,12 +355,32 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                     />
                 </div>
                 <div className="row">
+                    <InputDate
+                        label="Datum in behandeling"
+                        size={'col-sm-6'}
+                        name="dateUnderReview"
+                        value={dateUnderReview}
+                        onChangeAction={this.handleInputChangeDate}
+                    />
+                </div>
+                <div className="row">
                     <InputTextArea
                         label={'Omschrijving'}
                         name={'quotationText'}
                         value={quotationText}
                         onChangeAction={this.handleInputChange}
                     />
+                </div>
+
+                <div className="row">
+                    <div className="col-sm-3">
+                        <label htmlFor="externalpartyNote" className="col-sm-12">
+                            Opmerkingen externe partij
+                        </label>
+                    </div>
+                    <div className="col-sm-9" id="externalpartyNote">
+                        {externalpartyNote}
+                    </div>
                 </div>
 
                 <div className="panel-footer">

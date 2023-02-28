@@ -1,21 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Api\Contact;
+namespace App\Http\Controllers\Portal\PortalUser;
 
-use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactAvailability;
-use App\Eco\District\District;
-use App\Eco\QuotationRequest\QuotationRequestStatus;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ContactAvailabilityController
 {
-    public function getByWeek(Contact $contact, Request $request)
+    public function getByWeek(Request $request)
     {
-        if(!auth()->user()->hasPermissionTo('manage_coach_planning', 'api')) {
-            abort(403);
-        }
+        $contact = Auth::user()->contact;
 
         $request->validate([
             'startOfWeek' => ['required', 'date'],
@@ -34,53 +30,9 @@ class ContactAvailabilityController
             });
     }
 
-    public function getDistrictAvailabilityByWeek(District $district, Request $request)
+    public function update(Request $request)
     {
-        if(!auth()->user()->hasPermissionTo('manage_coach_planning', 'api')) {
-            abort(403);
-        }
-
-        $startOfWeek = Carbon::make($request->input('startOfWeek'))->startOfWeek();
-
-        return $district->getAvailableCoachesInWeek($startOfWeek)
-            ->load(['availabilities' => function($query) use ($startOfWeek, $request){
-                $endOfWeek = $startOfWeek->copy()->endOfWeek();
-                $query->whereBetween('from', [$startOfWeek, $endOfWeek]);
-            }])
-            ->load(['quotationRequests' => function($query) use ($startOfWeek, $request){
-                $endOfWeek = $startOfWeek->copy()->endOfWeek();
-                $query->whereBetween('date_planned', [$startOfWeek, $endOfWeek])
-                    ->where('uses_planning', true)
-                    ->where('status_id', '!=', QuotationRequestStatus::STATUS_VISIT_CANCELLED_ID);
-            }])
-            ->map(function(Contact $coach){
-                return [
-                    'id' => $coach->id,
-                    'fullName' => $coach->full_name,
-                    'coachMinMinutesBetweenAppointments' => $coach->coach_min_minutes_between_appointments,
-                    'availabilities' => $coach->availabilities
-                        ->map(function(ContactAvailability $availability){
-                            return [
-                                'from' => $availability->from->format('Y-m-d H:i:s'),
-                                'to' => $availability->to->format('Y-m-d H:i:s'),
-                            ];
-                        }),
-                    'quotationRequests' => $coach->quotationRequests
-                        ->map(function($quotationRequest){
-                            return [
-                                'datePlanned' => $quotationRequest->date_planned,
-                                'durationMinutes' => $quotationRequest->duration_minutes,
-                            ];
-                        }),
-                ];
-            });
-    }
-
-    public function update(Contact $contact, Request $request)
-    {
-        if(!auth()->user()->hasPermissionTo('manage_coach_planning', 'api')) {
-            abort(403);
-        }
+        $contact = Auth::user()->contact;
 
         $request->validate([
             'startOfWeek' => ['required', 'date'],
@@ -104,11 +56,9 @@ class ContactAvailabilityController
         }
     }
 
-    public function copyWeeks(Contact $contact, Request $request)
+    public function copyWeeks(Request $request)
     {
-        if(!auth()->user()->hasPermissionTo('manage_coach_planning', 'api')) {
-            abort(403);
-        }
+        $contact = Auth::user()->contact;
 
         $request->validate([
             'copyFromWeek' => ['required', 'date'],

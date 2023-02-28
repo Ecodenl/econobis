@@ -1,23 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import LoadingView from '../../../components/general/LoadingView';
-import { Field, Form, Formik } from 'formik';
+import {Field, Form, Formik} from 'formik';
 import FormLabel from 'react-bootstrap/FormLabel';
 import * as Yup from 'yup';
 import QuotationRequestAPI from '../../../api/quotation-request/QuotationRequestAPI';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
-import { ClipLoader } from 'react-spinners';
-import moment from 'moment';
+import {ClipLoader} from 'react-spinners';
 import InputTextDate from '../../../components/form/InputTextDate';
 import InspectDetailsDocumentTable from './document-table';
-import { PortalUserConsumer } from '../../../context/PortalUserContext';
+import {PortalUserConsumer} from '../../../context/PortalUserContext';
+import Select from "../../../components/form/Select";
+import OpportunityStatusAPI from "../../../api/opportunity-status/OpportunityStatusAPI";
+import moment from "moment/moment";
 
-function InspectDetails({ match, history, user }) {
+function InspectDetails({match, history, user}) {
     const [isLoading, setLoading] = useState(true);
     const [initialQuotationRequest, setInitialQuotationRequest] = useState({});
+    const [statuses, setStatuses] = useState([]);
 
     const validationSchema = Yup.object().shape({});
 
@@ -29,6 +32,11 @@ function InspectDetails({ match, history, user }) {
             dateReleased: values.dateReleased,
             dateApprovedProjectManager: values.dateApprovedProjectManager,
             dateApprovedExternal: values.dateApprovedExternal,
+            opportunityStatusId: values.opportunity.status.id,
+            externalpartyNote: values.externalpartyNote,
+            quotationText: values.quotationText,
+            statusId: values.status.id,
+            dateUnderReview: values.dateUnderReview,
         }).then(response => {
             history.push('/schouwen');
         });
@@ -44,12 +52,28 @@ function InspectDetails({ match, history, user }) {
             setInitialQuotationRequest(response.data);
             setLoading(false);
         });
+
+        OpportunityStatusAPI.fetchOpportunityStatus()
+            .then(payload => {
+                setStatuses(payload.data.data);
+            });
     }, []);
+
+    const getStatusOptions = () => {
+        return statuses.filter(status => {
+            return status.active;
+        }).map(status => {
+            return {
+                id: status.id,
+                name: initialQuotationRequest?.opportunityAction.name + ' - ' + status.name,
+            };
+        });
+    }
 
     return (
         <Container className={'content-section'}>
             {isLoading ? (
-                <LoadingView />
+                <LoadingView/>
             ) : (
                 <>
                     <div>
@@ -59,14 +83,14 @@ function InspectDetails({ match, history, user }) {
                             validationSchema={validationSchema}
                             onSubmit={handleSubmit}
                             render={({
-                                errors,
-                                touched,
-                                setFieldValue,
-                                isSubmitting,
-                                status,
-                                values,
-                                handleSubmit,
-                            }) => {
+                                         errors,
+                                         touched,
+                                         setFieldValue,
+                                         isSubmitting,
+                                         status,
+                                         values,
+                                         handleSubmit,
+                                     }) => {
                                 return (
                                     <Form>
                                         <Row>
@@ -109,16 +133,49 @@ function InspectDetails({ match, history, user }) {
                                                     readOnly={true}
                                                 />
                                                 <FormLabel className={'field-label'}>Status</FormLabel>
-                                                <input
-                                                    type="text"
-                                                    className={`text-input w-input content`}
-                                                    value={
-                                                        initialQuotationRequest.opportunityAction.name +
-                                                        ' - ' +
-                                                        initialQuotationRequest.opportunity.status.name
-                                                    }
-                                                    readOnly={true}
-                                                />
+                                                {user.inspectionPersonTypeId === 'coach' ? (
+                                                    <Field
+                                                        name="opportunity.status.id"
+                                                        render={({field}) => (
+                                                            <Select
+                                                                name="opportunity.status.id"
+                                                                field={field}
+                                                                errors={errors}
+                                                                touched={touched}
+                                                                id="opportunity_status_id"
+                                                                placeholder={'Status'}
+                                                                options={getStatusOptions()}
+                                                                emptyOption={false}
+                                                            />
+                                                        )}
+                                                    />
+                                                ) : (
+                                                    <input
+                                                        type="text"
+                                                        className={`text-input w-input content`}
+                                                        value={
+                                                            initialQuotationRequest.opportunityAction.name +
+                                                            ' - ' +
+                                                            initialQuotationRequest.opportunity.status.name
+                                                        }
+                                                        readOnly={true}
+                                                    />
+                                                )}
+                                                {user.inspectionPersonTypeId === 'externalparty' ? (
+                                                    <>
+                                                        <FormLabel className={'field-label'}>Omschrijving</FormLabel>
+                                                        {initialQuotationRequest.quotationText}
+                                                    </>
+                                                    ) : user.inspectionPersonTypeId === 'projectmanager' ? (
+                                                    <>
+                                                        <FormLabel className={'field-label'}>Omschrijving</FormLabel>
+                                                        <Field
+                                                            name="quotationText"
+                                                            component="textarea"
+                                                            className="form-control input-sm mb-2"
+                                                        />
+                                                    </>
+                                                    ) : null }
                                                 {user.inspectionPersonTypeId === 'coach' ? (
                                                     <>
                                                         <FormLabel htmlFor="date_planned" className={'field-label'}>
@@ -126,7 +183,7 @@ function InspectDetails({ match, history, user }) {
                                                         </FormLabel>
                                                         <Field
                                                             name="datePlanned"
-                                                            render={({ field }) => (
+                                                            render={({field}) => (
                                                                 <InputTextDate
                                                                     name="datePlanned"
                                                                     field={field}
@@ -151,7 +208,7 @@ function InspectDetails({ match, history, user }) {
                                                                 </FormLabel>
                                                                 <Field
                                                                     name="dateRecorded"
-                                                                    render={({ field }) => (
+                                                                    render={({field}) => (
                                                                         <InputTextDate
                                                                             name="dateRecorded"
                                                                             field={field}
@@ -172,7 +229,7 @@ function InspectDetails({ match, history, user }) {
                                                         </FormLabel>
                                                         <Field
                                                             name="dateReleased"
-                                                            render={({ field }) => (
+                                                            render={({field}) => (
                                                                 <InputTextDate
                                                                     name="dateReleased"
                                                                     field={field}
@@ -197,7 +254,7 @@ function InspectDetails({ match, history, user }) {
                                                                 </FormLabel>
                                                                 <Field
                                                                     name="dateApprovedClient"
-                                                                    render={({ field }) => (
+                                                                    render={({field}) => (
                                                                         <InputTextDate
                                                                             field={field}
                                                                             type="date"
@@ -224,26 +281,96 @@ function InspectDetails({ match, history, user }) {
                                                                 >
                                                                     Datum akkoord projectleider
                                                                 </FormLabel>
+                                                                <div style={{display: 'flex'}}>
+                                                                    <div>
+                                                                        <Field
+                                                                        name="dateApprovedProjectManager"
+                                                                        render={({field}) => (
+                                                                            <InputTextDate
+                                                                                field={field}
+                                                                                type="date"
+                                                                                errors={errors}
+                                                                                touched={touched}
+                                                                                onChangeAction={setFieldValue}
+                                                                                id="date_approved_project_manager"
+                                                                                placeholder={'Datum akkoord projectleider'}
+                                                                                readOnly={
+                                                                                    user.inspectionPersonTypeId !==
+                                                                                    'projectmanager'
+                                                                                }
+                                                                            />
+                                                                        )}
+                                                                    />
+                                                                    </div>
+                                                                    {user.inspectionPersonTypeId === 'projectmanager' ? (
+                                                                        <div>
+                                                                            <Button
+                                                                                variant={parseInt(values.status?.id) === 12 ? 'dark' : 'outline-dark'}
+                                                                                size="sm"
+                                                                                onClick={() => {
+                                                                                    setFieldValue('status.id', 12);
+                                                                                    setFieldValue('dateApprovedProjectManager', moment().format('YYYY-MM-DD'));
+                                                                                }}
+                                                                            >
+                                                                                {parseInt(values.status?.id) === 12 ? 'Goedgekeurd' : 'Goedkeuren'}
+                                                                            </Button>
+
+                                                                            <Button
+                                                                                variant={parseInt(values.status?.id) === 13 ? 'dark' : 'outline-dark'}
+                                                                                size="sm"
+                                                                                onClick={() => {
+                                                                                    setFieldValue('status.id', 13);
+                                                                                    setFieldValue('dateApprovedProjectManager', '');
+                                                                                }}
+                                                                            >
+                                                                                {parseInt(values.status?.id) === 13 ? 'Afgekeurd' : 'Niet Goedkeuren'}
+                                                                            </Button>
+                                                                        </div>
+                                                                    ) : null}
+                                                                </div>
+                                                            </>
+                                                        ) : null}
+                                                    </>
+                                                ) : null}
+                                                {user.inspectionPersonTypeId === 'externalparty' ? (
+                                                    <>
+                                                        <FormLabel
+                                                            htmlFor="date_under_review"
+                                                            className={'field-label'}
+                                                        >
+                                                            Datum in behandeling
+                                                        </FormLabel>
+                                                        <div style={{display: 'flex'}}>
+                                                            <div>
                                                                 <Field
-                                                                    name="dateApprovedProjectManager"
-                                                                    render={({ field }) => (
+                                                                    name="dateUnderReview"
+                                                                    render={({field}) => (
                                                                         <InputTextDate
                                                                             field={field}
                                                                             type="date"
                                                                             errors={errors}
                                                                             touched={touched}
                                                                             onChangeAction={setFieldValue}
-                                                                            id="date_approved_project_manager"
-                                                                            placeholder={'Datum akkoord projectleider'}
-                                                                            readOnly={
-                                                                                user.inspectionPersonTypeId !==
-                                                                                'projectmanager'
-                                                                            }
+                                                                            id="date_under_review"
+                                                                            placeholder={'Datum in behandeling'}
+                                                                            readOnly={true}
                                                                         />
                                                                     )}
                                                                 />
-                                                            </>
-                                                        ) : null}
+                                                            </div>
+                                                            <div>
+                                                                <Button
+                                                                    variant={parseInt(values.status?.id) === 16 ? 'dark' : 'outline-dark'}
+                                                                    size="sm"
+                                                                    onClick={() => {
+                                                                        setFieldValue('status.id', 16);
+                                                                        setFieldValue('dateUnderReview', moment().format('YYYY-MM-DD'));
+                                                                    }}
+                                                                >
+                                                                    In behandeling {parseInt(values.status?.id) !== 16 ? 'nemen' : ''}
+                                                                </Button>
+                                                            </div>
+                                                        </div>
                                                     </>
                                                 ) : null}
 
@@ -256,25 +383,63 @@ function InspectDetails({ match, history, user }) {
                                                         >
                                                             Datum akkoord extern
                                                         </FormLabel>
-                                                        <Field
-                                                            name="dateApprovedExternal"
-                                                            render={({ field }) => (
-                                                                <InputTextDate
-                                                                    field={field}
-                                                                    type="date"
-                                                                    errors={errors}
-                                                                    touched={touched}
-                                                                    onChangeAction={setFieldValue}
-                                                                    id="date_approved_external"
-                                                                    placeholder={'Datum akkoord extern'}
-                                                                    readOnly={
-                                                                        user.inspectionPersonTypeId !== 'externalparty'
-                                                                    }
+                                                        <div style={{display: 'flex'}}>
+                                                            <div>
+                                                                <Field
+                                                                    name="dateApprovedExternal"
+                                                                    render={({field}) => (
+                                                                        <InputTextDate
+                                                                            field={field}
+                                                                            type="date"
+                                                                            errors={errors}
+                                                                            touched={touched}
+                                                                            onChangeAction={setFieldValue}
+                                                                            id="date_approved_external"
+                                                                            placeholder={'Datum akkoord extern'}
+                                                                            readOnly={true}
+                                                                        />
+                                                                    )}
                                                                 />
-                                                            )}
-                                                        />
+                                                            </div>
+                                                            {user.inspectionPersonTypeId === 'externalparty' ? (
+                                                                <div>
+                                                                    <Button
+                                                                        variant={parseInt(values.status?.id) === 17 ? 'dark' : 'outline-dark'}
+                                                                        size="sm"
+                                                                        onClick={() => {
+                                                                            setFieldValue('status.id', 17);
+                                                                            setFieldValue('dateApprovedExternal', moment().format('YYYY-MM-DD'));
+                                                                        }}
+                                                                    >
+                                                                        {parseInt(values.status?.id) === 17 ? 'Goedgekeurd' : 'Goedkeuren'}
+                                                                    </Button>
+
+                                                                    <Button
+                                                                        variant={parseInt(values.status?.id) === 18 ? 'dark' : 'outline-dark'}
+                                                                        size="sm"
+                                                                        onClick={() => {
+                                                                            setFieldValue('status.id', 18);
+                                                                            setFieldValue('dateApprovedExternal', '');
+                                                                        }}
+                                                                    >
+                                                                        {parseInt(values.status?.id) === 18 ? 'Afgekeurd' : 'Niet Goedkeuren'}
+                                                                    </Button>
+                                                                </div>
+                                                            ) : null}
+                                                        </div>
                                                     </>
                                                 ) : null}
+
+                                                {user.inspectionPersonTypeId === 'externalparty' ? (
+                                                    <>
+                                                        <FormLabel className={'field-label'}>Opmerkingen</FormLabel>
+                                                        <Field
+                                                            name="externalpartyNote"
+                                                            component="textarea"
+                                                            className="form-control input-sm mb-2"
+                                                        />
+                                                    </>
+                                                ) : null }
                                             </Col>
                                         </Row>
                                         <Row>
@@ -283,7 +448,7 @@ function InspectDetails({ match, history, user }) {
                                                     <Button
                                                         variant={'outline-dark'}
                                                         size="sm"
-                                                        onClick={function() {
+                                                        onClick={function () {
                                                             history.push(`/schouwen`);
                                                         }}
                                                     >
@@ -297,7 +462,7 @@ function InspectDetails({ match, history, user }) {
                                                     >
                                                         {isSubmitting ? (
                                                             <span>
-                                                                <ClipLoader color={'white'} size={14} />
+                                                                <ClipLoader color={'white'} size={14}/>
                                                                 Bezig met opslaan
                                                             </span>
                                                         ) : (
@@ -325,5 +490,5 @@ function InspectDetails({ match, history, user }) {
 }
 
 export default function InspectDetailsWithContext(props) {
-    return <PortalUserConsumer>{({ user }) => <InspectDetails {...props} user={user} />}</PortalUserConsumer>;
+    return <PortalUserConsumer>{({user}) => <InspectDetails {...props} user={user}/>}</PortalUserConsumer>;
 }

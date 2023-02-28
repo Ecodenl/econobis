@@ -172,7 +172,7 @@ const DistrictCalendarApp = (props) => {
                         time: 'Tijd',
                         showMore: total => `+${total} meer`,
                     }}
-                    min={new Date('2018-01-01 06:00:00')}
+                    min={new Date(`${moment().format('D MMM YYYY')}, 6:00`)}
                 />
             </PanelBody>
         </Panel>

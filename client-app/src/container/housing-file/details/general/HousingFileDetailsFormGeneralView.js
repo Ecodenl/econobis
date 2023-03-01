@@ -18,6 +18,7 @@ const HousingFileDetailsFormGeneralView = props => {
         floors,
         energyLabelStatus,
         isMonument,
+        numberOfResidents,
     } = props.housingFileDetails;
 
     return (
@@ -52,6 +53,7 @@ const HousingFileDetailsFormGeneralView = props => {
             </div>
 
             <div className="row">
+                <ViewText label="Aantal bewoners" value={numberOfResidents && numberOfResidents} />
                 <ViewText label="Koophuis" value={isHouseForSale ? 'Ja' : 'Nee'} />
             </div>
         </div>

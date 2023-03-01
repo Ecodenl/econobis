@@ -150,7 +150,7 @@ class TemplateVariableHelper
                 return TemplateVariableHelper::getCampaignVar($model, $varname);
                 break;
             case 'HousingFile':
-                return '';
+                return TemplateVariableHelper::getHousingFileVar($model, $varname);
                 break;
             case 'QuotationRequest':
                 return TemplateVariableHelper::getQuotationRequestVar($model, $varname);
@@ -2121,6 +2121,41 @@ class TemplateVariableHelper
                 break;
             case 'aangeboden_maatregelen':
                 return $model->name;
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
+    
+    public static function getHousingFileVar($model, $varname){
+        switch ($varname) {
+            case 'woningtype':
+                return optional($model->buildingType)->name;
+                break;
+            case 'gebruikersoppervlakte':
+                return $model->surface;
+                break;
+            case 'bouwjaar':
+                return $model->build_year;
+                break;
+            case 'daktype':
+                return optional($model->roofType)->name;
+                break;
+            case 'energielabel':
+                return optional($model->energyLabel)->name;
+                break;
+            case 'status_energielabel':
+                return optional($model->energyLabelStatus)->name;
+                break;
+            case 'aantal_bouwlagen':
+                return $model->floors;
+                break;
+            case 'monument':
+                return $model->is_monument ? 'Ja' : 'Nee';
+                break;
+            case 'koophuis':
+                return $model->is_house_for_sale ? 'Ja' : 'Nee';
                 break;
             default:
                 return '';

@@ -41,7 +41,7 @@ Route::namespace('Api')
         Route::get('/contact/excel/verbruik/gas', 'Contact\GridController@excelAddressEnergyConsumptionGas');
         Route::get('/contact/excel/verbruik/electriciteit', 'Contact\GridController@excelAddressEnergyConsumptionElectricity');
         Route::get('/contact/save-as-group', 'Contact\GridController@saveAsGroup');
-        Route::get('/contact/peek', 'Contact\ContactController@peek');
+        Route::get('/contact/peek' . '/{inspectionpersontype?}', 'Contact\ContactController@peek');
         Route::get('/contact/search', 'Contact\ContactController@search');
         Route::get('/contact/address/peek', 'Contact\ContactController@peekWithAddress');
         Route::get('/contact/chart-data', 'Contact\ContactController@chartData');

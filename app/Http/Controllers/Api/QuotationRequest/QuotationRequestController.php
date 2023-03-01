@@ -130,6 +130,8 @@ class QuotationRequestController extends ApiController
         ]);
 
         $opportunity->relatedQuotationRequestsStatuses = $this->getRelatedQuotationRequestsStatuses($opportunityAction);
+        $defaultStatusId = QuotationRequestStatus::where('opportunity_action_id', $opportunityAction->id)->orderBy('order')->first()->id;
+        $opportunity->defaultStatusId = $defaultStatusId;
 
         return FullOpportunity::make($opportunity);
     }

@@ -831,6 +831,16 @@ class RevenuePartsKwhController extends ApiController
                     $conceptValueKwh->status = 'confirmed';
                     $conceptValueKwh->save();
                 }
+
+                // When processing last part, also set endvalue to confirmed.
+                if( $partKwh->date_end && $partKwh->date_end == $partKwh->revenuesKwh->date_end ){
+                    $dateRegistrationDayAfterEnd = Carbon::parse($partKwh->date_end)->addDay()->format('Y-m-d');
+                    $endRevenueValuesKwhOriginal = RevenueValuesKwh::where('revenue_id', $partKwh->revenue_id)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
+                    if($endRevenueValuesKwhOriginal){
+                        $endRevenueValuesKwhOriginal->status = 'confirmed';
+                        $endRevenueValuesKwhOriginal->save();
+                    }
+                }
             }
         }
 

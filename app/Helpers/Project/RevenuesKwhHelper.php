@@ -110,7 +110,7 @@ class RevenuesKwhHelper
 
             $dateRegistrationDayAfterEnd = Carbon::parse($revenuePartsKwh->date_end)->addDay()->format('Y-m-d');
             $endRevenueValuesKwhOriginal = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
-            if (!$endRevenueValuesKwhOriginal || in_array($endRevenueValuesKwhOriginal->status, ['confirmed', 'processed'])) {
+            if ($endRevenueValuesKwhOriginal && in_array($endRevenueValuesKwhOriginal->status, ['confirmed', 'processed'])) {
                 return $createOrUpdateNextRevenueValuesKwh;
             }
 
@@ -163,6 +163,17 @@ class RevenuesKwhHelper
                     $endRevenueValuesKwhOriginal->kwh_start_high = $valuesKwhData['kwhEndHigh'];
                     $endRevenueValuesKwhOriginal->kwh_start_low = $valuesKwhData['kwhEndLow'];
                     $endRevenueValuesKwhOriginal->save();
+                } else {
+                    RevenueValuesKwh::create([
+                        'revenue_id' => $revenuePartsKwh->revenue_id,
+                        'date_registration' => $dateRegistrationDayAfterEnd,
+                        'is_simulated' => false,
+                        'kwh_start' => $valuesKwhData['kwhEnd'],
+                        'kwh_start_high' => $valuesKwhData['kwhEndHigh'],
+                        'kwh_start_low' => $valuesKwhData['kwhEndLow'],
+                        'status' => 'concept',
+                        'delivered_kwh' => 0
+                    ]);
                 }
 
                 // Opnieuw aanmaken simulated values kwh tussen begin en eind datum.

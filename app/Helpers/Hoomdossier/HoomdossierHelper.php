@@ -128,6 +128,23 @@ class HoomdossierHelper
             $lastName = $this->contact->person->last_name;
         }
 
+        //calculate the total electricity usage (consumption_high + consumption_low - return_high - return_low)
+        $totalEnergy = 0;
+        if($this->contact->primaryAddress->addressEnergyConsumptionElectricityPeriods()->count() > 0) {
+            $consumptionRow = $this->contact->primaryAddress->addressEnergyConsumptionElectricityPeriods()->get()->reverse()->first();
+            $consumptionHigh = $consumptionRow->consumption_high;
+            $consumptionLow = $consumptionRow->consumption_low;
+            $returnHigh = $consumptionRow->return_high;
+            $returnLow = $consumptionRow->return_low;
+
+            $totalEnergy = $consumptionHigh + $consumptionLow - $returnHigh - $returnLow;
+        }
+        //calculate the total gas usage
+        $totalGas = 0;
+        if($this->contact->primaryAddress->addressEnergyConsumptionGasPeriods()->count() > 0) {
+            $totalGas = $this->contact->primaryAddress->addressEnergyConsumptionGasPeriods()->get()->reverse()->first()->consumption;
+        }
+
         $payload = [
             'extra' => ['contact_id' => $this->contact->id],
             'email' => $this->contact->primaryEmailAddress->email ? $this->contact->primaryEmailAddress->email : '',
@@ -139,6 +156,16 @@ class HoomdossierHelper
             'street' => $this->contact->primaryAddress->street ? $this->contact->primaryAddress->street : '',
             'city' => $this->contact->primaryAddress->city ? $this->contact->primaryAddress->city : '',
             'phone_number' => $this->contact->primaryphoneNumber ? $this->contact->primaryphoneNumber->number : '',
+
+            'tool_questions' => [
+                'resident-count' => $this->contact->primaryAddress->housingFile->number_of_residents,
+                'amount-gas' => $totalGas,
+                'amount-electricity' => $totalEnergy,
+            ],
+
+            'roles' => [
+                'resident',
+            ]
         ];
         $client = new Client;
         $headers = [

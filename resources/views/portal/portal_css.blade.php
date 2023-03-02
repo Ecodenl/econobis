@@ -924,3 +924,12 @@ border-radius: 5px;
 background-color: #d9e3f7;
 margin-bottom: 10px;
 }
+
+/* ----------------- PDF PREVIEW STYLING -----------------*/
+
+.pdf_viewer_wrapper {
+text-align: center;
+}
+.pdf-viewer-page canvas {
+display: inline-block !important;
+}

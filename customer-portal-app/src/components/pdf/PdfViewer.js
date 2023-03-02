@@ -1,25 +1,56 @@
 import React, { useState } from 'react';
 import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';
+import { Button } from 'react-bootstrap';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import { FiArrowLeft, FiArrowRight } from 'react-icons/all';
 
 function PdfViewer(props) {
     const [numPages, setNumPages] = useState(null);
     const [pageNumber, setPageNumber] = useState(1);
     const { file, scale } = props;
-    // const file = 'https://tourdepoule.nl/tdp/TDP2022.pdf';
-    // const file = 'https://econobis-laravel7.nl/test-word-3.pdf';
 
     function onDocumentLoadSuccess({ numPages }) {
         setNumPages(numPages);
     }
 
     return (
-        <div>
+        <div className="pdf_viewer_wrapper">
             <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-                <Page pageNumber={pageNumber} renderTextLayer={true} />
+                <Page
+                    className={'pdf-viewer-page'}
+                    renderAnnotationLayer={false}
+                    renderTextLayer={false}
+                    pageNumber={pageNumber}
+                    scale={scale}
+                />
             </Document>
-            <p>
-                Page {pageNumber} of {numPages}
-            </p>
+            <div>
+                <div className="text-center">
+                    Pagina {pageNumber} van {numPages}
+                </div>
+            </div>
+            {numPages > 1 ? (
+                <>
+                    <ButtonGroup aria-label="document-preview">
+                        <Button
+                            className={'w-button btn-sm text-left'}
+                            disabled={pageNumber === 1}
+                            onClick={() => setPageNumber(pageNumber - 1)}
+                        >
+                            <FiArrowLeft />
+                            &nbsp;Vorige pagina&nbsp;
+                        </Button>
+                        <Button
+                            className={'w-button btn-sm'}
+                            disabled={pageNumber === numPages}
+                            onClick={() => setPageNumber(pageNumber + 1)}
+                        >
+                            &nbsp;Volgende pagina&nbsp;
+                            <FiArrowRight />
+                        </Button>
+                    </ButtonGroup>
+                </>
+            ) : null}
         </div>
     );
 }

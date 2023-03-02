@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import EmailDetailsAPI from '../../../../api/email/EmailAPI';
 import fileDownload from 'js-file-download';
 
+import Icon from 'react-icons-kit';
+import { trash } from 'react-icons-kit/fa/trash';
+
 const ConceptAttachmentsView = props => {
     const { id, name } = props.attachment;
 
@@ -24,7 +27,7 @@ const ConceptAttachmentsView = props => {
             <div className="col-sm-1">
                 {props.showActionButtons ? (
                     <a role="button" onClick={props.toggleDelete}>
-                        <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                        <Icon class="mybtn-danger" size={14} icon={trash} />
                     </a>
                 ) : (
                     ''

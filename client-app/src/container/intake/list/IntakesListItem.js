@@ -4,6 +4,9 @@ import moment from 'moment';
 import { setCheckedIntake } from '../../../actions/intake/IntakesActions';
 import { connect } from 'react-redux';
 
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+
 class IntakesListItem extends Component {
     constructor(props) {
         super(props);
@@ -69,7 +72,7 @@ class IntakesListItem extends Component {
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <Icon class="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''

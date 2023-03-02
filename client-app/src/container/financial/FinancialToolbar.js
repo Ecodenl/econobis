@@ -101,7 +101,7 @@ class FinancialToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                         {this.props.administrationDetails.usesTwinfield == true &&
                             this.props.administrationDetails.twinfieldIsValid == true && (
                                 <ButtonText
@@ -109,10 +109,6 @@ class FinancialToolbar extends Component {
                                     loadText={'Aan het synchroniseren'}
                                     buttonText={
                                         <span>
-                                            <span
-                                                className="glyphicon glyphicon-refresh"
-                                                title="Nota's naar Twinfield synchroniseren"
-                                            />
                                             &nbsp;Nota's
                                         </span>
                                     }
@@ -126,10 +122,6 @@ class FinancialToolbar extends Component {
                                     loadText={'Betalingen aan het ophalen'}
                                     buttonText={
                                         <span>
-                                            <span
-                                                className="glyphicon glyphicon-refresh"
-                                                title="Betalingen van Twinfield ophalen"
-                                            />
                                             &nbsp;Betalingen
                                         </span>
                                     }

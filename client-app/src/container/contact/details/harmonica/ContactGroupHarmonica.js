@@ -4,6 +4,9 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import ContactGroupsList from './ContactGroupsList';
 
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
+
 const ContactGroupHarmonica = ({ toggleShowList, showContactGroupsList, toggleAddGroup, groupCount }) => {
     return (
         <Panel className={'harmonica-button'}>
@@ -15,7 +18,7 @@ const ContactGroupHarmonica = ({ toggleShowList, showContactGroupsList, toggleAd
                 </div>
                 <div className={'col-sm-2'}>
                     <a role="button" className="pull-right" onClick={toggleAddGroup}>
-                        <span className="glyphicon glyphicon-plus glyphicon-white" />
+                        <Icon class="harmonica-button" size={14} icon={plus} />
                     </a>
                 </div>
                 <div className="col-sm-12">{showContactGroupsList && <ContactGroupsList />}</div>

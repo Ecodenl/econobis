@@ -38,11 +38,11 @@ class IntakeDetailsToolbar extends Component {
                             <div className="col-md-2">
                                 <div className="btn-group" role="group">
                                     <ButtonIcon
-                                        iconName={'glyphicon-arrow-left'}
+                                        iconName={'arrowLeft'}
                                         onClickAction={browserHistory.goBack}
                                     />
                                     {this.props.permissions.manageIntake && (
-                                        <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                     )}
                                 </div>
                             </div>

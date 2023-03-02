@@ -1,6 +1,10 @@
 import React, {useState} from 'react';
 import {hashHistory} from 'react-router';
 
+import Icon from 'react-icons-kit';
+import { calendar } from 'react-icons-kit/fa/calendar';
+import { pencil } from 'react-icons-kit/fa/pencil';
+
 export default function DistrictListItem({district}) {
     const [showActionButtons, setShowActionButtons] = useState(false);
     const [highlightRow, setHighlightRow] = useState('');
@@ -36,11 +40,11 @@ export default function DistrictListItem({district}) {
                 {showActionButtons && (
                     <>
                         <a role="button" onClick={openCalender}>
-                            <span className="glyphicon glyphicon-calendar mybtn-success"/>
+                            <Icon class="mybtn-success" size={14} icon={calendar} />
                         </a>
                         {' '}
                         <a role="button" onClick={openItem}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success"/>
+                            <Icon class="mybtn-success" size={14} icon={pencil} />
                         </a>
                     </>
                 )}

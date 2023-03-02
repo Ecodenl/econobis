@@ -27,9 +27,9 @@ class PortalSettingsDashboardWidgetDetailsToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                         {permissions.managePortalSettings && !staticWidgets.includes(codeRef) && (
-                            <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
+                            <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                         )}
                     </div>
                 </div>

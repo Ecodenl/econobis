@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { browserHistory } from 'react-router';
 
+import Icon from 'react-icons-kit';
+import { share } from 'react-icons-kit/fa/share';
+
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import { setBulkEmailToContactIds } from '../../../actions/email/BulkMailActions';
 
@@ -33,14 +36,14 @@ class OpportunitiesListToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
-                        <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                         <ButtonIcon
-                            iconName={'glyphicon-refresh'}
+                            iconName={'refresh'}
                             onClickAction={this.props.resetOpportunitiesFilters}
                         />
                         <div className="nav navbar-nav btn-group" role="group">
                             <button className="btn btn-success btn-sm" data-toggle="dropdown">
-                                <span className="glyphicon glyphicon-share-alt" />
+                                <Icon size={14} icon={share} />
                             </button>
                             <ul className="dropdown-menu">
                                 <li>
@@ -48,8 +51,8 @@ class OpportunitiesListToolbar extends Component {
                                 </li>
                             </ul>
                         </div>
-                        <ButtonIcon iconName={'glyphicon-ok'} onClickAction={this.props.toggleShowCheckboxList} />
-                        <ButtonIcon iconName={'glyphicon-download-alt'} onClickAction={this.props.getCSV} />
+                        <ButtonIcon iconName={'check'} onClickAction={this.props.toggleShowCheckboxList} />
+                        <ButtonIcon iconName={'download'} onClickAction={this.props.getCSV} />
                     </div>
                 </div>
                 <div className="col-md-4">

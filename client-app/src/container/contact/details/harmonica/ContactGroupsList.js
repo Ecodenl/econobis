@@ -6,6 +6,9 @@ import DeleteContactFromGroup from './ContactDetailsFormGroupDelete';
 import ContactGroupAPI from '../../../../api/contact-group/ContactGroupAPI';
 import { fetchContactDetails } from '../../../../actions/contact/ContactDetailsActions';
 
+import Icon from 'react-icons-kit';
+import { trash } from 'react-icons-kit/fa/trash';
+
 class ContactGroupsList extends Component {
     constructor(props) {
         super(props);
@@ -74,7 +77,7 @@ class ContactGroupsList extends Component {
                                                 onClick={() => this.toggleDeleteFromGroup(group)}
                                                 className="pull-right"
                                             >
-                                                <span className="glyphicon glyphicon-trash glyphicon-white" />
+                                                <Icon class="harmonica-button" size={14} icon={trash} />
                                             </a>
                                         </td>
                                     </tr>

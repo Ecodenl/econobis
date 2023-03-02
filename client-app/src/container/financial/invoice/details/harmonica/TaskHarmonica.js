@@ -5,6 +5,9 @@ import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import TasksList from './TasksList';
 
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
+
 const TaskHarmonica = ({ toggleShowList, showTasksList, newTask, taskCount, permissions }) => {
     return (
         <Panel className={'harmonica-button'}>
@@ -17,11 +20,7 @@ const TaskHarmonica = ({ toggleShowList, showTasksList, newTask, taskCount, perm
                 <div className={'col-sm-2'}>
                     {permissions.manageTask && (
                         <div className="pull-right">
-                            <span
-                                className="glyphicon glyphicon-plus glyphicon-white"
-                                data-toggle="dropdown"
-                                role="button"
-                            />
+                            <Icon class="harmonica-button" size={14} icon={plus} data-toggle="dropdown" role="button" />
                             <ul className="dropdown-menu">
                                 <li>
                                     <a className="btn" onClick={() => newTask('open')}>

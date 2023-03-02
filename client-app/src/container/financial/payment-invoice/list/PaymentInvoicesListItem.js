@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import PaymentInvoiceListSetNotPaid from './PaymentInvoiceListSetNotPaid';
 
+import Icon from 'react-icons-kit';
+import { remove } from 'react-icons-kit/fa/remove';
+
 class PaymentInvoicesListItem extends Component {
     constructor(props) {
         super(props);
@@ -51,7 +54,7 @@ class PaymentInvoicesListItem extends Component {
                 <td>
                     {this.state.showActionButtons && this.props.statusId === 'sent' ? (
                         <a role="button" onClick={() => this.showSetNotPaid()} title="Zet op niet betaald">
-                            <span className="glyphicon glyphicon-remove mybtn-success" />{' '}
+                            <Icon class="mybtn-success" size={14} icon={remove} />&nbsp;
                         </a>
                     ) : (
                         ''

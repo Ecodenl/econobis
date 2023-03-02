@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import { hashHistory } from 'react-router';
 import { setBulkEmailToContactIds } from '../../../actions/email/BulkMailActions';
+import Icon from "react-icons-kit";
+import { share } from 'react-icons-kit/fa/share';
 
 class IntakesListToolbar extends Component {
     constructor(props) {
@@ -26,10 +28,10 @@ class IntakesListToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
-                        <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={this.props.resetIntakeFilters} />
+                        <ButtonIcon iconName={'refresh'} onClickAction={this.props.resetIntakeFilters} />
                         <div className="nav navbar-nav btn-group" role="group">
                             <button className="btn btn-success btn-sm" data-toggle="dropdown">
-                                <span className="glyphicon glyphicon-share-alt" />
+                                <Icon size={12} icon={share} />
                             </button>
                             <ul className="dropdown-menu">
                                 <li>
@@ -37,8 +39,8 @@ class IntakesListToolbar extends Component {
                                 </li>
                             </ul>
                         </div>
-                        <ButtonIcon iconName={'glyphicon-ok'} onClickAction={this.props.toggleShowCheckboxList} />
-                        <ButtonIcon iconName={'glyphicon-download-alt'} onClickAction={this.props.getExcel} />
+                        <ButtonIcon iconName={'check'} onClickAction={this.props.toggleShowCheckboxList} />
+                        <ButtonIcon iconName={'download'} onClickAction={this.props.getExcel} />
                     </div>
                 </div>
                 <div className="col-md-4">

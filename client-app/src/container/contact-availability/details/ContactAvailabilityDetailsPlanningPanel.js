@@ -223,7 +223,7 @@ export default function ContactAvailabilityDetailsPlanningPanel({contactId}) {
             <PanelHeader>
                 <div className="row">
                     <div className={'col-sm-4'}>
-                        <ButtonIcon disabled={!getPreviousWeek()} iconName={'glyphicon-arrow-left'} buttonClassName="btn-default btn-sm" onClickAction={() => setCurrentWeek(getPreviousWeek())}/>
+                        <ButtonIcon disabled={!getPreviousWeek()} iconName={'arrowLeft'} buttonClassName="btn-default btn-sm" onClickAction={() => setCurrentWeek(getPreviousWeek())}/>
                     </div>
                     <div className={'col-sm-4'}>
                         <select
@@ -243,7 +243,7 @@ export default function ContactAvailabilityDetailsPlanningPanel({contactId}) {
                     <div className={'col-sm-4'} style={{textAlign: 'right'}}>
                         <ContactAvailabilityDetailsPlanningCopyModal weekOptions={getWeekOptions()} copyFromWeek={currentWeek} contactId={contactId}/>
                         {' '}
-                        <ButtonIcon disabled={!getNextWeek()} iconName={'glyphicon-arrow-right'} buttonClassName="btn-default btn-sm" onClickAction={() => setCurrentWeek(getNextWeek())}/>
+                        <ButtonIcon disabled={!getNextWeek()} iconName={'arrowRight'} buttonClassName="btn-default btn-sm" onClickAction={() => setCurrentWeek(getNextWeek())}/>
                     </div>
                 </div>
             </PanelHeader>

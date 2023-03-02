@@ -3,6 +3,10 @@ import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 import LapostaIcon from '../../../images/logo/laposta-16x16.png';
 
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+import { trash } from 'react-icons-kit/fa/trash';
+
 class ContactGroupsListItem extends Component {
     constructor(props) {
         super(props);
@@ -90,14 +94,15 @@ class ContactGroupsListItem extends Component {
                 <td>
                     {this.state.showActionButtons && permissions.manageGroup ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <Icon class="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''
                     )}
+                    &nbsp;
                     {this.state.showActionButtons && permissions.manageGroup && !isUsedInComposedGroup ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name, type.id)}>
-                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                            <Icon class="mybtn-danger" size={14} icon={trash} />
                         </a>
                     ) : (
                         ''

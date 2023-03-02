@@ -8,7 +8,7 @@ const CreateRevenuePartsKwhReportToolbar = ({ amountOfDistributions, createReven
     <div className="row">
         <div className="col-md-4">
             <div className="btn-group btn-group-flex margin-small" role="group">
-                <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
+                <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                 {amountOfDistributions > 0 && (
                     <ButtonText buttonText={'Rapportage versturen'} onClickAction={() => createRevenueReport()} />
                 )}

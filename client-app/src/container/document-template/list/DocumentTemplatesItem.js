@@ -2,6 +2,11 @@ import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import moment from 'moment';
 import { connect } from 'react-redux';
+
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+import { trash } from 'react-icons-kit/fa/trash';
+
 moment.locale('nl');
 
 class DocumentTemplatesItem extends Component {
@@ -49,14 +54,15 @@ class DocumentTemplatesItem extends Component {
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <Icon class="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''
                     )}
+                    &nbsp;
                     {this.state.showActionButtons && this.props.permissions.createDocumentTemplate && false ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}>
-                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                            <Icon class="mybtn-danger" size={14} icon={trash} />
                         </a>
                     ) : (
                         ''

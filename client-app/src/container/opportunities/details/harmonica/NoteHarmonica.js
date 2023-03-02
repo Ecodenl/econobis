@@ -5,6 +5,9 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import NotesList from './NotesList';
 
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
+
 const NoteHarmonica = ({ toggleShowList, showNotesList, newNote, noteCount, permissions }) => {
     return (
         <Panel className={'harmonica-button'}>
@@ -17,7 +20,7 @@ const NoteHarmonica = ({ toggleShowList, showNotesList, newNote, noteCount, perm
                 <div className={'col-sm-2'}>
                     {permissions.manageTask && (
                         <a role="button" className="pull-right" onClick={newNote}>
-                            <span className="glyphicon glyphicon-plus glyphicon-white" />
+                            <Icon class="harmonica-button" size={14} icon={plus} />
                         </a>
                     )}
                 </div>

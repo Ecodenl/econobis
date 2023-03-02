@@ -5,6 +5,9 @@ import { Link } from 'react-router';
 
 import Logo from '../logo/Logo';
 import NavSearch from './NavSearch';
+import Icon from 'react-icons-kit';
+import { bars } from 'react-icons-kit/fa/bars';
+import { ellipsisV } from 'react-icons-kit/fa/ellipsisV';
 // import { question } from 'react-icons-kit/icomoon/question';
 
 const NavHeader = props => {
@@ -15,11 +18,7 @@ const NavHeader = props => {
             <div className="fluid-container row-eq-height">
                 <div className="col-xs-2 col-md-1 nav-item">
                     <a className="btn btn-sm" onClick={props.toggleMenuStuck}>
-                        {props.menuStuck ? (
-                            <span className="glyphicon glyphicon-option-vertical close-menu-option-vertical" />
-                        ) : (
-                            <span className="glyphicon glyphicon-menu-hamburger" />
-                        )}
+                        {props.menuStuck ? <Icon size={21} icon={ellipsisV} /> : <Icon size={21} icon={bars} />}
                     </a>
                     <a
                         href="https://alfresco.econobis.nl"

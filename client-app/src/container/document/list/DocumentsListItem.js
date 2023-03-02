@@ -5,6 +5,8 @@ import moment from 'moment';
 
 import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
 import fileDownload from 'js-file-download';
+import Icon from 'react-icons-kit';
+import { download } from 'react-icons-kit/fa/download';
 
 class DocumentsListItem extends Component {
     constructor(props) {
@@ -82,7 +84,7 @@ class DocumentsListItem extends Component {
                     )}
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.download(id)}>
-                            <span className="glyphicon glyphicon-open-file mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={12} icon={download} />
                         </a>
                     ) : (
                         ''

@@ -165,7 +165,7 @@ const DistrictCalendarApp = props => {
                         </div>
                     </div>
                 </div>
-                <BigCalendar
+                <Calendar
                     events={getFilteredEvents()}
                     style={{ height: 'calc(100vh - 200px)' }}
                     step={15}
@@ -176,7 +176,7 @@ const DistrictCalendarApp = props => {
                     date={date}
                     onNavigate={setDate}
                     onSelectEvent={selectEventHandler}
-                    localizer={BigCalendar.momentLocalizer(moment)}
+                    localizer={momentLocalizer(moment)}
                     eventPropGetter={eventPropGetter}
                     messages={{
                         allDay: 'Gehele dag',

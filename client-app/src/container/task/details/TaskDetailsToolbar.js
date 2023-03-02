@@ -41,10 +41,7 @@ class TaskDetailsToolbar extends Component {
                                         onClickAction={browserHistory.goBack}
                                     />
                                     {this.props.permissions.manageTask && (
-                                        <ButtonIcon
-                                            iconName={'glyphicon-duplicate'}
-                                            onClickAction={this.toggleDuplicate}
-                                        />
+                                        <ButtonIcon iconName={'copy'} onClickAction={this.toggleDuplicate} />
                                     )}
                                     {this.props.permissions.manageTask && (
                                         <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />

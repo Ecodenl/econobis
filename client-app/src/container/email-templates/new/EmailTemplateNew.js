@@ -7,7 +7,7 @@ import InputTinyMCE from '../../../components/form/InputTinyMCE';
 import InputSelect from '../../../components/form/InputSelect';
 
 const EmailTemplateNew = props => {
-    const { name, subject, htmlBody, defaultAttachmentDocumentId } = props.emailTemplate;
+    const { name, subject, htmlBody, initialHtmlBody, defaultAttachmentDocumentId } = props.emailTemplate;
 
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
@@ -54,7 +54,12 @@ const EmailTemplateNew = props => {
             <div className="row">
                 <div className="form-group col-sm-12">
                     <div className="row">
-                        <InputTinyMCE label={'Tekst'} value={htmlBody} onChangeAction={props.handleTextChange} />
+                        <InputTinyMCE
+                            label={'Tekst'}
+                            initialValue={initialHtmlBody}
+                            value={htmlBody}
+                            onChangeAction={props.handleTextChange}
+                        />
                     </div>
                 </div>
             </div>

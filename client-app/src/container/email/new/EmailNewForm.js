@@ -19,7 +19,6 @@ const EmailNewForm = ({
     handleCcIds,
     handleBccIds,
     handleInputChange,
-    handleTextChange,
     addAttachment,
     addDocumentAsAttachment,
     deleteAttachment,
@@ -42,7 +41,6 @@ const EmailNewForm = ({
                 handleCcIds={handleCcIds}
                 handleBccIds={handleBccIds}
                 handleInputChange={handleInputChange}
-                handleTextChange={handleTextChange}
             />
 
             <EmailAttachments

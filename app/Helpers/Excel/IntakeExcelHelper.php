@@ -54,10 +54,12 @@ class IntakeExcelHelper
         $headerData[] = 'Opmerking';
         $headerData[] = 'Motivatie';
         $headerData[] = 'Interesse maatregel';
-        $headerData[] = 'Gerelateerde kans';
-        $headerData[] = 'Kans status';
-        $headerData[] = 'Kans datum uitvoering';
-        $headerData[] = 'Kans datum evaluatie';
+        if( $withOpportunities == "true" ) {
+            $headerData[] = 'Gerelateerde kans';
+            $headerData[] = 'Kans status';
+            $headerData[] = 'Kans datum uitvoering';
+            $headerData[] = 'Kans datum evaluatie';
+        }
 
         $completeData[] = $headerData;
 
@@ -136,7 +138,7 @@ class IntakeExcelHelper
 
                     }
                 } else {
-                    $rowData[21] = '';
+                    $rowData[21] = implode(', ', $intake->measuresRequested->pluck('name')->toArray());
                     $rowData[22] = '';
                     $rowData[23] = '';
                     $rowData[24] = '';

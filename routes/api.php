@@ -629,6 +629,9 @@ Route::namespace('Api')
     ->group(function () {
         Route::post('webform/external/{apiKey}', 'Webform\ExternalWebformController@post');
         Route::post('hoomdossier/woonplan/{apiKey}', 'Hoomdossier\EndPointWoonplanController@post');
+        Route::post('hoomdossier/afspraak/{apiKey}', 'Hoomdossier\EndPointAfspraakController@post');
+        Route::post('hoomdossier/gebruik/{apiKey}', 'Hoomdossier\EndPointGebruikController@post');
+        Route::post('hoomdossier/status/{apiKey}', 'Hoomdossier\EndPointStatusController@post');
         Route::post('hoomdossier/pdf/{apiKey}', 'Hoomdossier\EndPointPdfController@post');
         Route::post('hoomdossier/delete/{apiKey}', 'Hoomdossier\EndPointDeleteHoomDossierController@post');
 //        Route::post('hoomdossier/maatregelen/{apiKey}', 'Webform\EndPointMaatregelenController@post');

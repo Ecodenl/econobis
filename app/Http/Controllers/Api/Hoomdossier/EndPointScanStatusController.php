@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Response;
 
-class EndPointStatusController extends Controller
+class EndPointScanStatusController extends Controller
 {
     protected $logs = [];
 
@@ -30,7 +30,7 @@ class EndPointStatusController extends Controller
 
     public function post(string $apiKey, Request $request)
     {
-        $this->log('Test EndPointStatus');
+        $this->log('Test EndPointScanStatus');
 
         $data = $this->getDataFromRequest($request);
 

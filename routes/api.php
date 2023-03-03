@@ -628,16 +628,13 @@ Route::namespace('Api')
 Route::namespace('Api')
     ->group(function () {
         Route::post('webform/external/{apiKey}', 'Webform\ExternalWebformController@post');
-        Route::post('hoomdossier/woonplan/{apiKey}', 'Hoomdossier\EndPointWoonplanController@post');
-        Route::post('hoomdossier/afspraak/{apiKey}', 'Hoomdossier\EndPointAfspraakController@post');
-        Route::post('hoomdossier/gebruik/{apiKey}', 'Hoomdossier\EndPointGebruikController@post');
-        Route::post('hoomdossier/status/{apiKey}', 'Hoomdossier\EndPointStatusController@post');
-        Route::post('hoomdossier/pdf/{apiKey}', 'Hoomdossier\EndPointPdfController@post');
-        Route::post('hoomdossier/delete/{apiKey}', 'Hoomdossier\EndPointDeleteHoomDossierController@post');
-//        Route::post('hoomdossier/maatregelen/{apiKey}', 'Webform\EndPointMaatregelenController@post');
-//        Route::post('hoomdossier/vragen-antwoorden/{apiKey}', 'Webform\EndPointVragenAntwoordenController@post');
-//        Route::post('hoomdossier/gebruik/{apiKey}', 'Webform\EndPointGebruikController@post');
-//        Route::post('hoomdossier/status/{apiKey}', 'Webform\EndPointStatusController@post');
+        Route::post('{apiKey}/hoomdossier/woonplan', 'Hoomdossier\EndPointWoonplanController@post');
+        Route::post('{apiKey}/hoomdossier/afspraak', 'Hoomdossier\EndPointAfspraakController@post');
+        Route::post('{apiKey}/hoomdossier/gebruik', 'Hoomdossier\EndPointGebruikController@post');
+        Route::post('{apiKey}/hoomdossier/woning-status', 'Hoomdossier\EndPointWoningStatusController@post');
+        Route::post('{apiKey}/hoomdossier/scan-status', 'Hoomdossier\EndPointScanStatusController@post');
+        Route::post('{apiKey}/hoomdossier/pdf', 'Hoomdossier\EndPointPdfController@post');
+        Route::post('{apiKey}/hoomdossier/delete', 'Hoomdossier\EndPointDeleteHoomDossierController@post');
 
         Route::post('mollie/webhook', [InvoiceMolliePaymentController::class, 'webhook'])->name('mollie.webhook');
     });

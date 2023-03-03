@@ -14,7 +14,8 @@ class RevenueDistributionKwhHelper
         $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_end', '<=', $revenuePartsKwh->date_end)->pluck('id')->toArray();
         $distributionKwhCollection = RevenueDistributionPartsKwh::whereIn('parts_id', $upToPartsKwhIds)->where('is_visible', 1)->whereNull('date_energy_supplier_report')->whereNotNull('es_id')->where('status', 'confirmed')->get();
         $distributionKwhIds = $distributionKwhCollection->filter(function($model){
-            return ($model->delivered_kwh_from_till_visible != 0 || $model->partsKwh->date_end == $model->partsKwh->revenuesKwh->date_end);
+//            return ($model->delivered_kwh_from_till_visible != 0 || $model->partsKwh->date_end == $model->partsKwh->revenuesKwh->date_end);
+            return ($model->delivered_kwh_from_till_visible != 0);
         })
             ->pluck('distribution_id')->toArray();
         return $distributionKwhIds;

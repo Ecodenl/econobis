@@ -79,8 +79,12 @@ class IntakeWorkflowHelper
             return false;
         }
 
+        $contactOrganistation = Organisation::find($this->measureCategory->organisation_id_wf_create_quotation_request);
+        if(!$contactOrganistation){
+            return false;
+        }
         $this->quotationRequest = QuotationRequest::create([
-            'organisation_id' => $this->measureCategory->organisation_id_wf_create_quotation_request,
+            'contact_id' => $contactOrganistation->contact_id,
             'opportunity_id' => $this->opportunity->id,
             'date_recorded' => null,
             'date_released' => null,

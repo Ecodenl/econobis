@@ -98,11 +98,6 @@ class EanAddressChanges extends Migration
                 $table->renameColumn('contact_energy_supplier_id', 'xxx_contact_energy_supplier_id');
             });
 
-// Niet nodig voor nieuwe cooperaties en na het toevoegen van softdeletes aan addressEnergySuppliers
-// zorgt dit nu voor een error hier in de migration bij nieuwe cooperaties want op dit punt bestaat
-// het veld deleted_at dus nog niet.
-//            Artisan::call('project:conversionContactESToAddressES');
-
         }
 
     }

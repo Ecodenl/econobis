@@ -150,7 +150,7 @@ class TemplateVariableHelper
                 return TemplateVariableHelper::getCampaignVar($model, $varname);
                 break;
             case 'HousingFile':
-                return '';
+                return TemplateVariableHelper::getHousingFileVar($model, $varname);
                 break;
             case 'QuotationRequest':
                 return TemplateVariableHelper::getQuotationRequestVar($model, $varname);
@@ -2127,45 +2127,80 @@ class TemplateVariableHelper
                 break;
         }
     }
+    
+    public static function getHousingFileVar($model, $varname){
+        switch ($varname) {
+            case 'woningtype':
+                return optional($model->buildingType)->name;
+                break;
+            case 'gebruikersoppervlakte':
+                return $model->surface;
+                break;
+            case 'bouwjaar':
+                return $model->build_year;
+                break;
+            case 'daktype':
+                return optional($model->roofType)->name;
+                break;
+            case 'energielabel':
+                return optional($model->energyLabel)->name;
+                break;
+            case 'status_energielabel':
+                return optional($model->energyLabelStatus)->name;
+                break;
+            case 'aantal_bouwlagen':
+                return $model->floors;
+                break;
+            case 'monument':
+                return $model->is_monument ? 'Ja' : 'Nee';
+                break;
+            case 'koophuis':
+                return $model->is_house_for_sale ? 'Ja' : 'Nee';
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
 
     public static function getQuotationRequestVar($model, $varname){
         switch ($varname) {
             case 'organisatie_naam':
-                return optional($model->organisationOrCoach->organisation)->name;
+                return optional(optional($model->organisationOrCoach)->organisation)->name;
                 break;
             case 'organisatie_statutaire_naam':
-                return optional($model->organisationOrCoach->organisation)->statutory_name;
+                return optional(optional($model->organisationOrCoach)->organisation)->statutory_name;
                 break;
             case 'organisatie_adres':
-                return optional($model->organisationOrCoach->primaryAddress)->street . ' ' . optional($model->organisationOrCoach->primaryAddress)->number . (optional($model->organisationOrCoach->primaryAddress)->addition ? ('-' . optional($model->organisationOrCoach->primaryAddress)->addition) : '');
+                return optional(optional($model->organisationOrCoach)->primaryAddress)->street . ' ' . optional(optional($model->organisationOrCoach)->primaryAddress)->number . (optional(optional($model->organisationOrCoach)->primaryAddress)->addition ? ('-' . optional(optional($model->organisationOrCoach)->primaryAddress)->addition) : '');
                 break;
             case 'organisatie_plaats':
-                return optional($model->organisationOrCoach->primaryAddress)->city;
+                return optional(optional($model->organisationOrCoach)->primaryAddress)->city;
                 break;
             case 'organisatie_email':
-                return optional($model->organisationOrCoach->primaryEmailAddress)->email;
+                return optional(optional($model->organisationOrCoach)->primaryEmailAddress)->email;
                 break;
             case 'organisatie_telefoonnummer':
-                return optional($model->organisationOrCoach->primaryPhoneNumber)->number;
+                return optional(optional($model->organisationOrCoach)->primaryPhoneNumber)->number;
                 break;
             case 'organisatie_primair_contact':
-                return optional(optional($model->organisationOrCoach->contactPerson)->contact)->full_name;
+                return optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->full_name;
                 break;
             case 'organisatie_primair_contact_voornaam':
-                if(optional(optional($model->organisationOrCoach->contactPerson)->contact)->type_id == 'person'){
-                    return optional(optional($model->organisationOrCoach->contactPerson)->contact)->person->first_name;
+                if(optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->type_id == 'person'){
+                    return optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->person->first_name;
                 }
-                elseif(optional(optional($model->organisationOrCoach->contactPerson)->contact)->type_id == 'organisation'){
+                elseif(optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->type_id == 'organisation'){
                     return '';
                 }
                 break;
             case 'organisatie_primair_contact_achternaam':
-                if(optional(optional($model->organisationOrCoach->contactPerson)->contact)->type_id == 'person'){
-                    $prefix = optional(optional($model->organisationOrCoach->contactPerson)->contact)->person->last_name_prefix;
-                    return $prefix ? $prefix . ' ' . optional(optional($model->organisationOrCoach->contactPerson)->contact)->person->last_name : optional(optional($model->organisationOrCoach->contactPerson)->contact)->person->last_name;
+                if(optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->type_id == 'person'){
+                    $prefix = optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->person->last_name_prefix;
+                    return $prefix ? $prefix . ' ' . optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->person->last_name : optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->person->last_name;
                 }
-                elseif(optional(optional($model->organisationOrCoach->contactPerson)->contact)->type_id == 'organisation'){
-                    return optional(optional($model->organisationOrCoach->contactPerson)->contact)->full_name;
+                elseif(optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->type_id == 'organisation'){
+                    return optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->full_name;
                 }
                 break;
             case 'organisatie_of_coach_naam':

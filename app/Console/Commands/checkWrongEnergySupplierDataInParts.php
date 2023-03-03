@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
+use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Helpers\Email\EmailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
@@ -53,6 +54,8 @@ class checkWrongEnergySupplierDataInParts extends Command
         DB::table('_wrong_energy_supplier_data_in_parts')
             ->delete();
 
+        $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
+
         $revenuesKwh = RevenuesKwh::all();
         foreach($revenuesKwh as $revenueKwh) {
             // niet verwerkte parts controleren
@@ -63,9 +66,10 @@ class checkWrongEnergySupplierDataInParts extends Command
                 if ($address) {
                     $addressEnergySupplier = $this->getAddressEnergySupplierInAPeriod($address->id, $distributionPartKwh->partsKwh->date_begin, $distributionPartKwh->partsKwh->date_end);
                     if(!$addressEnergySupplier){
-                        if ($distributionPartKwh->es_id != null
+                        if ( $distributionPartKwh->es_id != $energySupplierUnknown->id &&
+                            ($distributionPartKwh->es_id != null
                             || ($distributionPartKwh->energy_supplier_name != null && $distributionPartKwh->energy_supplier_name != '')
-                            || ($distributionPartKwh->energy_supplier_number != null && $distributionPartKwh->energy_supplier_number != '')
+                            || ($distributionPartKwh->energy_supplier_number != null && $distributionPartKwh->energy_supplier_number != '') )
                         ){
                             $comment = 'Geen adres/energieleverancier data gevonden bij deelperiode data:';
                             $comment .= " \n";

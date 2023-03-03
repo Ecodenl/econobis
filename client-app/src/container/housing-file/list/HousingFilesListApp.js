@@ -10,6 +10,10 @@ import HousingFilesListToolbar from './HousingFilesListToolbar';
 import filterHelper from '../../../helpers/FilterHelper';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+import HousingFilesAPI from "../../../api/housing-file/HousingFilesAPI";
+import fileDownload from "js-file-download";
+import moment from "moment";
+import {blockUI, unblockUI} from "../../../actions/general/BlockUIActions";
 
 class HousingFilesListApp extends Component {
     constructor(props) {
@@ -33,6 +37,23 @@ class HousingFilesListApp extends Component {
             const pagination = { limit: 20, offset: this.props.housingFilesPagination.offset };
 
             this.props.fetchHousingFiles(filters, sorts, pagination);
+        }, 100);
+    };
+
+    getExcel = () => {
+        this.props.blockUI();
+        setTimeout(() => {
+            const filters = filterHelper(this.props.housingFilesFilters);
+            const sorts = this.props.housingFilesSorts;
+
+            HousingFilesAPI.getExcel({ filters, sorts })
+                .then(payload => {
+                    fileDownload(payload.data, 'Woningdossiers-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.xlsx');
+                    this.props.unblockUI();
+                })
+                .catch(error => {
+                    this.props.unblockUI();
+                });
         }, 100);
     };
 
@@ -69,7 +90,10 @@ class HousingFilesListApp extends Component {
             <Panel>
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
-                        <HousingFilesListToolbar resetHousingFileFilters={() => this.resetHousingFileFilters()} />
+                        <HousingFilesListToolbar
+                            resetHousingFileFilters={() => this.resetHousingFileFilters()}
+                            getExcel={this.getExcel}
+                        />
                     </div>
 
                     <div className="col-md-12 margin-10-top">
@@ -98,7 +122,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
-        { fetchHousingFiles, clearHousingFiles, setHousingFilesPagination, clearFilterHousingFiles },
+        { fetchHousingFiles, clearHousingFiles, setHousingFilesPagination, clearFilterHousingFiles, blockUI, unblockUI },
         dispatch
     );
 };

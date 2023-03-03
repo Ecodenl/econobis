@@ -52,7 +52,12 @@ class ReportEnergySupplierExcel implements ShouldQueue
         $revenueDistributionKwhHelper = new RevenueDistributionKwhHelper();
 
         $this->distributionsForReport = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $revenueDistributionKwhHelper->getDistributionForReportEnergySupplierIds($revenuePartsKwh))->get();
-        $this->distributionsSetProcessed = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $revenueDistributionKwhHelper->getDistributionSetProcessedEnergySupplierIds($revenuePartsKwh))->get();
+        $distributionsForReportIds = $this->distributionsForReport->pluck('id')->toArray();
+        $this->distributionsSetProcessed = $revenuePartsKwh->revenuesKwh
+            ->distributionKwh()
+            ->whereIn('id', $revenueDistributionKwhHelper->getDistributionSetProcessedEnergySupplierIds($revenuePartsKwh))
+            ->whereNotin('id', $distributionsForReportIds)
+            ->get();
 
         if($this->distributionsForReport->count() == 0 && $this->distributionsSetProcessed->count() == 0){
             return;

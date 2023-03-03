@@ -160,6 +160,35 @@ class HoomdossierHelper
         }
     }
 
+    public function connectCoachToHoomdossier($contact, $coach)
+    {
+        $payload = [
+            'building_coach_status' => [
+                'coach_contact_id' => $coach->hoom_account_id,
+                'resident_contact_id' => $contact->hoom_account_id,
+            ],
+        ];
+
+        $client = new Client;
+        $headers = [
+            'Authorization' => 'Bearer ' . Cooperation::first()->hoom_key,
+            'Accept'        => 'application/json',
+        ];
+
+        try {
+            $response = $client->post('https://hoom.hoomdossier.nl/api/v1/building-coach-status/', ['headers' => $headers, 'json' => $payload]);
+            return $response->getBody();
+        } catch (RequestException $e) {
+            if ($e->hasResponse()) {
+                Log::error('Er is iets misgegaan met het koppelen van een coach aan het Hoomdossier met de id ' . $homedossier->id .  ', melding: ' . $e->getCode() . ' - ' . $e->getResponse()->getBody() );
+                abort($e->getCode(), $e->getResponse()->getBody());
+            } else {
+                Log::error('Er is iets misgegaan met het koppelen van een coach aan het Hoomdossier met de id ' . $homedossier->id .  ', melding: ' . $e->getCode() );
+                abort($e->getCode(), 'Er is iets misgegaan met het koppelen van een coach aan het Hoomdossier');
+            }
+        }
+    }
+
     private function sendMail()
     {
         (new EmailHelper())->setConfigToDefaultMailbox();

@@ -19,7 +19,7 @@ class ContactDetailsFormPersonalEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { number, createdAt, person, didAgreeAvg, dateDidAgreeAvg, inspectionPersonType } = props.contactDetails;
+        const { number, createdAt, person, didAgreeAvg, dateDidAgreeAvg, inspectionPersonType, hoomAccountId } = props.contactDetails;
 
         this.state = {
             lastNamePrefixes: props.lastNamePrefixes,
@@ -43,6 +43,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                 didAgreeAvg: didAgreeAvg,
                 dateDidAgreeAvg: dateDidAgreeAvg ? moment(dateDidAgreeAvg).format('Y-MM-DD') : '',
                 inspectionPersonTypeName: inspectionPersonType ? inspectionPersonType.name : '',
+                hoomAccountId: hoomAccountId ? hoomAccountId : '',
             },
             errors: {
                 name: false,
@@ -161,9 +162,15 @@ class ContactDetailsFormPersonalEdit extends Component {
             dateDidAgreeAvg,
             lastNamePrefix,
             inspectionPersonTypeName,
+            hoomAccountId,
         } = this.state.person;
 
         const { isInInspectionPersonTypeGroup } = this.props.contactDetails;
+
+        let coach = false;
+        if (inspectionPersonTypeName && inspectionPersonTypeName === 'Is coach') {
+            coach = true;
+        }
 
         return (
             <React.Fragment>
@@ -297,6 +304,20 @@ class ContactDetailsFormPersonalEdit extends Component {
                             value={inspectionPersonTypeName ? inspectionPersonTypeName : ''}
                         />
                     </div>
+
+                    {coach ? (
+                        <div className="row">
+                            <InputText
+                                label={'Hoom account id'}
+                                divSize={'col-xs-12'}
+                                name="hoomAccountId"
+                                value={hoomAccountId}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+                    ) : (
+                        ' '
+                    )}
 
                     <PanelFooter>
                         <div className="pull-right btn-group" role="group">

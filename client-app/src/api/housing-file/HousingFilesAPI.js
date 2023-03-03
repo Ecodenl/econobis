@@ -50,4 +50,15 @@ export default {
                 console.log(error);
             });
     },
+
+    getExcel: ({ filters, sorts }) => {
+        const requestUrl = `${URL_API}/api/housing-file/excel`;
+        return axiosInstance.get(requestUrl, {
+            params: {
+                filters: JSON.stringify(filters),
+                sorts: JSON.stringify(sorts),
+            },
+            responseType: 'blob',
+        });
+    },
 };

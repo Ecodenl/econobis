@@ -20,7 +20,7 @@ class ContactListAddPersonToGroup extends Component {
     }
 
     componentDidMount() {
-        contactAPI.getPerson().then(payload => {
+        contactAPI.getPerson(this.props.inspectionPersonTypeId).then(payload => {
             this.setState({
                 ...this.state,
                 people: payload,

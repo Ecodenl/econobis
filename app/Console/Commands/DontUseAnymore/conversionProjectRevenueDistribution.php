@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\DontUseAnyMore;
 
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\User\User;

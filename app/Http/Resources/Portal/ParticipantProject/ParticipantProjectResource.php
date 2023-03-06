@@ -98,6 +98,7 @@ class ParticipantProjectResource extends JsonResource
                                 'type' => 'money',
                                 'label' => 'Huidige boekwaarde per obligatie',
                                 'value' => $this->project ? $this->project->current_book_worth : '',
+                                'dataTip' => 'De huidige hoofdsom per obligatie is een administratieve hoofdsom van een deelname, die afhankelijk is van de waarde van het project en de gemaakte kosten en wordt vastgesteld o.b.v. de jaarrekening van de coöperatie. De hoofdsom per 1 januari van een jaar gebruik je bij je aangifte inkomstenbelasting.',
                             ],
                             [
                                 'type' => 'string',
@@ -142,6 +143,7 @@ class ParticipantProjectResource extends JsonResource
                                 'type' => 'money',
                                 'label' => 'Huidige boekwaarde per participatie',
                                 'value' => $this->project ? $this->project->current_book_worth : '',
+                                'dataTip' => 'De huidige boekwaarde per participatie is een administratieve boekwaarde van een deelname, die afhankelijk is van de waarde van het project en de gemaakte kosten en wordt vastgesteld o.b.v. de jaarrekening van de coöperatie. De boekwaarde per 1 januari van een jaar gebruik je bij je aangifte inkomstenbelasting.',
                             ],
                             [
                                 'type' => 'string',
@@ -162,6 +164,7 @@ class ParticipantProjectResource extends JsonResource
                                 'type' => 'money',
                                 'label' => 'Totale indicatie teruggave energiebelasting',
                                 'value' => $this->participationsIndicationOfRestitutionEnergyTaxTotal,
+                                'dataTip' => 'Elk jaar verdelen we de totale opgewekte kWh over de deelnemers. O.b.v. de vastgestelde teruggave energiebelasting € / kWh berekenen we de indicatie teruggave energiebelasting per deelnemer (euro per kWh x opgewekte kWh per deelnemer). De totale indicatie teruggave energiebelasting is het totaal per deelnemer van alle bedragen indicatie teruggave energiebelasting opgeteld over de jaren heen.'
                             ],
                         ],
                         'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutationsForPortal')),
@@ -196,6 +199,7 @@ class ParticipantProjectResource extends JsonResource
                                 'type' => 'money',
                                 'label' => 'Huidige boekwaarde per participatie',
                                 'value' => $this->project ? $this->project->current_book_worth : '',
+                                'dataTip' => 'De huidige boekwaarde per participatie is een administratieve boekwaarde van een deelname, die afhankelijk is van de waarde van het project en de gemaakte kosten en wordt vastgesteld o.b.v. de jaarrekening van de coöperatie. De boekwaarde per 1 januari van een jaar gebruik je bij je aangifte inkomstenbelasting.',
                             ],
                             [
                                 'type' => 'string',

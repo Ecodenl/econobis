@@ -103,6 +103,9 @@ class HoomdossierHelper
             if(!$this->contact->primaryAddress->city || empty($this->contact->primaryAddress->city)) {
                 $errorsCheckBefore[] = 'Plaats in adres ontbreekt';
             }
+            if(!$this->contact->primaryAddress->housingfile) {
+                $errorsCheckBefore[] = 'Woningdossier ontbreekt';
+            }
         }
         $errors = null;
         if(count($errorsCheckBefore)) {

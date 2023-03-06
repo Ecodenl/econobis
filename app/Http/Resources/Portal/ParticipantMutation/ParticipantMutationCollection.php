@@ -4,6 +4,7 @@ namespace App\Http\Resources\Portal\ParticipantMutation;
 
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 class ParticipantMutationCollection extends JsonResource
 {
@@ -127,6 +128,7 @@ class ParticipantMutationCollection extends JsonResource
                 }
                 return $fields;
             case 'postalcode_link_capital':
+                Log::info('mutatie velden', (array)$this);
                 if($projectTransactionCostsCodeRef === 'none'){
                     $fields =
                         [
@@ -139,6 +141,7 @@ class ParticipantMutationCollection extends JsonResource
                                 ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
                                 ['type' => 'decimal', 'label' => 'kWh', 'value' => $this->payout_kwh],
                                 ['type' => 'money', 'label' => 'Indicatie teruggave EB', 'value' => $this->indication_of_restitution_energy_tax],
+                                ['type' => 'date', 'label' => 'Betaal datum', 'value' => $this->date_payment],
                             ],
                         ];
                 } else {
@@ -154,6 +157,7 @@ class ParticipantMutationCollection extends JsonResource
                                 ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
                                 ['type' => 'decimal', 'label' => 'kWh', 'value' => $this->payout_kwh],
                                 ['type' => 'money', 'label' => 'Indicatie teruggave EB', 'value' => $this->indication_of_restitution_energy_tax],
+                                ['type' => 'date', 'label' => 'Betaal datum', 'value' => $this->date_payment],
                             ],
                         ];
                 }

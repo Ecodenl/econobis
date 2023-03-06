@@ -5,6 +5,7 @@ namespace App\Http\Resources\Portal\ParticipantProject;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\Portal\ParticipantMutation\ParticipantMutationCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 class ParticipantProjectResource extends JsonResource
 {
@@ -90,6 +91,21 @@ class ParticipantProjectResource extends JsonResource
                             ],
                             [
                                 'type' => 'money',
+                                'label' => 'Nominale waarde per obligatie',
+                                'value' => $this->project ? $this->project->participation_worth : '',
+                            ],
+                            [
+                                'type' => 'money',
+                                'label' => 'Huidige boekwaarde per obligatie',
+                                'value' => $this->project ? $this->project->current_book_worth : '',
+                            ],
+                            [
+                                'type' => 'string',
+                                'label' => 'Huidig aantal obligaties',
+                                'value' => $this->participations_definitive,
+                            ],
+                            [
+                                'type' => 'money',
                                 'label' => 'Totale opbrengsten',
                                 'value' => $this->participations_returns_total,
                             ],
@@ -97,6 +113,59 @@ class ParticipantProjectResource extends JsonResource
                         'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutationsForPortal')),
                     ];
             case 'postalcode_link_capital':
+                return
+                    [
+                        'basicInformation' => $basicInformation,
+                        'documents' => $documents,
+                        'fields' => [
+                            [
+                                'type' => 'string',
+                                'label' => 'Contact naam',
+                                'value' => $this->contact ? $this->contact->full_name : '',
+                            ],
+                            [
+                                'type' => 'string',
+                                'label' => 'Project',
+                                'value' => $this->project ? $this->project->name : '',
+                            ],
+                            [
+                                'type' => 'string',
+                                'label' => 'Uitgevende instelling',
+                                'value' => ($this->project && $this->project->administration) ? $this->project->administration->name : '',
+                            ],
+                            [
+                                'type' => 'money',
+                                'label' => 'Nominale waarde per participatie',
+                                'value' => $this->project ? $this->project->participation_worth : '',
+                            ],
+                            [
+                                'type' => 'money',
+                                'label' => 'Huidige boekwaarde per participatie',
+                                'value' => $this->project ? $this->project->current_book_worth : '',
+                            ],
+                            [
+                                'type' => 'string',
+                                'label' => 'Huidig aantal participaties',
+                                'value' => $this->participations_definitive,
+                            ],
+                            [
+                                'type' => 'money',
+                                'label' => 'Huidig saldo kapitaal rekening',
+                                'value' => $this->participations_capital_worth,
+                            ],
+                            [
+                                'type' => 'money',
+                                'label' => 'Totale opbrengsten',
+                                'value' => $this->participations_returns_total,
+                            ],
+                            [
+                                'type' => 'money',
+                                'label' => 'Totale indicatie teruggave energiebelasting',
+                                'value' => $this->participationsIndicationOfRestitutionEnergyTaxTotal,
+                            ],
+                        ],
+                        'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutationsForPortal')),
+                    ];
             case 'capital':
                 return
                     [
@@ -120,6 +189,21 @@ class ParticipantProjectResource extends JsonResource
                             ],
                             [
                                 'type' => 'money',
+                                'label' => 'Nominale waarde per participatie',
+                                'value' => $this->project ? $this->project->participation_worth : '',
+                            ],
+                            [
+                                'type' => 'money',
+                                'label' => 'Huidige boekwaarde per participatie',
+                                'value' => $this->project ? $this->project->current_book_worth : '',
+                            ],
+                            [
+                                'type' => 'string',
+                                'label' => 'Huidig aantal participaties',
+                                'value' => $this->participations_definitive,
+                            ],
+                            [
+                                'type' => 'money',
                                 'label' => 'Huidig saldo kapitaal rekening',
                                 'value' => $this->participations_capital_worth,
                             ],
@@ -131,7 +215,6 @@ class ParticipantProjectResource extends JsonResource
                         ],
                         'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutationsForPortal')),
                     ];
-
         }
     }
 }

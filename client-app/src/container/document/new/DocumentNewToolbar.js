@@ -17,7 +17,7 @@ const DocumentNewToolbar = ({ handleSubmit, documentCreatedFromName }) => {
             </div>
             <div className="col-md-4">
                 <h4 className="text-right margin-10-right">
-                    Gemaakt vanuit/voor: <strong>Kansactie {documentCreatedFromName ? documentCreatedFromName : ''}</strong>
+                    Gemaakt vanuit/voor: <strong>{documentCreatedFromName ? documentCreatedFromName : ''}</strong>
                 </h4>
             </div>
         </div>

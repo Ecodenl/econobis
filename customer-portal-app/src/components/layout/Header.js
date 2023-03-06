@@ -93,9 +93,6 @@ function Header({ location, history }) {
                         <PortalUserConsumer>
                             {({ user, currentSelectedContact, switchCurrentContact, resetCurrentUserToDefault }) => {
                                 if (
-                                    user.inspectionPersonTypeId === 'coach' ||
-                                    user.inspectionPersonTypeId === 'projectmanager' ||
-                                    user.inspectionPersonTypeId === 'externalparty' ||
                                     !user.occupations ||
                                     user.occupations.length < 1
                                 ) {

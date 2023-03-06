@@ -137,14 +137,24 @@ class ContactController extends Controller
         return $result;
     }
 
-    public function peek()
+    public function peek($inspectionpersontype = null)
     {
         $teamContactIds = Auth::user()->getTeamContactIds();
+
         if ($teamContactIds){
-            $contacts = Contact::select('id', 'full_name', 'number')->whereIn('contacts.id', $teamContactIds)->orderBy('full_name')->get();
+            $query = Contact::select('id', 'full_name', 'number')->whereIn('contacts.id', $teamContactIds)->orderBy('full_name');
         }else{
-            $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->get();
+            $query = Contact::select('id', 'full_name', 'number')->orderBy('full_name');
         }
+
+        if($inspectionpersontype !== null AND $inspectionpersontype !== "null") {
+            $query->where(function ($q) use ($inspectionpersontype) {
+                $q->where('inspection_person_type_id', $inspectionpersontype);
+                $q->orWhereNull('inspection_person_type_id');
+            });
+        }
+
+        $contacts = $query->get();
 
         return ContactPeek::collection($contacts);
     }

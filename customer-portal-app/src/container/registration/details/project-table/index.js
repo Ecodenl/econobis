@@ -26,7 +26,7 @@ function RegistrationDetailsProjectTable({ fields }) {
                                     <ReactTooltip
                                         id={`deelname-${index}`}
                                         effect="float"
-                                        place="bottom"
+                                        place="right"
                                         multiline={true}
                                         aria-haspopup="true"
                                     />

@@ -50,8 +50,6 @@ function RegistrationDetails({ match: { params } }) {
                             type: 'updateResult',
                             payload: payload.data.data,
                         });
-                        console.log('test');
-                        console.log(payload.data.data.fields);
                         setCurrentThemeSettings(payload.data.data.basicInformation.portalSettingsLayoutAssigned);
                         setIsLoading(false);
                     })

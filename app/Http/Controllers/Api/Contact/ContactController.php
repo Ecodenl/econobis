@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class ContactController extends Controller
 {
@@ -346,11 +347,16 @@ class ContactController extends Controller
 
         try{
             (new ContactMerger($toContact, $fromContact))->merge();
+        }catch (ValidationException $e){
+            return response()->json([
+                'status'=> 'error',
+                'code' => 422,
+                'errors' => $e->errors()], 422);
         }catch (ContactMergeException $e){
-            return response()->json(['message' => 'Contacten konden niet worden samengevoegd: ' . $e->getMessage()], 500);
+            return response()->json(['message' => 'Contacten konden niet worden samengevoegd: ' . $e->getMessage()], 422);
         }catch (\Throwable $e){
             Log::error($e); // Zorgen dat we de error evengoed kunnen debuggen vanuit het log.
-            return response()->json(['message' => 'Contacten konden niet worden samengevoegd, er is een onbekende fout opgetreden'], 500);
+            return response()->json(['message' => 'Contacten konden niet worden samengevoegd, er is een onbekende fout opgetreden'], 422);
         }
 
         return response()->json(['message' => 'Contacten zijn samengevoegd.'], 200);

@@ -84,6 +84,12 @@ class DeleteEmailTemplate implements DeleteInterface
             array_push($this->errorMessage,'Ontkoppel template eerst in de volgende kans statusen: ' . implode(', ', $opportunityStatusNames));
         }
 
+        // Email template can not be deleted if it is used in administrations
+        $administrationNames = Administration::where('email_template_id_collection', $this->emailTemplate->id)->orWhere('email_template_id_transfer', $this->emailTemplate->id)->orWhere('email_template_reminder_id', $this->emailTemplate->id)->orWhere('email_template_exhortation_id', $this->emailTemplate->id)->orWhere('email_template_financial_overview_id', $this->emailTemplate->id)->pluck('name')->toArray();
+        if($administrationNames){
+            array_push($this->errorMessage,'Ontkoppel template eerst in de volgende administraties: ' . implode(', ', $administrationNames));
+        }
+
         // Email template can not be deleted if it is used in portalsettings
         $emailTemplateNewAccountId = PortalSettings::get('emailTemplateNewAccountId');
         if($this->emailTemplate->id == $emailTemplateNewAccountId){
@@ -104,31 +110,6 @@ class DeleteEmailTemplate implements DeleteInterface
      */
     public function dissociateRelations()
     {
-        foreach (Administration::where('email_template_id_collection', $this->emailTemplate->id)->get() as $administration) {
-            $administration->emailTemplateCollection()->dissociate();
-            $administration->save();
-        }
-
-        foreach (Administration::where('email_template_id_transfer', $this->emailTemplate->id)->get() as $administration) {
-            $administration->emailTemplateTransfer()->dissociate();
-            $administration->save();
-        }
-
-        foreach (Administration::where('email_template_reminder_id', $this->emailTemplate->id)->get() as $administration){
-            $administration->emailTemplateReminder()->dissociate();
-            $administration->save();
-        }
-
-        foreach (Administration::where('email_template_exhortation_id', $this->emailTemplate->id)->get() as $administration){
-            $administration->emailTemplateExhortation()->dissociate();
-            $administration->save();
-        }
-
-        foreach (Administration::where('email_template_financial_overview_id', $this->emailTemplate->id)->get() as $administration){
-            $administration->emailTemplateFinancialOverview()->dissociate();
-            $administration->save();
-        }
-
         foreach (Order::where('email_template_id_collection', $this->emailTemplate->id)->get() as $order) {
             $order->emailTemplateCollection()->dissociate();
             $order->save();

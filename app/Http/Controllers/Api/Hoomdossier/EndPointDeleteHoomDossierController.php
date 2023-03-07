@@ -100,7 +100,9 @@ class EndPointDeleteHoomDossierController extends Controller
         }
         $this->checkMaxRequests($webform);
 
-        $this->log('Hier check en verwerkingen inzake endpoint contact.');
+        $this->log('Binnenkomende payload (zie laravel log)');
+        Log::info($request->getContent());
+        $this->log('Hier check en verwerkingen inzake endpoint delete hoomdossier.');
     }
 
 

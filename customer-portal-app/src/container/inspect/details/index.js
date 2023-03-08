@@ -141,7 +141,9 @@ function InspectDetails({ match, history, user }) {
                                                             )}
                                                         />
                                                         {initialQuotationRequest.opportunityAction.codeRef ===
-                                                        'quotation-request' ? (
+                                                            'quotation-request' ||
+                                                        initialQuotationRequest.opportunityAction.codeRef ===
+                                                            'visit' ? (
                                                             <>
                                                                 <FormLabel
                                                                     htmlFor="date_recorded"
@@ -167,25 +169,35 @@ function InspectDetails({ match, history, user }) {
                                                                 />
                                                             </>
                                                         ) : null}
-                                                        <FormLabel htmlFor="date_released" className={'field-label'}>
-                                                            Datum uitgebracht
-                                                        </FormLabel>
-                                                        <Field
-                                                            name="dateReleased"
-                                                            render={({ field }) => (
-                                                                <InputTextDate
+                                                        {initialQuotationRequest.opportunityAction.codeRef ===
+                                                            'quotation-request' ||
+                                                        initialQuotationRequest.opportunityAction.codeRef ===
+                                                            'subsidy-request' ? (
+                                                            <>
+                                                                <FormLabel
+                                                                    htmlFor="date_released"
+                                                                    className={'field-label'}
+                                                                >
+                                                                    Datum uitgebracht
+                                                                </FormLabel>
+                                                                <Field
                                                                     name="dateReleased"
-                                                                    field={field}
-                                                                    type="datetime-local"
-                                                                    errors={errors}
-                                                                    touched={touched}
-                                                                    onChangeAction={setFieldValue}
-                                                                    id="date_released"
-                                                                    placeholder={'Datum uitgebracht'}
-                                                                    step="900"
+                                                                    render={({ field }) => (
+                                                                        <InputTextDate
+                                                                            name="dateReleased"
+                                                                            field={field}
+                                                                            type="datetime-local"
+                                                                            errors={errors}
+                                                                            touched={touched}
+                                                                            onChangeAction={setFieldValue}
+                                                                            id="date_released"
+                                                                            placeholder={'Datum uitgebracht'}
+                                                                            step="900"
+                                                                        />
+                                                                    )}
                                                                 />
-                                                            )}
-                                                        />
+                                                            </>
+                                                        ) : null}
                                                         {initialQuotationRequest.opportunityAction.codeRef ===
                                                         'subsidy-request' ? (
                                                             <>
@@ -250,29 +262,37 @@ function InspectDetails({ match, history, user }) {
                                                 {user.inspectionPersonTypeId === 'coach' ||
                                                 user.inspectionPersonTypeId === 'externalparty' ? (
                                                     <>
-                                                        <FormLabel
-                                                            htmlFor="date_approved_external"
-                                                            className={'field-label'}
-                                                        >
-                                                            Datum akkoord extern
-                                                        </FormLabel>
-                                                        <Field
-                                                            name="dateApprovedExternal"
-                                                            render={({ field }) => (
-                                                                <InputTextDate
-                                                                    field={field}
-                                                                    type="date"
-                                                                    errors={errors}
-                                                                    touched={touched}
-                                                                    onChangeAction={setFieldValue}
-                                                                    id="date_approved_external"
-                                                                    placeholder={'Datum akkoord extern'}
-                                                                    readOnly={
-                                                                        user.inspectionPersonTypeId !== 'externalparty'
-                                                                    }
+                                                        {initialQuotationRequest.opportunityAction.codeRef ===
+                                                            'quotation-request' ||
+                                                        initialQuotationRequest.opportunityAction.codeRef ===
+                                                            'subsidy-request' ? (
+                                                            <>
+                                                                <FormLabel
+                                                                    htmlFor="date_approved_external"
+                                                                    className={'field-label'}
+                                                                >
+                                                                    Datum akkoord extern
+                                                                </FormLabel>
+                                                                <Field
+                                                                    name="dateApprovedExternal"
+                                                                    render={({ field }) => (
+                                                                        <InputTextDate
+                                                                            field={field}
+                                                                            type="date"
+                                                                            errors={errors}
+                                                                            touched={touched}
+                                                                            onChangeAction={setFieldValue}
+                                                                            id="date_approved_external"
+                                                                            placeholder={'Datum akkoord extern'}
+                                                                            readOnly={
+                                                                                user.inspectionPersonTypeId !==
+                                                                                'externalparty'
+                                                                            }
+                                                                        />
+                                                                    )}
                                                                 />
-                                                            )}
-                                                        />
+                                                            </>
+                                                        ) : null}
                                                     </>
                                                 ) : null}
                                             </Col>

@@ -53,23 +53,21 @@ const QuotationRequestDetailsFormGeneralView = props => {
                 />
             </div>
 
-
-                {organisationOrCoach && organisationOrCoach.typeId === 'organisation' && (
-                    <div className="row">
-                        <ViewText
-                            label={'Organisatie contactpersoon'}
-                            value={
-                                organisationOrCoach.contactPerson ? organisationOrCoach.contactPerson.contact.fullName : ''
-                            }
-                            link={
-                                organisationOrCoach.contactPerson
-                                    ? 'contact/' + organisationOrCoach.contactPerson.contact.id
-                                    : ''
-                            }
-                        />
-                    </div>
-                )}
-
+            {organisationOrCoach && organisationOrCoach.typeId === 'organisation' && (
+                <div className="row">
+                    <ViewText
+                        label={'Organisatie contactpersoon'}
+                        value={
+                            organisationOrCoach.contactPerson ? organisationOrCoach.contactPerson.contact.fullName : ''
+                        }
+                        link={
+                            organisationOrCoach.contactPerson
+                                ? 'contact/' + organisationOrCoach.contactPerson.contact.id
+                                : ''
+                        }
+                    />
+                </div>
+            )}
 
             <div className="row">
                 <ViewText
@@ -103,17 +101,26 @@ const QuotationRequestDetailsFormGeneralView = props => {
                 <ViewText label={'Tijd afspraak'} value={datePlanned ? moment(datePlanned).format('HH:mm') : ''} />
             </div>
 
-            {opportunityAction.codeRef === 'quotation-request' ? (
+            {opportunityAction.codeRef === 'quotation-request' || opportunityAction.codeRef === 'visit' ? (
                 <div className="row">
                     <ViewText label={'Datum opname'} value={dateRecorded ? moment(dateRecorded).format('L') : ''} />
                     <ViewText label={'Tijd opname'} value={dateRecorded ? moment(dateRecorded).format('HH:mm') : ''} />
                 </div>
             ) : null}
 
-            <div className="row">
-                <ViewText label={'Datum uitgebracht'} value={dateReleased ? moment(dateReleased).format('L') : ''} />
-                <ViewText label={'Tijd uitgebracht'} value={dateReleased ? moment(dateReleased).format('HH:mm') : ''} />
-            </div>
+            {opportunityAction.codeRef === 'quotation-request' || opportunityAction.codeRef === 'subsidy-request' ? (
+                <div className="row">
+                    <ViewText
+                        label={'Datum uitgebracht'}
+                        value={dateReleased ? moment(dateReleased).format('L') : ''}
+                    />
+                    <ViewText
+                        label={'Tijd uitgebracht'}
+                        value={dateReleased ? moment(dateReleased).format('HH:mm') : ''}
+                    />
+                </div>
+            ) : null}
+
             {opportunityAction.codeRef === 'subsidy-request' ? (
                 <div className="row">
                     <ViewText
@@ -130,12 +137,14 @@ const QuotationRequestDetailsFormGeneralView = props => {
                     />
                 </div>
             ) : null}
-            <div className="row">
-                <ViewText
-                    label={'Datum akkoord extern'}
-                    value={dateApprovedExternal ? moment(dateApprovedExternal).format('L') : ''}
-                />
-            </div>
+            {opportunityAction.codeRef === 'quotation-request' || opportunityAction.codeRef === 'subsidy-request' ? (
+                <div className="row">
+                    <ViewText
+                        label={'Datum akkoord extern'}
+                        value={dateApprovedExternal ? moment(dateApprovedExternal).format('L') : ''}
+                    />
+                </div>
+            ) : null}
 
             <div className="row">
                 <div className="col-sm-3">

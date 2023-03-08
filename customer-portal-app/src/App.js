@@ -28,6 +28,7 @@ import AboutUsAdministration from './container/about-us/details';
 import ProjectMollieRedirectWithContext from './container/register/mollie-redirect';
 import CoachInspectList from './container/inspect/list';
 import CoachInspectDetails from './container/inspect/details';
+import AvailabilityDetails from './container/availability/index';
 import DocumentPreview from './container/inspect/details/document';
 
 function App() {
@@ -60,6 +61,7 @@ function App() {
                             />
                             <ProtectedRoute path="/schouwen/:id" component={CoachInspectDetails} />
                             <ProtectedRoute path="/schouwen" component={CoachInspectList} />
+                            <ProtectedRoute path="/beschikbaarheid" component={AvailabilityDetails} />
                             <PublicRoute path="/login" component={Login} />
                             <PublicRoute path="/two-factor/confirm" component={TwoFactorConfirm} />
                             <PublicRoute path="/two-factor/recover" component={TwoFactorRecover} />

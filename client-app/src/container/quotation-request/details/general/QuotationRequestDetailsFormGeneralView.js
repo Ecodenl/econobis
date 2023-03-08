@@ -17,10 +17,12 @@ const QuotationRequestDetailsFormGeneralView = props => {
         dateReleased,
         datePlanned,
         dateApprovedExternal,
+        dateUnderReview,
         dateApprovedProjectManager,
         dateApprovedClient,
         quotationText,
         opportunity,
+        externalpartyNote,
     } = props.quotationRequestDetails;
 
     return (
@@ -136,6 +138,12 @@ const QuotationRequestDetailsFormGeneralView = props => {
                     value={dateApprovedExternal ? moment(dateApprovedExternal).format('L') : ''}
                 />
             </div>
+            <div className="row">
+                <ViewText
+                    label={'Datum in behandeling'}
+                    value={dateUnderReview ? moment(dateUnderReview).format('L') : ''}
+                />
+            </div>
 
             <div className="row">
                 <div className="col-sm-3">
@@ -145,6 +153,17 @@ const QuotationRequestDetailsFormGeneralView = props => {
                 </div>
                 <div className="col-sm-9" id="quotationText">
                     {quotationText}
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-sm-3">
+                    <label htmlFor="externalpartyNote" className="col-sm-12">
+                        Opmerkingen externe partij
+                    </label>
+                </div>
+                <div className="col-sm-9" id="externalpartyNote">
+                    {externalpartyNote}
                 </div>
             </div>
         </div>

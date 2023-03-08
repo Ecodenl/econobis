@@ -1,14 +1,17 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import InputText from "../../../components/form/InputText";
 import {useFormik} from "formik";
 import * as Yup from "yup";
 import ButtonText from "../../../components/button/ButtonText";
-import ViewText from "../../../components/form/ViewText";
+import InputSelect from "../../../components/form/InputSelect";
+import InputToggle from "../../../components/form/InputToggle";
+import EmailTemplateAPI from "../../../api/email-template/EmailTemplateAPI";
 
 export default function DistrictGeneralEditForm({initialValues, onSubmit, cancelAction}) {
-    const {values, errors, touched, handleChange, handleSubmit, handleBlur, isSubmitting} = useFormik({
+    const [emailTemplates, setEmailTemplates] = React.useState([]);
+    const {values, errors, touched, handleChange, handleSubmit, handleBlur, isSubmitting, setFieldValue} = useFormik({
         initialValues: initialValues,
         validationSchema: Yup.object().shape({
             name: Yup.string().required('Verplicht'),
@@ -17,6 +20,17 @@ export default function DistrictGeneralEditForm({initialValues, onSubmit, cancel
             onSubmit(values, setSubmitting);
         },
     });
+
+    const durationOptions = [];
+    for (let i = 30; i <= (60 * 3); i += 15) {
+        durationOptions.push({id: i, name: i + ' minuten'});
+    }
+
+    useEffect(() => {
+        EmailTemplateAPI.fetchEmailTemplatesPeek().then(payload => {
+            setEmailTemplates(payload);
+        });
+    }, []);
 
     return (
         <form className="form-horizontal" onSubmit={handleSubmit}>
@@ -33,8 +47,69 @@ export default function DistrictGeneralEditForm({initialValues, onSubmit, cancel
                             error={errors.name && touched.name}
                             errorMessage={errors.name}
                         />
-                        {/* Standaardtijd voor nu hardcoded, deze staat nu ook hardcoded in QuotationRequestPlanNewPlanningPanel en wordt later misschien nog dynamisch */}
-                        <ViewText label={'Standaard duur afspraak'} value="90 minuten"/>
+                        <InputSelect
+                            label="Standaard duur afspraak"
+                            name={'defaultDurationMinutes'}
+                            value={values.defaultDurationMinutes}
+                            options={durationOptions}
+                            onChangeAction={handleChange}
+                            emptyOption={false}
+                        />
+                    </div>
+                    <div className="row">
+                        <InputToggle
+                            label="Verstuur automatisch e-mail aan bewoner bij maken afspraak"
+                            name={'sendEmailToContactWhenPlanned'}
+                            value={values.sendEmailToContactWhenPlanned}
+                            onChangeAction={event => {
+                                event.persist();
+                                setFieldValue(event.target.name, event.target.checked);
+                            }}
+                        />
+                        {
+                            values.sendEmailToContactWhenPlanned && (
+                                <InputSelect
+                                        label="E-mail template"
+                                        name={'emailToContactTemplateId'}
+                                        value={values.emailToContactTemplateId}
+                                        options={emailTemplates}
+                                        onChangeAction={handleChange}
+                                    />
+                            )
+                        }
+                    </div>
+                    <div className="row">
+                        <InputToggle
+                            label="Verstuur automatisch e-mail aan coach bij maken afspraak"
+                            name={'sendEmailToCoachWhenPlanned'}
+                            value={values.sendEmailToCoachWhenPlanned}
+                            onChangeAction={event => {
+                                event.persist();
+                                setFieldValue(event.target.name, event.target.checked);
+                            }}
+                        />
+                        {
+                            values.sendEmailToCoachWhenPlanned && (
+                                <InputSelect
+                                        label="E-mail template"
+                                        name={'emailToCoachTemplateId'}
+                                        value={values.emailToCoachTemplateId}
+                                        options={emailTemplates}
+                                        onChangeAction={handleChange}
+                                    />
+                            )
+                        }
+                    </div>
+                    <div className="row">
+                        <InputToggle
+                            label={'Gesloten'}
+                            name={'closed'}
+                            value={values.closed}
+                            onChangeAction={event => {
+                                event.persist();
+                                setFieldValue(event.target.name, event.target.checked);
+                            }}
+                        />
                     </div>
                 </PanelBody>
 

@@ -22,7 +22,7 @@ class OpportunityDetailsQuotationRequests extends Component {
 
     componentDidMount() {
         DistrictAPI.fetchDistricts().then((data) => {
-            this.setState({districts: data});
+            this.setState({districts: data.filter(district => !district.closed)});
         });
     }
 
@@ -63,7 +63,7 @@ class OpportunityDetailsQuotationRequests extends Component {
                                         <ul className="dropdown-menu">
                                             {opportunityActions.map((opportunityAction, i) => {
                                                 return (
-                                                    <li>
+                                                    <li key={opportunityAction.id}>
                                                         <a
                                                             role={'button'}
                                                             title={opportunityAction.name}

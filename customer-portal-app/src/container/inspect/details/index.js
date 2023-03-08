@@ -382,7 +382,11 @@ function InspectDetails({ match, history, user }) {
                                                                             onChangeAction={setFieldValue}
                                                                             id="date_under_review"
                                                                             placeholder={'Datum in behandeling'}
-                                                                            readOnly={true}
+                                                                            readOnly={
+                                                                                parseInt(values.status?.id) === 16
+                                                                                    ? false
+                                                                                    : true
+                                                                            }
                                                                         />
                                                                     )}
                                                                 />
@@ -438,7 +442,12 @@ function InspectDetails({ match, history, user }) {
                                                                                     onChangeAction={setFieldValue}
                                                                                     id="date_approved_external"
                                                                                     placeholder={'Datum akkoord extern'}
-                                                                                    readOnly={true}
+                                                                                    readOnly={
+                                                                                        parseInt(values.status?.id) ===
+                                                                                        17
+                                                                                            ? false
+                                                                                            : true
+                                                                                    }
                                                                                 />
                                                                             )}
                                                                         />

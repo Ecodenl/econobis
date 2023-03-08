@@ -274,6 +274,13 @@ class CampaignController extends ApiController
         return CampaignPeek::collection($campaigns);
     }
 
+    public function peekNotFinished()
+    {
+        $campaigns = Campaign::orderBy('id')->get();
+
+        return CampaignPeek::collection($campaigns);
+    }
+
     public function associateOwner(Campaign $campaign, User $user)
     {
         $this->authorize('manage', Campaign::class);

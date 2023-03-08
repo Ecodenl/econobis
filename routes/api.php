@@ -221,6 +221,7 @@ Route::namespace('Api')
 
         Route::get('campaign/grid', 'Campaign\CampaignController@grid');
         Route::get('campaign/peek', 'Campaign\CampaignController@peek');
+        Route::get('campaign/peeknotfinished', 'Campaign\CampaignController@peekNotFinished');
         Route::get('campaign/{campaign}', 'Campaign\CampaignController@show');
         Route::get('campaign/{campaign}/intakes', 'Campaign\CampaignController@intakes');
         Route::get('campaign/{campaign}/opportunities', 'Campaign\CampaignController@opportunities');

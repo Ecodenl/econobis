@@ -283,7 +283,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                     />
                 </div>
 
-                {opportunityAction.codeRef === 'quotation-request' ? (
+                {opportunityAction.codeRef === 'quotation-request' || opportunityAction.codeRef === 'visit' ? (
                     <div className="row">
                         <InputDate
                             label="Datum opname"
@@ -304,24 +304,27 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                     </div>
                 ) : null}
 
-                <div className="row">
-                    <InputDate
-                        label="Datum uitgebracht"
-                        size={'col-sm-6'}
-                        name="dateReleased"
-                        value={dateReleased}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
-                    <InputTime
-                        label={'Tijd uitgebracht'}
-                        size={'col-sm-6'}
-                        name="timeReleased"
-                        value={timeReleased}
-                        start={'06:00'}
-                        end={'23:00'}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
-                </div>
+                {opportunityAction.codeRef === 'quotation-request' ||
+                opportunityAction.codeRef === 'subsidy-request' ? (
+                    <div className="row">
+                        <InputDate
+                            label="Datum uitgebracht"
+                            size={'col-sm-6'}
+                            name="dateReleased"
+                            value={dateReleased}
+                            onChangeAction={this.handleInputChangeDate}
+                        />
+                        <InputTime
+                            label={'Tijd uitgebracht'}
+                            size={'col-sm-6'}
+                            name="timeReleased"
+                            value={timeReleased}
+                            start={'06:00'}
+                            end={'23:00'}
+                            onChangeAction={this.handleInputChangeDate}
+                        />
+                    </div>
+                ) : null}
 
                 {opportunityAction.codeRef === 'subsidy-request' ? (
                     <div className="row">
@@ -345,15 +348,18 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         />
                     </div>
                 ) : null}
-                <div className="row">
-                    <InputDate
-                        label="Datum akkoord extern"
-                        size={'col-sm-6'}
-                        name="dateApprovedExternal"
-                        value={dateApprovedExternal}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
-                </div>
+                {opportunityAction.codeRef === 'quotation-request' ||
+                opportunityAction.codeRef === 'subsidy-request' ? (
+                    <div className="row">
+                        <InputDate
+                            label="Datum akkoord extern"
+                            size={'col-sm-6'}
+                            name="dateApprovedExternal"
+                            value={dateApprovedExternal}
+                            onChangeAction={this.handleInputChangeDate}
+                        />
+                    </div>
+                ) : null}
                 <div className="row">
                     <InputDate
                         label="Datum in behandeling"

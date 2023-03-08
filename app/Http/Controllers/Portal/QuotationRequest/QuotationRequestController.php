@@ -168,6 +168,7 @@ class QuotationRequestController
             'status' => [
                 'id' => $quotationRequest->status->id,
                 'name' => $quotationRequest->status->name,
+                'codeRef' => $quotationRequest->status->code_ref,
             ],
             'dateUnderReview' => $quotationRequest->date_under_review,
         ];

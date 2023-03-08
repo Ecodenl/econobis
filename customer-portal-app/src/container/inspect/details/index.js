@@ -174,25 +174,33 @@ function InspectDetails({ match, history, user }) {
                                                 ) : null}
                                                 {user.inspectionPersonTypeId === 'coach' ? (
                                                     <>
-                                                        <FormLabel htmlFor="date_planned" className={'field-label'}>
-                                                            Datum afspraak
-                                                        </FormLabel>
-                                                        <Field
-                                                            name="datePlanned"
-                                                            render={({ field }) => (
-                                                                <InputTextDate
+                                                        {initialQuotationRequest.opportunityAction.codeRef ===
+                                                        'subsidy-request' ? (
+                                                            <>
+                                                                <FormLabel
+                                                                    htmlFor="date_planned"
+                                                                    className={'field-label'}
+                                                                >
+                                                                    Datum afspraak
+                                                                </FormLabel>
+                                                                <Field
                                                                     name="datePlanned"
-                                                                    field={field}
-                                                                    type="datetime-local"
-                                                                    errors={errors}
-                                                                    touched={touched}
-                                                                    onChangeAction={setFieldValue}
-                                                                    id="date_planned"
-                                                                    placeholder={'Datum afspraak'}
-                                                                    step="900"
+                                                                    render={({ field }) => (
+                                                                        <InputTextDate
+                                                                            name="datePlanned"
+                                                                            field={field}
+                                                                            type="datetime-local"
+                                                                            errors={errors}
+                                                                            touched={touched}
+                                                                            onChangeAction={setFieldValue}
+                                                                            id="date_planned"
+                                                                            placeholder={'Datum afspraak'}
+                                                                            step="900"
+                                                                        />
+                                                                    )}
                                                                 />
-                                                            )}
-                                                        />
+                                                            </>
+                                                        ) : null}
                                                         {initialQuotationRequest.opportunityAction.codeRef ===
                                                             'quotation-request' ||
                                                         initialQuotationRequest.opportunityAction.codeRef ===
@@ -317,40 +325,44 @@ function InspectDetails({ match, history, user }) {
                                                                         <div>
                                                                             <Button
                                                                                 variant={
-                                                                                    parseInt(values.status?.id) === 12
+                                                                                    values.status?.codeRef ===
+                                                                                    'pm-approved'
                                                                                         ? 'dark'
                                                                                         : 'outline-dark'
                                                                                 }
                                                                                 size="sm"
                                                                                 onClick={() => {
-                                                                                    setFieldValue('status.id', 12);
+                                                                                    // setFieldValue('status.id', 12);
                                                                                     setFieldValue(
                                                                                         'dateApprovedProjectManager',
                                                                                         moment().format('YYYY-MM-DD')
                                                                                     );
                                                                                 }}
                                                                             >
-                                                                                {parseInt(values.status?.id) === 12
+                                                                                {values.status?.codeRef ===
+                                                                                'pm-approved'
                                                                                     ? 'Goedgekeurd'
                                                                                     : 'Goedkeuren'}
                                                                             </Button>
 
                                                                             <Button
                                                                                 variant={
-                                                                                    parseInt(values.status?.id) === 13
+                                                                                    values.status?.codeRef ===
+                                                                                    'pm-not-approved'
                                                                                         ? 'dark'
                                                                                         : 'outline-dark'
                                                                                 }
                                                                                 size="sm"
                                                                                 onClick={() => {
-                                                                                    setFieldValue('status.id', 13);
+                                                                                    // setFieldValue('status.id', 13);
                                                                                     setFieldValue(
                                                                                         'dateApprovedProjectManager',
                                                                                         ''
                                                                                     );
                                                                                 }}
                                                                             >
-                                                                                {parseInt(values.status?.id) === 13
+                                                                                {values.status?.codeRef ===
+                                                                                'pm-not-approved'
                                                                                     ? 'Afgekeurd'
                                                                                     : 'Niet Goedkeuren'}
                                                                             </Button>
@@ -383,7 +395,8 @@ function InspectDetails({ match, history, user }) {
                                                                             id="date_under_review"
                                                                             placeholder={'Datum in behandeling'}
                                                                             readOnly={
-                                                                                parseInt(values.status?.id) === 16
+                                                                                values.status?.codeRef ===
+                                                                                'under-review'
                                                                                     ? false
                                                                                     : true
                                                                             }
@@ -394,21 +407,22 @@ function InspectDetails({ match, history, user }) {
                                                             <div>
                                                                 <Button
                                                                     variant={
-                                                                        parseInt(values.status?.id) === 16
+                                                                        values.status?.codeRef === 'under-review'
                                                                             ? 'dark'
                                                                             : 'outline-dark'
                                                                     }
                                                                     size="sm"
                                                                     onClick={() => {
-                                                                        setFieldValue('status.id', 16);
+                                                                        // setFieldValue('status.id', 16);
                                                                         setFieldValue(
                                                                             'dateUnderReview',
                                                                             moment().format('YYYY-MM-DD')
                                                                         );
                                                                     }}
                                                                 >
-                                                                    In behandeling{' '}
-                                                                    {parseInt(values.status?.id) !== 16 ? 'nemen' : ''}
+                                                                    {values.status?.codeRef === 'under-review'
+                                                                        ? 'In behandeling'
+                                                                        : 'In behandeling nemen'}
                                                                 </Button>
                                                             </div>
                                                         </div>
@@ -443,8 +457,8 @@ function InspectDetails({ match, history, user }) {
                                                                                     id="date_approved_external"
                                                                                     placeholder={'Datum akkoord extern'}
                                                                                     readOnly={
-                                                                                        parseInt(values.status?.id) ===
-                                                                                        17
+                                                                                        values.status?.codeRef ===
+                                                                                        'approved'
                                                                                             ? false
                                                                                             : true
                                                                                     }
@@ -456,40 +470,43 @@ function InspectDetails({ match, history, user }) {
                                                                         <div>
                                                                             <Button
                                                                                 variant={
-                                                                                    parseInt(values.status?.id) === 17
+                                                                                    values.status?.codeRef ===
+                                                                                    'approved'
                                                                                         ? 'dark'
                                                                                         : 'outline-dark'
                                                                                 }
                                                                                 size="sm"
                                                                                 onClick={() => {
-                                                                                    setFieldValue('status.id', 17);
+                                                                                    // setFieldValue('status.id', 17);
                                                                                     setFieldValue(
                                                                                         'dateApprovedExternal',
                                                                                         moment().format('YYYY-MM-DD')
                                                                                     );
                                                                                 }}
                                                                             >
-                                                                                {parseInt(values.status?.id) === 17
+                                                                                {values.status?.codeRef === 'approved'
                                                                                     ? 'Goedgekeurd'
                                                                                     : 'Goedkeuren'}
                                                                             </Button>
 
                                                                             <Button
                                                                                 variant={
-                                                                                    parseInt(values.status?.id) === 18
+                                                                                    values.status?.codeRef ===
+                                                                                    'not-approved'
                                                                                         ? 'dark'
                                                                                         : 'outline-dark'
                                                                                 }
                                                                                 size="sm"
                                                                                 onClick={() => {
-                                                                                    setFieldValue('status.id', 18);
+                                                                                    // setFieldValue('status.id', 18);
                                                                                     setFieldValue(
                                                                                         'dateApprovedExternal',
                                                                                         ''
                                                                                     );
                                                                                 }}
                                                                             >
-                                                                                {parseInt(values.status?.id) === 18
+                                                                                {values.status?.codeRef ===
+                                                                                'not-approved'
                                                                                     ? 'Afgekeurd'
                                                                                     : 'Niet Goedkeuren'}
                                                                             </Button>

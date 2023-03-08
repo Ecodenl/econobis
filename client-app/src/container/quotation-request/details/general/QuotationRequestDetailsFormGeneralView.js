@@ -147,12 +147,14 @@ const QuotationRequestDetailsFormGeneralView = props => {
                     />
                 </div>
             ) : null}
-            <div className="row">
-                <ViewText
-                    label={'Datum in behandeling'}
-                    value={dateUnderReview ? moment(dateUnderReview).format('L') : ''}
-                />
-            </div>
+            {opportunityAction.codeRef === 'quotation-request' || opportunityAction.codeRef === 'subsidy-request' ? (
+                <div className="row">
+                    <ViewText
+                        label={'Datum in behandeling'}
+                        value={dateUnderReview ? moment(dateUnderReview).format('L') : ''}
+                    />
+                </div>
+            ) : null}
 
             <div className="row">
                 <div className="col-sm-3">

@@ -360,15 +360,18 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         />
                     </div>
                 ) : null}
-                <div className="row">
-                    <InputDate
-                        label="Datum in behandeling"
-                        size={'col-sm-6'}
-                        name="dateUnderReview"
-                        value={dateUnderReview}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
-                </div>
+                {opportunityAction.codeRef === 'quotation-request' ||
+                opportunityAction.codeRef === 'subsidy-request' ? (
+                    <div className="row">
+                        <InputDate
+                            label="Datum in behandeling"
+                            size={'col-sm-6'}
+                            name="dateUnderReview"
+                            value={dateUnderReview}
+                            onChangeAction={this.handleInputChangeDate}
+                        />
+                    </div>
+                ) : null}
                 <div className="row">
                     <InputTextArea
                         label={'Omschrijving'}

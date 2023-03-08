@@ -357,20 +357,6 @@ class QuotationRequestController extends ApiController
             $contact = $quotationRequest->opportunity->intake->contact;
             $coach = $quotationRequest->organisationOrCoach;
 
-//            $payload = [
-//                'building_coach_statuses' => [
-//                    'account_id' => "100085",
-//                    'user_id' => "5017",
-//                ]
-//            ];
-
-//            $payload = [
-//
-//                    'building_coach_statuses.coach_contact_id' => "10074",
-//                    'building_coach_statuses.resident_contact_id' => "2532",
-//
-//            ];
-
             $payload = [
                 'building_coach_statuses' => [
                     'coach_contact_id' => $coach->hoom_account_id,
@@ -378,7 +364,6 @@ class QuotationRequestController extends ApiController
                 ]
             ];
 
-            Log::info('payloadJson: ', (array)$payload);
             $client = new Client;
             $headers = [
                 'Authorization' => 'Bearer ' . Cooperation::first()->hoom_key,

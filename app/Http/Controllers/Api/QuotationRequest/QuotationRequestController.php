@@ -321,6 +321,8 @@ class QuotationRequestController extends ApiController
                 $dateReleasedMerged = Carbon::createFromFormat('Y-m-d H:i', $dateReleased . ' 08:00');
             }
             $quotationRequest->date_released = $dateReleasedMerged;
+        } else {
+            $quotationRequest->date_released = null;
         }
 
         if ($data['datePlanned']) {
@@ -333,6 +335,8 @@ class QuotationRequestController extends ApiController
                 $datePlannedMerged = Carbon::createFromFormat('Y-m-d H:i', $datePlanned . ' 08:00');
             }
             $quotationRequest->date_planned = $datePlannedMerged;
+        } else {
+            $quotationRequest->date_planned = null;
         }
 
         if ($data['dateApprovedClient']) {

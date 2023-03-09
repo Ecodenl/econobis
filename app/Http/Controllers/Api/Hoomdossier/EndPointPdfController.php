@@ -99,9 +99,21 @@ class EndPointPdfController extends Controller
         }
         $this->checkMaxRequests($webform);
 
-        $this->log('Binnenkomende payload (zie laravel log)');
-        Log::info($request->getContent());
+//        $this->log('Binnenkomende payload (zie laravel log)');
+//        Log::info($request->getContent());
+
+        $data = json_decode($request->getContent());
+        $this->log('Building id: ' . $data->account_related->building_id);
+        $this->log('User id: ' . $data->account_related->user_id);
+        $this->log('Account id: ' . $data->account_related->account_id);
+        $this->log('Contact id: ' . $data->account_related->contact_id);
         $this->log('Hier check en verwerkingen inzake endpoint pdf.');
+
+        $contents = base64_decode( $data->pdf->contents);
+        $fileName = 'Hoomdossier-rapportage-' . $data->account_related->building_id . '.pdf';
+        $this->log('Filename rapportage: ' . $fileName);
+
+        \Illuminate\Support\Facades\Storage::disk('local')->put( DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR . $fileName, $contents);
     }
 
 

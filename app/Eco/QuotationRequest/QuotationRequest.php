@@ -138,23 +138,27 @@ class QuotationRequest extends Model
 
         $mailbox = Mailbox::getDefault();
         foreach($mails as $mail){
-            $email = new Email();
-            $email->mailbox_id = $mailbox->id;
-            $email->from = $mailbox->email;
-            $email->to = [$mail['contact']->primaryEmailAddress->email];
-            $email->cc = [];
-            $email->bcc = [];
-            $email->subject = $mail['template']->subject;
-            $email->folder = 'concept';
-            $email->quotation_request_id = $this->id;
-            $email->html_body
-                = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
-                . $mail['template']->subject . '</title></head><body>'
-                . $mail['template']->html_body . '</body></html>';
-            $email->sent_by_user_id = Auth::id();
-            $email->save();
+            if($mail['contact']->primaryEmailAddress){
+                $email = new Email();
+                $email->mailbox_id = $mailbox->id;
+                $email->from = $mailbox->email;
+                $email->to = [$mail['contact']->primaryEmailAddress->email];
+                $email->cc = [];
+                $email->bcc = [];
+                $email->subject = $mail['template']->subject;
+                $email->folder = 'concept';
+                $email->quotation_request_id = $this->id;
+                $email->html_body
+                    = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
+                    . $mail['template']->subject . '</title></head><body>'
+                    . $mail['template']->html_body . '</body></html>';
+                $email->sent_by_user_id = Auth::id();
+                $email->save();
 
-            SendEmailsWithVariables::dispatch($email, [$mail['contact']->id], Auth::id());
+                $email->contacts()->attach([$mail['contact']->id]);
+
+                SendEmailsWithVariables::dispatch($email, [$mail['contact']->primaryEmailAddress->id], Auth::id());
+            }
         }
     }
 }

@@ -4,7 +4,6 @@ namespace App\Http\Resources\Portal\ParticipantMutation;
 
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Log;
 
 class ParticipantMutationCollection extends JsonResource
 {
@@ -128,7 +127,6 @@ class ParticipantMutationCollection extends JsonResource
                 }
                 return $fields;
             case 'postalcode_link_capital':
-                Log::info('mutatie velden', (array)$this);
                 if($projectTransactionCostsCodeRef === 'none'){
                     $fields =
                         [

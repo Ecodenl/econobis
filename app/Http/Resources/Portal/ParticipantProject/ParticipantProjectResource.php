@@ -5,7 +5,6 @@ namespace App\Http\Resources\Portal\ParticipantProject;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\Portal\ParticipantMutation\ParticipantMutationCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Log;
 
 class ParticipantProjectResource extends JsonResource
 {

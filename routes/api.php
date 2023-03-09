@@ -628,6 +628,13 @@ Route::namespace('Api')
 Route::namespace('Api')
     ->group(function () {
         Route::post('webform/external/{apiKey}', 'Webform\ExternalWebformController@post');
+        Route::post('{apiKey}/hoomdossier/woonplan', 'Hoomdossier\EndPointWoonplanController@post');
+        Route::post('{apiKey}/hoomdossier/afspraak', 'Hoomdossier\EndPointAfspraakController@post');
+        Route::post('{apiKey}/hoomdossier/gebruik', 'Hoomdossier\EndPointGebruikController@post');
+        Route::post('{apiKey}/hoomdossier/woning-status', 'Hoomdossier\EndPointWoningStatusController@post');
+        Route::post('{apiKey}/hoomdossier/scan-status', 'Hoomdossier\EndPointScanStatusController@post');
+        Route::post('{apiKey}/hoomdossier/pdf', 'Hoomdossier\EndPointPdfController@post');
+        Route::post('{apiKey}/hoomdossier/delete', 'Hoomdossier\EndPointDeleteHoomDossierController@post');
 
         Route::post('mollie/webhook', [InvoiceMolliePaymentController::class, 'webhook'])->name('mollie.webhook');
     });

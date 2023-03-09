@@ -62,6 +62,7 @@ class ContactMerger
     private function doMerge()
     {
         $this->mergeContact();
+        $this->mergeEmailAddresses();
 
         if ($this->toContact->isPerson()) {
             $this->mergePerson();
@@ -72,7 +73,6 @@ class ContactMerger
         }
 
         $this->mergeAddresses();
-        $this->mergeEmailAddresses();
         $this->mergePhoneNumbers();
         $this->mergeGenericBelongsToManyRelation('emails');
         $this->mergeGenericBelongsToManyRelation('groups');

@@ -174,8 +174,13 @@ class RevenuesKwhController extends ApiController
             ->orderBy('date_begin')->get());
     }
 
+    public function recalculateRevenuesDistribution(RevenuesKwh $revenuesKwh)
+    {
+        $this->saveParticipantsOfDistribution($revenuesKwh);
+    }
+
     //todo WM: dit naar job verplaatsen ?!
-    public function saveParticipantsOfDistribution(RevenuesKwh $revenuesKwh)
+    protected function saveParticipantsOfDistribution(RevenuesKwh $revenuesKwh)
     {
         set_time_limit(300);
 

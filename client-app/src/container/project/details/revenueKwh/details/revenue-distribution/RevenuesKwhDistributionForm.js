@@ -24,6 +24,7 @@ import ButtonIcon from '../../../../../../components/button/ButtonIcon';
 import ErrorModal from '../../../../../../components/modal/ErrorModal';
 import RevenuesKwhDistributionFormList from './RevenuesKwhDistributionFormList';
 import InputToggle from '../../../../../../components/form/InputToggle';
+import RevenuesKwhAPI from "../../../../../../api/project/RevenuesKwhAPI";
 
 class RevenuesKwhDistributionForm extends Component {
     constructor(props) {
@@ -267,6 +268,12 @@ class RevenuesKwhDistributionForm extends Component {
         this.setState({ showErrorModal: false, modalErrorMessage: '' });
     };
 
+    recalculateRevenuesKwhDistributions = () => {
+        RevenuesKwhAPI.recalculateRevenuesDistribution(this.props.revenuesKwh.id).then(payload => {
+            this.reloadDistributions();
+        });
+    };
+
     render() {
         let administrationIds = [];
         this.props.administrations.forEach(function(administration) {
@@ -308,12 +315,24 @@ class RevenuesKwhDistributionForm extends Component {
                                             ? 'Totale opbrengstverdeling is nog niet definitief'
                                             : ''
                                     }
-                                    onClickAction={() => this.toggleShowCheckboxList('createReport')}
+                                    onClickAction={() => this.recalculateRevenuesKwhDistribution('createReport')}
+                                />
+                            </React.Fragment>
+                        ) : null}
+
+                        {administrationIds.includes(this.props.revenuesKwh.project.administrationId) &&
+                        this.state.createType === '' ? (
+                            <React.Fragment>
+                                <ButtonText
+                                    buttonText={'Opbrengstverdeling herbepalen'}
+                                    buttonClassName='btn-success'
+                                    onClickAction={() => this.recalculateRevenuesKwhDistributions()}
                                 />
                             </React.Fragment>
                         ) : null}
                     </div>
                 </PanelHeader>
+
                 <PanelBody>
                     {this.state.showCheckboxList && this.state.createType === 'createReport' ? (
                         <Panel>

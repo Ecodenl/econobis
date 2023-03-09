@@ -273,7 +273,8 @@ class QuotationRequestNewFormGeneral extends Component {
                         onChangeAction={this.handleInputChangeDate}
                     />
                 </div>
-                {this.props.opportunityAction.codeRef === 'quotation-request' ? (
+                {this.props.opportunityAction.codeRef === 'quotation-request' ||
+                this.props.opportunityAction.codeRef === 'visit' ? (
                     <div className="row">
                         <InputDate
                             label="Datum opname"
@@ -294,24 +295,28 @@ class QuotationRequestNewFormGeneral extends Component {
                     </div>
                 ) : null}
 
-                <div className="row">
-                    <InputDate
-                        label="Datum uitgebracht"
-                        size={'col-sm-6'}
-                        name="dateReleased"
-                        value={dateReleased}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
-                    <InputTime
-                        label={'Tijd uitgebracht'}
-                        size={'col-sm-6'}
-                        name="timeReleased"
-                        value={timeReleased}
-                        start={'06:00'}
-                        end={'23:00'}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
-                </div>
+                {this.props.opportunityAction.codeRef === 'quotation-request' ||
+                this.props.opportunityAction.codeRef === 'subsidy-request' ? (
+                    <div className="row">
+                        <InputDate
+                            label="Datum uitgebracht"
+                            size={'col-sm-6'}
+                            name="dateReleased"
+                            value={dateReleased}
+                            onChangeAction={this.handleInputChangeDate}
+                        />
+                        <InputTime
+                            label={'Tijd uitgebracht'}
+                            size={'col-sm-6'}
+                            name="timeReleased"
+                            value={timeReleased}
+                            start={'06:00'}
+                            end={'23:00'}
+                            onChangeAction={this.handleInputChangeDate}
+                        />
+                    </div>
+                ) : null}
+
                 {this.props.opportunityAction.codeRef === 'subsidy-request' ? (
                     <div className="row">
                         <InputDate
@@ -334,15 +339,18 @@ class QuotationRequestNewFormGeneral extends Component {
                         />
                     </div>
                 ) : null}
-                <div className="row">
-                    <InputDate
-                        label="Datum akkoord extern"
-                        size={'col-sm-6'}
-                        name="dateApprovedExternal"
-                        value={dateApprovedExternal}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
-                </div>
+                {this.props.opportunityAction.codeRef === 'quotation-request' ||
+                this.props.opportunityAction.codeRef === 'subsidy-request' ? (
+                    <div className="row">
+                        <InputDate
+                            label="Datum akkoord extern"
+                            size={'col-sm-6'}
+                            name="dateApprovedExternal"
+                            value={dateApprovedExternal}
+                            onChangeAction={this.handleInputChangeDate}
+                        />
+                    </div>
+                ) : null}
 
                 <div className="row">
                     <InputTextArea

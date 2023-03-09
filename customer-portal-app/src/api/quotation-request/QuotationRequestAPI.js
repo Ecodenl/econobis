@@ -15,7 +15,7 @@ export default {
         return axiosInstance.get(requestUrl, {
             params: {
                 jory: {
-                    fld: ['id', 'name', 'opportunityActionId', 'order'],
+                    fld: ['id', 'name', 'codeRef', 'opportunityActionId', 'order'],
                     flt: {
                         f: 'opportunityActionId',
                         d: opportunityActionId,

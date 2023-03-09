@@ -78,7 +78,7 @@ class QuotationRequestController
         $quotationRequest->externalparty_note = $request->input('externalpartyNote');
         $quotationRequest->quotation_text = $request->input('quotationText');
         $quotationRequest->status_id = $request->input('statusId');
-        $quotationRequest->date_under_review = $request->input('dateUnderReview');
+        $quotationRequest->date_under_review = $request->input('dateUnderReview') ?: null;
 
         $sendMailPlanned = ($quotationRequest->isDirty('date_planned') && !!$quotationRequest->date_planned);
         $sendMailRecorded = ($quotationRequest->isDirty('date_recorded') && !!$quotationRequest->date_recorded);
@@ -168,6 +168,7 @@ class QuotationRequestController
             'status' => [
                 'id' => $quotationRequest->status->id,
                 'name' => $quotationRequest->status->name,
+                'codeRef' => $quotationRequest->status->code_ref,
             ],
             'dateUnderReview' => $quotationRequest->date_under_review,
         ];

@@ -20,6 +20,11 @@ function InspectDetails({ match, history, user }) {
     const [isLoading, setLoading] = useState(true);
     const [initialQuotationRequest, setInitialQuotationRequest] = useState({});
     const [statuses, setStatuses] = useState([]);
+    const [underReview, setUnderReview] = useState(false);
+    const [approved, setApproved] = useState(false);
+    const [notApproved, setNotApproved] = useState(false);
+    const [pmApproved, setPmApproved] = useState(false);
+    const [pmNotApproved, setPmNotApproved] = useState(false);
 
     const validationSchema = Yup.object().shape({});
 
@@ -194,7 +199,9 @@ function InspectDetails({ match, history, user }) {
                                                             )}
                                                         />
                                                         {initialQuotationRequest.opportunityAction.codeRef ===
-                                                        'quotation-request' ? (
+                                                            'quotation-request' ||
+                                                        initialQuotationRequest.opportunityAction.codeRef ===
+                                                            'visit' ? (
                                                             <>
                                                                 <FormLabel
                                                                     htmlFor="date_recorded"
@@ -220,25 +227,35 @@ function InspectDetails({ match, history, user }) {
                                                                 />
                                                             </>
                                                         ) : null}
-                                                        <FormLabel htmlFor="date_released" className={'field-label'}>
-                                                            Datum uitgebracht
-                                                        </FormLabel>
-                                                        <Field
-                                                            name="dateReleased"
-                                                            render={({ field }) => (
-                                                                <InputTextDate
+                                                        {initialQuotationRequest.opportunityAction.codeRef ===
+                                                            'quotation-request' ||
+                                                        initialQuotationRequest.opportunityAction.codeRef ===
+                                                            'subsidy-request' ? (
+                                                            <>
+                                                                <FormLabel
+                                                                    htmlFor="date_released"
+                                                                    className={'field-label'}
+                                                                >
+                                                                    Datum uitgebracht
+                                                                </FormLabel>
+                                                                <Field
                                                                     name="dateReleased"
-                                                                    field={field}
-                                                                    type="datetime-local"
-                                                                    errors={errors}
-                                                                    touched={touched}
-                                                                    onChangeAction={setFieldValue}
-                                                                    id="date_released"
-                                                                    placeholder={'Datum uitgebracht'}
-                                                                    step="900"
+                                                                    render={({ field }) => (
+                                                                        <InputTextDate
+                                                                            name="dateReleased"
+                                                                            field={field}
+                                                                            type="datetime-local"
+                                                                            errors={errors}
+                                                                            touched={touched}
+                                                                            onChangeAction={setFieldValue}
+                                                                            id="date_released"
+                                                                            placeholder={'Datum uitgebracht'}
+                                                                            step="900"
+                                                                        />
+                                                                    )}
                                                                 />
-                                                            )}
-                                                        />
+                                                            </>
+                                                        ) : null}
                                                         {initialQuotationRequest.opportunityAction.codeRef ===
                                                         'subsidy-request' ? (
                                                             <>
@@ -293,8 +310,16 @@ function InspectDetails({ match, history, user }) {
                                                                                         'Datum akkoord projectleider'
                                                                                     }
                                                                                     readOnly={
-                                                                                        user.inspectionPersonTypeId !==
+                                                                                        // pmApproved &&
+                                                                                        user.inspectionPersonTypeId ===
                                                                                         'projectmanager'
+                                                                                            ? false
+                                                                                            : true
+                                                                                    }
+                                                                                    readOnly={
+                                                                                        pmApproved &&
+                                                                                        user.inspectionPersonTypeId !==
+                                                                                            'projectmanager'
                                                                                     }
                                                                                 />
                                                                             )}
@@ -305,40 +330,49 @@ function InspectDetails({ match, history, user }) {
                                                                         <div>
                                                                             <Button
                                                                                 variant={
-                                                                                    parseInt(values.status?.id) === 12
+                                                                                    pmApproved ||
+                                                                                    values.status?.codeRef ===
+                                                                                        'pm-approved'
                                                                                         ? 'dark'
                                                                                         : 'outline-dark'
                                                                                 }
                                                                                 size="sm"
                                                                                 onClick={() => {
-                                                                                    setFieldValue('status.id', 12);
+                                                                                    // setFieldValue('status.id', 12);
+                                                                                    setPmApproved(true);
                                                                                     setFieldValue(
                                                                                         'dateApprovedProjectManager',
                                                                                         moment().format('YYYY-MM-DD')
                                                                                     );
                                                                                 }}
                                                                             >
-                                                                                {parseInt(values.status?.id) === 12
+                                                                                {pmApproved ||
+                                                                                values.status?.codeRef === 'pm-approved'
                                                                                     ? 'Goedgekeurd'
                                                                                     : 'Goedkeuren'}
                                                                             </Button>
 
                                                                             <Button
                                                                                 variant={
-                                                                                    parseInt(values.status?.id) === 13
+                                                                                    pmNotApproved ||
+                                                                                    values.status?.codeRef ===
+                                                                                        'pm-not-approved'
                                                                                         ? 'dark'
                                                                                         : 'outline-dark'
                                                                                 }
                                                                                 size="sm"
                                                                                 onClick={() => {
-                                                                                    setFieldValue('status.id', 13);
+                                                                                    // setFieldValue('status.id', 13);
+                                                                                    setPmNotApproved(true);
                                                                                     setFieldValue(
                                                                                         'dateApprovedProjectManager',
                                                                                         ''
                                                                                     );
                                                                                 }}
                                                                             >
-                                                                                {parseInt(values.status?.id) === 13
+                                                                                {pmNotApproved ||
+                                                                                values.status?.codeRef ===
+                                                                                    'pm-not-approved'
                                                                                     ? 'Afgekeurd'
                                                                                     : 'Niet Goedkeuren'}
                                                                             </Button>
@@ -351,122 +385,165 @@ function InspectDetails({ match, history, user }) {
                                                 ) : null}
                                                 {user.inspectionPersonTypeId === 'externalparty' ? (
                                                     <>
-                                                        <FormLabel
-                                                            htmlFor="date_under_review"
-                                                            className={'field-label'}
-                                                        >
-                                                            Datum in behandeling
-                                                        </FormLabel>
-                                                        <div style={{ display: 'flex' }}>
-                                                            <div>
-                                                                <Field
-                                                                    name="dateUnderReview"
-                                                                    render={({ field }) => (
-                                                                        <InputTextDate
-                                                                            field={field}
-                                                                            type="date"
-                                                                            errors={errors}
-                                                                            touched={touched}
-                                                                            onChangeAction={setFieldValue}
-                                                                            id="date_under_review"
-                                                                            placeholder={'Datum in behandeling'}
-                                                                            readOnly={true}
-                                                                        />
-                                                                    )}
-                                                                />
-                                                            </div>
-                                                            <div>
-                                                                <Button
-                                                                    variant={
-                                                                        parseInt(values.status?.id) === 16
-                                                                            ? 'dark'
-                                                                            : 'outline-dark'
-                                                                    }
-                                                                    size="sm"
-                                                                    onClick={() => {
-                                                                        setFieldValue('status.id', 16);
-                                                                        setFieldValue(
-                                                                            'dateUnderReview',
-                                                                            moment().format('YYYY-MM-DD')
-                                                                        );
-                                                                    }}
+                                                        {initialQuotationRequest.opportunityAction.codeRef ===
+                                                            'quotation-request' ||
+                                                        initialQuotationRequest.opportunityAction.codeRef ===
+                                                            'subsidy-request' ? (
+                                                            <>
+                                                                <FormLabel
+                                                                    htmlFor="date_under_review"
+                                                                    className={'field-label'}
                                                                 >
-                                                                    In behandeling{' '}
-                                                                    {parseInt(values.status?.id) !== 16 ? 'nemen' : ''}
-                                                                </Button>
-                                                            </div>
-                                                        </div>
+                                                                    Datum in behandeling
+                                                                </FormLabel>
+                                                                <div style={{ display: 'flex' }}>
+                                                                    <div>
+                                                                        <Field
+                                                                            name="dateUnderReview"
+                                                                            render={({ field }) => (
+                                                                                <InputTextDate
+                                                                                    field={field}
+                                                                                    type="date"
+                                                                                    errors={errors}
+                                                                                    touched={touched}
+                                                                                    onChangeAction={setFieldValue}
+                                                                                    id="date_under_review"
+                                                                                    placeholder={'Datum in behandeling'}
+                                                                                    readOnly={
+                                                                                        underReview ||
+                                                                                        values.status?.codeRef ===
+                                                                                            'under-review'
+                                                                                            ? false
+                                                                                            : true
+                                                                                    }
+                                                                                />
+                                                                            )}
+                                                                        />
+                                                                    </div>
+                                                                    <div>
+                                                                        <Button
+                                                                            variant={
+                                                                                underReview ||
+                                                                                values.status?.codeRef ===
+                                                                                    'under-review'
+                                                                                    ? 'dark'
+                                                                                    : 'outline-dark'
+                                                                            }
+                                                                            size="sm"
+                                                                            onClick={() => {
+                                                                                // setFieldValue('status.id', 16);
+                                                                                setUnderReview(true);
+                                                                                setFieldValue(
+                                                                                    'dateUnderReview',
+                                                                                    moment().format('YYYY-MM-DD')
+                                                                                );
+                                                                            }}
+                                                                        >
+                                                                            {underReview ||
+                                                                            values.status?.codeRef === 'under-review'
+                                                                                ? 'In behandeling'
+                                                                                : 'In behandeling nemen'}
+                                                                        </Button>
+                                                                    </div>
+                                                                </div>
+                                                            </>
+                                                        ) : null}
                                                     </>
                                                 ) : null}
 
                                                 {user.inspectionPersonTypeId === 'coach' ||
                                                 user.inspectionPersonTypeId === 'externalparty' ? (
                                                     <>
-                                                        <FormLabel
-                                                            htmlFor="date_approved_external"
-                                                            className={'field-label'}
-                                                        >
-                                                            Datum akkoord extern
-                                                        </FormLabel>
-                                                        <div style={{ display: 'flex' }}>
-                                                            <div>
-                                                                <Field
-                                                                    name="dateApprovedExternal"
-                                                                    render={({ field }) => (
-                                                                        <InputTextDate
-                                                                            field={field}
-                                                                            type="date"
-                                                                            errors={errors}
-                                                                            touched={touched}
-                                                                            onChangeAction={setFieldValue}
-                                                                            id="date_approved_external"
-                                                                            placeholder={'Datum akkoord extern'}
-                                                                            readOnly={true}
+                                                        {initialQuotationRequest.opportunityAction.codeRef ===
+                                                            'quotation-request' ||
+                                                        initialQuotationRequest.opportunityAction.codeRef ===
+                                                            'subsidy-request' ? (
+                                                            <>
+                                                                <FormLabel
+                                                                    htmlFor="date_approved_external"
+                                                                    className={'field-label'}
+                                                                >
+                                                                    Datum akkoord extern
+                                                                </FormLabel>
+                                                                <div style={{ display: 'flex' }}>
+                                                                    <div>
+                                                                        <Field
+                                                                            name="dateApprovedExternal"
+                                                                            render={({ field }) => (
+                                                                                <InputTextDate
+                                                                                    field={field}
+                                                                                    type="date"
+                                                                                    errors={errors}
+                                                                                    touched={touched}
+                                                                                    onChangeAction={setFieldValue}
+                                                                                    id="date_approved_external"
+                                                                                    placeholder={'Datum akkoord extern'}
+                                                                                    readOnly={
+                                                                                        approved ||
+                                                                                        values.status?.codeRef ===
+                                                                                            'approved'
+                                                                                            ? false
+                                                                                            : true
+                                                                                    }
+                                                                                />
+                                                                            )}
                                                                         />
-                                                                    )}
-                                                                />
-                                                            </div>
-                                                            {user.inspectionPersonTypeId === 'externalparty' ? (
-                                                                <div>
-                                                                    <Button
-                                                                        variant={
-                                                                            parseInt(values.status?.id) === 17
-                                                                                ? 'dark'
-                                                                                : 'outline-dark'
-                                                                        }
-                                                                        size="sm"
-                                                                        onClick={() => {
-                                                                            setFieldValue('status.id', 17);
-                                                                            setFieldValue(
-                                                                                'dateApprovedExternal',
-                                                                                moment().format('YYYY-MM-DD')
-                                                                            );
-                                                                        }}
-                                                                    >
-                                                                        {parseInt(values.status?.id) === 17
-                                                                            ? 'Goedgekeurd'
-                                                                            : 'Goedkeuren'}
-                                                                    </Button>
+                                                                    </div>
+                                                                    {user.inspectionPersonTypeId === 'externalparty' ? (
+                                                                        <div>
+                                                                            <Button
+                                                                                variant={
+                                                                                    approved ||
+                                                                                    values.status?.codeRef ===
+                                                                                        'approved'
+                                                                                        ? 'dark'
+                                                                                        : 'outline-dark'
+                                                                                }
+                                                                                size="sm"
+                                                                                onClick={() => {
+                                                                                    // setFieldValue('status.id', 17);
+                                                                                    setApproved(true);
+                                                                                    setFieldValue(
+                                                                                        'dateApprovedExternal',
+                                                                                        moment().format('YYYY-MM-DD')
+                                                                                    );
+                                                                                }}
+                                                                            >
+                                                                                {approved ||
+                                                                                values.status?.codeRef === 'approved'
+                                                                                    ? 'Goedgekeurd'
+                                                                                    : 'Goedkeuren'}
+                                                                            </Button>
 
-                                                                    <Button
-                                                                        variant={
-                                                                            parseInt(values.status?.id) === 18
-                                                                                ? 'dark'
-                                                                                : 'outline-dark'
-                                                                        }
-                                                                        size="sm"
-                                                                        onClick={() => {
-                                                                            setFieldValue('status.id', 18);
-                                                                            setFieldValue('dateApprovedExternal', '');
-                                                                        }}
-                                                                    >
-                                                                        {parseInt(values.status?.id) === 18
-                                                                            ? 'Afgekeurd'
-                                                                            : 'Niet Goedkeuren'}
-                                                                    </Button>
+                                                                            <Button
+                                                                                variant={
+                                                                                    notApproved ||
+                                                                                    values.status?.codeRef ===
+                                                                                        'not-approved'
+                                                                                        ? 'dark'
+                                                                                        : 'outline-dark'
+                                                                                }
+                                                                                size="sm"
+                                                                                onClick={() => {
+                                                                                    // setFieldValue('status.id', 18);
+                                                                                    setNotApproved(true);
+                                                                                    setFieldValue(
+                                                                                        'dateApprovedExternal',
+                                                                                        ''
+                                                                                    );
+                                                                                }}
+                                                                            >
+                                                                                {notApproved ||
+                                                                                values.status?.codeRef ===
+                                                                                    'not-approved'
+                                                                                    ? 'Afgekeurd'
+                                                                                    : 'Niet Goedkeuren'}
+                                                                            </Button>
+                                                                        </div>
+                                                                    ) : null}
                                                                 </div>
-                                                            ) : null}
-                                                        </div>
+                                                            </>
+                                                        ) : null}
                                                     </>
                                                 ) : null}
 

@@ -58,6 +58,7 @@ class RevenuesKwhDistributionForm extends Component {
             showErrorModal: false,
             modalErrorMessage: '',
             showOnPortal: true,
+            isBusy: false,
         };
     }
 
@@ -269,9 +270,25 @@ class RevenuesKwhDistributionForm extends Component {
     };
 
     recalculateRevenuesKwhDistributions = () => {
-        RevenuesKwhAPI.recalculateRevenuesDistribution(this.props.revenuesKwh.id).then(payload => {
-            this.reloadDistributions();
+        document.body.style.cursor = 'wait';
+        this.setState({
+            isBusy: true,
         });
+        RevenuesKwhAPI.recalculateRevenuesDistribution(this.props.revenuesKwh.id)
+            .then(payload => {
+                this.reloadDistributions();
+                document.body.style.cursor = 'default';
+                this.setState({
+                    isBusy: false,
+                });
+            })
+            .catch(error => {
+                console.log(error);
+                document.body.style.cursor = 'default';
+                this.setState({
+                    isBusy: false,
+                });
+            });
     };
 
     render() {
@@ -299,39 +316,46 @@ class RevenuesKwhDistributionForm extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Opbrengstverdeling deelnemers</span>
-                    <div className="btn-group pull-right">
-                        <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={this.reloadDistributions} />
-                        {/*{this.props.revenuesKwh.confirmed == 1 &&*/}
-                        {administrationIds.includes(this.props.revenuesKwh.project.administrationId) &&
-                        this.state.createType === '' ? (
-                            <React.Fragment>
-                                <ButtonText
-                                    buttonText={'Selecteer preview rapportage'}
-                                    buttonClassName={
-                                        this.props.revenuesKwh.confirmed == 0 ? 'btn-danger' : 'btn-success'
-                                    }
-                                    title={
-                                        this.props.revenuesKwh.confirmed == 0
-                                            ? 'Totale opbrengstverdeling is nog niet definitief'
-                                            : ''
-                                    }
-                                    onClickAction={() => this.toggleShowCheckboxList('createReport')}
-                                />
-                            </React.Fragment>
-                        ) : null}
 
-                        {administrationIds.includes(this.props.revenuesKwh.project.administrationId) &&
-                        this.state.createType === '' &&
-                        this.props.revenuesKwh.confirmed == 0 ? (
-                            <React.Fragment>
-                                <ButtonText
-                                    buttonText={'Deelnemers aantallen herbepalen'}
-                                    buttonClassName="btn-success"
-                                    onClickAction={() => this.recalculateRevenuesKwhDistributions()}
-                                />
-                            </React.Fragment>
-                        ) : null}
-                    </div>
+                    {this.state.isBusy ? (
+                        <div className="btn-group pull-right">
+                            <div>Bezig met herbepalen deelnames (aantallen)...</div>
+                        </div>
+                    ) : (
+                        <div className="btn-group pull-right">
+                            <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={this.reloadDistributions} />
+                            {/*{this.props.revenuesKwh.confirmed == 1 &&*/}
+                            {administrationIds.includes(this.props.revenuesKwh.project.administrationId) &&
+                            this.state.createType === '' ? (
+                                <React.Fragment>
+                                    <ButtonText
+                                        buttonText={'Selecteer preview rapportage'}
+                                        buttonClassName={
+                                            this.props.revenuesKwh.confirmed == 0 ? 'btn-danger' : 'btn-success'
+                                        }
+                                        title={
+                                            this.props.revenuesKwh.confirmed == 0
+                                                ? 'Totale opbrengstverdeling is nog niet definitief'
+                                                : ''
+                                        }
+                                        onClickAction={() => this.toggleShowCheckboxList('createReport')}
+                                    />
+                                </React.Fragment>
+                            ) : null}
+
+                            {administrationIds.includes(this.props.revenuesKwh.project.administrationId) &&
+                            this.state.createType === '' &&
+                            this.props.revenuesKwh.confirmed == 0 ? (
+                                <React.Fragment>
+                                    <ButtonText
+                                        buttonText={'Deelnames (aantallen) herbepalen'}
+                                        buttonClassName="btn-success"
+                                        onClickAction={() => this.recalculateRevenuesKwhDistributions()}
+                                    />
+                                </React.Fragment>
+                            ) : null}
+                        </div>
+                    )}
                 </PanelHeader>
 
                 <PanelBody>

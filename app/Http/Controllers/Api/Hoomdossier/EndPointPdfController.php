@@ -102,20 +102,26 @@ class EndPointPdfController extends Controller
 //        $this->log('Binnenkomende payload (zie laravel log)');
 //        Log::info($request->getContent());
 
-        $data = json_decode($request->getContent());
-        $this->log('Building id: ' . $data->account_related->building_id);
-        $this->log('User id: ' . $data->account_related->user_id);
-        $this->log('Account id: ' . $data->account_related->account_id);
-        $this->log('Contact id: ' . $data->account_related->contact_id);
-        $this->log('Hier check en verwerkingen inzake endpoint pdf.');
+//        $data = json_decode($request->getContent());
+        $contentRaw = file_get_contents('php://input');
+        $data = json_decode($contentRaw);
 
-        $contents = base64_decode( $data->pdf->contents);
-        $fileName = 'Hoomdossier-rapportage-' . $data->account_related->building_id . '.pdf';
-        $this->log('Filename rapportage: ' . $fileName);
+        if($data){
+            $this->log('Building id: ' . $data->account_related->building_id);
+            $this->log('User id: ' . $data->account_related->user_id);
+            $this->log('Account id: ' . $data->account_related->account_id);
+            $this->log('Contact id: ' . $data->account_related->contact_id);
+            $this->log('Hier check en verwerkingen inzake endpoint pdf.');
 
-        \Illuminate\Support\Facades\Storage::disk('local')->put( DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR . $fileName, $contents);
+            $contents = base64_decode( $data->pdf->contents);
+            $fileName = 'Hoomdossier-rapportage-' . $data->account_related->building_id . '.pdf';
+            $this->log('Filename rapportage: ' . $fileName);
+
+            \Illuminate\Support\Facades\Storage::disk('local')->put( DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR . $fileName, $contents);
+        } else {
+            $this->error('No payload found', 404);
+        }
     }
-
 
     protected function getDataFromRequest(Request $request)
     {

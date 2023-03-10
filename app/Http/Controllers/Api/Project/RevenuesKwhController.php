@@ -247,7 +247,7 @@ class RevenuesKwhController extends ApiController
                 $distributionKwh->save();
             } else {
                 $revenuePartsKwhHasConfirmed = $revenuesKwh->partsKwh()->where('confirmed', true)->exists();
-                if($revenuePartsKwhHasConfirmed){
+                if(!$revenuePartsKwhHasConfirmed){
                     $deleteRevenueDistributionKwh = new DeleteRevenueDistributionKwh($distributionKwh);
                     $deleteRevenueDistributionKwh->delete();
                 }

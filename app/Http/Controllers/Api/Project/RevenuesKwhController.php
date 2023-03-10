@@ -246,8 +246,11 @@ class RevenuesKwhController extends ApiController
                 $distributionKwh->participations_quantity = $quantityOfParticipations;
                 $distributionKwh->save();
             } else {
-                $deleteRevenueDistributionKwh = new DeleteRevenueDistributionKwh($distributionKwh);
-                $deleteRevenueDistributionKwh->delete();
+                $revenuePartsKwhHasConfirmed = $revenuesKwh->partsKwh()->where('confirmed', true)->exists();
+                if($revenuePartsKwhHasConfirmed){
+                    $deleteRevenueDistributionKwh = new DeleteRevenueDistributionKwh($distributionKwh);
+                    $deleteRevenueDistributionKwh->delete();
+                }
             }
         }
     }

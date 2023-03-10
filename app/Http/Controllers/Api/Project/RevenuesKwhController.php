@@ -19,6 +19,7 @@ use App\Eco\RevenuesKwh\RevenuePartsKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\RevenueDistributionKwhCSVHelper;
+use App\Helpers\Delete\Models\DeleteRevenueDistributionKwh;
 use App\Helpers\Delete\Models\DeleteRevenuesKwh;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
@@ -143,10 +144,13 @@ class RevenuesKwhController extends ApiController
         $revenuesKwh->fill($data);
 
         $recalculateDistribution = false;
-        if(
-            Carbon::parse($revenuesKwh->date_begin) != Carbon::parse($oldDateBegin) ||
-            Carbon::parse($revenuesKwh->date_end) != Carbon::parse($oldDateEnd) ||
-            floatval($revenuesKwh->payout_kwh) != floatval($oldPayoutKwh)) {
+        if(!$revenuesKwh->confirmed &&
+            (
+                Carbon::parse($revenuesKwh->date_begin) != Carbon::parse($oldDateBegin) ||
+                Carbon::parse($revenuesKwh->date_end) != Carbon::parse($oldDateEnd) ||
+                floatval($revenuesKwh->payout_kwh) != floatval($oldPayoutKwh)
+            )
+        ) {
             $recalculateDistribution = true;
         }
         $revenuesKwh->save();
@@ -201,6 +205,7 @@ class RevenuesKwhController extends ApiController
         }
 
         // If participant already is added to project revenue distribution then update
+        $distributionKwhIsNew = false;
         if(RevenueDistributionKwh::where('revenue_id', $revenuesKwh->id)->where('participation_id', $participant->id)->exists()) {
             $distributionKwh = RevenueDistributionKwh::where('revenue_id', $revenuesKwh->id)->where('participation_id', $participant->id)->first();
         } else {
@@ -208,6 +213,7 @@ class RevenuesKwhController extends ApiController
             $distributionKwh->revenue_id = $revenuesKwh->id;
             $distributionKwh->participation_id = $participant->id;
             $distributionKwh->contact_id = $contact->id;
+            $distributionKwhIsNew = true;
         }
 
         if($revenuesKwh->confirmed) {
@@ -227,10 +233,23 @@ class RevenuesKwhController extends ApiController
             $distributionKwh->energy_supplier_ean_electricity = $participantAddress->ean_electricity;
         }
 
-        list($quantityOfParticipationsAtStart, $quantityOfParticipations) = $this->determineParticipationsQuantity($distributionKwh);
-        $distributionKwh->participations_quantity_at_start = $quantityOfParticipationsAtStart;
-        $distributionKwh->participations_quantity = $quantityOfParticipations;
-        $distributionKwh->save();
+        list($quantityOfParticipationsAtStart, $quantityOfParticipations, $hasMutationQuantity) = $this->determineParticipationsQuantity($distributionKwh);
+        if($distributionKwhIsNew) {
+            if ($quantityOfParticipationsAtStart != 0 || $hasMutationQuantity) {
+                $distributionKwh->participations_quantity_at_start = $quantityOfParticipationsAtStart;
+                $distributionKwh->participations_quantity = $quantityOfParticipations;
+                $distributionKwh->save();
+            }
+        } else {
+            if ($quantityOfParticipationsAtStart != 0 || $hasMutationQuantity) {
+                $distributionKwh->participations_quantity_at_start = $quantityOfParticipationsAtStart;
+                $distributionKwh->participations_quantity = $quantityOfParticipations;
+                $distributionKwh->save();
+            } else {
+                $deleteRevenueDistributionKwh = new DeleteRevenueDistributionKwh($distributionKwh);
+                $deleteRevenueDistributionKwh->delete();
+            }
+        }
     }
 
     /**
@@ -246,6 +265,8 @@ class RevenuesKwhController extends ApiController
         $dateEndRevenuesKwh = Carbon::parse($distributionKwh->revenuesKwh->date_end)->format('Y-m-d');
         $mutations = $distributionKwh->participation->mutationsDefinitiveForKwhPeriod;
 
+        $hasMutationQuantity = false;
+
         foreach ($mutations as $mutation) {
             if ($mutation->date_entry >= $dateBeginFromRegister && $mutation->date_entry < $dateBeginRevenuesKwh) {
                 $quantityOfParticipationsAtStart += $mutation->quantity;
@@ -253,8 +274,13 @@ class RevenuesKwhController extends ApiController
             if ($mutation->date_entry >= $dateBeginFromRegister && $mutation->date_entry <= $dateEndRevenuesKwh) {
                 $quantityOfParticipations += $mutation->quantity;
             }
+            if ($mutation->date_entry >= $dateBeginRevenuesKwh && $mutation->date_entry <= $dateEndRevenuesKwh) {
+                if($mutation->quantity != 0){
+                    $hasMutationQuantity = true;
+                }
+            }
         }
-        return array($quantityOfParticipationsAtStart, $quantityOfParticipations);
+        return array($quantityOfParticipationsAtStart, $quantityOfParticipations, $hasMutationQuantity);
     }
 
     public function createEnergySupplierReport(

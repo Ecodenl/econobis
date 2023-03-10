@@ -24,7 +24,7 @@ import ButtonIcon from '../../../../../../components/button/ButtonIcon';
 import ErrorModal from '../../../../../../components/modal/ErrorModal';
 import RevenuesKwhDistributionFormList from './RevenuesKwhDistributionFormList';
 import InputToggle from '../../../../../../components/form/InputToggle';
-import RevenuesKwhAPI from "../../../../../../api/project/RevenuesKwhAPI";
+import RevenuesKwhAPI from '../../../../../../api/project/RevenuesKwhAPI';
 
 class RevenuesKwhDistributionForm extends Component {
     constructor(props) {
@@ -315,17 +315,18 @@ class RevenuesKwhDistributionForm extends Component {
                                             ? 'Totale opbrengstverdeling is nog niet definitief'
                                             : ''
                                     }
-                                    onClickAction={() => this.recalculateRevenuesKwhDistribution('createReport')}
+                                    onClickAction={() => this.toggleShowCheckboxList('createReport')}
                                 />
                             </React.Fragment>
                         ) : null}
 
                         {administrationIds.includes(this.props.revenuesKwh.project.administrationId) &&
-                        this.state.createType === '' ? (
+                        this.state.createType === '' &&
+                        this.props.revenuesKwh.confirmed == 0 ? (
                             <React.Fragment>
                                 <ButtonText
-                                    buttonText={'Opbrengstverdeling herbepalen'}
-                                    buttonClassName='btn-success'
+                                    buttonText={'Deelnemers aantallen herbepalen'}
+                                    buttonClassName="btn-success"
                                     onClickAction={() => this.recalculateRevenuesKwhDistributions()}
                                 />
                             </React.Fragment>

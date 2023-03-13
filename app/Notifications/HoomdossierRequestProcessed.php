@@ -45,10 +45,10 @@ class HoomdossierRequestProcessed extends Notification
         else $mail->line('Een aanroep naar endpoint ' . $webformName . ' kon niet worden verwerkt.');
 
         $mail->line('&nbsp;');
-        $mail->line('Aangeleverde data:');
-        foreach ($this->data as $key => $value) {
-            $mail->line($key . ": " . $value);
-        }
+//        $mail->line('Aangeleverde data:');
+//        foreach ($this->data as $key => $value) {
+//            $mail->line($key . ": " . $value);
+//        }
         $mail->line('&nbsp;');
         $mail->line('Log:');
         foreach ($this->log as $item) {

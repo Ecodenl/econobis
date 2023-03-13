@@ -340,7 +340,7 @@ class RevenuesKwhHelper
     protected function saveDistributionValuesKwh($partDateBegin, $partDateEnd, RevenueDistributionPartsKwh $distributionPartsKwh): void
     {
         // startwaardes uit distributionKwh halen (die zijn al bepaald en dan hoeven we niet weer helemaal bij date_register datum van participation te beginnen.)
-        $participationsQuantity = $distributionPartsKwh->participations_quantity_at_start;          // 2
+        $participationsQuantity = $distributionPartsKwh->participations_quantity_at_start;
 
         $mutations = $distributionPartsKwh->distributionKwh->participation->mutationsDefinitiveForKwhPeriod->whereBetween('date_entry', [$partDateBegin, $partDateEnd]);
         $dateBegin = Carbon::parse($partDateBegin);  // dateBegin = 01-06-2024

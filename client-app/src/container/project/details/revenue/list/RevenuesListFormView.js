@@ -40,7 +40,7 @@ const RevenuesListFormView = ({
             <div className="col-sm-1">
                 {showActionButtons ? (
                     <a role="button" onClick={() => hashHistory.push(`/project/opbrengst/${id}`)}>
-                        <Icon class="mybtn-success" size={14} icon={`${confirmed ? 'eye' : 'pencil'}`} />
+                        <Icon class="mybtn-success" size={14} icon={confirmed ? eye : pencil} />
                     </a>
                 ) : (
                     ''
@@ -48,7 +48,6 @@ const RevenuesListFormView = ({
                 {showActionButtons && permissions.manageFinancial && !confirmed ? (
                     <a role="button" onClick={toggleDelete}>
                         <Icon class="mybtn-danger" size={14} icon={trash} />
-
                     </a>
                 ) : (
                     ''

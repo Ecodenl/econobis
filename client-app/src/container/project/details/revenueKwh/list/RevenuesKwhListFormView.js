@@ -67,7 +67,7 @@ const RevenuesKwhListFormView = ({
             <div className="col-sm-1">
                 {showActionButtons ? (
                     <a role="button" onClick={() => hashHistory.push(`/project/opbrengst-kwh/${id}`)}>
-                        <Icon class="mybtn-success" size={14} icon={`${confirmed ? 'eye' : 'pencil'}`} />
+                        <Icon class="mybtn-success" size={14} icon={confirmed ? eye : pencil} />
                     </a>
                 ) : (
                     ''

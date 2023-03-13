@@ -70,7 +70,7 @@ const RevenuePartsKwhListFormView = ({
                         role="button"
                         onClick={() => hashHistory.push(`/project/opbrengst-kwh/${revenueId}/deelperiode/${id}`)}
                     >
-                        <Icon class="mybtn-success" size={14} icon={`${confirmed ? 'eye' : 'pencil'}`} />
+                        <Icon class="mybtn-success" size={14} icon={confirmed ? eye : pencil} />
                     </a>
                 ) : (
                     ''

@@ -1843,7 +1843,7 @@ class ExternalWebformController extends Controller
         $tmpFileName = Str::random(9) . '-' . $fileName;
 
         $document = new Document();
-        $document->description = 'Test';
+        $document->description = 'Intake kans bijlage';
         $document->document_type = 'upload';
         $document->document_group = 'general';
         $document->filename = $fileName;
@@ -1861,11 +1861,11 @@ class ExternalWebformController extends Controller
         $document->document_created_from_id = $documentCreatedFromId;
 
         // voor alsnog deze Ids niet vullen
-//        $document->templateId = ??;
-//        $document->campaignId = ??;
-//        $document->housingFileId = ??;
-//        $document->quotationRequestId = ??;
-//        $document->measureId = ??;
+//        $document->template_id = ??;
+//        $document->campaign_id = ??;
+//        $document->housing_file_id = ??;
+//        $document->quotation_request_id = ??;
+//        $document->measure_id = ??;
 
         $document->save();
 

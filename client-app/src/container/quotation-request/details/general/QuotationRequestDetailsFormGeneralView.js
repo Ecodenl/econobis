@@ -27,33 +27,85 @@ const QuotationRequestDetailsFormGeneralView = props => {
 
     return (
         <div onClick={props.switchToEdit}>
-            <div className="row">
-                <ViewText
-                    label={'Organisatie/Coach'}
-                    value={organisationOrCoach && organisationOrCoach.fullName}
-                    link={organisationOrCoach ? 'contact/' + organisationOrCoach.id : ''}
-                />
-                <ViewText
-                    label={'Verzoek voor bewoner'}
-                    value={opportunity.intake && opportunity.intake.contact.fullName}
-                    link={'contact/' + opportunity.intake.contact.id}
-                />
-            </div>
-            <div className="row">
-                <ViewText
-                    label={'Projectleider'}
-                    value={projectManager && projectManager.fullName}
-                    link={projectManager ? 'contact/' + projectManager.id : ''}
-                />
-                <ViewText label={'Adres voor'} value={opportunity.intake && opportunity.intake.fullAddress} />
-            </div>
-            <div className="row">
-                <ViewText
-                    label={'Externe Partij'}
-                    value={externalParty && externalParty.fullName}
-                    link={externalParty ? 'contact/' + externalParty.id : ''}
-                />
-            </div>
+            {opportunityAction.codeRef === 'quotation-request' ? (
+                <>
+                    <div className="row">
+                        <ViewText
+                            label={'Organisatie/Coach'}
+                            value={organisationOrCoach && organisationOrCoach.fullName}
+                            link={organisationOrCoach ? 'contact/' + organisationOrCoach.id : ''}
+                        />
+                        <ViewText
+                            label={'Verzoek voor bewoner'}
+                            value={opportunity.intake && opportunity.intake.contact.fullName}
+                            link={'contact/' + opportunity.intake.contact.id}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Externe Partij'}
+                            value={externalParty && externalParty.fullName}
+                            link={externalParty ? 'contact/' + externalParty.id : ''}
+                        />
+                        <ViewText label={'Adres'} value={opportunity.intake && opportunity.intake.fullAddress} />
+                    </div>
+                </>
+            ) : null}
+            {opportunityAction.codeRef === 'visit' ? (
+                <>
+                    <div className="row">
+                        <ViewText
+                            label={'Organisatie/Coach'}
+                            value={organisationOrCoach && organisationOrCoach.fullName}
+                            link={organisationOrCoach ? 'contact/' + organisationOrCoach.id : ''}
+                        />
+                        <ViewText
+                            label={'Verzoek voor bewoner'}
+                            value={opportunity.intake && opportunity.intake.contact.fullName}
+                            link={'contact/' + opportunity.intake.contact.id}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Projectleider'}
+                            value={projectManager && projectManager.fullName}
+                            link={projectManager ? 'contact/' + projectManager.id : ''}
+                        />
+                        <ViewText label={'Adres'} value={opportunity.intake && opportunity.intake.fullAddress} />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Externe Partij'}
+                            value={externalParty && externalParty.fullName}
+                            link={externalParty ? 'contact/' + externalParty.id : ''}
+                        />
+                    </div>
+                </>
+            ) : null}
+            {opportunityAction.codeRef === 'subsidy-request' ? (
+                <>
+                    <div className="row">
+                        <ViewText
+                            label={'Projectleider'}
+                            value={projectManager && projectManager.fullName}
+                            link={projectManager ? 'contact/' + projectManager.id : ''}
+                        />
+                        <ViewText
+                            label={'Verzoek voor bewoner'}
+                            value={opportunity.intake && opportunity.intake.contact.fullName}
+                            link={'contact/' + opportunity.intake.contact.id}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Externe Partij'}
+                            value={externalParty && externalParty.fullName}
+                            link={externalParty ? 'contact/' + externalParty.id : ''}
+                        />
+                        <ViewText label={'Adres'} value={opportunity.intake && opportunity.intake.fullAddress} />
+                    </div>
+                </>
+            ) : null}
 
             {organisationOrCoach && organisationOrCoach.typeId === 'organisation' && (
                 <div className="row">

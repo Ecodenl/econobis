@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Portal\Templates;
 
+use App\Eco\Document\Document;
+use App\Http\Controllers\Api\Document\DocumentController;
 use App\Mail\ConfigurableMailable;
 
 class PortalMail extends ConfigurableMailable

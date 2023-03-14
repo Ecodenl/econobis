@@ -60,7 +60,7 @@ class ConceptApp extends Component {
                         cc: payload.cc ? payload.cc.join(',') : '',
                         bcc: payload.bcc ? payload.bcc.join(',') : '',
                         subject: payload.subject ? payload.subject : '',
-                        htmlBody: payload.htmlBody ? payload.htmlBody : '',
+                        htmlBody: payload.htmlBodyWithEmbeddedImages ? payload.htmlBodyWithEmbeddedImages : '',
                         attachments: payload.attachments ? payload.attachments : '',
                         quotationRequestId: payload.quotationRequestId ? payload.quotationRequestId : '',
                         intakeId: payload.intakeId ? payload.intakeId : '',

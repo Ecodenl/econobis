@@ -178,8 +178,13 @@ class RevenuesKwhController extends ApiController
             ->orderBy('date_begin')->get());
     }
 
+    public function recalculateRevenuesDistribution(RevenuesKwh $revenuesKwh)
+    {
+        $this->saveParticipantsOfDistribution($revenuesKwh);
+    }
+
     //todo WM: dit naar job verplaatsen ?!
-    public function saveParticipantsOfDistribution(RevenuesKwh $revenuesKwh)
+    protected function saveParticipantsOfDistribution(RevenuesKwh $revenuesKwh)
     {
         set_time_limit(300);
 
@@ -241,8 +246,11 @@ class RevenuesKwhController extends ApiController
                 $distributionKwh->participations_quantity = $quantityOfParticipations;
                 $distributionKwh->save();
             } else {
-                $deleteRevenueDistributionKwh = new DeleteRevenueDistributionKwh($distributionKwh);
-                $deleteRevenueDistributionKwh->delete();
+                $revenuePartsKwhHasConfirmed = $revenuesKwh->partsKwh()->where('confirmed', true)->exists();
+                if(!$revenuePartsKwhHasConfirmed){
+                    $deleteRevenueDistributionKwh = new DeleteRevenueDistributionKwh($distributionKwh);
+                    $deleteRevenueDistributionKwh->delete();
+                }
             }
         }
     }

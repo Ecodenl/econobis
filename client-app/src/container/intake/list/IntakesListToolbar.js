@@ -40,7 +40,16 @@ class IntakesListToolbar extends Component {
                             </ul>
                         </div>
                         <ButtonIcon iconName={'check'} onClickAction={this.props.toggleShowCheckboxList} />
-                        <ButtonIcon iconName={'download'} onClickAction={this.props.getExcel} />
+                        <ButtonIcon
+                            iconName={'download'}
+                            title="Download unieke intakes"
+                            onClickAction={this.props.getExcel}
+                        />
+                        <ButtonIcon
+                            iconName={'download'}
+                            title="Download intakes met kansen"
+                            onClickAction={this.props.getExcelWithOpportunities}
+                        />
                     </div>
                 </div>
                 <div className="col-md-4">

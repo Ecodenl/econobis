@@ -22,7 +22,7 @@ export default function DistrictDetailsGeneralView({district, switchToEdit}) {
                         <ViewText label={'E-mail template'} value={district.emailToCoachTemplate?.name}/>
                     </div>
                     <div className="row">
-                        <ViewText label={'Gesloten'} value={district.closed ? 'Ja' : 'Nee'}/>
+                        <ViewText label={'Status'} value={district.closed ? 'Gesloten' : 'Open'}/>
                     </div>
                 </PanelBody>
             </Panel>

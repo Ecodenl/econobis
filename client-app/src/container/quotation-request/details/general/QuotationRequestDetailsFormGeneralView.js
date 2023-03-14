@@ -27,51 +27,101 @@ const QuotationRequestDetailsFormGeneralView = props => {
 
     return (
         <div onClick={props.switchToEdit}>
-            <div className="row">
-                <ViewText
-                    label={'Organisatie/Coach'}
-                    value={organisationOrCoach && organisationOrCoach.fullName}
-                    link={organisationOrCoach ? 'contact/' + organisationOrCoach.id : ''}
-                />
-                <ViewText
-                    label={'Verzoek voor bewoner'}
-                    value={opportunity.intake && opportunity.intake.contact.fullName}
-                    link={'contact/' + opportunity.intake.contact.id}
-                />
-            </div>
-            <div className="row">
-                <ViewText
-                    label={'Projectleider'}
-                    value={projectManager && projectManager.fullName}
-                    link={projectManager ? 'contact/' + projectManager.id : ''}
-                />
-                <ViewText label={'Adres voor'} value={opportunity.intake && opportunity.intake.fullAddress} />
-            </div>
-            <div className="row">
-                <ViewText
-                    label={'Externe Partij'}
-                    value={externalParty && externalParty.fullName}
-                    link={externalParty ? 'contact/' + externalParty.id : ''}
-                />
-            </div>
-
-
-                {organisationOrCoach && organisationOrCoach.typeId === 'organisation' && (
+            {opportunityAction.codeRef === 'quotation-request' ? (
+                <>
                     <div className="row">
                         <ViewText
-                            label={'Organisatie contactpersoon'}
-                            value={
-                                organisationOrCoach.contactPerson ? organisationOrCoach.contactPerson.contact.fullName : ''
-                            }
-                            link={
-                                organisationOrCoach.contactPerson
-                                    ? 'contact/' + organisationOrCoach.contactPerson.contact.id
-                                    : ''
-                            }
+                            label={'Organisatie/Coach'}
+                            value={organisationOrCoach && organisationOrCoach.fullName}
+                            link={organisationOrCoach ? 'contact/' + organisationOrCoach.id : ''}
+                        />
+                        <ViewText
+                            label={'Verzoek voor bewoner'}
+                            value={opportunity.intake && opportunity.intake.contact.fullName}
+                            link={'contact/' + opportunity.intake.contact.id}
                         />
                     </div>
-                )}
+                    <div className="row">
+                        <ViewText
+                            label={'Externe Partij'}
+                            value={externalParty && externalParty.fullName}
+                            link={externalParty ? 'contact/' + externalParty.id : ''}
+                        />
+                        <ViewText label={'Adres'} value={opportunity.intake && opportunity.intake.fullAddress} />
+                    </div>
+                </>
+            ) : null}
+            {opportunityAction.codeRef === 'visit' ? (
+                <>
+                    <div className="row">
+                        <ViewText
+                            label={'Organisatie/Coach'}
+                            value={organisationOrCoach && organisationOrCoach.fullName}
+                            link={organisationOrCoach ? 'contact/' + organisationOrCoach.id : ''}
+                        />
+                        <ViewText
+                            label={'Verzoek voor bewoner'}
+                            value={opportunity.intake && opportunity.intake.contact.fullName}
+                            link={'contact/' + opportunity.intake.contact.id}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Projectleider'}
+                            value={projectManager && projectManager.fullName}
+                            link={projectManager ? 'contact/' + projectManager.id : ''}
+                        />
+                        <ViewText label={'Adres'} value={opportunity.intake && opportunity.intake.fullAddress} />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Externe Partij'}
+                            value={externalParty && externalParty.fullName}
+                            link={externalParty ? 'contact/' + externalParty.id : ''}
+                        />
+                    </div>
+                </>
+            ) : null}
+            {opportunityAction.codeRef === 'subsidy-request' ? (
+                <>
+                    <div className="row">
+                        <ViewText
+                            label={'Projectleider'}
+                            value={projectManager && projectManager.fullName}
+                            link={projectManager ? 'contact/' + projectManager.id : ''}
+                        />
+                        <ViewText
+                            label={'Verzoek voor bewoner'}
+                            value={opportunity.intake && opportunity.intake.contact.fullName}
+                            link={'contact/' + opportunity.intake.contact.id}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Externe Partij'}
+                            value={externalParty && externalParty.fullName}
+                            link={externalParty ? 'contact/' + externalParty.id : ''}
+                        />
+                        <ViewText label={'Adres'} value={opportunity.intake && opportunity.intake.fullAddress} />
+                    </div>
+                </>
+            ) : null}
 
+            {organisationOrCoach && organisationOrCoach.typeId === 'organisation' && (
+                <div className="row">
+                    <ViewText
+                        label={'Organisatie contactpersoon'}
+                        value={
+                            organisationOrCoach.contactPerson ? organisationOrCoach.contactPerson.contact.fullName : ''
+                        }
+                        link={
+                            organisationOrCoach.contactPerson
+                                ? 'contact/' + organisationOrCoach.contactPerson.contact.id
+                                : ''
+                        }
+                    />
+                </div>
+            )}
 
             <div className="row">
                 <ViewText
@@ -105,17 +155,26 @@ const QuotationRequestDetailsFormGeneralView = props => {
                 <ViewText label={'Tijd afspraak'} value={datePlanned ? moment(datePlanned).format('HH:mm') : ''} />
             </div>
 
-            {opportunityAction.codeRef === 'quotation-request' ? (
+            {opportunityAction.codeRef === 'quotation-request' || opportunityAction.codeRef === 'visit' ? (
                 <div className="row">
                     <ViewText label={'Datum opname'} value={dateRecorded ? moment(dateRecorded).format('L') : ''} />
                     <ViewText label={'Tijd opname'} value={dateRecorded ? moment(dateRecorded).format('HH:mm') : ''} />
                 </div>
             ) : null}
 
-            <div className="row">
-                <ViewText label={'Datum uitgebracht'} value={dateReleased ? moment(dateReleased).format('L') : ''} />
-                <ViewText label={'Tijd uitgebracht'} value={dateReleased ? moment(dateReleased).format('HH:mm') : ''} />
-            </div>
+            {opportunityAction.codeRef === 'quotation-request' || opportunityAction.codeRef === 'subsidy-request' ? (
+                <div className="row">
+                    <ViewText
+                        label={'Datum uitgebracht'}
+                        value={dateReleased ? moment(dateReleased).format('L') : ''}
+                    />
+                    <ViewText
+                        label={'Tijd uitgebracht'}
+                        value={dateReleased ? moment(dateReleased).format('HH:mm') : ''}
+                    />
+                </div>
+            ) : null}
+
             {opportunityAction.codeRef === 'subsidy-request' ? (
                 <div className="row">
                     <ViewText
@@ -132,18 +191,22 @@ const QuotationRequestDetailsFormGeneralView = props => {
                     />
                 </div>
             ) : null}
-            <div className="row">
-                <ViewText
-                    label={'Datum akkoord extern'}
-                    value={dateApprovedExternal ? moment(dateApprovedExternal).format('L') : ''}
-                />
-            </div>
-            <div className="row">
-                <ViewText
-                    label={'Datum in behandeling'}
-                    value={dateUnderReview ? moment(dateUnderReview).format('L') : ''}
-                />
-            </div>
+            {opportunityAction.codeRef === 'quotation-request' || opportunityAction.codeRef === 'subsidy-request' ? (
+                <div className="row">
+                    <ViewText
+                        label={'Datum akkoord extern'}
+                        value={dateApprovedExternal ? moment(dateApprovedExternal).format('L') : ''}
+                    />
+                </div>
+            ) : null}
+            {opportunityAction.codeRef === 'quotation-request' || opportunityAction.codeRef === 'subsidy-request' ? (
+                <div className="row">
+                    <ViewText
+                        label={'Datum in behandeling'}
+                        value={dateUnderReview ? moment(dateUnderReview).format('L') : ''}
+                    />
+                </div>
+            ) : null}
 
             <div className="row">
                 <div className="col-sm-3">

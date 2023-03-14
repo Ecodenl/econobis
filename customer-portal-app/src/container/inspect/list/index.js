@@ -44,7 +44,7 @@ function Inspectlist(props) {
         <Container className={'content-section'}>
             <Row>
                 <Col>
-                    <h1 className="content-heading">Overzicht schouwingen</h1>
+                    <h1 className="content-heading">Overzicht buurtaanpak</h1>
                 </Col>
             </Row>
             <Row>
@@ -52,7 +52,7 @@ function Inspectlist(props) {
                     {isLoading ? (
                         <LoadingView />
                     ) : quotationRequestsArray.length === 0 ? (
-                        'Geen schouwingen beschikbaar.'
+                        'Geen gegevens beschikbaar.'
                     ) : (
                         <Table responsive>
                             <thead>

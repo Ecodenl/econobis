@@ -354,6 +354,30 @@ function MailboxDefaultFormGeneral({
                     />
                 )}
 
+                <PanelHeader>
+                    <span className="h5">
+                        <strong>Forward adres</strong>
+                    </span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <InputToggle
+                            label={'Actief'}
+                            name={'inboundMailgunEnabled'}
+                            value={values.inboundMailgunEnabled}
+                            onChangeAction={handleChange}
+                            onBlurAction={handleBlur}
+                        />
+                        {
+                            values.inboundMailgunEnabled && (
+                                <div className={'col-sm-6'}>
+                                    Forward email naar {values.inboundMailgunEmail} om deze in Econobis te ontvangen.
+                                </div>
+                            )
+                        }
+                    </div>
+                </PanelBody>
+
                 {values.id && (
                     <>
                         <PanelHeader>

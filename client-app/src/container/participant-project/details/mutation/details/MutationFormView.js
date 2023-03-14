@@ -2,6 +2,11 @@ import React from 'react';
 import moment from 'moment/moment';
 import { connect } from 'react-redux';
 import styled from '@emotion/styled';
+
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+import { trash } from 'react-icons-kit/fa/trash';
+
 moment.locale('nl');
 import moneyPresenter from '../../../../../helpers/MoneyPresenter';
 
@@ -96,14 +101,15 @@ const MutationFormView = ({
                     <StyledColumn columnWidth={'6%'}>
                         {showActionButtons && !financialOverviewDefinitive && permissions.manageFinancial ? (
                             <a role="button" onClick={openDetails}>
-                                <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                                <Icon class="mybtn-success" size={14} icon={pencil} />
                             </a>
                         ) : (
                             ''
                         )}
+                        &nbsp;
                         {allowDelete && showActionButtons && permissions.manageFinancial ? (
                             <a role="button" onClick={toggleDelete}>
-                                <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                                <Icon class="mybtn-danger" size={14} icon={trash} />
                             </a>
                         ) : (
                             ''

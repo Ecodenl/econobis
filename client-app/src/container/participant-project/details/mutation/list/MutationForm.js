@@ -7,6 +7,9 @@ import PanelBody from '../../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../../components/panel/PanelHeader';
 import { connect } from 'react-redux';
 
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
+
 class MutationForm extends Component {
     constructor(props) {
         super(props);
@@ -31,7 +34,7 @@ class MutationForm extends Component {
                     <span className="h5 text-bold">Mutaties</span>
                     {this.props.permissions.manageFinancial && !this.props.isTerminated && (
                         <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                            <span className="glyphicon glyphicon-plus" />
+                            <Icon size={14} icon={plus} />
                         </a>
                     )}
                 </PanelHeader>

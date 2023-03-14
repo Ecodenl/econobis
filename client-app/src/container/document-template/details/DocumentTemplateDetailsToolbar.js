@@ -31,12 +31,12 @@ class DocumentTemplateDetailsToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
-                        <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                         {permissions.createDocumentTemplate && (
                             <ButtonIcon iconName={'copy'} onClickAction={this.toggleDuplicate} />
                         )}
                         {permissions.createDocumentTemplate && (
-                            <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
+                            <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                         )}
                     </div>
                 </div>

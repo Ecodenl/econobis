@@ -8,6 +8,9 @@ import PanelHeader from '../../../../components/panel/PanelHeader';
 import ContactsAPI from '../../../../api/contact/ContactsAPI';
 import { connect } from 'react-redux';
 
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
+
 class ContactDetailsFormOccupations extends Component {
     constructor(props) {
         super(props);
@@ -46,7 +49,7 @@ class ContactDetailsFormOccupations extends Component {
                     <span className="h5 text-bold">Verbindingen</span>
                     {this.props.permissions.createContactOccupation && (
                         <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                            <span className="glyphicon glyphicon-plus" />
+                            <Icon size={14} icon={plus} />
                         </a>
                     )}
                 </PanelHeader>

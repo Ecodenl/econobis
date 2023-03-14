@@ -4,6 +4,9 @@ import { hashHistory } from 'react-router';
 import moment from 'moment';
 
 import { setCheckedContact } from '../../../actions/contact/ContactsActions';
+import Icon from 'react-icons-kit';
+import { trash } from 'react-icons-kit/fa/trash';
+import { pencil } from 'react-icons-kit/fa/pencil';
 
 class ContactsListItem extends Component {
     constructor(props) {
@@ -79,7 +82,7 @@ class ContactsListItem extends Component {
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''
@@ -88,12 +91,12 @@ class ContactsListItem extends Component {
                         <>
                             {typeId === 'organisation' && permissions && permissions.deleteOrganisation && (
                                 <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, fullName)}>
-                                    <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                                    <Icon className="mybtn-danger" size={14} icon={trash} />
                                 </a>
                             )}
                             {typeId === 'person' && permissions && permissions.deletePerson && (
                                 <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, fullName)}>
-                                    <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                                    <Icon className="mybtn-danger" size={14} icon={trash} />
                                 </a>
                             )}
                         </>

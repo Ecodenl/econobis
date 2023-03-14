@@ -6,6 +6,11 @@ import FinancialOverviewProjectAPI from '../../../../../api/financial/overview/F
 import ErrorModal from '../../../../../components/modal/ErrorModal';
 import FinancialOverviewProjectDelete from './FinancialOverviewProjectDelete';
 
+import Icon from 'react-icons-kit';
+import { check } from 'react-icons-kit/fa/check';
+import { trash } from 'react-icons-kit/fa/trash';
+import { remove } from 'react-icons-kit/fa/remove';
+
 function FinancialOverviewProjectItem({
     financialOverview,
     financialOverviewProject,
@@ -120,21 +125,21 @@ function FinancialOverviewProjectItem({
                 <td>
                     {financialOverview.definitive ? (
                         <a role="button">
-                            <span className="glyphicon glyphicon-ok mybtn-primary" />{' '}
+                            <Icon class="mybtn-primary" size={14} icon={check} />&nbsp;
                         </a>
                     ) : showActionButtons ? (
                         financialOverviewProject.definitive ? (
                             <a role="button" onClick={toggleMakeConcept}>
-                                <span className="glyphicon glyphicon-remove mybtn-danger" />
+                                <Icon class="mybtn-danger" size={14} icon={remove} />&nbsp;
                             </a>
                         ) : (
                             <>
                                 <a role="button" onClick={toggleMakeDefinitive}>
-                                    <span className="glyphicon glyphicon-ok mybtn-success" />
+                                    <Icon class="mybtn-success" size={14} icon={check} />
                                 </a>
                                 &nbsp;&nbsp;&nbsp;
                                 <a role="button" onClick={toggleDelete}>
-                                    <span className="glyphicon glyphicon-trash mybtn-danger" />
+                                    <Icon class="mybtn-danger" size={14} icon={trash} />
                                 </a>
                             </>
                         )

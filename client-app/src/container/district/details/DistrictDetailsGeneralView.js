@@ -21,6 +21,9 @@ export default function DistrictDetailsGeneralView({district, switchToEdit}) {
                         <ViewText label={'Verstuur automatisch e-mail aan coach bij maken afspraak'} value={district.sendEmailToCoachWhenPlanned ? 'Ja' : 'Nee'}/>
                         <ViewText label={'E-mail template'} value={district.emailToCoachTemplate?.name}/>
                     </div>
+                    <div className="row">
+                        <ViewText label={'Status'} value={district.closed ? 'Gesloten' : 'Open'}/>
+                    </div>
                 </PanelBody>
             </Panel>
         </div>

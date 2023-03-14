@@ -3,6 +3,10 @@ import moment from 'moment/moment';
 import { connect } from 'react-redux';
 moment.locale('nl');
 
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+import { trash } from 'react-icons-kit/fa/trash';
+
 const AddressDetailsFormAddressEnergySupplierView = props => {
     const {
         energySupplier,
@@ -38,14 +42,14 @@ const AddressDetailsFormAddressEnergySupplierView = props => {
                     <>
                         {props.permissions.updateContactAddress ? (
                             <a role="button" onClick={props.openEdit} title="Wijzigen Leveranciergegevens">
-                                <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                                <Icon class="mybtn-success" size={14} icon={pencil} />
                             </a>
                         ) : (
                             ''
                         )}
                         {props.permissions.deleteContactAddress ? (
                             <a role="button" onClick={props.toggleDelete} title="Verwijderen Leveranciergegevens">
-                                <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                                <Icon class="mybtn-danger" size={14} icon={trash} />
                             </a>
                         ) : (
                             ''

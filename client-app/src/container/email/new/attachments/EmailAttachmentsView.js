@@ -1,6 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import Icon from 'react-icons-kit';
+import { trash } from 'react-icons-kit/fa/trash';
+
 const EmailAttachmentsView = props => {
     const { name } = props.attachment;
 
@@ -14,7 +17,7 @@ const EmailAttachmentsView = props => {
             <div className="col-sm-1">
                 {props.showActionButtons ? (
                     <a role="button" onClick={props.toggleDelete}>
-                        <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                        <Icon class="mybtn-danger" size={14} icon={trash} />
                     </a>
                 ) : (
                     ''

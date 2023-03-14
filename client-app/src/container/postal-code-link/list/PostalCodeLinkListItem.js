@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PostalCodeLinkEditForm from './PostalCodeLinkEditForm';
 
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+import { trash } from 'react-icons-kit/fa/trash';
+
 class PostalCodeLinkListItem extends Component {
     constructor(props) {
         super(props);
@@ -47,17 +51,18 @@ class PostalCodeLinkListItem extends Component {
                     <td>
                         {this.state.showActionButtons ? (
                             <a role="button" onClick={this.toggleShowEdit}>
-                                <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                                <Icon class="mybtn-success" size={14} icon={pencil} />
                             </a>
                         ) : (
                             ''
                         )}
+                        &nbsp;
                         {this.state.showActionButtons ? (
                             <a
                                 role="button"
                                 onClick={this.props.showDeleteItemModal.bind(this, id, postalCodeMain, postalCodeLink)}
                             >
-                                <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                                <Icon class="mybtn-danger" size={14} icon={trash} />
                             </a>
                         ) : (
                             ''

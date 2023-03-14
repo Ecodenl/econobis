@@ -100,6 +100,17 @@ export default function DistrictGeneralEditForm({initialValues, onSubmit, cancel
                             )
                         }
                     </div>
+                    <div className="row">
+                        <InputToggle
+                            label={'Gesloten'}
+                            name={'closed'}
+                            value={values.closed}
+                            onChangeAction={event => {
+                                event.persist();
+                                setFieldValue(event.target.name, event.target.checked);
+                            }}
+                        />
+                    </div>
                 </PanelBody>
 
                 <PanelBody>

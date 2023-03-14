@@ -14,6 +14,7 @@ export default function DistrictsListApp() {
     const [isLoading, setLoading] = useState(true);
     const [districts, setDistricts] = useState([]);
     const [errorText, setErrorText] = useState('');
+    const [statusFilter, setStatusFilter] = useState(0);
 
     useEffect(() => {
         fetch();
@@ -47,6 +48,14 @@ export default function DistrictsListApp() {
         return '';
     }
 
+    const getFilteredDistricts = () => {
+        if(statusFilter === ''){
+            return districts;
+        }
+
+        return districts.filter(district => district.closed === (statusFilter === '1'));
+    }
+
     return (
         <Panel className="col-md-12">
             <PanelBody>
@@ -54,8 +63,8 @@ export default function DistrictsListApp() {
                     <div className="row">
                         <div className="col-md-4">
                             <div className="btn-group" role="group">
-                                <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={fetch}/>
-                                <ButtonIcon iconName={'glyphicon-plus'}
+                                <ButtonIcon iconName={'refresh'} onClickAction={fetch}/>
+                                <ButtonIcon iconName={'plus'}
                                             onClickAction={() => hashHistory.push(`/afspraak-kalender/nieuw`)}/>
                             </div>
                         </div>
@@ -70,18 +79,35 @@ export default function DistrictsListApp() {
                     <DataTable>
                         <DataTableHead>
                             <tr className="thead-title">
-                                <DataTableHeadTitle title={'Naam'} width={'95%'}/>
+                                <DataTableHeadTitle title={'Naam'} width={'65%'}/>
+                                <DataTableHeadTitle title={'Status'} width={'30%'}/>
                                 <DataTableHeadTitle title={''} width={'5%'}/>
                             </tr>
                         </DataTableHead>
                         <DataTableBody>
+                            <tr className="thead-filter">
+                                <th />
+                                <th>
+                                    <select className="form-control input-sm" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                                        <option />
+                                        <option key={1} value={0}>
+                                            {'Open'}
+                                        </option>
+                                        <option key={2} value={1}>
+                                            {'Gesloten'}
+                                        </option>
+                                    </select>
+                                </th>
+                                <th />
+                            </tr>
+
                             {loadingText() ? (
                                 <tr>
-                                    <td colSpan={2}>{loadingText()}</td>
+                                    <td colSpan={3}>{loadingText()}</td>
                                 </tr>
                             ) : (
-                                districts.map(district => {
-                                    return <DistrictListItem key={district.id} district={district} onDelete={fetch}/>;
+                                getFilteredDistricts().map(district => {
+                                    return <DistrictListItem key={district.id} district={district}/>;
                                 })
                             )}
                         </DataTableBody>

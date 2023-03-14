@@ -114,35 +114,10 @@ class RevenuePartsKwhController extends ApiController
 
         if(!$revenuePartsKwh->confirmed && $revenuePartsKwh->status == 'concept') {
             $valuesKwhData = $request->get("valuesKwh");
-            $recalculateNextPart = false;
 
-            if ($revenuePartsKwh->next_revenue_parts_kwh) {
-                $dateRegistrationDayAfterEnd = Carbon::parse($revenuePartsKwh->date_end)->addDay()->format('Y-m-d');
-                $revenueValuesKwhEnd = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
-                if ($revenueValuesKwhEnd
-                    && ($revenueValuesKwhEnd->kwh_start != $valuesKwhData['kwhEnd']
-                        || $revenueValuesKwhEnd->kwh_start_high != $valuesKwhData['kwhEndHigh']
-                        || $revenueValuesKwhEnd->kwh_start_low != $valuesKwhData['kwhEndLow'])
-                ) {
-                    $recalculateNextPart = true;
-                }
-            }
             $revenuesKwhHelper = new RevenuesKwhHelper();
-            $revenuesKwhHelper->createOrUpdateRevenueValuesKwh($valuesKwhData, $revenuePartsKwh, false);
+            $revenuesKwhHelper->createOrUpdateRevenueValuesKwh($valuesKwhData, $revenuePartsKwh);
             UpdateRevenuePartsKwh::dispatch($revenuePartsKwh, Auth::id());
-            if ($recalculateNextPart) {
-                $valuesKwhDataNext = [
-                    'kwhStart' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_start['kwhStart'],
-                    'kwhStartHigh' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_start['kwhStartHigh'],
-                    'kwhStartLow' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_start['kwhStartLow'],
-                    'kwhEnd' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_end['kwhEnd'],
-                    'kwhEndHigh' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_end['kwhEndHigh'],
-                    'kwhEndLow' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_end['kwhEndLow'],
-                ];
-                $revenuesKwhHelper = new RevenuesKwhHelper();
-                $revenuesKwhHelper->createOrUpdateRevenueValuesKwh($valuesKwhDataNext, $revenuePartsKwh->next_revenue_parts_kwh, true);
-                UpdateRevenuePartsKwh::dispatch($revenuePartsKwh->next_revenue_parts_kwh, Auth::id());
-            }
         }
 
         if($revenuePartsKwh->confirmed && $revenuePartsKwh->status == 'concept') {
@@ -855,6 +830,16 @@ class RevenuePartsKwhController extends ApiController
                 foreach ($partKwh->conceptValuesKwh() as $conceptValueKwh) {
                     $conceptValueKwh->status = 'confirmed';
                     $conceptValueKwh->save();
+                }
+
+                // When processing last part, also set endvalue to confirmed.
+                if( $partKwh->date_end && $partKwh->date_end == $partKwh->revenuesKwh->date_end ){
+                    $dateRegistrationDayAfterEnd = Carbon::parse($partKwh->date_end)->addDay()->format('Y-m-d');
+                    $endRevenueValuesKwhOriginal = RevenueValuesKwh::where('revenue_id', $partKwh->revenue_id)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
+                    if($endRevenueValuesKwhOriginal){
+                        $endRevenueValuesKwhOriginal->status = 'confirmed';
+                        $endRevenueValuesKwhOriginal->save();
+                    }
                 }
             }
         }

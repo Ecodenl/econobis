@@ -5,6 +5,9 @@ import Draggable from 'react-draggable';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
+
 class GeneralSearchModal extends Component {
     constructor(props) {
         super(props);
@@ -78,7 +81,7 @@ class GeneralSearchModal extends Component {
                             <div className="col-md-12">
                                 <div className="nav navbar-nav btn-group" role="group">
                                     <button className="btn btn-success btn-sm" data-toggle="dropdown">
-                                        <span className="glyphicon glyphicon-plus" /> Nieuw contact
+                                        <Icon size={14} icon={plus} /> Nieuw contact
                                     </button>
                                     <ul className="dropdown-menu">
                                         {permissions.createPerson && (

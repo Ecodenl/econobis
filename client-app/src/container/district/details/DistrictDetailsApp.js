@@ -6,9 +6,11 @@ import {browserHistory} from "react-router";
 import DistrictAPI from "../../../api/district/DistrictAPI";
 import DistrictDetailsGeneral from "./DistrictDetailsGeneral";
 import DistrictDetailsCoaches from "./DistrictDetailsCoaches";
+import DistrictListItemDeleteModal from "./DistrictListItemDeleteModal";
 
 export default function DistrictDetailsApp(props) {
     const [district, setDistrict] = useState({coaches: []});
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     useEffect(() => {
         fetch();
@@ -33,9 +35,9 @@ export default function DistrictDetailsApp(props) {
                             <div className="row">
                                 <div className="col-md-4">
                                     <div className="btn-group" role="group">
-                                        <ButtonIcon iconName={'glyphicon-arrow-left'}
+                                        <ButtonIcon iconName={'arrowLeft'}
                                                     onClickAction={browserHistory.goBack}/>
-                                    </div>
+                                        <DistrictListItemDeleteModal district={district} onDelete={browserHistory.goBack} setShowDeleteModal={setShowDeleteModal} showDeleteModal={showDeleteModal}/>                                    </div>
                                 </div>
                                 <div className="col-md-4">
                                     <h4 className="text-center">Instellingen Afspraakkalender: {district.name}</h4>

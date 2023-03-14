@@ -31,9 +31,9 @@ class QuotationRequestController
             $quotationRequests = $portalUser->contact->quotationRequests;
         }
 
-        return response()->json($quotationRequests->map(function (QuotationRequest $quotationRequest) {
+        return response()->json($quotationRequests->sortByDesc('date_planned')->map(function (QuotationRequest $quotationRequest) {
             return $this->getJson($quotationRequest);
-        }));
+        })->values());
     }
 
     public function view(QuotationRequest $quotationRequest)
@@ -62,6 +62,11 @@ class QuotationRequestController
             'dateReleased' => ['nullable', 'date'],
             'dateApprovedProjectManager' => ['nullable', 'date'],
             'dateApprovedExternal' => ['nullable', 'date'],
+            'opportunityStatusId' => ['integer'],
+            'externalpartyNote' => ['nullable', 'string'],
+            'statusId' => ['integer'],
+            'dateUnderReview' => ['nullable', 'date'],
+            'quotationText' => ['nullable', 'string'],
         ]);
 
         $quotationRequest->date_planned = $request->input('datePlanned') ?: null;
@@ -70,12 +75,20 @@ class QuotationRequestController
         $quotationRequest->date_approved_external = $request->input('dateApprovedExternal') ?: null;
         $quotationRequest->date_approved_project_manager = $request->input('dateApprovedProjectManager') ?: null;
         $quotationRequest->updated_by_id = $responsibleUserId;
+        $quotationRequest->externalparty_note = $request->input('externalpartyNote');
+        $quotationRequest->quotation_text = $request->input('quotationText');
+        $quotationRequest->status_id = $request->input('statusId');
+        $quotationRequest->date_under_review = $request->input('dateUnderReview') ?: null;
 
         $sendMailPlanned = ($quotationRequest->isDirty('date_planned') && !!$quotationRequest->date_planned);
         $sendMailRecorded = ($quotationRequest->isDirty('date_recorded') && !!$quotationRequest->date_recorded);
         $sendMailReleased = ($quotationRequest->isDirty('date_released') && !!$quotationRequest->date_released);
 
         $quotationRequest->save();
+
+        $opportunity = $quotationRequest->opportunity;
+        $opportunity->status_id = $request->input('opportunityStatusId');
+        $opportunity->save();
 
         if ($sendMailPlanned) {
             $this->sendInspectionPlannedMail($quotationRequest);
@@ -140,6 +153,7 @@ class QuotationRequestController
                     ],
                 ],
                 'status' => [
+                    'id' => $quotationRequest->opportunity->status->id,
                     'name' => $quotationRequest->opportunity->status->name,
                 ]
             ],
@@ -149,6 +163,14 @@ class QuotationRequestController
             'dateApprovedExternal' => $quotationRequest->date_approved_external,
             'dateApprovedProjectManager' => $quotationRequest->date_approved_project_manager,
             'dateApprovedClient' => $quotationRequest->date_approved_client,
+            'quotationText' => $quotationRequest->quotation_text,
+            'externalpartyNote' => $quotationRequest->externalparty_note,
+            'status' => [
+                'id' => $quotationRequest->status->id,
+                'name' => $quotationRequest->status->name,
+                'codeRef' => $quotationRequest->status->code_ref,
+            ],
+            'dateUnderReview' => $quotationRequest->date_under_review,
         ];
     }
 

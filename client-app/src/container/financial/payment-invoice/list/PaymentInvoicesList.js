@@ -118,13 +118,13 @@ class PaymentInvoicesList extends Component {
                     <div className="col-md-4">
                         <div className="btn-group btn-group-flex" role="group">
                             <ButtonIcon
-                                iconName={'glyphicon-refresh'}
+                                iconName={'refresh'}
                                 onClickAction={this.resetPaymentInvoiceFilters}
                             />
                         </div>
                     </div>
                     <div className="col-md-4">
-                        <h3 className="text-center table-title">Uitkering nota's</h3>
+                        <h3 className="text-center table-title">Uitkering nota's.</h3>
                     </div>
                     <div className="col-md-4">
                         <div className="row">

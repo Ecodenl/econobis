@@ -7,6 +7,9 @@ import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
 import fileDownload from 'js-file-download';
 import Icon from 'react-icons-kit';
 import { download } from 'react-icons-kit/fa/download';
+import { trash } from 'react-icons-kit/fa/trash';
+import { eye } from 'react-icons-kit/fa/eye';
+import { pencil } from 'react-icons-kit/fa/pencil';
 
 class DocumentsListItem extends Component {
     constructor(props) {
@@ -70,28 +73,28 @@ class DocumentsListItem extends Component {
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons && filename.toLowerCase().endsWith('.pdf') ? (
                         <a role="button" onClick={() => hashHistory.push(`/document/inzien/${id}`)}>
-                            <span className="glyphicon glyphicon-eye-open mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={eye} />
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.download(id)}>
-                            <Icon className="mybtn-success" size={12} icon={download} />
+                            <Icon className="mybtn-success" size={14} icon={download} />
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons && this.props.permissions.createDocument ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, filename)}>
-                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                            <Icon className="mybtn-danger" size={14} icon={trash} />
                         </a>
                     ) : (
                         ''

@@ -956,20 +956,20 @@ class ContactController extends ApiController
      */
     protected function checkSplitRevenuePart(AddressEnergySupplier $primaryAddressEnergySupplierElectricityNew): void
     {
-//        $revenuePartsKwhArray = [];
-//        if (Carbon::parse($primaryAddressEnergySupplierElectricityNew->end_date_previous)->format('Y-m-d') != '1900-01-01') {
-//            $participations = $primaryAddressEnergySupplierElectricityNew->address->participations;
-//            foreach ($participations as $participation) {
-//                $projectType = $participation->project->projectType;
-//                if ($projectType->code_ref === 'postalcode_link_capital') {
-//                    $revenuesKwhHelper = new RevenuesKwhHelper();
-//                    $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkRevenuePartsKwh($participation, $primaryAddressEnergySupplierElectricityNew->member_since, $primaryAddressEnergySupplierElectricityNew);
-//                    if ($splitRevenuePartsKwhResponse) {
-//                        $revenuePartsKwhArray [] = $splitRevenuePartsKwhResponse;
-//                    }
-//                }
-//            }
-//        }
+        $revenuePartsKwhArray = [];
+        if (Carbon::parse($primaryAddressEnergySupplierElectricityNew->end_date_previous)->format('Y-m-d') != '1900-01-01') {
+            $participations = $primaryAddressEnergySupplierElectricityNew->address->participations;
+            foreach ($participations as $participation) {
+                $projectType = $participation->project->projectType;
+                if ($projectType->code_ref === 'postalcode_link_capital') {
+                    $revenuesKwhHelper = new RevenuesKwhHelper();
+                    $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkRevenuePartsKwh($participation, $primaryAddressEnergySupplierElectricityNew->member_since, $primaryAddressEnergySupplierElectricityNew);
+                    if ($splitRevenuePartsKwhResponse) {
+                        $revenuePartsKwhArray [] = $splitRevenuePartsKwhResponse;
+                    }
+                }
+            }
+        }
     }
 
 }

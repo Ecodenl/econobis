@@ -1,6 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+
 const TaskDetailFormPropertiesView = props => {
     const { value, property } = props.property;
 
@@ -17,7 +20,7 @@ const TaskDetailFormPropertiesView = props => {
             <div className="col-sm-1">
                 {props.showActionButtons && props.permissions.manageTask ? (
                     <a role="button" onClick={props.openEdit}>
-                        <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                        <Icon class="mybtn-success" size={14} icon={pencil} />
                     </a>
                 ) : (
                     ''

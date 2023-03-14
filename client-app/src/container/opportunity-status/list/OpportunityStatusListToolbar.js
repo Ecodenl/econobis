@@ -8,7 +8,7 @@ const OpportunityStatusListToolbar = ({ opportunityStatusCount, refreshOpportuni
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={refreshOpportunityStatusData} />
+                    <ButtonIcon iconName={'refresh'} onClickAction={refreshOpportunityStatusData} />
                 </div>
             </div>
             <div className="col-md-4">

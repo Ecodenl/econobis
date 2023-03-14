@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+
 class MailgunDomainsListItem extends Component {
     constructor(props) {
         super(props);
@@ -45,7 +48,7 @@ class MailgunDomainsListItem extends Component {
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <Icon class="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''

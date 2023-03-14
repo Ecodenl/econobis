@@ -5,6 +5,9 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import ParticipationsList from './ParticipationsList';
 
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
+
 const ParticipationHarmonica = ({
     toggleShowList,
     showParticipationsList,
@@ -23,7 +26,7 @@ const ParticipationHarmonica = ({
                 <div className="col-sm-2">
                     {permissions.manageParticipation && (
                         <a role="button" className="pull-right" onClick={newParticipation}>
-                            <span className="glyphicon glyphicon-plus glyphicon-white" />
+                            <Icon class="harmonica-button" size={14} icon={plus} />
                         </a>
                     )}
                 </div>

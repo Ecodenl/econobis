@@ -2,6 +2,9 @@ import React, {useState} from 'react';
 import Modal from "../../../components/modal/Modal";
 import DistrictAPI from "../../../api/district/DistrictAPI";
 
+import Icon from 'react-icons-kit';
+import { trash } from 'react-icons-kit/fa/trash';
+
 export default function DistrictDetailsCoachesListItem({district, coach, onDetach}) {
     const [isHovered, setIsHovered] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -26,7 +29,7 @@ export default function DistrictDetailsCoachesListItem({district, coach, onDetac
                 <div className="col-sm-1">
                     {isHovered && (
                         <a role="button" onClick={() => setShowDeleteModal(true)}>
-                            <span className="glyphicon glyphicon-trash mybtn-danger" />
+                            <Icon class="mybtn-danger" size={14} icon={trash} />
                         </a>
                     )}
                 </div>

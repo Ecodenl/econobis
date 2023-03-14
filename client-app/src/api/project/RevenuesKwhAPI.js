@@ -25,6 +25,12 @@ export default {
             });
     },
 
+    recalculateRevenuesDistribution: (id) => {
+        const requestUrl = `${URL_REVENUES_KWH}/${id}/recalculateRevenuesDistribution`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
     storeRevenuesKwh: data => {
         const requestUrl = `${URL_REVENUES_KWH}`;
 

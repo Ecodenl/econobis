@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
+import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './DistrictCalendar.css';
@@ -134,7 +134,7 @@ const DistrictCalendarApp = props => {
                 <div className="row margin-10-bottom">
                     <div className="col-md-4">
                         <div className="btn-group" role="group">
-                            <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
+                            <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                         </div>
                     </div>
                     <div className="col-md-4">
@@ -191,7 +191,7 @@ const DistrictCalendarApp = props => {
                         time: 'Tijd',
                         showMore: total => `+${total} meer`,
                     }}
-                    min={new Date('2018-01-01 06:00:00')}
+                    min={new Date(`${moment().format('YYYY-MM-DD')} 06:00:00`)}
                 />
             </PanelBody>
         </Panel>

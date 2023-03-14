@@ -9,6 +9,9 @@ import axios from 'axios';
 import FinancialOverviewProjectAPI from '../../../../../api/financial/overview/FinancialOverviewProjectAPI';
 import FinancialOverviewDetailsAPI from '../../../../../api/financial/overview/FinancialOverviewDetailsAPI';
 
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
+
 function FinancialOverviewProjectApp({ financialOverview, callFetchFinancialOverviewDetails }) {
     const [showNew, setShowNew] = useState(false);
     const [financialOverviewProjects, setFinancialOverviewProjects] = useState([]);
@@ -71,7 +74,7 @@ function FinancialOverviewProjectApp({ financialOverview, callFetchFinancialOver
                 <span className="h5 text-bold">Projecten</span>
                 {financialOverview && !financialOverview.definitive && (
                     <a role="button" className="pull-right" onClick={toggleShowNew}>
-                        <span className="glyphicon glyphicon-plus" />
+                        <Icon size={14} icon={plus} />
                     </a>
                 )}
             </PanelHeader>

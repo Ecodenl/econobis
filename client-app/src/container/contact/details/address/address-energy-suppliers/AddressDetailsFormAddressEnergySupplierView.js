@@ -42,14 +42,14 @@ const AddressDetailsFormAddressEnergySupplierView = props => {
                     <>
                         {props.permissions.updateContactAddress ? (
                             <a role="button" onClick={props.openEdit} title="Wijzigen Leveranciergegevens">
-                                <Icon class="mybtn-success" size={14} icon={pencil} />
+                                <Icon className="mybtn-success" size={14} icon={pencil} />
                             </a>
                         ) : (
                             ''
                         )}
                         {props.permissions.deleteContactAddress ? (
                             <a role="button" onClick={props.toggleDelete} title="Verwijderen Leveranciergegevens">
-                                <Icon class="mybtn-danger" size={14} icon={trash} />
+                                <Icon className="mybtn-danger" size={14} icon={trash} />
                             </a>
                         ) : (
                             ''

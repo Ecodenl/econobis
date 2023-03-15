@@ -38,7 +38,7 @@ const WebformDetailsFormGeneralView = props => {
                             <div className="col-sm-6" style={{ paddingRight: '5px' }} onClick={null}>
                                 {apiKey}
                                 <CopyToClipboard text={apiKey}>
-                                    <Icon class="mybtn-success pull-right" size={14} icon={copy} role="button" onClick={null} title={'Kopieer sleutel'} />
+                                    <Icon className="mybtn-success pull-right" size={14} icon={copy} role="button" onClick={null} title={'Kopieer sleutel'} />
                                 </CopyToClipboard>
                             </div>
                         </div>

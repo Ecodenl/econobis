@@ -145,13 +145,13 @@ const PortalDashboardWidgetOrderRow = ({
                                                     hashHistory.push(`/portal-instellingen-dashboard-widget/${row.id}`)
                                                 }
                                             >
-                                                <Icon class="mybtn-success" size={14} icon={pencil} />
+                                                <Icon className="mybtn-success" size={14} icon={pencil} />
                                             </a>
                                         )}
                                         &nbsp;
                                         {!staticWidgets.includes(cell.value) && showActionButtons ? (
                                             <a role="button" onClick={() => setShowDelete(true)}>
-                                                <Icon class="mybtn-danger" size={14} icon={trash} />
+                                                <Icon className="mybtn-danger" size={14} icon={trash} />
                                             </a>
                                         ) : null}
                                     </td>

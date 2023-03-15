@@ -20,7 +20,7 @@ const TaskHarmonica = ({ toggleShowList, showTasksList, newTask, taskCount, perm
                 <div className={'col-sm-2'}>
                     {permissions.manageTask && (
                         <a role="button" className="pull-right" onClick={newTask}>
-                            <Icon class="harmonica-button" size={14} icon={plus} />
+                            <Icon className="harmonica-button" size={14} icon={plus} />
                         </a>
                     )}
                 </div>

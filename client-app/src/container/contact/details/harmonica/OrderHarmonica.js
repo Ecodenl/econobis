@@ -20,7 +20,7 @@ const OrderHarmonica = ({ toggleShowList, showOrdersList, newOrder, orderCount, 
                 <div className="col-sm-2">
                     {permissions.manageFinancial && (
                         <a role="button" className="pull-right" onClick={newOrder}>
-                            <Icon class="harmonica-button" size={14} icon={plus} />
+                            <Icon className="harmonica-button" size={14} icon={plus} />
                         </a>
                     )}
                 </div>

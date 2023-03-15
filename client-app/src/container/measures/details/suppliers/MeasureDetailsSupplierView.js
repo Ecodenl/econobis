@@ -21,7 +21,7 @@ const MeasureDetailsSupplierView = props => {
             <div className="col-sm-1">
                 {props.showActionButtons && props.permissions.manageMeasure ? (
                     <a role="button" onClick={props.toggleDelete}>
-                        <Icon class="mybtn-danger" size={14} icon={trash} />
+                        <Icon className="mybtn-danger" size={14} icon={trash} />
                     </a>
                 ) : (
                     ''

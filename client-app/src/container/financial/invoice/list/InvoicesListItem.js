@@ -208,28 +208,28 @@ class InvoicesListItem extends Component {
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)} title="Open nota">
-                            <Icon class="mybtn-success" size={14} icon={pencil} />&nbsp;
+                            <Icon className="mybtn-success" size={14} icon={pencil} />&nbsp;
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.viewItem(id)} title="Preview nota">
-                            <Icon class="mybtn-success" size={14} icon={eye} />&nbsp;
+                            <Icon className="mybtn-success" size={14} icon={eye} />&nbsp;
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons && this.props.statusId === 'to-send' && !compatibleStatus ? (
                         <a role="button" onClick={() => this.showSend()} title="Verstuur nota">
-                            <Icon class="mybtn-success" size={14} icon={envelopeO} />&nbsp;
+                            <Icon className="mybtn-success" size={14} icon={envelopeO} />&nbsp;
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons && this.props.statusId === 'error-sending' && !compatibleStatus ? (
                         <a role="button" onClick={() => this.showSend()} title="Verstuur nota opnieuw">
-                            <Icon class="mybtn-success" size={14} icon={envelopeO} />&nbsp;
+                            <Icon className="mybtn-success" size={14} icon={envelopeO} />&nbsp;
                         </a>
                     ) : (
                         ''
@@ -239,7 +239,7 @@ class InvoicesListItem extends Component {
                     this.state.showActionButtons &&
                     (this.props.statusId === 'sent' || this.props.statusId === 'exported') ? (
                         <a role="button" onClick={() => this.showSetPaid()} title="Zet op betaald">
-                            <Icon class="mybtn-success" size={14} icon={euro} />&nbsp;
+                            <Icon className="mybtn-success" size={14} icon={euro} />&nbsp;
                         </a>
                     ) : (
                         ''
@@ -249,7 +249,7 @@ class InvoicesListItem extends Component {
                     !this.props.dateExhortation &&
                     !this.props.isPaidByMollie ? (
                         <a role="button" onClick={() => this.showSendNotification()} title="Verstuur herinnering">
-                            <Icon class="mybtn-success" size={14} icon={bullhorn} />&nbsp;
+                            <Icon className="mybtn-success" size={14} icon={bullhorn} />&nbsp;
                         </a>
                     ) : (
                         ''
@@ -264,7 +264,7 @@ class InvoicesListItem extends Component {
                     this.props.statusId !== 'paid' &&
                     this.props.statusId !== 'irrecoverable' ? (
                         <a role="button" onClick={() => this.showSetIrrecoverable()} title="Zet op oninbaar">
-                            <Icon class="mybtn-success" size={14} icon={remove} />
+                            <Icon className="mybtn-success" size={14} icon={remove} />
                         </a>
                     ) : (
                         ''
@@ -275,7 +275,7 @@ class InvoicesListItem extends Component {
                             onClick={this.props.showDeleteItemModal.bind(this, id, number)}
                             title="Verwijder nota"
                         >
-                            <Icon class="mybtn-danger" size={14} icon={trash} />
+                            <Icon className="mybtn-danger" size={14} icon={trash} />
                         </a>
                     ) : (
                         ''

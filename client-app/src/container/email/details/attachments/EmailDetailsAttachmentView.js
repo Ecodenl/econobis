@@ -78,21 +78,21 @@ class EmailDetailsAttachmentView extends Component {
                 <div className="col-sm-1">
                     {this.props.showActionButtons ? (
                         <a role="button" onClick={() => this.downloadItem(id, name)}>
-                            <Icon class="mybtn-success" size={14} icon={fileO} />
+                            <Icon className="mybtn-success" size={14} icon={fileO} />
                         </a>
                     ) : (
                         ''
                     )}
                     {this.props.showActionButtons ? (
                         <a role="button" onClick={() => this.saveToAlfresco(id)}>
-                            <Icon class="mybtn-success" size={14} icon={share} />
+                            <Icon className="mybtn-success" size={14} icon={share} />
                         </a>
                     ) : (
                         ''
                     )}
                     {this.props.showActionButtons && hasValidExtension ? (
                         <a role="button" onClick={() => this.viewItem(id, name)}>
-                            <Icon class="mybtn-success" size={14} icon={eye} />
+                            <Icon className="mybtn-success" size={14} icon={eye} />
                         </a>
                     ) : (
                         ''

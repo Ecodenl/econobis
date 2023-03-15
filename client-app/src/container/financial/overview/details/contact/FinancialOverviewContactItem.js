@@ -53,7 +53,7 @@ function FinancialOverviewContactItem({
             <td>{emailedTo}</td>
             <td>
                 <a role="button" onClick={() => getFinancialOverviewPDF(id, statusId)}>
-                    <Icon class="mybtn-success" size={14} icon={eye} />
+                    <Icon className="mybtn-success" size={14} icon={eye} />
                 </a>
             </td>
         </tr>

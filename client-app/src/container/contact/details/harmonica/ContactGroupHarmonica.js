@@ -18,7 +18,7 @@ const ContactGroupHarmonica = ({ toggleShowList, showContactGroupsList, toggleAd
                 </div>
                 <div className={'col-sm-2'}>
                     <a role="button" className="pull-right" onClick={toggleAddGroup}>
-                        <Icon class="harmonica-button" size={14} icon={plus} />
+                        <Icon className="harmonica-button" size={14} icon={plus} />
                     </a>
                 </div>
                 <div className="col-sm-12">{showContactGroupsList && <ContactGroupsList />}</div>

@@ -54,7 +54,7 @@ class PaymentInvoicesListItem extends Component {
                 <td>
                     {this.state.showActionButtons && this.props.statusId === 'sent' ? (
                         <a role="button" onClick={() => this.showSetNotPaid()} title="Zet op niet betaald">
-                            <Icon class="mybtn-success" size={14} icon={remove} />&nbsp;
+                            <Icon className="mybtn-success" size={14} icon={remove} />&nbsp;
                         </a>
                     ) : (
                         ''

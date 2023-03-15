@@ -94,7 +94,7 @@ class ContactGroupsListItem extends Component {
                 <td>
                     {this.state.showActionButtons && permissions.manageGroup ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <Icon class="mybtn-success" size={14} icon={pencil} />
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''
@@ -102,7 +102,7 @@ class ContactGroupsListItem extends Component {
                     &nbsp;
                     {this.state.showActionButtons && permissions.manageGroup && !isUsedInComposedGroup ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name, type.id)}>
-                            <Icon class="mybtn-danger" size={14} icon={trash} />
+                            <Icon className="mybtn-danger" size={14} icon={trash} />
                         </a>
                     ) : (
                         ''

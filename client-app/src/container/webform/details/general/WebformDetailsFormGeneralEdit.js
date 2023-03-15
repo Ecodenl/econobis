@@ -140,7 +140,7 @@ class WebformDetailsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChange}
                                 readOnly={true}
                             />
-                            <Icon class="mybtn-success" size={14} icon={refresh} style={{ 'margin-left': '15px' }} role="button" onClick={this.refreshKey} title={'Ververs sleutel'} />
+                            <Icon className="mybtn-success" size={14} icon={refresh} style={{ 'margin-left': '15px' }} role="button" onClick={this.refreshKey} title={'Ververs sleutel'} />
 
                         </div>
                         <div className="row">

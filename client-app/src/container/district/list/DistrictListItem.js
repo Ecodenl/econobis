@@ -40,11 +40,11 @@ export default function DistrictListItem({district}) {
                 {showActionButtons && (
                     <>
                         <a role="button" onClick={openCalender}>
-                            <Icon class="mybtn-success" size={14} icon={calendar} />
+                            <Icon className="mybtn-success" size={14} icon={calendar} />
                         </a>
                         {' '}
                         <a role="button" onClick={openItem}>
-                            <Icon class="mybtn-success" size={14} icon={pencil} />
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
                         </a>
                     </>
                 )}

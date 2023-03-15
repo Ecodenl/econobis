@@ -20,7 +20,7 @@ const IntakeHarmonica = ({ toggleShowList, showIntakesList, newIntake, intakeCou
                 <div className="col-sm-2">
                     {permissions.manageIntake && (
                         <a role="button" className="pull-right" onClick={newIntake}>
-                            <Icon class="harmonica-button" size={14} icon={plus} />
+                            <Icon className="harmonica-button" size={14} icon={plus} />
                         </a>
                     )}
                 </div>

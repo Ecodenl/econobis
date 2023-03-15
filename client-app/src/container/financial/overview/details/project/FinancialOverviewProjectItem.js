@@ -125,21 +125,21 @@ function FinancialOverviewProjectItem({
                 <td>
                     {financialOverview.definitive ? (
                         <a role="button">
-                            <Icon class="mybtn-primary" size={14} icon={check} />&nbsp;
+                            <Icon className="mybtn-primary" size={14} icon={check} />&nbsp;
                         </a>
                     ) : showActionButtons ? (
                         financialOverviewProject.definitive ? (
                             <a role="button" onClick={toggleMakeConcept}>
-                                <Icon class="mybtn-danger" size={14} icon={remove} />&nbsp;
+                                <Icon className="mybtn-danger" size={14} icon={remove} />&nbsp;
                             </a>
                         ) : (
                             <>
                                 <a role="button" onClick={toggleMakeDefinitive}>
-                                    <Icon class="mybtn-success" size={14} icon={check} />
+                                    <Icon className="mybtn-success" size={14} icon={check} />
                                 </a>
                                 &nbsp;&nbsp;&nbsp;
                                 <a role="button" onClick={toggleDelete}>
-                                    <Icon class="mybtn-danger" size={14} icon={trash} />
+                                    <Icon className="mybtn-danger" size={14} icon={trash} />
                                 </a>
                             </>
                         )

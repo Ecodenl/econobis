@@ -25,7 +25,7 @@ const AdministrationDetailsSepasView = props => {
                 <div className="col-sm-1">
                     {props.showActionButtons && props.permissions.manageFinancial ? (
                         <a role="button" onClick={() => props.downloadSepa(id)}>
-                            <Icon class="mybtn-success" size={14} icon={fileO} />
+                            <Icon className="mybtn-success" size={14} icon={fileO} />
                         </a>
                     ) : (
                         ''
@@ -33,7 +33,7 @@ const AdministrationDetailsSepasView = props => {
                     &nbsp;
                     {props.showActionButtons && props.permissions.manageFinancial ? (
                         <a role="button" onClick={props.toggleDelete}>
-                            <Icon class="mybtn-danger" size={14} icon={trash} />
+                            <Icon className="mybtn-danger" size={14} icon={trash} />
                         </a>
                     ) : (
                         ''

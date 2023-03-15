@@ -20,7 +20,7 @@ const TaskHarmonica = ({ toggleShowList, showTasksList, newTask, taskCount, perm
                 <div className={'col-sm-2'}>
                     {permissions.manageTask && (
                         <div className="pull-right">
-                            <Icon class="harmonica-button" size={14} icon={plus} data-toggle="dropdown" role="button" />
+                            <Icon className="harmonica-button" size={14} icon={plus} data-toggle="dropdown" role="button" />
                             <ul className="dropdown-menu">
                                 <li>
                                     <a className="btn" onClick={() => newTask('open')}>

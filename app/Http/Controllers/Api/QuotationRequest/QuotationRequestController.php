@@ -26,6 +26,7 @@ use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\QuotationRequest\GridQuotationRequest;
 use App\Http\Resources\QuotationRequest\QuotationRequestPeek;
 use Carbon\Carbon;
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
@@ -33,6 +34,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use App\Helpers\Hoomdossier\HoomdossierHelper;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class QuotationRequestController extends ApiController
 {
@@ -349,42 +352,30 @@ class QuotationRequestController extends ApiController
         $this->creatEnergyCoachOccupation($quotationRequest);
 
         //if contact has a hoom_account_id, coach is set and coach has a hoom_account_id connect the coach to the hoom dossier
-        if(
-            $quotationRequest->organisationOrCoach->exists() AND
-            $quotationRequest->organisationOrCoach->hoom_account_id != null AND
-            $quotationRequest->opportunity->exists() AND
-            $quotationRequest->opportunity->intake->exists() AND
-            $quotationRequest->opportunity->intake->contact->hoom_account_id != null
-        ) {
-            $contact = $quotationRequest->opportunity->intake->contact;
-            $coach = $quotationRequest->organisationOrCoach;
-
-            $payload = [
-                'building_coach_statuses' => [
-                    'coach_contact_id' => $coach->hoom_account_id,
-                    'resident_contact_id' => $contact->hoom_account_id,
-                ]
-            ];
-
-            $client = new Client;
-            $headers = [
-                'Authorization' => 'Bearer ' . Cooperation::first()->hoom_key,
-                'Accept'        => 'application/json',
-            ];
-
-            try {
-                $response = $client->post('https://test-hoom.hoomdossier.nl/api/v1/building-coach-status/', ['headers' => $headers, 'json' => $payload]);
-                return $response->getBody();
-            } catch (RequestException $e) {
-                if ($e->hasResponse()) {
-                    Log::error('Er is iets misgegaan met het koppelen van een coach aan het Hoomdossier van contact ' . $contact->id .  ', melding: ' . $e->getCode() . ' - ' . $e->getResponse()->getBody() );
-                    abort($e->getCode(), $e->getResponse()->getBody());
-                } else {
-                    Log::error('Er is iets misgegaan met het koppelen van een coach aan het Hoomdossier van contact ' . $contact->id .  ', melding: ' . $e->getCode() );
-                    abort($e->getCode(), 'Er is iets misgegaan met het koppelen van een coach aan het Hoomdossier');
-                }
-            }
-        }
+//        if(
+//            $quotationRequest->organisationOrCoach->exists() AND
+//            $quotationRequest->organisationOrCoach->hoom_account_id != null AND
+//            $quotationRequest->opportunity->exists() AND
+//            $quotationRequest->opportunity->intake->exists() AND
+//            $quotationRequest->opportunity->intake->contact->hoom_account_id != null
+//        ) {
+//            $contact = $quotationRequest->opportunity->intake->contact;
+//            $coach = $quotationRequest->organisationOrCoach;
+//
+//            try {
+//                $HoomdossierHelper = new HoomdossierHelper($contact);
+//                $HoomdossierHelper->connectCoachToHoomdossier($contact, $coach);
+//            } catch (RequestException $e) {
+//                abort($e->getCode(), $e->getResponse()->getBody());
+////                throw new HttpException(500, $e->getMessage());
+//                Log::error('---');
+//                Log::error($e->getMessage());
+////                \Session::flash('error', 'Unable to process request.Error:'.$e->getMessage());
+//                Log::error('--');
+//            }
+//        }
+                $HoomdossierHelper = new HoomdossierHelper($quotationRequest->opportunity->intake->contact);
+                $HoomdossierHelper->connectCoachToHoomdossier($quotationRequest);
 
         return $this->show($quotationRequest);
     }

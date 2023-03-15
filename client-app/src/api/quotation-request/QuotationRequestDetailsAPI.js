@@ -46,13 +46,14 @@ export default {
         const requestUrl = `${URL_QUOTATION_REQUEST}/${quotationRequest.id}/update`;
 
         return axiosInstance
-            .post(requestUrl, quotationRequest)
-            .then(function(response) {
-                return response.data.data;
-            })
-            .catch(function(error) {
-                console.log(error);
-            });
+            .post(requestUrl, quotationRequest);
+            // .then(function(response) {
+            //     return response.data.data;
+            // })
+            // .catch(function(error) {
+            //     console.log('test updateQuotationRequest error');
+            //     console.log(error);
+            // });
     },
 
     deleteQuotationRequest: id => {

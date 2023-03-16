@@ -1,8 +1,6 @@
 import React from 'react';
-// import SvgIcon from 'react-icons-kit';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-
 import Logo from '../logo/Logo';
 import NavSearch from './NavSearch';
 import Icon from 'react-icons-kit';

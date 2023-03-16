@@ -1,10 +1,9 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import contactAPI from '../../../api/contact/ContactsAPI';
 import Modal from '../../../components/modal/Modal';
 import InputReactSelect from '../../../components/form/InputReactSelect';
-import AsyncSelectSet from "../../../components/form/AsyncSelectSet";
 
 class ContactListAddPersonToGroup extends Component {
     constructor(props) {
@@ -17,7 +16,7 @@ class ContactListAddPersonToGroup extends Component {
                 people: true,
             },
         };
-        //this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     }
 
     componentDidMount() {
@@ -33,15 +32,11 @@ class ContactListAddPersonToGroup extends Component {
         });
     }
 
-    // handleReactSelectChange(selectedOption) {
-    //     this.setState({
-    //         ...this.state,
-    //         personId: selectedOption,
-    //     });
-    // }
-
-    handleInputSearchChange(value) {
-        //setSearchTermContact(value);
+    handleReactSelectChange(selectedOption) {
+        this.setState({
+            ...this.state,
+            personId: selectedOption,
+        });
     }
 
     render() {
@@ -72,22 +67,23 @@ class ContactListAddPersonToGroup extends Component {
                         Na toevoegen wordt dit contact automatisch "Is externe partij".
                     </div>
                 ) : null}
-
-                    <form onSubmit={this.handleSubmit}>
-
-                            <AsyncSelectSet
-                                label={'Voeg bestaand contact toe'}
-                                name={'personId'}
-                                value={''}
-                                loadOptions={getContactOptions}
-                                optionName={'name'}
-                                onChangeAction={this.handleInputSearchChange}
-                                allowCreate={true}
-                                isLoading={isLoadingContact}
-                                handleInputChange={this.handleInputSearchChange}
-                            />
-
-                    </form>
+                <form className="form-horizontal" onSubmit={this.handleSubmit}>
+                    <div className="row">
+                        <InputReactSelect
+                            label={'Voeg bestaand contact toe'}
+                            divSize={'col-sm-12'}
+                            size={'col-sm-6'}
+                            id={'personId'}
+                            name={'personId'}
+                            value={this.state.personId}
+                            onChangeAction={this.handleReactSelectChange}
+                            options={this.state.people}
+                            optionId={'id'}
+                            optionName={'fullName'}
+                            isLoading={this.state.peekLoading.people}
+                        />
+                    </div>
+                </form>
             </Modal>
         );
     }
@@ -97,38 +93,6 @@ const mapStateToProps = state => {
     return {
         id: state.contactDetails.id,
     };
-};
-
-const isLoadingContact = state => {
-    return false;
-};
-
-const setLoadingContact = state => {
-    return false;
-};
-
-const searchTermContact = state => {
-    return false;
-};
-
-const setSearchTermContact = state => {
-    return '';
-};
-
-const getContactOptions = async () => {
-    if (searchTermContact.length <= 1) return;
-
-    setLoadingContact(true);
-
-    try {
-        const results = await contactAPI.fetchEmailAddressessSearch(searchTermContact);
-        setLoadingContact(false);
-        return results.data;
-    } catch (error) {
-        setLoadingContact(false);
-
-        // console.log(error);
-    }
 };
 
 const mapDispatchToProps = dispatch => ({

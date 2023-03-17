@@ -27,6 +27,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
             floors,
             energyLabelStatus,
             isMonument,
+            numberOfResidents,
         } = props.housingFileDetails;
 
         this.state = {
@@ -44,6 +45,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                 floors: floors ? floors : '',
                 energyLabelStatusId: energyLabelStatus ? energyLabelStatus.id : '',
                 isMonument: isMonument ? isMonument : false,
+                numberOfResidents: numberOfResidents ? numberOfResidents : '',
             },
         };
     }
@@ -86,6 +88,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
             floors,
             energyLabelStatusId,
             isMonument,
+            numberOfResidents,
         } = this.state.housingFile;
         const { addresses = [] } = this.props.contactDetails;
 
@@ -182,6 +185,13 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                 </div>
 
                 <div className="row">
+                    <InputText
+                        label={'Aantal bewoners'}
+                        name={'numberOfResidents'}
+                        value={numberOfResidents}
+                        min={0}
+                        onChangeAction={this.handleInputChange}
+                    />
                     <InputToggle
                         label={'Koophuis'}
                         name={'isHouseForSale'}

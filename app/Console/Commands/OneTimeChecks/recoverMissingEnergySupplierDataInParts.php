@@ -3,9 +3,11 @@
 namespace App\Console\Commands\OneTimeChecks;
 
 use App\Eco\RevenuesKwh\RevenuesKwh;
+use App\Eco\User\User;
 use App\Helpers\Project\RevenuesKwhHelper;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class recoverMissingEnergySupplierDataInParts extends Command
@@ -41,6 +43,11 @@ class recoverMissingEnergySupplierDataInParts extends Command
      */
     public function handle()
     {
+
+        $adminUser = User::where('email', config('app.admin_user.email'))->first();
+        if($adminUser){
+            Auth::setUser($adminUser);
+        }
 
 //        Log::info($this->description);
 //        Log::info('-----------------------------');

@@ -33,7 +33,7 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
         case 'organisation':
             validationSchemaBasic = ValidationSchemaOrganisation.validationSchemaBasic;
             validationSchemaAdditional = ValidationSchemaOrganisation.validationSchemaAdditional;
-            validationSchemaPcrAdditional = ValidationSchemaPersonal.validationSchemaPcrAdditional;
+            validationSchemaPcrAdditional = ValidationSchemaOrganisation.validationSchemaPcrAdditional;
             validationSchema = validationSchemaBasic.concat(validationSchemaAdditional);
             if (project.projectType.codeRef === 'postalcode_link_capital') {
                 validationSchema = validationSchema.concat(validationSchemaPcrAdditional);

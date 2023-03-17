@@ -45,6 +45,7 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
                 text: false,
                 image: false,
                 showGroupId: false,
+                hideGroupId: false,
                 buttonText: false,
                 buttonLink: false,
                 widgetImageFileName: false,
@@ -219,6 +220,7 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
         data.append('buttonLink', widget.buttonLink);
         data.append('widgetImageFileName', widget.widgetImageFileName);
         data.append('showGroupId', widget.showGroupId ? widget.showGroupId : '');
+        data.append('hideGroupId', widget.hideGroupId ? widget.hideGroupId : '');
         data.append('backgroundColor', widget.backgroundColor);
         data.append('textColor', widget.textColor);
 
@@ -368,6 +370,20 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
                                 textToolTip={`Je kan maar één groep kiezen, als je meerdere groepen deze widget wil laten tonen kan je onder groepenbeheer > + knop een samengestelde groep maken.`}
                                 options={this.props.contactGroups}
                                 value={widget.showGroupId}
+                                onChangeAction={this.handleReactSelectChange}
+                                isLoading={this.props.isLoading}
+                                clearable={true}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputReactSelect
+                                label={'Verborgen voor groep'}
+                                divSize={'col-sm-8'}
+                                name={'hideGroupId'}
+                                size={'col-sm-5'}
+                                textToolTip={`Je kan maar één groep kiezen, als je meerdere groepen deze widget wil laten verbergen kan je onder groepenbeheer > + knop een samengestelde groep maken.`}
+                                options={this.props.contactGroups}
+                                value={widget.hideGroupId}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.props.isLoading}
                                 clearable={true}

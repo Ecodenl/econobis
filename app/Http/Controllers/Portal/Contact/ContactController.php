@@ -26,6 +26,7 @@ use App\Eco\Task\TaskType;
 use App\Eco\User\User;
 use App\Helpers\Address\AddressHelper;
 use App\Helpers\Document\DocumentHelper;
+use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Helpers\Workflow\TaskWorkflowHelper;
@@ -650,7 +651,7 @@ class ContactController extends ApiController
             }
             $primaryAddressEnergySupplierElectricityNew = $this->createNewAddressEnergySupplier($address, $primaryAddressEnergySupplierElectricityData);
             $primaryAddressEnergySupplierElectricityNew->save();
-
+            $this->checkSplitRevenuePart($primaryAddressEnergySupplierElectricityNew);
         } else {
             if($primaryAddressEnergySupplierElectricityData['energySupplierId'] == null) {
                 // delete
@@ -673,6 +674,7 @@ class ContactController extends ApiController
                     // new
                     $primaryAddressEnergySupplierElectricityNew = $this->createNewAddressEnergySupplier($address, $primaryAddressEnergySupplierElectricityData);
                     $primaryAddressEnergySupplierElectricityNew->save();
+                    $this->checkSplitRevenuePart($primaryAddressEnergySupplierElectricityNew);
                 }
 
                 $primaryAddressEnergySupplierElectricityNew->save();
@@ -947,6 +949,27 @@ class ContactController extends ApiController
             $addressEnergySupplierController->setEndDateAddressEnergySupplier($primaryAddressEnergySupplierElectricityNew);
         }
         return $primaryAddressEnergySupplierElectricityNew;
+    }
+
+    /**
+     * @param AddressEnergySupplier $primaryAddressEnergySupplierElectricityNew
+     */
+    protected function checkSplitRevenuePart(AddressEnergySupplier $primaryAddressEnergySupplierElectricityNew): void
+    {
+        $revenuePartsKwhArray = [];
+        if (Carbon::parse($primaryAddressEnergySupplierElectricityNew->end_date_previous)->format('Y-m-d') != '1900-01-01') {
+            $participations = $primaryAddressEnergySupplierElectricityNew->address->participations;
+            foreach ($participations as $participation) {
+                $projectType = $participation->project->projectType;
+                if ($projectType->code_ref === 'postalcode_link_capital') {
+                    $revenuesKwhHelper = new RevenuesKwhHelper();
+                    $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkRevenuePartsKwh($participation, $primaryAddressEnergySupplierElectricityNew->member_since, $primaryAddressEnergySupplierElectricityNew);
+                    if ($splitRevenuePartsKwhResponse) {
+                        $revenuePartsKwhArray [] = $splitRevenuePartsKwhResponse;
+                    }
+                }
+            }
+        }
     }
 
 }

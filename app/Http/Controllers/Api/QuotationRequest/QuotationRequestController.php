@@ -8,7 +8,6 @@
 
 namespace App\Http\Controllers\Api\QuotationRequest;
 
-use App\Eco\Cooperation\Cooperation;
 use App\Eco\Email\Email;
 use App\Eco\Occupation\Occupation;
 use App\Eco\Occupation\OccupationContact;
@@ -26,16 +25,12 @@ use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\QuotationRequest\GridQuotationRequest;
 use App\Http\Resources\QuotationRequest\QuotationRequestPeek;
 use Carbon\Carbon;
-use Exception;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use App\Helpers\Hoomdossier\HoomdossierHelper;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class QuotationRequestController extends ApiController
 {
@@ -252,12 +247,13 @@ class QuotationRequestController extends ApiController
         $this->creatEnergyCoachOccupation($quotationRequest);
 
         //if contact has a hoom_account_id, coach is set and coach has a hoom_account_id connect the coach to the hoom dossier
-        $HoomdossierHelper = new HoomdossierHelper($quotationRequest->opportunity->intake->contact);
-        $HoomdossierHelper->connectCoachToHoomdossier($quotationRequest);
+        if($quotationRequest->organisationOrCoach && $quotationRequest->organisationOrCoach->isCoach()){
+            $HoomdossierHelper = new HoomdossierHelper($quotationRequest->opportunity->intake->contact);
+            $HoomdossierHelper->connectCoachToHoomdossier($quotationRequest);
+        }
 
         return $this->show($quotationRequest);
     }
-
 
     public function update(Request $request, QuotationRequest $quotationRequest)
     {

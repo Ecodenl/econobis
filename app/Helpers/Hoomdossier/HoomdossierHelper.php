@@ -163,12 +163,16 @@ class HoomdossierHelper
 
     public function connectCoachToHoomdossier(QuotationRequest $quotationRequest)
     {
+        if(!$this->cooperation->hoom_connect_coach_link){
+            return;
+        }
+
         if(
-            $quotationRequest->organisationOrCoach->exists() AND
-            $quotationRequest->organisationOrCoach->hoom_account_id != null AND
-            $quotationRequest->opportunity->exists() AND
-            $quotationRequest->opportunity->intake->exists() AND
-            $quotationRequest->opportunity->intake->contact->hoom_account_id != null
+            $quotationRequest->organisationOrCoach->exists() &&
+            $quotationRequest->organisationOrCoach->hoom_account_id &&
+            $quotationRequest->opportunity->exists() &&
+            $quotationRequest->opportunity->intake->exists() &&
+            $quotationRequest->opportunity->intake->contact->hoom_account_id
         ) {
             $coach = $quotationRequest->organisationOrCoach;
 
@@ -181,12 +185,12 @@ class HoomdossierHelper
 
                 $client = new Client;
                 $headers = [
-                    'Authorization' => 'Bearer ' . Cooperation::first()->hoom_key,
+                    'Authorization' => 'Bearer ' . $this->cooperation->hoom_key,
                     'Accept' => 'application/json',
                 ];
 
                 try {
-                    $response = $client->post(Cooperation::first()->hoom_connect_coach_link, ['headers' => $headers, 'json' => $payload]);
+                    $response = $client->post($this->cooperation->hoom_connect_coach_link, ['headers' => $headers, 'json' => $payload]);
                     return $response->getBody();
                 } catch (RequestException $e) {
                     if ($e->hasResponse()) {

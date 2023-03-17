@@ -16,9 +16,9 @@ const ContactDetailsFormPersonalView = props => {
         hoomAccountId,
     } = props.contactDetails;
 
-    let coach = false;
+    let isCoach = false;
     if (inspectionPersonType && inspectionPersonType.id === 'coach') {
-        coach = true;
+        isCoach = true;
     }
 
     return (
@@ -83,7 +83,7 @@ const ContactDetailsFormPersonalView = props => {
                 />
             </div>
 
-            {coach ? (
+            {isCoach ? (
                 <div className="row">
                     <ViewText
                         className={'col-xs-12'}

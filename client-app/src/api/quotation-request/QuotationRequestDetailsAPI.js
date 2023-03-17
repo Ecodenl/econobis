@@ -32,14 +32,12 @@ export default {
     newQuotationRequest: quotationRequest => {
         const requestUrl = `${URL_QUOTATION_REQUEST}`;
 
-        return axiosInstance
-            .post(requestUrl, quotationRequest)
-            .then(function(response) {
-                return response.data;
-            });
-            // .catch(function(error) {
-            //     console.log(error);
-            // });
+        return axiosInstance.post(requestUrl, quotationRequest).then(function(response) {
+            return response.data;
+        });
+        // .catch(function(error) {
+        //     console.log(error);
+        // });
     },
 
     updateQuotationRequest: quotationRequest => {
@@ -51,7 +49,6 @@ export default {
                 return response.data.data;
             })
             .catch(function(error) {
-                console.log('test updateQuotationRequest error');
                 console.log(error);
             });
     },

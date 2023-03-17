@@ -57,7 +57,7 @@ class PersonController extends ApiController
             'lastNamePrefixId' => 'nullable',
             'titleId' => 'nullable',
             'typeId' => 'nullable',
-            'dateOfBirth' => 'nullable'
+            'dateOfBirth' => 'nullable',
         ]);
 
         $contactData = $this->arrayKeysToSnakeCase($contactData);

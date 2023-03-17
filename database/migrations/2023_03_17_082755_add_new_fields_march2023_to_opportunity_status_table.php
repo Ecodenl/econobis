@@ -5,7 +5,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddNewFieldsMarch2023ToOpportuniyStatusTable extends Migration
+class AddNewFieldsMarch2023ToOpportunityStatusTable extends Migration
 {
     /**
      * Run the migrations.

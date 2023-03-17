@@ -36,7 +36,7 @@ class AddNewFieldsMarch2023ToOpportunityStatusTable extends Migration
         $opportunityStatus->save();
         $opportunityStatus = OpportunityStatus::where('name', 'Geen uitvoering')->first();
         $opportunityStatus->external_hoom_id = 6;
-        $opportunityStatus->code_ref = "mp_execution";
+        $opportunityStatus->code_ref = "no_execution";
         $opportunityStatus->order = 6;
         $opportunityStatus->save();
         $opportunityStatus = OpportunityStatus::where('name', 'Opdracht')->first();

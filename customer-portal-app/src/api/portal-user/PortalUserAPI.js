@@ -24,6 +24,7 @@ export default {
                         'addressLines',
                         'portalSettingsLayoutAssigned',
                         'inspectionPersonTypeId',
+                        'hoomAccountId',
                     ],
                     rlt: {
                         occupations: {

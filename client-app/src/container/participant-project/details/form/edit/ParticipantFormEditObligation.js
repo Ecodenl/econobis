@@ -36,6 +36,7 @@ function ParticipantFormEditObligation({
                     label={'Huidige hoofdsom per obligatie'}
                     value={moneyPresenter(currentBookWorth)}
                     className={'col-sm-6 form-group'}
+                    textToolTip={'De huidige hoofdsom per obligatie is een administratieve boekwaarde van een deelname, die afhankelijk is van de waarde van het project en de gemaakte kosten en wordt vastgesteld o.b.v. de jaarrekening van de coöperatie. De boekwaarde per 1 januari van een jaar gebruik je bij je aangifte inkomstenbelasting.'}
                 />
             </div>
             <div className="row">

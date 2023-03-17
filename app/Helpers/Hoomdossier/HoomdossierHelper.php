@@ -174,8 +174,8 @@ class HoomdossierHelper
 
                 $payload = [
                     'building_coach_statuses' => [
-                        'coach_contact_id' => 666,
-                        'resident_contact_id' => 999,
+                        'coach_contact_id' => $coach->id,
+                        'resident_contact_id' => $this->contact->id,
                     ],
                 ];
 

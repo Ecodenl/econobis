@@ -76,7 +76,7 @@ class EndPointPdfController extends EndPointHoomDossierController
 
         $document->save();
 
-        $contents = $dataContent->pdf->contents;
+        $contents = base64_decode( $dataContent->pdf->contents );
         $filePath_tmp = Storage::disk('documents')->getDriver()->getAdapter()->applyPathPrefix($tmpFileName);
 
         $this->log('FilePath_tmp: ' . $filePath_tmp);

@@ -19,12 +19,12 @@ class MailgunMailController
         /**
          * Log alle input om te kunnen debuggen voor alle mogelijke inkomende varianten.
          */
-        Log::info([
-            'info' =>'Mail ontvangen via mailgun:',
-            'input' => $request->all(),
-            'headers' => $request->headers->all(),
-            'files' => $request->files->all(),
-        ]);
+//        Log::info([
+//            'info' =>'Mail ontvangen via mailgun:',
+//            'input' => $request->all(),
+//            'headers' => $request->headers->all(),
+//            'files' => $request->files->all(),
+//        ]);
 
         $mailbox = $request->getMailbox();
 

@@ -67,6 +67,7 @@ class PersonController extends ApiController
                 'owner_id' => $contactData['owner_id'],
                 'did_agree_avg' => $contactData['did_agree_avg'],
                 'inspection_person_type_id' => $contactData['inspection_person_type_id'],
+                'hoomAccountId' => $contactData['hoom_account_id'],
             ];
 
         $lnp = null;
@@ -231,6 +232,7 @@ class PersonController extends ApiController
             'collectMandateSignatureDate' => 'date',
             'collectMandateFirstRunDate' => 'date',
             'collectMandateCollectionSchema' => '',
+            'hoomAccountId' => '',
         ]);
 
         $personData = $request->validate([
@@ -261,6 +263,7 @@ class PersonController extends ApiController
             'isCollectMandate' => 'boolean',
             'collectMandateSignatureDate' => 'nullable',
             'collectMandateFirstRunDate' => 'nullable',
+            'hoomAccountId'=> 'nullable',
         ]);
 
         if(isset($contactData['iban']) && $contact->iban != $contactData['iban']) $this->authorize('updateIban', $contact);

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
 import moment from 'moment';
 
 moment.locale('nl');
@@ -133,6 +132,12 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                 this.props.fetchQuotationRequestDetails(quotationRequest.id);
                 this.props.switchToView();
             });
+    };
+
+    toggleModal = () => {
+        this.setState({
+            showModal: !this.state.showModal,
+        });
     };
 
     render() {

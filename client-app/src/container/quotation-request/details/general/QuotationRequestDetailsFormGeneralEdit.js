@@ -13,7 +13,6 @@ import InputTextArea from '../../../../components/form/InputTextArea';
 import validator from 'validator';
 import { fetchQuotationRequestDetails } from '../../../../actions/quotation-request/QuotationRequestDetailsActions';
 import InputTime from '../../../../components/form/InputTime';
-import Modal from "../../../../components/modal/Modal";
 
 class QuotationRequestDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -83,8 +82,6 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                 externalParty: false,
                 status: false,
             },
-            errorMessage: '',
-            modalAction: this.toggleModal,
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     }
@@ -134,26 +131,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             QuotationRequestDetailsAPI.updateQuotationRequest(quotationRequest).then(payload => {
                 this.props.fetchQuotationRequestDetails(quotationRequest.id);
                 this.props.switchToView();
-            })
-                .catch(error => {
-                    if (error.response && error.response.status === 422) {
-                        if (error.response.data && error.response.data.errors) {
-                            if (error.response.data.errors.econobis && error.response.data.errors.econobis.length) {
-                                this.setState({ ...this.state, errorMesssage: 'Niet alle benodigde gegevens zijn ingevuld' });
-                            }
-                        } else if (error.response.data && error.response.data.message) {
-                            let messageErrors = [];
-                            for (const [key, value] of Object.entries(JSON.parse(error.response.data.message))) {
-                                messageErrors.push(`${value}`);
-                            }
-                            this.setState({ ...this.state, errorMesssage: messageErrors, showModal: true });
-                        }
-                    } else {
-                        this.setState({ ...this.state, errorMesssage: 'Er is iets misgegaan bij het aanmaken van het hoomdossier (' +
-                                (error.response && error.response.status) + ').', showModal: true });
-                    }
-                });
-
+            });
     };
 
     toggleModal = () => {
@@ -394,23 +372,6 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         <ButtonText buttonText={'Opslaan'} onClickAction={this.handleSubmit} />
                     </div>
                 </div>
-                {this.state.showModal && (
-                    <Modal
-                        buttonClassName={'btn-danger'}
-                        closeModal={this.toggleModal}
-                        buttonCancelText={'Sluiten'}
-                        showConfirmAction={false}
-                        title="Hoomdossier aanmaken"
-                    >
-                        {this.state.errorMesssage.length ? (
-                            <ul>
-                                {this.state.errorMesssage.map(item => (
-                                    <li>{item}</li>
-                                ))}
-                            </ul>
-                        ) : null}
-                    </Modal>
-                )}
             </form>
         );
     }

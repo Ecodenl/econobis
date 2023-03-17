@@ -355,10 +355,6 @@ class QuotationRequestController extends ApiController
 
         $this->creatEnergyCoachOccupation($quotationRequest);
 
-        //if contact has a hoom_account_id, coach is set and coach has a hoom_account_id connect the coach to the hoom dossier
-        $HoomdossierHelper = new HoomdossierHelper($quotationRequest->opportunity->intake->contact);
-        $HoomdossierHelper->connectCoachToHoomdossier($quotationRequest);
-
         return $this->show($quotationRequest);
     }
 

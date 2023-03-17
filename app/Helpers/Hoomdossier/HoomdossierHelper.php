@@ -103,9 +103,10 @@ class HoomdossierHelper
             if(!$this->contact->primaryAddress->city || empty($this->contact->primaryAddress->city)) {
                 $errorsCheckBefore[] = 'Plaats in adres ontbreekt';
             }
-            if(!$this->contact->primaryAddress->housingfile) {
-                $errorsCheckBefore[] = 'Woningdossier ontbreekt';
-            }
+// niet verplicht
+//            if(!$this->contact->primaryAddress->housingfile) {
+//                $errorsCheckBefore[] = 'Woningdossier ontbreekt';
+//            }
         }
         $errors = null;
         if(count($errorsCheckBefore)) {
@@ -133,7 +134,7 @@ class HoomdossierHelper
 
         //calculate the total electricity usage (consumption_high + consumption_low - return_high - return_low)
         $totalEnergy = 0;
-        if($this->contact->primaryAddress->addressEnergyConsumptionElectricityPeriods()->count() > 0) {
+        if($this->contact->primaryAddress && $this->contact->primaryAddress->addressEnergyConsumptionElectricityPeriods()->count() > 0) {
             $consumptionRow = $this->contact->primaryAddress->addressEnergyConsumptionElectricityPeriods()->get()->reverse()->first();
             $consumptionHigh = $consumptionRow->consumption_high;
             $consumptionLow = $consumptionRow->consumption_low;
@@ -144,8 +145,14 @@ class HoomdossierHelper
         }
         //calculate the total gas usage
         $totalGas = 0;
-        if($this->contact->primaryAddress->addressEnergyConsumptionGasPeriods()->count() > 0) {
+        if($this->contact->primaryAddress && $this->contact->primaryAddress->addressEnergyConsumptionGasPeriods()->count() > 0) {
             $totalGas = $this->contact->primaryAddress->addressEnergyConsumptionGasPeriods()->get()->reverse()->first()->consumption;
+        }
+
+        // number of residents (default 2)
+        $numberOfResidents = 2;
+        if($this->contact->primaryAddress && $this->contact->primaryAddress->housingFile) {
+            $numberOfResidents = $this->contact->primaryAddress->housingFile->number_of_residents;
         }
 
         $payload = [
@@ -161,7 +168,7 @@ class HoomdossierHelper
             'phone_number' => $this->contact->primaryphoneNumber ? $this->contact->primaryphoneNumber->number : '',
 
             'tool_questions' => [
-                'resident-count' => $this->contact->primaryAddress->housingFile->number_of_residents,
+                'resident-count' => $numberOfResidents,
                 'amount-gas' => $totalGas,
                 'amount-electricity' => $totalEnergy,
             ],

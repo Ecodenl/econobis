@@ -161,35 +161,6 @@ class HoomdossierHelper
         }
     }
 
-//    public function connectCoachToHoomdossier($contact, $coach)
-//    {
-//        $payload = [
-//            'building_coach_statuses' => [
-//                'coach_contact_id' => $coach->id,
-//                'resident_contact_id' => $contact->id,
-//            ],
-//        ];
-//
-//        $client = new Client;
-//        $headers = [
-//            'Authorization' => 'Bearer ' . Cooperation::first()->hoom_key,
-//            'Accept'        => 'application/json',
-//        ];
-//
-//        try {
-//            $response = $client->post(Cooperation::first()->hoom_connect_coach_link, ['headers' => $headers, 'json' => $payload]);
-//            return $response->getBody();
-//        } catch (RequestException $e) {
-//            if ($e->hasResponse()) {
-//                Log::error('Er is iets misgegaan met het koppelen van een coach aan het Hoomdossier met de coach id ' . $contact->id . ', melding: ' . $e->getCode() . ' - ' . $e->getResponse()->getBody());
-//                abort($e->getCode(), $e->getResponse()->getBody());
-//            } else {
-//                Log::error('Er is iets misgegaan met het koppelen van een coach aan het Hoomdossier met de coach id ' . $contact->id . ', melding: ' . $e->getCode());
-//                abort($e->getCode(), 'Er is iets misgegaan met het koppelen van een coach aan het Hoomdossier');
-//            }
-//        }
-//    }
-
     public function connectCoachToHoomdossier(QuotationRequest $quotationRequest)
     {
         if(
@@ -199,13 +170,12 @@ class HoomdossierHelper
             $quotationRequest->opportunity->intake->exists() AND
             $quotationRequest->opportunity->intake->contact->hoom_account_id != null
         ) {
-//            $contact = $quotationRequest->opportunity->intake->contact;
             $coach = $quotationRequest->organisationOrCoach;
 
                 $payload = [
                     'building_coach_statuses' => [
-                        'coach_contact_id' => $coach->id,
-                        'resident_contact_id' => $this->contact->id,
+                        'coach_contact_id' => 666,
+                        'resident_contact_id' => 999,
                     ],
                 ];
 

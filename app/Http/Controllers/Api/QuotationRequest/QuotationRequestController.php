@@ -251,6 +251,10 @@ class QuotationRequestController extends ApiController
 
         $this->creatEnergyCoachOccupation($quotationRequest);
 
+        //if contact has a hoom_account_id, coach is set and coach has a hoom_account_id connect the coach to the hoom dossier
+        $HoomdossierHelper = new HoomdossierHelper($quotationRequest->opportunity->intake->contact);
+        $HoomdossierHelper->connectCoachToHoomdossier($quotationRequest);
+
         return $this->show($quotationRequest);
     }
 
@@ -352,30 +356,8 @@ class QuotationRequestController extends ApiController
         $this->creatEnergyCoachOccupation($quotationRequest);
 
         //if contact has a hoom_account_id, coach is set and coach has a hoom_account_id connect the coach to the hoom dossier
-//        if(
-//            $quotationRequest->organisationOrCoach->exists() AND
-//            $quotationRequest->organisationOrCoach->hoom_account_id != null AND
-//            $quotationRequest->opportunity->exists() AND
-//            $quotationRequest->opportunity->intake->exists() AND
-//            $quotationRequest->opportunity->intake->contact->hoom_account_id != null
-//        ) {
-//            $contact = $quotationRequest->opportunity->intake->contact;
-//            $coach = $quotationRequest->organisationOrCoach;
-//
-//            try {
-//                $HoomdossierHelper = new HoomdossierHelper($contact);
-//                $HoomdossierHelper->connectCoachToHoomdossier($contact, $coach);
-//            } catch (RequestException $e) {
-//                abort($e->getCode(), $e->getResponse()->getBody());
-////                throw new HttpException(500, $e->getMessage());
-//                Log::error('---');
-//                Log::error($e->getMessage());
-////                \Session::flash('error', 'Unable to process request.Error:'.$e->getMessage());
-//                Log::error('--');
-//            }
-//        }
-                $HoomdossierHelper = new HoomdossierHelper($quotationRequest->opportunity->intake->contact);
-                $HoomdossierHelper->connectCoachToHoomdossier($quotationRequest);
+        $HoomdossierHelper = new HoomdossierHelper($quotationRequest->opportunity->intake->contact);
+        $HoomdossierHelper->connectCoachToHoomdossier($quotationRequest);
 
         return $this->show($quotationRequest);
     }

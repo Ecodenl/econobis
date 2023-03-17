@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import moment from 'moment';
 
@@ -13,6 +12,7 @@ import InputDate from '../../../components/form/InputDate';
 import InputTextArea from '../../../components/form/InputTextArea';
 import validator from 'validator';
 import InputTime from '../../../components/form/InputTime';
+import Modal from "../../../components/modal/Modal";
 
 class QuotationRequestNewFormGeneral extends Component {
     constructor(props) {
@@ -51,6 +51,8 @@ class QuotationRequestNewFormGeneral extends Component {
                 externalParty: false,
                 status: false,
             },
+            errorMessage: '',
+            modalAction: this.toggleModal,
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     }
@@ -142,7 +144,31 @@ class QuotationRequestNewFormGeneral extends Component {
         !hasErrors &&
             QuotationRequestDetailsAPI.newQuotationRequest(quotationRequest).then(payload => {
                 hashHistory.push(`/offerteverzoek/${payload.data.id}`);
-            });
+            })
+                .catch(error => {
+                    if (error.response && error.response.status === 422) {
+                        if (error.response.data && error.response.data.errors) {
+                            if (error.response.data.errors.econobis && error.response.data.errors.econobis.length) {
+                                this.setState({ ...this.state, errorMesssage: 'Niet alle benodigde gegevens zijn ingevuld' });
+                            }
+                        } else if (error.response.data && error.response.data.message) {
+                            let messageErrors = [];
+                            for (const [key, value] of Object.entries(JSON.parse(error.response.data.message))) {
+                                messageErrors.push(`${value}`);
+                            }
+                            this.setState({ ...this.state, errorMesssage: messageErrors, showModal: true });
+                        }
+                    } else {
+                        this.setState({ ...this.state, errorMesssage: 'Er is iets misgegaan bij het aanmaken van het hoomdossier (' +
+                                (error.response && error.response.status) + ').', showModal: true });
+                    }
+                });
+    };
+
+    toggleModal = () => {
+        this.setState({
+            showModal: !this.state.showModal,
+        });
     };
 
     render() {
@@ -358,6 +384,23 @@ class QuotationRequestNewFormGeneral extends Component {
                         <ButtonText buttonText={'Opslaan'} onClickAction={this.handleSubmit} />
                     </div>
                 </div>
+                {this.state.showModal && (
+                    <Modal
+                        buttonClassName={'btn-danger'}
+                        closeModal={this.toggleModal}
+                        buttonCancelText={'Sluiten'}
+                        showConfirmAction={false}
+                        title="Hoomdossier aanmaken"
+                    >
+                        {this.state.errorMesssage.length ? (
+                            <ul>
+                                {this.state.errorMesssage.map(item => (
+                                    <li>{item}</li>
+                                ))}
+                            </ul>
+                        ) : null}
+                    </Modal>
+                )}
             </form>
         );
     }

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
 import moment from 'moment';
 
 moment.locale('nl');
@@ -85,6 +84,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                 status: false,
             },
             errorMessage: '',
+            modalAction: this.toggleModal,
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     }
@@ -139,38 +139,27 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                     if (error.response && error.response.status === 422) {
                         if (error.response.data && error.response.data.errors) {
                             if (error.response.data.errors.econobis && error.response.data.errors.econobis.length) {
-                                console.log('Niet alle benodigde gegevens zijn ingevuld:')
-                                console.log(error.response.data.errors.econobis)
-                                // setMessage('Niet alle benodigde gegevens zijn ingevuld:');
-                                this.setState({ ...this.state, errorMesssage: 'Niet alle benodigde gegevens zijn ingevuld:' });
-                                // setErrors(error.response.data.errors.econobis);
+                                this.setState({ ...this.state, errorMesssage: 'Niet alle benodigde gegevens zijn ingevuld' });
                             }
                         } else if (error.response.data && error.response.data.message) {
-                            console.log('Er is iets misgegaan bij het aanmaken van het hoomdossier (' + error.response.status + ').')
-                            console.log(error.response.data.message);
-                            // setMessage(
-                            //     'Er is iets misgegaan bij het aanmaken van het hoomdossier (' + error.response.status + ').'
-                            // );
                             let messageErrors = [];
                             for (const [key, value] of Object.entries(JSON.parse(error.response.data.message))) {
                                 messageErrors.push(`${value}`);
-                                console.log(`${value}`);
                             }
-
-                            // setErrors(messageErrors);
+                            this.setState({ ...this.state, errorMesssage: messageErrors, showModal: true });
                         }
                     } else {
-                        console.log('Er is iets misgegaan bij het aanmaken van het hoomdossier (' +
-                             (error.response && error.response.status) + ').')
-
-                        // setMessage(
-                        //     'Er is iets misgegaan bij het aanmaken van het hoomdossier (' +
-                        //     (error.response && error.response.status) +
-                        //     ').'
-                        // );
+                        this.setState({ ...this.state, errorMesssage: 'Er is iets misgegaan bij het aanmaken van het hoomdossier (' +
+                                (error.response && error.response.status) + ').', showModal: true });
                     }
                 });
 
+    };
+
+    toggleModal = () => {
+        this.setState({
+            showModal: !this.state.showModal,
+        });
     };
 
     render() {
@@ -405,22 +394,21 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         <ButtonText buttonText={'Opslaan'} onClickAction={this.handleSubmit} />
                     </div>
                 </div>
-                {this.state.errorMesssage && (
+                {this.state.showModal && (
                     <Modal
                         buttonClassName={'btn-danger'}
-                        closeModal={this.closeModal}
+                        closeModal={this.toggleModal}
                         buttonCancelText={'Sluiten'}
                         showConfirmAction={false}
                         title="Hoomdossier aanmaken"
                     >
-                        <p>{this.state.errorMesssage}</p>
-                        {/*{this.state.errors.length ? (*/}
-                        {/*    <ul>*/}
-                        {/*        {this.state.errors.map(item => (*/}
-                        {/*            <li>{item}</li>*/}
-                        {/*        ))}*/}
-                        {/*    </ul>*/}
-                        {/*) : null}*/}
+                        {this.state.errorMesssage.length ? (
+                            <ul>
+                                {this.state.errorMesssage.map(item => (
+                                    <li>{item}</li>
+                                ))}
+                            </ul>
+                        ) : null}
                     </Modal>
                 )}
             </form>

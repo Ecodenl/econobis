@@ -36,10 +36,10 @@ export default {
             .post(requestUrl, quotationRequest)
             .then(function(response) {
                 return response.data;
-            })
-            .catch(function(error) {
-                console.log(error);
             });
+            // .catch(function(error) {
+            //     console.log(error);
+            // });
     },
 
     updateQuotationRequest: quotationRequest => {

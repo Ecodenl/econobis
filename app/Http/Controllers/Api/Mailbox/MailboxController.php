@@ -119,7 +119,7 @@ class MailboxController extends Controller
             if (isset($client['message']) && $client['message'] == 'ms_oauth_unauthorised') {
                 return response()->json($client, 401);
             }
-        } else {
+        } else if ($mailbox->incoming_server_type !== 'mailgun'){
             new MailFetcher($mailbox);
         }
 
@@ -211,7 +211,7 @@ class MailboxController extends Controller
             if (isset($client['message']) && $client['message'] == 'ms_oauth_unauthorised') {
                 return response()->json($client, 401);
             }
-        } else {
+        } else if ($mailbox->incoming_server_type !== 'mailgun'){
             new MailFetcher($mailbox);
         }
 
@@ -255,9 +255,12 @@ class MailboxController extends Controller
             $mailFetcher = new MailFetcherGmail($mailbox);
         } elseif ($mailbox->incoming_server_type === 'ms-oauth') {
             $mailFetcher = new MailFetcherMsOauth($mailbox);
-        } else {
+        } else if ($mailbox->incoming_server_type !== 'mailgun'){
             $mailFetcher = new MailFetcher($mailbox);
+        } else {
+            return;
         }
+
         return $mailFetcher->fetchNew();
     }
 
@@ -302,8 +305,10 @@ class MailboxController extends Controller
                 $mailFetcher = new MailFetcherGmail($mailbox);
             } elseif ($mailbox->incoming_server_type === 'ms-oauth') {
                 $mailFetcher = new MailFetcherMsOauth($mailbox);
-            } else {
+            } else if ($mailbox->incoming_server_type !== 'mailgun'){
                 $mailFetcher = new MailFetcher($mailbox);
+            } else {
+                return;
             }
             $mailFetcher->fetchNew();
         }

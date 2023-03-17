@@ -49,11 +49,15 @@ class ReportEnergySupplierExcel implements ShouldQueue
 
         $this->upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_end', '<=', $revenuePartsKwh->date_end)->pluck('id')->toArray();
 
-        $this->revenuesKwh = $revenuePartsKwh->revenuesKwh;
         $revenueDistributionKwhHelper = new RevenueDistributionKwhHelper();
 
         $this->distributionsForReport = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $revenueDistributionKwhHelper->getDistributionForReportEnergySupplierIds($revenuePartsKwh))->get();
-        $this->distributionsSetProcessed = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $revenueDistributionKwhHelper->getDistributionSetProcessedEnergySupplierIds($revenuePartsKwh))->get();
+        $distributionsForReportIds = $this->distributionsForReport->pluck('id')->toArray();
+        $this->distributionsSetProcessed = $revenuePartsKwh->revenuesKwh
+            ->distributionKwh()
+            ->whereIn('id', $revenueDistributionKwhHelper->getDistributionSetProcessedEnergySupplierIds($revenuePartsKwh))
+            ->whereNotin('id', $distributionsForReportIds)
+            ->get();
 
         if($this->distributionsForReport->count() == 0 && $this->distributionsSetProcessed->count() == 0){
             return;
@@ -130,6 +134,9 @@ class ReportEnergySupplierExcel implements ShouldQueue
             $revenuepartsKwhController->setProcessedEnergySupplierJob($this->revenuePartsKwh, $energySupplier, $this->upToPartsKwhIds);
         }
 
+//        $revenuePartsKwhHasNotProcessed = $this->revenuesKwh->partsKwh()->where('status', '!=', 'processed')->exists();
+        $revenuePartsKwhHasNotConfirmed = $this->revenuesKwh->partsKwh()->where('confirmed', false)->exists();
+
         foreach ($this->distributionsForReport as $distributionKwh) {
 //            if ($distributionKwh->revenuesKwh->partsKwh->where('status', '==', 'new')->count() > 0) {
 //                $distributionKwh->status = 'concept';
@@ -138,11 +145,13 @@ class ReportEnergySupplierExcel implements ShouldQueue
                 // doe niets
             } elseif ($distributionKwh->distributionValuesKwh->where('status', '!=', 'processed')->count() == 0
                 && $distributionKwh->distributionValuesKwh->where('status', '==', 'processed')->count() > 0
+                && $revenuePartsKwhHasNotConfirmed == false
             ) {
                 $distributionKwh->status = 'processed';
             } else {
                 if ($distributionKwh->distributionValuesKwh->whereNotIn('status', ['confirmed', 'processed'])->count() == 0
                     && $distributionKwh->distributionValuesKwh->where('status', '==', 'confirmed')->count() > 0
+                    && $revenuePartsKwhHasNotConfirmed == false
                 ) {
                     $distributionKwh->status = 'confirmed';
                 } else {

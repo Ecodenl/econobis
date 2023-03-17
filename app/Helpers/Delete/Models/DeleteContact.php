@@ -150,8 +150,8 @@ class DeleteContact implements DeleteInterface
         }
 
         foreach ($this->contact->quotationRequests as $quotationRequest){
-            $deleteQuotationRequest = new DeleteQuotationRequest($quotationRequest);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteQuotationRequest->delete());
+            $quotationRequest->contact_id = null;
+            $quotationRequest->save();
         }
         foreach ($this->contact->quotationRequestsAsProjectManager as $quotationRequest){
             $quotationRequest->project_manager_id = null;

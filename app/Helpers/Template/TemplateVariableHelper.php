@@ -150,7 +150,7 @@ class TemplateVariableHelper
                 return TemplateVariableHelper::getCampaignVar($model, $varname);
                 break;
             case 'HousingFile':
-                return '';
+                return TemplateVariableHelper::getHousingFileVar($model, $varname);
                 break;
             case 'QuotationRequest':
                 return TemplateVariableHelper::getQuotationRequestVar($model, $varname);
@@ -234,7 +234,7 @@ class TemplateVariableHelper
                 break;
             case 'geboortedatum':
                 if($model->type_id == 'person'){
-                    return $model->person->date_of_birth ? Carbon::parse($model->person->date_of_birth)->format('d/m/Y') : null;;
+                    return $model->person->date_of_birth ? Carbon::parse($model->person->date_of_birth)->format('d-m-Y') : null;;
                 }
                 elseif($model->type_id == 'organisation'){
                     return '';
@@ -271,13 +271,13 @@ class TemplateVariableHelper
                 return optional($model->primaryAddress)->ean_electricity;
                 break;
             case 'energieleverancier_klant_sinds':
-                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplierElectricity)->member_since ? Carbon::parse(optional(optional($model->primaryAddress)->primaryAddressEnergySupplierElectricity)->member_since)->format('d/m/Y') : null;;
+                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplierElectricity)->member_since ? Carbon::parse(optional(optional($model->primaryAddress)->primaryAddressEnergySupplierElectricity)->member_since)->format('d-m-Y') : null;;
                 break;
             case 'energieleverancier_klant_einddatum':
-                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplierElectricity)->end_date ? Carbon::parse(optional(optional($model->primaryAddress)->primaryAddressEnergySupplierElectricity)->end_date)->format('d/m/Y') : null;;
+                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplierElectricity)->end_date ? Carbon::parse(optional(optional($model->primaryAddress)->primaryAddressEnergySupplierElectricity)->end_date)->format('d-m-Y') : null;;
                 break;
             case 'energieleverancier_mogelijke_overstap':
-                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplierElectricity)->switch_date ? Carbon::parse(optional(optional($model->primaryAddress)->primaryAddressEnergySupplierElectricity)->switch_date)->format('d/m/Y') : null;;
+                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplierElectricity)->switch_date ? Carbon::parse(optional(optional($model->primaryAddress)->primaryAddressEnergySupplierElectricity)->switch_date)->format('d-m-Y') : null;;
                 break;
             case 'kvk':
                 if($model->type_id == 'organisation'){
@@ -457,13 +457,13 @@ class TemplateVariableHelper
                 return $model->quotation_text;
                 break;
             case 'uitvoering_gepland':
-                return $model->desired_date ? Carbon::parse($model->desired_date)->format('d/m/Y') : null;
+                return $model->desired_date ? Carbon::parse($model->desired_date)->format('d-m-Y') : null;
                 break;
             case 'status':
                 return $model->status ? $model->status->name : '';
                 break;
             case 'datum_evaluatie':
-                return $model->evaluation_agreed_date ? Carbon::parse($model->evaluation_agreed_date)->format('d/m/Y') : null;
+                return $model->evaluation_agreed_date ? Carbon::parse($model->evaluation_agreed_date)->format('d-m-Y') : null;
                 break;
 //            case 'akkoord':
 //                break;
@@ -540,7 +540,7 @@ class TemplateVariableHelper
                 return $model->note;
                 break;
             case 'gemaakt_op':
-                return $model->created_at ? Carbon::parse($model->created_at)->format('d/m/Y') : null;
+                return $model->created_at ? Carbon::parse($model->created_at)->format('d-m-Y') : null;
                 break;
             default:
                 return '';
@@ -575,13 +575,13 @@ class TemplateVariableHelper
                 return $model->note;
                 break;
             case 'datum_afhandelen':
-                return $model->date_planned_start ? Carbon::parse($model->date_planned_start)->format('d/m/Y') : null;
+                return $model->date_planned_start ? Carbon::parse($model->date_planned_start)->format('d-m-Y') : null;
                 break;
             case 'begin_tijd':
                 return $model->start_time_planned ? Carbon::parse($model->start_time_planned)->format('H:i') : null;
                 break;
             case 'einddatum':
-                return $model->date_planned_finish ? Carbon::parse($model->date_planned_finish)->format('d/m/Y') : null;
+                return $model->date_planned_finish ? Carbon::parse($model->date_planned_finish)->format('d-m-Y') : null;
                 break;
             case 'eind_tijd':
                 return $model->end_time_planned ? Carbon::parse($model->end_time_planned)->format('H:i') : null;
@@ -599,7 +599,7 @@ class TemplateVariableHelper
                 }
                 break;
             case 'datum_gereed':
-                return $model->date_finished ? Carbon::parse($model->date_finished)->format('d/m/Y') : null;
+                return $model->date_finished ? Carbon::parse($model->date_finished)->format('d-m-Y') : null;
                 break;
             case 'afgerond_door':
                 return optional(optional($model->finishedBy)->present())->fullName;
@@ -621,16 +621,16 @@ class TemplateVariableHelper
                 return $model->description;
                 break;
             case 'start_project':
-                return $model->date_start ? Carbon::parse($model->date_start)->format('d/m/Y') : null;
+                return $model->date_start ? Carbon::parse($model->date_start)->format('d-m-Y') : null;
                 break;
             case 'start_productie':
-                return $model->date_production ? Carbon::parse($model->date_production)->format('d/m/Y') : null;
+                return $model->date_production ? Carbon::parse($model->date_production)->format('d-m-Y') : null;
                 break;
             case 'start_inschrijving':
-                return $model->date_start_registrations ? Carbon::parse($model->date_start_registrations)->format('d/m/Y') : null;
+                return $model->date_start_registrations ? Carbon::parse($model->date_start_registrations)->format('d-m-Y') : null;
                 break;
             case 'eind_inschrijving':
-                return $model->date_end_registrations ? Carbon::parse($model->date_end_registrations)->format('d/m/Y') : null;
+                return $model->date_end_registrations ? Carbon::parse($model->date_end_registrations)->format('d-m-Y') : null;
                 break;
             case 'postcode':
                 return $model->postal_code;
@@ -787,7 +787,7 @@ class TemplateVariableHelper
                 break;
             case 'contact_geboortedatum':
                 if($model->contact->type_id == 'person'){
-                    return $model->contact->person->date_of_birth ? Carbon::parse($model->contact->person->date_of_birth)->format('d/m/Y') : null;;
+                    return $model->contact->person->date_of_birth ? Carbon::parse($model->contact->person->date_of_birth)->format('d-m-Y') : null;;
                 }
                 elseif($model->contact->type_id == 'organisation'){
                     return '';
@@ -857,7 +857,7 @@ class TemplateVariableHelper
                 return $model->power_kwh_consumption;
                 break;
             case 'inschrijf_datum':
-                return $model->date_register ? Carbon::parse($model->date_register)->format('d/m/Y') : null;
+                return $model->date_register ? Carbon::parse($model->date_register)->format('d-m-Y') : null;
                 break;
             case 'aantal_interesse':
                 return  $model->participations_interessed;
@@ -1101,7 +1101,7 @@ class TemplateVariableHelper
                 break;
 
             case 'beeindigd_op':
-                return $model->date_terminated ? Carbon::parse($model->date_terminated)->format('d/m/Y') : null;
+                return $model->date_terminated ? Carbon::parse($model->date_terminated)->format('d-m-Y') : null;
                 break;
 
             case 'aantal_inleg_mutatie_interesse':
@@ -1533,49 +1533,49 @@ class TemplateVariableHelper
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'interest')->first())->id;
                 // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
                 $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationDepositTypes)->first();
-                return ($lastMutation && $lastMutation->date_interest) ? Carbon::parse($lastMutation->date_interest)->format('d/m/Y') : null;
+                return ($lastMutation && $lastMutation->date_interest) ? Carbon::parse($lastMutation->date_interest)->format('d-m-Y') : null;
                 break;
             case 'datum_laatste_mutatie_ingeschreven':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'option')->first())->id;
                 // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
                 $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationDepositTypes)->first();
-                return ($lastMutation && $lastMutation->date_option) ? Carbon::parse($lastMutation->date_option)->format('d/m/Y') : null;
+                return ($lastMutation && $lastMutation->date_option) ? Carbon::parse($lastMutation->date_option)->format('d-m-Y') : null;
                 break;
             case 'datum_laatste_mutatie_toegekend':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'granted')->first())->id;
                 // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
                 $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationDepositTypes)->first();
-                return ($lastMutation && $lastMutation->date_granted) ? Carbon::parse($lastMutation->date_granted)->format('d/m/Y') : null;
+                return ($lastMutation && $lastMutation->date_granted) ? Carbon::parse($lastMutation->date_granted)->format('d-m-Y') : null;
                 break;
             case 'datum_laatste_mutatie_definitief':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
                 // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
                 $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationDepositTypes)->first();
-                return ($lastMutation && $lastMutation->date_entry) ? Carbon::parse($lastMutation->date_entry)->format('d/m/Y') : null;
+                return ($lastMutation && $lastMutation->date_entry) ? Carbon::parse($lastMutation->date_entry)->format('d-m-Y') : null;
                 break;
             case 'datum_laatste_opname_interesse':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'interest')->first())->id;
                 // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
                 $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationWithDrawalTypes)->first();
-                return ($lastMutation && $lastMutation->date_interest) ? Carbon::parse($lastMutation->date_interest)->format('d/m/Y') : null;
+                return ($lastMutation && $lastMutation->date_interest) ? Carbon::parse($lastMutation->date_interest)->format('d-m-Y') : null;
                 break;
             case 'datum_laatste_opname_ingeschreven':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'option')->first())->id;
                 // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
                 $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationWithDrawalTypes)->first();
-                return ($lastMutation && $lastMutation->date_option) ? Carbon::parse($lastMutation->date_option)->format('d/m/Y') : null;
+                return ($lastMutation && $lastMutation->date_option) ? Carbon::parse($lastMutation->date_option)->format('d-m-Y') : null;
                 break;
             case 'datum_laatste_opname_toegekend':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'granted')->first())->id;
                 // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
                 $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationWithDrawalTypes)->first();
-                return ($lastMutation && $lastMutation->date_granted) ? Carbon::parse($lastMutation->date_granted)->format('d/m/Y') : null;
+                return ($lastMutation && $lastMutation->date_granted) ? Carbon::parse($lastMutation->date_granted)->format('d-m-Y') : null;
                 break;
             case 'datum_laatste_opname_definitief':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
                 // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
                 $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationWithDrawalTypes)->first();
-                return ($lastMutation && $lastMutation->date_entry) ? Carbon::parse($lastMutation->date_entry)->format('d/m/Y') : null;
+                return ($lastMutation && $lastMutation->date_entry) ? Carbon::parse($lastMutation->date_entry)->format('d-m-Y') : null;
                 break;
 
             case 'transactiekosten_laatste_mutatie':
@@ -1588,7 +1588,7 @@ class TemplateVariableHelper
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
                 // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
                 $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationDepositTypes)->first();
-                return ($lastMutation && $lastMutation->date_payment) ? Carbon::parse($lastMutation->date_payment)->format('d/m/Y') : null;
+                return ($lastMutation && $lastMutation->date_payment) ? Carbon::parse($lastMutation->date_payment)->format('d-m-Y') : null;
                 break;
             case 'mutatie_betalingskenmerk':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
@@ -1600,7 +1600,7 @@ class TemplateVariableHelper
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
                 // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
                 $lastMutation = $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationDepositTypes)->first();
-                return ($lastMutation && $lastMutation->date_contract_retour) ? Carbon::parse($lastMutation->date_contract_retour)->format('d/m/Y') : null;
+                return ($lastMutation && $lastMutation->date_contract_retour) ? Carbon::parse($lastMutation->date_contract_retour)->format('d-m-Y') : null;
                 break;
 
             default:
@@ -1643,8 +1643,8 @@ class TemplateVariableHelper
                     <tr>
                       <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $mutatie->type ? $mutatie->type->description : '' ) . "</td>
                       <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $mutatie->status ? $mutatie->status->name : '' ) . "</td>
-                      <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $mutatie->date_payment ? Carbon::parse($mutatie->date_payment)->format('d/m/Y') : '' ) . "</td>
-                      <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $mutatie->date_entry ? Carbon::parse($mutatie->date_entry)->format('d/m/Y') : '' ) . "</td>";
+                      <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $mutatie->date_payment ? Carbon::parse($mutatie->date_payment)->format('d-m-Y') : '' ) . "</td>
+                      <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $mutatie->date_entry ? Carbon::parse($mutatie->date_entry)->format('d-m-Y') : '' ) . "</td>";
                     switch ($projectTypeCodeRef) {
                         case 'loan':
                             $html .= "<td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal;'>" . ( $mutatie->amount ? number_format($mutatie->amount, 2, ',', '') : '' ) . "</td>";
@@ -1683,10 +1683,10 @@ class TemplateVariableHelper
                 return $model->getDistributionType() ? $model->getDistributionType()->name : '';
                 break;
             case 'peildatum':
-                return $model->date_reference ? Carbon::parse($model->date_reference)->format('d/m/Y') : null;
+                return $model->date_reference ? Carbon::parse($model->date_reference)->format('d-m-Y') : null;
                 break;
             case 'datum_definitief':
-                return $model->date_confirmed ? Carbon::parse($model->date_confirmed)->format('d/m/Y') : null;
+                return $model->date_confirmed ? Carbon::parse($model->date_confirmed)->format('d-m-Y') : null;
                 break;
             case 'kwh_start':
                 return $model->kwh_start;
@@ -1706,13 +1706,13 @@ class TemplateVariableHelper
                 return $model->participantProjectPayoutType ? $model->participantProjectPayoutType->name : '';
                 break;
             case 'datum_uitgekeerd':
-                return $model->date_payed ? Carbon::parse($model->date_payed)->format('d/m/Y') : null;
+                return $model->date_payed ? Carbon::parse($model->date_payed)->format('d-m-Y') : null;
                 break;
             case 'beginperiode':
-                return $model->date_begin ? Carbon::parse($model->date_begin)->format('d/m/Y') : null;
+                return $model->date_begin ? Carbon::parse($model->date_begin)->format('d-m-Y') : null;
                 break;
             case 'eindperiode':
-                return $model->date_end ? Carbon::parse($model->date_end)->format('d/m/Y') : null;
+                return $model->date_end ? Carbon::parse($model->date_end)->format('d-m-Y') : null;
                 break;
             case 'teruggave':
                 $start = $model->kwh_start ? $model->kwh_start : 0;
@@ -1806,7 +1806,7 @@ class TemplateVariableHelper
                 return $model->payout_type;
                 break;
             case 'datum_uitkeren':
-                return $model->date_payout ? Carbon::parse($model->date_payout)->format('d/m/Y') : null;
+                return $model->date_payout ? Carbon::parse($model->date_payout)->format('d-m-Y') : null;
                 break;
             case 'energieleverancier':
                 return $model->energy_supplier_name;
@@ -1868,10 +1868,10 @@ class TemplateVariableHelper
                 return ProjectRevenueDistributionType::get('inPossessionOf') ? ProjectRevenueDistributionType::get('inPossessionOf')->name : '';
                 break;
             case 'datum_definitief':
-                return $model->date_confirmed ? Carbon::parse($model->date_confirmed)->format('d/m/Y') : null;
+                return $model->date_confirmed ? Carbon::parse($model->date_confirmed)->format('d-m-Y') : null;
                 break;
             case 'datum_uitkeren':
-                return optional($model->last_parts_kwh)->date_payout ? Carbon::parse($model->last_parts_kwh->date_payout)->format('d/m/Y') : null;
+                return optional($model->last_parts_kwh)->date_payout ? Carbon::parse($model->last_parts_kwh->date_payout)->format('d-m-Y') : null;
                 break;
             case 'kwh_start':
                 return $startKhw;
@@ -1886,10 +1886,10 @@ class TemplateVariableHelper
                 return $model->payout_kwh;
                 break;
             case 'beginperiode':
-                return $model->date_begin ? Carbon::parse($model->date_begin)->format('d/m/Y') : null;
+                return $model->date_begin ? Carbon::parse($model->date_begin)->format('d-m-Y') : null;
                 break;
             case 'eindperiode':
-                return $model->date_end ? Carbon::parse($model->date_end)->format('d/m/Y') : null;
+                return $model->date_end ? Carbon::parse($model->date_end)->format('d-m-Y') : null;
                 break;
             case 'teruggave':
                 $payoutKwh = $model->payout_kwh ? $model->payout_kwh : 0;
@@ -1934,10 +1934,10 @@ class TemplateVariableHelper
                 return ProjectRevenueDistributionType::get('inPossessionOf') ? ProjectRevenueDistributionType::get('inPossessionOf')->name : '';
                 break;
             case 'datum_definitief':
-                return $model->date_confirmed ? Carbon::parse($model->date_confirmed)->format('d/m/Y') : null;
+                return $model->date_confirmed ? Carbon::parse($model->date_confirmed)->format('d-m-Y') : null;
                 break;
             case 'datum_uitkeren':
-                return $model->date_payout ? Carbon::parse($model->date_payout)->format('d/m/Y') : null;
+                return $model->date_payout ? Carbon::parse($model->date_payout)->format('d-m-Y') : null;
                 break;
             case 'kwh_start':
                 return $startKhw;
@@ -1952,10 +1952,10 @@ class TemplateVariableHelper
                 return $model->payout_kwh;
                 break;
             case 'beginperiode':
-                return $model->date_begin ? Carbon::parse($model->date_begin)->format('d/m/Y') : null;
+                return $model->date_begin ? Carbon::parse($model->date_begin)->format('d-m-Y') : null;
                 break;
             case 'eindperiode':
-                return $model->date_end ? Carbon::parse($model->date_end)->format('d/m/Y') : null;
+                return $model->date_end ? Carbon::parse($model->date_end)->format('d-m-Y') : null;
                 break;
             case 'teruggave':
                 $payoutKwh = $model->payout_kwh ? $model->payout_kwh : 0;
@@ -2028,10 +2028,10 @@ class TemplateVariableHelper
                 return $esNumbers;
                 break;
             case 'begindatum':
-                return $model->revenuesKwh->date_begin ? Carbon::parse($model->revenuesKwh->date_begin)->format('d/m/Y') : null;
+                return $model->revenuesKwh->date_begin ? Carbon::parse($model->revenuesKwh->date_begin)->format('d-m-Y') : null;
                 break;
             case 'einddatum':
-                return $model->revenuesKwh->date_end ? Carbon::parse($model->revenuesKwh->date_end)->format('d/m/Y') : null;
+                return $model->revenuesKwh->date_end ? Carbon::parse($model->revenuesKwh->date_end)->format('d-m-Y') : null;
                 break;
             case 'opbrengst_kwh_euro':
                 return $model->revenuesKwh->payout_kwh;
@@ -2091,10 +2091,10 @@ class TemplateVariableHelper
                 return $model->energy_supplier_number;
                 break;
             case 'begindatum':
-                return $model->date_begin_from_till_visible ? Carbon::parse($model->date_begin_from_till_visible)->format('d/m/Y') : null;
+                return $model->date_begin_from_till_visible ? Carbon::parse($model->date_begin_from_till_visible)->format('d-m-Y') : null;
                 break;
             case 'einddatum':
-                return $model->partsKwh->date_end ? Carbon::parse($model->partsKwh->date_end)->format('d/m/Y') : null;
+                return $model->partsKwh->date_end ? Carbon::parse($model->partsKwh->date_end)->format('d-m-Y') : null;
                 break;
             case 'opbrengst_kwh_euro':
                 return $model->partsKwh->payout_kwh;
@@ -2111,10 +2111,10 @@ class TemplateVariableHelper
                 return $model->name;
                 break;
             case 'begindatum':
-                return $model->start_date ? Carbon::parse($model->start_date)->format('d/m/Y') : null;
+                return $model->start_date ? Carbon::parse($model->start_date)->format('d-m-Y') : null;
                 break;
             case 'einddatum':
-                return $model->end_date ? Carbon::parse($model->end_date)->format('d/m/Y') : null;
+                return $model->end_date ? Carbon::parse($model->end_date)->format('d-m-Y') : null;
                 break;
             case 'omschrijving':
                 return $model->description;
@@ -2127,49 +2127,84 @@ class TemplateVariableHelper
                 break;
         }
     }
+    
+    public static function getHousingFileVar($model, $varname){
+        switch ($varname) {
+            case 'woningtype':
+                return optional($model->buildingType)->name;
+                break;
+            case 'gebruikersoppervlakte':
+                return $model->surface;
+                break;
+            case 'bouwjaar':
+                return $model->build_year;
+                break;
+            case 'daktype':
+                return optional($model->roofType)->name;
+                break;
+            case 'energielabel':
+                return optional($model->energyLabel)->name;
+                break;
+            case 'status_energielabel':
+                return optional($model->energyLabelStatus)->name;
+                break;
+            case 'aantal_bouwlagen':
+                return $model->floors;
+                break;
+            case 'monument':
+                return $model->is_monument ? 'Ja' : 'Nee';
+                break;
+            case 'koophuis':
+                return $model->is_house_for_sale ? 'Ja' : 'Nee';
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
 
     public static function getQuotationRequestVar($model, $varname){
         switch ($varname) {
             case 'organisatie_naam':
-                return optional($model->organisationOrCoach->organisation)->name;
+                return optional(optional($model->organisationOrCoach)->organisation)->name;
                 break;
             case 'organisatie_statutaire_naam':
-                return optional($model->organisationOrCoach->organisation)->statutory_name;
+                return optional(optional($model->organisationOrCoach)->organisation)->statutory_name;
                 break;
             case 'organisatie_adres':
-                return optional($model->organisationOrCoach->primaryAddress)->street . ' ' . optional($model->organisationOrCoach->primaryAddress)->number . (optional($model->organisationOrCoach->primaryAddress)->addition ? ('-' . optional($model->organisationOrCoach->primaryAddress)->addition) : '');
+                return optional(optional($model->organisationOrCoach)->primaryAddress)->street . ' ' . optional(optional($model->organisationOrCoach)->primaryAddress)->number . (optional(optional($model->organisationOrCoach)->primaryAddress)->addition ? ('-' . optional(optional($model->organisationOrCoach)->primaryAddress)->addition) : '');
                 break;
             case 'organisatie_plaats':
-                return optional($model->organisationOrCoach->primaryAddress)->city;
+                return optional(optional($model->organisationOrCoach)->primaryAddress)->city;
                 break;
             case 'organisatie_email':
-                return optional($model->organisationOrCoach->primaryEmailAddress)->email;
+                return optional(optional($model->organisationOrCoach)->primaryEmailAddress)->email;
                 break;
             case 'organisatie_telefoonnummer':
-                return optional($model->organisationOrCoach->primaryPhoneNumber)->number;
+                return optional(optional($model->organisationOrCoach)->primaryPhoneNumber)->number;
                 break;
             case 'organisatie_primair_contact':
-                return optional(optional($model->organisationOrCoach->contactPerson)->contact)->full_name;
+                return optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->full_name_fnf;
                 break;
             case 'organisatie_primair_contact_voornaam':
-                if(optional(optional($model->organisationOrCoach->contactPerson)->contact)->type_id == 'person'){
-                    return optional(optional($model->organisationOrCoach->contactPerson)->contact)->person->first_name;
+                if(optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->type_id == 'person'){
+                    return optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->person->first_name;
                 }
-                elseif(optional(optional($model->organisationOrCoach->contactPerson)->contact)->type_id == 'organisation'){
+                elseif(optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->type_id == 'organisation'){
                     return '';
                 }
                 break;
             case 'organisatie_primair_contact_achternaam':
-                if(optional(optional($model->organisationOrCoach->contactPerson)->contact)->type_id == 'person'){
-                    $prefix = optional(optional($model->organisationOrCoach->contactPerson)->contact)->person->last_name_prefix;
-                    return $prefix ? $prefix . ' ' . optional(optional($model->organisationOrCoach->contactPerson)->contact)->person->last_name : optional(optional($model->organisationOrCoach->contactPerson)->contact)->person->last_name;
+                if(optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->type_id == 'person'){
+                    $prefix = optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->person->last_name_prefix;
+                    return $prefix ? $prefix . ' ' . optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->person->last_name : optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->person->last_name;
                 }
-                elseif(optional(optional($model->organisationOrCoach->contactPerson)->contact)->type_id == 'organisation'){
-                    return optional(optional($model->organisationOrCoach->contactPerson)->contact)->full_name;
+                elseif(optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->type_id == 'organisation'){
+                    return optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->full_name;
                 }
                 break;
             case 'organisatie_of_coach_naam':
-                return optional($model->organisationOrCoach)->full_name;
+                return optional($model->organisationOrCoach)->full_name_fnf;
                 break;
             case 'organisatie_of_coach_adres':
                 return optional(optional($model->organisationOrCoach)->primaryAddress)->street . ' ' . optional(optional($model->organisationOrCoach)->primaryAddress)->number . (optional(optional($model->organisationOrCoach)->primaryAddress)->addition ? ('-' . optional(optional($model->organisationOrCoach)->primaryAddress)->addition) : '');
@@ -2257,10 +2292,10 @@ class TemplateVariableHelper
                 return optional(optional(optional($model->opportunity)->intake)->contact->primaryPhoneNumber)->number;
                 break;
             case 'datum_opname':
-                return $model->date_recorded ? Carbon::parse($model->date_recorded)->format('d/m/Y') : null;
+                return $model->date_recorded ? Carbon::parse($model->date_recorded)->format('d-m-Y') : null;
                 break;
             case 'uitgebracht':
-                return $model->date_released ? Carbon::parse($model->date_released)->format('d/m/Y') : null;
+                return $model->date_released ? Carbon::parse($model->date_released)->format('d-m-Y') : null;
                 break;
             case 'maatregel':
             case 'maatregel_categorie':
@@ -2297,28 +2332,28 @@ class TemplateVariableHelper
                 return $model->quotation_text;
                 break;
             case 'gemaakt_op':
-                return $model->created_at ? Carbon::parse($model->created_at)->format('d/m/Y') : null;
+                return $model->created_at ? Carbon::parse($model->created_at)->format('d-m-Y') : null;
                 break;
             case 'gemaakt_door':
                 return optional(optional($model->createdBy)->present())->fullName();
                 break;
             case 'datum_afspraak':
-                return $model->date_planned ? Carbon::parse($model->date_planned)->format('d/m/Y H:i') : null;
+                return $model->date_planned ? Carbon::parse($model->date_planned)->format('d-m-Y H:i') : null;
                 break;
             case 'datum_opname':
-                return $model->date_recorded ? Carbon::parse($model->date_recorded)->format('d/m/Y H:i') : null;
+                return $model->date_recorded ? Carbon::parse($model->date_recorded)->format('d-m-Y H:i') : null;
                 break;
             case 'datum_uitgebracht':
-                return $model->date_released ? Carbon::parse($model->date_released)->format('d/m/Y H:i') : null;
+                return $model->date_released ? Carbon::parse($model->date_released)->format('d-m-Y H:i') : null;
                 break;
             case 'datum_akkoord_extern':
-                return $model->date_approved_external ? Carbon::parse($model->date_approved_external)->format('d/m/Y') : null;
+                return $model->date_approved_external ? Carbon::parse($model->date_approved_external)->format('d-m-Y') : null;
                 break;
             case 'datum_akkoord_projectleider':
-                return $model->date_approved_project_manager ? Carbon::parse($model->date_approved_project_manager)->format('d/m/Y') : null;
+                return $model->date_approved_project_manager ? Carbon::parse($model->date_approved_project_manager)->format('d-m-Y') : null;
                 break;
             case 'datum_akkoord_bewoner':
-                return $model->date_approved_client ? Carbon::parse($model->date_approved_client)->format('d/m/Y') : null;
+                return $model->date_approved_client ? Carbon::parse($model->date_approved_client)->format('d-m-Y') : null;
                 break;
             case 'status':
                 return $model->status ? $model->status->name : '';
@@ -2348,10 +2383,10 @@ class TemplateVariableHelper
                 return number_format($model->total_price_incl_vat_per_year, 2, ',', '');
                 break;
             case 'datum_aangevraagd':
-                return $model->date_requested ? Carbon::parse($model->date_requested)->format('d/m/Y') : null;
+                return $model->date_requested ? Carbon::parse($model->date_requested)->format('d-m-Y') : null;
                 break;
             case 'gemaakt_op':
-                return $model->created_at ? Carbon::parse($model->created_at)->format('d/m/Y') : null;
+                return $model->created_at ? Carbon::parse($model->created_at)->format('d-m-Y') : null;
                 break;
             case 'status':
                 return $model->getStatus() ? $model->getStatus()->name : '';

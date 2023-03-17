@@ -41,7 +41,7 @@ Route::namespace('Api')
         Route::get('/contact/excel/verbruik/gas', 'Contact\GridController@excelAddressEnergyConsumptionGas');
         Route::get('/contact/excel/verbruik/electriciteit', 'Contact\GridController@excelAddressEnergyConsumptionElectricity');
         Route::get('/contact/save-as-group', 'Contact\GridController@saveAsGroup');
-        Route::get('/contact/peek', 'Contact\ContactController@peek');
+        Route::get('/contact/peek' . '/{inspectionpersontype?}', 'Contact\ContactController@peek');
         Route::get('/contact/search', 'Contact\ContactController@search');
         Route::get('/contact/address/peek', 'Contact\ContactController@peekWithAddress');
         Route::get('/contact/chart-data', 'Contact\ContactController@chartData');
@@ -82,6 +82,7 @@ Route::namespace('Api')
 
         Route::get('/housing-file/grid', 'HousingFile\HousingFileController@grid');
         Route::get('/housing-file/peek', 'HousingFile\HousingFileController@peek');
+        Route::get('/housing-file/excel', 'HousingFile\HousingFileController@excel');
         Route::get('/contact/{contact}/housing-file', 'HousingFile\HousingFileController@getStore');
         Route::post('/contact/housing-file', 'HousingFile\HousingFileController@store');
         Route::get('/housing-file/{housingFile}', 'HousingFile\HousingFileController@show');
@@ -383,6 +384,7 @@ Route::namespace('Api')
         Route::post('project/revenues-kwh', 'Project\RevenuesKwhController@store');
         Route::post('project/revenues-kwh/{revenuesKwh}', 'Project\RevenuesKwhController@update');
         Route::post('project/revenues-kwh/{revenuesKwh}/delete', 'Project\RevenuesKwhController@destroy');
+        Route::get('project/revenues-kwh/{revenuesKwh}/recalculateRevenuesDistribution', 'Project\RevenuesKwhController@recalculateRevenuesDistribution');
 
         Route::get('project/revenue-parts-kwh/{revenuePartsKwh}', 'Project\RevenuePartsKwhController@show');
         Route::get('project/revenue-parts-kwh-for-report/{revenuePartsKwh}', 'Project\RevenuePartsKwhController@showForReport');

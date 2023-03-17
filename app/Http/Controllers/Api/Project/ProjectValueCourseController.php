@@ -22,8 +22,8 @@ class ProjectValueCourseController extends ApiController
         $data = $requestInput
             ->integer('projectId')->validate('required|exists:projects,id')->alias('project_id')->next()
             ->date('date')->validate('required|date')->next()
-            ->double('bookWorth')->onEmpty(null)->alias('book_worth')->next()
-            ->double('transferWorth')->onEmpty(null)->alias('transfer_worth')->next()
+            ->double('bookWorth')->onEmpty(0)->alias('book_worth')->next()
+            ->double('transferWorth')->onEmpty(0)->alias('transfer_worth')->next()
             ->boolean('active')->next()
             ->get();
 
@@ -56,8 +56,8 @@ class ProjectValueCourseController extends ApiController
 
         $data = $requestInput
             ->date('date')->validate('required|date')->next()
-            ->double('bookWorth')->onEmpty(null)->alias('book_worth')->next()
-            ->double('transferWorth')->onEmpty(null)->alias('transfer_worth')->next()
+            ->double('bookWorth')->onEmpty(0)->alias('book_worth')->next()
+            ->double('transferWorth')->onEmpty(0)->alias('transfer_worth')->next()
             ->boolean('active')->next()
             ->get();
 

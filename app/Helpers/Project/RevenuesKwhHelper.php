@@ -4,6 +4,7 @@ namespace App\Helpers\Project;
 
 
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
+use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
@@ -11,9 +12,10 @@ use App\Eco\RevenuesKwh\RevenueDistributionValuesKwh;
 use App\Eco\RevenuesKwh\RevenuePartsKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\RevenuesKwh\RevenueValuesKwh;
+use App\Jobs\RevenueKwh\UpdateRevenuePartsKwh;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class RevenuesKwhHelper
 {
@@ -67,61 +69,100 @@ class RevenuesKwhHelper
     }
 
     /**
-     * @param string $request
-     * @param $revenuePartsKwh
+     * @param null $valuesKwhData
+     * @param RevenuePartsKwh $revenuePartsKwh
      */
-    public function createOrUpdateRevenueValuesKwh($valuesKwhData = null, RevenuePartsKwh $revenuePartsKwh, $alwaysRecalculate): void
+    public function createOrUpdateRevenueValuesKwh($valuesKwhData = null, RevenuePartsKwh $revenuePartsKwh): void
     {
+        $createOrUpdateNextRevenueValuesKwh = $this->doCreateOrUpdateRevenueValuesKwh($valuesKwhData, $revenuePartsKwh, false);
+        if($createOrUpdateNextRevenueValuesKwh && $revenuePartsKwh->next_revenue_parts_kwh && !$revenuePartsKwh->next_revenue_parts_kwh->confirmed && $revenuePartsKwh->next_revenue_parts_kwh->status == 'concept') {
+            $valuesKwhDataNext = [
+                'kwhStart' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_start['kwhStart'],
+                'kwhStartHigh' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_start['kwhStartHigh'],
+                'kwhStartLow' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_start['kwhStartLow'],
+                'kwhEnd' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_end['kwhEnd'],
+                'kwhEndHigh' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_end['kwhEndHigh'],
+                'kwhEndLow' => $revenuePartsKwh->next_revenue_parts_kwh->values_kwh_end['kwhEndLow'],
+            ];
+            $revenuesKwhHelper = new RevenuesKwhHelper();
+            $revenuesKwhHelper->doCreateOrUpdateRevenueValuesKwh($valuesKwhDataNext, $revenuePartsKwh->next_revenue_parts_kwh, true);
+            UpdateRevenuePartsKwh::dispatch($revenuePartsKwh->next_revenue_parts_kwh, Auth::id());
+        }
+    }
+
+    /**
+     * @param null $valuesKwhData
+     * @param RevenuePartsKwh $revenuePartsKwh
+     * @param $alwaysRecalculate
+     * @return bool
+     */
+    protected function doCreateOrUpdateRevenueValuesKwh($valuesKwhData = null, RevenuePartsKwh $revenuePartsKwh, $alwaysRecalculate): bool
+    {
+        $createOrUpdateNextRevenueValuesKwh = false;
+
         if($valuesKwhData != null) {
 
             $partDateBegin = Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d');
-            $partDateEnd =  Carbon::parse($revenuePartsKwh->date_end)->format('Y-m-d');
-            $dateRegistrationDayAfterEnd = Carbon::parse($revenuePartsKwh->date_end)->addDay()->format('Y-m-d');
+            $beginRevenueValuesKwhOriginal = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $partDateBegin)->first();
+            if (!$beginRevenueValuesKwhOriginal || in_array($beginRevenueValuesKwhOriginal->status, ['confirmed', 'processed'])) {
+                return $createOrUpdateNextRevenueValuesKwh;
+            }
 
-            $beginRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $partDateBegin)->first();
-            $endRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
+            $dateRegistrationDayAfterEnd = Carbon::parse($revenuePartsKwh->date_end)->addDay()->format('Y-m-d');
+            $endRevenueValuesKwhOriginal = RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
+            if ($endRevenueValuesKwhOriginal && in_array($endRevenueValuesKwhOriginal->status, ['confirmed', 'processed'])) {
+                return $createOrUpdateNextRevenueValuesKwh;
+            }
+
+            // Als Eindstanden gewijzigd zijn, dan niet langer meer simulated.
+            if(
+                $endRevenueValuesKwhOriginal
+                && $endRevenueValuesKwhOriginal->is_simulated == true
+                && ($endRevenueValuesKwhOriginal->kwh_start != $valuesKwhData['kwhEnd']
+                    || $endRevenueValuesKwhOriginal->kwh_start_high != $valuesKwhData['kwhEndHigh']
+                    || $endRevenueValuesKwhOriginal->kwh_start_low != $valuesKwhData['kwhEndLow'])
+            ){
+                $endRevenueValuesKwhOriginal->is_simulated = false;
+                $endRevenueValuesKwhOriginal->save();
+            }
 
             if($alwaysRecalculate
-                || $beginRevenueValuesKwh->kwh_start_high != $valuesKwhData['kwhStartHigh']
-                || $beginRevenueValuesKwh->kwh_start_low != $valuesKwhData['kwhStartLow']
-                || !$endRevenueValuesKwh
-                || $endRevenueValuesKwh->kwh_start_high != $valuesKwhData['kwhEndHigh']
-                || $endRevenueValuesKwh->kwh_start_low != $valuesKwhData['kwhEndLow']
+                || !$beginRevenueValuesKwhOriginal
+                || $beginRevenueValuesKwhOriginal->kwh_start_high != $valuesKwhData['kwhStartHigh']
+                || $beginRevenueValuesKwhOriginal->kwh_start_low != $valuesKwhData['kwhStartLow']
+                || !$endRevenueValuesKwhOriginal
+                || $endRevenueValuesKwhOriginal->kwh_start_high != $valuesKwhData['kwhEndHigh']
+                || $endRevenueValuesKwhOriginal->kwh_start_low != $valuesKwhData['kwhEndLow']
             ){
+
+                if(!$endRevenueValuesKwhOriginal
+                    || $endRevenueValuesKwhOriginal->kwh_start_high != $valuesKwhData['kwhEndHigh']
+                    || $endRevenueValuesKwhOriginal->kwh_start_low != $valuesKwhData['kwhEndLow']
+                ) {
+                    $createOrUpdateNextRevenueValuesKwh = true;
+                }
                 // Delete bestaande gesimuleerde values kwh
-                $revenuePartsKwh->conceptSimulatedValuesKwh()->delete();
+                $partDateDateAfterBegin =  Carbon::parse($revenuePartsKwh->date_begin)->addDay(1)->format('Y-m-d');
+                $partDateEnd =  Carbon::parse($revenuePartsKwh->date_end)->format('Y-m-d');
+                if( !($revenuePartsKwh->date_begin == $revenuePartsKwh->date_end) ){
+                    $conceptSimulatedValuesKwh =  RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->whereBetween('date_registration', [$partDateDateAfterBegin, $partDateEnd])->where('is_simulated', true)->where('status', 'concept');
+                    $conceptSimulatedValuesKwh->delete();
+                }
 
                 // Bijwerken of aanmaken start values kwh.
-                if ($beginRevenueValuesKwh) {
-                    if (in_array($beginRevenueValuesKwh->status, ['confirmed', 'processed'])) {
-                        return;
-                    }
-                    $beginRevenueValuesKwh->kwh_start = $valuesKwhData['kwhStart'];
-                    $beginRevenueValuesKwh->kwh_start_high = $valuesKwhData['kwhStartHigh'];
-                    $beginRevenueValuesKwh->kwh_start_low = $valuesKwhData['kwhStartLow'];
-                    $beginRevenueValuesKwh->save();
-                } else {
-                    RevenueValuesKwh::create([
-                        'revenue_id' => $revenuePartsKwh->revenue_id,
-                        'date_registration' => $beginRevenueValuesKwh,
-                        'is_simulated' => false,
-                        'kwh_start' => $valuesKwhData['kwhStart'],
-                        'kwh_start_high' => $valuesKwhData['kwhStartHigh'],
-                        'kwh_start_low' => $valuesKwhData['kwhStartLow'],
-                        'status' => 'concept',
-                        'delivered_kwh' => 0
-                    ]);
+                if ($beginRevenueValuesKwhOriginal) {
+                    $beginRevenueValuesKwhOriginal->kwh_start = $valuesKwhData['kwhStart'];
+                    $beginRevenueValuesKwhOriginal->kwh_start_high = $valuesKwhData['kwhStartHigh'];
+                    $beginRevenueValuesKwhOriginal->kwh_start_low = $valuesKwhData['kwhStartLow'];
+                    $beginRevenueValuesKwhOriginal->save();
                 }
 
                 // Bijwerken of aanmaken end values kwh (deze plaatsen we in start values kwh 1 dag na einddatum.
-                if ($endRevenueValuesKwh) {
-                    if (in_array($endRevenueValuesKwh->status, ['confirmed', 'processed'])) {
-                        return;
-                    }
-                    $endRevenueValuesKwh->kwh_start = $valuesKwhData['kwhEnd'];
-                    $endRevenueValuesKwh->kwh_start_high = $valuesKwhData['kwhEndHigh'];
-                    $endRevenueValuesKwh->kwh_start_low = $valuesKwhData['kwhEndLow'];
-                    $endRevenueValuesKwh->save();
+                if ($endRevenueValuesKwhOriginal) {
+                    $endRevenueValuesKwhOriginal->kwh_start = $valuesKwhData['kwhEnd'];
+                    $endRevenueValuesKwhOriginal->kwh_start_high = $valuesKwhData['kwhEndHigh'];
+                    $endRevenueValuesKwhOriginal->kwh_start_low = $valuesKwhData['kwhEndLow'];
+                    $endRevenueValuesKwhOriginal->save();
                 } else {
                     RevenueValuesKwh::create([
                         'revenue_id' => $revenuePartsKwh->revenue_id,
@@ -140,12 +181,13 @@ class RevenuesKwhHelper
 
             }
         }
+        return $createOrUpdateNextRevenueValuesKwh;
     }
 
     /**
      * @param $revenueDistributionPartsKwh
      */
-    public function createOrUpdateRevenueValuesKwhSimulate($revenueId, $partDateBegin, $partDateEnd, $dateRegistrationDayAfterEnd): void
+    protected function createOrUpdateRevenueValuesKwhSimulate($revenueId, $partDateBegin, $partDateEnd, $dateRegistrationDayAfterEnd): void
     {
         $daysOfPeriod = Carbon::parse($dateRegistrationDayAfterEnd)->diffInDays(Carbon::parse($partDateBegin));
         $beginRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenueId)->where('date_registration', $partDateBegin)->first();
@@ -253,12 +295,21 @@ class RevenuesKwhHelper
         $distributionPartsKwh->distributionKwh->newOrConceptDistributionValuesKwh()->where('parts_id', $revenuePartsKwh->id)->delete();
         $this->saveDistributionValuesKwh($partDateBegin, $partDateEnd, $distributionPartsKwh);
 
+        $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
         $distributionPartsKwh->delivered_kwh = 0;
-        $distributionPartsKwh->es_id = $addressEnergySupplier ? $addressEnergySupplier->energy_supplier_id : null;
-        $distributionPartsKwh->energy_supplier_name = $addressEnergySupplier ? $addressEnergySupplier->energySupplier->name : null;
-        $distributionPartsKwh->energy_supplier_number = $addressEnergySupplier ? $addressEnergySupplier->es_number: null;
-
-        $distributionPartsKwh->is_visible = empty($distributionPartsKwh->remarks) ? false : true;
+        if($addressEnergySupplier){
+            $distributionPartsKwh->es_id = $addressEnergySupplier ? $addressEnergySupplier->energy_supplier_id : null;
+            $distributionPartsKwh->energy_supplier_name = $addressEnergySupplier ? $addressEnergySupplier->energySupplier->name : null;
+            $distributionPartsKwh->energy_supplier_number = $addressEnergySupplier ? $addressEnergySupplier->es_number: null;
+            $distributionPartsKwh->is_visible = empty($distributionPartsKwh->remarks) ? false : true;
+        } else {
+            if($energySupplierUnknown){
+                $distributionPartsKwh->es_id = $energySupplierUnknown->id;
+                $distributionPartsKwh->energy_supplier_name = $energySupplierUnknown->name;
+                $distributionPartsKwh->energy_supplier_number = '';
+                $distributionPartsKwh->is_visible = 1;
+            }
+        }
         $distributionPartsKwh->save();
     }
 
@@ -289,7 +340,7 @@ class RevenuesKwhHelper
     protected function saveDistributionValuesKwh($partDateBegin, $partDateEnd, RevenueDistributionPartsKwh $distributionPartsKwh): void
     {
         // startwaardes uit distributionKwh halen (die zijn al bepaald en dan hoeven we niet weer helemaal bij date_register datum van participation te beginnen.)
-        $participationsQuantity = $distributionPartsKwh->participations_quantity_at_start;          // 2
+        $participationsQuantity = $distributionPartsKwh->participations_quantity_at_start;
 
         $mutations = $distributionPartsKwh->distributionKwh->participation->mutationsDefinitiveForKwhPeriod->whereBetween('date_entry', [$partDateBegin, $partDateEnd]);
         $dateBegin = Carbon::parse($partDateBegin);  // dateBegin = 01-06-2024
@@ -563,7 +614,7 @@ class RevenuesKwhHelper
         $newEndDateOriginalPartsKwh = Carbon::parse($splitDate)->subDay()->format('Y-m-d');
         $revenuePartsKwh->date_end = $newEndDateOriginalPartsKwh;
 
-        if($revenuePartsKwh->status == 'concept'){
+        if($revenuePartsKwh->status == 'new' || $revenuePartsKwh->status == 'concept'){
             $revenuePartsKwh->delivered_total_concept = 0;
             $revenuePartsKwh->delivered_total_confirmed = 0;
             $revenuePartsKwh->delivered_total_processed = 0;
@@ -587,7 +638,7 @@ class RevenuesKwhHelper
         $newRevenuePartsKwh->date_begin = $splitDateString;
         $newRevenuePartsKwh->date_end = $oldEndDateOriginalPartsKwh;
 
-        if($newRevenuePartsKwh->status == 'concept'){
+        if($newRevenuePartsKwh->status == 'new' || $newRevenuePartsKwh->status == 'concept'){
             $newRevenuePartsKwh->delivered_total_concept = 0;
             $newRevenuePartsKwh->delivered_total_confirmed = 0;
             $newRevenuePartsKwh->delivered_total_processed = 0;
@@ -679,13 +730,21 @@ class RevenuesKwhHelper
 
                 $newTotalDeliveredKwh = RevenueDistributionValuesKwh::where('revenue_id', $newRevenuePartsKwh->revenue_id)->where('distribution_id', $newDistributionPartsKwh->distribution_id)->where('parts_id', $newRevenuePartsKwh->id)->sum('delivered_kwh');
                 $newDistributionPartsKwh->delivered_kwh = $newTotalDeliveredKwh;
-                $newDistributionPartsKwh->is_visible = empty($distributionPartsKwh->remarks) ? false : true;
+                $newDistributionPartsKwh->is_visible = empty($newDistributionPartsKwh->remarks) ? false : true;
                 $newDistributionPartsKwh->save();
             }
             $revenuePartsKwhForRecalculate = RevenuePartsKwh::find($revenuePartsKwh->id);
-            $revenuePartsKwhForRecalculate->calculator()->runCountingsRevenuesKwh();
+            if($revenuePartsKwhForRecalculate->status == 'concept'){
+                UpdateRevenuePartsKwh::dispatch($revenuePartsKwhForRecalculate, Auth::id());
+            } else {
+                $revenuePartsKwhForRecalculate->calculator()->runCountingsRevenuesKwh();
+            }
             $newRevenuePartsKwhForRecalculate = RevenuePartsKwh::find($newRevenuePartsKwh->id);
-            $newRevenuePartsKwhForRecalculate->calculator()->runCountingsRevenuesKwh();
+            if($newRevenuePartsKwhForRecalculate->status == 'concept'){
+                UpdateRevenuePartsKwh::dispatch($newRevenuePartsKwhForRecalculate, Auth::id());
+            } else {
+                $newRevenuePartsKwhForRecalculate->calculator()->runCountingsRevenuesKwh();
+            }
         }
         return $revenuePartsKwh;
     }

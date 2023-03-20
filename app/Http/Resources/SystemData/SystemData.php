@@ -51,7 +51,7 @@ use App\Eco\Opportunity\OpportunityEvaluationStatus;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Order\OrderCollectionFrequency;
 use App\Eco\Order\OrderPaymentType;
-use App\Eco\Order\OrderStatus;
+use App\Eco\Order\OrderStatusToSelect;
 use App\Eco\OrganisationType\OrganisationType;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
@@ -164,7 +164,6 @@ class SystemData extends JsonResource
             'campaigns' => Campaign::select(['id', 'name'])->get(),
             'campaignStatuses' => FullEnumWithIdAndName::collection(CampaignStatus::all()),
             'campaignTypes' => FullEnumWithIdAndName::collection(CampaignType::orderBy('name')->get()),
-            'opportunityActions' => GenericResource::collection(OpportunityAction::all()),
             'energySupplierStatuses' => GenericResource::collection(EnergySupplierStatus::all()),
             'energySupplierTypes' => GenericResource::collection(EnergySupplierType::all()),
             'staticContactGroups' => ContactGroup::select(['id', 'name'])->where('type_id', 'static')->get(),
@@ -201,11 +200,12 @@ class SystemData extends JsonResource
             'measureCategories' => MeasureCategory::select(['id', 'name'])->orderBy('name')->get(),
             'measures' => MeasurePeek::collection(Measure::orderBy('name')->get()),
             'occupations' => FullOccupation::collection(Occupation::orderBy('primary_occupation')->get()),
+            'opportunityActions' => GenericResource::collection(OpportunityAction::all()),
             'opportunityStatus' => OpportunityStatusResource::collection(OpportunityStatus::all()),
             'opportunityEvaluationStatuses' => OpportunityEvaluationStatusResource::collection(OpportunityEvaluationStatus::all()),
             'orderCollectionFrequencies' => FullEnumWithIdAndName::collection(OrderCollectionFrequency::collection()),
             'orderPaymentTypes' => FullEnumWithIdAndName::collection(OrderPaymentType::collection()),
-            'orderStatuses' => FullEnumWithIdAndName::collection(OrderStatus::collection()),
+            'orderStatuses' => FullEnumWithIdAndName::collection(OrderStatusToSelect::collection()),
             'organisationTypes' => FullOrganisationType::collection(OrganisationType::all()),
             'participantMutationStatuses' => FullParticipantMutationStatus::collection(ParticipantMutationStatus::all()),
             'participantMutationTypes' => FullParticipantMutationType::collection(ParticipantMutationType::all()),

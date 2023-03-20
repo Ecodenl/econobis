@@ -29,8 +29,15 @@ const OrderDetailsFormGeneralView = props => {
         dateNextInvoice,
     } = props.orderDetails;
 
+    let onclickAction;
+    if(status.id == "in-progress") {
+        onclickAction = null;
+    } else {
+        onclickAction = props.switchToEdit;
+    }
+
     return (
-        <div onClick={props.switchToEdit}>
+        <div onClick={onclickAction}>
             <Panel>
                 <PanelBody>
                     <div className="row">

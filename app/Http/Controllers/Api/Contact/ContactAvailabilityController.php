@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Contact;
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactAvailability;
 use App\Eco\District\District;
+use App\Eco\QuotationRequest\QuotationRequestStatus;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -49,7 +50,8 @@ class ContactAvailabilityController
             ->load(['quotationRequests' => function($query) use ($startOfWeek, $request){
                 $endOfWeek = $startOfWeek->copy()->endOfWeek();
                 $query->whereBetween('date_planned', [$startOfWeek, $endOfWeek])
-                    ->where('uses_planning', true);
+                    ->where('uses_planning', true)
+                    ->where('status_id', '!=', QuotationRequestStatus::STATUS_VISIT_CANCELLED_ID);
             }])
             ->map(function(Contact $coach){
                 return [

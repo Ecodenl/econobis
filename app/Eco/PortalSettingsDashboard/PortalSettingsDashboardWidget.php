@@ -28,6 +28,11 @@ class PortalSettingsDashboardWidget extends Model
         return $this->belongsTo(ContactGroup::class, 'show_group_id');
     }
 
+    public function hideForContactGroup()
+    {
+        return $this->belongsTo(ContactGroup::class, 'hide_group_id');
+    }
+
     public function getBackgroundColorUsedAttribute()
     {
         return !empty($this->background_color) ? $this->background_color : $this->portalSettingsDashboard->default_widget_background_color;

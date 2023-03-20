@@ -1,11 +1,9 @@
 import React, {useState} from 'react';
 import {hashHistory} from 'react-router';
-import DistrictListItemDeleteModal from "./DistrictListItemDeleteModal";
 
-export default function DistrictListItem({district, onDelete}) {
+export default function DistrictListItem({district}) {
     const [showActionButtons, setShowActionButtons] = useState(false);
     const [highlightRow, setHighlightRow] = useState('');
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const onRowEnter = () => {
         setShowActionButtons(true);
@@ -33,8 +31,9 @@ export default function DistrictListItem({district, onDelete}) {
             onMouseLeave={onRowLeave}
         >
             <td>{district.name}</td>
+            <td>{district.closed ? 'Gesloten' : 'Open'}</td>
             <td>
-                {(showActionButtons || showDeleteModal) && (
+                {showActionButtons && (
                     <>
                         <a role="button" onClick={openCalender}>
                             <span className="glyphicon glyphicon-calendar mybtn-success"/>
@@ -43,8 +42,6 @@ export default function DistrictListItem({district, onDelete}) {
                         <a role="button" onClick={openItem}>
                             <span className="glyphicon glyphicon-pencil mybtn-success"/>
                         </a>
-                        {' '}
-                        <DistrictListItemDeleteModal district={district} onDelete={onDelete} setShowDeleteModal={setShowDeleteModal} showDeleteModal={showDeleteModal}/>
                     </>
                 )}
             </td>

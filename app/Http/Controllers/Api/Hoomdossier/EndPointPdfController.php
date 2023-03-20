@@ -35,6 +35,7 @@ class EndPointPdfController extends EndPointHoomDossierController
                 }
 
                 $this->processAccountRelatedData($dataContent->account_related);
+                $this->validatePost($dataContent);
                 $this->doPost($dataContent);
             });
         } catch (HoomdossierException $e) {
@@ -49,6 +50,12 @@ class EndPointPdfController extends EndPointHoomDossierController
         return Response::json($this->logs);
     }
 
+    protected function validatePost($dataContent)
+    {
+        if(!isset($dataContent->pdf) || !isset($dataContent->pdf->contents) || empty($dataContent->pdf->contents)) {
+            $this->error('Geen PDF content gevonden', 404);
+        }
+    }
     protected function doPost($dataContent)
     {
         $fileName = 'Hoomdossier-rapportage-' . $this->housingFile->id . '.pdf';

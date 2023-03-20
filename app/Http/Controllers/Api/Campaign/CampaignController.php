@@ -276,7 +276,7 @@ class CampaignController extends ApiController
 
     public function peekNotFinished()
     {
-        $campaigns = Campaign::orderBy('id')->get();
+        $campaigns = Campaign::orderBy('id')->where('status_id', '!=', 4)->get();
 
         return CampaignPeek::collection($campaigns);
     }

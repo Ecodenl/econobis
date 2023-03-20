@@ -21,7 +21,7 @@ class IntakeNewFormGeneral extends Component {
             intake: {
                 contactId: props.contactId,
                 addressId: props.addressId,
-                campaignId: '',
+                campaignId: props.campaignId,
                 statusId: '1',
                 sourceIds: '',
                 sourceIdsSelected: [],

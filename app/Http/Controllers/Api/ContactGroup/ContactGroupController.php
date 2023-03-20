@@ -65,20 +65,15 @@ class ContactGroupController extends Controller
 
     public function peekStatic($active = null)
     {
+        $contactGroups = ContactGroup::where('type_id', 'static')->orderBy('name');
         $teamContactGroupIds = Auth::user()->getTeamContactGroupIds();
         if($teamContactGroupIds){
-            if($active == "active") {
-                return ContactGroupPeek::collection(ContactGroup::whereIn('contact_groups.id', $teamContactGroupIds)->where('closed', '!=', 1)->where('type_id', 'static')->orderBy('name')->get());
-            } else {
-                return ContactGroupPeek::collection(ContactGroup::whereIn('contact_groups.id', $teamContactGroupIds)->where('type_id', 'static')->orderBy('name')->get());
-            }
-        } else {
-            if($active == "active") {
-                return ContactGroupPeek::collection(ContactGroup::orderBy('name')->where('closed', '!=', 1)->where('type_id', 'static')->get());
-            } else {
-                return ContactGroupPeek::collection(ContactGroup::orderBy('name')->where('type_id', 'static')->get());
-            }
+            $contactGroups->whereIn('contact_groups.id', $teamContactGroupIds);
         }
+        if($active == "active") {
+            $contactGroups->where('closed', '!=', 1);
+        }
+        return ContactGroupPeek::collection($contactGroups->get());
     }
 
     public function show(ContactGroup $contactGroup)

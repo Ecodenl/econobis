@@ -28,6 +28,7 @@ class PortalSettingsDashboardWidgetJoryResource extends JoryResource
         $this->field('button_text')->filterable()->sortable();
         $this->field('button_link')->filterable()->sortable();
         $this->field('show_group_id')->filterable()->sortable();
+        $this->field('hide_group_id')->filterable()->sortable();
         $this->field('background_color')->filterable()->sortable();
         $this->field('text_color')->filterable()->sortable();
         $this->field('created_at')->filterable()->sortable();
@@ -40,7 +41,7 @@ class PortalSettingsDashboardWidgetJoryResource extends JoryResource
 
         // Relations
         $this->relation('contactGroup');
-
+        $this->relation('hideForContactGroup');
     }
 
     protected function configureForPortal(): void

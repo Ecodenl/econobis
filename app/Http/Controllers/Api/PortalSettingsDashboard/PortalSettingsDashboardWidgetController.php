@@ -41,6 +41,7 @@ class PortalSettingsDashboardWidgetController extends Controller
             ->string('textColor')->whenMissing('')->onEmpty('')->alias('text_color')->next()
 //            ->string('widgetImageFileName')->whenMissing('')->onEmpty('')->alias('widget_image_file_name')->next()
             ->integer('showGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('show_group_id')->next()
+            ->integer('hideGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('hide_group_id')->next()
             ->boolean('active')->whenMissing(true)->onEmpty(true)->next()
             ->get();
 
@@ -70,6 +71,7 @@ class PortalSettingsDashboardWidgetController extends Controller
             ->string('textColor')->whenMissing('')->onEmpty('')->alias('text_color')->next()
 //            ->string('widgetImageFileName')->whenMissing('')->onEmpty('')->alias('widget_image_file_name')->next()
             ->integer('showGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('show_group_id')->next()
+            ->integer('hideGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('hide_group_id')->next()
             ->boolean('active')->whenMissing(true)->onEmpty(true)->next()
             ->get();
 
@@ -89,7 +91,7 @@ class PortalSettingsDashboardWidgetController extends Controller
 
         $this->storeWidgetImage($request, $portalSettingsDashboardWidget, $request->input('widgetImageFileName'), $oldWidgetImageFileName);
 
-        return FullPortalSettingsDashboardWidget::make($portalSettingsDashboardWidget->load('contactGroup'));
+        return FullPortalSettingsDashboardWidget::make($portalSettingsDashboardWidget->load(['contactGroup', 'hideForContactGroup']));
 
     }
 

@@ -21,7 +21,15 @@ class PortalSettingsDashboardController extends Controller
                     return true;
                 }
             }
+
+            if($widget->hideForContactGroup){
+                $hideForContacts = (array_unique($widget->hideForContactGroup->getAllContacts()->pluck('id')->toArray()));
+                if(in_array($contact->id, $hideForContacts)) {
+                    return true;
+                }
+            }
         });
+
         $portalSettingsDashboard->widgets = $validatedWidgets;
         return FullPortalSettingsDashboard::make($portalSettingsDashboard);
     }

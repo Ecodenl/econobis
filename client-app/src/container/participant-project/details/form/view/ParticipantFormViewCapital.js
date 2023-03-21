@@ -21,7 +21,11 @@ function ParticipantFormViewCapital({
                 <ViewText label={'Nominale waarde per participatie'} value={moneyPresenter(participationWorth)} />
             </div>
             <div className="row" onClick={onClick}>
-                <ViewText label={'Huidige boekwaarde per participatie'} value={moneyPresenter(currentBookWorth)} />
+                <ViewText
+                    label={'Huidige boekwaarde per participatie'}
+                    value={moneyPresenter(currentBookWorth)}
+                    textToolTip={'De huidige boekwaarde per participatie is een administratieve boekwaarde van een deelname, die afhankelijk is van de waarde van het project en de gemaakte kosten en wordt vastgesteld o.b.v. de jaarrekening van de coöperatie. De boekwaarde per 1 januari van een jaar gebruik je bij je aangifte inkomstenbelasting.'}
+                />
             </div>
             <div className="row" onClick={onClick}>
                 <ViewText label={'Huidige totale waarde'} value={moneyPresenter(participationsDefinitiveWorth)} />

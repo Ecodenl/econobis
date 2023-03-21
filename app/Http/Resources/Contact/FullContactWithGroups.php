@@ -17,7 +17,7 @@ use App\Http\Resources\ParticipantProject\RelatedParticipantProjectToContact;
 use App\Http\Resources\Person\FullPerson;
 use App\Http\Resources\PhoneNumber\FullPhoneNumber;
 use App\Http\Resources\PortalUser\FullPortalUser;
-use App\Http\Resources\QuotationRequest\FullQuotationRequest;
+use App\Http\Resources\QuotationRequest\GridContactQuotationRequest;
 use App\Http\Resources\Task\GridTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -116,7 +116,7 @@ class FullContactWithGroups extends JsonResource
             'isInInspectionPersonTypeGroup' => $this->is_in_inspection_person_type_group,
             'inspectionPersonTypeId' => $this->inspection_person_type_id,
             'inspectionPersonType' => FullEnumWithIdAndName::make($this->getInspectionPersonType()),
-            'quotationRequests' => FullQuotationRequest::collection($this->whenLoaded('quotationRequests')),
+            'quotationRequests' => GridContactQuotationRequest::collection($this->whenLoaded('quotationRequests')),
             'organisantionOrCoachCampaigns' => $organisantionOrCoachCampaigns,
         ];
     }

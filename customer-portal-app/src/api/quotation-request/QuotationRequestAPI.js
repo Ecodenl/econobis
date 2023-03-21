@@ -9,6 +9,23 @@ export default {
         return axiosInstance.get('quotation-request/' + id);
     },
 
+    fetchQuotationRequestStatus: function(opportunityActionId) {
+        const requestUrl = `jory/quotation-request-status`;
+
+        return axiosInstance.get(requestUrl, {
+            params: {
+                jory: {
+                    fld: ['id', 'name', 'codeRef', 'opportunityActionId', 'order'],
+                    flt: {
+                        f: 'opportunityActionId',
+                        d: opportunityActionId,
+                    },
+                    sorts: ['order'],
+                },
+            },
+        });
+    },
+
     update: function(quotationRequest) {
         return axiosInstance.post('quotation-request/' + quotationRequest.id, quotationRequest);
     },

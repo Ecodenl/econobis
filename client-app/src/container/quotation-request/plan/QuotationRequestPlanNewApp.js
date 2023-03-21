@@ -38,7 +38,7 @@ export default function QuotationRequestPlanNewApp(props) {
                 </div>
 
                 <div className="col-md-12 margin-10-top">
-                    <QuotationRequestPlanNewPlanningPanel districtId={props.params.districtId} opportunityId={props.params.opportunityId} />
+                    <QuotationRequestPlanNewPlanningPanel district={district} opportunityId={props.params.opportunityId} />
                 </div>
             </div>
             <div className="col-md-3"/>

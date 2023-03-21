@@ -32,6 +32,7 @@ export default {
                                 'buttonText',
                                 'buttonLink',
                                 'showGroupId',
+                                'hideGroupId',
                                 'backgroundColor',
                                 'textColor',
                                 'backgroundColorUsed',
@@ -66,6 +67,7 @@ export default {
                         'buttonText',
                         'buttonLink',
                         'showGroupId',
+                        'hideGroupId',
                         'backgroundColor',
                         'textColor',
                         'backgroundColorUsed',
@@ -73,6 +75,9 @@ export default {
                     ],
                     rlt: {
                         contactGroup: {
+                            fld: ['name'],
+                        },
+                        hideForContactGroup: {
                             fld: ['name'],
                         },
                     },

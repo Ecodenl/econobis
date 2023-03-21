@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 class QuotationRequestStatus extends Model
 {
 
+    const STATUS_VISIT_CANCELLED_ID = 14;
+
     protected $table = 'quotation_request_status';
 
     /**

@@ -138,4 +138,9 @@ class Intake extends Model
     {
         return new IntakeBuilder($query);
     }
+
+    public function getCampaignsToSelect()
+    {
+        return Campaign::where('status_id', '!=', 4)->orWhere('id', $this->campaign_id)->get();
+    }
 }

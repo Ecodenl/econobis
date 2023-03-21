@@ -22,6 +22,7 @@ use App\Http\RequestQueries\Intake\Grid\RequestQuery;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Intake\FullIntake;
 use App\Http\Resources\Intake\GridIntake;
+use App\Http\Resources\Intake\FullIntakeWithCustomCampaigns;
 use App\Http\Resources\Intake\IntakePeek;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
@@ -96,6 +97,49 @@ class IntakeController extends ApiController
         }
 
         return FullIntake::make($intake);
+    }
+
+    public function showWithCustomCampaigns(Intake $intake)
+    {
+        $intake->load([
+            'contact',
+            'address.housingFile',
+            'campaign',
+            'status',
+            'sources',
+            'reasons',
+            'measuresRequested',
+            'opportunities.measures',
+            'opportunities.quotationRequests',
+            'opportunities.status',
+            'tasks',
+            'notes',
+            'documents',
+            'emails',
+            'createdBy',
+            'updatedBy',
+        ]);
+
+        $measureRequestedWithOpportunityIds = [];
+
+        foreach ($intake->measuresRequested as $measureRequested){
+            if (count($measureRequested->opportunities()->where('intake_id', $intake->id)->get()))
+            {
+                array_push($measureRequestedWithOpportunityIds, $measureRequested->id);
+            }
+        }
+        $intake->measureRequestedWithOpportunityIds = $measureRequestedWithOpportunityIds;
+
+        $intake->relatedEmailsSent = $this->getRelatedEmails($intake->id, 'sent');
+
+        $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
+        if($teamDocumentCreatedFromIds){
+            $intake->relatedDocuments = $intake->documents()->whereIn('document_created_from_id', $teamDocumentCreatedFromIds)->get();
+        } else{
+            $intake->relatedDocuments = $intake->documents()->get();
+        }
+
+        return FullIntakeWithCustomCampaigns::make($intake);
     }
 
     public function excel(RequestQuery $requestQuery)

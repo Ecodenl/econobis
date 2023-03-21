@@ -474,7 +474,6 @@ const mapStateToProps = state => {
         opportunityStatus: state.systemData.opportunityStatus,
         opportunityEvaluationStatuses: state.systemData.opportunityEvaluationStatuses,
         intakeStatuses: state.systemData.intakeStatuses,
-        campaigns: state.systemData.campaigns,
         products: state.systemData.products,
         energySuppliers: state.systemData.energySuppliers,
         energySupplierTypes: state.systemData.energySupplierTypes,

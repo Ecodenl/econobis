@@ -5,6 +5,7 @@ import moment from 'moment';
 moment.locale('nl');
 
 import IntakeDetailsAPI from '../../../api/intake/IntakeDetailsAPI';
+import CampaignsAPI from "../../../api/campaign/CampaignsAPI";
 
 import InputSelect from '../../../components/form/InputSelect';
 import InputMultiSelect from '../../../components/form/InputMultiSelect';
@@ -16,10 +17,11 @@ class IntakeNewFormGeneral extends Component {
         super(props);
 
         this.state = {
+            intakeCampaigns: [],
             intake: {
                 contactId: props.contactId,
                 addressId: props.addressId,
-                campaignId: props.campaigns[0].id,
+                campaignId: props.campaignId,
                 statusId: '1',
                 sourceIds: '',
                 sourceIdsSelected: [],
@@ -28,6 +30,12 @@ class IntakeNewFormGeneral extends Component {
                 note: '',
             },
         };
+    }
+
+    componentDidMount() {
+        CampaignsAPI.peekNotFinishedCampaigns().then(payload => {
+            this.setState({ intakeCampaigns: payload });
+        });
     }
 
     handleInputChange = event => {
@@ -151,7 +159,7 @@ class IntakeNewFormGeneral extends Component {
                         label="Campagne"
                         name="campaignId"
                         value={campaignId}
-                        options={this.props.campaigns}
+                        options={this.state.intakeCampaigns}
                         onChangeAction={this.handleInputChange}
                         required={true}
                         emptyOption={false}
@@ -218,7 +226,6 @@ const mapStateToProps = state => {
         intakeStatuses: state.systemData.intakeStatuses,
         intakeSources: state.systemData.intakeSources,
         intakeReasons: state.systemData.intakeReasons,
-        campaigns: state.systemData.campaigns,
         buildingTypes: state.systemData.buildingTypes,
         contactDetails: state.contactDetails,
     };

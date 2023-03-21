@@ -26,6 +26,7 @@ class IntakesListApp extends Component {
 
         this.handlePageClick = this.handlePageClick.bind(this);
         this.getExcel = this.getExcel.bind(this);
+        this.getExcelWithOpportunities = this.getExcelWithOpportunities.bind(this);
     }
 
     componentDidMount() {
@@ -45,6 +46,23 @@ class IntakesListApp extends Component {
             IntakesAPI.getExcel({ filters, sorts })
                 .then(payload => {
                     fileDownload(payload.data, 'Intakes-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.xlsx');
+                    this.props.unblockUI();
+                })
+                .catch(error => {
+                    this.props.unblockUI();
+                });
+        }, 100);
+    };
+
+    getExcelWithOpportunities = () => {
+        this.props.blockUI();
+        setTimeout(() => {
+            const filters = filterHelper(this.props.intakesFilters);
+            const sorts = this.props.intakesSorts;
+
+            IntakesAPI.getExcelWithOpportunities({ filters, sorts })
+                .then(payload => {
+                    fileDownload(payload.data, 'Intakes-met-kansen-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.xlsx');
                     this.props.unblockUI();
                 })
                 .catch(error => {
@@ -114,6 +132,7 @@ class IntakesListApp extends Component {
                             toggleShowCheckboxList={() => this.toggleShowCheckboxList()}
                             resetIntakeFilters={() => this.resetIntakeFilters()}
                             getExcel={this.getExcel}
+                            getExcelWithOpportunities={this.getExcelWithOpportunities}
                         />
                     </div>
 

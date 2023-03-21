@@ -59,6 +59,19 @@ export default {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
+                withOpportunities: false,
+            },
+            responseType: 'blob',
+        });
+    },
+
+    getExcelWithOpportunities: ({ filters, sorts }) => {
+        const requestUrl = `${URL_INTAKES}/excel`;
+        return axiosInstance.get(requestUrl, {
+            params: {
+                filters: JSON.stringify(filters),
+                sorts: JSON.stringify(sorts),
+                withOpportunities: true,
             },
             responseType: 'blob',
         });

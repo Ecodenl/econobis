@@ -35,6 +35,7 @@ function ParticipantFormEditCapital({
                     label={'Huidige boekwaarde per participatie'}
                     value={moneyPresenter(currentBookWorth)}
                     className={'col-sm-6 form-group'}
+                    textToolTip={'Elk jaar verdelen we de totale opgewekte kWh over de deelnemers. O.b.v. de vastgestelde teruggave energiebelasting € / kWh berekenen we de indicatie teruggave energiebelasting per deelnemer (euro per kWh x opgewekte kWh per deelnemer). De totale indicatie teruggave energiebelasting is het totaal per deelnemer van alle bedragen indicatie teruggave energiebelasting opgeteld over de jaren heen.'}
                 />
             </div>
             <div className="row">

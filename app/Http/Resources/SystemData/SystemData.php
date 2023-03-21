@@ -4,7 +4,6 @@ namespace App\Http\Resources\SystemData;
 
 use App\Eco\Address\AddressType;
 use App\Eco\Administration\Administration;
-use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignStatus;
 use App\Eco\Campaign\CampaignType;
 use App\Eco\Contact\ContactStatus;
@@ -161,7 +160,6 @@ class SystemData extends JsonResource
             'appName' => config('app.name'),
             'baseProjectCodeRefs' => FullEnumWithIdAndName::collection(BaseProjectCodeRef::collection()),
             'buildingTypes' => BuildingType::select(['id', 'name'])->get(),
-            'campaigns' => Campaign::select(['id', 'name'])->get(),
             'campaignStatuses' => FullEnumWithIdAndName::collection(CampaignStatus::all()),
             'campaignTypes' => FullEnumWithIdAndName::collection(CampaignType::orderBy('name')->get()),
             'opportunityActions' => GenericResource::collection(OpportunityAction::all()),

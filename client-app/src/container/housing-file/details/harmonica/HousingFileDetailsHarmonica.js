@@ -31,7 +31,8 @@ class HousingFileDetailsHarmonica extends Component {
     }
 
     newDocument(type) {
-        hashHistory.push(`/document/nieuw/${type}/woningdossier/${this.props.id}`);
+        // hashHistory.push(`/document/nieuw/${type}/woningdossier/${this.props.id}`);
+        hashHistory.push(`/document/nieuw/${type}/woningdossier/${this.props.id}/contact/${this.props.housingFileDetails.address.contactId}`);
     }
 
     toggleShowList(name) {

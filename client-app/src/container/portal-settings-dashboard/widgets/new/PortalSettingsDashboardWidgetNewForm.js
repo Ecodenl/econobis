@@ -32,6 +32,7 @@ class PortalSettingsDashboardWidgetNewForm extends Component {
                 image: '',
                 widgetImageFileName: '',
                 showGroupId: '',
+                hideGroupId: '',
                 buttonText: '',
                 buttonLink: '',
                 backgroundColor: '',
@@ -50,6 +51,7 @@ class PortalSettingsDashboardWidgetNewForm extends Component {
                 text: false,
                 image: false,
                 showGroupId: false,
+                hideGroupId: false,
                 buttonText: false,
                 buttonLink: false,
                 widgetImageFileName: false,
@@ -188,6 +190,7 @@ class PortalSettingsDashboardWidgetNewForm extends Component {
         data.append('buttonLink', widget.buttonLink);
         data.append('widgetImageFileName', widget.widgetImageFileName);
         data.append('showGroupId', widget.showGroupId);
+        data.append('hideGroupId', widget.hideGroupId);
         data.append('backgroundColor', widget.backgroundColor);
         data.append('textColor', widget.textColor);
 
@@ -304,6 +307,17 @@ class PortalSettingsDashboardWidgetNewForm extends Component {
                                 name={'showGroupId'}
                                 options={this.state.contactGroups}
                                 value={widget.showGroupId}
+                                onChangeAction={this.handleReactSelectChange}
+                                isLoading={this.state.contactGroupsLoading}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputReactSelect
+                                label={'Verborgen voor groep'}
+                                divSize={'col-sm-8'}
+                                name={'hideGroupId'}
+                                options={this.state.contactGroups}
+                                value={widget.hideGroupId}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.contactGroupsLoading}
                             />

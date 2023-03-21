@@ -90,6 +90,22 @@ class ParticipantProjectResource extends JsonResource
                             ],
                             [
                                 'type' => 'money',
+                                'label' => 'Nominale waarde per obligatie',
+                                'value' => $this->project ? $this->project->participation_worth : '',
+                            ],
+                            [
+                                'type' => 'money',
+                                'label' => 'Huidige boekwaarde per obligatie',
+                                'value' => $this->project ? $this->project->current_book_worth : '',
+                                'dataTip' => 'De huidige hoofdsom per obligatie is een administratieve hoofdsom van een deelname, die afhankelijk is van de waarde van het project en de gemaakte kosten en wordt vastgesteld o.b.v. de jaarrekening van de coöperatie. De hoofdsom per 1 januari van een jaar gebruik je bij je aangifte inkomstenbelasting.',
+                            ],
+                            [
+                                'type' => 'string',
+                                'label' => 'Huidig aantal obligaties',
+                                'value' => $this->participations_definitive,
+                            ],
+                            [
+                                'type' => 'money',
                                 'label' => 'Totale opbrengsten',
                                 'value' => $this->participations_returns_total,
                             ],
@@ -97,6 +113,61 @@ class ParticipantProjectResource extends JsonResource
                         'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutationsForPortal')),
                     ];
             case 'postalcode_link_capital':
+                return
+                    [
+                        'basicInformation' => $basicInformation,
+                        'documents' => $documents,
+                        'fields' => [
+                            [
+                                'type' => 'string',
+                                'label' => 'Contact naam',
+                                'value' => $this->contact ? $this->contact->full_name : '',
+                            ],
+                            [
+                                'type' => 'string',
+                                'label' => 'Project',
+                                'value' => $this->project ? $this->project->name : '',
+                            ],
+                            [
+                                'type' => 'string',
+                                'label' => 'Uitgevende instelling',
+                                'value' => ($this->project && $this->project->administration) ? $this->project->administration->name : '',
+                            ],
+                            [
+                                'type' => 'money',
+                                'label' => 'Nominale waarde per participatie',
+                                'value' => $this->project ? $this->project->participation_worth : '',
+                            ],
+                            [
+                                'type' => 'money',
+                                'label' => 'Huidige boekwaarde per participatie',
+                                'value' => $this->project ? $this->project->current_book_worth : '',
+                                'dataTip' => 'De huidige boekwaarde per participatie is een administratieve boekwaarde van een deelname, die afhankelijk is van de waarde van het project en de gemaakte kosten en wordt vastgesteld o.b.v. de jaarrekening van de coöperatie. De boekwaarde per 1 januari van een jaar gebruik je bij je aangifte inkomstenbelasting.',
+                            ],
+                            [
+                                'type' => 'string',
+                                'label' => 'Huidig aantal participaties',
+                                'value' => $this->participations_definitive,
+                            ],
+                            [
+                                'type' => 'money',
+                                'label' => 'Huidig saldo kapitaal rekening',
+                                'value' => $this->participations_capital_worth,
+                            ],
+                            [
+                                'type' => 'money',
+                                'label' => 'Totale opbrengsten',
+                                'value' => $this->participations_returns_total,
+                            ],
+                            [
+                                'type' => 'money',
+                                'label' => 'Totale indicatie teruggave energiebelasting',
+                                'value' => $this->participationsIndicationOfRestitutionEnergyTaxTotal,
+                                'dataTip' => 'Elk jaar verdelen we de totale opgewekte kWh over de deelnemers. O.b.v. de vastgestelde teruggave energiebelasting € / kWh berekenen we de indicatie teruggave energiebelasting per deelnemer (euro per kWh x opgewekte kWh per deelnemer). De totale indicatie teruggave energiebelasting is het totaal per deelnemer van alle bedragen indicatie teruggave energiebelasting opgeteld over de jaren heen.'
+                            ],
+                        ],
+                        'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutationsForPortal')),
+                    ];
             case 'capital':
                 return
                     [
@@ -120,6 +191,22 @@ class ParticipantProjectResource extends JsonResource
                             ],
                             [
                                 'type' => 'money',
+                                'label' => 'Nominale waarde per participatie',
+                                'value' => $this->project ? $this->project->participation_worth : '',
+                            ],
+                            [
+                                'type' => 'money',
+                                'label' => 'Huidige boekwaarde per participatie',
+                                'value' => $this->project ? $this->project->current_book_worth : '',
+                                'dataTip' => 'De huidige boekwaarde per participatie is een administratieve boekwaarde van een deelname, die afhankelijk is van de waarde van het project en de gemaakte kosten en wordt vastgesteld o.b.v. de jaarrekening van de coöperatie. De boekwaarde per 1 januari van een jaar gebruik je bij je aangifte inkomstenbelasting.',
+                            ],
+                            [
+                                'type' => 'string',
+                                'label' => 'Huidig aantal participaties',
+                                'value' => $this->participations_definitive,
+                            ],
+                            [
+                                'type' => 'money',
                                 'label' => 'Huidig saldo kapitaal rekening',
                                 'value' => $this->participations_capital_worth,
                             ],
@@ -131,7 +218,6 @@ class ParticipantProjectResource extends JsonResource
                         ],
                         'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutationsForPortal')),
                     ];
-
         }
     }
 }

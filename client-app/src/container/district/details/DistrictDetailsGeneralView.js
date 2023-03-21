@@ -11,7 +11,18 @@ export default function DistrictDetailsGeneralView({district, switchToEdit}) {
                 <PanelBody>
                     <div className="row">
                         <ViewText label={'Weergavenaam'} value={district.name}/>
-                        <ViewText label={'Standaard duur afspraak'} value="90 minuten"/>
+                        <ViewText label={'Standaard duur afspraak'} value={district.defaultDurationMinutes + ' minuten'}/>
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Verstuur automatisch e-mail aan bewoner bij maken afspraak'} value={district.sendEmailToContactWhenPlanned ? 'Ja' : 'Nee'}/>
+                        <ViewText label={'E-mail template'} value={district.emailToContactTemplate?.name}/>
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Verstuur automatisch e-mail aan coach bij maken afspraak'} value={district.sendEmailToCoachWhenPlanned ? 'Ja' : 'Nee'}/>
+                        <ViewText label={'E-mail template'} value={district.emailToCoachTemplate?.name}/>
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Status'} value={district.closed ? 'Gesloten' : 'Open'}/>
                     </div>
                 </PanelBody>
             </Panel>

@@ -59,6 +59,13 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
         Route::post('quotation-request/{quotationRequest}', 'QuotationRequest\QuotationRequestController@update');
         Route::get('quotation-request/{quotationRequest}/document/{document}/download', 'QuotationRequest\QuotationRequestController@downloadDocument');
 
+        /**
+         * Availabilities
+         */
+        Route::get('portal-user/availability/by-week', [\App\Http\Controllers\Portal\PortalUser\ContactAvailabilityController::class, 'getByWeek']);
+        Route::post('portal-user/availability', [\App\Http\Controllers\Portal\PortalUser\ContactAvailabilityController::class, 'update']);
+        Route::post('portal-user/availability/copy-weeks', [\App\Http\Controllers\Portal\PortalUser\ContactAvailabilityController::class, 'copyWeeks']);
+
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\' . JoryController::class . '@multiple');
         Route::get('jory/{uri}/count', '\\' . JoryController::class . '@count');

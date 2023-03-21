@@ -3,13 +3,17 @@
 namespace App\Eco\QuotationRequest;
 
 use App\Eco\Contact\Contact;
+use App\Eco\District\District;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
+use App\Eco\Mailbox\Mailbox;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\User\User;
+use App\Jobs\Email\SendEmailsWithVariables;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class QuotationRequest extends Model
@@ -84,6 +88,11 @@ class QuotationRequest extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function district()
+    {
+        return $this->belongsTo(District::class);
+    }
+
     public function getOrganisastionsOrCoachsToSelect()
     {
         return Contact::whereIn('id', $this->opportunity->intake->campaign->organisationsOrCoachesIds())
@@ -103,5 +112,53 @@ class QuotationRequest extends Model
     public function newEloquentBuilder($query)
     {
         return new QuotationRequestBuilder($query);
+    }
+
+    public function sendPlannedInDistrictMails()
+    {
+        if(!$this->district){
+            return;
+        }
+
+        $district = $this->district;
+
+        $mails = [];
+        if($district->send_email_to_contact_when_planned && $district->emailToContactTemplate){
+            $mails[] = [
+                'contact' => $this->opportunity->intake->contact,
+                'template' => $district->emailToContactTemplate,
+            ];
+        }
+        if($district->send_email_to_coach_when_planned && $district->emailToCoachTemplate){
+            $mails[] = [
+                'contact' => $this->organisationOrCoach,
+                'template' => $district->emailToCoachTemplate,
+            ];
+        }
+
+        $mailbox = Mailbox::getDefault();
+        foreach($mails as $mail){
+            if($mail['contact']->primaryEmailAddress){
+                $email = new Email();
+                $email->mailbox_id = $mailbox->id;
+                $email->from = $mailbox->email;
+                $email->to = [$mail['contact']->primaryEmailAddress->email];
+                $email->cc = [];
+                $email->bcc = [];
+                $email->subject = $mail['template']->subject;
+                $email->folder = 'concept';
+                $email->quotation_request_id = $this->id;
+                $email->html_body
+                    = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
+                    . $mail['template']->subject . '</title></head><body>'
+                    . $mail['template']->html_body . '</body></html>';
+                $email->sent_by_user_id = Auth::id();
+                $email->save();
+
+                $email->contacts()->attach([$mail['contact']->id]);
+
+                SendEmailsWithVariables::dispatch($email, [$mail['contact']->primaryEmailAddress->id], Auth::id());
+            }
+        }
     }
 }

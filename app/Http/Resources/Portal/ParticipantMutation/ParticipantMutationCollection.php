@@ -139,6 +139,7 @@ class ParticipantMutationCollection extends JsonResource
                                 ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
                                 ['type' => 'decimal', 'label' => 'kWh', 'value' => $this->payout_kwh],
                                 ['type' => 'money', 'label' => 'Indicatie teruggave EB', 'value' => $this->indication_of_restitution_energy_tax],
+                                ['type' => 'date', 'label' => 'Betaal datum', 'value' => $this->date_payment],
                             ],
                         ];
                 } else {
@@ -154,6 +155,7 @@ class ParticipantMutationCollection extends JsonResource
                                 ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
                                 ['type' => 'decimal', 'label' => 'kWh', 'value' => $this->payout_kwh],
                                 ['type' => 'money', 'label' => 'Indicatie teruggave EB', 'value' => $this->indication_of_restitution_energy_tax],
+                                ['type' => 'date', 'label' => 'Betaal datum', 'value' => $this->date_payment],
                             ],
                         ];
                 }

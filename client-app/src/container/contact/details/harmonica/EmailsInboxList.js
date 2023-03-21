@@ -6,9 +6,9 @@ import moment from 'moment';
 class EmailsInboxList extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            relatedOpportunities: '',
-        };
+        // this.state = {
+        //     relatedEmailsInbox: '',
+        // };
     }
 
     openItem = id => {

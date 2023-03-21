@@ -142,14 +142,14 @@ class IntakeController extends ApiController
         return FullIntakeWithCustomCampaigns::make($intake);
     }
 
-    public function excel(RequestQuery $requestQuery)
+    public function excel(RequestQuery $requestQuery, Request $request)
     {
         set_time_limit(0);
         $intakes = $requestQuery->getQueryNoPagination()->get();
 
         $intakeExcelHelper = new IntakeExcelHelper($intakes);
 
-        return $intakeExcelHelper->downloadExcel();
+        return $intakeExcelHelper->downloadExcel($request->get('withOpportunities'));
     }
 
     public function store(Request $request)

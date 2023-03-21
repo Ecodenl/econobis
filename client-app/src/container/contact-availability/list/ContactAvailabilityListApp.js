@@ -57,7 +57,7 @@ export default function ContactAvailabilityListApp() {
                             </div>
                         </div>
                         <div className="col-md-4">
-                            <h3 className="text-center table-title">Contacten</h3>
+                            <h3 className="text-center table-title">Instellen beschikbaarheden</h3>
                         </div>
                         <div className="col-md-4"/>
                     </div>

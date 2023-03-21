@@ -22,9 +22,8 @@ class IntakeExcelHelper
         $this->intakes = $intakes;
     }
 
-    public function downloadExcel()
+    public function downloadExcel($withOpportunities = "true")
     {
-
         if($this->intakes->count() === 0){
             abort(403, 'Geen intakes aanwezig in selectie');
         }
@@ -52,11 +51,15 @@ class IntakeExcelHelper
         $headerData[] = 'Laatste update door';
         $headerData[] = 'Gemaakt op';
         $headerData[] = 'Gemaakt door';
+        $headerData[] = 'Opmerking';
+        $headerData[] = 'Motivatie';
         $headerData[] = 'Interesse maatregel';
-        $headerData[] = 'Gerelateerde kans';
-        $headerData[] = 'Kans status';
-        $headerData[] = 'Kans datum uitvoering';
-        $headerData[] = 'Kans datum evaluatie';
+        if( $withOpportunities == "true" ) {
+            $headerData[] = 'Gerelateerde kans';
+            $headerData[] = 'Kans status';
+            $headerData[] = 'Kans datum uitvoering';
+            $headerData[] = 'Kans datum evaluatie';
+        }
 
         $completeData[] = $headerData;
 
@@ -78,6 +81,7 @@ class IntakeExcelHelper
                 foreach ($intake->sources as $source) {
                     array_push($sources, $source->name);
                 }
+
                 if (count($sources) > 0) {
                     $intake->sources_string = implode(', ', $sources);
                 }
@@ -112,39 +116,33 @@ class IntakeExcelHelper
                 $rowData[16] = $intake->updatedBy ? $intake->updatedBy->present()->fullName() : '';
                 $rowData[17] = $this->formatDate($intake->created_at);
                 $rowData[18] = $intake->createdBy ? $intake->createdBy->present()->fullName() : '' ;
+                $rowData[19] = $intake->note ?? '';
+                $rowData[20] = implode(', ', $intake->reasons->pluck('name')->toArray());
 
-                if (count($intake->measuresRequested)>0) {
+                if (count($intake->measuresRequested)>0 AND $withOpportunities == "true") {
 
                     // measuresRequested
                     foreach ($intake->measuresRequested as $measure) {
-//                    $rowData = [];
-
-//                    $x = 0;
-//                    while($x <= 18) {
-//                        $rowData[$x] = '';
-//                        $x++;
-//                    }
-
-                        $rowData[19] = $measure->name;
+                        $rowData[21] = $measure->name;
 
                         // opportunity
                         $opportunity = Opportunity::where('intake_id', $intake->id)->where('measure_category_id', $measure->id)->first();
                         if ($opportunity) {
-                            $rowData[20] = $opportunity->number;
-                            $rowData[21] = $opportunity->status ? $opportunity->status->name : '';
-                            $rowData[22] = $this->formatDate($opportunity->desired_date);
-                            $rowData[23] = $this->formatDate($opportunity->evaluation_agreed_date);
+                            $rowData[22] = $opportunity->number;
+                            $rowData[23] = $opportunity->status ? $opportunity->status->name : '';
+                            $rowData[24] = $this->formatDate($opportunity->desired_date);
+                            $rowData[25] = $this->formatDate($opportunity->evaluation_agreed_date);
                         }
 
                         $completeData[] = $rowData;
 
                     }
                 } else {
-                    $rowData[19] = '';
-                    $rowData[20] = '';
-                    $rowData[21] = '';
+                    $rowData[21] = implode(', ', $intake->measuresRequested->pluck('name')->toArray());
                     $rowData[22] = '';
                     $rowData[23] = '';
+                    $rowData[24] = '';
+                    $rowData[25] = '';
                     $completeData[] = $rowData;
                 }
             }
@@ -156,7 +154,7 @@ class IntakeExcelHelper
         // Load all data in worksheet
         $sheet->fromArray($completeData);
 
-        for ($col = 'A'; $col !== 'Y'; $col++) {
+        for ($col = 'A'; $col !== 'Z'; $col++) {
             $spreadsheet->getActiveSheet()
                 ->getColumnDimension($col)
                 ->setAutoSize(true);

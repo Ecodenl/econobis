@@ -16,8 +16,8 @@ const PortalSettingsDashboardWidgetFormGeneralView = ({
     text,
     buttonText,
     buttonLink,
-    showGroupId,
     contactGroup,
+    hideForContactGroup,
     backgroundColor,
     textColor,
     backgroundColorUsed,
@@ -112,6 +112,14 @@ const PortalSettingsDashboardWidgetFormGeneralView = ({
                         <ViewText
                             label={'Zichtbaar voor groep'}
                             value={contactGroup ? contactGroup.name : 'Alle groepen'}
+                            divSize={'col-sm-8'}
+                            className={'col-sm-8 form-group'}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Verborgen voor groep'}
+                            value={hideForContactGroup ? hideForContactGroup.name : 'Geen'}
                             divSize={'col-sm-8'}
                             className={'col-sm-8 form-group'}
                         />

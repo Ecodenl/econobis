@@ -87,10 +87,10 @@ class Campaign extends Model
         return array_unique(array_merge($contactIdsOrganisations, $contactIdsCoaches));
     }
     public function projectManagersIds(){
-        return $this->projectManagers()->get()->pluck('contact_id')->toArray();
+        return $this->projectManagers()->get()->pluck('id')->toArray();
     }
     public function externalPartiesIds(){
-        return $this->externalParties()->get()->pluck('contact_id')->toArray();
+        return $this->externalParties()->get()->pluck('id')->toArray();
     }
 
     public function createdBy(){

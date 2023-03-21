@@ -2,7 +2,9 @@
 
 namespace App\Http\Resources\FinancialOverview\Templates;
 
+use App\Eco\Document\Document;
 use App\Eco\Email\Email;
+use App\Http\Controllers\Api\Document\DocumentController;
 use App\Mail\ConfigurableMailable;
 
 class FinancialOverviewContactMail extends ConfigurableMailable

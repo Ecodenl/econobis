@@ -8,10 +8,14 @@ import { PortalUserConsumer } from '../../../context/PortalUserContext';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import QuotationRequestAPI from '../../../api/quotation-request/QuotationRequestAPI';
+import OpportunityStatusAPI from "../../../api/opportunity-status/OpportunityStatusAPI";
+import {get} from "lodash";
 
 function Inspectlist(props) {
     const [quotationRequestsArray, setQuotationRequestsArray] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [statuses, setStatuses] = useState([]);
+    const [statusFilter, setStatusFilter] = useState('');
 
     useEffect(() => {
         QuotationRequestAPI.fetchAll(props.user.id).then(response => {
@@ -19,13 +23,28 @@ function Inspectlist(props) {
 
             setIsLoading(false);
         });
+
+        OpportunityStatusAPI.fetchOpportunityStatus()
+            .then(payload => {
+                setStatuses(payload.data.data);
+            });
     }, [props.user]);
+
+    const getFilteredQuotationRequests = () => {
+        if (statusFilter) {
+            return quotationRequestsArray.filter(quotationRequest => {
+                return quotationRequest.opportunity.status.id === parseInt(statusFilter);
+            });
+        }
+
+        return quotationRequestsArray;
+    }
 
     return (
         <Container className={'content-section'}>
             <Row>
                 <Col>
-                    <h1 className="content-heading">Overzicht schouwingen</h1>
+                    <h1 className="content-heading">Overzicht buurtaanpak</h1>
                 </Col>
             </Row>
             <Row>
@@ -33,7 +52,7 @@ function Inspectlist(props) {
                     {isLoading ? (
                         <LoadingView />
                     ) : quotationRequestsArray.length === 0 ? (
-                        'Geen schouwingen beschikbaar.'
+                        'Geen gegevens beschikbaar.'
                     ) : (
                         <Table responsive>
                             <thead>
@@ -48,9 +67,32 @@ function Inspectlist(props) {
                                     <th>Akkoord bewoner</th>
                                     <th>Datum akkoord extern</th>
                                 </tr>
+                                <tr>
+                                    <th colSpan={2}></th>
+                                    <th colSpan={1}>
+                                        <select
+                                            className="select-field w-select content"
+                                            value={statusFilter}
+                                            onChange={e => setStatusFilter(e.target.value)}
+                                            style={{width: '150px'}}
+                                        >
+                                            <option/>
+                                            {statuses.filter(status => {
+                                                return status.active;
+                                            }).map(option => {
+                                                return (
+                                                    <option key={option.id} value={option.id}>
+                                                        {option.name}
+                                                    </option>
+                                                );
+                                            })}
+                                        </select>
+                                    </th>
+                                    <th colSpan={6}></th>
+                                </tr>
                             </thead>
                             <tbody>
-                                {quotationRequestsArray.map(quotationRequest => (
+                                {getFilteredQuotationRequests().map(quotationRequest => (
                                     <tr key={quotationRequest.id}>
                                         <td>{quotationRequest.opportunity.intake.contact.fullName}</td>
                                         <td>

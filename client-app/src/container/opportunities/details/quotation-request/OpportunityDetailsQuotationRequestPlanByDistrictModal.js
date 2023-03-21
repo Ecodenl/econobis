@@ -3,7 +3,7 @@ import Modal from '../../../../components/modal/Modal';
 import {hashHistory} from "react-router";
 
 export default function OpportunityDetailsQuotationRequestPlanByDistrictModal({districts, onCancel, opportunityId}) {
-    const [districtId, setDistrictId] = useState(null);
+    const [districtId, setDistrictId] = useState('');
 
     useEffect(() => {
         setDistrictId(districts[0].id);

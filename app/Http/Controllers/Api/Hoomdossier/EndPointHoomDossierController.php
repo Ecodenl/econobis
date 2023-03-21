@@ -105,7 +105,7 @@ class EndPointHoomDossierController extends Controller
         }
 
         if($contact->hoom_account_id != $accountId) {
-            $this->error('Mismatch account_id ' . $accountId . ' (Bij contact: ' . $contact->hoom_account_id . ')', 404);
+            $this->error('Mismatch account_id ' . $accountId . ' (Hoom account id bij contact in Econobis: ' . ( $contact->hoom_account_id ? $contact->hoom_account_id : "leeg"). ')', 404);
         }
 
         $housingFile = HousingFile::where('hoom_building_id', $buildingId)->first();

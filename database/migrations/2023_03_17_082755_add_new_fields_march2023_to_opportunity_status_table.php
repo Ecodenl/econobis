@@ -22,7 +22,7 @@ class AddNewFieldsMarch2023ToOpportunityStatusTable extends Migration
         $opportunityStatus = OpportunityStatus::where('name', 'Actief')->first();
         $opportunityStatus->external_hoom_id = 1;
         $opportunityStatus->code_ref = "active";
-        $opportunityStatus->order = 1;
+        $opportunityStatus->order = 2;
         $opportunityStatus->save();
         $opportunityStatus = OpportunityStatus::where('name', 'In afwachting')->first();
         $opportunityStatus->external_hoom_id = 3;
@@ -32,6 +32,11 @@ class AddNewFieldsMarch2023ToOpportunityStatusTable extends Migration
         $opportunityStatus = OpportunityStatus::where('name', 'Uitgevoerd')->first();
         $opportunityStatus->external_hoom_id = 5;
         $opportunityStatus->code_ref = "executed";
+        $opportunityStatus->order = 5;
+        $opportunityStatus->save();
+        $opportunityStatus = OpportunityStatus::where('name', 'Uitvoering, doe het zelf')->first();
+        $opportunityStatus->external_hoom_id = null;
+        $opportunityStatus->code_ref = "executed-do-it-yourself";
         $opportunityStatus->order = 5;
         $opportunityStatus->save();
         $opportunityStatus = OpportunityStatus::where('name', 'Geen uitvoering')->first();
@@ -53,7 +58,7 @@ class AddNewFieldsMarch2023ToOpportunityStatusTable extends Migration
         $opportunityStatus->active = 1;
         $opportunityStatus->external_hoom_id = 2;
         $opportunityStatus->code_ref = "inactive";
-        $opportunityStatus->order = 2;
+        $opportunityStatus->order = 1;
         $opportunityStatus->save();
     }
 

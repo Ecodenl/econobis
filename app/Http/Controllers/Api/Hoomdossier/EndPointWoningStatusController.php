@@ -8,8 +8,11 @@
 
 namespace App\Http\Controllers\Api\Hoomdossier;
 
+use App\Eco\Opportunity\OpportunityAction;
+use App\Eco\QuotationRequest\QuotationRequest;
+use App\Eco\QuotationRequest\QuotationRequestStatus;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 
 class EndPointWoningStatusController extends EndPointHoomDossierController
@@ -33,6 +36,7 @@ class EndPointWoningStatusController extends EndPointHoomDossierController
                 }
 
                 $this->processAccountRelatedData($dataContent->account_related);
+                $this->validatePost($dataContent);
                 $this->doPost($dataContent);
             });
         } catch (HoomdossierException $e) {
@@ -47,11 +51,40 @@ class EndPointWoningStatusController extends EndPointHoomDossierController
         return Response::json($this->logs);
     }
 
+    protected function validatePost($dataContent)
+    {
+        if(!isset($dataContent->status) || !isset($dataContent->status->short)) {
+            $this->error('Geen status meegegeven', 404);
+        }
+        if(!$this->cooperation->hoom_campaign_id) {
+            $this->error('Geen Hoomdossier campagne voor cooperatie gevonden', 404);
+        }
+    }
     protected function doPost($dataContent)
     {
-        $this->log('Binnenkomende payload (zie laravel log)');
-        Log::info(json_encode($dataContent));
-        $this->log('Hier check en verwerkingen inzake endpoint woning status.');
+        $bezoekAction = OpportunityAction::where('code_ref', 'visit')->first();
+
+        $quotationRequest = QuotationRequest::where('opportunity_action_id', $bezoekAction->id)
+            ->WhereHas('opportunity', function($query){
+                $query->WhereHas('intake', function($query2){
+                    $query2->where('contact_id', $this->contact->id)
+                        ->where('campaign_id', $this->cooperation->hoom_campaign_id);
+                });
+            })
+            ->orderby('id', 'desc')->first();
+        if(!$quotationRequest) {
+            $this->error('Afspraak niet gevonden in Econobis', 404);
+        }
+
+        if($dataContent->status->short === 'executed'){
+            $bezoekStatusDone = QuotationRequestStatus::where('opportunity_action_id', $bezoekAction->id)->where('code_ref', 'done')->first();
+            $quotationRequest->status_id = $bezoekStatusDone->id;
+            $quotationRequest->save();
+            $this->log('Afspraak ' .  Carbon::parse($quotationRequest->date_planned)->format('d-m-Y H:i'). ' op gedaan voor bezoek coach ' . $quotationRequest->organisationOrCoach->full_name_fnf . ' bij bewoner ' . $this->contact->full_name_fnf);
+        } else {
+            $StatusFromContent = (isset($dataContent->status->name) ? $dataContent->status->name : 'onbekend');
+            $this->log('Afspraak ' .  Carbon::parse($quotationRequest->date_planned)->format('d-m-Y H:i'). ' niet bijgewerkt voor bezoek coach ' . $quotationRequest->organisationOrCoach->full_name_fnf . ' bij bewoner ' . $this->contact->full_name_fnf . ' i.v.m. status: '. $StatusFromContent);
+        }
     }
 
 }

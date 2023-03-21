@@ -21,6 +21,7 @@ use App\Console\Commands\checkWrongDistributionParts;
 use App\Console\Commands\checkWrongEnergySupplierDataInParts;
 use App\Console\Commands\checkMissingEnergySupplierDataInParts;
 use App\Console\Commands\checkWrongRevenueDistributionKwhStatus;
+use App\Console\Commands\contactGroupsContactsForReport;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -51,6 +52,7 @@ class Kernel extends ConsoleKernel
         checkWrongEnergySupplierDataInParts::class,
         checkMissingEnergySupplierDataInParts::class,
         checkWrongRevenueDistributionKwhStatus::class,
+        contactGroupsContactsForReport::class,
     ];
 
     /**

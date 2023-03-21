@@ -141,6 +141,6 @@ class Intake extends Model
 
     public function getCampaignsToSelect()
     {
-        return Campaign::where('status_id', '!=', 4)->orWhere('id', $this->campaign_id)->get();
+        return Campaign::where('status_id', '!=', Campaign::STATUS_CLOSED)->orWhere('id', $this->campaign_id)->get();
     }
 }

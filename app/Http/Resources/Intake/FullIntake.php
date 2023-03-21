@@ -5,16 +5,11 @@ namespace App\Http\Resources\Intake;
 use App\Http\Resources\Address\FullAddress;
 use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\Contact\FullContact;
-use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\GenericResource;
-use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Task\GridTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Eco\Contact\Contact;
-use App\Eco\Address\Address;
-use App\Eco\Measure\Measure;
 
 class FullIntake extends JsonResource
 {

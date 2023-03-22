@@ -44,13 +44,18 @@ class contactGroupsContactsForReport extends Command
         DB::table('contact_groups_contacts_for_report')->truncate();
 
         /* now repopulate the table again with the current data */
-//todo nog aanpassen naar alles behalve gesimuleerde groepen
-        $contactGroups = ContactGroup::whereIn('type_id', ['dynamic', 'composed'])->get();
+        $contactGroups = ContactGroup::whereIn('type_id', ['dynamic', 'composed', 'static'])->where('closed', 0)->get();
 
         foreach($contactGroups as $contactGroup) {
             $allContacts = $contactGroup->getAllContacts();
 
             foreach($allContacts as $contact) {
+                if(isSet($contact->pivot->member_to_group_since)) {
+                    $member_to_group_since = $contact->pivot->member_to_group_since;
+                } else {
+                    $member_to_group_since = null;
+                }
+
                 DB::insert('insert into contact_groups_contacts_for_report (
                     contact_id, 
                     contact_group_id,
@@ -59,7 +64,7 @@ class contactGroupsContactsForReport extends Command
                     [
                         $contact->id,
                         $contactGroup->id,
-                        $contact->member_since
+                        $member_to_group_since
                     ]
                 );
             }

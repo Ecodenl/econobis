@@ -420,6 +420,7 @@ class ExternalWebformController extends Controller
                 'contact_groep_ids' => 'contact_group_ids',
                 // Hoomdossier aanmaken
                 'hoomdossier_aanmaken' => 'create_hoom_dossier',
+                'forceer_nieuw_contact' => 'forceer_nieuw_contact',
             ],
             'address_energy_consumption_gas' => [
                 // Address energy consumption gas
@@ -627,8 +628,13 @@ class ExternalWebformController extends Controller
         }
         Auth::setUser($ownerAndResponsibleUser);
         $this->log('Default Eigenaar contact verantwoordelijke gebruiker (zelfde als eigenaar) : ' . $ownerAndResponsibleUser->id);
+        
+        if($data['forceer_nieuw_contact'] == 1) {
+            $contact = false;
+        } else {
+            $contact = $this->getContactByAddressAndEmail($data);
+        }
 
-        $contact = $this->getContactByAddressAndEmail($data);
         $this->log('Actie: ' . $this->contactActie);
         if($contact){
             $this->log('Actie bij contact: ' . $contact->id);

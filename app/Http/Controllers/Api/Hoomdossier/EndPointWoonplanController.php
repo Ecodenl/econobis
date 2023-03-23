@@ -33,6 +33,7 @@ class EndPointWoonplanController extends EndPointHoomDossierController
                 }
 
                 $this->processAccountRelatedData($dataContent->account_related);
+                $this->validatePost($dataContent);
                 $this->doPost($dataContent);
             });
         } catch (HoomdossierException $e) {
@@ -45,6 +46,10 @@ class EndPointWoonplanController extends EndPointHoomDossierController
 
         $this->logInfo();
         return Response::json($this->logs);
+    }
+
+    protected function validatePost($dataContent)
+    {
     }
 
     protected function doPost($dataContent)

@@ -61,6 +61,8 @@ class AddNew2FieldsMarch2023ToHousingFilesTable extends Migration
      */
     public function down()
     {
+        HousingFileSpecificationStatus::where('code_ref', 'opportunity_created')->delete();
+
         if (Schema::hasColumn('housing_file_specification_statuses', 'code_ref'))
         {
             Schema::table('housing_file_specification_statuses', function (Blueprint $table)

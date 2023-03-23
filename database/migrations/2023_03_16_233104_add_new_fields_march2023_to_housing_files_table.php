@@ -14,7 +14,7 @@ class AddNewFieldsMarch2023ToHousingFilesTable extends Migration
     public function up()
     {
         Schema::table('housing_files', function (Blueprint $table) {
-            $table->integer('hoom_building_id')->nullable(true);
+            $table->integer('hoom_building_id')->nullable(true)->after('remark');
         });
     }
 

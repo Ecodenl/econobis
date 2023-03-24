@@ -18,7 +18,7 @@ class EndPointScanStatusController extends EndPointHoomDossierController
 
     public function post(string $apiKey, Request $request)
     {
-        $this->log('Test EndPointScanStatus');
+        $this->log('Start EndPointScanStatus');
 
         try {
             \DB::transaction(function () use ($request, $apiKey) {

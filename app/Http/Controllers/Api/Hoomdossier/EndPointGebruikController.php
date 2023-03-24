@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api\Hoomdossier;
 use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\HousingFile\HousingFileHoomLinks;
+use App\Eco\HousingFile\HousingFileHousingStatus;
 use App\Eco\HousingFile\RoofType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -25,7 +26,7 @@ class EndPointGebruikController extends EndPointHoomDossierController
 
     public function post(string $apiKey, Request $request)
     {
-        $this->log('Test EndPointGebruik');
+        $this->log('Start EndPointGebruik');
 
         try {
             \DB::transaction(function () use ($request, $apiKey) {
@@ -61,10 +62,10 @@ class EndPointGebruikController extends EndPointHoomDossierController
         $this->hasNew = isset($dataContent->new);
 
         if(!$this->hasCurrent){
-            $this->log('Payload heeft geen current data');
+            $this->log('Payload heeft geen "current" data');
         }
         if(!$this->hasNew){
-            $this->log('Payload heeft geen new data');
+            $this->log('Payload heeft geen "new" data');
         }
     }
 
@@ -73,7 +74,7 @@ class EndPointGebruikController extends EndPointHoomDossierController
 //        $this->log('Binnenkomende payload (zie laravel log)');
 //        Log::info(json_encode($dataContent));
         if($this->hasCurrent){
-            $this->log('Payload current');
+            $this->log('Verwerk payload "current" data');
             foreach($dataContent->current as $key => $value)
             {
                 if(!empty($key)){
@@ -82,7 +83,7 @@ class EndPointGebruikController extends EndPointHoomDossierController
             }
         }
         if($this->hasNew){
-            $this->log('Payload new');
+            $this->log('Verwerk payload "new" data');
             foreach($dataContent->new as $key => $value)
             {
                 $this->doPostElement($key, $value);
@@ -105,13 +106,11 @@ class EndPointGebruikController extends EndPointHoomDossierController
             return;
         }
 
-//        $this->log('Your key is: ' . $key);
-
         $housingFileHoomLink = HousingFileHoomLinks::where('external_hoom_short_name', $key)->first();
         if($housingFileHoomLink){
-            $this->log('HousingFile hoom link found for hoom short ' . $key . '. Linked to econobis field: ' . $housingFileHoomLink->econobis_field_name . ' data-type: ' . $housingFileHoomLink->housing_file_data_type ) . '.';
+            $this->log('Woningdossier hoom koppeling gevonden voor hoom short ' . $key . '. Koppeling naar econobis veld: ' . $housingFileHoomLink->econobis_field_name . ' data-type: ' . $housingFileHoomLink->housing_file_data_type ) . '.';
         } else {
-            $this->log('HousingFile hoom link NOT found for hoom short ' . $key . '.');
+            $this->log('Woningdossier hoom koppeling NIET gevonden voor hoom short ' . $key . '.');
             $housingFileHoomLink = New HousingFileHoomLinks();
             $housingFileHoomLink->external_hoom_short_name = $key;
             $housingFileHoomLink->econobis_field_name = "";
@@ -120,11 +119,11 @@ class EndPointGebruikController extends EndPointHoomDossierController
             $housingFileHoomLink->import_from_hoom = false;
             $housingFileHoomLink->visible_in_econobis = false;
             $housingFileHoomLink->save();
-            $this->log('HousingFile hoom link created for hoom short ' . $key . '.');
+            $this->log('Woningdossier hoom koppeling gemaakt voor hoom short ' . $key . '.');
         }
 
         if($housingFileHoomLink->import_from_hoom == false){
-            $this->log('HousingFile hoom link for hoom short ' . $key . ' not imported (value for import is False).');
+            $this->log('Woningdossier hoom koppeling voor hoom short ' . $key . ' niet geimporteerd (koppeling staat ingesteld op NIET importeren).');
             return;
         }
 
@@ -141,12 +140,12 @@ class EndPointGebruikController extends EndPointHoomDossierController
                     $this->doPostWoningStatus($housingFileHoomLink, $value->answers);
                     break;
                 default:
-                    $this->log('Unkown data type: ' . $housingFileHoomLink->housing_file_data_type . '. No further action for hoom short ' . $key . '.');
+                    $this->log('Onbekende data type: ' . $housingFileHoomLink->housing_file_data_type . '. Geen verdere acties voor hoom short ' . $key . '.');
                     return;
 
             }
         } else {
-            $this->log('Answer(s) are not set. No further action for hoom short ' . $key . '.');
+            $this->log('Answer(s) zijn niet gezet. Geen verdere acties voor hoom short ' . $key . '.');
             return;
         }
     }
@@ -156,10 +155,10 @@ class EndPointGebruikController extends EndPointHoomDossierController
         $econobisFieldName = $housingFileHoomLink->econobis_field_name;
         if (is_array($answers)) {
                 $value =  $answers[0]->value;
-                $this->log(' first answer value: ' . $value);
+                $this->log(' Meerdere answers, eerste waarde: ' . $value);
         } else {
             $value =  $answers->value;
-            $this->log(' answer value: ' . $value);
+            $this->log(' answer waarde: ' . $value);
         }
 
         switch ($econobisFieldName){
@@ -212,13 +211,37 @@ class EndPointGebruikController extends EndPointHoomDossierController
         }
 
         if($this->housingFile->$econobisFieldName != $housingFileValue){
-            $this->log('Woningdossing Basis waarde veld ' . $econobisFieldName . ' gewijzigd van ' . $this->housingFile->$econobisFieldName . ' naar ' . $housingFileValue . '.' );
+            $this->log('Woningdossier Basis waarde veld ' . $econobisFieldName . ' gewijzigd van ' . $this->housingFile->$econobisFieldName . ' naar ' . $housingFileValue . '.' );
             $this->housingFile->$econobisFieldName = $housingFileValue;
             $this->isHousingFileChanged = true;
         }
     }
 
     protected function doPostGebruik($housingFileHoomLink, $answers): void
+    {
+        $econobisFieldName = $housingFileHoomLink->econobis_field_name;
+        if (is_array($answers)) {
+            $value =  $answers[0]->value;
+            $this->log(' Meerdere answers, eerste waarde: ' . $value);
+        } else {
+            $value =  $answers->value;
+            $this->log(' answer waarde: ' . $value);
+        }
+
+        switch ($econobisFieldName){
+            default:
+                $housingFileValue = $value;
+                break;
+        }
+
+        if($this->housingFile->$econobisFieldName != $housingFileValue){
+            $this->log('Woningdossier Gebruik waarde veld ' . $econobisFieldName . ' gewijzigd van ' . $this->housingFile->$econobisFieldName . ' naar ' . $housingFileValue . '.' );
+            $this->housingFile->$econobisFieldName = $housingFileValue;
+            $this->isHousingFileChanged = true;
+        }
+    }
+
+    protected function doPostWoningStatus($housingFileHoomLink, $answers): void
     {
         $econobisFieldName = $housingFileHoomLink->econobis_field_name;
         if (is_array($answers)) {
@@ -235,22 +258,23 @@ class EndPointGebruikController extends EndPointHoomDossierController
                 break;
         }
 
-        if($this->housingFile->$econobisFieldName != $housingFileValue){
-            $this->log('Woningdossing Gebruik waarde veld ' . $econobisFieldName . ' gewijzigd van ' . $this->housingFile->$econobisFieldName . ' naar ' . $housingFileValue . ') ' );
-            $this->housingFile->$econobisFieldName = $housingFileValue;
-            $this->isHousingFileChanged = true;
-        }
-    }
-
-    protected function doPostWoningStatus($housingFileHoomLink, $answers): void
-    {
-//        $econobisFieldName = $housingFileHoomLink->econobis_field_name;
-        if (is_array($answers)) {
-            $value =  $answers[0]->value;
-            $this->log(' first answer value: ' . $value);
+        $housingFileHousingStatus = HousingFileHousingStatus::where('housing_file_id', $this->housingFile->id)->where('housing_file_hoom_links_id', $housingFileHoomLink->id)->first();
+        if($housingFileHousingStatus){
+            $this->log('Woningdossier Woningstatus gevonden voor hoom short ' . $housingFileHoomLink->external_hoom_short_name . '.');
+            $housingFileOldValue = $housingFileHousingStatus->status;
+            $housingFileHousingStatus->status = $housingFileValue;
+//            $housingFileHousingStatus->number_or_m2 = $housingFileNumericValue;
+            $housingFileHousingStatus->save();
+            $this->log('Woningdossier Woningstatus waarde veld ' . $housingFileHoomLink->external_hoom_short_name . ' gewijzigd van ' . $housingFileOldValue . ' naar ' . $housingFileValue . '.' );
         } else {
-            $value =  $answers->value;
-            $this->log(' answer value: ' . $value);
+            $this->log('Woningdossier Woningstatus NIET gevonden voor hoom short ' . $housingFileHoomLink->external_hoom_short_name . '.');
+            $housingFileHousingStatus = new HousingFileHousingStatus();
+            $housingFileHousingStatus->housing_file_id = $this->housingFile->id;
+            $housingFileHousingStatus->housing_file_hoom_links_id = $housingFileHoomLink->id;
+            $housingFileHousingStatus->status = $housingFileValue;
+//            $housingFileHousingStatus->number_or_m2 = $housingFileNumericValue;
+            $housingFileHousingStatus->save();
+            $this->log('Woningdossier Woningstatus gemaakt voor hoom short ' . $housingFileHoomLink->external_hoom_short_name . ' met waarde ' . $housingFileValue);
         }
 
     }

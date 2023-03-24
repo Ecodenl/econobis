@@ -101,17 +101,17 @@ class AddNewFieldsMarch2023ToHousingFilesTable extends Migration
 //    boiler-setting-comfort-heat         boiler_setting_comfort_heat           G   new     Stooktemperatuur
 //    amount-gas                          amount_gas                            G   new     Verbruik gas
 //    amount-electricity                  amount_electricity                    G   new     Verbruik electriciteit
-//    current-wall-insulation                                                   W           Status muurisolatie
-//    current-floor-insulation                                                  W           Status vloerisolatie
-//    current-roof-insulation                                                   W           atus dakisolatie
-//    current-living-rooms-windows                                              W           Status glasisolatie woon
-//    current-sleeping-rooms-windows                                            W           Status glasisolatie slaap
-//    heat-source-warm-tap-water                                                W           Warmtapwater
-//    building-heating-application                                              W           Warmtesysteem
-//    ventilation-type                                                          W           Type ventilatie
-//    crack-sealing-type                                                        W           Status kierdichting
-//    has-cavity-wall                                                           W           Spouwmuur
-//    has-solar-panels                                                          W           Zonnepanelen
+//    current-wall-insulation                                                   W   S       Status muurisolatie
+//    current-floor-insulation                                                  W   S       Status vloerisolatie
+//    current-roof-insulation                                                   W   S       atus dakisolatie
+//    current-living-rooms-windows                                              W   S       Status glasisolatie woon
+//    current-sleeping-rooms-windows                                            W   S       Status glasisolatie slaap
+//    heat-source-warm-tap-water                                                W   S       Warmtapwater
+//    building-heating-application                                              W   S       Warmtesysteem
+//    ventilation-type                                                          W   S       Type ventilatie
+//    crack-sealing-type                                                        W   S       Status kierdichting
+//    has-cavity-wall                                                           W   S       Spouwmuur
+//    has-solar-panels                                                          W   S       Zonnepanelen
 
         DB::table('housing_file_hoom_links')->insert([
             ['external_hoom_short_name'=> 'surface', 'econobis_field_name'=> 'surface', 'housing_file_data_type'=> 'B', 'label' => 'Gebruiksoppervlakte', 'import_from_hoom'=> true, 'visible_in_econobis'=> true ],
@@ -163,10 +163,7 @@ class AddNewFieldsMarch2023ToHousingFilesTable extends Migration
             $table->foreign('housing_file_hoom_links_id')
                 ->references('id')->on('housing_file_hoom_links')
                 ->onDelete('restrict');
-            $table->unsignedInteger('status_id');
-//            $table->foreign('status_id')
-//                ->references('id')->on('housing_statuses')
-//                ->onDelete('restrict');
+            $table->text('status')->nullable();;
             $table->float('number_or_m2')->nullable();
             $table->timestamps();
         });

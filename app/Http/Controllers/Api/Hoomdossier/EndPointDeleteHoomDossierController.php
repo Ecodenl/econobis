@@ -20,7 +20,7 @@ class EndPointDeleteHoomDossierController extends EndPointHoomDossierController
 
     public function post(string $apiKey, Request $request)
     {
-        $this->log('Test EndPointDeleteHoomDossier');
+        $this->log('Start EndPointDeleteHoomDossier');
 
         try {
             \DB::transaction(function () use ($request, $apiKey) {

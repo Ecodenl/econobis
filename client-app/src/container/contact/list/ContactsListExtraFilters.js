@@ -286,6 +286,11 @@ class ContactsListExtraFilters extends Component {
                 type: 'dropdownHas',
                 dropDownOptions: this.props.measureCategories,
             },
+            quotationRequestStatus: {
+                name: 'Kansactie status',
+                type: 'dropdownCustomForQuotationRequest',
+                dropDownOptions: this.props.quotationRequestStatus,
+            },
             intakeMeasureCategory: {
                 name: 'Intake interesse',
                 type: 'dropdownHas',
@@ -480,6 +485,7 @@ const mapStateToProps = state => {
         energySupplierTypes: state.systemData.energySupplierTypes,
         countries: state.systemData.countries,
         orderStatuses: state.systemData.orderStatuses,
+        quotationRequestStatus: state.systemData.quotationRequestStatus,
     };
 };
 

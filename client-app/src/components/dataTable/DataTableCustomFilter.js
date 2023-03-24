@@ -11,6 +11,7 @@ import DataTableCustomFilterSelectBoolean from './DataTableCustomFilterSelectBoo
 import moment from 'moment';
 import DataTableDateFilter from './DataTableDateFilter';
 import DataTableCustomFilterSelectDropdownHas from './DataTableCustomFilterSelectDropdownHas';
+import DataTableCustomFilterSelectDropdownCustomForQuotationRequest from './DataTableCustomFilterSelectDropdownCustomForQuotationRequest';
 import DataTableCustomFilterSelectDropdownRelations from './DataTableCustomFilterSelectDropdownRelations';
 
 moment.locale('nl');
@@ -133,6 +134,13 @@ const DataTableCustomFilter = props => {
                 )}
                 {fieldType === 'dropdown' && (
                     <DataTableCustomFilterSelectDropdown
+                        handleInputChange={handleInputChange}
+                        type={type}
+                        readOnly={props.filter.readOnly}
+                    />
+                )}
+                {fieldType === 'dropdownCustomForQuotationRequest' && (
+                    <DataTableCustomFilterSelectDropdownCustomForQuotationRequest
                         handleInputChange={handleInputChange}
                         type={type}
                         readOnly={props.filter.readOnly}

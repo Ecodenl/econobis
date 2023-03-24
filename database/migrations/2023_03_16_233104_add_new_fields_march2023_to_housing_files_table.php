@@ -21,6 +21,13 @@ class AddNewFieldsMarch2023ToHousingFilesTable extends Migration
             $table->integer('hoom_building_id')->nullable(true)->after('remark');
         });
 
+        Schema::table('housing_file_specifications', function (Blueprint $table) {
+            $table->string('type_of_execution', 1)->nullable(true)->after('status_id');
+            $table->double('savings_gas', 11, 0)->nullable(true)->after('type_of_execution');
+            $table->double('savings_electricity', 11, 0)->nullable(true)->after('savings_gas');
+            $table->double('co2_savings', 11, 0)->nullable(true)->after('savings_electricity');
+        });
+
         Schema::table('housing_file_specification_statuses', function (Blueprint $table) {
             $table->string('code_ref')->nullable(true)->after('name');
             $table->integer('order')->nullable(true)->after('code_ref');
@@ -633,6 +640,35 @@ class AddNewFieldsMarch2023ToHousingFilesTable extends Migration
             Schema::table('housing_file_specification_statuses', function (Blueprint $table)
             {
                 $table->dropColumn('order');
+            });
+        }
+
+        if (Schema::hasColumn('housing_file_specifications', 'co2_savings'))
+        {
+            Schema::table('housing_file_specifications', function (Blueprint $table)
+            {
+                $table->dropColumn('co2_savings');
+            });
+        }
+        if (Schema::hasColumn('housing_file_specifications', 'savings_electricity'))
+        {
+            Schema::table('housing_file_specifications', function (Blueprint $table)
+            {
+                $table->dropColumn('savings_electricity');
+            });
+        }
+        if (Schema::hasColumn('housing_file_specifications', 'savings_gas'))
+        {
+            Schema::table('housing_file_specifications', function (Blueprint $table)
+            {
+                $table->dropColumn('savings_gas');
+            });
+        }
+        if (Schema::hasColumn('housing_file_specifications', 'type_of_execution'))
+        {
+            Schema::table('housing_file_specifications', function (Blueprint $table)
+            {
+                $table->dropColumn('type_of_execution');
             });
         }
 

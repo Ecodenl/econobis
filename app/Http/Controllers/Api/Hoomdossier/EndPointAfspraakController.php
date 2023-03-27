@@ -22,7 +22,7 @@ class EndPointAfspraakController extends EndPointHoomDossierController
 
     public function post(string $apiKey, Request $request)
     {
-        $this->log('Test EndPointAfspraak');
+        $this->log('Start EndPointAfspraak');
 
         try {
             \DB::transaction(function () use ($request, $apiKey) {

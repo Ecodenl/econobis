@@ -8,30 +8,31 @@
 
 namespace App\Helpers\Delete\Models;
 
+use App\Eco\Opportunity\OpportunityStatus;
 use App\Helpers\Delete\DeleteInterface;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class DeleteHousingFile
+ * Class DeleteHousingFileSpecification
  *
  * Relation: 1-n Documents. Action: dissociate
  * Relation: 1-n Tasks & notes. Action: call DeleteTask
  *
  * @package App\Helpers\Delete
  */
-class DeleteHousingFile implements DeleteInterface
+class DeleteHousingFileSpecification implements DeleteInterface
 {
     private $errorMessage = [];
-    private $housingFile;
+    private $housingFileSpecification;
 
     /** Sets the model to delete
      *
      * @param Model $housingFile the model to delete
      */
 
-    public function __construct(Model $housingFile)
+    public function __construct(Model $housingFileSpecification)
     {
-        $this->housingFile = $housingFile;
+        $this->housingFileSpecification = $housingFileSpecification;
     }
 
     /** Main method for deleting this model and all it's relations
@@ -46,7 +47,7 @@ class DeleteHousingFile implements DeleteInterface
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->housingFile->delete();
+        $this->housingFileSpecification->delete();
 
         return $this->errorMessage;
     }
@@ -56,7 +57,10 @@ class DeleteHousingFile implements DeleteInterface
      */
     public function canDelete()
     {
-
+        $statusInActive = OpportunityStatus::where('code_ref', 'inactive')->first();
+        if($this->housingFileSpecification->opportunities()->where('status_id', '!=', $statusInActive->id)->count() > 0){
+            array_push($this->errorMessage, "Er zijn nog gekoppelde kansen in behandeling.");
+        }
     }
 
     /** Deletes models recursive
@@ -64,17 +68,9 @@ class DeleteHousingFile implements DeleteInterface
      */
     public function deleteModels()
     {
-        foreach ($this->housingFile->housingFileSpecifications as $specification) {
-            $deleteSpecifiction = new DeleteHousingFileSpecification($specification);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteSpecifiction->delete());
-        }
-        foreach ($this->housingFile->tasks as $task) {
-            $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
-        }
-        foreach ($this->housingFile->notes as $task) {
-            $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+        foreach ($this->housingFileSpecification->opportunities as $opportunity) {
+            $deleteOpportunity = new DeleteOpportunity($opportunity);
+            $this->errorMessage = array_merge($this->errorMessage, $deleteOpportunity->delete());
         }
     }
 
@@ -82,10 +78,6 @@ class DeleteHousingFile implements DeleteInterface
      */
     public function dissociateRelations()
     {
-        foreach ($this->housingFile->documents as $document){
-            $document->housingFile()->dissociate();
-            $document->save();
-        }
     }
 
     /**

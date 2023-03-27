@@ -55,6 +55,11 @@ class HousingFile extends Model
         return $this->belongsTo(EnergyLabelStatus::class);
     }
 
+    public function housingFileHousingStatuses()
+    {
+        return $this->hasMany(HousingFileHousingStatus::class);
+    }
+
     public function housingFileSpecifications()
     {
         return $this->hasMany(HousingFileSpecification::class);

@@ -4,7 +4,7 @@ namespace App\Eco\HousingFile;
 
 use Illuminate\Database\Eloquent\Model;
 
-class HousingFileHoomLinks extends Model
+class HousingFileHoomLink extends Model
 {
     protected $table = 'housing_file_hoom_links';
      /**

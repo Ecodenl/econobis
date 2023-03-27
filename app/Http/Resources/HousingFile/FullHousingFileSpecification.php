@@ -28,6 +28,11 @@ class FullHousingFileSpecification extends JsonResource
                 'floor' => GenericResource::make($this->whenLoaded('floor')),
                 'side' => GenericResource::make($this->whenLoaded('side')),
                 'typeBrand' => $this->type_brand,
+                'externalHoomName' => $this->external_hoom_name,
+                'typeOfExecution' => $this->type_of_execution,
+                'savingsGas' => $this->savings_gas,
+                'savingsElectricity' => $this->savings_electricity,
+                'co2Savings' => $this->co2_savings,
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
             ];

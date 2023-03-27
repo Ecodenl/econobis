@@ -63,6 +63,8 @@ class HousingFileController extends ApiController
             'housingFileSpecifications.status',
             'housingFileSpecifications.floor',
             'housingFileSpecifications.side',
+            'housingFileHousingStatuses',
+            'housingFileHousingStatuses.housingFileHoomLink',
             'buildingType',
             'roofType',
             'energyLabel',
@@ -101,7 +103,7 @@ class HousingFileController extends ApiController
             ->integer('buildingTypeId')->validate('nullable|exists:building_types,id')->onEmpty(null)->whenMissing(null)->alias('building_type_id')->next()
             ->integer('buildYear')->validate('nullable|integer|between:1500,3000')->onEmpty(null)->whenMissing(null)->alias('build_year')->next()
             ->boolean('isHouseForSale')->validate('boolean')->alias('is_house_for_sale')->whenMissing(true)->next()
-            ->integer('surface')->validate('nullable|integer')->onEmpty(null)->whenMissing(null)->alias('surface')->next()
+            ->numeric('surface')->validate('nullable|numeric')->onEmpty(null)->whenMissing(null)->alias('surface')->next()
             ->integer('roofTypeId')->validate('nullable|exists:roof_types,id')->onEmpty(null)->whenMissing(null)->alias('roof_type_id')->next()
             ->integer('energyLabelId')->validate('nullable|exists:energy_labels,id')->onEmpty(null)->whenMissing(null)->alias('energy_label_id')->next()
             ->integer('floors')->validate('nullable|integer')->onEmpty(null)->whenMissing(null)->alias('floors')->next()
@@ -110,7 +112,25 @@ class HousingFileController extends ApiController
             ->integer('numberOfResidents')->validate('integer')->onEmpty(0)->whenMissing(0)->alias('number_of_residents')->next()
             ->integer('revenueSolarPanels')->validate('integer')->onEmpty(0)->whenMissing(0)->alias('revenue_solar_panels')->next()
             ->string('remark')->validate('string')->onEmpty('')->whenMissing('')->alias('remark')->next()
+//            ->integer('hoomBuildingId')->validate('integer')->onEmpty(0)->whenMissing(0)->alias('hoom_building_id')->next()
+            ->string('wallSurface')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('wall_surface')->next()
+            ->string('totalWindowSurface')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('total_window_surface')->next()
+            ->string('frameType')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('frame_type')->next()
+            ->string('floorSurface')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('floor_surface')->next()
+            ->string('pitchedRoofSurface')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('pitched_roof_surface')->next()
+            ->string('flatRoofSurface')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('flat_roof_surface')->next()
+            ->string('cookRype')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('cook_type')->next()
+            ->string('heatSource')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('heat_source')->next()
+            ->string('waterComfort')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('water_comfort')->next()
+            ->string('boilerSettingComfortHeat')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('boiler_setting_comfort_heat')->next()
+            ->string('pitchedRoofHeating')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('pitched_roof_heating')->next()
+            ->string('flatRoofHeating')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('flat_roof_heating')->next()
+            ->string('hr3pGlassFrameCurrentGlass')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('hr3p_glass_frame_current_glass')->next()
+            ->string('glassInLeadReplaceRoomsHeated')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('glass_in_lead_replace_rooms_heated')->next()
+            ->string('amountGas')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('amount_gas')->next()
+            ->string('amountElectricity')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('amount_electricity')->next()
             ->get();
+
 
         $housingFile = new HousingFile($data);
         $housingFile->save();
@@ -127,7 +147,7 @@ class HousingFileController extends ApiController
             ->integer('buildingTypeId')->validate('nullable|exists:building_types,id')->onEmpty(null)->whenMissing(null)->alias('building_type_id')->next()
             ->integer('buildYear')->validate('nullable|integer|between:1500,3000')->onEmpty(null)->whenMissing(null)->alias('build_year')->next()
             ->boolean('isHouseForSale')->validate('boolean')->alias('is_house_for_sale')->whenMissing(true)->next()
-            ->integer('surface')->validate('nullable|integer')->onEmpty(null)->whenMissing(null)->alias('surface')->next()
+            ->integer('numeric')->validate('nullable|numeric')->onEmpty(null)->whenMissing(null)->alias('surface')->next()
             ->integer('roofTypeId')->validate('nullable|exists:roof_types,id')->onEmpty(null)->whenMissing(null)->alias('roof_type_id')->next()
             ->integer('energyLabelId')->validate('nullable|exists:energy_labels,id')->onEmpty(null)->whenMissing(null)->alias('energy_label_id')->next()
             ->integer('floors')->validate('nullable|integer')->onEmpty(null)->whenMissing(null)->alias('floors')->next()
@@ -136,6 +156,23 @@ class HousingFileController extends ApiController
             ->integer('numberOfResidents')->validate('integer')->onEmpty(0)->whenMissing(0)->alias('number_of_residents')->next()
             ->integer('revenueSolarPanels')->validate('integer')->onEmpty(0)->whenMissing(0)->alias('revenue_solar_panels')->next()
             ->string('remark')->validate('string')->onEmpty('')->whenMissing('')->alias('remark')->next()
+//            ->integer('hoomBuildingId')->validate('integer')->onEmpty(0)->whenMissing(0)->alias('hoom_building_id')->next()
+            ->string('wallSurface')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('wall_surface')->next()
+            ->string('totalWindowSurface')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('total_window_surface')->next()
+            ->string('frameType')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('frame_type')->next()
+            ->string('floorSurface')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('floor_surface')->next()
+            ->string('pitchedRoofSurface')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('pitched_roof_surface')->next()
+            ->string('flatRoofSurface')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('flat_roof_surface')->next()
+            ->string('cookRype')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('cook_type')->next()
+            ->string('heatSource')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('heat_source')->next()
+            ->string('waterComfort')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('water_comfort')->next()
+            ->string('boilerSettingComfortHeat')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('boiler_setting_comfort_heat')->next()
+            ->string('pitchedRoofHeating')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('pitched_roof_heating')->next()
+            ->string('flatRoofHeating')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('flat_roof_heating')->next()
+            ->string('hr3pGlassFrameCurrentGlass')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('hr3p_glass_frame_current_glass')->next()
+            ->string('glassInLeadReplaceRoomsHeated')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('glass_in_lead_replace_rooms_heated')->next()
+            ->string('amountGas')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('amount_gas')->next()
+            ->string('amountElectricity')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('amount_electricity')->next()
             ->get();
 
         $housingFile->fill($data);
@@ -143,7 +180,6 @@ class HousingFileController extends ApiController
 
         return $this->show($housingFile);
     }
-
 
     public function addHousingFileSpecification(RequestInput $requestInput)
     {
@@ -157,7 +193,11 @@ class HousingFileController extends ApiController
             ->integer('statusId')->validate('nullable|exists:housing_file_specification_statuses,id')->whenMissing(null)->onEmpty(null)->alias('status_id')->next()
             ->integer('floorId')->validate('nullable|exists:housing_file_specification_floors,id')->whenMissing(null)->onEmpty(null)->alias('floor_id')->next()
             ->integer('sideId')->validate('nullable|exists:housing_file_specification_sides,id')->whenMissing(null)->onEmpty(null)->alias('side_id')->next()
-            ->string('typeBrand')->whenMissing(null)->onEmpty(null)->alias('type_brand')->next()
+//            ->string('externalHoomName')->whenMissing(null)->onEmpty(null)->alias('external_hoom_name')->next()
+            ->string('typeOfExecution')->whenMissing(null)->onEmpty(null)->alias('type_of_execution')->next()
+            ->numeric('savingsGas')->validate('nullable|numeric')->whenMissing(null)->onEmpty(null)->alias('savings_gas')->next()
+            ->numeric('savingsElectricity')->validate('nullable|numeric')->whenMissing(null)->onEmpty(null)->alias('savings_electricity')->next()
+            ->numeric('co2Savings')->validate('nullable|numeric')->whenMissing(null)->onEmpty(null)->alias('co2_savings')->next()
             ->get();
 
         $housingFileSpecification = new HousingFileSpecification($data);
@@ -184,6 +224,11 @@ class HousingFileController extends ApiController
             ->integer('floorId')->validate('nullable|exists:housing_file_specification_floors,id')->whenMissing(null)->onEmpty(null)->alias('floor_id')->next()
             ->integer('sideId')->validate('nullable|exists:housing_file_specification_sides,id')->whenMissing(null)->onEmpty(null)->alias('side_id')->next()
             ->string('typeBrand')->whenMissing(null)->onEmpty(null)->alias('type_brand')->next()
+//            ->string('externalHoomName')->whenMissing(null)->onEmpty(null)->alias('external_hoom_name')->next()
+            ->string('typeOfExecution')->whenMissing(null)->onEmpty(null)->alias('type_of_execution')->next()
+            ->numeric('savingsGas')->validate('nullable|numeric')->whenMissing(null)->onEmpty(null)->alias('savings_gas')->next()
+            ->numeric('savingsElectricity')->validate('nullable|numeric')->whenMissing(null)->onEmpty(null)->alias('savings_electricity')->next()
+            ->numeric('co2Savings')->validate('nullable|numeric')->whenMissing(null)->onEmpty(null)->alias('co2_savings')->next()
             ->get();
 
         $housingFileSpecification->fill($data);
@@ -204,6 +249,53 @@ class HousingFileController extends ApiController
         $this->authorize('manage', HousingFile::class);
 
        $housingFileSpecification->delete();
+    }
+
+    public function addHousingFileHousingStatus(RequestInput $requestInput)
+    {
+        $this->authorize('manage', HousingFile::class);
+
+        $data = $requestInput
+            ->integer('housingFileId')->validate('required|exists:housing_files,id')->alias('housing_file_id')->next()
+            ->integer('housingFileHoomLinksId')->validate('required|exists:housing_file_hoom_links,id')->alias('housing_file_hoom_links_id')->next()
+            ->string('status')->whenMissing(null)->onEmpty(null)->alias('status')->next()
+//            ->numeric('numberOrM2')->validate('nullable|numeric')->whenMissing(null)->onEmpty(null)->alias('number_or_m2')->next()
+            ->get();
+
+        $housingFileHousingStatus = new HousingFileHousingStatus($data);
+        $housingFileHousingStatus->save();
+
+        $housingFileHousingStatus->load([
+            'housingFileHoomLink',
+        ]);
+        return FullHousingFileHousingStatus::make($housingFileHousingStatus);
+    }
+
+    public function updateHousingFileHousingStatus(RequestInput $requestInput, HousingFileHousingStatus $housingFileHousingStatus)
+    {
+        $this->authorize('manage', HousingFile::class);
+
+        $data = $requestInput
+//            ->integer('housingFileId')->validate('required|exists:housing_files,id')->alias('housing_file_id')->next()
+//            ->integer('housingFileHoomLinksId')->validate('required|exists:housing_file_hoom_links,id')->alias('housing_file_hoom_links_id')->next()
+            ->string('status')->whenMissing(null)->onEmpty(null)->alias('status')->next()
+//            ->numeric('numberOrM2')->validate('nullable|numeric')->whenMissing(null)->onEmpty(null)->alias('number_or_m2')->next()
+            ->get();
+
+        $housingFileHousingStatus->fill($data);
+        $housingFileHousingStatus->save();
+
+        $housingFileHousingStatus->load([
+            'housingFileHoomLink',
+        ]);
+        return FullHousingFileHousingStatus::make($housingFileHousingStatus);
+    }
+
+    public function deleteHousingFileHousingStatus(HousingFileHousingStatus $housingFileHousingStatus)
+    {
+        $this->authorize('manage', HousingFile::class);
+
+        $housingFileHousingStatus->delete();
     }
 
     public function destroy(HousingFile $housingFile)

@@ -5,6 +5,7 @@ import { isEmpty } from 'lodash';
 import HousingFileDetailsFormGeneral from './general/HousingFileDetailsFormGeneral';
 import HousingFileSpecifications from './housing-file-specifications/HousingFileSpecifications';
 import HousingFileDetailsFormConclusion from './conclusion/HousingFileDetailsFormConclusion';
+import HousingFileHousingStatuses from './housing-file-housing-statuses/HousingFileHousingStatuses';
 
 class HousingFileDetailsForm extends Component {
     constructor(props) {
@@ -30,6 +31,7 @@ class HousingFileDetailsForm extends Component {
         ) : (
             <div>
                 <HousingFileDetailsFormGeneral />
+                <HousingFileHousingStatuses />
                 <HousingFileSpecifications />
                 <HousingFileDetailsFormConclusion />
             </div>

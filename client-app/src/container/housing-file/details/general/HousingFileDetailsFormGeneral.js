@@ -5,6 +5,9 @@ import HousingFileDetailsFormGeneralView from './HousingFileDetailsFormGeneralVi
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import { connect } from 'react-redux';
+import PanelHeader from '../../../../components/panel/PanelHeader';
+import HousingFileDetailsFormUseView from './HousingFileDetailsFormUseView';
+import HousingFileDetailsFormUseEdit from './HousingFileDetailsFormUseEdit';
 
 class HousingFileDetailsFormGeneral extends Component {
     constructor(props) {
@@ -56,6 +59,19 @@ class HousingFileDetailsFormGeneral extends Component {
                             <HousingFileDetailsFormGeneralEdit switchToView={this.switchToView} />
                         ) : (
                             <HousingFileDetailsFormGeneralView switchToEdit={this.switchToEdit} />
+                        )}
+                    </div>
+                </PanelBody>
+
+                <PanelHeader>
+                    <span className="h5 text-bold">Gebruik</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="col-md-12">
+                        {this.state.showEdit && this.props.permissions.manageHousingFile ? (
+                            <HousingFileDetailsFormUseEdit switchToView={this.switchToView} />
+                        ) : (
+                            <HousingFileDetailsFormUseView switchToEdit={this.switchToEdit} />
                         )}
                     </div>
                 </PanelBody>

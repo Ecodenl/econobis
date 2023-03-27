@@ -53,7 +53,7 @@ class MailboxController extends Controller
         return GridMailbox::collection($mailboxes);
     }
 
-    public function store(Request $request, RequestInput $input)
+    public function store(Request $request, RequestInput $input, MailgunHelper $mailgunHelper)
     {
         $this->authorize('create', Mailbox::class);
 
@@ -119,6 +119,8 @@ class MailboxController extends Controller
             if (isset($client['message']) && $client['message'] == 'ms_oauth_unauthorised') {
                 return response()->json($client, 401);
             }
+        } else if ($mailbox->incoming_server_type === 'mailgun'){
+            $mailgunHelper->updateMailgunForwarding($mailbox);
         } else if ($mailbox->incoming_server_type !== 'mailgun'){
             new MailFetcher($mailbox);
         }

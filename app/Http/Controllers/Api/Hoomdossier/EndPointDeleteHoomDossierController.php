@@ -8,6 +8,8 @@
 
 namespace App\Http\Controllers\Api\Hoomdossier;
 
+use App\Eco\Opportunity\OpportunityStatus;
+use App\Helpers\Delete\Models\DeleteHousingFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
@@ -18,7 +20,7 @@ class EndPointDeleteHoomDossierController extends EndPointHoomDossierController
 
     public function post(string $apiKey, Request $request)
     {
-        $this->log('Test EndPointDeleteHoomDossier');
+        $this->log('Start EndPointDeleteHoomDossier');
 
         try {
             \DB::transaction(function () use ($request, $apiKey) {
@@ -33,6 +35,7 @@ class EndPointDeleteHoomDossierController extends EndPointHoomDossierController
                 }
 
                 $this->processAccountRelatedData($dataContent->account_related);
+                $this->validatePost($dataContent);
                 $this->doPost($dataContent);
             });
         } catch (HoomdossierException $e) {
@@ -47,11 +50,34 @@ class EndPointDeleteHoomDossierController extends EndPointHoomDossierController
         return Response::json($this->logs);
     }
 
+    protected function validatePost($dataContent)
+    {
+    }
+
     protected function doPost($dataContent)
     {
-        $this->log('Binnenkomende payload (zie laravel log)');
-        Log::info(json_encode($dataContent));
-        $this->log('Hier check en verwerkingen inzake endpoint delete hoomdossier.');
+        // check of er nog specificaties onder behandeling zijn bij woningdossier:
+        $allowDelete = true;
+        $statusInActive = OpportunityStatus::where('code_ref', 'inactive')->first();
+        $specifications = $this->housingFile->housingFileSpecifications;
+        foreach ($specifications as $specification) {
+            if( $specification->opportunities()->where('status_id', '!=', $statusInActive->id)->exists() ){
+                $allowDelete = false;
+                break;
+            }
+        }
+        if(!$allowDelete){
+            $this->error('Woningdossier heeft kansen die in behandeling zijn. Woningdossier niet verwijderd in Econobis', 404);
+        }
+
+        $deleteHousingFile = new DeleteHousingFile($this->housingFile);
+        $result = $deleteHousingFile->delete();
+
+        if(count($result) > 0){
+            $this->error(implode(";", array_unique($result)), 412);
+        } else {
+            $this->log('Woningdossier met building id ' . $this->housingFile->hoom_building_id . ' in Econobis verwijderd.');
+        }
     }
 
 }

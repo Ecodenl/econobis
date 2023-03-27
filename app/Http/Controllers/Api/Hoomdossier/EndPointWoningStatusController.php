@@ -21,7 +21,7 @@ class EndPointWoningStatusController extends EndPointHoomDossierController
 
     public function post(string $apiKey, Request $request)
     {
-        $this->log('Test EndPointWoningStatus');
+        $this->log('Start EndPointWoningStatus');
 
         try {
             \DB::transaction(function () use ($request, $apiKey) {

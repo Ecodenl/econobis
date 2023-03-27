@@ -14,8 +14,17 @@ class IntakeDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        // eslint-disable-next-line react/prop-types
-        const { id, contact, address = {}, reasons, campaign, sources, status, note, campaignsToSelect } = props.intakeDetails;
+        const {
+            id,
+            contact,
+            address = {},
+            reasons,
+            campaign,
+            sources,
+            status,
+            note,
+            campaignsToSelect,
+        } = props.intakeDetails;
 
         this.state = {
             intake: {

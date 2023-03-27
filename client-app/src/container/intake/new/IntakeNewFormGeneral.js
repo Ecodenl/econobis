@@ -5,7 +5,7 @@ import moment from 'moment';
 moment.locale('nl');
 
 import IntakeDetailsAPI from '../../../api/intake/IntakeDetailsAPI';
-import CampaignsAPI from "../../../api/campaign/CampaignsAPI";
+import CampaignsAPI from '../../../api/campaign/CampaignsAPI';
 
 import InputSelect from '../../../components/form/InputSelect';
 import InputMultiSelect from '../../../components/form/InputMultiSelect';
@@ -21,7 +21,7 @@ class IntakeNewFormGeneral extends Component {
             intake: {
                 contactId: props.contactId,
                 addressId: props.addressId,
-                campaignId: props.campaignId,
+                campaignId: '',
                 statusId: '1',
                 sourceIds: '',
                 sourceIdsSelected: [],
@@ -34,7 +34,14 @@ class IntakeNewFormGeneral extends Component {
 
     componentDidMount() {
         CampaignsAPI.peekNotFinishedCampaigns().then(payload => {
-            this.setState({ intakeCampaigns: payload });
+            this.setState({
+                ...this.state,
+                intakeCampaigns: payload,
+                intake: {
+                    ...this.state.intake,
+                    campaignId: payload[0].id,
+                },
+            });
         });
     }
 

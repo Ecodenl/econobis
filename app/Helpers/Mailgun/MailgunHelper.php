@@ -61,6 +61,7 @@ class MailgunHelper
         ]);
 
         $mailbox->inbound_mailgun_route_id = json_decode($response->getBody()->getContents())->route->id;
+        $mailbox->valid = true;
         $mailbox->save();
     }
 

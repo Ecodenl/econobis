@@ -7,6 +7,7 @@ use App\Eco\HousingFile\RoofType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Spatie\Permission\Models\Permission;
 
 class AddNewFieldsMarch2023ToHousingFilesTable extends Migration
 {
@@ -18,7 +19,24 @@ class AddNewFieldsMarch2023ToHousingFilesTable extends Migration
     public function up()
     {
         Schema::table('housing_files', function (Blueprint $table) {
+            $table->float('surface')->nullable()->change();
             $table->integer('hoom_building_id')->nullable(true)->after('remark');
+            $table->string('wall_surface')->nullable(true)->after('hoom_building_id');
+            $table->string('total_window_surface')->nullable(true)->after('wall_surface');
+            $table->string('frame_type')->nullable(true)->after('total_window_surface');
+            $table->string('floor_surface')->nullable(true)->after('frame_type');
+            $table->string('pitched_roof_surface')->nullable(true)->after('floor_surface');
+            $table->string('flat_roof_surface')->nullable(true)->after('pitched_roof_surface');
+            $table->string('cook_type')->nullable(true)->after('flat_roof_surface');
+            $table->string('heat_source')->nullable(true)->after('cook_type');
+            $table->string('water_comfort')->nullable(true)->after('heat_source');
+            $table->string('boiler_setting_comfort_heat')->nullable(true)->after('water_comfort');
+            $table->string('pitched_roof_heating')->nullable(true)->after('boiler_setting_comfort_heat');
+            $table->string('flat_roof_heating')->nullable(true)->after('pitched_roof_heating');
+            $table->string('hr3p_glass_frame_current_glass')->nullable(true)->after('flat_roof_heating');
+            $table->string('glass_in_lead_replace_rooms_heated')->nullable(true)->after('hr3p_glass_frame_current_glass');
+            $table->string('amount_gas')->nullable(true)->after('glass_in_lead_replace_rooms_heated');
+            $table->string('amount_electricity')->nullable(true)->after('amount_gas');
         });
 
         Schema::table('housing_file_specifications', function (Blueprint $table) {
@@ -168,25 +186,43 @@ class AddNewFieldsMarch2023ToHousingFilesTable extends Migration
             $table->timestamps();
         });
 
-        Schema::table('housing_files', function (Blueprint $table) {
-            $table->float('surface')->nullable()->change();
-            $table->string('wall_surface')->nullable(true)->after('hoom_building_id');
-            $table->string('total_window_surface')->nullable(true)->after('wall_surface');
-            $table->string('frame_type')->nullable(true)->after('total_window_surface');
-            $table->string('floor_surface')->nullable(true)->after('frame_type');
-            $table->string('pitched_roof_surface')->nullable(true)->after('floor_surface');
-            $table->string('flat_roof_surface')->nullable(true)->after('pitched_roof_surface');
-            $table->string('cook_type')->nullable(true)->after('flat_roof_surface');
-            $table->string('heat_source')->nullable(true)->after('cook_type');
-            $table->string('water_comfort')->nullable(true)->after('heat_source');
-            $table->string('boiler_setting_comfort_heat')->nullable(true)->after('water_comfort');
-            $table->string('pitched_roof_heating')->nullable(true)->after('boiler_setting_comfort_heat');
-            $table->string('flat_roof_heating')->nullable(true)->after('pitched_roof_heating');
-            $table->string('hr3p_glass_frame_current_glass')->nullable(true)->after('flat_roof_heating');
-            $table->string('glass_in_lead_replace_rooms_heated')->nullable(true)->after('hr3p_glass_frame_current_glass');
-            $table->string('amount_gas')->nullable(true)->after('glass_in_lead_replace_rooms_heated');
-            $table->string('amount_electricity')->nullable(true)->after('amount_gas');
+        Schema::create('housing_file_log', function (Blueprint $table) {
+            $table->increments('id');
+
+            $table->unsignedInteger('housing_file_id')->nullable();
+            $table->foreign('housing_file_id')
+                ->references('id')->on('housing_files')
+                ->onDelete('restrict');
+            $table->string('message_text', 256);
+            $table->string('message_type', 10);
+            $table->unsignedInteger('user_id')->nullable();
+            $table->foreign('user_id')
+                ->references('id')->on('users')
+                ->onDelete('restrict');
+            $table->boolean('is_error', false);
+            $table->timestamps();
         });
+
+        //make permission and assign to roles inzake nieuw view permission housing_file_log
+        Permission::create(['name' => 'view_housing_file_log', 'guard_name' => 'api']);
+        $newViewRoles = [
+            'Key user' => ['view_housing_file_log'],
+            'Medewerker' => ['view_housing_file_log'],
+            'Medewerker 2' => ['view_housing_file_log'],
+            'Projectmedewerker' => ['view_housing_file_log'],
+            'Financieel medewerker' => ['view_housing_file_log'],
+            'Financieel controller' => ['view_housing_file_log'],
+            'Participatie medewerker' => ['view_housing_file_log'],
+            'Energie adviseur' => ['view_housing_file_log'],
+            'Marketing medewerker' => ['view_housing_file_log'],
+            'Buurtaanpak manager' => ['view_housing_file_log'],
+            'Buurtaanpak coördinator' => ['view_housing_file_log'],
+        ];
+        foreach($newViewRoles as $newViewRoleName => $permissions) {
+            $role =  \Spatie\Permission\Models\Role::findByName($newViewRoleName);
+            $role->givePermissionTo($permissions);
+
+        }
 
         Schema::table('building_types', function (Blueprint $table) {
             $table->integer('external_hoom_id')->nullable(true)->after('name');
@@ -440,9 +476,118 @@ class AddNewFieldsMarch2023ToHousingFilesTable extends Migration
         EnergyLabel::where('name', 'G')->delete();
         EnergyLabel::where('name', 'Onbekend')->delete();
 
-        Schema::table('housing_files', function (Blueprint $table) {
-            $table->integer('surface')->nullable()->change();;
-        });
+        if (Schema::hasColumn('building_types', 'external_hoom_id'))
+        {
+            Schema::table('building_types', function (Blueprint $table)
+            {
+                $table->dropColumn('external_hoom_id');
+            });
+        }
+        if (Schema::hasColumn('building_types', 'external_hoom_short'))
+        {
+            Schema::table('building_types', function (Blueprint $table)
+            {
+                $table->dropColumn('external_hoom_short');
+            });
+        }
+        if (Schema::hasColumn('building_types', 'order'))
+        {
+            Schema::table('building_types', function (Blueprint $table)
+            {
+                $table->dropColumn('order');
+            });
+        }
+        if (Schema::hasColumn('roof_types', 'external_hoom_id'))
+        {
+            Schema::table('roof_types', function (Blueprint $table)
+            {
+                $table->dropColumn('external_hoom_id');
+            });
+        }
+        if (Schema::hasColumn('roof_types', 'external_hoom_short'))
+        {
+            Schema::table('roof_types', function (Blueprint $table)
+            {
+                $table->dropColumn('external_hoom_short');
+            });
+        }
+        if (Schema::hasColumn('roof_types', 'order'))
+        {
+            Schema::table('roof_types', function (Blueprint $table)
+            {
+                $table->dropColumn('order');
+            });
+        }
+        if (Schema::hasColumn('energy_labels', 'external_hoom_id'))
+        {
+            Schema::table('energy_labels', function (Blueprint $table)
+            {
+                $table->dropColumn('external_hoom_id');
+            });
+        }
+        if (Schema::hasColumn('energy_labels', 'external_hoom_short'))
+        {
+            Schema::table('energy_labels', function (Blueprint $table)
+            {
+                $table->dropColumn('external_hoom_short');
+            });
+        }
+        if (Schema::hasColumn('energy_labels', 'order'))
+        {
+            Schema::table('energy_labels', function (Blueprint $table)
+            {
+                $table->dropColumn('order');
+            });
+        }
+        Schema::dropIfExists('housing_file_housing_statuses');
+        Schema::dropIfExists('housing_file_hoom_links');
+        Schema::dropIfExists('housing_file_log');
+
+        HousingFileSpecificationStatus::where('code_ref', 'opportunity_created')->delete();
+
+        if (Schema::hasColumn('housing_file_specification_statuses', 'code_ref'))
+        {
+            Schema::table('housing_file_specification_statuses', function (Blueprint $table)
+            {
+                $table->dropColumn('code_ref');
+            });
+        }
+        if (Schema::hasColumn('housing_file_specification_statuses', 'order'))
+        {
+            Schema::table('housing_file_specification_statuses', function (Blueprint $table)
+            {
+                $table->dropColumn('order');
+            });
+        }
+
+        if (Schema::hasColumn('housing_file_specifications', 'co2_savings'))
+        {
+            Schema::table('housing_file_specifications', function (Blueprint $table)
+            {
+                $table->dropColumn('co2_savings');
+            });
+        }
+        if (Schema::hasColumn('housing_file_specifications', 'savings_electricity'))
+        {
+            Schema::table('housing_file_specifications', function (Blueprint $table)
+            {
+                $table->dropColumn('savings_electricity');
+            });
+        }
+        if (Schema::hasColumn('housing_file_specifications', 'savings_gas'))
+        {
+            Schema::table('housing_file_specifications', function (Blueprint $table)
+            {
+                $table->dropColumn('savings_gas');
+            });
+        }
+        if (Schema::hasColumn('housing_file_specifications', 'type_of_execution'))
+        {
+            Schema::table('housing_file_specifications', function (Blueprint $table)
+            {
+                $table->dropColumn('type_of_execution');
+            });
+        }
 
         if (Schema::hasColumn('housing_files', 'amount_electricity'))
         {
@@ -557,118 +702,6 @@ class AddNewFieldsMarch2023ToHousingFilesTable extends Migration
             });
         }
 
-        if (Schema::hasColumn('building_types', 'external_hoom_id'))
-        {
-            Schema::table('building_types', function (Blueprint $table)
-            {
-                $table->dropColumn('external_hoom_id');
-            });
-        }
-        if (Schema::hasColumn('building_types', 'external_hoom_short'))
-        {
-            Schema::table('building_types', function (Blueprint $table)
-            {
-                $table->dropColumn('external_hoom_short');
-            });
-        }
-        if (Schema::hasColumn('building_types', 'order'))
-        {
-            Schema::table('building_types', function (Blueprint $table)
-            {
-                $table->dropColumn('order');
-            });
-        }
-        if (Schema::hasColumn('roof_types', 'external_hoom_id'))
-        {
-            Schema::table('roof_types', function (Blueprint $table)
-            {
-                $table->dropColumn('external_hoom_id');
-            });
-        }
-        if (Schema::hasColumn('roof_types', 'external_hoom_short'))
-        {
-            Schema::table('roof_types', function (Blueprint $table)
-            {
-                $table->dropColumn('external_hoom_short');
-            });
-        }
-        if (Schema::hasColumn('roof_types', 'order'))
-        {
-            Schema::table('roof_types', function (Blueprint $table)
-            {
-                $table->dropColumn('order');
-            });
-        }
-        if (Schema::hasColumn('energy_labels', 'external_hoom_id'))
-        {
-            Schema::table('energy_labels', function (Blueprint $table)
-            {
-                $table->dropColumn('external_hoom_id');
-            });
-        }
-        if (Schema::hasColumn('energy_labels', 'external_hoom_short'))
-        {
-            Schema::table('energy_labels', function (Blueprint $table)
-            {
-                $table->dropColumn('external_hoom_short');
-            });
-        }
-        if (Schema::hasColumn('energy_labels', 'order'))
-        {
-            Schema::table('energy_labels', function (Blueprint $table)
-            {
-                $table->dropColumn('order');
-            });
-        }
-        Schema::dropIfExists('housing_file_housing_statuses');
-        Schema::dropIfExists('housing_file_hoom_links');
-
-        HousingFileSpecificationStatus::where('code_ref', 'opportunity_created')->delete();
-
-        if (Schema::hasColumn('housing_file_specification_statuses', 'code_ref'))
-        {
-            Schema::table('housing_file_specification_statuses', function (Blueprint $table)
-            {
-                $table->dropColumn('code_ref');
-            });
-        }
-        if (Schema::hasColumn('housing_file_specification_statuses', 'order'))
-        {
-            Schema::table('housing_file_specification_statuses', function (Blueprint $table)
-            {
-                $table->dropColumn('order');
-            });
-        }
-
-        if (Schema::hasColumn('housing_file_specifications', 'co2_savings'))
-        {
-            Schema::table('housing_file_specifications', function (Blueprint $table)
-            {
-                $table->dropColumn('co2_savings');
-            });
-        }
-        if (Schema::hasColumn('housing_file_specifications', 'savings_electricity'))
-        {
-            Schema::table('housing_file_specifications', function (Blueprint $table)
-            {
-                $table->dropColumn('savings_electricity');
-            });
-        }
-        if (Schema::hasColumn('housing_file_specifications', 'savings_gas'))
-        {
-            Schema::table('housing_file_specifications', function (Blueprint $table)
-            {
-                $table->dropColumn('savings_gas');
-            });
-        }
-        if (Schema::hasColumn('housing_file_specifications', 'type_of_execution'))
-        {
-            Schema::table('housing_file_specifications', function (Blueprint $table)
-            {
-                $table->dropColumn('type_of_execution');
-            });
-        }
-
         if (Schema::hasColumn('housing_files', 'hoom_building_id'))
         {
             Schema::table('housing_files', function (Blueprint $table)
@@ -676,5 +709,14 @@ class AddNewFieldsMarch2023ToHousingFilesTable extends Migration
                 $table->dropColumn('hoom_building_id');
             });
         }
+
+        Schema::table('housing_files', function (Blueprint $table) {
+            $table->integer('surface')->nullable()->change();;
+        });
+
+        Permission::findByName('view_housing_file_log')->delete();
+        // reset cached roles and permissions
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
     }
 }

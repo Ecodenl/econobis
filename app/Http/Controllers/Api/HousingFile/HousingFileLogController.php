@@ -6,17 +6,17 @@
  * Time: 9:35
  */
 
-namespace App\Http\Controllers\Api\TwinfieldLog;
+namespace App\Http\Controllers\Api\HousingFile;
 
-use App\Eco\Twinfield\TwinfieldLog;
+use App\Eco\HousingFile\HousingFileLog;
 use App\Http\Controllers\Api\ApiController;
 use JosKolenberg\LaravelJory\Facades\Jory;
 
-class TwinfieldLogController extends ApiController
+class HousingFileLogController extends ApiController
 {
     public function jory()
     {
-        return Jory::on(TwinfieldLog::class);
+        return Jory::on(HousingFileLog::class);
     }
 
 }

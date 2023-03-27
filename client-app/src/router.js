@@ -235,6 +235,7 @@ const OpportunityStatusDetailsApp = React.lazy(() =>
 );
 const ProcessesListApp = React.lazy(() => import('./container/processes/list'));
 const TwinfieldListApp = React.lazy(() => import('./container/twinfield/list'));
+const HousingFileListApp = React.lazy(() => import('./container/housing-file/log'));
 const CooperationDetailsApp = React.lazy(() => import('./container/cooperation/details'));
 const TwoFactorActivate = React.lazy(() => import('./container/auth/TwoFactorActivate'));
 const TwoFactorConfirm = React.lazy(() => import('./container/auth/TwoFactorConfirm'));
@@ -311,7 +312,10 @@ const Routes = () => {
                     <Route path="document/nieuw/:type/contact-groep/:contactGroupId" component={DocumentNewApp} />
                     <Route path="document/nieuw/:type/contact/:contactId" component={DocumentNewApp} />
                     <Route path="document/nieuw/:type/order/:orderId" component={DocumentNewApp} />
-                    <Route path="document/nieuw/:type/woningdossier/:housingFileId/contact/:contactId" component={DocumentNewApp} />
+                    <Route
+                        path="document/nieuw/:type/woningdossier/:housingFileId/contact/:contactId"
+                        component={DocumentNewApp}
+                    />
                     <Route path="document/nieuw/:type/intake/:intakeId/contact/:contactId" component={DocumentNewApp} />
                     <Route path="document/nieuw/:type/maatregel/:measureId" component={DocumentNewApp} />
                     <Route path="document/nieuw/:type/offerteverzoek/:quotationRequestId" component={DocumentNewApp} />
@@ -510,6 +514,8 @@ const Routes = () => {
                     <route path="processen" component={ProcessesListApp} />
                     /* Twinfield */
                     <route path="twinfield" component={TwinfieldListApp} />
+                    /* Housingfile Log */
+                    <route path="housing-file/log" component={HousingFileListApp} />
                     /* Task / notes */
                     <Route path="taak/nieuw" component={TaskNewApp} />
                     <Route path="taak/nieuw/:closed" component={TaskNewApp} />

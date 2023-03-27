@@ -12,8 +12,10 @@ use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\HousingFile\HousingFileHoomLinks;
 use App\Eco\HousingFile\HousingFileHousingStatus;
+use App\Eco\HousingFile\HousingFileLog;
 use App\Eco\HousingFile\RoofType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 
@@ -119,7 +121,16 @@ class EndPointGebruikController extends EndPointHoomDossierController
             $housingFileHoomLink->import_from_hoom = false;
             $housingFileHoomLink->visible_in_econobis = false;
             $housingFileHoomLink->save();
-            $this->log('Woningdossier hoom koppeling gemaakt voor hoom short ' . $key . '.');
+            $message = 'Ontbrekende woningdossier hoom koppeling gemaakt voor hoom short ' . $key . '.';
+            $this->log($message);
+            HousingFileLog::create([
+                'housing_file_id' => $this->housingFile->id,
+                'message_text' => substr($message, 0, 256),
+                'message_type' => 'gebruik',
+                'user_id' => Auth::user()->id,
+                'is_error' => false,
+            ]);
+
         }
 
         if($housingFileHoomLink->import_from_hoom == false){

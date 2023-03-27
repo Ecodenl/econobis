@@ -187,7 +187,6 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </NavText>
                         </Nav>
                     )}
-
                 </Nav>
             )}
 
@@ -278,7 +277,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </Link>
                         </NavText>
                     </Nav>
-                    {(permissions.manageCoachPlanning) && (
+                    {permissions.manageCoachPlanning && (
                         <Nav key={'nav-afspraak-kalender'} id={`afspraak-kalender`}>
                             <NavText>
                                 <Link className="sidebar-link-header" to="afspraak-kalenders">
@@ -287,7 +286,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </NavText>
                         </Nav>
                     )}
-                    {(permissions.manageCoachPlanning) && (
+                    {permissions.manageCoachPlanning && (
                         <Nav key={'nav-beschikbaarheid'} id={`beschikbaarheid`}>
                             <NavText>
                                 <Link className="sidebar-link-header" to="beschikbaarheid">
@@ -316,6 +315,13 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         <NavText>
                             <Link className="sidebar-link-header" to="twinfield">
                                 Twinfield
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav key={'nav-housing-file-log'} id={`housing-file-log`}>
+                        <NavText>
+                            <Link className="sidebar-link-header" to="housing-file/log">
+                                Hoomdossier
                             </Link>
                         </NavText>
                     </Nav>

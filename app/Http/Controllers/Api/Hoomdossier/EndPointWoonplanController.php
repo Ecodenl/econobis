@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api\Hoomdossier;
 
 use App\Eco\HousingFile\HousingFileSpecification;
+use App\Eco\HousingFile\HousingFileSpecificationStatus;
 use App\Eco\Measure\Measure;
 use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\QuotationRequest\QuotationRequest;
@@ -126,7 +127,7 @@ class EndPointWoonplanController extends EndPointHoomDossierController
             } else {
                 $this->log('Woningdossier specificatie onbekend antwoord !?');
             }
-            $statusId = null;
+            $statusId = HousingFileSpecificationStatus::where('code_ref', 'desirable')->first()->id;
             $floorId = null;
             $sideId = null;
             $typeBrand = null;

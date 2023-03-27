@@ -11,10 +11,8 @@ namespace App\Http\Controllers\Api\Hoomdossier;
 use App\Eco\HousingFile\HousingFileSpecification;
 use App\Eco\HousingFile\HousingFileSpecificationStatus;
 use App\Eco\Measure\Measure;
-use App\Eco\Opportunity\OpportunityAction;
-use App\Eco\QuotationRequest\QuotationRequest;
-use App\Eco\QuotationRequest\QuotationRequestStatus;
-use Carbon\Carbon;
+use App\Helpers\Delete\Models\DeleteHousingFileSpecification;
+use App\Helpers\Delete\Models\DeleteOpportunity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
@@ -76,12 +74,31 @@ class EndPointWoonplanController extends EndPointHoomDossierController
         $this->log('specificationsInWoonplan ' . implode(',', $this->specificationsInWoonplan));
         $this->log('specificationsInEconobisNotInWoonplan ' . implode(',', $specificationsInEconobisNotInWoonplan));
 
-        foreach ($specificationsInEconobisNotInWoonplan as $specification){
+        foreach ($specificationsInEconobisNotInWoonplan as $specificationId){
+            $specification = HousingFileSpecification::find($specificationId);
             // hier check of er al een kans gemaakt was,
-            // zo niet -> specificatie verwijderen
-            // zo wel  -> check of er al kansacties aanwezig is bij die kans,
-            //            zo niet -> kans verwijderen.
-            //            zo wel  -> kans bijwerken (waarmee?)
+            if($specification && $specification->opportunities){
+                // zo wel  -> check of er al kansacties aanwezig is bij die kans,
+                foreach ($specification->opportunities as $opportunity) {
+                    if (!$opportunity->quotationRequests) {
+                        // zo niet -> kans verwijderen.
+                        $deleteOpportunity = new DeleteOpportunity($opportunity);
+                        $deleteOpportunity->delete();
+                        $this->log('Specificatie niet in woonplan. Kans ' . $opportunity->number . ' (' . $opportunity->id . ') verwijderd.');
+                    } else {
+                        // zo wel  -> kans bijwerken (waarmee?)
+                        $this->log('Specificatie niet in woonplan. Kans ' . $opportunity->number . ' (' . $opportunity->id . ') bijwerken.');
+                    }
+                }
+            }
+            // hier check of er nog gekoppelde kanzen zijn, (even opnieuw specificatie ophalen. Kanzen kunnen net verwijderd zijn hierboven
+            $specificationReload = HousingFileSpecification::find($specification->id);
+            if(!$specificationReload->opportunities){
+                // zo niet -> specificatie verwijderen
+                $deleteSpecifiction = new DeleteHousingFileSpecification($specificationReload);
+                $this->errorMessage = array_merge($this->errorMessage, $deleteSpecifiction->delete());
+                $this->log('Specificatie niet in woonplan. Specification ' . $specificationReload->id. ' verwijderd.');
+            }
         }
     }
 
@@ -110,15 +127,42 @@ class EndPointWoonplanController extends EndPointHoomDossierController
         if ($housingFileSpecification) {
             $this->log('Woningdossier specificatie via hoom koppeling gevonden voor maatregel ' . $econobisMeasure->id . ' ' . $econobisMeasure->name . '. Specificatie bijwerken.');
             // hier check of er al een kans gemaakt was,
-            // zo niet -> hier bijwerken specificatie.
-            // zo wel  -> check of er al kansacties aanwezig is bij die kans,
-            //            zo niet -> kans verwijderen.
-            //            zo wel  -> kans bijwerken (waarmee?)
+            if($housingFileSpecification->opportunities){
+                // zo wel  -> check of er al kansacties aanwezig is bij die kans,
+                foreach ($housingFileSpecification->opportunities as $opportunity) {
+                    if (!$opportunity->quotationRequests) {
+                        // zo niet -> kans verwijderen.
+                        $deleteOpportunity = new DeleteOpportunity($opportunity);
+                        $deleteOpportunity->delete();
+                        $this->log('Specificatie ' . $housingFileSpecification->id . 'Kans ' . $opportunity->number . ' (' . $opportunity->id . ') verwijderd.');
+                    } else {
+                        // zo wel  -> kans bijwerken (waarmee?)
+                        $this->log('Specificatie ' . $housingFileSpecification->id . 'Kans ' . $opportunity->number . ' (' . $opportunity->id . ') bijwerken.');
+                    }
+                }
+            }
+            // zo niet  -> specificatie bijwerken
+            $answer = null;
+            if (isset($userActionPlanAdvice->surface)) {
+                $answer = $userActionPlanAdvice->surface;
+            } elseif ($userActionPlanAdvice->count) {
+                $answer = $userActionPlanAdvice->count;
+            } else {
+                $this->log('Woningdossier specificatie onbekend antwoord !?');
+            }
+            $housingFileSpecification->answer = $answer;
+            $housingFileSpecification->external_hoom_name = isset($userActionPlanAdvice->name) ? $userActionPlanAdvice->name : '';
+            $housingFileSpecification->type_of_execution = isset($userActionPlanAdvice->execute_self) ? ($userActionPlanAdvice->execute_self ? 'Z' : 'L') : null;;
+            $housingFileSpecification->savings_gas = isset($userActionPlanAdvice->savings_gas) ? $userActionPlanAdvice->savings_gas : 0;
+            $housingFileSpecification->savings_electricity = isset($userActionPlanAdvice->savings_electricity) ? $userActionPlanAdvice->savings_electricity : 0;
+            $housingFileSpecification->co2_savings = isset($userActionPlanAdvice->co2_savings) ? $userActionPlanAdvice->co2_savings : 0;
+            $housingFileSpecification->save();
+            $this->log('Specificatie ' . $housingFileSpecification->id  . ' bijwerken.');
 
         } else {
             $this->log('Woningdossier specificatie via hoom koppeling NIET gevonden voor maatregel ' . $econobisMeasure->id . ' ' . $econobisMeasure->name . '. Specificatie aanmaken.');
 
-            $measurDate = null;
+            $measureDate = null;
             $answer = null;
             if (isset($userActionPlanAdvice->surface)) {
                 $answer = $userActionPlanAdvice->surface;
@@ -135,9 +179,10 @@ class EndPointWoonplanController extends EndPointHoomDossierController
             $housingFileSpecification = new HousingFileSpecification();
             $housingFileSpecification->housing_file_id = $this->housingFile->id;
             $housingFileSpecification->measure_id = $econobisMeasure->id;
-            $housingFileSpecification->measure_date = $measurDate;
+            $housingFileSpecification->measure_date = $measureDate;
             $housingFileSpecification->answer = $answer;
             $housingFileSpecification->status_id = $statusId;
+            $housingFileSpecification->external_hoom_name = isset($userActionPlanAdvice->name) ? $userActionPlanAdvice->name : '';
             $housingFileSpecification->type_of_execution = isset($userActionPlanAdvice->execute_self) ? ($userActionPlanAdvice->execute_self ? 'Z' : 'L') : null;;
             $housingFileSpecification->savings_gas = isset($userActionPlanAdvice->savings_gas) ? $userActionPlanAdvice->savings_gas : 0;
             $housingFileSpecification->savings_electricity = isset($userActionPlanAdvice->savings_electricity) ? $userActionPlanAdvice->savings_electricity : 0;
@@ -155,33 +200,5 @@ class EndPointWoonplanController extends EndPointHoomDossierController
         // array met specifcation ids in dit woonplan bijhouden
         $this->specificationsInWoonplan[] =$housingFileSpecification->id;
     }
-
-    protected function checkOpportunity($housingFileSpecification)
-    {
-        $bezoekAction = OpportunityAction::where('code_ref', 'visit')->first();
-
-        $quotationRequest = QuotationRequest::where('opportunity_action_id', $bezoekAction->id)
-            ->WhereHas('opportunity', function($query){
-                $query->WhereHas('intake', function($query2){
-                    $query2->where('contact_id', $this->contact->id)
-                        ->where('campaign_id', $this->cooperation->hoom_campaign_id);
-                });
-            })
-            ->orderby('id', 'desc')->first();
-        if(!$quotationRequest) {
-            $this->error('Afspraak niet gevonden in Econobis', 404);
-        }
-
-        if($dataContent->status->short === 'executed'){
-            $bezoekStatusDone = QuotationRequestStatus::where('opportunity_action_id', $bezoekAction->id)->where('code_ref', 'done')->first();
-            $quotationRequest->status_id = $bezoekStatusDone->id;
-            $quotationRequest->save();
-            $this->log('Afspraak ' .  Carbon::parse($quotationRequest->date_planned)->format('d-m-Y H:i'). ' op gedaan voor bezoek coach ' . $quotationRequest->organisationOrCoach->full_name_fnf . ' bij bewoner ' . $this->contact->full_name_fnf);
-        } else {
-            $StatusFromContent = (isset($dataContent->status->name) ? $dataContent->status->name : 'onbekend');
-            $this->log('Afspraak ' .  Carbon::parse($quotationRequest->date_planned)->format('d-m-Y H:i'). ' niet bijgewerkt voor bezoek coach ' . $quotationRequest->organisationOrCoach->full_name_fnf . ' bij bewoner ' . $this->contact->full_name_fnf . ' i.v.m. status: '. $StatusFromContent);
-        }
-    }
-
 
 }

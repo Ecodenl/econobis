@@ -27,7 +27,6 @@ class CreateHousingFileHoomHousingStatusesTable extends Migration
         });
 
         DB::table('housing_file_hoom_housing_statuses')->insert([
-            ['external_hoom_short_name'=> 'tool_question_short', 'hoom_status_question'=> 'tool_question_name', 'hoom_status_value'=> 'option_value', 'hoom_status_name' => 'option_name'],
             ['external_hoom_short_name'=> 'building-type-category', 'hoom_status_question'=> 'Wat voor soort woning heb je?', 'hoom_status_value'=> '1', 'hoom_status_name' => 'Appartement'],
             ['external_hoom_short_name'=> 'building-type-category', 'hoom_status_question'=> 'Wat voor soort woning heb je?', 'hoom_status_value'=> '2', 'hoom_status_name' => 'Hoekwoning'],
             ['external_hoom_short_name'=> 'building-type-category', 'hoom_status_question'=> 'Wat voor soort woning heb je?', 'hoom_status_value'=> '3', 'hoom_status_name' => 'Vrijstaand'],

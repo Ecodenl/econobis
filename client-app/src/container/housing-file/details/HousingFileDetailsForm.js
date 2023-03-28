@@ -6,6 +6,7 @@ import HousingFileDetailsFormGeneral from './general/HousingFileDetailsFormGener
 import HousingFileSpecifications from './housing-file-specifications/HousingFileSpecifications';
 import HousingFileDetailsFormConclusion from './conclusion/HousingFileDetailsFormConclusion';
 import HousingFileHousingStatuses from './housing-file-housing-statuses/HousingFileHousingStatuses';
+import HousingFileDetailsFormUse from './use/HousingFileDetailsFormUse';
 
 class HousingFileDetailsForm extends Component {
     constructor(props) {
@@ -31,6 +32,7 @@ class HousingFileDetailsForm extends Component {
         ) : (
             <div>
                 <HousingFileDetailsFormGeneral />
+                <HousingFileDetailsFormUse />
                 <HousingFileHousingStatuses />
                 <HousingFileSpecifications />
                 <HousingFileDetailsFormConclusion />

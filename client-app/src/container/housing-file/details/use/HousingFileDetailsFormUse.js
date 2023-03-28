@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 
-import HousingFileDetailsFormGeneralEdit from './HousingFileDetailsFormGeneralEdit';
-import HousingFileDetailsFormGeneralView from './HousingFileDetailsFormGeneralView';
+import HousingFileDetailsFormUseEdit from './HousingFileDetailsFormUseEdit';
+import HousingFileDetailsFormUseView from './HousingFileDetailsFormUseView';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import { connect } from 'react-redux';
+import PanelHeader from '../../../../components/panel/PanelHeader';
 
-class HousingFileDetailsFormGeneral extends Component {
+class HousingFileDetailsFormUse extends Component {
     constructor(props) {
         super(props);
 
@@ -50,12 +51,15 @@ class HousingFileDetailsFormGeneral extends Component {
                 onMouseEnter={() => this.onDivEnter()}
                 onMouseLeave={() => this.onDivLeave()}
             >
+                <PanelHeader>
+                    <span className="h5 text-bold">Gebruik</span>
+                </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
                         {this.state.showEdit && this.props.permissions.manageHousingFile ? (
-                            <HousingFileDetailsFormGeneralEdit switchToView={this.switchToView} />
+                            <HousingFileDetailsFormUseEdit switchToView={this.switchToView} />
                         ) : (
-                            <HousingFileDetailsFormGeneralView switchToEdit={this.switchToEdit} />
+                            <HousingFileDetailsFormUseView switchToEdit={this.switchToEdit} />
                         )}
                     </div>
                 </PanelBody>
@@ -70,4 +74,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(HousingFileDetailsFormGeneral);
+export default connect(mapStateToProps, null)(HousingFileDetailsFormUse);

@@ -20,22 +20,31 @@ const HousingFileDetailsFormUseView = props => {
     return (
         <div onClick={props.switchToEdit}>
             <div className="row">
-                <ViewText label="Hellend dak ruimtes verwarming" value={pitchedRoofHeating && pitchedRoofHeating} />
-                <ViewText label="Platte dak ruimtes verwarming" value={flatRoofHeating && flatRoofHeating} />
+                <ViewText
+                    label="Hellend dak ruimtes verwarming"
+                    value={pitchedRoofHeating && pitchedRoofHeating.hoomStatusName}
+                />
+                <ViewText
+                    label="Platte dak ruimtes verwarming"
+                    value={flatRoofHeating && flatRoofHeating.hoomStatusName}
+                />
             </div>
             <div className="row">
                 <ViewText
                     label="hr3p glaslijst (huidig)"
-                    value={hr3pGlassFrameCurrentGlass && hr3pGlassFrameCurrentGlass}
+                    value={hr3pGlassFrameCurrentGlass && hr3pGlassFrameCurrentGlass.hoomStatusName}
                 />
                 <ViewText
                     label="Kamers verwarmd (met Glas-in-lood ramen)"
-                    value={glassInLeadReplaceRoomsHeated && glassInLeadReplaceRoomsHeated}
+                    value={glassInLeadReplaceRoomsHeated && glassInLeadReplaceRoomsHeated.hoomStatusName}
                 />
             </div>
             <div className="row">
                 <ViewText label="Aantal bewoners" value={numberOfResidents && numberOfResidents} />
-                <ViewText label="Stooktemperatuur" value={boilerSettingComfortHeat && boilerSettingComfortHeat} />
+                <ViewText
+                    label="Stooktemperatuur"
+                    value={boilerSettingComfortHeat && boilerSettingComfortHeat.hoomStatusName}
+                />
             </div>
             <div className="row">
                 <ViewText label="Verbruik gas" value={amountGas && amountGas} />

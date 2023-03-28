@@ -25,7 +25,7 @@ const HousingFileDetailsFormGeneralView = props => {
         floorSurface,
         pitchedRoofSurface,
         flatRoofSurface,
-        cookRype,
+        cookType,
         heatSource,
         waterComfort,
     } = props.housingFileDetails;
@@ -65,7 +65,7 @@ const HousingFileDetailsFormGeneralView = props => {
                 <ViewText label="Raamoppervlakte" value={totalWindowSurface && totalWindowSurface} />
             </div>
             <div className="row">
-                <ViewText label="Kozijntype" value={frameType && frameType} />
+                <ViewText label="Kozijntype" value={frameType && frameType.hoomStatusName} />
                 <ViewText label="Vloeroppervlakte" value={floorSurface && floorSurface} />
             </div>
             <div className="row">
@@ -73,11 +73,11 @@ const HousingFileDetailsFormGeneralView = props => {
                 <ViewText label="Platte dakoppervlakte" value={flatRoofSurface && flatRoofSurface} />
             </div>
             <div className="row">
-                <ViewText label="Manier koken" value={cookRype && cookRype} />
-                <ViewText label="Verwarming" value={heatSource && heatSource} />
+                <ViewText label="Manier koken" value={cookType && cookType.hoomStatusName} />
+                <ViewText label="Verwarming" value={heatSource && heatSource.hoomStatusName} />
             </div>
             <div className="row">
-                <ViewText label="Water comfort" value={waterComfort && waterComfort} />
+                <ViewText label="Water comfort" value={waterComfort && waterComfort.hoomStatusName} />
             </div>
         </div>
     );

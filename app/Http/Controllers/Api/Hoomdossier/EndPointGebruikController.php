@@ -207,6 +207,19 @@ class EndPointGebruikController extends EndPointHoomDossierController
                         break;
                 }
                 break;
+            case "is_house_for_sale":
+                // bought (Koopwoning)
+                // rented (Huurwoning corporatie)
+                // rented-private (Particuliere huur)
+                switch ($value){
+                    case 'bought':
+                        $housingFileValue = 1;
+                        break;
+                    default:
+                        $housingFileValue = 0;
+                        break;
+                }
+                break;
             case "energy_label_id":
                 $energyLabel = EnergyLabel::where('external_hoom_id', $value)->first();
                 if($energyLabel && $energyLabel->external_hoom_id){

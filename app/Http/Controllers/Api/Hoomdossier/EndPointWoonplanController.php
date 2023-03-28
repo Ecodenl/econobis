@@ -173,7 +173,7 @@ class EndPointWoonplanController extends EndPointHoomDossierController
             $answer = null;
             if (isset($userActionPlanAdvice->surface)) {
                 $answer = $userActionPlanAdvice->surface;
-            } elseif ($userActionPlanAdvice->count) {
+            } elseif (isset($userActionPlanAdvice->count)) {
                 $answer = $userActionPlanAdvice->count;
             } else {
                 $this->log('Woningdossier specificatie onbekend antwoord !?');

@@ -12,6 +12,13 @@ export const updateHousingFile = housingFile => {
     };
 };
 
+export const updateHousingFileUse = housingFile => {
+    return {
+        type: 'UPDATE_HOUSING_FILE_USE',
+        housingFile,
+    };
+};
+
 export const deleteHousingFile = id => {
     return {
         type: 'DELETE_HOUSING_FILE',

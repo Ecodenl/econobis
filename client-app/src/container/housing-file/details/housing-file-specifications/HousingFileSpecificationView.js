@@ -5,7 +5,22 @@ import moment from 'moment/moment';
 moment.locale('nl');
 
 const HousingFileSpecificationView = props => {
-    const { id, measure, status, measureDate, answer, floor, side, typeBrand } = props.housingFileSpecification;
+    const {
+        id,
+        measure,
+        isDefaultEconobisMeasure,
+        status,
+        measureDate,
+        answer,
+        floor,
+        side,
+        typeBrand,
+        externalHoomName,
+        typeOfExecution,
+        savingsGas,
+        savingsElectricity,
+        co2Savings,
+    } = props.housingFileSpecification;
     const { showEdit } = props;
 
     return (
@@ -16,7 +31,7 @@ const HousingFileSpecificationView = props => {
                 onMouseLeave={() => props.onLineLeave()}
             >
                 <div onClick={props.openEdit}>
-                    <div className="col-sm-3">{measure.name}</div>
+                    <div className="col-sm-3">{isDefaultEconobisMeasure ? externalHoomName : measure.name}</div>
                     <div className="col-sm-3">{measure.measureCategory && measure.measureCategory.name}</div>
                     <div className="col-sm-3">{status ? status.name : ''}</div>
                     <div className="col-sm-2">{measureDate && moment(measureDate).format('L')}</div>
@@ -94,6 +109,66 @@ const HousingFileSpecificationView = props => {
                         <div className="col-sm-1">&nbsp;</div>
                         <div className="col-sm-2">Type/merk:</div>
                         <div className="col-sm-8">{typeBrand}</div>
+                        <div className="col-sm-1">&nbsp;</div>
+                    </div>
+                </div>
+            ) : null}
+            {!showEdit && typeOfExecution ? (
+                <div
+                    onClick={props.openEdit}
+                    className={`row border ${props.highlightLine}`}
+                    onMouseEnter={() => props.onLineEnter()}
+                    onMouseLeave={() => props.onLineLeave()}
+                >
+                    <div>
+                        <div className="col-sm-1">&nbsp;</div>
+                        <div className="col-sm-2">Uitvoering:</div>
+                        <div className="col-sm-8">{typeOfExecution === 'Z' ? 'Zelf doen' : 'Laten doen'}</div>
+                        <div className="col-sm-1">&nbsp;</div>
+                    </div>
+                </div>
+            ) : null}
+            {!showEdit && savingsGas ? (
+                <div
+                    onClick={props.openEdit}
+                    className={`row border ${props.highlightLine}`}
+                    onMouseEnter={() => props.onLineEnter()}
+                    onMouseLeave={() => props.onLineLeave()}
+                >
+                    <div>
+                        <div className="col-sm-1">&nbsp;</div>
+                        <div className="col-sm-2">Besparing gas:</div>
+                        <div className="col-sm-8">{savingsGas}</div>
+                        <div className="col-sm-1">&nbsp;</div>
+                    </div>
+                </div>
+            ) : null}
+            {!showEdit && savingsElectricity ? (
+                <div
+                    onClick={props.openEdit}
+                    className={`row border ${props.highlightLine}`}
+                    onMouseEnter={() => props.onLineEnter()}
+                    onMouseLeave={() => props.onLineLeave()}
+                >
+                    <div>
+                        <div className="col-sm-1">&nbsp;</div>
+                        <div className="col-sm-2">Besparing Electriciteit:</div>
+                        <div className="col-sm-8">{savingsElectricity}</div>
+                        <div className="col-sm-1">&nbsp;</div>
+                    </div>
+                </div>
+            ) : null}
+            {!showEdit && co2Savings ? (
+                <div
+                    onClick={props.openEdit}
+                    className={`row border ${props.highlightLine}`}
+                    onMouseEnter={() => props.onLineEnter()}
+                    onMouseLeave={() => props.onLineLeave()}
+                >
+                    <div>
+                        <div className="col-sm-1">&nbsp;</div>
+                        <div className="col-sm-2">CO2 besparing:</div>
+                        <div className="col-sm-8">{co2Savings}</div>
                         <div className="col-sm-1">&nbsp;</div>
                     </div>
                 </div>

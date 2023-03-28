@@ -27,7 +27,6 @@ class CreateHousingFileHoomHousingStatusesTable extends Migration
         });
 
         DB::table('housing_file_hoom_housing_statuses')->insert([
-            ['external_hoom_short_name'=> 'tool_question_short', 'hoom_status_question'=> 'tool_question_name', 'hoom_status_value'=> 'option_value', 'hoom_status_name' => 'option_name'],
             ['external_hoom_short_name'=> 'building-type-category', 'hoom_status_question'=> 'Wat voor soort woning heb je?', 'hoom_status_value'=> '1', 'hoom_status_name' => 'Appartement'],
             ['external_hoom_short_name'=> 'building-type-category', 'hoom_status_question'=> 'Wat voor soort woning heb je?', 'hoom_status_value'=> '2', 'hoom_status_name' => 'Hoekwoning'],
             ['external_hoom_short_name'=> 'building-type-category', 'hoom_status_question'=> 'Wat voor soort woning heb je?', 'hoom_status_value'=> '3', 'hoom_status_name' => 'Vrijstaand'],
@@ -517,6 +516,8 @@ class CreateHousingFileHoomHousingStatusesTable extends Migration
             ['external_hoom_short_name'=> 'use-door-closers-how', 'hoom_status_question'=> 'Hoe wil je het uitvoeren?', 'hoom_status_value'=> 'let-do', 'hoom_status_name' => 'Dat wil ik laten doen'],
             ['external_hoom_short_name'=> 'use-door-closers-coach-help', 'hoom_status_question'=> 'De energiecoach heeft voor deze maatregel', 'hoom_status_value'=> 'explained', 'hoom_status_name' => 'Uitleg gegeven'],
             ['external_hoom_short_name'=> 'use-door-closers-coach-help', 'hoom_status_question'=> 'De energiecoach heeft voor deze maatregel', 'hoom_status_value'=> 'helped', 'hoom_status_name' => 'Geholpen bij uitvoering (zie omschrijving)'],
+            ['external_hoom_short_name'=> 'has-cavity-wall', 'hoom_status_question'=> 'Zijn er spouwmuren?', 'hoom_status_value'=> 'yes', 'hoom_status_name' => 'Ja'],
+            ['external_hoom_short_name'=> 'has-cavity-wall', 'hoom_status_question'=> 'Zijn er spouwmuren?', 'hoom_status_value'=> 'no', 'hoom_status_name' => 'Nee'],
         ]);
 
     }

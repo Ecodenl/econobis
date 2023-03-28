@@ -17,7 +17,7 @@ const HousingFileHousingStatusView = props => {
             >
                 <div onClick={props.openEdit}>
                     <div className="col-sm-4">{housingFileHoomLink.label}</div>
-                    <div className="col-sm-7">{status}</div>
+                    <div className="col-sm-7">{status.hoomStatusName}</div>
                 </div>
                 <div className="col-sm-1">
                     {props.showActionButtons && props.permissions.manageHousingFile ? (

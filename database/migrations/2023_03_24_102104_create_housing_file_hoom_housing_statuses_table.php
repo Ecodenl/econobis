@@ -516,6 +516,8 @@ class CreateHousingFileHoomHousingStatusesTable extends Migration
             ['external_hoom_short_name'=> 'use-door-closers-how', 'hoom_status_question'=> 'Hoe wil je het uitvoeren?', 'hoom_status_value'=> 'let-do', 'hoom_status_name' => 'Dat wil ik laten doen'],
             ['external_hoom_short_name'=> 'use-door-closers-coach-help', 'hoom_status_question'=> 'De energiecoach heeft voor deze maatregel', 'hoom_status_value'=> 'explained', 'hoom_status_name' => 'Uitleg gegeven'],
             ['external_hoom_short_name'=> 'use-door-closers-coach-help', 'hoom_status_question'=> 'De energiecoach heeft voor deze maatregel', 'hoom_status_value'=> 'helped', 'hoom_status_name' => 'Geholpen bij uitvoering (zie omschrijving)'],
+            ['external_hoom_short_name'=> 'has-cavity-wall', 'hoom_status_question'=> 'Zijn er spouwmuren?', 'hoom_status_value'=> 'yes', 'hoom_status_name' => 'Ja'],
+            ['external_hoom_short_name'=> 'has-cavity-wall', 'hoom_status_question'=> 'Zijn er spouwmuren?', 'hoom_status_value'=> 'no', 'hoom_status_name' => 'Nee'],
         ]);
 
     }

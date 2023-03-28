@@ -4,9 +4,9 @@ namespace App\Eco\HousingFile;
 
 use Illuminate\Database\Eloquent\Model;
 
-class HousingFileHoomLinks extends Model
+class HousingFileHoomHousingStatus extends Model
 {
-    protected $table = 'housing_file_hoom_links';
+    protected $table = 'housing_file_hoom_housing_statuses';
      /**
      * The attributes that are not mass assignable.
      *

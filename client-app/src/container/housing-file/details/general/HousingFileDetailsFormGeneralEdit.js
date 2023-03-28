@@ -9,6 +9,7 @@ import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputToggle from '../../../../components/form/InputToggle';
+import ViewText from '../../../../components/form/ViewText';
 
 class HousingFileDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -27,7 +28,16 @@ class HousingFileDetailsFormGeneralEdit extends Component {
             floors,
             energyLabelStatus,
             isMonument,
-            numberOfResidents,
+            hoomBuildingId,
+            wallSurface,
+            totalWindowSurface,
+            frameType,
+            floorSurface,
+            pitchedRoofSurface,
+            flatRoofSurface,
+            cookType,
+            heatSource,
+            waterComfort,
         } = props.housingFileDetails;
 
         this.state = {
@@ -45,7 +55,17 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                 floors: floors ? floors : '',
                 energyLabelStatusId: energyLabelStatus ? energyLabelStatus.id : '',
                 isMonument: isMonument ? isMonument : false,
-                numberOfResidents: numberOfResidents ? numberOfResidents : '',
+                hoomBuildingId: hoomBuildingId ? hoomBuildingId : null,
+                hasHoomDossierLink: hoomBuildingId != null ? true : false,
+                wallSurface: wallSurface ? wallSurface : '',
+                totalWindowSurface: totalWindowSurface ? totalWindowSurface : '',
+                frameType: frameType ? frameType.hoomStatusValue : '',
+                floorSurface: floorSurface ? floorSurface : '',
+                pitchedRoofSurface: pitchedRoofSurface ? pitchedRoofSurface : '',
+                flatRoofSurface: flatRoofSurface ? flatRoofSurface : '',
+                cookType: cookType ? cookType.hoomStatusValue : '',
+                heatSource: heatSource ? heatSource.hoomStatusValue : '',
+                waterComfort: waterComfort ? waterComfort.hoomStatusValue : '',
             },
         };
     }
@@ -79,6 +99,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
         const {
             fullAddress,
             fullName,
+            hasHoomDossierLink,
             buildingTypeId,
             buildYear,
             isHouseForSale,
@@ -88,7 +109,16 @@ class HousingFileDetailsFormGeneralEdit extends Component {
             floors,
             energyLabelStatusId,
             isMonument,
-            numberOfResidents,
+            hoomBuildingId,
+            wallSurface,
+            totalWindowSurface,
+            frameType,
+            floorSurface,
+            pitchedRoofSurface,
+            flatRoofSurface,
+            cookType,
+            heatSource,
+            waterComfort,
         } = this.state.housingFile;
         const { addresses = [] } = this.props.contactDetails;
 
@@ -104,7 +134,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                     />
 
                     <InputText
-                        label={'Contact'}
+                        label={'Adres'}
                         name={'fullAddress'}
                         value={fullAddress}
                         onChangeAction={() => {}}
@@ -120,6 +150,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                         value={buildingTypeId}
                         options={this.props.buildingTypes}
                         onChangeAction={this.handleInputChange}
+                        readOnly={hasHoomDossierLink}
                     />
                     <InputText
                         label={'Bouwjaar'}
@@ -128,6 +159,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                         min={1500}
                         max={3000}
                         onChangeAction={this.handleInputChange}
+                        readOnly={hasHoomDossierLink}
                     />
                 </div>
 
@@ -138,6 +170,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                         value={surface}
                         min={0}
                         onChangeAction={this.handleInputChange}
+                        readOnly={hasHoomDossierLink}
                     />
                     <InputSelect
                         label={'Daktype'}
@@ -146,6 +179,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                         value={roofTypeId}
                         options={this.props.roofTypes}
                         onChangeAction={this.handleInputChange}
+                        readOnly={hasHoomDossierLink}
                     />
                 </div>
 
@@ -157,6 +191,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                         value={energyLabelId}
                         options={this.props.energyLabels}
                         onChangeAction={this.handleInputChange}
+                        readOnly={hasHoomDossierLink}
                     />
                     <InputText
                         label={'Aantal bouwlagen'}
@@ -164,6 +199,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                         value={floors}
                         min={0}
                         onChangeAction={this.handleInputChange}
+                        readOnly={hasHoomDossierLink}
                     />
                 </div>
 
@@ -181,27 +217,122 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                         name={'isMonument'}
                         value={isMonument}
                         onChangeAction={this.handleInputChange}
+                        disabled={hasHoomDossierLink}
                     />
                 </div>
 
                 <div className="row">
-                    <InputText
-                        label={'Aantal bewoners'}
-                        name={'numberOfResidents'}
-                        value={numberOfResidents}
-                        min={0}
-                        onChangeAction={this.handleInputChange}
+                    <ViewText
+                        className={'form-group col-md-6'}
+                        label="Hoom building Id"
+                        value={hoomBuildingId && hoomBuildingId}
                     />
                     <InputToggle
                         label={'Koophuis'}
                         name={'isHouseForSale'}
                         value={isHouseForSale}
                         onChangeAction={this.handleInputChange}
+                        disabled={hasHoomDossierLink}
+                    />
+                </div>
+                <div className="row">
+                    <InputText
+                        label={'Geveloppervlakte'}
+                        name="wallSurface"
+                        value={wallSurface}
+                        min={0}
+                        onChangeAction={this.handleInputChange}
+                        readOnly={hasHoomDossierLink}
+                    />
+                    <InputText
+                        label={'Raamoppervlakte'}
+                        name="totalWindowSurface"
+                        value={totalWindowSurface}
+                        min={0}
+                        onChangeAction={this.handleInputChange}
+                        readOnly={hasHoomDossierLink}
+                    />
+                </div>
+                <div className="row">
+                    <InputSelect
+                        label={'Kozijntype'}
+                        size={'col-sm-6'}
+                        name="frameType"
+                        value={frameType}
+                        options={this.props.frameTypeSelection}
+                        optionValue={'key'}
+                        onChangeAction={this.handleInputChange}
+                        readOnly={hasHoomDossierLink}
+                    />
+                    <InputText
+                        label={'Vloeroppervlakte'}
+                        name="floorSurface"
+                        value={floorSurface}
+                        min={0}
+                        onChangeAction={this.handleInputChange}
+                        readOnly={hasHoomDossierLink}
+                    />
+                </div>
+                <div className="row">
+                    <InputText
+                        label={'Hellend dakoppervlakte'}
+                        name="pitchedRoofSurface"
+                        value={pitchedRoofSurface}
+                        min={0}
+                        onChangeAction={this.handleInputChange}
+                        readOnly={hasHoomDossierLink}
+                    />
+                    <InputText
+                        label={'Platte dakoppervlakte'}
+                        name="flatRoofSurface"
+                        value={flatRoofSurface}
+                        min={0}
+                        onChangeAction={this.handleInputChange}
+                        readOnly={hasHoomDossierLink}
+                    />
+                </div>
+                <div className="row">
+                    <InputSelect
+                        label={'Manier koken'}
+                        size={'col-sm-6'}
+                        name="cookType"
+                        value={cookType}
+                        options={this.props.cookTypeSelection}
+                        optionValue={'key'}
+                        onChangeAction={this.handleInputChange}
+                        readOnly={hasHoomDossierLink}
+                    />
+                    <InputSelect
+                        label={'Verwarming'}
+                        size={'col-sm-6'}
+                        name="heatSource"
+                        value={heatSource}
+                        options={this.props.heatSourceSelection}
+                        optionValue={'key'}
+                        onChangeAction={this.handleInputChange}
+                        readOnly={hasHoomDossierLink}
+                    />
+                </div>
+                <div className="row">
+                    <InputSelect
+                        label={'Water comfort'}
+                        size={'col-sm-6'}
+                        name="waterComfort"
+                        value={waterComfort}
+                        options={this.props.waterComfortSelection}
+                        optionValue={'key'}
+                        onChangeAction={this.handleInputChange}
+                        readOnly={hasHoomDossierLink}
                     />
                 </div>
 
                 <div className="panel-footer">
                     <div className="pull-right btn-group" role="group">
+                        <ButtonText
+                            buttonClassName={'btn-default'}
+                            buttonText={'Sluiten'}
+                            onClickAction={this.props.switchToView}
+                        />
                         <ButtonText buttonText={'Opslaan'} onClickAction={this.handleSubmit} />
                     </div>
                 </div>
@@ -217,6 +348,10 @@ const mapStateToProps = state => {
         roofTypes: state.systemData.roofTypes,
         energyLabels: state.systemData.energyLabels,
         energyLabelStatus: state.systemData.energyLabelStatus,
+        frameTypeSelection: state.systemData.frameTypeSelection,
+        cookTypeSelection: state.systemData.cookTypeSelection,
+        heatSourceSelection: state.systemData.heatSourceSelection,
+        waterComfortSelection: state.systemData.waterComfortSelection,
         contactDetails: state.contactDetails,
     };
 };

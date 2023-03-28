@@ -10,7 +10,7 @@ namespace App\Http\Controllers\Api\Hoomdossier;
 
 use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
-use App\Eco\HousingFile\HousingFileHoomLinks;
+use App\Eco\HousingFile\HousingFileHoomLink;
 use App\Eco\HousingFile\HousingFileHousingStatus;
 use App\Eco\HousingFile\HousingFileLog;
 use App\Eco\HousingFile\RoofType;
@@ -108,12 +108,12 @@ class EndPointGebruikController extends EndPointHoomDossierController
             return;
         }
 
-        $housingFileHoomLink = HousingFileHoomLinks::where('external_hoom_short_name', $key)->first();
+        $housingFileHoomLink = HousingFileHoomLink::where('external_hoom_short_name', $key)->first();
         if($housingFileHoomLink){
             $this->log('Woningdossier hoom koppeling gevonden voor hoom short ' . $key . '. Koppeling naar econobis veld: ' . $housingFileHoomLink->econobis_field_name . ' data-type: ' . $housingFileHoomLink->housing_file_data_type ) . '.';
         } else {
             $this->log('Woningdossier hoom koppeling NIET gevonden voor hoom short ' . $key . '.');
-            $housingFileHoomLink = New HousingFileHoomLinks();
+            $housingFileHoomLink = New HousingFileHoomLink();
             $housingFileHoomLink->external_hoom_short_name = $key;
             $housingFileHoomLink->econobis_field_name = "";
             $housingFileHoomLink->housing_file_data_type = "";

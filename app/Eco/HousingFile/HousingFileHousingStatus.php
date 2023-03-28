@@ -21,4 +21,10 @@ class HousingFileHousingStatus extends Model
         return $this->belongsTo(HousingFile::class);
     }
 
+    public function housingFileHoomLink()
+    {
+        return $this->belongsTo(HousingFileHoomLink::class, 'housing_file_hoom_links_id');
+    }
+
+
 }

@@ -42,6 +42,19 @@ export default {
             });
     },
 
+    updateHousingFileUse: housingFile => {
+        const requestUrl = `${URL_HOUSING_FILE}/${housingFile.id}/update-use`;
+
+        return axiosInstance
+            .post(requestUrl, housingFile)
+            .then(function(response) {
+                return response.data.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    },
+
     deleteHousingFile: id => {
         const requestUrl = `${URL_HOUSING_FILE}/${id}/delete`;
 

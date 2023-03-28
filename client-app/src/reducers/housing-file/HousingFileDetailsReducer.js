@@ -10,6 +10,11 @@ export default function(state = {}, action) {
                 ...state,
                 ...action.housingFileDetails,
             };
+        case 'UPDATE_HOUSING_FILE_USE':
+            return {
+                ...state,
+                ...action.housingFileDetails,
+            };
         case 'UPDATE_HOUSING_FILE_SPECIFICATION':
             return {
                 ...state,

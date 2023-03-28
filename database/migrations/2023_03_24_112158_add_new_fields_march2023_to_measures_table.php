@@ -59,7 +59,7 @@ class AddNewFieldsMarch2023ToMeasuresTable extends Migration
         $overig_14_MeasureCategoryId = MeasureCategory::where('name', 'Overig')->first()->id;
         $lampen_22_MeasureCategoryId = MeasureCategory::where('name', 'Lampen')->first()->id;
 
-        DB::table('measures')->insertGetId(['name'=> 'Overig uit Hoomdossier', 'measure_category_id' => $onderhoud_new_MeasureCategoryId, 'number' => 'M2023-2', 'visible' => 0, 'external_hoom_id' => 'overig-uit-hoomdossier', 'import_from_hoom' => true, 'visible_in_econobis' => true]);
+        DB::table('measures')->insertGetId(['name'=> 'Overig uit Hoomdossier', 'measure_category_id' => $overig_14_MeasureCategoryId, 'number' => 'M2023-2', 'visible' => 0, 'external_hoom_id' => 'overig-uit-hoomdossier', 'import_from_hoom' => true, 'visible_in_econobis' => true]);
         DB::table('measures')->insertGetId(['name'=> 'Vloerisolatie, meer info nodig', 'measure_category_id' => $vloerisolatie_1_MeasureCategoryId, 'number' => 'M2023-3', 'visible' => 0, 'external_hoom_id' => 'floor-insulation-research', 'import_from_hoom' => true, 'visible_in_econobis' => true]);
         DB::table('measures')->insertGetId(['name'=> 'Muurisolatie, meer info nodig', 'measure_category_id' => $gevelisolatie_2_MeasureCategoryId, 'number' => 'M2023-4', 'visible' => 0, 'external_hoom_id' => 'wall-insulation-research', 'import_from_hoom' => true, 'visible_in_econobis' => true]);
         DB::table('measures')->insertGetId(['name'=> 'HR++ glas + kozijn', 'measure_category_id' => $isolatieglas_4_MeasureCategoryId, 'number' => 'M2023-5', 'visible' => 0, 'external_hoom_id' => 'hrpp-glass-frames', 'import_from_hoom' => true, 'visible_in_econobis' => true]);

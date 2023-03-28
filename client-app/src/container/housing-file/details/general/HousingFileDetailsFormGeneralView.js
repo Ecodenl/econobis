@@ -18,7 +18,16 @@ const HousingFileDetailsFormGeneralView = props => {
         floors,
         energyLabelStatus,
         isMonument,
-        numberOfResidents,
+        hoomBuildingId,
+        wallSurface,
+        totalWindowSurface,
+        frameType,
+        floorSurface,
+        pitchedRoofSurface,
+        flatRoofSurface,
+        cookType,
+        heatSource,
+        waterComfort,
     } = props.housingFileDetails;
 
     return (
@@ -31,30 +40,44 @@ const HousingFileDetailsFormGeneralView = props => {
                 />
                 <ViewText label={'Adres'} value={fullAddress && fullAddress} />
             </div>
-
             <div className="row">
                 <ViewText label="Woningtype" value={buildingType && buildingType.name} />
                 <ViewText label="Bouwjaar" value={buildYear && buildYear} />
             </div>
-
             <div className="row">
                 <ViewText label="Gebruiksoppervlakte" value={surface && surface} />
                 <ViewText label="Daktype" value={roofType && roofType.name} />
             </div>
-
             <div className="row">
                 <ViewText label="Energielabel" value={energyLabel && energyLabel.name} />
                 <ViewText label="Aantal bouwlagen" value={floors && floors} />
             </div>
-
             <div className="row">
                 <ViewText label="Status energielabel" value={energyLabelStatus && energyLabelStatus.name} />
                 <ViewText label="Monument" value={isMonument ? 'Ja' : 'Nee'} />
             </div>
-
             <div className="row">
-                <ViewText label="Aantal bewoners" value={numberOfResidents && numberOfResidents} />
+                <ViewText label="Hoom building Id" value={hoomBuildingId && hoomBuildingId} />
                 <ViewText label="Koophuis" value={isHouseForSale ? 'Ja' : 'Nee'} />
+            </div>
+            <div className="row">
+                <ViewText label="Geveloppervlakte" value={wallSurface && wallSurface} />
+                <ViewText label="Raamoppervlakte" value={totalWindowSurface && totalWindowSurface} />
+            </div>
+            <div className="row">
+                <ViewText label="Kozijntype" value={frameType && frameType.hoomStatusName} />
+                <ViewText label="Vloeroppervlakte" value={floorSurface && floorSurface} />
+            </div>
+            <div className="row">
+                <ViewText label="Hellend dakoppervlakte" value={pitchedRoofSurface && pitchedRoofSurface} />
+                <ViewText label="Platte dakoppervlakte" value={flatRoofSurface && flatRoofSurface} />
+            </div>
+            <div className="row">
+                <ViewText label="Manier koken" value={cookType && cookType.hoomStatusName} />
+                <ViewText label="Verwarming" value={heatSource && heatSource.hoomStatusName} />
+            </div>
+            <div className="row">
+                <ViewText label="Water comfort" value={waterComfort && waterComfort.hoomStatusName} />
             </div>
         </div>
     );

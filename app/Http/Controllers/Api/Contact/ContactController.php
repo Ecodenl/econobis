@@ -35,7 +35,7 @@ class ContactController extends Controller
         $contact->contactNotes->load(['createdBy', 'updatedBy']);
         $contact->occupations->load(['occupation', 'primaryContact', 'contact']);
         $contact->primaryOccupations->load(['occupation', 'primaryContact', 'contact']);
-        $contact->load(['quotationRequests.opportunity.measureCategory', 'quotationRequests.opportunity.status']);
+        $contact->load(['quotationRequests.opportunity']);
 
         if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisation.campaigns', 'contactPerson.contact']);
         if($contact->isPerson()) $contact->load(['person', 'person.title', 'person.organisation', 'person.type']);

@@ -13,11 +13,11 @@ const ContactDetailsQuotationView = props => {
         >
             <div onClick={() => hashHistory.push(`/kans/${opportunity.id}`)}>
                 <div className="col-sm-2">{opportunity ? opportunity.number : ''}</div>
-                <div className="col-sm-2">{opportunity ? opportunity.measureCategory.name : ''}</div>
-                <div className="col-sm-2">{opportunity ? opportunity.status.name : ''}</div>
+                <div className="col-sm-2">{opportunity ? opportunity.measureCategoryName : ''}</div>
+                <div className="col-sm-2">{opportunity ? opportunity.statusName : ''}</div>
                 <div className="col-sm-2">{dateRecorded ? moment(dateRecorded).format('L') : ''}</div>
                 <div className="col-sm-2">{dateReleased ? moment(dateReleased).format('L') : ''}</div>
-                <div className="col-sm-2">{opportunity ? opportunity.intake.contact.fullName : ''}</div>
+                <div className="col-sm-2">{opportunity ? opportunity.intakeContactFullName : ''}</div>
             </div>
         </div>
     );

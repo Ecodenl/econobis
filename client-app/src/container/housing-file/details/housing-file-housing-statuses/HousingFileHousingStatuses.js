@@ -27,11 +27,12 @@ class HousingFileHousingStatuses extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Woningstatus</span>
-                    {this.props.permissions.manageHousingFile && (
-                        <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                            <span className="glyphicon glyphicon-plus" />
-                        </a>
-                    )}
+                    {/*todo WM: new housingfile housingstatus*/}
+                    {/*{this.props.permissions.manageHousingFile && (*/}
+                    {/*    <a role="button" className="pull-right" onClick={this.toggleShowNew}>*/}
+                    {/*        <span className="glyphicon glyphicon-plus" />*/}
+                    {/*    </a>*/}
+                    {/*)}*/}
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">

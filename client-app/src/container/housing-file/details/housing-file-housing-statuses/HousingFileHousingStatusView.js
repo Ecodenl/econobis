@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment/moment';
+import PanelHeader from '../../../../components/panel/PanelHeader';
 
 moment.locale('nl');
 
@@ -19,22 +20,23 @@ const HousingFileHousingStatusView = props => {
                     <div className="col-sm-4">{housingFileHoomLink.label}</div>
                     <div className="col-sm-7">{status.hoomStatusName}</div>
                 </div>
-                <div className="col-sm-1">
-                    {props.showActionButtons && props.permissions.manageHousingFile ? (
-                        <a role="button" onClick={props.openEdit}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
-                        </a>
-                    ) : (
-                        ''
-                    )}
-                    {props.showActionButtons && props.permissions.manageHousingFile ? (
-                        <a role="button" onClick={props.toggleDelete}>
-                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
-                        </a>
-                    ) : (
-                        ''
-                    )}
-                </div>
+                {/*todo WM: edit/delete housingfile housingstatus*/}
+                {/*<div className="col-sm-1">*/}
+                {/*    {props.showActionButtons && props.permissions.manageHousingFile ? (*/}
+                {/*        <a role="button" onClick={props.openEdit}>*/}
+                {/*            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}*/}
+                {/*        </a>*/}
+                {/*    ) : (*/}
+                {/*        ''*/}
+                {/*    )}*/}
+                {/*    {props.showActionButtons && props.permissions.manageHousingFile ? (*/}
+                {/*        <a role="button" onClick={props.toggleDelete}>*/}
+                {/*            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}*/}
+                {/*        </a>*/}
+                {/*    ) : (*/}
+                {/*        ''*/}
+                {/*    )}*/}
+                {/*</div>*/}
             </div>
         </>
     );

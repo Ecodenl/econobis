@@ -56,16 +56,23 @@ class EndPointWoonplanController extends EndPointHoomDossierController
 
     protected function validatePost($dataContent)
     {
-        if(!isset($dataContent->user_action_plan_advices) || !is_array($dataContent->user_action_plan_advices) ) {
+        if(!isset($dataContent->user_action_plan_advices)) {
             $this->error('Geen "user_action_plan_advices" meegegeven', 404);
         }
     }
 
     protected function doPost($dataContent)
     {
-
-        foreach($dataContent->user_action_plan_advices as $userActionPlanAdvice) {
-            $this->doPostElement($userActionPlanAdvice);
+//        $this->log('Binnenkomende payload (zie laravel log)');
+//        Log::info(json_encode($dataContent));
+//        foreach($dataContent->user_action_plan_advices as $userActionPlanAdvice) {
+//            $this->doPostElement($userActionPlanAdvice);
+//        }
+        foreach($dataContent->user_action_plan_advices as $key => $userActionPlanAdvice)
+        {
+            if(!empty($key)){
+                $this->doPostElement($userActionPlanAdvice);
+            }
         }
 
         $specificationsInEconobis = $this->housingFile->housingFileSpecifications->pluck('id')->toArray();
@@ -145,10 +152,10 @@ class EndPointWoonplanController extends EndPointHoomDossierController
             $answer = null;
             if (isset($userActionPlanAdvice->surface)) {
                 $answer = $userActionPlanAdvice->surface;
-            } elseif ($userActionPlanAdvice->count) {
+            } elseif (isset($userActionPlanAdvice->count)) {
                 $answer = $userActionPlanAdvice->count;
             } else {
-                $this->log('Woningdossier specificatie onbekend antwoord !?');
+                $this->log('Woningdossier specificatie zonder specifiek antwoord !?');
             }
             $housingFileSpecification->answer = $answer;
             $housingFileSpecification->external_hoom_name = isset($userActionPlanAdvice->name) ? $userActionPlanAdvice->name : '';

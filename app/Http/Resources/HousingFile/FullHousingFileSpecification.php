@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\HousingFile;
 
+use App\Eco\Measure\Measure;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Measure\FullMeasure;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -17,12 +18,15 @@ class FullHousingFileSpecification extends JsonResource
      */
     public function toArray($request)
     {
+        $defaultEconobisMeasure = Measure::where('external_hoom_id', 'overig-uit-hoomdossier')->first();
+
         return
             [
                 'id' => $this->id,
                 'measure' => FullMeasure::make($this->whenLoaded('measure')),
                 'measureId' => $this->measure_id,
                 'measureDate' => $this->measure_date,
+                'isDefaultEconobisMeasure' => ($defaultEconobisMeasure->id == $this->measure_id),
                 'answer' => $this->answer,
                 'status' => GenericResource::make($this->whenLoaded('status')),
                 'floor' => GenericResource::make($this->whenLoaded('floor')),

@@ -508,7 +508,7 @@ class ExtraFilter extends RequestExtraFilter
             if(empty($data)) {
                 $query->where(function ($query) use ($type, $data) {
                     $query->whereHas('addresses', function($query) {
-                        $query->whereHas('primaryAddressEnergySupplierElectricityAndGas')->where('type_id', '!=', 'old');
+                        $query->whereHas('primaryAddressEnergySupplierElectricityAndGas');
                     });
                 });
             }else{
@@ -516,7 +516,7 @@ class ExtraFilter extends RequestExtraFilter
                     $query->whereHas('addresses', function($query) use ($data) {
                         $query->whereHas('primaryAddressEnergySupplierElectricityAndGas', function($query) use ($data) {
                             $query->where('energy_supplier_id', $data);
-                        })->where('type_id', '!=', 'old');
+                        });
                     });
                 });
             }
@@ -530,7 +530,7 @@ class ExtraFilter extends RequestExtraFilter
                                 ->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas', function ($query) use ($type, $data) {
                                     $data = str_replace(' ', '', $data);
                                     RequestFilter::applyFilter($query, 'energy_supplier_id', $type, $data);
-                                })->where('type_id', '!=', 'old');
+                                });
                         });
                 });
             }else {
@@ -541,7 +541,7 @@ class ExtraFilter extends RequestExtraFilter
                                 ->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas', function ($query) use ($type, $data) {
                                     $data = str_replace(' ', '', $data);
                                     RequestFilter::applyFilter($query, 'energy_supplier_id', $type, $data);
-                                })->where('type_id', '!=', 'old');
+                                });
                         });
                 });
             }
@@ -558,7 +558,7 @@ class ExtraFilter extends RequestExtraFilter
         }
         elseif($type === 'nnl'){
             $query->whereHas('addresses', function($query) use ($data) {
-                $query->whereHas('primaryAddressEnergySupplierElectricityAndGas')->where('type_id', '!=', 'old');
+                $query->whereHas('primaryAddressEnergySupplierElectricityAndGas');
             });
         }
     }

@@ -558,7 +558,9 @@ class ExtraFilter extends RequestExtraFilter
         }
         elseif($type === 'nnl'){
             $query->whereHas('addresses', function($query) use ($data) {
-                $query->whereHas('primaryAddressEnergySupplierElectricityAndGas');
+                $query->whereHas('primaryAddressEnergySupplierElectricityAndGas', function($query) use ($data) {
+                    $query->where('energy_supplier_id', $data);
+                });
             });
         }
     }

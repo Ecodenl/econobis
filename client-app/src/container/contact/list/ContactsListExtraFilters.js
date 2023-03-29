@@ -288,7 +288,7 @@ class ContactsListExtraFilters extends Component {
             },
             quotationRequestStatus: {
                 name: 'Kansactie status',
-                type: 'dropdownCustomForQuotationRequest',
+                type: 'dropdownHas',
                 dropDownOptions: this.props.quotationRequestStatus,
             },
             intakeMeasureCategory: {

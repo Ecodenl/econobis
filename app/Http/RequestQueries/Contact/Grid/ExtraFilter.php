@@ -47,6 +47,7 @@ class ExtraFilter extends RequestExtraFilter
         'energySupplierType',
         'portalUser',
         'didAgreeAvg',
+        'quotationRequestStatus',
     ];
 
     protected $mapping = [
@@ -244,6 +245,36 @@ class ExtraFilter extends RequestExtraFilter
                     });
                 }
                 break;
+        }
+    }
+
+    protected function applyQuotationRequestStatusFilter($query, $type, $data)
+    {
+        if(empty($data)){
+            switch($type) {
+                case 'eq':
+                    $query->whereHas('quotationRequests');
+                    break;
+                default:
+                    $query->whereDoesntHave('quotationRequests');
+                    break;
+            }
+        }else{
+            switch($type) {
+                case 'neq':
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('quotationRequests')
+                            ->orWhereDoesntHave('quotationRequests', function ($query) use ($type, $data) {
+                                RequestFilter::applyFilter($query, 'status_id', 'eq', $data);
+                            });
+                    });
+                    break;
+                default:
+                    $query->whereHas('quotationRequests', function ($query) use ($type, $data) {
+                        RequestFilter::applyFilter($query, 'status_id', $type, $data);
+                    });
+                    break;
+            }
         }
     }
 

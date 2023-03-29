@@ -320,6 +320,11 @@ class ContactsListExtraFilters extends Component {
                 type: 'boolean',
                 dropDownOptions: this.state.yesNoOptions,
             },
+            housingFile: {
+                name: 'Woningdossier aanwezig',
+                type: 'boolean',
+                dropDownOptions: this.state.yesNoOptions,
+            },
         };
 
         // Options only if product is set

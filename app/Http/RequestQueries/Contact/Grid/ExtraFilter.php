@@ -47,6 +47,7 @@ class ExtraFilter extends RequestExtraFilter
         'energySupplierType',
         'portalUser',
         'didAgreeAvg',
+        'housingFile',
     ];
 
     protected $mapping = [
@@ -607,6 +608,15 @@ class ExtraFilter extends RequestExtraFilter
         }else{
             $query->whereDoesntHave('portalUser')
             ->whereHas('person');
+        }
+    }
+
+    protected function applyHousingFileFilter($query, $type, $data)
+    {
+        if($data){
+            $query->whereHas('housingFiles');
+        }else{
+            $query->whereDoesntHave('housingFiles');
         }
     }
 

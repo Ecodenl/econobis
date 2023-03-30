@@ -26,7 +26,7 @@ const HousingFileHarmonica = ({
                 <div className="col-sm-2">
                     {permissions.manageHousingFile && (
                         <a role="button" className="pull-right" onClick={newHousingFile}>
-                            <Icon class="harmonica-button" size={14} icon={plus} />
+                            <Icon className="harmonica-button" size={14} icon={plus} />
                         </a>
                     )}
                 </div>

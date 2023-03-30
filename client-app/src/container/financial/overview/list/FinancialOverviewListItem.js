@@ -70,7 +70,7 @@ class FinancialOverviewListItem extends Component {
                 <td>
                     {this.state.showActionButtons && permissions.manageFinancial ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <Icon class="mybtn-success" size={14} icon={pencil} />&nbsp;
+                            <Icon className="mybtn-success" size={14} icon={pencil} />&nbsp;
                         </a>
                     ) : (
                         ''
@@ -80,7 +80,7 @@ class FinancialOverviewListItem extends Component {
                     !definitive &&
                     statusId === 'concept' ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, description)}>
-                            <Icon class="mybtn-danger" size={14} icon={trash} />&nbsp;
+                            <Icon className="mybtn-danger" size={14} icon={trash} />&nbsp;
                         </a>
                     ) : (
                         ''

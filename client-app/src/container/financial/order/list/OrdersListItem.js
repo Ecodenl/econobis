@@ -81,14 +81,14 @@ class OrdersListItem extends Component {
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <Icon class="mybtn-success" size={14} icon={pencil} />&nbsp;
+                            <Icon className="mybtn-success" size={14} icon={pencil} />&nbsp;
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, subject)}>
-                            <Icon class="mybtn-danger" size={14} icon={trash} />&nbsp;
+                            <Icon className="mybtn-danger" size={14} icon={trash} />&nbsp;
                         </a>
                     ) : (
                         ''

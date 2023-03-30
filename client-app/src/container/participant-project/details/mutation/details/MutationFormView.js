@@ -101,7 +101,7 @@ const MutationFormView = ({
                     <StyledColumn columnWidth={'6%'}>
                         {showActionButtons && !financialOverviewDefinitive && permissions.manageFinancial ? (
                             <a role="button" onClick={openDetails}>
-                                <Icon class="mybtn-success" size={14} icon={pencil} />
+                                <Icon className="mybtn-success" size={14} icon={pencil} />
                             </a>
                         ) : (
                             ''
@@ -109,7 +109,7 @@ const MutationFormView = ({
                         &nbsp;
                         {allowDelete && showActionButtons && permissions.manageFinancial ? (
                             <a role="button" onClick={toggleDelete}>
-                                <Icon class="mybtn-danger" size={14} icon={trash} />
+                                <Icon className="mybtn-danger" size={14} icon={trash} />
                             </a>
                         ) : (
                             ''

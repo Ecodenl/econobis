@@ -82,7 +82,7 @@ class ProjectsListItem extends Component {
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <Icon class="mybtn-success" size={14} icon={pencil} />
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''
@@ -90,7 +90,7 @@ class ProjectsListItem extends Component {
                     &nbsp;
                     {this.state.showActionButtons && this.props.permissions.manageProject && false ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}>
-                            <Icon class="mybtn-danger" size={14} icon={trash} />
+                            <Icon className="mybtn-danger" size={14} icon={trash} />
                         </a>
                     ) : (
                         ''

@@ -111,7 +111,7 @@ class ContactsInGroupListItem extends Component {
                             role="button"
                             onClick={this.props.showEditItemModal.bind(this, id, emailAddress, memberToGroupSince)}
                         >
-                            <Icon class="mybtn-success" size={14} icon={pencil} />
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''
@@ -123,7 +123,7 @@ class ContactsInGroupListItem extends Component {
                     this.props.contactGroupType &&
                     this.props.contactGroupType.id === 'static' ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, fullName)}>
-                            <Icon class="mybtn-danger" size={14} icon={trash} />
+                            <Icon className="mybtn-danger" size={14} icon={trash} />
                         </a>
                     ) : (
                         ''

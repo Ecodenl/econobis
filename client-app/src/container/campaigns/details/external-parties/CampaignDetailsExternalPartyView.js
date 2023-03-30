@@ -24,7 +24,7 @@ const CampaignDetailsExternalPartyView = ({
             <div className="col-sm-1">
                 {showActionButtons && permissions.manageMarketing ? (
                     <a role="button" onClick={toggleDelete}>
-                        <Icon class="mybtn-danger" size={14} icon={trash} />
+                        <Icon className="mybtn-danger" size={14} icon={trash} />
                     </a>
                 ) : (
                     ''

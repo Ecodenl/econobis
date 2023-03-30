@@ -252,7 +252,7 @@ const DataTableCustomFilter = props => {
                 <td />
             ) : (
                 <td className="col-md-1">
-                    <Icon class="mybtn-danger" size={14} icon={trash} role="button" onClick={deleteRow} />
+                    <Icon className="mybtn-danger" size={14} icon={trash} role="button" onClick={deleteRow} />
                 </td>
             )}
         </tr>

@@ -57,7 +57,7 @@ class MeasureCategoriesListItem extends Component {
                 <td>
                     {this.state.showActionButtons && permissions.manageFinancial ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <Icon class="mybtn-success" size={14} icon={pencil} />
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''

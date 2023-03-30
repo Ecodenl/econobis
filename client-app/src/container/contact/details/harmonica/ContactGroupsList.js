@@ -77,7 +77,7 @@ class ContactGroupsList extends Component {
                                                 onClick={() => this.toggleDeleteFromGroup(group)}
                                                 className="pull-right"
                                             >
-                                                <Icon class="harmonica-button" size={14} icon={trash} />
+                                                <Icon className="harmonica-button" size={14} icon={trash} />
                                             </a>
                                         </td>
                                     </tr>

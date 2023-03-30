@@ -76,7 +76,7 @@ function FinancialOverviewPostItem({ financialOverviewPost }) {
                     {showActionButtons ? (
                         <>
                             <a role="button" onClick={() => downloadFinancialOverviewPost(financialOverviewPost.id)}>
-                                <Icon class="mybtn-success" size={14} icon={fileO} />&nbsp;
+                                <Icon className="mybtn-success" size={14} icon={fileO} />&nbsp;
                             </a>
                             {/*&nbsp;&nbsp;&nbsp;*/}
                             {/*<a role="button" onClick={toggleDelete}>*/}

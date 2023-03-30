@@ -26,14 +26,14 @@ const ProjectDetailsFormValueCourseView = props => {
             <div className="col-sm-1">
                 {props.showActionButtons ? (
                     <a role="button" onClick={props.openEdit}>
-                        <Icon class="mybtn-success" size={14} icon={pencil} />
+                        <Icon className="mybtn-success" size={14} icon={pencil} />
                     </a>
                 ) : (
                     ''
                 )}
                 {props.showActionButtons && props.permissions.manageFinancial ? (
                     <a role="button" onClick={props.toggleDelete}>
-                        <Icon class="mybtn-danger" size={14} icon={trash} />
+                        <Icon className="mybtn-danger" size={14} icon={trash} />
                     </a>
                 ) : (
                     ''

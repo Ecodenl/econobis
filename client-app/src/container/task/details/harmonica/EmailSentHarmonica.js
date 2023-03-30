@@ -18,7 +18,7 @@ const EmailSentHarmonica = ({ toggleShowList, showEmailsSentList, newEmail, emai
                 </div>
                 <div className={'col-sm-2'}>
                     <a role="button" className="pull-right" onClick={newEmail}>
-                        <Icon class="harmonica-button" size={14} icon={plus} />
+                        <Icon className="harmonica-button" size={14} icon={plus} />
                     </a>
                 </div>
                 <div className="col-sm-12">{showEmailsSentList && <EmailSentList />}</div>

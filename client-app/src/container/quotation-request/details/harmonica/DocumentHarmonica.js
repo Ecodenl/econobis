@@ -20,7 +20,7 @@ const DocumentHarmonica = ({ toggleShowList, showDocumentsList, newDocument, doc
                 <div className={'col-sm-2'}>
                     {permissions.createDocument && (
                         <div className="pull-right">
-                            <Icon class="harmonica-button" size={14} icon={plus} data-toggle="dropdown" role="button"/>
+                            <Icon className="harmonica-button" size={14} icon={plus} data-toggle="dropdown" role="button"/>
                             <ul className="dropdown-menu">
                                 <li>
                                     <a className="btn" onClick={() => newDocument('internal')}>

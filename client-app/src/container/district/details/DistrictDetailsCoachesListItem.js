@@ -29,7 +29,7 @@ export default function DistrictDetailsCoachesListItem({district, coach, onDetac
                 <div className="col-sm-1">
                     {isHovered && (
                         <a role="button" onClick={() => setShowDeleteModal(true)}>
-                            <Icon class="mybtn-danger" size={14} icon={trash} />
+                            <Icon className="mybtn-danger" size={14} icon={trash} />
                         </a>
                     )}
                 </div>

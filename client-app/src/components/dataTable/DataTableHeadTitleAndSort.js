@@ -11,8 +11,8 @@ const DataTableHeadTitleAndSort = props => {
     return (
         <th className={RowClassName} width={width}>
             {title}
-            <Icon class="pull-right small" size={14} icon={arrowDown} role="button" onClick={setSorts.bind(this, sortColumn, 'ASC')}/>
-            <Icon class="pull-right small" size={14} icon={arrowUp} role="button" onClick={setSorts.bind(this, sortColumn, 'DESC')}/>
+            <Icon className="pull-right small" size={14} icon={arrowDown} role="button" onClick={setSorts.bind(this, sortColumn, 'ASC')}/>
+            <Icon className="pull-right small" size={14} icon={arrowUp} role="button" onClick={setSorts.bind(this, sortColumn, 'DESC')}/>
         </th>
     );
 };

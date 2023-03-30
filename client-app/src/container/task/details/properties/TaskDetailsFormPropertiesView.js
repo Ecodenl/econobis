@@ -20,7 +20,7 @@ const TaskDetailFormPropertiesView = props => {
             <div className="col-sm-1">
                 {props.showActionButtons && props.permissions.manageTask ? (
                     <a role="button" onClick={props.openEdit}>
-                        <Icon class="mybtn-success" size={14} icon={pencil} />
+                        <Icon className="mybtn-success" size={14} icon={pencil} />
                     </a>
                 ) : (
                     ''

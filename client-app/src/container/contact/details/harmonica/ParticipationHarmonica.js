@@ -26,7 +26,7 @@ const ParticipationHarmonica = ({
                 <div className="col-sm-2">
                     {permissions.manageParticipation && (
                         <a role="button" className="pull-right" onClick={newParticipation}>
-                            <Icon class="harmonica-button" size={14} icon={plus} />
+                            <Icon className="harmonica-button" size={14} icon={plus} />
                         </a>
                     )}
                 </div>

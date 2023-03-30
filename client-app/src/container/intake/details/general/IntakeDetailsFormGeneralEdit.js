@@ -4,7 +4,6 @@ import moment from 'moment';
 moment.locale('nl');
 
 import IntakeDetailsAPI from '../../../../api/intake/IntakeDetailsAPI';
-import CampaignsAPI from '../../../../api/campaign/CampaignsAPI';
 import { fetchIntakeDetails } from '../../../../actions/intake/IntakeDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
@@ -15,12 +14,22 @@ class IntakeDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, contact, address = {}, reasons, campaign, sources, status, note } = props.intakeDetails;
+        const {
+            id,
+            contact,
+            address = {},
+            reasons,
+            campaign,
+            sources,
+            status,
+            note,
+            campaignsToSelect,
+        } = props.intakeDetails;
 
         this.state = {
-            campaigns: [],
             intake: {
                 id,
+                campaigns: campaignsToSelect ? campaignsToSelect : '',
                 contact: contact.fullName,
                 address: address ? address : '',
                 campaignId: campaign && campaign.id,
@@ -32,20 +41,6 @@ class IntakeDetailsFormGeneralEdit extends Component {
                 note: note && note,
             },
         };
-    }
-
-    componentWillMount() {
-        const { campaign } = this.props.intakeDetails;
-
-        CampaignsAPI.peekCampaigns().then(payload => {
-            this.setState({
-                campaigns: payload,
-                intake: {
-                    ...this.state.intake,
-                    campaignId: campaign ? campaign.id : payload[0].id,
-                },
-            });
-        });
     }
 
     handleInputChange = event => {
@@ -116,6 +111,7 @@ class IntakeDetailsFormGeneralEdit extends Component {
             intakeReasonIds,
             intakeReasonIdsSelected,
             note,
+            campaigns,
         } = this.state.intake;
 
         function compareIntakeSources(a, b) {
@@ -152,7 +148,7 @@ class IntakeDetailsFormGeneralEdit extends Component {
                         label="Campagne"
                         name="campaignId"
                         value={campaignId}
-                        options={this.props.campaigns}
+                        options={campaigns}
                         onChangeAction={this.handleInputChange}
                         required={true}
                         emptyOption={false}
@@ -229,7 +225,6 @@ const mapStateToProps = state => {
         intakeStatuses: state.systemData.intakeStatuses,
         intakeSources: state.systemData.intakeSources,
         intakeReasons: state.systemData.intakeReasons,
-        campaigns: state.systemData.campaigns,
         buildingTypes: state.systemData.buildingTypes,
     };
 };

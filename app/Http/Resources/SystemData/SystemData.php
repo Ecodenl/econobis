@@ -4,7 +4,6 @@ namespace App\Http\Resources\SystemData;
 
 use App\Eco\Address\AddressType;
 use App\Eco\Administration\Administration;
-use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignStatus;
 use App\Eco\Campaign\CampaignType;
 use App\Eco\Contact\ContactStatus;
@@ -52,7 +51,7 @@ use App\Eco\Opportunity\OpportunityEvaluationStatus;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Order\OrderCollectionFrequency;
 use App\Eco\Order\OrderPaymentType;
-use App\Eco\Order\OrderStatus;
+use App\Eco\Order\OrderStatusToSelect;
 use App\Eco\OrganisationType\OrganisationType;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
@@ -105,7 +104,6 @@ use App\Http\Resources\User\UserPeek;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -175,7 +173,9 @@ class SystemData extends JsonResource
             'buildingTypes' => BuildingType::select(['id', 'name'])->get(),
             'campaignStatuses' => FullEnumWithIdAndName::collection(CampaignStatus::all()),
             'campaignTypes' => FullEnumWithIdAndName::collection(CampaignType::orderBy('name')->get()),
-            'campaigns' => Campaign::select(['id', 'name'])->get(),
+            'energySupplierStatuses' => GenericResource::collection(EnergySupplierStatus::all()),
+            'energySupplierTypes' => GenericResource::collection(EnergySupplierType::all()),
+            'staticContactGroups' => ContactGroup::select(['id', 'name'])->where('type_id', 'static')->get(),
             'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
             'contactStatuses' => FullEnumWithIdAndName::collection(ContactStatus::collection()),
             'contactTypes' => FullEnumWithIdAndName::collection(ContactType::collection()),
@@ -216,7 +216,7 @@ class SystemData extends JsonResource
             'opportunityStatus' => OpportunityStatusResource::collection(OpportunityStatus::all()),
             'orderCollectionFrequencies' => FullEnumWithIdAndName::collection(OrderCollectionFrequency::collection()),
             'orderPaymentTypes' => FullEnumWithIdAndName::collection(OrderPaymentType::collection()),
-            'orderStatuses' => FullEnumWithIdAndName::collection(OrderStatus::collection()),
+            'orderStatuses' => FullEnumWithIdAndName::collection(OrderStatusToSelect::collection()),
             'organisationTypes' => FullOrganisationType::collection(OrganisationType::all()),
             'participantMutationStatuses' => FullParticipantMutationStatus::collection(ParticipantMutationStatus::all()),
             'participantMutationTypes' => FullParticipantMutationType::collection(ParticipantMutationType::all()),

@@ -4,6 +4,7 @@ namespace App\Http\Resources\Intake;
 
 use App\Http\Resources\Address\FullAddress;
 use App\Http\Resources\Campaign\FullCampaign;
+use App\Http\Resources\Campaign\GridCampaign;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Opportunity\FullOpportunity;
@@ -11,7 +12,7 @@ use App\Http\Resources\Task\GridTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullIntake extends JsonResource
+class FullIntakeWithCustomCampaigns extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -49,6 +50,7 @@ class FullIntake extends JsonResource
                 'emailSentCount' => $this->relatedEmailsSent ? $this->relatedEmailsSent->count() : 0,
                 'relatedEmailsSent' => $this->relatedEmailsSent,
                 'measureRequestedWithOpportunityIds' => $this->measureRequestedWithOpportunityIds,
+                'campaignsToSelect' => GridCampaign::collection($this->getCampaignsToSelect()),
             ];
     }
 }

@@ -9,8 +9,6 @@ import TasksAPI from '../../api/task/TasksAPI';
 import { setSelectedView, setSelectedDate } from '../../actions/calendar/CalendarActions';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 
-const localizer = momentLocalizer(moment);
-
 class CalendarBody extends Component {
     constructor(props) {
         super(props);
@@ -51,7 +49,7 @@ class CalendarBody extends Component {
             .format('YYYY-MM-DD');
 
         //
-        if (view == 'month') {
+        if (view === 'month') {
             startDate = moment(date)
                 .startOf(view)
                 .subtract(1, 'w')
@@ -111,22 +109,25 @@ class CalendarBody extends Component {
 
         return (
             <Calendar
-                date={new Date(this.state.selectedDate)}
-                defaultView={this.state.selectedView}
-                endAccessor="end"
                 events={this.state.events}
-                localizer={localizer}
-                // max={new Date('2018-01-01T23:00:00.000Z')}
-                messages={localizedLabel}
-                min={new Date('2018-01-01T07:00:00.000Z')}
-                onNavigate={this.onNavigate}
-                onSelectEvent={this.openItem}
-                onView={this.onViewChange}
-                popup
-                startAccessor="start"
+                style={{ height: 'calc(100vh - 200px)' }}
                 step={15}
                 timeslots={4}
                 views={['month', 'week', 'day']}
+                // defaultView={this.state.selectedView}
+                view={this.state.selectedView}
+                onView={this.onViewChange}
+                date={new Date(this.state.selectedDate)}
+                onNavigate={this.onNavigate}
+                onSelectEvent={this.openItem}
+                // localizer={localizer}
+                localizer={momentLocalizer(moment)}
+                endAccessor="end"
+                messages={localizedLabel}
+                min={new Date('2018-01-01T07:00:00.000Z')}
+                // max={new Date('2018-01-01T23:00:00.000Z')}
+                popup
+                startAccessor="start"
             />
         );
     }

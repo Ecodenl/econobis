@@ -18,6 +18,7 @@ import fileDownload from 'js-file-download';
 import { hashHistory } from 'react-router';
 import ContactsListSaveAsGroup from './ContactsListSaveAsGroup';
 import ContactsListExtraFilters from './ContactsListExtraFilters';
+import CampaignsAPI from '../../../api/campaign/CampaignsAPI';
 
 class ContactsListApp extends Component {
     constructor(props) {
@@ -34,6 +35,7 @@ class ContactsListApp extends Component {
         }
 
         this.state = {
+            campaigns: '',
             showCheckboxList: false,
             checkedAllCheckboxes: false,
             showSaveAsGroup: false,
@@ -51,6 +53,9 @@ class ContactsListApp extends Component {
 
     componentDidMount() {
         this.fetchContactsData();
+        CampaignsAPI.peekNotFinishedCampaigns().then(payload => {
+            this.setState({ campaigns: payload });
+        });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -323,6 +328,7 @@ class ContactsListApp extends Component {
                 )}
                 {this.state.showExtraFilters && (
                     <ContactsListExtraFilters
+                        campaigns={this.state.campaigns}
                         saveAsGroup={this.saveAsGroup}
                         filterType={this.state.filterType}
                         toggleShowExtraFilters={this.toggleShowExtraFilters}

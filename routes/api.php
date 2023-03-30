@@ -68,7 +68,7 @@ Route::namespace('Api')
         Route::get('/intake/excel', 'Intake\IntakeController@excel');
         Route::get('/contact/{contact}/intake', 'Intake\IntakeController@getStore');
         Route::post('/contact/intake', 'Intake\IntakeController@store');
-        Route::get('/intake/{intake}', 'Intake\IntakeController@show');
+        Route::get('/intake/{intake}', 'Intake\IntakeController@showWithCustomCampaigns');
         Route::post('/intake/{intake}/update', 'Intake\IntakeController@update');
         Route::post('/intake/{intake}/delete', 'Intake\IntakeController@destroy');
 
@@ -150,7 +150,7 @@ Route::namespace('Api')
 
         Route::get('contact-group/grid', 'ContactGroup\ContactGroupController@grid');
         Route::get('contact-group/peek', 'ContactGroup\ContactGroupController@peek');
-        Route::get('contact-group/peek/static', 'ContactGroup\ContactGroupController@peekStatic');
+        Route::get('contact-group/peek/static/{active?}', 'ContactGroup\ContactGroupController@peekStatic');
         Route::get('contact-group/excel/group-report', 'ContactGroup\ContactGroupController@excelGroupReport');
         Route::get('contact-group/{contactGroup}', 'ContactGroup\ContactGroupController@show');
         Route::get('contact-group/{contactGroup}/csv', 'ContactGroup\ContactGroupController@getCsv');
@@ -221,6 +221,7 @@ Route::namespace('Api')
 
         Route::get('campaign/grid', 'Campaign\CampaignController@grid');
         Route::get('campaign/peek', 'Campaign\CampaignController@peek');
+        Route::get('campaign/peeknotfinished', 'Campaign\CampaignController@peekNotFinished');
         Route::get('campaign/{campaign}', 'Campaign\CampaignController@show');
         Route::get('campaign/{campaign}/intakes', 'Campaign\CampaignController@intakes');
         Route::get('campaign/{campaign}/opportunities', 'Campaign\CampaignController@opportunities');

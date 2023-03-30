@@ -26,4 +26,17 @@ export default {
                 console.log(error);
             });
     },
+
+    peekNotFinishedCampaigns: () => {
+        const requestUrl = `${URL_CAMPAIGN}/peeknotfinished`;
+
+        return axiosInstance
+            .get(requestUrl)
+            .then(function(response) {
+                return response.data.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    },
 };

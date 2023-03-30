@@ -20,6 +20,8 @@ class Campaign extends Model
 {
     use RevisionableTrait, SoftDeletes, HasFactory;
 
+    const STATUS_CLOSED = 4;
+
     protected $table = 'campaigns';
      /**
      * The attributes that are not mass assignable.

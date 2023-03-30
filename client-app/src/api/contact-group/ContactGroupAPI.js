@@ -146,6 +146,19 @@ export default {
             });
     },
 
+    peekStaticActiveContactGroups: () => {
+        const requestUrl = `${URL_API}/api/contact-group/peek/static/active`;
+
+        return axiosInstance
+            .get(requestUrl)
+            .then(function(response) {
+                return response.data.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    },
+
     getCsv: groupId => {
         const requestUrl = `${URL_CONTACT_GROUP}/${groupId}/csv`;
 

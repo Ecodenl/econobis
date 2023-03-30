@@ -47,7 +47,7 @@ class IntakeDetailsToolbar extends Component {
                                 </div>
                             </div>
                             <div className="col-md-8">
-                                <h4 className="text-center">{`Intake voor: ${campaignName}`}</h4>
+                                <h4 className="text-center">{`Intake voor: ${campaignName ? campaignName : '...'}`}</h4>
                             </div>
                             <div className="col-md-2" />
                         </PanelBody>

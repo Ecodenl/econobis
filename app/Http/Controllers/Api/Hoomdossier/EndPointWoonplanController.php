@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api\Hoomdossier;
 use App\Eco\HousingFile\HousingFileSpecification;
 use App\Eco\HousingFile\HousingFileSpecificationStatus;
 use App\Eco\Measure\Measure;
+use App\Eco\Opportunity\OpportunityStatus;
 use App\Helpers\Delete\Models\DeleteHousingFileSpecification;
 use App\Helpers\Delete\Models\DeleteOpportunity;
 use Illuminate\Http\Request;
@@ -91,10 +92,23 @@ class EndPointWoonplanController extends EndPointHoomDossierController
                         // zo niet -> kans verwijderen.
                         $deleteOpportunity = new DeleteOpportunity($opportunity);
                         $deleteOpportunity->delete();
-                        $this->log('Specificatie niet in woonplan. Kans ' . $opportunity->number . ' (' . $opportunity->id . ') verwijderd.');
+                        $this->log('Specificatie niet in woonplan. Kans ' . $opportunity->number . ' (' . $opportunity->id . ') zonder kansacties verwijderd.');
                     } else {
-                        // zo wel  -> kans bijwerken (waarmee?)
-                        $this->log('Specificatie niet in woonplan. Kans ' . $opportunity->number . ' (' . $opportunity->id . ') bijwerken.');
+                        // zo wel  -> kans status is In behandeling?
+                        $statusInActive = OpportunityStatus::where('code_ref', 'inactive')->first();
+                        if($opportunity->status_id == $statusInActive->id){
+                            // kans status is In behandeling, kans verwijderen
+                            $deleteOpportunity = new DeleteOpportunity($opportunity);
+                            $deleteOpportunity->delete();
+                            $this->log('Specificatie niet in woonplan. Kans ' . $opportunity->number . ' (' . $opportunity->id . ') met status Inactief (in behandeling) verwijderd.');
+
+                        } else {
+                            // kans status is niet In behandeling, kans status aanpassen naar "Verwijderd in Hoomdossier"
+                            $statusDeletedInHD = OpportunityStatus::where('code_ref', 'deleted_in_hd')->first();
+                            $opportunity->status_id = $statusDeletedInHD->id;
+                            $opportunity->save();
+                            $this->log('Specificatie niet in woonplan. Kans ' . $opportunity->number . ' (' . $opportunity->id . ') bijgewerkt met status "Verwijderd in Hoomdossier"');
+                        }
                     }
                 }
             }

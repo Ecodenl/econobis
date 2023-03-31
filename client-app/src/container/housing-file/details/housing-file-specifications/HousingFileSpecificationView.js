@@ -123,7 +123,13 @@ const HousingFileSpecificationView = props => {
                     <div>
                         <div className="col-sm-1">&nbsp;</div>
                         <div className="col-sm-2">Uitvoering:</div>
-                        <div className="col-sm-8">{typeOfExecution === 'Z' ? 'Zelf doen' : 'Laten doen'}</div>
+                        <div className="col-sm-8">
+                            {typeOfExecution === null
+                                ? 'Onbekend'
+                                : typeOfExecution === 'Z'
+                                ? 'Zelf doen'
+                                : 'Laten doen'}
+                        </div>
                         <div className="col-sm-1">&nbsp;</div>
                     </div>
                 </div>

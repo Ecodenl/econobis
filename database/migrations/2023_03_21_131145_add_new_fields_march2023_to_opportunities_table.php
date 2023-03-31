@@ -61,6 +61,17 @@ class AddNewFieldsMarch2023ToOpportunitiesTable extends Migration
         $opportunityStatus->order = 1;
         $opportunityStatus->save();
 
+        $opportunityStatus = New OpportunityStatus();
+        $opportunityStatus->name = 'Verwijderd in Hoomdossier';
+        $opportunityStatus->uses_wf = 0;
+        $opportunityStatus->email_template_id_wf = null;
+        $opportunityStatus->number_of_days_to_send_email = 0;
+        $opportunityStatus->active = 1;
+        $opportunityStatus->external_hoom_id = null;
+        $opportunityStatus->code_ref = "deleted_in_hd";
+        $opportunityStatus->order = 7;
+        $opportunityStatus->save();
+
         Schema::table('opportunities', function (Blueprint $table) {
             $table->integer('housing_file_specification_id')->nullable()->unsigned()->after('status_id');
             $table->foreign('housing_file_specification_id')->references('id')->on('housing_file_specifications') ->onDelete('restrict');

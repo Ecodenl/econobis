@@ -8,7 +8,6 @@
 
 namespace App\Http\Controllers\Api\QuotationRequest;
 
-
 use App\Eco\Email\Email;
 use App\Eco\Occupation\Occupation;
 use App\Eco\Occupation\OccupationContact;
@@ -31,6 +30,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use App\Helpers\Hoomdossier\HoomdossierHelper;
 
 class QuotationRequestController extends ApiController
 {
@@ -251,11 +251,16 @@ class QuotationRequestController extends ApiController
 
         $this->creatEnergyCoachOccupation($quotationRequest);
 
+        //if contact has a hoom_account_id, coach is set and coach has a hoom_account_id connect the coach to the hoom dossier
+        if($quotationRequest->organisationOrCoach && $quotationRequest->organisationOrCoach->isCoach()){
+            $HoomdossierHelper = new HoomdossierHelper($quotationRequest->opportunity->intake->contact);
+            $HoomdossierHelper->connectCoachToHoomdossier($quotationRequest);
+        }
+
         $quotationRequest->sendPlannedInDistrictMails();
 
         return $this->show($quotationRequest);
     }
-
 
     public function update(Request $request, QuotationRequest $quotationRequest)
     {

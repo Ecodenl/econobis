@@ -8,6 +8,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\QuotationRequest\QuotationRequest;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Template\TemplateVariableHelper;
@@ -103,6 +104,10 @@ class HoomdossierHelper
             if(!$this->contact->primaryAddress->city || empty($this->contact->primaryAddress->city)) {
                 $errorsCheckBefore[] = 'Plaats in adres ontbreekt';
             }
+// niet verplicht
+//            if(!$this->contact->primaryAddress->housingfile) {
+//                $errorsCheckBefore[] = 'Woningdossier ontbreekt';
+//            }
         }
         $errors = null;
         if(count($errorsCheckBefore)) {
@@ -128,6 +133,29 @@ class HoomdossierHelper
             $lastName = $this->contact->person->last_name;
         }
 
+        //calculate the total electricity usage (consumption_high + consumption_low - return_high - return_low)
+        $totalEnergy = 0;
+        if($this->contact->primaryAddress && $this->contact->primaryAddress->addressEnergyConsumptionElectricityPeriods()->count() > 0) {
+            $consumptionRow = $this->contact->primaryAddress->addressEnergyConsumptionElectricityPeriods()->get()->reverse()->first();
+            $consumptionHigh = $consumptionRow->consumption_high;
+            $consumptionLow = $consumptionRow->consumption_low;
+            $returnHigh = $consumptionRow->return_high;
+            $returnLow = $consumptionRow->return_low;
+
+            $totalEnergy = $consumptionHigh + $consumptionLow - $returnHigh - $returnLow;
+        }
+        //calculate the total gas usage
+        $totalGas = 0;
+        if($this->contact->primaryAddress && $this->contact->primaryAddress->addressEnergyConsumptionGasPeriods()->count() > 0) {
+            $totalGas = $this->contact->primaryAddress->addressEnergyConsumptionGasPeriods()->get()->reverse()->first()->consumption;
+        }
+
+        // number of residents (default 2)
+        $numberOfResidents = 2;
+        if($this->contact->primaryAddress && $this->contact->primaryAddress->housingFile) {
+            $numberOfResidents = $this->contact->primaryAddress->housingFile->number_of_residents;
+        }
+
         $payload = [
             'extra' => ['contact_id' => $this->contact->id],
             'email' => $this->contact->primaryEmailAddress->email ? $this->contact->primaryEmailAddress->email : '',
@@ -139,6 +167,16 @@ class HoomdossierHelper
             'street' => $this->contact->primaryAddress->street ? $this->contact->primaryAddress->street : '',
             'city' => $this->contact->primaryAddress->city ? $this->contact->primaryAddress->city : '',
             'phone_number' => $this->contact->primaryphoneNumber ? $this->contact->primaryphoneNumber->number : '',
+
+            'tool_questions' => [
+                'resident-count' => $numberOfResidents,
+                'amount-gas' => $totalGas,
+                'amount-electricity' => $totalEnergy,
+            ],
+
+            'roles' => [
+                'resident',
+            ]
         ];
         $client = new Client;
         $headers = [
@@ -157,6 +195,49 @@ class HoomdossierHelper
                 Log::error('Er is iets misgegaan met het verzenden naar Hoomdossier voor contact id ' . $this->contact->id .  ', melding: ' . $e->getCode() );
                 abort($e->getCode(), 'Er is iets misgegaan met het verzenden naar Hoomdossier');
             }
+        }
+    }
+
+    public function connectCoachToHoomdossier(QuotationRequest $quotationRequest)
+    {
+        if(!$this->cooperation->hoom_connect_coach_link){
+            return;
+        }
+
+        if(
+            $quotationRequest->organisationOrCoach->exists() &&
+            $quotationRequest->organisationOrCoach->hoom_account_id &&
+            $quotationRequest->opportunity->exists() &&
+            $quotationRequest->opportunity->intake->exists() &&
+            $quotationRequest->opportunity->intake->contact->hoom_account_id
+        ) {
+            $coach = $quotationRequest->organisationOrCoach;
+
+                $payload = [
+                    'building_coach_statuses' => [
+                        'coach_contact_id' => $coach->id,
+                        'resident_contact_id' => $this->contact->id,
+                    ],
+                ];
+
+                $client = new Client;
+                $headers = [
+                    'Authorization' => 'Bearer ' . $this->cooperation->hoom_key,
+                    'Accept' => 'application/json',
+                ];
+
+                try {
+                    $response = $client->post($this->cooperation->hoom_connect_coach_link, ['headers' => $headers, 'json' => $payload]);
+                    return $response->getBody();
+                } catch (RequestException $e) {
+                    if ($e->hasResponse()) {
+                        Log::error('Er is iets misgegaan met het koppelen van een coach aan het Hoomdossier met de coach id ' . $this->contact->id . ', melding: ' . $e->getCode() . ' - ' . $e->getResponse()->getBody());
+                        abort($e->getCode(), $e->getResponse()->getBody());
+                    } else {
+                        Log::error('Er is iets misgegaan met het koppelen van een coach aan het Hoomdossier met de coach id ' . $this->contact->id . ', melding: ' . $e->getCode());
+                        abort($e->getCode(), 'Er is iets misgegaan met het koppelen van een coach aan het Hoomdossier');
+                    }
+                }
         }
     }
 

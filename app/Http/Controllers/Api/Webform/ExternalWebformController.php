@@ -1516,7 +1516,9 @@ class ExternalWebformController extends Controller
             if($data['first_name']) {
                 $contactPersonUpdateArray['first_name'] = $data['first_name'];
             }
-            $contactPersonUpdateArray['last_name_prefix'] = $data['last_name_prefix'];
+            if($data['last_name_prefix']) {
+                $contactPersonUpdateArray['last_name_prefix'] = $data['last_name_prefix'];
+            }
             $contactPersonUpdateArray['last_name'] = $lastName;
         }
 

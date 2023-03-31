@@ -29,6 +29,10 @@ class HousingFileSpecificationNew extends Component {
                 floorId: '',
                 sideId: '',
                 typeBrand: '',
+                typeOfExecution: '',
+                savingsGas: '',
+                savingsElectricity: '',
+                co2Savings: '',
             },
             errors: {
                 measureId: false,
@@ -98,8 +102,20 @@ class HousingFileSpecificationNew extends Component {
             floorId,
             sideId,
             typeBrand,
+            typeOfExecution,
+            savingsGas,
+            savingsElectricity,
+            co2Savings,
         } = this.state.housingFileSpecification;
+        // const hasHoomDossierLink = this.props.hasHoomDossierLink;
         const measuresMatchToCategory = MeasuresOfCategory(this.props.measures, measureCategoryId);
+
+        const typeOfExecutionOptions = [
+            { id: '', name: 'Onbekend' },
+            { id: 'Z', name: 'Zelf doen' },
+            { id: 'L', name: 'Laten doen' },
+        ];
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
@@ -174,6 +190,38 @@ class HousingFileSpecificationNew extends Component {
                             />
                         </div>
 
+                        <div className="row">
+                            <InputText
+                                label={'Besparing gas'}
+                                name={'savingsGas'}
+                                value={savingsGas}
+                                onChangeAction={this.handleInputChange}
+                            />
+                            <InputSelect
+                                label={'Uitvoering'}
+                                name={'typeOfExecution'}
+                                options={typeOfExecutionOptions}
+                                value={typeOfExecution}
+                                onChangeAction={this.handleInputChange}
+                                emptyOption={false}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputText
+                                label={'Besparing Electriciteit'}
+                                name={'savingsElectricity'}
+                                value={savingsElectricity}
+                                onChangeAction={this.handleInputChange}
+                            />
+                            <InputText
+                                label={'CO2 besparing'}
+                                name={'co2Savings'}
+                                value={co2Savings}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+
                         <div className="pull-right btn-group" role="group">
                             <ButtonText
                                 buttonClassName={'btn-default'}
@@ -196,6 +244,7 @@ class HousingFileSpecificationNew extends Component {
 
 const mapStateToProps = state => {
     return {
+        // hasHoomDossierLink: state.housingFileDetails.hoomBuildingId != null ? true : false,
         housingFileId: state.housingFileDetails.id,
         measures: state.systemData.measures,
         measureCategories: state.systemData.measureCategories,

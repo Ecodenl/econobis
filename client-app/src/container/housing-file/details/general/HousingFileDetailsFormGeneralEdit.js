@@ -39,7 +39,6 @@ class HousingFileDetailsFormGeneralEdit extends Component {
             heatSource,
             waterComfort,
         } = props.housingFileDetails;
-        console.log(hoomBuildingId);
 
         this.state = {
             housingFile: {

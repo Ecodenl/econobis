@@ -16,7 +16,8 @@ const HousingFileHousingStatusView = props => {
                 onMouseEnter={() => props.onLineEnter()}
                 onMouseLeave={() => props.onLineLeave()}
             >
-                <div onClick={props.openEdit}>
+                {/*<div onClick={props.openEdit}>*/}
+                <div>
                     <div className="col-sm-4">{housingFileHoomLink.label}</div>
                     <div className="col-sm-7">{status.hoomStatusName}</div>
                 </div>

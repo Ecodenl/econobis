@@ -82,6 +82,8 @@ class EndPointWoonplanController extends EndPointHoomDossierController
         $this->log('specificationsInWoonplan ' . implode(',', $this->specificationsInWoonplan));
         $this->log('specificationsInEconobisNotInWoonplan ' . implode(',', $specificationsInEconobisNotInWoonplan));
 
+
+//        Log::info(json_encode($dataContent));
         foreach ($specificationsInEconobisNotInWoonplan as $specificationId){
             $specification = HousingFileSpecification::find($specificationId);
             // hier check of er al een kans gemaakt was,
@@ -114,10 +116,10 @@ class EndPointWoonplanController extends EndPointHoomDossierController
             }
             // hier check of er nog gekoppelde kanzen zijn, (even opnieuw specificatie ophalen. Kanzen kunnen net verwijderd zijn hierboven
             $specificationReload = HousingFileSpecification::find($specification->id);
-            if(!$specificationReload->opportunities){
+            if($specificationReload->opportunities->count() == 0){
                 // zo niet -> specificatie verwijderen
                 $deleteSpecifiction = new DeleteHousingFileSpecification($specificationReload);
-                $this->errorMessage = array_merge($this->errorMessage, $deleteSpecifiction->delete());
+                $deleteSpecifiction->delete();
                 $this->log('Specificatie niet in woonplan. Specification ' . $specificationReload->id. ' verwijderd.');
             }
         }

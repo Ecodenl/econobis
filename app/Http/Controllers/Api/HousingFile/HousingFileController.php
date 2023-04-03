@@ -9,9 +9,18 @@
 namespace App\Http\Controllers\Api\HousingFile;
 
 
+use App\Eco\Campaign\Campaign;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Contact\Contact;
+use App\Eco\HousingFile\HousingFileHousingStatus;
 use App\Eco\HousingFile\HousingFileSpecification;
+use App\Eco\HousingFile\HousingFileSpecificationStatus;
+use App\Eco\Intake\Intake;
+use App\Eco\Intake\IntakeSource;
+use App\Eco\Intake\IntakeStatus;
+use App\Eco\Measure\Measure;
+use App\Eco\Opportunity\Opportunity;
+use App\Eco\Opportunity\OpportunityStatus;
 use App\Helpers\Delete\Models\DeleteHousingFile;
 use App\Helpers\Excel\HousingFileExcelHelper;
 use App\Helpers\RequestInput\RequestInput;
@@ -325,6 +334,50 @@ class HousingFileController extends ApiController
         $this->authorize('manage', HousingFile::class);
 
         $housingFileHousingStatus->delete();
+    }
+
+    public function createOpportunities(Request $request, HousingFile $housingFile, Campaign $campaign)
+    {
+        $this->authorize('manage', HousingFile::class);
+
+        $intakeStatusIdClosedWithOpportunity = IntakeStatus::where('code_Ref', 'closed_with_opportunity')->first()->id;
+        $housingFileIntakeSource = IntakeSource::where('code_ref', 'housing_file')->first()->id;
+        $opportunityStatusIdInactive = OpportunityStatus::where('code_ref', 'inactive')->first()->id;
+        $specificationStatusIdOpportunityCreated = HousingFileSpecificationStatus::where('code_ref', 'opportunity_created')->first()->id;
+
+        $specificationIds = $request->input('ids');
+
+        foreach ($specificationIds as $specificationId){
+            $housingFileSpecification = HousingFileSpecification::find($specificationId);
+            if($housingFileSpecification){
+                $measure = Measure::find($housingFileSpecification->measure_id);
+
+                $intake = Intake::create([
+                    'contact_id' => $housingFile->address->contact->id,
+                    'address_id' => $housingFile->address->id,
+                    'intake_status_id' => $intakeStatusIdClosedWithOpportunity,
+                    'campaign_id' => $campaign->id,
+                    'note' => 'Intake gemaakt vanuit woningdossier',
+                ]);
+                $intake->sources()->sync($housingFileIntakeSource);
+
+                $intake->measuresRequested()->sync($measure->measureCategory->id);
+
+                $opportunity = Opportunity::create([
+                    'measure_category_id' => $measure->measureCategory->id,
+                    'status_id' => $opportunityStatusIdInactive,
+                    'housing_file_specification_id' => $housingFileSpecification->id,
+                    'intake_id' => $intake->id,
+                    'quotation_text' => $housingFileSpecification->external_hoom_name ? $housingFileSpecification->external_hoom_name : '',
+                    'desired_date' => null,
+                    'evaluation_agreed_date' => null,
+                ]);
+                $opportunity->measures()->sync($measure->id);
+
+                $housingFileSpecification->status_id = $specificationStatusIdOpportunityCreated;
+                $housingFileSpecification->save();
+            }
+        }
     }
 
     public function destroy(HousingFile $housingFile)

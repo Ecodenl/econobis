@@ -22,6 +22,7 @@ const HousingFileHousingStatusView = props => {
                     <div className="col-sm-7">{status.hoomStatusName}</div>
                 </div>
                 {/*todo WM: edit/delete housingfile housingstatus*/}
+                {/*todo WM: glyphicon aanpassen in master-release-440*/}
                 {/*<div className="col-sm-1">*/}
                 {/*    {props.showActionButtons && props.permissions.manageHousingFile ? (*/}
                 {/*        <a role="button" onClick={props.openEdit}>*/}

@@ -28,6 +28,7 @@ class HousingFileHousingStatuses extends Component {
                 <PanelHeader>
                     <span className="h5 text-bold">Woningstatus</span>
                     {/*todo WM: new housingfile housingstatus*/}
+                    {/*todo WM: glyphicon aanpassen in master-release-440*/}
                     {/*{this.props.permissions.manageHousingFile && (*/}
                     {/*    <a role="button" className="pull-right" onClick={this.toggleShowNew}>*/}
                     {/*        <span className="glyphicon glyphicon-plus" />*/}

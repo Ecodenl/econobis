@@ -37,7 +37,6 @@ class FullHousingFile extends JsonResource
                 'buildingType' => GenericResource::make($this->whenLoaded('buildingType')),
                 'buildYear' => $this->build_year,
                 'isHouseForSale' => $this->is_house_for_sale,
-                'numberOfResidents' => $this->number_of_residents,
                 'surface' => $this->surface,
                 'roofType' => GenericResource::make($this->whenLoaded('roofType')),
                 'energyLabel' => GenericResource::make($this->whenLoaded('energyLabel')),

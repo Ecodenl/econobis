@@ -37,6 +37,7 @@ class FullHousingFileSpecification extends JsonResource
                 'savingsGas' => $this->savings_gas,
                 'savingsElectricity' => $this->savings_electricity,
                 'co2Savings' => $this->co2_savings,
+                'hasOpportunities' => $this->has_opportunities,
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
             ];

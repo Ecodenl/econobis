@@ -68,4 +68,10 @@ class HousingFileSpecification extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function getHasOpportunitiesAttribute()
+    {
+        return $this->opportunities()->exists();
+    }
+
+
 }

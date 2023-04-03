@@ -54,7 +54,7 @@ class IntakeWorkflowHelper
         $this->opportunity->measures()->sync($this->measureCategory->measure_id_wf_create_opportunity);
 
         //intake kan nu op status Afgesloten met kans gezet worden.
-        $statusIdClosedWithOpportunity = IntakeStatus::where('name', 'Afgesloten met kans')->first()->id;
+        $statusIdClosedWithOpportunity = IntakeStatus::where('code_ref', 'closed_with_opportunity')->first()->id;
         $this->intake->intake_status_id = $statusIdClosedWithOpportunity;
 
         //Indien maak offerte verzoek

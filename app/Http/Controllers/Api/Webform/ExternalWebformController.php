@@ -1778,7 +1778,7 @@ class ExternalWebformController extends Controller
             $intake->measuresRequested()->sync($measureCategories->pluck('id'));
             $this->log("Intake gekoppeld aan interesses: " . $measureCategories->implode('name', ', '));
 
-            $statusIdClosedWithOpportunity = IntakeStatus::where('name', 'Afgesloten met kans')->first()->id;
+            $statusIdClosedWithOpportunity = IntakeStatus::where('code_ref', 'closed_with_opportunity')->first()->id;
             // Intake maatregelen meegegeven, aanmaken kansen (per intake maatregel)
             $firstOpportunity = true;
             $saveOpportunity = null;

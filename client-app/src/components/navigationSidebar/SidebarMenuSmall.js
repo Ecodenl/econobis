@@ -79,7 +79,7 @@ const SidebarMenuSmall = ({ permissions, administrations }) => (
             </div>
         )}
         {/* Administraties */}
-        {permissions.menuFinacial && permissions.manageFinancial && administrations.length > 0 && (
+        {permissions.menuFinancial && permissions.manageFinancial && administrations.length > 0 && (
             <div className="sidebar-menu-small-item">
                 <SvgIcon size={20} icon={ic_business_center} />
             </div>

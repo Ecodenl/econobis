@@ -85,4 +85,17 @@ export default {
                 return error;
             });
     },
+
+    createOpportunitiesFromSpecifications: (housingFileId, specificationIds, campaignId) => {
+        const requestUrl = `${URL_HOUSING_FILE}/${housingFileId}/campaign/${campaignId}/create-opportunities`;
+
+        return axiosInstance
+            .post(requestUrl, { ids: specificationIds })
+            .then(function(response) {
+                return response.data;
+            })
+            .catch(function(error) {
+                return error.response;
+            });
+    },
 };

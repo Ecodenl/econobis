@@ -140,7 +140,7 @@ class HousingFileDetailsFormUseEdit extends Component {
                         readOnly={hasHoomDossierLink}
                     />
                     <InputSelect
-                        label={'Stooktemperatuur)'}
+                        label={'Stooktemperatuur'}
                         size={'col-sm-6'}
                         name="boilerSettingComfortHeat"
                         value={boilerSettingComfortHeat}

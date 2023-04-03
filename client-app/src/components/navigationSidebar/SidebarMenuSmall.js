@@ -54,12 +54,6 @@ const SidebarMenuSmall = ({ permissions, administrations }) => (
                 <SvgIcon size={20} icon={ic_email} />
             </div>
         )}
-        {/* Marketing */}
-        {permissions.menuMarketing && (
-            <div className="sidebar-menu-small-item">
-                <SvgIcon size={20} icon={speech_bubbles} />
-            </div>
-        )}
         {/* Taken */}
         {permissions.menuTasks && (
             <div className="sidebar-menu-small-item">
@@ -85,7 +79,7 @@ const SidebarMenuSmall = ({ permissions, administrations }) => (
             </div>
         )}
         {/* Administraties */}
-        {permissions.menuFinacial && permissions.manageFinancial && administrations.length > 0 && (
+        {permissions.menuFinancial && permissions.manageFinancial && administrations.length > 0 && (
             <div className="sidebar-menu-small-item">
                 <SvgIcon size={20} icon={ic_business_center} />
             </div>

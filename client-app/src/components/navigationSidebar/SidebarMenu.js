@@ -10,7 +10,6 @@ import { ic_business } from 'react-icons-kit/md/ic_business';
 import { ic_contacts } from 'react-icons-kit/md/ic_contacts';
 import { ic_email } from 'react-icons-kit/md/ic_email';
 import { cog } from 'react-icons-kit/icomoon/cog';
-import { speech_bubbles } from 'react-icons-kit/ikons/speech_bubbles';
 import { documents } from 'react-icons-kit/ikons/documents';
 import { calendar } from 'react-icons-kit/icomoon/calendar';
 import { home } from 'react-icons-kit/icomoon/home';
@@ -187,7 +186,6 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </NavText>
                         </Nav>
                     )}
-
                 </Nav>
             )}
 
@@ -278,7 +276,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </Link>
                         </NavText>
                     </Nav>
-                    {(permissions.manageCoachPlanning) && (
+                    {permissions.manageCoachPlanning && (
                         <Nav key={'nav-afspraak-kalender'} id={`afspraak-kalender`}>
                             <NavText>
                                 <Link className="sidebar-link-header" to="afspraak-kalenders">
@@ -287,7 +285,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </NavText>
                         </Nav>
                     )}
-                    {(permissions.manageCoachPlanning) && (
+                    {permissions.manageCoachPlanning && (
                         <Nav key={'nav-beschikbaarheid'} id={`beschikbaarheid`}>
                             <NavText>
                                 <Link className="sidebar-link-header" to="beschikbaarheid">

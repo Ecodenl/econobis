@@ -209,7 +209,8 @@ class HoomdossierHelper
             $quotationRequest->organisationOrCoach->hoom_account_id &&
             $quotationRequest->opportunity->exists() &&
             $quotationRequest->opportunity->intake->exists() &&
-            $quotationRequest->opportunity->intake->contact->hoom_account_id
+            $quotationRequest->opportunity->intake->contact->hoom_account_id &&
+            ($quotationRequest->opportunity->intake->campaign_id === $this->cooperation->hoom_campaign_id)
         ) {
             $coach = $quotationRequest->organisationOrCoach;
 

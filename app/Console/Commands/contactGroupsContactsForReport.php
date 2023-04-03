@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Eco\User\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Eco\ContactGroup\ContactGroup;
@@ -40,6 +42,8 @@ class contactGroupsContactsForReport extends Command
      */
     public function handle()
     {
+        Auth::setUser(User::find(1));
+
         /* first truncate the 'contact_groups_contacts_for_report' table */
         DB::table('contact_groups_contacts_for_report')->truncate();
 
@@ -47,24 +51,18 @@ class contactGroupsContactsForReport extends Command
         $contactGroups = ContactGroup::whereIn('type_id', ['dynamic', 'composed', 'static'])->where('closed', 0)->get();
 
         foreach($contactGroups as $contactGroup) {
-            $allContacts = $contactGroup->getAllContacts();
+            $allContacts = $contactGroup->all_contact_group_contacts;
 
             foreach($allContacts as $contact) {
-                if(isSet($contact->pivot->member_to_group_since)) {
-                    $member_to_group_since = $contact->pivot->member_to_group_since;
-                } else {
-                    $member_to_group_since = null;
-                }
-
                 DB::insert('insert into contact_groups_contacts_for_report (
-                    contact_id, 
+                    contact_id,
                     contact_group_id,
                     member_to_group_since
                 ) values (?, ?, ?)',
                     [
                         $contact->id,
                         $contactGroup->id,
-                        $member_to_group_since
+                        $contact->member_to_group_since,
                     ]
                 );
             }

@@ -43,7 +43,38 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             externalpartyNote,
         } = props.quotationRequestDetails;
 
+        // this.state.opportunityActionCodeRef                'visit'
+        // this.state.visitDefaultStatusId                     7
+        // this.state.visitMadeStatusId                        8
+        // this.state.visitDoneStatusId                        9
+        // this.state.visitCanceledStatusId                    14
+
         this.state = {
+            opportunityActionCodeRef: opportunityAction.codeRef,
+            visitDefaultStatusId:
+                opportunityAction.codeRef === 'visit'
+                    ? relatedQuotationRequestsStatuses.find(status => {
+                          return status.codeRef == 'default';
+                      }).id
+                    : null,
+            visitMadeStatusId:
+                opportunityAction.codeRef === 'visit'
+                    ? relatedQuotationRequestsStatuses.find(status => {
+                          return status.codeRef == 'made';
+                      }).id
+                    : null,
+            visitDoneStatusId:
+                opportunityAction.codeRef === 'visit'
+                    ? relatedQuotationRequestsStatuses.find(status => {
+                          return status.codeRef == 'done';
+                      }).id
+                    : null,
+            visitCanceledStatusId:
+                opportunityAction.codeRef === 'visit'
+                    ? relatedQuotationRequestsStatuses.find(status => {
+                          return status.codeRef == 'cancelled';
+                      }).id
+                    : null,
             opportunity: {
                 fullName: opportunity.intake ? opportunity.intake.contact.fullName : '',
                 fullAddress: opportunity.intake ? opportunity.intake.fullAddress : '',
@@ -96,18 +127,27 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        if(name == 'statusId' && value == 7) {
+        if (
+            name === 'statusId' &&
+            this.state.opportunityActionCodeRef === 'visit' &&
+            value == this.state.visitDefaultStatusId
+        ) {
             this.setState({
                 ...this.state,
                 quotationRequest: {
                     ...this.state.quotationRequest,
                     [name]: value,
-                    dateRecorded: "",
-                    timeRecorded: "",
-                    dateReleased: "",
+                    datePlanned: '',
+                    timePlanned: '08:00',
+                    dateRecorded: '',
+                    timeRecorded: '08:00',
                 },
             });
-        } else if(name == 'statusId' && value == 9) {
+        } else if (
+            name == 'statusId' &&
+            this.state.opportunityActionCodeRef === 'visit' &&
+            value == this.state.visitDoneStatusId
+        ) {
             this.setState({
                 ...this.state,
                 quotationRequest: {
@@ -128,15 +168,18 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
         }
     };
 
-
     handleInputChangeDate(value, name) {
-        if(name == 'datePlanned' && this.state.quotationRequest.statusId != 14) {
+        if (
+            name == 'datePlanned' &&
+            this.state.opportunityActionCodeRef === 'visit' &&
+            this.state.quotationRequest.statusId != this.state.visitCanceledStatusId
+        ) {
             this.setState({
                 ...this.state,
                 quotationRequest: {
                     ...this.state.quotationRequest,
                     [name]: value,
-                    statusId: 8,
+                    statusId: this.state.visitMadeStatusId,
                 },
             });
         } else {

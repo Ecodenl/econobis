@@ -93,9 +93,7 @@ class HousingFileSpecifications extends Component {
                     {this.props.permissions.manageHousingFile && (
                         <div>
                             <ButtonText
-                                buttonText={
-                                    this.state.showCheckboxList ? 'Contactselectie sluiten' : 'Contactselectie maken'
-                                }
+                                buttonText={this.state.showCheckboxList ? 'Selectie sluiten' : 'Selectie maken'}
                                 onClickAction={this.toggleShowCheckboxList}
                             />
                             {this.state.showCheckboxList ? (

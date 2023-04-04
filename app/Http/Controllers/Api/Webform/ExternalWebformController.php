@@ -420,7 +420,7 @@ class ExternalWebformController extends Controller
                 'contact_groep_ids' => 'contact_group_ids',
                 // Hoomdossier aanmaken
                 'hoomdossier_aanmaken' => 'create_hoom_dossier',
-                'forceer_nieuw_contact' => 'forceer_nieuw_contact',
+                'forceer_nieuw_contact' => 'force_new_contact',
             ],
             'address_energy_consumption_gas' => [
                 // Address energy consumption gas
@@ -628,9 +628,12 @@ class ExternalWebformController extends Controller
         }
         Auth::setUser($ownerAndResponsibleUser);
         $this->log('Default Eigenaar contact verantwoordelijke gebruiker (zelfde als eigenaar) : ' . $ownerAndResponsibleUser->id);
-        
-        if($data['forceer_nieuw_contact'] == 1) {
-            $contact = false;
+
+        $this->log('Forceer nieuw contact : ' . $data['force_new_contact']);
+
+        if($data['force_new_contact'] == 1) {
+            $contact = null;
+            $this->contactActie = "NCG";
         } else {
             $contact = $this->getContactByAddressAndEmail($data);
         }
@@ -749,11 +752,22 @@ class ExternalWebformController extends Controller
         if (!$contact) {
             // Person of organisatie is niet gevonden, uitvoeren acties
             // contactActie = "NC"  -> Nieuw contact
+            // contactActie = "NCG" -> Nieuw contact geforceerd
             // contactActie = "NCT" -> Nieuw contact + taak
-            $this->log('Geen enkel contact kunnen vinden op basis van meegegeven data, nieuw contact aanmaken.');
+            if($this->contactActie == 'NCG'){
+                $this->log('Geforceerd nieuw contact aanmaken');
+            } else {
+                $this->log('Geen enkel contact kunnen vinden op basis van meegegeven data, nieuw contact aanmaken.');
+            }
 
             $contact = $this->addContact($data, $ownerAndResponsibleUser);
             switch($this->contactActie){
+                case 'NCG' :
+                    $note = "Webformulier " . $webform->name . ".\n\n";
+                    $note .= "Nieuw contact " . $contact->full_name . " (".$contact->number.") geforceerd aangemaakt zonder check op adres en/of emailadres bij bestaande contact(en).\n";
+                    $note .= "Controleer contactgegevens\n";
+                    $this->addTaskCheckContact($responsibleIds, $contact, $webform, $note);
+                    break;
                 case 'NCT' :
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw contact " . $contact->full_name . " (".$contact->number.") aangemaakt op adres wat al voorkomt bij bestaande contact(en).\n";

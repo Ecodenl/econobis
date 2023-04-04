@@ -678,7 +678,9 @@ class ExternalWebformController extends Controller
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw adres toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
                     $note .= "Adres type : " . AddressType::get($addressTypeId)->name . "\n";
+                    $note .= "Voorletters : " . $data['initials'] . "\n";
                     $note .= "Voornaam : " . $data['first_name'] . "\n";
+                    $note .= "Tussenvoegsel : " . $data['last_name_prefix'] . "\n";
                     $note .= "Achternaam : " . $data['last_name'] . "\n";
                     $note .= "Straat : " . $data['address_street'] . "\n";
                     $note .= "Nummer : " . $data['address_number'] . "\n";
@@ -726,7 +728,9 @@ class ExternalWebformController extends Controller
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Gegevens contact met emailadres " . $data['email_address'] . " (".$contact->number.") gevonden bij op basis van e-mail maar zonder goede match op NAW.\n";
                     $note .= "Adres type : " . AddressType::get($addressTypeId)->name . "\n";
+                    $note .= "Voorletters : " . $data['initials'] . "\n";
                     $note .= "Voornaam : " . $data['first_name'] . "\n";
+                    $note .= "Tussenvoegsel : " . $data['last_name_prefix'] . "\n";
                     $note .= "Achternaam : " . $data['last_name'] . "\n";
                     $note .= "Straat : " . $data['address_street'] . "\n";
                     $note .= "Nummer : " . $data['address_number'] . "\n";

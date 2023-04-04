@@ -24,10 +24,14 @@ const ContactGroupExtraFilterView = props => {
             field === 'occupationPrimary' ||
             field === 'occupation' ||
             field === 'staticContactGroup' ||
-            field === 'country') &&
+            field === 'country' ||
+            field === 'inspectionPersonType') &&
         (comperator === 'eq' || comperator === 'neq' || comperator === 'rel' || comperator === 'nrel')
     ) {
         dataNameReadable = '--Willekeurige waarde--';
+    }
+    if (field === 'didAgreeAvg' || field === 'portalUser' || field === 'housingFile') {
+        dataNameReadable = dataName == 1 ? 'Ja' : 'Nee';
     }
 
     const fieldReadable = FilterHelper('field', field);

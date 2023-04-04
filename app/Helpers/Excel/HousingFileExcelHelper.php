@@ -11,8 +11,6 @@ namespace App\Helpers\Excel;
 use App\Eco\HousingFile\HousingFileHoomHousingStatus;
 use App\Eco\HousingFile\HousingFileHoomLink;
 use App\Eco\HousingFile\HousingFileHousingStatus;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -23,6 +21,7 @@ class HousingFileExcelHelper
     public function __construct($housingFiles)
     {
         $this->housingFiles = $housingFiles;
+        $this->housingFileHoomLinks = HousingFileHoomLink::where('housing_file_data_type', 'W')->orderBy('external_hoom_short_name')->get();
     }
 
     public function downloadExcel()
@@ -72,7 +71,7 @@ class HousingFileExcelHelper
         $headerData[] = 'Verbruik gas';
         $headerData[] = 'Verbruik electriciteit';
 
-        foreach(HousingFileHoomLink::where('housing_file_data_type', 'W')->orderBy('external_hoom_short_name')->get() as $housingFileHoomLink) {
+        foreach($this->housingFileHoomLinks as $housingFileHoomLink) {
             $headerData[] = $housingFileHoomLink->label;
         }
 
@@ -122,7 +121,7 @@ class HousingFileExcelHelper
                 $rowData[32] = $housingFile->amount_electricity;
 
                 $colcounter = 33;
-                foreach(HousingFileHoomLink::where('housing_file_data_type', 'W')->orderBy('external_hoom_short_name')->get() as $housingFileHoomLink) {
+                foreach($this->housingFileHoomLinks as $housingFileHoomLink) {
                     $housingFileHousingStatus = HousingFileHousingStatus::where('housing_file_id', $housingFile->id)->where('housing_file_hoom_links_id', $housingFileHoomLink->id)->first();
 
                     if($housingFileHousingStatus AND $hfhhs = HousingFileHoomHousingStatus::where('external_hoom_short_name', $housingFileHoomLink->external_hoom_short_name)->where('hoom_status_value', $housingFileHousingStatus->status)->first()) {

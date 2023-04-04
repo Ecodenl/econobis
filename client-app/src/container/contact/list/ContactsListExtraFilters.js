@@ -320,6 +320,16 @@ class ContactsListExtraFilters extends Component {
                 type: 'boolean',
                 dropDownOptions: this.state.yesNoOptions,
             },
+            housingFile: {
+                name: 'Woningdossier aanwezig',
+                type: 'boolean',
+                dropDownOptions: this.state.yesNoOptions,
+            },
+            inspectionPersonType: {
+                name: 'Rol in buurtaanpak',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.inspectionPersonTypes,
+            },
         };
 
         // Options only if product is set
@@ -479,6 +489,7 @@ const mapStateToProps = state => {
         energySupplierTypes: state.systemData.energySupplierTypes,
         countries: state.systemData.countries,
         orderStatuses: state.systemData.orderStatuses,
+        inspectionPersonTypes: state.systemData.inspectionPersonTypes,
     };
 };
 

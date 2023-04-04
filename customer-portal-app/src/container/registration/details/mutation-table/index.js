@@ -19,7 +19,9 @@ function RegistrationDetailsMutationTable({ participantMutations }) {
                 <thead>
                     <tr>
                         {participantMutations[0].fields.map((field, index) => (
-                            <th key={index}>{field.label}</th>
+                            <th className={classNameBasedOnTypePresenter(field)} key={index}>
+                                {field.label}
+                            </th>
                         ))}
                     </tr>
                 </thead>
@@ -27,7 +29,7 @@ function RegistrationDetailsMutationTable({ participantMutations }) {
                     {participantMutations.map((participantMutation, index) => (
                         <tr key={index}>
                             {participantMutation.fields.map((field, index) => (
-                                <td className='text-left' key={index}>
+                                <td className={classNameBasedOnTypePresenter(field)} key={index}>
                                     {valueBasedOnTypePresenter(field)}
                                 </td>
                             ))}

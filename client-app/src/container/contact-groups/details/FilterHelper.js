@@ -68,6 +68,8 @@ export default (type, field) => {
                     return 'Portal gebruiker actief';
                 case 'housingFile':
                     return 'Woningdossier aanwezig';
+                case 'inspectionPersonType':
+                    return 'Rol in buurtaanpak';
                 case 'product':
                     return 'Product';
                 case 'dateStart':

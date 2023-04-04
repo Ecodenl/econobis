@@ -301,12 +301,12 @@ class ContactsListExtraFilters extends Component {
                 type: 'date',
             },
             energySupplier: {
-                name: 'Primaire Energie leverancier',
+                name: 'Huidige Energie leverancier',
                 type: 'dropdown',
                 dropDownOptions: this.props.energySuppliers,
             },
             energySupplierType: {
-                name: 'Type primaire energie leverancier',
+                name: 'Type huidige energie leverancier',
                 type: 'dropdownHas',
                 dropDownOptions: this.props.energySupplierTypes,
             },

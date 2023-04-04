@@ -47,6 +47,8 @@ class ExtraFilter extends RequestExtraFilter
         'energySupplierType',
         'portalUser',
         'didAgreeAvg',
+        'housingFile',
+        'inspectionPersonType',
     ];
 
     protected $mapping = [
@@ -56,6 +58,7 @@ class ExtraFilter extends RequestExtraFilter
         'currentParticipations' => 'contacts.participations_current',
         'currentPostalcodeLinkCapital' => 'contacts.postalcode_link_capital_current',
         'currentLoan' => 'contacts.loan_current',
+        'inspectionPersonType' => 'contacts.inspection_person_type_id',
     ];
 
     protected $joins = [];
@@ -607,6 +610,39 @@ class ExtraFilter extends RequestExtraFilter
         }else{
             $query->whereDoesntHave('portalUser')
             ->whereHas('person');
+        }
+    }
+
+    protected function applyHousingFileFilter($query, $type, $data)
+    {
+        if($data){
+            $query->whereHas('housingFiles');
+        }else{
+            $query->whereDoesntHave('housingFiles');
+        }
+    }
+    protected function applyInspectionPersonTypeFilter($query, $type, $data)
+    {
+        switch($type) {
+            case 'neq':
+                if(empty($data)){
+                    RequestFilter::applyFilter($query, 'inspection_person_type_id', 'nl', null);
+                }else{
+                    $query->Where(function ($query) use ($type, $data) {
+                        RequestFilter::applyFilter($query, 'inspection_person_type_id', $type, $data);
+                    })
+                        ->orWhere(function ($query) use ($data) {
+                            RequestFilter::applyFilter($query, 'inspection_person_type_id', 'nl', null);
+                        });
+                }
+                break;
+            default:
+                if(empty($data)){
+                    RequestFilter::applyFilter($query, 'inspection_person_type_id', 'nnl', '');
+                }else{
+                    RequestFilter::applyFilter($query, 'inspection_person_type_id', $type, $data);
+                }
+                break;
         }
     }
 

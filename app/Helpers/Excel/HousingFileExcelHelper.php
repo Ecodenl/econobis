@@ -8,6 +8,9 @@
 
 namespace App\Helpers\Excel;
 
+use App\Eco\HousingFile\HousingFileHoomHousingStatus;
+use App\Eco\HousingFile\HousingFileHoomLink;
+use App\Eco\HousingFile\HousingFileHousingStatus;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -69,6 +72,10 @@ class HousingFileExcelHelper
         $headerData[] = 'Verbruik gas';
         $headerData[] = 'Verbruik electriciteit';
 
+        foreach(HousingFileHoomLink::where('housing_file_data_type', 'W')->orderBy('external_hoom_short_name')->get() as $housingFileHoomLink) {
+            $headerData[] = $housingFileHoomLink->label;
+        }
+
         $completeData[] = $headerData;
 
         foreach ($this->housingFiles->chunk(500) as $chunk) {
@@ -114,6 +121,18 @@ class HousingFileExcelHelper
                 $rowData[31] = $housingFile->amount_gas;
                 $rowData[32] = $housingFile->amount_electricity;
 
+                $colcounter = 33;
+                foreach(HousingFileHoomLink::where('housing_file_data_type', 'W')->orderBy('external_hoom_short_name')->get() as $housingFileHoomLink) {
+                    $housingFileHousingStatus = HousingFileHousingStatus::where('housing_file_id', $housingFile->id)->where('housing_file_hoom_links_id', $housingFileHoomLink->id)->first();
+
+                    if($housingFileHousingStatus AND $hfhhs = HousingFileHoomHousingStatus::where('external_hoom_short_name', $housingFileHoomLink->external_hoom_short_name)->where('hoom_status_value', $housingFileHousingStatus->status)->first()) {
+                        $rowData[$colcounter] = $hfhhs->hoom_status_name;
+                    } else {
+                        $rowData[$colcounter] = '';
+                    }
+                    $colcounter = $colcounter + 1;
+                }
+
                 $completeData[] = $rowData;
             }
         }
@@ -124,13 +143,13 @@ class HousingFileExcelHelper
         // Load all data in worksheet
         $sheet->fromArray($completeData);
 
-        for ($col = 'A'; $col !== 'AG'; $col++) {
+        for ($col = 'A'; $col !== 'AR'; $col++) {
             $spreadsheet->getActiveSheet()
                 ->getColumnDimension($col)
                 ->setAutoSize(true);
         }
 
-        $sheet->getStyle('A1:AG1')
+        $sheet->getStyle('A1:AR1')
             ->applyFromArray([
                 'font' => [
                     'bold' => true,

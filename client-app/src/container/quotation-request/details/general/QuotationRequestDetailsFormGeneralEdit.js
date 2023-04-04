@@ -42,7 +42,38 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             externalpartyNote,
         } = props.quotationRequestDetails;
 
+        // this.state.opportunityActionCodeRef                'visit'
+        // this.state.visitDefaultStatusId                     7
+        // this.state.visitMadeStatusId                        8
+        // this.state.visitDoneStatusId                        9
+        // this.state.visitCanceledStatusId                    14
+
         this.state = {
+            opportunityActionCodeRef: opportunityAction.codeRef,
+            visitDefaultStatusId:
+                opportunityAction.codeRef === 'visit'
+                    ? relatedQuotationRequestsStatuses.find(status => {
+                          return status.codeRef == 'default';
+                      }).id
+                    : null,
+            visitMadeStatusId:
+                opportunityAction.codeRef === 'visit'
+                    ? relatedQuotationRequestsStatuses.find(status => {
+                          return status.codeRef == 'made';
+                      }).id
+                    : null,
+            visitDoneStatusId:
+                opportunityAction.codeRef === 'visit'
+                    ? relatedQuotationRequestsStatuses.find(status => {
+                          return status.codeRef == 'done';
+                      }).id
+                    : null,
+            visitCanceledStatusId:
+                opportunityAction.codeRef === 'visit'
+                    ? relatedQuotationRequestsStatuses.find(status => {
+                          return status.codeRef == 'cancelled';
+                      }).id
+                    : null,
             opportunity: {
                 fullName: opportunity.intake ? opportunity.intake.contact.fullName : '',
                 fullAddress: opportunity.intake ? opportunity.intake.fullAddress : '',
@@ -95,23 +126,70 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        this.setState({
-            ...this.state,
-            quotationRequest: {
-                ...this.state.quotationRequest,
-                [name]: value,
-            },
-        });
+        if (
+            name === 'statusId' &&
+            this.state.opportunityActionCodeRef === 'visit' &&
+            value == this.state.visitDefaultStatusId
+        ) {
+            this.setState({
+                ...this.state,
+                quotationRequest: {
+                    ...this.state.quotationRequest,
+                    [name]: value,
+                    datePlanned: '',
+                    timePlanned: '08:00',
+                    dateRecorded: '',
+                    timeRecorded: '08:00',
+                },
+            });
+        } else if (
+            name == 'statusId' &&
+            this.state.opportunityActionCodeRef === 'visit' &&
+            value == this.state.visitDoneStatusId
+        ) {
+            this.setState({
+                ...this.state,
+                quotationRequest: {
+                    ...this.state.quotationRequest,
+                    [name]: value,
+                    dateRecorded: this.state.quotationRequest.datePlanned,
+                    timeRecorded: this.state.quotationRequest.timePlanned,
+                },
+            });
+        } else {
+            this.setState({
+                ...this.state,
+                quotationRequest: {
+                    ...this.state.quotationRequest,
+                    [name]: value,
+                },
+            });
+        }
     };
 
     handleInputChangeDate(value, name) {
-        this.setState({
-            ...this.state,
-            quotationRequest: {
-                ...this.state.quotationRequest,
-                [name]: value,
-            },
-        });
+        if (
+            name == 'datePlanned' &&
+            this.state.opportunityActionCodeRef === 'visit' &&
+            this.state.quotationRequest.statusId != this.state.visitCanceledStatusId
+        ) {
+            this.setState({
+                ...this.state,
+                quotationRequest: {
+                    ...this.state.quotationRequest,
+                    [name]: value,
+                    statusId: this.state.visitMadeStatusId,
+                },
+            });
+        } else {
+            this.setState({
+                ...this.state,
+                quotationRequest: {
+                    ...this.state.quotationRequest,
+                    [name]: value,
+                },
+            });
+        }
     }
 
     handleSubmit = event => {
@@ -361,16 +439,18 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         onChangeAction={this.handleInputChangeDate}
                         readOnly={this.props.quotationRequestDetails.usesPlanning}
                     />
-                    <InputTime
-                        label={'Tijd afspraak'}
-                        size={'col-sm-6'}
-                        name="timePlanned"
-                        value={timePlanned}
-                        start={'06:00'}
-                        end={'23:00'}
-                        onChangeAction={this.handleInputChangeDate}
-                        readOnly={this.props.quotationRequestDetails.usesPlanning}
-                    />
+                    {datePlanned ? (
+                        <InputTime
+                            label={'Tijd afspraak'}
+                            size={'col-sm-6'}
+                            name="timePlanned"
+                            value={timePlanned}
+                            start={'06:00'}
+                            end={'23:00'}
+                            onChangeAction={this.handleInputChangeDate}
+                            readOnly={this.props.quotationRequestDetails.usesPlanning}
+                        />
+                    ) : null}
                 </div>
 
                 {opportunityAction.codeRef === 'quotation-request' || opportunityAction.codeRef === 'visit' ? (
@@ -382,15 +462,17 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                             value={dateRecorded}
                             onChangeAction={this.handleInputChangeDate}
                         />
-                        <InputTime
-                            label={'Tijd opname'}
-                            size={'col-sm-6'}
-                            name="timeRecorded"
-                            value={timeRecorded}
-                            start={'06:00'}
-                            end={'23:00'}
-                            onChangeAction={this.handleInputChangeDate}
-                        />
+                        {dateRecorded ? (
+                            <InputTime
+                                label={'Tijd opname'}
+                                size={'col-sm-6'}
+                                name="timeRecorded"
+                                value={timeRecorded}
+                                start={'06:00'}
+                                end={'23:00'}
+                                onChangeAction={this.handleInputChangeDate}
+                            />
+                        ) : null}
                     </div>
                 ) : null}
 
@@ -404,15 +486,17 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                             value={dateReleased}
                             onChangeAction={this.handleInputChangeDate}
                         />
-                        <InputTime
-                            label={'Tijd uitgebracht'}
-                            size={'col-sm-6'}
-                            name="timeReleased"
-                            value={timeReleased}
-                            start={'06:00'}
-                            end={'23:00'}
-                            onChangeAction={this.handleInputChangeDate}
-                        />
+                        {dateReleased ? (
+                            <InputTime
+                                label={'Tijd uitgebracht'}
+                                size={'col-sm-6'}
+                                name="timeReleased"
+                                value={timeReleased}
+                                start={'06:00'}
+                                end={'23:00'}
+                                onChangeAction={this.handleInputChangeDate}
+                            />
+                        ) : null}
                     </div>
                 ) : null}
 

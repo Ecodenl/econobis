@@ -109,6 +109,9 @@ const HousingFilesListFilter = props => {
             </th>
 
             <th>
+            </th>
+
+            <th>
                 <select
                     className="form-control input-sm"
                     value={props.filters.buildingTypeId.data}
@@ -123,6 +126,9 @@ const HousingFilesListFilter = props => {
                         );
                     })}
                 </select>
+            </th>
+
+            <th>
             </th>
 
             <th>

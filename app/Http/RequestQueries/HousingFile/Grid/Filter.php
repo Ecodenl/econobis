@@ -20,7 +20,8 @@ class Filter extends RequestFilter
         'postalCode',
         'city',
         'buildingTypeId',
-        'energyLabelId'
+        'energyLabelId',
+        'buildYear'
     ];
 
     protected $mapping = [
@@ -28,6 +29,7 @@ class Filter extends RequestFilter
         'fullName' => 'contacts.full_name',
         'buildingTypeId' => 'housing_files.building_type_id',
         'energyLabelId' => 'housing_files.energy_label_id',
+        'buildYear' => 'housing_files.build_year',
     ];
 
     protected $joins = [

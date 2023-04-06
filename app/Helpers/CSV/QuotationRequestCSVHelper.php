@@ -47,6 +47,7 @@ class QuotationRequestCSVHelper
                 $quotationRequest->date_recorded = $this->formatDateTime($quotationRequest->date_recorded);
                 $quotationRequest->date_planned = $this->formatDateTime($quotationRequest->date_planned);
                 $quotationRequest->date_released = $this->formatDate($quotationRequest->date_released);
+                $quotationRequest->date_under_review = $this->formatDate($quotationRequest->date_under_review);
                 $quotationRequest->date_approved_external = $this->formatDate($quotationRequest->date_approved_external);
                 $quotationRequest->date_approved_project_manager = $this->formatDate($quotationRequest->date_approved_project_manager);
                 $quotationRequest->date_approved_client = $this->formatDate($quotationRequest->date_approved_client);
@@ -100,6 +101,7 @@ class QuotationRequestCSVHelper
                 'date_released' => 'Datum uitgebracht',
                 'date_approved_client' => 'Datum akkoord bewoner',
                 'date_approved_project_manager' => 'Datum akkoord projectleider',
+                'date_under_review' => 'Datum in behandeling',
                 'date_approved_external' => 'Datum akkoord extern',
                 'quotation_text' => 'Offerte omschrijving',
                 'opportunity.intake.contact.full_name' => 'Contact',

@@ -1,7 +1,7 @@
 export default function(contactData) {
     const typeContact = contactData.typeId ? contactData.typeId : null;
 
-    let emptyPrimaryAddressEnergySupplierElectricity = {
+    let emptyCurrentAddressEnergySupplierElectricity = {
         energySupplierId: null,
         esNumber: '',
         memberSince: '',
@@ -15,7 +15,7 @@ export default function(contactData) {
         countryId: null,
         eanElectricity: '',
         eanGas: '',
-        primaryAddressEnergySupplierElectricity: emptyPrimaryAddressEnergySupplierElectricity,
+        currentAddressEnergySupplierElectricity: emptyCurrentAddressEnergySupplierElectricity,
     };
     let primaryAddress = null;
     let visitAddress = null;
@@ -26,10 +26,10 @@ export default function(contactData) {
             // Set primary address
             primaryAddress = contactData.addresses.find(address => address.primary);
             contactData.primaryAddress = primaryAddress ? { ...emptyAddress, ...primaryAddress } : emptyAddress;
-            if (!contactData.primaryAddress.primaryAddressEnergySupplierElectricity) {
-                contactData.primaryAddress.primaryAddressEnergySupplierElectricity = {
+            if (!contactData.primaryAddress.currentAddressEnergySupplierElectricity) {
+                contactData.primaryAddress.currentAddressEnergySupplierElectricity = {
                     ...contactData.primaryAddress,
-                    emptyPrimaryAddressEnergySupplierElectricity,
+                    emptyCurrentAddressEnergySupplierElectricity,
                 };
             }
             break;
@@ -37,10 +37,10 @@ export default function(contactData) {
             // Set visit, postal, invoice addresses
             visitAddress = contactData.addresses.find(address => address.typeId === 'visit');
             contactData.visitAddress = visitAddress ? { ...emptyAddress, ...visitAddress } : emptyAddress;
-            if (!contactData.visitAddress.primaryAddressEnergySupplierElectricity) {
-                contactData.visitAddress.primaryAddressEnergySupplierElectricity = {
+            if (!contactData.visitAddress.currentAddressEnergySupplierElectricity) {
+                contactData.visitAddress.currentAddressEnergySupplierElectricity = {
                     ...contactData.visitAddress,
-                    emptyPrimaryAddressEnergySupplierElectricity,
+                    emptyCurrentAddressEnergySupplierElectricity,
                 };
             }
             postalAddress = contactData.addresses.find(address => address.typeId === 'postal');

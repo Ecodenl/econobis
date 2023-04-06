@@ -262,22 +262,22 @@ class TemplateVariableHelper
                 return optional($model->primaryEmailAddress)->email;
                 break;
             case 'energieleverancier':
-                return optional(optional(optional($model->primaryAddress)->primaryAddressEnergySupplierElectricity)->energySupplier)->name;
+                return optional(optional(optional($model->primaryAddress)->currentAddressEnergySupplierElectricity)->energySupplier)->name;
                 break;
             case 'energieleverancier_klantnummer':
-                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplierElectricity)->es_number;
+                return optional(optional($model->primaryAddress)->currentAddressEnergySupplierElectricity)->es_number;
                 break;
             case 'energieleverancier_ean_elektra':
                 return optional($model->primaryAddress)->ean_electricity;
                 break;
             case 'energieleverancier_klant_sinds':
-                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplierElectricity)->member_since ? Carbon::parse(optional(optional($model->primaryAddress)->primaryAddressEnergySupplierElectricity)->member_since)->format('d-m-Y') : null;;
+                return optional(optional($model->primaryAddress)->currentAddressEnergySupplierElectricity)->member_since ? Carbon::parse(optional(optional($model->primaryAddress)->currentAddressEnergySupplierElectricity)->member_since)->format('d-m-Y') : null;;
                 break;
             case 'energieleverancier_klant_einddatum':
-                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplierElectricity)->end_date ? Carbon::parse(optional(optional($model->primaryAddress)->primaryAddressEnergySupplierElectricity)->end_date)->format('d-m-Y') : null;;
+                return optional(optional($model->primaryAddress)->currentAddressEnergySupplierElectricity)->end_date ? Carbon::parse(optional(optional($model->primaryAddress)->currentAddressEnergySupplierElectricity)->end_date)->format('d-m-Y') : null;;
                 break;
             case 'energieleverancier_mogelijke_overstap':
-                return optional(optional($model->primaryAddress)->primaryAddressEnergySupplierElectricity)->switch_date ? Carbon::parse(optional(optional($model->primaryAddress)->primaryAddressEnergySupplierElectricity)->switch_date)->format('d-m-Y') : null;;
+                return optional(optional($model->primaryAddress)->currentAddressEnergySupplierElectricity)->switch_date ? Carbon::parse(optional(optional($model->primaryAddress)->currentAddressEnergySupplierElectricity)->switch_date)->format('d-m-Y') : null;;
                 break;
             case 'kvk':
                 if($model->type_id == 'organisation'){
@@ -831,10 +831,10 @@ class TemplateVariableHelper
                 return optional(optional($model->contact)->primaryEmailAddress)->email;
                 break;
             case 'contact_energieleverancier':
-                return optional(optional(optional($model->address)->primaryAddressEnergySupplierElectricity)->energySupplier)->name;
+                return optional(optional(optional($model->address)->currentAddressEnergySupplierElectricity)->energySupplier)->name;
                 break;
             case 'contact_energieleverancier_klantnummer':
-                return optional(optional($model->address)->primaryAddressEnergySupplierElectricity)->es_number;
+                return optional(optional($model->address)->currentAddressEnergySupplierElectricity)->es_number;
                 break;
             case 'contact_energieleverancier_ean_elektra':
                 return optional($model->address)->ean_electricity;

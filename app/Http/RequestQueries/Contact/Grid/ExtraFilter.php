@@ -380,7 +380,7 @@ class ExtraFilter extends RequestExtraFilter
                     $query->where(function ($query) use ($type, $data) {
                         $query->whereDoesntHave('intakes')
                             ->orWhereDoesntHave('intakes', function ($query) use ($type, $data) {
-                                RequestFilter::applyFilter($query, 'campaign_id', 'eq', $data);
+                                $query->where('campaign_id', $data);
                             });
                     });
                     break;
@@ -537,10 +537,6 @@ class ExtraFilter extends RequestExtraFilter
                         ->orWhereHas('addresses', function ($query) use ($type, $data) {
                             $query
                                 ->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas')
-                                ->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas', function ($query) use ($type, $data) {
-                                    $data = str_replace(' ', '', $data);
-                                    RequestFilter::applyFilter($query, 'energy_supplier_id', $type, $data);
-                                })
                                 ->where('type_id', '!=', 'old');
                         });
                 });
@@ -554,7 +550,7 @@ class ExtraFilter extends RequestExtraFilter
                                 ->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas')
                                 ->whereDoesntHave('primaryAddressEnergySupplierElectricityAndGas', function ($query) use ($type, $data) {
                                     $data = str_replace(' ', '', $data);
-                                    RequestFilter::applyFilter($query, 'energy_supplier_id', $type, $data);
+                                    $query->where('energy_supplier_id', $data);
                                 })
                                 ->where('type_id', '!=', 'old');
                         });
@@ -600,7 +596,7 @@ class ExtraFilter extends RequestExtraFilter
                     $query->where(function ($query) use ($type, $data) {
                         $query->whereDoesntHave('primaryAddressEnergySuppliers')
                             ->orWhereDoesntHave('primaryAddressEnergySuppliers', function ($query) use ($type, $data) {
-                                RequestFilter::applyFilter($query, 'energy_supply_type_id', 'eq', $data);
+                                $query->where('energy_supply_type_id', $data);
                             });
                     });
                     break;

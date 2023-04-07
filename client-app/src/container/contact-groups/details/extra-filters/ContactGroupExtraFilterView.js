@@ -30,9 +30,6 @@ const ContactGroupExtraFilterView = props => {
     ) {
         dataNameReadable = '--Willekeurige waarde--';
     }
-    if (field === 'didAgreeAvg' || field === 'portalUser' || field === 'housingFile') {
-        dataNameReadable = dataName == 1 ? 'Ja' : 'Nee';
-    }
 
     const fieldReadable = FilterHelper('field', field);
     const comperatorReadable = FilterHelper('comperator', comperator);

@@ -95,7 +95,7 @@ export default (type, field) => {
                 case 'energySupplier':
                     return 'Energie leverancier';
                 case 'energySupplierType':
-                    return 'Type primaire energie leverancier';
+                    return 'Type huidige energie leverancier';
                 case 'dateContractSend':
                     return 'Datum contract verzonden';
                 case 'dateEnd':

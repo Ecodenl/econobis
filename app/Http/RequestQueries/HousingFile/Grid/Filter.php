@@ -21,7 +21,8 @@ class Filter extends RequestFilter
         'city',
         'buildingTypeId',
         'energyLabelId',
-        'buildYear'
+        'buildYear',
+        'isHouseForSale'
     ];
 
     protected $mapping = [
@@ -30,6 +31,7 @@ class Filter extends RequestFilter
         'buildingTypeId' => 'housing_files.building_type_id',
         'energyLabelId' => 'housing_files.energy_label_id',
         'buildYear' => 'housing_files.build_year',
+        'isHouseForSale' => 'housing_files.is_house_for_sale',
     ];
 
     protected $joins = [

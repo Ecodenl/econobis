@@ -47,7 +47,7 @@ class HousingFilesListItem extends Component {
                 <td>{fullName}</td>
                 <td>{buildYear ? buildYear : ''}</td>
                 <td>{buildingType ? buildingType : ''}</td>
-                <td>{isHouseForSale ? isHouseForSale : ''}</td>
+                <td>{isHouseForSale ? 'Ja' : 'Nee'}</td>
                 <td>{energyLabel ? energyLabel : ''}</td>
 
                 <td>

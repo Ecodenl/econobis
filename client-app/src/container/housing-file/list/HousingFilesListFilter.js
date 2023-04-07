@@ -12,6 +12,8 @@ import {
     setFilterHousingFileAddress,
     setFilterHousingFileEnergyLabel,
     setHousingFileDateFilter,
+    setFilterIsHouseForSale,
+    setFilterBuildYear,
 } from '../../../actions/housing-file/HousingFilesFiltersActions';
 import DataTableFilterDate from '../../../components/dataTable/DataTableFilterDate';
 
@@ -68,6 +70,22 @@ const HousingFilesListFilter = props => {
         }, 100);
     };
 
+    const onIsHouseForSaleChange = e => {
+        props.setFilterIsHouseForSale(e.target.value);
+
+        setTimeout(() => {
+            props.onSubmitFilter();
+        }, 100);
+    };
+
+    const onBuildYearChange = e => {
+        props.setFilterBuildYear(e.target.value);
+
+        setTimeout(() => {
+            props.onSubmitFilter();
+        }, 100);
+    };
+
     return (
         <tr className="thead-filter">
             <DataTableFilterDate
@@ -109,6 +127,12 @@ const HousingFilesListFilter = props => {
             </th>
 
             <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.buildYear.data}
+                    onChange={onBuildYearChange}
+                />
             </th>
 
             <th>
@@ -129,6 +153,19 @@ const HousingFilesListFilter = props => {
             </th>
 
             <th>
+                <select
+                    className="form-control input-sm"
+                    value={props.filters.isHouseForSale.data}
+                    onChange={onIsHouseForSaleChange}
+                >
+                    <option />
+                    <option key={1} value={1}>
+                        Nee
+                    </option>
+                    <option key={0} value={0}>
+                        Ja
+                    </option>
+                </select>
             </th>
 
             <th>
@@ -170,6 +207,8 @@ const mapDispatchToProps = dispatch => {
             setFilterHousingFileAddress,
             setFilterHousingFileEnergyLabel,
             setHousingFileDateFilter,
+            setFilterIsHouseForSale,
+            setFilterBuildYear,
         },
         dispatch
     );

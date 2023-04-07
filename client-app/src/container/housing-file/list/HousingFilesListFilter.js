@@ -36,6 +36,10 @@ const HousingFilesListFilter = props => {
 
     const onFullNameChange = e => {
         props.setFilterFullName(e.target.value);
+
+        setTimeout(() => {
+            props.onSubmitFilter();
+        }, 100);
     };
 
     const onPostalCodeChange = e => {

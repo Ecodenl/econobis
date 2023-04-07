@@ -25,7 +25,7 @@ const DocumentsListToolbar = props => {
                     {/*    {permissions.createDocument && (*/}
                     {/*        <div className="nav navbar-nav btn-group" role="group">*/}
                     {/*            <button className="btn btn-success btn-sm" data-toggle="dropdown">*/}
-                    {/*                <span className="glyphicon glyphicon-plus" />*/}
+                    {/*                <Icon size={14} icon={plus} />*/}
                     {/*            </button>*/}
                     {/*            <ul className="dropdown-menu">*/}
                     {/*                <li>*/}

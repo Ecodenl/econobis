@@ -76,8 +76,8 @@ const RevenuePartsKwhListFormView = ({
                     ''
                 )}
                 {/*{showActionButtons && permissions.manageFinancial && !confirmed ? (*/}
-                {/*    <a role="button" onClick={toggleDelete}>*/}
-                {/*        <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}*/}
+                {/*    <a className="btn btn-success btn-sm" role="button" onClick={toggleDelete}>*/}
+                {/*        <Icon size={14} icon={trash} />{' '}*/}
                 {/*    </a>*/}
                 {/*) : (*/}
                 {/*    ''*/}

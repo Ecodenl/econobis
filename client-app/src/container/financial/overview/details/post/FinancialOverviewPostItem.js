@@ -4,7 +4,7 @@ import ErrorModal from '../../../../../components/modal/ErrorModal';
 import fileDownload from 'js-file-download';
 import moment from 'moment';
 
-import Icon from "react-icons-kit";
+import Icon from 'react-icons-kit';
 import { fileO } from 'react-icons-kit/fa/fileO';
 // import FinancialOverviewPostDelete from './FinancialOverviewPostDelete';
 
@@ -76,11 +76,12 @@ function FinancialOverviewPostItem({ financialOverviewPost }) {
                     {showActionButtons ? (
                         <>
                             <a role="button" onClick={() => downloadFinancialOverviewPost(financialOverviewPost.id)}>
-                                <Icon className="mybtn-success" size={14} icon={fileO} />&nbsp;
+                                <Icon className="mybtn-success" size={14} icon={fileO} />
+                                &nbsp;
                             </a>
                             {/*&nbsp;&nbsp;&nbsp;*/}
-                            {/*<a role="button" onClick={toggleDelete}>*/}
-                            {/*    <span className="glyphicon glyphicon-trash mybtn-danger" />*/}
+                            {/*<a className="btn btn-success btn-sm" role="button" onClick={toggleDelete}>*/}
+                            {/*     <Icon size={14} icon={trash} />{' '}/}
                             {/*</a>*/}
                         </>
                     ) : (

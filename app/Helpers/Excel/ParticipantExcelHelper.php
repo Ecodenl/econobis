@@ -290,11 +290,11 @@ class ParticipantExcelHelper
                 }
 
                 // Reformat energy supplier fields
-                if ($address && $address->primaryAddressEnergySupplierElectricity) {
+                if ($address && $address->currentAddressEnergySupplierElectricity) {
                     $participant->energy_supplier_name
-                        = $address->primaryAddressEnergySupplierElectricity->energySupplier->name;
+                        = $address->currentAddressEnergySupplierElectricity->energySupplier->name;
                     $participant->energy_supplier_member_since
-                        = $this->formatDate($address->primaryAddressEnergySupplierElectricity->member_since);
+                        = $this->formatDate($address->currentAddressEnergySupplierElectricity->member_since);
                 }
 
                 //reformat bools
@@ -384,7 +384,7 @@ class ParticipantExcelHelper
                 $rowData[] = $participant->phonenumber_3;
                 $rowData[] = $participant->energy_supplier_name;
                 $rowData[] = $participant->energy_supplier_member_since;
-                $rowData[] = $address && $address->primaryAddressEnergySupplierElectricity ? $address->primaryAddressEnergySupplierElectricity->es_number : '';
+                $rowData[] = $address && $address->currentAddressEnergySupplierElectricity ? $address->currentAddressEnergySupplierElectricity->es_number : '';
                 $rowData[] = $address && !empty($address->ean_electricity) ? 'EAN: ' . $address->ean_electricity : '';
                 $rowData[] = $address && !empty($address->ean_gas) ? 'EAN: ' . $address->ean_gas : '';
 // [56]

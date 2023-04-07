@@ -39,8 +39,8 @@ class ContactCSVHelper
                 'primaryphoneNumber',
                 'phoneNumbers',
                 'primaryAddress',
-                'primaryAddress.primaryAddressEnergySupplierElectricity.energySupplier',
-                'primaryAddress.primaryAddressEnergySupplierGas.energySupplier',
+                'primaryAddress.currentAddressEnergySupplierElectricity.energySupplier',
+                'primaryAddress.currentAddressEnergySupplierGas.energySupplier',
                 'contactNotes',
                 'occupations.occupation',
                 'occupations.primaryContact.person.title',
@@ -206,17 +206,17 @@ class ContactCSVHelper
                 }
 
                 // Reformat energy supplier fields
-                if ($contact->primaryAddress && $contact->primaryAddress->primaryAddressEnergySupplierElectricity) {
-                    $contact->energy_supplier_name_electricity = $contact->primaryAddress->primaryAddressEnergySupplierElectricity->energySupplier->name;
-                    $contact->es_number_electricity = $contact->primaryAddress->primaryAddressEnergySupplierElectricity->es_number;
+                if ($contact->primaryAddress && $contact->primaryAddress->currentAddressEnergySupplierElectricity) {
+                    $contact->energy_supplier_name_electricity = $contact->primaryAddress->currentAddressEnergySupplierElectricity->energySupplier->name;
+                    $contact->es_number_electricity = $contact->primaryAddress->currentAddressEnergySupplierElectricity->es_number;
                     $contact->energy_member_since_electricity
-                        = $this->formatDate($contact->primaryAddress->primaryAddressEnergySupplierElectricity->member_since);
+                        = $this->formatDate($contact->primaryAddress->currentAddressEnergySupplierElectricity->member_since);
                 }
-                if ($contact->primaryAddress && $contact->primaryAddress->primaryAddressEnergySupplierGas) {
-                    $contact->energy_supplier_name_gas = $contact->primaryAddress->primaryAddressEnergySupplierGas->energySupplier->name;
-                    $contact->es_number_gas = $contact->primaryAddress->primaryAddressEnergySupplierGas->es_number;
+                if ($contact->primaryAddress && $contact->primaryAddress->currentAddressEnergySupplierGas) {
+                    $contact->energy_supplier_name_gas = $contact->primaryAddress->currentAddressEnergySupplierGas->energySupplier->name;
+                    $contact->es_number_gas = $contact->primaryAddress->currentAddressEnergySupplierGas->es_number;
                     $contact->energy_member_since_gas
-                        = $this->formatDate($contact->primaryAddress->primaryAddressEnergySupplierGas->member_since);
+                        = $this->formatDate($contact->primaryAddress->currentAddressEnergySupplierGas->member_since);
                 }
                 // Reformat primary address fields
                 if ($contact->primaryAddress) {

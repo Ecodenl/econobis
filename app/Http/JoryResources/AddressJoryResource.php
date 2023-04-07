@@ -36,7 +36,7 @@ class AddressJoryResource extends JoryResource
 
         // Relations
         $this->relation('country');
-        $this->relation('primaryAddressEnergySupplierElectricity');
+        $this->relation('currentAddressEnergySupplierElectricity');
     }
 
     public function afterQueryBuild($query, $count = false): void

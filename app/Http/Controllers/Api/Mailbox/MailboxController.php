@@ -9,22 +9,19 @@
 namespace App\Http\Controllers\Api\Mailbox;
 
 
-use App\Eco\Mailbox\ImapEncryptionType;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailboxGmailApiSettings;
 use App\Eco\Mailbox\MailboxIgnore;
 use App\Eco\Mailbox\MailFetcher;
 use App\Eco\Mailbox\MailFetcherGmail;
 use App\Eco\Mailbox\MailFetcherMsOauth;
-use App\Eco\Mailbox\MailValidator;
-use App\Eco\Mailbox\SmtpEncryptionType;
 use App\Eco\User\User;
 use App\Helpers\Gmail\GmailConnectionManager;
+use App\Helpers\Mailgun\MailgunHelper;
 use App\Helpers\MsOauth\MsOauthConnectionManager;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\EncryptCookies;
-use App\Http\Resources\Email\GridEmailTemplate;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Mailbox\FullMailbox;
 use App\Http\Resources\Mailbox\FullMailboxIgnore;
@@ -32,14 +29,10 @@ use App\Http\Resources\Mailbox\GridMailbox;
 use App\Http\Resources\Mailbox\LoggedInEmailPeek;
 use App\Http\Resources\Mailbox\MailboxPeek;
 use App\Http\Resources\User\UserPeek;
-use Doctrine\Common\Annotations\Annotation\Enum;
-use http\Header;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 
 class MailboxController extends Controller
 {
@@ -60,7 +53,7 @@ class MailboxController extends Controller
         return GridMailbox::collection($mailboxes);
     }
 
-    public function store(Request $request, RequestInput $input)
+    public function store(Request $request, RequestInput $input, MailgunHelper $mailgunHelper)
     {
         $this->authorize('create', Mailbox::class);
 
@@ -82,7 +75,18 @@ class MailboxController extends Controller
             ->boolean('primary')->next()
             ->boolean('linkContactFromEmailToAddress')->alias('link_contact_from_email_to_address')->whenMissing(false)->onEmpty(false)->next()
             ->boolean('emailMarkAsSeen')->alias('email_mark_as_seen')->whenMissing(true)->onEmpty(true)->next()
+            ->boolean('inboundMailgunEnabled')->alias('inbound_mailgun_enabled')->whenMissing(false)->next()
             ->get();
+
+        //if incomingServerType is "mailgun", always set inboundMailgunEnabled to 1, else clear some fields just to be safe
+        if($data['incoming_server_type'] == "mailgun"){
+            $data['inbound_mailgun_enabled'] = 1;
+        } else {
+            $data['inbound_mailgun_email'] = null;
+            $data['inbound_mailgun_post_token'] = null;
+            $data['inbound_mailgun_route_id'] = null;
+            $data['inbound_mailgun_enabled'] = 0;
+        }
 
         $mailbox = new Mailbox($data);
         $mailbox->save();
@@ -115,7 +119,9 @@ class MailboxController extends Controller
             if (isset($client['message']) && $client['message'] == 'ms_oauth_unauthorised') {
                 return response()->json($client, 401);
             }
-        } else {
+        } else if ($mailbox->incoming_server_type === 'mailgun'){
+            $mailgunHelper->updateMailgunForwarding($mailbox);
+        } else if ($mailbox->incoming_server_type !== 'mailgun'){
             new MailFetcher($mailbox);
         }
 
@@ -131,7 +137,7 @@ class MailboxController extends Controller
         return FullMailbox::make($mailbox);
     }
 
-    public function update(Mailbox $mailbox, Request $request, RequestInput $input)
+    public function update(Mailbox $mailbox, Request $request, RequestInput $input, MailgunHelper $mailgunHelper)
     {
         $this->authorize('create', Mailbox::class);
 
@@ -153,11 +159,34 @@ class MailboxController extends Controller
             ->boolean('primary')->next()
             ->boolean('linkContactFromEmailToAddress')->alias('link_contact_from_email_to_address')->whenMissing(false)->onEmpty(false)->next()
             ->boolean('emailMarkAsSeen')->alias('email_mark_as_seen')->whenMissing(true)->next()
+            ->boolean('inboundMailgunEnabled')->alias('inbound_mailgun_enabled')->whenMissing(false)->next()
             ->get();
 
+        //if incomingServerType is "mailgun", always set inboundMailgunEnabled to 1, else clear some fields just to be safe
+        if($data['incoming_server_type'] == "mailgun"){
+            $data['inbound_mailgun_enabled'] = 1;
+        } else {
+            $data['inbound_mailgun_email'] = null;
+            $data['inbound_mailgun_post_token'] = null;
+            $data['inbound_mailgun_route_id'] = null;
+            $data['inbound_mailgun_enabled'] = 0;
+        }
+
         $mailbox->login_tries = 0;
-        $mailbox->update($data);
+        $mailbox->fill($data);
+        $updateMailgunForwarding = $mailbox->isDirty('incoming_server_type');
         $mailbox->save();
+
+        if($updateMailgunForwarding){
+            try{
+                $mailgunHelper->updateMailgunForwarding($mailbox);
+            }catch (\Exception $e){
+                /**
+                 * Error loggen maar niet hele script laten stoppen.
+                 */
+                Log::info('Mailgun forwarding update failed: ' . $e->getMessage());
+            }
+        }
 
         if ($mailbox->incoming_server_type == 'gmail' || $mailbox->outgoing_server_type == 'gmail'
             || $mailbox->incoming_server_type == 'ms-oauth' || $mailbox->outgoing_server_type == 'ms-oauth') {
@@ -184,7 +213,7 @@ class MailboxController extends Controller
             if (isset($client['message']) && $client['message'] == 'ms_oauth_unauthorised') {
                 return response()->json($client, 401);
             }
-        } else {
+        } else if ($mailbox->incoming_server_type !== 'mailgun'){
             new MailFetcher($mailbox);
         }
 
@@ -228,9 +257,12 @@ class MailboxController extends Controller
             $mailFetcher = new MailFetcherGmail($mailbox);
         } elseif ($mailbox->incoming_server_type === 'ms-oauth') {
             $mailFetcher = new MailFetcherMsOauth($mailbox);
-        } else {
+        } else if ($mailbox->incoming_server_type !== 'mailgun'){
             $mailFetcher = new MailFetcher($mailbox);
+        } else {
+            return;
         }
+
         return $mailFetcher->fetchNew();
     }
 
@@ -275,8 +307,10 @@ class MailboxController extends Controller
                 $mailFetcher = new MailFetcherGmail($mailbox);
             } elseif ($mailbox->incoming_server_type === 'ms-oauth') {
                 $mailFetcher = new MailFetcherMsOauth($mailbox);
-            } else {
+            } else if ($mailbox->incoming_server_type !== 'mailgun'){
                 $mailFetcher = new MailFetcher($mailbox);
+            } else {
+                return;
             }
             $mailFetcher->fetchNew();
         }

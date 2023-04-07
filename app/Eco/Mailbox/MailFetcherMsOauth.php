@@ -212,10 +212,8 @@ class MailFetcherMsOauth
         //if from email exists in any of the email addresses make a pivot record.
         $this->addRelationToContacts($email);
 
-        if($message->getHasAttachments()){
-            $this->storeAttachments($message->getId(), $email);
-        }
-//
+        $this->storeAttachments($message->getId(), $email);
+
 //        $this->fetchedEmails[] = $email;
     }
 

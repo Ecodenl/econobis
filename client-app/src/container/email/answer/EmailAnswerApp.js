@@ -89,7 +89,7 @@ class EmailAnswerApp extends Component {
                     cc: payload.cc ? payload.cc.join(',') : '',
                     bcc: payload.bcc ? payload.bcc.join(',') : '',
                     subject: payload.subject ? payload.subject : '',
-                    htmlBody: payload.htmlBody ? payload.htmlBody : '',
+                    htmlBody: payload.htmlBodyWithEmbeddedImages ? payload.htmlBodyWithEmbeddedImages : '',
                     attachments: payload.attachments ? payload.attachments : '',
                 },
                 emailAddressesToSelected: payload.emailAddressesToSelected,
@@ -317,7 +317,10 @@ class EmailAnswerApp extends Component {
             data.append('replyTypeId', email.replyTypeId);
             data.append('contactGroupId', email.contactGroupId);
             if (email.attachments) {
-                email.attachments.map((file, key) => {
+                /**
+                 * alleen bijlages zonder "cid", de cid bijlages zijn inline bijlages en worden bij opslaan automatisch toegevoegd (dmv de verwijzing in oldEmailId)
+                 */
+                email.attachments.filter(a => !a.cid).map((file, key) => {
                     if (file.id) {
                         data.append('oldAttachments[' + key + ']', JSON.stringify(file));
                     } else {

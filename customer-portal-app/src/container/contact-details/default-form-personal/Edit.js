@@ -27,27 +27,27 @@ const DefaultContactPersonalEdit = function({
     // determine memberSince disabledBefore and after
     let memberSinceDisabledBefore = '';
     let memberSinceDisabledAfter = '';
-    if (initialContact.primaryAddress.primaryAddressEnergySupplierElectricity.energySupplierId) {
+    if (initialContact.primaryAddress.currentAddressEnergySupplierElectricity.energySupplierId) {
         if (
-            initialContact.primaryAddress.primaryAddressEnergySupplierElectricity.memberSince &&
-            initialContact.primaryAddress.primaryAddressEnergySupplierElectricity.energySupplierId !==
-                values.primaryAddress.primaryAddressEnergySupplierElectricity.energySupplierId
+            initialContact.primaryAddress.currentAddressEnergySupplierElectricity.memberSince &&
+            initialContact.primaryAddress.currentAddressEnergySupplierElectricity.energySupplierId !==
+                values.primaryAddress.currentAddressEnergySupplierElectricity.energySupplierId
         ) {
             memberSinceDisabledBefore = moment(
-                initialContact.primaryAddress.primaryAddressEnergySupplierElectricity.memberSince
+                initialContact.primaryAddress.currentAddressEnergySupplierElectricity.memberSince
             )
                 .add(1, 'day')
                 .format('YYYY-MM-DD');
-        } else if (initialContact.primaryAddress.primaryAddressEnergySupplierElectricity.endDatePrevious) {
+        } else if (initialContact.primaryAddress.currentAddressEnergySupplierElectricity.endDatePrevious) {
             memberSinceDisabledBefore = moment(
-                initialContact.primaryAddress.primaryAddressEnergySupplierElectricity.endDatePrevious
+                initialContact.primaryAddress.currentAddressEnergySupplierElectricity.endDatePrevious
             )
                 .add(1, 'day')
                 .format('YYYY-MM-DD');
         }
-        if (initialContact.primaryAddress.primaryAddressEnergySupplierElectricity.memberSinceNext) {
+        if (initialContact.primaryAddress.currentAddressEnergySupplierElectricity.memberSinceNext) {
             memberSinceDisabledAfter = moment(
-                initialContact.primaryAddress.primaryAddressEnergySupplierElectricity.memberSinceNext
+                initialContact.primaryAddress.currentAddressEnergySupplierElectricity.memberSinceNext
             )
                 .subtract(1, 'day')
                 .format('YYYY-MM-DD');
@@ -646,11 +646,11 @@ const DefaultContactPersonalEdit = function({
                         {((!isNaN(values.primaryAddress.number) && values.primaryAddress.number == 0) ||
                             (isNaN(values.primaryAddress.number) && values.primaryAddress.number.trim() == '') ||
                             values.primaryAddress.postalCode.trim() == '') &&
-                        (values.primaryAddress.primaryAddressEnergySupplierElectricity.energySupplierId != null ||
-                            (values.primaryAddress.primaryAddressEnergySupplierElectricity.esNumber &&
-                                values.primaryAddress.primaryAddressEnergySupplierElectricity.esNumber.trim() != '') ||
-                            (values.primaryAddress.primaryAddressEnergySupplierElectricity.memberSince &&
-                                values.primaryAddress.primaryAddressEnergySupplierElectricity.memberSince.trim() !=
+                        (values.primaryAddress.currentAddressEnergySupplierElectricity.energySupplierId != null ||
+                            (values.primaryAddress.currentAddressEnergySupplierElectricity.esNumber &&
+                                values.primaryAddress.currentAddressEnergySupplierElectricity.esNumber.trim() != '') ||
+                            (values.primaryAddress.currentAddressEnergySupplierElectricity.memberSince &&
+                                values.primaryAddress.currentAddressEnergySupplierElectricity.memberSince.trim() !=
                                     '')) ? (
                             <Row>
                                 <Col xs={12} sm={12}>
@@ -663,14 +663,14 @@ const DefaultContactPersonalEdit = function({
                         ) : (
                             ''
                         )}
-                        {(!values.primaryAddress.primaryAddressEnergySupplierElectricity.memberSince ||
-                            values.primaryAddress.primaryAddressEnergySupplierElectricity.memberSince.trim() == '') &&
-                        ((values.primaryAddress.primaryAddressEnergySupplierElectricity.energySupplierId != null &&
-                            values.primaryAddress.primaryAddressEnergySupplierElectricity.energySupplierId != '') ||
-                            (values.primaryAddress.primaryAddressEnergySupplierElectricity.esNumber &&
-                                values.primaryAddress.primaryAddressEnergySupplierElectricity.esNumber.trim() != '') ||
-                            (values.primaryAddress.primaryAddressEnergySupplierElectricity.memberSince &&
-                                values.primaryAddress.primaryAddressEnergySupplierElectricity.memberSince.trim() !=
+                        {(!values.primaryAddress.currentAddressEnergySupplierElectricity.memberSince ||
+                            values.primaryAddress.currentAddressEnergySupplierElectricity.memberSince.trim() == '') &&
+                        ((values.primaryAddress.currentAddressEnergySupplierElectricity.energySupplierId != null &&
+                            values.primaryAddress.currentAddressEnergySupplierElectricity.energySupplierId != '') ||
+                            (values.primaryAddress.currentAddressEnergySupplierElectricity.esNumber &&
+                                values.primaryAddress.currentAddressEnergySupplierElectricity.esNumber.trim() != '') ||
+                            (values.primaryAddress.currentAddressEnergySupplierElectricity.memberSince &&
+                                values.primaryAddress.currentAddressEnergySupplierElectricity.memberSince.trim() !=
                                     '')) ? (
                             <Row>
                                 <Col xs={12} sm={12}>
@@ -686,7 +686,7 @@ const DefaultContactPersonalEdit = function({
                         <Row>
                             <Col xs={12} sm={12} md={8}>
                                 <Field
-                                    name="primaryAddress.primaryAddressEnergySupplierElectricity.energySupplierId"
+                                    name="primaryAddress.currentAddressEnergySupplierElectricity.energySupplierId"
                                     render={({ field }) => (
                                         <Select
                                             field={field}
@@ -697,15 +697,15 @@ const DefaultContactPersonalEdit = function({
                                             options={EnergySuppliers}
                                             customOnChange={e => {
                                                 setFieldValue(
-                                                    'primaryAddress.primaryAddressEnergySupplierElectricity.energySupplierId',
+                                                    'primaryAddress.currentAddressEnergySupplierElectricity.energySupplierId',
                                                     e.target.value
                                                 );
                                                 setFieldValue(
-                                                    'primaryAddress.primaryAddressEnergySupplierElectricity.esNumber',
+                                                    'primaryAddress.currentAddressEnergySupplierElectricity.esNumber',
                                                     ''
                                                 );
                                                 setFieldValue(
-                                                    'primaryAddress.primaryAddressEnergySupplierElectricity.memberSince',
+                                                    'primaryAddress.currentAddressEnergySupplierElectricity.memberSince',
                                                     ''
                                                 );
                                             }}
@@ -715,8 +715,8 @@ const DefaultContactPersonalEdit = function({
                             </Col>
                         </Row>
 
-                        {values.primaryAddress.primaryAddressEnergySupplierElectricity &&
-                        values.primaryAddress.primaryAddressEnergySupplierElectricity.energySupplierId ? (
+                        {values.primaryAddress.currentAddressEnergySupplierElectricity &&
+                        values.primaryAddress.currentAddressEnergySupplierElectricity.energySupplierId ? (
                             <>
                                 <FormLabel
                                     htmlFor="es_number"
@@ -731,7 +731,7 @@ const DefaultContactPersonalEdit = function({
                                 <Row>
                                     <Col xs={12} sm={12} md={8}>
                                         <Field
-                                            name="primaryAddress.primaryAddressEnergySupplierElectricity.esNumber"
+                                            name="primaryAddress.currentAddressEnergySupplierElectricity.esNumber"
                                             render={({ field }) => (
                                                 <InputText
                                                     field={field}
@@ -751,7 +751,7 @@ const DefaultContactPersonalEdit = function({
                                 <Row>
                                     <Col xs={12} sm={12} md={8}>
                                         <Field
-                                            name="primaryAddress.primaryAddressEnergySupplierElectricity.memberSince"
+                                            name="primaryAddress.currentAddressEnergySupplierElectricity.memberSince"
                                             render={({ field }) => (
                                                 <InputTextDate
                                                     field={field}

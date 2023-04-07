@@ -162,26 +162,26 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                 <FormLabel className={'field-label'}>Huidige energie leverancier</FormLabel>
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'} placeholder={'Energieleverancier'}>
-                        {visitAddress.primaryAddressEnergySupplierElectricity.energySupplier
-                            ? visitAddress.primaryAddressEnergySupplierElectricity.energySupplier.name
+                        {visitAddress.currentAddressEnergySupplierElectricity.energySupplier
+                            ? visitAddress.currentAddressEnergySupplierElectricity.energySupplier.name
                             : ''}
                     </TextBlock>
                 </Row>
-                {visitAddress.primaryAddressEnergySupplierElectricity &&
-                visitAddress.primaryAddressEnergySupplierElectricity.energySupplierId ? (
+                {visitAddress.currentAddressEnergySupplierElectricity &&
+                visitAddress.currentAddressEnergySupplierElectricity.energySupplierId ? (
                     <>
                         <FormLabel className={'field-label'}>Klant nummer bij leverancier</FormLabel>
                         <Row>
                             <TextBlock className={'col-12 col-sm-8'} placeholder={'Klant nummer'}>
-                                {visitAddress.primaryAddressEnergySupplierElectricity.esNumber}
+                                {visitAddress.currentAddressEnergySupplierElectricity.esNumber}
                             </TextBlock>
                         </Row>
 
                         <FormLabel className={'field-label'}>Klant bij leverancier sinds</FormLabel>
                         <Row>
                             <TextBlock className={'col-12 col-sm-8'} placeholder={'Klant sinds'}>
-                                {visitAddress.primaryAddressEnergySupplierElectricity.memberSince
-                                    ? moment(visitAddress.primaryAddressEnergySupplierElectricity.memberSince).format(
+                                {visitAddress.currentAddressEnergySupplierElectricity.memberSince
+                                    ? moment(visitAddress.currentAddressEnergySupplierElectricity.memberSince).format(
                                           'L'
                                       )
                                     : ''}

@@ -160,10 +160,10 @@ const HousingFilesListFilter = props => {
                 >
                     <option />
                     <option key={1} value={1}>
-                        Nee
+                        Ja
                     </option>
                     <option key={0} value={0}>
-                        Ja
+                        Nee
                     </option>
                 </select>
             </th>

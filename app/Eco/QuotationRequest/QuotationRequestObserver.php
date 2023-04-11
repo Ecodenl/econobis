@@ -34,7 +34,9 @@ class QuotationRequestObserver
 
     public function saving(QuotationRequest $quotationRequest)
     {
-        if ($quotationRequest->isDirty('date_planned'))
+        $datePlanned = $quotationRequest->date_planned;
+        $datePlannedOriginal = $quotationRequest->getOriginal('date_planned');
+        if($datePlanned != $datePlannedOriginal)
         {
             if($quotationRequest->date_planned){
                 $madeStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'made')->first();
@@ -43,7 +45,9 @@ class QuotationRequestObserver
                 }
             }
         }
-        if ($quotationRequest->isDirty('date_recorded'))
+        $dateRecorded = $quotationRequest->date_recorded;
+        $dateRecordedOriginal = $quotationRequest->getOriginal('date_recorded');
+        if($dateRecorded != $dateRecordedOriginal)
         {
             if($quotationRequest->date_recorded){
                 $doneStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'done')->first();
@@ -52,7 +56,9 @@ class QuotationRequestObserver
                 }
             }
         }
-        if ($quotationRequest->isDirty('date_under_review'))
+        $dateUnderReview = $quotationRequest->date_under_review;
+        $dateUnderReviewOriginal = $quotationRequest->getOriginal('date_under_review');
+        if($dateUnderReview != $dateUnderReviewOriginal)
         {
             if($quotationRequest->date_under_review){
                 $underReviewStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'under-review')->first();
@@ -61,7 +67,9 @@ class QuotationRequestObserver
                 }
             }
         }
-        if ($quotationRequest->isDirty('date_approved_external'))
+        $dateApprovedExternal = $quotationRequest->date_approved_external;
+        $dateApprovedExternalOriginal = $quotationRequest->getOriginal('date_approved_external');
+        if($dateApprovedExternal != $dateApprovedExternalOriginal)
         {
             if($quotationRequest->date_approved_external){
                 $approvedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'approved')->first();
@@ -75,7 +83,9 @@ class QuotationRequestObserver
                 }
             }
         }
-        if ($quotationRequest->isDirty('date_approved_project_manager'))
+        $dateApprovedProjectManager = $quotationRequest->date_approved_project_manager;
+        $dateApprovedProjectManagerOriginal = $quotationRequest->getOriginal('date_approved_project_manager');
+        if($dateApprovedProjectManager != $dateApprovedProjectManagerOriginal)
         {
             if($quotationRequest->date_approved_project_manager){
                 $approvedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'pm-approved')->first();

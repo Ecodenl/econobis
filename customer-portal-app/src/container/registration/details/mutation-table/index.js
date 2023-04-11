@@ -19,7 +19,9 @@ function RegistrationDetailsMutationTable({ participantMutations }) {
                 <thead>
                     <tr>
                         {participantMutations[0].fields.map((field, index) => (
-                            <th key={index}>{field.label}</th>
+                            <th className={classNameBasedOnTypePresenter(field)} key={index}>
+                                {field.label}
+                            </th>
                         ))}
                     </tr>
                 </thead>

@@ -164,27 +164,27 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
                 <FormLabel className={'field-label'}>Huidige energie leverancier</FormLabel>
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'} placeholder={'Energieleverancier'}>
-                        {primaryAddress.primaryAddressEnergySupplierElectricity.energySupplier
-                            ? primaryAddress.primaryAddressEnergySupplierElectricity.energySupplier.name
+                        {primaryAddress.currentAddressEnergySupplierElectricity.energySupplier
+                            ? primaryAddress.currentAddressEnergySupplierElectricity.energySupplier.name
                             : ''}
                     </TextBlock>
                 </Row>
 
-                {primaryAddress.primaryAddressEnergySupplierElectricity &&
-                primaryAddress.primaryAddressEnergySupplierElectricity.energySupplierId ? (
+                {primaryAddress.currentAddressEnergySupplierElectricity &&
+                primaryAddress.currentAddressEnergySupplierElectricity.energySupplierId ? (
                     <>
                         <FormLabel className={'field-label'}>Klant nummer bij leverancier</FormLabel>
                         <Row>
                             <TextBlock className={'col-12 col-sm-8'} placeholder={'Klant nummer'}>
-                                {primaryAddress.primaryAddressEnergySupplierElectricity.esNumber}
+                                {primaryAddress.currentAddressEnergySupplierElectricity.esNumber}
                             </TextBlock>
                         </Row>
 
                         <FormLabel className={'field-label'}>Klant bij leverancier sinds</FormLabel>
                         <Row>
                             <TextBlock className={'col-12 col-sm-8'} placeholder={'Klant sinds'}>
-                                {primaryAddress.primaryAddressEnergySupplierElectricity.memberSince
-                                    ? moment(primaryAddress.primaryAddressEnergySupplierElectricity.memberSince).format(
+                                {primaryAddress.currentAddressEnergySupplierElectricity.memberSince
+                                    ? moment(primaryAddress.currentAddressEnergySupplierElectricity.memberSince).format(
                                           'L'
                                       )
                                     : ''}

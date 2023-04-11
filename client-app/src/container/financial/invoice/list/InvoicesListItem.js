@@ -126,6 +126,8 @@ class InvoicesListItem extends Component {
             invoiceInTwinfield,
             invoicePaidInTwinfield,
             compatibleWithTwinfield,
+            okForSepa,
+            contactCountry
         } = this.props;
 
         const inProgressRowClass =
@@ -136,21 +138,25 @@ class InvoicesListItem extends Component {
             this.props.statusId === 'is-resending'
                 ? 'in-progress-row'
                 : '';
-        const compatibleStatus =
+        const errorStatus =
             (this.props.statusId === 'to-send' || this.props.statusId === 'sent') &&
-            usesTwinfield &&
-            !compatibleWithTwinfield;
-        const compatibleStatusRowClow = compatibleStatus ? 'missing-data-row' : '';
-        const compatibleStatusTitle =
-            'Er ontbreekt een Twinfield Grootboekrekening koppeling bij één of meerdere producten.';
+            (
+                (usesTwinfield && !compatibleWithTwinfield) ||
+                okForSepa !== true
+            );
+        const errorStatusRowClow = errorStatus ? 'missing-data-row' : '';
+
+        let errorStatusTitle = "";
+        if(usesTwinfield && !compatibleWithTwinfield) errorStatusTitle += 'Er ontbreekt een Twinfield Grootboekrekening koppeling bij één of meerdere producten.\n';
+        if(okForSepa !== true) errorStatusTitle += okForSepa;
 
         return (
             <tr
-                className={`${this.state.highlightRow} ${hideRowClass} ${inProgressRowClass} ${compatibleStatusRowClow}`}
+                className={`${this.state.highlightRow} ${hideRowClass} ${inProgressRowClass} ${errorStatusRowClow}`}
                 onDoubleClick={() => this.openItem(id)}
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
-                title={compatibleStatus ? compatibleStatusTitle : ''}
+                title={errorStatus ? errorStatusTitle : ''}
             >
                 {this.props.showSelectInvoicesToSend && (
                     <td>
@@ -211,14 +217,14 @@ class InvoicesListItem extends Component {
                     ) : (
                         ''
                     )}
-                    {this.state.showActionButtons && this.props.statusId === 'to-send' && !compatibleStatus ? (
+                    {this.state.showActionButtons && this.props.statusId === 'to-send' && !errorStatus ? (
                         <a role="button" onClick={() => this.showSend()} title="Verstuur nota">
                             <span className="glyphicon glyphicon-envelope mybtn-success" />{' '}
                         </a>
                     ) : (
                         ''
                     )}
-                    {this.state.showActionButtons && this.props.statusId === 'error-sending' && !compatibleStatus ? (
+                    {this.state.showActionButtons && this.props.statusId === 'error-sending' && !errorStatus ? (
                         <a role="button" onClick={() => this.showSend()} title="Verstuur nota opnieuw">
                             <span className="glyphicon glyphicon-envelope mybtn-success" />{' '}
                         </a>

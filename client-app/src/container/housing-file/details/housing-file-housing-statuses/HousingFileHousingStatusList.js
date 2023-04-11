@@ -13,7 +13,11 @@ const HousingFileHousingStatusList = props => {
             </div>
             {props.housingFileHousingStatuses.length > 0 ? (
                 props.housingFileHousingStatuses.map((housingFileHousingStatus, i) => {
-                    return <HousingFileHousingStatusItem key={i} housingFileHousingStatus={housingFileHousingStatus} />;
+                    if (housingFileHousingStatus.housingFileHoomLink.visibleInEconobis) {
+                        return (
+                            <HousingFileHousingStatusItem key={i} housingFileHousingStatus={housingFileHousingStatus} />
+                        );
+                    }
                 })
             ) : (
                 <div>Geen woningstatussen bekend.</div>

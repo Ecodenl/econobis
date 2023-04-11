@@ -21,7 +21,8 @@ class HousingFileExcelHelper
     public function __construct($housingFiles)
     {
         $this->housingFiles = $housingFiles;
-        $this->housingFileHoomLinks = HousingFileHoomLink::where('housing_file_data_type', 'W')->orderBy('external_hoom_short_name')->get();
+        // voorlopig even op volgorde external_hoom_short_name
+        $this->housingFileHoomLinks = HousingFileHoomLink::where('housing_file_data_type', 'W')->where('visible_in_econobis', true)->orderBy('external_hoom_short_name')->get();
     }
 
     public function downloadExcel()

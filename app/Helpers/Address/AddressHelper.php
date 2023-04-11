@@ -206,7 +206,7 @@ class AddressHelper
 
     public function addTaskAddressChangeParticipation($user)
     {
-        $taskType = TaskType::where('name', 'Adres wijziging deelnemer')->first();
+        $taskType = TaskType::where('name', 'Adreswijziging deelnemer')->first();
         $note = $taskType->name . ".\n\n";
         $note .= "Adres wijziging voor contact " . $this->contact->full_name . " (" . $this->contact->number . ").\n";
         $note .= "Adres op type \"Oud\" gezet: " . $this->address->StreetPostalCodeCity . ".\n";

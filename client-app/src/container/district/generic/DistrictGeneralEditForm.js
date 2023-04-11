@@ -65,6 +65,8 @@ export default function DistrictGeneralEditForm({initialValues, onSubmit, cancel
                                 event.persist();
                                 setFieldValue(event.target.name, event.target.checked);
                             }}
+                            size={'col-sm-5'}
+                            textToolTip={`Deze e-mails worden verstuurd vanaf het primaire e-mail adres.`}
                         />
                         {
                             values.sendEmailToContactWhenPlanned && (
@@ -87,6 +89,8 @@ export default function DistrictGeneralEditForm({initialValues, onSubmit, cancel
                                 event.persist();
                                 setFieldValue(event.target.name, event.target.checked);
                             }}
+                            size={'col-sm-5'}
+                            textToolTip={`Deze e-mails worden verstuurd vanaf het primaire e-mail adres.`}
                         />
                         {
                             values.sendEmailToCoachWhenPlanned && (

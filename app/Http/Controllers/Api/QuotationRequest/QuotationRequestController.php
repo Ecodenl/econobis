@@ -20,9 +20,9 @@ use App\Helpers\CSV\QuotationRequestCSVHelper;
 use App\Helpers\Delete\Models\DeleteQuotationRequest;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\QuotationRequest\Grid\RequestQuery;
-use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\QuotationRequest\FullQuotationRequest;
+use App\Http\Resources\QuotationRequest\FullQuotationRequestStatus;
 use App\Http\Resources\QuotationRequest\GridQuotationRequest;
 use App\Http\Resources\QuotationRequest\QuotationRequestPeek;
 use Carbon\Carbon;
@@ -412,7 +412,7 @@ class QuotationRequestController extends ApiController
 
     protected function getRelatedQuotationRequestsStatuses(OpportunityAction $opportunityAction)
     {
-        return FullEnumWithIdAndName::collection(QuotationRequestStatus::where('opportunity_action_id', $opportunityAction->id)->orderBy('order')->get());
+        return FullQuotationRequestStatus::collection(QuotationRequestStatus::where('opportunity_action_id', $opportunityAction->id)->orderBy('order')->get());
     }
 
 

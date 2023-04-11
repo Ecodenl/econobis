@@ -66,7 +66,7 @@ class ParticipationProjectController extends ApiController
 
         $participantProject = $requestQuery->get();
         $participantProject->load([
-            'address.primaryAddressEnergySupplierElectricity.energySupplier',
+            'address.currentAddressEnergySupplierElectricity.energySupplier',
             'contact.primaryAddress',
             'contact.primaryEmailAddress',
             'project',
@@ -162,7 +162,7 @@ class ParticipationProjectController extends ApiController
             'contact.primaryEmailAddress',
             'contact.primaryphoneNumber',
             'contact.primaryAddress.country',
-            'address.primaryAddressEnergySupplierElectricity.energySupplier',
+            'address.currentAddressEnergySupplierElectricity.energySupplier',
             'giftedByContact',
             'legalRepContact',
             'project',
@@ -221,7 +221,7 @@ class ParticipationProjectController extends ApiController
         $participantProject->load([
             'contact',
             'contact.primaryAddress',
-            'address.primaryAddressEnergySupplierElectricity',
+            'address.currentAddressEnergySupplierElectricity',
             'project.projectType',
             'project.administration',
             'project.projectValueCourses',
@@ -1067,14 +1067,14 @@ class ParticipationProjectController extends ApiController
     {
         $checkText = 'Energieleverancier check: ';
 
-        $primaryAddressEnergySupplierElectricity = $address ? $address->primaryAddressEnergySupplierElectricity : null;
+        $currentAddressEnergySupplierElectricity = $address ? $address->currentAddressEnergySupplierElectricity : null;
 
-        if(!$primaryAddressEnergySupplierElectricity){
+        if(!$currentAddressEnergySupplierElectricity){
             $message[] = $checkText . 'Contact heeft nog geen energieleverancier.';
             return false;
         }
 
-        $energySupplier = $primaryAddressEnergySupplierElectricity->energySupplier;
+        $energySupplier = $currentAddressEnergySupplierElectricity->energySupplier;
 
         if(!$energySupplier->does_postal_code_links){
             $message[] = $checkText . 'Energieleverancier van contact doet niet mee aan postcoderoos.';

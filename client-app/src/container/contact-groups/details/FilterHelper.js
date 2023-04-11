@@ -66,6 +66,10 @@ export default (type, field) => {
                     return 'Intake - Status';
                 case 'portalUser':
                     return 'Portal gebruiker actief';
+                case 'housingFile':
+                    return 'Woningdossier aanwezig';
+                case 'inspectionPersonType':
+                    return 'Rol in buurtaanpak';
                 case 'product':
                     return 'Product';
                 case 'dateStart':
@@ -91,7 +95,7 @@ export default (type, field) => {
                 case 'energySupplier':
                     return 'Energie leverancier';
                 case 'energySupplierType':
-                    return 'Type primaire energie leverancier';
+                    return 'Type huidige energie leverancier';
                 case 'dateContractSend':
                     return 'Datum contract verzonden';
                 case 'dateEnd':

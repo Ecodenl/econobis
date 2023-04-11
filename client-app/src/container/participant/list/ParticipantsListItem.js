@@ -106,8 +106,8 @@ class ParticipantsListItem extends Component {
                 <td>{uniqueMutationStatuses.map(item => item.name).join(', ')}</td>
                 <td>{dateRegister ? moment(dateRegister).format('L') : ''}</td>
                 <td>
-                    {address.primaryAddressEnergySupplierElectricity
-                        ? address.primaryAddressEnergySupplierElectricity.energySupplier.name
+                    {address.currentAddressEnergySupplierElectricity
+                        ? address.currentAddressEnergySupplierElectricity.energySupplier.name
                         : ''}
                 </td>
                 <td>

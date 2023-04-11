@@ -104,14 +104,14 @@ class Intake extends Model
 
     public function setStatusToInBehandeling()
     {
-        $statusIdToUse = IntakeStatus::where('name', 'In Behandeling')->first()->id;
+        $statusIdToUse = IntakeStatus::where('code_ref', 'in_progress')->first()->id;
         $this->intake_status_id = $statusIdToUse;
         $this->save();
     }
 
     public function updateStatusToAfgeslotenMetKans()
     {
-        $statusIdToUse = IntakeStatus::where('name', 'Afgesloten met kans')->first()->id;
+        $statusIdToUse = IntakeStatus::where('code_ref', 'closed_with_opportunity')->first()->id;
 
         if($this->checkIfAllMeasureRequestedHaveOpportunity()){
             $this->intake_status_id = $statusIdToUse;

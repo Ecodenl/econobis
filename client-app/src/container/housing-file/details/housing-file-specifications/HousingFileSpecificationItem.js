@@ -82,6 +82,9 @@ class HousingFileSpecificationItem extends Component {
                     housingFileSpecification={this.state.housingFileSpecification}
                     showEdit={this.state.showEdit}
                     openEdit={this.openEdit}
+                    showCheckboxList={this.props.showCheckboxList}
+                    toggleSpecificationCheck={this.props.toggleSpecificationCheck}
+                    specificationIds={this.props.specificationIds}
                 />
                 {this.state.showEdit && (
                     <HousingFileSpecificationEdit

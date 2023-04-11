@@ -329,7 +329,7 @@ class ProjectRevenueController extends ApiController
             $distribution->payout_type = '';
         }
 
-        $addressEnergySupplier = $participantAddress->primaryAddressEnergySupplierElectricity;
+        $addressEnergySupplier = $participantAddress->currentAddressEnergySupplierElectricity;
         if ($addressEnergySupplier) {
             $distribution->energy_supplier_name
                 = $addressEnergySupplier->energySupplier->name;

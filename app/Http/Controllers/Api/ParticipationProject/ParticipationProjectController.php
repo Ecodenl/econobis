@@ -682,6 +682,7 @@ class ParticipationProjectController extends ApiController
 
     public function createParticipantReport(Request $request, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate)
     {
+
         $this->authorize('manage', ParticipantProject::class);
 
         set_time_limit(0);
@@ -828,8 +829,10 @@ class ParticipationProjectController extends ApiController
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'administratie', $project->administration);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
 
+                $defaultAttachmentDocumentId = $emailTemplate->defaultAttachmentDocument ? $emailTemplate->defaultAttachmentDocument->id : null;
+
                 $email->send(new ParticipantReportMail($email, $fromEmail, $fromName,
-                    $htmlBodyWithContactVariables, $document));
+                    $htmlBodyWithContactVariables, $document, $defaultAttachmentDocumentId));
             } catch (\Exception $e) {
                 Log::error( 'Fout bij verzenden email naar ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
                 Log::error($e->getMessage());

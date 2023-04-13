@@ -20,6 +20,7 @@ const EmailAnswerForm = ({
     handleCcIds,
     handleBccIds,
     handleInputChange,
+    handleTextChange,
     addAttachment,
     deleteAttachment,
 }) => {
@@ -38,6 +39,7 @@ const EmailAnswerForm = ({
                     handleCcIds={handleCcIds}
                     handleBccIds={handleBccIds}
                     handleInputChange={handleInputChange}
+                    handleTextChange={handleTextChange}
                     emailTemplates={emailTemplates}
                     handleEmailTemplates={handleEmailTemplates}
                     handleFromIds={handleFromIds}

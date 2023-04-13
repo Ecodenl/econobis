@@ -34,6 +34,7 @@ class EmailNewApp extends Component {
                 templateId: '',
                 subject: '',
                 htmlBody: '',
+                initialHtmlBody: '',
                 attachments: [],
                 quotationRequestId: props.params.quotationRequestId ? props.params.quotationRequestId : '',
                 opportunityId: props.params.opportunityId ? props.params.opportunityId : '',
@@ -57,6 +58,7 @@ class EmailNewApp extends Component {
         this.handleToIds = this.handleToIds.bind(this);
         this.handleCcIds = this.handleCcIds.bind(this);
         this.handleBccIds = this.handleBccIds.bind(this);
+        this.handleTextChange = this.handleTextChange.bind(this);
         this.addAttachment = this.addAttachment.bind(this);
         this.addDocumentAsAttachment = this.addDocumentAsAttachment.bind(this);
         this.deleteAttachment = this.deleteAttachment.bind(this);
@@ -171,6 +173,7 @@ class EmailNewApp extends Component {
                     ...this.state.email,
                     subject: payload.subject ? payload.subject : this.state.email.subject,
                     htmlBody: payload.htmlBody ? payload.htmlBody : this.state.email.htmlBody,
+                    initialHtmlBody: payload.htmlBody ? payload.htmlBody : this.state.email.htmlBody,
                 },
             });
             if (payload.defaultAttachmentDocument) {
@@ -236,6 +239,16 @@ class EmailNewApp extends Component {
                 bcc: bccIds,
             },
             emailAddressesBccSelected: selectedOption,
+        });
+    }
+
+    handleTextChange(htmlBody) {
+        this.setState({
+            ...this.state,
+            email: {
+                ...this.state.email,
+                htmlBody: htmlBody,
+            },
         });
     }
 
@@ -426,6 +439,7 @@ class EmailNewApp extends Component {
                             handleCcIds={this.handleCcIds}
                             handleBccIds={this.handleBccIds}
                             handleInputChange={this.handleInputChange}
+                            handleTextChange={this.handleTextChange}
                             addAttachment={this.addAttachment}
                             addDocumentAsAttachment={this.addDocumentAsAttachment}
                             deleteAttachment={this.deleteAttachment}

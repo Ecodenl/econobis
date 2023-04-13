@@ -12,6 +12,7 @@ function ConceptFormGeneral(props) {
     const [valueSelectedTo, setValueSelectedTo] = useState([]);
     const [valueSelectedCc, setValueSelectedCc] = useState([]);
     const [valueSelectedBcc, setValueSelectedBcc] = useState([]);
+    const [htmlBody, setValueHtmlBody] = useState('');
     const [selectedToMoreThanOne, setSelectedToMoreThanOne] = useState(false);
     const [includesEmailAddress, setIncludesEmailAddress] = useState(false);
 
@@ -27,12 +28,13 @@ function ConceptFormGeneral(props) {
         handleCcIds,
         handleBccIds,
         handleInputChange,
+        handleTextChange,
     } = props;
-    const { from, to, cc, bcc, subject, contactGroupId } = email;
-    const initialHtmlBody = email.htmlBody;
-    const [htmlBody, setValueHtmlBody] = useState(htmlBody ?? '');
+    const { from, to, cc, bcc, subject, initialHtmlBody, contactGroupId } = email;
 
-    useEffect(() => setValueHtmlBody(htmlBody ?? ''), [htmlBody]);
+    useEffect(() => {
+        handleTextChange(htmlBody);
+    }, [htmlBody]);
 
     useEffect(() => {
         setValueSelectedTo(getSelectedTo());
@@ -281,7 +283,7 @@ function ConceptFormGeneral(props) {
                             <InputTinyMCEUpdateable
                                 label={'Tekst'}
                                 initialValue={initialHtmlBody}
-                                value={htmlBody}
+                                value={htmlBody != '' ? htmlBody : initialHtmlBody}
                                 onChangeAction={(newValueHtmlBody, editor) => setValueHtmlBody(newValueHtmlBody)}
                             />
                         )}
@@ -303,6 +305,7 @@ ConceptFormGeneral.propTypes = {
     handleCcIds: PropTypes.any,
     handleBccIds: PropTypes.any,
     handleInputChange: PropTypes.any,
+    handleTextChange: PropTypes.any,
     hasLoaded: PropTypes.bool,
 };
 

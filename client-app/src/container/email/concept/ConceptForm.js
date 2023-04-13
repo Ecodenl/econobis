@@ -17,6 +17,7 @@ const ConceptNewForm = ({
     handleCcIds,
     handleBccIds,
     handleInputChange,
+    handleTextChange,
     addAttachment,
     deleteAttachment,
 }) => {
@@ -36,6 +37,7 @@ const ConceptNewForm = ({
                     handleCcIds={handleCcIds}
                     handleBccIds={handleBccIds}
                     handleInputChange={handleInputChange}
+                    handleTextChange={handleTextChange}
                 />
 
                 <ConceptAttachments

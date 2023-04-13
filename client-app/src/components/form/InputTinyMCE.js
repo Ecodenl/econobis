@@ -47,9 +47,6 @@ const InputTinyMCE = props => {
                         toolbar:
                             'undo redo | formatselect fontselect | bold italic forecolor | alignleft aligncenter alignright | pagebreak | bullist numlist outdent indent | table | link image | code',
                         paste_data_images: true,
-                        images_upload_handler: function (blobInfo, success) {
-                            success("data:" + blobInfo.blob().type + ";base64," + blobInfo.base64());
-                        },
                         contextmenu: false,
                         height: '300',
                         browser_spellcheck: true,

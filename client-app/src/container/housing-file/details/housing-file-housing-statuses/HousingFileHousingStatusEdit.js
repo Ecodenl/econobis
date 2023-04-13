@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 moment.locale('nl');
 import HousingFileDetailsAPI from '../../../../api/housing-file/HousingFileDetailsAPI';
-import { updateHousingFileHousingStatusToState } from '../../../../actions/housing-file/HousingFileDetailsActions';
+// import { updateHousingFileHousingStatusToState } from '../../../../actions/housing-file/HousingFileDetailsActions';
 import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from '../../../../components/form/InputSelect';
@@ -83,15 +83,15 @@ class HousingFileHousingStatusEdit extends Component {
 
         this.setState({ ...this.state, errors: errors });
 
-        !hasErrors &&
-            HousingFileDetailsAPI.updateHousingFileHousingStatus(housingFileHousingStatus)
-                .then(payload => {
-                    this.props.updateHousingFileHousingStatusToState(payload.data.data);
-                    this.props.closeEdit();
-                })
-                .catch(function(error) {
-                    alert(error);
-                });
+        // !hasErrors &&
+        //     HousingFileDetailsAPI.updateHousingFileHousingStatus(housingFileHousingStatus)
+        //         .then(payload => {
+        //             this.props.updateHousingFileHousingStatusToState(payload.data.data);
+        //             this.props.closeEdit();
+        //         })
+        //         .catch(function(error) {
+        //             alert(error);
+        //         });
     };
 
     render() {
@@ -207,9 +207,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    updateHousingFileHousingStatusToState: housingFileHousingStatus => {
-        dispatch(updateHousingFileHousingStatusToState(housingFileHousingStatus));
-    },
+    // updateHousingFileHousingStatusToState: housingFileHousingStatus => {
+    //     dispatch(updateHousingFileHousingStatusToState(housingFileHousingStatus));
+    // },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(HousingFileHousingStatusEdit);

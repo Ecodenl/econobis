@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import HousingFileHousingStatusView from './HousingFileHousingStatusView';
-import HousingFileHousingStatusDelete from './HousingFileHousingStatusDelete';
+// import HousingFileHousingStatusDelete from './HousingFileHousingStatusDelete';
 import HousingFileHousingStatusEdit from './HousingFileHousingStatusEdit';
 import { isEqual } from 'lodash';
 
@@ -91,12 +91,12 @@ class HousingFileHousingStatusItem extends Component {
                         closeEdit={this.closeEdit}
                     />
                 )}
-                {this.state.showDelete && (
-                    <HousingFileHousingStatusDelete
-                        closeDeleteItemModal={this.toggleDelete}
-                        {...this.props.housingFileHousingStatus}
-                    />
-                )}
+                {/*{this.state.showDelete && (*/}
+                {/*    <HousingFileHousingStatusDelete*/}
+                {/*        closeDeleteItemModal={this.toggleDelete}*/}
+                {/*        {...this.props.housingFileHousingStatus}*/}
+                {/*    />*/}
+                {/*)}*/}
             </div>
         );
     }

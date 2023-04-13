@@ -45,13 +45,84 @@ class EmailInlineImagesService
     /**
      * Vervang embedded images in html door cid verwijzingen.
      *
-     * Als een mail is gebaseerd op een andere mail (reply of forward) dan kunnen er inline images aanwezig zijn.
+     * Als een mail is gebaseerd op een andere mail (reply of forward), of als er nieuwe afbeeldingen in de MCE editor geplakt zijn dan kunnen er inline images aanwezig zijn.
      * Aan de voorkant tonen we deze dmv base64 inline images en voegen we data-cid tag toe om de cid van de afbeelding in deze functie terug te kunnen herleiden
      * Bij opslaan willen we de inline afbeeldingen weer opslaan als bijlage en de cid verwijzingen in de html zetten.
      *
-     * Als dit de eerste keer is dat de mail wordt opgeslagen moeten de afbeeldingen ook worden gekopieerd van de mail waar deze op is gebaseerd.
+     * Als dit de eerste keer is dat de mail wordt opgeslagen moeten de afbeeldingen ook worden gekopieerd van de mail waar deze op is gebaseerd, of als bijlage worden opgeslagen obv de base64 data.
      */
     public function convertInlineImagesToCid()
+    {
+        $html = $this->email->html_body;
+
+        /**
+         * Verwijder de data-mce-src en date-mce- attributen uit de html inclusief de key en value.
+         * Deze worden door TinyMCE toegevoegd maar hebben we verder niet nodig en werken alleen maar storend.
+         */
+        $html = preg_replace('/\bdata-mce-src\s*=\s*"[^"]*"/i', '', $html);
+        $html = preg_replace('/\bdata-mce-[^=]*\s*=\s*"[^"]*"/i', '', $html);
+
+        $this->email->html_body = $html;
+
+        $this->convertExistingInlineImagesToCid();
+        $this->convertNewInlineImagesToCid();
+    }
+
+    /**
+     * Maak gebruik van Laravel's embed() functie om inline afbeeldingen te mailen. (https://laravel.com/docs/9.x/mail#inline-attachments)
+     *
+     * De $message variabele is een variabele die Laravel automatisch meegeeft naar de blade template van de mail.
+     * Daarom moeten we deze functie vanuit de blade template aanroepen.
+     */
+    public function embedCidImagesForSending(string $html, Message $message)
+    {
+        foreach($this->email->attachments()->whereNotNull('cid')->get() as $attachment){
+            $search = 'src="cid:' . $attachment->cid . '"';
+
+            if(strpos($html, $search) === false){
+                continue;
+            }
+
+            $html = str_replace($search, 'src="' . $message->embed(Storage::disk('mail_attachments')->path($attachment->filename)) . '"', $html);
+        }
+
+        return $html;
+    }
+
+    protected function getBase64ImageForAttachment(EmailAttachment $emailAttachment)
+    {
+        return 'data:image/' . pathinfo($emailAttachment->filename, PATHINFO_EXTENSION) . ';base64,' . base64_encode(Storage::disk('mail_attachments')->get($emailAttachment->filename));
+    }
+
+    protected function copyAttachmentFromOldEmail($cid)
+    {
+        if(!$this->email->oldEmail){
+            return;
+        }
+
+        $attachmentFromOldEmail = $this->email->oldEmail->attachments()->where('cid', $cid)->first();
+
+        if(!$attachmentFromOldEmail){
+            return;
+        }
+
+        /**
+         * Kopiëren van bijlages gebeurt altijd voor forwards of replies, daarom opslaan in "outbox".
+         */
+        $newFilename = 'mailbox_' . $this->email->mailbox_id . '/outbox' . '/' . Str::random(40) . '.' . pathinfo($attachmentFromOldEmail->filename, PATHINFO_EXTENSION);
+        Storage::disk('mail_attachments')->copy($attachmentFromOldEmail->filename, $newFilename);
+
+        $attachment = $attachmentFromOldEmail->replicate();
+        $attachment->email_id = $this->email->id;
+        $attachment->filename = $newFilename;
+        $attachment->save();
+    }
+
+    /**
+     * Zet bestaande afbeeldingen van eerder opgeslagen mail of reply/forward om naar cid verwijzingen.
+     * @see convertInlineImagesToCid()
+     */
+    private function convertExistingInlineImagesToCid()
     {
         $html = $this->email->html_body;
 
@@ -108,52 +179,68 @@ class EmailInlineImagesService
     }
 
     /**
-     * Maak gebruik van Laravel's embed() functie om inline afbeeldingen te mailen. (https://laravel.com/docs/9.x/mail#inline-attachments)
-     *
-     * De $message variabele is een variabele die Laravel automatisch meegeeft naar de blade template van de mail.
-     * Daarom moeten we deze functie vanuit de blade template aanroepen.
+     * Zet nieuwe inline afbeeldingen (geplakt in TinyMCE) om naar een bijlage en cid verwijzingen.
+     * @see convertInlineImagesToCid()
      */
-    public function embedCidImagesForSending(string $html, Message $message)
+    private function convertNewInlineImagesToCid()
     {
-        foreach($this->email->attachments()->whereNotNull('cid')->get() as $attachment){
-            $search = 'src="cid:' . $attachment->cid . '"';
-
-            if(strpos($html, $search) === false){
-                continue;
-            }
-
-            $html = str_replace($search, 'src="' . $message->embed(Storage::disk('mail_attachments')->path($attachment->filename)) . '"', $html);
-        }
-
-        return $html;
-    }
-
-    protected function getBase64ImageForAttachment(EmailAttachment $emailAttachment)
-    {
-        return 'data:image/jpeg;base64,' . base64_encode(Storage::disk('mail_attachments')->get($emailAttachment->filename));
-    }
-
-    protected function copyAttachmentFromOldEmail($cid)
-    {
-        if(!$this->email->oldEmail){
-            return;
-        }
-
-        $attachmentFromOldEmail = $this->email->oldEmail->attachments()->where('cid', $cid)->first();
-
-        if(!$attachmentFromOldEmail){
-            return;
-        }
+        $html = $this->email->html_body;
 
         /**
-         * Kopiëren van bijlages gebeurt altijd voor forwards of replies, daarom opslaan in "outbox".
+         * Verzamel alle img tags die een base64 image bevatten.
          */
-        $newFilename = 'mailbox_' . $this->email->mailbox_id . '/outbox' . '/' . Str::random(40) . '.' . pathinfo($attachmentFromOldEmail->filename, PATHINFO_EXTENSION);
-        Storage::disk('mail_attachments')->copy($attachmentFromOldEmail->filename, $newFilename);
+        preg_match_all('/<img[^>]+src="data:image\/[^>]*>/i', $html, $result);
+        $imageTags = $result[0];
 
-        $attachment = $attachmentFromOldEmail->replicate();
-        $attachment->email_id = $this->email->id;
-        $attachment->filename = $newFilename;
-        $attachment->save();
+        foreach ($imageTags as $imageTag){
+            /**
+             * Haal de waarde van het src attribuut uit de img tag ("data:image/png;base64,....").
+             */
+            preg_match('/src="([^"]*)"/i', $imageTag, $result);
+            $base64Image = $result[1];
+
+            /**
+             * Haal de extensie uit de base64 image.
+             */
+            preg_match('/data:image\/([^;]*);/i', $imageTag, $result);
+            $extension = $result[1];
+
+            /**
+             * Maak een nieuwe unieke filename aan.
+             */
+            $filename = 'mailbox_' . $this->email->mailbox_id . '/outbox' . '/' . Str::random(40) . '.' . $extension;
+
+            /**
+             * Haal de data:base64... prefix er af.
+             */
+            $base64Data = str_replace('data:image/' . $extension . ';base64,', '', $base64Image);
+
+            /**
+             * Sla de base64 image op als bijlage.
+             */
+            Storage::disk('mail_attachments')->put($filename, base64_decode($base64Data));
+
+            /**
+             * Maak een nieuwe bijlage aan.
+             */
+            $attachment = new EmailAttachment();
+            $attachment->email_id = $this->email->id;
+            $attachment->filename = $filename;
+            $attachment->name = basename($filename);
+            $attachment->cid = Str::random(40);
+            $attachment->save();
+
+            /**
+             * Vervang de base64 image in de img tag door een cid verwijzing.
+             */
+            $newImageTag = str_replace($base64Image, 'cid:' . $attachment->cid, $imageTag);
+
+            /**
+             * Vervang de img tag in de html.
+             */
+            $html = str_replace($imageTag, $newImageTag, $html);
+        }
+
+        $this->email->html_body = $html;
     }
 }

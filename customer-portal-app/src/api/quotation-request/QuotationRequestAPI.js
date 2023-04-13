@@ -1,8 +1,12 @@
 import axiosInstance from '../default-setup/AxiosInstance';
 
 export default {
-    fetchAll: function() {
-        return axiosInstance.get('me/quotation-request');
+    fetchAll: function(campaignId = null) {
+        return axiosInstance.get('me/quotation-request', {
+            params: {
+                campaignId: campaignId,
+            }
+        });
     },
 
     fetchById: function(id) {

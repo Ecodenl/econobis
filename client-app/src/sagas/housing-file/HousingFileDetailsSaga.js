@@ -34,11 +34,11 @@ export function* deleteHousingFileSpecificationSaga({ housingFileSpecificationId
     }
 }
 // ToDo WM: nog aanpassen !!!
-export function* deleteHousingFileHousingStatusSaga({ housingFileHousingStatusId }) {
-    try {
-        yield call(HousingFileDetailsAPI.deleteHousingStatus, housingFileHousingStatusId);
-        yield put({ type: 'DELETE_HOUSING_FILE_HOUSING_STATUS_SUCCESS', housingFileHousingStatusId });
-    } catch (error) {
-        yield put({ type: 'DELETE_HOUSING_FILE_HOUSING_STATUS_ERROR', error });
-    }
-}
+// export function* deleteHousingFileHousingStatusSaga({ housingFileHousingStatusId }) {
+//     try {
+//         yield call(HousingFileDetailsAPI.deleteHousingStatus, housingFileHousingStatusId);
+//         yield put({ type: 'DELETE_HOUSING_FILE_HOUSING_STATUS_SUCCESS', housingFileHousingStatusId });
+//     } catch (error) {
+//         yield put({ type: 'DELETE_HOUSING_FILE_HOUSING_STATUS_ERROR', error });
+//     }
+// }

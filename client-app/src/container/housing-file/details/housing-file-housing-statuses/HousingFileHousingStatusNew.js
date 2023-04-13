@@ -4,7 +4,7 @@ import moment from 'moment';
 import validator from 'validator';
 moment.locale('nl');
 import HousingFileDetailsAPI from '../../../../api/housing-file/HousingFileDetailsAPI';
-import { addHousingFileHousingStatusToState } from '../../../../actions/housing-file/HousingFileDetailsActions';
+// import { addHousingFileHousingStatusToState } from '../../../../actions/housing-file/HousingFileDetailsActions';
 import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from '../../../../components/form/InputSelect';
@@ -77,15 +77,15 @@ class HousingFileHousingStatusNew extends Component {
 
         this.setState({ ...this.state, errors: errors });
 
-        !hasErrors &&
-            HousingFileDetailsAPI.addHousingFileHousingStatus(housingFileHousingStatus)
-                .then(payload => {
-                    this.props.addHousingFileHousingStatusToState(payload.data.data);
-                    this.props.toggleShowNew();
-                })
-                .catch(function(error) {
-                    alert(error);
-                });
+        // !hasErrors &&
+        //     HousingFileDetailsAPI.addHousingFileHousingStatus(housingFileHousingStatus)
+        //         .then(payload => {
+        //             this.props.addHousingFileHousingStatusToState(payload.data.data);
+        //             this.props.toggleShowNew();
+        //         })
+        //         .catch(function(error) {
+        //             alert(error);
+        //         });
     };
 
     render() {
@@ -204,9 +204,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    addHousingFileHousingStatusToState: housingFileHousingStatus => {
-        dispatch(addHousingFileHousingStatusToState(housingFileHousingStatus));
-    },
+    // addHousingFileHousingStatusToState: housingFileHousingStatus => {
+    //     dispatch(addHousingFileHousingStatusToState(housingFileHousingStatus));
+    // },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(HousingFileHousingStatusNew);

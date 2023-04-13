@@ -49,7 +49,9 @@ class InvoiceProductsForm extends Component {
                         {/*{this.props.permissions.manageFinancial && this.props.invoice.statusId == 'to-send' && (*/}
                         {/*    <div className={'col-xs-2'}>*/}
                         {/*        <div className="pull-right">*/}
-                        {/*            <span className="glyphicon glyphicon-plus" data-toggle="dropdown" role="button" />*/}
+                        {/*            <button className="btn btn-success btn-sm" data-toggle="dropdown">*/}
+                        {/*                <Icon size={14} icon={plus} />*/}
+                        {/*            </button>*/}
                         {/*            <ul className="dropdown-menu">*/}
                         {/*                <li>*/}
                         {/*                    <a className="btn" onClick={this.toggleShowNew}>*/}

@@ -19,10 +19,10 @@ const ContactGroupsListToolbar = props => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={props.resetContactGroupsFilters} />
+                    <ButtonIcon iconName={'refresh'} onClickAction={props.resetContactGroupsFilters} />
                     {permissions.manageGroup && (
                         <>
-                            <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newContactGroup} />
+                            <ButtonIcon iconName={'plus'} onClickAction={newContactGroup} />
                             <br /> <br />
                             <ButtonText
                                 onClickAction={props.getExcelExportGroupReport}

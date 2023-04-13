@@ -9,6 +9,9 @@ import { connect } from 'react-redux';
 import HousingFileSpecificationCreateOpportunity from './HousingFileSpecificationCreateOpportunity';
 import ButtonText from '../../../../components/button/ButtonText';
 
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
+
 class HousingFileSpecifications extends Component {
     constructor(props) {
         super(props);
@@ -109,7 +112,7 @@ class HousingFileSpecifications extends Component {
                     )}
                     {this.props.permissions.manageHousingFile && !this.props.hasHoomDossierLink && (
                         <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                            <span className="glyphicon glyphicon-plus" />
+                            <Icon size={14} icon={plus} />
                         </a>
                     )}
                 </PanelHeader>

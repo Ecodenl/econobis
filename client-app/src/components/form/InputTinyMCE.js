@@ -23,7 +23,7 @@ import 'tinymce/plugins/pagebreak';
 import { Editor } from '@tinymce/tinymce-react';
 
 const InputTinyMCE = props => {
-    const { label, value, onChangeAction } = props;
+    const { label, initialValue, value, onChangeAction } = props;
 
     return (
         <div>
@@ -34,7 +34,9 @@ const InputTinyMCE = props => {
             </div>
             <div className="col-sm-9">
                 <Editor
-                    initialValue={value}
+                    id={'tinyMCE'}
+                    initialValue={initialValue}
+                    value={value}
                     init={{
                         skin: false,
                         content_css: false,
@@ -44,13 +46,14 @@ const InputTinyMCE = props => {
                         plugins: 'paste lists advlist link image code table pagebreak',
                         toolbar:
                             'undo redo | formatselect fontselect | bold italic forecolor | alignleft aligncenter alignright | pagebreak | bullist numlist outdent indent | table | link image | code',
+                        // paste_data_images: true,
                         contextmenu: false,
                         height: '300',
                         browser_spellcheck: true,
                         font_formats:
                             'Courier New=courier new;Tahoma=tahoma;Times New Roman=times new roman;Verdana=verdana;',
                     }}
-                    onChange={onChangeAction}
+                    onEditorChange={onChangeAction}
                 />
             </div>
         </div>
@@ -58,6 +61,7 @@ const InputTinyMCE = props => {
 };
 
 InputTinyMCE.defaultProps = {
+    initialValue: '',
     value: '',
     errorMessage: '',
 };
@@ -67,6 +71,7 @@ InputTinyMCE.propTypes = {
     type: PropTypes.string,
     id: PropTypes.string,
     placeholder: PropTypes.string,
+    initialValue: PropTypes.string,
     value: PropTypes.string,
     onChangeAction: PropTypes.func,
 };

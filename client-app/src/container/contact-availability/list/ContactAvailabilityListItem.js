@@ -1,6 +1,9 @@
 import React, {useState} from 'react';
 import {hashHistory} from 'react-router';
 
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+
 export default function ContactAvailabilityListItem({contact}) {
     const [showActionButtons, setShowActionButtons] = useState(false);
     const [highlightRow, setHighlightRow] = useState('');
@@ -30,7 +33,7 @@ export default function ContactAvailabilityListItem({contact}) {
                 {showActionButtons && (
                     <>
                         <a role="button" onClick={openItem}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success"/>
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
                         </a>
                     </>
                 )}

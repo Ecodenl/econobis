@@ -7,6 +7,9 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import moment from 'moment';
 
+import Icon from 'react-icons-kit';
+import { copy } from 'react-icons-kit/fa/copy';
+
 const WebformDetailsFormGeneralView = props => {
     const {
         name,
@@ -35,13 +38,7 @@ const WebformDetailsFormGeneralView = props => {
                             <div className="col-sm-6" style={{ paddingRight: '5px' }} onClick={null}>
                                 {apiKey}
                                 <CopyToClipboard text={apiKey}>
-                                    <span
-                                        className="glyphicon glyphicon-copy mybtn-success pull-right"
-                                        style={{ top: '5px' }}
-                                        role="button"
-                                        onClick={null}
-                                        title={'Kopieer sleutel'}
-                                    />
+                                    <Icon className="mybtn-success pull-right" size={14} icon={copy} role="button" onClick={null} title={'Kopieer sleutel'} />
                                 </CopyToClipboard>
                             </div>
                         </div>

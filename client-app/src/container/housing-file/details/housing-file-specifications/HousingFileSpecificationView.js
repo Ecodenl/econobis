@@ -2,6 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment/moment';
 
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+import { trash } from 'react-icons-kit/fa/trash';
+
 moment.locale('nl');
 
 const HousingFileSpecificationView = props => {
@@ -57,10 +61,10 @@ const HousingFileSpecificationView = props => {
                     !props.hasHoomDossierLink ? (
                         <>
                             <a role="button" onClick={props.openEdit}>
-                                <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                                <Icon className="mybtn-success" size={14} icon={pencil} />
                             </a>
                             <a role="button" onClick={props.toggleDelete}>
-                                <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                                <Icon className="mybtn-danger" size={14} icon={trash} />
                             </a>
                         </>
                     ) : (

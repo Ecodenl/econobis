@@ -525,8 +525,8 @@ class InvoicesList extends Component {
                 <div className="row">
                     <div className="col-md-4">
                         <div className="btn-group btn-group-flex" role="group">
-                            <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={this.resetInvoiceFilters} />
-                            <ButtonIcon iconName={'glyphicon-download-alt'} onClickAction={this.getCSV} />
+                            <ButtonIcon iconName={'refresh'} onClickAction={this.resetInvoiceFilters} />
+                            <ButtonIcon iconName={'download'} onClickAction={this.getCSV} />
                             {(this.props.invoicesFilters.statusId.data == 'to-send' ||
                                 this.props.invoicesFilters.statusId.data == 'error-sending') &&
                                 this.props.invoicesFilters.paymentTypeId.data == 'collection' &&

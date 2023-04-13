@@ -1,5 +1,10 @@
 import React from 'react';
 import moment from 'moment';
+
+import Icon from 'react-icons-kit';
+import { fileO } from 'react-icons-kit/fa/fileO';
+import { trash } from 'react-icons-kit/fa/trash';
+
 moment.locale('nl');
 import { connect } from 'react-redux';
 
@@ -20,14 +25,15 @@ const AdministrationDetailsSepasView = props => {
                 <div className="col-sm-1">
                     {props.showActionButtons && props.permissions.manageFinancial ? (
                         <a role="button" onClick={() => props.downloadSepa(id)}>
-                            <span className="glyphicon glyphicon-open-file mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={fileO} />
                         </a>
                     ) : (
                         ''
                     )}
+                    &nbsp;
                     {props.showActionButtons && props.permissions.manageFinancial ? (
                         <a role="button" onClick={props.toggleDelete}>
-                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                            <Icon className="mybtn-danger" size={14} icon={trash} />
                         </a>
                     ) : (
                         ''

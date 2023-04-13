@@ -32,7 +32,7 @@ class ProjectDetailsFormValueCourse extends Component {
                         <ButtonIcon
                             buttonClassName={'pull-right btn btn-link'}
                             onClickAction={this.toggleShowNew}
-                            iconName={'glyphicon-plus'}
+                            iconName={'plus'}
                         />
                     )}
                 </PanelHeader>

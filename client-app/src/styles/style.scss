@@ -7,6 +7,7 @@
 // Bootstrap
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 @import "node_modules/react-day-picker/lib/style";
+//@import url(https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css);
 
 @import "./partials/button";
 @import "./partials/calendar";
@@ -16,7 +17,7 @@
 @import "./partials/financial";
 @import "./partials/loading-screen";
 @import "./partials/form";
-@import "./partials/glyphicon";
+//@import "./partials/glyphicon";
 @import "./partials/harmonica";
 @import "./partials/iframe";
 @import "./partials/loader";
@@ -25,6 +26,7 @@
 @import "./partials/nav";
 @import "./partials/pagination";
 @import "./partials/panel";
+@import "./partials/pdf_viewer";
 @import "./partials/preview_portal";
 @import "./partials/sidebar";
 @import "./partials/sidebarmenu";

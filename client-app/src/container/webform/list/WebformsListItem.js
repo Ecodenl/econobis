@@ -3,6 +3,10 @@ import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
+import Icon from 'react-icons-kit';
+import { trash } from 'react-icons-kit/fa/trash';
+import { pencil } from 'react-icons-kit/fa/pencil';
+
 class WebformsListItem extends Component {
     constructor(props) {
         super(props);
@@ -48,14 +52,15 @@ class WebformsListItem extends Component {
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''
                     )}
+                    &nbsp;
                     {this.state.showActionButtons && this.props.permissions.createWebform ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}>
-                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                            <Icon className="mybtn-danger" size={14} icon={trash} />
                         </a>
                     ) : (
                         ''

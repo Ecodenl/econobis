@@ -5,27 +5,41 @@ module.exports = {
     entry: {
         bundle: './src/index.js',
     },
+
     resolve: {
         modules: [path.join(__dirname, 'src'), 'node_modules'],
+        alias: {
+            process: 'process/browser',
+            stream: 'stream-browserify',
+            zlib: 'browserify-zlib',
+        },
     },
     module: {
         rules: [
             {
-                use: 'babel-loader',
                 test: /\.js$/,
                 exclude: /node_modules/,
+                use: [{ loader: 'babel-loader' }],
             },
             {
                 test: /\.(sass|scss)$/,
-                use: ['style-loader', 'css-loader', 'sass-loader'],
+                use: [{ loader: 'style-loader' }, { loader: 'css-loader' }, { loader: 'sass-loader' }],
             },
             {
                 test: /\.css$/,
-                use: ['style-loader', 'css-loader'],
+                use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
             },
             {
+                // test: /.png$|.woff$|.woff2$|.ttf$|.eot$|.svg$|.jpg$|.gif$/,
                 test: /\.(png|woff|woff2|eot|ttf|svg|jpg|gif)$/,
-                loader: 'url-loader?limit=100000',
+                use: [
+                    {
+                        loader: 'url-loader',
+                        options: {
+                            limit: 100000,
+                        },
+                    },
+                ],
             },
         ],
     },
@@ -34,6 +48,7 @@ module.exports = {
             $: 'jquery',
             jQuery: 'jquery',
             'window.jQuery': 'jquery',
+            Buffer: ['buffer', 'Buffer'],
         }),
     ],
 
@@ -41,7 +56,7 @@ module.exports = {
         splitChunks: {
             chunks: 'all',
         },
-        noEmitOnErrors: true, // NoEmitOnErrorsPlugin
+        emitOnErrors: false, // emitOnErrorsPlugin
         concatenateModules: true, //ModuleConcatenationPlugin
     },
 };

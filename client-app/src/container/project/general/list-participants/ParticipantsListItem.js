@@ -5,6 +5,9 @@ import MoneyPresenter from '../../../../helpers/MoneyPresenter';
 import validator from 'validator';
 moment.locale('nl');
 
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+
 class ParticipantsListItem extends Component {
     constructor(props) {
         super(props);
@@ -112,7 +115,7 @@ class ParticipantsListItem extends Component {
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''

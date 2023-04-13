@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Icon from 'react-icons-kit';
+import { refresh } from 'react-icons-kit/fa/refresh';
+
 const ButtonText = props => {
     const { buttonClassName, buttonText, onClickAction, type, value, loading, loadText, disabled, title } = props;
 
@@ -12,7 +15,7 @@ const ButtonText = props => {
                 value={value}
                 disabled={loading}
             >
-                <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate" /> {loadText}
+                <Icon size={14} icon={refresh} /> {loadText}
             </button>
         );
     } else {

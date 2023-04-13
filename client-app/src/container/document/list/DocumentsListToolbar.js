@@ -19,13 +19,13 @@ const DocumentsListToolbar = props => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
-                    <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={props.resetDocumentsFilters} />
+                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                    <ButtonIcon iconName={'refresh'} onClickAction={props.resetDocumentsFilters} />
                     {/* Voorlopig geen nieuwe documenten (maken / uploaden) vanuit hier,Zie verderop uitleg via {i} knop */}
                     {/*    {permissions.createDocument && (*/}
                     {/*        <div className="nav navbar-nav btn-group" role="group">*/}
                     {/*            <button className="btn btn-success btn-sm" data-toggle="dropdown">*/}
-                    {/*                <span className="glyphicon glyphicon-plus" />*/}
+                    {/*                <Icon size={14} icon={plus} />*/}
                     {/*            </button>*/}
                     {/*            <ul className="dropdown-menu">*/}
                     {/*                <li>*/}

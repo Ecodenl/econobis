@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import BigCalendar from 'react-big-calendar';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './DistrictCalendar.css';
@@ -134,7 +134,7 @@ const DistrictCalendarApp = props => {
                 <div className="row margin-10-bottom">
                     <div className="col-md-4">
                         <div className="btn-group" role="group">
-                            <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
+                            <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                         </div>
                     </div>
                     <div className="col-md-4">
@@ -165,7 +165,7 @@ const DistrictCalendarApp = props => {
                         </div>
                     </div>
                 </div>
-                <BigCalendar
+                <Calendar
                     events={getFilteredEvents()}
                     style={{ height: 'calc(100vh - 200px)' }}
                     step={15}
@@ -176,7 +176,7 @@ const DistrictCalendarApp = props => {
                     date={date}
                     onNavigate={setDate}
                     onSelectEvent={selectEventHandler}
-                    localizer={BigCalendar.momentLocalizer(moment)}
+                    localizer={momentLocalizer(moment)}
                     eventPropGetter={eventPropGetter}
                     messages={{
                         allDay: 'Gehele dag',

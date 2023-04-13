@@ -2,6 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import ViewText from '../../../../components/form/ViewText';
 
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+import { trash } from 'react-icons-kit/fa/trash';
+
 const ContactDetailsFormPortalUserView = props => {
     const { email, hasTwoFactorEnabled } = props.portalUser;
     return (
@@ -20,14 +24,14 @@ const ContactDetailsFormPortalUserView = props => {
                 <div className="col-sm-1">
                     {props.permissions.updateContactPortalUser && props.showActionButtons ? (
                         <a role="button" onClick={props.switchToEdit}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''
                     )}
                     {props.permissions.deleteContactPortalUser && props.showActionButtons ? (
                         <a role="button" onClick={props.toggleDelete}>
-                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                            <Icon className="mybtn-danger" size={14} icon={trash} />
                         </a>
                     ) : (
                         ''

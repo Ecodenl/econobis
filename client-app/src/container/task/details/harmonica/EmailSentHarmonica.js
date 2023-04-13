@@ -4,6 +4,9 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import EmailSentList from './EmailsSentList';
 
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
+
 const EmailSentHarmonica = ({ toggleShowList, showEmailsSentList, newEmail, emailSentCount }) => {
     return (
         <Panel className={'harmonica-button'}>
@@ -15,7 +18,7 @@ const EmailSentHarmonica = ({ toggleShowList, showEmailsSentList, newEmail, emai
                 </div>
                 <div className={'col-sm-2'}>
                     <a role="button" className="pull-right" onClick={newEmail}>
-                        <span className="glyphicon glyphicon-plus glyphicon-white" />
+                        <Icon className="harmonica-button" size={14} icon={plus} />
                     </a>
                 </div>
                 <div className="col-sm-12">{showEmailsSentList && <EmailSentList />}</div>

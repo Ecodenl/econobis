@@ -3,6 +3,10 @@ import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
+import Icon from 'react-icons-kit';
+import { trash } from 'react-icons-kit/fa/trash';
+import { pencil } from 'react-icons-kit/fa/pencil';
+
 class FinancialOverviewListItem extends Component {
     constructor(props) {
         super(props);
@@ -66,7 +70,7 @@ class FinancialOverviewListItem extends Component {
                 <td>
                     {this.state.showActionButtons && permissions.manageFinancial ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={pencil} />&nbsp;
                         </a>
                     ) : (
                         ''
@@ -76,7 +80,7 @@ class FinancialOverviewListItem extends Component {
                     !definitive &&
                     statusId === 'concept' ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, description)}>
-                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                            <Icon className="mybtn-danger" size={14} icon={trash} />&nbsp;
                         </a>
                     ) : (
                         ''

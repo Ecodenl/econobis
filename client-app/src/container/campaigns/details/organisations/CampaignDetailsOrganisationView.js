@@ -2,6 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 
+import Icon from 'react-icons-kit';
+import { trash } from 'react-icons-kit/fa/trash';
+
 const CampaignDetailsOrganisationView = ({
     organisation: { id, contactId, address, contact, name, amountOfQuotations, amountOfWonQuotations },
     highlightLine,
@@ -24,7 +27,7 @@ const CampaignDetailsOrganisationView = ({
             <div className="col-sm-1">
                 {showActionButtons && permissions.manageMarketing ? (
                     <a role="button" onClick={toggleDelete}>
-                        <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                        <Icon className="mybtn-danger" size={14} icon={trash} />
                     </a>
                 ) : (
                     ''

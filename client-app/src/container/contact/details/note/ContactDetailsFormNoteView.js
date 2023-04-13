@@ -3,6 +3,10 @@ import React from 'react';
 import ViewText from '../../../../components/form/ViewText';
 import { connect } from 'react-redux';
 
+import Icon from 'react-icons-kit';
+import { trash } from 'react-icons-kit/fa/trash';
+import { pencil } from 'react-icons-kit/fa/pencil';
+
 const ContactDetailsFormNoteView = props => {
     const { note, createdAt, createdBy } = props.note;
 
@@ -18,14 +22,14 @@ const ContactDetailsFormNoteView = props => {
             <div className="col-sm-1">
                 {props.permissions.updateContactNote && props.showActionButtons ? (
                     <a role="button" onClick={props.openEdit}>
-                        <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                        <Icon className="mybtn-success" size={14} icon={pencil} />
                     </a>
                 ) : (
                     ''
                 )}
                 {props.permissions.deleteContactNote && props.showActionButtons ? (
                     <a role="button" onClick={props.toggleDelete}>
-                        <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                        <Icon className="mybtn-danger" size={14} icon={trash} />
                     </a>
                 ) : (
                     ''

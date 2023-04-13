@@ -40,7 +40,6 @@ class ConceptApp extends Component {
         this.handleToIds = this.handleToIds.bind(this);
         this.handleCcIds = this.handleCcIds.bind(this);
         this.handleBccIds = this.handleBccIds.bind(this);
-        this.handleTextChange = this.handleTextChange.bind(this);
         this.addAttachment = this.addAttachment.bind(this);
         this.deleteAttachment = this.deleteAttachment.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -136,16 +135,6 @@ class ConceptApp extends Component {
                 bcc: bccIds,
             },
             emailAddressesBccSelected: selectedOption,
-        });
-    }
-
-    handleTextChange(event) {
-        this.setState({
-            ...this.state,
-            email: {
-                ...this.state.email,
-                htmlBody: event.target.getContent({ format: 'raw' }),
-            },
         });
     }
 
@@ -318,7 +307,6 @@ class ConceptApp extends Component {
                             handleCcIds={this.handleCcIds}
                             handleBccIds={this.handleBccIds}
                             handleInputChange={this.handleInputChange}
-                            handleTextChange={this.handleTextChange}
                             addAttachment={this.addAttachment}
                             deleteAttachment={this.deleteAttachment}
                         />

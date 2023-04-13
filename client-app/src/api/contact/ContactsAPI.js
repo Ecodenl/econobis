@@ -42,12 +42,11 @@ export default {
     },
 
     mergeContacts: (toId, fromId) => {
-        return axiosInstance
-            .post('contacts/merge', { toId, fromId });
+        return axiosInstance.post('contacts/merge', { toId, fromId });
     },
 
-    getPerson: (inspectionpersontype = null) => {
-        const requestUrl = `${URL_API}/api/contact/peek/${inspectionpersontype}`;
+    getPerson: (inspectionPersonType = null) => {
+        const requestUrl = `${URL_API}/api/contact/peek/${inspectionPersonType}`;
 
         return axiosInstance
             .get(requestUrl)
@@ -84,8 +83,8 @@ export default {
             });
     },
 
-    fetchContactSearch: searchTermContact => {
-        const requestUrl = `${URL_API}/api/contact/search?searchTerm=${searchTermContact}`;
+    fetchContactSearch: (searchTermContact, inspectionPersonType = null) => {
+        const requestUrl = `${URL_API}/api/contact/search/${inspectionPersonType}/?searchTerm=${searchTermContact}`;
 
         if (typeof cancelToken != typeof undefined) {
             //Check if there are any previous pending requests

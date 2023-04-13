@@ -12,8 +12,8 @@ const CalendarToolbar = props => {
         <div className="row margin-10-bottom">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
-                    <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newTask} />
+                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                    <ButtonIcon iconName={'plus'} onClickAction={newTask} />
                 </div>
             </div>
             <div className="col-md-4">

@@ -3,6 +3,10 @@ import { connect } from 'react-redux';
 import validator from 'validator';
 import uuid from 'uuid';
 import moment from 'moment';
+
+import Icon from 'react-icons-kit';
+import { refresh } from 'react-icons-kit/fa/refresh';
+
 moment.locale('nl');
 
 import { updateWebform } from '../../../../actions/webform/WebformDetailsActions';
@@ -136,13 +140,8 @@ class WebformDetailsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChange}
                                 readOnly={true}
                             />
-                            <span
-                                className="glyphicon glyphicon-refresh mybtn-success"
-                                style={{ top: '5px' }}
-                                role="button"
-                                onClick={this.refreshKey}
-                                title={'Ververs sleutel'}
-                            />
+                            <Icon className="mybtn-success" size={14} icon={refresh} style={{ 'margin-left': '15px' }} role="button" onClick={this.refreshKey} title={'Ververs sleutel'} />
+
                         </div>
                         <div className="row">
                             <InputText

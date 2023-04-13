@@ -21,9 +21,9 @@ function CampaignDetailsToolbar({ campaign, permissions }) {
                     <PanelBody className={'panel-small'}>
                         <div className="col-md-2">
                             <div className="btn-group btn-group-flex margin-small" role="group">
-                                <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
+                                <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                                 {permissions.manageMarketing && (
-                                    <ButtonIcon iconName={'glyphicon-trash'} onClickAction={toggleDelete} />
+                                    <ButtonIcon iconName={'trash'} onClickAction={toggleDelete} />
                                 )}
                             </div>
                         </div>

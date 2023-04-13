@@ -16,8 +16,8 @@ const TasksListToolbar = props => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={props.resetTaskFilters} />
-                    {permissions.manageTask && <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newTask} />}
+                    <ButtonIcon iconName={'refresh'} onClickAction={props.resetTaskFilters} />
+                    {permissions.manageTask && <ButtonIcon iconName={'plus'} onClickAction={newTask} />}
                 </div>
             </div>
             <div className="col-md-4">

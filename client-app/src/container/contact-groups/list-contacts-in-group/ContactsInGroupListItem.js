@@ -3,6 +3,10 @@ import { hashHistory } from 'react-router';
 import moment from 'moment';
 import { connect } from 'react-redux';
 
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+import { trash } from 'react-icons-kit/fa/trash';
+
 class ContactsInGroupListItem extends Component {
     constructor(props) {
         super(props);
@@ -107,18 +111,19 @@ class ContactsInGroupListItem extends Component {
                             role="button"
                             onClick={this.props.showEditItemModal.bind(this, id, emailAddress, memberToGroupSince)}
                         >
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''
                     )}
+                    &nbsp;
                     {this.state.showActionButtons &&
                     (permissions.updateContactGroupMembers ||
                         (permissions.updatePerson && permissions.updateOrganisation)) &&
                     this.props.contactGroupType &&
                     this.props.contactGroupType.id === 'static' ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, fullName)}>
-                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                            <Icon className="mybtn-danger" size={14} icon={trash} />
                         </a>
                     ) : (
                         ''

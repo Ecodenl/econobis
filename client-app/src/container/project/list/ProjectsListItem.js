@@ -3,6 +3,10 @@ import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 import MoneyPresenter from '../../../helpers/MoneyPresenter';
 
+import Icon from 'react-icons-kit';
+import { trash } from 'react-icons-kit/fa/trash';
+import { pencil } from 'react-icons-kit/fa/pencil';
+
 class ProjectsListItem extends Component {
     constructor(props) {
         super(props);
@@ -78,14 +82,15 @@ class ProjectsListItem extends Component {
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''
                     )}
+                    &nbsp;
                     {this.state.showActionButtons && this.props.permissions.manageProject && false ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}>
-                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                            <Icon className="mybtn-danger" size={14} icon={trash} />
                         </a>
                     ) : (
                         ''

@@ -34,7 +34,7 @@ export default function ContactAvailabilityDetailsApp(props) {
                             <div className="row">
                                 <div className="col-md-4">
                                     <div className="btn-group" role="group">
-                                        <ButtonIcon iconName={'glyphicon-arrow-left'}
+                                        <ButtonIcon iconName={'arrowLeft'}
                                                     onClickAction={browserHistory.goBack}/>
                                     </div>
                                 </div>

@@ -10,6 +10,9 @@ import OrderProductsFormNewProduct from './OrderProductsFormNewProduct';
 import OrderProductsFormNewProductOneTime from './OrderProductsFormNewProductOneTime';
 import { setError } from '../../../../../actions/general/ErrorActions';
 
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
+
 class OrderProductsForm extends Component {
     constructor(props) {
         super(props);
@@ -71,7 +74,7 @@ class OrderProductsForm extends Component {
                         {this.props.permissions.manageFinancial && (
                             <div className={'col-xs-2'}>
                                 <div className="pull-right">
-                                    <span className="glyphicon glyphicon-plus" data-toggle="dropdown" role="button" />
+                                    <Icon size={14} icon={plus} data-toggle="dropdown" role="button" />
                                     <ul className="dropdown-menu">
                                         <li>
                                             <a className="btn" onClick={this.toggleShowNew}>

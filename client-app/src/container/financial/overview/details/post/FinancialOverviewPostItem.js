@@ -3,6 +3,9 @@ import FinancialOverviewPostAPI from '../../../../../api/financial/overview/Fina
 import ErrorModal from '../../../../../components/modal/ErrorModal';
 import fileDownload from 'js-file-download';
 import moment from 'moment';
+
+import Icon from 'react-icons-kit';
+import { fileO } from 'react-icons-kit/fa/fileO';
 // import FinancialOverviewPostDelete from './FinancialOverviewPostDelete';
 
 function FinancialOverviewPostItem({ financialOverviewPost }) {
@@ -73,11 +76,12 @@ function FinancialOverviewPostItem({ financialOverviewPost }) {
                     {showActionButtons ? (
                         <>
                             <a role="button" onClick={() => downloadFinancialOverviewPost(financialOverviewPost.id)}>
-                                <span className="glyphicon glyphicon-open-file mybtn-success" />{' '}
+                                <Icon className="mybtn-success" size={14} icon={fileO} />
+                                &nbsp;
                             </a>
                             {/*&nbsp;&nbsp;&nbsp;*/}
-                            {/*<a role="button" onClick={toggleDelete}>*/}
-                            {/*    <span className="glyphicon glyphicon-trash mybtn-danger" />*/}
+                            {/*<a className="btn btn-success btn-sm" role="button" onClick={toggleDelete}>*/}
+                            {/*     <Icon size={14} icon={trash} />{' '}/}
                             {/*</a>*/}
                         </>
                     ) : (

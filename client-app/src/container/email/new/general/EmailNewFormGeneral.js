@@ -34,9 +34,12 @@ function EmailNewFormGeneral(props) {
         handleCcIds,
         handleBccIds,
         handleInputChange,
-        handleTextChange,
     } = props;
-    const { from, to, cc, bcc, subject, htmlBody, emailTemplateId, contactGroupId } = email;
+    const { from, to, cc, bcc, subject, emailTemplateId, contactGroupId } = email;
+    const initialHtmlBody = email.htmlBody;
+    const [htmlBody, setValueHtmlBody] = useState(htmlBody ?? '');
+
+    useEffect(() => setValueHtmlBody(htmlBody ?? ''), [htmlBody]);
 
     useEffect(() => {
         setValueSelectedTo(getSelectedTo());
@@ -293,8 +296,9 @@ function EmailNewFormGeneral(props) {
                         <div className="row">
                             <InputTinyMCEUpdateable
                                 label={'Tekst'}
+                                initialValue={initialHtmlBody}
                                 value={htmlBody}
-                                onChangeAction={handleTextChange}
+                                onChangeAction={(newValueHtmlBody, editor) => setValueHtmlBody(newValueHtmlBody)}
                             />
                         </div>
                     </div>
@@ -319,7 +323,6 @@ EmailNewFormGeneral.propTypes = {
     handleCcIds: PropTypes.any,
     handleBccIds: PropTypes.any,
     handleInputChange: PropTypes.any,
-    handleTextChange: PropTypes.any,
 };
 
 export default EmailNewFormGeneral;

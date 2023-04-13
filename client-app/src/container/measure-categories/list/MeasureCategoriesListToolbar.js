@@ -8,7 +8,7 @@ const MeasureCategoriesListToolbar = ({ measureCategoriesCount, refreshMeasureCa
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={refreshMeasureCategoriesData} />
+                    <ButtonIcon iconName={'refresh'} onClickAction={refreshMeasureCategoriesData} />
                 </div>
             </div>
             <div className="col-md-4">

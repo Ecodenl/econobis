@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 
 import ParticipantDetailsMutationConclusionView from './View';
 import PanelHeader from '../../../../../../components/panel/PanelHeader';
+import Icon from 'react-icons-kit';
+import { angleRight } from 'react-icons-kit/fa/angleRight';
+import { angleDown } from 'react-icons-kit/fa/angleDown';
 
 const ParticipantDetailsMutationConclusion = ({
     createdAt,
@@ -17,11 +20,7 @@ const ParticipantDetailsMutationConclusion = ({
         <React.Fragment>
             <PanelHeader>
                 <div className="row" onClick={() => toggleConclusion(!showConclusion)}>
-                    {showConclusion ? (
-                        <span className="glyphicon glyphicon-menu-down" />
-                    ) : (
-                        <span className="glyphicon glyphicon-menu-right" />
-                    )}
+                    {showConclusion ? <Icon size={21} icon={angleDown} /> : <Icon size={21} icon={angleRight} />}
                     <span className="h5">Afsluiting gegevens</span>
                 </div>
             </PanelHeader>

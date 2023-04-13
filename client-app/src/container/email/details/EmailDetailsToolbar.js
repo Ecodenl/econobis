@@ -25,7 +25,7 @@ const EmailDetailsToolbar = ({ email, id, removeEmail }) => {
                     <PanelBody className={'panel-small'}>
                         <div className="col-md-4">
                             <div className="btn-group margin-small margin-10-right" role="group">
-                                <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
+                                <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                             </div>
                             {email.id ? (
                                 <>
@@ -63,7 +63,7 @@ const EmailDetailsToolbar = ({ email, id, removeEmail }) => {
                                     </div>
                                     <div className="btn-group margin-small margin-10-left" role="group">
                                         <ButtonIcon
-                                            iconName={'glyphicon-trash'}
+                                            iconName={'trash'}
                                             onClickAction={removeEmail}
                                             buttonClassName={removeButtonClass}
                                         />

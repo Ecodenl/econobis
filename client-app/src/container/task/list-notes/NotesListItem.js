@@ -4,6 +4,10 @@ import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import moment from 'moment';
 
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+import { trash } from 'react-icons-kit/fa/trash';
+
 class NotesListItem extends Component {
     constructor(props) {
         super(props);
@@ -53,14 +57,14 @@ class NotesListItem extends Component {
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={this.openItem}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons && this.props.permissions.manageNote ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}>
-                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                            <Icon className="mybtn-danger" size={14} icon={trash} />
                         </a>
                     ) : (
                         ''

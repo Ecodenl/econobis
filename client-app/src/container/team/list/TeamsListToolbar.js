@@ -13,8 +13,8 @@ const TeamsListToolbar = props => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={props.refreshTeamsData} />
-                    {props.permissions.createTeam && <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newTeam} />}
+                    <ButtonIcon iconName={'refresh'} onClickAction={props.refreshTeamsData} />
+                    {props.permissions.createTeam && <ButtonIcon iconName={'plus'} onClickAction={newTeam} />}
                 </div>
             </div>
             <div className="col-md-4">

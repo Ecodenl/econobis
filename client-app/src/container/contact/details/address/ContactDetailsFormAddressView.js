@@ -2,7 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import GetNameByIdHelper from '../../../../helpers/GetNameByIdHelper';
-import { FaRegLightbulb } from 'react-icons/fa';
+import Icon from "react-icons-kit";
+import { pencil } from 'react-icons-kit/fa/pencil';
+import { trash } from 'react-icons-kit/fa/trash';
+import { lightbulbO } from 'react-icons-kit/fa/lightbulbO';
 
 const ContactDetailsFormAddressView = props => {
     const {
@@ -81,21 +84,17 @@ const ContactDetailsFormAddressView = props => {
                               {props.permissions.updateContactAddress &&
                                   (props.numberOfAddressesNotOld > 0 || primary == true) && (
                                       <>
-                                          <a role="button" onClick={props.openEdit}>
-                                              <span
-                                                  className="glyphicon glyphicon-pencil mybtn-success"
-                                                  title="Wijzigen adresgegevens"
-                                              />{' '}
+                                          <a role="button" onClick={props.openEdit} title="Wijzigen adresgegevens">
+                                              <Icon className="mybtn-success" size={14} icon={pencil} />
                                           </a>
                                       </>
                                   )}
                               <a role="button" onClick={props.openAddressEnergySupplier} title="Leveranciergegevens">
-                                  {/*<span className="glyphicon glyphicon-cog mybtn-success" />*/}
-                                  <FaRegLightbulb className="mybtn-success" size={'15px'} />
+                                  <Icon className="mybtn-success" size={14} icon={lightbulbO} />
                               </a>
                               {props.permissions.deleteContactAddress && (
                                   <a role="button" onClick={props.toggleDelete} title="Verwijderen adres">
-                                      <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                                      <Icon className="mybtn-danger" size={14} icon={trash} />
                                   </a>
                               )}
                           </>

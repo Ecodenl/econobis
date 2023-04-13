@@ -16,9 +16,9 @@ class FinancialOverviewListToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
-                        <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={refreshFinancialOverviewsData} />
+                        <ButtonIcon iconName={'refresh'} onClickAction={refreshFinancialOverviewsData} />
                         {permissions.manageFinancial && (
-                            <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newFinancialOverview} />
+                            <ButtonIcon iconName={'plus'} onClickAction={newFinancialOverview} />
                         )}
                     </div>
                 </div>

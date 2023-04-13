@@ -9,6 +9,9 @@ import { connect } from 'react-redux';
 import ContactGroupComposedExceptGroupsList from './except/ContactGroupComposedExceptGroupsList';
 import ContactGroupComposedExceptGroupAddGroup from './except/ContactGroupComposedExceptGroupAddGroup';
 
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
+
 class ContactGroupComposedGroups extends Component {
     constructor(props) {
         super(props);
@@ -34,7 +37,7 @@ class ContactGroupComposedGroups extends Component {
                     <PanelHeader>
                         <span className="h5 text-bold">Samengesteld uit</span>
                         <a role="button" className="pull-right" onClick={this.toggleAddGroup}>
-                            <span className="glyphicon glyphicon-plus" />
+                            <Icon size={14} icon={plus} />
                         </a>
                     </PanelHeader>
                     <PanelBody>
@@ -53,7 +56,7 @@ class ContactGroupComposedGroups extends Component {
                     <PanelHeader>
                         <span className="h5 text-bold">Uitgezonderd in samenstelling</span>
                         <a role="button" className="pull-right" onClick={this.toggleExceptGroup}>
-                            <span className="glyphicon glyphicon-plus" />
+                            <Icon size={14} icon={plus} />
                         </a>
                     </PanelHeader>
                     <PanelBody>

@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { hashHistory } from 'react-router';
 import moment from 'moment';
 
+import Icon from 'react-icons-kit';
+import { eye } from 'react-icons-kit/fa/eye';
+
 function FinancialOverviewContactItem({
     id,
     contactFullName,
@@ -50,7 +53,7 @@ function FinancialOverviewContactItem({
             <td>{emailedTo}</td>
             <td>
                 <a role="button" onClick={() => getFinancialOverviewPDF(id, statusId)}>
-                    <span className="glyphicon glyphicon-eye-open mybtn-success" />
+                    <Icon className="mybtn-success" size={14} icon={eye} />
                 </a>
             </td>
         </tr>

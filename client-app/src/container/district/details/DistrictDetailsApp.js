@@ -35,7 +35,7 @@ export default function DistrictDetailsApp(props) {
                             <div className="row">
                                 <div className="col-md-4">
                                     <div className="btn-group" role="group">
-                                        <ButtonIcon iconName={'glyphicon-arrow-left'}
+                                        <ButtonIcon iconName={'arrowLeft'}
                                                     onClickAction={browserHistory.goBack}/>
                                         <DistrictListItemDeleteModal district={district} onDelete={browserHistory.goBack} setShowDeleteModal={setShowDeleteModal} showDeleteModal={showDeleteModal}/>                                    </div>
                                 </div>

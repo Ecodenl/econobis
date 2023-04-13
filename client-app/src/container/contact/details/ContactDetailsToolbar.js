@@ -41,15 +41,15 @@ function ContactDetailsToolbar({
                     <PanelBody className={'panel-small'}>
                         <div className="col-md-4">
                             <div className="btn-group btn-group-flex margin-small" role="group">
-                                <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
+                                <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                                 {type &&
                                     type.id === 'organisation' &&
                                     permissions &&
                                     permissions.deleteOrganisation && (
-                                        <ButtonIcon iconName={'glyphicon-trash'} onClickAction={toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={toggleDelete} />
                                     )}
                                 {type && type.id === 'person' && permissions && permissions.deletePerson && (
-                                    <ButtonIcon iconName={'glyphicon-trash'} onClickAction={toggleDelete} />
+                                    <ButtonIcon iconName={'trash'} onClickAction={toggleDelete} />
                                 )}
                                 {type &&
                                 type.id === 'person' &&

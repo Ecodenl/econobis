@@ -6,6 +6,9 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import { connect } from 'react-redux';
 
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
+
 class ConceptAttachments extends Component {
     constructor(props) {
         super(props);
@@ -27,7 +30,7 @@ class ConceptAttachments extends Component {
                 <PanelHeader>
                     <span className="h5 text-bold">Bijlages</span>
                     <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                        <span className="glyphicon glyphicon-plus" />
+                        <Icon size={14} icon={plus} />
                     </a>
                 </PanelHeader>
                 <PanelBody>

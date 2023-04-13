@@ -4,6 +4,11 @@ import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import moment from 'moment';
 
+import Icon from 'react-icons-kit';
+import { trash } from 'react-icons-kit/fa/trash';
+import { pencil } from 'react-icons-kit/fa/pencil';
+import { check } from 'react-icons-kit/fa/check';
+
 import { setTaskFinished } from '../../../actions/task/TasksActions';
 
 class TasksListItem extends Component {
@@ -66,21 +71,21 @@ class TasksListItem extends Component {
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={this.openItem}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons && this.props.permissions.manageTask ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}>
-                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                            <Icon className="mybtn-danger" size={14} icon={trash} />
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={this.setItemFinished}>
-                            <span className="glyphicon glyphicon-ok mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={check} />
                         </a>
                     ) : (
                         ''

@@ -604,6 +604,7 @@ const DefaultContactPersonalEdit = function({
                                         checked={field.value}
                                         className="w-checkbox-input checkbox"
                                         disabled={initialContact.didAgreeAvg}
+                                        value={false}
                                     />
                                     <span htmlFor="did_agree_avg" className="checkbox-label w-form-label">
                                         Ik ga akkoord met{' '}

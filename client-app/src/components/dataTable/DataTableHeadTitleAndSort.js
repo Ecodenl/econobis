@@ -1,22 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Icon from 'react-icons-kit';
+import { arrowUp } from 'react-icons-kit/fa/arrowUp';
+import { arrowDown } from 'react-icons-kit/fa/arrowDown';
+
 const DataTableHeadTitleAndSort = props => {
     const { RowClassName, setSorts, sortColumn, title, width } = props;
 
     return (
         <th className={RowClassName} width={width}>
             {title}
-            <span
-                className="glyphicon glyphicon-arrow-down pull-right small"
-                role="button"
-                onClick={setSorts.bind(this, sortColumn, 'ASC')}
-            />
-            <span
-                className="glyphicon glyphicon-arrow-up pull-right small"
-                role="button"
-                onClick={setSorts.bind(this, sortColumn, 'DESC')}
-            />
+            <Icon className="pull-right small" size={14} icon={arrowDown} role="button" onClick={setSorts.bind(this, sortColumn, 'ASC')}/>
+            <Icon className="pull-right small" size={14} icon={arrowUp} role="button" onClick={setSorts.bind(this, sortColumn, 'DESC')}/>
         </th>
     );
 };

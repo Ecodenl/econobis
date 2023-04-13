@@ -394,7 +394,7 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
             <PanelHeader>
                 <div className="row">
                     <div className={'col-sm-3'}>
-                        <ButtonIcon disabled={!getPreviousWeek()} iconName={'glyphicon-arrow-left'}
+                        <ButtonIcon disabled={!getPreviousWeek()} iconName={'arrowLeft'}
                                     buttonClassName="btn-default btn-sm"
                                     onClickAction={() => setCurrentWeek(getPreviousWeek())}/>
                     </div>
@@ -445,7 +445,7 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
                         </select>
                     </div>
                     <div className={'col-sm-3'} style={{textAlign: 'right'}}>
-                        <ButtonIcon disabled={!getNextWeek()} iconName={'glyphicon-arrow-right'}
+                        <ButtonIcon disabled={!getNextWeek()} iconName={'arrowRight'}
                                     buttonClassName="btn-default btn-sm"
                                     onClickAction={() => setCurrentWeek(getNextWeek())}/>
                     </div>

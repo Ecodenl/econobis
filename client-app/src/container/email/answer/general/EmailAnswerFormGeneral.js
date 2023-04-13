@@ -13,6 +13,7 @@ function EmailAnswerFormGeneral(props) {
     const [valueSelectedTo, setValueSelectedTo] = useState([]);
     const [valueSelectedCc, setValueSelectedCc] = useState([]);
     const [valueSelectedBcc, setValueSelectedBcc] = useState([]);
+    const [htmlBody, setValueHtmlBody] = useState('');
     const [selectedToMoreThanOne, setSelectedToMoreThanOne] = useState(false);
     const [includesEmailAddress, setIncludesEmailAddress] = useState(false);
 
@@ -28,15 +29,16 @@ function EmailAnswerFormGeneral(props) {
         handleCcIds,
         handleBccIds,
         handleInputChange,
+        handleTextChange,
         emailTemplates,
         handleEmailTemplates,
         handleFromIds,
     } = props;
-    const { mailboxId, to, cc, bcc, subject, emailTemplateId } = email;
-    const initialHtmlBody = email.htmlBody;
-    const [htmlBody, setValueHtmlBody] = useState(htmlBody ?? '');
+    const { mailboxId, to, cc, bcc, subject, initialHtmlBody, emailTemplateId } = email;
 
-    useEffect(() => setValueHtmlBody(htmlBody ?? ''), [htmlBody]);
+    useEffect(() => {
+        handleTextChange(htmlBody);
+    }, [htmlBody]);
 
     useEffect(() => {
         setValueSelectedTo(getSelectedTo());
@@ -275,7 +277,7 @@ function EmailAnswerFormGeneral(props) {
                             <InputTinyMCEUpdateable
                                 label={'Tekst'}
                                 initialValue={initialHtmlBody}
-                                value={htmlBody}
+                                value={htmlBody != '' ? htmlBody : initialHtmlBody}
                                 onChangeAction={(newValueHtmlBody, editor) => setValueHtmlBody(newValueHtmlBody)}
                             />
                         )}
@@ -298,6 +300,7 @@ EmailAnswerFormGeneral.propTypes = {
     handleCcIds: PropTypes.any,
     handleBccIds: PropTypes.any,
     handleInputChange: PropTypes.any,
+    handleTextChange: PropTypes.any,
     emailTemplates: PropTypes.any,
     handleEmailTemplates: PropTypes.any,
     handleFromIds: PropTypes.any,

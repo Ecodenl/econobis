@@ -40,6 +40,7 @@ class ConceptApp extends Component {
         this.handleToIds = this.handleToIds.bind(this);
         this.handleCcIds = this.handleCcIds.bind(this);
         this.handleBccIds = this.handleBccIds.bind(this);
+        this.handleTextChange = this.handleTextChange.bind(this);
         this.addAttachment = this.addAttachment.bind(this);
         this.deleteAttachment = this.deleteAttachment.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -60,6 +61,7 @@ class ConceptApp extends Component {
                         bcc: payload.bcc ? payload.bcc.join(',') : '',
                         subject: payload.subject ? payload.subject : '',
                         htmlBody: payload.htmlBody ? payload.htmlBody : '',
+                        initialHtmlBody: payload.htmlBody ? payload.htmlBody : '',
                         attachments: payload.attachments ? payload.attachments : '',
                         quotationRequestId: payload.quotationRequestId ? payload.quotationRequestId : '',
                         intakeId: payload.intakeId ? payload.intakeId : '',
@@ -135,6 +137,16 @@ class ConceptApp extends Component {
                 bcc: bccIds,
             },
             emailAddressesBccSelected: selectedOption,
+        });
+    }
+
+    handleTextChange(htmlBody) {
+        this.setState({
+            ...this.state,
+            email: {
+                ...this.state.email,
+                htmlBody: htmlBody,
+            },
         });
     }
 
@@ -307,6 +319,7 @@ class ConceptApp extends Component {
                             handleCcIds={this.handleCcIds}
                             handleBccIds={this.handleBccIds}
                             handleInputChange={this.handleInputChange}
+                            handleTextChange={this.handleTextChange}
                             addAttachment={this.addAttachment}
                             deleteAttachment={this.deleteAttachment}
                         />

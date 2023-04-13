@@ -50,6 +50,7 @@ class EmailAnswerApp extends Component {
         this.handleToIds = this.handleToIds.bind(this);
         this.handleCcIds = this.handleCcIds.bind(this);
         this.handleBccIds = this.handleBccIds.bind(this);
+        this.handleTextChange = this.handleTextChange.bind(this);
         this.addAttachment = this.addAttachment.bind(this);
         this.deleteAttachment = this.deleteAttachment.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -90,6 +91,7 @@ class EmailAnswerApp extends Component {
                     bcc: payload.bcc ? payload.bcc.join(',') : '',
                     subject: payload.subject ? payload.subject : '',
                     htmlBody: payload.htmlBody ? payload.htmlBody : '',
+                    initialHtmlBody: payload.htmlBody ? payload.htmlBody : '',
                     attachments: payload.attachments ? payload.attachments : '',
                 },
                 emailAddressesToSelected: payload.emailAddressesToSelected,
@@ -130,6 +132,9 @@ class EmailAnswerApp extends Component {
                 email: {
                     ...this.state.email,
                     htmlBody: payload.htmlBody
+                        ? payload.htmlBody + this.state.originalHtmlBody
+                        : this.state.email.htmlBody,
+                    initialHtmlBody: payload.htmlBody
                         ? payload.htmlBody + this.state.originalHtmlBody
                         : this.state.email.htmlBody,
                 },
@@ -194,6 +199,16 @@ class EmailAnswerApp extends Component {
                 bcc: bccIds,
             },
             emailAddressesBccSelected: selectedOption,
+        });
+    }
+
+    handleTextChange(htmlBody) {
+        this.setState({
+            ...this.state,
+            email: {
+                ...this.state.email,
+                htmlBody: htmlBody,
+            },
         });
     }
 
@@ -378,6 +393,7 @@ class EmailAnswerApp extends Component {
                             handleCcIds={this.handleCcIds}
                             handleBccIds={this.handleBccIds}
                             handleInputChange={this.handleInputChange}
+                            handleTextChange={this.handleTextChange}
                             addAttachment={this.addAttachment}
                             emailTemplates={this.state.emailTemplates}
                             handleEmailTemplates={this.handleEmailTemplates}

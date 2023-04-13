@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import InputMultiSelect from '../../../../components/form/InputMultiSelect';
 import InputTinyMCEUpdateable from '../../../../components/form/InputTinyMCEUpdateable';
 import InputText from '../../../../components/form/InputText';
 import * as PropTypes from 'prop-types';
@@ -16,6 +15,7 @@ function EmailNewFormGeneral(props) {
     const [valueSelectedTo, setValueSelectedTo] = useState([]);
     const [valueSelectedCc, setValueSelectedCc] = useState([]);
     const [valueSelectedBcc, setValueSelectedBcc] = useState([]);
+    const [htmlBody, setValueHtmlBody] = useState('');
     const [selectedToMoreThanOne, setSelectedToMoreThanOne] = useState(false);
     const [includesEmailAddress, setIncludesEmailAddress] = useState(false);
 
@@ -34,12 +34,13 @@ function EmailNewFormGeneral(props) {
         handleCcIds,
         handleBccIds,
         handleInputChange,
+        handleTextChange,
     } = props;
-    const { from, to, cc, bcc, subject, emailTemplateId, contactGroupId } = email;
-    const initialHtmlBody = email.htmlBody;
-    const [htmlBody, setValueHtmlBody] = useState(htmlBody ?? '');
+    const { from, to, cc, bcc, subject, initialHtmlBody, emailTemplateId, contactGroupId } = email;
 
-    useEffect(() => setValueHtmlBody(htmlBody ?? ''), [htmlBody]);
+    useEffect(() => {
+        handleTextChange(htmlBody);
+    }, [htmlBody]);
 
     useEffect(() => {
         setValueSelectedTo(getSelectedTo());
@@ -148,7 +149,7 @@ function EmailNewFormGeneral(props) {
         } catch (error) {
             setLoadingContact(false);
 
-            // console.log(error);
+            console.log(error);
         }
     };
 
@@ -297,7 +298,7 @@ function EmailNewFormGeneral(props) {
                             <InputTinyMCEUpdateable
                                 label={'Tekst'}
                                 initialValue={initialHtmlBody}
-                                value={htmlBody}
+                                value={htmlBody != '' ? htmlBody : initialHtmlBody}
                                 onChangeAction={(newValueHtmlBody, editor) => setValueHtmlBody(newValueHtmlBody)}
                             />
                         </div>
@@ -323,6 +324,7 @@ EmailNewFormGeneral.propTypes = {
     handleCcIds: PropTypes.any,
     handleBccIds: PropTypes.any,
     handleInputChange: PropTypes.any,
+    handleTextChange: PropTypes.any,
 };
 
 export default EmailNewFormGeneral;

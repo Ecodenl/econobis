@@ -22,6 +22,7 @@ use App\Console\Commands\checkWrongEnergySupplierDataInParts;
 use App\Console\Commands\checkMissingEnergySupplierDataInParts;
 use App\Console\Commands\checkWrongRevenueDistributionKwhStatus;
 use App\Console\Commands\contactGroupsContactsForReport;
+use App\Console\Commands\checkOverlappingEnergySuppliers;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -53,6 +54,7 @@ class Kernel extends ConsoleKernel
         checkMissingEnergySupplierDataInParts::class,
         checkWrongRevenueDistributionKwhStatus::class,
         contactGroupsContactsForReport::class,
+        checkOverlappingEnergySuppliers::class,
     ];
 
     /**
@@ -74,6 +76,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('laposta:processStateAllMembersLaposta')->dailyAt('22:30');
         $schedule->command('address:createTaskAtEndDateAddress')->dailyAt('00:30');
         $schedule->command('addressEnergySupplier:setIsCurrentSupplier')->dailyAt('01:00');
+        $schedule->command('addressEnergySupplier:checkOverlappingEnergySuppliers')->dailyAt('01:10');
         $schedule->command('invoice:setDaysLastReminder')->dailyAt('01:05');
         $schedule->command('invoice:setDaysToExpire')->dailyAt('02:05');
         $schedule->command('email:deleteEmailDefinitive')->dailyAt('03:05');

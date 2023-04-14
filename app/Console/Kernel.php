@@ -23,6 +23,7 @@ use App\Console\Commands\checkMissingEnergySupplierDataInParts;
 use App\Console\Commands\checkWrongRevenueDistributionKwhStatus;
 use App\Console\Commands\contactGroupsContactsForReport;
 use App\Console\Commands\checkOverlappingEnergySuppliers;
+use App\Console\Commands\checkFirstStartingDateParticipants;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -55,6 +56,7 @@ class Kernel extends ConsoleKernel
         checkWrongRevenueDistributionKwhStatus::class,
         contactGroupsContactsForReport::class,
         checkOverlappingEnergySuppliers::class,
+        checkFirstStartingDateParticipants::class,
     ];
 
     /**
@@ -92,6 +94,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('revenue:checkWrongEnergySupplierDataInParts')->dailyAt('21:05');
         $schedule->command('revenue:checkMissingEnergySupplierDataInParts')->dailyAt('21:10');
         $schedule->command('revenue:checkWrongRevenueDistributionKwhStatus')->dailyAt('21:15');
+
+        $schedule->command('participants:checkFirstStartingDate')->dailyAt('06:15');
 
         $schedule->command('report:contactGroupsContacts')->dailyAt('06:00');
     }

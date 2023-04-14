@@ -53,6 +53,20 @@ export default function ContactAvailabilityDetailsGeneralEdit({contact, switchTo
                             allowZero={true}
                         />
                     </div>
+                    <div className="row">
+                        <InputText
+                            type="text"
+                            label="Max. aantal afspraken per maand"
+                            name={'coachMaxAppointmentsPerMonth'}
+                            value={values.coachMaxAppointmentsPerMonth}
+                            onChangeAction={(e) => {e.target.value = e.target.value.replace(/[^0-9.]/g, ''); handleChange(e)}} // only allow numbers
+                            onBlurAction={handleBlur}
+                            required={'required'}
+                            error={errors.coachMaxAppointmentsPerMonth && touched.coachMaxAppointmentsPerMonth}
+                            errorMessage={errors.coachMaxAppointmentsPerMonth}
+                            allowZero={true}
+                        />
+                    </div>
                 </PanelBody>
 
                 <PanelBody>

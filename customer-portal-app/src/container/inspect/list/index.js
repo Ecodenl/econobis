@@ -17,7 +17,9 @@ function Inspectlist(props) {
     const [statusFilter, setStatusFilter] = useState('');
 
     useEffect(() => {
-        QuotationRequestAPI.fetchAll(props.user.id).then(response => {
+        const campaignId = props.match.params.campaignId;
+
+        QuotationRequestAPI.fetchAll(campaignId).then(response => {
             setQuotationRequestsArray(response.data);
 
             setIsLoading(false);

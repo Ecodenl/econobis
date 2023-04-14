@@ -224,6 +224,12 @@ class MailFetcherMsOauth
             ->setReturnType(Attachment::class);
         if($requestResult){
             foreach ($requestResult->getPage() as $attachment){
+                /**
+                 * contentId is niet rechtsreeks benaderbaar maar zit wel in json.
+                 * Daarom maar via deze omweg uit $attachment halen.
+                 */
+                $cid = json_decode(json_encode($attachment))->contentId;
+
                 $contents = base64_decode( $attachment->getProperties()['contentBytes']);
                 $name = $attachment->getName();
                 $filePathAndName = $this->getAttachmentDBName() . \bin2hex(\random_bytes(16)).'.bin';
@@ -231,6 +237,7 @@ class MailFetcherMsOauth
                     'filename' => $filePathAndName,
                     'name' => $name,
                     'email_id' => $email->id,
+                    'cid' => str_contains($email->html_body, $cid) ? $cid : null,
                 ]);
                 $emailAttachment->save();
                 \Illuminate\Support\Facades\Storage::disk('mail_attachments')->put($filePathAndName, $contents);

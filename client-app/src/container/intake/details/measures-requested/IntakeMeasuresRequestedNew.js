@@ -68,9 +68,6 @@ class IntakeMeasuresRequestedNew extends Component {
                 .then(payload => {
                     this.props.newIntakeMeasureRequested(payload);
                     this.props.toggleShowNew();
-                    setTimeout(() => {
-                        hashHistory.push(`/intake/${props.intakeId}`);
-                    }, 200);
                 })
                 .catch(function(error) {
                     alert(error.response.data.message);

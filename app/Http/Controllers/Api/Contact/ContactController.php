@@ -375,6 +375,7 @@ class ContactController extends Controller
             'id' => $contact->id,
             'fullName' => $contact->full_name,
             'coachMaxAppointmentsPerWeek' => $contact->coach_max_appointments_per_week,
+            'coachMaxAppointmentsPerMonth' => $contact->coach_max_appointments_per_month,
             'coachMinMinutesBetweenAppointments' => $contact->coach_min_minutes_between_appointments,
         ];
     }
@@ -382,6 +383,7 @@ class ContactController extends Controller
     public function updateCoachAttributes(Contact $contact, Request $request)
     {
         $contact->coach_max_appointments_per_week = $request->input('coachMaxAppointmentsPerWeek') ?: 0;
+        $contact->coach_max_appointments_per_month = $request->input('coachMaxAppointmentsPerMonth') ?: 0;
         $contact->coach_min_minutes_between_appointments = $request->input('coachMinMinutesBetweenAppointments') ?: 0;
         $contact->save();
     }

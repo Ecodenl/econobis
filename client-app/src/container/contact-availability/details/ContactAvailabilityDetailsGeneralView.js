@@ -13,6 +13,9 @@ export default function ContactAvailabilityDetailsGeneralView({contact, switchTo
                         <ViewText label={'Max. aantal afspraken per week'} value={contact.coachMaxAppointmentsPerWeek}/>
                         <ViewText label={'Min. tijd tussen afspraken'} value={contact.coachMinMinutesBetweenAppointments + ' minuten'}/>
                     </div>
+                    <div className="row">
+                        <ViewText label={'Max. aantal afspraken per maand'} value={contact.coachMaxAppointmentsPerMonth}/>
+                    </div>
                 </PanelBody>
             </Panel>
         </div>

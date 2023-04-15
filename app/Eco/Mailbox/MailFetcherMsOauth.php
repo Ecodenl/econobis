@@ -225,6 +225,10 @@ class MailFetcherMsOauth
         if($requestResult){
             foreach ($requestResult->getPage() as $attachment){
                 /**
+                 * De cid's zijn de verwijzingen in de html van images.
+                 * Ook overige bijlages (excel bijv.) krijgen een cid, zet hem voor deze bijlages op null.
+                 * Op die manier kunnen we afbeeldingen die in de html staan verbergen als bijlage.
+                 *
                  * contentId is niet rechtsreeks benaderbaar maar zit wel in json.
                  * Daarom maar via deze omweg uit $attachment halen.
                  */

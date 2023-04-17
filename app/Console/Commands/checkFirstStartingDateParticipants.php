@@ -52,15 +52,20 @@ class checkFirstStartingDateParticipants extends Command
         foreach($projects as $project) {
             $participantsProject = $project->participantsProject()->get();
 
-            /* check for each participantProject if the date_register is the same as the ..... */
             foreach($participantsProject as $participantProject) {
-
-                $firstMutation = $participantProject->mutations->first();
-                if($participantProject->date_register != $firstMutation->date_entry) {
+                $firstMutation = $participantProject->mutationsDefinitive()->first();
+                if(
+                    isSet($firstMutation) &&
+                    ($firstMutation->date_entry != null) &&
+                    ($participantProject->date_register != $firstMutation->date_entry) &&
+                    ($firstMutation->type->code_ref === 'first_deposit' || $firstMutation->type->code_ref === 'deposit')
+                ) {
+                    $dateRegister = $participantProject->date_register ? $participantProject->date_register : 'NNB';
                     $wrongParticipantProjects[$counter]['project'] = $project->id . ' - ' . $project->name;
-                    $wrongParticipantProjects[$counter]['participant'] = $participantProject->contact->id . ' - ' . $participantProject->contact->full_name;
-                    $wrongParticipantProjects[$counter]['dates'] = $participantProject->date_register . ' - ' . $firstMutation->date_entry;
+                    $wrongParticipantProjects[$counter]['participant'] = $participantProject->id . ' - ' . $participantProject->contact->full_name;
+                    $wrongParticipantProjects[$counter]['dates'] = $dateRegister . ' - ' . $firstMutation->date_entry;
                 }
+                $counter++;
             }
         }
 
@@ -78,12 +83,11 @@ class checkFirstStartingDateParticipants extends Command
     private function sendMail($subject, $wrongParticipantProjects)
     {
         (new EmailHelper())->setConfigToDefaultMailbox();
-dump($wrongParticipantProjects);
         $wrongParticipantProjectsHtml = "";
         foreach($wrongParticipantProjects as $wrongParticipantProject) {
             $wrongParticipantProjectsHtml .=
                 "Project: " . $wrongParticipantProject['project'] . "<br>" .
-                "Contact: " . $wrongParticipantProject['participant'] . "<br>" .
+                "Deelnemer: " . $wrongParticipantProject['participant'] . "<br>" .
                 "Datums: " . $wrongParticipantProject['dates'] . "<br><br>"
             ;
         }

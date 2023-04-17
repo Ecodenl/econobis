@@ -52,6 +52,7 @@ class ContactNewFormPersonal extends Component {
                 ownerId: props.userId,
                 didAgreeAvg: false,
                 inspectionPersonTypeId: '',
+                hoomAccountId: '',
             },
             address: {
                 street: '',
@@ -364,6 +365,7 @@ class ContactNewFormPersonal extends Component {
             ownerId,
             didAgreeAvg,
             inspectionPersonTypeId,
+            hoomAccountId,
         } = this.state.person;
 
         return (

@@ -5,6 +5,7 @@ import InputTinyMCEUpdateable from '../../../../components/form/InputTinyMCEUpda
 import * as PropTypes from 'prop-types';
 import EmailAddressAPI from '../../../../api/contact/EmailAddressAPI';
 import AsyncSelectSet from '../../../../components/form/AsyncSelectSet';
+import InputText from '../../../../components/form/InputText';
 
 function ConceptFormGeneral(props) {
     const [searchTermContact, setSearchTermContact] = useState('');

@@ -8,8 +8,7 @@ import { PortalUserConsumer } from '../../../context/PortalUserContext';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import QuotationRequestAPI from '../../../api/quotation-request/QuotationRequestAPI';
-import OpportunityStatusAPI from "../../../api/opportunity-status/OpportunityStatusAPI";
-import {get} from "lodash";
+import OpportunityStatusAPI from '../../../api/opportunity-status/OpportunityStatusAPI';
 
 function Inspectlist(props) {
     const [quotationRequestsArray, setQuotationRequestsArray] = useState([]);
@@ -24,10 +23,9 @@ function Inspectlist(props) {
             setIsLoading(false);
         });
 
-        OpportunityStatusAPI.fetchOpportunityStatus()
-            .then(payload => {
-                setStatuses(payload.data.data);
-            });
+        OpportunityStatusAPI.fetchOpportunityStatus().then(payload => {
+            setStatuses(payload.data.data);
+        });
     }, [props.user]);
 
     const getFilteredQuotationRequests = () => {
@@ -38,7 +36,7 @@ function Inspectlist(props) {
         }
 
         return quotationRequestsArray;
-    }
+    };
 
     return (
         <Container className={'content-section'}>
@@ -74,18 +72,20 @@ function Inspectlist(props) {
                                             className="select-field w-select content"
                                             value={statusFilter}
                                             onChange={e => setStatusFilter(e.target.value)}
-                                            style={{width: '150px'}}
+                                            style={{ width: '150px' }}
                                         >
-                                            <option/>
-                                            {statuses.filter(status => {
-                                                return status.active;
-                                            }).map(option => {
-                                                return (
-                                                    <option key={option.id} value={option.id}>
-                                                        {option.name}
-                                                    </option>
-                                                );
-                                            })}
+                                            <option />
+                                            {statuses
+                                                .filter(status => {
+                                                    return status.active;
+                                                })
+                                                .map(option => {
+                                                    return (
+                                                        <option key={option.id} value={option.id}>
+                                                            {option.name}
+                                                        </option>
+                                                    );
+                                                })}
                                         </select>
                                     </th>
                                     <th colSpan={6}></th>

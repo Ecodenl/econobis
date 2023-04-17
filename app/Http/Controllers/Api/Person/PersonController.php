@@ -47,6 +47,7 @@ class PersonController extends ApiController
                 'lastNamePrefixId' => 'exists:last_name_prefixes,id',
                 'titleId' => 'exists:titles,id',
                 'dateOfBirth' => 'date',
+                'hoomAccountId' => 'string',
             ]);
 
         $contactData = $this->sanitizeData($request['person'], [
@@ -58,6 +59,7 @@ class PersonController extends ApiController
             'titleId' => 'nullable',
             'typeId' => 'nullable',
             'dateOfBirth' => 'nullable',
+            'hoomAccountId' => 'nullable',
         ]);
 
         $contactData = $this->arrayKeysToSnakeCase($contactData);
@@ -67,7 +69,7 @@ class PersonController extends ApiController
                 'owner_id' => $contactData['owner_id'],
                 'did_agree_avg' => $contactData['did_agree_avg'],
                 'inspection_person_type_id' => $contactData['inspection_person_type_id'],
-                'hoomAccountId' => $contactData['hoom_account_id'],
+                'hoom_account_id' => $contactData['hoom_account_id'],
             ];
 
         $lnp = null;
@@ -232,7 +234,7 @@ class PersonController extends ApiController
             'collectMandateSignatureDate' => 'date',
             'collectMandateFirstRunDate' => 'date',
             'collectMandateCollectionSchema' => '',
-            'hoomAccountId' => '',
+            'hoomAccountId' => 'string',
         ]);
 
         $personData = $request->validate([

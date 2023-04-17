@@ -123,6 +123,28 @@ class EndPointWoonplanController extends EndPointHoomDossierController
                 $this->log('Specificatie niet in woonplan. Specification ' . $specificationReload->id. ' verwijderd.');
             }
         }
+
+        if(isset($dataContent->user_action_plan_advice_comments)) {
+            $remark = '';
+            foreach($dataContent->user_action_plan_advice_comments as $key => $comment)
+            {
+                if(!empty($key)){
+//                    $this->log('Comment key: ' . $key);
+//                    $this->log('Comment comment: ' . $comment);
+                    if($key == 'resident'){
+                        $remark .= 'Bewoner: ' . $comment . "\n";
+                    }
+                    if($key == 'coach'){
+                        $remark .= 'Coach: ' . $comment . "\n";
+                    }
+//                    $this->log('Remark: ' . $remark);
+                }
+            }
+            $this->log('Opmerkingen woningdossier vervangen met: ' . $remark);
+            $this->housingFile->remark = $remark;
+            $this->housingFile->save();
+        }
+
     }
 
     /**

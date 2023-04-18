@@ -1,20 +1,14 @@
 <?php
 
-namespace App\Console\Command\DontUseAnyMore;
+namespace App\Console\Commands\DontUseAnyMore;
 
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Project\ProjectValueCourse;
-use App\Eco\User\User;
-use App\Http\Controllers\Api\ParticipantMutation\ParticipantMutationController;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use ParticipantTransactions;
-use phpDocumentor\Reflection\Types\Boolean;
 
 class conversionParticipationsToMutations extends Command
 {

@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands\DontUseAnyMore;
 
-use App\Console\Command\DontUseAnyMore\conversionParticipationsToMutations;
 use App\Eco\User\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Auth;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\OneTimeChecks;
+namespace App\Console\Commands\RecoverScripts;
 
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\User\User;
@@ -17,7 +17,7 @@ class recoverMissingEnergySupplierDataInParts extends Command
      *
      * @var string
      */
-    protected $signature = 'onetimecheck:recoverMissingEnergySupplierDataInParts';
+    protected $signature = 'recover:recoverMissingEnergySupplierDataInParts';
 
     /**
      * The console command description.

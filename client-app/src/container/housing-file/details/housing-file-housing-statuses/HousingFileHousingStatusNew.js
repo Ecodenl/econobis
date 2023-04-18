@@ -4,37 +4,58 @@ import moment from 'moment';
 import validator from 'validator';
 moment.locale('nl');
 import HousingFileDetailsAPI from '../../../../api/housing-file/HousingFileDetailsAPI';
-// import { addHousingFileHousingStatusToState } from '../../../../actions/housing-file/HousingFileDetailsActions';
-import InputDate from '../../../../components/form/InputDate';
+import { addHousingFileHousingStatusToState } from '../../../../actions/housing-file/HousingFileDetailsActions';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from '../../../../components/form/InputSelect';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import MeasuresOfCategory from '../../../../selectors/MeasuresOfCategory';
-import InputTextArea from '../../../../components/form/InputTextArea';
-import InputText from '../../../../components/form/InputText';
 
 class HousingFileHousingStatusNew extends Component {
     constructor(props) {
         super(props);
 
+        let housingFileHoomLinksNoDups = [];
+        let currentHousingFileHoomLinksIds = [];
+
+        props.housingFileHousingStatuses.forEach(function(housingFileHousingStatus) {
+            currentHousingFileHoomLinksIds.push(housingFileHousingStatus.housingFileHoomLink.id);
+        });
+        housingFileHoomLinksNoDups = props.housingFileHoomLinks.filter(
+            housingFileHoomLink => !currentHousingFileHoomLinksIds.includes(housingFileHoomLink.key)
+        );
+
         this.state = {
+            statusOptions: [],
+            housingFileHoomLinksNoDups: housingFileHoomLinksNoDups,
             housingFileHousingStatus: {
                 housingFileId: this.props.housingFileId,
-                measureId: '',
-                measureCategoryId: '',
-                measureDate: '',
-                answer: '',
-                statusId: '',
-                floorId: '',
-                sideId: '',
-                typeBrand: '',
+                housingFileHoomLinksId: '',
+                status: '',
             },
             errors: {
-                measureId: false,
+                housingFileHoomLinksId: false,
+                status: false,
             },
         };
     }
+
+    handleHousingFileHoomLinksChange = event => {
+        const target = event.target;
+        const value = target.value;
+
+        const housingFileHoomLink = this.props.housingFileHoomLinks.find(
+            housingFileHoomLink => housingFileHoomLink.key === Number(value)
+        );
+        this.setState({
+            ...this.state,
+            statusOptions: housingFileHoomLink ? this.getStatusOptions(housingFileHoomLink.externalHoomShortName) : [],
+            housingFileHousingStatus: {
+                ...this.state.housingFileHousingStatus,
+                housingFileHoomLinksId: value,
+                status: '',
+            },
+        });
+    };
 
     handleInputChange = event => {
         const target = event.target;
@@ -50,18 +71,34 @@ class HousingFileHousingStatusNew extends Component {
         });
     };
 
-    handleMeasureDate = date => {
-        const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
-
-        this.setState({
-            ...this.state,
-            housingFileHousingStatus: {
-                ...this.state.housingFileHousingStatus,
-                measureDate: formattedDate,
-            },
-        });
-    };
-
+    getStatusOptions(externalHoomShortName) {
+        switch (externalHoomShortName) {
+            case 'current-wall-insulation':
+                return this.props.currentWallInsulationSelection;
+            case 'current-floor-insulation':
+                return this.props.currentFloorInsulationSelection;
+            case 'current-roof-insulation':
+                return this.props.currentRoofInsulationSelection;
+            case 'current-living-rooms-windows':
+                return this.props.currentLivingRoomsWindowsSelection;
+            case 'current-sleeping-rooms-windows':
+                return this.props.currentSleepingRoomsWindowsSelection;
+            case 'heat-source-warm-tap-water':
+                return this.props.heatSourceWarmTapWaterSelection;
+            case 'building-heating-application':
+                return this.props.buildingHeatingApplicationSelection;
+            case 'ventilation-type':
+                return this.props.ventilationTypeSelection;
+            case 'crack-sealing-type':
+                return this.props.crackSealingTypeSelection;
+            case 'has-cavity-wall':
+                return this.props.hasCavityWallSelection;
+            case 'has-solar-panels':
+                return this.props.hasSolarPanelsSelection;
+            default:
+                return [];
+        }
+    }
     handleSubmit = event => {
         event.preventDefault();
 
@@ -70,107 +107,56 @@ class HousingFileHousingStatusNew extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(housingFileHousingStatus.measureId)) {
-            errors.measureId = true;
+        if (validator.isEmpty(housingFileHousingStatus.housingFileHoomLinksId)) {
+            errors.housingFileHoomLinksId = true;
+            hasErrors = true;
+        }
+        if (validator.isEmpty(housingFileHousingStatus.status)) {
+            errors.status = true;
             hasErrors = true;
         }
 
         this.setState({ ...this.state, errors: errors });
 
-        // !hasErrors &&
-        //     HousingFileDetailsAPI.addHousingFileHousingStatus(housingFileHousingStatus)
-        //         .then(payload => {
-        //             this.props.addHousingFileHousingStatusToState(payload.data.data);
-        //             this.props.toggleShowNew();
-        //         })
-        //         .catch(function(error) {
-        //             alert(error);
-        //         });
+        !hasErrors &&
+            HousingFileDetailsAPI.addHousingFileHousingStatus(housingFileHousingStatus)
+                .then(payload => {
+                    this.props.addHousingFileHousingStatusToState(payload.data.data);
+                    this.props.toggleShowNew();
+                })
+                .catch(function(error) {
+                    alert(error);
+                });
     };
 
     render() {
-        const {
-            measureCategoryId,
-            measureId,
-            measureDate,
-            answer,
-            statusId,
-            floorId,
-            sideId,
-            typeBrand,
-        } = this.state.housingFileHousingStatus;
-        const measuresMatchToCategory = MeasuresOfCategory(this.props.measures, measureCategoryId);
+        const { housingFileHoomLinksId, status } = this.state.housingFileHousingStatus;
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
                     <PanelBody>
                         <div className="row">
                             <InputSelect
-                                label={'Maatregel - categorie'}
-                                name={'measureCategoryId'}
-                                options={this.props.measureCategories}
-                                value={measureCategoryId}
-                                onChangeAction={this.handleInputChange}
-                            />
-                            <InputSelect
-                                label={'Maatregel - specifiek'}
-                                name={'measureId'}
-                                options={measuresMatchToCategory}
-                                value={measureId}
-                                onChangeAction={this.handleInputChange}
+                                label={'Kenmerk'}
+                                name={'housingFileHoomLinksId'}
+                                value={housingFileHoomLinksId}
+                                options={this.state.housingFileHoomLinksNoDups}
+                                optionValue={'key'}
+                                onChangeAction={this.handleHousingFileHoomLinksChange}
                                 required={'required'}
-                                error={this.state.errors.measureId}
+                                error={this.state.errors.housingFileHoomLinksId}
                             />
-                        </div>
-
-                        <div className="row">
                             <InputSelect
                                 label={'Status'}
-                                name={'statusId'}
-                                options={this.props.statuses}
-                                value={statusId}
+                                size={'col-sm-6'}
+                                name="status"
+                                value={status}
+                                options={this.state.statusOptions}
+                                optionValue={'key'}
                                 onChangeAction={this.handleInputChange}
-                            />
-                            <InputDate
-                                label={'Datum realisatie'}
-                                name="measureDate"
-                                value={measureDate}
-                                onChangeAction={this.handleMeasureDate}
-                            />
-                        </div>
-
-                        <div className="row">
-                            <InputTextArea
-                                label={'Waarde'}
-                                name={'answer'}
-                                value={answer}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
-
-                        <div className="row">
-                            <InputSelect
-                                label={'Verdieping'}
-                                name={'floorId'}
-                                options={this.props.floors}
-                                value={floorId}
-                                onChangeAction={this.handleInputChange}
-                            />
-                            <InputSelect
-                                label={'Zijde'}
-                                name={'sideId'}
-                                options={this.props.sides}
-                                value={sideId}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
-
-                        <div className="row">
-                            <InputText
-                                label={'Type/merk'}
-                                name={'typeBrand'}
-                                value={typeBrand}
-                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.status}
                             />
                         </div>
 
@@ -196,17 +182,27 @@ class HousingFileHousingStatusNew extends Component {
 
 const mapStateToProps = state => {
     return {
+        housingFileHousingStatuses: state.housingFileDetails.housingFileHousingStatuses,
         housingFileId: state.housingFileDetails.id,
-        measures: state.systemData.measures,
-        measureCategories: state.systemData.measureCategories,
-        // housingFileHoomLinks: state.systemData.housingFileHoomLinks,
+        housingFileHoomLinks: state.systemData.housingFileHoomLinks,
+        currentWallInsulationSelection: state.systemData.currentWallInsulationSelection,
+        currentFloorInsulationSelection: state.systemData.currentFloorInsulationSelection,
+        currentRoofInsulationSelection: state.systemData.currentRoofInsulationSelection,
+        currentLivingRoomsWindowsSelection: state.systemData.currentLivingRoomsWindowsSelection,
+        currentSleepingRoomsWindowsSelection: state.systemData.currentSleepingRoomsWindowsSelection,
+        heatSourceWarmTapWaterSelection: state.systemData.heatSourceWarmTapWaterSelection,
+        buildingHeatingApplicationSelection: state.systemData.buildingHeatingApplicationSelection,
+        ventilationTypeSelection: state.systemData.ventilationTypeSelection,
+        crackSealingTypeSelection: state.systemData.crackSealingTypeSelection,
+        hasCavityWallSelection: state.systemData.hasCavityWallSelection,
+        hasSolarPanelsSelection: state.systemData.hasSolarPanelsSelection,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    // addHousingFileHousingStatusToState: housingFileHousingStatus => {
-    //     dispatch(addHousingFileHousingStatusToState(housingFileHousingStatus));
-    // },
+    addHousingFileHousingStatusToState: housingFileHousingStatus => {
+        dispatch(addHousingFileHousingStatusToState(housingFileHousingStatus));
+    },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(HousingFileHousingStatusNew);

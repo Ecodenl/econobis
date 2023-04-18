@@ -27,6 +27,7 @@ use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\HousingFileHoomHousingStatus;
+use App\Eco\HousingFile\HousingFileHoomLink;
 use App\Eco\HousingFile\HousingFileSpecificationFloor;
 use App\Eco\HousingFile\HousingFileSpecificationSide;
 use App\Eco\HousingFile\HousingFileSpecificationStatus;
@@ -155,7 +156,10 @@ class SystemData extends JsonResource
         });
         $sortedEnergySuppliers = $sortedEnergySuppliers->values();
 
+
         return [
+            'housingFileHoomLinks' => HousingFileHoomLink::select(['id as key', 'label as name', 'external_hoom_short_name as externalHoomShortName'])->where('housing_file_data_type', 'W')->where('visible_in_econobis', true)->orderBy('external_hoom_short_name')->get(),
+
             'frameTypeSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'frame-type')->get(),
             'cookTypeSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'cook-type')->get(),
             'heatSourceSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'heat-source')->get(),
@@ -165,6 +169,18 @@ class SystemData extends JsonResource
             'hr3pGlassFrameCurrentGlassSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'hr3p-glass-frame-current-glass')->get(),
             'glassInLeadReplaceRoomsHeatedSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'glass-in-lead-replace-rooms-heated')->get(),
             'boilerSettingComfortHeatSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'boiler-setting-comfort-heat')->get(),
+
+            'currentWallInsulationSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'current-wall-insulation')->get(),
+            'currentFloorInsulationSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'current-floor-insulation')->get(),
+            'currentRoofInsulationSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'current-roof-insulation')->get(),
+            'currentLivingRoomsWindowsSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'current-living-rooms-windows')->get(),
+            'currentSleepingRoomsWindowsSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'current-sleeping-rooms-windows')->get(),
+            'heatSourceWarmTapWaterSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'heat-source-warm-tap-water')->get(),
+            'buildingHeatingApplicationSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'building-heating-application')->get(),
+            'ventilationTypeSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'ventilation-type')->get(),
+            'crackSealingTypeSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'crack-sealing-type')->get(),
+            'hasCavityWallSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'has-cavity-wall')->get(),
+            'hasSolarPanelsSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'has-solar-panels')->get(),
 
             'addressTypes' => FullEnumWithIdAndName::collection(AddressType::collection()),
             'administrationsPeek' => AdministrationPeek::collection(Administration::orderBy('id')->get()),

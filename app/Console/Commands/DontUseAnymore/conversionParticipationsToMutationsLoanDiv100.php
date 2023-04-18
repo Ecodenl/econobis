@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\DontUseAnyMore;
 
+use App\Console\Command\DontUseAnyMores\conversionParticipationsToMutations;
 use App\Eco\Invoice\Invoice;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationType;

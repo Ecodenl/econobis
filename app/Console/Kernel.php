@@ -22,6 +22,8 @@ use App\Console\Commands\checkWrongEnergySupplierDataInParts;
 use App\Console\Commands\checkMissingEnergySupplierDataInParts;
 use App\Console\Commands\checkWrongRevenueDistributionKwhStatus;
 use App\Console\Commands\contactGroupsContactsForReport;
+use App\Console\Commands\executionTimeCommand1;
+use App\Console\Commands\executionTimeCommand2;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -53,6 +55,8 @@ class Kernel extends ConsoleKernel
         checkMissingEnergySupplierDataInParts::class,
         checkWrongRevenueDistributionKwhStatus::class,
         contactGroupsContactsForReport::class,
+        executionTimeCommand1::class,
+        executionTimeCommand2::class,
     ];
 
     /**
@@ -71,7 +75,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('email:checkMailboxes')->dailyAt('11:58');
         $schedule->command('email:checkMailboxes')->dailyAt('14:58');
         $schedule->command('email:checkMailboxes')->dailyAt('17:58');
-        $schedule->command('laposta:processStateAllMembersLaposta')->dailyAt('22:30');
+        $schedule->command('laposta:processStateAllMembersLaposta')->dailyAt('23:45');
         $schedule->command('address:createTaskAtEndDateAddress')->dailyAt('00:30');
         $schedule->command('addressEnergySupplier:setIsCurrentSupplier')->dailyAt('01:00');
         $schedule->command('invoice:setDaysLastReminder')->dailyAt('01:05');
@@ -91,6 +95,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('revenue:checkWrongRevenueDistributionKwhStatus')->dailyAt('21:15');
 
         $schedule->command('report:contactGroupsContacts')->dailyAt('06:00');
+
+        $schedule->command('test:executionTimeCommand1')->dailyAt('09:30');
+        $schedule->command('test:executionTimeCommand2')->dailyAt('11:35')->timezone('Europe/Amsterdam');
     }
 
     /**

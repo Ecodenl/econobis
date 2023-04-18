@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\OneTimeChecks;
+namespace App\Console\Commands\RecoverScripts;
 
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use Illuminate\Console\Command;
@@ -14,7 +14,7 @@ class recountWrongDistributionParts extends Command
      *
      * @var string
      */
-    protected $signature = 'onetimecheck:recountWrongDistributionParts';
+    protected $signature = 'recover:recountWrongDistributionParts';
 
     /**
      * The console command description.

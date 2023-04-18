@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\DontUseAnyMore;
 
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;

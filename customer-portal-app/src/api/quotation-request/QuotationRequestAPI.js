@@ -1,5 +1,6 @@
 import axiosInstance from '../default-setup/AxiosInstance';
 
+// eslint-disable-next-line
 export default {
     fetchAll: function(campaignId = null) {
         return axiosInstance.get('me/quotation-request', {

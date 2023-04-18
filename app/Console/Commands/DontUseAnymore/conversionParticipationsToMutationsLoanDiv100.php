@@ -1,19 +1,10 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\DontUseAnyMore;
 
-use App\Eco\Invoice\Invoice;
-use App\Eco\ParticipantMutation\ParticipantMutation;
-use App\Eco\ParticipantMutation\ParticipantMutationType;
-use App\Eco\ParticipantProject\ParticipantProject;
-use App\Eco\Project\ProjectValueCourse;
 use App\Eco\User\User;
-use App\Http\Controllers\Api\ParticipantMutation\ParticipantMutationController;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use ParticipantTransactions;
 
 class conversionParticipationsToMutationsLoanDiv100 extends Command
 {

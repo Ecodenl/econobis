@@ -65,30 +65,33 @@ class Kernel extends ConsoleKernel
     {
 // Time is CET. So when scheduled for 06:00 it is run at 08:00 Amsterdam time (summertime).
 // Time is CET. So when scheduled for 06:00 it is run at 07:00 Amsterdam time (wintertime).
-        $schedule->command('email:getAllEmail')->everyTenMinutes()->between('06:00', '23:30');
-        $schedule->command('email:checkMailboxes')->dailyAt('05:58');
-        $schedule->command('email:checkMailboxes')->dailyAt('08:58');
-        $schedule->command('email:checkMailboxes')->dailyAt('11:58');
-        $schedule->command('email:checkMailboxes')->dailyAt('14:58');
-        $schedule->command('email:checkMailboxes')->dailyAt('17:58');
-        $schedule->command('laposta:processStateAllMembersLaposta')->dailyAt('22:30');
-        $schedule->command('address:createTaskAtEndDateAddress')->dailyAt('00:30');
-        $schedule->command('addressEnergySupplier:setIsCurrentSupplier')->dailyAt('01:00');
-        $schedule->command('invoice:setDaysLastReminder')->dailyAt('01:05');
-        $schedule->command('invoice:setDaysToExpire')->dailyAt('02:05');
-        $schedule->command('email:deleteEmailDefinitive')->dailyAt('03:05');
-//        $schedule->command('email:deleteFloatingAttachmentFiles')->dailyAt('03:35');
-        $schedule->command('invoice:processTwinfieldCustomer')->dailyAt('04:20');
-        $schedule->command('invoice:processTwinfieldInvoicePayment')->dailyAt('04:30');
-        $schedule->command('workflow:processWorkflowEmailCompleteTask')->dailyAt('05:00');
-        $schedule->command('workflow:processWorkflowEmailExpiredTask')->dailyAt('05:05');
-        $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->dailyAt('05:10');
-        $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->dailyAt('05:15');
+// Time is default CET, therefore set timezone to Europ/Amsterdam, scheduled for 06:00 wil run at 06:00 Amsterdam time now.
+        $schedule->command('email:getAllEmail')->everyTenMinutes()->between('06:00', '23:30')->timezone('Europe/Amsterdam');
 
-        $schedule->command('revenue:checkWrongDistributionParts')->dailyAt('21:00');
-        $schedule->command('revenue:checkWrongEnergySupplierDataInParts')->dailyAt('21:05');
-        $schedule->command('revenue:checkMissingEnergySupplierDataInParts')->dailyAt('21:10');
-        $schedule->command('revenue:checkWrongRevenueDistributionKwhStatus')->dailyAt('21:15');
+        $schedule->command('email:checkMailboxes')->dailyAt('05:58')->timezone('Europe/Amsterdam');
+        $schedule->command('email:checkMailboxes')->dailyAt('08:58')->timezone('Europe/Amsterdam');
+        $schedule->command('email:checkMailboxes')->dailyAt('11:58')->timezone('Europe/Amsterdam');
+        $schedule->command('email:checkMailboxes')->dailyAt('14:58')->timezone('Europe/Amsterdam');
+        $schedule->command('email:checkMailboxes')->dailyAt('17:58')->timezone('Europe/Amsterdam');
+
+        $schedule->command('revenue:checkWrongDistributionParts')->dailyAt('21:00')->timezone('Europe/Amsterdam');
+        $schedule->command('revenue:checkWrongEnergySupplierDataInParts')->dailyAt('21:05')->timezone('Europe/Amsterdam');
+        $schedule->command('revenue:checkMissingEnergySupplierDataInParts')->dailyAt('21:10')->timezone('Europe/Amsterdam');
+        $schedule->command('revenue:checkWrongRevenueDistributionKwhStatus')->dailyAt('21:15')->timezone('Europe/Amsterdam');
+
+        $schedule->command('laposta:processStateAllMembersLaposta')->dailyAt('23:45')->timezone('Europe/Amsterdam');
+        $schedule->command('address:createTaskAtEndDateAddress')->dailyAt('00:30')->timezone('Europe/Amsterdam');
+        $schedule->command('addressEnergySupplier:setIsCurrentSupplier')->dailyAt('01:00')->timezone('Europe/Amsterdam');
+        $schedule->command('invoice:setDaysLastReminder')->dailyAt('01:05')->timezone('Europe/Amsterdam');
+        $schedule->command('invoice:setDaysToExpire')->dailyAt('02:05')->timezone('Europe/Amsterdam');
+        $schedule->command('email:deleteEmailDefinitive')->dailyAt('03:05')->timezone('Europe/Amsterdam');
+//        $schedule->command('email:deleteFloatingAttachmentFiles')->dailyAt('03:35');
+        $schedule->command('invoice:processTwinfieldCustomer')->dailyAt('04:20')->timezone('Europe/Amsterdam');
+        $schedule->command('invoice:processTwinfieldInvoicePayment')->dailyAt('04:30')->timezone('Europe/Amsterdam');
+        $schedule->command('workflow:processWorkflowEmailCompleteTask')->dailyAt('05:00')->timezone('Europe/Amsterdam');
+        $schedule->command('workflow:processWorkflowEmailExpiredTask')->dailyAt('05:05')->timezone('Europe/Amsterdam');
+        $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->dailyAt('05:10')->timezone('Europe/Amsterdam');
+        $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->dailyAt('05:15')->timezone('Europe/Amsterdam');
 
         $schedule->command('report:contactGroupsContacts')->dailyAt('06:00');
     }

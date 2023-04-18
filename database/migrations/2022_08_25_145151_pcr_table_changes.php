@@ -14,7 +14,7 @@ class PcrTableChanges extends Migration
      */
     public function up()
     {
-        Artisan::call('pcr:alterTablePcrTableOzon');
+//        Artisan::call('pcr:alterTablePcrTableOzon');
     }
 
     /**

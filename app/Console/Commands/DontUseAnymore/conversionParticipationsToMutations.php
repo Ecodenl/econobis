@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Command\DontUseAnyMores;
+namespace App\Console\Command\DontUseAnyMore;
 
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationType;

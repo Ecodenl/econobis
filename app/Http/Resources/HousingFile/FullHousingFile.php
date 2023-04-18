@@ -43,6 +43,8 @@ class FullHousingFile extends JsonResource
                 'floors' => $this->floors,
                 'energyLabelStatus' => GenericResource::make($this->whenLoaded('energyLabelStatus')),
                 'isMonument' => $this->is_monument,
+                'remark' => $this->remark,
+                'remarkCoach' => $this->remark_coach,
                 'hoomBuildingId' => $this->hoom_building_id,
                 'wallSurface' => $this->wall_surface,
                 'totalWindowSurface' => $this->total_window_surface,

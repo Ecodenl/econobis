@@ -18,6 +18,8 @@ const HousingFileDetailsFormGeneralView = props => {
         floors,
         energyLabelStatus,
         isMonument,
+        remark,
+        remarkCoach,
         hoomBuildingId,
         wallSurface,
         totalWindowSurface,
@@ -78,6 +80,26 @@ const HousingFileDetailsFormGeneralView = props => {
             </div>
             <div className="row">
                 <ViewText label="Water comfort" value={waterComfort && waterComfort.hoomStatusName} />
+            </div>
+            <div className="row">
+                <div className="col-sm-3">
+                    <label htmlFor="remark" className="col-sm-12">
+                        Opmerkingen bewoner
+                    </label>
+                </div>
+                <div className="col-sm-9" id="remark">
+                    {remark}
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-sm-3">
+                    <label htmlFor="remarkCoach" className="col-sm-12">
+                        Opmerkingen coach
+                    </label>
+                </div>
+                <div className="col-sm-9" id="remarkCoach">
+                    {remarkCoach}
+                </div>
             </div>
         </div>
     );

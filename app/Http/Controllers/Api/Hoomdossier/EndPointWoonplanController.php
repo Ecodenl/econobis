@@ -126,22 +126,23 @@ class EndPointWoonplanController extends EndPointHoomDossierController
 
         if(isset($dataContent->user_action_plan_advice_comments)) {
             $remark = '';
+            $remarkCoach = '';
             foreach($dataContent->user_action_plan_advice_comments as $key => $comment)
             {
                 if(!empty($key)){
-//                    $this->log('Comment key: ' . $key);
-//                    $this->log('Comment comment: ' . $comment);
                     if($key == 'resident'){
-                        $remark .= 'Bewoner: ' . $comment . "\n";
+                        $remark .= $comment;
                     }
                     if($key == 'coach'){
-                        $remark .= 'Coach: ' . $comment . "\n";
+                        $remarkCoach .= $comment;
                     }
-//                    $this->log('Remark: ' . $remark);
                 }
             }
-            $this->log('Opmerkingen woningdossier vervangen met: ' . $remark);
+//            $this->log('Opmerkingen bewoner woningdossier vervangen met: ' . $remark);
+//            $this->log('Opmerkingen coach woningdossier vervangen met: ' . $remarkCoach);
+            $this->log('Opmerkingen bewoner en/of coach woningdossier vervangen');
             $this->housingFile->remark = $remark;
+            $this->housingFile->remark_coach = $remarkCoach;
             $this->housingFile->save();
         }
 

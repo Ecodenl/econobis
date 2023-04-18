@@ -8,9 +8,8 @@ function ProccessesListToolbar({ countTotal, reloadHousingFilelogs }) {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    {/*todo WM: glyphicon aanpassen in master-release-440*/}
                     <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
-                    <ButtonIcon iconName={'refresh'} onClickAction={reloadTwinfieldlogs} />
+                    <ButtonIcon iconName={'refresh'} onClickAction={reloadHousingFilelogs} />
                 </div>
             </div>
             <div className="col-md-4">

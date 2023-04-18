@@ -10,6 +10,7 @@ import InputSelect from '../../../../components/form/InputSelect';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputToggle from '../../../../components/form/InputToggle';
 import ViewText from '../../../../components/form/ViewText';
+import InputTextArea from '../../../../components/form/InputTextArea';
 
 class HousingFileDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -28,6 +29,8 @@ class HousingFileDetailsFormGeneralEdit extends Component {
             floors,
             energyLabelStatus,
             isMonument,
+            remark,
+            remarkCoach,
             hoomBuildingId,
             wallSurface,
             totalWindowSurface,
@@ -55,6 +58,8 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                 floors: floors ? floors : '',
                 energyLabelStatusId: energyLabelStatus ? energyLabelStatus.id : '',
                 isMonument: isMonument ? isMonument : false,
+                remark,
+                remarkCoach,
                 hoomBuildingId: hoomBuildingId ? hoomBuildingId : null,
                 hasHoomDossierLink: hoomBuildingId != null ? true : false,
                 wallSurface: wallSurface ? wallSurface : '',
@@ -109,6 +114,8 @@ class HousingFileDetailsFormGeneralEdit extends Component {
             floors,
             energyLabelStatusId,
             isMonument,
+            remark,
+            remarkCoach,
             hoomBuildingId,
             wallSurface,
             totalWindowSurface,
@@ -323,6 +330,24 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                         optionValue={'key'}
                         onChangeAction={this.handleInputChange}
                         readOnly={hasHoomDossierLink}
+                    />
+                </div>
+                <div className="row">
+                    <InputTextArea
+                        label={'Opmerking bewoner'}
+                        name="remark"
+                        value={remark}
+                        onChangeAction={this.handleInputChange}
+                        disabled={hasHoomDossierLink}
+                    />
+                </div>
+                <div className="row">
+                    <InputTextArea
+                        label={'Opmerking coach'}
+                        name="remarkCoach"
+                        value={remarkCoach}
+                        onChangeAction={this.handleInputChange}
+                        disabled={hasHoomDossierLink}
                     />
                 </div>
 

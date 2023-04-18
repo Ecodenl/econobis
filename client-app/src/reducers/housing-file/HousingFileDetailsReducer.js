@@ -46,40 +46,37 @@ export default function(state = {}, action) {
                     housingFileSpecification => housingFileSpecification.id !== action.housingFileSpecificationId
                 ),
             };
-        // // ToDo WM: nog aanpassen !!!
-        // case 'UPDATE_HOUSING_FILE_HOUSING_STATUS':
-        //     return {
-        //         ...state,
-        //         // housingFileSpecifications: [
-        //         //     ...state.housingFileSpecifications.map(housingFileSpecification => {
-        //         //         if (housingFileSpecification.id == action.housingFileSpecification.id) {
-        //         //             housingFileSpecification = action.housingFileSpecification;
-        //         //             return housingFileSpecification;
-        //         //         } else {
-        //         //             return housingFileSpecification;
-        //         //         }
-        //         //     }),
-        //         // ],
-        //     };
-        // // ToDo WM: nog aanpassen !!!
-        // case 'ADD_HOUSING_FILE_HOUSING_STATUS':
-        //     return {
-        //         ...state,
-        //         // housingFileSpecifications: [
-        //         //     ...state.housingFileSpecifications,
-        //         //     {
-        //         //         ...action.housingFileSpecification,
-        //         //     },
-        //         // ],
-        //     };
-        // // ToDo WM: nog aanpassen !!!
-        // case 'DELETE_HOUSING_FILE_HOUSING_STATUS_SUCCESS':
-        //     return {
-        //         ...state,
-        //         // housingFileSpecifications: state.housingFileSpecifications.filter(
-        //         //     housingFileSpecification => housingFileSpecification.id !== action.housingFileSpecificationId
-        //         // ),
-        //     };
+        case 'UPDATE_HOUSING_FILE_HOUSING_STATUS':
+            return {
+                ...state,
+                housingFileHousingStatuses: [
+                    ...state.housingFileHousingStatuses.map(housingFileHousingStatus => {
+                        if (housingFileHousingStatus.id == action.housingFileHousingStatus.id) {
+                            housingFileHousingStatus = action.housingFileHousingStatus;
+                            return housingFileHousingStatus;
+                        } else {
+                            return housingFileHousingStatus;
+                        }
+                    }),
+                ],
+            };
+        case 'ADD_HOUSING_FILE_HOUSING_STATUS':
+            return {
+                ...state,
+                housingFileHousingStatuses: [
+                    ...state.housingFileHousingStatuses,
+                    {
+                        ...action.housingFileHousingStatus,
+                    },
+                ],
+            };
+        case 'DELETE_HOUSING_FILE_HOUSING_STATUS_SUCCESS':
+            return {
+                ...state,
+                housingFileHousingStatuses: state.housingFileHousingStatuses.filter(
+                    housingFileHousingStatus => housingFileHousingStatus.id !== action.housingFileHousingStatusId
+                ),
+            };
         default:
             return state;
     }

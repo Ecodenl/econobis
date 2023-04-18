@@ -240,6 +240,11 @@ const TwoFactorActivate = React.lazy(() => import('./container/auth/TwoFactorAct
 const TwoFactorConfirm = React.lazy(() => import('./container/auth/TwoFactorConfirm'));
 const TwoFactorRecover = React.lazy(() => import('./container/auth/TwoFactorRecover'));
 
+/**
+ * Mailclient / Mail in splitview
+ * */
+const EmailSplitView = React.lazy(() => import('./container/email/splitview/EmailSplitView'));
+
 const Routes = () => {
     return (
         <Suspense fallback={<LoadingPage />}>
@@ -551,6 +556,8 @@ const Routes = () => {
                     <Route path="offerte-verzoek-status/:id" component={QuotationRequestStatusDetailsApp} />
                     <Route path="kans-statussen" component={OpportunityStatusListApp} />
                     <Route path="kans-status/:id" component={OpportunityStatusDetailsApp} />
+                    /* Mailclient */
+                    <Route path="mailclient/:folder" component={EmailSplitView} />
                     /* 404 route */
                     <Route path="*" component={NotFoundedPage} />
                 </Route>

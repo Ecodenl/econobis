@@ -27,6 +27,7 @@ use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\HousingFile\Grid\RequestQuery;
 use App\Http\Resources\HousingFile\FullHousingFile;
+use App\Http\Resources\HousingFile\FullHousingFileHousingStatus;
 use App\Http\Resources\HousingFile\FullHousingFileSpecification;
 use App\Http\Resources\HousingFile\GridHousingFile;
 use App\Http\Resources\HousingFile\HousingFilePeek;

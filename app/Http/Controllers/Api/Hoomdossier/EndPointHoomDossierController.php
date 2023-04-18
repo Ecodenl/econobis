@@ -121,6 +121,7 @@ class EndPointHoomDossierController extends Controller
                     $housingFile->is_house_for_sale = 0;
                     $housingFile->is_monument = 0;
                     $housingFile->remark = '';
+                    $housingFile->remark_coach = '';
                     $housingFile->save();
                     $this->log('Nieuw woningdossier ' . $housingFile->id . ' aangemaakt voor contact ' . $contactId . ' ' . $contact->full_name);
                 } else {

@@ -531,6 +531,7 @@ class ExternalWebformController extends Controller
                 'woondossier_aantal_bewoners' => 'number_of_residents',
                 'woondossier_opbrengst_zonnepanelen' => 'revenue_solar_panels',
                 'woondossier_opmerking' => 'remark',
+                'woondossier_opmerking_coach' => 'remark_coach',
             ],
             'quotation_request_visit' => [
                 'kansactie_update_afspraak_status' => 'status_id',
@@ -1982,6 +1983,7 @@ class ExternalWebformController extends Controller
             && $data['number_of_residents'] == ''
             && $data['revenue_solar_panels'] == ''
             && $data['remark'] == ''
+            && $data['remark_coach'] == ''
         ){
             $this->log('Er zijn geen woondossiergegevens meegegeven.');
             return null;
@@ -2096,6 +2098,7 @@ class ExternalWebformController extends Controller
                 'number_of_residents' => is_numeric($data['number_of_residents']) ? $data['number_of_residents'] : 0,
                 'revenue_solar_panels' => is_numeric($data['revenue_solar_panels']) ? $data['revenue_solar_panels'] : 0,
                 'remark' => $data['remark'],
+                'remark_coach' => $data['remark_coach'],
             ]);
             $this->log("Woondossier met id " . $housingFile->id . " aangemaakt en gekoppeld aan adres id " . $address->id . ".");
 
@@ -2157,6 +2160,7 @@ class ExternalWebformController extends Controller
             $housingFile->number_of_residents = is_numeric($data['number_of_residents']) ? $data['number_of_residents'] : 0;
             $housingFile->revenue_solar_panels = is_numeric($data['revenue_solar_panels']) ? $data['revenue_solar_panels'] : 0;
             $housingFile->remark = $data['remark'];
+            $housingFile->remark_coach = $data['remark_coach'];
             $housingFile->save();
             $this->log("Woondossier met id " . $housingFile->id . " is gewijzigd voor adres id " . $address->id . ".");
 

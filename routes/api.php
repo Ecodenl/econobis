@@ -94,6 +94,9 @@ Route::namespace('Api')
         Route::post('/housing-file/housing-file-specification', 'HousingFile\HousingFileController@addHousingFileSpecification');
         Route::post('/housing-file/housing-file-specification/{housingFileSpecification}/update', 'HousingFile\HousingFileController@updateHousingFileSpecification');
         Route::post('/housing-file/housing-file-specification/{housingFileSpecification}/delete', 'HousingFile\HousingFileController@deleteHousingFileSpecification');
+        Route::post('/housing-file/housing-file-housing-status', 'HousingFile\HousingFileController@addHousingFileHousingStatus');
+        Route::post('/housing-file/housing-file-housing-status/{housingFileHousingStatus}/update', 'HousingFile\HousingFileController@updateHousingFileHousingStatus');
+        Route::post('/housing-file/housing-file-housing-status/{housingFileHousingStatus}/delete', 'HousingFile\HousingFileController@deleteHousingFileHousingStatus');
 
         Route::get('/housing-file/{housingFile}/notes', 'HousingFile\HousingFileController@notes');
         Route::get('/housing-file/{housingFile}/documents', 'HousingFile\HousingFileController@documents');

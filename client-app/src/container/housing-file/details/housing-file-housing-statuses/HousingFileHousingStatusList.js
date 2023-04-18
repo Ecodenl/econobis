@@ -13,7 +13,10 @@ const HousingFileHousingStatusList = props => {
             </div>
             {props.housingFileHousingStatuses.length > 0 ? (
                 props.housingFileHousingStatuses.map((housingFileHousingStatus, i) => {
-                    if (housingFileHousingStatus.housingFileHoomLink.visibleInEconobis) {
+                    if (
+                        housingFileHousingStatus.housingFileHoomLink &&
+                        housingFileHousingStatus.housingFileHoomLink.visibleInEconobis
+                    ) {
                         return (
                             <HousingFileHousingStatusItem key={i} housingFileHousingStatus={housingFileHousingStatus} />
                         );

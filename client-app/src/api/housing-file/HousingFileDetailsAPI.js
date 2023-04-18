@@ -73,8 +73,33 @@ export default {
         return axiosInstance.post(requestUrl, housingFileSpecification);
     },
 
-    deleteSpecification: housingFileSpecificationId => {
+    deleteHousingFileSpecification: housingFileSpecificationId => {
         const requestUrl = `${URL_HOUSING_FILE}/housing-file-specification/${housingFileSpecificationId}/delete`;
+
+        return axiosInstance
+            .post(requestUrl)
+            .then(function(response) {
+                return response.data.data;
+            })
+            .catch(function(error) {
+                return error;
+            });
+    },
+
+    addHousingFileHousingStatus: housingFileHousingStatus => {
+        const requestUrl = `${URL_HOUSING_FILE}/housing-file-housing-status`;
+
+        return axiosInstance.post(requestUrl, housingFileHousingStatus);
+    },
+
+    updateHousingFileHousingStatus: housingFileHousingStatus => {
+        const requestUrl = `${URL_HOUSING_FILE}/housing-file-housing-status/${housingFileHousingStatus.id}/update`;
+
+        return axiosInstance.post(requestUrl, housingFileHousingStatus);
+    },
+
+    deleteHousingFileHousingStatus: housingFileHousingStatusId => {
+        const requestUrl = `${URL_HOUSING_FILE}/housing-file-housing-status/${housingFileHousingStatusId}/delete`;
 
         return axiosInstance
             .post(requestUrl)

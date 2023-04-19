@@ -18,9 +18,16 @@ export default function EmailSplitViewDetails({emailId}) {
     const fetchEmail = () => {
         setIsLoading(true);
         EmailAPI.fetchEmail(emailId).then(data => {
-            setEmail(data);
+            setEmail(formatFetchedEmail(data));
             setIsLoading(false);
         });
+    }
+
+    const formatFetchedEmail = (email) => {
+        return {
+            ...email,
+            attachmentsWithoutCids: email.attachments.filter(a => a.cid === null),
+        };
     }
 
     if (isLoading || !email) {

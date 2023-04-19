@@ -47,6 +47,11 @@ class Email extends Model
         return $this->hasMany(EmailAttachment::class);
     }
 
+    public function attachmentsWithoutCids()
+    {
+        return $this->hasMany(EmailAttachment::class)->whereNull('cid');
+    }
+
     public function contacts()
     {
         return $this->belongsToMany(Contact::class);

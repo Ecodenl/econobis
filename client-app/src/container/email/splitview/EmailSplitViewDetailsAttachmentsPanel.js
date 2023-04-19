@@ -52,13 +52,14 @@ export default function EmailSplitViewDetailsAttachmentsPanel({email}) {
                     <div className="row border header">
                         <div className="col-sm-12">Bestand</div>
                     </div>
-                    {email.attachments.length > 0 ? (
-                        email.attachments.filter(a => a.cid === null).map(attachment => {
+                    {email.attachmentsWithoutCids.length > 0 ? (
+                        email.attachmentsWithoutCids.map(attachment => {
                             return (
                                 <div
                                     className={`row border ${hoveredAttachmentId === attachment.id ? 'highlight-line' : ''}`}
                                     onMouseEnter={() => setHoveredAttachmentId(attachment.id)}
                                     onMouseLeave={() => setHoveredAttachmentId(null)}
+                                    key={attachment.id}
                                 >
                                     <div className="col-sm-10">{attachment.name}</div>
                                     <div className="col-sm-2">

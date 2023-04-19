@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import EmailAPI from "../../../api/email/EmailAPI";
+import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
 import EmailSplitViewDetailsHeaderPanel from "./EmailSplitViewDetailsHeaderPanel";
 import EmailSplitViewDetailsAttachmentsPanel from "./EmailSplitViewDetailsAttachmentsPanel";
 
@@ -17,7 +17,7 @@ export default function EmailSplitViewDetails({emailId}) {
 
     const fetchEmail = () => {
         setIsLoading(true);
-        EmailAPI.fetchEmail(emailId).then(data => {
+        EmailSplitviewAPI.fetchEmail(emailId).then(data => {
             setEmail(formatFetchedEmail(data));
             setIsLoading(false);
         });
@@ -38,7 +38,7 @@ export default function EmailSplitViewDetails({emailId}) {
 
     return (
         <div>
-            <EmailSplitViewDetailsHeaderPanel email={email} />
+            <EmailSplitViewDetailsHeaderPanel email={email} setEmail={setEmail} />
 
             <div className="panel panel-default">
                 <div className="panel-body panel-small" style={{padding: '20px'}}>

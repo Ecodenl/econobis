@@ -7,8 +7,41 @@ import {trash} from 'react-icons-kit/fa/trash';
 import {windowRestore} from 'react-icons-kit/fa/windowRestore';
 import InputReactSelect from "../../../components/form/InputReactSelect";
 import {Link} from "react-router";
+import { useSelector } from 'react-redux'
+import InputSelectGroup from "../../../components/form/InputSelectGroup";
+import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
 
-export default function EmailSplitViewDetailsHeaderPanel({email}) {
+export default function EmailSplitViewDetailsHeaderPanel({email, setEmail}) {
+    const teams = useSelector((state) => state.systemData.teams);
+    const users = useSelector((state) => state.systemData.users);
+
+    const setResonsibleValue = (val) => {
+        if(val.indexOf('user') === 0) {
+            email.responsibleUserId = val.replace('user', '');
+            email.responsibleTeamId = null;
+        }
+
+        if(val.indexOf('team') === 0) {
+            email.responsibleTeamId = val.replace('team', '');
+            email.responsibleUserId = null;
+        }
+
+        setEmail({...email});
+
+        EmailSplitviewAPI.updateEmail(email);
+    }
+
+    const getResponsibleValue = () => {
+        if (email.responsibleUserId) {
+            return 'user' + email.responsibleUserId;
+        }
+        if (email.responsibleTeamId) {
+            return 'team' + email.responsibleTeamId;
+        }
+
+        return '';
+    }
+
     return (
         <div className="panel panel-default">
             <div className="panel-body panel-small">
@@ -81,15 +114,21 @@ export default function EmailSplitViewDetailsHeaderPanel({email}) {
                         onChangeAction={() => {
                         }}
                     />
-                    <InputReactSelect
+                    <InputSelectGroup
                         label={'Verantwoordelijke'}
                         size={'col-sm-6'}
-                        name={'intakeId'}
-                        options={[]}
-                        value={'1'}
-                        clearable={true}
-                        onChangeAction={() => {
-                        }}
+                        name={'responsible'}
+                        optionsInGroups={[
+                            {
+                                name: 'user',
+                                label: 'Gebruikers',
+                                options: users,
+                                optionName: 'fullName',
+                            },
+                            { name: 'team', label: 'Teams', options: teams },
+                        ]}
+                        value={getResponsibleValue()}
+                        onChangeAction={(e) => setResonsibleValue(e.target.value)}
                     />
                 </div>
                 <div className="row">

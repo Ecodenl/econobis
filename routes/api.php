@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Email\EmailSplitviewController;
 use App\Http\Controllers\Api\Invoice\InvoiceMolliePaymentController;
 use App\Http\Controllers\Api\Mailbox\MailboxController;
 use App\Http\Middleware\EncryptCookies;
@@ -312,6 +313,12 @@ Route::namespace('Api')
         Route::post('email/concept/{email}/update2', 'Email\EmailController@updateConcept2');
         Route::post('email/concept/{email}/send', 'Email\EmailController@sendConcept');
         Route::post('email/{email}/status/{emailStatusId}', 'Email\EmailController@setEmailStatus');
+
+        /**
+         * Email splitview
+         */
+        Route::get('email-splitview/select-list', [EmailSplitviewController::class, 'selectList']);
+        Route::get('email-splitview/{email}', [EmailSplitviewController::class, 'show']);
 
         Route::get('email-template/grid', 'EmailTemplate\EmailTemplateController@grid');
         Route::get('email-template/peek', 'EmailTemplate\EmailTemplateController@peek');

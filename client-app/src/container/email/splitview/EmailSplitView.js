@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import EmailAPI from "../../../api/email/EmailAPI";
+import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
 import EmailSplitViewDetails from "./EmailSplitViewDetails";
-import EmailSplitViewSelectPanel from "./EmailSplitViewSelectPanel";
+import EmailSplitViewSelectList from "./EmailSplitViewSelectList";
 
 export default function EmailSplitView({router}) {
     const perPage = 50;
@@ -21,13 +21,14 @@ export default function EmailSplitView({router}) {
     }
 
     const fetchMoreEmails = () => {
-        return EmailAPI.fetchEmails({
-            folder: router.params.folder,
-            pagination: {limit: perPage, offset: emails.length},
-            sorts: [{field: "date", order: "DESC"}],
+        return EmailSplitviewAPI.fetchSelectList({
+            filter: getFilter(),
+            limit: perPage,
+            offset: emails.length,
+            sorts: getSorts(),
         }).then(response => {
-            setEmails([...emails, ...response.data.data])
-            setEmailCount(response.data.meta.total);
+            setEmails([...emails, ...response.data.items])
+            setEmailCount(response.data.total);
         });
     }
 
@@ -41,6 +42,21 @@ export default function EmailSplitView({router}) {
         });
 
         setEmails(newEmails);
+    }
+
+    const getFilter = () => {
+        return {
+            and: [
+                {
+                    f: 'folder',
+                    d: router.params.folder,
+                }
+            ]
+        }
+    }
+
+    const getSorts = () => {
+        return ['-dateSent'];
     }
 
     return (
@@ -60,7 +76,7 @@ export default function EmailSplitView({router}) {
             </div>
             <div className="row">
                 <div className="col-md-4 margin-10-top" style={{paddingRight: '0px'}}>
-                    <EmailSplitViewSelectPanel
+                    <EmailSplitViewSelectList
                         emails={emails}
                         folder={router.params.folder}
                         emailCount={emailCount}

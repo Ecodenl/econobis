@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import Icon from "react-icons-kit";
-import EmailDetailsAPI from "../../../api/email/EmailAPI";
+import EmailDetailsAPI from "../../../api/email/EmailSplitviewAPI";
 import fileDownload from "js-file-download";
 import {fileO} from 'react-icons-kit/fa/fileO';
 import {share} from 'react-icons-kit/fa/share';

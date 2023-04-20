@@ -5,30 +5,31 @@ import {mailReplyAll} from 'react-icons-kit/fa/mailReplyAll';
 import {mailForward} from 'react-icons-kit/fa/mailForward';
 import {trash} from 'react-icons-kit/fa/trash';
 import {windowRestore} from 'react-icons-kit/fa/windowRestore';
-import InputReactSelect from "../../../components/form/InputReactSelect";
 import {Link} from "react-router";
-import { useSelector } from 'react-redux'
+import {useSelector} from 'react-redux'
 import InputSelectGroup from "../../../components/form/InputSelectGroup";
-import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
+import InputSelect from "../../../components/form/InputSelect";
 
-export default function EmailSplitViewDetailsHeaderPanel({email, setEmail}) {
+export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttributes}) {
+    const statusses = useSelector((state) => state.systemData.emailStatuses);
     const teams = useSelector((state) => state.systemData.teams);
     const users = useSelector((state) => state.systemData.users);
 
     const setResonsibleValue = (val) => {
-        if(val.indexOf('user') === 0) {
-            email.responsibleUserId = val.replace('user', '');
-            email.responsibleTeamId = null;
+        let values = {
+            responsibleUserId: null,
+            responsibleTeamId: null,
+        };
+
+        if (val.indexOf('user') === 0) {
+            values.responsibleUserId = val.replace('user', '');
         }
 
-        if(val.indexOf('team') === 0) {
-            email.responsibleTeamId = val.replace('team', '');
-            email.responsibleUserId = null;
+        if (val.indexOf('team') === 0) {
+            values.responsibleTeamId = val.replace('team', '');
         }
 
-        setEmail({...email});
-
-        EmailSplitviewAPI.updateEmail(email);
+        updateEmailAttributes(values);
     }
 
     const getResponsibleValue = () => {
@@ -104,15 +105,14 @@ export default function EmailSplitViewDetailsHeaderPanel({email, setEmail}) {
                     </div>
                 </div>
                 <div className="row" style={{marginTop: '12px'}}>
-                    <InputReactSelect
+                    <InputSelect
                         label={'Status'}
                         size={'col-sm-6'}
-                        name={'intakeId'}
-                        options={[]}
-                        value={'1'}
-                        clearable={true}
-                        onChangeAction={() => {
-                        }}
+                        name={'status'}
+                        options={statusses}
+                        value={email.status}
+                        onChangeAction={(e) => updateEmailAttributes({status: e.target.value})}
+                        emptyOption={false}
                     />
                     <InputSelectGroup
                         label={'Verantwoordelijke'}
@@ -125,7 +125,7 @@ export default function EmailSplitViewDetailsHeaderPanel({email, setEmail}) {
                                 options: users,
                                 optionName: 'fullName',
                             },
-                            { name: 'team', label: 'Teams', options: teams },
+                            {name: 'team', label: 'Teams', options: teams},
                         ]}
                         value={getResponsibleValue()}
                         onChangeAction={(e) => setResonsibleValue(e.target.value)}
@@ -154,10 +154,9 @@ export default function EmailSplitViewDetailsHeaderPanel({email, setEmail}) {
                         <label className="col-sm-6">CC</label>
                         <div className="col-sm-6">
                             {
-                                email.cc &&
-                                email.emailAddressesCcSelected.map(cc => {
+                                email.ccAddresses.map(cc => {
                                     return (
-                                        <span key={cc.email}>
+                                        <span key={cc.id}>
                                         {cc.name}<br/>
                                         </span>
                                     )

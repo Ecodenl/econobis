@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Api\Email;
 
 
+use App\Eco\Contact\Contact;
 use App\Eco\Email\Email;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Email\FullEmail;
 use App\Http\Resources\Email\SplitviewSelectlistEmail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use JosKolenberg\LaravelJory\Facades\Jory;
 
@@ -45,10 +46,35 @@ class EmailSplitviewController extends Controller
         $this->authorize('view', Email::class);
         $this->checkMailboxAutorized($email->mailbox_id);
 
-        $email->load('contacts', 'attachments', 'closedBy', 'removedBy', 'intake', 'task', 'quotationRequest', 'measure', 'opportunity', 'order', 'invoice', 'responsibleUser',
-            'responsibleTeam');
+        return response()->json([
+            'id' => $email->id,
+            'status' => $email->status,
+            'attachmentsWithoutCids' => $email->attachmentsWithoutCids,
+            'responsibleUserId' => $email->responsible_user_id,
+            'responsibleTeamId' => $email->responsible_team_id,
+            'contacts' => $email->contacts->map(function (Contact $contact) {
+                return [
+                    'id' => $contact->id,
+                    'fullName' => $contact->full_name,
+                ];
+            }),
+            'ccAddresses' => $email->getCcAdresses(),
+            'htmlBodyWithEmbeddedImages' => $email->inlineImagesService()->getHtmlBodyWithCidsConvertedToEmbeddedImages(),
+        ]);
+    }
 
-        return FullEmail::make($email);
+    public function update(Email $email, Request $request)
+    {
+        $this->authorize('view', Email::class);
+        $this->checkMailboxAutorized($email->mailbox_id);
+
+        $data = $request->validate([
+            'status' => ['sometimes', 'required', 'string'],
+            'responsibleUserId' => ['nullable', 'exists:users,id'],
+            'responsibleTeamId' => ['nullable', 'exists:teams,id'],
+        ]);
+
+        $email->update(Arr::keysToSnakeCase($data));
     }
 
     protected function checkMailboxAutorized($mailboxId): void

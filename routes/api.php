@@ -319,6 +319,7 @@ Route::namespace('Api')
          */
         Route::get('email-splitview/select-list', [EmailSplitviewController::class, 'selectList']);
         Route::get('email-splitview/{email}', [EmailSplitviewController::class, 'show']);
+        Route::post('email-splitview/{email}', [EmailSplitviewController::class, 'update']);
 
         Route::get('email-template/grid', 'EmailTemplate\EmailTemplateController@grid');
         Route::get('email-template/peek', 'EmailTemplate\EmailTemplateController@peek');

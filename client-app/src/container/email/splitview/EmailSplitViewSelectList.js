@@ -1,13 +1,9 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect} from 'react';
 import moment from "moment/moment";
-// import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
 import Icon from "react-icons-kit";
 import {paperclip} from 'react-icons-kit/fa/paperclip';
 
-export default function EmailSplitViewSelectList({emails, folder, emailCount, fetchMoreEmails, selectedEmailId, setSelectedEmailId, updateEmailAttributes}) {
-    // const markAsReadAfter = 2000;
-    // const lastSelectedEmailId = useRef(null);
-
+export default function EmailSplitViewSelectList({emails, folder, emailCount, fetchMoreEmails, selectedEmailId, setSelectedEmailId}) {
     const getTitle = () => {
         switch (folder) {
             case 'inbox':
@@ -25,22 +21,6 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
 
     const selectEmail = (email) => {
         setSelectedEmailId(email.id);
-        //
-        // lastSelectedEmailId.current = email.id;
-        //
-        // setTimeout(() => {
-        //     if (lastSelectedEmailId.current === email.id) {
-        //         markAsRead(email);
-        //     }
-        // }, markAsReadAfter);
-    }
-
-    const markAsRead = (email) => {
-        // if (email.status.id === 'unread') {
-            // EmailSplitviewAPI.setStatus(email.id, 'read').then(() => {
-            //     updateEmailAttributes(email.id, {status: {id: "read", name: "Gelezen"}});
-            // });
-        // }
     }
 
     useEffect(() => {

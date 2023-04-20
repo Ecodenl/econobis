@@ -24,6 +24,13 @@ export default {
 
         return axiosInstance
             .get(requestUrl)
-            .then(response => response.data.data);
+            .then(response => response.data);
     },
+
+    update: (id, attributes) => {
+        const requestUrl = `${URL_EMAIL}/${id}`;
+
+        return axiosInstance
+            .post(requestUrl, attributes);
+    }
 };

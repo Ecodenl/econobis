@@ -18,16 +18,18 @@ export default function EmailSplitViewDetails({emailId}) {
     const fetchEmail = () => {
         setIsLoading(true);
         EmailSplitviewAPI.fetchEmail(emailId).then(data => {
-            setEmail(formatFetchedEmail(data));
+            setEmail(data);
             setIsLoading(false);
         });
     }
 
-    const formatFetchedEmail = (email) => {
-        return {
+    const updateEmailAttributes = (attributes) => {
+        setEmail({
             ...email,
-            attachmentsWithoutCids: email.attachments.filter(a => a.cid === null),
-        };
+            ...attributes,
+        });
+
+        EmailSplitviewAPI.update(emailId, attributes);
     }
 
     if (isLoading || !email) {
@@ -38,7 +40,7 @@ export default function EmailSplitViewDetails({emailId}) {
 
     return (
         <div>
-            <EmailSplitViewDetailsHeaderPanel email={email} setEmail={setEmail} />
+            <EmailSplitViewDetailsHeaderPanel email={email} updateEmailAttributes={updateEmailAttributes} />
 
             <div className="panel panel-default">
                 <div className="panel-body panel-small" style={{padding: '20px'}}>

@@ -62,12 +62,51 @@ export default function EmailSplitView({router}) {
     return (
         <div>
             <div className="row">
-                <div className="col-md-12 margin-10-top">
+                <div className="col-md-12" style={{marginTop: '-10px'}}>
                     <div className="panel panel-default">
                         <div className="panel-body panel-small">
                             <div className="row">
-                                <div className="col-md-4">
-                                    Filters
+                                <div className="col-md-12">
+                                    <table className="table table-condensed table-hover table-striped col-xs-12" style={{marginBottom: '0px'}}>
+                                    <thead>
+                                    <tr className="thead-title">
+                                        <th className="" width="10%">Van e-mail</th>
+                                        <th className="" width="10%">Gekoppeld contact</th>
+                                        <th className="" width="15%">Onderwerp</th>
+                                        <th className="" width="10%">Datum</th>
+                                        <th className="" width="15%">Mailbox</th>
+                                        <th className="" width="10%">Status</th>
+                                        <th className="" width="10%">Verantwoordelijke</th>
+                                        <th className="" width="10%">Aan</th>
+                                        <th className="" width="5%">Bijlage</th>
+                                    </tr>
+                                    <tr className="thead-filter">
+                                        <th className="DayPicker-overflow ">
+                                            <div className="DayPickerInput"><input placeholder=""
+                                                                                   className="form-control input-sm"
+                                                                                   value=""/></div>
+                                        </th>
+                                        <th><input type="text" className="form-control input-sm" value=""/></th>
+                                        <th><input type="text" className="form-control input-sm" value=""/></th>
+                                        <th><input type="text" className="form-control input-sm" value=""/></th>
+                                        <th><input type="text" className="form-control input-sm" value=""/></th>
+                                        <th><select className="form-control input-sm">
+                                            <option></option>
+                                            <option value="null">Geen status</option>
+                                            <option value="unread">Ongelezen</option>
+                                            <option value="read">Gelezen</option>
+                                            <option value="in_progress">In behandeling</option>
+                                            <option value="urgent">Urgent</option>
+                                            <option value="closed">Afgehandeld</option>
+                                        </select></th>
+                                        <th><input type="text" className="form-control input-sm" value=""/></th>
+                                        <th><input type="text" className="form-control input-sm" value=""/></th>
+                                        <th><select className="form-control input-sm">
+                                            <option></option>
+                                        </select></th>
+                                    </tr>
+                                    </thead>
+                                    </table>
                                 </div>
                             </div>
                         </div>

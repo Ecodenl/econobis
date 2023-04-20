@@ -38,7 +38,7 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
     return (
         <div className="panel panel-default">
             <div className="panel-body panel-small"
-                 style={{height: "calc(100vh - 160px)", overflow: 'auto'}}>
+                 style={{height: "calc(100vh - 190px)", overflow: 'auto'}}>
                 <table className="table table-condensed table-hover table-striped col-xs-12">
                     <thead>
                     <tr className="thead-title">

@@ -27,6 +27,11 @@ class HousingFileDetailsFormUseEdit extends Component {
         } = props.housingFileDetails;
 
         this.state = {
+            pitchedRoofHeatingSelection: [],
+            flatRoofHeatingSelection: [],
+            hr3pGlassFrameCurrentGlassSelection: [],
+            glassInLeadReplaceRoomsHeatedSelection: [],
+            boilerSettingComfortHeatSelection: [],
             housingFile: {
                 id,
                 hasHoomDossierLink: hoomBuildingId != null ? true : false,
@@ -44,6 +49,44 @@ class HousingFileDetailsFormUseEdit extends Component {
                 amountElectricity: amountElectricity ? amountElectricity : '',
             },
         };
+    }
+
+    componentDidMount() {
+        HousingFileDetailsAPI.fetchHousingFileSelectionPerType('pitched-roof-heating-selection')
+            .then(payload => {
+                this.setState({ ...this.state, pitchedRoofHeatingSelection: payload });
+            })
+            .catch(error => {
+                this.setState({ ...this.state, hasError: true });
+            });
+        HousingFileDetailsAPI.fetchHousingFileSelectionPerType('flat-roof-heating-selection')
+            .then(payload => {
+                this.setState({ ...this.state, flatRoofHeatingSelection: payload });
+            })
+            .catch(error => {
+                this.setState({ ...this.state, hasError: true });
+            });
+        HousingFileDetailsAPI.fetchHousingFileSelectionPerType('hr3p-glass-frame-cCurrent-glass-selection')
+            .then(payload => {
+                this.setState({ ...this.state, hr3pGlassFrameCurrentGlassSelection: payload });
+            })
+            .catch(error => {
+                this.setState({ ...this.state, hasError: true });
+            });
+        HousingFileDetailsAPI.fetchHousingFileSelectionPerType('glass-in-lead-replace-rooms-heated-selection')
+            .then(payload => {
+                this.setState({ ...this.state, glassInLeadReplaceRoomsHeatedSelection: payload });
+            })
+            .catch(error => {
+                this.setState({ ...this.state, hasError: true });
+            });
+        HousingFileDetailsAPI.fetchHousingFileSelectionPerType('boiler-setting-comfort-heat-selection')
+            .then(payload => {
+                this.setState({ ...this.state, boilerSettingComfortHeatSelection: payload });
+            })
+            .catch(error => {
+                this.setState({ ...this.state, hasError: true });
+            });
     }
 
     handleInputChange = event => {
@@ -83,90 +126,109 @@ class HousingFileDetailsFormUseEdit extends Component {
             amountGas,
             amountElectricity,
         } = this.state.housingFile;
+        const showFields = this.props.housingFileHoomLinksToShowInEconobis;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">
-                    <InputSelect
-                        label={'Hellend dak ruimtes verwarming'}
-                        size={'col-sm-6'}
-                        name="pitchedRoofHeating"
-                        value={pitchedRoofHeating}
-                        options={this.props.pitchedRoofHeatingSelection}
-                        optionValue={'key'}
-                        onChangeAction={this.handleInputChange}
-                        readOnly={hasHoomDossierLink}
-                    />
-                    <InputSelect
-                        label={'Platte dak ruimtes verwarming'}
-                        size={'col-sm-6'}
-                        name="flatRoofHeating"
-                        value={flatRoofHeating}
-                        options={this.props.flatRoofHeatingSelection}
-                        optionValue={'key'}
-                        onChangeAction={this.handleInputChange}
-                        readOnly={hasHoomDossierLink}
-                    />
+                    {showFields.some(showField => showField.econobisFieldName === 'pitched_roof_heating') ? (
+                        <InputSelect
+                            label={'Hellend dak ruimtes verwarming'}
+                            size={'col-sm-6'}
+                            name="pitchedRoofHeating"
+                            value={pitchedRoofHeating}
+                            options={this.state.pitchedRoofHeatingSelection}
+                            optionValue={'key'}
+                            onChangeAction={this.handleInputChange}
+                            readOnly={hasHoomDossierLink}
+                        />
+                    ) : null}
+                    {showFields.some(showField => showField.econobisFieldName === 'flat_roof_heating') ? (
+                        <InputSelect
+                            label={'Platte dak ruimtes verwarming'}
+                            size={'col-sm-6'}
+                            name="flatRoofHeating"
+                            value={flatRoofHeating}
+                            options={this.state.flatRoofHeatingSelection}
+                            optionValue={'key'}
+                            onChangeAction={this.handleInputChange}
+                            readOnly={hasHoomDossierLink}
+                        />
+                    ) : null}
                 </div>
                 <div className="row">
-                    <InputSelect
-                        label={'hr3p glaslijst (huidig)'}
-                        size={'col-sm-6'}
-                        name="hr3pGlassFrameCurrentGlass"
-                        value={hr3pGlassFrameCurrentGlass}
-                        options={this.props.hr3pGlassFrameCurrentGlassSelection}
-                        optionValue={'key'}
-                        onChangeAction={this.handleInputChange}
-                        readOnly={hasHoomDossierLink}
-                    />
-                    <InputSelect
-                        label={'Kamers verwarmd (met Glas-in-lood ramen)'}
-                        size={'col-sm-6'}
-                        name="glassInLeadReplaceRoomsHeated"
-                        value={glassInLeadReplaceRoomsHeated}
-                        options={this.props.glassInLeadReplaceRoomsHeatedSelection}
-                        optionValue={'key'}
-                        onChangeAction={this.handleInputChange}
-                        readOnly={hasHoomDossierLink}
-                    />
+                    {showFields.some(showField => showField.econobisFieldName === 'hr3p_glass_frame_current_glass') ? (
+                        <InputSelect
+                            label={'hr3p glaslijst (huidig)'}
+                            size={'col-sm-6'}
+                            name="hr3pGlassFrameCurrentGlass"
+                            value={hr3pGlassFrameCurrentGlass}
+                            options={this.state.hr3pGlassFrameCurrentGlassSelection}
+                            optionValue={'key'}
+                            onChangeAction={this.handleInputChange}
+                            readOnly={hasHoomDossierLink}
+                        />
+                    ) : null}
+                    {showFields.some(
+                        showField => showField.econobisFieldName === 'glass_in_lead_replace_rooms_heated'
+                    ) ? (
+                        <InputSelect
+                            label={'Kamers verwarmd (met Glas-in-lood ramen)'}
+                            size={'col-sm-6'}
+                            name="glassInLeadReplaceRoomsHeated"
+                            value={glassInLeadReplaceRoomsHeated}
+                            options={this.state.glassInLeadReplaceRoomsHeatedSelection}
+                            optionValue={'key'}
+                            onChangeAction={this.handleInputChange}
+                            readOnly={hasHoomDossierLink}
+                        />
+                    ) : null}
                 </div>
                 <div className="row">
-                    <InputText
-                        label={'Aantal bewoners'}
-                        name={'numberOfResidents'}
-                        value={numberOfResidents}
-                        min={0}
-                        onChangeAction={this.handleInputChange}
-                        readOnly={hasHoomDossierLink}
-                    />
-                    <InputSelect
-                        label={'Stooktemperatuur'}
-                        size={'col-sm-6'}
-                        name="boilerSettingComfortHeat"
-                        value={boilerSettingComfortHeat}
-                        options={this.props.boilerSettingComfortHeatSelection}
-                        optionValue={'key'}
-                        onChangeAction={this.handleInputChange}
-                        readOnly={hasHoomDossierLink}
-                    />
+                    {showFields.some(showField => showField.econobisFieldName === 'number_of_residents') ? (
+                        <InputText
+                            label={'Aantal bewoners'}
+                            name={'numberOfResidents'}
+                            value={numberOfResidents}
+                            min={0}
+                            onChangeAction={this.handleInputChange}
+                            readOnly={hasHoomDossierLink}
+                        />
+                    ) : null}
+                    {showFields.some(showField => showField.econobisFieldName === 'boiler_setting_comfort_heat') ? (
+                        <InputSelect
+                            label={'Stooktemperatuur'}
+                            size={'col-sm-6'}
+                            name="boilerSettingComfortHeat"
+                            value={boilerSettingComfortHeat}
+                            options={this.state.boilerSettingComfortHeatSelection}
+                            optionValue={'key'}
+                            onChangeAction={this.handleInputChange}
+                            readOnly={hasHoomDossierLink}
+                        />
+                    ) : null}
                 </div>
                 <div className="row">
-                    <InputText
-                        label={'Verbruik gas'}
-                        name={'amountGas'}
-                        value={amountGas}
-                        min={0}
-                        onChangeAction={this.handleInputChange}
-                        readOnly={hasHoomDossierLink}
-                    />
-                    <InputText
-                        label={'Verbruik electriciteit'}
-                        name={'amountElectricity'}
-                        value={amountElectricity}
-                        min={0}
-                        onChangeAction={this.handleInputChange}
-                        readOnly={hasHoomDossierLink}
-                    />
+                    {showFields.some(showField => showField.econobisFieldName === 'amount_gas') ? (
+                        <InputText
+                            label={'Verbruik gas'}
+                            name={'amountGas'}
+                            value={amountGas}
+                            min={0}
+                            onChangeAction={this.handleInputChange}
+                            readOnly={hasHoomDossierLink}
+                        />
+                    ) : null}
+                    {showFields.some(showField => showField.econobisFieldName === 'amount_electricity') ? (
+                        <InputText
+                            label={'Verbruik electriciteit'}
+                            name={'amountElectricity'}
+                            value={amountElectricity}
+                            min={0}
+                            onChangeAction={this.handleInputChange}
+                            readOnly={hasHoomDossierLink}
+                        />
+                    ) : null}
                 </div>
 
                 <div className="panel-footer">
@@ -187,11 +249,7 @@ class HousingFileDetailsFormUseEdit extends Component {
 const mapStateToProps = state => {
     return {
         housingFileDetails: state.housingFileDetails,
-        pitchedRoofHeatingSelection: state.systemData.pitchedRoofHeatingSelection,
-        flatRoofHeatingSelection: state.systemData.flatRoofHeatingSelection,
-        hr3pGlassFrameCurrentGlassSelection: state.systemData.hr3pGlassFrameCurrentGlassSelection,
-        glassInLeadReplaceRoomsHeatedSelection: state.systemData.glassInLeadReplaceRoomsHeatedSelection,
-        boilerSettingComfortHeatSelection: state.systemData.boilerSettingComfortHeatSelection,
+        housingFileHoomLinksToShowInEconobis: state.systemData.housingFileHoomLinksToShowInEconobis,
     };
 };
 

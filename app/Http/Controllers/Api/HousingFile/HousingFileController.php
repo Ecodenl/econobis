@@ -10,11 +10,16 @@ namespace App\Http\Controllers\Api\HousingFile;
 
 
 use App\Eco\Campaign\Campaign;
+use App\Eco\HousingFile\BuildingType;
+use App\Eco\HousingFile\EnergyLabel;
+use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Contact\Contact;
+use App\Eco\HousingFile\HousingFileHoomHousingStatus;
 use App\Eco\HousingFile\HousingFileHousingStatus;
 use App\Eco\HousingFile\HousingFileSpecification;
 use App\Eco\HousingFile\HousingFileSpecificationStatus;
+use App\Eco\HousingFile\RoofType;
 use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakeSource;
 use App\Eco\Intake\IntakeStatus;
@@ -31,6 +36,7 @@ use App\Http\Resources\HousingFile\FullHousingFileHousingStatus;
 use App\Http\Resources\HousingFile\FullHousingFileSpecification;
 use App\Http\Resources\HousingFile\GridHousingFile;
 use App\Http\Resources\HousingFile\HousingFilePeek;
+use App\Http\Resources\HousingFile\HousingFileSelectionPeek;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -428,6 +434,59 @@ class HousingFileController extends ApiController
         }
 
         return HousingFilePeek::collection($housingFiles);
+    }
+    public function buildingTypesPeek()
+    {
+        return HousingFileSelectionPeek::collection(BuildingType::orderBy('order')->get());
+    }
+    public function roofTypesPeek()
+    {
+        return HousingFileSelectionPeek::collection(RoofType::orderBy('order')->get());
+    }
+    public function energyLabelsPeek()
+    {
+        return HousingFileSelectionPeek::collection(EnergyLabel::orderBy('order')->get());
+    }
+    public function energyLabelStatusPeek()
+    {
+        return HousingFileSelectionPeek::collection(EnergyLabelStatus::orderBy('id')->get());
+    }
+    public function frameTypeSelectionPeek()
+    {
+        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'frame-type')->get());
+    }
+    public function cookTypeSelectionPeek()
+    {
+        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'cook-type')->get());
+    }
+    public function heatSourceSelectionPeek()
+    {
+        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'heat-source')->get());
+    }
+    public function waterComfortSelectionPeek()
+    {
+        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'water-comfort')->get());
+    }
+
+    public function pitchedRoofHeatingSelectionPeek()
+    {
+        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'pitched-roof-heating')->get());
+    }
+    public function flatRoofHeatingSelectionPeek()
+    {
+        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'flat-roof-heating')->get());
+    }
+    public function hr3pGlassFrameCurrentGlassSelectionPeek()
+    {
+        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'hr3p-glass-frame-current-glass')->get());
+    }
+    public function glassInLeadReplaceRoomsHeatedSelectionPeek()
+    {
+        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'glass-in-lead-replace-rooms-heated')->get());
+    }
+    public function boilerSettingComfortHeatSelectionPeek()
+    {
+        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'boiler-setting-comfort-heat')->get());
     }
 
     public function getAmountOfActiveHousingFiles(){

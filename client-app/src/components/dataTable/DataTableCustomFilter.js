@@ -7,11 +7,13 @@ import DataTableCustomFilterSelectNumberOrString from './DataTableCustomFilterSe
 import DataTableCustomFilterSelectDropdown from './DataTableCustomFilterSelectDropdown';
 import DataTableCustomFilterSelectDate from './DataTableCustomFilterSelectDate';
 import DataTableCustomFilterSelectBoolean from './DataTableCustomFilterSelectBoolean';
+import DataTableCustomFilterSelectDropdownHas from './DataTableCustomFilterSelectDropdownHas';
+import DataTableCustomFilterSelectDropdownRelations from './DataTableCustomFilterSelectDropdownRelations';
+import DataTableCustomFilterSelectDropdownHousingFileFields from './DataTableCustomFilterSelectDropdownHousingFileFields';
+import DataTableCustomFilterHousingFileFields from './DataTableCustomFilterHousingFileFields';
 
 import moment from 'moment';
 import DataTableDateFilter from './DataTableDateFilter';
-import DataTableCustomFilterSelectDropdownHas from './DataTableCustomFilterSelectDropdownHas';
-import DataTableCustomFilterSelectDropdownRelations from './DataTableCustomFilterSelectDropdownRelations';
 
 import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
@@ -27,6 +29,14 @@ const DataTableCustomFilter = props => {
     };
 
     const handleInputChange = event => {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+
+        props.handleFilterValueChange(name, value, props.filterNumber);
+    };
+
+    const handleInputChangeHousingFileFields = event => {
         const target = event.target;
         const value = target.value;
         const name = target.name;
@@ -56,6 +66,7 @@ const DataTableCustomFilter = props => {
         )
             return;
         if (key === 'intakeDateStart' || key === 'intakeDateFinish' || key === 'intakeStatus') return;
+        if (key === 'housingFileFieldValue') return;
         if (props.contactType === 'organisation' && key === 'portalUser') return;
 
         return (
@@ -72,6 +83,7 @@ const DataTableCustomFilter = props => {
         field == 'opportunityEvaluationRealised' ||
         field == 'opportunityCampaign';
     const isCustomIntakeField = field == 'intakeDateStart' || field == 'intakeDateFinish' || field == 'intakeStatus';
+    const isCustomHousingFileField = field == 'housingFileFieldValue';
     const fieldType = props.fields[props.filter.field].type;
     const optionName = props.fields[props.filter.field].optionName
         ? props.fields[props.filter.field].optionName
@@ -80,7 +92,7 @@ const DataTableCustomFilter = props => {
     return (
         <tr>
             <td className="col-md-4">
-                {isCustomProductField || isCustomOpportunityField || isCustomIntakeField ? (
+                {isCustomProductField || isCustomOpportunityField || isCustomIntakeField || isCustomHousingFileField ? (
                     <select disabled={true} className="form-control input-sm" name={'field'} value={field}>
                         <option key={0} value={field}>
                             {fields[field].name}
@@ -143,6 +155,20 @@ const DataTableCustomFilter = props => {
                 )}
                 {fieldType === 'dropdownHas' && (
                     <DataTableCustomFilterSelectDropdownHas
+                        handleInputChange={handleInputChange}
+                        type={type}
+                        readOnly={props.filter.readOnly}
+                    />
+                )}
+                {fieldType === 'dropdownHousingFileFields' && (
+                    <DataTableCustomFilterSelectDropdownHousingFileFields
+                        handleInputChange={handleInputChange}
+                        type={type}
+                        readOnly={props.filter.readOnly}
+                    />
+                )}
+                {fieldType === 'housingFileFields' && (
+                    <DataTableCustomFilterHousingFileFields
                         handleInputChange={handleInputChange}
                         type={type}
                         readOnly={props.filter.readOnly}
@@ -218,6 +244,24 @@ const DataTableCustomFilter = props => {
                                 })}
                             </select>
                         )}
+                        {fieldType === 'dropdownHousingFileFields' && (
+                            <select
+                                className={`form-control input-sm`}
+                                id="data"
+                                name="data"
+                                value={props.filter.data}
+                                onChange={handleInputChange}
+                                disabled={props.filter.readOnly}
+                            >
+                                {props.fields[props.filter.field].dropDownOptions.map(option => {
+                                    return (
+                                        <option key={option.id} value={option.id}>
+                                            {option[optionName]}
+                                        </option>
+                                    );
+                                })}
+                            </select>
+                        )}
                         {fieldType === 'dropdownRelations' && (
                             <select
                                 className={`form-control input-sm`}
@@ -242,6 +286,17 @@ const DataTableCustomFilter = props => {
                                 id="data"
                                 value={props.filter.data}
                                 onChangeAction={handleInputChangeDate}
+                                readOnly={props.filter.readOnly}
+                            />
+                        )}
+                        {fieldType === 'housingFileFields' && (
+                            <input
+                                className={'form-control input-sm'}
+                                type="text"
+                                id="data"
+                                name="data"
+                                value={props.filter.data}
+                                onChange={handleInputChange}
                                 readOnly={props.filter.readOnly}
                             />
                         )}

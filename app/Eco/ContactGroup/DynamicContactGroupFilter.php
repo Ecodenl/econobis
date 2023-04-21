@@ -35,7 +35,7 @@ class DynamicContactGroupFilter extends Model
             if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $this->data))  return Carbon::parse($this->data)->format('d-m-Y');
 
             // Booleans omzetten
-            $yesNoFields = ['didAcceptAgreement', 'didAgreeAvg', 'portalUser', 'housingFile'];
+            $yesNoFields = ['didAcceptAgreement', 'didAgreeAvg', 'portalUser', 'housingFileExists'];
             if (in_array($this->field, $yesNoFields)) return $this->data ? 'Ja' : 'Nee';
 
             // opportunityMeasureCategory omzetten
@@ -100,6 +100,15 @@ class DynamicContactGroupFilter extends Model
                 if($this->data){
                     return OrderStatus::get($this->data)->name;
                 }
+                return '';
+            }
+            // housingFileFieldName omzetten
+            if ($this->field == 'housingFileFieldName'){
+                console.log('hier housingFileFieldName extrafilter omzetten');
+//                if($this->data){
+//                    $measureCategory = MeasureCategory::find($this->data);
+//                    return $measureCategory ? $measureCategory->name : ''   ;
+//                }
                 return '';
             }
 

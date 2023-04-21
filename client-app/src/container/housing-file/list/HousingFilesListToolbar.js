@@ -11,7 +11,8 @@ const HousingFilesListToolbar = props => {
             <div className="col-md-4">
                 <div className="btn-group" role="group">
                     <ButtonIcon iconName={'refresh'} onClickAction={props.resetHousingFileFilters} />
-                    <ButtonIcon iconName={'download'} onClickAction={props.getExcel} />
+                    <ButtonIcon iconName={'download'} onClickAction={props.getExcel} title={'Download woningdossiers'}/>
+                    <ButtonIcon iconName={'download'} onClickAction={props.getExcelSpecifications} title={'Download woningdossiers specificaties'} />
                 </div>
             </div>
             <div className="col-md-4">

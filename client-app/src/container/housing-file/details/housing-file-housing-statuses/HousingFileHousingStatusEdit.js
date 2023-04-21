@@ -108,7 +108,7 @@ class HousingFileHousingStatusEdit extends Component {
                                 label={'Kenmerk'}
                                 name={'housingFileHoomLinksId'}
                                 value={housingFileHoomLinkId}
-                                options={this.props.housingFileHoomLinks}
+                                options={this.props.housingFileHoomLinksStatus}
                                 optionValue={'key'}
                                 onChangeAction={this.handleHousingFileHoomLinksChange}
                                 readOnly={true}
@@ -149,7 +149,7 @@ class HousingFileHousingStatusEdit extends Component {
 const mapStateToProps = state => {
     return {
         housingFileId: state.housingFileDetails.id,
-        housingFileHoomLinks: state.systemData.housingFileHoomLinks,
+        housingFileHoomLinksStatus: state.systemData.housingFileHoomLinksStatus,
         currentWallInsulationSelection: state.systemData.currentWallInsulationSelection,
         currentFloorInsulationSelection: state.systemData.currentFloorInsulationSelection,
         currentRoofInsulationSelection: state.systemData.currentRoofInsulationSelection,

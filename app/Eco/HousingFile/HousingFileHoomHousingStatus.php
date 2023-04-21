@@ -16,4 +16,9 @@ class HousingFileHoomHousingStatus extends Model
         'id'
     ];
 
+// todo WM: cleanup indien niet nodig
+//    public function housingFileHoomLink(){
+//        return $this->belongsTo(HousingFileHoomLink::class, 'external_hoom_short_name', 'external_hoom_short_name');
+//    }
+
 }

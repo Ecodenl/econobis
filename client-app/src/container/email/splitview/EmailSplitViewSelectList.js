@@ -20,6 +20,8 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
     }
 
     const selectEmail = (email) => {
+        localStorage.setItem('lastOpenedEmailId', email.id);
+
         setSelectedEmailId(email.id);
     }
 
@@ -32,7 +34,9 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
             return;
         }
 
-        selectEmail(emails[0]);
+        let lastOpenedEmailIndex = emails.findIndex(email => email.id === parseInt(localStorage.getItem('lastOpenedEmailId')));
+
+        selectEmail(emails[lastOpenedEmailIndex === -1 ? 0 : lastOpenedEmailIndex]);
     }, [emails]);
 
     return (

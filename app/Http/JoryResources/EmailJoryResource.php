@@ -52,5 +52,12 @@ class EmailJoryResource extends JoryResource
         $this->field('task_id')->filterable()->sortable();
         $this->field('to')->filterable()->sortable();
         $this->field('updated_at')->filterable()->sortable();
+
+        $this->filter('contacts.full_name');
+        $this->filter('mailbox.name');
+        $this->filter('responsibleUser.first_name');
+        $this->filter('responsibleUser.last_name');
+        $this->filter('responsibleTeam.name');
+        $this->filter('attachmentsWithoutCids.id');
     }
 }

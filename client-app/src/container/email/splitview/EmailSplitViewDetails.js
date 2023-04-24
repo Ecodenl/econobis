@@ -36,7 +36,7 @@ export default function EmailSplitViewDetails({emailId, updatedEmailHandler}) {
 
     if (isLoading || !email) {
         return (
-            <div>Laden...</div>
+            <></>
         )
     }
 

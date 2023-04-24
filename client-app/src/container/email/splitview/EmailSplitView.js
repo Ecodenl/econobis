@@ -2,23 +2,43 @@ import React, {useEffect, useState} from 'react';
 import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
 import EmailSplitViewDetails from "./EmailSplitViewDetails";
 import EmailSplitViewSelectList from "./EmailSplitViewSelectList";
+import EmailSplitViewFiltersPanel from "./EmailSplitViewFiltersPanel";
+import {getJoryFilter, storeFiltersToStorage, getFiltersFromStorage} from "./EmailFilterHelpers";
 
 export default function EmailSplitView({router}) {
     const perPage = 50;
     const [emails, setEmails] = useState([]);
-    const [emailCount, setEmailCount] = useState([]);
+    const [emailCount, setEmailCount] = useState(0);
     const [selectedEmailId, setSelectedEmailId] = useState(null);
+    const [filters, setFilters] = useState({});
 
     useEffect(() => {
-        reset();
+        setFilters({...getFiltersFromStorage(), fetch: true});
     }, [router.params.folder]);
 
-    const reset = () => {
-        setEmails([]);
-        setEmailCount(0);
-        setSelectedEmailId(null);
-        fetchMoreEmails();
-    }
+    useEffect(() => {
+        /**
+         * We willen niet bij elke letter die je typt de lijst opnieuw ophalen.
+         * Daarom zetten we een fetch flag die we op true zetten als je op enter drukt of een select optie selecteert.
+         */
+        if(!filters.fetch) {
+            return;
+        }
+
+        setFilters({...filters, fetch: false});
+
+        storeFiltersToStorage(filters);
+
+        EmailSplitviewAPI.fetchSelectList({
+            filter: getFilter(),
+            limit: perPage,
+            offset: 0,
+            sorts: getSorts(),
+        }).then(response => {
+            setEmails(response.data.items);
+            setEmailCount(response.data.total);
+        });
+    }, [filters.fetch]);
 
     const fetchMoreEmails = () => {
         return EmailSplitviewAPI.fetchSelectList({
@@ -57,72 +77,26 @@ export default function EmailSplitView({router}) {
     }
 
     const getFilter = () => {
-        return {
-            and: [
-                {
-                    f: 'folder',
-                    d: router.params.folder,
-                }
-            ]
-        }
+        return getJoryFilter(filters, router.params.folder);
     }
 
     const getSorts = () => {
         return ['-dateSent'];
     }
 
+    const handleFilterKeyUp = e => {
+        if (e.keyCode === 13) {
+            setFilters({...filters, fetch: true})
+        }
+    };
+
     return (
         <div>
             <div className="row">
                 <div className="col-md-12" style={{marginTop: '-10px'}}>
-                    <div className="panel panel-default">
-                        <div className="panel-body panel-small">
-                            <div className="row">
-                                <div className="col-md-12">
-                                    <table className="table table-condensed table-hover table-striped col-xs-12" style={{marginBottom: '0px'}}>
-                                    <thead>
-                                    <tr className="thead-title">
-                                        <th className="" width="10%">Van e-mail</th>
-                                        <th className="" width="10%">Gekoppeld contact</th>
-                                        <th className="" width="15%">Onderwerp</th>
-                                        <th className="" width="10%">Datum</th>
-                                        <th className="" width="15%">Mailbox</th>
-                                        <th className="" width="10%">Status</th>
-                                        <th className="" width="10%">Verantwoordelijke</th>
-                                        <th className="" width="10%">Aan</th>
-                                        <th className="" width="5%">Bijlage</th>
-                                    </tr>
-                                    <tr className="thead-filter">
-                                        <th className="DayPicker-overflow ">
-                                            <div className="DayPickerInput"><input placeholder=""
-                                                                                   className="form-control input-sm"
-                                                                                   value=""/></div>
-                                        </th>
-                                        <th><input type="text" className="form-control input-sm" value=""/></th>
-                                        <th><input type="text" className="form-control input-sm" value=""/></th>
-                                        <th><input type="text" className="form-control input-sm" value=""/></th>
-                                        <th><input type="text" className="form-control input-sm" value=""/></th>
-                                        <th><select className="form-control input-sm">
-                                            <option></option>
-                                            <option value="null">Geen status</option>
-                                            <option value="unread">Ongelezen</option>
-                                            <option value="read">Gelezen</option>
-                                            <option value="in_progress">In behandeling</option>
-                                            <option value="urgent">Urgent</option>
-                                            <option value="closed">Afgehandeld</option>
-                                        </select></th>
-                                        <th><input type="text" className="form-control input-sm" value=""/></th>
-                                        <th><input type="text" className="form-control input-sm" value=""/></th>
-                                        <th><select className="form-control input-sm">
-                                            <option></option>
-                                        </select></th>
-                                    </tr>
-                                    </thead>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <form onKeyUp={handleFilterKeyUp}>
+                        <EmailSplitViewFiltersPanel filters={filters} setFilters={setFilters}/>
+                    </form>
                 </div>
             </div>
             <div className="row">

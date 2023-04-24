@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "613e7d89eb8df11892100e21093ad8c2",
+    "content-hash": "9423ad894ec0d9f4bf068375dffd695a",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1194,6 +1194,49 @@
                 }
             ],
             "time": "2022-09-10T18:51:20+00:00"
+        },
+        {
+            "name": "ecodenl/lvbag-php-wrapper",
+            "version": "v2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Ecodenl/lvbag-php-wrapper.git",
+                "reference": "2238737b593ad0f6460746f1e89e2d3d035dcc3c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Ecodenl/lvbag-php-wrapper/zipball/2238737b593ad0f6460746f1e89e2d3d035dcc3c",
+                "reference": "2238737b593ad0f6460746f1e89e2d3d035dcc3c",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.3.1|^7.4.5",
+                "php": "^7.4.0|^8.0",
+                "psr/log": "^1.1.4|^3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Ecodenl\\LvbagPhpWrapper\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Bodhi Looij",
+                    "email": "b.looij@wedesignit.nl",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP Wrapper for the LVBAG API ",
+            "support": {
+                "issues": "https://github.com/Ecodenl/lvbag-php-wrapper/issues",
+                "source": "https://github.com/Ecodenl/lvbag-php-wrapper/tree/v2.1.0"
+            },
+            "time": "2023-02-13T13:52:22+00:00"
         },
         {
             "name": "ecodenl/pico-wrapper",

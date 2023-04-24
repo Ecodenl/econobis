@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Icon from "react-icons-kit";
 import {mailReply} from 'react-icons-kit/fa/mailReply';
 import {mailReplyAll} from 'react-icons-kit/fa/mailReplyAll';
@@ -11,9 +11,11 @@ import InputSelectGroup from "../../../components/form/InputSelectGroup";
 import InputSelect from "../../../components/form/InputSelect";
 
 export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttributes}) {
+    const defaultCcDisplayLimit = 2;
     const statusses = useSelector((state) => state.systemData.emailStatuses);
     const teams = useSelector((state) => state.systemData.teams);
     const users = useSelector((state) => state.systemData.users);
+    const [ccDisplayLimit, setCcDisplayLimit] = useState(defaultCcDisplayLimit);
 
     const setResonsibleValue = (val) => {
         let values = {
@@ -105,33 +107,6 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                     </div>
                 </div>
                 <div className="row" style={{marginTop: '12px'}}>
-                    <InputSelect
-                        label={'Status'}
-                        size={'col-sm-6'}
-                        name={'status'}
-                        options={statusses}
-                        value={email.status}
-                        onChangeAction={(e) => updateEmailAttributes({status: e.target.value})}
-                        emptyOption={false}
-                    />
-                    <InputSelectGroup
-                        label={'Verantwoordelijke'}
-                        size={'col-sm-6'}
-                        name={'responsible'}
-                        optionsInGroups={[
-                            {
-                                name: 'user',
-                                label: 'Gebruikers',
-                                options: users,
-                                optionName: 'fullName',
-                            },
-                            {name: 'team', label: 'Teams', options: teams},
-                        ]}
-                        value={getResponsibleValue()}
-                        onChangeAction={(e) => setResonsibleValue(e.target.value)}
-                    />
-                </div>
-                <div className="row">
                     <div className="col-sm-6">
                         <label className="col-sm-6">Gekoppeld contact</label>
                         <div className="col-sm-6">
@@ -150,20 +125,78 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                             }
                         </div>
                     </div>
+                    <InputSelect
+                        label={'Status'}
+                        size={'col-sm-6'}
+                        name={'status'}
+                        options={statusses}
+                        value={email.status}
+                        onChangeAction={(e) => updateEmailAttributes({status: e.target.value})}
+                        emptyOption={false}
+                    />
+                </div>
+                <div className="row">
                     <div className="col-sm-6">
                         <label className="col-sm-6">CC</label>
                         <div className="col-sm-6">
                             {
-                                email.ccAddresses.map(cc => {
+                                [...email.ccAddresses].splice(0, ccDisplayLimit).map((cc, index) => {
                                     return (
                                         <span key={cc.id}>
-                                        {cc.name}<br/>
+                                            {
+                                                index > 0 && (
+                                                    <span>, </span>
+                                                )
+                                            }
+                                            {cc.name}
                                         </span>
                                     )
                                 })
                             }
+                            {
+                                email.ccAddresses.length > ccDisplayLimit && (
+                                    <>
+                                        <br/>
+                                        <a href="#" onClick={(e) => {
+                                            e.preventDefault();
+                                            setCcDisplayLimit(email.ccAddresses.length)
+                                        }}>
+                                            {email.ccAddresses.length - ccDisplayLimit} meer...
+                                        </a>
+                                    </>
+                                )
+                            }
+                            {
+                                ccDisplayLimit > defaultCcDisplayLimit && (
+                                    <>
+                                        <br/>
+                                        <a href="#" onClick={(e) => {
+                                            e.preventDefault();
+                                            setCcDisplayLimit(defaultCcDisplayLimit)
+                                        }}>
+                                            verbergen
+                                        </a>
+                                    </>
+                                )
+                            }
                         </div>
                     </div>
+                    <InputSelectGroup
+                        label={'Verantwoordelijke'}
+                        size={'col-sm-6'}
+                        name={'responsible'}
+                        optionsInGroups={[
+                            {
+                                name: 'user',
+                                label: 'Gebruikers',
+                                options: users,
+                                optionName: 'fullName',
+                            },
+                            {name: 'team', label: 'Teams', options: teams},
+                        ]}
+                        value={getResponsibleValue()}
+                        onChangeAction={(e) => setResonsibleValue(e.target.value)}
+                    />
                 </div>
             </div>
         </div>

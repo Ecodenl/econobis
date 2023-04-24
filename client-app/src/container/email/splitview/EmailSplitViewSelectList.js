@@ -71,11 +71,14 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
                                             alignItems: 'end',
                                         }}>
                                             <span style={{fontSize: '12px'}}>{email.date && moment(email.date).format('DD-MM-YYYY HH:mm')}</span>
-                                            {
-                                                email.hasAttachmentsWithoutCids && (
-                                                    <Icon icon={paperclip} size={18}/>
-                                                )
-                                            }
+                                            <div>
+                                                <span style={{color: '#999'}}>{email.responsibleName}</span>
+                                                {
+                                                    email.hasAttachmentsWithoutCids && (
+                                                        <Icon icon={paperclip} size={18}/>
+                                                    )
+                                                }
+                                            </div>
                                         </div>
                                     </div>
                                 </td>

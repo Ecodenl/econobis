@@ -24,7 +24,11 @@ class EmailSplitviewController extends Controller
             ->getJoryBuilder()
             ->buildQuery();
 
-        $mails = $query->with('attachmentsWithoutCids')->get();
+        $mails = $query->with([
+            'attachmentsWithoutCids',
+            'responsibleUser',
+            'responsibleTeam',
+        ])->get();
 
         return response()->json([
             'items' => $mails->map(function (Email $mail) {
@@ -35,6 +39,7 @@ class EmailSplitviewController extends Controller
                     'subject' => $mail->subject,
                     'status' => $mail->status,
                     'hasAttachmentsWithoutCids' => $mail->attachmentsWithoutCids->isNotEmpty(),
+                    'responsibleName' => $mail->getResponsibleName(),
                 ];
             }),
             'total' => $query->count()

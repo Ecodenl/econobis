@@ -180,4 +180,17 @@ class Email extends Model
             'name' => $idOrEmailAddress,
         ];
     }
+
+    public function getResponsibleName()
+    {
+        if ($this->responsibleUser) {
+            return $this->responsibleUser->present()->fullName();
+        }
+
+        if ($this->responsibleTeam) {
+            return $this->responsibleTeam->name;
+        }
+
+        return null;
+    }
 }

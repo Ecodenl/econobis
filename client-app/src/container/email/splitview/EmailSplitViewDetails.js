@@ -3,7 +3,7 @@ import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
 import EmailSplitViewDetailsHeaderPanel from "./EmailSplitViewDetailsHeaderPanel";
 import EmailSplitViewDetailsAttachmentsPanel from "./EmailSplitViewDetailsAttachmentsPanel";
 
-export default function EmailSplitViewDetails({emailId}) {
+export default function EmailSplitViewDetails({emailId, updatedEmailHandler}) {
     const [email, setEmail] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -29,7 +29,9 @@ export default function EmailSplitViewDetails({emailId}) {
             ...attributes,
         });
 
-        EmailSplitviewAPI.update(emailId, attributes);
+        EmailSplitviewAPI.update(emailId, attributes).then(() => {
+            updatedEmailHandler();
+        });
     }
 
     if (isLoading || !email) {

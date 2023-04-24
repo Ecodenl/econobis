@@ -32,6 +32,18 @@ export default function EmailSplitView({router}) {
         });
     }
 
+    const refetchCurrentEmails = () => {
+        return EmailSplitviewAPI.fetchSelectList({
+            filter: getFilter(),
+            limit: emails.length,
+            offset: 0,
+            sorts: getSorts(),
+        }).then(response => {
+            setEmails(response.data.items)
+            setEmailCount(response.data.total);
+        });
+    }
+
     const updateEmailAttributes = (emailId, attributes) => {
         const newEmails = emails.map(email => {
             if (email.id === emailId) {
@@ -126,7 +138,7 @@ export default function EmailSplitView({router}) {
                     />
                 </div>
                 <div className="col-md-8 margin-10-top">
-                    <EmailSplitViewDetails emailId={selectedEmailId}/>
+                    <EmailSplitViewDetails emailId={selectedEmailId} updatedEmailHandler={refetchCurrentEmails}/>
                 </div>
             </div>
         </div>

@@ -83,6 +83,7 @@ Route::namespace('Api')
         Route::get('/housing-file/grid', 'HousingFile\HousingFileController@grid');
         Route::get('/housing-file/peek', 'HousingFile\HousingFileController@peek');
         Route::get('/housing-file/excel', 'HousingFile\HousingFileController@excel');
+        Route::get('/housing-file/excelspecifications', 'HousingFile\HousingFileController@excelspecifications');
         Route::get('/contact/{contact}/housing-file', 'HousingFile\HousingFileController@getStore');
         Route::post('/contact/housing-file', 'HousingFile\HousingFileController@store');
         Route::get('/housing-file/{housingFile}', 'HousingFile\HousingFileController@show');

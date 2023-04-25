@@ -23,6 +23,7 @@ use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Helpers\Delete\Models\DeleteHousingFile;
 use App\Helpers\Excel\HousingFileExcelHelper;
+use App\Helpers\Excel\HousingFileExcelspecificationsHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\HousingFile\Grid\RequestQuery;
@@ -112,6 +113,16 @@ class HousingFileController extends ApiController
         $housingFileExcelHelper = new HousingFileExcelHelper($housingFiles);
 
         return $housingFileExcelHelper->downloadExcel();
+    }
+
+    public function excelspecifications(RequestQuery $requestQuery)
+    {
+        set_time_limit(0);
+        $housingFiles = $requestQuery->getQueryNoPagination()->get();
+
+        $housingFileExcelspecificationsHelper = new HousingFileExcelspecificationsHelper($housingFiles);
+
+        return $housingFileExcelspecificationsHelper->downloadExcel();
     }
 
     public function store(Request $request, RequestInput $requestInput)

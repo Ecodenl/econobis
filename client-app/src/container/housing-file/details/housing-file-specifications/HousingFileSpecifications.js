@@ -117,6 +117,9 @@ class HousingFileSpecifications extends Component {
                     )}
                 </PanelHeader>
                 <PanelBody>
+                    <div className="col-md-12 margin-10-top">
+                        {this.state.showNew && <HousingFileSpecificationNew toggleShowNew={this.toggleShowNew} />}
+                    </div>
                     <div className="col-md-12">
                         <HousingFileSpecificationList
                             showCheckboxList={this.state.showCheckboxList}
@@ -124,9 +127,6 @@ class HousingFileSpecifications extends Component {
                             toggleSpecificationCheck={this.toggleSpecificationCheck}
                             specificationIds={this.state.specificationIds}
                         />
-                    </div>
-                    <div className="col-md-12 margin-10-top">
-                        {this.state.showNew && <HousingFileSpecificationNew toggleShowNew={this.toggleShowNew} />}
                     </div>
 
                     {this.state.showCreateOpportunitiesFromSpecifications && (

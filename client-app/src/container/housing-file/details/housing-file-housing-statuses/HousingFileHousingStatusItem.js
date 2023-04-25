@@ -5,6 +5,7 @@ import HousingFileHousingStatusView from './HousingFileHousingStatusView';
 // import HousingFileHousingStatusDelete from './HousingFileHousingStatusDelete';
 import HousingFileHousingStatusEdit from './HousingFileHousingStatusEdit';
 import { isEqual } from 'lodash';
+import HousingFileHousingStatusDelete from './HousingFileHousingStatusDelete';
 
 class HousingFileHousingStatusItem extends Component {
     constructor(props) {
@@ -91,12 +92,12 @@ class HousingFileHousingStatusItem extends Component {
                         closeEdit={this.closeEdit}
                     />
                 )}
-                {/*{this.state.showDelete && (*/}
-                {/*    <HousingFileHousingStatusDelete*/}
-                {/*        closeDeleteItemModal={this.toggleDelete}*/}
-                {/*        {...this.props.housingFileHousingStatus}*/}
-                {/*    />*/}
-                {/*)}*/}
+                {this.state.showDelete && (
+                    <HousingFileHousingStatusDelete
+                        closeDeleteItemModal={this.toggleDelete}
+                        {...this.props.housingFileHousingStatus}
+                    />
+                )}
             </div>
         );
     }

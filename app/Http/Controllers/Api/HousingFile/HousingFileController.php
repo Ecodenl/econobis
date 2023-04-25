@@ -23,10 +23,12 @@ use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Helpers\Delete\Models\DeleteHousingFile;
 use App\Helpers\Excel\HousingFileExcelHelper;
+use App\Helpers\Excel\HousingFileExcelspecificationsHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\HousingFile\Grid\RequestQuery;
 use App\Http\Resources\HousingFile\FullHousingFile;
+use App\Http\Resources\HousingFile\FullHousingFileHousingStatus;
 use App\Http\Resources\HousingFile\FullHousingFileSpecification;
 use App\Http\Resources\HousingFile\GridHousingFile;
 use App\Http\Resources\HousingFile\HousingFilePeek;
@@ -113,6 +115,16 @@ class HousingFileController extends ApiController
         return $housingFileExcelHelper->downloadExcel();
     }
 
+    public function excelspecifications(RequestQuery $requestQuery)
+    {
+        set_time_limit(0);
+        $housingFiles = $requestQuery->getQueryNoPagination()->get();
+
+        $housingFileExcelspecificationsHelper = new HousingFileExcelspecificationsHelper($housingFiles);
+
+        return $housingFileExcelspecificationsHelper->downloadExcel();
+    }
+
     public function store(Request $request, RequestInput $requestInput)
     {
         $this->authorize('manage', HousingFile::class);
@@ -129,6 +141,7 @@ class HousingFileController extends ApiController
             ->boolean('isMonument')->validate('boolean')->alias('is_monument')->whenMissing(false)->next()
             ->integer('revenueSolarPanels')->validate('integer')->onEmpty(0)->whenMissing(0)->alias('revenue_solar_panels')->next()
             ->string('remark')->validate('string')->onEmpty('')->whenMissing('')->alias('remark')->next()
+            ->string('remarkCoach')->validate('string')->onEmpty('')->whenMissing('')->alias('remark_coach')->next()
             ->integer('hoomBuildingId')->validate('integer')->onEmpty(null)->whenMissing(null)->alias('hoom_building_id')->next()
             ->string('wallSurface')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('wall_surface')->next()
             ->string('totalWindowSurface')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('total_window_surface')->next()
@@ -173,6 +186,7 @@ class HousingFileController extends ApiController
             ->boolean('isMonument')->validate('boolean')->alias('is_monument')->whenMissing(false)->next()
             ->integer('revenueSolarPanels')->validate('integer')->onEmpty(0)->whenMissing(0)->alias('revenue_solar_panels')->next()
             ->string('remark')->validate('string')->onEmpty('')->whenMissing('')->alias('remark')->next()
+            ->string('remarkCoach')->validate('string')->onEmpty('')->whenMissing('')->alias('remark_coach')->next()
 //            ->integer('hoomBuildingId')->validate('integer')->onEmpty(0)->whenMissing(0)->alias('hoom_building_id')->next()
             ->string('wallSurface')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('wall_surface')->next()
             ->string('totalWindowSurface')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('total_window_surface')->next()

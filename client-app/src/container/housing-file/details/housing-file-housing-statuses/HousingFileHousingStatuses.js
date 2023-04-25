@@ -7,6 +7,9 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import { connect } from 'react-redux';
 
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
+
 class HousingFileHousingStatuses extends Component {
     constructor(props) {
         super(props);
@@ -23,24 +26,26 @@ class HousingFileHousingStatuses extends Component {
     };
 
     render() {
+        const hasHoomDossierLink = this.props.housingFileDetails.hoomBuildingId != null ? true : false;
+
         return (
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Woningstatus</span>
-                    {/*todo WM: new housingfile housingstatus*/}
-                    {/*todo WM: glyphicon aanpassen in master-release-440*/}
-                    {/*{this.props.permissions.manageHousingFile && (*/}
-                    {/*    <a role="button" className="pull-right" onClick={this.toggleShowNew}>*/}
-                    {/*        <span className="glyphicon glyphicon-plus" />*/}
-                    {/*    </a>*/}
-                    {/*)}*/}
+                    {!hasHoomDossierLink && this.props.permissions.manageHousingFile && (
+                        <a role="button" className="pull-right" onClick={this.toggleShowNew}>
+                            <Icon size={14} icon={plus} />
+                        </a>
+                    )}
                 </PanelHeader>
                 <PanelBody>
+                    <div className="col-md-12 margin-10-top">
+                        {!hasHoomDossierLink && this.state.showNew && (
+                            <HousingFileHousingStatusNew toggleShowNew={this.toggleShowNew} />
+                        )}
+                    </div>
                     <div className="col-md-12">
                         <HousingFileHousingStatusList />
-                    </div>
-                    <div className="col-md-12 margin-10-top">
-                        {this.state.showNew && <HousingFileHousingStatusNew toggleShowNew={this.toggleShowNew} />}
                     </div>
                 </PanelBody>
             </Panel>
@@ -50,6 +55,7 @@ class HousingFileHousingStatuses extends Component {
 
 const mapStateToProps = state => {
     return {
+        housingFileDetails: state.housingFileDetails,
         permissions: state.meDetails.permissions,
     };
 };

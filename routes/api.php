@@ -83,6 +83,7 @@ Route::namespace('Api')
         Route::get('/housing-file/grid', 'HousingFile\HousingFileController@grid');
         Route::get('/housing-file/peek', 'HousingFile\HousingFileController@peek');
         Route::get('/housing-file/excel', 'HousingFile\HousingFileController@excel');
+        Route::get('/housing-file/excelspecifications', 'HousingFile\HousingFileController@excelspecifications');
         Route::get('/contact/{contact}/housing-file', 'HousingFile\HousingFileController@getStore');
         Route::post('/contact/housing-file', 'HousingFile\HousingFileController@store');
         Route::get('/housing-file/{housingFile}', 'HousingFile\HousingFileController@show');
@@ -94,6 +95,9 @@ Route::namespace('Api')
         Route::post('/housing-file/housing-file-specification', 'HousingFile\HousingFileController@addHousingFileSpecification');
         Route::post('/housing-file/housing-file-specification/{housingFileSpecification}/update', 'HousingFile\HousingFileController@updateHousingFileSpecification');
         Route::post('/housing-file/housing-file-specification/{housingFileSpecification}/delete', 'HousingFile\HousingFileController@deleteHousingFileSpecification');
+        Route::post('/housing-file/housing-file-housing-status', 'HousingFile\HousingFileController@addHousingFileHousingStatus');
+        Route::post('/housing-file/housing-file-housing-status/{housingFileHousingStatus}/update', 'HousingFile\HousingFileController@updateHousingFileHousingStatus');
+        Route::post('/housing-file/housing-file-housing-status/{housingFileHousingStatus}/delete', 'HousingFile\HousingFileController@deleteHousingFileHousingStatus');
 
         Route::get('/housing-file/{housingFile}/notes', 'HousingFile\HousingFileController@notes');
         Route::get('/housing-file/{housingFile}/documents', 'HousingFile\HousingFileController@documents');
@@ -402,6 +406,7 @@ Route::namespace('Api')
         Route::get('project/participant/excel', 'ParticipationProject\ParticipationProjectController@excel');
         Route::get('project/participant/excelParticipants', 'ParticipationProject\ParticipationProjectController@excelParticipants');
         Route::get('project/participant/peek', 'ParticipationProject\ParticipationProjectController@peek');
+        Route::get('project/participant/save-as-group', 'ParticipationProject\ParticipationProjectController@saveAsGroup');
         Route::get('project/participant/save-as-group', 'ParticipationProject\ParticipationProjectController@saveAsGroup');
         Route::get('project/participant/{participantProject}/peek-members', 'ParticipationProject\ParticipationProjectController@peekContactsMembershipRequired');
         Route::get('project/participant/{participantProject}', 'ParticipationProject\ParticipationProjectController@show');

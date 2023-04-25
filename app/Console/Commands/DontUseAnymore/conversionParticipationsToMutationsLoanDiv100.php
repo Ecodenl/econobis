@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\DontUseAnyMore;
+namespace App\Console\Commands\DontUseAnymore;
 
 use App\Eco\User\User;
 use Illuminate\Console\Command;

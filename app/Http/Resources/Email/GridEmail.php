@@ -11,8 +11,6 @@ namespace App\Http\Resources\Email;
 
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
-use App\Http\Resources\Team\FullTeam;
-use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class GridEmail extends JsonResource
@@ -48,6 +46,7 @@ class GridEmail extends JsonResource
             'contacts' => ContactPeek::collection($this->whenLoaded('contacts')),
             'responsibleName' => $responsible,
             'sentByUser' => $this->sent_by_user_id,
+            'hasAttachmentsWithoutCids' => $this->attachmentsWithoutCids->isNotEmpty(),
         ];
     }
 }

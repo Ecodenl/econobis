@@ -47,6 +47,11 @@ class Email extends Model
         return $this->hasMany(EmailAttachment::class);
     }
 
+    public function attachmentsWithoutCids()
+    {
+        return $this->hasMany(EmailAttachment::class)->whereNull('cid');
+    }
+
     public function contacts()
     {
         return $this->belongsToMany(Contact::class);
@@ -64,7 +69,7 @@ class Email extends Model
 
     public function getStatus()
     {
-        if(!$this->status) return null;
+        if (!$this->status) return null;
 
         return EmailStatus::get($this->status);
     }
@@ -109,15 +114,18 @@ class Email extends Model
         return $this->belongsTo(Invoice::class);
     }
 
-    public function groupEmailAddresses(){
+    public function groupEmailAddresses()
+    {
         return $this->belongsToMany(EmailAddress::class, 'email_group_email_addresses');
     }
 
-    public function sentByUser(){
+    public function sentByUser()
+    {
         return $this->belongsTo(User::class, 'sent_by_user_id');
     }
 
-    public function oldEmail(){
+    public function oldEmail()
+    {
         return $this->belongsTo(Email::class);
     }
 
@@ -140,5 +148,49 @@ class Email extends Model
     public function inlineImagesService(): EmailInlineImagesService
     {
         return new EmailInlineImagesService($this);
+    }
+
+    public function getCcAdresses()
+    {
+        return collect($this->cc)->map(function ($idOrEmailAddress) {
+            return $this->mapIdOrEmailAddressToValueObject($idOrEmailAddress);
+        })->filter(function ($value) {
+            return $value !== null;
+        })->values()
+            ->toArray();
+    }
+
+    protected function mapIdOrEmailAddressToValueObject(mixed $idOrEmailAddress)
+    {
+        if (is_numeric($idOrEmailAddress)) {
+            $emailAddress = EmailAddress::find($idOrEmailAddress);
+
+            if (!$emailAddress) {
+                return null;
+            }
+
+            return [
+                'id' => $emailAddress->id,
+                'name' => $emailAddress->contact->full_name . ' (' . $emailAddress->email . ')',
+            ];
+        }
+
+        return [
+            'id' => $idOrEmailAddress,
+            'name' => $idOrEmailAddress,
+        ];
+    }
+
+    public function getResponsibleName()
+    {
+        if ($this->responsibleUser) {
+            return $this->responsibleUser->present()->fullName();
+        }
+
+        if ($this->responsibleTeam) {
+            return $this->responsibleTeam->name;
+        }
+
+        return null;
     }
 }

@@ -133,10 +133,10 @@ class LapostaHelper
             return $response['data'];
         } catch (\Exception $e) {
             if ($e->getMessage()) {
-                Log::error('Er is iets misgegaan bij het ophalen van alle Laposta relaties voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage() );
+                Log::error('Er is iets misgegaan bij het ophalen van alle Laposta relaties voor laposta list id ' . $listId .  ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage() );
                 abort($e->getHttpStatus(), $e->getMessage());
             } else {
-                Log::error('Er is iets misgegaan met bij het ophalen van alle Laposta relaties voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() );
+                Log::error('Er is iets misgegaan met bij het ophalen van alle Laposta relaties voor laposta list id ' . $listId .  ', melding: ' . $e->getHttpStatus() );
                 abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren van Laposta');
             }
         }

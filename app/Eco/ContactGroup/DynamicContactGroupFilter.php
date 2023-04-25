@@ -13,6 +13,7 @@ use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Order\OrderStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use JosKolenberg\Enum\EnumNotFoundException;
 
 class DynamicContactGroupFilter extends Model
@@ -104,7 +105,7 @@ class DynamicContactGroupFilter extends Model
             }
             // housingFileFieldName omzetten
             if ($this->field == 'housingFileFieldName'){
-                console.log('hier housingFileFieldName extrafilter omzetten');
+                Log::info('hier housingFileFieldName extrafilter omzetten');
 //                if($this->data){
 //                    $measureCategory = MeasureCategory::find($this->data);
 //                    return $measureCategory ? $measureCategory->name : ''   ;

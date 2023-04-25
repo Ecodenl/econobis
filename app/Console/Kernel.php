@@ -80,12 +80,15 @@ class Kernel extends ConsoleKernel
         $schedule->command('revenue:checkWrongRevenueDistributionKwhStatus')->dailyAt('21:15')->timezone('Europe/Amsterdam');
 
         $schedule->command('laposta:processStateAllMembersLaposta')->dailyAt('23:45')->timezone('Europe/Amsterdam');
-        // report:contactGroupsContacts after laposta:processStateAllMembersLaposta
-        $schedule->command('report:contactGroupsContacts')->dailyAt('00:30');
+
         $schedule->command('address:createTaskAtEndDateAddress')->dailyAt('00:30')->timezone('Europe/Amsterdam');
         $schedule->command('addressEnergySupplier:setIsCurrentSupplier')->dailyAt('01:00')->timezone('Europe/Amsterdam');
         $schedule->command('invoice:setDaysLastReminder')->dailyAt('01:05')->timezone('Europe/Amsterdam');
         $schedule->command('invoice:setDaysToExpire')->dailyAt('02:05')->timezone('Europe/Amsterdam');
+
+        // report:contactGroupsContacts after laposta:processStateAllMembersLaposta
+        $schedule->command('report:contactGroupsContacts')->dailyAt('02:15');
+
         $schedule->command('email:deleteEmailDefinitive')->dailyAt('03:05')->timezone('Europe/Amsterdam');
 //        $schedule->command('email:deleteFloatingAttachmentFiles')->dailyAt('03:35');
         $schedule->command('invoice:processTwinfieldCustomer')->dailyAt('04:20')->timezone('Europe/Amsterdam');

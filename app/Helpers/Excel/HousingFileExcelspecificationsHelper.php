@@ -8,9 +8,6 @@
 
 namespace App\Helpers\Excel;
 
-use App\Eco\HousingFile\HousingFileHoomHousingStatus;
-use App\Eco\HousingFile\HousingFileHoomLink;
-use App\Eco\HousingFile\HousingFileHousingStatus;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -21,8 +18,6 @@ class HousingFileExcelspecificationsHelper
     public function __construct($housingFiles)
     {
         $this->housingFiles = $housingFiles;
-        // voorlopig even op volgorde external_hoom_short_name
-        $this->housingFileHoomLinks = HousingFileHoomLink::where('housing_file_data_type', 'W')->where('visible_in_econobis', true)->orderBy('external_hoom_short_name')->get();
     }
 
     public function downloadExcel()

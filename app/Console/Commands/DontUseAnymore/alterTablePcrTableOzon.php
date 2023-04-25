@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\DontUseAnyMore;
+namespace App\Console\Commands\DontUseAnymore;
 
 use App\Eco\Contact\Contact;
 use Illuminate\Console\Command;

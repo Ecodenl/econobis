@@ -407,7 +407,6 @@ Route::namespace('Api')
         Route::get('project/participant/excelParticipants', 'ParticipationProject\ParticipationProjectController@excelParticipants');
         Route::get('project/participant/peek', 'ParticipationProject\ParticipationProjectController@peek');
         Route::get('project/participant/save-as-group', 'ParticipationProject\ParticipationProjectController@saveAsGroup');
-        Route::get('project/participant/save-as-group', 'ParticipationProject\ParticipationProjectController@saveAsGroup');
         Route::get('project/participant/{participantProject}/peek-members', 'ParticipationProject\ParticipationProjectController@peekContactsMembershipRequired');
         Route::get('project/participant/{participantProject}', 'ParticipationProject\ParticipationProjectController@show');
         Route::post('project/participant', 'ParticipationProject\ParticipationProjectController@store');

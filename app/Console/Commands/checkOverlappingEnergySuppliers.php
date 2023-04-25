@@ -75,20 +75,6 @@ class checkOverlappingEnergySuppliers extends Command
                 if($overlappingenergySuppliersCount > 0) {
                     $overlappingAddressIds .= $address->id . ',';
                 }
-
-                //todo, delete if above query is correct
-//                foreach($addressEnergySuppliers as $addressEnergySupplier) {
-//                    $overlappingenergySuppliers =
-//                        $address->addressEnergySuppliers()
-//                            ->whereBetween('member_since', [$addressEnergySupplier->member_since, $addressEnergySupplier->end_date])
-//                            ->where('id', '!=', $addressEnergySupplier->id)
-//                            ->get();
-//                    $overlappingenergySuppliersCount = $overlappingenergySuppliers->count();
-//                }
-//
-//                if($overlappingenergySuppliersCount > 0) {
-//                    dump('adres id: ' . $address->id . '| aantal: ' . $overlappingenergySuppliersCount);
-//                }
             }
         }
 

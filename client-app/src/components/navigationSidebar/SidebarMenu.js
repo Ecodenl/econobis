@@ -242,6 +242,46 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                     </Nav>
                 </Nav>
             )}
+            {permissions.menuEmail && (
+                <Nav id="mailclient">
+                    <NavIcon>
+                        <SvgIcon size={20} icon={ic_email} />
+                    </NavIcon>
+                    <NavText>
+                        <Link className="sidebar-link-header" to="mailclient/inbox">
+                            E-mail
+                        </Link>
+                    </NavText>
+                    <Nav id="inbox">
+                        <NavText>
+                            <Link className="sidebar-link" to="mailclient/inbox">
+                                Ontvangen
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="sent">
+                        <NavText>
+                            <Link className="sidebar-link" to="mailclient/sent">
+                                Verzonden
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="concepts">
+                        <NavText>
+                            <Link className="sidebar-link" to="mailclient/concept">
+                                Concepten
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="removed">
+                        <NavText>
+                            <Link className="sidebar-link" to="mailclient/removed">
+                                Verwijderd
+                            </Link>
+                        </NavText>
+                    </Nav>
+                </Nav>
+            )}
 
             {permissions.menuTasks && (
                 <Nav id="taken">

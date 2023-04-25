@@ -1,0 +1,103 @@
+export function getJoryFilter(values, folder) {
+    let filter = {
+        and: [
+            {
+                f: 'folder',
+                d: folder,
+            }
+        ]
+    }
+
+    if (values.subject) {
+        filter.and.push({
+            f: 'subject',
+            o: 'like',
+            d: `%${values.subject}%`,
+        })
+    }
+
+    if (values.from) {
+        filter.and.push({
+            f: 'from',
+            o: 'like',
+            d: `%${values.from}%`,
+        })
+    }
+
+    if (values.contact) {
+        filter.and.push({
+            f: 'contacts.fullName',
+            o: 'like',
+            d: `%${values.contact}%`,
+        })
+    }
+
+    if (values.mailbox) {
+        filter.and.push({
+            f: 'mailbox.name',
+            o: 'like',
+            d: `%${values.mailbox}%`,
+        })
+    }
+
+    if (values.status) {
+        filter.and.push({
+            f: 'status',
+            d: values.status,
+        })
+    }
+
+    if (values.responsible) {
+        filter.and.push({
+            or: [
+                {
+                    f: 'responsibleUser.firstName',
+                    o: 'like',
+                    d: `%${values.responsible}%`,
+                },
+                {
+                    f: 'responsibleUser.lastName',
+                    o: 'like',
+                    d: `%${values.responsible}%`,
+                },
+                {
+                    f: 'responsibleTeam.name',
+                    o: 'like',
+                    d: `%${values.responsible}%`,
+                },
+            ]
+        })
+    }
+
+    if (values.to) {
+        filter.and.push({
+            f: 'to',
+            o: 'like',
+            d: `%${values.to}%`,
+        })
+    }
+
+    if (values.attachment) {
+        filter.and.push({
+            f: 'attachmentsWithoutCids.id',
+            o: '>',
+            d: 0,
+        })
+    }
+
+    return filter;
+}
+
+export function storeFiltersToStorage(values) {
+    localStorage.setItem('emailFilters', JSON.stringify(values));
+}
+
+export function getFiltersFromStorage() {
+    let filters = localStorage.getItem('emailFilters');
+
+    if (!filters) {
+        return {};
+    }
+
+    return JSON.parse(filters);
+}

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';
 import { Button } from 'react-bootstrap';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { FiArrowLeft, FiArrowRight } from 'react-icons/all';
+
+import { Document, Page, pdfjs } from 'react-pdf/dist/esm/entry.webpack';
+pdfjs.GlobalWorkerOptions.workerSrc = '/js/pdf.worker.min.js';
 
 function PdfViewer(props) {
     const [numPages, setNumPages] = useState(null);

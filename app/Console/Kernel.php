@@ -24,6 +24,7 @@ use App\Console\Commands\checkWrongRevenueDistributionKwhStatus;
 use App\Console\Commands\contactGroupsContactsForReport;
 use App\Console\Commands\checkOverlappingEnergySuppliers;
 use App\Console\Commands\checkFirstStartingDateParticipants;
+use App\Console\Commands\checkTerminationDateParticipants;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -57,6 +58,7 @@ class Kernel extends ConsoleKernel
         contactGroupsContactsForReport::class,
         checkOverlappingEnergySuppliers::class,
         checkFirstStartingDateParticipants::class,
+        checkTerminationDateParticipants::class,
     ];
 
     /**
@@ -96,6 +98,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('revenue:checkWrongRevenueDistributionKwhStatus')->dailyAt('21:15');
 
         $schedule->command('participants:checkFirstStartingDate')->dailyAt('06:15');
+        $schedule->command('participants:checkTerminationDate')->dailyAt('06:30');
 
         $schedule->command('report:contactGroupsContacts')->dailyAt('06:00');
     }

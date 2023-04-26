@@ -7,6 +7,6 @@ return [
     | Pico API base URL
     |--------------------------------------------------------------------------
     */
-	'base_uri' => env('PICO_URL', ''),
-
+	'lvbag_key' => env('LVBAG_KEY', ''),
+    'lvbag_production' => env('LVBAG_PRODUCTION', false),
 ];

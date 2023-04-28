@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import DocumentHarmonica from './DocumentHarmonica';
 import EmailSentHarmonica from './EmailSentHarmonica';
 import ExternalpartyAndOccupantEmailSentHarmonica from './ExternalpartyAndOccupantEmailSentHarmonica';
+import ExternalpartyEmailSentHarmonica from './ExternalpartyEmailSentHarmonica';
 import OccupantEmailSentHarmonica from './OccupantEmailSentHarmonica';
 import CoachEmailSentHarmonica from './CoachEmailSentHarmonica';
 
@@ -18,6 +19,7 @@ class QuotationRequestDetailsHarmonica extends Component {
                 emailsSent: false,
                 occupantEmailsSent: false,
                 externalpartyAndOccupantEmailsSent: false,
+                externalpartyEmailsSent: false,
             },
         };
 
@@ -25,6 +27,7 @@ class QuotationRequestDetailsHarmonica extends Component {
         this.newEmail = this.newEmail.bind(this);
         this.newOccupantEmail = this.newOccupantEmail.bind(this);
         this.newExternalpartyAndOccupantEmail = this.newExternalpartyAndOccupantEmail.bind(this);
+        this.newExternalpartyEmail = this.newExternalpartyEmail.bind(this);
         this.newCoachEmail = this.newCoachEmail.bind(this);
         this.toggleShowList = this.toggleShowList.bind(this);
     }
@@ -50,6 +53,12 @@ class QuotationRequestDetailsHarmonica extends Component {
     newExternalpartyAndOccupantEmail() {
         hashHistory.push(
             `/email/nieuw/offerteverzoek/${this.props.id}/${this.props.quotationRequestDetails.externalPartyId}/occupant/${this.props.quotationRequestDetails.occupantId}`
+        );
+    }
+
+    newExternalpartyEmail() {
+        hashHistory.push(
+            `/email/nieuw/offerteverzoek/${this.props.id}/${this.props.quotationRequestDetails.externalPartyId}`
         );
     }
 
@@ -107,6 +116,16 @@ class QuotationRequestDetailsHarmonica extends Component {
                         emailSentCount={this.props.quotationRequestDetails.relatedExternalpartyAndOccupantEmailsSent?.length}
                     />
                 )}
+
+                {(externalPartyId && opportunityActionName == 'Budgetaanvraag') && (
+                    <ExternalpartyEmailSentHarmonica
+                        toggleShowList={() => this.toggleShowList('externalpartyEmailsSent')}
+                        showEmailsSentList={this.state.toggleShowList.externalpartyEmailsSent}
+                        newEmail={this.newExternalpartyEmail}
+                        emailSentCount={this.props.quotationRequestDetails.relatedExternalpartyEmailsSent?.length}
+                    />
+                )}
+
                 <DocumentHarmonica
                     toggleShowList={() => this.toggleShowList('documents')}
                     showDocumentsList={this.state.toggleShowList.documents}

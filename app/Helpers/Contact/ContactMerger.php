@@ -57,6 +57,12 @@ class ContactMerger
         if ($toIban && $fromIban && $toIban !== $fromIban) {
             throw new ContactMergeException('Contacten hebben een verschillende IBAN, verwijder eerst één van de twee IBAN\'s handmatig.');
         }
+
+        $toGroupInspectionPersontype = $this->toContact->groups()->where('inspection_person_type_id', '!=', null)->first();
+        $fromGroupInspectionPersontype = $this->fromContact->groups()->where('inspection_person_type_id', '!=', null)->first();
+        if ($toGroupInspectionPersontype && $fromGroupInspectionPersontype && $toGroupInspectionPersontype->inspection_person_type_id !== $fromGroupInspectionPersontype->inspection_person_type_id) {
+            throw new ContactMergeException('Contacten hebben beide een verschillende rol in "rol in buurtaanpak", een contact mag maar één unieke rol hebben.');
+        }
     }
 
     private function doMerge()

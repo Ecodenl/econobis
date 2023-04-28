@@ -112,7 +112,7 @@ class QuotationRequestDetailsHarmonica extends Component {
                     <ExternalpartyAndOccupantEmailSentHarmonica
                         toggleShowList={() => this.toggleShowList('externalpartyAndOccupantEmailsSent')}
                         showEmailsSentList={this.state.toggleShowList.externalpartyAndOccupantEmailsSent}
-                        newEmail={this.newEmail}
+                        newEmail={this.newExternalpartyAndOccupantEmail}
                         emailSentCount={this.props.quotationRequestDetails.relatedExternalpartyAndOccupantEmailsSent?.length}
                     />
                 )}

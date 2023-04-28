@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import DocumentHarmonica from './DocumentHarmonica';
 import EmailSentHarmonica from './EmailSentHarmonica';
+import ExternalpartyAndOccupantEmailSentHarmonica from './ExternalpartyAndOccupantEmailSentHarmonica';
 import OccupantEmailSentHarmonica from './OccupantEmailSentHarmonica';
 import CoachEmailSentHarmonica from './CoachEmailSentHarmonica';
 
@@ -16,12 +17,14 @@ class QuotationRequestDetailsHarmonica extends Component {
                 documents: false,
                 emailsSent: false,
                 occupantEmailsSent: false,
+                externalpartyAndOccupantEmailsSent: false,
             },
         };
 
         this.newDocument = this.newDocument.bind(this);
         this.newEmail = this.newEmail.bind(this);
         this.newOccupantEmail = this.newOccupantEmail.bind(this);
+        this.newExternalpartyAndOccupantEmail = this.newExternalpartyAndOccupantEmail.bind(this);
         this.newCoachEmail = this.newCoachEmail.bind(this);
         this.toggleShowList = this.toggleShowList.bind(this);
     }
@@ -44,6 +47,12 @@ class QuotationRequestDetailsHarmonica extends Component {
         );
     }
 
+    newExternalpartyAndOccupantEmail() {
+        hashHistory.push(
+            `/email/nieuw/offerteverzoek/${this.props.id}/${this.props.quotationRequestDetails.externalPartyId}/occupant/${this.props.quotationRequestDetails.occupantId}`
+        );
+    }
+
     newDocument(type) {
         hashHistory.push(`/document/nieuw/${type}/offerteverzoek/${this.props.id}`);
     }
@@ -61,7 +70,8 @@ class QuotationRequestDetailsHarmonica extends Component {
         const organisationOrCoachId = this.props.quotationRequestDetails.organisationOrCoachId;
         const occupantId = this.props.quotationRequestDetails.occupantId;
         // const projectManagerId = this.props.quotationRequestDetails.projectManagerId;
-        // const externalPartyId = this.props.quotationRequestDetails.externalPartyId;
+        const externalPartyId = this.props.quotationRequestDetails.externalPartyId;
+        const opportunityActionName = this.props.quotationRequestDetails.opportunityAction ? this.props.quotationRequestDetails.opportunityAction.name : '';
 
         return (
             <div className="col-md-12 margin-10-top">
@@ -81,12 +91,22 @@ class QuotationRequestDetailsHarmonica extends Component {
                         emailSentCount={this.props.quotationRequestDetails.relatedOccupantEmailsSent?.length}
                     />
                 )}
+
                 <EmailSentHarmonica
                     toggleShowList={() => this.toggleShowList('coachAndOccupantEmailsSent')}
                     showEmailsSentList={this.state.toggleShowList.coachAndOccupantEmailsSent}
                     newEmail={this.newEmail}
                     emailSentCount={this.props.quotationRequestDetails.relatedCoachAndOccupantEmailsSent?.length}
                 />
+
+                {(externalPartyId && opportunityActionName == 'Budgetaanvraag') && (
+                    <ExternalpartyAndOccupantEmailSentHarmonica
+                        toggleShowList={() => this.toggleShowList('externalpartyAndOccupantEmailsSent')}
+                        showEmailsSentList={this.state.toggleShowList.externalpartyAndOccupantEmailsSent}
+                        newEmail={this.newEmail}
+                        emailSentCount={this.props.quotationRequestDetails.relatedExternalpartyAndOccupantEmailsSent?.length}
+                    />
+                )}
                 <DocumentHarmonica
                     toggleShowList={() => this.toggleShowList('documents')}
                     showDocumentsList={this.state.toggleShowList.documents}

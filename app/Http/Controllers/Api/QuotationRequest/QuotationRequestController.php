@@ -90,7 +90,9 @@ class QuotationRequestController extends ApiController
         $quotationRequest->relatedCoachAndOccupantEmailsSent = $quotationRequest->relatedEmailsSent->filter(function (Email $email) use ($quotationRequest) {
             return in_array(optional(optional($quotationRequest->organisationOrCoach)->primaryEmailAddress)->email, $email->to) && in_array(optional($quotationRequest->opportunity->intake->contact->primaryEmailAddress)->email, $email->to);
         })->values();
-
+        $quotationRequest->relatedExternalpartyAndOccupantEmailsSent = $quotationRequest->relatedEmailsSent->filter(function (Email $email) use ($quotationRequest) {
+            return in_array(optional(optional($quotationRequest->externalParty)->primaryEmailAddress)->email, $email->to) && in_array(optional($quotationRequest->opportunity->intake->contact->primaryEmailAddress)->email, $email->to);
+        })->values();
         $quotationRequest->relatedQuotationRequestsStatuses = $this->getRelatedQuotationRequestsStatuses($quotationRequest->opportunityAction);
 
         $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();

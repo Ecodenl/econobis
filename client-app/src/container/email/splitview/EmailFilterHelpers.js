@@ -1,4 +1,4 @@
-export function getJoryFilter(values, folder) {
+export function getJoryFilter(values, folder, contactId) {
     let filter = {
         and: [
             {
@@ -82,6 +82,21 @@ export function getJoryFilter(values, folder) {
             f: 'attachmentsWithoutCids.id',
             o: '>',
             d: 0,
+        })
+    }
+
+    if (values.attachment) {
+        filter.and.push({
+            f: 'attachmentsWithoutCids.id',
+            o: '>',
+            d: 0,
+        })
+    }
+
+    if (contactId) {
+        filter.and.push({
+            f: 'contacts.contactId',
+            d: contactId,
         })
     }
 

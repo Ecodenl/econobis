@@ -36,6 +36,21 @@ export default {
             });
     },
 
+    storeReply: (id) => {
+        return axiosInstance
+            .post(`${URL_EMAIL}/${id}/store-reply`);
+    },
+
+    storeReplyAll: (id) => {
+        return axiosInstance
+            .post(`${URL_EMAIL}/${id}/store-reply-all`);
+    },
+
+    storeForward: (id) => {
+        return axiosInstance
+            .post(`${URL_EMAIL}/${id}/store-forward`);
+    },
+
     deleteMultiple: emailIds => {
         return axiosInstance.post(`${URL_EMAIL}/delete-multiple`, {
             ids: emailIds,

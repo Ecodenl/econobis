@@ -15,6 +15,7 @@ use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\Task\Task;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
+use App\Helpers\Email\EmailGeneratorService;
 use App\Helpers\Email\EmailInlineImagesService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -47,6 +48,17 @@ class Email extends Model
         return $this->hasMany(EmailAttachment::class);
     }
 
+    /**
+     * Bijlages met cid zijn de inline images.
+     */
+    public function inlineImageAttachments()
+    {
+        return $this->hasMany(EmailAttachment::class)->whereNotNull('cid');
+    }
+
+    /**
+     * De bijlages zonder cid zijn de bijlages die als "echte" bijlage worden meegestuurd.
+     */
     public function attachmentsWithoutCids()
     {
         return $this->hasMany(EmailAttachment::class)->whereNull('cid');
@@ -192,5 +204,10 @@ class Email extends Model
         }
 
         return null;
+    }
+
+    public function generator()
+    {
+        return new EmailGeneratorService($this);
     }
 }

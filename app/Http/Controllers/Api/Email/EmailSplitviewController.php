@@ -127,6 +127,42 @@ class EmailSplitviewController extends Controller
         }
     }
 
+    public function storeReply(Email $email)
+    {
+        $this->authorize('view', Email::class);
+        $this->checkMailboxAutorized($email->mailbox_id);
+
+        $reply = $email->generator()->reply();
+
+        return response()->json([
+            'id' => $reply->id,
+        ]);
+    }
+
+    public function storeReplyAll(Email $email)
+    {
+        $this->authorize('view', Email::class);
+        $this->checkMailboxAutorized($email->mailbox_id);
+
+        $reply = $email->generator()->replyAll();
+
+        return response()->json([
+            'id' => $reply->id,
+        ]);
+    }
+
+    public function storeForward(Email $email)
+    {
+        $this->authorize('view', Email::class);
+        $this->checkMailboxAutorized($email->mailbox_id);
+
+        $forward = $email->generator()->forward();
+
+        return response()->json([
+            'id' => $forward->id,
+        ]);
+    }
+
     protected function checkMailboxAutorized($mailboxId): void
     {
         if (!Auth::user()->mailboxes()->where('mailboxes.id', $mailboxId)->exists()) {

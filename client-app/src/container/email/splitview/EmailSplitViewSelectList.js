@@ -68,11 +68,13 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
                     selectEnabled && (
                         <div className="row">
                             <div className="col-xs-12" style={{display: 'flex', justifyContent: 'space-between'}}>
-                                    <div style={{flex: 'none', display: 'flex', marginLeft: '6px'}} onClick={toggleSelectAll}>
+                                    <div style={{flex: 'none', display: 'flex', marginLeft: '6px', alignItems: 'center'}} onClick={toggleSelectAll}>
                                         <input
                                             type="checkbox"
                                             checked={selectedEmailIds.length === emails.length}
+                                            style={{marginRight: '5px'}}
                                         />
+                                        Selecteer alles
                                     </div>
                                 <div className="btn-group margin-small" role="group">
                                     <EmailSplitViewBulkEditModal emailIds={selectedEmailIds} onSaved={onUpdated}/>

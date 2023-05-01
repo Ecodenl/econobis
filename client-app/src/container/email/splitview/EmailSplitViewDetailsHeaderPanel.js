@@ -9,6 +9,7 @@ import {Link} from "react-router";
 import {useSelector} from 'react-redux'
 import InputSelectGroup from "../../../components/form/InputSelectGroup";
 import InputSelect from "../../../components/form/InputSelect";
+import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
 
 export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttributes}) {
     const defaultCcDisplayLimit = 2;
@@ -45,6 +46,24 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
         return '';
     }
 
+    const createReply = () => {
+        EmailSplitviewAPI.storeReply(email.id).then(payload => {
+            // Todo; open popup
+        });
+    }
+
+    const createReplyAll = () => {
+        EmailSplitviewAPI.storeReplyAll(email.id).then(payload => {
+            // Todo; open popup
+        });
+    }
+
+    const createForward = () => {
+        EmailSplitviewAPI.storeForward(email.id).then(payload => {
+            // Todo; open popup
+        });
+    }
+
     return (
         <div className="panel panel-default">
             <div className="panel-body panel-small">
@@ -55,9 +74,7 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                                 type="button"
                                 title="Beantwoorden"
                                 className={'btn btn-success btn-sm'}
-                                // onClick={() => {
-                                //     hashHistory.push(`/email/${id}/beantwoorden`);
-                                // }}
+                                onClick={createReply}
                             >
                                 <Icon icon={mailReply} size={13}/>
                             </button>
@@ -65,9 +82,7 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                                 type="button"
                                 title="Allen beantwoorden"
                                 className={'btn btn-success btn-sm'}
-                                // onClick={() => {
-                                //     hashHistory.push(`/email/${id}/allenbeantwoorden`);
-                                // }}
+                                onClick={createReplyAll}
                             >
                                 <Icon icon={mailReplyAll} size={13}/>
                             </button>
@@ -75,9 +90,7 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                                 type="button"
                                 title="Doorsturen"
                                 className={'btn btn-success btn-sm'}
-                                // onClick={() => {
-                                //     hashHistory.push(`/email/${id}/doorsturen`);
-                                // }}
+                                onClick={createForward}
                             >
                                 <Icon icon={mailForward} size={13}/>
                             </button>

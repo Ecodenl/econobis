@@ -322,6 +322,9 @@ Route::namespace('Api')
         Route::post('email-splitview/delete-multiple', [EmailSplitviewController::class, 'deleteMultiple']);
         Route::post('email-splitview/update-multiple', [EmailSplitviewController::class, 'updateMultiple']);
         Route::post('email-splitview/{email}', [EmailSplitviewController::class, 'update']);
+        Route::post('email-splitview/{email}/store-reply', [EmailSplitviewController::class, 'storeReply']);
+        Route::post('email-splitview/{email}/store-reply-all', [EmailSplitviewController::class, 'storeReplyAll']);
+        Route::post('email-splitview/{email}/store-forward', [EmailSplitviewController::class, 'storeForward']);
 
         Route::get('email-template/grid', 'EmailTemplate\EmailTemplateController@grid');
         Route::get('email-template/peek', 'EmailTemplate\EmailTemplateController@peek');

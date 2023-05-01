@@ -1,9 +1,14 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import moment from "moment/moment";
 import Icon from "react-icons-kit";
 import {paperclip} from 'react-icons-kit/fa/paperclip';
+import EmailSplitViewBulkDeleteModal from "./EmailSplitViewBulkDeleteModal";
+import EmailSplitViewBulkEditModal from "./EmailSplitViewBulkEditModal";
 
-export default function EmailSplitViewSelectList({emails, folder, emailCount, fetchMoreEmails, selectedEmailId, setSelectedEmailId}) {
+export default function EmailSplitViewSelectList({emails, folder, emailCount, fetchMoreEmails, selectedEmailId, setSelectedEmailId, onUpdated}) {
+    const [selectEnabled, setSelectEnabled] = useState(false);
+    const [selectedEmailIds, setSelectedEmailIds] = useState([]);
+
     const getTitle = () => {
         switch (folder) {
             case 'inbox':
@@ -25,6 +30,22 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
         setSelectedEmailId(email.id);
     }
 
+    const toggleSelectedEmail = (email) => {
+        if(selectedEmailIds.includes(email.id)) {
+            setSelectedEmailIds(selectedEmailIds.filter(id => id !== email.id));
+        } else {
+            setSelectedEmailIds([...selectedEmailIds, email.id]);
+        }
+    }
+
+    const toggleSelectAll = () => {
+        if(selectedEmailIds.length === emails.length) {
+            setSelectedEmailIds([]);
+        } else {
+            setSelectedEmailIds(emails.map(email => email.id));
+        }
+    }
+
     useEffect(() => {
         if (selectedEmailId) {
             return;
@@ -43,10 +64,42 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
         <div className="panel panel-default">
             <div className="panel-body panel-small"
                  style={{height: "calc(100vh - 190px)", overflow: 'auto'}}>
+                {
+                    selectEnabled && (
+                        <div className="row">
+                            <div className="col-xs-12" style={{display: 'flex', justifyContent: 'space-between'}}>
+                                    <div style={{flex: 'none', display: 'flex', marginLeft: '6px'}} onClick={toggleSelectAll}>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedEmailIds.length === emails.length}
+                                        />
+                                    </div>
+                                <div className="btn-group margin-small" role="group">
+                                    <EmailSplitViewBulkEditModal emailIds={selectedEmailIds} onSaved={onUpdated}/>
+                                    <EmailSplitViewBulkDeleteModal emailIds={selectedEmailIds} onDeleted={() => {setSelectedEmailIds([]); onUpdated()}}/>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                }
                 <table className="table table-condensed table-hover table-striped col-xs-12">
                     <thead>
                     <tr className="thead-title">
-                        <th>{getTitle()} ({emailCount})</th>
+                        <th>
+                            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <div>
+                                {getTitle()} ({emailCount})
+                                </div>
+                                <div>
+                                    <a href="#" style={{color: '#fff'}} onClick={(e) => {
+                                        e.preventDefault();
+                                        setSelectEnabled(!selectEnabled);
+                                    }}>
+                                        selecteren
+                                    </a>
+                                </div>
+                            </div>
+                        </th>
                     </tr>
                     </thead>
 
@@ -58,14 +111,22 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
                         ) :
                         emails.map(email => (
                             <tr key={email.id} style={{cursor: 'pointer'}}>
-                                <td onClick={() => selectEmail(email)}
+                                <td
                                     style={{
                                         borderRadius: '5px',
                                         backgroundColor: email.id === selectedEmailId ? '#d6e1f3' : '#fff',
                                         fontWeight: email.status === 'unread' ? 'bold' : 'normal',
                                     }}>
                                     <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                        <div>
+                                        {selectEnabled && (
+                                            <div style={{flex: 'none', display: 'flex', marginRight: '10px'}} onClick={() => toggleSelectedEmail(email)}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedEmailIds.includes(email.id)}
+                                                />
+                                            </div>
+                                        )}
+                                        <div style={{flex: 1}} onClick={() => selectEmail(email)}>
                                             <span style={{fontSize: '15px'}}>{email.from}</span>
                                             <br/><span>{email.subject}</span>
                                         </div>
@@ -73,7 +134,8 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
                                             display: 'flex',
                                             flexDirection: 'column',
                                             alignItems: 'end',
-                                        }}>
+                                        }}
+                                             onClick={() => selectEmail(email)}>
                                             <span style={{fontSize: '12px'}}>{email.date && moment(email.date).format('DD-MM-YYYY HH:mm')}</span>
                                             <div>
                                                 <span style={{color: '#999'}}>{email.responsibleName}</span>
@@ -98,7 +160,6 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
                                 >
                                     meer laden...
                                 </button>
-
                             </td>
                         </tr>
                     )}

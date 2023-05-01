@@ -109,6 +109,7 @@ export default function EmailSplitView({router}) {
                         selectedEmailId={selectedEmailId}
                         setSelectedEmailId={setSelectedEmailId}
                         updateEmailAttributes={updateEmailAttributes}
+                        onUpdated={refetchCurrentEmails}
                     />
                 </div>
                 <div className="col-md-8 margin-10-top">

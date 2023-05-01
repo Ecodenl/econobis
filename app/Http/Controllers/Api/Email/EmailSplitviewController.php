@@ -14,7 +14,6 @@ use JosKolenberg\LaravelJory\Facades\Jory;
 
 class EmailSplitviewController extends Controller
 {
-
     public function selectList(Request $request)
     {
         $this->authorize('view', Email::class);
@@ -80,6 +79,52 @@ class EmailSplitviewController extends Controller
         ]);
 
         $email->update(Arr::keysToSnakeCase($data));
+    }
+
+    public function deleteMultiple(Request $request)
+    {
+        $this->authorize('view', Email::class);
+
+        $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:emails,id'],
+        ]);
+
+        $emails = Email::whereIn('id', $request->input('ids'))->get();
+
+        foreach ($emails->pluck('mailbox_id')->unique() as $mailBoxId) {
+            $this->checkMailboxAutorized($mailBoxId);
+        }
+
+        foreach ($emails as $email) {
+            $email->delete();
+        }
+    }
+
+    public function updateMultiple(Request $request)
+    {
+        $this->authorize('view', Email::class);
+
+        $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:emails,id'],
+        ]);
+
+        $emails = Email::whereIn('id', $request->input('ids'))->get();
+
+        foreach ($emails->pluck('mailbox_id')->unique() as $mailBoxId) {
+            $this->checkMailboxAutorized($mailBoxId);
+        }
+
+        $data = $request->validate([
+            'status' => ['sometimes', 'required', 'string'],
+            'responsibleUserId' => ['nullable', 'exists:users,id'],
+            'responsibleTeamId' => ['nullable', 'exists:teams,id'],
+        ]);
+
+        foreach ($emails as $email){
+            $email->update(Arr::keysToSnakeCase($data));
+        }
     }
 
     protected function checkMailboxAutorized($mailboxId): void

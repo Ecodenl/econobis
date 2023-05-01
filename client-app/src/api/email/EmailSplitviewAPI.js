@@ -4,9 +4,7 @@ const URL_EMAIL = `${URL_API}/api/email-splitview`;
 
 export default {
     fetchSelectList: ({ filter, sorts, limit, offset }) => {
-        const requestUrl = `${URL_EMAIL}/select-list`;
-
-        return axiosInstance.get(requestUrl, {
+        return axiosInstance.get(`${URL_EMAIL}/select-list`, {
             params: {
                 jory: {
                     fld: [],
@@ -20,17 +18,27 @@ export default {
     },
 
     fetchEmail: id => {
-        const requestUrl = `${URL_EMAIL}/${id}`;
-
         return axiosInstance
-            .get(requestUrl)
+            .get(`${URL_EMAIL}/${id}`)
             .then(response => response.data);
     },
 
     update: (id, attributes) => {
-        const requestUrl = `${URL_EMAIL}/${id}`;
-
         return axiosInstance
-            .post(requestUrl, attributes);
-    }
+            .post(`${URL_EMAIL}/${id}`, attributes);
+    },
+
+    updateMultiple: (ids, attributes) => {
+        return axiosInstance
+            .post(`${URL_EMAIL}/update-multiple`, {
+                ids: ids,
+                ...attributes,
+            });
+    },
+
+    deleteMultiple: emailIds => {
+        return axiosInstance.post(`${URL_EMAIL}/delete-multiple`, {
+            ids: emailIds,
+        });
+    },
 };

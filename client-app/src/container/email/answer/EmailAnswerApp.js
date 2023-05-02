@@ -10,6 +10,7 @@ import EmailAPI from '../../../api/email/EmailAPI';
 import { browserHistory, hashHistory } from 'react-router';
 import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
+import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
 
 class EmailAnswerApp extends Component {
     constructor(props) {
@@ -139,6 +140,9 @@ class EmailAnswerApp extends Component {
                         : this.state.email.htmlBody,
                 },
             });
+            if (payload.defaultAttachmentDocument) {
+                this.addDocumentAsAttachment(payload.defaultAttachmentDocument.id);
+            }
         });
     }
 
@@ -220,6 +224,18 @@ class EmailAnswerApp extends Component {
                 attachments: [...this.state.email.attachments, ...files],
             },
         });
+    }
+
+    addDocumentAsAttachment(documentId) {
+        if (documentId) {
+            DocumentDetailsAPI.fetchDocumentDetails(documentId).then(payload => {
+                let filename = payload.data.data.filename ? payload.data.data.filename : 'bijlage.pdf';
+
+                DocumentDetailsAPI.download(documentId).then(payload => {
+                    this.addAttachment([new File([payload.data], filename)]);
+                });
+            });
+        }
     }
 
     deleteAttachment(attachmentName) {

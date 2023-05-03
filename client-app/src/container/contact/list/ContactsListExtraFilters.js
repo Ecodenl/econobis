@@ -286,6 +286,11 @@ class ContactsListExtraFilters extends Component {
                 type: 'dropdownHas',
                 dropDownOptions: this.props.measureCategories,
             },
+            quotationRequestStatus: {
+                name: 'Kansactie status',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.quotationRequestStatus,
+            },
             intakeMeasureCategory: {
                 name: 'Intake interesse',
                 type: 'dropdownHas',
@@ -301,12 +306,12 @@ class ContactsListExtraFilters extends Component {
                 type: 'date',
             },
             energySupplier: {
-                name: 'Primaire Energie leverancier',
+                name: 'Huidige Energie leverancier',
                 type: 'dropdown',
                 dropDownOptions: this.props.energySuppliers,
             },
             energySupplierType: {
-                name: 'Type primaire energie leverancier',
+                name: 'Type huidige energie leverancier',
                 type: 'dropdownHas',
                 dropDownOptions: this.props.energySupplierTypes,
             },
@@ -319,6 +324,16 @@ class ContactsListExtraFilters extends Component {
                 name: 'Portal gebruiker actief',
                 type: 'boolean',
                 dropDownOptions: this.state.yesNoOptions,
+            },
+            housingFile: {
+                name: 'Woningdossier aanwezig',
+                type: 'boolean',
+                dropDownOptions: this.state.yesNoOptions,
+            },
+            inspectionPersonType: {
+                name: 'Rol in buurtaanpak',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.inspectionPersonTypes,
             },
         };
 
@@ -479,6 +494,8 @@ const mapStateToProps = state => {
         energySupplierTypes: state.systemData.energySupplierTypes,
         countries: state.systemData.countries,
         orderStatuses: state.systemData.orderStatuses,
+        quotationRequestStatus: state.systemData.quotationRequestStatus,
+        inspectionPersonTypes: state.systemData.inspectionPersonTypes,
     };
 };
 

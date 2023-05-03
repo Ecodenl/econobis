@@ -2,7 +2,9 @@ import React from 'react';
 import ViewText from '../../../../../components/form/ViewText';
 import moment from 'moment';
 import ViewTextLong from '../../../../../components/form/ViewTextLong';
-import InputText from '../../../../../components/form/InputText';
+import Icon from 'react-icons-kit';
+import { angleRight } from 'react-icons-kit/fa/angleRight';
+import { angleDown } from 'react-icons-kit/fa/angleDown';
 
 const ProjectFormViewGeneral = ({
     switchToEdit,
@@ -249,9 +251,9 @@ const ProjectFormViewGeneral = ({
                 <hr />
                 <h4 onClick={() => toggleCustomerPortalSettings(!showCustomerPortalSettings)}>
                     {showCustomerPortalSettings ? (
-                        <span className="glyphicon glyphicon-menu-down" />
+                        <Icon size={21} icon={angleDown} />
                     ) : (
-                        <span className="glyphicon glyphicon-menu-right" />
+                        <Icon size={21} icon={angleRight} />
                     )}
                     &nbsp;Contacten portal instellingen
                 </h4>
@@ -269,12 +271,9 @@ const ProjectFormViewGeneral = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={
-                                'Blokkeer wijzigen naam via contactenportal.'
-                            }
+                            label={'Blokkeer wijzigen naam via contactenportal.'}
                             value={disableChangeContactNameOnPortal ? 'Ja' : 'Nee'}
                             textToolTip={`Als deze instelling actief is kunnen contacten die deelnemen in dit project hun naam niet wijzigen via de contactenportal. In verband met customer due diligence (voorkomen fraude en witwassen) zijn extra controles wenselijk bij naamswijziging of overdracht. Daarom kun je met deze instelling naamswijziging door contacten in het portal blokkeren.`}
-
                         />
                     </div>
                     <hr />

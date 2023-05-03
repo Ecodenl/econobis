@@ -91,6 +91,7 @@ class EmailAnswerApp extends Component {
                     bcc: payload.bcc ? payload.bcc.join(',') : '',
                     subject: payload.subject ? payload.subject : '',
                     htmlBody: payload.htmlBody ? payload.htmlBody : '',
+                    initialHtmlBody: payload.htmlBody ? payload.htmlBody : '',
                     attachments: payload.attachments ? payload.attachments : '',
                 },
                 emailAddressesToSelected: payload.emailAddressesToSelected,
@@ -131,6 +132,9 @@ class EmailAnswerApp extends Component {
                 email: {
                     ...this.state.email,
                     htmlBody: payload.htmlBody
+                        ? payload.htmlBody + this.state.originalHtmlBody
+                        : this.state.email.htmlBody,
+                    initialHtmlBody: payload.htmlBody
                         ? payload.htmlBody + this.state.originalHtmlBody
                         : this.state.email.htmlBody,
                 },
@@ -198,12 +202,12 @@ class EmailAnswerApp extends Component {
         });
     }
 
-    handleTextChange(event) {
+    handleTextChange(htmlBody) {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                htmlBody: event.target.getContent({ format: 'raw' }),
+                htmlBody: htmlBody,
             },
         });
     }

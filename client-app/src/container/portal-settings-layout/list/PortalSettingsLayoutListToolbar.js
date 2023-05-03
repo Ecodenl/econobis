@@ -16,9 +16,9 @@ class PortalSettingsLayoutListToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
-                        <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={refreshPortalSettingsLayoutsData} />
+                        <ButtonIcon iconName={'refresh'} onClickAction={refreshPortalSettingsLayoutsData} />
                         {permissions.managePortalSettings && (
-                            <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newPortalSettingsLayout} />
+                            <ButtonIcon iconName={'plus'} onClickAction={newPortalSettingsLayout} />
                         )}
                     </div>
                 </div>

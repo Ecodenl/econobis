@@ -2,6 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 
+import Icon from 'react-icons-kit';
+import { trash } from 'react-icons-kit/fa/trash';
+
 const MeasureDetailsSupplierView = props => {
     const { id, name, address, contactId } = props.supplier;
 
@@ -18,7 +21,7 @@ const MeasureDetailsSupplierView = props => {
             <div className="col-sm-1">
                 {props.showActionButtons && props.permissions.manageMeasure ? (
                     <a role="button" onClick={props.toggleDelete}>
-                        <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                        <Icon className="mybtn-danger" size={14} icon={trash} />
                     </a>
                 ) : (
                     ''

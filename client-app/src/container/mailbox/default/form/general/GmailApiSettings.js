@@ -32,13 +32,15 @@ function MailboxDefaultFormGeneralGmailApiSettings({ values, errors, touched, ha
                     {/*    <div className="col-sm-6" style={{ paddingRight: '5px' }} onClick={null}>*/}
                     {/*        {REDIRECT_URL_GMAIL}*/}
                     {/*        <CopyToClipboard text={REDIRECT_URL_GMAIL}>*/}
-                    {/*            <span*/}
-                    {/*                className="glyphicon glyphicon-copy mybtn-success pull-right"*/}
-                    {/*                style={{ top: '5px' }}*/}
-                    {/*                role="button"*/}
-                    {/*                onClick={null}*/}
-                    {/*                title={'Kopieer sleutel'}*/}
-                    {/*            />*/}
+                    {/*        <a*/}
+                    {/*            className="btn btn-success btn-sm pull-right"*/}
+                    {/*            style={{ top: '5px' }}*/}
+                    {/*            role="button"*/}
+                    {/*            onClick={null}*/}
+                    {/*            title={'Kopieer sleutel'}*/}
+                    {/*        >*/}
+                    {/*            <Icon size={14} icon={copy} />{' '}*/}
+                    {/*        </a>*/}
                     {/*        </CopyToClipboard>*/}
                     {/*    </div>*/}
                     {/*</div>*/}

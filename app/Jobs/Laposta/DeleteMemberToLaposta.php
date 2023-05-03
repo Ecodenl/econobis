@@ -47,7 +47,9 @@ class DeleteMemberToLaposta implements ShouldQueue
         $member = new Laposta_Member($this->contactGroup->laposta_list_id ? $this->contactGroup->laposta_list_id : '');
 
         try {
+            // wait for 1,5 second
             sleep(1);
+            usleep(500000);
             $lapostaResponse = $member->delete($this->lapostaMemberId);
 
             if($this->contactGroup->contacts()->where('contact_id', $this->contact->id)->exists()){

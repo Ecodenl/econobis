@@ -1,6 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import Icon from 'react-icons-kit';
+import { trash } from 'react-icons-kit/fa/trash';
+
 const TeamDetailsContactGroupsView = props => {
     const { id, name } = props.contactGroup;
 
@@ -14,7 +17,7 @@ const TeamDetailsContactGroupsView = props => {
             <div className="col-sm-1">
                 {props.showActionButtons && props.permissions.createTeam ? (
                     <a role="button" onClick={props.toggleDelete}>
-                        <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                        <Icon className="mybtn-danger" size={14} icon={trash} />
                     </a>
                 ) : (
                     ''

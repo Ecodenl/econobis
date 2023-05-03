@@ -55,7 +55,7 @@ class AdministrationToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                         {this.props.administrationDetails.usesTwinfield == true &&
                             this.props.administrationDetails.twinfieldIsValid == true && (
                                 <>
@@ -64,11 +64,7 @@ class AdministrationToolbar extends Component {
                                         loadText={'Aan het synchroniseren'}
                                         buttonText={
                                             <span>
-                                                <span
-                                                    className="glyphicon glyphicon-refresh"
-                                                    title="Contacten naar Twinfield synchroniseren"
-                                                />
-                                                &nbsp;Contacten
+                                                Contacten
                                             </span>
                                         }
                                         onClickAction={this.syncContactsToTwinfield}
@@ -78,11 +74,7 @@ class AdministrationToolbar extends Component {
                                         loadText={'Aan het synchroniseren'}
                                         buttonText={
                                             <span>
-                                                <span
-                                                    className="glyphicon glyphicon-refresh"
-                                                    title="Nota's naar Twinfield synchroniseren"
-                                                />
-                                                &nbsp;Nota's
+                                                Nota's
                                             </span>
                                         }
                                         onClickAction={this.syncInvoicesToTwinfield}
@@ -92,18 +84,14 @@ class AdministrationToolbar extends Component {
                                         loadText={'Betalingen aan het ophalen'}
                                         buttonText={
                                             <span>
-                                                <span
-                                                    className="glyphicon glyphicon-refresh"
-                                                    title="Betalingen van Twinfield ophalen"
-                                                />
-                                                &nbsp;Betalingen
+                                                Betalingen
                                             </span>
                                         }
                                         onClickAction={this.syncInvoicesFromTwinfield}
                                     />
                                 </>
                             )}
-                        <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
+                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                     </div>
                 </div>
                 <div className="col-md-4">

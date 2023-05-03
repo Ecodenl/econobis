@@ -5,6 +5,9 @@ import MoneyPresenter from '../../../../helpers/MoneyPresenter';
 import validator from 'validator';
 moment.locale('nl');
 
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+
 class ParticipantsListItem extends Component {
     constructor(props) {
         super(props);
@@ -104,15 +107,15 @@ class ParticipantsListItem extends Component {
                 <td>{dateRegister ? moment(dateRegister).format('L') : ''}</td>
                 {this.props.projectTypeRef === 'postalcode_link_capital' ? (
                     <td>
-                        {address && address.primaryAddressEnergySupplierElectricity
-                            ? address.primaryAddressEnergySupplierElectricity.energySupplier.name
+                        {address && address.currentAddressEnergySupplierElectricity
+                            ? address.currentAddressEnergySupplierElectricity.energySupplier.name
                             : ''}
                     </td>
                 ) : null}
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''

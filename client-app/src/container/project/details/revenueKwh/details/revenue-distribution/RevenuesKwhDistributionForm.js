@@ -323,7 +323,7 @@ class RevenuesKwhDistributionForm extends Component {
                         </div>
                     ) : (
                         <div className="btn-group pull-right">
-                            <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={this.reloadDistributions} />
+                            <ButtonIcon iconName={'refresh'} onClickAction={this.reloadDistributions} />
                             {/*{this.props.revenuesKwh.confirmed == 1 &&*/}
                             {administrationIds.includes(this.props.revenuesKwh.project.administrationId) &&
                             this.state.createType === '' ? (

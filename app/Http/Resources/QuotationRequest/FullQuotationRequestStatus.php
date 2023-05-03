@@ -25,6 +25,7 @@ class FullQuotationRequestStatus extends JsonResource
             [
                 'id' => $this->id,
                 'name' => $this->name,
+                'codeRef' => $this->code_ref,
                 'opportunityActionName' => $this->opportunityAction->name,
             ];
     }

@@ -13,6 +13,7 @@ function EmailAnswerFormGeneral(props) {
     const [valueSelectedTo, setValueSelectedTo] = useState([]);
     const [valueSelectedCc, setValueSelectedCc] = useState([]);
     const [valueSelectedBcc, setValueSelectedBcc] = useState([]);
+    const [htmlBody, setValueHtmlBody] = useState('');
     const [selectedToMoreThanOne, setSelectedToMoreThanOne] = useState(false);
     const [includesEmailAddress, setIncludesEmailAddress] = useState(false);
 
@@ -33,7 +34,11 @@ function EmailAnswerFormGeneral(props) {
         handleEmailTemplates,
         handleFromIds,
     } = props;
-    const { mailboxId, to, cc, bcc, subject, htmlBody, emailTemplateId } = email;
+    const { mailboxId, to, cc, bcc, subject, initialHtmlBody, emailTemplateId } = email;
+
+    useEffect(() => {
+        handleTextChange(htmlBody);
+    }, [htmlBody]);
 
     useEffect(() => {
         setValueSelectedTo(getSelectedTo());
@@ -271,8 +276,9 @@ function EmailAnswerFormGeneral(props) {
                         {hasLoaded && (
                             <InputTinyMCEUpdateable
                                 label={'Tekst'}
-                                value={htmlBody}
-                                onChangeAction={handleTextChange}
+                                initialValue={initialHtmlBody}
+                                value={htmlBody != '' ? htmlBody : initialHtmlBody}
+                                onChangeAction={(newValueHtmlBody, editor) => setValueHtmlBody(newValueHtmlBody)}
                             />
                         )}
                     </div>

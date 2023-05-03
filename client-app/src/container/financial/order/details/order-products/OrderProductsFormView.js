@@ -1,6 +1,11 @@
 import React from 'react';
 import moment from 'moment/moment';
 import { connect } from 'react-redux';
+
+import Icon from 'react-icons-kit';
+import { trash } from 'react-icons-kit/fa/trash';
+import { pencil } from 'react-icons-kit/fa/pencil';
+
 moment.locale('nl');
 
 const OrderProductsFormView = props => {
@@ -59,14 +64,14 @@ const OrderProductsFormView = props => {
             <div className="col-sm-1">
                 {props.showActionButtons && props.permissions.manageFinancial ? (
                     <a role="button" onClick={props.openEdit}>
-                        <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                        <Icon className="mybtn-success" size={14} icon={pencil} />&nbsp;
                     </a>
                 ) : (
                     ''
                 )}
                 {props.showActionButtons && props.permissions.manageFinancial ? (
                     <a role="button" onClick={props.toggleDelete}>
-                        <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                        <Icon className="mybtn-danger" size={14} icon={trash} />&nbsp;
                     </a>
                 ) : (
                     ''

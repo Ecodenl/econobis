@@ -234,20 +234,16 @@ class RevenuesKwhController extends ApiController
         }
 
         list($quantityOfParticipationsAtStart, $quantityOfParticipations, $hasMutationQuantity) = $this->determineParticipationsQuantity($distributionKwh);
-        if($distributionKwhIsNew) {
-            if ($quantityOfParticipationsAtStart != 0 || $hasMutationQuantity) {
-                $distributionKwh->participations_quantity_at_start = $quantityOfParticipationsAtStart;
-                $distributionKwh->participations_quantity = $quantityOfParticipations;
-                $distributionKwh->save();
-            }
+        if ($quantityOfParticipationsAtStart != 0 || $hasMutationQuantity) {
+            $distributionKwh->participations_quantity_at_start = $quantityOfParticipationsAtStart;
+            $distributionKwh->participations_quantity = $quantityOfParticipations;
+            $distributionKwh->save();
         } else {
-            if ($quantityOfParticipationsAtStart != 0 || $hasMutationQuantity) {
-                $distributionKwh->participations_quantity_at_start = $quantityOfParticipationsAtStart;
-                $distributionKwh->participations_quantity = $quantityOfParticipations;
-                $distributionKwh->save();
-            } else {
+            // Indien $quantityOfParticipationsAtStart 0 is en er zijn geen mutaties en distribution niet was niet nieuw
+            if (!$distributionKwhIsNew) {
                 $revenuePartsKwhHasConfirmed = $revenuesKwh->partsKwh()->where('confirmed', true)->exists();
-                if(!$revenuePartsKwhHasConfirmed){
+                // en er is ook nog geen deelperiode bevestigd, dan verwijderen distributionKwh
+                if (!$revenuePartsKwhHasConfirmed) {
                     $deleteRevenueDistributionKwh = new DeleteRevenueDistributionKwh($distributionKwh);
                     $deleteRevenueDistributionKwh->delete();
                 }
@@ -264,11 +260,16 @@ class RevenuesKwhController extends ApiController
         $quantityOfParticipationsAtStart = 0;
         $quantityOfParticipations = 0;
         $dateBeginFromRegister = Carbon::parse($distributionKwh->participation->date_register)->format('Y-m-d');
+        $dateTerminatedParticipation = Carbon::parse($distributionKwh->participation->date_terminated)->format('Y-m-d');
         $dateBeginRevenuesKwh = Carbon::parse($distributionKwh->revenuesKwh->date_begin)->format('Y-m-d');
         $dateEndRevenuesKwh = Carbon::parse($distributionKwh->revenuesKwh->date_end)->format('Y-m-d');
         $mutations = $distributionKwh->participation->mutationsDefinitiveForKwhPeriod;
 
         $hasMutationQuantity = false;
+
+        if($distributionKwh->participation->date_terminated &&  $dateTerminatedParticipation < $dateBeginRevenuesKwh) {
+            return array($quantityOfParticipationsAtStart, $quantityOfParticipations, $hasMutationQuantity);
+        }
 
         foreach ($mutations as $mutation) {
             if ($mutation->date_entry >= $dateBeginFromRegister && $mutation->date_entry < $dateBeginRevenuesKwh) {

@@ -7,6 +7,15 @@ import InvoiceListSendNotification from './InvoiceListSendNotification';
 import InvoiceListSetIrrecoverable from './InvoiceListSetIrrecoverable';
 import InvoiceListSend from './InvoiceListSend';
 
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+import { eye } from 'react-icons-kit/fa/eye';
+import { envelopeO } from 'react-icons-kit/fa/envelopeO';
+import { euro } from 'react-icons-kit/fa/euro';
+import { bullhorn } from 'react-icons-kit/fa/bullhorn';
+import { remove } from 'react-icons-kit/fa/remove';
+import { trash } from 'react-icons-kit/fa/trash';
+
 class InvoicesListItem extends Component {
     constructor(props) {
         super(props);
@@ -205,28 +214,28 @@ class InvoicesListItem extends Component {
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)} title="Open nota">
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={pencil} />&nbsp;
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.viewItem(id)} title="Preview nota">
-                            <span className="glyphicon glyphicon-eye-open mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={eye} />&nbsp;
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons && this.props.statusId === 'to-send' && !errorStatus ? (
                         <a role="button" onClick={() => this.showSend()} title="Verstuur nota">
-                            <span className="glyphicon glyphicon-envelope mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={envelopeO} />&nbsp;
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons && this.props.statusId === 'error-sending' && !errorStatus ? (
                         <a role="button" onClick={() => this.showSend()} title="Verstuur nota opnieuw">
-                            <span className="glyphicon glyphicon-envelope mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={envelopeO} />&nbsp;
                         </a>
                     ) : (
                         ''
@@ -236,7 +245,7 @@ class InvoicesListItem extends Component {
                     this.state.showActionButtons &&
                     (this.props.statusId === 'sent' || this.props.statusId === 'exported') ? (
                         <a role="button" onClick={() => this.showSetPaid()} title="Zet op betaald">
-                            <span className="glyphicon glyphicon-euro mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={euro} />&nbsp;
                         </a>
                     ) : (
                         ''
@@ -246,7 +255,7 @@ class InvoicesListItem extends Component {
                     !this.props.dateExhortation &&
                     !this.props.isPaidByMollie ? (
                         <a role="button" onClick={() => this.showSendNotification()} title="Verstuur herinnering">
-                            <span className="glyphicon glyphicon-bullhorn mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={bullhorn} />&nbsp;
                         </a>
                     ) : (
                         ''
@@ -261,7 +270,7 @@ class InvoicesListItem extends Component {
                     this.props.statusId !== 'paid' &&
                     this.props.statusId !== 'irrecoverable' ? (
                         <a role="button" onClick={() => this.showSetIrrecoverable()} title="Zet op oninbaar">
-                            <span className="glyphicon glyphicon-remove mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={remove} />
                         </a>
                     ) : (
                         ''
@@ -272,7 +281,7 @@ class InvoicesListItem extends Component {
                             onClick={this.props.showDeleteItemModal.bind(this, id, number)}
                             title="Verwijder nota"
                         >
-                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                            <Icon className="mybtn-danger" size={14} icon={trash} />
                         </a>
                     ) : (
                         ''

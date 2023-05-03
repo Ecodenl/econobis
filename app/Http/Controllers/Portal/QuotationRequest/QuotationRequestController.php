@@ -200,8 +200,11 @@ class QuotationRequestController
     private function sendInspectionPlannedMail(QuotationRequest $quotationRequest)
     {
         $cooperation = Cooperation::first();
-        $emailTemplate = $cooperation->inspectionPlannedEmailTemplate;
+        if (!$cooperation) {
+            return;
+        }
 
+        $emailTemplate = $cooperation->inspectionPlannedEmailTemplate;
         if (!$emailTemplate) {
             return;
         }
@@ -224,8 +227,11 @@ class QuotationRequestController
     private function sendInspectionRecordedMail(QuotationRequest $quotationRequest)
     {
         $cooperation = Cooperation::first();
-        $emailTemplate = $cooperation->inspectionRecordedEmailTemplate;
+        if (!$cooperation) {
+            return;
+        }
 
+        $emailTemplate = $cooperation->inspectionRecordedEmailTemplate;
         if (!$emailTemplate) {
             return;
         }
@@ -248,8 +254,11 @@ class QuotationRequestController
     private function sendInspectionReleasedMail(QuotationRequest $quotationRequest)
     {
         $cooperation = Cooperation::first();
-        $emailTemplate = $cooperation->inspectionReleasedEmailTemplate;
+        if (!$cooperation) {
+            return;
+        }
 
+        $emailTemplate = $cooperation->inspectionReleasedEmailTemplate;
         if (!$emailTemplate) {
             return;
         }

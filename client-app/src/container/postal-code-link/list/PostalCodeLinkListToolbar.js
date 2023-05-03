@@ -9,8 +9,8 @@ const PostalCodeLinkListToolbar = props => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={props.refreshPostalCodeLinksData} />
-                    <ButtonIcon iconName={'glyphicon-plus'} onClickAction={props.toggleShowNew} />
+                    <ButtonIcon iconName={'refresh'} onClickAction={props.refreshPostalCodeLinksData} />
+                    <ButtonIcon iconName={'plus'} onClickAction={props.toggleShowNew} />
                 </div>
             </div>
             <div className="col-md-4">

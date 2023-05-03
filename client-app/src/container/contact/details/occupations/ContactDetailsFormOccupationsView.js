@@ -4,6 +4,10 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 moment.locale('nl');
 
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+import { trash } from 'react-icons-kit/fa/trash';
+
 const ContactDetailsFormOccupationsView = props => {
     const { primaryContact, contact, occupation, startDate, endDate, primary } = props.occupation;
 
@@ -35,14 +39,14 @@ const ContactDetailsFormOccupationsView = props => {
             <div className="col-sm-1">
                 {props.permissions.updateContactOccupation && props.showActionButtons ? (
                     <a role="button" onClick={props.openEdit}>
-                        <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                        <Icon className="mybtn-success" size={14} icon={pencil} />
                     </a>
                 ) : (
                     ''
                 )}
                 {props.permissions.deleteContactOccupation && props.showActionButtons ? (
                     <a role="button" onClick={props.toggleDelete}>
-                        <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                        <Icon className="mybtn-danger" size={14} icon={trash} />
                     </a>
                 ) : (
                     ''

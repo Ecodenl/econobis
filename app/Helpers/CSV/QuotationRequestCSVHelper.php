@@ -43,17 +43,16 @@ class QuotationRequestCSVHelper
             ]);
 
             $this->csvExporter->beforeEach(function ($quotationRequest) {
-
-                $quotationRequest->date_recorded = $this->formatDateTime($quotationRequest->date_recorded);
                 $quotationRequest->date_planned = $this->formatDateTime($quotationRequest->date_planned);
+                $quotationRequest->date_recorded = $this->formatDateTime($quotationRequest->date_recorded);
                 $quotationRequest->date_released = $this->formatDate($quotationRequest->date_released);
+                $quotationRequest->date_approved_client = $this->formatDate($quotationRequest->date_approved_client);
+                $quotationRequest->date_approved_project_manager = $this->formatDate($quotationRequest->date_approved_project_manager);
                 $quotationRequest->date_under_review = $this->formatDate($quotationRequest->date_under_review);
                 $quotationRequest->date_approved_external = $this->formatDate($quotationRequest->date_approved_external);
-                $quotationRequest->date_approved_project_manager = $this->formatDate($quotationRequest->date_approved_project_manager);
-                $quotationRequest->date_approved_client = $this->formatDate($quotationRequest->date_approved_client);
                 $quotationRequest->measures = '';
 
-                $quotationRequest->opportunityActionName = $quotationRequest->opportunityAction->name;
+                $quotationRequest->opportunityActionName = $quotationRequest->opportunityAction ? $quotationRequest->opportunityAction->name : '';
 
                 $measures = [];
                 foreach ($quotationRequest->opportunity->measures as $measure){

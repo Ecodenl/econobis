@@ -296,7 +296,7 @@ const mapStateToProps = state => ({
     contactStatuses: state.systemData.contactStatuses,
     participantMutationTypes: state.systemData.participantMutationTypes,
     participantProjectPayoutTypes: state.systemData.participantProjectPayoutTypes,
-    projectTypeRef: state.projectDetails.projectType.codeRef,
+    projectTypeRef: state.projectDetails.projectType?.codeRef,
 });
 
 export default connect(mapStateToProps)(ParticipantsListExtraFilters);

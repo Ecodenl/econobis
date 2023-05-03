@@ -34,6 +34,7 @@ class EmailNewApp extends Component {
                 templateId: '',
                 subject: '',
                 htmlBody: '',
+                initialHtmlBody: '',
                 attachments: [],
                 quotationRequestId: props.params.quotationRequestId ? props.params.quotationRequestId : '',
                 opportunityId: props.params.opportunityId ? props.params.opportunityId : '',
@@ -172,6 +173,7 @@ class EmailNewApp extends Component {
                     ...this.state.email,
                     subject: payload.subject ? payload.subject : this.state.email.subject,
                     htmlBody: payload.htmlBody ? payload.htmlBody : this.state.email.htmlBody,
+                    initialHtmlBody: payload.htmlBody ? payload.htmlBody : this.state.email.htmlBody,
                 },
             });
             if (payload.defaultAttachmentDocument) {
@@ -240,12 +242,12 @@ class EmailNewApp extends Component {
         });
     }
 
-    handleTextChange(event) {
+    handleTextChange(htmlBody) {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                htmlBody: event.target.getContent({ format: 'raw' }),
+                htmlBody: htmlBody,
             },
         });
     }

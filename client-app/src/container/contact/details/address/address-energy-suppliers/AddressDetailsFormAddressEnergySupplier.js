@@ -8,6 +8,9 @@ import PanelHeader from '../../../../../components/panel/PanelHeader';
 import { connect } from 'react-redux';
 import ButtonText from '../../../../../components/button/ButtonText';
 
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
+
 class AddressDetailsFormAddressEnergySupplier extends Component {
     constructor(props) {
         super(props);
@@ -34,7 +37,7 @@ class AddressDetailsFormAddressEnergySupplier extends Component {
                         (this.props.permissions.updatePerson || this.props.permissions.updateOrganisation) &&
                         this.props.addressEnergySupplierNewOrEditOpen == false && (
                             <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                                <span className="glyphicon glyphicon-plus" />
+                                <Icon size={14} icon={plus} />
                             </a>
                         )}
                 </PanelHeader>

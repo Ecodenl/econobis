@@ -9,14 +9,14 @@ const DocumentViewToolbar = props => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
-                    <ButtonIcon iconName={'glyphicon-download-alt'} onClickAction={props.download} />
+                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                    <ButtonIcon iconName={'download'} onClickAction={props.download} />
                     <ButtonIcon
-                        iconName={'glyphicon-envelope'}
+                        iconName={'envelopeO'}
                         onClickAction={() => hashHistory.push(`/email/nieuw/document/${props.documentId}`)}
                     />
-                    <ButtonIcon iconName={'glyphicon-zoom-in'} onClickAction={props.zoomIn} />
-                    <ButtonIcon iconName={'glyphicon-zoom-out'} onClickAction={props.zoomOut} />
+                    <ButtonIcon iconName={'searchPlus'} onClickAction={props.zoomIn} />
+                    <ButtonIcon iconName={'searchMinus'} onClickAction={props.zoomOut} />
                 </div>
             </div>
             <div className="col-md-4">

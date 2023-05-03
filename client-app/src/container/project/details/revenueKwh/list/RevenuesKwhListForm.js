@@ -44,7 +44,7 @@ const RevenuesKwhListForm = ({ permissions, projectId, projectStatus, revenuesKw
                             }
                             disabled={disabled || revenueDisabledKwh}
                             title={revenueTitleKwh}
-                            iconName={'glyphicon-plus'}
+                            iconName={'plus'}
                         />
                     </React.Fragment>
                 )}

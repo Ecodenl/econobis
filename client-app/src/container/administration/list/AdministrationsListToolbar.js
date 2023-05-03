@@ -13,9 +13,9 @@ const AdministrationsListToolbar = props => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={props.refreshAdministrationsData} />
+                    <ButtonIcon iconName={'refresh'} onClickAction={props.refreshAdministrationsData} />
                     {props.permissions.manageFinancial && (
-                        <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newAdministration} />
+                        <ButtonIcon iconName={'plus'} onClickAction={newAdministration} />
                     )}
                 </div>
             </div>

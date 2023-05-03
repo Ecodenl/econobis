@@ -97,8 +97,8 @@ class ContactController extends ApiController
                 $this->updatePhoneNumberPrimary($contact, $request);
                 $this->updatePhoneNumberTwo($contact, $request);
                 if (isset($request['primaryAddress'])) {
-                    $primaryAddressEnergySupplierElectricity = isset($request['primaryAddress']['primaryAddressEnergySupplierElectricity']) ? $request['primaryAddress']['primaryAddressEnergySupplierElectricity'] : null;
-                    $this->updateAddress(ContactType::PERSON, $contact, $request['primaryAddress'], $primaryAddressEnergySupplierElectricity, 'visit', $request->projectId);
+                    $currentAddressEnergySupplierElectricity = isset($request['primaryAddress']['currentAddressEnergySupplierElectricity']) ? $request['primaryAddress']['currentAddressEnergySupplierElectricity'] : null;
+                    $this->updateAddress(ContactType::PERSON, $contact, $request['primaryAddress'], $currentAddressEnergySupplierElectricity, 'visit', $request->projectId);
                 }
             }
 
@@ -111,8 +111,8 @@ class ContactController extends ApiController
                 $this->updatePhoneNumberPrimary($contact, $request);
                 $this->updatePhoneNumberTwo($contact, $request);
                 if (isset($request['visitAddress'])) {
-                    $primaryAddressEnergySupplierElectricity = isset($request['visitAddress']['primaryAddressEnergySupplierElectricity']) ? $request['visitAddress']['primaryAddressEnergySupplierElectricity'] : null;
-                    $this->updateAddress(ContactType::ORGANISATION, $contact, $request['visitAddress'], $primaryAddressEnergySupplierElectricity, 'visit', $request->projectId);
+                    $currentAddressEnergySupplierElectricity = isset($request['visitAddress']['currentAddressEnergySupplierElectricity']) ? $request['visitAddress']['currentAddressEnergySupplierElectricity'] : null;
+                    $this->updateAddress(ContactType::ORGANISATION, $contact, $request['visitAddress'], $currentAddressEnergySupplierElectricity, 'visit', $request->projectId);
                 }
                 if (isset($request['postalAddress'])) {
                     $this->updateAddress(ContactType::ORGANISATION, $contact, $request['postalAddress'], null, 'postal', null);
@@ -489,7 +489,7 @@ class ContactController extends ApiController
 
     }
 
-    protected function updateAddress($type, $contact, $addressData, $primaryAddressEnergySupplierElectricity, $addressType, $projectId)
+    protected function updateAddress($type, $contact, $addressData, $currentAddressEnergySupplierElectricity, $addressType, $projectId)
     {
         unset($addressData['country']);
         if($addressData['countryId'] == ''){
@@ -617,67 +617,67 @@ class ContactController extends ApiController
             }
         }
 
-        if ($address != null && $primaryAddressEnergySupplierElectricity != null ) {
-            $this->updateEnergySupplierToAddress($address, $primaryAddressEnergySupplierElectricity);
+        if ($address != null && $currentAddressEnergySupplierElectricity != null ) {
+            $this->updateEnergySupplierToAddress($address, $currentAddressEnergySupplierElectricity);
         }
 
     }
 
-    protected function updateEnergySupplierToAddress(Address $address, $primaryAddressEnergySupplierElectricityData)
+    protected function updateEnergySupplierToAddress(Address $address, $currentAddressEnergySupplierElectricityData)
     {
-        unset($primaryAddressEnergySupplierElectricityData['energySupplier']);
+        unset($currentAddressEnergySupplierElectricityData['energySupplier']);
 
-        $primaryAddressEnergySupplierElectricityData['addressId'] = $address->id;
+        $currentAddressEnergySupplierElectricityData['addressId'] = $address->id;
 
-        if(!isset($primaryAddressEnergySupplierElectricityData['energySupplierId']) || $primaryAddressEnergySupplierElectricityData['energySupplierId'] == ''){
-            $primaryAddressEnergySupplierElectricityData['energySupplierId'] = null;
+        if(!isset($currentAddressEnergySupplierElectricityData['energySupplierId']) || $currentAddressEnergySupplierElectricityData['energySupplierId'] == ''){
+            $currentAddressEnergySupplierElectricityData['energySupplierId'] = null;
         }
-        if(!isset($primaryAddressEnergySupplierElectricityData['memberSince']) || $primaryAddressEnergySupplierElectricityData['memberSince'] == ''){
-            $primaryAddressEnergySupplierElectricityData['memberSince'] = null;
+        if(!isset($currentAddressEnergySupplierElectricityData['memberSince']) || $currentAddressEnergySupplierElectricityData['memberSince'] == ''){
+            $currentAddressEnergySupplierElectricityData['memberSince'] = null;
         }
 
-        if (isset($primaryAddressEnergySupplierElectricityData['id']))
+        if (isset($currentAddressEnergySupplierElectricityData['id']))
         {
-            $primaryAddressEnergySupplierElectricityOld = $address->addressEnergySuppliers->find($primaryAddressEnergySupplierElectricityData['id']);
+            $currentAddressEnergySupplierElectricityOld = $address->addressEnergySuppliers->find($currentAddressEnergySupplierElectricityData['id']);
         }else{
-            $primaryAddressEnergySupplierElectricityOld = null;
+            $currentAddressEnergySupplierElectricityOld = null;
         }
 
-        $primaryAddressEnergySupplierElectricityNew = null;
+        $currentAddressEnergySupplierElectricityNew = null;
 
-        if ($primaryAddressEnergySupplierElectricityOld == null){
-            if($primaryAddressEnergySupplierElectricityData['energySupplierId'] == null || $primaryAddressEnergySupplierElectricityData['memberSince'] == null) {
+        if ($currentAddressEnergySupplierElectricityOld == null){
+            if($currentAddressEnergySupplierElectricityData['energySupplierId'] == null || $currentAddressEnergySupplierElectricityData['memberSince'] == null) {
                 return;
             }
-            $primaryAddressEnergySupplierElectricityNew = $this->createNewAddressEnergySupplier($address, $primaryAddressEnergySupplierElectricityData);
-            $primaryAddressEnergySupplierElectricityNew->save();
-            $this->checkSplitRevenuePart($primaryAddressEnergySupplierElectricityNew);
+            $currentAddressEnergySupplierElectricityNew = $this->createNewAddressEnergySupplier($address, $currentAddressEnergySupplierElectricityData);
+            $currentAddressEnergySupplierElectricityNew->save();
+            $this->checkSplitRevenuePart($currentAddressEnergySupplierElectricityNew);
         } else {
-            if($primaryAddressEnergySupplierElectricityData['energySupplierId'] == null) {
+            if($currentAddressEnergySupplierElectricityData['energySupplierId'] == null) {
                 // delete
-                $primaryAddressEnergySupplierElectricityOld->delete();
+                $currentAddressEnergySupplierElectricityOld->delete();
             }else{
-                if($primaryAddressEnergySupplierElectricityData['memberSince'] == null) {
+                if($currentAddressEnergySupplierElectricityData['memberSince'] == null) {
                     return;
                 }
-                if($primaryAddressEnergySupplierElectricityData['energySupplierId'] == $primaryAddressEnergySupplierElectricityOld->energy_supplier_id) {
+                if($currentAddressEnergySupplierElectricityData['energySupplierId'] == $currentAddressEnergySupplierElectricityOld->energy_supplier_id) {
                     // update
-                    $primaryAddressEnergySupplierElectricityNew = clone $primaryAddressEnergySupplierElectricityOld;
-                    $primaryAddressEnergySupplierElectricityNew->member_since = $primaryAddressEnergySupplierElectricityData['memberSince'];
-                    $primaryAddressEnergySupplierElectricityNew->es_number = $primaryAddressEnergySupplierElectricityData['esNumber'];
+                    $currentAddressEnergySupplierElectricityNew = clone $currentAddressEnergySupplierElectricityOld;
+                    $currentAddressEnergySupplierElectricityNew->member_since = $currentAddressEnergySupplierElectricityData['memberSince'];
+                    $currentAddressEnergySupplierElectricityNew->es_number = $currentAddressEnergySupplierElectricityData['esNumber'];
 
                     $addressEnergySupplierController = new AddressEnergySupplierController();
-                    $addressEnergySupplierController->validateAddressEnergySupplier($primaryAddressEnergySupplierElectricityNew, true);
+                    $addressEnergySupplierController->validateAddressEnergySupplier($currentAddressEnergySupplierElectricityNew, true);
 
-                    $primaryAddressEnergySupplierElectricityNew->save();
+                    $currentAddressEnergySupplierElectricityNew->save();
                 }else{
                     // new
-                    $primaryAddressEnergySupplierElectricityNew = $this->createNewAddressEnergySupplier($address, $primaryAddressEnergySupplierElectricityData);
-                    $primaryAddressEnergySupplierElectricityNew->save();
-                    $this->checkSplitRevenuePart($primaryAddressEnergySupplierElectricityNew);
+                    $currentAddressEnergySupplierElectricityNew = $this->createNewAddressEnergySupplier($address, $currentAddressEnergySupplierElectricityData);
+                    $currentAddressEnergySupplierElectricityNew->save();
+                    $this->checkSplitRevenuePart($currentAddressEnergySupplierElectricityNew);
                 }
 
-                $primaryAddressEnergySupplierElectricityNew->save();
+                $currentAddressEnergySupplierElectricityNew->save();
             }
         }
 
@@ -685,28 +685,28 @@ class ContactController extends ApiController
         $noteAddressEnergySupplier = "Controleren wijziging energie leverancier gegevens:\n";
         $addressEnergySupplierChanged = false;
 
-        if($primaryAddressEnergySupplierElectricityOld != null && ($primaryAddressEnergySupplierElectricityNew == null || $primaryAddressEnergySupplierElectricityOld->energy_supplier_id != $primaryAddressEnergySupplierElectricityNew->energy_supplier_id) ){
-            $noteAddressEnergySupplier = $noteAddressEnergySupplier . "Oude leverancier: " . EnergySupplier::find($primaryAddressEnergySupplierElectricityOld->energy_supplier_id)->name . "\n";
+        if($currentAddressEnergySupplierElectricityOld != null && ($currentAddressEnergySupplierElectricityNew == null || $currentAddressEnergySupplierElectricityOld->energy_supplier_id != $currentAddressEnergySupplierElectricityNew->energy_supplier_id) ){
+            $noteAddressEnergySupplier = $noteAddressEnergySupplier . "Oude leverancier: " . EnergySupplier::find($currentAddressEnergySupplierElectricityOld->energy_supplier_id)->name . "\n";
             $addressEnergySupplierChanged = true;
         }
-        if( ($primaryAddressEnergySupplierElectricityOld == null && $primaryAddressEnergySupplierElectricityNew != null && $primaryAddressEnergySupplierElectricityNew->energy_supplier_id != null) || ($primaryAddressEnergySupplierElectricityOld != null && $primaryAddressEnergySupplierElectricityNew != null && $primaryAddressEnergySupplierElectricityOld->energy_supplier_id != $primaryAddressEnergySupplierElectricityNew->energy_supplier_id)){
-            $noteAddressEnergySupplier = $noteAddressEnergySupplier . "Nieuwe leverancier:" . EnergySupplier::find($primaryAddressEnergySupplierElectricityNew->energy_supplier_id)->name . "\n";
+        if( ($currentAddressEnergySupplierElectricityOld == null && $currentAddressEnergySupplierElectricityNew != null && $currentAddressEnergySupplierElectricityNew->energy_supplier_id != null) || ($currentAddressEnergySupplierElectricityOld != null && $currentAddressEnergySupplierElectricityNew != null && $currentAddressEnergySupplierElectricityOld->energy_supplier_id != $currentAddressEnergySupplierElectricityNew->energy_supplier_id)){
+            $noteAddressEnergySupplier = $noteAddressEnergySupplier . "Nieuwe leverancier:" . EnergySupplier::find($currentAddressEnergySupplierElectricityNew->energy_supplier_id)->name . "\n";
             $addressEnergySupplierChanged = true;
         }
-        if($primaryAddressEnergySupplierElectricityOld != null && ($primaryAddressEnergySupplierElectricityNew == null || $primaryAddressEnergySupplierElectricityOld->es_number != $primaryAddressEnergySupplierElectricityNew->es_number) ){
-            $noteAddressEnergySupplier = $noteAddressEnergySupplier . "Oude klantnummer: " . $primaryAddressEnergySupplierElectricityOld->es_number . "\n";
+        if($currentAddressEnergySupplierElectricityOld != null && ($currentAddressEnergySupplierElectricityNew == null || $currentAddressEnergySupplierElectricityOld->es_number != $currentAddressEnergySupplierElectricityNew->es_number) ){
+            $noteAddressEnergySupplier = $noteAddressEnergySupplier . "Oude klantnummer: " . $currentAddressEnergySupplierElectricityOld->es_number . "\n";
             $addressEnergySupplierChanged = true;
         }
-        if( ($primaryAddressEnergySupplierElectricityOld == null && $primaryAddressEnergySupplierElectricityNew != null && $primaryAddressEnergySupplierElectricityNew->es_number != null) || ($primaryAddressEnergySupplierElectricityOld != null && $primaryAddressEnergySupplierElectricityNew != null && $primaryAddressEnergySupplierElectricityOld->es_number != $primaryAddressEnergySupplierElectricityNew->es_number)){
-            $noteAddressEnergySupplier = $noteAddressEnergySupplier . "Nieuwe klantnummer: " . $primaryAddressEnergySupplierElectricityNew->es_number . "\n";
+        if( ($currentAddressEnergySupplierElectricityOld == null && $currentAddressEnergySupplierElectricityNew != null && $currentAddressEnergySupplierElectricityNew->es_number != null) || ($currentAddressEnergySupplierElectricityOld != null && $currentAddressEnergySupplierElectricityNew != null && $currentAddressEnergySupplierElectricityOld->es_number != $currentAddressEnergySupplierElectricityNew->es_number)){
+            $noteAddressEnergySupplier = $noteAddressEnergySupplier . "Nieuwe klantnummer: " . $currentAddressEnergySupplierElectricityNew->es_number . "\n";
             $addressEnergySupplierChanged = true;
         }
-        if($primaryAddressEnergySupplierElectricityOld != null && ($primaryAddressEnergySupplierElectricityNew == null || $primaryAddressEnergySupplierElectricityOld->member_since != $primaryAddressEnergySupplierElectricityNew->member_since) ){
-            $noteAddressEnergySupplier = $noteAddressEnergySupplier . "Oude klant sinds: " . $primaryAddressEnergySupplierElectricityOld->member_since . "\n";
+        if($currentAddressEnergySupplierElectricityOld != null && ($currentAddressEnergySupplierElectricityNew == null || $currentAddressEnergySupplierElectricityOld->member_since != $currentAddressEnergySupplierElectricityNew->member_since) ){
+            $noteAddressEnergySupplier = $noteAddressEnergySupplier . "Oude klant sinds: " . $currentAddressEnergySupplierElectricityOld->member_since . "\n";
             $addressEnergySupplierChanged = true;
         }
-        if( ($primaryAddressEnergySupplierElectricityOld == null && $primaryAddressEnergySupplierElectricityNew != null && $primaryAddressEnergySupplierElectricityNew->member_since != null) || ($primaryAddressEnergySupplierElectricityOld != null && $primaryAddressEnergySupplierElectricityNew != null && $primaryAddressEnergySupplierElectricityOld->member_since != $primaryAddressEnergySupplierElectricityNew->member_since)){
-            $noteAddressEnergySupplier = $noteAddressEnergySupplier . "Nieuwe klant sinds: " . $primaryAddressEnergySupplierElectricityNew->member_since . "\n";
+        if( ($currentAddressEnergySupplierElectricityOld == null && $currentAddressEnergySupplierElectricityNew != null && $currentAddressEnergySupplierElectricityNew->member_since != null) || ($currentAddressEnergySupplierElectricityOld != null && $currentAddressEnergySupplierElectricityNew != null && $currentAddressEnergySupplierElectricityOld->member_since != $currentAddressEnergySupplierElectricityNew->member_since)){
+            $noteAddressEnergySupplier = $noteAddressEnergySupplier . "Nieuwe klant sinds: " . $currentAddressEnergySupplierElectricityNew->member_since . "\n";
             $addressEnergySupplierChanged = true;
         }
 
@@ -923,47 +923,47 @@ class ContactController extends ApiController
 
     /**
      * @param Address $address
-     * @param $primaryAddressEnergySupplierElectricityData
+     * @param $currentAddressEnergySupplierElectricityData
      * @return AddressEnergySupplier
      */
-    protected function createNewAddressEnergySupplier(Address $address, $primaryAddressEnergySupplierElectricityData): AddressEnergySupplier
+    protected function createNewAddressEnergySupplier(Address $address, $currentAddressEnergySupplierElectricityData): AddressEnergySupplier
     {
         if (!empty($address->ean_gas)) {
-            $primaryAddressEnergySupplierElectricityData['energySupplyTypeId'] = 3;
+            $currentAddressEnergySupplierElectricityData['energySupplyTypeId'] = 3;
         } else {
-            $primaryAddressEnergySupplierElectricityData['energySupplyTypeId'] = 2;
+            $currentAddressEnergySupplierElectricityData['energySupplyTypeId'] = 2;
         }
 
-        Validator::make($primaryAddressEnergySupplierElectricityData, [
+        Validator::make($currentAddressEnergySupplierElectricityData, [
             'energySupplyTypeId' => new EnumExists(EnergySupplierType::class),
             'isCurrentSupplier' => 'boolean',
         ]);
-        $primaryAddressEnergySupplierElectricityData = $this->sanitizeData($primaryAddressEnergySupplierElectricityData, [
+        $currentAddressEnergySupplierElectricityData = $this->sanitizeData($currentAddressEnergySupplierElectricityData, [
             'energySupplyTypeId' => 'nullable',
             'isCurrentSupplier' => 'boolean',
         ]);
-        $primaryAddressEnergySupplierElectricityNew = new AddressEnergySupplier($this->arrayKeysToSnakeCase($primaryAddressEnergySupplierElectricityData));
+        $currentAddressEnergySupplierElectricityNew = new AddressEnergySupplier($this->arrayKeysToSnakeCase($currentAddressEnergySupplierElectricityData));
 
         $addressEnergySupplierController = new AddressEnergySupplierController();
-        if ($addressEnergySupplierController->validateAddressEnergySupplier($primaryAddressEnergySupplierElectricityNew, false)) {
-            $addressEnergySupplierController->setEndDateAddressEnergySupplier($primaryAddressEnergySupplierElectricityNew);
+        if ($addressEnergySupplierController->validateAddressEnergySupplier($currentAddressEnergySupplierElectricityNew, false)) {
+            $addressEnergySupplierController->setEndDateAddressEnergySupplier($currentAddressEnergySupplierElectricityNew);
         }
-        return $primaryAddressEnergySupplierElectricityNew;
+        return $currentAddressEnergySupplierElectricityNew;
     }
 
     /**
-     * @param AddressEnergySupplier $primaryAddressEnergySupplierElectricityNew
+     * @param AddressEnergySupplier $currentAddressEnergySupplierElectricityNew
      */
-    protected function checkSplitRevenuePart(AddressEnergySupplier $primaryAddressEnergySupplierElectricityNew): void
+    protected function checkSplitRevenuePart(AddressEnergySupplier $currentAddressEnergySupplierElectricityNew): void
     {
         $revenuePartsKwhArray = [];
-        if (Carbon::parse($primaryAddressEnergySupplierElectricityNew->end_date_previous)->format('Y-m-d') != '1900-01-01') {
-            $participations = $primaryAddressEnergySupplierElectricityNew->address->participations;
+        if (Carbon::parse($currentAddressEnergySupplierElectricityNew->end_date_previous)->format('Y-m-d') != '1900-01-01') {
+            $participations = $currentAddressEnergySupplierElectricityNew->address->participations;
             foreach ($participations as $participation) {
                 $projectType = $participation->project->projectType;
                 if ($projectType->code_ref === 'postalcode_link_capital') {
                     $revenuesKwhHelper = new RevenuesKwhHelper();
-                    $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkRevenuePartsKwh($participation, $primaryAddressEnergySupplierElectricityNew->member_since, $primaryAddressEnergySupplierElectricityNew);
+                    $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkRevenuePartsKwh($participation, $currentAddressEnergySupplierElectricityNew->member_since, $currentAddressEnergySupplierElectricityNew);
                     if ($splitRevenuePartsKwhResponse) {
                         $revenuePartsKwhArray [] = $splitRevenuePartsKwhResponse;
                     }

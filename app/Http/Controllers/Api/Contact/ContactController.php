@@ -31,7 +31,7 @@ class ContactController extends Controller
         $this->authorize('view', $contact);
         $this->checkContactTeamAutorized($contact);
 
-        $contact->load(['addresses.addressEnergySuppliers.energySupplier', 'addresses.addressEnergySuppliers.energySupplyType', 'addresses.addressEnergySuppliers.energySupplyStatus', 'addresses.primaryAddressEnergySupplierElectricity', 'addresses.primaryAddressEnergySupplierElectricity.energySupplier', 'addresses.primaryAddressEnergySupplierGas', 'addresses.primaryAddressEnergySupplierGas.energySupplier', 'addresses.country', 'emailAddresses', 'phoneNumbers', 'createdBy', 'updatedBy', 'owner', 'portalUser', 'tasks', 'notes', 'financialOverviewContactsSend', 'documents', 'opportunities', 'participations', 'orders', 'invoices']);
+        $contact->load(['addresses.addressEnergySuppliers.energySupplier', 'addresses.addressEnergySuppliers.energySupplyType', 'addresses.addressEnergySuppliers.energySupplyStatus', 'addresses.currentAddressEnergySupplierElectricity', 'addresses.currentAddressEnergySupplierElectricity.energySupplier', 'addresses.currentAddressEnergySupplierGas', 'addresses.currentAddressEnergySupplierGas.energySupplier', 'addresses.country', 'emailAddresses', 'phoneNumbers', 'createdBy', 'updatedBy', 'owner', 'portalUser', 'tasks', 'notes', 'financialOverviewContactsSend', 'documents', 'opportunities', 'participations', 'orders', 'invoices']);
         $contact->contactNotes->load(['createdBy', 'updatedBy']);
         $contact->occupations->load(['occupation', 'primaryContact', 'contact']);
         $contact->primaryOccupations->load(['occupation', 'primaryContact', 'contact']);
@@ -138,7 +138,7 @@ class ContactController extends Controller
         return $result;
     }
 
-    public function peek($inspectionpersontype = null)
+    public function peek($inspectionPersonType = null)
     {
         $teamContactIds = Auth::user()->getTeamContactIds();
 
@@ -148,9 +148,9 @@ class ContactController extends Controller
             $query = Contact::select('id', 'full_name', 'number')->orderBy('full_name');
         }
 
-        if($inspectionpersontype !== null AND $inspectionpersontype !== "null") {
-            $query->where(function ($q) use ($inspectionpersontype) {
-                $q->where('inspection_person_type_id', $inspectionpersontype);
+        if($inspectionPersonType !== null AND $inspectionPersonType !== "null") {
+            $query->where(function ($q) use ($inspectionPersonType) {
+                $q->where('inspection_person_type_id', $inspectionPersonType);
                 $q->orWhereNull('inspection_person_type_id');
             });
         }
@@ -181,7 +181,7 @@ class ContactController extends Controller
         return ContactPeekInspectionPerson::collection($externalParties);
     }
 
-    public function search(Request $request)
+    public function search(Request $request, $inspectionPersonType = null)
     {
         $teamContactIds = Auth::user()->getTeamContactIds();
         if ($teamContactIds){
@@ -190,10 +190,17 @@ class ContactController extends Controller
             $contacts = Contact::select('id', 'full_name', 'number')->with('addresses')->orderBy('full_name');
         }
 
+        if($inspectionPersonType !== null AND $inspectionPersonType !== "null") {
+            $contacts->where(function ($q) use ($inspectionPersonType) {
+                $q->where('inspection_person_type_id', $inspectionPersonType);
+                $q->orWhereNull('inspection_person_type_id');
+            });
+        }
+
         foreach(explode(" ", $request->input('searchTerm')) as $searchTerm) {
             $contacts->where(function ($contacts) use ($searchTerm) {
                 $contacts->where('contacts.full_name', 'like', '%' . $searchTerm . '%')
-                ->orWhere('contacts.number', 'like', '%' . $searchTerm . '%');
+                    ->orWhere('contacts.number', 'like', '%' . $searchTerm . '%');
             });
         }
         $contacts = $contacts->get();

@@ -111,11 +111,11 @@ class LapostaMemberHelper
     {
         $errorsCheckBefore = [];
 
-        if(!$this->cooperation->use_laposta) {
+        if(!$this->cooperation || !$this->cooperation->use_laposta) {
             $errorsCheckBefore[] = 'Gebruik laposta niet geactiveerd';
         }
 
-        if(!$this->cooperation->laposta_key) {
+        if(!$this->cooperation || !$this->cooperation->laposta_key) {
             $errorsCheckBefore[] = 'Geen key Laposta bekend';
         }
 

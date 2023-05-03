@@ -5,6 +5,9 @@ import PanelHeader from "../../../components/panel/PanelHeader";
 import DistrictDetailsCoachesListItem from "./DistrictDetailsCoachesListItem";
 import DistrictDetailsCoachesNew from "./DistrictDetailsCoachesNew";
 
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
+
 export default function DistrictDetailsCoaches({district, onChange}) {
     const [showNew, setShowNew] = useState(false);
 
@@ -13,7 +16,7 @@ export default function DistrictDetailsCoaches({district, onChange}) {
             <PanelHeader>
                 <span className="h5 text-bold">Gekoppelde coaches</span>
                 <a role="button" className="pull-right" onClick={() => setShowNew(true)}>
-                    <span className="glyphicon glyphicon-plus"/>
+                    <Icon size={14} icon={plus} />
                 </a>
             </PanelHeader>
             <PanelBody>

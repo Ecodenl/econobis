@@ -106,6 +106,7 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
 
     const filterAvailabilitiesByPlannedQuotationRequests = (coach) => {
         let blockedTimeslots = coach.quotationRequests.map(qr => {
+
             return {
                 from: moment(qr.datePlanned).subtract(coach.coachMinMinutesBetweenAppointments, 'minutes'),
                 to: moment(qr.datePlanned).add(qr.durationMinutes, 'minutes').add(coach.coachMinMinutesBetweenAppointments, 'minutes'),
@@ -118,6 +119,14 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
             let timeslot = blockedTimeslots[i];
 
             availabilities = availabilities.reduce((acc, availability) => {
+                /**
+                 * De beschikbaarheid valt volledig binnen het geblokkeerde slot;
+                 * de beschikbaarheid vervalt dus volledig.
+                 */
+                if (availability.from.isSameOrAfter(timeslot.from) && availability.to.isSameOrBefore(timeslot.to)) {
+                    return acc;
+                }
+
                 /**
                  * Het geblokkeerde slot valt volledig binnen de beschikbaarheid;
                  * de beschikbaarheid moet dus in twee stukken worden gesplitst.
@@ -141,7 +150,7 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
                  * Het geblokkeerde slot start in de beschikbaarheid, maar eindigt buiten de beschikbaarheid.
                  * De beschikbaarheid moet dus worden ingekort.
                  */
-                if (availability.from.isBefore(timeslot.from) && availability.to.isAfter(timeslot.from)) {
+                if (availability.from.isBefore(timeslot.from) && availability.to.isSameOrAfter(timeslot.from)) {
                     acc.push({
                         ...availability,
                         from: availability.from,
@@ -155,7 +164,7 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
                  * Het geblokkeerde slot start voor de beschikbaarheid, maar eindigt in de beschikbaarheid.
                  * De beschikbaarheid moet dus worden ingekort.
                  */
-                if (availability.from.isBefore(timeslot.to) && availability.to.isAfter(timeslot.to)) {
+                if (availability.from.isSameOrBefore(timeslot.to) && availability.to.isAfter(timeslot.to)) {
                     acc.push({
                         ...availability,
                         from: timeslot.to,
@@ -385,7 +394,7 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
             <PanelHeader>
                 <div className="row">
                     <div className={'col-sm-3'}>
-                        <ButtonIcon disabled={!getPreviousWeek()} iconName={'glyphicon-arrow-left'}
+                        <ButtonIcon disabled={!getPreviousWeek()} iconName={'arrowLeft'}
                                     buttonClassName="btn-default btn-sm"
                                     onClickAction={() => setCurrentWeek(getPreviousWeek())}/>
                     </div>
@@ -436,7 +445,7 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
                         </select>
                     </div>
                     <div className={'col-sm-3'} style={{textAlign: 'right'}}>
-                        <ButtonIcon disabled={!getNextWeek()} iconName={'glyphicon-arrow-right'}
+                        <ButtonIcon disabled={!getNextWeek()} iconName={'arrowRight'}
                                     buttonClassName="btn-default btn-sm"
                                     onClickAction={() => setCurrentWeek(getNextWeek())}/>
                     </div>

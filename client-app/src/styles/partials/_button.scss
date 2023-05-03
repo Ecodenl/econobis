@@ -30,10 +30,10 @@
   z-index: 99;
 }
 
-.glyphicon-refresh-animate {
-  animation: spin 1s infinite linear;
-  -webkit-animation: spin2 1s infinite linear;
-}
+//.glyphicon-refresh-animate {
+//  animation: spin 1s infinite linear;
+//  -webkit-animation: spin2 1s infinite linear;
+//}
 
 @-webkit-keyframes spin2 {
   from { -webkit-transform: rotate(0deg);}
@@ -45,9 +45,9 @@
   to { transform: scale(1) rotate(360deg);}
 }
 
-.glyphicon-refresh-centered {
-
-}
+//.glyphicon-refresh-centered {
+//
+//}
 
 .dropdown-menu > li > a {
   text-align: left;

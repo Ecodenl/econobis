@@ -3,6 +3,10 @@ import moment from 'moment/moment';
 import { connect } from 'react-redux';
 import MoneyPresenter from '../../../../helpers/MoneyPresenter';
 
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+import { trash } from 'react-icons-kit/fa/trash';
+
 const ProjectDetailsFormValueCourseView = props => {
     const { project, date, bookWorth, transferWorth, active } = props.valueCourse;
 
@@ -22,14 +26,14 @@ const ProjectDetailsFormValueCourseView = props => {
             <div className="col-sm-1">
                 {props.showActionButtons ? (
                     <a role="button" onClick={props.openEdit}>
-                        <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                        <Icon className="mybtn-success" size={14} icon={pencil} />
                     </a>
                 ) : (
                     ''
                 )}
                 {props.showActionButtons && props.permissions.manageFinancial ? (
                     <a role="button" onClick={props.toggleDelete}>
-                        <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                        <Icon className="mybtn-danger" size={14} icon={trash} />
                     </a>
                 ) : (
                     ''

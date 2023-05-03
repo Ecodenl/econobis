@@ -30,8 +30,8 @@ const InvoiceProductsFormView = props => {
                     {/*{props.showActionButtons &&*/}
                     {/*props.permissions.manageFinancial &&*/}
                     {/*props.invoiceDetails.statusId === 'to-send' ? (*/}
-                    {/*    <a role="button" onClick={props.openEdit}>*/}
-                    {/*        <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}*/}
+                    {/*    <a className="btn btn-success btn-sm" role="button" onClick={props.openEdit}>*/}
+                    {/*        <Icon size={14} icon={pencil} />{' '}/}
                     {/*    </a>*/}
                     {/*) : (*/}
                     {/*    ''*/}
@@ -39,8 +39,8 @@ const InvoiceProductsFormView = props => {
                     {/*{props.showActionButtons &&*/}
                     {/*props.permissions.manageFinancial &&*/}
                     {/*props.invoiceDetails.statusId === 'to-send' ? (*/}
-                    {/*    <a role="button" onClick={props.toggleDelete}>*/}
-                    {/*        <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}*/}
+                    {/*    <a className="btn btn-success btn-sm" role="button" onClick={props.toggleDelete}>*/}
+                    {/*        <Icon size={14} icon={trash} />{' '}/}
                     {/*    </a>*/}
                     {/*) : (*/}
                     {/*    ''*/}

@@ -3,6 +3,10 @@ import { hashHistory } from 'react-router';
 import moment from 'moment';
 import validator from 'validator';
 import MoneyPresenter from '../../../helpers/MoneyPresenter';
+
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+
 moment.locale('nl');
 
 class ParticipantsListItem extends Component {
@@ -106,14 +110,14 @@ class ParticipantsListItem extends Component {
                 <td>{uniqueMutationStatuses.map(item => item.name).join(', ')}</td>
                 <td>{dateRegister ? moment(dateRegister).format('L') : ''}</td>
                 <td>
-                    {address.primaryAddressEnergySupplierElectricity
-                        ? address.primaryAddressEnergySupplierElectricity.energySupplier.name
+                    {address.currentAddressEnergySupplierElectricity
+                        ? address.currentAddressEnergySupplierElectricity.energySupplier.name
                         : ''}
                 </td>
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''

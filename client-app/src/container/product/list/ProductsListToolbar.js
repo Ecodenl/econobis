@@ -13,9 +13,9 @@ const ProductsListToolbar = props => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={props.refreshProductsData} />
+                    <ButtonIcon iconName={'refresh'} onClickAction={props.refreshProductsData} />
                     {props.permissions.manageFinancial && (
-                        <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newProduct} />
+                        <ButtonIcon iconName={'plus'} onClickAction={newProduct} />
                     )}
                 </div>
             </div>

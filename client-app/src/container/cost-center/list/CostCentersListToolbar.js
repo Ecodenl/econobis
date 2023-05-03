@@ -16,9 +16,9 @@ class CostCentersListToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
-                        <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={refreshCostCentersData} />
+                        <ButtonIcon iconName={'refresh'} onClickAction={refreshCostCentersData} />
                         {permissions.manageFinancial && (
-                            <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newCostCenter} />
+                            <ButtonIcon iconName={'plus'} onClickAction={newCostCenter} />
                         )}
                     </div>
                 </div>

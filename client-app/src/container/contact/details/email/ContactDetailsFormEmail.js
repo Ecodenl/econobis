@@ -7,6 +7,9 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import { connect } from 'react-redux';
 
+import Icon from "react-icons-kit";
+import { plus } from 'react-icons-kit/fa/plus';
+
 class ContactDetailsFormEmail extends Component {
     constructor(props) {
         super(props);
@@ -29,7 +32,7 @@ class ContactDetailsFormEmail extends Component {
                     <span className="h5 text-bold">E-mail gegevens</span>
                     {this.props.permissions.createContactEmail && (
                         <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                            <span className="glyphicon glyphicon-plus" />
+                            <Icon size={14} icon={plus} />
                         </a>
                     )}
                 </PanelHeader>

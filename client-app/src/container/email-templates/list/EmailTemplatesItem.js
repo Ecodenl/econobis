@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+
 class EmailTemplatesItem extends Component {
     constructor(props) {
         super(props);
@@ -45,7 +48,7 @@ class EmailTemplatesItem extends Component {
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''

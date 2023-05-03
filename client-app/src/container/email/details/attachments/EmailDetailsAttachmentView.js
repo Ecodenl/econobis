@@ -5,6 +5,11 @@ import Modal from '../../../../components/modal/Modal';
 import PdfViewer from '../../../../components/pdf/PdfViewer';
 import { hashHistory } from 'react-router';
 
+import Icon from 'react-icons-kit';
+import { fileO } from 'react-icons-kit/fa/fileO';
+import { share } from 'react-icons-kit/fa/share';
+import { eye } from 'react-icons-kit/fa/eye';
+
 class EmailDetailsAttachmentView extends Component {
     constructor(props) {
         super(props);
@@ -73,21 +78,21 @@ class EmailDetailsAttachmentView extends Component {
                 <div className="col-sm-1">
                     {this.props.showActionButtons ? (
                         <a role="button" onClick={() => this.downloadItem(id, name)}>
-                            <span className="glyphicon glyphicon-open-file mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={fileO} />
                         </a>
                     ) : (
                         ''
                     )}
                     {this.props.showActionButtons ? (
                         <a role="button" onClick={() => this.saveToAlfresco(id)}>
-                            <span className="glyphicon glyphicon-share mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={share} />
                         </a>
                     ) : (
                         ''
                     )}
                     {this.props.showActionButtons && hasValidExtension ? (
                         <a role="button" onClick={() => this.viewItem(id, name)}>
-                            <span className="glyphicon glyphicon-eye-open mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={eye} />
                         </a>
                     ) : (
                         ''

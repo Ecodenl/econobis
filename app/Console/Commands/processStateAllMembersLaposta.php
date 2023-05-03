@@ -48,7 +48,7 @@ class processStateAllMembersLaposta extends Command
         }
 
         $cooperation = Cooperation::first();
-        if($cooperation->use_laposta) {
+        if($cooperation && $cooperation->use_laposta) {
             $lapostaHelper = new LapostaHelper();
             $lapostaHelper->processStateAllMembersLaposta();
         }

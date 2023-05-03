@@ -3,6 +3,9 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 
+import Icon from 'react-icons-kit';
+import { trash } from 'react-icons-kit/fa/trash';
+
 const TeamDetailsUsersView = props => {
     const { id, fullName } = props.user;
 
@@ -16,7 +19,7 @@ const TeamDetailsUsersView = props => {
             <div className="col-sm-1">
                 {props.showActionButtons && props.permissions.createTeam ? (
                     <a role="button" onClick={props.toggleDelete}>
-                        <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                        <Icon className="mybtn-danger" size={14} icon={trash} />
                     </a>
                 ) : (
                     ''

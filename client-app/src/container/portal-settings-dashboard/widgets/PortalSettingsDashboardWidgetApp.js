@@ -10,6 +10,9 @@ import PortalDashboardWidgetOrderTable from './PortalDashboardWidgetOrderTable';
 import ButtonText from '../../../components/button/ButtonText';
 import { hashHistory } from 'react-router';
 
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
+
 class PortalSettingsDashboardWidgetApp extends Component {
     constructor(props) {
         super(props);
@@ -118,7 +121,7 @@ class PortalSettingsDashboardWidgetApp extends Component {
                     <span className="h5 text-bold">Widgets</span>
                     {!showEditSort && (
                         <a role="button" className="pull-right" onClick={this.newWidget}>
-                            <span className="glyphicon glyphicon-plus" title="Toevoegen widget" />
+                            <Icon size={14} icon={plus} title="Toevoegen widget" />
                         </a>
                     )}
                 </PanelHeader>

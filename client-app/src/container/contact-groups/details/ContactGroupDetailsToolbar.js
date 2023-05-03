@@ -68,9 +68,9 @@ function ContactGroupDetailsToolbar({
                     <PanelBody className={'panel-small'}>
                         <div className="col-md-3">
                             <div className="btn-group" role="group">
-                                <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
+                                <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                                 {permissions.manageGroup && !contactGroup.isUsedInComposedGroup && (
-                                    <ButtonIcon iconName={'glyphicon-trash'} onClickAction={toggleDelete} />
+                                    <ButtonIcon iconName={'trash'} onClickAction={toggleDelete} />
                                 )}
                                 <ButtonText
                                     buttonText={`Open lijst (${numberOfContacts})`}

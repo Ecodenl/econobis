@@ -61,6 +61,7 @@ class ConceptApp extends Component {
                         bcc: payload.bcc ? payload.bcc.join(',') : '',
                         subject: payload.subject ? payload.subject : '',
                         htmlBody: payload.htmlBody ? payload.htmlBody : '',
+                        initialHtmlBody: payload.htmlBody ? payload.htmlBody : '',
                         attachments: payload.attachments ? payload.attachments : '',
                         quotationRequestId: payload.quotationRequestId ? payload.quotationRequestId : '',
                         intakeId: payload.intakeId ? payload.intakeId : '',
@@ -139,12 +140,12 @@ class ConceptApp extends Component {
         });
     }
 
-    handleTextChange(event) {
+    handleTextChange(htmlBody) {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                htmlBody: event.target.getContent({ format: 'raw' }),
+                htmlBody: htmlBody,
             },
         });
     }

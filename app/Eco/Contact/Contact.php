@@ -291,9 +291,9 @@ class Contact extends Model
     {
         return $this->hasManyThrough(AddressEnergySupplier::class, Address::class)->orderBy('address_energy_suppliers.id', 'desc');
     }
-    public function primaryAddressEnergySuppliers()
+    public function currentAddressEnergySuppliers()
     {
-        return $this->hasManyThrough(AddressEnergySupplier::class, Address::class)->where('address_energy_suppliers.is_current_supplier', true)->orderBy('address_energy_suppliers.id', 'desc');
+        return $this->hasManyThrough(AddressEnergySupplier::class, Address::class)->where('addresses.type_id', '!=', 'old')->where('address_energy_suppliers.is_current_supplier', true)->orderBy('address_energy_suppliers.id', 'desc');
     }
 
     public function participations()

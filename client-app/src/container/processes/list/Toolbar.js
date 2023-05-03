@@ -8,8 +8,8 @@ function ProccessesListToolbar({ countTotal, reloadJobslogs }) {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
-                    <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={reloadJobslogs} />
+                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                    <ButtonIcon iconName={'refresh'} onClickAction={reloadJobslogs} />
                 </div>
             </div>
             <div className="col-md-4">

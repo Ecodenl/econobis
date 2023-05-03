@@ -1,5 +1,5 @@
 const webpack = require('webpack');
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const common = require('./webpack.common.js');
 const path = require('path');
@@ -8,14 +8,13 @@ require('dotenv').config({ path: '.env.development' });
 
 module.exports = merge(common, {
     mode: 'development',
-    output: {
-        path: path.join(__dirname, 'dist'),
-        chunkFilename: '[name].js',
-    },
+    // output: {
+    // path: path.join(__dirname, 'dist'),
+    // chunkFilename: '[name].js',
+    // },
     devtool: 'source-map',
     devServer: {
-        contentBase: './dist',
-        hot: true,
+        static: './dist',
     },
     plugins: [
         new HtmlWebpackPlugin({

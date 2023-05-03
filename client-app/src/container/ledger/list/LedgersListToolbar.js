@@ -16,9 +16,9 @@ class LedgersListToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
-                        <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={refreshLedgersData} />
+                        <ButtonIcon iconName={'refresh'} onClickAction={refreshLedgersData} />
                         {permissions.manageFinancial && (
-                            <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newLedger} />
+                            <ButtonIcon iconName={'plus'} onClickAction={newLedger} />
                         )}
                     </div>
                 </div>

@@ -44,7 +44,7 @@ class HoomdossierHelper
         $this->contact->save();
 
         // Add contact to contactGroup 'Hoom'
-        if($this->cooperation->hoom_group_id) {
+        if($this->cooperation && $this->cooperation->hoom_group_id) {
             $hoomdossierContactGroup = ContactGroup::find($this->cooperation->hoom_group_id);
 
             $hoomdossierContactGroup->contacts()->syncWithoutDetaching([ $this->contact->id => ['member_created_at' => \Illuminate\Support\Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
@@ -56,7 +56,7 @@ class HoomdossierHelper
         }
 
         // Send email to contact
-        if($this->cooperation->hoom_email_template_id && $this->cooperation->send_email) {
+        if($this->cooperation && $this->cooperation->hoom_email_template_id && $this->cooperation->send_email) {
             $this->sendMail();
         }
 
@@ -116,7 +116,7 @@ class HoomdossierHelper
     private function sendToHoomdossier()
     {
         // If hoom link contains .test then return fake id
-        if(strpos ($this->cooperation->hoom_link, '.test')) {
+        if($this->cooperation && strpos($this->cooperation->hoom_link, '.test')) {
             $testResponse = json_encode(["account_id" => rand(1,3000),
                 "user_id" => rand(1,3000)]);
             return $testResponse;

@@ -19,6 +19,7 @@ class EmailTemplateNewApp extends Component {
             emailTemplate: {
                 name: '',
                 subject: '',
+                initialHtmlBody: '',
                 htmlBody: '',
             },
             errors: {
@@ -51,12 +52,12 @@ class EmailTemplateNewApp extends Component {
         });
     };
 
-    handleTextChange(event) {
+    handleTextChange(value, editor) {
         this.setState({
             ...this.state,
             emailTemplate: {
                 ...this.state.emailTemplate,
-                htmlBody: event.target.getContent({ format: 'raw' }),
+                htmlBody: value,
             },
         });
     }

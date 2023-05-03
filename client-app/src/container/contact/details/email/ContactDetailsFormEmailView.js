@@ -3,6 +3,10 @@ import { connect } from 'react-redux';
 
 import GetNameByIdHelper from '../../../../helpers/GetNameByIdHelper';
 
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+import { trash } from 'react-icons-kit/fa/trash';
+
 const ContactDetailsFormEmailView = props => {
     const { email, typeId, primary } = props.emailAddress;
 
@@ -22,14 +26,14 @@ const ContactDetailsFormEmailView = props => {
             <div className="col-sm-1">
                 {props.permissions.updateContactEmail && props.showActionButtons ? (
                     <a role="button" onClick={props.openEdit}>
-                        <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                        <Icon className="mybtn-success" size={14} icon={pencil} />
                     </a>
                 ) : (
                     ''
                 )}
                 {props.permissions.deleteContactEmail && props.showActionButtons ? (
                     <a role="button" onClick={props.toggleDelete}>
-                        <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                        <Icon className="mybtn-danger" size={14} icon={trash} />
                     </a>
                 ) : (
                     ''

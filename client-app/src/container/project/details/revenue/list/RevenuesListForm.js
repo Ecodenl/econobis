@@ -8,6 +8,9 @@ import { hashHistory, Link } from 'react-router';
 import { connect } from 'react-redux';
 import ButtonIcon from '../../../../../components/button/ButtonIcon';
 
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
+
 const RevenuesListForm = ({
     permissions,
     projectId,
@@ -63,7 +66,7 @@ const RevenuesListForm = ({
                                 }
                                 disabled={disabled || revenueDisabledEuro}
                                 title={revenueTitleEuro}
-                                iconName={'glyphicon-plus'}
+                                iconName={'plus'}
                             />
                         ) : (
                             ''
@@ -72,7 +75,7 @@ const RevenuesListForm = ({
                         {projectType.codeRef === 'loan' || projectType.codeRef === 'obligation' ? (
                             <div className="nav navbar-nav btn-group pull-right" role="group">
                                 <button className="btn btn-link" data-toggle="dropdown">
-                                    <span className="glyphicon glyphicon-plus" />
+                                    <Icon size={14} icon={plus} />
                                 </button>
                                 <ul className="dropdown-menu">
                                     <li className={disabled || revenueDisabledEuro ? 'disabled' : null}>

@@ -11,6 +11,9 @@ import InputToggle from '../../../components/form/InputToggle';
 import PanelHeader from '../../../components/panel/PanelHeader';
 import TaskNewFormExtraConnections from './extra-connections/TaskNewFormExtraConnections';
 import InputSelectGroup from '../../../components/form/InputSelectGroup';
+import Icon from 'react-icons-kit';
+import { angleRight } from 'react-icons-kit/fa/angleRight';
+import { angleDown } from 'react-icons-kit/fa/angleDown';
 
 const TaskNewForm = props => {
     const {
@@ -138,9 +141,9 @@ const TaskNewForm = props => {
                 <PanelHeader>
                     <div className="row" onClick={props.toggleExtraConnections}>
                         {props.showExtraConnections ? (
-                            <span className="glyphicon glyphicon-menu-down" />
+                            <Icon size={21} icon={angleDown} />
                         ) : (
-                            <span className="glyphicon glyphicon-menu-right" />
+                            <Icon size={21} icon={angleRight} />
                         )}
                         <span className="h5">Overige koppelingen</span>
                     </div>

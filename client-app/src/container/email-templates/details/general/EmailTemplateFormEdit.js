@@ -56,12 +56,12 @@ class EmailTemplateFormEdit extends Component {
         });
     };
 
-    handleTextChange(event) {
+    handleTextChange(value, editor) {
         this.setState({
             ...this.state,
             emailTemplate: {
                 ...this.state.emailTemplate,
-                htmlBody: event.target.getContent({ format: 'raw' }),
+                htmlBody: value,
             },
         });
     }
@@ -91,7 +91,7 @@ class EmailTemplateFormEdit extends Component {
     render() {
         const { name, subject, htmlBody, defaultAttachmentDocumentId } = this.state.emailTemplate;
         const { createdBy } = this.props.emailTemplate;
-
+        const initialHtmlBody = this.props.emailTemplate.htmlBody;
         return (
             <div>
                 <div className="row">
@@ -145,7 +145,12 @@ class EmailTemplateFormEdit extends Component {
                 <div className="row">
                     <div className="form-group col-sm-12">
                         <div className="row">
-                            <InputTinyMCE label={'Tekst'} value={htmlBody} onChangeAction={this.handleTextChange} />
+                            <InputTinyMCE
+                                label={'Tekst'}
+                                initialValue={initialHtmlBody}
+                                value={htmlBody}
+                                onChangeAction={this.handleTextChange}
+                            />
                         </div>
                     </div>
                 </div>

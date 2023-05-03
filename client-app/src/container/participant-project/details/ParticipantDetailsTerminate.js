@@ -47,7 +47,6 @@ const ParticipantDetailsTerminate = ({
                 payoutPercentageTerminated,
             })
                 .then(payload => {
-                    console.log(payload);
                     fetchParticipantProjectDetails(participantProject.id);
                     closeDeleteItemModal();
                     if (projectTypeCodeRef === 'postalcode_link_capital' && redirectRevenueSplit) {

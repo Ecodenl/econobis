@@ -3,6 +3,10 @@ import moment from 'moment/moment';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
+import Icon from 'react-icons-kit';
+import { eye } from 'react-icons-kit/fa/eye';
+import { pencil } from 'react-icons-kit/fa/pencil';
+
 const RevenuePartsKwhListFormView = ({
     revenuePartKwh: revenuePartKwhDetails,
     showActionButtons,
@@ -66,18 +70,14 @@ const RevenuePartsKwhListFormView = ({
                         role="button"
                         onClick={() => hashHistory.push(`/project/opbrengst-kwh/${revenueId}/deelperiode/${id}`)}
                     >
-                        <span
-                            className={`glyphicon ${
-                                confirmed ? 'glyphicon-eye-open' : 'glyphicon-pencil'
-                            } mybtn-success`}
-                        />{' '}
+                        <Icon className="mybtn-success" size={14} icon={confirmed ? eye : pencil} />
                     </a>
                 ) : (
                     ''
                 )}
                 {/*{showActionButtons && permissions.manageFinancial && !confirmed ? (*/}
-                {/*    <a role="button" onClick={toggleDelete}>*/}
-                {/*        <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}*/}
+                {/*    <a className="btn btn-success btn-sm" role="button" onClick={toggleDelete}>*/}
+                {/*        <Icon size={14} icon={trash} />{' '}*/}
                 {/*    </a>*/}
                 {/*) : (*/}
                 {/*    ''*/}

@@ -7,6 +7,9 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import { connect } from 'react-redux';
 
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
+
 function CampaignDetailsProjectManagers({ campaignId, campaignName, projectManagers, permissions, fetchCampaignData }) {
     const [showNew, setShowNew] = useState(false);
 
@@ -20,7 +23,7 @@ function CampaignDetailsProjectManagers({ campaignId, campaignName, projectManag
                 <span className="h5 text-bold">Betrokken projectmanagers</span>
                 {permissions.manageMarketing && (
                     <a role="button" className="pull-right" onClick={toggleShowNew}>
-                        <span className="glyphicon glyphicon-plus" />
+                        <Icon size={14} icon={plus} />
                     </a>
                 )}
             </PanelHeader>

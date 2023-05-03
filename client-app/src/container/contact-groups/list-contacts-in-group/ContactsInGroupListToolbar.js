@@ -10,6 +10,9 @@ import fileDownload from 'js-file-download';
 import moment from 'moment/moment';
 import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
 
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
+
 class ContactsInGroupListToolbar extends Component {
     constructor(props) {
         super(props);
@@ -83,7 +86,7 @@ class ContactsInGroupListToolbar extends Component {
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
                         <ButtonIcon
-                            iconName={'glyphicon-refresh'}
+                            iconName={'refresh'}
                             onClickAction={this.props.refreshContactsInGroupData}
                         />
                         {(permissions.updateContactGroupMembers ||
@@ -92,12 +95,12 @@ class ContactsInGroupListToolbar extends Component {
                             contactGroupDetails.type.id === 'static' && (
                                 <div className="nav navbar-nav btn-group">
                                     <button onClick={this.toggleModalAddToGroup} className="btn btn-success btn-sm">
-                                        <span className="glyphicon glyphicon-plus" />
+                                        <Icon size={14} icon={plus} />
                                     </button>
                                 </div>
                             )}
-                        <ButtonIcon iconName={'glyphicon-download-alt'} onClickAction={this.getCSV} />
-                        <ButtonIcon iconName={'glyphicon-envelope'} onClickAction={this.sendEmail} />
+                        <ButtonIcon iconName={'download'} onClickAction={this.getCSV} />
+                        <ButtonIcon iconName={'envelopeO'} onClickAction={this.sendEmail} />
                     </div>
                 </div>
                 <div className="col-md-4">

@@ -5,7 +5,6 @@ import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from '../../../../components/panel/PanelFooter';
 
 import { fetchDocumentTemplate } from '../../../../actions/document-templates/DocumentTemplateDetailsActions';
-import InputTinyMCE from '../../../../components/form/InputTinyMCE';
 import validator from 'validator';
 import DocumentTemplateAPI from '../../../../api/document-template/DocumentTemplateAPI';
 import moment from 'moment/moment';
@@ -14,6 +13,7 @@ import ViewText from '../../../../components/form/ViewText';
 import InputSelect from '../../../../components/form/InputSelect';
 import InputMultiSelect from '../../../../components/form/InputMultiSelect';
 import InputToggle from '../../../../components/form/InputToggle';
+import InputTinyMCE from '../../../../components/form/InputTinyMCE';
 
 class DocumentTemplateFormEdit extends Component {
     constructor(props) {
@@ -99,12 +99,12 @@ class DocumentTemplateFormEdit extends Component {
         });
     };
 
-    handleTextChange(event) {
+    handleTextChange(value, editor) {
         this.setState({
             ...this.state,
             documentTemplate: {
                 ...this.state.documentTemplate,
-                htmlBody: event.target.getContent({ format: 'raw' }),
+                htmlBody: value,
             },
         });
     }
@@ -161,6 +161,7 @@ class DocumentTemplateFormEdit extends Component {
             active,
         } = this.state.documentTemplate;
         const { number, createdAt, documentTemplateType, createdBy } = this.props.documentTemplate;
+        const initialHtmlBody = this.props.documentTemplate.htmlBody;
 
         return (
             <div>
@@ -212,7 +213,12 @@ class DocumentTemplateFormEdit extends Component {
                 <div className="row">
                     <div className="form-group col-sm-12">
                         <div className="row">
-                            <InputTinyMCE label={'Tekst'} value={htmlBody} onChangeAction={this.handleTextChange} />
+                            <InputTinyMCE
+                                label={'Tekst'}
+                                initialValue={initialHtmlBody}
+                                value={htmlBody}
+                                onChangeAction={this.handleTextChange}
+                            />
                         </div>
                     </div>
                 </div>

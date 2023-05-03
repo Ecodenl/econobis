@@ -77,7 +77,7 @@ const FinancialOverviewDetailsFormGeneralView = ({
                                     <div className="col-md-10">
                                         <div className="btn-group btn-group-flex" role="group">
                                             <ButtonIcon
-                                                iconName={'glyphicon-refresh'}
+                                                iconName={'refresh'}
                                                 onClickAction={callFetchFinancialOverviewDetails}
                                             />
                                         </div>

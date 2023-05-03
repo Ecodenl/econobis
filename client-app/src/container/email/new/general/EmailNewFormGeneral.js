@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import InputMultiSelect from '../../../../components/form/InputMultiSelect';
 import InputTinyMCEUpdateable from '../../../../components/form/InputTinyMCEUpdateable';
 import InputText from '../../../../components/form/InputText';
 import * as PropTypes from 'prop-types';
@@ -16,6 +15,7 @@ function EmailNewFormGeneral(props) {
     const [valueSelectedTo, setValueSelectedTo] = useState([]);
     const [valueSelectedCc, setValueSelectedCc] = useState([]);
     const [valueSelectedBcc, setValueSelectedBcc] = useState([]);
+    const [htmlBody, setValueHtmlBody] = useState('');
     const [selectedToMoreThanOne, setSelectedToMoreThanOne] = useState(false);
     const [includesEmailAddress, setIncludesEmailAddress] = useState(false);
 
@@ -36,7 +36,11 @@ function EmailNewFormGeneral(props) {
         handleInputChange,
         handleTextChange,
     } = props;
-    const { from, to, cc, bcc, subject, htmlBody, emailTemplateId, contactGroupId } = email;
+    const { from, to, cc, bcc, subject, initialHtmlBody, emailTemplateId, contactGroupId } = email;
+
+    useEffect(() => {
+        handleTextChange(htmlBody);
+    }, [htmlBody]);
 
     useEffect(() => {
         setValueSelectedTo(getSelectedTo());
@@ -145,7 +149,7 @@ function EmailNewFormGeneral(props) {
         } catch (error) {
             setLoadingContact(false);
 
-            // console.log(error);
+            console.log(error);
         }
     };
 
@@ -293,8 +297,9 @@ function EmailNewFormGeneral(props) {
                         <div className="row">
                             <InputTinyMCEUpdateable
                                 label={'Tekst'}
-                                value={htmlBody}
-                                onChangeAction={handleTextChange}
+                                initialValue={initialHtmlBody}
+                                value={htmlBody != '' ? htmlBody : initialHtmlBody}
+                                onChangeAction={(newValueHtmlBody, editor) => setValueHtmlBody(newValueHtmlBody)}
                             />
                         </div>
                     </div>

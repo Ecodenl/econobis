@@ -81,6 +81,7 @@ class ParticipantMutationCollection extends JsonResource
                                 ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
                                 ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
                                 ['type' => 'integer', 'label' => 'Aantal obligaties', 'value' => $this->quantity],
+                                ['type' => 'money', 'label' => 'Obligatie rekening', 'value' => ($this->amount + $this->participation_worth)],
                                 ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
                             ],
                         ];
@@ -92,6 +93,7 @@ class ParticipantMutationCollection extends JsonResource
                                 ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
                                 ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
                                 ['type' => 'integer', 'label' => 'Aantal obligaties', 'value' => $this->quantity],
+                                ['type' => 'money', 'label' => 'Obligatie rekening', 'value' => ($this->amount + $this->participation_worth)],
                                 ['type' => 'money', 'label' => $projectTextTransactionCosts, 'value' => $this->transaction_costs_amount],
                                 ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
                             ],

@@ -37,6 +37,11 @@ class FinancialOverviewListItem extends Component {
 
     render() {
         const { id, description, year, administration, definitive, statusId, dateProcessed, permissions } = this.props;
+
+        // list of administration ids that the current user has access to
+        const administrationIds = this.props.administrations.map((administration) => administration.id);
+        let hasAccessToAdministration = (administrationIds.indexOf(administration.id) > -1);
+
         let status = '';
         switch (statusId) {
             case 'in-progress':
@@ -58,7 +63,7 @@ class FinancialOverviewListItem extends Component {
         return (
             <tr
                 className={this.state.highlightRow}
-                onDoubleClick={permissions.manageFinancial ? () => this.openItem(id) : null}
+                onDoubleClick={permissions.manageFinancial && hasAccessToAdministration ? () => this.openItem(id) : null}
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
@@ -68,7 +73,7 @@ class FinancialOverviewListItem extends Component {
                 <td>{status}</td>
                 <td>{dateProcessedFormated}</td>
                 <td>
-                    {this.state.showActionButtons && permissions.manageFinancial ? (
+                    {this.state.showActionButtons && permissions.manageFinancial && hasAccessToAdministration ? (
                         <a role="button" onClick={() => this.openItem(id)}>
                             <Icon className="mybtn-success" size={14} icon={pencil} />&nbsp;
                         </a>
@@ -78,6 +83,7 @@ class FinancialOverviewListItem extends Component {
                     {this.state.showActionButtons &&
                     permissions.manageFinancial &&
                     !definitive &&
+                    hasAccessToAdministration &&
                     statusId === 'concept' ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, description)}>
                             <Icon className="mybtn-danger" size={14} icon={trash} />&nbsp;
@@ -94,6 +100,7 @@ class FinancialOverviewListItem extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
+        administrations: state.meDetails.administrations,
     };
 };
 

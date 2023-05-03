@@ -60,7 +60,7 @@ const RevenuesListFormView = ({
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        projectTypeCodeRef: state.projectDetails.projectType.codeRef,
+        projectTypeCodeRef: state.projectDetails.projectType?.codeRef,
     };
 };
 

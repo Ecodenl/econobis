@@ -61,6 +61,7 @@ class GridInvoice extends JsonResource
             'invoicePaidInTwinfield' => $invoicePaidInTwinfield,
             'compatibleWithTwinfield' => $this->isInvoiceFullyCompatibleWithTwinfield(),
             'twinfieldNumber' => $this->twinfield_number,
+            'okForSepa' => $this->isInvoiceOkForSepa(),
 
             'emailToAddress' => $this->emailToAddress ? $this->emailToAddress : 'Geen e-mail bekend',
 

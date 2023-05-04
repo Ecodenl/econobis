@@ -13,9 +13,9 @@ const WebformsListToolbar = props => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={props.refreshWebformsData} />
+                    <ButtonIcon iconName={'refresh'} onClickAction={props.refreshWebformsData} />
                     {props.permissions.manageWebform && (
-                        <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newWebform} />
+                        <ButtonIcon iconName={'plus'} onClickAction={newWebform} />
                     )}
                 </div>
             </div>

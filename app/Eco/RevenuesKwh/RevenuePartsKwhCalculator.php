@@ -66,7 +66,7 @@ class RevenuePartsKwhCalculator
             $conceptDistributionValuesKwh->save();
         }
 
-        $distributionPartsKwh = RevenueDistributionPartsKwh::where('revenue_id', $revenueId)->where('parts_id', $partsId)->get();
+        $distributionPartsKwh = RevenueDistributionPartsKwh::where('revenue_id', $revenueId)->where('parts_id', $partsId)->where('status', 'concept')->get();
         foreach ($distributionPartsKwh as $distributionPartKwh) {
             $totalDeliveredKwh = RevenueDistributionValuesKwh::where('revenue_id', $revenueId)->where('distribution_id', $distributionPartKwh->distribution_id)->where('parts_id', $partsId)->sum('delivered_kwh');
             $distributionPartKwh->delivered_kwh = $totalDeliveredKwh;

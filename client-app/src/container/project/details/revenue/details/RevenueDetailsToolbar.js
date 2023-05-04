@@ -54,13 +54,13 @@ class RevenueDetailsToolbar extends Component {
                             <div className="col-md-2">
                                 <div className="btn-group btn-group-flex margin-small" role="group">
                                     <ButtonIcon
-                                        iconName={'glyphicon-arrow-left'}
+                                        iconName={'arrowLeft'}
                                         onClickAction={browserHistory.goBack}
                                     />
                                     {this.props.permissions.manageFinancial && !this.props.revenue.confirmed && (
-                                        <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                     )}
-                                    <ButtonIcon iconName={'glyphicon-download-alt'} onClickAction={this.getCSV} />
+                                    <ButtonIcon iconName={'download'} onClickAction={this.getCSV} />
                                 </div>
                             </div>
                             <div className="col-md-8">

@@ -25,6 +25,7 @@ class DocumentTemplateNewApp extends Component {
                 roleIds: '',
                 roleIdsSelected: [],
                 characteristic: '',
+                initialHtmlBody: '',
                 htmlBody: '',
                 baseTemplateId: '',
                 headerTemplateId: '',
@@ -110,12 +111,12 @@ class DocumentTemplateNewApp extends Component {
         }
     };
 
-    handleTextChange(event) {
+    handleTextChange(value, editor) {
         this.setState({
             ...this.state,
             documentTemplate: {
                 ...this.state.documentTemplate,
-                htmlBody: event.target.getContent({ format: 'raw' }),
+                htmlBody: value,
             },
         });
     }

@@ -4,6 +4,9 @@ import moment from 'moment';
 
 import ViewText from '../../../../components/form/ViewText';
 import PanelHeader from '../../../../components/panel/PanelHeader';
+import Icon from 'react-icons-kit';
+import { angleRight } from 'react-icons-kit/fa/angleRight';
+import { angleDown } from 'react-icons-kit/fa/angleDown';
 
 const TaskDetailsFormGeneralView = props => {
     const {
@@ -132,9 +135,9 @@ const TaskDetailsFormGeneralView = props => {
                 <PanelHeader>
                     <div className="row" onClick={props.toggleExtraConnections}>
                         {props.showExtraConnections ? (
-                            <span className="glyphicon glyphicon-menu-down" />
+                            <Icon size={21} icon={angleDown} />
                         ) : (
-                            <span className="glyphicon glyphicon-menu-right" />
+                            <Icon size={21} icon={angleRight} />
                         )}
                         <span className="h5">Overige koppelingen</span>
                     </div>

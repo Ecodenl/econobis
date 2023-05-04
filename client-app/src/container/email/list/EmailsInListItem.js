@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import moment from 'moment';
 import EmailAPI from '../../../api/email/EmailAPI';
+import Icon from "react-icons-kit";
 moment.locale('nl');
+import { trash } from 'react-icons-kit/fa/trash';
+import { pencil } from 'react-icons-kit/fa/pencil';
 
 class EmailsInListItem extends Component {
     constructor(props) {
@@ -71,14 +74,14 @@ class EmailsInListItem extends Component {
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons && (folder === 'inbox' || folder === 'sent') ? (
                         <a role="button" onClick={() => this.removeEmail(id)}>
-                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                            <Icon className="mybtn-danger" size={14} icon={trash} />
                         </a>
                     ) : (
                         ''

@@ -26,6 +26,9 @@ import HousingFilesAPI from '../../../../api/housing-file/HousingFilesAPI';
 import ParticipantsProjectAPI from '../../../../api/participant-project/ParticipantsProjectAPI';
 import OrdersAPI from '../../../../api/order/OrdersAPI';
 import InvoicesAPI from '../../../../api/invoice/InvoicesAPI';
+import Icon from 'react-icons-kit';
+import { angleRight } from 'react-icons-kit/fa/angleRight';
+import { angleDown } from 'react-icons-kit/fa/angleDown';
 
 class TaskDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -429,9 +432,9 @@ class TaskDetailsFormGeneralEdit extends Component {
                     <PanelHeader>
                         <div className="row" onClick={this.props.toggleExtraConnections}>
                             {this.props.showExtraConnections ? (
-                                <span className="glyphicon glyphicon-menu-down" />
+                                <Icon size={21} icon={angleDown} />
                             ) : (
-                                <span className="glyphicon glyphicon-menu-right" />
+                                <Icon size={21} icon={angleRight} />
                             )}
                             <span className="h5">Overige koppelingen</span>
                         </div>

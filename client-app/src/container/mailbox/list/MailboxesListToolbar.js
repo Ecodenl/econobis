@@ -15,8 +15,8 @@ const MailboxesListToolbar = props => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={props.refreshData} />
-                    {permissions.createMailbox && <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newMailbox} />}
+                    <ButtonIcon iconName={'refresh'} onClickAction={props.refreshData} />
+                    {permissions.createMailbox && <ButtonIcon iconName={'plus'} onClickAction={newMailbox} />}
                 </div>
             </div>
             <div className="col-md-4">

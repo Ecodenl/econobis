@@ -13,9 +13,9 @@ const MailgunDomainsListToolbar = props => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={props.refreshMailgunDomainsData} />
+                    <ButtonIcon iconName={'refresh'} onClickAction={props.refreshMailgunDomainsData} />
                     {props.permissions.manageMailgunDomain && (
-                        <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newMailgunDomain} />
+                        <ButtonIcon iconName={'plus'} onClickAction={newMailgunDomain} />
                     )}
                 </div>
             </div>

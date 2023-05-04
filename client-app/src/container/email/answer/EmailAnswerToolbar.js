@@ -9,7 +9,7 @@ const EmailAnswerToolbar = ({ handleSubmit, loading }) => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group margin-small margin-10-right" role="group">
-                    <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
+                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                 </div>
                 <div className="btn-group margin-small" role="group">
                     <ButtonText

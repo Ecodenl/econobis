@@ -2,7 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import GetNameByIdHelper from '../../../../helpers/GetNameByIdHelper';
-import { FaRegLightbulb } from 'react-icons/fa';
+import Icon from "react-icons-kit";
+import { pencil } from 'react-icons-kit/fa/pencil';
+import { trash } from 'react-icons-kit/fa/trash';
+import { lightbulbO } from 'react-icons-kit/fa/lightbulbO';
 
 const ContactDetailsFormAddressView = props => {
     const {
@@ -14,25 +17,25 @@ const ContactDetailsFormAddressView = props => {
         city,
         primary,
         country,
-        primaryAddressEnergySupplierElectricity,
-        primaryAddressEnergySupplierGas,
+        currentAddressEnergySupplierElectricity,
+        currentAddressEnergySupplierGas,
     } = props.address;
 
-    let primaryAddressEnergySupplierNames = [];
-    let primaryAddressEnergySupplierNumbers = [];
-    if (primaryAddressEnergySupplierElectricity && primaryAddressEnergySupplierElectricity.energySupplyTypeId === 3) {
-        primaryAddressEnergySupplierNames.push(primaryAddressEnergySupplierElectricity.energySupplier.name);
-        primaryAddressEnergySupplierNumbers.push(primaryAddressEnergySupplierElectricity.esNumber);
+    let currentAddressEnergySupplierNames = [];
+    let currentAddressEnergySupplierNumbers = [];
+    if (currentAddressEnergySupplierElectricity && currentAddressEnergySupplierElectricity.energySupplyTypeId === 3) {
+        currentAddressEnergySupplierNames.push(currentAddressEnergySupplierElectricity.energySupplier.name);
+        currentAddressEnergySupplierNumbers.push(currentAddressEnergySupplierElectricity.esNumber);
     } else {
-        if (primaryAddressEnergySupplierElectricity && primaryAddressEnergySupplierElectricity.energySupplier) {
-            primaryAddressEnergySupplierNames.push(
-                primaryAddressEnergySupplierElectricity.energySupplier.name + ' (Electra)'
+        if (currentAddressEnergySupplierElectricity && currentAddressEnergySupplierElectricity.energySupplier) {
+            currentAddressEnergySupplierNames.push(
+                currentAddressEnergySupplierElectricity.energySupplier.name + ' (Electra)'
             );
-            primaryAddressEnergySupplierNumbers.push(primaryAddressEnergySupplierElectricity.esNumber + ' (Electra)');
+            currentAddressEnergySupplierNumbers.push(currentAddressEnergySupplierElectricity.esNumber + ' (Electra)');
         }
-        if (primaryAddressEnergySupplierGas && primaryAddressEnergySupplierGas.energySupplier) {
-            primaryAddressEnergySupplierNames.push(primaryAddressEnergySupplierGas.energySupplier.name + ' (Gas)');
-            primaryAddressEnergySupplierNumbers.push(primaryAddressEnergySupplierGas.esNumber + ' (Gas)');
+        if (currentAddressEnergySupplierGas && currentAddressEnergySupplierGas.energySupplier) {
+            currentAddressEnergySupplierNames.push(currentAddressEnergySupplierGas.energySupplier.name + ' (Gas)');
+            currentAddressEnergySupplierNumbers.push(currentAddressEnergySupplierGas.esNumber + ' (Gas)');
         }
     }
 
@@ -53,7 +56,7 @@ const ContactDetailsFormAddressView = props => {
                 </div>
                 {/*<div className="col-sm-2">{country ? country.name : ''}</div>*/}
                 <div className="col-sm-2">
-                    {primaryAddressEnergySupplierNames.map(energySupplierName => {
+                    {currentAddressEnergySupplierNames.map(energySupplierName => {
                         return (
                             <>
                                 {energySupplierName}
@@ -63,7 +66,7 @@ const ContactDetailsFormAddressView = props => {
                     })}
                 </div>
                 <div className="col-sm-2">
-                    {primaryAddressEnergySupplierNumbers.map(energySupplierNumber => {
+                    {currentAddressEnergySupplierNumbers.map(energySupplierNumber => {
                         return (
                             <>
                                 {energySupplierNumber}
@@ -81,21 +84,17 @@ const ContactDetailsFormAddressView = props => {
                               {props.permissions.updateContactAddress &&
                                   (props.numberOfAddressesNotOld > 0 || primary == true) && (
                                       <>
-                                          <a role="button" onClick={props.openEdit}>
-                                              <span
-                                                  className="glyphicon glyphicon-pencil mybtn-success"
-                                                  title="Wijzigen adresgegevens"
-                                              />{' '}
+                                          <a role="button" onClick={props.openEdit} title="Wijzigen adresgegevens">
+                                              <Icon className="mybtn-success" size={14} icon={pencil} />
                                           </a>
                                       </>
                                   )}
                               <a role="button" onClick={props.openAddressEnergySupplier} title="Leveranciergegevens">
-                                  {/*<span className="glyphicon glyphicon-cog mybtn-success" />*/}
-                                  <FaRegLightbulb className="mybtn-success" size={'15px'} />
+                                  <Icon className="mybtn-success" size={14} icon={lightbulbO} />
                               </a>
                               {props.permissions.deleteContactAddress && (
                                   <a role="button" onClick={props.toggleDelete} title="Verwijderen adres">
-                                      <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                                      <Icon className="mybtn-danger" size={14} icon={trash} />
                                   </a>
                               )}
                           </>

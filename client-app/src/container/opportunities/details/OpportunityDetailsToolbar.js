@@ -35,13 +35,13 @@ class OpportunityDetailsToolbar extends Component {
                             <div className="col-md-2">
                                 <div className="btn-group btn-group-flex margin-small" role="group">
                                     <ButtonIcon
-                                        iconName={'glyphicon-arrow-left'}
+                                        iconName={'arrowLeft'}
                                         onClickAction={browserHistory.goBack}
                                     />
                                     {this.props.permissions.manageOpportunity && (
-                                        <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                     )}
-                                    <ButtonIcon iconName={'glyphicon-envelope'} onClickAction={this.sendMail} />
+                                    <ButtonIcon iconName={'envelopeO'} onClickAction={this.sendMail} />
                                 </div>
                             </div>
                             <div className="col-md-8">

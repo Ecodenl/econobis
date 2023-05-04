@@ -101,14 +101,14 @@ class ParticipantDetailsToolbar extends Component {
                             <div className="col-md-3">
                                 <div className="btn-group btn-group-flex margin-small" role="group">
                                     <ButtonIcon
-                                        iconName={'glyphicon-arrow-left'}
+                                        iconName={'arrowLeft'}
                                         onClickAction={browserHistory.goBack}
                                     />
                                     {allowDeleteAndTerminateButtons && (
                                         <>
                                             {this.props.permissions.manageParticipation && (
                                                 <ButtonIcon
-                                                    iconName={'glyphicon-trash'}
+                                                    iconName={'trash'}
                                                     onClickAction={this.toggleDelete}
                                                 />
                                             )}

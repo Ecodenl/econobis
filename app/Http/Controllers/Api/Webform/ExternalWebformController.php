@@ -146,6 +146,7 @@ class ExternalWebformController extends Controller
     private $processWorkflowEmailNewTask = false;
     private $createOpportunityToEmail = [];
     private $processWorkflowCreateOpportunity = false;
+    private $onlyCheckLastName = false;
 
     public function post(string $apiKey, Request $request)
     {
@@ -420,6 +421,7 @@ class ExternalWebformController extends Controller
                 'contact_groep_ids' => 'contact_group_ids',
                 // Hoomdossier aanmaken
                 'hoomdossier_aanmaken' => 'create_hoom_dossier',
+                'forceer_nieuw_contact' => 'force_new_contact',
             ],
             'address_energy_consumption_gas' => [
                 // Address energy consumption gas
@@ -549,6 +551,16 @@ class ExternalWebformController extends Controller
 
         $mapping['task']['taak_opmerkingen'] = 'note';
 
+        // geen organisatie, geen voorletters, voornaam en tussenvoegsel maar wel achternaam, dan alleen checks op achternaam.
+        if(empty(trim($request->get('organisatienaam', '')))
+            && !$request->get('voorletters')
+            && !$request->get('voornaam')
+            && !$request->get('tussenvoegsel')
+            && !empty(trim($request->get('achternaam', '')))
+        ){
+            $this->onlyCheckLastName = true;
+        }
+
         $data = [];
         foreach ($mapping as $groupname => $fields) {
             foreach ($fields as $inputName => $outputName) {
@@ -628,7 +640,15 @@ class ExternalWebformController extends Controller
         Auth::setUser($ownerAndResponsibleUser);
         $this->log('Default Eigenaar contact verantwoordelijke gebruiker (zelfde als eigenaar) : ' . $ownerAndResponsibleUser->id);
 
-        $contact = $this->getContactByAddressAndEmail($data);
+        $this->log('Forceer nieuw contact : ' . $data['force_new_contact']);
+
+        if($data['force_new_contact'] == 1) {
+            $contact = null;
+            $this->contactActie = "NCG";
+        } else {
+            $contact = $this->getContactByAddressAndEmail($data);
+        }
+
         $this->log('Actie: ' . $this->contactActie);
         if($contact){
             $this->log('Actie bij contact: ' . $contact->id);
@@ -678,7 +698,9 @@ class ExternalWebformController extends Controller
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw adres toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
                     $note .= "Adres type : " . AddressType::get($addressTypeId)->name . "\n";
+                    $note .= "Voorletters : " . $data['initials'] . "\n";
                     $note .= "Voornaam : " . $data['first_name'] . "\n";
+                    $note .= "Tussenvoegsel : " . $data['last_name_prefix'] . "\n";
                     $note .= "Achternaam : " . $data['last_name'] . "\n";
                     $note .= "Straat : " . $data['address_street'] . "\n";
                     $note .= "Nummer : " . $data['address_number'] . "\n";
@@ -726,7 +748,9 @@ class ExternalWebformController extends Controller
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Gegevens contact met emailadres " . $data['email_address'] . " (".$contact->number.") gevonden bij op basis van e-mail maar zonder goede match op NAW.\n";
                     $note .= "Adres type : " . AddressType::get($addressTypeId)->name . "\n";
+                    $note .= "Voorletters : " . $data['initials'] . "\n";
                     $note .= "Voornaam : " . $data['first_name'] . "\n";
+                    $note .= "Tussenvoegsel : " . $data['last_name_prefix'] . "\n";
                     $note .= "Achternaam : " . $data['last_name'] . "\n";
                     $note .= "Straat : " . $data['address_street'] . "\n";
                     $note .= "Nummer : " . $data['address_number'] . "\n";
@@ -743,11 +767,22 @@ class ExternalWebformController extends Controller
         if (!$contact) {
             // Person of organisatie is niet gevonden, uitvoeren acties
             // contactActie = "NC"  -> Nieuw contact
+            // contactActie = "NCG" -> Nieuw contact geforceerd
             // contactActie = "NCT" -> Nieuw contact + taak
-            $this->log('Geen enkel contact kunnen vinden op basis van meegegeven data, nieuw contact aanmaken.');
+            if($this->contactActie == 'NCG'){
+                $this->log('Geforceerd nieuw contact aanmaken');
+            } else {
+                $this->log('Geen enkel contact kunnen vinden op basis van meegegeven data, nieuw contact aanmaken.');
+            }
 
             $contact = $this->addContact($data, $ownerAndResponsibleUser);
             switch($this->contactActie){
+                case 'NCG' :
+                    $note = "Webformulier " . $webform->name . ".\n\n";
+                    $note .= "Nieuw contact " . $contact->full_name . " (".$contact->number.") geforceerd aangemaakt zonder check op adres en/of emailadres bij bestaande contact(en).\n";
+                    $note .= "Controleer contactgegevens\n";
+                    $this->addTaskCheckContact($responsibleIds, $contact, $webform, $note);
+                    break;
                 case 'NCT' :
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw contact " . $contact->full_name . " (".$contact->number.") aangemaakt op adres wat al voorkomt bij bestaande contact(en).\n";
@@ -826,24 +861,33 @@ class ExternalWebformController extends Controller
                     $queryEmail->where('email', $data['email_address']);
                 });
                 $this->log('Aantal gevonden op adres en emailadres ' . $data['email_address'] . ' : ' . $contactEmailQuery->count());
-                // Gevonden op adres maar niet op emailcontact. Check op voornaam + achternaam (of naam in geval van organisatie)
+                // Gevonden op adres maar niet op emailcontact. Check op voornaam + achternaam (of naam in geval van organisatie of expliciet alleen op achternaam)
                 if ($contactEmailQuery->count() == 0) {
                     $contactNameQuery = clone($contactAddressQuery);
-                    if ($data['organisation_name']) {
+                    if($this->onlyCheckLastName){
+                        $contactNameQuery = $contactNameQuery->whereHas('person', function ($queryName) use ($data) {
+                            $queryName->where('name', 'like', $data['last_name']);
+                        });
+                        $naamForLog = 'achternaam ' . $data['last_name'];
+                        $this->log('Check op persoon achternaam ?');
+                    } else if ($data['organisation_name']) {
                         $contactNameQuery = $contactNameQuery->whereHas('organisation', function ($queryName) use ($data) {
                             $queryName->where('name', 'like', $data['organisation_name']);
                         });
+                        $naamForLog = 'organisatienaam ' . $data['organisation_name'];
+                        $this->log('Check op organisatie naam ?');
                     }else{
                         $contactNameQuery = $contactNameQuery->whereHas('person', function ($queryName) use ($data) {
                             $queryName->where('first_name', $data['first_name'])
                                 ->where('last_name', $data['last_name']);
                         });
+                        $naamForLog = 'naam ' . $data['first_name'] . ' ' . $data['last_name'];
+                        $this->log('Check op persoon naam ?');
                     }
-                    // Gevonden op adres, niet op emailcontact. Wel op naam (voornaam + achternaam).
+                    // Gevonden op adres, niet op emailcontact. Wel op voornaam + achternaam (of naam in geval van organisatie of expliciet alleen achternaam).
                     if ($contactNameQuery->count() > 0) {
                         $this->log($contactNameQuery->count() . ' contacten gevonden op adres: ' . $data['address_postal_code']
-                            . $data['address_number'] . $data['address_addition'] . ' en naam '
-                            . $data['first_name'] . ' ' . $data['last_name']);
+                            . $data['address_number'] . $data['address_addition'] . ' en ' . $naamForLog);
                         // add emailaddress + taak
                         if($data['email_address'] && $data['email_address'] != ''){
                             $this->log('Nieuw emailadres toevoegen + taak ');
@@ -854,8 +898,8 @@ class ExternalWebformController extends Controller
                         return $contactNameQuery->first();
                     } else {
                         // Gevonden op adres, niet op emailcontact en niet op naam (voornaam + achternaam).
-                        // Indien geen organisatie check met voorletter + achternaam
-                        if (empty($data['organisation_name']) ) {
+                        // Indien geen organisatie en niet expliciet op achternaam: check met voorletter + achternaam
+                        if (empty($data['organisation_name']) && !$this->onlyCheckLastName) {
                             $contactNameInitialsQuery = clone($contactAddressQuery);
                             if (!empty($data['initials']) ) {
                                 $contactNameInitialsQuery = $contactNameInitialsQuery->whereHas('person', function ($queryNameInitials) use ($data) {
@@ -890,8 +934,16 @@ class ExternalWebformController extends Controller
                                 return null;
                             }
                         } else {
-                            // Organisatie Gevonden op adres maar niet op email of naam.
-                            $this->log('Contact (organisatie) gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) maar niet op emailadres of naam');
+                            if($this->onlyCheckLastName){
+                                // Organisatie Gevonden op adres maar niet op email of naam.
+                                $this->log('Contact gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) maar niet op emailadres of achternaam');
+                            } else if ($data['organisation_name']) {
+                                // Organisatie Gevonden op adres maar niet op email of naam.
+                                $this->log('Contact (organisatie) gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) maar niet op emailadres of naam');
+                            } else {
+                                // Gevonden op adres maar niet op email of naam, maar hier zouden we nooit moeten komen als het goed is.
+                                $this->log('Contact gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) maar niet op emailadres of naam');
+                            }
                             // add contact + taak
                             $this->contactActie = "NCT";
                             $this->log('Nieuw contact maken + taak');
@@ -899,32 +951,39 @@ class ExternalWebformController extends Controller
                         }
                     }
 
-                    // Ook gevonden op email, controle op voornaam en achternaam
+                    // Ook gevonden op email. Check op voornaam + achternaam (of naam in geval van organisatie of expliciet alleen op achternaam)
                 } else {
                     $contactNameQuery = clone($contactEmailQuery);
-                    if ($data['organisation_name']) {
+                    if($this->onlyCheckLastName) {
+                        $contactNameQuery = $contactNameQuery->whereHas('person', function ($queryName) use ($data) {
+                            $queryName->where('last_name', $data['last_name']);
+                        });
+                        $naamForLog = 'achternaam ' . $data['last_name'];
+                    } else if ($data['organisation_name']) {
                         $contactNameQuery = $contactNameQuery->whereHas('organisation', function ($queryName) use ($data) {
                             $queryName->where('name', 'like', $data['organisation_name']);
                         });
-                    }else{
+                        $naamForLog = 'organisatienaam ' . $data['organisation_name'];
+                    } else {
                         $contactNameQuery = $contactNameQuery->whereHas('person', function ($queryName) use ($data) {
                             $queryName->where('first_name', $data['first_name'])
                                 ->where('last_name', $data['last_name']);
                         });
+                        $naamForLog = 'naam ' . $data['first_name'] . ' ' . $data['last_name'];
                     }
                     // Gevonden op adres, emailcontact en naam (voornaam + achternaam).
                     if ($contactNameQuery->count() > 0) {
                         $this->log($contactNameQuery->count() . ' contacten gevonden op adres: ' . $data['address_postal_code']
                             . ', '
                             . $data['address_number'] . $data['address_addition'] . ' en emailadres ' . $data['email_address'] .
-                            ' en naam ' . $data['first_name'] . ' ' . $data['last_name']);
+                            ' en ' . $naamForLog);
                         // geen actie inzake contact, adres en/of email
                         $this->contactActie = "UPC";
                         return $contactNameQuery->first();
                     } else {
                         // Gevonden op adres en emailcontact, niet op naam (voornaam + achternaam).
-                        // Indien geen organisatie check met voorletter + achternaam
-                        if (empty($data['organisation_name']) ) {
+                        // Indien geen organisatie en niet expliciet op achternaam: check met voorletter + achternaam
+                        if (empty($data['organisation_name']) && !$this->onlyCheckLastName) {
                             $contactNameInitialsQuery = clone($contactEmailQuery);
                             if (!empty($data['initials']) ) {
                                 $contactNameInitialsQuery = $contactNameInitialsQuery->whereHas('person', function ($queryNameInitials) use ($data) {
@@ -953,8 +1012,16 @@ class ExternalWebformController extends Controller
                                 return null;
                             }
                         } else {
-                            // Organisatie Gevonden op adres maar niet op email of naam.
-                            $this->log('Contact (organisatie) gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) en emailadres maar niet op naam');
+                            if($this->onlyCheckLastName){
+                                // Organisatie Gevonden op adres maar niet op email of naam.
+                                $this->log('Contact gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) en emailadres maar niet op achternaam');
+                            } else if ($data['organisation_name']) {
+                                // Organisatie Gevonden op adres maar niet op email of naam.
+                                $this->log('Contact (organisatie) gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) en emailadres maar niet op naam');
+                            } else {
+                                // Gevonden op adres maar niet op email of naam, maar hier zouden we nooit moeten komen als het goed is.
+                                $this->log('Contact gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) en emailadres maar niet op naam');
+                            }
                             // add contact + taak
                             $this->contactActie = "NCT";
                             $this->log('Nieuw contact maken + taak');
@@ -977,17 +1044,32 @@ class ExternalWebformController extends Controller
     protected function getContactByNameAndEmail(array $data)
     {
         // Kijken of er een persoon gematcht kan worden op basis van naam en email
-        $person = Person::where('first_name', $data['first_name'])
-            ->where('last_name', $data['last_name'])
-            ->whereHas('contact', function ($query) use ($data) {
-                $query->whereHas('emailAddresses', function ($query) use ($data) {
-                    $query->where('email', $data['email_address']);
-                });
-            })
-            ->first();
+        // Indien alleen op achternaam
+        if($this->onlyCheckLastName) {
+            $person = Person::where('last_name', $data['last_name'])
+                ->whereHas('contact', function ($query) use ($data) {
+                    $query->whereHas('emailAddresses', function ($query) use ($data) {
+                        $query->where('email', $data['email_address']);
+                    });
+                })
+                ->first();
+        } else {
+            $person = Person::where('first_name', $data['first_name'])
+                ->where('last_name', $data['last_name'])
+                ->whereHas('contact', function ($query) use ($data) {
+                    $query->whereHas('emailAddresses', function ($query) use ($data) {
+                        $query->where('email', $data['email_address']);
+                    });
+                })
+                ->first();
+        }
 
         if ($person) {
-            $this->log('Persoon ' . $person->contact->full_name . ' gevonden op basis van naam en emailadres');
+            if($this->onlyCheckLastName) {
+                $this->log('Persoon ' . $person->contact->full_name . ' gevonden op basis van achternaam en emailadres');
+            } else {
+                $this->log('Persoon ' . $person->contact->full_name . ' gevonden op basis van naam en emailadres');
+            }
             // Geen taak nodig
             $this->contactActie = "UPC";
             return $person->contact;
@@ -1042,46 +1124,6 @@ class ExternalWebformController extends Controller
         $this->contactActie = "NCT";
         return null;
     }
-
-    //    protected function getContactByNameAndAddress(array $data)
-    //    {
-    //        // Kijken of er een persoon gematcht kan worden op basis van naam en adres
-    //        $person = Person::where('first_name', $data['first_name'])
-    //            ->where('last_name', $data['last_name'])
-    //            ->whereHas('contact', function ($query) use ($data) {
-    //                $query->whereHas('addresses', function ($query) use ($data) {
-    //                    $query->where('number', $data['address_number'])
-    //                        ->where('postal_code', $data['address_postal_code']);
-    //                });
-    //            })
-    //            ->first();
-    //
-    //        if ($person) {
-    //            $this->log('Persoon ' . $person->contact->full_name . ' gevonden op basis van naam en adres');
-    //            return $person->contact;
-    //        } else {
-    //            $this->log('Geen persoon gevonden op basis van naam en adres');
-    //        }
-    //
-    //        // Er is geen persoon gevonden op basis van naam en email, kijken of er een organisatie matcht
-    //        $organisation = Organisation::where('name', $data['organisation_name'])
-    //            ->whereHas('contact', function ($query) use ($data) {
-    //                $query->whereHas('addresses', function ($query) use ($data) {
-    //                    $query->where('number', $data['address_number'])
-    //                        ->where('postal_code', $data['address_postal_code']);
-    //                });
-    //            })
-    //            ->first();
-    //
-    //        if ($organisation) {
-    //            $this->log('Organisatie ' . $organisation->contact->full_name . ' gevonden op basis van naam en adres');
-    //            return $organisation->contact;
-    //        } else {
-    //            $this->log('Geen organisatie gevonden op basis van naam en adres');
-    //        }
-    //
-    //        return null;
-    //    }
 
     /**
      * @param array $data
@@ -1501,21 +1543,20 @@ class ExternalWebformController extends Controller
             $contactPersonUpdateArray['title_id'] = $titleValidator($data['title_id']);
         }
 
-        if($data['initials']){
-            $contactPersonUpdateArray['initials'] = $data['initials'];
-        }
+        // alleen achternaam check, dan laten voorletters, voornaam en tussenvoegsel ongemoeid
+        if($this->onlyCheckLastName){
+            $contactPersonUpdateArray['last_name'] = $data['last_name'];
 
-        if($data['first_name'] || $data['last_name'] || $data['last_name_prefix']){
-            $lastName = $data['last_name'];
-            if (!$lastName) {
-                $emailParts = explode('@', $data['email_address']);
-                $lastName = $emailParts[0];
-                if ($lastName) $this->log('Geen achternaam meegegeven, achternaam ' . $lastName . ' uit emailadres gehaald.');
-                else $this->log('Geen achternaam meegegeven, ook geen achternaam uit emailadres kunnen halen.');
+        } else {
+            if(!$data['initials']){
+                $contactPersonUpdateArray['initials'] = $data['initials'];
             }
-            $contactPersonUpdateArray['first_name'] = $data['first_name'];
-            $contactPersonUpdateArray['last_name_prefix'] = $data['last_name_prefix'];
-            $contactPersonUpdateArray['last_name'] = $lastName;
+
+            if($data['first_name'] || $data['last_name'] || $data['last_name_prefix']){
+                $contactPersonUpdateArray['first_name'] = $data['first_name'];
+                $contactPersonUpdateArray['last_name_prefix'] = $data['last_name_prefix'];
+                $contactPersonUpdateArray['last_name'] = $data['last_name'];
+            }
         }
 
         if($data['date_of_birth']){

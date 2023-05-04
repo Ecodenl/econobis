@@ -12,10 +12,10 @@ const ParticipantsListToolbar = props => {
         <div className="row">
             <div className="col-md-2">
                 <div className="btn-group btn-group-flex" role="group">
-                    <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={props.resetParticipantProjectFilters} />
+                    <ButtonIcon iconName={'refresh'} onClickAction={props.resetParticipantProjectFilters} />
                     {props.permissions.manageParticipation && (
                         <ButtonIcon
-                            iconName={'glyphicon-plus'}
+                            iconName={'plus'}
                             onClickAction={() => hashHistory.push(`/project/deelnemer/nieuw/${props.project.id}`)}
                             disabled={props.project.projectStatus.codeRef !== 'active'}
                             title={
@@ -25,14 +25,14 @@ const ParticipantsListToolbar = props => {
                             }
                         />
                     )}
-                    <ButtonIcon iconName={'glyphicon-filter'} onClickAction={props.toggleShowExtraFilters} />
+                    <ButtonIcon iconName={'filter'} onClickAction={props.toggleShowExtraFilters} />
                     <ButtonIcon
-                        iconName={'glyphicon-download-alt'}
+                        iconName={'download'}
                         title="Download deelnemers met mutaties"
                         onClickAction={props.getExcel}
                     />
                     <ButtonIcon
-                        iconName={'glyphicon-download-alt'}
+                        iconName={'download'}
                         title="Download unieke deelnemers"
                         onClickAction={props.getExcelParticipants}
                     />

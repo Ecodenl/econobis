@@ -66,7 +66,7 @@ export default {
                             ],
                             rlt: {
                                 country: { fld: ['id', 'name'] },
-                                primaryAddressEnergySupplierElectricity: {
+                                currentAddressEnergySupplierElectricity: {
                                     fld: [
                                         'id',
                                         'energySupplierId',

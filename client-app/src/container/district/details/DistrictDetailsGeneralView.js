@@ -14,11 +14,11 @@ export default function DistrictDetailsGeneralView({district, switchToEdit}) {
                         <ViewText label={'Standaard duur afspraak'} value={district.defaultDurationMinutes + ' minuten'}/>
                     </div>
                     <div className="row">
-                        <ViewText label={'Verstuur automatisch e-mail aan bewoner bij maken afspraak'} value={district.sendEmailToContactWhenPlanned ? 'Ja' : 'Nee'}/>
+                        <ViewText label={'Verstuur automatisch e-mail aan bewoner bij maken afspraak'} value={district.sendEmailToContactWhenPlanned ? 'Ja' : 'Nee'} textToolTip={`Deze e-mails worden verstuurd vanaf het primaire e-mail adres.`}/>
                         <ViewText label={'E-mail template'} value={district.emailToContactTemplate?.name}/>
                     </div>
                     <div className="row">
-                        <ViewText label={'Verstuur automatisch e-mail aan coach bij maken afspraak'} value={district.sendEmailToCoachWhenPlanned ? 'Ja' : 'Nee'}/>
+                        <ViewText label={'Verstuur automatisch e-mail aan coach bij maken afspraak'} value={district.sendEmailToCoachWhenPlanned ? 'Ja' : 'Nee'} textToolTip={`Deze e-mails worden verstuurd vanaf het primaire e-mail adres.`}/>
                         <ViewText label={'E-mail template'} value={district.emailToCoachTemplate?.name}/>
                     </div>
                     <div className="row">

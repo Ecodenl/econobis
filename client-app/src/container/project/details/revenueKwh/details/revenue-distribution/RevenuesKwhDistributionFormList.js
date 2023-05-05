@@ -56,7 +56,7 @@ const RevenuesKwhDistributionFormList = props => {
 
 const mapStateToProps = state => {
     return {
-        projectTypeCodeRef: state.revenuesKwh.project.projectType.codeRef,
+        projectTypeCodeRef: state.revenuesKwh.project?.projectType?.codeRef,
         revenuesKwh: state.revenuesKwh,
     };
 };

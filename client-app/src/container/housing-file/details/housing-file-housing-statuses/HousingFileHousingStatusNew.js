@@ -14,19 +14,19 @@ class HousingFileHousingStatusNew extends Component {
     constructor(props) {
         super(props);
 
-        let housingFileHoomLinksNoDups = [];
+        let housingFileHoomLinksStatusNoDups = [];
         let currentHousingFileHoomLinksIds = [];
 
         props.housingFileHousingStatuses.forEach(function(housingFileHousingStatus) {
             currentHousingFileHoomLinksIds.push(housingFileHousingStatus.housingFileHoomLink.id);
         });
-        housingFileHoomLinksNoDups = props.housingFileHoomLinks.filter(
+        housingFileHoomLinksStatusNoDups = props.housingFileHoomLinksStatus.filter(
             housingFileHoomLink => !currentHousingFileHoomLinksIds.includes(housingFileHoomLink.key)
         );
 
         this.state = {
             statusOptions: [],
-            housingFileHoomLinksNoDups: housingFileHoomLinksNoDups,
+            housingFileHoomLinksStatusNoDups: housingFileHoomLinksStatusNoDups,
             housingFileHousingStatus: {
                 housingFileId: this.props.housingFileId,
                 housingFileHoomLinksId: '',
@@ -43,12 +43,14 @@ class HousingFileHousingStatusNew extends Component {
         const target = event.target;
         const value = target.value;
 
-        const housingFileHoomLink = this.props.housingFileHoomLinks.find(
-            housingFileHoomLink => housingFileHoomLink.key === Number(value)
+        const housingFileHoomLinkStatus = this.props.housingFileHoomLinksStatus.find(
+            housingFileHoomLinkStatus => housingFileHoomLinkStatus.key === Number(value)
         );
         this.setState({
             ...this.state,
-            statusOptions: housingFileHoomLink ? this.getStatusOptions(housingFileHoomLink.externalHoomShortName) : [],
+            statusOptions: housingFileHoomLinkStatus
+                ? this.getStatusOptions(housingFileHoomLinkStatus.externalHoomShortName)
+                : [],
             housingFileHousingStatus: {
                 ...this.state.housingFileHousingStatus,
                 housingFileHoomLinksId: value,
@@ -141,7 +143,7 @@ class HousingFileHousingStatusNew extends Component {
                                 label={'Kenmerk'}
                                 name={'housingFileHoomLinksId'}
                                 value={housingFileHoomLinksId}
-                                options={this.state.housingFileHoomLinksNoDups}
+                                options={this.state.housingFileHoomLinksStatusNoDups}
                                 optionValue={'key'}
                                 onChangeAction={this.handleHousingFileHoomLinksChange}
                                 required={'required'}
@@ -184,7 +186,7 @@ const mapStateToProps = state => {
     return {
         housingFileHousingStatuses: state.housingFileDetails.housingFileHousingStatuses,
         housingFileId: state.housingFileDetails.id,
-        housingFileHoomLinks: state.systemData.housingFileHoomLinks,
+        housingFileHoomLinksStatus: state.systemData.housingFileHoomLinksStatus,
         currentWallInsulationSelection: state.systemData.currentWallInsulationSelection,
         currentFloorInsulationSelection: state.systemData.currentFloorInsulationSelection,
         currentRoofInsulationSelection: state.systemData.currentRoofInsulationSelection,

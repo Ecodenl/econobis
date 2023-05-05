@@ -22,7 +22,7 @@ class HousingFileExcelHelper
     {
         $this->housingFiles = $housingFiles;
         // voorlopig even op volgorde external_hoom_short_name
-        $this->housingFileHoomLinks = HousingFileHoomLink::where('housing_file_data_type', 'W')->where('visible_in_econobis', true)->orderBy('external_hoom_short_name')->get();
+        $this->housingFileHoomLinksStatus = HousingFileHoomLink::where('housing_file_data_type', 'W')->where('visible_in_econobis', true)->orderBy('external_hoom_short_name')->get();
     }
 
     public function downloadExcel()
@@ -72,8 +72,8 @@ class HousingFileExcelHelper
         $headerData[] = 'Verbruik gas';
         $headerData[] = 'Verbruik electriciteit';
 
-        foreach($this->housingFileHoomLinks as $housingFileHoomLink) {
-            $headerData[] = $housingFileHoomLink->label;
+        foreach($this->housingFileHoomLinksStatus as $housingFileHoomLinkStatus) {
+            $headerData[] = $housingFileHoomLinkStatus->label;
         }
 
         $completeData[] = $headerData;
@@ -122,10 +122,10 @@ class HousingFileExcelHelper
                 $rowData[32] = $housingFile->amount_electricity;
 
                 $colcounter = 33;
-                foreach($this->housingFileHoomLinks as $housingFileHoomLink) {
-                    $housingFileHousingStatus = HousingFileHousingStatus::where('housing_file_id', $housingFile->id)->where('housing_file_hoom_links_id', $housingFileHoomLink->id)->first();
+                foreach($this->housingFileHoomLinksStatus as $housingFileHoomLinkStatus) {
+                    $housingFileHousingStatus = HousingFileHousingStatus::where('housing_file_id', $housingFile->id)->where('housing_file_hoom_links_id', $housingFileHoomLinkStatus->id)->first();
 
-                    if($housingFileHousingStatus AND $hfhhs = HousingFileHoomHousingStatus::where('external_hoom_short_name', $housingFileHoomLink->external_hoom_short_name)->where('hoom_status_value', $housingFileHousingStatus->status)->first()) {
+                    if($housingFileHousingStatus AND $hfhhs = HousingFileHoomHousingStatus::where('external_hoom_short_name', $housingFileHoomLinkStatus->external_hoom_short_name)->where('hoom_status_value', $housingFileHousingStatus->status)->first()) {
                         $rowData[$colcounter] = $hfhhs->hoom_status_name;
                     } else {
                         $rowData[$colcounter] = '';

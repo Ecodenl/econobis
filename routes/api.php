@@ -103,6 +103,32 @@ Route::namespace('Api')
         Route::get('/housing-file/{housingFile}/notes', 'HousingFile\HousingFileController@notes');
         Route::get('/housing-file/{housingFile}/documents', 'HousingFile\HousingFileController@documents');
 
+        Route::get('/housing-file/selection/building-types/peek', 'HousingFile\HousingFileController@buildingTypesPeek');
+        Route::get('/housing-file/selection/roof-types/peek', 'HousingFile\HousingFileController@roofTypesPeek');
+        Route::get('/housing-file/selection/energy-labels/peek', 'HousingFile\HousingFileController@energyLabelsPeek');
+        Route::get('/housing-file/selection/energy-label-status/peek', 'HousingFile\HousingFileController@energyLabelStatusPeek');
+//        Route::get('/housing-file/selection/frame-type-selection/peek', 'HousingFile\HousingFileController@frameTypeSelectionPeek');
+        Route::get('/housing-file/selection/cook-type-selection/peek', 'HousingFile\HousingFileController@cookTypeSelectionPeek');
+        Route::get('/housing-file/selection/heat-source-selection/peek', 'HousingFile\HousingFileController@heatSourceSelectionPeek');
+        Route::get('/housing-file/selection/water-comfort-selection/peek', 'HousingFile\HousingFileController@waterComfortSelectionPeek');
+//        Route::get('/housing-file/selection/pitched-roof-heating-selection/peek', 'HousingFile\HousingFileController@pitchedRoofHeatingSelectionPeek');
+//        Route::get('/housing-file/selection/flat-roof-heating-selection/peek', 'HousingFile\HousingFileController@flatRoofHeatingSelectionPeek');
+//        Route::get('/housing-file/selection/hr3p-glass-frame-current-glass-selection/peek', 'HousingFile\HousingFileController@hr3pGlassFrameCurrentGlassSelectionPeek');
+//        Route::get('/housing-file/selection/glass-in-lead-replace-rooms-heated-selection/peek', 'HousingFile\HousingFileController@glassInLeadReplaceRoomsHeatedSelectionPeek');
+        Route::get('/housing-file/selection/boiler-setting-comfort-heat-selection/peek', 'HousingFile\HousingFileController@boilerSettingComfortHeatSelectionPeek');
+        Route::get('/housing-file/selection/crack-sealing-type-selection/peek', 'HousingFile\HousingFileController@crackSealingTypeSelectionPeek');
+        Route::get('/housing-file/selection/current-floor-insulation-selection/peek', 'HousingFile\HousingFileController@currentFloorInsulationSelectionPeek');
+//        Route::get('/housing-file/selection/building-heating-application-selection/peek', 'HousingFile\HousingFileController@buildingHeatingApplicationSelectionPeek');
+        Route::get('/housing-file/selection/ventilation-type-selection/peek', 'HousingFile\HousingFileController@ventilationTypeSelectionPeek');
+        Route::get('/housing-file/selection/current-living-rooms-windows-selection/peek', 'HousingFile\HousingFileController@currentLivingRoomsWindowsSelectionPeek');
+        Route::get('/housing-file/selection/current-wall-insulation-selection/peek', 'HousingFile\HousingFileController@currentWallInsulationSelectionPeek');
+        Route::get('/housing-file/selection/current-roof-insulation-selection/peek', 'HousingFile\HousingFileController@currentRoofInsulationSelectionPeek');
+        Route::get('/housing-file/selection/current-sleeping-rooms-windows-selection/peek', 'HousingFile\HousingFileController@currentSleepingRoomsWindowsSelectionPeek');
+        Route::get('/housing-file/selection/has-cavity-wall-selection/peek', 'HousingFile\HousingFileController@hasCavityWallSelectionPeek');
+        Route::get('/housing-file/selection/has-solar-panels-selection/peek', 'HousingFile\HousingFileController@hasSolarPanelsSelectionPeek');
+        Route::get('/housing-file/selection/heat-source-warm-tap-water-selection/peek', 'HousingFile\HousingFileController@heatSourceWarmTapWaterSelectionPeek');
+
+
         Route::get('/user/grid', 'User\GridController@index');
         Route::get('/user/rolesPermissionsExcel', 'User\UserController@rolesPermissionsExcel');
         Route::post('/user', 'User\UserController@store');

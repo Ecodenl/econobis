@@ -158,17 +158,11 @@ class SystemData extends JsonResource
 
 
         return [
-            'housingFileHoomLinks' => HousingFileHoomLink::select(['id as key', 'label as name', 'external_hoom_short_name as externalHoomShortName'])->where('housing_file_data_type', 'W')->where('visible_in_econobis', true)->orderBy('external_hoom_short_name')->get(),
-
-            'frameTypeSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'frame-type')->get(),
-            'cookTypeSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'cook-type')->get(),
-            'heatSourceSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'heat-source')->get(),
-            'waterComfortSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'water-comfort')->get(),
-            'pitchedRoofHeatingSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'pitched-roof-heating')->get(),
-            'flatRoofHeatingSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'flat-roof-heating')->get(),
-            'hr3pGlassFrameCurrentGlassSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'hr3p-glass-frame-current-glass')->get(),
-            'glassInLeadReplaceRoomsHeatedSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'glass-in-lead-replace-rooms-heated')->get(),
-            'boilerSettingComfortHeatSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'boiler-setting-comfort-heat')->get(),
+//            'housingFileHoomLinksBasic' => HousingFileHoomLink::select(['id as key', 'label as name', 'external_hoom_short_name as externalHoomShortName'])->where('housing_file_data_type', 'B')->where('visible_in_econobis', true)->orderBy('external_hoom_short_name')->get(),
+//            'housingFileHoomLinksUse' => HousingFileHoomLink::select(['id as key', 'label as name', 'external_hoom_short_name as externalHoomShortName'])->where('housing_file_data_type', 'G')->where('visible_in_econobis', true)->orderBy('external_hoom_short_name')->get(),
+            'housingFileHoomLinks' => HousingFileHoomLink::select(['id as key', 'label as name', 'external_hoom_short_name as externalHoomShortName', 'external_hoom_short_name as externalHoomShortName'])->where('visible_in_econobis', true)->orderBy('external_hoom_short_name')->get(),
+            'housingFileHoomLinksToShowInEconobis' => HousingFileHoomLink::select(['econobis_field_name as econobisFieldName'])->where('visible_in_econobis', true)->whereNotNull('econobis_field_name')->get(),
+            'housingFileHoomLinksStatus' => HousingFileHoomLink::select(['id as key', 'label as name', 'external_hoom_short_name as externalHoomShortName'])->where('housing_file_data_type', 'W')->where('visible_in_econobis', true)->orderBy('external_hoom_short_name')->get(),
 
             'currentWallInsulationSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'current-wall-insulation')->get(),
             'currentFloorInsulationSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'current-floor-insulation')->get(),

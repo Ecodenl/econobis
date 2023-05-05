@@ -527,7 +527,7 @@ class ParticipantsListApp extends Component {
 const mapStateToProps = state => {
     return {
         projectId: state.projectDetails.id,
-        projectTypeRef: state.projectDetails.projectType.codeRef,
+        projectTypeRef: state.projectDetails.projectType?.codeRef,
         participantsProject: state.participantsProject.list,
         participantsProjectFilters: state.participantsProject.filters,
         participantsProjectSorts: state.participantsProject.sorts,

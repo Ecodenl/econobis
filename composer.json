@@ -35,7 +35,8 @@
         "spatie/laravel-permission": "^5.0",
         "spatie/valuestore": "^1.2",
         "usmanhalalit/laracsv": "1.*@dev",
-        "venturecraft/revisionable": "^1.28"
+        "venturecraft/revisionable": "^1.28",
+        "league/flysystem-aws-s3-v3": "^3.0"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.4",

@@ -317,6 +317,13 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </Link>
                         </NavText>
                     </Nav>
+                    <Nav key={'nav-housing-file-log'} id={`housing-file-log`}>
+                        <NavText>
+                            <Link className="sidebar-link-header" to="housing-file/log">
+                                Hoomdossier
+                            </Link>
+                        </NavText>
+                    </Nav>
                 </Nav>
             )}
 

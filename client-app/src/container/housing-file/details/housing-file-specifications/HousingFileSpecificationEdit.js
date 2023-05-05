@@ -12,6 +12,7 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import MeasuresOfCategory from '../../../../selectors/MeasuresOfCategory';
 import InputTextArea from '../../../../components/form/InputTextArea';
 import InputText from '../../../../components/form/InputText';
+import { hashHistory } from 'react-router';
 
 class HousingFileSpecificationEdit extends Component {
     constructor(props) {
@@ -22,12 +23,18 @@ class HousingFileSpecificationEdit extends Component {
             housingFileId,
             measure,
             measureId,
+            isDefaultEconobisMeasure,
             measureDate,
             answer,
             status,
             floor,
             side,
             typeBrand,
+            externalHoomName,
+            typeOfExecution,
+            savingsGas,
+            savingsElectricity,
+            co2Savings,
         } = props.housingFileSpecification;
 
         this.state = {
@@ -35,6 +42,7 @@ class HousingFileSpecificationEdit extends Component {
                 id,
                 housingFileId,
                 measureId,
+                isDefaultEconobisMeasure: isDefaultEconobisMeasure,
                 measureCategoryId: measure.measureCategory ? measure.measureCategory.id : null,
                 measureDate,
                 answer,
@@ -42,6 +50,11 @@ class HousingFileSpecificationEdit extends Component {
                 floorId: floor ? floor.id : null,
                 sideId: side ? side.id : null,
                 typeBrand,
+                externalHoomName,
+                typeOfExecution,
+                savingsGas,
+                savingsElectricity,
+                co2Savings,
             },
             errors: {},
         };
@@ -96,16 +109,31 @@ class HousingFileSpecificationEdit extends Component {
 
     render() {
         const {
+            housingFileId,
             measureCategoryId,
             measureId,
+            isDefaultEconobisMeasure,
             measureDate,
             answer,
             statusId,
             floorId,
             sideId,
             typeBrand,
+            externalHoomName,
+            typeOfExecution,
+            savingsGas,
+            savingsElectricity,
+            co2Savings,
         } = this.state.housingFileSpecification;
+        const hasHoomDossierLink = this.props.hasHoomDossierLink;
         const measuresMatchToCategory = MeasuresOfCategory(this.props.measures, measureCategoryId);
+
+        const typeOfExecutionOptions = [
+            { id: '', name: 'Onbekend' },
+            { id: 'Z', name: 'Zelf doen' },
+            { id: 'L', name: 'Laten doen' },
+        ];
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
@@ -118,13 +146,22 @@ class HousingFileSpecificationEdit extends Component {
                                 value={measureCategoryId}
                                 readOnly={true}
                             />
-                            <InputSelect
-                                label={'Maatregel - specifiek'}
-                                name={'measureId'}
-                                options={measuresMatchToCategory}
-                                value={measureId}
-                                readOnly={true}
-                            />
+                            {isDefaultEconobisMeasure ? (
+                                <InputText
+                                    label={'Maatregel - specifiek'}
+                                    name={'externalHoomName'}
+                                    value={externalHoomName}
+                                    readOnly={true}
+                                />
+                            ) : (
+                                <InputSelect
+                                    label={'Maatregel - specifiek'}
+                                    name={'measureId'}
+                                    options={measuresMatchToCategory}
+                                    value={measureId}
+                                    readOnly={true}
+                                />
+                            )}
                         </div>
 
                         <div className="row">
@@ -149,6 +186,7 @@ class HousingFileSpecificationEdit extends Component {
                                 name={'answer'}
                                 value={answer}
                                 onChangeAction={this.handleInputChange}
+                                readOnly={hasHoomDossierLink}
                             />
                         </div>
 
@@ -178,7 +216,49 @@ class HousingFileSpecificationEdit extends Component {
                             />
                         </div>
 
+                        <div className="row">
+                            <InputText
+                                label={'Besparing gas'}
+                                name={'savingsGas'}
+                                value={savingsGas}
+                                onChangeAction={this.handleInputChange}
+                                readOnly={hasHoomDossierLink}
+                            />
+                            <InputSelect
+                                label={'Uitvoering'}
+                                name={'typeOfExecution'}
+                                options={typeOfExecutionOptions}
+                                value={typeOfExecution}
+                                onChangeAction={this.handleInputChange}
+                                emptyOption={false}
+                                readOnly={hasHoomDossierLink}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputText
+                                label={'Besparing Electriciteit'}
+                                name={'savingsElectricity'}
+                                value={savingsElectricity}
+                                onChangeAction={this.handleInputChange}
+                                readOnly={hasHoomDossierLink}
+                            />
+                            <InputText
+                                label={'CO2 besparing'}
+                                name={'co2Savings'}
+                                value={co2Savings}
+                                onChangeAction={this.handleInputChange}
+                                readOnly={hasHoomDossierLink}
+                            />
+                        </div>
+
                         <div className="pull-right btn-group" role="group">
+                            {/*<ButtonText*/}
+                            {/*    buttonText={'Maak kans'}*/}
+                            {/*    onClickAction={() =>*/}
+                            {/*        hashHistory.push(`/kans/nieuw/woningdossier/${housingFileId}/campagne/0`)*/}
+                            {/*    }*/}
+                            {/*/>*/}
                             <ButtonText
                                 buttonClassName={'btn-default'}
                                 buttonText={'Annuleren'}
@@ -200,6 +280,7 @@ class HousingFileSpecificationEdit extends Component {
 
 const mapStateToProps = state => {
     return {
+        hasHoomDossierLink: state.housingFileDetails.hoomBuildingId != null ? true : false,
         measures: state.systemData.measures,
         measureCategories: state.systemData.measureCategories,
         statuses: state.systemData.housingFileSpecificationStatuses,

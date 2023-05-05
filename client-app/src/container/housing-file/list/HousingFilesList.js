@@ -47,7 +47,7 @@ class HousingFilesList extends Component {
                     <DataTableBody>
                         {loading ? (
                             <tr>
-                                <td colSpan={6}>{loadingText}</td>
+                                <td colSpan={10}>{loadingText}</td>
                             </tr>
                         ) : (
                             data.map(housingFile => {

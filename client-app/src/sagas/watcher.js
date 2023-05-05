@@ -34,7 +34,12 @@ import {
     fetchContactsInGroupSaga,
     updateContactInGroupSaga,
 } from './contact-group/ContactsInGroupSaga';
-import { deleteContactSaga, deleteSelectedContactsSaga, fetchContactsSaga, mergeSelectedContactsSaga } from './contact/ContactsSaga';
+import {
+    deleteContactSaga,
+    deleteSelectedContactsSaga,
+    fetchContactsSaga,
+    mergeSelectedContactsSaga,
+} from './contact/ContactsSaga';
 import { fetchDocumentsSaga } from './document/DocumentsSaga';
 import { deleteDocumentSaga, fetchDocumentDetailsSaga } from './document/DocumentDetailsSaga';
 import {
@@ -87,6 +92,7 @@ import { deleteIntakeMeasureRequestedSaga, deleteIntakeSaga, fetchIntakeDetailsS
 import { fetchIntakesSaga } from './intake/IntakesSaga';
 import {
     deleteHousingFileSpecificationSaga,
+    deleteHousingFileHousingStatusSaga,
     deleteHousingFileSaga,
     fetchHousingFileDetailsSaga,
 } from './housing-file/HousingFileDetailsSaga';
@@ -191,6 +197,7 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_HOUSING_FILE_DETAILS', fetchHousingFileDetailsSaga);
     yield takeLatest('DELETE_HOUSING_FILE', deleteHousingFileSaga);
     yield takeLatest('DELETE_HOUSING_FILE_SPECIFICATION', deleteHousingFileSpecificationSaga);
+    yield takeLatest('DELETE_HOUSING_FILE_HOUSING_STATUS', deleteHousingFileHousingStatusSaga);
     // Quotation Requests
     yield takeLatest('FETCH_QUOTATION_REQUESTS', fetchQuotationRequestsSaga);
     yield takeLatest('FETCH_QUOTATION_REQUEST_DETAILS', fetchQuotationRequestDetailsSaga);

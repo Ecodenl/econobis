@@ -19,7 +19,15 @@ class ContactDetailsFormPersonalEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { number, createdAt, person, didAgreeAvg, dateDidAgreeAvg, inspectionPersonType } = props.contactDetails;
+        const {
+            number,
+            createdAt,
+            person,
+            didAgreeAvg,
+            dateDidAgreeAvg,
+            inspectionPersonType,
+            hoomAccountId,
+        } = props.contactDetails;
 
         this.state = {
             lastNamePrefixes: props.lastNamePrefixes,
@@ -42,7 +50,8 @@ class ContactDetailsFormPersonalEdit extends Component {
                 dateOfBirth: person.dateOfBirth ? moment(person.dateOfBirth).format('Y-MM-DD') : '',
                 didAgreeAvg: didAgreeAvg,
                 dateDidAgreeAvg: dateDidAgreeAvg ? moment(dateDidAgreeAvg).format('Y-MM-DD') : '',
-                inspectionPersonTypeName: inspectionPersonType ? inspectionPersonType.name : '',
+                inspectionPersonType: inspectionPersonType,
+                hoomAccountId: hoomAccountId ? hoomAccountId : '',
             },
             errors: {
                 name: false,
@@ -160,10 +169,16 @@ class ContactDetailsFormPersonalEdit extends Component {
             didAgreeAvg,
             dateDidAgreeAvg,
             lastNamePrefix,
-            inspectionPersonTypeName,
+            inspectionPersonType,
+            hoomAccountId,
         } = this.state.person;
 
-        const { isInInspectionPersonTypeGroup } = this.props.contactDetails;
+        // const { isInInspectionPersonTypeGroup } = this.props.contactDetails;
+
+        let isCoach = false;
+        if (inspectionPersonType && inspectionPersonType.id === 'coach') {
+            isCoach = true;
+        }
 
         return (
             <React.Fragment>
@@ -292,11 +307,25 @@ class ContactDetailsFormPersonalEdit extends Component {
 
                     <div className="row">
                         <ViewText
-                            label={"Rol in buurtaanpak"}
+                            label={'Rol in buurtaanpak'}
                             className={'form-group col-xs-12'}
-                            value={inspectionPersonTypeName ? inspectionPersonTypeName : ''}
+                            value={inspectionPersonType ? inspectionPersonType.name : ''}
                         />
                     </div>
+
+                    {isCoach ? (
+                        <div className="row">
+                            <InputText
+                                label={'Hoom account id'}
+                                divSize={'col-xs-12'}
+                                name="hoomAccountId"
+                                value={hoomAccountId}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+                    ) : (
+                        ' '
+                    )}
 
                     <PanelFooter>
                         <div className="pull-right btn-group" role="group">
@@ -331,7 +360,7 @@ const mapStateToProps = state => {
     return {
         contactDetails: state.contactDetails,
         lastNamePrefixes: state.systemData.lastNamePrefixes,
-        titles: state.systemData.titles
+        titles: state.systemData.titles,
     };
 };
 

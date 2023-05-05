@@ -1911,7 +1911,7 @@ class ExternalWebformController extends Controller
         $document->save();
 
         $contents = file_get_contents($intakeOpportunityAttachmentUrl);
-        $filePath_tmp = Storage::disk('documents')->getDriver()->getAdapter()->applyPathPrefix($tmpFileName);
+        $filePath_tmp = Storage::disk('documents')->path($tmpFileName);
         $tmpFileName = str_replace('\\', '/', $filePath_tmp);
         $pos = strrpos($tmpFileName, '/');
         $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);

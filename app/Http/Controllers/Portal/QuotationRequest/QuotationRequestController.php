@@ -115,8 +115,8 @@ class QuotationRequestController
 
         if (\Config::get('app.ALFRESCO_COOP_USERNAME') == 'local') {
             if($document->alfresco_node_id == null){
-                $filePath = Storage::disk('documents')->getDriver()
-                    ->getAdapter()->applyPathPrefix($document->filename);
+                $filePath = Storage::disk('documents')
+                    ->path($document->filename);
                 header('X-Filename:' . $document->filename);
                 header('Access-Control-Expose-Headers: X-Filename');
                 return response()->download($filePath, $document->filename);

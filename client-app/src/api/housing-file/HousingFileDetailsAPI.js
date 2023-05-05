@@ -123,4 +123,17 @@ export default {
                 return error.response;
             });
     },
+
+    fetchHousingFileSelectionPerType: $selectionType => {
+        const requestUrl = `${URL_HOUSING_FILE}/selection/${$selectionType}/peek`;
+
+        return axiosInstance
+            .get(requestUrl)
+            .then(function(response) {
+                return response.data.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    },
 };

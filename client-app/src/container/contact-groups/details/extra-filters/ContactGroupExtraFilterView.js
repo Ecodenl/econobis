@@ -25,7 +25,8 @@ const ContactGroupExtraFilterView = props => {
             field === 'occupation' ||
             field === 'staticContactGroup' ||
             field === 'country' ||
-            field === 'inspectionPersonType') &&
+            field === 'inspectionPersonType' ||
+            field === 'housingFileFieldValue') &&
         (comperator === 'eq' || comperator === 'neq' || comperator === 'rel' || comperator === 'nrel')
     ) {
         dataNameReadable = '--Willekeurige waarde--';

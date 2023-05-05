@@ -7,7 +7,7 @@ const DataTableBody = props => {
             className="form-control input-sm"
             name={'type'}
             value={props.type}
-            onChange={props.handleInputChangeHousingFileFields}
+            onChange={props.handleInputChange}
         >
             <option value="eq">is</option>
         </select>

@@ -10,13 +10,14 @@ import DataTableCustomFilterSelectBoolean from './DataTableCustomFilterSelectBoo
 import DataTableCustomFilterSelectDropdownHas from './DataTableCustomFilterSelectDropdownHas';
 import DataTableCustomFilterSelectDropdownRelations from './DataTableCustomFilterSelectDropdownRelations';
 import DataTableCustomFilterSelectDropdownHousingFileFields from './DataTableCustomFilterSelectDropdownHousingFileFields';
-import DataTableCustomFilterHousingFileFields from './DataTableCustomFilterHousingFileFields';
+import DataTableCustomFilterSelectHousingFileField from './DataTableCustomFilterSelectHousingFileField';
 
 import moment from 'moment';
 import DataTableDateFilter from './DataTableDateFilter';
 
 import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
+import DataTableHousingFileFieldFilter from './DataTableHousingFileFieldFilter';
 
 moment.locale('nl');
 
@@ -36,7 +37,7 @@ const DataTableCustomFilter = props => {
         props.handleFilterValueChange(name, value, props.filterNumber);
     };
 
-    const handleInputChangeHousingFileFields = event => {
+    const handleInputChangeHousingFileField = event => {
         const target = event.target;
         const value = target.value;
         const name = target.name;
@@ -88,6 +89,8 @@ const DataTableCustomFilter = props => {
     const optionName = props.fields[props.filter.field].optionName
         ? props.fields[props.filter.field].optionName
         : 'name';
+
+    const housingFileField = props.filter.housingFileField;
 
     return (
         <tr>
@@ -167,11 +170,12 @@ const DataTableCustomFilter = props => {
                         readOnly={props.filter.readOnly}
                     />
                 )}
-                {fieldType === 'housingFileFields' && (
-                    <DataTableCustomFilterHousingFileFields
+                {fieldType === 'housingFileFieldValue' && (
+                    <DataTableCustomFilterSelectHousingFileField
                         handleInputChange={handleInputChange}
                         type={type}
                         readOnly={props.filter.readOnly}
+                        housingFileField={props.filter.housingFileField}
                     />
                 )}
                 {fieldType === 'dropdownRelations' && (
@@ -244,24 +248,6 @@ const DataTableCustomFilter = props => {
                                 })}
                             </select>
                         )}
-                        {fieldType === 'dropdownHousingFileFields' && (
-                            <select
-                                className={`form-control input-sm`}
-                                id="data"
-                                name="data"
-                                value={props.filter.data}
-                                onChange={handleInputChange}
-                                disabled={props.filter.readOnly}
-                            >
-                                {props.fields[props.filter.field].dropDownOptions.map(option => {
-                                    return (
-                                        <option key={option.id} value={option.id}>
-                                            {option[optionName]}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        )}
                         {fieldType === 'dropdownRelations' && (
                             <select
                                 className={`form-control input-sm`}
@@ -289,15 +275,34 @@ const DataTableCustomFilter = props => {
                                 readOnly={props.filter.readOnly}
                             />
                         )}
-                        {fieldType === 'housingFileFields' && (
-                            <input
-                                className={'form-control input-sm'}
-                                type="text"
+                        {fieldType === 'dropdownHousingFileFields' && (
+                            <select
+                                className={`form-control input-sm`}
                                 id="data"
                                 name="data"
                                 value={props.filter.data}
-                                onChange={handleInputChange}
+                                onChange={handleInputChangeHousingFileField}
+                                disabled={props.filter.readOnly}
+                            >
+                                <option value="">--Kies een kenmerk--</option>
+                                {props.fields[props.filter.field].dropDownOptions.map(option => {
+                                    return (
+                                        <option key={option.key} value={option.key}>
+                                            {option[optionName]}
+                                        </option>
+                                    );
+                                })}
+                            </select>
+                        )}
+                        {fieldType === 'housingFileFieldValue' && (
+                            <DataTableHousingFileFieldFilter
+                                id="data"
+                                name="data"
+                                value={props.filter.data}
+                                handleInputChange={handleInputChange}
+                                handleInputChangeDate={handleInputChangeDate}
                                 readOnly={props.filter.readOnly}
+                                housingFileField={housingFileField}
                             />
                         )}
                     </React.Fragment>

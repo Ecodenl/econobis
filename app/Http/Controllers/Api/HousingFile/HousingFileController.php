@@ -451,10 +451,10 @@ class HousingFileController extends ApiController
     {
         return HousingFileSelectionPeek::collection(EnergyLabelStatus::orderBy('id')->get());
     }
-    public function frameTypeSelectionPeek()
-    {
-        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'frame-type')->get());
-    }
+//    public function frameTypeSelectionPeek()
+//    {
+//        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'frame-type')->get());
+//    }
     public function cookTypeSelectionPeek()
     {
         return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'cook-type')->get());
@@ -468,25 +468,71 @@ class HousingFileController extends ApiController
         return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'water-comfort')->get());
     }
 
-    public function pitchedRoofHeatingSelectionPeek()
-    {
-        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'pitched-roof-heating')->get());
-    }
-    public function flatRoofHeatingSelectionPeek()
-    {
-        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'flat-roof-heating')->get());
-    }
-    public function hr3pGlassFrameCurrentGlassSelectionPeek()
-    {
-        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'hr3p-glass-frame-current-glass')->get());
-    }
-    public function glassInLeadReplaceRoomsHeatedSelectionPeek()
-    {
-        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'glass-in-lead-replace-rooms-heated')->get());
-    }
+//    public function pitchedRoofHeatingSelectionPeek()
+//    {
+//        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'pitched-roof-heating')->get());
+//    }
+//    public function flatRoofHeatingSelectionPeek()
+//    {
+//        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'flat-roof-heating')->get());
+//    }
+//    public function hr3pGlassFrameCurrentGlassSelectionPeek()
+//    {
+//        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'hr3p-glass-frame-current-glass')->get());
+//    }
+//    public function glassInLeadReplaceRoomsHeatedSelectionPeek()
+//    {
+//        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'glass-in-lead-replace-rooms-heated')->get());
+//    }
+
     public function boilerSettingComfortHeatSelectionPeek()
     {
         return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'boiler-setting-comfort-heat')->get());
+    }
+
+    public function crackSealingTypeSelectionPeek()
+    {
+        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'crack-sealing-type')->get());
+    }
+    public function currentFloorInsulationSelectionPeek()
+    {
+        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'current-floor-insulation')->get());
+    }
+//    public function buildingHeatingApplicationSelectionPeek()
+//    {
+//        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'building-heating-application-selection')->get());
+//    }
+    public function ventilationTypeSelectionPeek()
+    {
+        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'ventilation-type-selection')->get());
+    }
+    public function currentLivingRoomsWindowsSelectionPeek()
+    {
+        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'current-living-rooms-windows')->get());
+    }
+    public function currentWallInsulationSelectionPeek()
+    {
+        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'current-wall-insulation')->get());
+    }
+    public function currentRoofInsulationSelectionPeek()
+    {
+        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'current-roof-insulation')->get());
+    }
+    public function currentSleepingRoomsWindowsSelectionPeek()
+    {
+        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'current-sleeping-rooms-windows')->get());
+    }
+    public function hasCavityWallSelectionPeek()
+    {
+        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'has-cavity-wall')->get());
+    }
+    public function hasSolarPanelsSelectionPeek()
+    {
+        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'has-solar-panels')->get());
+    }
+    public function heatSourceWarmTapWaterSelectionPeek()
+    {
+        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'heat-source-warm-tap-water')->get());
     }
 
     public function getAmountOfActiveHousingFiles(){

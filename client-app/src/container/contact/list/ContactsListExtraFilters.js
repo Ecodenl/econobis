@@ -49,7 +49,8 @@ class ContactsListExtraFilters extends Component {
         if (
             filters[filterNumber].field === 'product' ||
             filters[filterNumber].field === 'opportunityMeasureCategory' ||
-            filters[filterNumber].field === 'intakeMeasureCategory'
+            filters[filterNumber].field === 'intakeMeasureCategory' ||
+            filters[filterNumber].field === 'housingFileFieldName'
         ) {
             filters = filters.filter(filter => filter.connectedTo !== filters[filterNumber].connectName);
             delete filters[filterNumber].connectName;
@@ -166,6 +167,7 @@ class ContactsListExtraFilters extends Component {
                 type: 'eq',
                 data: '',
                 connectedTo: data + filterNumber,
+                housingFileField: '',
             });
 
             amountOfFilters = filters.length;
@@ -192,6 +194,25 @@ class ContactsListExtraFilters extends Component {
         let filters = this.state.filters;
 
         filters[filterNumber][field] = data;
+
+        if (filters[filterNumber].field == 'housingFileFieldName') {
+            if (filters[filterNumber].data) {
+                let housingFileHoomLink = this.props.housingFileHoomLinks.find(
+                    housingFileHoomLink => housingFileHoomLink.key === Number(filters[filterNumber].data)
+                );
+                if (housingFileHoomLink) {
+                    let filterConnectName = filters[filterNumber].connectName;
+                    filters.map(filter => {
+                        if (filter.connectedTo == filterConnectName) {
+                            filter.data = '';
+                            filter.type = 'eq';
+                            filter.housingFileField = housingFileHoomLink.externalHoomShortName;
+                        }
+                        return filter;
+                    });
+                }
+            }
+        }
 
         this.setState({
             ...this.state,
@@ -348,7 +369,7 @@ class ContactsListExtraFilters extends Component {
                 dropDownOptions: this.state.yesNoOptions,
             },
             housingFileFieldName: {
-                name: 'Woningdossier veld',
+                name: 'Woningdossier kenmerk',
                 type: 'dropdownHousingFileFields',
                 dropDownOptions: this.props.housingFileHoomLinks,
             },
@@ -421,7 +442,7 @@ class ContactsListExtraFilters extends Component {
         const customHousingFileFields = {
             housingFileFieldValue: {
                 name: 'Status/waarde',
-                type: 'housingFileFields',
+                type: 'housingFileFieldValue',
             },
         };
 

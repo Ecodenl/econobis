@@ -20,7 +20,7 @@
         "laposta/laposta-api-php": "^1.5",
         "laracasts/presenter": "^0.2.1",
         "laravel/fortify": "^1.13",
-        "laravel/framework": "^8.0",
+        "laravel/framework": "^9.0",
         "laravel/helpers": "^1.1",
         "laravel/passport": "^10.0",
         "laravel/tinker": "~2.0",
@@ -32,7 +32,7 @@
         "php-imap/php-imap": "^4.3",
         "php-twinfield/twinfield": "2.7.*",
         "phpoffice/phpspreadsheet": "^1.15",
-        "spatie/laravel-permission": "^3.0",
+        "spatie/laravel-permission": "^5.0",
         "spatie/valuestore": "^1.2",
         "usmanhalalit/laracsv": "1.*@dev",
         "venturecraft/revisionable": "^1.28"

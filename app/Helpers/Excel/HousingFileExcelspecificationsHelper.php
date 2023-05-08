@@ -41,7 +41,7 @@ class HousingFileExcelspecificationsHelper
         $headerData[] = 'Zijde';
         $headerData[] = 'Uitvoering';
         $headerData[] = 'Besparing gas';
-        $headerData[] = 'Besparing Electriciteit';
+        $headerData[] = 'Besparing electriciteit';
         $headerData[] = 'CO2 besparing';
 
         $completeData[] = $headerData;

@@ -29,7 +29,6 @@ class Joiner extends RequestJoiner
 
     protected function applyMeasureJoin($query)
     {
-//        $query->join('measures', 'housing_file_specifications.measure_id', '=', 'measures.id', 'left outer');
         $query->join('measures', 'housing_file_specifications.measure_id', '=', 'measures.id');
     }
 
@@ -39,14 +38,9 @@ class Joiner extends RequestJoiner
         $query->join('measure_categories', 'measures2.measure_category_id', '=', 'measure_categories.id');
     }
 
-//    protected function applyEnergyLabelJoin($query)
-//    {
-//        $query->join('energy_labels', 'housing_files.energy_label_id', '=', 'energy_labels.id', 'left outer');
-//    }
-//
-//    protected function applyBuildingTypeJoin($query)
-//    {
-//        $query->join('building_types', 'housing_files.building_type_id', '=', 'building_types.id', 'left outer');
-//    }
+    protected function applyHousingFileSpecificationStatusJoin($query)
+    {
+        $query->join('housing_file_specification_statuses', 'housing_file_specifications.status_id', '=', 'housing_file_specification_statuses.id', 'left outer');
+    }
 
 }

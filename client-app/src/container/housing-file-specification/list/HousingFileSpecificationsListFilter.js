@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-// import moment from 'moment';
+import moment from 'moment';
 
 import {
     clearFilterHousingFileSpecifications,
@@ -12,9 +12,10 @@ import {
     setFilterHousingFileSpecificationMeasureCategoryName,
     setFilterHousingFileSpecificationMeasureName,
     setFilterHousingFileSpecificationStatusName,
-    setFilterHousingFileSpecificationMeasureDate,
+    setFilterHousingFileSpecificationMeasureDateStart,
+    setFilterHousingFileSpecificationMeasureDateEnd,
 } from '../../../actions/housing-file-specification/HousingFileSpecificationsFiltersActions';
-import DataTableFilterDate from '../../../components/dataTable/DataTableFilterDate';
+import DataTableFilterDateStartEndTwoRows from '../../../components/dataTable/DataTableFilterDateStartEndTwoRows';
 
 const HousingFileSpecificationsListFilter = props => {
     const onAddressChange = e => {
@@ -73,11 +74,18 @@ const HousingFileSpecificationsListFilter = props => {
         }, 100);
     };
 
-    const onMeasureDateChange = selectedDay => {
+    const onMeasureDateStartChange = selectedDay => {
         if (selectedDay === undefined) {
-            props.setFilterHousingFileSpecificationMeasureDate('');
+            props.setFilterHousingFileSpecificationMeasureDateStart('');
         } else {
-            props.setFilterHousingFileSpecificationMeasureDate(moment(selectedDay).format('Y-MM-DD'));
+            props.setFilterHousingFileSpecificationMeasureDateStart(moment(selectedDay).format('Y-MM-DD'));
+        }
+    };
+    const onMeasureDateEndChange = selectedDay => {
+        if (selectedDay === undefined) {
+            props.setFilterHousingFileSpecificationMeasureDateEnd('');
+        } else {
+            props.setFilterHousingFileSpecificationMeasureDateEnd(moment(selectedDay).format('Y-MM-DD'));
         }
     };
 
@@ -139,12 +147,12 @@ const HousingFileSpecificationsListFilter = props => {
                     onChange={onStatusNameChange}
                 />
             </th>
-            <th>
-                <DataTableFilterDate
-                    value={props.filters.measureDate.data && props.filters.measureDate.data}
-                    onChangeAction={onMeasureDateChange}
-                />
-            </th>
+            <DataTableFilterDateStartEndTwoRows
+                startDate={props.filters.measureDateStart.data && props.filters.measureDateStart.data}
+                endDate={props.filters.measureDateEnd.data && props.filters.measureDateEnd.data}
+                onChangeActionStart={onMeasureDateStartChange}
+                onChangeActionEnd={onMeasureDateEndChange}
+            />
 
             <th />
         </tr>
@@ -153,8 +161,6 @@ const HousingFileSpecificationsListFilter = props => {
 
 const mapStateToProps = state => ({
     filters: state.housingFileSpecifications.filters,
-    // energyLabels: state.systemData.energyLabels,
-    // buildingTypes: state.systemData.buildingTypes,
 });
 
 const mapDispatchToProps = dispatch => {
@@ -168,7 +174,8 @@ const mapDispatchToProps = dispatch => {
             setFilterHousingFileSpecificationMeasureCategoryName,
             setFilterHousingFileSpecificationMeasureName,
             setFilterHousingFileSpecificationStatusName,
-            setFilterHousingFileSpecificationMeasureDate,
+            setFilterHousingFileSpecificationMeasureDateStart,
+            setFilterHousingFileSpecificationMeasureDateEnd,
         },
         dispatch
     );

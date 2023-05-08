@@ -19,7 +19,7 @@ import PanelBody from '../../../components/panel/PanelBody';
 
 import HousingFileSpecificationsAPI from '../../../api/housing-file-specification/HousingFileSpecificationsAPI';
 import fileDownload from 'js-file-download';
-import moment from 'moment';
+import moment from 'moment/moment';
 import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
 
 class HousingFileSpecificationsListApp extends Component {

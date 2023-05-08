@@ -10,6 +10,7 @@ namespace App\Http\RequestQueries\HousingFileSpecification\Grid;
 
 
 use App\Helpers\RequestQuery\RequestFilter;
+use Carbon\Carbon;
 
 class Filter extends RequestFilter
 {
@@ -21,28 +22,31 @@ class Filter extends RequestFilter
         'measureCategoryName',
         'measureName',
         'statusName',
-        'measureDate',
+        'measureDateStart',
+        'measureDateEnd',
     ];
 
     protected $mapping = [
-        'fullName' => 'full_name',
-        'measureCategoryName' => 'name',
-        'measureName' => 'name',
-        'statusName' => 'name',
-        'measureDate' => 'measure_date',
+        'fullName' => 'contacts.full_name',
+        'measureCategoryName' => 'measure_categories.name',
+        'measureName' => 'measures.name',
+        'statusName' => 'housing_file_specification_statuses.name',
+//        'measureDateStart' => 'measure_date',
+//        'measureDateEnd' => 'measure_date',
     ];
 
     protected $joins = [
-        'address' => 'address',
         'fullName' => 'contact',
+        'address' => 'address',
         'postalCode' => 'address',
         'city' => 'address',
+        'measureCategoryName' => 'measureCategory',
+        'measureName' => 'measure',
+        'statusName' => 'housingFileSpecificationStatus',
     ];
 
     protected $defaultTypes = [
         '*' => 'ct',
-//        'buildingType' => 'eq',
-//        'energyLabel' => 'eq',
     ];
 
     protected function applyAddressFilter($query, $type, $data) {
@@ -81,6 +85,17 @@ class Filter extends RequestFilter
             });
         }
 
+        return false;
+    }
+
+    protected function applyMeasureDateStartFilter($query, $type, $data)
+    {
+        $query->where('measure_date', '>=', Carbon::parse($data)->startOfDay());
+        return false;
+    }
+    protected function applyMeasureDateEndFilter($query, $type, $data)
+    {
+        $query->where('measure_date', '<=', Carbon::parse($data)->endOfDay());
         return false;
     }
 }

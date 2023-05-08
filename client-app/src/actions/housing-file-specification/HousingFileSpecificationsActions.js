@@ -1,7 +1,8 @@
-export const fetchHousingFileSpecifications = (filters, sorts, pagination) => {
+export const fetchHousingFileSpecifications = (filters, extraFilters, sorts, pagination) => {
     return {
         type: 'FETCH_HOUSING_FILE_SPECIFICATIONS',
         filters,
+        extraFilters,
         sorts,
         pagination,
     };

@@ -27,8 +27,12 @@ const filtersReducerDefaultState = {
         field: 'statusName',
         data: '',
     },
-    measureDate: {
-        field: 'measureDate',
+    measureDateStart: {
+        field: 'measureDateStart',
+        data: '',
+    },
+    measureDateEnd: {
+        field: 'measureDateEnd',
         data: '',
     },
 };
@@ -83,12 +87,20 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.measureName,
                 },
             };
-        case 'SET_FILTER_HOUSING_FILE_SPECIFICATION_MEASURE_DATE':
+        case 'SET_FILTER_HOUSING_FILE_SPECIFICATION_MEASURE_DATE_START':
             return {
                 ...state,
-                measureDate: {
-                    ...state.measureDate,
-                    data: action.measureDate,
+                measureDateStart: {
+                    ...state.measureDateStart,
+                    data: action.measureDateStart,
+                },
+            };
+        case 'SET_FILTER_HOUSING_FILE_SPECIFICATION_MEASURE_DATE_END':
+            return {
+                ...state,
+                measureDateEnd: {
+                    ...state.measureDateEnd,
+                    data: action.measureDateEnd,
                 },
             };
         case 'SET_FILTER_HOUSING_FILE_SPECIFICATION_STATUS_NAME':

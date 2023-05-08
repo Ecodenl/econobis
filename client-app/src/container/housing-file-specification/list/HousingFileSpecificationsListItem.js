@@ -70,7 +70,7 @@ class HousingFileSpecificationsListItem extends Component {
                 <td>{measureCategoryName}</td>
                 <td>{measureName}</td>
                 <td>{statusName}</td>
-                <td>{measureDate}</td>
+                <td>{measureDate ? moment(measureDate).format('DD-MM-Y') : ''}</td>
                 <td>
                     &nbsp;
                     {/*{this.state.showActionButtons && permissions.manageFinancial ? (*/}

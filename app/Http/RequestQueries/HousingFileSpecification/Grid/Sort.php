@@ -26,20 +26,23 @@ class Sort extends RequestSort
     ];
 
     protected $mapping = [
+        'fullName' => 'contacts.full_name',
         'address' => 'addresses.street',
         'postalCode' => 'addresses.postal_code',
         'city' => 'addresses.city',
-        'fullName' => 'contacts.full_name',
-        'measureCategoryName' => 'name',
-        'measureName' => 'name',
-        'statusName' => 'name',
+        'measureCategoryName' => 'measure_categories.name',
+        'measureName' => 'measures.name',
+        'statusName' => 'housing_file_specification_statuses.name',
         'measureDate' => 'measure_date',
     ];
 
     protected $joins = [
+        'fullName' => 'contact',
         'address' => 'address',
         'postalCode' => 'address',
         'city' => 'address',
-        'fullName' => 'contact',
+        'measureCategoryName' => 'measureCategory',
+        'measureName' => 'measure',
+        'statusName' => 'housingFileSpecificationStatus',
     ];
 }

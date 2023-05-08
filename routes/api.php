@@ -81,6 +81,7 @@ Route::namespace('Api')
         Route::get('/intake/{intake}/emails', 'Intake\IntakeController@emails');
 
         Route::get('/housing-file/grid', 'HousingFile\HousingFileController@grid');
+        Route::get('/housing-file-specification/grid', 'HousingFile\HousingFileSpecificationController@grid');
         Route::get('/housing-file/peek', 'HousingFile\HousingFileController@peek');
         Route::get('/housing-file/excel', 'HousingFile\HousingFileController@excel');
         Route::get('/housing-file/excelspecifications', 'HousingFile\HousingFileController@excelspecifications');

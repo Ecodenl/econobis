@@ -72,6 +72,9 @@ const Forgot = React.lazy(() => import('./container/auth/Forgot'));
 const HousingFileDetailsApp = React.lazy(() => import('./container/housing-file/details/HousingFileDetailsApp'));
 const HousingFileNewApp = React.lazy(() => import('./container/housing-file/new/HousingFileNewApp'));
 const HousingFilesListApp = React.lazy(() => import('./container/housing-file/list/HousingFilesListApp'));
+const HousingFileSpecificationsListApp = React.lazy(() =>
+    import('./container/housing-file-specification/list/HousingFileSpecificationsListApp')
+);
 const QuotationRequestDetailsApp = React.lazy(() =>
     import('./container/quotation-request/details/QuotationRequestDetailsApp')
 );
@@ -439,6 +442,7 @@ const Routes = () => {
                     />
                     <Route path="woningdossier/:id" component={HousingFileDetailsApp} />
                     <Route path="woningdossiers" component={HousingFilesListApp} />
+                    <Route path="woningdossier-specificaties" component={HousingFileSpecificationsListApp} />
                     /* Quotation Request */
                     <Route
                         path="offerteverzoek/nieuw/kans/:opportunityId/actie/:opportunityActionId"

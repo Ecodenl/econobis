@@ -124,6 +124,19 @@ export default {
             });
     },
 
+    createQuotationRequestsFromSpecifications: (housingFileId, opportunityIds, organisationOrCoachId) => {
+        const requestUrl = `${URL_HOUSING_FILE}/${housingFileId}/contact/${organisationOrCoachId}/create-quotation-requests`;
+
+        return axiosInstance
+            .post(requestUrl, { ids: opportunityIds })
+            .then(function(response) {
+                return response.data;
+            })
+            .catch(function(error) {
+                return error.response;
+            });
+    },
+
     fetchHousingFileSelectionPerType: $selectionType => {
         const requestUrl = `${URL_HOUSING_FILE}/selection/${$selectionType}/peek`;
 

@@ -50,8 +50,9 @@ class HousingFileSpecificationCreateOpportunity extends Component {
                 this.state.campaignId
             ).then(payload => {
                 this.props.closeModalCreateOpportunity();
-                this.props.toggleShowCheckboxList();
+                // this.props.toggleShowCheckboxList();
                 this.props.fetchHousingFileDetails(this.props.housingFileId);
+                this.props.showModalCreateQuotationRequest(this.state.campaignId, payload.opportunityIds);
             });
         }
     };
@@ -64,10 +65,11 @@ class HousingFileSpecificationCreateOpportunity extends Component {
                 confirmAction={this.handleSubmit}
                 title="Kans(en) maken"
             >
+                <p>Aanmaken kans(en) voor de {this.props.specificationIds.length} geselecteerde specificatie(s)?</p>
                 <div className="row">
                     <InputSelect
                         size={'col-md-12'}
-                        label={`Maak kans(en) van geselecteerde specificatie(s) voor campagne:`}
+                        label={'Campagne'}
                         name="campaignId"
                         options={this.state.campaigns}
                         value={this.state.campaignId}
@@ -83,6 +85,7 @@ class HousingFileSpecificationCreateOpportunity extends Component {
 
 const mapStateToProps = state => {
     return {
+        permissions: state.meDetails.permissions,
         housingFileId: state.housingFileDetails.id,
     };
 };

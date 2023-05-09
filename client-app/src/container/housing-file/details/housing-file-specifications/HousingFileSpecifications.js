@@ -7,6 +7,7 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import { connect } from 'react-redux';
 import HousingFileSpecificationCreateOpportunity from './HousingFileSpecificationCreateOpportunity';
+import HousingFileSpecificationsCreateQuotationRequest from './HousingFileSpecificationsCreateQuotationRequest';
 import ButtonText from '../../../../components/button/ButtonText';
 
 import Icon from 'react-icons-kit';
@@ -20,8 +21,11 @@ class HousingFileSpecifications extends Component {
             showNew: false,
             showCheckboxList: false,
             showCreateOpportunitiesFromSpecifications: false,
+            showCreateQuotationRequestsFromSpecifications: false,
             checkedAll: false,
             specificationIds: [],
+            campaignId: '',
+            opportunityIds: [],
         };
     }
 
@@ -82,9 +86,33 @@ class HousingFileSpecifications extends Component {
         });
     }
 
+    showModalCreateOpportunity = () => {
+        this.setState({
+            showCreateOpportunitiesFromSpecifications: true,
+        });
+    };
+
     closeModalCreateOpportunity = () => {
         this.setState({
             showCreateOpportunitiesFromSpecifications: false,
+        });
+    };
+
+    showModalCreateQuotationRequest = (campaignId, opportunityIds) => {
+        this.setState({
+            showCreateQuotationRequestsFromSpecifications: true,
+            specificationIds: [],
+            campaignId: campaignId,
+            opportunityIds: opportunityIds,
+        });
+    };
+
+    closeModalCreateQuotationRequest = () => {
+        this.setState({
+            showCreateQuotationRequestsFromSpecifications: false,
+            specificationIds: [],
+            campaignId: '',
+            opportunityIds: [],
         });
     };
 
@@ -103,8 +131,9 @@ class HousingFileSpecifications extends Component {
                                 <>
                                     {' '}
                                     <ButtonText
-                                        buttonText={'Maak kans(en)'}
-                                        onClickAction={this.closeModalCreateOpportunity}
+                                        buttonText={'Maak kans(en) (' + this.state.specificationIds.length + ')'}
+                                        onClickAction={this.showModalCreateOpportunity}
+                                        disabled={this.state.specificationIds.length == 0}
                                     />
                                 </>
                             ) : null}
@@ -132,8 +161,19 @@ class HousingFileSpecifications extends Component {
                     {this.state.showCreateOpportunitiesFromSpecifications && (
                         <HousingFileSpecificationCreateOpportunity
                             closeModalCreateOpportunity={this.closeModalCreateOpportunity}
-                            toggleShowCheckboxList={this.toggleShowCheckboxList}
                             specificationIds={this.state.specificationIds}
+                            showModalCreateQuotationRequest={this.showModalCreateQuotationRequest}
+                            // toggleShowCheckboxList={this.toggleShowCheckboxList}
+                            fetchHousingFileSpecificationsData={this.fetchHousingFileSpecificationsData}
+                        />
+                    )}
+                    {this.state.showCreateQuotationRequestsFromSpecifications && (
+                        <HousingFileSpecificationsCreateQuotationRequest
+                            closeModalCreateQuotationRequest={this.closeModalCreateQuotationRequest}
+                            campaignId={this.state.campaignId}
+                            opportunityIds={this.state.opportunityIds}
+                            toggleShowCheckboxList={this.toggleShowCheckboxList}
+                            // fetchHousingFileSpecificationsData={this.fetchHousingFileSpecificationsData}
                         />
                     )}
                 </PanelBody>

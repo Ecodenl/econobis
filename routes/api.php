@@ -92,6 +92,7 @@ Route::namespace('Api')
         Route::post('/housing-file/{housingFile}/delete', 'HousingFile\HousingFileController@destroy');
 
         Route::post('/housing-file/{housingFile}/campaign/{campaign}/create-opportunities', 'HousingFile\HousingFileController@createOpportunities');
+        Route::post('/housing-file/{housingFile}/contact/{contact}/create-quotation-requests', 'HousingFile\HousingFileController@createQuotationRequests');
         Route::post('/housing-file/housing-file-specification', 'HousingFile\HousingFileController@addHousingFileSpecification');
         Route::post('/housing-file/housing-file-specification/{housingFileSpecification}/update', 'HousingFile\HousingFileController@updateHousingFileSpecification');
         Route::post('/housing-file/housing-file-specification/{housingFileSpecification}/delete', 'HousingFile\HousingFileController@deleteHousingFileSpecification');

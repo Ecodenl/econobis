@@ -5,7 +5,6 @@ import HousingFileDetailsAPI from '../../../../api/housing-file/HousingFileDetai
 import Modal from '../../../../components/modal/Modal';
 import InputSelect from '../../../../components/form/InputSelect';
 import validator from 'validator';
-import { fetchHousingFileDetails } from '../../../../actions/housing-file/HousingFileDetailsActions';
 
 class HousingFileSpecificationCreateOpportunity extends Component {
     constructor(props) {
@@ -50,8 +49,6 @@ class HousingFileSpecificationCreateOpportunity extends Component {
                 this.state.campaignId
             ).then(payload => {
                 this.props.closeModalCreateOpportunity();
-                // this.props.toggleShowCheckboxList();
-                this.props.fetchHousingFileDetails(this.props.housingFileId);
                 this.props.showModalCreateQuotationRequest(this.state.campaignId, payload.opportunityIds);
             });
         }
@@ -89,10 +86,5 @@ const mapStateToProps = state => {
         housingFileId: state.housingFileDetails.id,
     };
 };
-const mapDispatchToProps = dispatch => ({
-    fetchHousingFileDetails: id => {
-        dispatch(fetchHousingFileDetails(id));
-    },
-});
 
-export default connect(mapStateToProps, mapDispatchToProps)(HousingFileSpecificationCreateOpportunity);
+export default connect(mapStateToProps, null)(HousingFileSpecificationCreateOpportunity);

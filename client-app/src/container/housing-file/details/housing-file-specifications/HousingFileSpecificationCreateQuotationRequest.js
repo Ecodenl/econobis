@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Modal from '../../../components/modal/Modal';
-import InputSelect from '../../../components/form/InputSelect';
+import Modal from '../../../../components/modal/Modal';
+import InputSelect from '../../../../components/form/InputSelect';
 import validator from 'validator';
-import HousingFileSpecificationsAPI from '../../../api/housing-file-specification/HousingFileSpecificationsAPI';
-import CampaignDetailsAPI from '../../../api/campaign/CampaignDetailsAPI';
+import CampaignDetailsAPI from '../../../../api/campaign/CampaignDetailsAPI';
+import { fetchHousingFileDetails } from '../../../../actions/housing-file/HousingFileDetailsActions';
+import HousingFileDetailsAPI from '../../../../api/housing-file/HousingFileDetailsAPI';
 
-class HousingFileSpecificationsListCreateQuotationRequest extends Component {
+class HousingFileSpecificationCreateQuotationRequest extends Component {
     constructor(props) {
         super(props);
 
@@ -43,11 +44,13 @@ class HousingFileSpecificationsListCreateQuotationRequest extends Component {
                 },
             });
         } else {
-            HousingFileSpecificationsAPI.createQuotationRequestsFromSpecificationsList(
+            HousingFileDetailsAPI.createQuotationRequestsFromSpecifications(
+                this.props.housingFileId,
                 this.props.opportunityIds,
                 this.state.organisationOrCoachId
             ).then(payload => {
                 this.props.closeModalCreateQuotationRequest();
+                this.props.fetchHousingFileDetails(this.props.housingFileId);
             });
         }
     };
@@ -82,7 +85,13 @@ class HousingFileSpecificationsListCreateQuotationRequest extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
+        housingFileId: state.housingFileDetails.id,
     };
 };
+const mapDispatchToProps = dispatch => ({
+    fetchHousingFileDetails: id => {
+        dispatch(fetchHousingFileDetails(id));
+    },
+});
 
-export default connect(mapStateToProps, null)(HousingFileSpecificationsListCreateQuotationRequest);
+export default connect(mapStateToProps, mapDispatchToProps)(HousingFileSpecificationCreateQuotationRequest);

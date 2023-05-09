@@ -229,6 +229,7 @@ class HousingFileSpecificationsListApp extends Component {
 
     showModalCreateQuotationRequest = (campaignId, opportunityIds) => {
         this.setState({
+            showCheckboxList: false,
             showCreateQuotationRequestsFromSpecifications: true,
             specificationIds: [],
             campaignId: campaignId,
@@ -292,7 +293,6 @@ class HousingFileSpecificationsListApp extends Component {
                             closeModalCreateOpportunity={this.closeModalCreateOpportunity}
                             specificationIds={this.state.specificationIds}
                             showModalCreateQuotationRequest={this.showModalCreateQuotationRequest}
-                            // toggleShowCheckboxList={this.toggleShowCheckboxList}
                             fetchHousingFileSpecificationsData={this.fetchHousingFileSpecificationsData}
                         />
                     )}
@@ -301,8 +301,6 @@ class HousingFileSpecificationsListApp extends Component {
                             closeModalCreateQuotationRequest={this.closeModalCreateQuotationRequest}
                             campaignId={this.state.campaignId}
                             opportunityIds={this.state.opportunityIds}
-                            toggleShowCheckboxList={this.toggleShowCheckboxList}
-                            // fetchHousingFileSpecificationsData={this.fetchHousingFileSpecificationsData}
                         />
                     )}
                 </PanelBody>

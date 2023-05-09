@@ -7,7 +7,7 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import { connect } from 'react-redux';
 import HousingFileSpecificationCreateOpportunity from './HousingFileSpecificationCreateOpportunity';
-import HousingFileSpecificationsCreateQuotationRequest from './HousingFileSpecificationsCreateQuotationRequest';
+import HousingFileSpecificationCreateQuotationRequest from './HousingFileSpecificationCreateQuotationRequest';
 import ButtonText from '../../../../components/button/ButtonText';
 
 import Icon from 'react-icons-kit';
@@ -100,6 +100,7 @@ class HousingFileSpecifications extends Component {
 
     showModalCreateQuotationRequest = (campaignId, opportunityIds) => {
         this.setState({
+            showCheckboxList: false,
             showCreateQuotationRequestsFromSpecifications: true,
             specificationIds: [],
             campaignId: campaignId,
@@ -163,17 +164,13 @@ class HousingFileSpecifications extends Component {
                             closeModalCreateOpportunity={this.closeModalCreateOpportunity}
                             specificationIds={this.state.specificationIds}
                             showModalCreateQuotationRequest={this.showModalCreateQuotationRequest}
-                            // toggleShowCheckboxList={this.toggleShowCheckboxList}
-                            fetchHousingFileSpecificationsData={this.fetchHousingFileSpecificationsData}
                         />
                     )}
                     {this.state.showCreateQuotationRequestsFromSpecifications && (
-                        <HousingFileSpecificationsCreateQuotationRequest
+                        <HousingFileSpecificationCreateQuotationRequest
                             closeModalCreateQuotationRequest={this.closeModalCreateQuotationRequest}
                             campaignId={this.state.campaignId}
                             opportunityIds={this.state.opportunityIds}
-                            toggleShowCheckboxList={this.toggleShowCheckboxList}
-                            // fetchHousingFileSpecificationsData={this.fetchHousingFileSpecificationsData}
                         />
                     )}
                 </PanelBody>

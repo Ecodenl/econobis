@@ -373,6 +373,7 @@ class HousingFileController extends ApiController
         $specificationStatusIdOpportunityCreated = HousingFileSpecificationStatus::where('code_ref', 'opportunity_created')->first()->id;
 
         $specificationIds = $request->input('ids');
+        $opportunityIds = [];
 
         foreach ($specificationIds as $specificationId){
             $housingFileSpecification = HousingFileSpecification::find($specificationId);
@@ -400,11 +401,13 @@ class HousingFileController extends ApiController
                     'evaluation_agreed_date' => null,
                 ]);
                 $opportunity->measures()->sync($measure->id);
+                $opportunityIds[] = $opportunity->id;
 
                 $housingFileSpecification->status_id = $specificationStatusIdOpportunityCreated;
                 $housingFileSpecification->save();
             }
         }
+        return ['opportunityIds' => $opportunityIds];
     }
 
     public function createQuotationRequests(Request $request, Contact $contact)

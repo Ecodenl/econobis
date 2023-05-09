@@ -48,7 +48,6 @@ class HousingFileSpecificationsListCreateOpportunity extends Component {
                 this.state.campaignId
             ).then(payload => {
                 this.props.closeModalCreateOpportunity();
-                // this.props.toggleShowCheckboxList();
                 this.props.fetchHousingFileSpecificationsData();
                 this.props.showModalCreateQuotationRequest(this.state.campaignId, payload.opportunityIds);
             });

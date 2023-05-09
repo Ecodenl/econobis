@@ -49,7 +49,7 @@ class HousingFileSpecificationCreateOpportunity extends Component {
                 this.props.specificationIds,
                 this.state.campaignId
             ).then(payload => {
-                this.props.toggleCreateOpportunity();
+                this.props.closeModalCreateOpportunity();
                 this.props.toggleShowCheckboxList();
                 this.props.fetchHousingFileDetails(this.props.housingFileId);
             });
@@ -60,7 +60,7 @@ class HousingFileSpecificationCreateOpportunity extends Component {
         return (
             <Modal
                 buttonConfirmText="Kans(en) maken"
-                closeModal={this.props.toggleCreateOpportunity}
+                closeModal={this.props.closeModalCreateOpportunity}
                 confirmAction={this.handleSubmit}
                 title="Kans(en) maken"
             >

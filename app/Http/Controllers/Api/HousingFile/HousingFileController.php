@@ -404,6 +404,11 @@ class HousingFileController extends ApiController
         }
     }
 
+    public function createQuotationRequests(Request $request, Contact $contact)
+    {
+        $this->authorize('manage', HousingFile::class);
+    }
+
     public function destroy(HousingFile $housingFile)
     {
         $this->authorize('manage', HousingFile::class);

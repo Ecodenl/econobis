@@ -129,6 +129,7 @@ Route::namespace('Api')
 
         Route::get('/housing-file-specification/grid', 'HousingFile\HousingFileSpecificationController@grid');
         Route::post('/housing-file-specification/campaign/{campaign}/create-opportunities', 'HousingFile\HousingFileSpecificationController@createOpportunities');
+        Route::post('/housing-file-specification/contact/{contact}/create-quotation-requests', 'HousingFile\HousingFileSpecificationController@createQuotationRequests');
         Route::get('/housing-file-specification/excel', 'HousingFile\HousingFileSpecificationController@excelHousingFiles');
         Route::get('/housing-file-specification/excel-specifications', 'HousingFile\HousingFileSpecificationController@excelSpecifications');
 

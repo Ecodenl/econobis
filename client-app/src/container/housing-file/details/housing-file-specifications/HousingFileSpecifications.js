@@ -82,9 +82,9 @@ class HousingFileSpecifications extends Component {
         });
     }
 
-    toggleCreateOpportunity = () => {
+    closeModalCreateOpportunity = () => {
         this.setState({
-            showCreateOpportunitiesFromSpecifications: !this.state.showCreateOpportunitiesFromSpecifications,
+            showCreateOpportunitiesFromSpecifications: false,
         });
     };
 
@@ -104,7 +104,7 @@ class HousingFileSpecifications extends Component {
                                     {' '}
                                     <ButtonText
                                         buttonText={'Maak kans(en)'}
-                                        onClickAction={this.toggleCreateOpportunity}
+                                        onClickAction={this.closeModalCreateOpportunity}
                                     />
                                 </>
                             ) : null}
@@ -131,7 +131,7 @@ class HousingFileSpecifications extends Component {
 
                     {this.state.showCreateOpportunitiesFromSpecifications && (
                         <HousingFileSpecificationCreateOpportunity
-                            toggleCreateOpportunity={this.toggleCreateOpportunity}
+                            closeModalCreateOpportunity={this.closeModalCreateOpportunity}
                             toggleShowCheckboxList={this.toggleShowCheckboxList}
                             specificationIds={this.state.specificationIds}
                         />

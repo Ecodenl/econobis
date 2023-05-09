@@ -38,8 +38,9 @@ const HousingFileSpecificationsListToolbar = props => {
                                 <>
                                     {' '}
                                     <ButtonText
-                                        buttonText={'Maak kans(en)'}
-                                        onClickAction={props.toggleCreateOpportunity}
+                                        buttonText={'Maak kans(en) (' + props.numberOfSelected + ')'}
+                                        onClickAction={props.showModalCreateOpportunity}
+                                        disabled={props.numberOfSelected == 0}
                                     />
                                 </>
                             ) : null}

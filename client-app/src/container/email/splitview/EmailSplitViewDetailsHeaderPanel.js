@@ -10,13 +10,14 @@ import {useSelector} from 'react-redux'
 import InputSelectGroup from "../../../components/form/InputSelectGroup";
 import InputSelect from "../../../components/form/InputSelect";
 import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
+import EmailEditModal from "../details-modal/EmailDetailsModal";
+import EmailAddressList from "../../../components/email/EmailAddressList";
 
 export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttributes}) {
-    const defaultCcDisplayLimit = 2;
     const statusses = useSelector((state) => state.systemData.emailStatuses);
     const teams = useSelector((state) => state.systemData.teams);
     const users = useSelector((state) => state.systemData.users);
-    const [ccDisplayLimit, setCcDisplayLimit] = useState(defaultCcDisplayLimit);
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
 
     const setResonsibleValue = (val) => {
         let values = {
@@ -110,9 +111,9 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                                 type="button"
                                 title="Doorsturen"
                                 className={'btn btn-success btn-sm'}
-                                // onClick={() => {
-                                //     hashHistory.push(`/email/${id}/doorsturen`);
-                                // }}
+                                onClick={() => {
+                                    setShowDetailsModal(true);
+                                }}
                             >
                                 <Icon icon={windowRestore} size={13}/>
                             </button>
@@ -152,46 +153,7 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                     <div className="col-sm-6">
                         <label className="col-sm-6">CC</label>
                         <div className="col-sm-6">
-                            {
-                                [...email.ccAddresses].splice(0, ccDisplayLimit).map((cc, index) => {
-                                    return (
-                                        <span key={cc.id}>
-                                            {
-                                                index > 0 && (
-                                                    <span>, </span>
-                                                )
-                                            }
-                                            {cc.name}
-                                        </span>
-                                    )
-                                })
-                            }
-                            {
-                                email.ccAddresses.length > ccDisplayLimit && (
-                                    <>
-                                        <br/>
-                                        <a href="#" onClick={(e) => {
-                                            e.preventDefault();
-                                            setCcDisplayLimit(email.ccAddresses.length)
-                                        }}>
-                                            {email.ccAddresses.length - ccDisplayLimit} meer...
-                                        </a>
-                                    </>
-                                )
-                            }
-                            {
-                                ccDisplayLimit > defaultCcDisplayLimit && (
-                                    <>
-                                        <br/>
-                                        <a href="#" onClick={(e) => {
-                                            e.preventDefault();
-                                            setCcDisplayLimit(defaultCcDisplayLimit)
-                                        }}>
-                                            verbergen
-                                        </a>
-                                    </>
-                                )
-                            }
+                            <EmailAddressList emailAddresses={email.ccAddresses}/>
                         </div>
                     </div>
                     <InputSelectGroup
@@ -212,6 +174,7 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                     />
                 </div>
             </div>
+            <EmailEditModal showModal={showDetailsModal} emailId={email.id} setShowModal={setShowDetailsModal}/>
         </div>
     );
 }

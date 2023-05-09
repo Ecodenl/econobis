@@ -162,9 +162,29 @@ class Email extends Model
         return new EmailInlineImagesService($this);
     }
 
-    public function getCcAdresses()
+    public function getCcAddresses()
     {
         return collect($this->cc)->map(function ($idOrEmailAddress) {
+            return $this->mapIdOrEmailAddressToValueObject($idOrEmailAddress);
+        })->filter(function ($value) {
+            return $value !== null;
+        })->values()
+            ->toArray();
+    }
+
+    public function getToAddresses()
+    {
+        return collect($this->to)->map(function ($idOrEmailAddress) {
+            return $this->mapIdOrEmailAddressToValueObject($idOrEmailAddress);
+        })->filter(function ($value) {
+            return $value !== null;
+        })->values()
+            ->toArray();
+    }
+
+    public function getBccAddresses()
+    {
+        return collect($this->bcc)->map(function ($idOrEmailAddress) {
             return $this->mapIdOrEmailAddressToValueObject($idOrEmailAddress);
         })->filter(function ($value) {
             return $value !== null;
@@ -182,14 +202,14 @@ class Email extends Model
             }
 
             return [
-                'id' => $emailAddress->id,
-                'name' => $emailAddress->contact->full_name . ' (' . $emailAddress->email . ')',
+                'name' => $emailAddress->contact->full_name,
+                'email' => $emailAddress->email,
             ];
         }
 
         return [
-            'id' => $idOrEmailAddress,
-            'name' => $idOrEmailAddress,
+            'name' => null,
+            'email' => $idOrEmailAddress,
         ];
     }
 

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
 import EmailSplitViewDetailsHeaderPanel from "./EmailSplitViewDetailsHeaderPanel";
-import EmailSplitViewDetailsAttachmentsPanel from "./EmailSplitViewDetailsAttachmentsPanel";
+import EmailAttachmentsPanel from "../../../components/email/EmailAttachmentsPanel";
 
 export default function EmailSplitViewDetails({emailId, updatedEmailHandler}) {
     const [email, setEmail] = useState([]);
@@ -50,7 +50,7 @@ export default function EmailSplitViewDetails({emailId, updatedEmailHandler}) {
                 </div>
             </div>
 
-            <EmailSplitViewDetailsAttachmentsPanel email={email} />
+            <EmailAttachmentsPanel email={email} />
         </div>
     );
 }

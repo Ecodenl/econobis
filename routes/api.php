@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\Email\EmailAttachmentController;
+use App\Http\Controllers\Api\Email\EmailDetailsController;
 use App\Http\Controllers\Api\Email\EmailSplitviewController;
 use App\Http\Controllers\Api\Invoice\InvoiceMolliePaymentController;
 use App\Http\Controllers\Api\Mailbox\MailboxController;
@@ -325,6 +327,16 @@ Route::namespace('Api')
         Route::post('email-splitview/{email}/store-reply', [EmailSplitviewController::class, 'storeReply']);
         Route::post('email-splitview/{email}/store-reply-all', [EmailSplitviewController::class, 'storeReplyAll']);
         Route::post('email-splitview/{email}/store-forward', [EmailSplitviewController::class, 'storeForward']);
+
+        /**
+         * Email details
+         */
+        Route::get('email-details/{email}', [EmailDetailsController::class, 'show']);
+
+        /**
+         * Email attachments
+         */
+        Route::get('email-attachment/{emailAttachment}/download', [EmailAttachmentController::class, 'download']);
 
         Route::get('email-template/grid', 'EmailTemplate\EmailTemplateController@grid');
         Route::get('email-template/peek', 'EmailTemplate\EmailTemplateController@peek');

@@ -3,14 +3,14 @@ import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
 import EmailSplitViewDetails from "./EmailSplitViewDetails";
 import EmailSplitViewSelectList from "./EmailSplitViewSelectList";
 import EmailSplitViewFiltersPanel from "./EmailSplitViewFiltersPanel";
-import {getJoryFilter, storeFiltersToStorage, getFiltersFromStorage} from "./EmailFilterHelpers";
+import {getJoryFilter, storeFiltersToStorage, getFiltersFromStorage, defaultFilters} from "./EmailFilterHelpers";
 
 export default function EmailSplitView({router}) {
     const perPage = 50;
     const [emails, setEmails] = useState([]);
     const [emailCount, setEmailCount] = useState(0);
     const [selectedEmailId, setSelectedEmailId] = useState(null);
-    const [filters, setFilters] = useState({});
+    const [filters, setFilters] = useState({...defaultFilters});
 
     useEffect(() => {
         setFilters({...getFiltersFromStorage(), fetch: true});

@@ -60,3 +60,16 @@
 .filter-row {
   margin: 0 0 12px 0;
 }
+
+.modal-fullscreen {
+  top: 0px;
+}
+
+.modal-fullscreen .modal-dialog {
+  width: 95vw;
+}
+
+.modal-fullscreen .modal-content .modal-body {
+  height: 80vh;
+  overflow-y: scroll;
+}

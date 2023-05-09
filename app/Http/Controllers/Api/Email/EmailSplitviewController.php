@@ -6,7 +6,6 @@ namespace App\Http\Controllers\Api\Email;
 use App\Eco\Contact\Contact;
 use App\Eco\Email\Email;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Email\SplitviewSelectlistEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -62,7 +61,7 @@ class EmailSplitviewController extends Controller
                     'fullName' => $contact->full_name,
                 ];
             }),
-            'ccAddresses' => $email->getCcAdresses(),
+            'ccAddresses' => $email->getCcAddresses(),
             'htmlBodyWithEmbeddedImages' => $email->inlineImagesService()->getHtmlBodyWithCidsConvertedToEmbeddedImages(),
         ]);
     }

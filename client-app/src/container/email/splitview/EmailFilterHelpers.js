@@ -111,8 +111,22 @@ export function getFiltersFromStorage() {
     let filters = localStorage.getItem('emailFilters');
 
     if (!filters) {
-        return {};
+        return {...defaultFilters};
     }
 
-    return JSON.parse(filters);
+    return {
+        ...defaultFilters,
+        ...JSON.parse(filters),
+    };
+}
+
+export const defaultFilters = {
+    from: '',
+    contact: '',
+    subject: '',
+    mailbox: '',
+    status: '',
+    responsible: '',
+    to: '',
+    attachment: '',
 }

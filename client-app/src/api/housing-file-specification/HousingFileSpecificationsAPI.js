@@ -1,12 +1,13 @@
 import axiosInstance from '../default-setup/AxiosInstance';
 
 export default {
-    fetchHousingFiles: ({ filters, sorts, pagination }) => {
-        const requestUrl = `${URL_API}/api/housing-file/grid`;
+    fetchHousingFileSpecifications: ({ filters, extraFilters, sorts, pagination }) => {
+        const requestUrl = `${URL_API}/api/housing-file-specification/grid`;
 
         return axiosInstance.get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
+                extraFilters: JSON.stringify(extraFilters),
                 sorts: JSON.stringify(sorts),
                 limit: pagination.limit,
                 offset: pagination.offset,
@@ -14,44 +15,20 @@ export default {
         });
     },
 
-    peekHousingFiles: () => {
-        const requestUrl = `${URL_API}/api/housing-file/peek`;
+    createOpportunitiesFromSpecificationsList: (specificationIds, campaignId) => {
+        const requestUrl = `${URL_API}/api/housing-file-specification/campaign/${campaignId}/create-opportunities`;
 
         return axiosInstance
-            .get(requestUrl)
-            .then(function(response) {
-                return response.data.data;
-            })
-            .catch(function(error) {
-                console.log(error);
-            });
-    },
-
-    getAmountActive: () => {
-        const requestUrl = `${URL_API}/api/housing-file/amount-active`;
-
-        return axiosInstance
-            .get(requestUrl)
-            .then(response => response.data)
-            .catch(error => {
-                console.log(error);
-            });
-    },
-
-    fetchHousingFilesByContact: contactId => {
-        const requestUrl = `${URL_API}/api/contact/${contactId}/housing-files`;
-
-        return axiosInstance
-            .get(requestUrl)
+            .post(requestUrl, { ids: specificationIds })
             .then(function(response) {
                 return response.data;
             })
             .catch(function(error) {
-                console.log(error);
+                return error.response;
             });
     },
 
-    getExcelHousingFiles: ({ filters, sorts }) => {
+    getExcelHousingFiles: ({ filters, extraFilters, sorts }) => {
         const requestUrl = `${URL_API}/api/housing-file/excel`;
         return axiosInstance.get(requestUrl, {
             params: {
@@ -62,7 +39,7 @@ export default {
         });
     },
 
-    getExcelSpecifications: ({ filters, sorts }) => {
+    getExcelSpecifications: ({ filters, extraFilters, sorts }) => {
         const requestUrl = `${URL_API}/api/housing-file/excel-specifications`;
         return axiosInstance.get(requestUrl, {
             params: {

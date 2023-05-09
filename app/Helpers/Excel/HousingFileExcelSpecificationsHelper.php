@@ -11,7 +11,7 @@ namespace App\Helpers\Excel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-class HousingFileExcelspecificationsHelper
+class HousingFileExcelSpecificationsHelper
 {
     private $housingFiles;
 
@@ -23,7 +23,7 @@ class HousingFileExcelspecificationsHelper
     public function downloadExcel()
     {
         if($this->housingFiles->count() === 0){
-            abort(403, 'Geen woningdossiers aanwezig in selectie');
+            abort(403, 'Geen woningdossiers specificaties aanwezig in selectie');
         }
 
         $completeData = [];
@@ -41,7 +41,7 @@ class HousingFileExcelspecificationsHelper
         $headerData[] = 'Zijde';
         $headerData[] = 'Uitvoering';
         $headerData[] = 'Besparing gas';
-        $headerData[] = 'Besparing Electriciteit';
+        $headerData[] = 'Besparing electriciteit';
         $headerData[] = 'CO2 besparing';
 
         $completeData[] = $headerData;

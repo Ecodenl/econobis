@@ -97,6 +97,7 @@ import {
     fetchHousingFileDetailsSaga,
 } from './housing-file/HousingFileDetailsSaga';
 import { fetchHousingFilesSaga } from './housing-file/HousingFilesSaga';
+import { fetchHousingFileSpecificationsSaga } from './housing-file-specification/HousingFileSpecificationsSaga';
 import {
     deleteQuotationRequestSaga,
     fetchQuotationRequestDetailsSaga,
@@ -198,6 +199,8 @@ export default function* watchSagas() {
     yield takeLatest('DELETE_HOUSING_FILE', deleteHousingFileSaga);
     yield takeLatest('DELETE_HOUSING_FILE_SPECIFICATION', deleteHousingFileSpecificationSaga);
     yield takeLatest('DELETE_HOUSING_FILE_HOUSING_STATUS', deleteHousingFileHousingStatusSaga);
+    // Housing File Specifications
+    yield takeLatest('FETCH_HOUSING_FILE_SPECIFICATIONS', fetchHousingFileSpecificationsSaga);
     // Quotation Requests
     yield takeLatest('FETCH_QUOTATION_REQUESTS', fetchQuotationRequestsSaga);
     yield takeLatest('FETCH_QUOTATION_REQUEST_DETAILS', fetchQuotationRequestDetailsSaga);

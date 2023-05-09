@@ -237,7 +237,7 @@ class HousingFileSpecificationEdit extends Component {
 
                         <div className="row">
                             <InputText
-                                label={'Besparing Electriciteit'}
+                                label={'Besparing electriciteit'}
                                 name={'savingsElectricity'}
                                 value={savingsElectricity}
                                 onChangeAction={this.handleInputChange}

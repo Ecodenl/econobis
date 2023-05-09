@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
+import ButtonText from '../../../components/button/ButtonText';
 
 const HousingFileSpecificationsListToolbar = props => {
     const { meta = {} } = props.housingFileSpecifications;
@@ -18,7 +19,7 @@ const HousingFileSpecificationsListToolbar = props => {
                     />
                     <ButtonIcon
                         iconName={'download'}
-                        onClickAction={props.getExcel}
+                        onClickAction={props.getExcelHousingFiles}
                         title={'Download woningdossiers'}
                     />
                     <ButtonIcon
@@ -26,6 +27,24 @@ const HousingFileSpecificationsListToolbar = props => {
                         onClickAction={props.getExcelSpecifications}
                         title={'Download woningdossiers specificaties'}
                     />
+
+                    {props.permissions.manageHousingFile && (
+                        <>
+                            <ButtonText
+                                buttonText={props.showCheckboxList ? 'Selectie sluiten' : 'Selectie maken'}
+                                onClickAction={props.toggleShowCheckboxList}
+                            />
+                            {props.showCheckboxList ? (
+                                <>
+                                    {' '}
+                                    <ButtonText
+                                        buttonText={'Maak kans(en)'}
+                                        onClickAction={props.toggleCreateOpportunity}
+                                    />
+                                </>
+                            ) : null}
+                        </>
+                    )}
                 </div>
             </div>
             <div className="col-md-4">
@@ -40,6 +59,7 @@ const HousingFileSpecificationsListToolbar = props => {
 
 const mapStateToProps = state => {
     return {
+        permissions: state.meDetails.permissions,
         housingFileSpecifications: state.housingFileSpecifications.list,
     };
 };

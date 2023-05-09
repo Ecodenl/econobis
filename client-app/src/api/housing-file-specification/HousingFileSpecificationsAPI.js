@@ -15,20 +15,20 @@ export default {
         });
     },
 
-    // createOpportunitiesFromSpecifications: (housingFileId, specificationIds, campaignId) => {
-    //     const requestUrl = `${URL_HOUSING_FILE}/${housingFileId}/campaign/${campaignId}/create-opportunities`;
-    //
-    //     return axiosInstance
-    //         .post(requestUrl, { ids: specificationIds })
-    //         .then(function(response) {
-    //             return response.data;
-    //         })
-    //         .catch(function(error) {
-    //             return error.response;
-    //         });
-    // },
+    createOpportunitiesFromSpecificationsList: (specificationIds, campaignId) => {
+        const requestUrl = `${URL_API}/api/housing-file-specification/campaign/${campaignId}/create-opportunities`;
 
-    getExcel: ({ filters, extraFilters, sorts }) => {
+        return axiosInstance
+            .post(requestUrl, { ids: specificationIds })
+            .then(function(response) {
+                return response.data;
+            })
+            .catch(function(error) {
+                return error.response;
+            });
+    },
+
+    getExcelHousingFiles: ({ filters, extraFilters, sorts }) => {
         const requestUrl = `${URL_API}/api/housing-file/excel`;
         return axiosInstance.get(requestUrl, {
             params: {
@@ -40,7 +40,7 @@ export default {
     },
 
     getExcelSpecifications: ({ filters, extraFilters, sorts }) => {
-        const requestUrl = `${URL_API}/api/housing-file/excelspecifications`;
+        const requestUrl = `${URL_API}/api/housing-file/excel-specifications`;
         return axiosInstance.get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),

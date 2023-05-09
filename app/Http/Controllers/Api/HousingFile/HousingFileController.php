@@ -28,7 +28,7 @@ use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Helpers\Delete\Models\DeleteHousingFile;
 use App\Helpers\Excel\HousingFileExcelHelper;
-use App\Helpers\Excel\HousingFileExcelspecificationsHelper;
+use App\Helpers\Excel\HousingFileExcelSpecificationsHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\HousingFile\Grid\RequestQuery;
@@ -111,24 +111,28 @@ class HousingFileController extends ApiController
         return FullHousingFile::make($housingFile);
     }
 
-    public function excel(RequestQuery $requestQuery)
+    public function excelHousingFiles(RequestQuery $requestQuery)
     {
         set_time_limit(0);
         $housingFiles = $requestQuery->getQueryNoPagination()->get();
+
+        $housingFiles->load(['address.contact', 'buildingType', 'energyLabel']);
 
         $housingFileExcelHelper = new HousingFileExcelHelper($housingFiles);
 
         return $housingFileExcelHelper->downloadExcel();
     }
 
-    public function excelspecifications(RequestQuery $requestQuery)
+    public function excelSpecifications(RequestQuery $requestQuery)
     {
         set_time_limit(0);
         $housingFiles = $requestQuery->getQueryNoPagination()->get();
 
-        $housingFileExcelspecificationsHelper = new HousingFileExcelspecificationsHelper($housingFiles);
+        $housingFiles->load(['address.contact', 'buildingType', 'energyLabel']);
 
-        return $housingFileExcelspecificationsHelper->downloadExcel();
+        $housingFileExcelSpecificationsHelper = new HousingFileExcelSpecificationsHelper($housingFiles);
+
+        return $housingFileExcelSpecificationsHelper->downloadExcel();
     }
 
     public function store(Request $request, RequestInput $requestInput)

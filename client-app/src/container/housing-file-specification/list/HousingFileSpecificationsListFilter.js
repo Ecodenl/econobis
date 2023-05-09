@@ -91,6 +91,13 @@ const HousingFileSpecificationsListFilter = props => {
 
     return (
         <tr className="thead-filter">
+            {props.showCheckboxList ? (
+                <th>
+                    <div>
+                        <input type="checkbox" onChange={props.toggleCheckedAll} />
+                    </div>
+                </th>
+            ) : null}
             <th>
                 <input
                     type="text"

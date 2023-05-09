@@ -34,12 +34,12 @@ export const setFilterHousingFileSpecificationStatusName = statusName => ({
 });
 
 export const setFilterHousingFileSpecificationMeasureDateStart = measureDateStart => ({
-    type: 'SET_FILTER_HOUSING_FILE_SPECIFICATION__MEASURE_DATE_START',
+    type: 'SET_FILTER_HOUSING_FILE_SPECIFICATION_MEASURE_DATE_START',
     measureDateStart,
 });
 
 export const setFilterHousingFileSpecificationMeasureDateEnd = measureDateEnd => ({
-    type: 'SET_FILTER_HOUSING_FILE_SPECIFICATION__MEASURE_DATE_END',
+    type: 'SET_FILTER_HOUSING_FILE_SPECIFICATION_MEASURE_DATE_END',
     measureDateEnd,
 });
 

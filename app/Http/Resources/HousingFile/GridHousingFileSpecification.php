@@ -17,7 +17,7 @@ class GridHousingFileSpecification extends JsonResource
     public function toArray($request)
     {
            return [
-//               'id' => $this->id,
+               'id' => $this->id,
                'fullAddress' => $this->housingFile->address->present()->streetAndNumber(),
                'postalCode' => $this->housingFile->address->postal_code,
                'city' => $this->housingFile->address->city,
@@ -26,9 +26,9 @@ class GridHousingFileSpecification extends JsonResource
 //               'measureId' => $this->measure_id,
                'measureCategoryName' => $this->measure && $this->measure->measureCategory? $this->measure->measureCategory->name  : '',
                'measureName' => $this->measure ? $this->measure->name : '',
-//               'status' => GenericResource::make($this->whenLoaded('status')),
+               'status' => GenericResource::make($this->whenLoaded('status')),
 //               'isDefaultEconobisMeasure' => ($defaultEconobisMeasure->id == $this->measure_id),
-               'statusName' => $this->status ? $this->status->name : '',
+//               'statusName' => $this->status ? $this->status->name : '',
                'measureDate' => $this->measure_date,
                'answer' => $this->answer,
                'floor' => GenericResource::make($this->whenLoaded('floor')),

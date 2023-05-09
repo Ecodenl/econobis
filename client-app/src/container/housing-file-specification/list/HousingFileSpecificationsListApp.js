@@ -57,14 +57,14 @@ class HousingFileSpecificationsListApp extends Component {
         }, 100);
     };
 
-    getExcel = () => {
+    getExcelHousingFiles = () => {
         this.props.blockUI();
         setTimeout(() => {
             const extraFilters = this.state.extraFilters;
             const filters = filterHelper(this.props.housingFileSpecificationsFilters);
             const sorts = this.props.housingFileSpecificationsSorts;
 
-            HousingFileSpecificationsAPI.getExcel({ filters, extraFilters, sorts })
+            HousingFileSpecificationsAPI.getExcelHousingFiles({ filters, extraFilters, sorts })
                 .then(payload => {
                     fileDownload(payload.data, 'Woningdossiers-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.xlsx');
                     this.props.unblockUI();
@@ -171,7 +171,7 @@ class HousingFileSpecificationsListApp extends Component {
         let specificationIds = [];
 
         if (isChecked) {
-            this.props.housingFileSpecifications.map(
+            this.props.housingFileSpecifications.data.map(
                 specification =>
                     specification &&
                     specification.status &&
@@ -228,9 +228,12 @@ class HousingFileSpecificationsListApp extends Component {
                             // }
                             // refreshHousingFileSpecificationsData={this.callFetchHousingFileSpecificationsData}
                             resetHousingFileSpecificationFilters={() => this.resetHousingFileSpecificationFilters()}
-                            getExcel={this.getExcel}
+                            getExcelHousingFiles={this.getExcelHousingFiles}
                             getExcelSpecifications={this.getExcelSpecifications}
                             toggleShowExtraFilters={this.toggleShowExtraFilters}
+                            showCheckboxList={this.state.showCheckboxList}
+                            toggleShowCheckboxList={this.toggleShowCheckboxList}
+                            toggleCreateOpportunity={this.toggleCreateOpportunity}
                         />
                     </div>
 
@@ -262,6 +265,7 @@ class HousingFileSpecificationsListApp extends Component {
                             toggleCreateOpportunity={this.toggleCreateOpportunity}
                             toggleShowCheckboxList={this.toggleShowCheckboxList}
                             specificationIds={this.state.specificationIds}
+                            fetchHousingFileSpecificationsData={this.fetchHousingFileSpecificationsData}
                         />
                     )}
                 </PanelBody>
@@ -272,7 +276,7 @@ class HousingFileSpecificationsListApp extends Component {
 
 const mapStateToProps = state => {
     return {
-        // permissions: state.meDetails.permissions,
+        permissions: state.meDetails.permissions,
         housingFileSpecifications: state.housingFileSpecifications.list,
         housingFileSpecificationsFilters: state.housingFileSpecifications.filters,
         housingFileSpecificationsSorts: state.housingFileSpecifications.sorts,

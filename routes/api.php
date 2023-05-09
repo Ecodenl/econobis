@@ -81,10 +81,9 @@ Route::namespace('Api')
         Route::get('/intake/{intake}/emails', 'Intake\IntakeController@emails');
 
         Route::get('/housing-file/grid', 'HousingFile\HousingFileController@grid');
-        Route::get('/housing-file-specification/grid', 'HousingFile\HousingFileSpecificationController@grid');
         Route::get('/housing-file/peek', 'HousingFile\HousingFileController@peek');
-        Route::get('/housing-file/excel', 'HousingFile\HousingFileController@excel');
-        Route::get('/housing-file/excelspecifications', 'HousingFile\HousingFileController@excelspecifications');
+        Route::get('/housing-file/excel', 'HousingFile\HousingFileController@excelHousingFiles');
+        Route::get('/housing-file/excel-specifications', 'HousingFile\HousingFileController@excelSpecifications');
         Route::get('/contact/{contact}/housing-file', 'HousingFile\HousingFileController@getStore');
         Route::post('/contact/housing-file', 'HousingFile\HousingFileController@store');
         Route::get('/housing-file/{housingFile}', 'HousingFile\HousingFileController@show');
@@ -128,6 +127,10 @@ Route::namespace('Api')
         Route::get('/housing-file/selection/has-solar-panels-selection/peek', 'HousingFile\HousingFileController@hasSolarPanelsSelectionPeek');
         Route::get('/housing-file/selection/heat-source-warm-tap-water-selection/peek', 'HousingFile\HousingFileController@heatSourceWarmTapWaterSelectionPeek');
 
+        Route::get('/housing-file-specification/grid', 'HousingFile\HousingFileSpecificationController@grid');
+        Route::post('/housing-file-specification/campaign/{campaign}/create-opportunities', 'HousingFile\HousingFileSpecificationController@createOpportunities');
+        Route::get('/housing-file-specification/excel', 'HousingFile\HousingFileSpecificationController@excelHousingFiles');
+        Route::get('/housing-file-specification/excel-specifications', 'HousingFile\HousingFileSpecificationController@excelSpecifications');
 
         Route::get('/user/grid', 'User\GridController@index');
         Route::get('/user/rolesPermissionsExcel', 'User\UserController@rolesPermissionsExcel');

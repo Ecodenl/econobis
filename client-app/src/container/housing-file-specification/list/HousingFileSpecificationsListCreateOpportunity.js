@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import CampaignsAPI from '../../../api/campaign/CampaignsAPI';
-import HousingFileDetailsAPI from '../../../api/housing-file/HousingFileDetailsAPI';
 import Modal from '../../../components/modal/Modal';
 import InputSelect from '../../../components/form/InputSelect';
 import validator from 'validator';
+import HousingFileSpecificationsAPI from '../../../api/housing-file-specification/HousingFileSpecificationsAPI';
 
 class HousingFileSpecificationsListCreateOpportunity extends Component {
     constructor(props) {
@@ -44,13 +44,12 @@ class HousingFileSpecificationsListCreateOpportunity extends Component {
             });
         } else {
             HousingFileSpecificationsAPI.createOpportunitiesFromSpecificationsList(
-                // this.props.housingFileId,
                 this.props.specificationIds,
                 this.state.campaignId
             ).then(payload => {
                 this.props.toggleCreateOpportunity();
                 this.props.toggleShowCheckboxList();
-                // this.props.fetchHousingFileDetails(this.props.housingFileId);
+                this.props.fetchHousingFileSpecificationsData();
             });
         }
     };

@@ -168,6 +168,15 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </NavText>
                         </Nav>
                     )}
+                    {permissions.menuHousingFiles && (
+                        <Nav id="home-files">
+                            <NavText>
+                                <Link className="sidebar-link" to="woningdossier-specificaties">
+                                    Woningdossier specificaties
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
                     {permissions.menuMarketing && (
                         <Nav id="marketing-sub">
                             <NavText>

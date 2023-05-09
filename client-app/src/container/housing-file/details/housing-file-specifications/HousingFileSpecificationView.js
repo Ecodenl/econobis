@@ -186,7 +186,7 @@ const HousingFileSpecificationView = props => {
                     <div>
                         {props.showCheckboxList && <div className="col-sm-1">&nbsp;</div>}
                         <div className="col-sm-1">&nbsp;</div>
-                        <div className="col-sm-2">Besparing Electriciteit:</div>
+                        <div className="col-sm-2">Besparing electriciteit:</div>
                         <div className={props.showCheckboxList ? 'col-sm-7' : 'col-sm-8'}>{savingsElectricity}</div>
                         <div className="col-sm-1">&nbsp;</div>
                     </div>

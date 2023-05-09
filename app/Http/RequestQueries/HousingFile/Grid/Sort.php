@@ -31,7 +31,6 @@ class Sort extends RequestSort
         'address' => 'addresses.street',
         'postalCode' => 'addresses.postal_code',
         'city' => 'addresses.city',
-        'fullName' => 'contact.full_name',
         'buildingType' => 'building_types.name',
         'energyLabel' => 'energy_labels.name',
         'buildYear' => 'housing_files.build_year',

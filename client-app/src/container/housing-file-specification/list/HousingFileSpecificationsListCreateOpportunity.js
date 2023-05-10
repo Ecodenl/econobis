@@ -47,9 +47,9 @@ class HousingFileSpecificationsListCreateOpportunity extends Component {
                 this.props.specificationIds,
                 this.state.campaignId
             ).then(payload => {
-                this.props.toggleCreateOpportunity();
-                this.props.toggleShowCheckboxList();
+                this.props.closeModalCreateOpportunity();
                 this.props.fetchHousingFileSpecificationsData();
+                this.props.showModalCreateQuotationRequest(this.state.campaignId, payload.opportunityIds);
             });
         }
     };
@@ -58,14 +58,15 @@ class HousingFileSpecificationsListCreateOpportunity extends Component {
         return (
             <Modal
                 buttonConfirmText="Kans(en) maken"
-                closeModal={this.props.toggleCreateOpportunity}
+                closeModal={this.props.closeModalCreateOpportunity}
                 confirmAction={this.handleSubmit}
                 title="Kans(en) maken"
             >
+                <p>Aanmaken kans(en) voor de {this.props.specificationIds.length} geselecteerde specificatie(s)?</p>
                 <div className="row">
                     <InputSelect
                         size={'col-md-12'}
-                        label={`Maak kans(en) van geselecteerde specificatie(s) voor campagne:`}
+                        label={'Campagne'}
                         name="campaignId"
                         options={this.state.campaigns}
                         value={this.state.campaignId}

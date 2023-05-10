@@ -7,6 +7,7 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import { connect } from 'react-redux';
 import HousingFileSpecificationCreateOpportunity from './HousingFileSpecificationCreateOpportunity';
+import HousingFileSpecificationCreateQuotationRequest from './HousingFileSpecificationCreateQuotationRequest';
 import ButtonText from '../../../../components/button/ButtonText';
 
 import Icon from 'react-icons-kit';
@@ -20,8 +21,11 @@ class HousingFileSpecifications extends Component {
             showNew: false,
             showCheckboxList: false,
             showCreateOpportunitiesFromSpecifications: false,
+            showCreateQuotationRequestsFromSpecifications: false,
             checkedAll: false,
             specificationIds: [],
+            campaignId: '',
+            opportunityIds: [],
         };
     }
 
@@ -82,9 +86,34 @@ class HousingFileSpecifications extends Component {
         });
     }
 
-    toggleCreateOpportunity = () => {
+    showModalCreateOpportunity = () => {
         this.setState({
-            showCreateOpportunitiesFromSpecifications: !this.state.showCreateOpportunitiesFromSpecifications,
+            showCreateOpportunitiesFromSpecifications: true,
+        });
+    };
+
+    closeModalCreateOpportunity = () => {
+        this.setState({
+            showCreateOpportunitiesFromSpecifications: false,
+        });
+    };
+
+    showModalCreateQuotationRequest = (campaignId, opportunityIds) => {
+        this.setState({
+            showCheckboxList: false,
+            showCreateQuotationRequestsFromSpecifications: true,
+            specificationIds: [],
+            campaignId: campaignId,
+            opportunityIds: opportunityIds,
+        });
+    };
+
+    closeModalCreateQuotationRequest = () => {
+        this.setState({
+            showCreateQuotationRequestsFromSpecifications: false,
+            specificationIds: [],
+            campaignId: '',
+            opportunityIds: [],
         });
     };
 
@@ -103,18 +132,21 @@ class HousingFileSpecifications extends Component {
                                 <>
                                     {' '}
                                     <ButtonText
-                                        buttonText={'Maak kans(en)'}
-                                        onClickAction={this.toggleCreateOpportunity}
+                                        buttonText={'Maak kans(en) (' + this.state.specificationIds.length + ')'}
+                                        onClickAction={this.showModalCreateOpportunity}
+                                        disabled={this.state.specificationIds.length == 0}
                                     />
                                 </>
                             ) : null}
                         </div>
                     )}
-                    {this.props.permissions.manageHousingFile && !this.props.hasHoomDossierLink && (
-                        <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                            <Icon size={14} icon={plus} />
-                        </a>
-                    )}
+                    {this.props.permissions.manageHousingFile &&
+                        !this.props.hasHoomDossierLink &&
+                        !this.state.showCheckboxList && (
+                            <a role="button" className="pull-right" onClick={this.toggleShowNew}>
+                                <Icon size={14} icon={plus} />
+                            </a>
+                        )}
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
@@ -131,9 +163,16 @@ class HousingFileSpecifications extends Component {
 
                     {this.state.showCreateOpportunitiesFromSpecifications && (
                         <HousingFileSpecificationCreateOpportunity
-                            toggleCreateOpportunity={this.toggleCreateOpportunity}
-                            toggleShowCheckboxList={this.toggleShowCheckboxList}
+                            closeModalCreateOpportunity={this.closeModalCreateOpportunity}
                             specificationIds={this.state.specificationIds}
+                            showModalCreateQuotationRequest={this.showModalCreateQuotationRequest}
+                        />
+                    )}
+                    {this.state.showCreateQuotationRequestsFromSpecifications && (
+                        <HousingFileSpecificationCreateQuotationRequest
+                            closeModalCreateQuotationRequest={this.closeModalCreateQuotationRequest}
+                            campaignId={this.state.campaignId}
+                            opportunityIds={this.state.opportunityIds}
                         />
                     )}
                 </PanelBody>

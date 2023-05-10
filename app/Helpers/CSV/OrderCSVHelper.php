@@ -163,6 +163,7 @@ class OrderCSVHelper
                 'status' => 'Status',
                 'subject' => 'Betreft',
                 'po_number' => 'Opdrachtnummer klant',
+                'projectnummer' => 'Projectnummer',
                 'invoice_text' => 'Opmerking',
                 'total_excl_vat_incl_reduction_formatted' => 'Orderbedrag excl. btw',
                 'btw_formatted' => 'Orderbedrag BTW',

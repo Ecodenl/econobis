@@ -5,7 +5,6 @@ import HousingFileDetailsAPI from '../../../../api/housing-file/HousingFileDetai
 import Modal from '../../../../components/modal/Modal';
 import InputSelect from '../../../../components/form/InputSelect';
 import validator from 'validator';
-import { fetchHousingFileDetails } from '../../../../actions/housing-file/HousingFileDetailsActions';
 
 class HousingFileSpecificationCreateOpportunity extends Component {
     constructor(props) {
@@ -49,9 +48,8 @@ class HousingFileSpecificationCreateOpportunity extends Component {
                 this.props.specificationIds,
                 this.state.campaignId
             ).then(payload => {
-                this.props.toggleCreateOpportunity();
-                this.props.toggleShowCheckboxList();
-                this.props.fetchHousingFileDetails(this.props.housingFileId);
+                this.props.closeModalCreateOpportunity();
+                this.props.showModalCreateQuotationRequest(this.state.campaignId, payload.opportunityIds);
             });
         }
     };
@@ -60,14 +58,15 @@ class HousingFileSpecificationCreateOpportunity extends Component {
         return (
             <Modal
                 buttonConfirmText="Kans(en) maken"
-                closeModal={this.props.toggleCreateOpportunity}
+                closeModal={this.props.closeModalCreateOpportunity}
                 confirmAction={this.handleSubmit}
                 title="Kans(en) maken"
             >
+                <p>Aanmaken kans(en) voor de {this.props.specificationIds.length} geselecteerde specificatie(s)?</p>
                 <div className="row">
                     <InputSelect
                         size={'col-md-12'}
-                        label={`Maak kans(en) van geselecteerde specificatie(s) voor campagne:`}
+                        label={'Campagne'}
                         name="campaignId"
                         options={this.state.campaigns}
                         value={this.state.campaignId}
@@ -83,13 +82,9 @@ class HousingFileSpecificationCreateOpportunity extends Component {
 
 const mapStateToProps = state => {
     return {
+        permissions: state.meDetails.permissions,
         housingFileId: state.housingFileDetails.id,
     };
 };
-const mapDispatchToProps = dispatch => ({
-    fetchHousingFileDetails: id => {
-        dispatch(fetchHousingFileDetails(id));
-    },
-});
 
-export default connect(mapStateToProps, mapDispatchToProps)(HousingFileSpecificationCreateOpportunity);
+export default connect(mapStateToProps, null)(HousingFileSpecificationCreateOpportunity);

@@ -25,7 +25,6 @@ const HousingFileSpecificationView = props => {
         savingsElectricity,
         co2Savings,
     } = props.housingFileSpecification;
-    const { showEdit } = props;
 
     return (
         <>
@@ -33,27 +32,26 @@ const HousingFileSpecificationView = props => {
                 className={`row border ${props.highlightLine}`}
                 onMouseEnter={() => props.onLineEnter()}
                 onMouseLeave={() => props.onLineLeave()}
+                onClick={() => (!props.showCheckboxList ? props.openEdit() : {})}
             >
-                <div onClick={!props.showCheckboxList && props.openEdit}>
-                    {props.showCheckboxList ? (
-                        <div className="col-sm-1">
-                            {status && status.codeRef === 'desirable' ? (
-                                <input
-                                    type="checkbox"
-                                    name={id}
-                                    onChange={props.toggleSpecificationCheck}
-                                    checked={props.specificationIds ? props.specificationIds.includes(id) : false}
-                                />
-                            ) : (
-                                ' '
-                            )}
-                        </div>
-                    ) : null}
-                    <div className="col-sm-3">{isDefaultEconobisMeasure ? externalHoomName : measure.name}</div>
-                    <div className="col-sm-3">{measure.measureCategory && measure.measureCategory.name}</div>
-                    <div className={props.showCheckboxList ? 'col-sm-2' : 'col-sm-3'}>{status ? status.name : ''}</div>
-                    <div className="col-sm-2">{measureDate && moment(measureDate).format('L')}</div>
-                </div>
+                {props.showCheckboxList ? (
+                    <div className="col-sm-1">
+                        {status && status.codeRef === 'desirable' ? (
+                            <input
+                                type="checkbox"
+                                name={id}
+                                onChange={props.toggleSpecificationCheck}
+                                checked={props.specificationIds ? props.specificationIds.includes(id) : false}
+                            />
+                        ) : (
+                            ' '
+                        )}
+                    </div>
+                ) : null}
+                <div className="col-sm-3">{isDefaultEconobisMeasure ? externalHoomName : measure.name}</div>
+                <div className="col-sm-3">{measure.measureCategory && measure.measureCategory.name}</div>
+                <div className={props.showCheckboxList ? 'col-sm-2' : 'col-sm-3'}>{status ? status.name : ''}</div>
+                <div className="col-sm-2">{measureDate && moment(measureDate).format('L')}</div>
                 <div className="col-sm-1">
                     {!props.showCheckboxList &&
                     props.showActionButtons &&
@@ -72,12 +70,12 @@ const HousingFileSpecificationView = props => {
                     )}
                 </div>
             </div>
-            {!showEdit && answer ? (
+            {(!props.showEdit || props.showCheckboxList) && answer ? (
                 <div
-                    onClick={!props.showCheckboxList && props.openEdit}
                     className={`row border ${props.highlightLine}`}
                     onMouseEnter={() => props.onLineEnter()}
                     onMouseLeave={() => props.onLineLeave()}
+                    onClick={() => (!props.showCheckboxList ? props.openEdit() : {})}
                 >
                     <div>
                         {props.showCheckboxList && <div className="col-sm-1">&nbsp;</div>}
@@ -88,12 +86,12 @@ const HousingFileSpecificationView = props => {
                     </div>
                 </div>
             ) : null}
-            {!showEdit && floor ? (
+            {(!props.showEdit || props.showCheckboxList) && floor ? (
                 <div
-                    onClick={!props.showCheckboxList && props.openEdit}
                     className={`row border ${props.highlightLine}`}
                     onMouseEnter={() => props.onLineEnter()}
                     onMouseLeave={() => props.onLineLeave()}
+                    onClick={() => (!props.showCheckboxList ? props.openEdit() : {})}
                 >
                     <div>
                         {props.showCheckboxList && <div className="col-sm-1">&nbsp;</div>}
@@ -106,12 +104,12 @@ const HousingFileSpecificationView = props => {
                     </div>
                 </div>
             ) : null}
-            {!showEdit && side ? (
+            {(!props.showEdit || props.showCheckboxList) && side ? (
                 <div
-                    onClick={!props.showCheckboxList && props.openEdit}
                     className={`row border ${props.highlightLine}`}
                     onMouseEnter={() => props.onLineEnter()}
                     onMouseLeave={() => props.onLineLeave()}
+                    onClick={() => (!props.showCheckboxList ? props.openEdit() : {})}
                 >
                     <div>
                         {props.showCheckboxList && <div className="col-sm-1">&nbsp;</div>}
@@ -122,12 +120,12 @@ const HousingFileSpecificationView = props => {
                     </div>
                 </div>
             ) : null}
-            {!showEdit && typeBrand ? (
+            {(!props.showEdit || props.showCheckboxList) && typeBrand ? (
                 <div
-                    onClick={!props.showCheckboxList && props.openEdit}
                     className={`row border ${props.highlightLine}`}
                     onMouseEnter={() => props.onLineEnter()}
                     onMouseLeave={() => props.onLineLeave()}
+                    onClick={() => (!props.showCheckboxList ? props.openEdit() : {})}
                 >
                     <div>
                         {props.showCheckboxList && <div className="col-sm-1">&nbsp;</div>}
@@ -138,12 +136,12 @@ const HousingFileSpecificationView = props => {
                     </div>
                 </div>
             ) : null}
-            {!showEdit && typeOfExecution ? (
+            {(!props.showEdit || props.showCheckboxList) && typeOfExecution ? (
                 <div
-                    onClick={!props.showCheckboxList && props.openEdit}
                     className={`row border ${props.highlightLine}`}
                     onMouseEnter={() => props.onLineEnter()}
                     onMouseLeave={() => props.onLineLeave()}
+                    onClick={() => (!props.showCheckboxList ? props.openEdit() : {})}
                 >
                     <div>
                         {props.showCheckboxList && <div className="col-sm-1">&nbsp;</div>}
@@ -160,12 +158,12 @@ const HousingFileSpecificationView = props => {
                     </div>
                 </div>
             ) : null}
-            {!showEdit && savingsGas ? (
+            {(!props.showEdit || props.showCheckboxList) && savingsGas ? (
                 <div
-                    onClick={!props.showCheckboxList && props.openEdit}
                     className={`row border ${props.highlightLine}`}
                     onMouseEnter={() => props.onLineEnter()}
                     onMouseLeave={() => props.onLineLeave()}
+                    onClick={() => (!props.showCheckboxList ? props.openEdit() : {})}
                 >
                     <div>
                         {props.showCheckboxList && <div className="col-sm-1">&nbsp;</div>}
@@ -176,12 +174,12 @@ const HousingFileSpecificationView = props => {
                     </div>
                 </div>
             ) : null}
-            {!showEdit && savingsElectricity ? (
+            {(!props.showEdit || props.showCheckboxList) && savingsElectricity ? (
                 <div
-                    onClick={!props.showCheckboxList && props.openEdit}
                     className={`row border ${props.highlightLine}`}
                     onMouseEnter={() => props.onLineEnter()}
                     onMouseLeave={() => props.onLineLeave()}
+                    onClick={() => (!props.showCheckboxList ? props.openEdit() : {})}
                 >
                     <div>
                         {props.showCheckboxList && <div className="col-sm-1">&nbsp;</div>}
@@ -192,12 +190,12 @@ const HousingFileSpecificationView = props => {
                     </div>
                 </div>
             ) : null}
-            {!showEdit && co2Savings ? (
+            {(!props.showEdit || props.showCheckboxList) && co2Savings ? (
                 <div
-                    onClick={!props.showCheckboxList && props.openEdit}
                     className={`row border ${props.highlightLine}`}
                     onMouseEnter={() => props.onLineEnter()}
                     onMouseLeave={() => props.onLineLeave()}
+                    onClick={() => (!props.showCheckboxList ? props.openEdit() : {})}
                 >
                     <div>
                         {props.showCheckboxList && <div className="col-sm-1">&nbsp;</div>}

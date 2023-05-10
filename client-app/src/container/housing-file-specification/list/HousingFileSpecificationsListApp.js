@@ -21,6 +21,7 @@ import HousingFileSpecificationsAPI from '../../../api/housing-file-specificatio
 import fileDownload from 'js-file-download';
 import moment from 'moment/moment';
 import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
+import HousingFileSpecificationsListCreateQuotationRequest from './HousingFileSpecificationsListCreateQuotationRequest';
 
 class HousingFileSpecificationsListApp extends Component {
     constructor(props) {
@@ -31,7 +32,10 @@ class HousingFileSpecificationsListApp extends Component {
             extraFilters: [],
             showCheckboxList: false,
             showCreateOpportunitiesFromSpecifications: false,
+            showCreateQuotationRequestsFromSpecifications: false,
             specificationIds: [],
+            campaignId: '',
+            opportunityIds: [],
         };
 
         this.handlePageClick = this.handlePageClick.bind(this);
@@ -211,9 +215,34 @@ class HousingFileSpecificationsListApp extends Component {
         });
     }
 
-    toggleCreateOpportunity = () => {
+    showModalCreateOpportunity = () => {
         this.setState({
-            showCreateOpportunitiesFromSpecifications: !this.state.showCreateOpportunitiesFromSpecifications,
+            showCreateOpportunitiesFromSpecifications: true,
+        });
+    };
+
+    closeModalCreateOpportunity = () => {
+        this.setState({
+            showCreateOpportunitiesFromSpecifications: false,
+        });
+    };
+
+    showModalCreateQuotationRequest = (campaignId, opportunityIds) => {
+        this.setState({
+            showCheckboxList: false,
+            showCreateQuotationRequestsFromSpecifications: true,
+            specificationIds: [],
+            campaignId: campaignId,
+            opportunityIds: opportunityIds,
+        });
+    };
+
+    closeModalCreateQuotationRequest = () => {
+        this.setState({
+            showCreateQuotationRequestsFromSpecifications: false,
+            specificationIds: [],
+            campaignId: '',
+            opportunityIds: [],
         });
     };
 
@@ -233,7 +262,8 @@ class HousingFileSpecificationsListApp extends Component {
                             toggleShowExtraFilters={this.toggleShowExtraFilters}
                             showCheckboxList={this.state.showCheckboxList}
                             toggleShowCheckboxList={this.toggleShowCheckboxList}
-                            toggleCreateOpportunity={this.toggleCreateOpportunity}
+                            showModalCreateOpportunity={this.showModalCreateOpportunity}
+                            numberOfSelected={this.state.specificationIds.length}
                         />
                     </div>
 
@@ -244,8 +274,6 @@ class HousingFileSpecificationsListApp extends Component {
                             onSubmitFilter={() => this.onSubmitFilter()}
                             refreshHousingFileSpecificationsData={() => this.fetchHousingFileSpecificationsData()}
                             handlePageClick={this.handlePageClick}
-                            // isLoading={this.state.isLoading}
-                            // hasError={this.state.hasError}
                             showCheckboxList={this.state.showCheckboxList}
                             toggleCheckedAll={this.toggleCheckedAll}
                             toggleSpecificationCheck={this.toggleSpecificationCheck}
@@ -262,10 +290,17 @@ class HousingFileSpecificationsListApp extends Component {
                     )}
                     {this.state.showCreateOpportunitiesFromSpecifications && (
                         <HousingFileSpecificationsListCreateOpportunity
-                            toggleCreateOpportunity={this.toggleCreateOpportunity}
-                            toggleShowCheckboxList={this.toggleShowCheckboxList}
+                            closeModalCreateOpportunity={this.closeModalCreateOpportunity}
                             specificationIds={this.state.specificationIds}
+                            showModalCreateQuotationRequest={this.showModalCreateQuotationRequest}
                             fetchHousingFileSpecificationsData={this.fetchHousingFileSpecificationsData}
+                        />
+                    )}
+                    {this.state.showCreateQuotationRequestsFromSpecifications && (
+                        <HousingFileSpecificationsListCreateQuotationRequest
+                            closeModalCreateQuotationRequest={this.closeModalCreateQuotationRequest}
+                            campaignId={this.state.campaignId}
+                            opportunityIds={this.state.opportunityIds}
                         />
                     )}
                 </PanelBody>

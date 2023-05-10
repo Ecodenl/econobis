@@ -28,6 +28,19 @@ export default {
             });
     },
 
+    createQuotationRequestsFromSpecificationsList: (specificationIds, organisationOrCoachId) => {
+        const requestUrl = `${URL_API}/api/housing-file-specification/contact/${organisationOrCoachId}/create-quotation-requests`;
+
+        return axiosInstance
+            .post(requestUrl, { ids: specificationIds })
+            .then(function(response) {
+                return response.data;
+            })
+            .catch(function(error) {
+                return error.response;
+            });
+    },
+
     getExcelHousingFiles: ({ filters, extraFilters, sorts }) => {
         const requestUrl = `${URL_API}/api/housing-file/excel`;
         return axiosInstance.get(requestUrl, {

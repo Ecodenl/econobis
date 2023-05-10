@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api\HousingFile;
 
 
 use App\Eco\Campaign\Campaign;
+use App\Eco\Contact\Contact;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\HousingFile\HousingFileSpecification;
 use App\Eco\HousingFile\HousingFileSpecificationStatus;
@@ -18,7 +19,10 @@ use App\Eco\Intake\IntakeSource;
 use App\Eco\Intake\IntakeStatus;
 use App\Eco\Measure\Measure;
 use App\Eco\Opportunity\Opportunity;
+use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\Opportunity\OpportunityStatus;
+use App\Eco\QuotationRequest\QuotationRequest;
+use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Helpers\Excel\HousingFileExcel2Helper;
 use App\Helpers\Excel\HousingFileExcel2SpecificationsHelper;
 use App\Http\Controllers\Api\ApiController;
@@ -53,6 +57,7 @@ class HousingFileSpecificationController extends ApiController
         $specificationStatusIdOpportunityCreated = HousingFileSpecificationStatus::where('code_ref', 'opportunity_created')->first()->id;
 
         $specificationIds = $request->input('ids');
+        $opportunityIds = [];
 
         foreach ($specificationIds as $specificationId){
             $housingFileSpecification = HousingFileSpecification::find($specificationId);
@@ -81,9 +86,37 @@ class HousingFileSpecificationController extends ApiController
                     'evaluation_agreed_date' => null,
                 ]);
                 $opportunity->measures()->sync($measure->id);
+                $opportunityIds[] = $opportunity->id;
 
                 $housingFileSpecification->status_id = $specificationStatusIdOpportunityCreated;
                 $housingFileSpecification->save();
+            }
+        }
+        return ['opportunityIds' => $opportunityIds];
+    }
+
+    public function createQuotationRequests(Request $request, Contact $contact)
+    {
+        $this->authorize('manage', HousingFile::class);
+
+        $quotationRequestStatus = QuotationRequestStatus::orderBy('order')->first();
+        $offerteverzoekAction = OpportunityAction::where('code_ref', 'quotation-request')->first();
+        $opportunityIds = $request->input('ids');
+
+        foreach ($opportunityIds as $opportunityId){
+
+            $opportunity = Opportunity::find($opportunityId);
+            if($opportunity){
+                $quotationRequest = QuotationRequest::create([
+                    'contact_id' => $contact->id,
+                    'opportunity_id' => $opportunity->id,
+                    'opportunity_action_id' => $offerteverzoekAction->id,
+                    'date_recorded' => null,
+                    'date_released' => null,
+                    'status_id' => $quotationRequestStatus->id,
+                    'date_planned_to_send_wf_email_status' => null,
+                    'quotation_text' => '',
+                ]);
             }
         }
     }

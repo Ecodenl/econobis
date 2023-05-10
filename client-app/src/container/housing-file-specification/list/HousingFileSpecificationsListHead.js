@@ -15,7 +15,13 @@ const HousingFileSpecificationsListHead = props => {
 
     return (
         <tr className="thead-title">
-            {props.showCheckboxList ? <th width="3%" /> : null}
+            {props.showCheckboxList ? (
+                <th width="3%">
+                    <div>
+                        <input type="checkbox" onChange={props.toggleCheckedAll} />
+                    </div>
+                </th>
+            ) : null}
             <DataTableHeadTitleAndSort
                 sortColumn={'fullName'}
                 title={'Contact'}

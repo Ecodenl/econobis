@@ -46,12 +46,14 @@ class HousingFileSpecificationsList extends Component {
                                 this.props.refreshHousingFileSpecificationsData()
                             }
                             showCheckboxList={this.props.showCheckboxList}
-                        />
-                        <HousingFileSpecificationsListFilter
-                            onSubmitFilter={this.props.onSubmitFilter}
-                            showCheckboxList={this.props.showCheckboxList}
                             toggleCheckedAll={this.props.toggleCheckedAll}
                         />
+                        {!this.props.showCheckboxList && (
+                            <HousingFileSpecificationsListFilter
+                                onSubmitFilter={this.props.onSubmitFilter}
+                                showCheckboxList={this.props.showCheckboxList}
+                            />
+                        )}
                     </DataTableHead>
                     <DataTableBody>
                         {loading ? (

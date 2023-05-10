@@ -4,9 +4,9 @@ return [
 
 	/*
     |--------------------------------------------------------------------------
-    | Pico API base URL
+    | Lvbag API base URL
     |--------------------------------------------------------------------------
     */
 	'lvbag_key' => env('LVBAG_KEY', ''),
-    'lvbag_production' => env('LVBAG_PRODUCTION', false),
+    'lvbag_production' => env('LVBAG_PRODUCTION', true),
 ];

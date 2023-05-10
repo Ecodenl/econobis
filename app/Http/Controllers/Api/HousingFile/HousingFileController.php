@@ -410,7 +410,7 @@ class HousingFileController extends ApiController
         return ['opportunityIds' => $opportunityIds];
     }
 
-    public function createQuotationRequests(Request $request, Contact $contact)
+    public function createQuotationRequests(Request $request, HousingFile $housingFile, Contact $contact)
     {
         $this->authorize('manage', HousingFile::class);
 
@@ -419,19 +419,18 @@ class HousingFileController extends ApiController
         $opportunityIds = $request->input('ids');
 
         foreach ($opportunityIds as $opportunityId){
-
             $opportunity = Opportunity::find($opportunityId);
             if($opportunity){
-                $quotationRequest = QuotationRequest::create([
-                    'contact_id' => $contact->id,
-                    'opportunity_id' => $opportunity->id,
-                    'opportunity_action_id' => $offerteverzoekAction->id,
-                    'date_recorded' => null,
-                    'date_released' => null,
-                    'status_id' => $quotationRequestStatus->id,
-                    'date_planned_to_send_wf_email_status' => null,
-                    'quotation_text' => '',
-                ]);
+                $quotationRequest = new QuotationRequest();
+                $quotationRequest->contact_id = $contact->id;
+                $quotationRequest->opportunity_id = $opportunity->id;
+                $quotationRequest->opportunity_action_id = $offerteverzoekAction->id;
+                $quotationRequest->date_recorded = null;
+                $quotationRequest->date_released = null;
+                $quotationRequest->status_id = $quotationRequestStatus->id;
+                $quotationRequest->date_planned_to_send_wf_email_status = null;
+                $quotationRequest->quotation_text = $opportunity = '';
+                $quotationRequest->save();
             }
         }
 

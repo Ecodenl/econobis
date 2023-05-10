@@ -80,7 +80,9 @@ class QuotationRequestDetailsHarmonica extends Component {
         const occupantId = this.props.quotationRequestDetails.occupantId;
         // const projectManagerId = this.props.quotationRequestDetails.projectManagerId;
         const externalPartyId = this.props.quotationRequestDetails.externalPartyId;
-        const opportunityActionName = this.props.quotationRequestDetails.opportunityAction ? this.props.quotationRequestDetails.opportunityAction.name : '';
+        const opportunityActionCodeRef = this.props.quotationRequestDetails.opportunityAction
+            ? this.props.quotationRequestDetails.opportunityAction.codeRef
+            : '';
 
         return (
             <div className="col-md-12 margin-10-top">
@@ -108,16 +110,18 @@ class QuotationRequestDetailsHarmonica extends Component {
                     emailSentCount={this.props.quotationRequestDetails.relatedCoachAndOccupantEmailsSent?.length}
                 />
 
-                {(externalPartyId && opportunityActionName == 'Budgetaanvraag') && (
+                {externalPartyId && opportunityActionCodeRef === 'subsidy-request' && (
                     <ExternalpartyAndOccupantEmailSentHarmonica
                         toggleShowList={() => this.toggleShowList('externalpartyAndOccupantEmailsSent')}
                         showEmailsSentList={this.state.toggleShowList.externalpartyAndOccupantEmailsSent}
                         newEmail={this.newExternalpartyAndOccupantEmail}
-                        emailSentCount={this.props.quotationRequestDetails.relatedExternalpartyAndOccupantEmailsSent?.length}
+                        emailSentCount={
+                            this.props.quotationRequestDetails.relatedExternalpartyAndOccupantEmailsSent?.length
+                        }
                     />
                 )}
 
-                {(externalPartyId && opportunityActionName == 'Budgetaanvraag') && (
+                {externalPartyId && opportunityActionCodeRef === 'subsidy-request' && (
                     <ExternalpartyEmailSentHarmonica
                         toggleShowList={() => this.toggleShowList('externalpartyEmailsSent')}
                         showEmailsSentList={this.state.toggleShowList.externalpartyEmailsSent}

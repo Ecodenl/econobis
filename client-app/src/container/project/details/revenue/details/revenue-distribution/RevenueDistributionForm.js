@@ -541,15 +541,23 @@ class RevenueDistributionForm extends Component {
                                             <ButtonText
                                                 buttonText={
                                                     this.props.projectRevenue.category.codeRef === 'revenueKwh'
-                                                        ? 'Opbrengst verdelen'
+                                                        ? 'Mutaties aanmaken'
                                                         : this.props.projectRevenue.category.codeRef ===
                                                           'redemptionEuro'
                                                         ? 'Aflossing verdelen en Sepa bestand maken'
-                                                        : 'Opbrengst verdelen en Sepa bestand maken'
+                                                        : 'Mutaties aanmaken en Sepa bestand maken'
                                                 }
                                                 onClickAction={this.checkDistributionRevenueInvoices}
                                                 type={'submit'}
                                                 value={'Submit'}
+                                                title={
+                                                    this.props.projectRevenue.category.codeRef === 'revenueKwh'
+                                                        ? ' '
+                                                        : this.props.projectRevenue.category.codeRef ===
+                                                        'redemptionEuro'
+                                                            ? ' '
+                                                            : 'Met de knop Mutaties aanmaken en Sepa bestand maak je mutaties aan in het mutatieoverzicht van de individuele deelnemers en genereer je een Sepa bestand om bij de bank te uploaden. Het Sepa bestand vind je na het aanmaken terug bij Instellingen > Administratie > onder de betreffende administratie.'
+                                                }
                                             />
                                         </div>
                                     </div>

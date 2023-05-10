@@ -434,10 +434,15 @@ class RevenueDistributionForm extends Component {
                                         buttonText={
                                             this.props.projectRevenue.category.codeRef === 'redemptionEuro'
                                                 ? 'Selecteer preview aflossing verdeling'
-                                                : 'Selecteer preview opbrengst verdeling'
+                                                : 'Selecteer preview mutaties en sepa bestand uitkeringsdatum'
                                         }
                                         onClickAction={() => this.toggleShowCheckboxList('createInvoices')}
                                         buttonClassName={'btn-primary'}
+                                        title={
+                                            this.props.projectRevenue.category.codeRef === 'redemptionEuro'
+                                                ? ' '
+                                                : 'De uitkeringsdatum is de datum in het SEPA bestand en de datum van de mutaties in het mutatieoverzicht van de deelnemers. Als je niet gaat uitkeren (\'naar kapitaalrekening (niet uitbetalen)\') betreft het alleen de mutatiedatum en is de uitkeringsdatum niet van toepassing.'
+                                        }
                                     />
                                 </React.Fragment>
                             ) : null)}

@@ -7,6 +7,7 @@ use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakeStatus;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Opportunity\Opportunity;
+use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\Organisation\Organisation;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
@@ -78,20 +79,23 @@ class IntakeWorkflowHelper
         if (!$this->measureCategory->organisation_id_wf_create_quotation_request || $this->measureCategory->organisation_id_wf_create_quotation_request == 0 ) {
             return false;
         }
+        $offerteverzoekAction = OpportunityAction::where('code_ref', 'quotation-request')->first();
 
         $contactOrganistation = Organisation::find($this->measureCategory->organisation_id_wf_create_quotation_request);
         if(!$contactOrganistation){
             return false;
         }
-        $this->quotationRequest = QuotationRequest::create([
-            'contact_id' => $contactOrganistation->contact_id,
-            'opportunity_id' => $this->opportunity->id,
-            'date_recorded' => null,
-            'date_released' => null,
-            'status_id' => $quotationRequestStatus->id,
-            'date_planned_to_send_wf_email_status' => null,
-            'quotation_text' => '',
-        ]);
+        $quotationRequest = new QuotationRequest();
+        $quotationRequest->contact_id = $contactOrganistation->id;
+        $quotationRequest->opportunity_id = $this->opportunity->id;
+        $quotationRequest->opportunity_action_id = $offerteverzoekAction->id;
+        $quotationRequest->date_recorded = null;
+        $quotationRequest->date_released = null;
+        $quotationRequest->status_id = $quotationRequestStatus->id;
+        $quotationRequest->date_planned_to_send_wf_email_status = null;
+        $quotationRequest->quotation_text = $opportunity = '';
+        $quotationRequest->save();
+
         return true;
     }
 

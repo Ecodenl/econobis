@@ -140,11 +140,13 @@ class HousingFileSpecifications extends Component {
                             ) : null}
                         </div>
                     )}
-                    {this.props.permissions.manageHousingFile && !this.props.hasHoomDossierLink && (
-                        <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                            <Icon size={14} icon={plus} />
-                        </a>
-                    )}
+                    {this.props.permissions.manageHousingFile &&
+                        !this.props.hasHoomDossierLink &&
+                        !this.state.showCheckboxList && (
+                            <a role="button" className="pull-right" onClick={this.toggleShowNew}>
+                                <Icon size={14} icon={plus} />
+                            </a>
+                        )}
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">

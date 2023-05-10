@@ -45,6 +45,7 @@ class OrderNewForm extends Component {
                 ibanAttn: '',
                 numberOfInvoiceReminders: '',
                 poNumber: '',
+                projectnummer: '',
                 invoiceText: '',
                 dateRequested: moment().format('YYYY-MM-DD'),
                 dateStart: '',
@@ -296,6 +297,7 @@ class OrderNewForm extends Component {
             collectionFrequencyId,
             numberOfInvoiceReminders,
             poNumber,
+            projectnummer,
             invoiceText,
             dateRequested,
             dateNextInvoice,
@@ -457,11 +459,21 @@ class OrderNewForm extends Component {
                             />
                         </div>
                         <div className="row">
-                            <div className="col-sm-6" />
+                            <div className="col-sm-6 form-group" />
                             <InputText
                                 label="Opdracht nummer klant"
                                 name={'poNumber'}
                                 value={poNumber}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-6 form-group" />
+                            <InputText
+                                label="Projectnummer"
+                                name={'projectnummer'}
+                                value={projectnummer}
+                                maxLength={'25'}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>

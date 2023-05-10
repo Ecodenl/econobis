@@ -7,15 +7,13 @@ use App\Mail\CustomMailDriver\GmailapiTransport;
 use App\Mail\CustomMailDriver\MsoauthapiTransport;
 use Illuminate\Bus\Queueable;
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Mail\Factory as MailFactory;
-use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Transport\MailgunTransport;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
-use Swift_Mailer;
-use Swift_SmtpTransport;
 use GuzzleHttp\Client as HttpClient;
+use Symfony\Component\Mailer\Transport;
+
+
 
 class ConfigurableMailable extends Mailable
 {
@@ -54,25 +52,24 @@ class ConfigurableMailable extends Mailable
             $host      = config('mail.host');
             $port      = config('mail.port');
             $security  = config('mail.encryption');
-
-            $transport = new Swift_SmtpTransport( $host, $port, $security);
-            $transport->setUsername(config('mail.username'));
-            $transport->setPassword(config('mail.password'));
+            $password  = config('mail.password');
+            $username  = config('mail.username');
         } else {
             return;
         }
 
-        $mailer->setSwiftMailer(new Swift_Mailer($transport));
-
         Container::getInstance()->call([$this, 'build']);
 
-        $mailer->send($this->buildView(), $this->buildViewData(), function ($message) {
-            $message->from([config('mail.from.address') => config('mail.from.name')]);
+        $mailer->setSymfonyTransport(Transport::fromDsn("smtp://{$username}:{$password}@{$host}:{$port}"));
+
+        return $mailer->send([], [], callback: function ($message) {
+            $message->html($this->html_body);
+
             $this->buildFrom($message)
                 ->buildRecipients($message)
                 ->buildSubject($message)
-                ->buildAttachments($message)
-                ->runCallbacks($message);
+                ->runCallbacks($message)
+                ->buildAttachments($message);
         });
     }
 

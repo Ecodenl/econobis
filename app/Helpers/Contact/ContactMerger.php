@@ -58,7 +58,6 @@ class ContactMerger
             throw new ContactMergeException('Contacten hebben een verschillende IBAN, verwijder eerst één van de twee IBAN\'s handmatig.');
         }
 
-
         $toGroupInspectionPersontype = $this->toContact->groups()->where('inspection_person_type_id', '!=', null)->first();
         $fromGroupInspectionPersontype = $this->fromContact->groups()->where('inspection_person_type_id', '!=', null)->first();
         if ($toGroupInspectionPersontype && $fromGroupInspectionPersontype && $toGroupInspectionPersontype->inspection_person_type_id !== $fromGroupInspectionPersontype->inspection_person_type_id) {

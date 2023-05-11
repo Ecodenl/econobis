@@ -61,7 +61,8 @@ class checkWrongTwinfieldInvoices extends Command
     {
         (new EmailHelper())->setConfigToDefaultMailbox();
 
-        $subject = 'Ongeldige twinfield nota\'s gevonden';
+//        $subject = 'Ongeldige twinfield nota\'s gevonden';
+        $subject = 'Ongeldige twinfield nota\'s gevonden ! (' . count($wrongTwinfieldInvoices) . ') - ' . \Config::get('app.APP_COOP_NAME');
 
         $wrongTwinfieldInvoicesHtml = "";
 

@@ -265,7 +265,7 @@ class TwinfieldSalesTransactionHelper
             $exclAmount = round($invoiceProduct->getAmountInclReductionExclVat()*100, 0);
             $invoiceDetailExcl = new Money($exclAmount, $this->currency );
 //            $descriptionDetail = $twinfieldCustomer ? ($twinfieldCustomer->getCode() . " " . $twinfieldCustomer->getName()) : ($invoice->contact->number . " " . $invoice->contact->full_name);
-            $descriptionDetail = $invoice->contact->number . " " . $invoice->contact->full_name;
+            $descriptionDetail = $invoice->order->contact->number . " " . $invoice->order->contact->full_name;
 
             $twinfieldTransactionLineDetail = new SalesTransactionLine();
             $idTeller++;

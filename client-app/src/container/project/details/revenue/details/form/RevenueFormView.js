@@ -236,7 +236,7 @@ const RevenueFormView = props => {
                                 {project.projectType.codeRef === 'loan' ||
                                 project.projectType.codeRef === 'obligation' ? (
                                     <ViewText
-                                        label={'Aflossingsbedrag (per deelnemer)'}
+                                        label={'Aflossing bedrag per deelname'}
                                         value={MoneyPresenter(payAmount)}
                                     />
                                 ) : null}

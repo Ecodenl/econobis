@@ -21,6 +21,7 @@ use App\Console\Commands\checkWrongDistributionParts;
 use App\Console\Commands\checkWrongEnergySupplierDataInParts;
 use App\Console\Commands\checkMissingEnergySupplierDataInParts;
 use App\Console\Commands\checkWrongRevenueDistributionKwhStatus;
+use App\Console\Commands\checkWrongTwinfieldInvoices;
 use App\Console\Commands\contactGroupsContactsForReport;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -49,6 +50,7 @@ class Kernel extends ConsoleKernel
         processWorkflowEmailOpportunityStatus::class,
         processWorkflowEmailQuotationRequestStatus::class,
         checkWrongDistributionParts::class,
+        checkWrongTwinfieldInvoices::class,
         checkWrongEnergySupplierDataInParts::class,
         checkMissingEnergySupplierDataInParts::class,
         checkWrongRevenueDistributionKwhStatus::class,
@@ -93,10 +95,13 @@ class Kernel extends ConsoleKernel
 //        $schedule->command('email:deleteFloatingAttachmentFiles')->dailyAt('03:35');
         $schedule->command('invoice:processTwinfieldCustomer')->dailyAt('04:20')->timezone('Europe/Amsterdam');
         $schedule->command('invoice:processTwinfieldInvoicePayment')->dailyAt('04:30')->timezone('Europe/Amsterdam');
+        $schedule->command('invoice:checkWrongTwinfieldInvoices')->dailyAt('04:45')->timezone('Europe/Amsterdam');
         $schedule->command('workflow:processWorkflowEmailCompleteTask')->dailyAt('05:00')->timezone('Europe/Amsterdam');
         $schedule->command('workflow:processWorkflowEmailExpiredTask')->dailyAt('05:05')->timezone('Europe/Amsterdam');
         $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->dailyAt('05:10')->timezone('Europe/Amsterdam');
         $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->dailyAt('05:15')->timezone('Europe/Amsterdam');
+
+
     }
 
     /**

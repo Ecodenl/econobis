@@ -17,16 +17,23 @@ class AboutUs extends Component {
                             Econobis is een administratiesysteem van energie-initiatieven in Nederland.
                             <br />
                             <i>
-                                Zie voor meer informatie: <a href="https://econobis.nl">https://econobis.nl</a>{' '}
+                                Zie voor meer informatie:{' '}
+                                <a href="https://econobis.nl" target="_blank">
+                                    https://econobis.nl
+                                </a>{' '}
                             </i>
                         </p>
                     </div>
                     <div className="col-xs-12">
                         <p>
-                            Econobis maakt gebruik maakt van Pico Geodan.
+                            Econobis maakt gebruik maakt van BAG API Individuele Bevragingen.
                             <br />
                             <i>
-                                Zie voor meer informatie: <a href="https://pico.geodan.nl">https://pico.geodan.nl</a>/
+                                Zie voor meer informatie:{' '}
+                                <a href="https://zakelijk.kadaster.nl/-/bag-api" target="_blank">
+                                    https://zakelijk.kadaster.nl/-/bag-api
+                                </a>
+                                /
                             </i>
                         </p>
                     </div>

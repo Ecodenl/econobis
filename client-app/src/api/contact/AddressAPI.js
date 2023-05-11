@@ -21,8 +21,8 @@ export default {
         return axiosInstance.post(requestUrl);
     },
 
-    getPicoAddress: (postalCode, number) => {
-        const requestUrl = `${URL_ADDRESS}/pico`;
+    getLvbagAddress: (postalCode, number) => {
+        const requestUrl = `${URL_ADDRESS}/lvbag`;
 
         return axiosInstance
             .post(requestUrl, { postalCode: postalCode, number: number })

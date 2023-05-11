@@ -67,15 +67,14 @@ class checkWrongTwinfieldInvoices extends Command
 
         foreach($wrongTwinfieldInvoices as $wrongTwinfieldInvoice) {
             $wrongTwinfieldInvoicesHtml .=
-                "ID: " . $wrongTwinfieldInvoice->id . "<br>" .
-                "Nota nummer: " . $wrongTwinfieldInvoice->invoice_number . "<br>" .
-                "Nummer: " . $wrongTwinfieldInvoice->number . "<br>" .
-                "Nota status: " . $wrongTwinfieldInvoice->status_id . "<br><br>"
-            ;
+                "<p>ID: " . $wrongTwinfieldInvoice->id . ", " .
+                "Nota nummer: " . $wrongTwinfieldInvoice->invoice_number . ", " .
+                "Nummer: " . $wrongTwinfieldInvoice->number . ", " .
+                "Nota status: " . $wrongTwinfieldInvoice->status_id . "</p>";
         }
 
-        $mail = Mail::to('patrick@xaris.nl');
-        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'.$subject.'</title></head><body><p>'.$subject.'</p><p>' . $wrongTwinfieldInvoicesHtml .'</p></body></html>';
+        $mail = Mail::to('wim.mosman@xaris.nl');
+        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'.$subject.'</title></head><body><p>'.$subject.'</p>' . $wrongTwinfieldInvoicesHtml .'</body></html>';
 
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;

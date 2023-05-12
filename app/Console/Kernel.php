@@ -86,7 +86,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('address:createTaskAtEndDateAddress')->timezone('Europe/Amsterdam')->dailyAt('00:30');
         $schedule->command('addressEnergySupplier:setIsCurrentSupplier')->timezone('Europe/Amsterdam')->dailyAt('01:00');
         $schedule->command('invoice:setDaysLastReminder')->timezone('Europe/Amsterdam')->dailyAt('01:05');
-        $schedule->command('invoice:setDaysToExpire')->timezone('Europe/Amsterdam')->dailyAt('02:05');
+        $schedule->command('invoice:setDaysToExpire')->timezone('Europe/Amsterdam')->dailyAt('01:55');
+
+        // don't schedule anything between 02:00 and 03:00 because of summer/winter time changes (02:00 -> 03:00 job is skipt and 03:00-02:00 job is run double.
 
         // report:contactGroupsContacts after laposta:processStateAllMembersLaposta
         $schedule->command('report:contactGroupsContacts')->timezone('Europe/Amsterdam')->dailyAt('03:05');

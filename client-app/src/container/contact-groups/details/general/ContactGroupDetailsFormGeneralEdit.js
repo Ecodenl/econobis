@@ -14,7 +14,7 @@ import InputSelect from '../../../../components/form/InputSelect';
 import { fetchSystemData } from '../../../../actions/general/SystemDataActions';
 import InputReactSelect from '../../../../components/form/InputReactSelect';
 import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
-import Modal from "../../../../components/modal/Modal";
+import Modal from '../../../../components/modal/Modal';
 
 class ContactGroupDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -171,7 +171,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
         //check if type has changed and is now static
         let typeChanged = false;
 
-        if (contactGroup.type !== this.state.oldType.id && contactGroup.type == "static") {
+        if (contactGroup.type !== this.state.oldType.id && contactGroup.type == 'static') {
             typeChanged = true;
         }
 
@@ -192,7 +192,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
             this.props.fetchSystemData();
             this.props.switchToView();
         });
-    }
+    };
 
     handleChangeStartedDate = date => {
         const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
@@ -553,7 +553,9 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                         title="Bevestig groep type aanpassing"
                     >
                         <>
-                            Weet je zeker dat je het groepstype van deze groep wilt wijzigen naar \"statisch\"? De filters die zijn ingesteld voor deze groep komen te vervallen. De groep wordt dan niet meer dynamisch bijgewerkt op basis van de filters.
+                            Weet je zeker dat je het groepstype van deze groep wilt wijzigen naar "statisch"? De filters
+                            die zijn ingesteld voor deze groep komen te vervallen. De groep wordt dan niet meer
+                            dynamisch bijgewerkt op basis van de filters.
                         </>
                     </Modal>
                 )}

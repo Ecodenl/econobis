@@ -69,7 +69,7 @@ class FullOrder extends JsonResource
                 'totalInclVatInclReductionPerYear' => $this->getTotalInclVatInclReductionPerYearAttribute(),
                 'numberOfInvoiceReminders' => $this->number_of_invoice_reminders,
                 'poNumber' => $this->po_number,
-                'projectnummer' => $this->projectnummer,
+                'projectNumber' => $this->project_number,
                 'IBAN' => $this->IBAN,
                 'ibanAttn' => $this->iban_attn,
                 'invoiceText' => $this->invoice_text,

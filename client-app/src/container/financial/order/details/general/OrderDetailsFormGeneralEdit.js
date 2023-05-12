@@ -35,7 +35,7 @@ class OrderDetailsFormGeneralEdit extends Component {
             ibanAttn,
             numberOfInvoiceReminders,
             poNumber,
-            projectnummer,
+            projectNumber,
             invoiceText,
             dateRequested,
             administrationId,
@@ -64,7 +64,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                 ibanAttn: ibanAttn ? ibanAttn : '',
                 numberOfInvoiceReminders: numberOfInvoiceReminders ? numberOfInvoiceReminders : '',
                 poNumber: poNumber ? poNumber : '',
-                projectnummer: projectnummer ? projectnummer : '',
+                projectNumber: projectNumber ? projectNumber : '',
                 invoiceText: invoiceText ? invoiceText : '',
                 dateRequested: dateRequested ? dateRequested : '',
                 dateNextInvoice: dateNextInvoice ? dateNextInvoice : '',
@@ -234,7 +234,7 @@ class OrderDetailsFormGeneralEdit extends Component {
             ibanAttn,
             numberOfInvoiceReminders,
             poNumber,
-            projectnummer,
+            projectNumber,
             invoiceText,
             dateRequested,
             administrationId,
@@ -416,8 +416,8 @@ class OrderDetailsFormGeneralEdit extends Component {
                             <div className="col-sm-6 form-group" />
                             <InputText
                                 label="Projectnummer"
-                                name={'projectnummer'}
-                                value={projectnummer}
+                                name={'projectNumber'}
+                                value={projectNumber}
                                 maxLength={'25'}
                                 onChangeAction={this.handleInputChange}
                             />

@@ -14,7 +14,7 @@ class AddProjectnummerToOrdersTable extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->string('projectnummer', 25)->nullable();
+            $table->string('project_number', 25)->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddProjectnummerToOrdersTable extends Migration
     public function down()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn('projectnummer');
+            $table->dropColumn('project_number');
         });
     }
 }

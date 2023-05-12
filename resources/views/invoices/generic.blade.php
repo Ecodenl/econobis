@@ -227,11 +227,11 @@
 
     <div class="conclusion-text">{!! (str_replace('€', '&euro;', $invoice->order->invoice_text)) !!}</div>
 
-    @if($invoice->order->po_number || $invoice->order->projectnummer)
+    @if($invoice->order->po_number || $invoice->order->project_number)
         <div class="conclusion-text">
             @if($invoice->order->po_number) Opdrachtnummer: {{ $invoice->order->po_number }} @endif
-            @if($invoice->order->po_number && $invoice->order->projectnummer) <br> @endif
-            @if($invoice->order->projectnummer) Projectnummer: {{ $invoice->order->projectnummer }} @endif
+            @if($invoice->order->po_number && $invoice->order->project_number) <br> @endif
+            @if($invoice->order->project_number) Projectnummer: {{ $invoice->order->project_number }} @endif
         </div>
     @endif
 

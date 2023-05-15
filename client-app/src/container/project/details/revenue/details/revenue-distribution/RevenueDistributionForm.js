@@ -458,8 +458,8 @@ class RevenueDistributionForm extends Component {
                                         }
                                         disabled={
                                             totalToProcess === 0
-                                                ? 'disabled'
-                                                : ''
+                                                ? true
+                                                : false
                                         }
                                     />
                                 </React.Fragment>

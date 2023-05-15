@@ -45,7 +45,7 @@ class ExtraFilter extends RequestExtraFilter
         'energySupplierType',
         'portalUser',
         'didAgreeAvg',
-        'quotationRequestStatus',
+        'quotationRequestStatusOrganisationOrCoach',
         'quotationRequestStatusClient',
         'housingFile',
         'inspectionPersonType',
@@ -250,7 +250,7 @@ class ExtraFilter extends RequestExtraFilter
         }
     }
 
-    protected function applyQuotationRequestStatusFilter($query, $type, $data)
+    protected function applyQuotationRequestStatusOrganisationOrCoachFilter($query, $type, $data)
     {
         if(empty($data)){
             switch($type) {

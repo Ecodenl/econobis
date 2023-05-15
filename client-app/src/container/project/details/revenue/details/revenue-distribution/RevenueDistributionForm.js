@@ -429,6 +429,17 @@ class RevenueDistributionForm extends Component {
             totalToProcess = 0;
         }
 
+        let distributionIdsTotalToProcess = [];
+        if (
+            this.props &&
+            this.props.projectRevenue &&
+            this.props.projectRevenue.distribution &&
+            this.props.projectRevenue.distribution.meta &&
+            this.props.projectRevenue.distribution.meta.distributionIdsTotalToProcess
+        ) {
+            distributionIdsTotalToProcess = this.props.projectRevenue.distribution.meta.distributionIdsTotalToProcess;
+        }
+
         return (
             <Panel>
                 <PanelHeader>
@@ -597,6 +608,7 @@ class RevenueDistributionForm extends Component {
                             toggleDistributionCheck={this.toggleDistributionCheck}
                             distributionIds={this.state.distributionIds}
                             createType={this.state.createType}
+                            distributionIdsTotalToProcess={distributionIdsTotalToProcess}
                         />
                     </div>
                 </PanelBody>

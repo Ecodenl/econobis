@@ -11,7 +11,6 @@ namespace App\Http\RequestQueries\Contact\Grid;
 
 use App\Helpers\RequestQuery\RequestExtraFilter;
 use App\Helpers\RequestQuery\RequestFilter;
-use Config;
 
 class ExtraFilter extends RequestExtraFilter
 {
@@ -47,6 +46,7 @@ class ExtraFilter extends RequestExtraFilter
         'portalUser',
         'didAgreeAvg',
         'quotationRequestStatus',
+        'quotationRequestStatusClient',
         'housingFile',
         'inspectionPersonType',
     ];
@@ -274,6 +274,45 @@ class ExtraFilter extends RequestExtraFilter
                 default:
                     $query->whereHas('quotationRequests', function ($query) use ($type, $data) {
                         RequestFilter::applyFilter($query, 'status_id', $type, $data);
+                    });
+                    break;
+            }
+        }
+    }
+
+    protected function applyQuotationRequestStatusClientFilter($query, $type, $data)
+    {
+
+        if(empty($data)){
+            switch($type) {
+                case 'eq':
+                    $query->whereHas('opportunities', function ($query) {
+                        $query->whereHas('quotationRequests');
+                    });
+                    break;
+                default:
+                    $query->whereDoesntHave('opportunities')
+                        ->orWhereHas('opportunities', function ($query) {
+                            $query->whereDoesntHave('quotationRequests');
+                    });
+                    break;
+            }
+        }else{
+            switch($type) {
+                case 'neq':
+                    $query->whereDoesntHave('opportunities')
+                        ->orWhereHas('opportunities', function ($query) use ($data) {
+                        $query->whereDoesntHave('quotationRequests')
+                            ->orWhereHas('quotationRequests', function ($query) use ($data) {
+                            $query->where('status_id', '!=', $data);
+                        });
+                    });
+                    break;
+                default:
+                    $query->whereHas('opportunities', function ($query) use ($data) {
+                        $query->whereHas('quotationRequests', function ($query) use ($data) {
+                            $query->where('status_id', $data);
+                        });
                     });
                     break;
             }

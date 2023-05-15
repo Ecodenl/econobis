@@ -224,6 +224,7 @@ class SystemData extends JsonResource
             'projectTypes' => GenericResource::collection(ProjectType::all()),
             'projectTypesActive' => GenericResource::collection(ProjectType::where('is_active', true)->get()),
             'quotationRequestStatus' => FullQuotationRequestStatus::collection(QuotationRequestStatus::orderBy('opportunity_action_id')->orderBy('name')->get()),
+            'quotationRequestStatusClient' => FullQuotationRequestStatus::collection(QuotationRequestStatus::orderBy('opportunity_action_id')->orderBy('name')->get()),
             'roles' => Role::select(['id', 'name'])->get()->toArray(),
             'roofTypes' => FullEnumWithIdAndName::collection(RoofType::all()),
             'taskProperties' => GenericResource::collection(TaskProperty::all()),

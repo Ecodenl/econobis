@@ -416,6 +416,19 @@ class RevenueDistributionForm extends Component {
             numberSelectedNumberTotal = this.state.distributionIds.length;
         }
 
+        let totalToProcess = 0;
+        if (
+            this.props &&
+            this.props.projectRevenue &&
+            this.props.projectRevenue.distribution &&
+            this.props.projectRevenue.distribution.meta &&
+            this.props.projectRevenue.distribution.meta.totalToProcess
+        ) {
+            totalToProcess = this.props.projectRevenue.distribution.meta.totalToProcess;
+        } else {
+            totalToProcess = 0;
+        }
+
         return (
             <Panel>
                 <PanelHeader>
@@ -442,6 +455,11 @@ class RevenueDistributionForm extends Component {
                                             this.props.projectRevenue.category.codeRef === 'redemptionEuro'
                                                 ? ' '
                                                 : "De uitkeringsdatum is de datum in het SEPA bestand en de datum van de mutaties in het mutatieoverzicht van de deelnemers. Als je niet gaat uitkeren ('naar kapitaalrekening (niet uitbetalen)') betreft het alleen de mutatiedatum en is de uitkeringsdatum niet van toepassing."
+                                        }
+                                        disabled={
+                                            totalToProcess === 0
+                                                ? 'disabled'
+                                                : ''
                                         }
                                     />
                                 </React.Fragment>

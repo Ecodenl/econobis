@@ -23,7 +23,7 @@ class EmailGenericController extends Controller
         $this->checkMailboxAutorized($email->mailbox_id);
 
         $data = $request->validate([
-            'status' => ['sometimes', 'required', 'string'],
+            'status' => ['nullable', 'string'],
             'responsibleUserId' => ['nullable', 'exists:users,id'],
             'responsibleTeamId' => ['nullable', 'exists:teams,id'],
             'intakeId' => ['nullable', 'exists:intakes,id'],

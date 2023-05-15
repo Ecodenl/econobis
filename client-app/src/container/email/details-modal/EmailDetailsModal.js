@@ -40,6 +40,7 @@ export default function EmailDetailsModal({emailId, showModal, setShowModal, onS
             invoiceId: email.invoiceId,
             contactIds: email.contacts.map(c => c.id),
         }).then(() => {
+            setShowEdit(false);
             setShowModal(false);
 
             onSave();

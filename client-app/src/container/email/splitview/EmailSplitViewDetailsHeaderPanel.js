@@ -9,7 +9,7 @@ import {Link} from "react-router";
 import {useSelector} from 'react-redux'
 import InputSelect from "../../../components/form/InputSelect";
 import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
-import EmailEditModal from "../details-modal/EmailDetailsModal";
+import EmailDetailsModal from "../details-modal/EmailDetailsModal";
 import EmailAddressList from "../../../components/email/EmailAddressList";
 import ResponsibleInputSelect from "../../../components/email/ResponsibleInputSelect";
 
@@ -134,7 +134,7 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                     />
                 </div>
             </div>
-            <EmailEditModal showModal={showDetailsModal} emailId={email.id} setShowModal={setShowDetailsModal} onSave={updatedEmailHandler}/>
+            <EmailDetailsModal showModal={showDetailsModal} emailId={email.id} setShowModal={setShowDetailsModal} onSave={updatedEmailHandler}/>
         </div>
     );
 }

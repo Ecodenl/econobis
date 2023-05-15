@@ -15,7 +15,7 @@ export default function EmailAddressList({emailAddresses}) {
             /**
              * 20230509; Jos Todo; Links nieuwe mail in Econobis laten aanmaken
              */
-            return (<>{email.name} (<Link className="link-underline" to={'mailto: ' + email.email}>{email.email})</Link></>);
+            return (<>{email.name} (<Link className="link-underline" to={'mailto: ' + email.email}>{email.email}</Link>)</>);
         }
 
         if (email.email) {

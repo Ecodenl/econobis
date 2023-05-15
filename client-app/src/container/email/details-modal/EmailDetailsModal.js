@@ -38,6 +38,7 @@ export default function EmailDetailsModal({emailId, showModal, setShowModal, onS
             opportunityId: email.opportunityId,
             orderId: email.orderId,
             invoiceId: email.invoiceId,
+            contactIds: email.contacts.map(c => c.id),
         }).then(() => {
             setShowModal(false);
 

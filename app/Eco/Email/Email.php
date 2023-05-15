@@ -230,4 +230,27 @@ class Email extends Model
     {
         return new EmailGeneratorService($this);
     }
+
+    public function copyEmailAddressToContacts()
+    {
+        if (Mailbox::where('email', $this->from)->exists()) {
+            return;
+        }
+
+        if ($this->mailbox->ignoresEmailAddress($this->from)) {
+            return;
+        }
+
+        foreach ($this->contacts as $contact) {
+            if ($contact->emailAddresses()->where('email', $this->from)->exists()) {
+                continue;
+            }
+
+            $emailAddress = new EmailAddress();
+            $emailAddress->email = $this->from;
+            $emailAddress->type_id = 'general';
+            $emailAddress->contact_id = $contact->id;
+            $emailAddress->save();
+        }
+    }
 }

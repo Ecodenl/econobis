@@ -35,7 +35,16 @@ class EmailGenericController extends Controller
             'invoiceId' => ['nullable', 'exists:invoices,id'],
         ]);
 
+        $contactIds = $request->validate([
+            'contactIds' => ['array'],
+            'contactIds.*' => ['integer', 'exists:contacts,id'],
+        ])['contactIds'];
+
         $email->update(Arr::keysToSnakeCase($data));
+
+        $email->contacts()->sync($contactIds);
+
+        $email->copyEmailAddressToContacts();
     }
 
     public function deleteMultiple(Request $request)

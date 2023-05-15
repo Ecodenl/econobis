@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import EmailDetailsModalView from "./EmailDetailsModalView";
 import IntakesAPI from "../../../api/intake/IntakesAPI";
 import InputReactSelect from "../../../components/form/InputReactSelect";
 import TasksAPI from "../../../api/task/TasksAPI";
@@ -9,6 +8,8 @@ import OpportunitiesAPI from "../../../api/opportunity/OpportunitiesAPI";
 import OrdersAPI from "../../../api/order/OrdersAPI";
 import InvoicesAPI from "../../../api/invoice/InvoicesAPI";
 import AsyncSelectSet from "../../../components/form/AsyncSelectSet";
+import ContactsAPI from "../../../api/contact/ContactsAPI";
+import EmailDetailsModalLayout from "./EmailDetailsModalLayout";
 
 export default function EmailDetailsModalEdit({email, updateEmailAttributes}) {
     const [intakes, setIntakes] = useState([]);
@@ -18,6 +19,8 @@ export default function EmailDetailsModalEdit({email, updateEmailAttributes}) {
     const [opportunities, setOpportunities] = useState([]);
     const [orders, setOrders] = useState([]);
     const [invoices, setInvoices] = useState([]);
+    const [searchTermContact, setSearchTermContact] = useState('');
+    const [isLoadingContact, setLoadingContact] = useState(false);
 
     useEffect(() => {
         IntakesAPI.peekIntakes().then(payload => {
@@ -43,20 +46,35 @@ export default function EmailDetailsModalEdit({email, updateEmailAttributes}) {
         });
     }, []);
 
+    const getContactOptions = async () => {
+        if (searchTermContact.length <= 1) return;
+
+        setLoadingContact(true);
+
+        try {
+            const results = await ContactsAPI.fetchContactSearch(searchTermContact);
+            setLoadingContact(false);
+            return results.data.data;
+        } catch (error) {
+            setLoadingContact(false);
+        }
+    };
+
     return (
-        <EmailDetailsModalView
+        <EmailDetailsModalLayout
             email={email}
             updateEmailAttributes={updateEmailAttributes}
             contactsComponent={(
                 <AsyncSelectSet
                     label={'Contacten'}
                     name={'contacts'}
-                    value={valueSelectedContacts}
+                    value={email.contacts}
                     loadOptions={getContactOptions}
                     optionName={'fullName'}
-                    onChangeAction={handleContactIds}
+                    onChangeAction={(value) => updateEmailAttributes({contacts: value ? value : []})}
                     isLoading={isLoadingContact}
-                    handleInputChange={handleInputSearchChange}
+                    handleInputChange={setSearchTermContact}
+                    clearable={true}
                 />
             )}
             intakeComponent={(

@@ -51,7 +51,7 @@ const InputText = props => {
                     id={id}
                     placeholder={placeholder}
                     name={name}
-                    value={value ? value : (allowZero && value === 0 ? 0 : '')}
+                    value={value ? value : allowZero && value === 0 ? 0 : ''}
                     onClick={onClickAction}
                     onChange={onChangeAction}
                     onBlur={onBlurAction}
@@ -73,7 +73,7 @@ const InputText = props => {
                                 color={'blue'}
                                 size={'15px'}
                                 data-tip={textToolTip}
-                                data-for={`tooltip-${name}`}
+                                data-for={`tooltip-${name ? name : id}`}
                             />
                             <ReactTooltip
                                 id={`tooltip-${name ? name : id}`}

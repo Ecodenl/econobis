@@ -2,10 +2,10 @@ import React, {useState} from 'react';
 import Modal from '../../../components/modal/Modal';
 import Icon from "react-icons-kit";
 import {pencil} from 'react-icons-kit/fa/pencil';
-import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
 import InputSelect from "../../../components/form/InputSelect";
 import {useSelector} from "react-redux";
 import InputSelectGroup from "../../../components/form/InputSelectGroup";
+import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 
 export default function EmailSplitViewBulkEditModal({emailIds, onSaved}) {
     const statusses = useSelector((state) => state.systemData.emailStatuses);
@@ -66,7 +66,7 @@ export default function EmailSplitViewBulkEditModal({emailIds, onSaved}) {
             values.responsibleTeamId = responsibleTeamId;
         }
 
-        EmailSplitviewAPI.updateMultiple(emailIds, values).then(() => {
+        EmailGenericAPI.updateMultiple(emailIds, values).then(() => {
             setShowModal(false);
             onSaved();
         });

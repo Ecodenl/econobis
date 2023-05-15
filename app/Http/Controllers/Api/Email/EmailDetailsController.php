@@ -52,32 +52,37 @@ class EmailDetailsController extends Controller
                     'fullName' => $contact->full_name,
                 ];
             }),
-            //    'intakeId' => $email->intake_id,
+                'intakeId' => $email->intake_id,
                 'intake' => $email->intake ? [
                     'id' => $email->intake->id,
                     'name' => $email->intake->getName(),
                 ] : null,
-            //    'taskId' => $email->task_id,
+                'taskId' => $email->task_id,
                 'task' => $email->task ? [
                     'id' => $email->task->id,
                     'noteSummary' => $email->task->present()->noteSummary(),
                 ] : null,
-            //    'quotationRequestId' => $email->quotation_request_id,
+                'quotationRequestId' => $email->quotation_request_id,
                 'quotationRequest' => $email->quotationRequest ? [
                     'id' => $email->quotationRequest->id,
+                    'name' => $email->quotationRequest->name,
                 ] : null,
+                'orderId' => $email->order_id,
                 'order' => $email->order ? [
                     'id' => $email->order->id,
                     'subject' => $email->order->subject,
                 ] : null,
+                'invoiceId' => $email->invoice_id,
                 'invoice' => $email->invoice ? [
                     'id' => $email->invoice->id,
                     'number' => $email->invoice->number,
                 ] : null,
+                'measureId' => $email->measure_id,
                 'measure' => $email->measure ? [
                     'id' => $email->measure->id,
                     'name' => $email->measure->name,
                 ] : null,
+                'opportunityId' => $email->opportunity_id,
                 'opportunity' => $email->opportunity ? [
                     'id' => $email->opportunity->id,
                     'name' => $email->opportunity->getName(),
@@ -85,22 +90,23 @@ class EmailDetailsController extends Controller
             //    'attachments' => GenericResource::collection($email->whenLoaded('attachments')),
             //    'replyTypeId' => $email->reply_type_id,
             //    'oldEmailId' => $email->old_email_id,
-                'status' => $email->getStatus() ? [
-                    'id' => $email->getStatus()->id,
-                    'name' => $email->getStatus()->name,
-                ] : null,
+                'status' => $email->status,
+//                'status' => $email->getStatus() ? [
+//                    'id' => $email->getStatus()->id,
+//                    'name' => $email->getStatus()->name,
+//                ] : null,
                 'dateClosed' => $email->date_closed,
                 'dateRemoved' => $email->date_removed,
-            //    'responsibleUserId' => $email->responsible_user_id,
-                'responsibleUser' => $email->responsibleUser ? [
-                    'id' => $email->responsibleUser->id,
-                    'fullName' => $email->responsibleUser->present()->fullName(),
-                ] : null,
-            //    'responsibleTeamId' => $email->responsible_team_id,
-                'responsibleTeam' => $email->responsibleTeam ? [
-                    'id' => $email->responsibleTeam->id,
-                    'name' => $email->responsibleTeam->name,
-                ]: null,
+                'responsibleUserId' => $email->responsible_user_id,
+//                'responsibleUser' => $email->responsibleUser ? [
+//                    'id' => $email->responsibleUser->id,
+//                    'fullName' => $email->responsibleUser->present()->fullName(),
+//                ] : null,
+                'responsibleTeamId' => $email->responsible_team_id,
+//                'responsibleTeam' => $email->responsibleTeam ? [
+//                    'id' => $email->responsibleTeam->id,
+//                    'name' => $email->responsibleTeam->name,
+//                ]: null,
             //    'closedById' => $email->closed_by_id,
                 'closedBy' => $email->closedBy ? [
                     'id' => $email->closedBy->id,

@@ -67,6 +67,7 @@ class Modal extends Component {
             title,
             draggableDisabled,
             loading,
+            headerRight,
         } = this.props;
         const bounds = {
             left: this.state.offsetLeft,
@@ -87,7 +88,10 @@ class Modal extends Component {
                     <div className={`modal-dialog ${modalClassName}`} ref={this.divModalDialog}>
                         <div className="modal-content">
                             <div className={`modal-header` + (draggableDisabled ? '' : ' draggable-header')}>
-                                <h4 className="modal-title">{title}</h4>
+                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                    <h4 className="modal-title">{title}</h4>
+                                    { headerRight ? headerRight : null }
+                                </div>
                             </div>
                             <div className="modal-body">{children}</div>
                             <div className="modal-footer">
@@ -128,6 +132,7 @@ Modal.defaultProps = {
     confirmAction: () => {},
     draggableDisabled: false,
     loading: false,
+    headerRight: null,
 };
 
 Modal.propTypes = {
@@ -143,6 +148,7 @@ Modal.propTypes = {
     extraButtonAction: PropTypes.func,
     draggableDisabled: PropTypes.bool,
     loading: PropTypes.bool,
+    headerRight: PropTypes.any,
 };
 
 export default Modal;

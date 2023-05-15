@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Email\EmailAttachmentController;
 use App\Http\Controllers\Api\Email\EmailDetailsController;
+use App\Http\Controllers\Api\Email\EmailGenericController;
 use App\Http\Controllers\Api\Email\EmailSplitviewController;
 use App\Http\Controllers\Api\Invoice\InvoiceMolliePaymentController;
 use App\Http\Controllers\Api\Mailbox\MailboxController;
@@ -321,12 +322,16 @@ Route::namespace('Api')
          */
         Route::get('email-splitview/select-list', [EmailSplitviewController::class, 'selectList']);
         Route::get('email-splitview/{email}', [EmailSplitviewController::class, 'show']);
-        Route::post('email-splitview/delete-multiple', [EmailSplitviewController::class, 'deleteMultiple']);
-        Route::post('email-splitview/update-multiple', [EmailSplitviewController::class, 'updateMultiple']);
-        Route::post('email-splitview/{email}', [EmailSplitviewController::class, 'update']);
-        Route::post('email-splitview/{email}/store-reply', [EmailSplitviewController::class, 'storeReply']);
-        Route::post('email-splitview/{email}/store-reply-all', [EmailSplitviewController::class, 'storeReplyAll']);
-        Route::post('email-splitview/{email}/store-forward', [EmailSplitviewController::class, 'storeForward']);
+
+        /**
+         * Email generic
+         */
+        Route::post('email-generic/delete-multiple', [EmailGenericController::class, 'deleteMultiple']);
+        Route::post('email-generic/update-multiple', [EmailGenericController::class, 'updateMultiple']);
+        Route::post('email-generic/{email}', [EmailGenericController::class, 'update']);
+        Route::post('email-generic/{email}/store-reply', [EmailGenericController::class, 'storeReply']);
+        Route::post('email-generic/{email}/store-reply-all', [EmailGenericController::class, 'storeReplyAll']);
+        Route::post('email-generic/{email}/store-forward', [EmailGenericController::class, 'storeForward']);
 
         /**
          * Email details

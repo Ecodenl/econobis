@@ -2,13 +2,13 @@ import React, {useState} from 'react';
 import Modal from '../../../components/modal/Modal';
 import Icon from "react-icons-kit";
 import {trash} from 'react-icons-kit/fa/trash';
-import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
+import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 
 export default function EmailSplitViewBulkDeleteModal({emailIds, onDeleted}) {
     const [showModal, setShowModal] = useState(false);
 
     const doDelete = () => {
-        EmailSplitviewAPI.deleteMultiple(emailIds).then(() => {
+        EmailGenericAPI.deleteMultiple(emailIds).then(() => {
             setShowModal(false);
             onDeleted();
         });

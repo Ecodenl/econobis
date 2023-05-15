@@ -3,8 +3,9 @@ import Modal from '../../../components/modal/Modal';
 import EmailDetailsModalView from "./EmailDetailsModalView";
 import EmailDetailsModalEdit from "./EmailDetailsModalEdit";
 import EmailDetailsAPI from "../../../api/email/EmailDetailsAPI";
+import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 
-export default function EmailDetailsModal({emailId, showModal, setShowModal}) {
+export default function EmailDetailsModal({emailId, showModal, setShowModal, onSave}) {
     const [showEdit, setShowEdit] = useState(false);
     const [email, setEmail] = useState(null);
 
@@ -18,8 +19,30 @@ export default function EmailDetailsModal({emailId, showModal, setShowModal}) {
         });
     }, [showModal]);
 
+    const updateEmailAttributes = (attributes) => {
+        setEmail({
+            ...email,
+            ...attributes,
+        });
+    }
+
     const save = () => {
-        setShowModal(false);
+        EmailGenericAPI.update(emailId, {
+            responsibleUserId: email.responsibleUserId,
+            responsibleTeamId: email.responsibleTeamId,
+            status: email.status,
+            intakeId: email.intakeId,
+            taskId: email.taskId,
+            quotationRequestId: email.quotationRequestId,
+            measureId: email.measureId,
+            opportunityId: email.opportunityId,
+            orderId: email.orderId,
+            invoiceId: email.invoiceId,
+        }).then(() => {
+            setShowModal(false);
+
+            onSave();
+        });
     }
 
     if (!email) return null;
@@ -28,16 +51,23 @@ export default function EmailDetailsModal({emailId, showModal, setShowModal}) {
         <>
             {showModal && (
                 <Modal
-                    buttonConfirmText="Sluiten"
+                    buttonConfirmText="Opslaan"
                     closeModal={() => setShowModal(false)}
                     confirmAction={save}
                     title={'Email van ' + email.from}
                     modalMainClassName="modal-fullscreen"
+                    headerRight={(
+                            <div>
+                                <button type="button" className="btn btn-default" onClick={() => {setShowEdit(true)}}>
+                                    Bewerken
+                                </button>
+                            </div>
+                        )}
                 >
                     {showEdit ? (
-                        <EmailDetailsModalEdit email={email}/>
+                        <EmailDetailsModalEdit email={email} updateEmailAttributes={updateEmailAttributes}/>
                     ) : (
-                        <EmailDetailsModalView email={email} onClick={() => setShowEdit(true)}/>
+                        <EmailDetailsModalView email={email} updateEmailAttributes={updateEmailAttributes}/>
                     )}
                 </Modal>
             )}

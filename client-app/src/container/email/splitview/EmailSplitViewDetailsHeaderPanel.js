@@ -7,60 +7,30 @@ import {trash} from 'react-icons-kit/fa/trash';
 import {windowRestore} from 'react-icons-kit/fa/windowRestore';
 import {Link} from "react-router";
 import {useSelector} from 'react-redux'
-import InputSelectGroup from "../../../components/form/InputSelectGroup";
 import InputSelect from "../../../components/form/InputSelect";
-import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
+import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 import EmailEditModal from "../details-modal/EmailDetailsModal";
 import EmailAddressList from "../../../components/email/EmailAddressList";
+import ResponsibleInputSelect from "../../../components/email/ResponsibleInputSelect";
 
-export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttributes}) {
+export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttributes, updatedEmailHandler}) {
     const statusses = useSelector((state) => state.systemData.emailStatuses);
-    const teams = useSelector((state) => state.systemData.teams);
-    const users = useSelector((state) => state.systemData.users);
     const [showDetailsModal, setShowDetailsModal] = useState(false);
 
-    const setResonsibleValue = (val) => {
-        let values = {
-            responsibleUserId: null,
-            responsibleTeamId: null,
-        };
-
-        if (val.indexOf('user') === 0) {
-            values.responsibleUserId = val.replace('user', '');
-        }
-
-        if (val.indexOf('team') === 0) {
-            values.responsibleTeamId = val.replace('team', '');
-        }
-
-        updateEmailAttributes(values);
-    }
-
-    const getResponsibleValue = () => {
-        if (email.responsibleUserId) {
-            return 'user' + email.responsibleUserId;
-        }
-        if (email.responsibleTeamId) {
-            return 'team' + email.responsibleTeamId;
-        }
-
-        return '';
-    }
-
     const createReply = () => {
-        EmailSplitviewAPI.storeReply(email.id).then(payload => {
+        EmailGenericAPI.storeReply(email.id).then(payload => {
             // Todo; open popup
         });
     }
 
     const createReplyAll = () => {
-        EmailSplitviewAPI.storeReplyAll(email.id).then(payload => {
+        EmailGenericAPI.storeReplyAll(email.id).then(payload => {
             // Todo; open popup
         });
     }
 
     const createForward = () => {
-        EmailSplitviewAPI.storeForward(email.id).then(payload => {
+        EmailGenericAPI.storeForward(email.id).then(payload => {
             // Todo; open popup
         });
     }
@@ -156,25 +126,15 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                             <EmailAddressList emailAddresses={email.ccAddresses}/>
                         </div>
                     </div>
-                    <InputSelectGroup
-                        label={'Verantwoordelijke'}
-                        size={'col-sm-6'}
-                        name={'responsible'}
-                        optionsInGroups={[
-                            {
-                                name: 'user',
-                                label: 'Gebruikers',
-                                options: users,
-                                optionName: 'fullName',
-                            },
-                            {name: 'team', label: 'Teams', options: teams},
-                        ]}
-                        value={getResponsibleValue()}
-                        onChangeAction={(e) => setResonsibleValue(e.target.value)}
+                    <ResponsibleInputSelect values={{
+                        responsibleUserId: email.responsibleUserId,
+                        responsibleTeamId: email.responsibleTeamId,
+                    }}
+                        onChangeAction={updateEmailAttributes}
                     />
                 </div>
             </div>
-            <EmailEditModal showModal={showDetailsModal} emailId={email.id} setShowModal={setShowDetailsModal}/>
+            <EmailEditModal showModal={showDetailsModal} emailId={email.id} setShowModal={setShowDetailsModal} onSave={updatedEmailHandler}/>
         </div>
     );
 }

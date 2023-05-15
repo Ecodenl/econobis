@@ -8,6 +8,7 @@ const RevenueDistributionFormList = props => {
     return (
         <div>
             <div className="row border header">
+                console.log('pa');
                 {props.projectRevenue.confirmed && props.showCheckboxList ? (
                     <div className="col-sm-1">
                         <input type="checkbox" onChange={props.toggleCheckedAll} checked={props.checkedAll} />

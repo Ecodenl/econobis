@@ -186,11 +186,7 @@ const RevenueFormView = props => {
                                         value={payPercentage && payPercentage + '%'}
                                     />
                                     <ViewText
-                                        label={
-                                            project.projectType.codeRef === 'loan'
-                                                ? 'of uitkeringsbedrag (per deelnemer)'
-                                                : 'of uitkeringsbedrag (per participatie)'
-                                        }
+                                        label={'of uitkeringsbedrag per deelname'}
                                         value={MoneyPresenter(payAmount)}
                                     />
                                 </div>

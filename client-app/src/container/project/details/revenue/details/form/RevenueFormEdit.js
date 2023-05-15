@@ -850,11 +850,7 @@ class RevenueFormEdit extends Component {
                                     />
                                     <InputText
                                         type={'number'}
-                                        label={
-                                            projectTypeCodeRef === 'loan'
-                                                ? 'of uitkeringsbedrag (per deelname)'
-                                                : 'of uitkeringsbedrag (per participatie)'
-                                        }
+                                        label={'of uitkeringsbedrag per deelname'}
                                         name={'payAmount'}
                                         value={payAmount}
                                         onChangeAction={this.handleInputChange}
@@ -926,11 +922,7 @@ class RevenueFormEdit extends Component {
                                     />
                                     <InputText
                                         type={'number'}
-                                        label={
-                                            projectTypeCodeRef === 'loan'
-                                                ? 'of aflossingsbedrag (per deelname)'
-                                                : 'of aflossingsbedrag (per participatie)'
-                                        }
+                                        label={'of aflossingsbedrag per deelname'}
                                         name={'payAmount'}
                                         value={payAmount}
                                         onChangeAction={this.handleInputChange}

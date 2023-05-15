@@ -155,6 +155,12 @@ class AddressController extends ApiController
 
     public function getLvbagAddress(Request $request){
         $secret = config('lvbag.lvbag_key');
+        if(empty($secret)){
+            return [
+                'street' => "",
+                'city' => "",
+            ];
+        }
         // crs is not static, you should change it accordingly to the desired call.
         $acceptCRS = 'epsg:28992';
 

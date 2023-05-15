@@ -2206,6 +2206,24 @@ class TemplateVariableHelper
             case 'organisatie_of_coach_naam':
                 return optional($model->organisationOrCoach)->full_name_fnf;
                 break;
+            case 'organisatie_of_coach_voornaam':
+                if(optional($model->organisationOrCoach)->type_id == 'person'){
+                    return optional($model->organisationOrCoach)->first_name;
+                }
+                elseif(optional($model->organisationOrCoach)->type_id == 'organisation'){
+                    return '';
+                }
+                break;
+            case 'organisatie_of_coach_achternaam':
+                if(optional($model->organisationOrCoach)->type_id == 'person'){
+
+                    $prefix = optional($model->organisationOrCoach)->last_name_prefix;
+                    return $prefix ? $prefix . ' ' . optional($model->organisationOrCoach)->last_name : optional($model->organisationOrCoach)->last_name;
+                }
+                elseif(optional($model->organisationOrCoach)->type_id == 'organisation'){
+                    return optional($model->organisationOrCoach)->full_name;
+                }
+                break;
             case 'organisatie_of_coach_adres':
                 return optional(optional($model->organisationOrCoach)->primaryAddress)->street . ' ' . optional(optional($model->organisationOrCoach)->primaryAddress)->number . (optional(optional($model->organisationOrCoach)->primaryAddress)->addition ? ('-' . optional(optional($model->organisationOrCoach)->primaryAddress)->addition) : '');
                 break;

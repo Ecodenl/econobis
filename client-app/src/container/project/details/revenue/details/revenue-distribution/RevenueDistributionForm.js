@@ -441,7 +441,7 @@ class RevenueDistributionForm extends Component {
                                         title={
                                             this.props.projectRevenue.category.codeRef === 'redemptionEuro'
                                                 ? ' '
-                                                : 'De uitkeringsdatum is de datum in het SEPA bestand en de datum van de mutaties in het mutatieoverzicht van de deelnemers. Als je niet gaat uitkeren (\'naar kapitaalrekening (niet uitbetalen)\') betreft het alleen de mutatiedatum en is de uitkeringsdatum niet van toepassing.'
+                                                : "De uitkeringsdatum is de datum in het SEPA bestand en de datum van de mutaties in het mutatieoverzicht van de deelnemers. Als je niet gaat uitkeren ('naar kapitaalrekening (niet uitbetalen)') betreft het alleen de mutatiedatum en is de uitkeringsdatum niet van toepassing."
                                         }
                                     />
                                 </React.Fragment>
@@ -559,9 +559,9 @@ class RevenueDistributionForm extends Component {
                                                     this.props.projectRevenue.category.codeRef === 'revenueKwh'
                                                         ? ' '
                                                         : this.props.projectRevenue.category.codeRef ===
-                                                        'redemptionEuro'
-                                                            ? ' '
-                                                            : 'Met de knop Mutaties aanmaken en Sepa bestand maak je mutaties aan in het mutatieoverzicht van de individuele deelnemers en genereer je een Sepa bestand om bij de bank te uploaden. Het Sepa bestand vind je na het aanmaken terug bij Instellingen > Administratie > onder de betreffende administratie.'
+                                                          'redemptionEuro'
+                                                        ? ' '
+                                                        : 'Met de knop Mutaties aanmaken en Sepa bestand maak je mutaties aan in het mutatieoverzicht van de individuele deelnemers en genereer je een Sepa bestand om bij de bank te uploaden. Het Sepa bestand vind je na het aanmaken terug bij Instellingen > Administratie > onder de betreffende administratie.'
                                                 }
                                             />
                                         </div>

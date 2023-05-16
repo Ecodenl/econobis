@@ -898,6 +898,10 @@ class RevenueFormEdit extends Component {
                                         name={'revenue'}
                                         value={revenue}
                                         onChangeAction={this.handleInputChange}
+                                        size={'col-sm-5'}
+                                        textToolTip={
+                                            'Vul hier hier het totaal resultaat in dat je wilt verdelen over alle deelnemers. Econobis maakt vanuit dit totaal de verdeling per deelnemer'
+                                        }
                                     />
                                 </div>
                             </React.Fragment>

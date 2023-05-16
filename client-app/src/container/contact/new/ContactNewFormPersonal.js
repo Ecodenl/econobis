@@ -115,7 +115,7 @@ class ContactNewFormPersonal extends Component {
         });
     };
 
-    addressHandleInputPicoChange = event => {
+    addressHandleInputLvbagChange = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
@@ -136,7 +136,7 @@ class ContactNewFormPersonal extends Component {
                 validator.isEmpty(address.city) &&
                 validator.isEmpty(address.street)
             ) {
-                AddressAPI.getPicoAddress(address.postalCode, address.number).then(payload => {
+                AddressAPI.getLvbagAddress(address.postalCode, address.number).then(payload => {
                     this.setState({
                         ...this.state,
                         address: {
@@ -476,7 +476,7 @@ class ContactNewFormPersonal extends Component {
                         <ContactNewFormAddress
                             address={this.state.address}
                             errors={this.state.addressErrors}
-                            handleInputPicoChange={this.addressHandleInputPicoChange}
+                            handleInputLvbagChange={this.addressHandleInputLvbagChange}
                             handleInputChange={this.addressHandleInputChange}
                             handleInputChangeDate={this.addressHandleInputChangeDate}
                         />

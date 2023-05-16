@@ -18,6 +18,7 @@ class IncomingServerType extends EnumWithIdAndName
             new static('imap', 'IMAP'),
             new static('gmail', 'Gmail Api'),
             new static('ms-oauth', 'Microsoft Api'),
+            new static('mailgun', 'Mailgun'),
         ];
     }
 }

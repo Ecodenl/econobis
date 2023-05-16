@@ -33,13 +33,13 @@ class EnergySupplierExcelHelper
         $this->revenuePartsKwh = $revenuePartsKwh;
         $this->templateId = $templateId;
         $this->fileName = $fileName;
+
+        $isLastPart = $revenuePartsKwh->date_end && $revenuePartsKwh->date_end == $revenuePartsKwh->revenuesKwh->date_end;
         $this->upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_end', '<=', $revenuePartsKwh->date_end)->pluck('id')->toArray();
-
         $this->revenuesKwh = $revenuePartsKwh->revenuesKwh;
-
         $distributionKwhCollection = RevenueDistributionPartsKwh::whereIn('parts_id', $this->upToPartsKwhIds)->where('is_visible', 1)->whereNull('date_energy_supplier_report')->where('es_id', $energySupplier->id)->where('status', 'in-progress-report')->get();
-        $distributionKwhIds = $distributionKwhCollection->filter(function($model){
-            return ($model->delivered_kwh_from_till_visible != 0 || $model->partsKwh->date_end == $model->partsKwh->revenuesKwh->date_end);
+        $distributionKwhIds = $distributionKwhCollection->filter(function($model) use($isLastPart){
+            return ($model->delivered_kwh_from_till_visible != 0 && ($model->is_energy_supplier_switch == true || $model->is_end_participation == true || $model->is_end_total_period == true) || $isLastPart);
         })
             ->pluck('distribution_id')->toArray();
         $this->distributions = $revenuePartsKwh->revenuesKwh->distributionKwh()->whereIn('id', $distributionKwhIds )->get();

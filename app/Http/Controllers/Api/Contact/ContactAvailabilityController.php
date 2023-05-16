@@ -41,39 +41,46 @@ class ContactAvailabilityController
         }
 
         $startOfWeek = Carbon::make($request->input('startOfWeek'))->startOfWeek();
+        $endOfWeek = $startOfWeek->copy()->endOfWeek();
 
-        return $district->getAvailableCoachesInWeek($startOfWeek)
-            ->load(['availabilities' => function($query) use ($startOfWeek, $request){
-                $endOfWeek = $startOfWeek->copy()->endOfWeek();
-                $query->whereBetween('from', [$startOfWeek, $endOfWeek]);
-            }])
-            ->load(['quotationRequests' => function($query) use ($startOfWeek, $request){
-                $endOfWeek = $startOfWeek->copy()->endOfWeek();
-                $query->whereBetween('date_planned', [$startOfWeek, $endOfWeek])
-                    ->where('uses_planning', true)
-                    ->where('status_id', '!=', QuotationRequestStatus::STATUS_VISIT_CANCELLED_ID);
-            }])
-            ->map(function(Contact $coach){
-                return [
-                    'id' => $coach->id,
-                    'fullName' => $coach->full_name,
-                    'coachMinMinutesBetweenAppointments' => $coach->coach_min_minutes_between_appointments,
-                    'availabilities' => $coach->availabilities
-                        ->map(function(ContactAvailability $availability){
-                            return [
-                                'from' => $availability->from->format('Y-m-d H:i:s'),
-                                'to' => $availability->to->format('Y-m-d H:i:s'),
-                            ];
-                        }),
-                    'quotationRequests' => $coach->quotationRequests
-                        ->map(function($quotationRequest){
-                            return [
-                                'datePlanned' => $quotationRequest->date_planned,
-                                'durationMinutes' => $quotationRequest->duration_minutes,
-                            ];
-                        }),
-                ];
-            });
+        return $district->coaches->map(function(Contact $coach) use ($endOfWeek, $startOfWeek) {
+            /**
+             * getPlannableAvailabilitiesInPeriod() resultaat in tijdelijke variabele op coach opslaan
+             * zodat we deze hieronder niet meerdere keren hoeven te berekenen.
+             */
+            $coach->temp_availabilities = $coach->getPlannableAvailabilitiesInPeriod($startOfWeek, $endOfWeek);
+
+            return $coach;
+        })->filter(function(Contact $coach) {
+            return $coach->temp_availabilities->count() > 0;
+        })
+        ->load(['quotationRequests' => function($query) use ($startOfWeek, $request){
+            $endOfWeek = $startOfWeek->copy()->endOfWeek();
+            $query->whereBetween('date_planned', [$startOfWeek, $endOfWeek])
+                ->where('uses_planning', true)
+                ->where('status_id', '!=', QuotationRequestStatus::STATUS_VISIT_CANCELLED_ID);
+        }])
+        ->map(function(Contact $coach) {
+            return [
+                'id' => $coach->id,
+                'fullName' => $coach->full_name,
+                'coachMinMinutesBetweenAppointments' => $coach->coach_min_minutes_between_appointments,
+                'availabilities' => $coach->temp_availabilities
+                    ->map(function(ContactAvailability $availability){
+                        return [
+                            'from' => $availability->from->format('Y-m-d H:i:s'),
+                            'to' => $availability->to->format('Y-m-d H:i:s'),
+                        ];
+                    })->values(),
+                'quotationRequests' => $coach->quotationRequests
+                    ->map(function($quotationRequest){
+                        return [
+                            'datePlanned' => $quotationRequest->date_planned,
+                            'durationMinutes' => $quotationRequest->duration_minutes,
+                        ];
+                    }),
+            ];
+        })->values();
     }
 
     public function update(Contact $contact, Request $request)

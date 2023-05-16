@@ -21,7 +21,7 @@ class Filter extends RequestFilter
         'city',
         'measureCategoryName',
         'measureName',
-        'statusName',
+        'statusId',
         'measureDateStart',
         'measureDateEnd',
     ];
@@ -30,7 +30,7 @@ class Filter extends RequestFilter
         'fullName' => 'contacts.full_name',
         'measureCategoryName' => 'measure_categories.name',
         'measureName' => 'measures.name',
-        'statusName' => 'housing_file_specification_statuses.name',
+        'statusId' => 'housing_file_specification_statuses.id',
 //        'measureDateStart' => 'measure_date',
 //        'measureDateEnd' => 'measure_date',
     ];
@@ -42,7 +42,7 @@ class Filter extends RequestFilter
         'city' => 'address',
         'measureCategoryName' => 'measureCategory',
         'measureName' => 'measure',
-        'statusName' => 'housingFileSpecificationStatus',
+        'statusId' => 'housingFileSpecificationStatus',
     ];
 
     protected $defaultTypes = [

@@ -28,9 +28,9 @@ export const setFilterHousingFileSpecificationMeasureName = measureName => ({
     measureName,
 });
 
-export const setFilterHousingFileSpecificationStatusName = statusName => ({
-    type: 'SET_FILTER_HOUSING_FILE_SPECIFICATION_STATUS_NAME',
-    statusName,
+export const setFilterHousingFileSpecificationStatus = statusId => ({
+    type: 'SET_FILTER_HOUSING_FILE_SPECIFICATION_STATUS',
+    statusId,
 });
 
 export const setFilterHousingFileSpecificationMeasureDateStart = measureDateStart => ({

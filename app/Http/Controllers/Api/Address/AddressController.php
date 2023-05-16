@@ -19,6 +19,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Ecodenl\LvbagPhpWrapper\Client;
+use Ecodenl\LvbagPhpWrapper\Lvbag;
 
 class AddressController extends ApiController
 {
@@ -151,8 +153,31 @@ class AddressController extends ApiController
         }
     }
 
-    public function getPicoAddress(Request $request){
-        $pico = app()->make('pico');
+    public function getLvbagAddress(Request $request){
+        $secret = config('lvbag.lvbag_key');
+        if(empty($secret)){
+            return [
+                'street' => "",
+                'city' => "",
+            ];
+        }
+        // crs is not static, you should change it accordingly to the desired call.
+        $acceptCRS = 'epsg:28992';
+
+        // Establish the connection
+        $client = Client::init($secret, $acceptCRS);
+
+        // Using the production environment endpoint
+        $shouldUseProductionEndpoint = config('lvbag.lvbag_production');
+        $client = Client::init($secret, $acceptCRS, $shouldUseProductionEndpoint);
+
+        // To get extensive logging from each request
+        // the client accepts any logger that follows the (PSR-3 standard)[https://github.com/php-fig/log]
+        // This example uses the logger from laravel, but feel free to pass any logger that implements the \Psr\Log\LoggerInterface
+//        $logger = \Illuminate\Support\Facades\Log::getLogger();
+//        $client = Client::init($secret, $acceptCRS, $shouldUseProductionEndpoint, $logger);
+
+        $lvbag = Lvbag::init($client);
 
         $pc = $request->input('postalCode');
 
@@ -160,24 +185,19 @@ class AddressController extends ApiController
             $pc = preg_replace('/\s+/', '', $pc);
         }
 
-        $address = $pico->bag_adres_pchnr(['query' => ['pc' => $pc, 'hnr' => $request->input('number')]]);
+        $addresses = $lvbag->adresUitgebreid()
+        ->list([
+            'postcode' => $pc,
+            'huisnummer' => $request->input('number'),
+        ]);
 
-        //Be carefull when retrieving extra values. In the normal flow this method is called only once, with the first housenumber entered(e.g. 1 for house number 18).
-        $street = '';
-        $city = '';
+        $street = ($addresses && $addresses[0]) ? $addresses[0]['korteNaam'] : "";
+        $city = ($addresses && $addresses[0]) ? $addresses[0]['woonplaatsNaam'] : "";
 
-        if(!empty($address[0])) {
-            if (isset($address[0]['straat'])) {
-                $street = $address[0]['straat'];
-            }
-
-            if (isset($address[0]['woonplaats'])) {
-                $city = $address[0]['woonplaats'];
-            }
-        }
-
-        return ['street' => $street, 'city' => $city];
-
+        return [
+            'street' => $street,
+            'city' => $city
+        ];
     }
 
     public function createTaskEndDateAddress(Address $address)

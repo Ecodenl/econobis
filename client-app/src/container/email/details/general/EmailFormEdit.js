@@ -57,7 +57,7 @@ function EmailFormEdit(props) {
         cc,
         bcc,
         subject,
-        htmlBody,
+        htmlBodyWithEmbeddedImages,
         createdAt,
         dateSent,
         folder,
@@ -385,7 +385,7 @@ function EmailFormEdit(props) {
             </div>
 
             <div className="row">
-                <ViewHtmlAsText label={'Tekst'} value={htmlBody} />
+                <ViewHtmlAsText label={'Tekst'} value={htmlBodyWithEmbeddedImages} />
             </div>
 
             {((folder == 'inbox' && status) || (folder == 'inbox' && status == null)) && (

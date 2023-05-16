@@ -204,6 +204,13 @@ class MailFetcher
         $this->addRelationToContacts($email);
 
         foreach ($emailData->getAttachments() as $attachment){
+            /**
+             * De cid's zijn de verwijzingen in de html van images.
+             * Ook overige bijlages (excel bijv.) krijgen een cid, zet hem voor deze bijlages op null.
+             * Op die manier kunnen we afbeeldingen die in de html staan verbergen als bijlage.
+             */
+            $cid = $attachment->contentId;
+
             $name = substr($attachment->filePath, strrpos($attachment->filePath, DIRECTORY_SEPARATOR) + 1);
 
             $filename = $this->getAttachmentDBName() . $name;
@@ -212,6 +219,7 @@ class MailFetcher
                 'filename' => $filename,
                 'name' => $attachment->name,
                 'email_id' => $email->id,
+                'cid' => str_contains($email->html_body, $cid) ? $cid : null,
             ]);
             $emailAttachment->save();
         }

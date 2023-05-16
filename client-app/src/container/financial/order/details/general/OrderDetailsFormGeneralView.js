@@ -23,6 +23,7 @@ const OrderDetailsFormGeneralView = props => {
         ibanAttn,
         numberOfInvoiceReminders,
         poNumber,
+        projectNumber,
         invoiceText,
         dateRequested,
         totalInclVatInclReductionPerYear,
@@ -30,7 +31,7 @@ const OrderDetailsFormGeneralView = props => {
     } = props.orderDetails;
 
     let onclickAction;
-    if(status.id == "in-progress") {
+    if (status.id == 'in-progress') {
         onclickAction = null;
     } else {
         onclickAction = props.switchToEdit;
@@ -106,7 +107,10 @@ const OrderDetailsFormGeneralView = props => {
                         <div className="col-sm-6" />
                         <ViewText label={'Opdracht nummer klant'} value={poNumber} />
                     </div>
-
+                    <div className="row">
+                        <div className="col-sm-6" />
+                        <ViewText label={'Projectnummer'} value={projectNumber} />
+                    </div>
                     <div className="row">
                         <div className="col-sm-3">
                             <label htmlFor="invoiceText" className="col-sm-12">

@@ -105,7 +105,11 @@ class ContactGroupsListItem extends Component {
                             <Icon className="mybtn-danger" size={14} icon={trash} />
                         </a>
                     ) : (
-                        ''
+                        this.state.showActionButtons && permissions.manageGroup && isUsedInComposedGroup ? (
+                            <Icon className="mybtn-grey" size={14} icon={trash} title={"Je kan deze groep niet verwijderen omdat deze groep onderdeel is van een samengestelde groep. Verwijder eerst deze groep uit de samengestelde groep(en)"} />
+                        ) : (
+                            ''
+                        )
                     )}
                 </td>
             </tr>

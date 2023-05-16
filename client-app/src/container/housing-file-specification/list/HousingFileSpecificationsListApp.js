@@ -30,6 +30,7 @@ class HousingFileSpecificationsListApp extends Component {
         this.state = {
             showExtraFilters: false,
             extraFilters: [],
+            checkedAll: false,
             showCheckboxList: false,
             showCreateOpportunitiesFromSpecifications: false,
             showCreateQuotationRequestsFromSpecifications: false,
@@ -165,9 +166,17 @@ class HousingFileSpecificationsListApp extends Component {
     }
 
     toggleShowCheckboxList = () => {
-        this.setState({
-            showCheckboxList: !this.state.showCheckboxList,
-        });
+        if (this.state.showCheckboxList) {
+            this.setState({
+                showCheckboxList: false,
+                specificationIds: [],
+            });
+        } else {
+            this.setState({
+                showCheckboxList: true,
+                specificationIds: [],
+            });
+        }
     };
 
     toggleCheckedAll = event => {
@@ -175,13 +184,7 @@ class HousingFileSpecificationsListApp extends Component {
         let specificationIds = [];
 
         if (isChecked) {
-            this.props.housingFileSpecifications.data.map(
-                specification =>
-                    specification &&
-                    specification.status &&
-                    specification.status.codeRef === 'desirable' &&
-                    specificationIds.push(specification.id)
-            );
+            specificationIds = this.props.housingFileSpecifications.meta.specificationIdsTotal;
         }
 
         this.setState({
@@ -247,6 +250,23 @@ class HousingFileSpecificationsListApp extends Component {
     };
 
     render() {
+        let numberSelectedNumberTotal = 0;
+        if (this.state.specificationIds.length) {
+            if (
+                this.props &&
+                this.props.housingFileSpecifications &&
+                this.props.housingFileSpecifications.meta &&
+                this.props.housingFileSpecifications.meta.specificationIdsTotal
+            ) {
+                numberSelectedNumberTotal =
+                    this.state.specificationIds.length +
+                    '/' +
+                    this.props.housingFileSpecifications.meta.specificationIdsTotal.length;
+            } else {
+                numberSelectedNumberTotal = this.state.specificationIds.length;
+            }
+        }
+
         return (
             <Panel>
                 <PanelBody>
@@ -274,10 +294,12 @@ class HousingFileSpecificationsListApp extends Component {
                             onSubmitFilter={() => this.onSubmitFilter()}
                             refreshHousingFileSpecificationsData={() => this.fetchHousingFileSpecificationsData()}
                             handlePageClick={this.handlePageClick}
+                            checkedAll={this.state.checkedAll}
                             showCheckboxList={this.state.showCheckboxList}
                             toggleCheckedAll={this.toggleCheckedAll}
                             toggleSpecificationCheck={this.toggleSpecificationCheck}
                             specificationIds={this.state.specificationIds}
+                            numberSelectedNumberTotal={numberSelectedNumberTotal}
                         />
                     </div>
 

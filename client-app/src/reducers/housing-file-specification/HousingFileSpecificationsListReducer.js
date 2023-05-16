@@ -10,6 +10,7 @@ export default function(state = { isLoading: false }, action) {
                 data: action.housingFileSpecifications.data.data,
                 meta: {
                     total: action.housingFileSpecifications.data.meta.total,
+                    specificationIdsTotal: action.housingFileSpecifications.data.meta.specificationIdsTotal,
                 },
                 isLoading: false,
             };

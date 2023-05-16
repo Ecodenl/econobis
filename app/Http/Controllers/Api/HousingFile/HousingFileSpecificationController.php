@@ -40,9 +40,13 @@ class HousingFileSpecificationController extends ApiController
 
         $housingFileSpecifications->load(['housingFile.address', 'housingFile.address.contact', 'status', 'floor', 'side']);
 
+        $specificationStatusDesirable = HousingFileSpecificationStatus::where('code_ref', 'desirable')->first();
+        $specificationIdsTotal = $requestQuery->getQueryNoPagination()->where('housing_file_specifications.status_id', $specificationStatusDesirable->id)->get()->pluck('id');
+
         return GridHousingFileSpecification::collection($housingFileSpecifications)
             ->additional(['meta' => [
-            'total' => $requestQuery->total(),
+                'total' => $requestQuery->total(),
+                'specificationIdsTotal' => $specificationIdsTotal,
             ]
         ]);
     }

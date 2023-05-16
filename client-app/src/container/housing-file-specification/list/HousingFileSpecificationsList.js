@@ -35,7 +35,6 @@ class HousingFileSpecificationsList extends Component {
         } else {
             loading = false;
         }
-        // const noDataText = 'Geen woningdossier specificaties bekend.';
 
         return (
             <form onKeyUp={this.handleKeyUp}>
@@ -48,11 +47,19 @@ class HousingFileSpecificationsList extends Component {
                             showCheckboxList={this.props.showCheckboxList}
                             toggleCheckedAll={this.props.toggleCheckedAll}
                         />
-                        {!this.props.showCheckboxList && (
+                        {!this.props.showCheckboxList ? (
                             <HousingFileSpecificationsListFilter
                                 onSubmitFilter={this.props.onSubmitFilter}
                                 showCheckboxList={this.props.showCheckboxList}
                             />
+                        ) : (
+                            <tr className="thead-filter">
+                                <th colSpan={10}>
+                                    <div className="alert alert-success">
+                                        Geselecteerde specificaties: {this.props.numberSelectedNumberTotal}
+                                    </div>
+                                </th>
+                            </tr>
                         )}
                     </DataTableHead>
                     <DataTableBody>
@@ -67,6 +74,7 @@ class HousingFileSpecificationsList extends Component {
                                         key={housingFileSpecification.id}
                                         {...housingFileSpecification}
                                         showCheckboxList={this.props.showCheckboxList}
+                                        checkedAll={this.props.checkedAll}
                                         toggleSpecificationCheck={this.props.toggleSpecificationCheck}
                                         specificationIds={this.props.specificationIds}
                                     />

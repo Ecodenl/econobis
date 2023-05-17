@@ -1,3 +1,5 @@
+import React from 'react';
+
 export const setFilterHousingFileSpecificationFullName = fullName => ({
     type: 'SET_FILTER_HOUSING_FILE_SPECIFICATION_FULL_NAME',
     fullName,
@@ -41,6 +43,58 @@ export const setFilterHousingFileSpecificationMeasureDateStart = measureDateStar
 export const setFilterHousingFileSpecificationMeasureDateEnd = measureDateEnd => ({
     type: 'SET_FILTER_HOUSING_FILE_SPECIFICATION_MEASURE_DATE_END',
     measureDateEnd,
+});
+
+export const setFilterHousingFileSpecificationAnswer = answer => ({
+    type: 'SET_FILTER_HOUSING_FILE_SPECIFICATION_ANSWER',
+    answer,
+});
+
+export const setFilterHousingFileSpecificationFloor = floorId => ({
+    type: 'SET_FILTER_HOUSING_FILE_SPECIFICATION_FLOOR',
+    floorId,
+});
+
+export const setFilterHousingFileSpecificationSide = sideId => ({
+    type: 'SET_FILTER_HOUSING_FILE_SPECIFICATION_SIDE',
+    sideId,
+});
+
+export const setFilterHousingFileSpecificationTypeBrand = typeBrand => ({
+    type: 'SET_FILTER_HOUSING_FILE_SPECIFICATION_TYPE_BRAND',
+    typeBrand,
+});
+
+export const setFilterHousingFileSpecificationTypeOfExecution = typeOfExecutionId => ({
+    type: 'SET_FILTER_HOUSING_FILE_SPECIFICATION_TYPE_OF_EXECUTION',
+    typeOfExecutionId,
+});
+
+export const setFilterHousingFileSpecificationSavingsGasFrom = savingsGasFrom => ({
+    type: 'SET_FILTER_HOUSING_FILE_SPECIFICATION_SAVINGS_GAS_FROM',
+    savingsGasFrom,
+});
+export const setFilterHousingFileSpecificationSavingsGasTill = savingsGasTill => ({
+    type: 'SET_FILTER_HOUSING_FILE_SPECIFICATION_SAVINGS_GAS_TILL',
+    savingsGasTill,
+});
+
+export const setFilterHousingFileSpecificationSavingsElectricityFrom = savingsElectricityFrom => ({
+    type: 'SET_FILTER_HOUSING_FILE_SPECIFICATION_SAVINGS_ELECTRICITY_FROM',
+    savingsElectricityFrom,
+});
+export const setFilterHousingFileSpecificationSavingsElectricityTill = savingsElectricityTill => ({
+    type: 'SET_FILTER_HOUSING_FILE_SPECIFICATION_SAVINGS_ELECTRICITY_TILL',
+    savingsElectricityTill,
+});
+
+export const setFilterHousingFileSpecificationCo2SavingsFrom = co2SavingsFrom => ({
+    type: 'SET_FILTER_HOUSING_FILE_SPECIFICATION_CO2_SAVINGS_FROM',
+    co2SavingsFrom,
+});
+export const setFilterHousingFileSpecificationCo2SavingsTill = co2SavingsTill => ({
+    type: 'SET_FILTER_HOUSING_FILE_SPECIFICATION_CO2_SAVINGS_TILL',
+    co2SavingsTill,
 });
 
 export const clearFilterHousingFileSpecifications = () => ({

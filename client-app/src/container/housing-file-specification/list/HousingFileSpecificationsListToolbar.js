@@ -11,17 +11,24 @@ const HousingFileSpecificationsListToolbar = props => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'refresh'} onClickAction={props.resetHousingFileSpecificationFilters} />
-                    <ButtonIcon
-                        iconName={'filter'}
-                        onClickAction={props.toggleShowExtraFilters}
-                        title="Extra filters"
-                    />
-                    <ButtonIcon
-                        iconName={'download'}
-                        onClickAction={props.getExcelSpecifications}
-                        title={'Download woningdossiers specificaties'}
-                    />
+                    {!props.showCheckboxList && (
+                        <>
+                            <ButtonIcon
+                                iconName={'refresh'}
+                                onClickAction={props.resetHousingFileSpecificationFilters}
+                            />
+                            <ButtonIcon
+                                iconName={'filter'}
+                                onClickAction={props.toggleShowExtraFilters}
+                                title="Extra filters"
+                            />
+                            <ButtonIcon
+                                iconName={'download'}
+                                onClickAction={props.getExcelSpecifications}
+                                title={'Download woningdossiers specificaties'}
+                            />
+                        </>
+                    )}
 
                     {props.permissions.manageHousingFile && (
                         <>

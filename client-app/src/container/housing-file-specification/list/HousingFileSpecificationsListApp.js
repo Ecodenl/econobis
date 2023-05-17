@@ -287,8 +287,7 @@ class HousingFileSpecificationsListApp extends Component {
                     {this.state.showExtraFilters && (
                         <HousingFileSpecificationsListExtraFilters
                             toggleShowExtraFilters={this.toggleShowExtraFilters}
-                            handleExtraFiltersChange={this.handleExtraFiltersChange}
-                            extraFilters={this.state.extraFilters}
+                            onSubmitFilter={() => this.onSubmitFilter()}
                         />
                     )}
                     {this.state.showCreateOpportunitiesFromSpecifications && (

@@ -1017,6 +1017,14 @@ class ExtraFilter extends RequestExtraFilter
                                 $query->where('housing_files.' . $econobisFieldName, '<', $housingFileFieldValueData)->whereNotNull('housing_files.' . $econobisFieldName);
                             });
                             break;
+                        case 'lte':
+                            Log::info('type lte');
+                            Log::info('econobisFieldName: ' . $econobisFieldName);
+                            Log::info('housingFileFieldValueData: ' . $housingFileFieldValueData);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName, $housingFileFieldValueData) {
+                                $query->where('housing_files.' . $econobisFieldName, '<=', $housingFileFieldValueData)->whereNotNull('housing_files.' . $econobisFieldName);
+                            });
+                            break;
                         default:
                             Log::info('type overig: ' . $housingFileFieldValueType);
 //                            Log::info('waarde: ' . $housingFileFieldValueData);

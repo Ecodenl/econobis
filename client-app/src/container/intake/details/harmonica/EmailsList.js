@@ -1,11 +1,15 @@
-import React from 'react';
-import { hashHistory } from 'react-router';
-import { connect } from 'react-redux';
+import React, {useState} from 'react';
+import {connect} from 'react-redux';
 import moment from 'moment';
+import EmailDetailsModal from "../../../email/details-modal/EmailDetailsModal";
 
 const EmailsList = ({ relatedEmailsSent }) => {
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
+    const [activeEmailId, setActiveEmailId] = useState(null);
+
     const openItem = id => {
-        hashHistory.push(`/email/${id}`);
+        setShowDetailsModal(true);
+        setActiveEmailId(id);
     };
 
     return (
@@ -27,6 +31,8 @@ const EmailsList = ({ relatedEmailsSent }) => {
                     </tbody>
                 </table>
             )}
+
+            <EmailDetailsModal showModal={showDetailsModal} emailId={activeEmailId} setShowModal={(show) => setShowDetailsModal(show)}/>
         </div>
     );
 };

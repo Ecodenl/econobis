@@ -1,18 +1,23 @@
-import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import moment from 'moment';
+import EmailDetailsModal from "../../../email/details-modal/EmailDetailsModal";
 
 class CoachEmailsSentList extends Component {
     constructor(props) {
         super(props);
-        // this.state = {
-        //     relatedEmailsSent: '',
-        // };
+
+        this.state = {
+            showDetailsModal: false,
+            activeEmailId: null,
+        };
     }
 
     openItem = id => {
-        hashHistory.push(`/email/${id}`);
+        this.setState({
+            showDetailsModal: true,
+            activeEmailId: id,
+        });
     };
 
     render() {
@@ -39,6 +44,8 @@ class CoachEmailsSentList extends Component {
                         </tbody>
                     </table>
                 )}
+
+                <EmailDetailsModal showModal={this.state.showDetailsModal} emailId={this.state.activeEmailId} setShowModal={(show) => this.setState({showDetailsModal: show})}/>
             </div>
         );
     }

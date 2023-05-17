@@ -1,4 +1,4 @@
-export function getJoryFilter(values, folder) {
+export function getJoryFilter(values, folder, contactId) {
     let filter = {
         and: [
             {
@@ -85,6 +85,21 @@ export function getJoryFilter(values, folder) {
         })
     }
 
+    if (values.attachment) {
+        filter.and.push({
+            f: 'attachmentsWithoutCids.id',
+            o: '>',
+            d: 0,
+        })
+    }
+
+    if (contactId) {
+        filter.and.push({
+            f: 'contacts.contactId',
+            d: contactId,
+        })
+    }
+
     return filter;
 }
 
@@ -96,8 +111,22 @@ export function getFiltersFromStorage() {
     let filters = localStorage.getItem('emailFilters');
 
     if (!filters) {
-        return {};
+        return {...defaultFilters};
     }
 
-    return JSON.parse(filters);
+    return {
+        ...defaultFilters,
+        ...JSON.parse(filters),
+    };
+}
+
+export const defaultFilters = {
+    from: '',
+    contact: '',
+    subject: '',
+    mailbox: '',
+    status: '',
+    responsible: '',
+    to: '',
+    attachment: '',
 }

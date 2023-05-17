@@ -15,6 +15,7 @@ use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\Task\Task;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
+use App\Helpers\Email\EmailGeneratorService;
 use App\Helpers\Email\EmailInlineImagesService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -47,6 +48,17 @@ class Email extends Model
         return $this->hasMany(EmailAttachment::class);
     }
 
+    /**
+     * Bijlages met cid zijn de inline images.
+     */
+    public function inlineImageAttachments()
+    {
+        return $this->hasMany(EmailAttachment::class)->whereNotNull('cid');
+    }
+
+    /**
+     * De bijlages zonder cid zijn de bijlages die als "echte" bijlage worden meegestuurd.
+     */
     public function attachmentsWithoutCids()
     {
         return $this->hasMany(EmailAttachment::class)->whereNull('cid');
@@ -150,9 +162,29 @@ class Email extends Model
         return new EmailInlineImagesService($this);
     }
 
-    public function getCcAdresses()
+    public function getCcAddresses()
     {
         return collect($this->cc)->map(function ($idOrEmailAddress) {
+            return $this->mapIdOrEmailAddressToValueObject($idOrEmailAddress);
+        })->filter(function ($value) {
+            return $value !== null;
+        })->values()
+            ->toArray();
+    }
+
+    public function getToAddresses()
+    {
+        return collect($this->to)->map(function ($idOrEmailAddress) {
+            return $this->mapIdOrEmailAddressToValueObject($idOrEmailAddress);
+        })->filter(function ($value) {
+            return $value !== null;
+        })->values()
+            ->toArray();
+    }
+
+    public function getBccAddresses()
+    {
+        return collect($this->bcc)->map(function ($idOrEmailAddress) {
             return $this->mapIdOrEmailAddressToValueObject($idOrEmailAddress);
         })->filter(function ($value) {
             return $value !== null;
@@ -170,14 +202,14 @@ class Email extends Model
             }
 
             return [
-                'id' => $emailAddress->id,
-                'name' => $emailAddress->contact->full_name . ' (' . $emailAddress->email . ')',
+                'name' => $emailAddress->contact->full_name,
+                'email' => $emailAddress->email,
             ];
         }
 
         return [
-            'id' => $idOrEmailAddress,
-            'name' => $idOrEmailAddress,
+            'name' => null,
+            'email' => $idOrEmailAddress,
         ];
     }
 
@@ -192,5 +224,33 @@ class Email extends Model
         }
 
         return null;
+    }
+
+    public function generator()
+    {
+        return new EmailGeneratorService($this);
+    }
+
+    public function copyEmailAddressToContacts()
+    {
+        if (Mailbox::where('email', $this->from)->exists()) {
+            return;
+        }
+
+        if ($this->mailbox->ignoresEmailAddress($this->from)) {
+            return;
+        }
+
+        foreach ($this->contacts as $contact) {
+            if ($contact->emailAddresses()->where('email', $this->from)->exists()) {
+                continue;
+            }
+
+            $emailAddress = new EmailAddress();
+            $emailAddress->email = $this->from;
+            $emailAddress->type_id = 'general';
+            $emailAddress->contact_id = $contact->id;
+            $emailAddress->save();
+        }
     }
 }

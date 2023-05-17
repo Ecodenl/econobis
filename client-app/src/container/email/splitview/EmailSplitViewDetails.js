@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
 import EmailSplitViewDetailsHeaderPanel from "./EmailSplitViewDetailsHeaderPanel";
-import EmailSplitViewDetailsAttachmentsPanel from "./EmailSplitViewDetailsAttachmentsPanel";
+import EmailAttachmentsPanel from "../../../components/email/EmailAttachmentsPanel";
+import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
+import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
 
 export default function EmailSplitViewDetails({emailId, updatedEmailHandler}) {
     const [email, setEmail] = useState([]);
@@ -29,7 +30,7 @@ export default function EmailSplitViewDetails({emailId, updatedEmailHandler}) {
             ...attributes,
         });
 
-        EmailSplitviewAPI.update(emailId, attributes).then(() => {
+        EmailGenericAPI.update(emailId, attributes).then(() => {
             updatedEmailHandler();
         });
     }
@@ -42,7 +43,7 @@ export default function EmailSplitViewDetails({emailId, updatedEmailHandler}) {
 
     return (
         <div>
-            <EmailSplitViewDetailsHeaderPanel email={email} updateEmailAttributes={updateEmailAttributes} />
+            <EmailSplitViewDetailsHeaderPanel email={email} updateEmailAttributes={updateEmailAttributes} updatedEmailHandler={() => {fetchEmail(); updatedEmailHandler();}} />
 
             <div className="panel panel-default">
                 <div className="panel-body panel-small" style={{padding: '20px'}}>
@@ -50,7 +51,7 @@ export default function EmailSplitViewDetails({emailId, updatedEmailHandler}) {
                 </div>
             </div>
 
-            <EmailSplitViewDetailsAttachmentsPanel email={email} />
+            <EmailAttachmentsPanel email={email} />
         </div>
     );
 }

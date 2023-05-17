@@ -7,42 +7,32 @@ import {trash} from 'react-icons-kit/fa/trash';
 import {windowRestore} from 'react-icons-kit/fa/windowRestore';
 import {Link} from "react-router";
 import {useSelector} from 'react-redux'
-import InputSelectGroup from "../../../components/form/InputSelectGroup";
 import InputSelect from "../../../components/form/InputSelect";
+import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
+import EmailDetailsModal from "../details-modal/EmailDetailsModal";
+import EmailAddressList from "../../../components/email/EmailAddressList";
+import ResponsibleInputSelect from "../../../components/email/ResponsibleInputSelect";
 
-export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttributes}) {
-    const defaultCcDisplayLimit = 2;
+export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttributes, updatedEmailHandler}) {
     const statusses = useSelector((state) => state.systemData.emailStatuses);
-    const teams = useSelector((state) => state.systemData.teams);
-    const users = useSelector((state) => state.systemData.users);
-    const [ccDisplayLimit, setCcDisplayLimit] = useState(defaultCcDisplayLimit);
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
 
-    const setResonsibleValue = (val) => {
-        let values = {
-            responsibleUserId: null,
-            responsibleTeamId: null,
-        };
-
-        if (val.indexOf('user') === 0) {
-            values.responsibleUserId = val.replace('user', '');
-        }
-
-        if (val.indexOf('team') === 0) {
-            values.responsibleTeamId = val.replace('team', '');
-        }
-
-        updateEmailAttributes(values);
+    const createReply = () => {
+        EmailGenericAPI.storeReply(email.id).then(payload => {
+            // Todo; open popup
+        });
     }
 
-    const getResponsibleValue = () => {
-        if (email.responsibleUserId) {
-            return 'user' + email.responsibleUserId;
-        }
-        if (email.responsibleTeamId) {
-            return 'team' + email.responsibleTeamId;
-        }
+    const createReplyAll = () => {
+        EmailGenericAPI.storeReplyAll(email.id).then(payload => {
+            // Todo; open popup
+        });
+    }
 
-        return '';
+    const createForward = () => {
+        EmailGenericAPI.storeForward(email.id).then(payload => {
+            // Todo; open popup
+        });
     }
 
     return (
@@ -55,9 +45,7 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                                 type="button"
                                 title="Beantwoorden"
                                 className={'btn btn-success btn-sm'}
-                                // onClick={() => {
-                                //     hashHistory.push(`/email/${id}/beantwoorden`);
-                                // }}
+                                onClick={createReply}
                             >
                                 <Icon icon={mailReply} size={13}/>
                             </button>
@@ -65,9 +53,7 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                                 type="button"
                                 title="Allen beantwoorden"
                                 className={'btn btn-success btn-sm'}
-                                // onClick={() => {
-                                //     hashHistory.push(`/email/${id}/allenbeantwoorden`);
-                                // }}
+                                onClick={createReplyAll}
                             >
                                 <Icon icon={mailReplyAll} size={13}/>
                             </button>
@@ -75,9 +61,7 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                                 type="button"
                                 title="Doorsturen"
                                 className={'btn btn-success btn-sm'}
-                                // onClick={() => {
-                                //     hashHistory.push(`/email/${id}/doorsturen`);
-                                // }}
+                                onClick={createForward}
                             >
                                 <Icon icon={mailForward} size={13}/>
                             </button>
@@ -97,9 +81,9 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                                 type="button"
                                 title="Doorsturen"
                                 className={'btn btn-success btn-sm'}
-                                // onClick={() => {
-                                //     hashHistory.push(`/email/${id}/doorsturen`);
-                                // }}
+                                onClick={() => {
+                                    setShowDetailsModal(true);
+                                }}
                             >
                                 <Icon icon={windowRestore} size={13}/>
                             </button>
@@ -139,66 +123,18 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                     <div className="col-sm-6">
                         <label className="col-sm-6">CC</label>
                         <div className="col-sm-6">
-                            {
-                                [...email.ccAddresses].splice(0, ccDisplayLimit).map((cc, index) => {
-                                    return (
-                                        <span key={cc.id}>
-                                            {
-                                                index > 0 && (
-                                                    <span>, </span>
-                                                )
-                                            }
-                                            {cc.name}
-                                        </span>
-                                    )
-                                })
-                            }
-                            {
-                                email.ccAddresses.length > ccDisplayLimit && (
-                                    <>
-                                        <br/>
-                                        <a href="#" onClick={(e) => {
-                                            e.preventDefault();
-                                            setCcDisplayLimit(email.ccAddresses.length)
-                                        }}>
-                                            {email.ccAddresses.length - ccDisplayLimit} meer...
-                                        </a>
-                                    </>
-                                )
-                            }
-                            {
-                                ccDisplayLimit > defaultCcDisplayLimit && (
-                                    <>
-                                        <br/>
-                                        <a href="#" onClick={(e) => {
-                                            e.preventDefault();
-                                            setCcDisplayLimit(defaultCcDisplayLimit)
-                                        }}>
-                                            verbergen
-                                        </a>
-                                    </>
-                                )
-                            }
+                            <EmailAddressList emailAddresses={email.ccAddresses}/>
                         </div>
                     </div>
-                    <InputSelectGroup
-                        label={'Verantwoordelijke'}
-                        size={'col-sm-6'}
-                        name={'responsible'}
-                        optionsInGroups={[
-                            {
-                                name: 'user',
-                                label: 'Gebruikers',
-                                options: users,
-                                optionName: 'fullName',
-                            },
-                            {name: 'team', label: 'Teams', options: teams},
-                        ]}
-                        value={getResponsibleValue()}
-                        onChangeAction={(e) => setResonsibleValue(e.target.value)}
+                    <ResponsibleInputSelect values={{
+                        responsibleUserId: email.responsibleUserId,
+                        responsibleTeamId: email.responsibleTeamId,
+                    }}
+                        onChangeAction={updateEmailAttributes}
                     />
                 </div>
             </div>
+            <EmailDetailsModal showModal={showDetailsModal} emailId={email.id} setShowModal={setShowDetailsModal} onSave={updatedEmailHandler}/>
         </div>
     );
 }

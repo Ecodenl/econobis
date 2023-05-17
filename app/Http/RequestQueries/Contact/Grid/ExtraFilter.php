@@ -958,6 +958,13 @@ class ExtraFilter extends RequestExtraFilter
 //                                $query->where('housing_files.' . $econobisFieldName, '<', null);
 //                            });
 //                            break;
+                        case 'is0':
+                            Log::info('type is0');
+                            Log::info('econobisFieldName: ' . $econobisFieldName);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName) {
+                                $query->where('housing_files.' . $econobisFieldName, '=', null)->orWhere('housing_files.' . $econobisFieldName, '=', 0);
+                            });
+                            break;
                         default:
 //                            Log::info('type overig: ' .$housingFileFieldValueType);
                             $query->where(function ($query) {

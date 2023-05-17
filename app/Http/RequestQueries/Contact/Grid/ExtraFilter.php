@@ -1100,6 +1100,16 @@ class ExtraFilter extends RequestExtraFilter
                                 });
                             });
                             break;
+                        case 'neq':
+                            Log::info('type neq');
+                            Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
+                            $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                    $query->where('housing_file_hoom_links_id', '!=', $housingFileHoomLink->id);
+                                    $query->where('status', '!=', $housingFileFieldValueData);
+                                });
+                            });
+                            break;
                     }
                 }
         }

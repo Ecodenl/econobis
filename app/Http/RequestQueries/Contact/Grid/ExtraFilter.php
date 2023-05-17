@@ -1098,6 +1098,15 @@ class ExtraFilter extends RequestExtraFilter
                                 });
                             });
                             break;
+                        case 'nnl':
+                            Log::info('type nl');
+                            Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
+                            $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                    $query->where('housing_file_hoom_links_id', '!=', $housingFileHoomLink->id);
+                                });
+                            });
+                            break;
                     }
                 } else {
                     Log::info('housingFileFieldValueData is niet leeg');

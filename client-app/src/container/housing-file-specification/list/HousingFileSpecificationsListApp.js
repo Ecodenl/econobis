@@ -62,24 +62,6 @@ class HousingFileSpecificationsListApp extends Component {
         }, 100);
     };
 
-    getExcelHousingFiles = () => {
-        this.props.blockUI();
-        setTimeout(() => {
-            const extraFilters = this.state.extraFilters;
-            const filters = filterHelper(this.props.housingFileSpecificationsFilters);
-            const sorts = this.props.housingFileSpecificationsSorts;
-
-            HousingFileSpecificationsAPI.getExcelHousingFiles({ filters, extraFilters, sorts })
-                .then(payload => {
-                    fileDownload(payload.data, 'Woningdossiers-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.xlsx');
-                    this.props.unblockUI();
-                })
-                .catch(error => {
-                    this.props.unblockUI();
-                });
-        }, 100);
-    };
-
     getExcelSpecifications = () => {
         this.props.blockUI();
         setTimeout(() => {
@@ -277,7 +259,6 @@ class HousingFileSpecificationsListApp extends Component {
                             // }
                             // refreshHousingFileSpecificationsData={this.callFetchHousingFileSpecificationsData}
                             resetHousingFileSpecificationFilters={() => this.resetHousingFileSpecificationFilters()}
-                            getExcelHousingFiles={this.getExcelHousingFiles}
                             getExcelSpecifications={this.getExcelSpecifications}
                             toggleShowExtraFilters={this.toggleShowExtraFilters}
                             showCheckboxList={this.state.showCheckboxList}

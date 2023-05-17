@@ -19,11 +19,6 @@ const HousingFileSpecificationsListToolbar = props => {
                     />
                     <ButtonIcon
                         iconName={'download'}
-                        onClickAction={props.getExcelHousingFiles}
-                        title={'Download woningdossiers'}
-                    />
-                    <ButtonIcon
-                        iconName={'download'}
                         onClickAction={props.getExcelSpecifications}
                         title={'Download woningdossiers specificaties'}
                     />

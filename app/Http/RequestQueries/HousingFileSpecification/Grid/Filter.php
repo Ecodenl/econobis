@@ -30,7 +30,7 @@ class Filter extends RequestFilter
         'fullName' => 'contacts.full_name',
         'measureCategoryName' => 'measure_categories.name',
         'measureName' => 'measures.name',
-        'statusId' => 'housing_file_specification_statuses.id',
+        'statusId' => 'status_id',
 //        'measureDateStart' => 'measure_date',
 //        'measureDateEnd' => 'measure_date',
     ];
@@ -42,11 +42,11 @@ class Filter extends RequestFilter
         'city' => 'address',
         'measureCategoryName' => 'measureCategory',
         'measureName' => 'measure',
-        'statusId' => 'housingFileSpecificationStatus',
     ];
 
     protected $defaultTypes = [
         '*' => 'ct',
+        'status' => 'eq',
     ];
 
     protected function applyAddressFilter($query, $type, $data) {

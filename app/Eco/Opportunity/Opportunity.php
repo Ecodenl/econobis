@@ -103,6 +103,11 @@ class Opportunity extends Model
         return implode('-', $this->measures->pluck('name' )->toArray() );
     }
 
+    public function getName()
+    {
+        return $this->measureCategory->name . ' - ' . $this->status->name;
+    }
+
     public function newEloquentBuilder($query)
     {
         return new OpportunityBuilder($query);

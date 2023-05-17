@@ -27,7 +27,7 @@ export default function EmailSplitViewFiltersPanel({filters, setFilters}) {
                                 <th><input type="text" className="form-control input-sm" value={filters.from} onChange={(e) => {setFilters({...filters, from: e.target.value})}}/></th>
                                 <th><input type="text" className="form-control input-sm" value={filters.contact} onChange={(e) => {setFilters({...filters, contact: e.target.value})}}/></th>
                                 <th><input type="text" className="form-control input-sm" value={filters.subject} onChange={(e) => {setFilters({...filters, subject: e.target.value})}}/></th>
-                                <th><input type="text" className="form-control input-sm" value=""/></th>
+                                <th>Todo</th>
                                 <th><input type="text" className="form-control input-sm" value={filters.mailbox} onChange={(e) => {setFilters({...filters, mailbox: e.target.value})}}/></th>
                                 <th><select className="form-control input-sm" value={filters.status} onChange={(e) => {setFilters({...filters, status: e.target.value, fetch: true})}}>
                                     <option></option>

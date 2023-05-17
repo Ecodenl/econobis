@@ -302,19 +302,41 @@ class RevenuesKwhHelper
 
         // Address energy supplier niet meer wijzigen bij distributionPartsKwh als status processed is
         if(!in_array($distributionPartsKwh->status, ['processed'])){
-            $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
+            if(AddressEnergySupplier::where('address_id', $distributionPartsKwh->distributionKwh->participation->address_id)->where('energy_supplier_id', $distributionPartsKwh->es_id)->where('end_date', $distributionPartsKwh->partsKwh->date_end)->exists()){
+                $distributionPartsKwh->is_energy_supplier_switch = true;
+            } else {
+                $distributionPartsKwh->is_energy_supplier_switch = false;
+            }
+            if($distributionPartsKwh->distributionKwh->participation->date_terminated == $distributionPartsKwh->partsKwh->date_end){
+                $distributionPartsKwh->is_end_participation = true;
+            } else {
+                $distributionPartsKwh->is_end_participation = false;
+            }
+            if( $distributionPartsKwh->partsKwh->date_end && $distributionPartsKwh->partsKwh->date_end == $distributionPartsKwh->partsKwh->revenuesKwh->date_end ){
+                $distributionPartsKwh->is_end_total_period = true;
+            } else {
+                $distributionPartsKwh->is_end_total_period = false;
+            }
+            if( $distributionPartsKwh->partsKwh->date_end && Carbon::parse($distributionPartsKwh->partsKwh->date_end)->day == 31 && Carbon::parse($distributionPartsKwh->partsKwh->date_end)->month == 12 ){
+                $distributionPartsKwh->is_end_year_period = true;
+            } else {
+                $distributionPartsKwh->is_end_year_period = false;
+            }
+
             if($addressEnergySupplier){
                 $distributionPartsKwh->es_id = $addressEnergySupplier ? $addressEnergySupplier->energy_supplier_id : null;
                 $distributionPartsKwh->energy_supplier_name = $addressEnergySupplier ? $addressEnergySupplier->energySupplier->name : null;
                 $distributionPartsKwh->energy_supplier_number = $addressEnergySupplier ? $addressEnergySupplier->es_number: null;
-                $distributionPartsKwh->is_visible = empty($distributionPartsKwh->remarks) ? false : true;
+//                $distributionPartsKwh->is_visible = empty($distributionPartsKwh->remarks) ? false : true;
+                $distributionPartsKwh->is_visible = $this->determineIsVisible($distributionPartsKwh);
                 $distributionPartsKwh->save();
             } else {
+                $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
                 if($energySupplierUnknown){
                     $distributionPartsKwh->es_id = $energySupplierUnknown->id;
                     $distributionPartsKwh->energy_supplier_name = $energySupplierUnknown->name;
                     $distributionPartsKwh->energy_supplier_number = '';
-                    $distributionPartsKwh->is_visible = 1;
+                    $distributionPartsKwh->is_visible = true;
                     $distributionPartsKwh->save();
                 }
             }
@@ -733,12 +755,12 @@ class RevenuesKwhHelper
                 }
                 $totalDeliveredKwh = RevenueDistributionValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('distribution_id', $distributionPartsKwh->distribution_id)->where('parts_id', $revenuePartsKwh->id)->sum('delivered_kwh');
                 $distributionPartsKwh->delivered_kwh = $totalDeliveredKwh;
-                $distributionPartsKwh->is_visible = empty($distributionPartsKwh->remarks) ? false : true;
+                $distributionPartsKwh->is_visible = $this->determineIsVisible($distributionPartsKwh);
                 $distributionPartsKwh->save();
 
                 $newTotalDeliveredKwh = RevenueDistributionValuesKwh::where('revenue_id', $newRevenuePartsKwh->revenue_id)->where('distribution_id', $newDistributionPartsKwh->distribution_id)->where('parts_id', $newRevenuePartsKwh->id)->sum('delivered_kwh');
                 $newDistributionPartsKwh->delivered_kwh = $newTotalDeliveredKwh;
-                $newDistributionPartsKwh->is_visible = empty($newDistributionPartsKwh->remarks) ? false : true;
+                $newDistributionPartsKwh->is_visible = $this->determineIsVisible($newDistributionPartsKwh);
                 $newDistributionPartsKwh->save();
             }
             $revenuePartsKwhForRecalculate = RevenuePartsKwh::find($revenuePartsKwh->id);
@@ -841,6 +863,21 @@ class RevenuesKwhHelper
             ]);
         }
         return array($uniqueSplitDates, $periodParts);
+    }
+
+    /**
+     * @param RevenueDistributionPartsKwh $distributionPartsKwh
+     */
+    protected function determineIsVisible(RevenueDistributionPartsKwh $distributionPartsKwh): bool
+    {
+        if ($distributionPartsKwh->is_energy_supplier_switch
+            || $distributionPartsKwh->is_end_participation
+            || $distributionPartsKwh->is_end_total_period
+            || $distributionPartsKwh->is_end_year_period) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 

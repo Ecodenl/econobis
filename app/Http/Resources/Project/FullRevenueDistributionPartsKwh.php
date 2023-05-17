@@ -37,7 +37,12 @@ class FullRevenueDistributionPartsKwh extends JsonResource
                 'deliveredTotalThisPartString' => $this->delivered_total_this_part_string,
                 'kwhReturnThisPart' => $this->kwh_return_this_part,
                 'remarks' => $this->remarks,
-                'is_visible' => $this->is_visible,
+                'isVisible' => $this->is_visible,
+                'isEnergySupplierSwitch' => $this->is_energy_supplier_switch,
+                'isEndParticipation' => $this->is_end_participation,
+                'isEndYearPeriod' => $this->is_end_year_period,
+                'isEndTotalPeriod' => $this->is_end_total_period,
+
                 'dateEnergySupplierReport' => $this->date_energy_supplier_report,
             ];
     }

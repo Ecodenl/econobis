@@ -33,6 +33,7 @@ class Filter extends RequestFilter
         'contact' => 'contacts.full_name',
         'campaign' => 'campaigns.name',
         'measure' => 'measure_categories.name',
+        'createdAt' => 'quotation_requests.created_at',
         'datePlanned' => 'quotation_requests.date_planned',
         'dateRecorded' => 'quotation_requests.date_recorded',
         'statusId' => 'quotation_requests.status_id',
@@ -54,12 +55,12 @@ class Filter extends RequestFilter
 
     protected function applyCreatedAtStartFilter($query, $type, $data)
     {
-        $query->where('created_at', '>=', Carbon::parse($data)->startOfDay());
+        $query->where('quotation_requests.created_at', '>=', Carbon::parse($data)->startOfDay());
         return false;
     }
     protected function applyCreatedAtEndFilter($query, $type, $data)
     {
-        $query->where('created_at', '<=', Carbon::parse($data)->endOfDay());
+        $query->where('quotation_requests.created_at', '<=', Carbon::parse($data)->endOfDay());
         return false;
     }
     protected function applyAddressFilter($query, $type, $data)

@@ -19,6 +19,10 @@ const RevenuePartsKwhDistributionFormView = props => {
         participationsQuantity,
         kwhReturn,
         status,
+        isEnergySupplierSwitch,
+        isEndParticipation,
+        isEndYearPeriod,
+        isEndTotalPeriod,
         remarks,
         dateEnergySupplierReport,
     } = props.participation;
@@ -33,6 +37,7 @@ const RevenuePartsKwhDistributionFormView = props => {
     const missingAdress = !address || validator.isEmpty(address) ? true : false;
     const missingPostCode = !postalCode || validator.isEmpty(postalCode) ? true : false;
     const missingCity = !city || validator.isEmpty(city) ? true : false;
+    const showInfoButton = isEnergySupplierSwitch || isEndParticipation || isEndTotalPeriod ? true : false;
 
     const missingContactDataMessage =
         missingEmail || missingAdress || missingPostCode || missingCity
@@ -107,9 +112,14 @@ const RevenuePartsKwhDistributionFormView = props => {
             </div>
             <div className="col-sm-2">{statusText}</div>
             <div className="col-sm-1">
-                {remarks ? (
+                {showInfoButton ? (
                     <>
-                        <FaInfoCircle color={'blue'} size={'15px'} data-tip={remarks} data-for={`tooltip-remark`} />
+                        <FaInfoCircle
+                            color={'blue'}
+                            size={'15px'}
+                            data-tip={remarks ? remarks : 'Geen info bekend'}
+                            data-for={`tooltip-remark`}
+                        />
                         <ReactTooltip
                             id={`tooltip-remark`}
                             effect="float"

@@ -7,6 +7,8 @@ import AdministrationDeleteItem from './AdministrationDeleteItem';
 import ButtonText from '../../../components/button/ButtonText';
 import AdministrationDetailsAPI from '../../../api/administration/AdministrationDetailsAPI';
 import { setError } from '../../../actions/general/ErrorActions';
+import Icon from 'react-icons-kit';
+import { refresh } from 'react-icons-kit/fa/refresh';
 
 class AdministrationToolbar extends Component {
     constructor(props) {
@@ -63,8 +65,11 @@ class AdministrationToolbar extends Component {
                                         loading={this.state.syncingToCustomers}
                                         loadText={'Aan het synchroniseren'}
                                         buttonText={
-                                            <span>
-                                                Contacten
+                                            <span
+                                                title='Contacten naar Twinfield synchroniseren'
+                                            >
+                                                <Icon size={14} icon={refresh} />
+                                                &nbsp;Contacten
                                             </span>
                                         }
                                         onClickAction={this.syncContactsToTwinfield}
@@ -73,8 +78,11 @@ class AdministrationToolbar extends Component {
                                         loading={this.state.syncingToInvoices}
                                         loadText={'Aan het synchroniseren'}
                                         buttonText={
-                                            <span>
-                                                Nota's
+                                            <span
+                                                title='Notas naar Twinfield synchroniseren'
+                                            >
+                                                <Icon size={14} icon={refresh} />
+                                                &nbsp;Nota's
                                             </span>
                                         }
                                         onClickAction={this.syncInvoicesToTwinfield}
@@ -83,8 +91,11 @@ class AdministrationToolbar extends Component {
                                         loading={this.state.syncingFromInvoices}
                                         loadText={'Betalingen aan het ophalen'}
                                         buttonText={
-                                            <span>
-                                                Betalingen
+                                            <span
+                                                title='Betalingen van Twinfield ophalen'
+                                            >
+                                                <Icon size={14} icon={refresh} />
+                                                &nbsp;Betalingen
                                             </span>
                                         }
                                         onClickAction={this.syncInvoicesFromTwinfield}

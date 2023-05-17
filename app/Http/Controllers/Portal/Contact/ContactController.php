@@ -671,10 +671,16 @@ class ContactController extends ApiController
 
                     $currentAddressEnergySupplierElectricityNew->save();
                 }else{
+
                     // new
                     $currentAddressEnergySupplierElectricityNew = $this->createNewAddressEnergySupplier($address, $currentAddressEnergySupplierElectricityData);
+
+                    $addressEnergySupplierController = new AddressEnergySupplierController();
+                    $addressEnergySupplierController->validateAddressEnergySupplier($currentAddressEnergySupplierElectricityNew, true);
+
                     $currentAddressEnergySupplierElectricityNew->save();
                     $this->checkSplitRevenuePart($currentAddressEnergySupplierElectricityNew);
+
                 }
 
                 $currentAddressEnergySupplierElectricityNew->save();

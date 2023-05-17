@@ -965,6 +965,13 @@ class ExtraFilter extends RequestExtraFilter
                                 $query->where('housing_files.' . $econobisFieldName, '=', null)->orWhere('housing_files.' . $econobisFieldName, '=', 0);
                             });
                             break;
+                        case 'isn0':
+                            Log::info('type isn0');
+                            Log::info('econobisFieldName: ' . $econobisFieldName);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName) {
+                                $query->whereNotNull('housing_files.' . $econobisFieldName)->where('housing_files.' . $econobisFieldName, '!=', 0);
+                            });
+                            break;
                         case 'nl':
                             Log::info('type nl');
                             Log::info('econobisFieldName: ' . $econobisFieldName);
@@ -982,7 +989,7 @@ class ExtraFilter extends RequestExtraFilter
                             });
                             break;
                         default:
-//                            Log::info('type overig: ' .$housingFileFieldValueType);
+                            Log::info('type overig: ' .$housingFileFieldValueType);
                             $query->where(function ($query) {
                                 $query->whereDoesntHave('housingFiles');
                             });
@@ -1039,6 +1046,14 @@ class ExtraFilter extends RequestExtraFilter
                             Log::info('housingFileFieldValueData: ' . $housingFileFieldValueData);
                             $query->whereHas('housingFiles', function ($query) use ($econobisFieldName, $housingFileFieldValueData) {
                                 $query->where('housing_files.' . $econobisFieldName, '>=', $housingFileFieldValueData)->whereNotNull('housing_files.' . $econobisFieldName);
+                            });
+                            break;
+                        case 'is0':
+                            Log::info('type is0');
+                            Log::info('econobisFieldName: ' . $econobisFieldName);
+                            Log::info('housingFileFieldValueData: ' . $housingFileFieldValueData);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName) {
+                                $query->where('housing_files.' . $econobisFieldName, '=', null)->orWhere('housing_files.' . $econobisFieldName, '=', 0);
                             });
                             break;
                         default:

@@ -932,7 +932,7 @@ class ExtraFilter extends RequestExtraFilter
             case 'G':
                 Log::info('Case G');
 //                Log::info('hier filter op Woningdossier Basis en Gebruikgegevens');
-                if(empty($housingFileFieldValueData))
+                if($housingFileFieldValueData != 0 && empty($housingFileFieldValueData))
                 {
                     Log::info('housingFileFieldValueData is leeg');
                     switch($housingFileFieldValueType) {
@@ -997,7 +997,7 @@ class ExtraFilter extends RequestExtraFilter
                     }
 
                 }else{
-//                    Log::info('wel data : ' . $housingFileFieldValueData);
+                    Log::info('housingFileFieldValueData is niet leeg');
 
                     switch($housingFileFieldValueType) {
                         case 'eq':

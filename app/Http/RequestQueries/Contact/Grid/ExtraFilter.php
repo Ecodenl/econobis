@@ -1086,7 +1086,19 @@ class ExtraFilter extends RequestExtraFilter
                 Log::info('Case W');
 //                Log::info('hier filter op Woningdossier woningstatusgegevens');
                 if($housingFileFieldValueData != 0 && empty($housingFileFieldValueData)) {
-
+                    Log::info('housingFileFieldValueData is leeg');
+                    switch ($housingFileFieldValueType) {
+                        case 'nl':
+                            Log::info('type nl');
+                            Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
+                            $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                    $query->where('housing_file_hoom_links_id', '!=', $housingFileHoomLink->id);
+                                    $query->whereNull('status')->orWhere('status', '=', '');
+                                });
+                            });
+                            break;
+                    }
                 } else {
                     Log::info('housingFileFieldValueData is niet leeg');
                     switch ($housingFileFieldValueType) {
@@ -1110,6 +1122,8 @@ class ExtraFilter extends RequestExtraFilter
                                 });
                             });
                             break;
+                        default:
+
                     }
                 }
         }

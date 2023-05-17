@@ -12,7 +12,6 @@ namespace App\Http\RequestQueries\Contact\Grid;
 use App\Eco\HousingFile\HousingFileHoomLink;
 use App\Helpers\RequestQuery\RequestExtraFilter;
 use App\Helpers\RequestQuery\RequestFilter;
-use Config;
 use Illuminate\Support\Facades\Log;
 
 class ExtraFilter extends RequestExtraFilter
@@ -900,6 +899,10 @@ class ExtraFilter extends RequestExtraFilter
 
     protected function applyHousingFileFilter($query, $housingFileFieldNameType, $housingFileFieldNameData, $housingFileFieldNameConnectName)
     {
+        Log::info('housingFileFieldNameType: ' . $housingFileFieldNameType);
+        Log::info('housingFileFieldNameData: ' . $housingFileFieldNameData);
+        Log::info('housingFileFieldNameConnectName: ' . $housingFileFieldNameConnectName);
+
         if(empty($housingFileFieldNameData)){
 //            Log::info('lege housingFileFieldNameData, wegwezen');
             return;
@@ -927,15 +930,17 @@ class ExtraFilter extends RequestExtraFilter
             // Filter op Woningdossier Basis en Gebruikgegevens
             case 'B':
             case 'G':
+                Log::info('Case G');
 //                Log::info('hier filter op Woningdossier Basis en Gebruikgegevens');
                 if(empty($housingFileFieldValueData))
                 {
-//                    Log::info('geen data');
+                    Log::info('housingFileFieldValueData is leeg');
                     switch($housingFileFieldValueType) {
                         case 'eq':
-//                            Log::info('type eq');
-                            $query->whereHas('housingFiles', function ($query) use ($housingFileFieldValueFilter) {
-                                Log::info('hier slimme where bedenken a');
+                            Log::info('type eq');
+                            Log::info('econobisFieldName: ' . $econobisFieldName);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName) {
+                                $query->where('housing_files.' . $econobisFieldName, '=', null);
                             });
                             break;
                         default:

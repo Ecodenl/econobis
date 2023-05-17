@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\Email\EmailAttachmentController;
+use App\Http\Controllers\Api\Email\EmailDetailsController;
+use App\Http\Controllers\Api\Email\EmailGenericController;
 use App\Http\Controllers\Api\Email\EmailSplitviewController;
 use App\Http\Controllers\Api\Invoice\InvoiceMolliePaymentController;
 use App\Http\Controllers\Api\Mailbox\MailboxController;
@@ -319,7 +322,26 @@ Route::namespace('Api')
          */
         Route::get('email-splitview/select-list', [EmailSplitviewController::class, 'selectList']);
         Route::get('email-splitview/{email}', [EmailSplitviewController::class, 'show']);
-        Route::post('email-splitview/{email}', [EmailSplitviewController::class, 'update']);
+
+        /**
+         * Email generic
+         */
+        Route::post('email-generic/delete-multiple', [EmailGenericController::class, 'deleteMultiple']);
+        Route::post('email-generic/update-multiple', [EmailGenericController::class, 'updateMultiple']);
+        Route::post('email-generic/{email}', [EmailGenericController::class, 'update']);
+        Route::post('email-generic/{email}/store-reply', [EmailGenericController::class, 'storeReply']);
+        Route::post('email-generic/{email}/store-reply-all', [EmailGenericController::class, 'storeReplyAll']);
+        Route::post('email-generic/{email}/store-forward', [EmailGenericController::class, 'storeForward']);
+
+        /**
+         * Email details
+         */
+        Route::get('email-details/{email}', [EmailDetailsController::class, 'show']);
+
+        /**
+         * Email attachments
+         */
+        Route::get('email-attachment/{emailAttachment}/download', [EmailAttachmentController::class, 'download']);
 
         Route::get('email-template/grid', 'EmailTemplate\EmailTemplateController@grid');
         Route::get('email-template/peek', 'EmailTemplate\EmailTemplateController@peek');

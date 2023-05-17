@@ -6,7 +6,6 @@ namespace App\Http\Controllers\Api\Email;
 use App\Eco\Contact\Contact;
 use App\Eco\Email\Email;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Email\SplitviewSelectlistEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +13,6 @@ use JosKolenberg\LaravelJory\Facades\Jory;
 
 class EmailSplitviewController extends Controller
 {
-
     public function selectList(Request $request)
     {
         $this->authorize('view', Email::class);
@@ -63,23 +61,9 @@ class EmailSplitviewController extends Controller
                     'fullName' => $contact->full_name,
                 ];
             }),
-            'ccAddresses' => $email->getCcAdresses(),
+            'ccAddresses' => $email->getCcAddresses(),
             'htmlBodyWithEmbeddedImages' => $email->inlineImagesService()->getHtmlBodyWithCidsConvertedToEmbeddedImages(),
         ]);
-    }
-
-    public function update(Email $email, Request $request)
-    {
-        $this->authorize('view', Email::class);
-        $this->checkMailboxAutorized($email->mailbox_id);
-
-        $data = $request->validate([
-            'status' => ['sometimes', 'required', 'string'],
-            'responsibleUserId' => ['nullable', 'exists:users,id'],
-            'responsibleTeamId' => ['nullable', 'exists:teams,id'],
-        ]);
-
-        $email->update(Arr::keysToSnakeCase($data));
     }
 
     protected function checkMailboxAutorized($mailboxId): void

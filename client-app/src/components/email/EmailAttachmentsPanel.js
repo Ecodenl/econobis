@@ -1,20 +1,20 @@
 import React, {useState} from 'react';
 import Icon from "react-icons-kit";
-import EmailDetailsAPI from "../../../api/email/EmailSplitviewAPI";
+import EmailAttachmentAPI from "../../api/email/EmailAttachmentAPI";
 import fileDownload from "js-file-download";
 import {fileO} from 'react-icons-kit/fa/fileO';
 import {share} from 'react-icons-kit/fa/share';
 import {eye} from 'react-icons-kit/fa/eye';
 import {hashHistory} from "react-router";
-import Modal from '../../../components/modal/Modal';
-import PdfViewer from '../../../components/pdf/PdfViewer';
+import Modal from '../modal/Modal';
+import PdfViewer from '../pdf/PdfViewer';
 
-export default function EmailSplitViewDetailsAttachmentsPanel({email}) {
+export default function EmailAttachmentsPanel({email, allowView = true}) {
     const [hoveredAttachmentId, setHoveredAttachmentId] = useState(null);
     const [viewedAttachment, setViewedAttachment] = useState(null);
 
     const downloadItem = (attachment) => {
-        EmailDetailsAPI.downloadAttachment(attachment.id).then(payload => {
+        EmailAttachmentAPI.downloadAttachment(attachment.id).then(payload => {
             fileDownload(payload.data, attachment.name);
         });
     };
@@ -33,7 +33,7 @@ export default function EmailSplitViewDetailsAttachmentsPanel({email}) {
     }
 
     const viewItem = (attachment) => {
-        EmailDetailsAPI.downloadAttachment(attachment.id).then(payload => {
+        EmailAttachmentAPI.downloadAttachment(attachment.id).then(payload => {
             let item = isPdf(attachment) ? payload.data : URL.createObjectURL(payload.data);
             setViewedAttachment({
                 ...attachment,
@@ -71,7 +71,7 @@ export default function EmailSplitViewDetailsAttachmentsPanel({email}) {
                                                 <a role="button" onClick={() => saveToAlfresco(attachment)}>
                                                     <Icon className="mybtn-success" size={14} icon={share}/>
                                                 </a>
-                                                {(isImage(attachment) || isPdf(attachment)) && (
+                                                {allowView && (isImage(attachment) || isPdf(attachment)) && (
                                                     <a role="button" onClick={() => viewItem(attachment)}>
                                                         <Icon className="mybtn-success" size={14} icon={eye}/>
                                                     </a>
@@ -92,7 +92,6 @@ export default function EmailSplitViewDetailsAttachmentsPanel({email}) {
                 <Modal
                     closeModal={() => setViewedAttachment(null)}
                     modalClassName="modal-lg"
-                    modalMainClassName="email-attachment-modal "
                     showConfirmAction={false}
                     buttonCancelText="Ok"
                 >

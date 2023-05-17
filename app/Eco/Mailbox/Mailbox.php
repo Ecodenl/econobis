@@ -67,5 +67,14 @@ class Mailbox extends Model
         return OutgoingServerType::get($this->outgoing_server_type);
     }
 
+    public function ignoresEmailAddress(string $emailAddress)
+    {
+        foreach ($this->mailboxIgnores as $mailboxIgnore) {
+            if ($mailboxIgnore->ignoresEmailAddress($emailAddress)) {
+                return true;
+            }
+        }
 
+        return false;
+    }
 }

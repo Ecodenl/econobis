@@ -1002,13 +1002,11 @@ class ExtraFilter extends RequestExtraFilter
                             });
                             break;
                         case 'neq':
-//                            Log::info('type neq');
-                            $query->where(function ($query) use ($housingFileFieldValueType, $housingFileFieldValueData) {
-                                $query->whereDoesntHave('housingFiles', function ($query) use ($housingFileFieldValueData) {
-                                    Log::info('hier slimme where bedenken b');
-
-        //                                $query->where('housing_file.measure_category_id', $data);
-                                    });
+                            Log::info('type neq');
+                            Log::info('econobisFieldName: ' . $econobisFieldName);
+                            Log::info('housingFileFieldValueData: ' . $housingFileFieldValueData);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName, $housingFileFieldValueData) {
+                                $query->where('housing_files.' . $econobisFieldName, '!=', $housingFileFieldValueData)->orWhereNull('housing_files.' . $econobisFieldName);
                             });
                             break;
                         default:

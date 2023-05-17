@@ -993,7 +993,14 @@ class ExtraFilter extends RequestExtraFilter
 //                    Log::info('wel data : ' . $housingFileFieldValueData);
 
                     switch($housingFileFieldValueType) {
-
+                        case 'eq':
+                            Log::info('type eq');
+                            Log::info('econobisFieldName: ' . $econobisFieldName);
+                            Log::info('housingFileFieldValueData: ' . $housingFileFieldValueData);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName, $housingFileFieldValueData) {
+                                $query->where('housing_files.' . $econobisFieldName, '=', $housingFileFieldValueData);
+                            });
+                            break;
                         case 'neq':
 //                            Log::info('type neq');
                             $query->where(function ($query) use ($housingFileFieldValueType, $housingFileFieldValueData) {

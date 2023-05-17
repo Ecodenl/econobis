@@ -929,6 +929,7 @@ class ExtraFilter extends RequestExtraFilter
         switch($housingFileHoomLink->housing_file_data_type) {
             // Filter op Woningdossier Basis en Gebruikgegevens
             case 'B':
+                Log::info('Case B');
             case 'G':
                 Log::info('Case G');
 //                Log::info('hier filter op Woningdossier Basis en Gebruikgegevens');
@@ -1080,7 +1081,27 @@ class ExtraFilter extends RequestExtraFilter
 
             // Filter op Woningdossier woningstatusgegevens
             case 'W':
+                Log::info('housingFileHoomLink: ' . json_encode($housingFileHoomLink));
+                Log::info('housingFileFieldValueData: '. $housingFileFieldValueData);
+                Log::info('Case W');
 //                Log::info('hier filter op Woningdossier woningstatusgegevens');
+                if($housingFileFieldValueData != 0 && empty($housingFileFieldValueData)) {
+
+                } else {
+                    Log::info('housingFileFieldValueData is niet leeg');
+                    switch ($housingFileFieldValueType) {
+                        case 'eq':
+                            Log::info('type eq');
+                            Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
+                            $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                    $query->where('housing_file_hoom_links_id', '=', $housingFileHoomLink->id);
+                                    $query->where('status', '=', $housingFileFieldValueData);
+                                });
+                            });
+                            break;
+                    }
+                }
         }
 
 //        $arrayHousingFileHoomLinkSelectDropdownFieldsIds = HousingFileHoomLink::whereIn('external_hoom_short_name', HousingFileHoomLink::SELECT_DROPDOWN_FIELDS)->pluck('id')->toArray();

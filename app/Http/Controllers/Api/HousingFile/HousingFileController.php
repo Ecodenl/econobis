@@ -551,7 +551,7 @@ class HousingFileController extends ApiController
 //    }
     public function ventilationTypeSelectionPeek()
     {
-        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'ventilation-type-selection')->get());
+        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'ventilation-type')->get());
     }
     public function currentLivingRoomsWindowsSelectionPeek()
     {

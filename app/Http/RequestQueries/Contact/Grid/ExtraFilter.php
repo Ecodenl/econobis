@@ -928,7 +928,6 @@ class ExtraFilter extends RequestExtraFilter
         Log::info('housingFileHoomLink' . json_encode($housingFileHoomLink));
         switch($housingFileHoomLink->housing_file_data_type) {
             // Filter op Woningdossier Basis en Gebruikgegevens
-
             case 'B':
                 Log::info('Case B');
                 if($housingFileFieldValueData != 0 && empty($housingFileFieldValueData))

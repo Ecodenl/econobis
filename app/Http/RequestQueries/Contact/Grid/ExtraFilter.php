@@ -941,17 +941,17 @@ class ExtraFilter extends RequestExtraFilter
                 break;
 
             case 'W':
-                Log::info('Case W');
-                Log::info('type: ' . $housingFileFieldValueType);
-                Log::info('name: ' . $econobisFieldName);
-                Log::info('data: ' . $housingFileFieldValueData);
+//                Log::info('Case W');
+//                Log::info('type: ' . $housingFileFieldValueType);
+//                Log::info('name: ' . $econobisFieldName);
+//                Log::info('data: ' . $housingFileFieldValueData);
 
                 if($housingFileFieldValueData != 0 && empty($housingFileFieldValueData)) {
-                    Log::info('housingFileFieldValueData is leeg');
+//                    Log::info('housingFileFieldValueData is leeg');
                     switch ($housingFileFieldValueType) {
-                        case 'eq':
-                            Log::info('type eq');
-                            Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
+//                        case 'eq':
+//                            Log::info('type eq');
+//                            Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
                             $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
                                 $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
                                     $query->where('housing_file_hoom_links_id', '=', $housingFileHoomLink->id);
@@ -959,8 +959,8 @@ class ExtraFilter extends RequestExtraFilter
                             });
                             break;
                         case 'nl':
-                            Log::info('type nl');
-                            Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
+//                            Log::info('type nl');
+//                            Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
                             $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
                                 $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
                                     $query->where('housing_file_hoom_links_id', '=', $housingFileHoomLink->id);
@@ -972,8 +972,8 @@ class ExtraFilter extends RequestExtraFilter
                             });
                             break;
                         case 'nnl':
-                            Log::info('type nnl');
-                            Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
+//                            Log::info('type nnl');
+//                            Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
                             $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
                                 $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
                                     $query->where('housing_file_hoom_links_id', '=', $housingFileHoomLink->id);
@@ -985,12 +985,12 @@ class ExtraFilter extends RequestExtraFilter
                             break;
                     }
                 } else {
-                    Log::info('housingFileFieldValueData is niet leeg');
-                    Log::info('housingFileFieldValueData ' . $housingFileFieldValueData);
+//                    Log::info('housingFileFieldValueData is niet leeg');
+//                    Log::info('housingFileFieldValueData ' . $housingFileFieldValueData);
                     switch ($housingFileFieldValueType) {
                         case 'eq':
-                            Log::info('type eq');
-                            Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
+//                            Log::info('type eq');
+//                            Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
                             $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
                                 $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
                                     $query->where('housing_file_hoom_links_id', '=', $housingFileHoomLink->id);
@@ -999,32 +999,12 @@ class ExtraFilter extends RequestExtraFilter
                             });
                             break;
                         case 'neq':
-                            Log::info('type neq');
-                            Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
+//                            Log::info('type neq');
+//                            Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
                             $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
                                 $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
                                     $query->where('housing_file_hoom_links_id', '=', $housingFileHoomLink->id);
                                     $query->where('status', '!=', $housingFileFieldValueData);
-                                });
-                            });
-                            break;
-                        case 'nl':
-                            Log::info('type nl');
-                            Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
-                            $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
-                                $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
-                                    $query->where('housing_file_hoom_links_id', '=', $housingFileHoomLink->id);
-                                    $query->whereNull('status')->orWhere('status', '=', '');
-                                });
-                            });
-                            break;
-                        case 'nnl':
-                            Log::info('type nnl');
-                            Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
-                            $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
-                                $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
-                                    $query->where('housing_file_hoom_links_id', '=', $housingFileHoomLink->id);
-                                    $query->whereNotNull('status')->where('status', '!=', '');
                                 });
                             });
                             break;

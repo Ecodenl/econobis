@@ -8,6 +8,7 @@ use App\Helpers\Email\EmailHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class QuotationRequestWorkflowHelper
@@ -50,8 +51,7 @@ class QuotationRequestWorkflowHelper
         }
 
         $mail = Mail::to($this->contact->primaryEmailAddress);
-
-        if ($this->quotationRequest->organisationOrCoach && $this->quotationRequest_status->mail_cc_to_coach_wf) {
+        if ($this->quotationRequest->organisationOrCoach && $this->quotationRequest->organisationOrCoach->primaryEmailAddress && $this->quotationRequest_status->mail_cc_to_coach_wf) {
             $mail->cc([$this->quotationRequest->organisationOrCoach->primaryEmailAddress]);
         }
 

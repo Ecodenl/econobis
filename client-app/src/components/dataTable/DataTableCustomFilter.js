@@ -195,7 +195,7 @@ const DataTableCustomFilter = props => {
                 )}
             </td>
             <td className="col-md-4">
-                {props.filter.type !== 'nl' && props.filter.type !== 'nnl' && (
+                {props.filter.type !== 'nl' && props.filter.type !== 'nnl' && props.filter.type !== 'is0' && props.filter.type !== 'isn0' && (
                     <React.Fragment>
                         {(fieldType === 'number' ||
                             fieldType === 'string' ||

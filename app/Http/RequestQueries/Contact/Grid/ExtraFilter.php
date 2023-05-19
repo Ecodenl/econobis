@@ -925,13 +925,125 @@ class ExtraFilter extends RequestExtraFilter
 
         $housingFileFieldValueType = $housingFileFieldValueFilter['type'];
         $housingFileFieldValueData = $housingFileFieldValueFilter['data'];
-
+        Log::info('housingFileHoomLink' . json_encode($housingFileHoomLink));
         switch($housingFileHoomLink->housing_file_data_type) {
             // Filter op Woningdossier Basis en Gebruikgegevens
+
             case 'B':
                 Log::info('Case B');
+                if($housingFileFieldValueData != 0 && empty($housingFileFieldValueData))
+                {
+                    Log::info('housingFileFieldValueData is leeg');
+                    switch($housingFileFieldValueType) {
+                        case 'eq':
+                            Log::info('type eq');
+                            Log::info('econobisFieldName: ' . $econobisFieldName);
+                            Log::info('housingFileFieldValueData: ' . $housingFileFieldValueData);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName, $housingFileFieldValueData) {
+                                $query->where('housing_files.' . $econobisFieldName, '=', $housingFileFieldValueData);
+                            });
+                            break;
+                        case 'neq':
+                            Log::info('type neq');
+                            Log::info('econobisFieldName: ' . $econobisFieldName);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName) {
+                                $query->where('housing_files.' . $econobisFieldName, '!=', null);
+                            });
+                            break;
+                        case 'nl':
+                            Log::info('type nl');
+                            Log::info('econobisFieldName: ' . $econobisFieldName);
+                            Log::info('housingFileFieldValueData: ' . $housingFileFieldValueData);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName, $housingFileFieldValueData) {
+                                $query->whereNull('housing_files.' . $econobisFieldName)->orWhere('housing_files.' . $econobisFieldName, '=', '');
+                            });
+                            break;
+                        case 'nnl':
+                            Log::info('type nnl');
+                            Log::info('econobisFieldName: ' . $econobisFieldName);
+                            Log::info('housingFileFieldValueData: ' . $housingFileFieldValueData);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName, $housingFileFieldValueData) {
+                                $query->whereNotNull('housing_files.' . $econobisFieldName)->where('housing_files.' . $econobisFieldName, '!=', '');
+                            });
+                            break;
+                        case 'is0':
+                            Log::info('type is0');
+                            Log::info('econobisFieldName: ' . $econobisFieldName);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName) {
+                                $query->where('housing_files.' . $econobisFieldName, '=', null)->orWhere('housing_files.' . $econobisFieldName, '=', 0);
+                            });
+                            break;
+                        case 'isn0':
+                            Log::info('type isn0');
+                            Log::info('econobisFieldName: ' . $econobisFieldName);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName) {
+                                $query->whereNotNull('housing_files.' . $econobisFieldName)->where('housing_files.' . $econobisFieldName, '!=', 0);
+                            });
+                            break;
+
+                        default:
+                            Log::info('type overig: ' . $housingFileFieldValueType);
+                            break;
+                    }
+                } else {
+                    Log::info('housingFileFieldValueData is niet leeg');
+
+                    switch ($housingFileFieldValueType) {
+                        case 'eq':
+                            Log::info('type eq');
+                            Log::info('econobisFieldName: ' . $econobisFieldName);
+                            Log::info('housingFileFieldValueData: ' . $housingFileFieldValueData);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName, $housingFileFieldValueData) {
+                                $query->where('housing_files.' . $econobisFieldName, '=', $housingFileFieldValueData);
+                            });
+                            break;
+                        case 'neq':
+                            Log::info('type neq');
+                            Log::info('econobisFieldName: ' . $econobisFieldName);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName, $housingFileFieldValueData) {
+                                $query->where('housing_files.' . $econobisFieldName, '!=', $housingFileFieldValueData);
+                            });
+                            break;
+                        case 'lt':
+                            Log::info('type lt');
+                            Log::info('econobisFieldName: ' . $econobisFieldName);
+                            Log::info('housingFileFieldValueData: ' . $housingFileFieldValueData);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName, $housingFileFieldValueData, $housingFileFieldValueType) {
+                                static::applyFilterWhereRaw($query, '`housing_files`.`'.$econobisFieldName.'`', $housingFileFieldValueType, 'cast("' . $housingFileFieldValueData . '" AS int)');
+                            });
+                            break;
+                        case 'lte':
+                            Log::info('type lte');
+                            Log::info('econobisFieldName: ' . $econobisFieldName);
+                            Log::info('housingFileFieldValueData: ' . $housingFileFieldValueData);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName, $housingFileFieldValueData, $housingFileFieldValueType) {
+                                static::applyFilterWhereRaw($query, '`housing_files`.`'.$econobisFieldName.'`', $housingFileFieldValueType, 'cast("' . $housingFileFieldValueData . '" AS int)');
+                            });
+                            break;
+                        case 'gt':
+                            Log::info('type gt');
+                            Log::info('econobisFieldName: ' . $econobisFieldName);
+                            Log::info('housingFileFieldValueData: ' . $housingFileFieldValueData);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName, $housingFileFieldValueData, $housingFileFieldValueType) {
+                                static::applyFilterWhereRaw($query, '`housing_files`.`'.$econobisFieldName.'`', $housingFileFieldValueType, 'cast("' . $housingFileFieldValueData . '" AS int)');
+                            });
+                            break;
+                        case 'gte':
+                            Log::info('type gte');
+                            Log::info('econobisFieldName: ' . $econobisFieldName);
+                            Log::info('housingFileFieldValueData: ' . $housingFileFieldValueData);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName, $housingFileFieldValueData, $housingFileFieldValueType) {
+                                static::applyFilterWhereRaw($query, '`housing_files`.`'.$econobisFieldName.'`', $housingFileFieldValueType, 'cast("' . $housingFileFieldValueData . '" AS int)');
+                            });
+                            break;
+                        default:
+                            Log::info('type overig: ' . $housingFileFieldValueType);
+                            break;
+                    }
+                }
+                break;
             case 'G':
-                Log::info('Case G');
+                Log::info('Case G: ');
 //                Log::info('hier filter op Woningdossier Basis en Gebruikgegevens');
                 if($housingFileFieldValueData != 0 && empty($housingFileFieldValueData))
                 {
@@ -1021,32 +1133,32 @@ class ExtraFilter extends RequestExtraFilter
                             Log::info('type lt');
                             Log::info('econobisFieldName: ' . $econobisFieldName);
                             Log::info('housingFileFieldValueData: ' . $housingFileFieldValueData);
-                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName, $housingFileFieldValueData) {
-                                $query->where('housing_files.' . $econobisFieldName, '<', $housingFileFieldValueData)->whereNotNull('housing_files.' . $econobisFieldName);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName, $housingFileFieldValueData, $housingFileFieldValueType) {
+                                static::applyFilterWhereRaw($query, '`housing_files`.`'.$econobisFieldName.'`', $housingFileFieldValueType, 'cast("' . $housingFileFieldValueData . '" AS int)');
                             });
                             break;
                         case 'lte':
                             Log::info('type lte');
                             Log::info('econobisFieldName: ' . $econobisFieldName);
                             Log::info('housingFileFieldValueData: ' . $housingFileFieldValueData);
-                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName, $housingFileFieldValueData) {
-                                $query->where('housing_files.' . $econobisFieldName, '<=', $housingFileFieldValueData)->whereNotNull('housing_files.' . $econobisFieldName);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName, $housingFileFieldValueData, $housingFileFieldValueType) {
+                                static::applyFilterWhereRaw($query, '`housing_files`.`'.$econobisFieldName.'`', $housingFileFieldValueType, 'cast("' . $housingFileFieldValueData . '" AS int)');
                             });
                             break;
                         case 'gt':
                             Log::info('type gt');
                             Log::info('econobisFieldName: ' . $econobisFieldName);
                             Log::info('housingFileFieldValueData: ' . $housingFileFieldValueData);
-                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName, $housingFileFieldValueData) {
-                                $query->where('housing_files.' . $econobisFieldName, '>', $housingFileFieldValueData)->whereNotNull('housing_files.' . $econobisFieldName);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName, $housingFileFieldValueData, $housingFileFieldValueType) {
+                                static::applyFilterWhereRaw($query, '`housing_files`.`'.$econobisFieldName.'`', $housingFileFieldValueType, 'cast("' . $housingFileFieldValueData . '" AS int)');
                             });
                             break;
                         case 'gte':
                             Log::info('type gte');
                             Log::info('econobisFieldName: ' . $econobisFieldName);
                             Log::info('housingFileFieldValueData: ' . $housingFileFieldValueData);
-                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName, $housingFileFieldValueData) {
-                                $query->where('housing_files.' . $econobisFieldName, '>=', $housingFileFieldValueData)->whereNotNull('housing_files.' . $econobisFieldName);
+                            $query->whereHas('housingFiles', function ($query) use ($econobisFieldName, $housingFileFieldValueData, $housingFileFieldValueType) {
+                                static::applyFilterWhereRaw($query, '`housing_files`.`'.$econobisFieldName.'`', $housingFileFieldValueType, 'cast("' . $housingFileFieldValueData . '" AS int)');
                             });
                             break;
                         case 'is0':
@@ -1074,6 +1186,7 @@ class ExtraFilter extends RequestExtraFilter
                             break;
                     }
                 }
+                break;
 //Log::info($query->toSql());
 //$sql = str_replace(array('?'), array('\'%s\''), $query->toSql());
 //$sql = vsprintf($sql, $query->getBindings());
@@ -1088,6 +1201,15 @@ class ExtraFilter extends RequestExtraFilter
                 if($housingFileFieldValueData != 0 && empty($housingFileFieldValueData)) {
                     Log::info('housingFileFieldValueData is leeg');
                     switch ($housingFileFieldValueType) {
+                        case 'eq':
+                            Log::info('type eq');
+                            Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
+                            $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                    $query->where('housing_file_hoom_links_id', '=', $housingFileHoomLink->id);
+                                });
+                            });
+                            break;
                         case 'nl':
                             Log::info('type nl');
                             Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
@@ -1099,7 +1221,7 @@ class ExtraFilter extends RequestExtraFilter
                             });
                             break;
                         case 'nnl':
-                            Log::info('type nl');
+                            Log::info('type nnl');
                             Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
                             $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
                                 $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
@@ -1107,9 +1229,13 @@ class ExtraFilter extends RequestExtraFilter
                                 });
                             });
                             break;
+                        default:
+                            Log::info('type overig: ' . $housingFileFieldValueType);
+                            break;
                     }
                 } else {
                     Log::info('housingFileFieldValueData is niet leeg');
+                    Log::info('housingFileFieldValueData ' . $housingFileFieldValueData);
                     switch ($housingFileFieldValueType) {
                         case 'eq':
                             Log::info('type eq');
@@ -1126,15 +1252,37 @@ class ExtraFilter extends RequestExtraFilter
                             Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
                             $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
                                 $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
-                                    $query->where('housing_file_hoom_links_id', '!=', $housingFileHoomLink->id);
+                                    $query->where('housing_file_hoom_links_id', '=', $housingFileHoomLink->id);
                                     $query->where('status', '!=', $housingFileFieldValueData);
                                 });
                             });
                             break;
+                        case 'nl':
+                            Log::info('type nl');
+                            Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
+                            $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                    $query->where('housing_file_hoom_links_id', '=', $housingFileHoomLink->id);
+                                    $query->whereNull('status')->orWhere('status', '=', '');
+                                });
+                            });
+                            break;
+                        case 'nnl':
+                            Log::info('type nnl');
+                            Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
+                            $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                    $query->where('housing_file_hoom_links_id', '=', $housingFileHoomLink->id);
+                                    $query->whereNotNull('status')->where('status', '!=', '');
+                                });
+                            });
+                            break;
                         default:
-
+                            Log::info('type overig: ' . $housingFileFieldValueType);
+                            break;
                     }
                 }
+                break;
         }
 
 //        $arrayHousingFileHoomLinkSelectDropdownFieldsIds = HousingFileHoomLink::whereIn('external_hoom_short_name', HousingFileHoomLink::SELECT_DROPDOWN_FIELDS)->pluck('id')->toArray();

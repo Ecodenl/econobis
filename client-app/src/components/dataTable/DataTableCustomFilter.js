@@ -308,7 +308,7 @@ const DataTableCustomFilter = props => {
                     </React.Fragment>
                 )}
             </td>
-            {isCustomProductField || isCustomOpportunityField || isCustomIntakeField || props.filter.readOnly ? (
+            {isCustomProductField || isCustomOpportunityField || isCustomIntakeField || isCustomHousingFileField || props.filter.readOnly ? (
                 <td />
             ) : (
                 <td className="col-md-1">

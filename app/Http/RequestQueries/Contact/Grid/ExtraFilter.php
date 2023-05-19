@@ -949,12 +949,23 @@ class ExtraFilter extends RequestExtraFilter
                 if($housingFileFieldValueData != 0 && empty($housingFileFieldValueData)) {
 //                    Log::info('housingFileFieldValueData is leeg');
                     switch ($housingFileFieldValueType) {
-//                        case 'eq':
+                        case 'eq':
 //                            Log::info('type eq');
 //                            Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
                             $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
                                 $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
                                     $query->where('housing_file_hoom_links_id', '=', $housingFileHoomLink->id);
+                                    $query->whereNull('status')->orWhere('status', '=', '');
+                                });
+                            });
+                            break;
+                        case 'neq':
+//                            Log::info('type neq');
+//                            Log::info('housingFileHoomLink id: ' . $housingFileHoomLink->id);
+                            $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                    $query->where('housing_file_hoom_links_id', '=', $housingFileHoomLink->id);
+                                    $query->whereNotNull('status')->orWhere('status', '!=', '');
                                 });
                             });
                             break;

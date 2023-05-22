@@ -416,6 +416,30 @@ class RevenueDistributionForm extends Component {
             numberSelectedNumberTotal = this.state.distributionIds.length;
         }
 
+        let totalToProcess = 0;
+        if (
+            this.props &&
+            this.props.projectRevenue &&
+            this.props.projectRevenue.distribution &&
+            this.props.projectRevenue.distribution.meta &&
+            this.props.projectRevenue.distribution.meta.totalToProcess
+        ) {
+            totalToProcess = this.props.projectRevenue.distribution.meta.totalToProcess;
+        } else {
+            totalToProcess = 0;
+        }
+
+        let distributionIdsTotalToProcess = [];
+        if (
+            this.props &&
+            this.props.projectRevenue &&
+            this.props.projectRevenue.distribution &&
+            this.props.projectRevenue.distribution.meta &&
+            this.props.projectRevenue.distribution.meta.distributionIdsTotalToProcess
+        ) {
+            distributionIdsTotalToProcess = this.props.projectRevenue.distribution.meta.distributionIdsTotalToProcess;
+        }
+
         return (
             <Panel>
                 <PanelHeader>
@@ -434,10 +458,20 @@ class RevenueDistributionForm extends Component {
                                         buttonText={
                                             this.props.projectRevenue.category.codeRef === 'redemptionEuro'
                                                 ? 'Selecteer preview aflossing verdeling'
-                                                : 'Selecteer preview opbrengst verdeling'
+                                                : 'Selecteer preview mutaties en sepa bestand uitkeringsdatum'
                                         }
                                         onClickAction={() => this.toggleShowCheckboxList('createInvoices')}
                                         buttonClassName={'btn-primary'}
+                                        title={
+                                            this.props.projectRevenue.category.codeRef === 'redemptionEuro'
+                                                ? ' '
+                                                : "De uitkeringsdatum is de datum in het SEPA bestand en de datum van de mutaties in het mutatieoverzicht van de deelnemers. Als je niet gaat uitkeren ('naar kapitaalrekening (niet uitbetalen)') betreft het alleen de mutatiedatum en is de uitkeringsdatum niet van toepassing."
+                                        }
+                                        disabled={
+                                            totalToProcess === 0
+                                                ? true
+                                                : false
+                                        }
                                     />
                                 </React.Fragment>
                             ) : null)}
@@ -541,15 +575,23 @@ class RevenueDistributionForm extends Component {
                                             <ButtonText
                                                 buttonText={
                                                     this.props.projectRevenue.category.codeRef === 'revenueKwh'
-                                                        ? 'Opbrengst verdelen'
+                                                        ? 'Mutaties aanmaken'
                                                         : this.props.projectRevenue.category.codeRef ===
                                                           'redemptionEuro'
                                                         ? 'Aflossing verdelen en Sepa bestand maken'
-                                                        : 'Opbrengst verdelen en Sepa bestand maken'
+                                                        : 'Mutaties aanmaken en Sepa bestand maken'
                                                 }
                                                 onClickAction={this.checkDistributionRevenueInvoices}
                                                 type={'submit'}
                                                 value={'Submit'}
+                                                title={
+                                                    this.props.projectRevenue.category.codeRef === 'revenueKwh'
+                                                        ? ' '
+                                                        : this.props.projectRevenue.category.codeRef ===
+                                                          'redemptionEuro'
+                                                        ? ' '
+                                                        : 'Met de knop Mutaties aanmaken en Sepa bestand maak je mutaties aan in het mutatieoverzicht van de individuele deelnemers en genereer je een Sepa bestand om bij de bank te uploaden. Het Sepa bestand vind je na het aanmaken terug bij Instellingen > Administratie > onder de betreffende administratie.'
+                                                }
                                             />
                                         </div>
                                     </div>
@@ -566,6 +608,7 @@ class RevenueDistributionForm extends Component {
                             toggleDistributionCheck={this.toggleDistributionCheck}
                             distributionIds={this.state.distributionIds}
                             createType={this.state.createType}
+                            distributionIdsTotalToProcess={distributionIdsTotalToProcess}
                         />
                     </div>
                 </PanelBody>

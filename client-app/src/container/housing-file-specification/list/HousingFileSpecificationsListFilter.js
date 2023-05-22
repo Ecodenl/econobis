@@ -11,7 +11,7 @@ import {
     setFilterHousingFileSpecificationAddress,
     setFilterHousingFileSpecificationMeasureCategoryName,
     setFilterHousingFileSpecificationMeasureName,
-    setFilterHousingFileSpecificationStatusName,
+    setFilterHousingFileSpecificationStatus,
     setFilterHousingFileSpecificationMeasureDateStart,
     setFilterHousingFileSpecificationMeasureDateEnd,
 } from '../../../actions/housing-file-specification/HousingFileSpecificationsFiltersActions';
@@ -66,8 +66,8 @@ const HousingFileSpecificationsListFilter = props => {
         }, 100);
     };
 
-    const onStatusNameChange = e => {
-        props.setFilterHousingFileSpecificationStatusName(e.target.value);
+    const onStatusChange = e => {
+        props.setFilterHousingFileSpecificationStatus(e.target.value);
 
         setTimeout(() => {
             props.onSubmitFilter();
@@ -140,12 +140,16 @@ const HousingFileSpecificationsListFilter = props => {
                 />
             </th>
             <th>
-                <input
-                    type="text"
-                    className="form-control input-sm"
-                    value={props.filters.statusName.data}
-                    onChange={onStatusNameChange}
-                />
+                <select className="form-control input-sm" value={props.filters.statusId.data} onChange={onStatusChange}>
+                    <option />
+                    {props.housingFileSpecificationStatuses.map(status => {
+                        return (
+                            <option key={status.id} value={status.id}>
+                                {status.name}
+                            </option>
+                        );
+                    })}
+                </select>
             </th>
             <DataTableFilterDateStartEndTwoRows
                 startDate={props.filters.measureDateStart.data && props.filters.measureDateStart.data}
@@ -161,6 +165,7 @@ const HousingFileSpecificationsListFilter = props => {
 
 const mapStateToProps = state => ({
     filters: state.housingFileSpecifications.filters,
+    housingFileSpecificationStatuses: state.systemData.housingFileSpecificationStatuses,
 });
 
 const mapDispatchToProps = dispatch => {
@@ -173,7 +178,7 @@ const mapDispatchToProps = dispatch => {
             setFilterHousingFileSpecificationAddress,
             setFilterHousingFileSpecificationMeasureCategoryName,
             setFilterHousingFileSpecificationMeasureName,
-            setFilterHousingFileSpecificationStatusName,
+            setFilterHousingFileSpecificationStatus,
             setFilterHousingFileSpecificationMeasureDateStart,
             setFilterHousingFileSpecificationMeasureDateEnd,
         },

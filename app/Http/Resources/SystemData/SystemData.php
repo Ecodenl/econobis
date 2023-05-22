@@ -160,7 +160,7 @@ class SystemData extends JsonResource
         return [
 //            'housingFileHoomLinksBasic' => HousingFileHoomLink::select(['id as key', 'label as name', 'external_hoom_short_name as externalHoomShortName'])->where('housing_file_data_type', 'B')->where('visible_in_econobis', true)->orderBy('external_hoom_short_name')->get(),
 //            'housingFileHoomLinksUse' => HousingFileHoomLink::select(['id as key', 'label as name', 'external_hoom_short_name as externalHoomShortName'])->where('housing_file_data_type', 'G')->where('visible_in_econobis', true)->orderBy('external_hoom_short_name')->get(),
-            'housingFileHoomLinks' => HousingFileHoomLink::select(['id as key', 'label as name', 'external_hoom_short_name as externalHoomShortName', 'external_hoom_short_name as externalHoomShortName'])->where('visible_in_econobis', true)->orderBy('external_hoom_short_name')->get(),
+            'housingFileHoomLinks' => HousingFileHoomLink::select(['id as key', 'label as name', 'external_hoom_short_name as externalHoomShortName', 'external_hoom_short_name as externalHoomShortName'])->where('visible_in_econobis', true)->orderBy('housing_file_data_type')->orderBy('label')->get(),
             'housingFileHoomLinksToShowInEconobis' => HousingFileHoomLink::select(['econobis_field_name as econobisFieldName'])->where('visible_in_econobis', true)->whereNotNull('econobis_field_name')->get(),
             'housingFileHoomLinksStatus' => HousingFileHoomLink::select(['id as key', 'label as name', 'external_hoom_short_name as externalHoomShortName'])->where('housing_file_data_type', 'W')->where('visible_in_econobis', true)->orderBy('external_hoom_short_name')->get(),
 

@@ -61,15 +61,4 @@ export default {
             responseType: 'blob',
         });
     },
-
-    getExcelSpecifications: ({ filters, sorts }) => {
-        const requestUrl = `${URL_API}/api/housing-file/excel-specifications`;
-        return axiosInstance.get(requestUrl, {
-            params: {
-                filters: JSON.stringify(filters),
-                sorts: JSON.stringify(sorts),
-            },
-            responseType: 'blob',
-        });
-    },
 };

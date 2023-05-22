@@ -21,7 +21,7 @@ class Sort extends RequestSort
         'city',
         'measureCategoryName',
         'measureName',
-        'statusName',
+        'status',
         'measureDate',
     ];
 
@@ -32,7 +32,7 @@ class Sort extends RequestSort
         'city' => 'addresses.city',
         'measureCategoryName' => 'measure_categories.name',
         'measureName' => 'measures.name',
-        'statusName' => 'housing_file_specification_statuses.name',
+        'status' => 'housing_file_specification_statuses.name',
         'measureDate' => 'measure_date',
     ];
 
@@ -43,6 +43,6 @@ class Sort extends RequestSort
         'city' => 'address',
         'measureCategoryName' => 'measureCategory',
         'measureName' => 'measure',
-        'statusName' => 'housingFileSpecificationStatus',
+        'status' => 'housingFileSpecificationStatus',
     ];
 }

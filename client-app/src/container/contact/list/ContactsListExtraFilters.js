@@ -449,6 +449,7 @@ class ContactsListExtraFilters extends Component {
         return (
             <Modal
                 title="Extra filters"
+                modalBodyClassName="scrollable-modal-body"
                 buttonConfirmText="Toepassen"
                 confirmAction={this.confirmAction}
                 closeModal={this.closeModal}

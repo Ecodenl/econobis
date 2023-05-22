@@ -30,6 +30,7 @@ class HousingFileSpecificationsListApp extends Component {
         this.state = {
             showExtraFilters: false,
             extraFilters: [],
+            checkedAll: false,
             showCheckboxList: false,
             showCreateOpportunitiesFromSpecifications: false,
             showCreateQuotationRequestsFromSpecifications: false,
@@ -58,24 +59,6 @@ class HousingFileSpecificationsListApp extends Component {
             const pagination = { limit: 20, offset: this.props.housingFileSpecificationsPagination.offset };
 
             this.props.fetchHousingFileSpecifications(filters, extraFilters, sorts, pagination);
-        }, 100);
-    };
-
-    getExcelHousingFiles = () => {
-        this.props.blockUI();
-        setTimeout(() => {
-            const extraFilters = this.state.extraFilters;
-            const filters = filterHelper(this.props.housingFileSpecificationsFilters);
-            const sorts = this.props.housingFileSpecificationsSorts;
-
-            HousingFileSpecificationsAPI.getExcelHousingFiles({ filters, extraFilters, sorts })
-                .then(payload => {
-                    fileDownload(payload.data, 'Woningdossiers-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.xlsx');
-                    this.props.unblockUI();
-                })
-                .catch(error => {
-                    this.props.unblockUI();
-                });
         }, 100);
     };
 
@@ -165,9 +148,17 @@ class HousingFileSpecificationsListApp extends Component {
     }
 
     toggleShowCheckboxList = () => {
-        this.setState({
-            showCheckboxList: !this.state.showCheckboxList,
-        });
+        if (this.state.showCheckboxList) {
+            this.setState({
+                showCheckboxList: false,
+                specificationIds: [],
+            });
+        } else {
+            this.setState({
+                showCheckboxList: true,
+                specificationIds: [],
+            });
+        }
     };
 
     toggleCheckedAll = event => {
@@ -175,13 +166,7 @@ class HousingFileSpecificationsListApp extends Component {
         let specificationIds = [];
 
         if (isChecked) {
-            this.props.housingFileSpecifications.data.map(
-                specification =>
-                    specification &&
-                    specification.status &&
-                    specification.status.codeRef === 'desirable' &&
-                    specificationIds.push(specification.id)
-            );
+            specificationIds = this.props.housingFileSpecifications.meta.specificationIdsTotal;
         }
 
         this.setState({
@@ -247,6 +232,23 @@ class HousingFileSpecificationsListApp extends Component {
     };
 
     render() {
+        let numberSelectedNumberTotal = 0;
+        if (this.state.specificationIds.length) {
+            if (
+                this.props &&
+                this.props.housingFileSpecifications &&
+                this.props.housingFileSpecifications.meta &&
+                this.props.housingFileSpecifications.meta.specificationIdsTotal
+            ) {
+                numberSelectedNumberTotal =
+                    this.state.specificationIds.length +
+                    '/' +
+                    this.props.housingFileSpecifications.meta.specificationIdsTotal.length;
+            } else {
+                numberSelectedNumberTotal = this.state.specificationIds.length;
+            }
+        }
+
         return (
             <Panel>
                 <PanelBody>
@@ -257,7 +259,6 @@ class HousingFileSpecificationsListApp extends Component {
                             // }
                             // refreshHousingFileSpecificationsData={this.callFetchHousingFileSpecificationsData}
                             resetHousingFileSpecificationFilters={() => this.resetHousingFileSpecificationFilters()}
-                            getExcelHousingFiles={this.getExcelHousingFiles}
                             getExcelSpecifications={this.getExcelSpecifications}
                             toggleShowExtraFilters={this.toggleShowExtraFilters}
                             showCheckboxList={this.state.showCheckboxList}
@@ -274,18 +275,19 @@ class HousingFileSpecificationsListApp extends Component {
                             onSubmitFilter={() => this.onSubmitFilter()}
                             refreshHousingFileSpecificationsData={() => this.fetchHousingFileSpecificationsData()}
                             handlePageClick={this.handlePageClick}
+                            checkedAll={this.state.checkedAll}
                             showCheckboxList={this.state.showCheckboxList}
                             toggleCheckedAll={this.toggleCheckedAll}
                             toggleSpecificationCheck={this.toggleSpecificationCheck}
                             specificationIds={this.state.specificationIds}
+                            numberSelectedNumberTotal={numberSelectedNumberTotal}
                         />
                     </div>
 
                     {this.state.showExtraFilters && (
                         <HousingFileSpecificationsListExtraFilters
                             toggleShowExtraFilters={this.toggleShowExtraFilters}
-                            handleExtraFiltersChange={this.handleExtraFiltersChange}
-                            extraFilters={this.state.extraFilters}
+                            onSubmitFilter={() => this.onSubmitFilter()}
                         />
                     )}
                     {this.state.showCreateOpportunitiesFromSpecifications && (

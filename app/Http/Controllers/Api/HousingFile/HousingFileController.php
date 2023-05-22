@@ -31,7 +31,6 @@ use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Helpers\Delete\Models\DeleteHousingFile;
 use App\Helpers\Excel\HousingFileExcelHelper;
-use App\Helpers\Excel\HousingFileExcelSpecificationsHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\HousingFile\Grid\RequestQuery;
@@ -124,18 +123,6 @@ class HousingFileController extends ApiController
         $housingFileExcelHelper = new HousingFileExcelHelper($housingFiles);
 
         return $housingFileExcelHelper->downloadExcel();
-    }
-
-    public function excelSpecifications(RequestQuery $requestQuery)
-    {
-        set_time_limit(0);
-        $housingFiles = $requestQuery->getQueryNoPagination()->get();
-
-        $housingFiles->load(['address.contact', 'buildingType', 'energyLabel']);
-
-        $housingFileExcelSpecificationsHelper = new HousingFileExcelSpecificationsHelper($housingFiles);
-
-        return $housingFileExcelSpecificationsHelper->downloadExcel();
     }
 
     public function store(Request $request, RequestInput $requestInput)
@@ -551,7 +538,7 @@ class HousingFileController extends ApiController
 //    }
     public function ventilationTypeSelectionPeek()
     {
-        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'ventilation-type-selection')->get());
+        return HousingFileSelectionPeek::collection(HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'ventilation-type')->get());
     }
     public function currentLivingRoomsWindowsSelectionPeek()
     {

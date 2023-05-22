@@ -41,19 +41,8 @@ export default {
             });
     },
 
-    getExcelHousingFiles: ({ filters, extraFilters, sorts }) => {
-        const requestUrl = `${URL_API}/api/housing-file/excel`;
-        return axiosInstance.get(requestUrl, {
-            params: {
-                filters: JSON.stringify(filters),
-                sorts: JSON.stringify(sorts),
-            },
-            responseType: 'blob',
-        });
-    },
-
     getExcelSpecifications: ({ filters, extraFilters, sorts }) => {
-        const requestUrl = `${URL_API}/api/housing-file/excel-specifications`;
+        const requestUrl = `${URL_API}/api/housing-file-specification/excel-specifications`;
         return axiosInstance.get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),

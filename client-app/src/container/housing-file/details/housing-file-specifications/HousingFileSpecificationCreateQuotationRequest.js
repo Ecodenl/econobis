@@ -36,6 +36,11 @@ class HousingFileSpecificationCreateQuotationRequest extends Component {
         });
     };
 
+    closeModalCreateQuotationRequest = event => {
+        this.props.closeModalCreateQuotationRequest();
+        this.props.fetchHousingFileDetails(this.props.housingFileId);
+    };
+
     handleSubmit = event => {
         if (validator.isEmpty(this.state.organisationOrCoachId + '')) {
             this.setState({
@@ -59,7 +64,7 @@ class HousingFileSpecificationCreateQuotationRequest extends Component {
         return (
             <Modal
                 buttonConfirmText="Kansactie(s) maken"
-                closeModal={this.props.closeModalCreateQuotationRequest}
+                closeModal={this.closeModalCreateQuotationRequest}
                 confirmAction={this.handleSubmit}
                 title="Kansactie(s) maken"
             >

@@ -14,6 +14,7 @@ use App\Eco\HousingFile\HousingFile;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
 use App\Eco\Webform\Webform;
+use App\Helpers\Email\EmailHelper;
 use App\Http\Controllers\Controller;
 use App\Notifications\HoomdossierRequestProcessed;
 use Carbon\Carbon;
@@ -248,6 +249,7 @@ class EndPointHoomDossierController extends Controller
             } elseif ($webform->responsibleTeam && $webform->responsibleTeam->users()->exists()) {
                 $users = $webform->responsibleTeam->users;
             }
+            (new EmailHelper())->setConfigToDefaultMailbox();
             Notification::send($users, new HoomdossierRequestProcessed($this->logs, $data, $success, $webform));
         } catch (\Exception $e) {
             report($e);

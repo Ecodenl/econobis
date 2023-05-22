@@ -21,18 +21,31 @@ class Filter extends RequestFilter
         'city',
         'measureCategoryName',
         'measureName',
-        'statusName',
+        'statusId',
         'measureDateStart',
         'measureDateEnd',
+        'answer',
+        'floorId',
+        'sideId',
+        'typeBrand',
+        'typeOfExecutionId',
+        'savingsGasFrom',
+        'savingsGasTo',
+        'savingsElectricityFrom',
+        'savingsElectricityTill',
+        'co2SavingsFrom',
+        'co2SavingsTill',
     ];
 
     protected $mapping = [
         'fullName' => 'contacts.full_name',
         'measureCategoryName' => 'measure_categories.name',
         'measureName' => 'measures.name',
-        'statusName' => 'housing_file_specification_statuses.name',
-//        'measureDateStart' => 'measure_date',
-//        'measureDateEnd' => 'measure_date',
+        'statusId' => 'status_id',
+        'floorId' => 'floor_id',
+        'sideId' => 'side_id',
+        'typeBrand' => 'type_brand',
+        'typeOfExecutionId' => 'type_of_execution',
     ];
 
     protected $joins = [
@@ -42,11 +55,11 @@ class Filter extends RequestFilter
         'city' => 'address',
         'measureCategoryName' => 'measureCategory',
         'measureName' => 'measure',
-        'statusName' => 'housingFileSpecificationStatus',
     ];
 
     protected $defaultTypes = [
         '*' => 'ct',
+        'status' => 'eq',
     ];
 
     protected function applyAddressFilter($query, $type, $data) {
@@ -96,6 +109,36 @@ class Filter extends RequestFilter
     protected function applyMeasureDateEndFilter($query, $type, $data)
     {
         $query->where('measure_date', '<=', Carbon::parse($data)->endOfDay());
+        return false;
+    }
+    protected function applySavingsGasFromFilter($query, $type, $data)
+    {
+        $query->where('savings_gas', '>=', (float)$data);
+        return false;
+    }
+    protected function applySavingsGasTillFilter($query, $type, $data)
+    {
+        $query->where('savings_gas', '<=', (float)$data);
+        return false;
+    }
+    protected function applySavingsElectricityFromFilter($query, $type, $data)
+    {
+        $query->where('savings_electricity', '>=', (float)$data);
+        return false;
+    }
+    protected function applySavingsElectricityTillFilter($query, $type, $data)
+    {
+        $query->where('savings_electricity', '<=', (float)$data);
+        return false;
+    }
+    protected function applyCo2SavingsFromFilter($query, $type, $data)
+    {
+        $query->where('co2_savings', '>=', (float)$data);
+        return false;
+    }
+    protected function applyCo2SavingsTillFilter($query, $type, $data)
+    {
+        $query->where('co2_savings', '<=', (float)$data);
         return false;
     }
 }

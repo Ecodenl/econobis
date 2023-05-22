@@ -3,7 +3,9 @@ import moment from 'moment';
 
 import Icon from 'react-icons-kit';
 // import { trash } from 'react-icons-kit/fa/trash';
-import { pencil } from 'react-icons-kit/fa/pencil';
+// import { pencil } from 'react-icons-kit/fa/pencil';
+import { arrowDown } from 'react-icons-kit/fa/arrowDown';
+import { arrowRight } from 'react-icons-kit/fa/arrowRight';
 
 class HousingFileSpecificationsListItem extends Component {
     constructor(props) {
@@ -64,6 +66,8 @@ class HousingFileSpecificationsListItem extends Component {
 
         const { showMore, showActionButtons } = this.state;
 
+        const hasMore =
+            answer || floor || side || typeBrand || typeOfExecution || savingsGas || savingsElectricity || co2Savings;
         return (
             <>
                 <tr
@@ -102,10 +106,13 @@ class HousingFileSpecificationsListItem extends Component {
                     <td>{status ? status.name : ''}</td>
                     <td>{measureDate ? moment(measureDate).format('DD-MM-Y') : ''}</td>
                     <td>
-                        {!showCheckboxList && showActionButtons ? (
+                        {!showCheckboxList && hasMore ? (
                             <a role="button" onClick={() => this.toggleShowMore()}>
-                                <Icon className="mybtn-success" size={14} icon={pencil} />
-                                &nbsp;
+                                {showMore ? (
+                                    <Icon className="mybtn-success" size={14} icon={arrowDown} />
+                                ) : (
+                                    <Icon className="mybtn-success" size={14} icon={arrowRight} />
+                                )}
                             </a>
                         ) : (
                             ''

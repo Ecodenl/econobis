@@ -43,7 +43,7 @@ const HousingFileSpecificationsListHead = props => {
                 width={'15%'}
                 setSorts={setSorts}
             />
-            <DataTableHeadTitleAndSort sortColumn={'statusName'} title={'Status'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'status'} title={'Status'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'measureDate'}
                 title={'Datum realisatie'}

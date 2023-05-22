@@ -50,8 +50,8 @@ class QuotationRequestWorkflowHelper
         }
 
         $mail = Mail::to($this->contact->primaryEmailAddress);
-        if($this->quotationRequest->organisationOrCoach){
-            $mail->cc([$this->quotationRequest->organisationOrCoach->primaryEmailAddress]);
+        if($this->quotationRequest->organisationOrCoach && $this->quotationRequest->organisationOrCoach->primaryEmailAddress){
+            $mail->cc($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
         }
         $this->mailWorkflow($emailTemplate, $mail);
 

@@ -87,13 +87,20 @@ class ProjectRevenueController extends ApiController
         $offset = $request->input('page') ? $request->input('page') * $limit : 0;
 
         $distribution = $projectRevenue->distribution()->limit($limit)->offset($offset)->orderBy('status')->get();
+
         $distributionIdsTotal = $projectRevenue->distribution()->pluck('id')->toArray();
         $total = $projectRevenue->distribution()->count();
+
+        $distributionIdsTotalToProcess =$projectRevenue->distribution()->where('status', '!=', 'processed')->pluck('id')->toArray();
+        $totalToProcess = $projectRevenue->distribution()->where('status', '!=', 'processed')->count();
+
 
         return FullProjectRevenueDistribution::collection($distribution)
             ->additional(['meta' => [
                 'total' => $total,
                 'distributionIdsTotal' => $distributionIdsTotal,
+                'totalToProcess' => $totalToProcess,
+                'distributionIdsTotalToProcess' => $distributionIdsTotalToProcess,
             ]
             ]);
 

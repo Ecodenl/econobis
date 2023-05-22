@@ -37,14 +37,6 @@ const DataTableCustomFilter = props => {
         props.handleFilterValueChange(name, value, props.filterNumber);
     };
 
-    const handleInputChangeHousingFileField = event => {
-        const target = event.target;
-        const value = target.value;
-        const name = target.name;
-
-        props.handleFilterValueChange(name, value, props.filterNumber);
-    };
-
     const handleInputChangeDate = value => {
         props.handleFilterValueChange('data', value, props.filterNumber);
     };
@@ -195,120 +187,127 @@ const DataTableCustomFilter = props => {
                 )}
             </td>
             <td className="col-md-4">
-                {props.filter.type !== 'nl' && props.filter.type !== 'nnl' && (
-                    <React.Fragment>
-                        {(fieldType === 'number' ||
-                            fieldType === 'string' ||
-                            fieldType === 'numberOrString' ||
-                            fieldType === 'stringWithoutNull') && (
-                            <input
-                                className={'form-control input-sm'}
-                                type="text"
-                                id="data"
-                                name="data"
-                                value={props.filter.data}
-                                onChange={handleInputChange}
-                                readOnly={props.filter.readOnly}
-                            />
-                        )}
-                        {(fieldType === 'dropdown' || fieldType === 'dropdownHas') && (
-                            <select
-                                className={`form-control input-sm`}
-                                id="data"
-                                name="data"
-                                value={props.filter.data}
-                                onChange={handleInputChange}
-                                disabled={props.filter.readOnly}
-                            >
-                                <option value="">--Willekeurige waarde--</option>
-                                {props.fields[props.filter.field].dropDownOptions.map(option => {
-                                    return (
-                                        <option key={option.id} value={option.id}>
-                                            {option[optionName]}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        )}
-                        {fieldType === 'boolean' && (
-                            <select
-                                className={`form-control input-sm`}
-                                id="data"
-                                name="data"
-                                value={props.filter.data}
-                                onChange={handleInputChange}
-                                disabled={props.filter.readOnly}
-                            >
-                                {props.fields[props.filter.field].dropDownOptions.map(option => {
-                                    return (
-                                        <option key={option.id} value={option.id}>
-                                            {option[optionName]}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        )}
-                        {fieldType === 'dropdownRelations' && (
-                            <select
-                                className={`form-control input-sm`}
-                                id="data"
-                                name="data"
-                                value={props.filter.data}
-                                onChange={handleInputChange}
-                                disabled={props.filter.readOnly}
-                            >
-                                <option value="">--Willekeurige waarde--</option>
-                                {props.fields[props.filter.field].dropDownOptions.map(option => {
-                                    return (
-                                        <option key={option.id} value={option.id}>
-                                            {option[optionName]}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        )}
-                        {fieldType === 'date' && (
-                            <DataTableDateFilter
-                                id="data"
-                                value={props.filter.data}
-                                onChangeAction={handleInputChangeDate}
-                                readOnly={props.filter.readOnly}
-                            />
-                        )}
-                        {fieldType === 'dropdownHousingFileFields' && (
-                            <select
-                                className={`form-control input-sm`}
-                                id="data"
-                                name="data"
-                                value={props.filter.data}
-                                onChange={handleInputChangeHousingFileField}
-                                disabled={props.filter.readOnly}
-                            >
-                                <option value="">--Kies een kenmerk--</option>
-                                {props.fields[props.filter.field].dropDownOptions.map(option => {
-                                    return (
-                                        <option key={option.key} value={option.key}>
-                                            {option[optionName]}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        )}
-                        {fieldType === 'housingFileFieldValue' && (
-                            <DataTableHousingFileFieldFilter
-                                id="data"
-                                name="data"
-                                value={props.filter.data}
-                                handleInputChange={handleInputChange}
-                                handleInputChangeDate={handleInputChangeDate}
-                                readOnly={props.filter.readOnly}
-                                housingFileField={housingFileField}
-                            />
-                        )}
-                    </React.Fragment>
-                )}
+                {props.filter.type !== 'nl' &&
+                    props.filter.type !== 'nnl' &&
+                    props.filter.type !== 'is0' &&
+                    props.filter.type !== 'isn0' && (
+                        <React.Fragment>
+                            {(fieldType === 'number' ||
+                                fieldType === 'string' ||
+                                fieldType === 'numberOrString' ||
+                                fieldType === 'stringWithoutNull') && (
+                                <input
+                                    className={'form-control input-sm'}
+                                    type="text"
+                                    id="data"
+                                    name="data"
+                                    value={props.filter.data}
+                                    onChange={handleInputChange}
+                                    readOnly={props.filter.readOnly}
+                                />
+                            )}
+                            {(fieldType === 'dropdown' || fieldType === 'dropdownHas') && (
+                                <select
+                                    className={`form-control input-sm`}
+                                    id="data"
+                                    name="data"
+                                    value={props.filter.data}
+                                    onChange={handleInputChange}
+                                    disabled={props.filter.readOnly}
+                                >
+                                    <option value="">--Willekeurige waarde--</option>
+                                    {props.fields[props.filter.field].dropDownOptions.map(option => {
+                                        return (
+                                            <option key={option.id} value={option.id}>
+                                                {option[optionName]}
+                                            </option>
+                                        );
+                                    })}
+                                </select>
+                            )}
+                            {fieldType === 'boolean' && (
+                                <select
+                                    className={`form-control input-sm`}
+                                    id="data"
+                                    name="data"
+                                    value={props.filter.data}
+                                    onChange={handleInputChange}
+                                    disabled={props.filter.readOnly}
+                                >
+                                    {props.fields[props.filter.field].dropDownOptions.map(option => {
+                                        return (
+                                            <option key={option.id} value={option.id}>
+                                                {option[optionName]}
+                                            </option>
+                                        );
+                                    })}
+                                </select>
+                            )}
+                            {fieldType === 'dropdownRelations' && (
+                                <select
+                                    className={`form-control input-sm`}
+                                    id="data"
+                                    name="data"
+                                    value={props.filter.data}
+                                    onChange={handleInputChange}
+                                    disabled={props.filter.readOnly}
+                                >
+                                    <option value="">--Willekeurige waarde--</option>
+                                    {props.fields[props.filter.field].dropDownOptions.map(option => {
+                                        return (
+                                            <option key={option.id} value={option.id}>
+                                                {option[optionName]}
+                                            </option>
+                                        );
+                                    })}
+                                </select>
+                            )}
+                            {fieldType === 'date' && (
+                                <DataTableDateFilter
+                                    id="data"
+                                    value={props.filter.data}
+                                    onChangeAction={handleInputChangeDate}
+                                    readOnly={props.filter.readOnly}
+                                />
+                            )}
+                            {fieldType === 'dropdownHousingFileFields' && (
+                                <select
+                                    className={`form-control input-sm`}
+                                    id="data"
+                                    name="data"
+                                    value={props.filter.data}
+                                    onChange={handleInputChange}
+                                    disabled={props.filter.readOnly}
+                                >
+                                    <option value="">--Kies een kenmerk--</option>
+                                    {props.fields[props.filter.field].dropDownOptions.map(option => {
+                                        return (
+                                            <option key={option.key} value={option.key}>
+                                                {option[optionName]}
+                                            </option>
+                                        );
+                                    })}
+                                </select>
+                            )}
+                            {fieldType === 'housingFileFieldValue' && (
+                                <DataTableHousingFileFieldFilter
+                                    id="data"
+                                    name="data"
+                                    value={props.filter.data}
+                                    handleInputChange={handleInputChange}
+                                    handleInputChangeDate={handleInputChangeDate}
+                                    readOnly={props.filter.readOnly}
+                                    housingFileField={housingFileField}
+                                />
+                            )}
+                        </React.Fragment>
+                    )}
             </td>
-            {isCustomProductField || isCustomOpportunityField || isCustomIntakeField || props.filter.readOnly ? (
+            {isCustomProductField ||
+            isCustomOpportunityField ||
+            isCustomIntakeField ||
+            isCustomHousingFileField ||
+            props.filter.readOnly ? (
                 <td />
             ) : (
                 <td className="col-md-1">

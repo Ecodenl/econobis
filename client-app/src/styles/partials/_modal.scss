@@ -47,6 +47,11 @@
   overflow-y: scroll;
 }
 
+.scrollable-modal-body {
+  max-height: 75vh;
+  overflow-y: scroll;
+}
+
 .close-modal {
   cursor: pointer;
   float: right;

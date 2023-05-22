@@ -57,26 +57,6 @@ class HousingFilesListApp extends Component {
         }, 100);
     };
 
-    getExcelSpecifications = () => {
-        this.props.blockUI();
-        setTimeout(() => {
-            const filters = filterHelper(this.props.housingFilesFilters);
-            const sorts = this.props.housingFilesSorts;
-
-            HousingFilesAPI.getExcelSpecifications({ filters, sorts })
-                .then(payload => {
-                    fileDownload(
-                        payload.data,
-                        'Woningdossiers-specificaties-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.xlsx'
-                    );
-                    this.props.unblockUI();
-                })
-                .catch(error => {
-                    this.props.unblockUI();
-                });
-        }, 100);
-    };
-
     resetHousingFileFilters = () => {
         this.props.clearFilterHousingFiles();
 
@@ -113,7 +93,6 @@ class HousingFilesListApp extends Component {
                         <HousingFilesListToolbar
                             resetHousingFileFilters={() => this.resetHousingFileFilters()}
                             getExcelHousingFiles={this.getExcelHousingFiles}
-                            getExcelSpecifications={this.getExcelSpecifications}
                         />
                     </div>
 

@@ -28,7 +28,7 @@ class Intake extends Model
      * @var array
      */
     protected $guarded = [
-        'id', 'address_id', 'status_id',
+        'id'
     ];
 
     public function contact()

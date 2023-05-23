@@ -85,10 +85,13 @@ class Kernel extends ConsoleKernel
         $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('17:58');
 
         $schedule->command('revenue:checkWrongDistributionParts')->timezone('Europe/Amsterdam')->dailyAt('21:00');
-        $schedule->command('addressEnergySupplier:checkOverlappingEnergySuppliers')->dailyAt('01:10');
         $schedule->command('revenue:checkWrongEnergySupplierDataInParts')->timezone('Europe/Amsterdam')->dailyAt('21:05');
         $schedule->command('revenue:checkMissingEnergySupplierDataInParts')->timezone('Europe/Amsterdam')->dailyAt('21:10');
         $schedule->command('revenue:checkWrongRevenueDistributionKwhStatus')->timezone('Europe/Amsterdam')->dailyAt('21:15');
+        $schedule->command('addressEnergySupplier:checkOverlappingEnergySuppliers')->dailyAt('21:20');
+        $schedule->command('participants:checkFirstStartingDate')->dailyAt('21:25');
+        $schedule->command('participants:checkTerminationDate')->dailyAt('21:30');
+        $schedule->command('project:checkWrongProjectDataForLastProjectRevenue')->dailyAt('21:35');
 
         $schedule->command('laposta:processStateAllMembersLaposta')->timezone('Europe/Amsterdam')->dailyAt('23:45');
 
@@ -100,11 +103,6 @@ class Kernel extends ConsoleKernel
         // don't schedule anything between 02:00 and 03:00 because of summer/winter time changes (02:00 -> 03:00 job is skipt and 03:00-02:00 job is run double.
 
         // report:contactGroupsContacts after laposta:processStateAllMembersLaposta
-        $schedule->command('participants:checkFirstStartingDate')->dailyAt('06:15');
-        $schedule->command('participants:checkTerminationDate')->dailyAt('06:30');
-
-        $schedule->command('project:checkWrongProjectDataForLastProjectRevenue')->dailyAt('06:40');
-
         $schedule->command('report:contactGroupsContacts')->timezone('Europe/Amsterdam')->dailyAt('03:05');
 
         $schedule->command('email:deleteEmailDefinitive')->timezone('Europe/Amsterdam')->dailyAt('03:30');

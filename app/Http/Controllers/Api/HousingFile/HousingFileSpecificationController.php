@@ -74,7 +74,7 @@ class HousingFileSpecificationController extends ApiController
                     'address_id' => $housingFile->address->id,
                     'intake_status_id' => $intakeStatusIdClosedWithOpportunity,
                     'campaign_id' => $campaign->id,
-                    'note' => 'Intake gemaakt vanuit woningdossier',
+                    'note' => 'Intake gemaakt vanuit woningdossier specificatie',
                 ]);
                 $intake->sources()->sync($housingFileIntakeSource);
 

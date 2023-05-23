@@ -10,6 +10,7 @@ import EmailAPI from '../../../api/email/EmailAPI';
 import { browserHistory, hashHistory } from 'react-router';
 import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
+import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
 
 class EmailAnswerApp extends Component {
     constructor(props) {
@@ -90,8 +91,8 @@ class EmailAnswerApp extends Component {
                     cc: payload.cc ? payload.cc.join(',') : '',
                     bcc: payload.bcc ? payload.bcc.join(',') : '',
                     subject: payload.subject ? payload.subject : '',
-                    htmlBody: payload.htmlBody ? payload.htmlBody : '',
-                    initialHtmlBody: payload.htmlBody ? payload.htmlBody : '',
+                    htmlBody: payload.htmlBodyWithEmbeddedImages ? payload.htmlBodyWithEmbeddedImages : '',
+                    initialHtmlBody: payload.htmlBodyWithEmbeddedImages ? payload.htmlBodyWithEmbeddedImages : '',
                     attachments: payload.attachments ? payload.attachments : '',
                 },
                 emailAddressesToSelected: payload.emailAddressesToSelected,
@@ -139,6 +140,9 @@ class EmailAnswerApp extends Component {
                         : this.state.email.htmlBody,
                 },
             });
+            if (payload.defaultAttachmentDocument) {
+                this.addDocumentAsAttachment(payload.defaultAttachmentDocument.id);
+            }
         });
     }
 
@@ -220,6 +224,18 @@ class EmailAnswerApp extends Component {
                 attachments: [...this.state.email.attachments, ...files],
             },
         });
+    }
+
+    addDocumentAsAttachment(documentId) {
+        if (documentId) {
+            DocumentDetailsAPI.fetchDocumentDetails(documentId).then(payload => {
+                let filename = payload.data.data.filename ? payload.data.data.filename : 'bijlage.pdf';
+
+                DocumentDetailsAPI.download(documentId).then(payload => {
+                    this.addAttachment([new File([payload.data], filename)]);
+                });
+            });
+        }
     }
 
     deleteAttachment(attachmentName) {
@@ -332,7 +348,10 @@ class EmailAnswerApp extends Component {
             data.append('replyTypeId', email.replyTypeId);
             data.append('contactGroupId', email.contactGroupId);
             if (email.attachments) {
-                email.attachments.map((file, key) => {
+                /**
+                 * alleen bijlages zonder "cid", de cid bijlages zijn inline bijlages en worden bij opslaan automatisch toegevoegd (dmv de verwijzing in oldEmailId)
+                 */
+                email.attachments.filter(a => !a.cid).map((file, key) => {
                     if (file.id) {
                         data.append('oldAttachments[' + key + ']', JSON.stringify(file));
                     } else {

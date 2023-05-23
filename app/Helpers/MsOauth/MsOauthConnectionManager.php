@@ -245,7 +245,7 @@ class MsOauthConnectionManager extends Controller
                 $this->mailbox->valid = false;
                 $this->mailbox->save();
 
-                Log::error('Error requesting access token (1)');
+                Log::error('Error requesting access token (1) for mailbox: ' . $this->mailbox->id);
                 Log::error(json_encode($e->getResponseBody()));
 
 //                return json_encode($e->getResponseBody());
@@ -254,7 +254,7 @@ class MsOauthConnectionManager extends Controller
             $this->mailbox->valid = false;
             $this->mailbox->save();
 
-            Log::error('Error requesting access token (2)');
+            Log::error('Error requesting access token (2) for mailbox: ' . $this->mailbox->id);
 
 //            return json_encode('Error requesting access token (2)');
         }

@@ -3,7 +3,9 @@ import React from 'react';
 import ConceptAttachmentsItem from './ConceptAttachmentsItem';
 
 const ConceptAttachmentsList = props => {
-    const { attachments } = props;
+    let { attachments } = props;
+
+    attachments = attachments.filter(a => !a.cid);
 
     return (
         <div>

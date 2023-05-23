@@ -68,7 +68,9 @@ class UpdateMemberToLaposta implements ShouldQueue
         ];
 
         try {
+            // wait for 1,5 second
             sleep(1);
+            usleep(500000);
             $lapostaResponse = $member->update($this->lapostaMemberId, $memberData);
 
             $lapostaMemberState = $lapostaResponse['member']['state'];

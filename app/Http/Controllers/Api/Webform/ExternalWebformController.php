@@ -68,6 +68,7 @@ use App\Eco\Webform\Webform;
 use App\Helpers\Address\AddressHelper;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\ContactGroup\ContactGroupHelper;
+use App\Helpers\Email\EmailHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Workflow\IntakeWorkflowHelper;
 use App\Helpers\Workflow\TaskWorkflowHelper;
@@ -2876,6 +2877,7 @@ class ExternalWebformController extends Controller
             } elseif ($webform->responsibleTeam && $webform->responsibleTeam->users()->exists()) {
                 $users = $webform->responsibleTeam->users;
             }
+            (new EmailHelper())->setConfigToDefaultMailbox();
             Notification::send($users, new WebformRequestProcessed($this->logs, $data, $success, $webform));
         } catch (\Exception $e) {
             report($e);

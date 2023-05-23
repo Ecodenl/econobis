@@ -8,7 +8,7 @@ const RevenuesKwhDistributionFormList = props => {
     return (
         <div>
             <div className="row border header">
-                {props.revenuesKwh.confirmed && props.showCheckboxList ? (
+                {props.showCheckboxList ? (
                     <div className="col-sm-1">
                         <input type="checkbox" onChange={props.toggleCheckedAll} checked={props.checkedAll} />
                     </div>
@@ -39,7 +39,7 @@ const RevenuesKwhDistributionFormList = props => {
             ) : (
                 <div>Geen deelnemers bekend.</div>
             )}
-            {/* todo origineel 100: voor testen op 4*/}
+            {/* todo origineel 100: voor testen op 10*/}
             <DataTablePagination
                 initialPage={0}
                 onPageChangeAction={props.changePage}

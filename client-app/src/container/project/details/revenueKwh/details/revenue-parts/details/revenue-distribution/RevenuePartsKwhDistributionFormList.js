@@ -63,7 +63,7 @@ const RevenuePartsKwhDistributionFormList = props => {
                             <br />
                         </div>
                     )}
-                    {/* todo origineel 100: voor testen op 4*/}
+                    {/* todo origineel 100: voor testen op 10 */}
                     <DataTablePagination
                         initialPage={0}
                         onPageChangeAction={props.changePage}

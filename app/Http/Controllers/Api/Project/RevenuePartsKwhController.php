@@ -72,6 +72,7 @@ class RevenuePartsKwhController extends ApiController
 
     public function getRevenueDistributionParts(RevenuePartsKwh $revenuePartsKwh, Request $request)
     {
+//        todo origineel 100: voor testen op 10
         $limit = 100;
         $offset = $request->input('page') ? $request->input('page') * $limit : 0;
 

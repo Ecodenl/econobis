@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\Project\Project;
 use App\Helpers\Email\EmailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
@@ -17,6 +18,7 @@ class checkFirstStartingDateParticipants extends Command
      * @var string
      */
     protected $signature = 'participants:checkFirstStartingDate';
+    protected $mailTo = 'wim.mosman@xaris.nl';
 
     /**
      * The console command description.
@@ -45,55 +47,66 @@ class checkFirstStartingDateParticipants extends Command
         Log::info('Procedure check op ongeldige eerste ingangsdatum deelnemers gestart');
 
         $wrongParticipantProjects = [];
-        $counter = 1;
 
         $projects = Project::all();
 
         foreach($projects as $project) {
             $participantsProject = $project->participantsProject()->get();
+            $arrayDepositIds = [];
+            $mutationTypeFirstDesposit = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id',  $project->projectType->id)->first();
+            if($mutationTypeFirstDesposit){
+                $arrayDepositIds[] = $mutationTypeFirstDesposit->id;
+            }
+            $mutationTypeDesposit = ParticipantMutationType::where('code_ref', 'deposit')->where('project_type_id',  $project->projectType->id)->first();
+            if($mutationTypeDesposit){
+                $arrayDepositIds[] = $mutationTypeDesposit->id;
+            }
 
             foreach($participantsProject as $participantProject) {
-                $firstMutation = $participantProject->mutationsDefinitive()->first();
+//                Log::info('Deelnemer: ' . $participantProject->id);
+//                Log::info($participantProject->mutationsDefinitive()->first());
+//                Log::info($participantProject->mutationsDefinitive()->whereIn('type_id', $arrayDepositIds)->first());
+                $firstMutation = $participantProject->mutationsDefinitive()->whereIn('type_id', $arrayDepositIds)->first();
                 if(
-                    isSet($firstMutation) &&
-                    ($firstMutation->date_entry != null) &&
-                    ($participantProject->date_register != $firstMutation->date_entry) &&
-                    ($firstMutation->type->code_ref === 'first_deposit' || $firstMutation->type->code_ref === 'deposit')
+                    isSet($firstMutation)
+                    && ($firstMutation->date_entry != null)
+                    && ($participantProject->date_register != $firstMutation->date_entry)
                 ) {
                     $dateRegister = $participantProject->date_register ? $participantProject->date_register : 'NNB';
-                    $wrongParticipantProjects[$counter]['project'] = $project->id . ' - ' . $project->name;
-                    $wrongParticipantProjects[$counter]['participant'] = $participantProject->id . ' - ' . $participantProject->contact->full_name;
-                    $wrongParticipantProjects[$counter]['dates'] = $dateRegister . ' - ' . $firstMutation->date_entry;
+                    $wrongParticipantProjects[]['project'] = $project->id . ' - ' . $project->name;
+                    $wrongParticipantProjects[]['participant'] = $participantProject->id . ' - ' . $participantProject->contact->full_name;
+                    $wrongParticipantProjects[]['dates'] = $dateRegister . ' - ' . $firstMutation->date_entry;
                 }
-                $counter++;
             }
         }
 
         if(!empty($wrongParticipantProjects)) {
-            $subject = 'Ongeldige eerste ingangsdatum deelnemers! - ' . \Config::get('app.APP_COOP_NAME');
-            Log::info($subject);
-            Log::info($wrongParticipantProjects);
-
-            $this->sendMail($subject, $wrongParticipantProjects);
+            $this->sendMail($wrongParticipantProjects);
+            Log::info('Ongeldige eerste ingangsdatum deelnemers gevonden, mail gestuurd');
+        } else {
+            Log::info('Geen ongeldige eerste ingangsdatum deelnemers gevonden');
         }
 
         Log::info('Procedure check op ongeldige eerste ingangsdatum deelnemers klaar');
     }
 
-    private function sendMail($subject, $wrongParticipantProjects)
+    private function sendMail($wrongParticipantProjects)
     {
         (new EmailHelper())->setConfigToDefaultMailbox();
+
+        $subject = 'Ongeldige eerste ingangsdatum deelnemers! (' . count($wrongParticipantProjects) . ') - ' . \Config::get('app.APP_COOP_NAME');
+
         $wrongParticipantProjectsHtml = "";
         foreach($wrongParticipantProjects as $wrongParticipantProject) {
             $wrongParticipantProjectsHtml .=
-                "Project: " . $wrongParticipantProject['project'] . "<br>" .
-                "Deelnemer: " . $wrongParticipantProject['participant'] . "<br>" .
-                "Datums: " . $wrongParticipantProject['dates'] . "<br><br>"
+                "<p>Project: " . $wrongParticipantProject['project'] . ", " .
+                "Deelnemer: " . $wrongParticipantProject['participant'] . ", " .
+                "Datums: " . $wrongParticipantProject['dates'] . "</p>"
             ;
         }
 
-        $mail = Mail::to('patrick@xaris.nl');
-        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>Ongeldige eerste ingangsdatum deelnemers!</title></head><body><p>'. $subject . '</p><p>' . \Config::get("app.name") .'</p><p>Ongeldige eerste ingangsdatum deelnemers:<br>' . $wrongParticipantProjectsHtml . '</p></body></html>';
+        $mail = Mail::to($this->mailTo);
+        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'.$subject.'</title></head><body><p>'. $subject . '</p>' . $wrongParticipantProjectsHtml . '</body></html>';
 
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;

@@ -3,8 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Eco\Project\Project;
+use App\Eco\Project\ProjectRevenueCategory;
 use App\Helpers\Email\EmailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -17,6 +19,7 @@ class checkWrongProjectDataForLastProjectRevenue extends Command
      * @var string
      */
     protected $signature = 'project:checkWrongProjectDataForLastProjectRevenue';
+    protected $mailTo = 'wim.mosman@xaris.nl';
 
     /**
      * The console command description.
@@ -44,63 +47,58 @@ class checkWrongProjectDataForLastProjectRevenue extends Command
     {
         Log::info('Procedure check op ongeldige projectgegevens inzake laatste opbrengstverdelingen gestart');
 
-        $wrongProjectsDataForLastProjectRevenue = [];
-        $counter = 1;
+        $wrongProjectsDataForLastProjectRevenueEuroIds = [];
+        $wrongProjectsDataForLastProjectRedemptionEuroIds = [];
+        $wrongProjectsDataForLastProjectRevenueKwhIds = [];
 
         $projects = Project::all();
 
+        $projectRevenueCategoryRevenueEuroKwh = ProjectRevenueCategory::where('code_ref', 'revenueEuro' )->first()->id;
+        $projectRevenueCategoryRedemptionEuro = ProjectRevenueCategory::where('code_ref', 'redemptionEuro' )->first()->id;
+
         foreach($projects as $project) {
-            //wel date_interest_bearing maar geen confirmed projectRevenues van category 2
+            //wel date_interest_bearing maar geen confirmed projectRevenues van category 2 revenueEuro
             if (
                 $project->date_interest_bearing !== null &&
-                $project->projectRevenues()->where('category_id', 2)->where('confirmed', 1)->count() === 0
+                $project->projectRevenues()->where('category_id', $projectRevenueCategoryRevenueEuroKwh)->where('confirmed', 1)->count() === 0
             ) {
-                $wrongProjectsDataForLastProjectRevenue[$counter] = $project->id;
-                $counter++;
-                continue;
+                $wrongProjectsDataForLastProjectRevenueEuroIds[] = $project->id;
             }
 
-            //wel date_interest_bearing en projectRevenues van category 2, maar nieuwe startdatum is niet goed
+            //wel date_interest_bearing en projectRevenues van category 2 revenueEuro, maar nieuwe startdatum is niet goed
             if (
-                $project->projectRevenues()->where('category_id', 2)->where('confirmed', 1)->orderBy('date_end', 'Desc')->count() > 0 &&
-                $dateEnd = new \DateTime($project->projectRevenues()->where('category_id', 2)->where('confirmed', 1)->orderBy('date_end', 'Desc')->first()->date_end)
+                $project->projectRevenues()->where('category_id', $projectRevenueCategoryRevenueEuroKwh)->where('confirmed', 1)->orderBy('date_end', 'Desc')->count() > 0 &&
+                $dateEnd = Carbon::parse($project->projectRevenues()->where('category_id', $projectRevenueCategoryRevenueEuroKwh)->where('confirmed', 1)->orderBy('date_end', 'Desc')->first()->date_end)
             ) {
-                $dateEndPlusOneDay = $dateEnd->modify('+1 day');
+                $dateEndPlusOneDay = $dateEnd->addDay(1)->format('Y-m-d');
                 if (
                     $project->date_interest_bearing !== null &&
-                    $project->projectRevenues()->where('category_id', 2)->where('confirmed', 1)->count() > 0 &&
-                    $project->date_interest_bearing != $dateEndPlusOneDay
+                    $project->projectRevenues()->where('category_id', $projectRevenueCategoryRevenueEuroKwh)->where('confirmed', 1)->count() > 0 &&
+                    Carbon::parse($project->date_interest_bearing)->format('Y-m-d') != $dateEndPlusOneDay
                 ) {
-                    $wrongProjectsDataForLastProjectRevenue[$counter] = $project->id;
-                    $counter++;
-                    continue;
+                    $wrongProjectsDataForLastProjectRevenueEuroIds[] = $project->id;
                 }
             }
 
-            //wel date_interest_bearing_redemption maar geen confirmed projectRevenues van category 3
+            //wel date_interest_bearing_redemption maar geen confirmed projectRevenues van category 3 redemptionEuro
             if(
                 $project->date_interest_bearing_redemption !== null &&
-                $project->projectRevenues()->where('category_id', 3)->where('confirmed', 1)->count() === 0
+                $project->projectRevenues()->where('category_id', $projectRevenueCategoryRedemptionEuro)->where('confirmed', 1)->count() === 0
             ) {
-                $wrongProjectsDataForLastProjectRevenue[$counter] = $project->id;
-                $counter++;
-                continue;
+                $wrongProjectsDataForLastProjectRedemptionEuroIds[] = $project->id;
             }
-
             //wel date_interest_bearing_redemption en confirmed projectRevenues van category 3, maar nieuwe startdatum is niet goed
             if(
-                $project->projectRevenues()->where('category_id', 3)->where('confirmed', 1)->orderBy('date_end', 'Desc')->count() > 0 &&
-                $dateEnd = new \DateTime($project->projectRevenues()->where('category_id', 3)->where('confirmed', 1)->orderBy('date_end', 'Desc')->first()->date_end)
+                $project->projectRevenues()->where('category_id', $projectRevenueCategoryRedemptionEuro)->where('confirmed', 1)->orderBy('date_end', 'Desc')->count() > 0 &&
+                $dateEnd = Carbon::parse($project->projectRevenues()->where('category_id', $projectRevenueCategoryRedemptionEuro)->where('confirmed', 1)->orderBy('date_end', 'Desc')->first()->date_end)
             ) {
-                $dateEndPlusOneDay = $dateEnd->modify('+1 day');
+                $dateEndPlusOneDay = $dateEnd->addDay(1)->format('Y-m-d');
                 if (
                     $project->date_interest_bearing_redemption !== null &&
-                    $project->projectRevenues()->where('category_id', 2)->where('confirmed', 1)->count() > 0 &&
-                    $project->date_interest_bearing_redemption != $dateEndPlusOneDay
+                    $project->projectRevenues()->where('category_id', $projectRevenueCategoryRedemptionEuro)->where('confirmed', 1)->count() > 0 &&
+                    Carbon::parse($project->date_interest_bearing_redemption)->format('Y-m-d') != $dateEndPlusOneDay
                 ) {
-                    $wrongProjectsDataForLastProjectRevenue[$counter] = $project->id;
-                    $counter++;
-                    continue;
+                    $wrongProjectsDataForLastProjectRedemptionEuroIds[] = $project->id;
                 }
             }
 
@@ -109,9 +107,7 @@ class checkWrongProjectDataForLastProjectRevenue extends Command
                 $project->date_interest_bearing_kwh !== null &&
                 $project->revenuesKwh()->where('confirmed', 1)->count() === 0
             ) {
-                $wrongProjectsDataForLastProjectRevenue[$counter] = $project->id;
-                $counter++;
-                continue;
+                $wrongProjectsDataForLastProjectRevenueKwhIds[] = $project->id;
             }
 
             //wel date_interest_bearing_kwh en revenuesKwh, maar nieuwe startdatum is niet goed
@@ -125,9 +121,7 @@ class checkWrongProjectDataForLastProjectRevenue extends Command
                     $project->revenuesKwh()->where('confirmed', 1)->count() > 0 &&
                     $project->date_interest_bearing_kwh != $dateEndPlusOneDay
                 ) {
-                    $wrongProjectsDataForLastProjectRevenue[$counter] = $project->id;
-                    $counter++;
-                    continue;
+                    $wrongProjectsDataForLastProjectRevenueKwhIds[] = $project->id;
                 }
             }
 
@@ -140,35 +134,45 @@ class checkWrongProjectDataForLastProjectRevenue extends Command
                     $project->kwh_start_low_next_revenue != $project->revenuesKwh()->orderBy('date_end', 'Desc')->first()->kwh_start_low
                 )
             ) {
-                $wrongProjectsDataForLastProjectRevenue[$counter] = $project->id;
-                $counter++;
-                continue;
+                $wrongProjectsDataForLastProjectRevenueKwhIds[] = $project->id;
             }
         }
 
-        if(!empty($wrongProjectsDataForLastProjectRevenue)) {
-            $subject = 'Ongeldige projectgegevens inzake laatste opbrengstverdelingen! - ' . \Config::get('app.APP_COOP_NAME');
-            Log::info($subject);
-            Log::info($wrongProjectsDataForLastProjectRevenue);
-
-            $this->sendMail($subject, $wrongProjectsDataForLastProjectRevenue);
+        if(!empty($wrongProjectsDataForLastProjectRevenueEuroIds)
+        || !empty($wrongProjectsDataForLastProjectRedemptionEuroIds)
+        || !empty($wrongProjectsDataForLastProjectRevenueKwhIds)
+            ) {
+            $this->sendMail(array_unique($wrongProjectsDataForLastProjectRevenueEuroIds), array_unique($wrongProjectsDataForLastProjectRedemptionEuroIds), array_unique($wrongProjectsDataForLastProjectRevenueKwhIds));
+            Log::info('Ongeldige projectgegevens inzake laatste opbrengstverdelingen deelnemers gevonden, mail gestuurd');
+        } else {
+            Log::info('Geen ongeldige projectgegevens inzake laatste opbrengstverdelingen deelnemers gevonden');
         }
 
         Log::info('Procedure check op ongeldige projectgegevens inzake laatste opbrengstverdelingen klaar');
     }
 
-    private function sendMail($subject, $wrongProjectsDataForLastProjectRevenue)
+    private function sendMail($wrongProjectsDataForLastProjectRevenueEuroIds, $wrongProjectsDataForLastProjectRedemptionEuroIds, $wrongProjectsDataForLastProjectRevenueKwhIds)
     {
         (new EmailHelper())->setConfigToDefaultMailbox();
-        $wrongProjectDataForLastProjectRevenueHtml = "";
-        foreach($wrongProjectsDataForLastProjectRevenue as $wrongProjectDataForLastProjectRevenue) {
-            $wrongProjectDataForLastProjectRevenueHtml .=
-                "Project ID: " . $wrongProjectDataForLastProjectRevenue . "<br>"
-            ;
+
+        $subject = 'Ongeldige projectgegevens inzake laatste opbrengstverdelingen! (' . count($wrongProjectsDataForLastProjectRevenueEuroIds) . '/' . count($wrongProjectsDataForLastProjectRedemptionEuroIds) . '/' . count($wrongProjectsDataForLastProjectRevenueKwhIds) . ') - ' . \Config::get('app.APP_COOP_NAME');
+
+        $wrongProjectsDataForLastProjectRevenueHtml = "";
+        if(!empty($wrongProjectsDataForLastProjectRevenueEuroIds)) {
+            $wrongProjectsDataForLastProjectRevenueHtml .=
+                "<p>De volgende project id\'s hebben ongeldige projectgegevens inzake laatste opbrengstverdelingen (Euro):<br>" . implode(', ', $wrongProjectsDataForLastProjectRevenueEuroIds) . "</p>";
+        }
+        if(!empty($wrongProjectsDataForLastProjectRedemptionEuroIds)) {
+            $wrongProjectsDataForLastProjectRevenueHtml .=
+                "<p>De volgende project id\'s hebben ongeldige projectgegevens inzake laatste opbrengstverdelingen (Aflossing):<br>" . implode(', ', $wrongProjectsDataForLastProjectRedemptionEuroIds) . "</p>";
+        }
+        if(!empty($wrongProjectsDataForLastProjectRevenueKwhIds)) {
+            $wrongProjectsDataForLastProjectRevenueHtml .=
+                "<p>De volgende project id\'s hebben ongeldige projectgegevens inzake laatste opbrengstverdelingen (Kwh):<br>" . implode(', ', $wrongProjectsDataForLastProjectRevenueKwhIds) . "</p>";
         }
 
-        $mail = Mail::to('patrick@xaris.nl');
-        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>Ongeldige projectgegevens inzake laatste opbrengstverdelingen!</title></head><body><p>'. $subject . '</p><p>' . \Config::get("app.name") .'</p><p>Ongeldige projectgegevens inzake laatste opbrengstverdelingen:<br>' . $wrongProjectDataForLastProjectRevenueHtml . '</p></body></html>';
+        $mail = Mail::to($this->mailTo);
+        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'.$subject.'</title></head><body><p>'. $subject . '</p>' . $wrongProjectsDataForLastProjectRevenueHtml . '</body></html>';
 
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;

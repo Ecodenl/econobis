@@ -17,6 +17,7 @@ class checkOverlappingEnergySuppliers extends Command
      * @var string
      */
     protected $signature = 'addressEnergySupplier:checkOverlappingEnergySuppliers';
+    protected $mailTo = 'wim.mosman@xaris.nl';
 
     /**
      * The console command description.
@@ -44,7 +45,7 @@ class checkOverlappingEnergySuppliers extends Command
     {
         Log::info('Procedure of energieleveranciers overlappen gestart');
 
-        $overlappingAddressIds = "";
+        $overlappingAddressIds = [];
 
         $addresses = Address::all();
 
@@ -73,28 +74,29 @@ class checkOverlappingEnergySuppliers extends Command
                 }
 
                 if($overlappingenergySuppliersCount > 0) {
-                    $overlappingAddressIds .= $address->id . ',';
+                    $overlappingAddressIds[] = $address->id;
                 }
             }
         }
 
-        if($overlappingAddressIds != "") {
-            $subject = 'Overlappende energie leveranciers! - ' . \Config::get('app.APP_COOP_NAME');
-            Log::info($subject);
-            Log::info($overlappingAddressIds);
-
-            $this->sendMail($subject, $overlappingAddressIds);
+        if(!empty($overlappingAddressIds)) {
+            $this->sendMail($overlappingAddressIds);
+            Log::info('Overlappende energie leveranciers gevonden, mail gestuurd');
+        } else {
+            Log::info('Geen overlappende energie leveranciers gevonden');
         }
 
         Log::info('Procedure of energieleveranciers overlappen klaar');
     }
 
-    private function sendMail($subject, $overlappingAddressIds)
+    private function sendMail($overlappingAddressIds)
     {
         (new EmailHelper())->setConfigToDefaultMailbox();
 
-        $mail = Mail::to('patrick@xaris.nl');
-        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>Overlappende energie leveranciers!</title></head><body><p>'. $subject . '</p><p>' . \Config::get("app.name") .'</p><p>De volgende adres id\'s hebben overlappende energie leveranciers:<br>' . $overlappingAddressIds . '</p></body></html>';
+        $subject = 'Overlappende energie leveranciers! (' . count($overlappingAddressIds) . ') - ' . \Config::get('app.APP_COOP_NAME');
+
+        $mail = Mail::to($this->mailTo);
+        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'.$subject.'</title></head><body><p>'. $subject . '</p><p>De volgende adres id\'s hebben overlappende energie leveranciers:<br>' . implode(', ', $overlappingAddressIds) . '</p></body></html>';
 
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;

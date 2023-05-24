@@ -19,6 +19,7 @@ class checkMissingEnergySupplierDataInParts extends Command
      * @var string
      */
     protected $signature = 'revenue:checkMissingEnergySupplierDataInParts';
+    protected $mailTo = 'wim.mosman@xaris.nl';
 
     /**
      * The console command description.
@@ -177,11 +178,9 @@ class checkMissingEnergySupplierDataInParts extends Command
     {
         (new EmailHelper())->setConfigToDefaultMailbox();
 
-        $mail = Mail::to('wim.mosman@xaris.nl');
+        $mail = Mail::to($this->mailTo);
         $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>Missing parts</title></head><body><p>'. $subject . '</p><p>' . \Config::get("app.name") .'</p></body></html>';
 
-//        Log::info($subject);
-//        Log::info($htmlBody);
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
 

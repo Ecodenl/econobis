@@ -73,9 +73,11 @@ class checkFirstStartingDateParticipants extends Command
                     && ($participantProject->date_register != $firstMutation->date_entry)
                 ) {
                     $dateRegister = $participantProject->date_register ? $participantProject->date_register : 'NNB';
-                    $wrongParticipantProjects[]['project'] = $project->id . ' - ' . $project->name;
-                    $wrongParticipantProjects[]['participant'] = $participantProject->id . ' - ' . $participantProject->contact->full_name;
-                    $wrongParticipantProjects[]['dates'] = $dateRegister . ' - ' . $firstMutation->date_entry;
+                    $wrongParticipantProjects[] = [
+                        'project' => $project->id . ' - ' . $project->name,
+                        'participant' => $participantProject->id . ' - ' . $participantProject->contact->full_name,
+                        'dates' => $dateRegister . ' - ' . $firstMutation->date_entry
+                    ];
                 }
             }
         }

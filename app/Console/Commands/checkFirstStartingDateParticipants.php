@@ -17,7 +17,7 @@ class checkFirstStartingDateParticipants extends Command
      *
      * @var string
      */
-    protected $signature = 'participants:checkFirstStartingDate';
+    protected $signature = 'participants:checkFirstStartingDate {--recover=false}';
     protected $mailTo = 'wim.mosman@xaris.nl';
 
     /**
@@ -44,7 +44,10 @@ class checkFirstStartingDateParticipants extends Command
      */
     public function handle()
     {
-        Log::info('Procedure check op ongeldige eerste ingangsdatum deelnemers gestart');
+        // met of zonder herstel?
+        $doRecover = $this->option('recover') == 'true';
+
+        Log::info('Procedure check op ongeldige eerste ingangsdatum deelnemers gestart' . ($doRecover ? ' MET HERSTEL!' : '') );
 
         $wrongParticipantProjects = [];
 
@@ -78,12 +81,17 @@ class checkFirstStartingDateParticipants extends Command
                         'participant' => $participantProject->id . ' - ' . $participantProject->contact->full_name,
                         'dates' => $dateRegister . ' - ' . $firstMutation->date_entry
                     ];
+                    if($doRecover){
+                       $participantProject->date_register = $firstMutation->date_entry;
+                       $participantProject->save();
+                    }
+
                 }
             }
         }
 
         if(!empty($wrongParticipantProjects)) {
-            $this->sendMail($wrongParticipantProjects);
+            $this->sendMail($wrongParticipantProjects, $doRecover);
             Log::info('Ongeldige eerste ingangsdatum deelnemers gevonden, mail gestuurd');
         } else {
             Log::info('Geen ongeldige eerste ingangsdatum deelnemers gevonden');
@@ -92,13 +100,17 @@ class checkFirstStartingDateParticipants extends Command
         Log::info('Procedure check op ongeldige eerste ingangsdatum deelnemers klaar');
     }
 
-    private function sendMail($wrongParticipantProjects)
+    private function sendMail($wrongParticipantProjects, $doRecover)
     {
         (new EmailHelper())->setConfigToDefaultMailbox();
 
         $subject = 'Ongeldige eerste ingangsdatum deelnemers! (' . count($wrongParticipantProjects) . ') - ' . \Config::get('app.APP_COOP_NAME');
 
         $wrongParticipantProjectsHtml = "";
+        if($doRecover){
+            $wrongParticipantProjectsHtml .= "<p>MET HERSTEL!</p>";
+        }
+
         foreach($wrongParticipantProjects as $wrongParticipantProject) {
             $wrongParticipantProjectsHtml .=
                 "<p>Project: " . $wrongParticipantProject['project'] . ", " .

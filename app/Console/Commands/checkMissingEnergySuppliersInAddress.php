@@ -48,11 +48,10 @@ class checkMissingEnergySuppliersInAddress extends Command
      */
     public function handle()
     {
-
-        Log::info($this->description);
-
         // met of zonder herstel?
         $doRecover = $this->option('recover') == 'true';
+
+        Log::info($this->description . ($doRecover ? ' MET HERSTEL!' : '') );
 
         $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
         $energySupplierTypeElectriciteit = EnergySupplierType::where('name', 'Electriciteit')->first();
@@ -129,7 +128,7 @@ class checkMissingEnergySuppliersInAddress extends Command
 
         // Missing addressEnergySupplier gevonden, dan deze mailen
         if(!empty($missingEnergySuppliersInAddressData)){
-            $this->sendMail($missingEnergySuppliersInAddressData);
+            $this->sendMail($missingEnergySuppliersInAddressData, $doRecover);
             Log::info('Missing energy suppliers in address gevonden, mail gestuurd');
         } else {
             Log::info('Geen missing energy suppliers in address gevonden');
@@ -138,13 +137,17 @@ class checkMissingEnergySuppliersInAddress extends Command
         Log::info('Procedure check op missing energy suppliers in address klaar');
     }
 
-    private function sendMail($missingEnergySuppliersInAddressData)
+    private function sendMail($missingEnergySuppliersInAddressData, $doRecover)
     {
         (new EmailHelper())->setConfigToDefaultMailbox();
 
         $subject = 'Missing energy suppliers in address ! (' . count($missingEnergySuppliersInAddressData) . ') - ' . \Config::get('app.APP_COOP_NAME');
 
         $missingEnergySuppliersInAddressDataHtml = "";
+        if($doRecover){
+            $missingEnergySuppliersInAddressDataHtml .= "<p>MET HERSTEL!</p>";
+        }
+
         foreach($missingEnergySuppliersInAddressData as $missingEnergySuppliersInAddressItem) {
             $missingEnergySuppliersInAddressDataHtml .=
                 "<p>Address Id: " . $missingEnergySuppliersInAddressItem['address_id'] . ", " .

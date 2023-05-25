@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Eco\Address\Address;
 use App\Helpers\Email\EmailHelper;
+use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -45,9 +46,11 @@ class checkOverlappingEnergySuppliers extends Command
     {
         Log::info('Procedure of energieleveranciers overlappen gestart');
 
-        $overlappingAddressIds = [];
+        $overlappingAddresses = [];
 
         $addresses = Address::all();
+
+        $addressEnergySupplierController = new AddressEnergySupplierController();
 
         foreach($addresses as $address) {
 
@@ -56,31 +59,20 @@ class checkOverlappingEnergySuppliers extends Command
             if ($addressEnergySuppliers->count() > 1) {
                 /* check for each addressEnergySupplier if the start date is between start and enddata, or just after the startdate if no enddate, of another addressEnergySupplier */
                 foreach($addressEnergySuppliers as $addressEnergySupplier) {
-                    $overlappingenergySuppliers =
-                        $address->addressEnergySuppliers()
-                            ->where(function ($query) use ($addressEnergySupplier) {
-                                /* where the member_since date is between the member_since and end_date */
-                                $query->whereBetween('member_since', [$addressEnergySupplier->member_since, $addressEnergySupplier->end_date])
-                                    ->whereNull('deleted_at')
-                                    ->where('id', '!=', $addressEnergySupplier->id);
-                            })->orWhere(function ($query) use ($addressEnergySupplier) {
-                                /* where the member_since date is same or after the member_since and end_date is not set */
-                                $query->where('member_since', '>=', $addressEnergySupplier->member_since)
-                                    ->whereNull('end_date')
-                                    ->whereNull('deleted_at')
-                                    ->where('id', '!=', $addressEnergySupplier->id);
-                            })->get();
-                    $overlappingenergySuppliersCount = $overlappingenergySuppliers->count();
-                }
+                    $response = $addressEnergySupplierController->validateAddressEnergySupplier($addressEnergySupplier, false);
 
-                if($overlappingenergySuppliersCount > 0) {
-                    $overlappingAddressIds[] = $address->id;
+                    if($response){
+//                        Log::info('Fout bij adres met energieleverancier ' . $addressEnergySupplier->name . ' !');
+//                        Log::info($response);
+                        $overlappingAddresses[] = $address->contact->id . '/'. $address->id ;
+                        break;
+                    }
                 }
             }
         }
 
-        if(!empty($overlappingAddressIds)) {
-            $this->sendMail($overlappingAddressIds);
+        if(!empty($overlappingAddresses)) {
+            $this->sendMail($overlappingAddresses);
             Log::info('Overlappende energie leveranciers gevonden, mail gestuurd');
         } else {
             Log::info('Geen overlappende energie leveranciers gevonden');
@@ -89,14 +81,14 @@ class checkOverlappingEnergySuppliers extends Command
         Log::info('Procedure of energieleveranciers overlappen klaar');
     }
 
-    private function sendMail($overlappingAddressIds)
+    private function sendMail($overlappingAddresses)
     {
         (new EmailHelper())->setConfigToDefaultMailbox();
 
-        $subject = 'Overlappende energie leveranciers! (' . count($overlappingAddressIds) . ') - ' . \Config::get('app.APP_COOP_NAME');
+        $subject = 'Overlappende energie leveranciers! (' . count($overlappingAddresses) . ') - ' . \Config::get('app.APP_COOP_NAME');
 
         $mail = Mail::to($this->mailTo);
-        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'.$subject.'</title></head><body><p>'. $subject . '</p><p>De volgende adres id\'s hebben overlappende energie leveranciers:<br>' . implode(', ', $overlappingAddressIds) . '</p></body></html>';
+        $htmlBody = "<!DOCTYPE html><html><head><meta http-equiv='content-type' content='text/html;charset=UTF-8'/><title>".$subject."</title></head><body><p>". $subject . "</p><p>De volgende contact/adres id's hebben overlappende energie leveranciers:<br>" . implode(', ', $overlappingAddresses) . "</p></body></html>";
 
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;

@@ -74,9 +74,11 @@ class checkTerminationDateParticipants extends Command
                     && ($lastmutationDateEntry != null)
                     && ($participantProjectDateTerminatedDayAfter != $lastmutationDateEntry)
                 ) {
-                    $wrongParticipantProjects[]['project'] = $project->id . ' - ' . $project->name;
-                    $wrongParticipantProjects[]['participant'] = $participantProject->id . ' - ' . $participantProject->contact->full_name;
-                    $wrongParticipantProjects[]['dates'] = Carbon::parse($participantProjectDateTerminated)->format('d-m-Y') . ' - ' . Carbon::parse($lastmutationDateEntry)->format('d-m-Y');
+                    $wrongParticipantProjects[] = [
+                        'project' => $project->id . ' - ' . $project->name,
+                        'participant' => $participantProject->id . ' - ' . $participantProject->contact->full_name,
+                        'dates' => Carbon::parse($participantProjectDateTerminated)->format('d-m-Y') . ' - ' . Carbon::parse($lastmutationDateEntry)->format('d-m-Y')
+                    ];
                 }
             }
         }

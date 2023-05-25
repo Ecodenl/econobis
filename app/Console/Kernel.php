@@ -84,6 +84,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('14:58');
         $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('17:58');
 
+        $schedule->command('revenue:checkMissingEnergySuppliersInAddress')->timezone('Europe/Amsterdam')->dailyAt('20:55');
         $schedule->command('revenue:checkWrongDistributionParts')->timezone('Europe/Amsterdam')->dailyAt('21:00');
         $schedule->command('revenue:checkWrongEnergySupplierDataInParts')->timezone('Europe/Amsterdam')->dailyAt('21:05');
         $schedule->command('revenue:checkMissingEnergySupplierDataInParts')->timezone('Europe/Amsterdam')->dailyAt('21:10');

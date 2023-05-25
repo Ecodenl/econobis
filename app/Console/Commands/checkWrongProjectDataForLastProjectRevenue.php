@@ -53,73 +53,96 @@ class checkWrongProjectDataForLastProjectRevenue extends Command
 
         $projects = Project::all();
 
-        $projectRevenueCategoryRevenueEuroKwh = ProjectRevenueCategory::where('code_ref', 'revenueEuro' )->first()->id;
+        $projectRevenueCategoryRevenueEuro = ProjectRevenueCategory::where('code_ref', 'revenueEuro' )->first()->id;
         $projectRevenueCategoryRedemptionEuro = ProjectRevenueCategory::where('code_ref', 'redemptionEuro' )->first()->id;
 
         foreach($projects as $project) {
-            //wel date_interest_bearing maar geen confirmed projectRevenues van category 2 revenueEuro
+            
+            $confirmedProjectRevenuesEuro = $project->projectRevenues()->where('category_id', $projectRevenueCategoryRevenueEuro)->where('confirmed', 1)->orderBy('date_end', 'desc');
+            //Geen date_interest_bearing maar wel confirmed projectRevenues van category 2 revenueEuro
+            if (
+                $project->date_interest_bearing === null &&
+                $confirmedProjectRevenuesEuro->count() > 0
+            ) {
+                $wrongProjectsDataForLastProjectRevenueEuroIds[] = $project->id;
+            }
+            //Wel date_interest_bearing maar geen confirmed projectRevenues van category 2 revenueEuro
             if (
                 $project->date_interest_bearing !== null &&
-                $project->projectRevenues()->where('category_id', $projectRevenueCategoryRevenueEuroKwh)->where('confirmed', 1)->count() === 0
+                $confirmedProjectRevenuesEuro->count() === 0
             ) {
                 $wrongProjectsDataForLastProjectRevenueEuroIds[] = $project->id;
             }
 
-            //wel date_interest_bearing en projectRevenues van category 2 revenueEuro, maar nieuwe startdatum is niet goed
-            if (
-                $project->projectRevenues()->where('category_id', $projectRevenueCategoryRevenueEuroKwh)->where('confirmed', 1)->orderBy('date_end', 'Desc')->count() > 0 &&
-                $dateEnd = Carbon::parse($project->projectRevenues()->where('category_id', $projectRevenueCategoryRevenueEuroKwh)->where('confirmed', 1)->orderBy('date_end', 'Desc')->first()->date_end)
-            ) {
+            //Wel date_interest_bearing en projectRevenues van category 2 revenueEuro, maar nieuwe startdatum is niet goed
+            if ($confirmedProjectRevenuesEuro->count() > 0) {
+                $dateEnd = Carbon::parse($confirmedProjectRevenuesEuro->first()->date_end);
                 $dateEndPlusOneDay = $dateEnd->addDay(1)->format('Y-m-d');
                 if (
                     $project->date_interest_bearing !== null &&
-                    $project->projectRevenues()->where('category_id', $projectRevenueCategoryRevenueEuroKwh)->where('confirmed', 1)->count() > 0 &&
+                    $confirmedProjectRevenuesEuro->count() > 0 &&
                     Carbon::parse($project->date_interest_bearing)->format('Y-m-d') != $dateEndPlusOneDay
                 ) {
                     $wrongProjectsDataForLastProjectRevenueEuroIds[] = $project->id;
                 }
             }
 
+            $confirmedProjectRedemptionsEuro = $project->projectRevenues()->where('category_id', $projectRevenueCategoryRedemptionEuro)->where('confirmed', 1)->orderBy('date_end', 'desc');
+            //Geen date_interest_bearing_redemption maar wel confirmed projectRevenues van category 3 redemptionEuro
+            if (
+                $project->date_interest_bearing_redemption === null &&
+                $confirmedProjectRedemptionsEuro->count() > 0
+            ) {
+                $wrongProjectsDataForLastProjectRedemptionEuroIds[] = $project->id;
+            }
             //wel date_interest_bearing_redemption maar geen confirmed projectRevenues van category 3 redemptionEuro
             if(
                 $project->date_interest_bearing_redemption !== null &&
-                $project->projectRevenues()->where('category_id', $projectRevenueCategoryRedemptionEuro)->where('confirmed', 1)->count() === 0
+                $confirmedProjectRedemptionsEuro->count() === 0
             ) {
                 $wrongProjectsDataForLastProjectRedemptionEuroIds[] = $project->id;
             }
             //wel date_interest_bearing_redemption en confirmed projectRevenues van category 3, maar nieuwe startdatum is niet goed
             if(
-                $project->projectRevenues()->where('category_id', $projectRevenueCategoryRedemptionEuro)->where('confirmed', 1)->orderBy('date_end', 'Desc')->count() > 0 &&
-                $dateEnd = Carbon::parse($project->projectRevenues()->where('category_id', $projectRevenueCategoryRedemptionEuro)->where('confirmed', 1)->orderBy('date_end', 'Desc')->first()->date_end)
+                $confirmedProjectRedemptionsEuro->count() > 0
             ) {
+                $dateEnd = Carbon::parse($confirmedProjectRedemptionsEuro->first()->date_end);
                 $dateEndPlusOneDay = $dateEnd->addDay(1)->format('Y-m-d');
                 if (
                     $project->date_interest_bearing_redemption !== null &&
-                    $project->projectRevenues()->where('category_id', $projectRevenueCategoryRedemptionEuro)->where('confirmed', 1)->count() > 0 &&
+                    $confirmedProjectRedemptionsEuro->count() > 0 &&
                     Carbon::parse($project->date_interest_bearing_redemption)->format('Y-m-d') != $dateEndPlusOneDay
                 ) {
                     $wrongProjectsDataForLastProjectRedemptionEuroIds[] = $project->id;
                 }
             }
 
+            $confirmedRevenuesKwh = $project->revenuesKwh()->where('confirmed', 1)->orderBy('date_end', 'desc');
+            //Geen date_interest_bearing_kwh maar wel confirmed revenuesKwh
+            if (
+                $project->date_interest_bearing_kwh === null &&
+                $confirmedRevenuesKwh->count() > 0
+            ) {
+                $wrongProjectsDataForLastProjectRevenueKwhIds[] = $project->id;
+            }
+
             //wel date_interest_bearing_kwh maar geen confirmed revenuesKwh
             if(
                 $project->date_interest_bearing_kwh !== null &&
-                $project->revenuesKwh()->where('confirmed', 1)->count() === 0
+                $confirmedRevenuesKwh->count() === 0
             ) {
                 $wrongProjectsDataForLastProjectRevenueKwhIds[] = $project->id;
             }
 
             //wel date_interest_bearing_kwh en revenuesKwh, maar nieuwe startdatum is niet goed
             if(
-                $project->revenuesKwh()->orderBy('date_end', 'Desc')->count() > 0 &&
-                $dateEnd = new \DateTime($project->revenuesKwh()->orderBy('date_end', 'Desc')->first()->date_end)
+                $confirmedRevenuesKwh->count() > 0
             ) {
-                $dateEndPlusOneDay = $dateEnd->modify('+1 day');
+                $dateEnd = Carbon::parse($confirmedRevenuesKwh->first()->date_end);
+                $dateEndPlusOneDay = $dateEnd->addDay(1)->format('Y-m-d');
                 if (
                     $project->date_interest_bearing_kwh !== null &&
-                    $project->revenuesKwh()->where('confirmed', 1)->count() > 0 &&
-                    $project->date_interest_bearing_kwh != $dateEndPlusOneDay
+                    Carbon::parse($project->date_interest_bearing_kwh)->format('Y-m-d') != $dateEndPlusOneDay
                 ) {
                     $wrongProjectsDataForLastProjectRevenueKwhIds[] = $project->id;
                 }
@@ -128,10 +151,10 @@ class checkWrongProjectDataForLastProjectRevenue extends Command
             //wel date_interest_bearing_kwh en revenuesKwh, maar kwh_start_high_next_revenue of kwh_start_low_next_revenue is niet goed
             if(
                 $project->date_interest_bearing_kwh !== null &&
-                $project->revenuesKwh()->where('confirmed', 1)->count() > 0 &&
+                $confirmedRevenuesKwh->count() > 0 &&
                 (
-                    $project->kwh_start_high_next_revenue != $project->revenuesKwh()->orderBy('date_end', 'Desc')->first()->kwh_start_high ||
-                    $project->kwh_start_low_next_revenue != $project->revenuesKwh()->orderBy('date_end', 'Desc')->first()->kwh_start_low
+                    $project->kwh_start_high_next_revenue != $confirmedRevenuesKwh->first()->kwh_end_high ||
+                    $project->kwh_start_low_next_revenue != $confirmedRevenuesKwh->first()->kwh_end_low
                 )
             ) {
                 $wrongProjectsDataForLastProjectRevenueKwhIds[] = $project->id;
@@ -160,15 +183,15 @@ class checkWrongProjectDataForLastProjectRevenue extends Command
         $wrongProjectsDataForLastProjectRevenueHtml = "";
         if(!empty($wrongProjectsDataForLastProjectRevenueEuroIds)) {
             $wrongProjectsDataForLastProjectRevenueHtml .=
-                "<p>De volgende project id\'s hebben ongeldige projectgegevens inzake laatste opbrengstverdelingen (Euro):<br>" . implode(', ', $wrongProjectsDataForLastProjectRevenueEuroIds) . "</p>";
+                "<p>De volgende project id's hebben ongeldige projectgegevens inzake laatste opbrengstverdelingen (Euro):<br>" . implode(', ', $wrongProjectsDataForLastProjectRevenueEuroIds) . "</p>";
         }
         if(!empty($wrongProjectsDataForLastProjectRedemptionEuroIds)) {
             $wrongProjectsDataForLastProjectRevenueHtml .=
-                "<p>De volgende project id\'s hebben ongeldige projectgegevens inzake laatste opbrengstverdelingen (Aflossing):<br>" . implode(', ', $wrongProjectsDataForLastProjectRedemptionEuroIds) . "</p>";
+                "<p>De volgende project id's hebben ongeldige projectgegevens inzake laatste opbrengstverdelingen (Aflossing):<br>" . implode(', ', $wrongProjectsDataForLastProjectRedemptionEuroIds) . "</p>";
         }
         if(!empty($wrongProjectsDataForLastProjectRevenueKwhIds)) {
             $wrongProjectsDataForLastProjectRevenueHtml .=
-                "<p>De volgende project id\'s hebben ongeldige projectgegevens inzake laatste opbrengstverdelingen (Kwh):<br>" . implode(', ', $wrongProjectsDataForLastProjectRevenueKwhIds) . "</p>";
+                "<p>De volgende project id's hebben ongeldige projectgegevens inzake laatste opbrengstverdelingen (Kwh):<br>" . implode(', ', $wrongProjectsDataForLastProjectRevenueKwhIds) . "</p>";
         }
 
         $mail = Mail::to($this->mailTo);

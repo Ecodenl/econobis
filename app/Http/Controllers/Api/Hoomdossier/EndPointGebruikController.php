@@ -187,7 +187,7 @@ class EndPointGebruikController extends EndPointHoomDossierController
                 if($roofType && $roofType->external_hoom_id){
                     $housingFileValue = $roofType->id;
                 } else {
-                    $unKnownRoofType = BuildingType::where('name', 'Onbekend')->first();
+                    $unKnownRoofType = RoofType::where('name', 'Onbekend')->first();
                     $housingFileValue = $unKnownRoofType->id;
                 }
                 break;

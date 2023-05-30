@@ -99,7 +99,7 @@ class AddressEnergySupplierController extends ApiController
                 $projectType = $participation->project->projectType;
                 if ($projectType->code_ref === 'postalcode_link_capital') {
                     $revenuesKwhHelper = new RevenuesKwhHelper();
-                    $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkRevenuePartsKwh($participation, $addressEnergySupplier->member_since, $addressEnergySupplier);
+                    $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkAndSplitRevenuePartsKwh($participation, $addressEnergySupplier->member_since, $addressEnergySupplier);
                     if($splitRevenuePartsKwhResponse){
                         $revenuePartsKwhArray [] = $splitRevenuePartsKwhResponse;
                     }
@@ -173,7 +173,7 @@ class AddressEnergySupplierController extends ApiController
                 $projectType = $participation->project->projectType;
                 if ($projectType->code_ref === 'postalcode_link_capital') {
                     $revenuesKwhHelper = new RevenuesKwhHelper();
-                    $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkRevenuePartsKwh($participation, $addressEnergySupplier->member_since, $addressEnergySupplier);
+                    $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkAndSplitRevenuePartsKwh($participation, $addressEnergySupplier->member_since, $addressEnergySupplier);
                     if($splitRevenuePartsKwhResponse){
                         $revenuePartsKwhArray [] = $splitRevenuePartsKwhResponse;
                     }

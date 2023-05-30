@@ -99,16 +99,16 @@ class RevenueDistributionPartsKwh extends Model
     public function getRemarksAttribute()
     {
         $remarks = [];
-        if($this->distributionKwh->participation->date_terminated == $this->partsKwh->date_end){
+        if( $this->is_end_participation ){
             $remarks[] = "Deze deelname is beëindigd op " . Carbon::parse($this->distributionKwh->participation->date_terminated)->format('d-m-Y');
         }
-        if(AddressEnergySupplier::where('address_id', $this->distributionKwh->participation->address_id)->where('energy_supplier_id', $this->es_id)->where('end_date', $this->partsKwh->date_end)->exists()){
+        if( $this->is_energy_supplier_switch ){
             $remarks[] = "Deze energie leverancier bij deze deelname is beëindigd op " . Carbon::parse($this->partsKwh->date_end)->format('d-m-Y');
         }
-        if( $this->partsKwh->date_end && Carbon::parse($this->partsKwh->date_end)->day == 31 && Carbon::parse($this->partsKwh->date_end)->month == 12 ){
-            $remarks[] = "Einde jaar";
-        }
-        if( $this->partsKwh->date_end && $this->partsKwh->date_end == $this->partsKwh->revenuesKwh->date_end ){
+//        if( $this->is_end_year_period ){
+//            $remarks[] = "Einde jaar";
+//        }
+        if( $this->is_end_total_period ){
             $remarks[] = "Einde laatste periode ";
         }
         return implode('<br/>', $remarks);

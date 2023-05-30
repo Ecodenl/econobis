@@ -19,8 +19,6 @@ export default function EmailDetailsModalEdit({email, updateEmailAttributes}) {
     const [opportunities, setOpportunities] = useState([]);
     const [orders, setOrders] = useState([]);
     const [invoices, setInvoices] = useState([]);
-    const [searchTermContact, setSearchTermContact] = useState('');
-    const [isLoadingContact, setLoadingContact] = useState(false);
 
     useEffect(() => {
         IntakesAPI.peekIntakes().then(payload => {
@@ -46,18 +44,8 @@ export default function EmailDetailsModalEdit({email, updateEmailAttributes}) {
         });
     }, []);
 
-    const getContactOptions = async () => {
-        if (searchTermContact.length <= 1) return;
-
-        setLoadingContact(true);
-
-        try {
-            const results = await ContactsAPI.fetchContactSearch(searchTermContact);
-            setLoadingContact(false);
-            return results.data.data;
-        } catch (error) {
-            setLoadingContact(false);
-        }
+    const getContactOptions = (searchTerm) => {
+        return ContactsAPI.fetchContactSearch(searchTerm).then(payload => payload.data.data);
     };
 
     return (
@@ -72,8 +60,6 @@ export default function EmailDetailsModalEdit({email, updateEmailAttributes}) {
                     loadOptions={getContactOptions}
                     optionName={'fullName'}
                     onChangeAction={(value) => updateEmailAttributes({contacts: value ? value : []})}
-                    isLoading={isLoadingContact}
-                    handleInputChange={setSearchTermContact}
                     clearable={true}
                 />
             )}

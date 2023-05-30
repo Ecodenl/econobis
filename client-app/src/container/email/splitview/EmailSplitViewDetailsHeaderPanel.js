@@ -5,6 +5,7 @@ import {mailReplyAll} from 'react-icons-kit/fa/mailReplyAll';
 import {mailForward} from 'react-icons-kit/fa/mailForward';
 import {trash} from 'react-icons-kit/fa/trash';
 import {windowRestore} from 'react-icons-kit/fa/windowRestore';
+import {pencil} from 'react-icons-kit/fa/pencil';
 import {Link} from "react-router";
 import {useSelector} from 'react-redux'
 import InputSelect from "../../../components/form/InputSelect";
@@ -12,14 +13,18 @@ import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 import EmailDetailsModal from "../details-modal/EmailDetailsModal";
 import EmailAddressList from "../../../components/email/EmailAddressList";
 import ResponsibleInputSelect from "../../../components/email/ResponsibleInputSelect";
+import EmailSendModal from "../send-modal/EmailSendModal";
 
 export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttributes, updatedEmailHandler}) {
     const statusses = useSelector((state) => state.systemData.emailStatuses);
     const [showDetailsModal, setShowDetailsModal] = useState(false);
+    const [showSendModal, setShowSendModal] = useState(false);
+    const [sendModalMailId, setSendModalMailId] = useState(null);
 
     const createReply = () => {
         EmailGenericAPI.storeReply(email.id).then(payload => {
-            // Todo; open popup
+            setSendModalMailId(payload.data.id)
+            setShowSendModal(true);
         });
     }
 
@@ -40,33 +45,52 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
             <div className="panel-body panel-small">
                 <div className="row" style={{marginLeft: '-5px'}}>
                     <div className="col-md-12">
+                        { email.folder !== 'concept' && (
+                            <div className="btn-group margin-small margin-10-right" role="group">
+                                <button
+                                    type="button"
+                                    title="Beantwoorden"
+                                    className={'btn btn-success btn-sm'}
+                                    onClick={createReply}
+                                >
+                                    <Icon icon={mailReply} size={13}/>
+                                </button>
+                                <button
+                                    type="button"
+                                    title="Allen beantwoorden"
+                                    className={'btn btn-success btn-sm'}
+                                    onClick={createReplyAll}
+                                >
+                                    <Icon icon={mailReplyAll} size={13}/>
+                                </button>
+                                <button
+                                    type="button"
+                                    title="Doorsturen"
+                                    className={'btn btn-success btn-sm'}
+                                    onClick={createForward}
+                                >
+                                    <Icon icon={mailForward} size={13}/>
+                                </button>
+                            </div>
+                        )}
+
+                        { email.folder === 'concept' && (
+                            <div className="btn-group margin-small margin-10-right" role="group">
+                                <button
+                                    type="button"
+                                    title="Openen"
+                                    className={'btn btn-success btn-sm'}
+                                    onClick={() => {
+                                        setSendModalMailId(email.id)
+                                        setShowSendModal(true);
+                                    }}
+                                >
+                                    <Icon icon={pencil} size={13}/>
+                                </button>
+                            </div>
+                        )}
+
                         <div className="btn-group margin-small" role="group">
-                            <button
-                                type="button"
-                                title="Beantwoorden"
-                                className={'btn btn-success btn-sm'}
-                                onClick={createReply}
-                            >
-                                <Icon icon={mailReply} size={13}/>
-                            </button>
-                            <button
-                                type="button"
-                                title="Allen beantwoorden"
-                                className={'btn btn-success btn-sm'}
-                                onClick={createReplyAll}
-                            >
-                                <Icon icon={mailReplyAll} size={13}/>
-                            </button>
-                            <button
-                                type="button"
-                                title="Doorsturen"
-                                className={'btn btn-success btn-sm'}
-                                onClick={createForward}
-                            >
-                                <Icon icon={mailForward} size={13}/>
-                            </button>
-                        </div>
-                        <div className="btn-group margin-small margin-10-left" role="group">
                             <button
                                 type="button"
                                 title="Verwijderen"
@@ -79,11 +103,9 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                             </button>
                             <button
                                 type="button"
-                                title="Doorsturen"
+                                title="Openen"
                                 className={'btn btn-success btn-sm'}
-                                onClick={() => {
-                                    setShowDetailsModal(true);
-                                }}
+                                onClick={() => setShowDetailsModal(true)}
                             >
                                 <Icon icon={windowRestore} size={13}/>
                             </button>
@@ -135,6 +157,7 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                 </div>
             </div>
             <EmailDetailsModal showModal={showDetailsModal} emailId={email.id} setShowModal={setShowDetailsModal} onSave={updatedEmailHandler}/>
+            <EmailSendModal showModal={showSendModal} emailId={sendModalMailId} setShowModal={setShowSendModal} onClose={updatedEmailHandler}/>
         </div>
     );
 }

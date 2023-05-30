@@ -23,7 +23,7 @@ import { Editor } from '@tinymce/tinymce-react';
 
 class InputTinyMCEUpdateable extends Component {
     render() {
-        const { label, initialValue, value, onChangeAction } = this.props;
+        const { label, initialValue, value, onChangeAction, onBlur } = this.props;
 
         return (
             <div>
@@ -54,6 +54,7 @@ class InputTinyMCEUpdateable extends Component {
                                 'Courier New=courier new;Tahoma=tahoma;Times New Roman=times new roman;Verdana=verdana;',
                         }}
                         onEditorChange={onChangeAction}
+                        onBlur={onBlur}
                     />
                 </div>
             </div>
@@ -75,6 +76,7 @@ InputTinyMCEUpdateable.propTypes = {
     initialValue: PropTypes.string,
     value: PropTypes.string,
     onChangeAction: PropTypes.func,
+    onBlur: PropTypes.func,
 };
 
 export default InputTinyMCEUpdateable;

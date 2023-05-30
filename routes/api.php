@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Email\EmailAttachmentController;
 use App\Http\Controllers\Api\Email\EmailDetailsController;
 use App\Http\Controllers\Api\Email\EmailGenericController;
+use App\Http\Controllers\Api\Email\EmailSendController;
 use App\Http\Controllers\Api\Email\EmailSplitviewController;
 use App\Http\Controllers\Api\Invoice\InvoiceMolliePaymentController;
 use App\Http\Controllers\Api\Mailbox\MailboxController;
@@ -339,9 +340,18 @@ Route::namespace('Api')
         Route::get('email-details/{email}', [EmailDetailsController::class, 'show']);
 
         /**
+         * Email send modal
+         */
+        Route::get('email-send/{email}', [EmailSendController::class, 'show']);
+        Route::post('email-send/{email}/save-concept', [EmailSendController::class, 'saveConcept']);
+
+        /**
          * Email attachments
          */
         Route::get('email-attachment/{emailAttachment}/download', [EmailAttachmentController::class, 'download']);
+        Route::post('email-attachment/{emailAttachment}/delete', [EmailAttachmentController::class, 'delete']);
+        Route::post('email/{email}/add-documents-as-attachments', [EmailAttachmentController::class, 'addDocumentsAsAttachments']);
+        Route::post('email/{email}/attachment', [EmailAttachmentController::class, 'store']);
 
         Route::get('email-template/grid', 'EmailTemplate\EmailTemplateController@grid');
         Route::get('email-template/peek', 'EmailTemplate\EmailTemplateController@peek');

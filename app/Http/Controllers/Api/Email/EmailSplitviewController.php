@@ -63,6 +63,7 @@ class EmailSplitviewController extends Controller
             }),
             'ccAddresses' => $email->getCcAddresses(),
             'htmlBodyWithEmbeddedImages' => $email->inlineImagesService()->getHtmlBodyWithCidsConvertedToEmbeddedImages(),
+            'folder' => $email->folder,
         ]);
     }
 

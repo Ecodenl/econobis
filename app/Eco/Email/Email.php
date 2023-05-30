@@ -204,12 +204,14 @@ class Email extends Model
             return [
                 'name' => $emailAddress->contact->full_name,
                 'email' => $emailAddress->email,
+                'id' => $emailAddress->id,
             ];
         }
 
         return [
-            'name' => null,
+            'name' => $idOrEmailAddress,
             'email' => $idOrEmailAddress,
+            'id' => $idOrEmailAddress, // Het AsyncSelectSet React component gebruikt emailadres ook in 'id', dus dit ook zo teruggeven vanuit api.
         ];
     }
 

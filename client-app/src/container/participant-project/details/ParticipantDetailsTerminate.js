@@ -9,6 +9,7 @@ import moment from 'moment';
 import ParticipantProjectDetailsAPI from '../../../api/participant-project/ParticipantProjectDetailsAPI';
 import InputToggle from '../../../components/form/InputToggle';
 import { hashHistory } from 'react-router';
+import ViewText from "../../../components/form/ViewText";
 
 const ParticipantDetailsTerminate = ({
     participantProject,
@@ -95,13 +96,19 @@ const ParticipantDetailsTerminate = ({
             >
                 <p>Weet u zeker dat u deze deelname wilt beëindigen?</p>
                 <div className="row">
+                    <ViewText
+                        label={'Datum laatste mutatie storting/terugbetaling'}
+                        value={moment(participantProject.dateEntryLastMutation).format('DD-MM-Y')}
+                    />
+                </div>
+                <div className="row">
                     <InputDate
                         label={'Datum beëindigen'}
                         name="dateTerminated"
-                        value={dateTerminated}
+                        value={participantProject.participationsDefinitive > 0 ? dateTerminated : moment(participantProject.dateEntryLastMutation).subtract(1, 'days').format('Y-MM-DD') }
                         onChangeAction={onChangeDateTerminated}
-                        disabledBefore={moment(participantProject.dateEntryFirstDeposit).format('Y-MM-DD')}
-                        disabledAfter={moment().format('Y-MM-DD')}
+                        disabledBefore={moment(participantProject.dateEntryLastMutation).add(1, 'days').format('Y-MM-DD')}
+                        disabledAfter={participantProject.participationsDefinitive > 0 ? moment().format('Y-MM-DD') : moment(participantProject.dateEntryLastMutation).subtract(1, 'days').format('Y-MM-DD') }
                     />
                     {projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation' ? (
                         <InputText

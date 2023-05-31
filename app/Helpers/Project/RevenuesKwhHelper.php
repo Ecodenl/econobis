@@ -420,7 +420,7 @@ class RevenuesKwhHelper
             ]);
     }
 
-    public function checkRevenuePartsKwh(ParticipantProject $participant, $splitDate, AddressEnergySupplier $addressEnergySupplier = null)
+    public function checkAndSplitRevenuePartsKwh(ParticipantProject $participant, $splitDate, AddressEnergySupplier $addressEnergySupplier = null)
     {
         $projectName = $participant ? $participant->project->name : '?';
         $projectId = $participant ? $participant->project->id : 'onbekend';
@@ -428,6 +428,8 @@ class RevenuesKwhHelper
         $splitDateString = Carbon::parse($splitDate)->format('Y-m-d');
         $endDateBeforeSplitDate = Carbon::parse($splitDate)->subDay()->format('Y-m-d');
         $splitDateReadable = Carbon::parse($splitDate)->format('d-m-Y');
+
+        $dateTerminated = $participant->date_terminated ? Carbon::parse($participant->date_terminated)->format('Y-m-d') : null;
 
         // Zoek revenue part waar splitdatum in valt.
         $revenuePartsKwh = RevenuePartsKwh::where('date_begin', '<=', $splitDateString)
@@ -438,6 +440,11 @@ class RevenuesKwhHelper
 
         // indien part gevonden.
         if($revenuePartsKwh){
+            // indien beeindigsdatum participant na splitdatum, dan hoeven we niet opnieuw te splitsen.
+            if($dateTerminated != null && $splitDateString > $dateTerminated) {
+                return false;
+            }
+
             // indien begindatum is splitdatum, dan hoeven we niet opnieuw te splitsen.
             if($splitDateString == Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d')) {
                 // indien gevonden part helemaal verwerkt, dan geen splitsing meer.

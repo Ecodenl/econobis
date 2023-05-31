@@ -494,7 +494,7 @@ class ParticipationProjectController extends ApiController
 
         if($projectType->code_ref === 'postalcode_link_capital') {
             $revenuesKwhHelper = new RevenuesKwhHelper();
-            $revenuesKwhPart = $revenuesKwhHelper->checkRevenuePartsKwh($participantProject, Carbon::parse($participantProject->date_terminated)->addDay(), null);
+            $revenuesKwhPart = $revenuesKwhHelper->checkAndSplitRevenuePartsKwh($participantProject, Carbon::parse($participantProject->date_terminated)->addDay(), null);
 
             if($revenuesKwhPart){
                 $revenuePartsKwhRedirect = null;

@@ -20,6 +20,7 @@ class checkWrongDistributionParts extends Command
      * @var string
      */
     protected $signature = 'revenue:checkWrongDistributionParts';
+    protected $mailTo = 'wim.mosman@xaris.nl';
 
     /**
      * The console command description.
@@ -103,7 +104,7 @@ class checkWrongDistributionParts extends Command
     {
         (new EmailHelper())->setConfigToDefaultMailbox();
 
-        $mail = Mail::to('wim.mosman@xaris.nl');
+        $mail = Mail::to($this->mailTo);
         $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>Wrong distribution parts</title></head><body><p>'. $subject . '</p><p>' . \Config::get("app.name") .'</p></body></html>';
 
         $mail->subject = $subject;

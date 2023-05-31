@@ -1,22 +1,22 @@
 import React from 'react';
 import SvgIcon from 'react-icons-kit';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
-import { ic_aspect_ratio } from 'react-icons-kit/md/ic_aspect_ratio';
-import { ic_dashboard } from 'react-icons-kit/md/ic_dashboard';
-import { ic_business } from 'react-icons-kit/md/ic_business';
-import { ic_contacts } from 'react-icons-kit/md/ic_contacts';
-import { ic_email } from 'react-icons-kit/md/ic_email';
-import { cog } from 'react-icons-kit/icomoon/cog';
-import { speech_bubbles } from 'react-icons-kit/ikons/speech_bubbles';
-import { documents } from 'react-icons-kit/ikons/documents';
-import { calendar } from 'react-icons-kit/icomoon/calendar';
-import { home } from 'react-icons-kit/icomoon/home';
-import { drawer } from 'react-icons-kit/icomoon/drawer';
-import { ic_business_center } from 'react-icons-kit/md/ic_business_center';
-import { road } from 'react-icons-kit/icomoon/road';
-import { forward } from 'react-icons-kit/icomoon/forward';
-import { stopwatch } from 'react-icons-kit/icomoon/stopwatch';
+import {ic_aspect_ratio} from 'react-icons-kit/md/ic_aspect_ratio';
+import {ic_dashboard} from 'react-icons-kit/md/ic_dashboard';
+import {ic_business} from 'react-icons-kit/md/ic_business';
+import {ic_contacts} from 'react-icons-kit/md/ic_contacts';
+import {ic_email} from 'react-icons-kit/md/ic_email';
+import {ic_fiber_new} from 'react-icons-kit/md/ic_fiber_new';
+import {cog} from 'react-icons-kit/icomoon/cog';
+import {documents} from 'react-icons-kit/ikons/documents';
+import {calendar} from 'react-icons-kit/icomoon/calendar';
+import {home} from 'react-icons-kit/icomoon/home';
+import {drawer} from 'react-icons-kit/icomoon/drawer';
+import {ic_business_center} from 'react-icons-kit/md/ic_business_center';
+import {road} from 'react-icons-kit/icomoon/road';
+import {forward} from 'react-icons-kit/icomoon/forward';
+import {stopwatch} from 'react-icons-kit/icomoon/stopwatch';
 
 const SidebarMenuSmall = ({ permissions, administrations }) => (
     <div className="sidebar-menu-small">
@@ -52,6 +52,12 @@ const SidebarMenuSmall = ({ permissions, administrations }) => (
         {permissions.menuEmail && (
             <div className="sidebar-menu-small-item">
                 <SvgIcon size={20} icon={ic_email} />
+            </div>
+        )}
+        {/* Email */}
+        {permissions.menuEmail && (
+            <div className="sidebar-menu-small-item">
+                <SvgIcon size={20} icon={ic_fiber_new} />
             </div>
         )}
         {/* Taken */}

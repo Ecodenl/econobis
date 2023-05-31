@@ -11,7 +11,7 @@ import EmailTemplateAPI from "../../../api/email-template/EmailTemplateAPI";
 import InputTinyMCEUpdateable from "../../../components/form/InputTinyMCEUpdateable";
 import EmailSendModalAttachments from "./EmailSendModalAttachments";
 
-export default function EmailSendModal({emailId, showModal, setShowModal, onClose}) {
+export default function EmailSendModal({emailId, showModal, setShowModal}) {
     const [email, setEmail] = useState(null);
     const [mailboxAddresses, setMailboxAddresses] = useState([]);
     const [emailTemplates, setEmailTemplates] = useState([]);
@@ -80,7 +80,7 @@ export default function EmailSendModal({emailId, showModal, setShowModal, onClos
         validate();
 
         EmailSendAPI.send(emailId).then(() => {
-            onClose();
+            setShowModal(false);
         });
     }
 
@@ -109,7 +109,6 @@ export default function EmailSendModal({emailId, showModal, setShowModal, onClos
                 <Modal
                     buttonConfirmText="Versturen"
                     closeModal={() => {
-                        onClose();
                         setShowModal(false);
                     }}
                     confirmAction={send}

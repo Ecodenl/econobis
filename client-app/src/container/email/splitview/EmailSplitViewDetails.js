@@ -1,11 +1,25 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import EmailSplitViewDetailsHeaderPanel from "./EmailSplitViewDetailsHeaderPanel";
 import EmailAttachmentsPanel from "../../../components/email/EmailAttachmentsPanel";
 import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
+import {EmailModalContext} from "../../../context/EmailModalContext";
 
 export default function EmailSplitViewDetails({emailId, updatedEmailHandler}) {
+    const { isEmailDetailsModalOpen, isEmailSendModalOpen, modalEmailId } = useContext(EmailModalContext);
     const [email, setEmail] = useState({attachmentsWithoutCids: []});
+
+    useEffect(() => {
+        if(!isEmailDetailsModalOpen && email.id === modalEmailId) {
+            fetchEmail();
+        }
+    }, [isEmailDetailsModalOpen]);
+
+    useEffect(() => {
+        if(!isEmailSendModalOpen && email.id === modalEmailId) {
+            fetchEmail();
+        }
+    }, [isEmailSendModalOpen]);
 
     useEffect(() => {
         if (!emailId) {
@@ -40,7 +54,7 @@ export default function EmailSplitViewDetails({emailId, updatedEmailHandler}) {
 
     return (
         <div>
-            <EmailSplitViewDetailsHeaderPanel email={email} updateEmailAttributes={updateEmailAttributes} updatedEmailHandler={() => {fetchEmail(); updatedEmailHandler();}} />
+            <EmailSplitViewDetailsHeaderPanel email={email} updateEmailAttributes={updateEmailAttributes} />
 
             <div className="panel panel-default">
                 <div className="panel-body panel-small" style={{padding: '20px'}}>

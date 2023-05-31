@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
 import EmailSplitViewDetails from "./EmailSplitViewDetails";
 import EmailSplitViewSelectList from "./EmailSplitViewSelectList";
 import EmailSplitViewFiltersPanel from "./EmailSplitViewFiltersPanel";
 import {getJoryFilter, storeFiltersToStorage, getFiltersFromStorage, defaultFilters} from "./EmailFilterHelpers";
+import {EmailModalContext} from "../../../context/EmailModalContext";
 
 export default function EmailSplitView({router}) {
     const perPage = 50;
@@ -11,6 +12,19 @@ export default function EmailSplitView({router}) {
     const [emailCount, setEmailCount] = useState(0);
     const [selectedEmailId, setSelectedEmailId] = useState(null);
     const [filters, setFilters] = useState({...defaultFilters});
+    const { isEmailDetailsModalOpen, isEmailSendModalOpen } = useContext(EmailModalContext);
+
+    useEffect(() => {
+        if(!isEmailDetailsModalOpen && emailCount > 0) {
+            refetchCurrentEmails();
+        }
+    }, [isEmailDetailsModalOpen]);
+
+    useEffect(() => {
+        if(!isEmailSendModalOpen && emailCount > 0) {
+            refetchCurrentEmails();
+        }
+    }, [isEmailSendModalOpen]);
 
     useEffect(() => {
         setFilters({...getFiltersFromStorage(), fetch: true});

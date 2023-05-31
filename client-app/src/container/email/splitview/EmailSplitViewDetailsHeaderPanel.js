@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext} from 'react';
 import Icon from "react-icons-kit";
 import {mailReply} from 'react-icons-kit/fa/mailReply';
 import {mailReplyAll} from 'react-icons-kit/fa/mailReplyAll';
@@ -12,37 +12,27 @@ import InputSelect from "../../../components/form/InputSelect";
 import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 import EmailAddressList from "../../../components/email/EmailAddressList";
 import ResponsibleInputSelect from "../../../components/email/ResponsibleInputSelect";
-import EmailSendModal from "../send-modal/EmailSendModal";
 import {EmailModalContext} from "../../../context/EmailModalContext";
 
-export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttributes, updatedEmailHandler}) {
-    const { openEmailDetailsModal, isEmailDetailsModalOpen } = useContext(EmailModalContext);
+export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttributes}) {
+    const { openEmailDetailsModal, openEmailSendModal } = useContext(EmailModalContext);
     const statusses = useSelector((state) => state.systemData.emailStatuses);
-    const [showSendModal, setShowSendModal] = useState(false);
-    const [sendModalMailId, setSendModalMailId] = useState(null);
-
-    useEffect(() => {
-        if(!isEmailDetailsModalOpen) {
-            updatedEmailHandler();
-        }
-    }, [isEmailDetailsModalOpen]);
 
     const createReply = () => {
         EmailGenericAPI.storeReply(email.id).then(payload => {
-            setSendModalMailId(payload.data.id)
-            setShowSendModal(true);
+            openEmailSendModal(payload.data.id)
         });
     }
 
     const createReplyAll = () => {
         EmailGenericAPI.storeReplyAll(email.id).then(payload => {
-            // Todo; open popup
+            openEmailSendModal(payload.data.id)
         });
     }
 
     const createForward = () => {
         EmailGenericAPI.storeForward(email.id).then(payload => {
-            // Todo; open popup
+            openEmailSendModal(payload.data.id)
         });
     }
 
@@ -86,10 +76,7 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                                     type="button"
                                     title="Openen"
                                     className={'btn btn-success btn-sm'}
-                                    onClick={() => {
-                                        setSendModalMailId(email.id)
-                                        setShowSendModal(true);
-                                    }}
+                                    onClick={() => openEmailSendModal(email.id)}
                                 >
                                     <Icon icon={pencil} size={13}/>
                                 </button>
@@ -162,7 +149,6 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                     />
                 </div>
             </div>
-            <EmailSendModal showModal={showSendModal} emailId={sendModalMailId} setShowModal={setShowSendModal} onClose={updatedEmailHandler}/>
         </div>
     );
 }

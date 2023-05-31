@@ -39,6 +39,10 @@ class FullRevenueDistributionKwh extends JsonResource
                 'deliveredTotalProcessed' => $this->delivered_total_processed_string,
                 'deliveredTotalString' => $this->delivered_total_string,
                 'kwhReturn' => $this->kwh_return,
+                'dateEndLastConfirmedPartsKwh' => $this->date_end_last_confirmed_parts_kwh,
+                'dateParticipantReport' => $this->date_participant_report,
+                'beginDateParticipantReport' => $this->begin_date_participant_report,
+                'endDateParticipantReport' => $this->end_date_participant_report,
 
             ];
     }

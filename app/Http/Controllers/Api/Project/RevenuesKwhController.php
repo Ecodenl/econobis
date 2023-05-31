@@ -845,9 +845,12 @@ class RevenuesKwhController extends ApiController
         if(count($messages) > 0)
         {
             return ['messages' => $messages];
-        }
-        else
-        {
+        } else {
+            // Geen fouten bijwerken datum rapportage
+            $distributionKwh->date_participant_report = Carbon::today();
+            $distributionKwh->begin_date_participant_report = $distributionKwh->revenuesKwh->date_begin;
+            $distributionKwh->end_date_participant_report = $distributionKwh->date_end_last_confirmed_parts_kwh;
+            $distributionKwh->save();
             return null;
         }
     }

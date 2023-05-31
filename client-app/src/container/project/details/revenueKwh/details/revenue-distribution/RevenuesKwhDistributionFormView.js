@@ -2,6 +2,8 @@ import React from 'react';
 import moment from 'moment/moment';
 import MoneyPresenter from '../../../../../../helpers/MoneyPresenter';
 import validator from 'validator';
+import { FaCheckCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 moment.locale('nl');
 
 const RevenuesKwhDistributionFormView = props => {
@@ -21,13 +23,16 @@ const RevenuesKwhDistributionFormView = props => {
         participationsQuantity,
         kwhReturn,
         status,
-    } = props.participation;
+        dateEndLastConfirmedPartsKwh,
+        dateParticipantReport,
+        beginDateParticipantReport,
+        endDateParticipantReport,
+    } = props.distributionKwh;
 
     const missingEmail =
-        props.createType !== 'createInvoices' &&
-        (!contactPrimaryEmailAddress ||
-            !contactPrimaryEmailAddress.email ||
-            validator.isEmpty(contactPrimaryEmailAddress.email))
+        !contactPrimaryEmailAddress ||
+        !contactPrimaryEmailAddress.email ||
+        validator.isEmpty(contactPrimaryEmailAddress.email)
             ? true
             : false;
     const missingAdress = !address || validator.isEmpty(address) ? true : false;
@@ -67,12 +72,6 @@ const RevenuesKwhDistributionFormView = props => {
         case 'in-progress-report':
             statusText = 'Bezig met rapportage...';
             break;
-        //todo WM: opschonen
-        // Indien status confirmed, dan hoeven we niets meer te doen voor betreffende partKwh
-        // Onderscheid tussen confirmed en concept voor in-progress-process dan ook niet meer nodig
-        // case 'in-progress-process-concept':
-        //     statusText = 'Bezig met verwerken...';
-        //     break;
         case 'in-progress-process':
             statusText = 'Bezig met verwerken...';
             break;
@@ -88,20 +87,17 @@ const RevenuesKwhDistributionFormView = props => {
                 missingDataClass ? missingDataClass : ''
             }`}
         >
-            {props.showCheckboxList ? (
-                <div className="col-sm-1">
-                    {/*{status == 'confirmed' ? (*/}
+            <div className="col-sm-1">
+                {props.showCheckboxList && (
                     <input
                         type="checkbox"
                         name={id}
                         onChange={props.toggleDistributionCheck}
                         checked={props.distributionKwhIds.includes(id)}
                     />
-                    {/*) : null}*/}
-                </div>
-            ) : null}
-
-            <div className="col-sm-1">{contactType ? contactType.name : ''}</div>
+                )}
+                {contactType ? ' ' + contactType.name : ''}
+            </div>
             <div className="col-sm-2">{contactName}</div>
             <div className="col-sm-1">{participationsQuantity}</div>
             <div className="col-sm-2">{energySupplierNames && energySupplierNames.join(', ')}</div>
@@ -111,7 +107,44 @@ const RevenuesKwhDistributionFormView = props => {
                     ? '€' + kwhReturn.toLocaleString('nl', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
                     : ''}
             </div>
-            <div className="col-sm-2">{statusText}</div>
+            <div className="col-sm-2">
+                {statusText}
+                {status === 'concept' && dateEndLastConfirmedPartsKwh ? (
+                    <>
+                        <br />
+                        (Def. t/m: {moment(dateEndLastConfirmedPartsKwh).format('L')})
+                    </>
+                ) : (
+                    ''
+                )}
+            </div>
+            <div className="col-sm-1">
+                {dateParticipantReport ? (
+                    <>
+                        {' '}
+                        <FaCheckCircle
+                            color={'green'}
+                            size={'15px'}
+                            data-tip={
+                                'Rapport Deelnemer gemaakt op ' +
+                                moment(dateParticipantReport).format('L') +
+                                '. Verwerkingsperiode t/m ' +
+                                moment(beginDateParticipantReport).format('L') +
+                                ' t/m ' +
+                                moment(endDateParticipantReport).format('L')
+                            }
+                            data-for={`tooltip-remark`}
+                        />
+                        <ReactTooltip
+                            id={`tooltip-remark`}
+                            effect="float"
+                            place="right"
+                            multiline={true}
+                            aria-haspopup="true"
+                        />
+                    </>
+                ) : null}
+            </div>
         </div>
     );
 };

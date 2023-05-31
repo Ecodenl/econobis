@@ -22,11 +22,11 @@ const RevenuesKwhDistributionFormList = props => {
                 <div className="col-sm-2">Status</div>
             </div>
             {props.revenuesKwh.distributionKwh && props.revenuesKwh.distributionKwh.data.length > 0 ? (
-                props.revenuesKwh.distributionKwh.data.map(participation => {
+                props.revenuesKwh.distributionKwh.data.map(distributionKwh => {
                     return (
                         <RevenuesKwhDistributionFormView
-                            key={participation.id}
-                            participation={participation}
+                            key={distributionKwh.id}
+                            distributionKwh={distributionKwh}
                             showCheckboxList={props.showCheckboxList}
                             toggleDistributionCheck={props.toggleDistributionCheck}
                             projectRevenueCategoryCodeRef={props.revenuesKwh.category.codeRef}

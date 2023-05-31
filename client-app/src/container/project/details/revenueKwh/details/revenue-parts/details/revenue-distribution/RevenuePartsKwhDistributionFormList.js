@@ -44,11 +44,11 @@ const RevenuePartsKwhDistributionFormList = props => {
                         </div>
                     ) : props.revenuePartsKwh.distributionPartsKwh &&
                       props.revenuePartsKwh.distributionPartsKwh.data.length > 0 ? (
-                        props.revenuePartsKwh.distributionPartsKwh.data.map(participation => {
+                        props.revenuePartsKwh.distributionPartsKwh.data.map(distributionPartsKwh => {
                             return (
                                 <RevenuePartsKwhDistributionFormView
-                                    key={participation.id}
-                                    participation={participation}
+                                    key={distributionPartsKwh.id}
+                                    distributionPartsKwh={distributionPartsKwh}
                                     showCheckboxList={props.showCheckboxList}
                                     toggleDistributionCheck={props.toggleDistributionCheck}
                                     distributionPartsKwhIds={props.distributionPartsKwhIds}

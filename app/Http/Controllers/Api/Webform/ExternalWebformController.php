@@ -2876,13 +2876,21 @@ class ExternalWebformController extends Controller
             }
 
             $users = (new User())->newCollection();
-            if ($webform->responsibleUser) {
-                $users->push($webform->responsibleUser);
-            } elseif ($webform->responsibleTeam && $webform->responsibleTeam->users()->exists()) {
-                $users = $webform->responsibleTeam->users;
+
+            if($webform->mail_error_report == 1) {
+                if ($webform->email_address_error_report == "") {
+                    if ($webform->responsibleUser) {
+                        $users->push($webform->responsibleUser);
+                    } elseif ($webform->responsibleTeam && $webform->responsibleTeam->users()->exists()) {
+                        $users = $webform->responsibleTeam->users;
+                    }
+                } else {
+                    //$users->push($webform->email_address_error_report);
+                }
+
+                (new EmailHelper())->setConfigToDefaultMailbox();
+                Notification::send($users, new WebformRequestProcessed($this->logs, $data, $success, $webform));
             }
-            (new EmailHelper())->setConfigToDefaultMailbox();
-            Notification::send($users, new WebformRequestProcessed($this->logs, $data, $success, $webform));
         } catch (\Exception $e) {
             report($e);
             $this->log('Fout bij mailen naar verantwoordelijken, fout is gerapporteerd.');

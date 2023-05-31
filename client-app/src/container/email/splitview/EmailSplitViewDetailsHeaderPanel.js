@@ -88,9 +88,7 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                                 type="button"
                                 title="Verwijderen"
                                 className={'btn btn-success btn-sm'}
-                                // onClick={() => {
-                                //     hashHistory.push(`/email/${id}/doorsturen`);
-                                // }}
+                                onClick={() => updateEmailAttributes({folder: 'removed'})}
                             >
                                 <Icon icon={trash} size={13}/>
                             </button>

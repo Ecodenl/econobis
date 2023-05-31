@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 
 class EmailGenericController extends Controller
 {
@@ -22,6 +23,7 @@ class EmailGenericController extends Controller
 
         $data = $request->validate([
             'status' => ['nullable', 'string'],
+            'folder' => ['sometimes', 'required', 'string'],
             'responsibleUserId' => ['nullable', 'exists:users,id'],
             'responsibleTeamId' => ['nullable', 'exists:teams,id'],
             'intakeId' => ['nullable', 'exists:intakes,id'],
@@ -78,13 +80,40 @@ class EmailGenericController extends Controller
 
         $data = $request->validate([
             'status' => ['sometimes', 'required', 'string'],
+            'folder' => ['sometimes', 'required', 'string'],
             'responsibleUserId' => ['nullable', 'exists:users,id'],
             'responsibleTeamId' => ['nullable', 'exists:teams,id'],
         ]);
 
-        foreach ($emails as $email){
+        foreach ($emails as $email) {
             $email->update(Arr::keysToSnakeCase($data));
         }
+    }
+
+    public function store()
+    {
+        $this->authorize('create', Email::class);
+
+        $user = Auth::user();
+
+        $mailbox = $user->mailboxes()
+            ->where('is_active', true)
+            ->first();
+
+        $email = new Email([
+            'from' => $mailbox->email,
+            'to' => [],
+            'cc' => [],
+            'bcc' => [],
+            'html_body' => '',
+            'mailbox_id' => $mailbox->id,
+            'folder' => 'concept',
+        ]);
+        $email->save();
+
+        return response()->json([
+            'id' => $email->id,
+        ]);
     }
 
     public function storeReply(Email $email)

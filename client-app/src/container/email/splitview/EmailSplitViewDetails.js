@@ -7,7 +7,7 @@ import {EmailModalContext} from "../../../context/EmailModalContext";
 
 export default function EmailSplitViewDetails({emailId, updatedEmailHandler}) {
     const { isEmailDetailsModalOpen, isEmailSendModalOpen, modalEmailId } = useContext(EmailModalContext);
-    const [email, setEmail] = useState({attachmentsWithoutCids: []});
+    const [email, setEmail] = useState({attachments: []});
 
     useEffect(() => {
         if(!isEmailDetailsModalOpen && email.id === modalEmailId) {

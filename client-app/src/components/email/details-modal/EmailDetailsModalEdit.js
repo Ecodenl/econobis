@@ -11,7 +11,7 @@ import AsyncSelectSet from "../../../components/form/AsyncSelectSet";
 import ContactsAPI from "../../../api/contact/ContactsAPI";
 import EmailDetailsModalLayout from "./EmailDetailsModalLayout";
 
-export default function EmailDetailsModalEdit({email, updateEmailAttributes}) {
+export default function EmailDetailsModalEdit({email, updateEmailAttributes, onRemoved}) {
     const [intakes, setIntakes] = useState([]);
     const [tasks, setTasks] = useState([]);
     const [quotationRequests, setQuotationRequests] = useState([]);
@@ -52,6 +52,7 @@ export default function EmailDetailsModalEdit({email, updateEmailAttributes}) {
         <EmailDetailsModalLayout
             email={email}
             updateEmailAttributes={updateEmailAttributes}
+            onRemoved={onRemoved}
             contactsComponent={(
                 <AsyncSelectSet
                     label={'Contacten'}

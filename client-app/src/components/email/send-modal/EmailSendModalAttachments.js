@@ -12,6 +12,8 @@ import DocumentsAPI from "../../../api/document/DocumentsAPI";
 import EmailAttachmentAPI from "../../../api/email/EmailAttachmentAPI";
 import PdfViewer from "../../../components/pdf/PdfViewer";
 import {eye} from 'react-icons-kit/fa/eye';
+import {download} from 'react-icons-kit/fa/download';
+import fileDownload from "js-file-download";
 
 export default function EmailSendModalAttachments({email, updated}) {
     const [showSelectDocumentModal, setShowSelectDocumentModal] = useState(false);
@@ -77,6 +79,12 @@ export default function EmailSendModalAttachments({email, updated}) {
                 ...attachment,
                 item: item,
             })
+        });
+    };
+
+    const downloadItem = (attachment) => {
+        EmailAttachmentAPI.downloadAttachment(attachment.id).then(payload => {
+            fileDownload(payload.data, attachment.name);
         });
     };
 
@@ -156,6 +164,9 @@ export default function EmailSendModalAttachments({email, updated}) {
                                                             <Icon className="mybtn-success" size={14} icon={eye}/>
                                                         </a>
                                                     )}
+                                                    <a role="button" onClick={() => downloadItem(attachment)}>
+                                                        <Icon className="mybtn-success" size={14} icon={download}/>
+                                                    </a>
                                                 </div>
                                             </div>
                                         );

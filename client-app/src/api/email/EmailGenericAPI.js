@@ -16,6 +16,11 @@ export default {
             });
     },
 
+    storeNew: () => {
+        return axiosInstance
+            .post(`${URL_EMAIL}`);
+    },
+
     storeReply: (id) => {
         return axiosInstance
             .post(`${URL_EMAIL}/${id}/store-reply`);

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import Icon from "react-icons-kit";
 import EmailAttachmentAPI from "../../api/email/EmailAttachmentAPI";
 import fileDownload from "js-file-download";
-import {fileO} from 'react-icons-kit/fa/fileO';
+import {download} from 'react-icons-kit/fa/download';
 import {share} from 'react-icons-kit/fa/share';
 import {eye} from 'react-icons-kit/fa/eye';
 import {hashHistory} from "react-router";
@@ -52,8 +52,8 @@ export default function EmailAttachmentsPanel({email, allowView = true}) {
                     <div className="row border header">
                         <div className="col-sm-12">Bestand</div>
                     </div>
-                    {email.attachmentsWithoutCids.length > 0 ? (
-                        email.attachmentsWithoutCids.map(attachment => {
+                    {email.attachments.length > 0 ? (
+                        email.attachments.map(attachment => {
                             return (
                                 <div
                                     className={`row border ${hoveredAttachmentId === attachment.id ? 'highlight-line' : ''}`}
@@ -66,7 +66,7 @@ export default function EmailAttachmentsPanel({email, allowView = true}) {
                                         {hoveredAttachmentId === attachment.id && (
                                             <>
                                                 <a role="button" onClick={() => downloadItem(attachment)}>
-                                                    <Icon className="mybtn-success" size={14} icon={fileO}/>
+                                                    <Icon className="mybtn-success" size={14} icon={download}/>
                                                 </a>
                                                 <a role="button" onClick={() => saveToAlfresco(attachment)}>
                                                     <Icon className="mybtn-success" size={14} icon={share}/>

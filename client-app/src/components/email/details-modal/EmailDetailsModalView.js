@@ -3,10 +3,11 @@ import EmailDetailsModalLayout from "./EmailDetailsModalLayout";
 import {Link} from "react-router";
 import ViewText from "../../../components/form/ViewText";
 
-export default function EmailDetailsModalView({email, updateEmailAttributes}) {
+export default function EmailDetailsModalView({email, updateEmailAttributes, onRemoved}) {
     return (
         <EmailDetailsModalLayout
             email={email}
+            onRemoved={onRemoved}
             updateEmailAttributes={updateEmailAttributes}
             contactsComponent={(
                 <div className="col-sm-6">

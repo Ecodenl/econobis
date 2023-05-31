@@ -10,11 +10,15 @@ import EmailAddressAPI from "../../../api/contact/EmailAddressAPI";
 import EmailTemplateAPI from "../../../api/email-template/EmailTemplateAPI";
 import InputTinyMCEUpdateable from "../../../components/form/InputTinyMCEUpdateable";
 import EmailSendModalAttachments from "./EmailSendModalAttachments";
+import EmailAttachmentAPI from "../../../api/email/EmailAttachmentAPI";
+import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 
 export default function EmailSendModal({emailId, showModal, setShowModal}) {
+    const [isFirstLoad, setIsFirstLoad] = useState(true);
     const [email, setEmail] = useState(null);
     const [mailboxAddresses, setMailboxAddresses] = useState([]);
     const [emailTemplates, setEmailTemplates] = useState([]);
+    const [emailTemplateId, setEmailTemplateId] = useState(null);
     const [errors, setErrors] = useState({});
     const [initialHtmlBody, setInitialHtmlBody] = useState('');
 
@@ -24,6 +28,13 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
         }
 
         fetchEmail();
+
+        if(!isFirstLoad){
+            setEmailTemplateId(null);
+            return;
+        }
+
+        setIsFirstLoad(false);
 
         MailboxAPI.fetchMailboxesLoggedInUserPeek().then(payload => {
             setMailboxAddresses(payload.data.data);
@@ -59,22 +70,28 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
         let newEmail = {...email, ...values};
         setEmail(newEmail);
 
-        save(values);
+        return save(values);
     }
 
-    // const applyEmailTemplate = (templateId) => {
-    //     EmailTemplateAPI.fetchEmailTemplateWithUser(templateId).then(payload => {
-    //         setEmail({
-    //             ...email,
-    //             subject: payload.subject ? payload.subject : email.subject,
-    //             htmlBody: payload.htmlBody ? payload.htmlBody : email.htmlBody,
-    //         });
-    //
-    //         // if (payload.defaultAttachmentDocument) {
-    //         //     this.addDocumentAsAttachment(payload.defaultAttachmentDocument.id);
-    //         // }
-    //     });
-    // }
+    useEffect(() => {
+        if (emailTemplateId) {
+            applyEmailTemplate(emailTemplateId);
+        }
+    }, [emailTemplateId]);
+    const applyEmailTemplate = (templateId) => {
+        EmailTemplateAPI.fetchEmailTemplateWithUser(templateId).then(payload => {
+            updateEmail({
+                subject: payload.subject ? payload.subject : email.subject,
+                htmlBody: payload.htmlBody ? payload.htmlBody : email.htmlBody,
+            }).then(() => {
+                if (payload.defaultAttachmentDocument) {
+                    EmailAttachmentAPI.addDocumentsAsAttachments(email.id, [payload.defaultAttachmentDocument.id]).then(() => {
+                        fetchEmail();
+                    });
+                }
+            });
+        });
+    }
 
     const send = () => {
         validate();
@@ -87,13 +104,19 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
     const save = (values = {}) => {
         let newEmail = {...email, ...values};
 
-        EmailSendAPI.saveConcept(emailId, {
+        return EmailSendAPI.saveConcept(emailId, {
             mailboxId: newEmail.mailboxId,
             to: newEmail.toAddresses.map(to => to.id),
             cc: newEmail.ccAddresses.map(cc => cc.id),
             bcc: newEmail.bccAddresses.map(bcc => bcc.id),
             subject: newEmail.subject,
             htmlBody: newEmail.htmlBody,
+        });
+    }
+
+    const moveToRemoved = () => {
+        EmailGenericAPI.update(emailId, {folder: 'removed'}).then(() => {
+            setShowModal(false);
         });
     }
 
@@ -114,8 +137,9 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
                     confirmAction={send}
                     title={'Email versturen'}
                     modalMainClassName="modal-fullscreen"
-                    extraButtonAction={save}
-                    extraButtonClass={'pull-left btn-default'}
+                    extraButtonAction={moveToRemoved}
+                    extraButtonClass={'pull-left btn-danger'}
+                    extraButtonLabel={'Concept verwijderen'}
                     buttonCancelText="Sluiten"
                 >
                     <div className="row">
@@ -217,15 +241,15 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
                             />
                         </div>
                     )}
-                    {/*<div className="row">*/}
-                    {/*    <InputReactSelectLong*/}
-                    {/*        label="Template"*/}
-                    {/*        name={'emailTemplateId'}*/}
-                    {/*        value={emailTemplateId}*/}
-                    {/*        options={emailTemplates}*/}
-                    {/*        onChangeAction={applyEmailTemplate}*/}
-                    {/*    />*/}
-                    {/*</div>*/}
+                    <div className="row">
+                        <InputReactSelectLong
+                            label="Template"
+                            name={'emailTemplateId'}
+                            value={emailTemplateId}
+                            options={emailTemplates}
+                            onChangeAction={setEmailTemplateId}
+                        />
+                    </div>
                     <div className="row">
                         <div className="form-group col-sm-12">
                             <div className="row">

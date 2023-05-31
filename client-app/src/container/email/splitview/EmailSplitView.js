@@ -5,6 +5,7 @@ import EmailSplitViewSelectList from "./EmailSplitViewSelectList";
 import EmailSplitViewFiltersPanel from "./EmailSplitViewFiltersPanel";
 import {getJoryFilter, storeFiltersToStorage, getFiltersFromStorage, defaultFilters} from "./EmailFilterHelpers";
 import {EmailModalContext} from "../../../context/EmailModalContext";
+import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 
 export default function EmailSplitView({router}) {
     const perPage = 50;
@@ -12,7 +13,7 @@ export default function EmailSplitView({router}) {
     const [emailCount, setEmailCount] = useState(0);
     const [selectedEmailId, setSelectedEmailId] = useState(null);
     const [filters, setFilters] = useState({...defaultFilters});
-    const { isEmailDetailsModalOpen, isEmailSendModalOpen } = useContext(EmailModalContext);
+    const { isEmailDetailsModalOpen, isEmailSendModalOpen, openEmailSendModal } = useContext(EmailModalContext);
 
     useEffect(() => {
         if(!isEmailDetailsModalOpen && emailCount > 0) {
@@ -69,7 +70,7 @@ export default function EmailSplitView({router}) {
     const refetchCurrentEmails = () => {
         return EmailSplitviewAPI.fetchSelectList({
             filter: getFilter(),
-            limit: emails.length,
+            limit: Math.max(emails.length, perPage),
             offset: 0,
             sorts: getSorts(),
         }).then(response => {
@@ -104,10 +105,21 @@ export default function EmailSplitView({router}) {
         }
     };
 
+    const createMail = () => {
+        EmailGenericAPI.storeNew().then(payload => {
+            openEmailSendModal(payload.data.id);
+        });
+    }
+
     return (
         <div>
             <div className="row">
-                <div className="col-md-12" style={{marginTop: '-10px'}}>
+                <div className="col-md-12" style={{marginTop: '-10px', marginBottom: '5px'}}>
+                    <button type="button" className="btn btn-success pull-right" onClick={createMail}>Nieuwe email</button>
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-md-12">
                     <form onKeyUp={handleFilterKeyUp}>
                         <EmailSplitViewFiltersPanel filters={filters} setFilters={setFilters}/>
                     </form>

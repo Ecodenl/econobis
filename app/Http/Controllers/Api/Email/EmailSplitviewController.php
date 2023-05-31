@@ -38,7 +38,7 @@ class EmailSplitviewController extends Controller
                     'from' => $mail->from,
                     'subject' => $mail->subject,
                     'status' => $mail->status,
-                    'hasAttachmentsWithoutCids' => $mail->attachmentsWithoutCids->isNotEmpty(),
+                    'hasAttachments' => $mail->attachmentsWithoutCids->isNotEmpty(),
                     'responsibleName' => $mail->getResponsibleName(),
                 ];
             }),
@@ -53,7 +53,7 @@ class EmailSplitviewController extends Controller
         return response()->json([
             'id' => $email->id,
             'status' => $email->status,
-            'attachmentsWithoutCids' => $email->attachmentsWithoutCids,
+            'attachments' => $email->attachmentsWithoutCids,
             'responsibleUserId' => $email->responsible_user_id,
             'responsibleTeamId' => $email->responsible_team_id,
             'contacts' => $email->contacts->map(function (Contact $contact) {

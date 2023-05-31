@@ -117,7 +117,12 @@ class EmailDetailsController extends Controller
                     'fullName' => $email->removedBy->present()->fullName(),
                 ] : null,
             //    'contactGroupId' => $email->contact_group_id,
-            'attachmentsWithoutCids' => $email->attachmentsWithoutCids,
+            'attachments' => $email->attachmentsWithoutCids->map(function ($attachment) {
+                return [
+                    'id' => $attachment->id,
+                    'name' => $attachment->name,
+                ];
+            }),
         ]);
     }
 }

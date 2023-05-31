@@ -65,9 +65,9 @@ export default function EmailDetailsModal({emailId, showModal, setShowModal}) {
                         )}
                 >
                     {showEdit ? (
-                        <EmailDetailsModalEdit email={email} updateEmailAttributes={updateEmailAttributes}/>
+                        <EmailDetailsModalEdit email={email} updateEmailAttributes={updateEmailAttributes} onRemoved={() => setShowModal(false)} />
                     ) : (
-                        <EmailDetailsModalView email={email} updateEmailAttributes={updateEmailAttributes}/>
+                        <EmailDetailsModalView email={email} updateEmailAttributes={updateEmailAttributes} onRemoved={() => setShowModal(false)} />
                     )}
                 </Modal>
             )}

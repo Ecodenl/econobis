@@ -27,6 +27,7 @@ export default function EmailDetailsModalLayout({
                                                     opportunityComponent,
                                                     orderComponent,
                                                     invoiceComponent,
+                                                    onRemoved,
                                                 }) {
     const statusses = useSelector((state) => state.systemData.emailStatuses);
     const { openEmailSendModal } = useContext(EmailModalContext);
@@ -49,6 +50,11 @@ export default function EmailDetailsModalLayout({
         });
     }
 
+    const moveToRemoved = () => {
+        EmailGenericAPI.update(email.id, {folder: 'removed'}).then(() => {
+            onRemoved();
+        });
+    }
 
     return (
         <div>
@@ -101,9 +107,7 @@ export default function EmailDetailsModalLayout({
                             type="button"
                             title="Verwijderen"
                             className={'btn btn-success btn-sm'}
-                            // onClick={() => {
-                            //     hashHistory.push(`/email/${id}/doorsturen`);
-                            // }}
+                            onClick={moveToRemoved}
                         >
                             <Icon icon={trash} size={13}/>
                         </button>

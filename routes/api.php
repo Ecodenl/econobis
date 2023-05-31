@@ -329,6 +329,7 @@ Route::namespace('Api')
          */
         Route::post('email-generic/delete-multiple', [EmailGenericController::class, 'deleteMultiple']);
         Route::post('email-generic/update-multiple', [EmailGenericController::class, 'updateMultiple']);
+        Route::post('email-generic', [EmailGenericController::class, 'store']);
         Route::post('email-generic/{email}', [EmailGenericController::class, 'update']);
         Route::post('email-generic/{email}/store-reply', [EmailGenericController::class, 'storeReply']);
         Route::post('email-generic/{email}/store-reply-all', [EmailGenericController::class, 'storeReplyAll']);

@@ -7,7 +7,6 @@ use App\Eco\Contact\Contact;
 use App\Eco\Email\Email;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use JosKolenberg\LaravelJory\Facades\Jory;
 
@@ -15,9 +14,12 @@ class EmailSplitviewController extends Controller
 {
     public function selectList(Request $request)
     {
-        $this->authorize('view', Email::class);
+        $baseQuery = Email::whereIn('mailbox_id', Auth::user()->mailboxes->pluck('id'))
+            ->whereHas('mailbox', function ($query) {
+                $query->where('is_active', true);
+            });
 
-        $query = Jory::on(Email::class)
+        $query = Jory::on($baseQuery)
             ->apply($request->input('jory'))
             ->getJoryBuilder()
             ->buildQuery();
@@ -46,8 +48,7 @@ class EmailSplitviewController extends Controller
 
     public function show(Email $email)
     {
-        $this->authorize('view', Email::class);
-        $this->checkMailboxAutorized($email->mailbox_id);
+        $this->authorize('manage', $email);
 
         return response()->json([
             'id' => $email->id,
@@ -65,12 +66,5 @@ class EmailSplitviewController extends Controller
             'htmlBodyWithEmbeddedImages' => $email->inlineImagesService()->getHtmlBodyWithCidsConvertedToEmbeddedImages(),
             'folder' => $email->folder,
         ]);
-    }
-
-    protected function checkMailboxAutorized($mailboxId): void
-    {
-        if (!Auth::user()->mailboxes()->where('mailboxes.id', $mailboxId)->exists()) {
-            abort(403, 'Niet geautoriseerd.');
-        }
     }
 }

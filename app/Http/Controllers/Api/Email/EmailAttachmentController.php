@@ -15,8 +15,7 @@ class EmailAttachmentController extends Controller
 {
     public function download(EmailAttachment $emailAttachment)
     {
-        $this->authorize('view', Email::class);
-        $this->checkMailboxAutorized($emailAttachment->email->mailbox_id);
+        $this->authorize('manage', $emailAttachment->email);
 
         return Storage::disk('mail_attachments')->download($emailAttachment->filename, $emailAttachment->name);
 
@@ -40,8 +39,7 @@ class EmailAttachmentController extends Controller
 
     public function addDocumentsAsAttachments(Email $email, Request $request)
     {
-        $this->authorize('view', Email::class);
-        $this->checkMailboxAutorized($email->mailbox_id);
+        $this->authorize('manage', $email);
 
         $data = $request->validate([
             'documentIds' => ['array'],
@@ -70,8 +68,7 @@ class EmailAttachmentController extends Controller
 
     public function delete(EmailAttachment $emailAttachment)
     {
-        $this->authorize('view', Email::class);
-        $this->checkMailboxAutorized($emailAttachment->email->mailbox_id);
+        $this->authorize('manage', $emailAttachment->email);
 
         //delete real file (only when count on filename is 1, otherwise this attachment is also in use in another email because of a reply or send through)
         $countAttachment = EmailAttachment::where('filename', $emailAttachment->filename)->count();
@@ -86,8 +83,7 @@ class EmailAttachmentController extends Controller
 
     public function store(Email $email, Request $request)
     {
-        $this->authorize('view', Email::class);
-        $this->checkMailboxAutorized($email->mailbox_id);
+        $this->authorize('manage', $email);
 
         $request->validate([
             'file' => 'required',
@@ -105,13 +101,4 @@ class EmailAttachmentController extends Controller
 
         return response()->json($emailAttachment);
     }
-
-    protected function checkMailboxAutorized($mailboxId): void
-    {
-        $user = Auth::user();
-        if (!$user->mailboxes()->where('mailboxes.id', $mailboxId)->exists()) {
-            abort(403, 'Niet geautoriseerd.');
-        }
-    }
-
 }

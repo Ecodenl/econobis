@@ -12,8 +12,7 @@ class EmailDetailsController extends Controller
 {
     public function show(Email $email)
     {
-        $this->authorize('view', Email::class);
-        $this->checkMailboxAutorized($email->mailbox_id);
+        $this->authorize('manage', $email);
 
         /**
          * 20230509; Jos Todo; nog opschonen
@@ -120,12 +119,5 @@ class EmailDetailsController extends Controller
             //    'contactGroupId' => $email->contact_group_id,
             'attachmentsWithoutCids' => $email->attachmentsWithoutCids,
         ]);
-    }
-
-    protected function checkMailboxAutorized($mailboxId): void
-    {
-        if (!Auth::user()->mailboxes()->where('mailboxes.id', $mailboxId)->exists()) {
-            abort(403, 'Niet geautoriseerd.');
-        }
     }
 }

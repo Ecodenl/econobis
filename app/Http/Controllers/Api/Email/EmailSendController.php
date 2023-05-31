@@ -6,6 +6,8 @@ namespace App\Http\Controllers\Api\Email;
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 use App\Http\Controllers\Controller;
+use App\Jobs\Email\SendEmailsWithVariables;
+use App\Jobs\Email\SendGroupEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -14,8 +16,7 @@ class EmailSendController extends Controller
 {
     public function show(Email $email)
     {
-        $this->authorize('view', Email::class);
-        $this->checkMailboxAutorized($email->mailbox_id);
+        $this->authorize('manage', $email);
 
         return response()->json([
             'id' => $email->id,
@@ -40,8 +41,7 @@ class EmailSendController extends Controller
 
     public function saveConcept(Email $email, Request $request)
     {
-        $this->authorize('view', Email::class);
-        $this->checkMailboxAutorized($email->mailbox_id);
+        $this->authorize('manage', $email);
 
         $data = $request->validate([
             'mailboxId' => ['exists:mailboxes,id'],
@@ -62,10 +62,32 @@ class EmailSendController extends Controller
         return response()->json([]);
     }
 
-    protected function checkMailboxAutorized($mailboxId): void
+    public function send(Email $email)
     {
-        if (!Auth::user()->mailboxes()->where('mailboxes.id', $mailboxId)->exists()) {
-            abort(403, 'Niet geautoriseerd.');
+        $this->authorize('manage', $email);
+
+        set_time_limit(0);
+
+        if($email->contactGroup){
+            $email->syncContactsByGroup();
+            $email->attachGroupEmailAddressesFromGroup();
+        }else{
+            $email->syncContactsByRecipients();
+        }
+
+        // Add basic html tags for new emails
+        $email->html_body
+            = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
+            . $email->subject . '</title></head><body>'
+            . $email->html_body . '</body></html>';
+
+        $email->sent_by_user_id = Auth::id();
+        $email->save();
+
+        if ($email->contactGroup) {
+            SendGroupEmail::dispatch($email, $email->cc, Auth::id());
+        } else {
+            SendEmailsWithVariables::dispatch($email, $email->to, Auth::id());
         }
     }
 }

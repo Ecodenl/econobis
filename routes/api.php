@@ -344,6 +344,7 @@ Route::namespace('Api')
          */
         Route::get('email-send/{email}', [EmailSendController::class, 'show']);
         Route::post('email-send/{email}/save-concept', [EmailSendController::class, 'saveConcept']);
+        Route::post('email-send/{email}/send', [EmailSendController::class, 'send']);
 
         /**
          * Email attachments

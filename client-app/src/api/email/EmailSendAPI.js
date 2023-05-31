@@ -13,5 +13,10 @@ export default {
         return axiosInstance
             .post(`${URL_EMAIL}/${id}/save-concept`, attributes)
             .then(response => response.data);
+    },
+
+    send: (id) => {
+        return axiosInstance
+            .post(`${URL_EMAIL}/${id}/send`);
     }
 };

@@ -255,4 +255,46 @@ class Email extends Model
             $emailAddress->save();
         }
     }
+
+    public function syncContactsByRecipients()
+    {
+        $emailAddressIds = collect()
+            ->merge(collect($this->to))
+            ->merge(collect($this->cc))
+            ->merge(collect($this->bcc))
+            ->filter(function($idOrEmailAddress){
+                return is_numeric($idOrEmailAddress);
+            })
+            ->unique();
+
+        $contactIds = EmailAddress::whereIn('id', $emailAddressIds)->pluck('contact_id');
+
+        if($this->oldEmail){
+            $contactIds = $contactIds->merge($this->oldEmail->contacts()->pluck('contacts.id'));
+        }
+
+        $this->contacts()->sync($contactIds->unique()->toArray());
+    }
+
+    public function syncContactsByGroup()
+    {
+        $contactIds = $this->contactGroup->all_contacts->pluck('id');
+
+        if($this->oldEmail){
+            $contactIds = $contactIds->merge($this->oldEmail->contacts()->pluck('contacts.id'));
+        }
+
+        $this->contacts()->sync($contactIds->unique()->toArray());
+    }
+
+    public function attachGroupEmailAddressesFromGroup()
+    {
+        foreach ($this->contactGroup->all_contacts as $contact) {
+            if (!$contact->primaryEmailAddress) {
+                continue;
+            }
+
+            $this->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
+        }
+    }
 }

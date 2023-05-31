@@ -78,35 +78,14 @@ export default function EmailSendModal({emailId, showModal, setShowModal, onClos
 
     const send = () => {
         validate();
+
+        EmailSendAPI.send(emailId).then(() => {
+            onClose();
+        });
     }
 
     const save = (values = {}) => {
         let newEmail = {...email, ...values};
-        // const data = new FormData();
-
-        // data.append('mailboxId', email.mailboxId);
-        //
-        // email.toAddresses.forEach(to => {
-        //     data.append('to[]', to.id);
-        // });
-        // email.ccAddresses.forEach(cc => {
-        //     data.append('cc[]', cc.id);
-        // });
-        // email.bccAddresses.forEach(bcc => {
-        //     data.append('bcc[]', bcc.id);
-        // });
-        //
-        // data.append('subject', email.subject);
-        // data.append('htmlBody', email.htmlBody);
-        // data.append('existingAttachments', email.attachments.filter(a => !a.uploadedNew).map(a => a.id));
-        //
-        // email.attachments.forEach(attachment => {
-        //     if(!attachment.uploadedNew){
-        //         return;
-        //     }
-        //
-        //     data.append('newAttachment[]', attachment.file, attachment.name);
-        // });
 
         EmailSendAPI.saveConcept(emailId, {
             mailboxId: newEmail.mailboxId,
@@ -115,8 +94,6 @@ export default function EmailSendModal({emailId, showModal, setShowModal, onClos
             bcc: newEmail.bccAddresses.map(bcc => bcc.id),
             subject: newEmail.subject,
             htmlBody: newEmail.htmlBody,
-        }).then(() => {
-            // onClose();
         });
     }
 

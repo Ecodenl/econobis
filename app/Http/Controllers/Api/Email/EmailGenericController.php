@@ -19,8 +19,7 @@ class EmailGenericController extends Controller
 
     public function update(Email $email, Request $request)
     {
-        $this->authorize('view', Email::class);
-        $this->checkMailboxAutorized($email->mailbox_id);
+        $this->authorize('manage', $email);
 
         $data = $request->validate([
             'status' => ['nullable', 'string'],
@@ -49,8 +48,6 @@ class EmailGenericController extends Controller
 
     public function deleteMultiple(Request $request)
     {
-        $this->authorize('view', Email::class);
-
         $request->validate([
             'ids' => ['required', 'array'],
             'ids.*' => ['integer', 'exists:emails,id'],
@@ -58,8 +55,8 @@ class EmailGenericController extends Controller
 
         $emails = Email::whereIn('id', $request->input('ids'))->get();
 
-        foreach ($emails->pluck('mailbox_id')->unique() as $mailBoxId) {
-            $this->checkMailboxAutorized($mailBoxId);
+        foreach ($emails as $email) {
+            $this->authorize('manage', $email);
         }
 
         foreach ($emails as $email) {
@@ -69,8 +66,6 @@ class EmailGenericController extends Controller
 
     public function updateMultiple(Request $request)
     {
-        $this->authorize('view', Email::class);
-
         $request->validate([
             'ids' => ['required', 'array'],
             'ids.*' => ['integer', 'exists:emails,id'],
@@ -78,8 +73,8 @@ class EmailGenericController extends Controller
 
         $emails = Email::whereIn('id', $request->input('ids'))->get();
 
-        foreach ($emails->pluck('mailbox_id')->unique() as $mailBoxId) {
-            $this->checkMailboxAutorized($mailBoxId);
+        foreach ($emails as $email) {
+            $this->authorize('manage', $email);
         }
 
         $data = $request->validate([
@@ -95,8 +90,7 @@ class EmailGenericController extends Controller
 
     public function storeReply(Email $email)
     {
-        $this->authorize('view', Email::class);
-        $this->checkMailboxAutorized($email->mailbox_id);
+        $this->authorize('manage', $email);
 
         $reply = $email->generator()->reply();
 
@@ -107,8 +101,7 @@ class EmailGenericController extends Controller
 
     public function storeReplyAll(Email $email)
     {
-        $this->authorize('view', Email::class);
-        $this->checkMailboxAutorized($email->mailbox_id);
+        $this->authorize('manage', $email);
 
         $reply = $email->generator()->replyAll();
 
@@ -119,20 +112,12 @@ class EmailGenericController extends Controller
 
     public function storeForward(Email $email)
     {
-        $this->authorize('view', Email::class);
-        $this->checkMailboxAutorized($email->mailbox_id);
+        $this->authorize('manage', $email);
 
         $forward = $email->generator()->forward();
 
         return response()->json([
             'id' => $forward->id,
         ]);
-    }
-
-    protected function checkMailboxAutorized($mailboxId): void
-    {
-        if (!Auth::user()->mailboxes()->where('mailboxes.id', $mailboxId)->exists()) {
-            abort(403, 'Niet geautoriseerd.');
-        }
     }
 }

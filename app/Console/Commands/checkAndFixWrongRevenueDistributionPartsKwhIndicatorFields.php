@@ -17,7 +17,7 @@ class checkAndFixWrongRevenueDistributionPartsKwhIndicatorFields extends Command
      *
      * @var string
      */
-    protected $signature = 'revenue:checkAndFixWrongRevenueDistributionPartsKwhIndicatorFields';
+    protected $signature = 'revenue:checkAndFixWrongRevenueDistributionPartsKwhIndicatorFields {--recover=true}';
     protected $mailTo = 'patrick.koeman@xaris.nl';
 
     /**
@@ -44,6 +44,9 @@ class checkAndFixWrongRevenueDistributionPartsKwhIndicatorFields extends Command
      */
     public function handle()
     {
+        // met of zonder herstel?
+        $doRecover = $this->option('recover') == 'true';
+
         $revenueDistributionPartKwhWrong = "";
 
         foreach(RevenueDistributionPartsKwh::get() as $revenueDistributionPartKwh) {
@@ -82,11 +85,16 @@ class checkAndFixWrongRevenueDistributionPartsKwhIndicatorFields extends Command
                     "part_date_end: " .  $revenueDistributionPartKwh->partsKwh->date_end . "<br><br>"
                 ;
             }
+
+            if($doRecover){
+                $revenueDistributionPartKwh->is_visible = $this->determineIsVisible($revenueDistributionPartKwh);
+                $revenueDistributionPartKwh->save();
+            }
         }
 
         if($revenueDistributionPartKwhWrong != "") {
             $subject = 'Wrong revenue distribution parts! - ' . \Config::get('app.APP_COOP_NAME');
-            $this->sendMail($subject, $revenueDistributionPartKwhWrong);
+            $this->sendMail($subject, $revenueDistributionPartKwhWrong, $doRecover);
         }
     }
 
@@ -106,12 +114,18 @@ class checkAndFixWrongRevenueDistributionPartsKwhIndicatorFields extends Command
         }
     }
 
-    private function sendMail($subject, $revenueDistributionPartKwhWrong)
+    private function sendMail($subject, $revenueDistributionPartKwhWrong, $doRecover)
     {
         (new EmailHelper())->setConfigToDefaultMailbox();
 
+        if($doRecover){
+            $recoverHtml = "<p>MET HERSTEL!</p>";
+        } else {
+            $recoverHtml = "<p>ZONDER HERSTEL!</p>";
+        }
+
         $mail = Mail::to($this->mailTo);
-        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>Wrong distribution parts</title></head><body><p>'. $subject . '</p><p>' . \Config::get("app.name") .'</p><p>'. $revenueDistributionPartKwhWrong .'</p></body></html>';
+        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>Wrong distribution parts</title></head><body><p>'. $subject . '</p><p>' . \Config::get("app.name") .'</p><p>'. $revenueDistributionPartKwhWrong .'</p><p>'. $recoverHtml .'</p></body></html>';
 
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;

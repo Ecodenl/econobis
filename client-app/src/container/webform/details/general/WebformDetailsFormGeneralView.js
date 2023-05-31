@@ -15,11 +15,13 @@ const WebformDetailsFormGeneralView = props => {
         name,
         apiKey,
         apiKeyDate,
+        emailAddressErrorReport,
+        mailErrorReport,
         maxRequestsPerMinute,
         dateStart,
         dateEnd,
         responsibleUser,
-        responsibleTeam,
+        responsibleTeam
     } = props.webformDetails;
 
     return (
@@ -60,6 +62,12 @@ const WebformDetailsFormGeneralView = props => {
                             value={responsibleUser ? responsibleUser.fullName : responsibleTeam.name}
                             link={responsibleUser ? 'gebruiker/' + responsibleUser.id : 'team/' + responsibleTeam.id}
                         />
+                    </div>
+
+                    <div className="row" onClick={props.switchToEdit}>
+                        <ViewText label={'Emailadres foutrapportage'} value={emailAddressErrorReport} />
+
+                        <ViewText label={'Mailen foutrapportage'} value={(mailErrorReport === 1) ? 'Ja' : 'Nee'} />
                     </div>
                 </PanelBody>
             </Panel>

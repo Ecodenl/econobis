@@ -16,6 +16,7 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputDate from '../../../../components/form/InputDate';
 import InputSelectGroup from '../../../../components/form/InputSelectGroup';
+import InputCheckbox from "../../../../components/form/InputCheckbox";
 
 class WebformDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -118,7 +119,7 @@ class WebformDetailsFormGeneralEdit extends Component {
     }
 
     render() {
-        const { name, apiKey, apiKeyDate, maxRequestsPerMinute, dateStart, dateEnd, responsible } = this.state.webform;
+        const { name, apiKey, apiKeyDate, emailAddressErrorReport, mailErrorReport, maxRequestsPerMinute, dateStart, dateEnd, responsible } = this.state.webform;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -193,6 +194,22 @@ class WebformDetailsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
                                 error={this.state.errors.responsible}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Emailadres foutrapportage"
+                                name={'emailAddressErrorReport'}
+                                value={emailAddressErrorReport}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.emailAddressErrorReport}
+                            />
+                            <InputCheckbox
+                                label="Mailen foutrapportage"
+                                name={'mailErrorReport'}
+                                checked={mailErrorReport}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.mailErrorReport}
                             />
                         </div>
                     </PanelBody>

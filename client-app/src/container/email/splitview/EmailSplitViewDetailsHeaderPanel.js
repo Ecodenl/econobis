@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Icon from "react-icons-kit";
 import {mailReply} from 'react-icons-kit/fa/mailReply';
 import {mailReplyAll} from 'react-icons-kit/fa/mailReplyAll';
@@ -10,16 +10,22 @@ import {Link} from "react-router";
 import {useSelector} from 'react-redux'
 import InputSelect from "../../../components/form/InputSelect";
 import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
-import EmailDetailsModal from "../details-modal/EmailDetailsModal";
 import EmailAddressList from "../../../components/email/EmailAddressList";
 import ResponsibleInputSelect from "../../../components/email/ResponsibleInputSelect";
 import EmailSendModal from "../send-modal/EmailSendModal";
+import {EmailModalContext} from "../../../context/EmailModalContext";
 
 export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttributes, updatedEmailHandler}) {
+    const { openEmailDetailsModal, isEmailDetailsModalOpen } = useContext(EmailModalContext);
     const statusses = useSelector((state) => state.systemData.emailStatuses);
-    const [showDetailsModal, setShowDetailsModal] = useState(false);
     const [showSendModal, setShowSendModal] = useState(false);
     const [sendModalMailId, setSendModalMailId] = useState(null);
+
+    useEffect(() => {
+        if(!isEmailDetailsModalOpen) {
+            updatedEmailHandler();
+        }
+    }, [isEmailDetailsModalOpen]);
 
     const createReply = () => {
         EmailGenericAPI.storeReply(email.id).then(payload => {
@@ -105,7 +111,7 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                                 type="button"
                                 title="Openen"
                                 className={'btn btn-success btn-sm'}
-                                onClick={() => setShowDetailsModal(true)}
+                                onClick={() => openEmailDetailsModal(email.id)}
                             >
                                 <Icon icon={windowRestore} size={13}/>
                             </button>
@@ -156,7 +162,6 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                     />
                 </div>
             </div>
-            <EmailDetailsModal showModal={showDetailsModal} emailId={email.id} setShowModal={setShowDetailsModal} onSave={updatedEmailHandler}/>
             <EmailSendModal showModal={showSendModal} emailId={sendModalMailId} setShowModal={setShowSendModal} onClose={updatedEmailHandler}/>
         </div>
     );

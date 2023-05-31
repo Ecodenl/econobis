@@ -5,7 +5,7 @@ import EmailDetailsModalEdit from "./EmailDetailsModalEdit";
 import EmailDetailsAPI from "../../../api/email/EmailDetailsAPI";
 import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 
-export default function EmailDetailsModal({emailId, showModal, setShowModal, onSave}) {
+export default function EmailDetailsModal({emailId, showModal, setShowModal}) {
     const [showEdit, setShowEdit] = useState(false);
     const [email, setEmail] = useState(null);
 
@@ -42,8 +42,6 @@ export default function EmailDetailsModal({emailId, showModal, setShowModal, onS
         }).then(() => {
             setShowEdit(false);
             setShowModal(false);
-
-            onSave();
         });
     }
 

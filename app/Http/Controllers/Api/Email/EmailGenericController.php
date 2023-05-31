@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
 
 class EmailGenericController extends Controller
 {
@@ -37,7 +36,7 @@ class EmailGenericController extends Controller
         $contactIds = $request->validate([
             'contactIds' => ['array'],
             'contactIds.*' => ['integer', 'exists:contacts,id'],
-        ])['contactIds'];
+        ])['contactIds'] ?? [];
 
         $email->update(Arr::keysToSnakeCase($data));
 

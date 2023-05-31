@@ -5,8 +5,7 @@ import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
 
 export default function EmailSplitViewDetails({emailId, updatedEmailHandler}) {
-    const [email, setEmail] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [email, setEmail] = useState({attachmentsWithoutCids: []});
 
     useEffect(() => {
         if (!emailId) {
@@ -17,10 +16,8 @@ export default function EmailSplitViewDetails({emailId, updatedEmailHandler}) {
     }, [emailId]);
 
     const fetchEmail = () => {
-        setIsLoading(true);
         EmailSplitviewAPI.fetchEmail(emailId).then(data => {
             setEmail(data);
-            setIsLoading(false);
         });
     }
 
@@ -35,7 +32,7 @@ export default function EmailSplitViewDetails({emailId, updatedEmailHandler}) {
         });
     }
 
-    if (isLoading || !email) {
+    if (!email) {
         return (
             <></>
         )

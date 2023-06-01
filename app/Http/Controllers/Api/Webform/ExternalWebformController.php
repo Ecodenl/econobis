@@ -2885,7 +2885,11 @@ class ExternalWebformController extends Controller
                         $users = $webform->responsibleTeam->users;
                     }
                 } else {
-                    //$users->push($webform->email_address_error_report);
+                    $dummyUser = (new User)->forceFill([
+                        'id' => 99999999999999,
+                        'email' => $webform->email_address_error_report,
+                    ]);
+                    $users->push($dummyUser);
                 }
 
                 (new EmailHelper())->setConfigToDefaultMailbox();

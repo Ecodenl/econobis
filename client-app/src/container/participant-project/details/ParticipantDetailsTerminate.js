@@ -9,7 +9,7 @@ import moment from 'moment';
 import ParticipantProjectDetailsAPI from '../../../api/participant-project/ParticipantProjectDetailsAPI';
 import InputToggle from '../../../components/form/InputToggle';
 import { hashHistory } from 'react-router';
-import ViewText from "../../../components/form/ViewText";
+import ViewText from '../../../components/form/ViewText';
 
 const ParticipantDetailsTerminate = ({
     participantProject,
@@ -19,7 +19,13 @@ const ParticipantDetailsTerminate = ({
     fetchParticipantProjectDetails,
     projectRevenueCategories,
 }) => {
-    const [dateTerminated, setDateTerminated] = useState(moment().format('Y-MM-DD'));
+    const [dateTerminated, setDateTerminated] = useState(
+        participantProject.participationsDefinitive != 0 || participantProject.amountDefinitive != 0
+            ? moment().format('Y-MM-DD')
+            : moment(participantProject.dateEntryLastMutation)
+                  .subtract(1, 'days')
+                  .format('Y-MM-DD')
+    );
     const [payoutPercentageTerminated, setPayoutPercentageTerminated] = useState(0);
     const [redirectRevenueSplit, setRedirectRevenueSplit] = useState(true);
 
@@ -105,10 +111,23 @@ const ParticipantDetailsTerminate = ({
                     <InputDate
                         label={'Datum beëindigen'}
                         name="dateTerminated"
-                        value={participantProject.participationsDefinitive > 0 ? dateTerminated : moment(participantProject.dateEntryLastMutation).subtract(1, 'days').format('Y-MM-DD') }
+                        value={dateTerminated}
                         onChangeAction={onChangeDateTerminated}
-                        disabledBefore={moment(participantProject.dateEntryLastMutation).add(1, 'days').format('Y-MM-DD')}
-                        disabledAfter={participantProject.participationsDefinitive > 0 ? moment().format('Y-MM-DD') : moment(participantProject.dateEntryLastMutation).subtract(1, 'days').format('Y-MM-DD') }
+                        disabledBefore={
+                            participantProject.participationsDefinitive != 0 || participantProject.amountDefinitive != 0
+                                ? moment(participantProject.dateEntryFirstDeposit).format('Y-MM-DD')
+                                : moment(participantProject.dateEntryLastMutation)
+                                      .subtract(1, 'days')
+                                      .format('Y-MM-DD')
+                        }
+                        disabledAfter={
+                            participantProject.participationsDefinitive != 0 || participantProject.amountDefinitive != 0
+                                ? moment().format('Y-MM-DD')
+                                : moment(participantProject.dateEntryLastMutation)
+                                      .subtract(1, 'days')
+                                      .format('Y-MM-DD')
+                        }
+                        // readOnly={participantProject.participationsDefinitive == 0  && participantProject.amountDefinitive == 0}
                     />
                     {projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation' ? (
                         <InputText

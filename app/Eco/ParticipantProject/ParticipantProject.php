@@ -111,6 +111,13 @@ class ParticipantProject extends Model
         return $this->hasMany(ParticipantMutation::class, 'participation_id')->where('status_id', $mutationStatusFinal)->orderBy('date_entry', 'asc');
     }
 
+    public function mutationsDefinitiveDesc()
+    {
+        $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+
+        return $this->hasMany(ParticipantMutation::class, 'participation_id')->where('status_id', $mutationStatusFinal)->orderBy('date_entry', 'desc');
+    }
+
     public function mutationsDefinitiveForKwhPeriod()
     {
         $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;

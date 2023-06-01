@@ -78,7 +78,7 @@ class recoverMissingEnergySupplierDataInParts extends Command
 //                            Log::info('Geen splitsing deelperiode data gevonden voor switch datum deelnemer: ' . $distributionKwh->participation_id . ' ' . $distributionKwh->contact->full_name);
 //                            Log::info('Recover voor addressEnergySupplier Id: ' . $addressEnergySupplier->id);
                             $revenuesKwhHelper = new RevenuesKwhHelper();
-                            $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkRevenuePartsKwh($distributionKwh->participation, $addressEnergySupplier->member_since, $addressEnergySupplier);
+                            $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkAndSplitRevenuePartsKwh($distributionKwh->participation, $addressEnergySupplier->member_since, $addressEnergySupplier);
                         }
                     }
 
@@ -87,7 +87,7 @@ class recoverMissingEnergySupplierDataInParts extends Command
                         if ($dayAfterTerminated > $dateBegin and $dayAfterTerminated < $dateEnd) {
 //                            Log::info('Geen splitsing deelperiode data gevonden voor dag na beeindiging deelnemer: ' . $distributionKwh->participation_id . ' ' . $distributionKwh->contact->full_name);
                             $revenuesKwhHelper = new RevenuesKwhHelper();
-                            $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkRevenuePartsKwh($distributionKwh->participation, \Illuminate\Support\Carbon::parse($distributionKwh->participation->date_terminated)->addDay(), null);
+                            $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkAndSplitRevenuePartsKwh($distributionKwh->participation, \Illuminate\Support\Carbon::parse($distributionKwh->participation->date_terminated)->addDay(), null);
                         }
                     }
                 }

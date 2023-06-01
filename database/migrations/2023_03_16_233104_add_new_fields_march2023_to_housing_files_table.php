@@ -352,14 +352,14 @@ class AddNewFieldsMarch2023ToHousingFilesTable extends Migration
         }
         $roofType = New RoofType();
         $roofType->name = 'Puntdak';
-        $roofType->external_hoom_id= 5;
+        $roofType->external_hoom_id= 4;
         $roofType->external_hoom_short = '';
         $roofType->order = 8;
         $roofType->save();
 
         $roofType = New RoofType();
         $roofType->name = 'Afgerond dak';
-        $roofType->external_hoom_id= 6;
+        $roofType->external_hoom_id= 5;
         $roofType->external_hoom_short = '';
         $roofType->order = 8;
         $roofType->save();

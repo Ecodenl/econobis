@@ -149,7 +149,7 @@ class checkWrongRevenueDistributionPartsKwhIndicatorFields extends Command
 
         foreach($wrongRevenueDistributionPartsKwh as $wrongRevenueDistributionPartKwh) {
             $wrongRevenueDistributionPartsKwhHtml .=
-                "<>revenue_id: " . $wrongRevenueDistributionPartKwh['revenue_id'] . ", " .
+                "<p>revenue_id: " . $wrongRevenueDistributionPartKwh['revenue_id'] . ", " .
                 "project_id: " . $wrongRevenueDistributionPartKwh['project_id'] . ", " .
                 "distribution_id: " . $wrongRevenueDistributionPartKwh['distribution_id'] . ", " .
                 "part_id: " . $wrongRevenueDistributionPartKwh['part_id'] . ", " .

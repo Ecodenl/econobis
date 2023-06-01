@@ -117,7 +117,7 @@ const RevenuePartsKwhDistributionFormView = props => {
             <div className="col-sm-2">{energySupplierName && energySupplierName}</div>
             <div className="col-sm-1">
                 {deliveredTotalString && deliveredTotalString}
-                {!dateParticipantReport && (
+                {!dateParticipantReport && (status == 'confirmed' || status == 'processed') && (
                     <>
                         <br />
                         <span title="Nog te rapporteren" style={{ color: 'red' }}>
@@ -184,7 +184,7 @@ const RevenuePartsKwhDistributionFormView = props => {
                             data-tip={
                                 'Rapport Deelnemer gemaakt op ' +
                                 moment(dateParticipantReport).format('L') +
-                                '. Verwerkingsperiode t/m ' +
+                                '. Verwerkingsperiode vanaf ' +
                                 moment(beginDateParticipantReport).format('L') +
                                 ' t/m ' +
                                 moment(endDateParticipantReport).format('L')

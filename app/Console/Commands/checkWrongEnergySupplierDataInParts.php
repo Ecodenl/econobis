@@ -67,6 +67,7 @@ class checkWrongEnergySupplierDataInParts extends Command
                 if ($address) {
                     $addressEnergySupplier = $this->getAddressEnergySupplierInAPeriod($address->id, $distributionPartKwh->partsKwh->date_begin, $distributionPartKwh->partsKwh->date_end);
                     if(!$addressEnergySupplier){
+                        //todo WM: $distributionPartKwh->es_id != $energySupplierUnknown->id moet nog weg.
                         if ( $distributionPartKwh->es_id != $energySupplierUnknown->id &&
                             ($distributionPartKwh->es_id != null
                             || ($distributionPartKwh->energy_supplier_name != null && $distributionPartKwh->energy_supplier_name != '')

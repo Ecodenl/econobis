@@ -394,20 +394,24 @@ class QuotationRequestController extends ApiController
         }
     }
 
-    public function peek()
+    public function peek(Request $request)
     {
         $teamContactIds = Auth::user()->getTeamContactIds();
-        if ($teamContactIds){
-            $quotationRequests = QuotationRequest::whereHas('opportunity', function($query) use($teamContactIds){
-                $query->whereHas('intake', function($query) use($teamContactIds){
-                    $query->whereIn('contact_id', $teamContactIds);
-                });
-            })->orderBy('id')->get();
-        }else{
-            $quotationRequests = QuotationRequest::orderBy('id')->get();
+
+        $query = QuotationRequest::query()->orderBy('id');
+        if ($teamContactIds) {
+            $query->whereHas('opportunity.intake', function ($query) use ($teamContactIds) {
+                $query->whereIn('contact_id', $teamContactIds);
+            });
         }
 
-        return QuotationRequestPeek::collection($quotationRequests);
+        if($request->has('contactIds')){
+            $query->whereHas('opportunity.intake', function ($query) use ($request) {
+                $query->whereIn('contact_id', json_decode($request->input('contactIds')));
+            });
+        }
+
+        return QuotationRequestPeek::collection($query->get());
     }
 
     protected function getRelatedEmails($id, $folder)

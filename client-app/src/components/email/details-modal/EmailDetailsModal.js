@@ -62,7 +62,7 @@ export default function EmailDetailsModal({emailId, showModal, setShowModal}) {
             {showModal && (
                 <Modal
                     buttonConfirmText="Opslaan"
-                    closeModal={() => setShowModal(false)}
+                    closeModal={() => {setShowEdit(false); setShowModal(false);}}
                     confirmAction={save}
                     title={'Email van ' + email.from}
                     modalMainClassName="modal-fullscreen"

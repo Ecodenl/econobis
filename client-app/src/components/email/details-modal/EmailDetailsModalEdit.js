@@ -21,28 +21,28 @@ export default function EmailDetailsModalEdit({email, updateEmailAttributes, onR
     const [invoices, setInvoices] = useState([]);
 
     useEffect(() => {
-        IntakesAPI.peekIntakes().then(payload => {
+        IntakesAPI.peekIntakesForContacts(email.contacts.map(c => c.id)).then(payload => {
             setIntakes(payload);
         });
-        TasksAPI.peekTasks().then(payload => {
+        TasksAPI.peekTasksForContacts(email.contacts.map(c => c.id)).then(payload => {
             setTasks(payload);
         });
-        QuotationRequestsAPI.peekQuotationRequests().then(payload => {
+        QuotationRequestsAPI.peekQuotationRequestsForContacts(email.contacts.map(c => c.id)).then(payload => {
             setQuotationRequests(payload);
         });
         MeasureAPI.peekMeasures().then(payload => {
             setMeasures(payload);
         });
-        OpportunitiesAPI.peekOpportunities().then(payload => {
+        OpportunitiesAPI.peekOpportunitiesForContacts(email.contacts.map(c => c.id)).then(payload => {
             setOpportunities(payload);
         });
-        OrdersAPI.peekOrders().then(payload => {
+        OrdersAPI.peekOrdersForContacts(email.contacts.map(c => c.id)).then(payload => {
             setOrders(payload);
         });
         InvoicesAPI.peekInvoices().then(payload => {
             setInvoices(payload);
         });
-    }, []);
+    }, [email.contacts]);
 
     const getContactOptions = (searchTerm) => {
         return ContactsAPI.fetchContactSearch(searchTerm).then(payload => payload.data.data);

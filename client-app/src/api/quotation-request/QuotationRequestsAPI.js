@@ -27,6 +27,20 @@ export default {
             });
     },
 
+    peekQuotationRequestsForContacts: (contactIds) => {
+        const requestUrl = `${URL_API}/api/quotation-request/peek`;
+
+        return axiosInstance
+            .get(requestUrl, {
+                params: {
+                    contactIds: JSON.stringify(contactIds),
+                }
+            })
+            .then(function(response) {
+                return response.data.data;
+            });
+    },
+
     getAmountActive: () => {
         const requestUrl = `${URL_API}/api/quotation-request/amount-open`;
 

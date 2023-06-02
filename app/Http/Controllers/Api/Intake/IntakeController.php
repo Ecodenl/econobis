@@ -314,16 +314,22 @@ class IntakeController extends ApiController
         return SidebarDocument::collection($intake->documents);
     }
 
-    public function peek()
+    public function peek(Request $request)
     {
         $teamContactIds = Auth::user()->getTeamContactIds();
+
+        $query = Intake::query();
         if ($teamContactIds){
-            $intakes = Intake::whereIn('contact_id', $teamContactIds)->orderBy('id')->with('contact')->get();
+            $query->whereIn('contact_id', $teamContactIds)->orderBy('id')->with('contact');
         }else{
-            $intakes = Intake::orderBy('id')->with('contact')->get();
+            $query->orderBy('id')->with('contact');
         }
 
-        return IntakePeek::collection($intakes);
+        if($request->has('contactIds')){
+            $query->whereIn('contact_id', json_decode($request->input('contactIds')));
+        }
+
+        return IntakePeek::collection($query->get());
     }
 
     public function getAmountOfActiveIntakes(){

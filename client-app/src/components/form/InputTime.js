@@ -4,7 +4,7 @@ import TimePicker from 'react-bootstrap-time-picker';
 import moment from 'moment';
 
 const InputTime = props => {
-    const { label, size, id, name, value, onChangeAction, start, end, step, readOnly } = props;
+    const { label, size, id, name, value, onChangeAction, start, end, step, readOnly, nullable, nullableLabel, nullableSize } = props;
 
     const onTimeChange = timeInSeconds => {
         // Workaround for converting seconds to HH:mm:ss
@@ -44,6 +44,17 @@ const InputTime = props => {
                     )
                 }
             </div>
+            <div className={`${size}`}>
+                {nullable ? (
+                        <label className={'col-sm'}>
+                            <input type={'checkbox'} name={'vehicle1'} value={'Bike'} />
+                            {nullableLabel}
+                        </label>
+                    ) : (
+                        ''
+                    )
+                }
+            </div>
         </div>
     );
 };
@@ -56,6 +67,9 @@ InputTime.defaultProps = {
     end: '23:00',
     step: 15,
     readOnly: false,
+    nullable: false,
+    nullableLabel: '',
+    nullableSize: 'col-sm-3'
 };
 
 InputTime.propTypes = {
@@ -68,6 +82,9 @@ InputTime.propTypes = {
     end: PropTypes.string,
     step: PropTypes.number,
     readOnly: PropTypes.bool,
+    nullable: PropTypes.bool,
+    nullableLabel: PropTypes.string,
+    nullableSize: PropTypes.string,
 };
 
 export default InputTime;

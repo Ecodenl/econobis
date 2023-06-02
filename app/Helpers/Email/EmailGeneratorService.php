@@ -87,8 +87,8 @@ class EmailGeneratorService
         $toMixed = [];
 
         foreach ($emailAddresses as $emailAddress) {
-            $emailAddressesIds = EmailAddress::where('email', $emailAddress)->pluck('id');
-            $toMixed = array_merge($toMixed, $emailAddressesIds->count() > 0 ? $emailAddressesIds->toArray() : [$emailAddress]);
+            $emailAddressesModel = EmailAddress::where('email', $emailAddress)->first();
+            $toMixed[] = $emailAddressesModel ? $emailAddressesModel->id : $emailAddress;
         }
 
         return $toMixed;

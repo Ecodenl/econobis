@@ -69,6 +69,11 @@
   width: 95vw;
 }
 
+.modal-fullscreen .modal-body {
+  max-height: 80vh;
+  overflow: scroll;
+}
+
 .submodal .modal-dialog {
   width: 700px;
 }

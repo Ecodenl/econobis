@@ -19,10 +19,20 @@ export default function EmailDetailsModal({emailId, showModal, setShowModal}) {
         });
     }, [showModal]);
 
+    useEffect(() => {
+        if (email && email.withSaveAndClose) {
+            save();
+        }
+    }, [email]);
+
     const updateEmailAttributes = (attributes) => {
+        // Als we in weergave modus zitten willen we bij bewerken van status of verantwoordelijke meteen opslaan en popup sluiten
+        let saveAndClose = (!showEdit && (Object.keys(attributes).some(key => ['responsibleUserId', 'responsibleTeamId', 'status'].includes(key))));
+
         setEmail({
             ...email,
             ...attributes,
+            withSaveAndClose: saveAndClose,
         });
     }
 

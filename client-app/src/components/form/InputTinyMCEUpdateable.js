@@ -52,6 +52,7 @@ class InputTinyMCEUpdateable extends Component {
                             browser_spellcheck: true,
                             font_formats:
                                 'Courier New=courier new;Tahoma=tahoma;Times New Roman=times new roman;Verdana=verdana;',
+                            default_link_target: '_blank',
                         }}
                         onEditorChange={onChangeAction}
                         onBlur={onBlur}

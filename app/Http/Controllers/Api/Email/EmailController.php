@@ -15,7 +15,7 @@ use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Http\Controllers\Controller;
-use App\Jobs\Email\SendEmailsWithVariables;
+use App\Jobs\Email\SendEmailsWithVariablesDeprecated;
 use App\Eco\Email\Jobs\StoreConceptEmail;
 use App\Eco\Mailbox\Mailbox;
 use App\Helpers\RequestInput\RequestInput;
@@ -352,7 +352,7 @@ class EmailController extends Controller
         if ($email->contact_group_id) {
             SendGroupEmail::dispatch($email, json_decode($request['cc']), Auth::id());
         } else {
-            SendEmailsWithVariables::dispatch($email, json_decode($request['to']), Auth::id());
+            SendEmailsWithVariablesDeprecated::dispatch($email, json_decode($request['to']), Auth::id());
         }
     }
 

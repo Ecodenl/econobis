@@ -25,9 +25,9 @@ class EmailSendController extends Controller
                 'id' => $email->contactGroup->id,
                 'name' => $email->contactGroup->name,
             ] : null,
-            'toAddresses' => $email->getToAddresses(),
-            'ccAddresses' => $email->getCcAddresses(),
-            'bccAddresses' => $email->getBccAddresses(),
+            'toAddresses' => $email->getToRecipients()->toReactArray(),
+            'ccAddresses' => $email->getCcRecipients()->toReactArray(),
+            'bccAddresses' => $email->getBccRecipients()->toReactArray(),
             'subject' => $email->subject,
             'htmlBody' => $email->inlineImagesService()->getHtmlBodyWithCidsConvertedToEmbeddedImages(),
             'attachments' => $email->attachmentsWithoutCids->map(function (EmailAttachment $attachment) {
@@ -87,7 +87,7 @@ class EmailSendController extends Controller
         if ($email->contactGroup) {
             SendGroupEmail::dispatch($email, $email->cc, Auth::id());
         } else {
-            SendEmailsWithVariables::dispatch($email, $email->to, Auth::id());
+            SendEmailsWithVariables::dispatch($email, Auth::user());
         }
     }
 }

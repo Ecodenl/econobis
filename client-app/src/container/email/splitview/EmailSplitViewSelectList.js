@@ -16,10 +16,10 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
                 return 'Inbox';
             case 'sent':
                 return 'Verzonden';
-            case 'drafts':
+            case 'concept':
                 return 'Concepten';
             case 'removed':
-                return 'Prullenbak';
+                return 'Verwijderd';
             default:
                 return 'Onbekend';
         }

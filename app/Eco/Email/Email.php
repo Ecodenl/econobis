@@ -162,57 +162,19 @@ class Email extends Model
         return new EmailInlineImagesService($this);
     }
 
-    public function getCcAddresses()
+    public function getToRecipients(): EmailRecipientCollection
     {
-        return collect($this->cc)->map(function ($idOrEmailAddress) {
-            return $this->mapIdOrEmailAddressToValueObject($idOrEmailAddress);
-        })->filter(function ($value) {
-            return $value !== null;
-        })->values()
-            ->toArray();
+        return EmailRecipientCollection::createFromValues($this->to);
     }
 
-    public function getToAddresses()
+    public function getCcRecipients(): EmailRecipientCollection
     {
-        return collect($this->to)->map(function ($idOrEmailAddress) {
-            return $this->mapIdOrEmailAddressToValueObject($idOrEmailAddress);
-        })->filter(function ($value) {
-            return $value !== null;
-        })->values()
-            ->toArray();
+        return EmailRecipientCollection::createFromValues($this->cc);
     }
 
-    public function getBccAddresses()
+    public function getBccRecipients(): EmailRecipientCollection
     {
-        return collect($this->bcc)->map(function ($idOrEmailAddress) {
-            return $this->mapIdOrEmailAddressToValueObject($idOrEmailAddress);
-        })->filter(function ($value) {
-            return $value !== null;
-        })->values()
-            ->toArray();
-    }
-
-    protected function mapIdOrEmailAddressToValueObject(mixed $idOrEmailAddress)
-    {
-        if (is_numeric($idOrEmailAddress)) {
-            $emailAddress = EmailAddress::find($idOrEmailAddress);
-
-            if (!$emailAddress) {
-                return null;
-            }
-
-            return [
-                'name' => $emailAddress->contact->full_name,
-                'email' => $emailAddress->email,
-                'id' => $emailAddress->id,
-            ];
-        }
-
-        return [
-            'name' => $idOrEmailAddress,
-            'email' => $idOrEmailAddress,
-            'id' => $idOrEmailAddress, // Het AsyncSelectSet React component gebruikt emailadres ook in 'id', dus dit ook zo teruggeven vanuit api.
-        ];
+        return EmailRecipientCollection::createFromValues($this->bcc);
     }
 
     public function getResponsibleName()

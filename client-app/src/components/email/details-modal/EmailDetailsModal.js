@@ -4,6 +4,7 @@ import EmailDetailsModalView from "./EmailDetailsModalView";
 import EmailDetailsModalEdit from "./EmailDetailsModalEdit";
 import EmailDetailsAPI from "../../../api/email/EmailDetailsAPI";
 import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
+import {hashHistory} from "react-router";
 
 export default function EmailDetailsModal({emailId, showModal, setShowModal}) {
     const [showEdit, setShowEdit] = useState(false);
@@ -14,9 +15,7 @@ export default function EmailDetailsModal({emailId, showModal, setShowModal}) {
             return;
         }
 
-        EmailDetailsAPI.fetchEmail(emailId).then(data => {
-            setEmail(data)
-        });
+        fetchEmail();
     }, [showModal]);
 
     useEffect(() => {
@@ -24,6 +23,12 @@ export default function EmailDetailsModal({emailId, showModal, setShowModal}) {
             save();
         }
     }, [email]);
+
+    const fetchEmail = () => {
+        EmailDetailsAPI.fetchEmail(emailId).then(data => {
+            setEmail(data)
+        });
+    }
 
     const updateEmailAttributes = (attributes) => {
         // Als we in weergave modus zitten willen we bij bewerken van status of verantwoordelijke meteen opslaan en popup sluiten
@@ -55,6 +60,17 @@ export default function EmailDetailsModal({emailId, showModal, setShowModal}) {
         });
     }
 
+    const createContact = () => {
+        EmailGenericAPI.createContact(emailId).then(() => {
+            fetchEmail();
+        });
+    }
+
+    const goTo = (link) => {
+        setShowModal(false);
+        hashHistory.push(link);
+    }
+
     if (!email) return null;
 
     return (
@@ -77,7 +93,7 @@ export default function EmailDetailsModal({emailId, showModal, setShowModal}) {
                     {showEdit ? (
                         <EmailDetailsModalEdit email={email} updateEmailAttributes={updateEmailAttributes} onRemoved={() => setShowModal(false)} />
                     ) : (
-                        <EmailDetailsModalView email={email} updateEmailAttributes={updateEmailAttributes} onRemoved={() => setShowModal(false)} />
+                        <EmailDetailsModalView email={email} updateEmailAttributes={updateEmailAttributes} onRemoved={() => setShowModal(false)} createContact={createContact} goTo={goTo} />
                     )}
                 </Modal>
             )}

@@ -3,12 +3,16 @@
 namespace App\Http\Controllers\Api\Email;
 
 
+use App\Eco\Contact\Contact;
 use App\Eco\Email\Email;
+use App\Eco\EmailAddress\EmailAddress;
+use App\Eco\Person\Person;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class EmailGenericController extends Controller
 {
@@ -147,5 +151,31 @@ class EmailGenericController extends Controller
         return response()->json([
             'id' => $forward->id,
         ]);
+    }
+
+    public function createContact(Email $email)
+    {
+        $this->authorize('manage', $email);
+
+        $emailAddress = $email->getToRecipients()->first()->getEmailAddress();
+
+        $contact = new Contact();
+        $contact->save();
+
+        $person = new Person([
+            'contact_id' => $contact->id,
+            'last_name' => Str::before($emailAddress, '@'),
+        ]);
+        $person->save();
+
+        $emailAddress = new EmailAddress([
+            'contact_id' => $contact->id,
+            'type_id' => 'general',
+            'email' => $emailAddress,
+        ]);
+
+        $emailAddress->save();
+
+        $email->contacts()->attach($contact->id);
     }
 }

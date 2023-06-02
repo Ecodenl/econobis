@@ -334,6 +334,7 @@ Route::namespace('Api')
         Route::post('email-generic/{email}/store-reply', [EmailGenericController::class, 'storeReply']);
         Route::post('email-generic/{email}/store-reply-all', [EmailGenericController::class, 'storeReplyAll']);
         Route::post('email-generic/{email}/store-forward', [EmailGenericController::class, 'storeForward']);
+        Route::post('email-generic/{email}/create-contact', [EmailGenericController::class, 'createContact']);
 
         /**
          * Email details

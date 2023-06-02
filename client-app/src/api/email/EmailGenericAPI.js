@@ -41,4 +41,8 @@ export default {
             ids: emailIds,
         });
     },
+
+    createContact: id => {
+        return axiosInstance.post(`${URL_EMAIL}/${id}/create-contact`);
+    }
 };

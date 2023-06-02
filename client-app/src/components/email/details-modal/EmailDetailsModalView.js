@@ -1,9 +1,9 @@
 import React from 'react';
 import EmailDetailsModalLayout from "./EmailDetailsModalLayout";
-import {Link} from "react-router";
+import {hashHistory} from "react-router";
 import ViewText from "../../../components/form/ViewText";
 
-export default function EmailDetailsModalView({email, updateEmailAttributes, onRemoved}) {
+export default function EmailDetailsModalView({email, updateEmailAttributes, onRemoved, createContact, goTo}) {
     return (
         <EmailDetailsModalLayout
             email={email}
@@ -18,13 +18,17 @@ export default function EmailDetailsModalView({email, updateEmailAttributes, onR
                             email.contacts.map(contact => {
                                 return (
                                     <span key={contact.id}>
-                                        <Link to={`/contact/${contact.id}`} className="link-underline">
-                                            {contact.fullName}
-                                        </Link>{' '}
+                                        <a className={'link-underline'} onClick={() => goTo(`/contact/${contact.id}`)}>{contact.fullName}</a>
                                         <br/>
                                         </span>
                                 )
                             })
+                        }
+                        {
+                            email && email.contacts &&
+                            email.contacts.length === 0 && (
+                                <button className="btn btn-success btn-sm" onClick={createContact}>Contact aanmaken</button>
+                            )
                         }
                     </div>
                 </div>

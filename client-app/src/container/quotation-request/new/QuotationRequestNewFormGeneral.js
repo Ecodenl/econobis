@@ -443,6 +443,7 @@ class QuotationRequestNewFormGeneral extends Component {
                             nullableSize={'col-sm-3'}
                             nullable={true}
                             nullableLabel={'Onbekend'}
+                            nullableChecked={''}
                         />
                     ) : null}
                 </div>

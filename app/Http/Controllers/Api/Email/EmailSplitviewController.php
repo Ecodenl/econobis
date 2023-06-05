@@ -40,6 +40,9 @@ class EmailSplitviewController extends Controller
                     'status' => $mail->status,
                     'hasAttachments' => $mail->attachmentsWithoutCids->isNotEmpty(),
                     'responsibleName' => $mail->getResponsibleName(),
+                    'mailbox' => [
+                        'name' => $mail->mailbox->name,
+                    ],
                 ];
             }),
             'total' => $query->count()
@@ -62,6 +65,7 @@ class EmailSplitviewController extends Controller
                     'fullName' => $contact->full_name,
                 ];
             }),
+            'toAddresses' => $email->getToRecipients()->toReactArray(),
             'ccAddresses' => $email->getCcRecipients()->toReactArray(),
             'htmlBodyWithEmbeddedImages' => $email->inlineImagesService()->getHtmlBodyWithCidsConvertedToEmbeddedImages(),
             'folder' => $email->folder,

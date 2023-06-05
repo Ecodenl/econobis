@@ -40,7 +40,7 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
         <div className="panel panel-default">
             <div className="panel-body panel-small">
                 <div className="row" style={{marginLeft: '-5px'}}>
-                    <div className="col-md-12">
+                    <div className="col-md-6">
                         { email.folder !== 'concept' && (
                             <div className="btn-group margin-small margin-10-right" role="group">
                                 <button
@@ -100,6 +100,12 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                             >
                                 <Icon icon={windowRestore} size={13}/>
                             </button>
+                        </div>
+                    </div>
+                    <div className="col-sm-6">
+                        <label className="col-sm-6">Aan</label>
+                        <div className="col-sm-6">
+                            <EmailAddressList emailAddresses={email.toAddresses}/>
                         </div>
                     </div>
                 </div>

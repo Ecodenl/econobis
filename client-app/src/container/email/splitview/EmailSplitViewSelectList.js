@@ -146,7 +146,7 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
                                             </div>
                                         )}
                                         <div style={{flex: 1}} onClick={() => selectEmail(email)}>
-                                            <span style={{fontSize: '15px'}}>{email.from}</span>
+                                            <span style={{fontSize: '15px'}}>{email.from}</span> <span style={{fontSize: '12px'}}>({email.mailbox.name})</span>
                                             <br/><span>{email.subject}</span>
                                         </div>
                                         <div style={{

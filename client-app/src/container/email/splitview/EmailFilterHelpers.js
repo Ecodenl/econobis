@@ -93,6 +93,22 @@ export function getJoryFilter(values, folder, contactId) {
         })
     }
 
+    if (values.dateSentStart) {
+        filter.and.push({
+            f: 'dateSent',
+            o: '>=',
+            d: values.dateSentStart,
+        })
+    }
+
+    if (values.dateSentEnd) {
+        filter.and.push({
+            f: 'dateSent',
+            o: '<=',
+            d: values.dateSentEnd + ' 23:59:59',
+        })
+    }
+
     if (contactId) {
         filter.and.push({
             f: 'contacts.contactId',
@@ -129,4 +145,6 @@ export const defaultFilters = {
     responsible: '',
     to: '',
     attachment: '',
+    dateSentStart: '',
+    dateSentEnd: '',
 }

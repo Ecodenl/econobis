@@ -54,6 +54,9 @@ class FullCooperation extends JsonResource
             'inspectionReleasedEmailTemplate' => ['name' => $this->inspectionReleasedEmailTemplate ? $this->inspectionReleasedEmailTemplate->name : ''],
             'inspectionPlannedMailboxId' => $this->inspection_planned_mailbox_id ? $this->inspection_planned_mailbox_id : '',
             'inspectionPlannedMailbox' => ['name' => $this->inspectionPlannedMailbox ? $this->inspectionPlannedMailbox->name : ''],
+            'fontFamilyDefault' => $this->font_family_default,
+            'fontSizeDefault' => $this->font_size_default,
+            'fontColorDefault' => $this->font_color_default,
         ];
     }
 }

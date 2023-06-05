@@ -149,6 +149,27 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
                         />
                     </div>
                 </PanelBody>
+                <PanelHeader>
+                    <span className="h5 text-bold">Styling</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <ViewText
+                            label={'Lettertype'}
+                            value={formData.fontFamilyDefault}
+                        />
+                        <ViewText
+                            label={'Lettergrootte'}
+                            value={formData.fontSizeDefault}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Letterkleur'}
+                            value={formData.fontColorDefault}
+                        />
+                    </div>
+                </PanelBody>
             </Panel>
         </section>
     );

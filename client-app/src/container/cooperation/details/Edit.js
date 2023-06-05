@@ -17,6 +17,7 @@ import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import { connect } from 'react-redux';
 import Modal from '../../../components/modal/Modal';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
+import InputTextColorPicker from "../../../components/form/InputTextColorPicker";
 
 function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchSystemData }) {
     const [emailTemplates, setEmailTemplates] = useState([]);
@@ -388,6 +389,63 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
 {verbruik_electriciteit_variabele_kosten_laag}<br/>
 {verbruik_electriciteit_vaste_kosten_hoog}<br/>
 {verbruik_electriciteit_vaste_kosten_laag}`}
+                            />
+                        </div>
+                    </PanelBody>
+
+                    <PanelHeader>
+                        <span className="h5 text-bold">Styling</span>
+                    </PanelHeader>
+                    <PanelBody>
+                        <div className="row">
+                            <InputReactSelect
+                                label={'Lettertype'}
+                                name={'fontFamilyDefault'}
+                                options={[
+                                    {id: 'Helvetica', name: 'Helvetica'},
+                                    {id: 'Arial', name: 'Arial'},
+                                    {id: 'Arial Black', name: 'Arial Black'},
+                                    {id: 'Verdana', name: 'Verdana'},
+                                    {id: 'Tahoma', name: 'Tahoma'},
+                                    {id: 'Trebuchet MS', name: 'Trebuchet MS'},
+                                    {id: 'Impact', name: 'Impact'},
+                                    {id: 'Gill Sans', name: 'Gill Sans'},
+                                    {id: 'Times New Roman', name: 'Times New Roman'},
+                                    {id: 'Georgia', name: 'Georgia'},
+                                    {id: 'Palatino', name: 'Palatino'},
+                                    {id: 'Baskerville', name: 'Baskerville'},
+                                    {id: 'Andalé Mono', name: 'Andalé Mono'},
+                                    {id: 'Courier', name: 'Courier'},
+                                    {id: 'Lucida', name: 'Lucida'},
+                                    {id: 'Monaco', name: 'Monaco'},
+                                    {id: 'Bradley Hand', name: 'Bradley Hand'},
+                                    {id: 'Brush Script MT', name: 'Brush Script MT'},
+                                    {id: 'Luminari', name: 'Luminari'},
+                                    {id: 'Comic Sans MS', name: 'Comic Sans MS'},
+                                    {id: 'Maven Pro', name: 'Maven Pro'},
+                                ]}
+                                value={values.fontFamilyDefault}
+                                onChangeAction={(value, name) => setFieldValue(name, value)}
+                                clearable={true}
+                            />
+                            <InputText
+                                label="Lettergrootte"
+                                name={'fontSizeDefault'}
+                                value={values.fontSizeDefault}
+                                onChangeAction={handleChange}
+                                onBlurAction={handleBlur}
+                                type={'number'}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputTextColorPicker
+                                label="Letterkleur"
+                                name={'fontColorDefault'}
+                                value={values.fontColorDefault}
+                                onChangeAction={handleChange}
+                                cpSize={'col-sm-2'}
+                                divSize={'col-sm-6'}
+                                size={'col-sm-4'}
                             />
                         </div>
                     </PanelBody>

@@ -109,7 +109,7 @@ class EmailGenericController extends Controller
             'to' => [],
             'cc' => [],
             'bcc' => [],
-            'html_body' => '',
+            'html_body' => view('emails.new_email_wrapper')->render(),
             'mailbox_id' => $mailbox->id,
             'folder' => 'concept',
         ]);

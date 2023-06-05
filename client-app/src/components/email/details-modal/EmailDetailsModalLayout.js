@@ -28,9 +28,10 @@ export default function EmailDetailsModalLayout({
                                                     orderComponent,
                                                     invoiceComponent,
                                                     onRemoved,
+                                                    noteComponent,
                                                 }) {
     const statusses = useSelector((state) => state.systemData.emailStatuses);
-    const { openEmailSendModal } = useContext(EmailModalContext);
+    const {openEmailSendModal} = useContext(EmailModalContext);
 
     const createReply = () => {
         EmailGenericAPI.storeReply(email.id).then(payload => {
@@ -60,7 +61,7 @@ export default function EmailDetailsModalLayout({
         <div>
             <div className="row" style={{marginLeft: '-5px'}}>
                 <div className="col-md-12">
-                    { email.folder !== 'concept' && (
+                    {email.folder !== 'concept' && (
                         <div className="btn-group margin-small margin-10-right" role="group">
                             <button
                                 type="button"
@@ -89,7 +90,7 @@ export default function EmailDetailsModalLayout({
                         </div>
                     )}
 
-                    { email.folder === 'concept' && (
+                    {email.folder === 'concept' && (
                         <div className="btn-group margin-small margin-10-right" role="group">
                             <button
                                 type="button"
@@ -219,6 +220,11 @@ export default function EmailDetailsModalLayout({
                     <div dangerouslySetInnerHTML={{__html: email.htmlBodyWithEmbeddedImages}}/>
                 </Panel>
             </div>
+
+            <div className="row">
+                {noteComponent}
+            </div>
+
             {email.folder === 'inbox' && (
                 <div>
                     <div className="row">

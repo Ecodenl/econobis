@@ -10,6 +10,7 @@ import InvoicesAPI from "../../../api/invoice/InvoicesAPI";
 import AsyncSelectSet from "../../../components/form/AsyncSelectSet";
 import ContactsAPI from "../../../api/contact/ContactsAPI";
 import EmailDetailsModalLayout from "./EmailDetailsModalLayout";
+import InputTextArea from "../../form/InputTextArea";
 
 export default function EmailDetailsModalEdit({email, updateEmailAttributes, onRemoved}) {
     const [intakes, setIntakes] = useState([]);
@@ -139,6 +140,16 @@ export default function EmailDetailsModalEdit({email, updateEmailAttributes, onR
                     value={email.invoiceId}
                     clearable={true}
                     onChangeAction={(value) => updateEmailAttributes({invoiceId: value})}
+                />
+            )}
+            noteComponent={(
+                <InputTextArea
+                    label={'Opmerking'}
+                    name={'note'}
+                    value={email.note ? email.note : ''}
+                    onChangeAction={(e) => updateEmailAttributes({note: e.target.value})}
+                    textToolTip={"let op: deze opmerking is alleen zichtbaar bij deze specifieke e-mail. als iemand een reply stuurt is daar de opmerking niet meer te zien"}
+                    sizeInput={'col-sm-8'}
                 />
             )}
         />

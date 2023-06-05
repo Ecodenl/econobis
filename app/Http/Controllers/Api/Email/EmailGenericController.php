@@ -37,6 +37,7 @@ class EmailGenericController extends Controller
             'opportunityId' => ['nullable', 'exists:opportunities,id'],
             'orderId' => ['nullable', 'exists:orders,id'],
             'invoiceId' => ['nullable', 'exists:invoices,id'],
+            'note' => ['string'],
         ]);
 
         $contactIds = $request->validate([

@@ -115,6 +115,7 @@ class Project extends Model
     }
 
     public function requiresContactGroups(){
+        // Hier geen authorisatie check op TeamContactGroupdIds ! ( dus geen: whereTeamContactGroupIds(Auth::user()) )
         return $this->belongsToMany(ContactGroup::class, 'contact_group_participation', 'project_id', 'group_id');
     }
 

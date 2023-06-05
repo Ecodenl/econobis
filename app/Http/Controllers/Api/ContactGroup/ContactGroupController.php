@@ -53,23 +53,16 @@ class ContactGroupController extends Controller
 
     public function peek()
     {
-        $teamContactGroupIds = Auth::user()->getTeamContactGroupIds();
-        if($teamContactGroupIds){
-            $contactGroups = ContactGroup::whereNotIn('type_id', ['simulated'])->whereIn('contact_groups.id', $teamContactGroupIds)->orderBy('name')->get();
-        } else {
-            $contactGroups = ContactGroup::whereNotIn('type_id', ['simulated'])->orderBy('name')->get();
-        }
+        $contactGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())
+        ->whereNotIn('type_id', ['simulated'])->orderBy('name')->get();
 
         return ContactGroupPeek::collection($contactGroups);
     }
 
     public function peekStatic($active = null)
     {
-        $contactGroups = ContactGroup::where('type_id', 'static')->orderBy('name');
-        $teamContactGroupIds = Auth::user()->getTeamContactGroupIds();
-        if($teamContactGroupIds){
-            $contactGroups->whereIn('contact_groups.id', $teamContactGroupIds);
-        }
+        $contactGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())
+            ->where('type_id', 'static')->orderBy('name');
         if($active == "active") {
             $contactGroups->where('closed', '!=', 1);
         }
@@ -80,8 +73,18 @@ class ContactGroupController extends Controller
     {
         $this->authorize('view', ContactGroup::class);
 
+        $contactGroupAutorized = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('id', $contactGroup->id)->first();
+// todo WM: cleanup
+//        Log::info('test contactGroup');
+//        Log::info($contactGroup);
+//        Log::info('test contactGroupAutorized');
+//        Log::info($contactGroupAutorized);
+
+        if(!$contactGroupAutorized){
+            abort(403, 'Niet geautoriseerd.');
+        }
         $contactGroup->load(['responsibleUser', 'createdBy', 'tasks', 'emailTemplateNewContactLink']);
-        return FullContactGroup::make($contactGroup);
+        return FullContactGroup::make($contactGroupAutorized);
     }
 
     public function store(Request $request, RequestInput $requestInput)

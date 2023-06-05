@@ -76,6 +76,7 @@ class Email extends Model
 
     public function contactGroup()
     {
+        // Hier geen authorisatie check op TeamContactGroupdIds ! ( dus geen: whereTeamContactGroupIds(Auth::user()) )
         return $this->belongsTo(ContactGroup::class);
     }
 

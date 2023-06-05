@@ -100,9 +100,9 @@ use App\Http\Resources\QuotationRequest\FullQuotationRequestStatus;
 use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\Title\FullTitle;
 use App\Http\Resources\User\UserPeek;
-use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -164,7 +164,7 @@ class SystemData extends JsonResource
             'campaignTypes' => FullEnumWithIdAndName::collection(CampaignType::orderBy('name')->get()),
             'energySupplierStatuses' => GenericResource::collection(EnergySupplierStatus::all()),
             'energySupplierTypes' => GenericResource::collection(EnergySupplierType::all()),
-            'staticContactGroups' => ContactGroup::select(['id', 'name'])->where('type_id', 'static')->get(),
+            'staticContactGroups' => ContactGroup::whereTeamContactGroupIds(Auth::user())->select(['id', 'name'])->where('type_id', 'static')->get(),
             'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
             'contactStatuses' => FullEnumWithIdAndName::collection(ContactStatus::collection()),
             'contactTypes' => FullEnumWithIdAndName::collection(ContactType::collection()),

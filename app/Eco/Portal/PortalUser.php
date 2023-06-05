@@ -94,9 +94,10 @@ class PortalUser extends Authenticatable
         );
     }
 
-    public function getTeamContactGroupIds(){
-        return false;
-    }
+// todo WM: cleanup
+//    public function getTeamContactGroupIds(){
+//        return false;
+//    }
 
     public function getTeamContactIds(){
         return false;

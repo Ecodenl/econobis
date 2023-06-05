@@ -159,32 +159,33 @@ class User extends Authenticatable
             decrypt($this->two_factor_secret)
         );
     }
-    public function getTeamContactGroupIds(){
-        if(!$this->teamContactGroupids == null){
-            return $this->teamContactGroupids;
-        } else {
-            if (!$this->teams){
-                return false;
-            }
+// todo WM: cleanup
+//    public function getTeamContactGroupIds(){
+//        if(!$this->teamContactGroupids == null){
+//            return $this->teamContactGroupids;
+//        } else {
+//            if (!$this->teams){
+//                return false;
+//            }
+//            $teamContactGroupIds = [];
+//            $hasContactGroup = false;
+//            foreach ($this->teams as $team){
+//                $thisTeamContactGroupIds = $team->contactGroups->pluck('id')->toArray();
+//                if(count($teamContactGroupIds) > 0) {
+//                    $hasContactGroup = true;
+//                }
+//                $teamContactGroupIds = array_unique(array_merge($teamContactGroupIds, $thisTeamContactGroupIds));
+//            }
+//            if($hasContactGroup && count($teamContactGroupIds) == 0){
+//                $this->teamContactGroupids = [-1];
+//            } else {
+//                $this->teamContactGroupids = $teamContactGroupIds;
+//            }
+//            return $this->teamContactGroupids;
+//        }
+//    }
 
-            $teamContactGroupIds = [];
-            $hasContactGroup = false;
-            foreach ($this->teams as $team){
-                $thisTeamContactGroupIds = $team->contactGroups->pluck('id')->toArray();
-                if(count($teamContactGroupIds) > 0) {
-                    $hasContactGroup = true;
-                }
-                $teamContactGroupIds = array_unique(array_merge($teamContactGroupIds, $thisTeamContactGroupIds));
-            }
-            if($hasContactGroup && count($teamContactGroupIds) == 0){
-                $this->teamContactGroupids = [-1];
-            } else {
-                $this->teamContactGroupids = $teamContactGroupIds;
-            }
-
-            return $this->teamContactGroupids;
-        }
-    }
+// todo WM: zelfde aanpassing als hierboven getTeamContactGroupIds()??
     public function getTeamContactIds(){
         if(!$this->teamContactids == null){
             return $this->teamContactids;

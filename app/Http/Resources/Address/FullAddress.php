@@ -63,6 +63,8 @@ class FullAddress extends JsonResource
             'contact' => FullContact::make($this->whenLoaded('contact')),
             'addressEnergySuppliers' => FullAddressEnergySupplier::collection($this->whenLoaded('addressEnergySuppliers')),
             'usedInActiveParticipation' =>$this->used_in_active_participation,
+            'usedInActiveParticipationWithSce' =>$this->used_in_active_participation_with_sce,
+            'usedInActiveParticipationWithoutSce' =>$this->used_in_active_participation_without_sce,
             'currentAddressEnergySupplierElectricity' => FullAddressEnergySupplier::make($this->whenLoaded('currentAddressEnergySupplierElectricity')),
             'currentAddressEnergySupplierGas' => FullAddressEnergySupplier::make($this->whenLoaded('currentAddressEnergySupplierGas')),
             'memberSinceGasDisabledBefore' => $memberSinceGasDisabledBefore,

@@ -33,9 +33,23 @@ class AddressObserver
     public function saved(Address $address)
     {
         if($address->isDirty('type_id') && $address->type_id == 'old') {
-            if ($address->used_in_active_participation) {
+            if ($address->used_in_active_participation_with_sce || $address->primary) {
                 $addressHelper = new AddressHelper( $address->contact, $address);
                 $addressHelper->addTaskAddressChangeParticipation(Auth::id());
+            }
+            if ($address->used_in_active_participation_without_sce && !$address->primary) {
+                //move all the participations to the primary address of the user
+                $primaryAddress = $address->contact->addresses()->where('primary', 1)->first();
+
+                if($primaryAddress) {
+                    foreach ($address->participations()->get() as $participation) {
+                        $participation->address_id = $primaryAddress->id;
+                        $participation->save();
+                    }
+                } else {
+                    $addressHelper = new AddressHelper($address->contact, $address);
+                    $addressHelper->addTaskAddressChangeParticipation(Auth::id());
+                }
             }
         }
 

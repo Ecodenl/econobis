@@ -128,6 +128,15 @@ class Address extends Model
         return $this->participations->whereNull('date_terminated')->count() > 0;
     }
 
+    public function getUsedInActiveParticipationWithSceAttribute()
+    {
+        return $this->participations->whereNull('date_terminated')->where('project.is_sce_project', 1)->count() > 0;
+    }
+
+    public function getUsedInActiveParticipationWithoutSceAttribute()
+    {
+        return $this->participations->whereNull('date_terminated')->where('project.is_sce_project', 0)->count() > 0;
+    }
 
     public function getMemberSinceGasDisabledBeforeAttribute()
     {

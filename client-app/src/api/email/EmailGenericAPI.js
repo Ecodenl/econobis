@@ -36,6 +36,11 @@ export default {
             .post(`${URL_EMAIL}/${id}/store-forward`);
     },
 
+    storeGroupMail: (id) => {
+        return axiosInstance
+            .post(`${URL_EMAIL}/store-group-mail/${id}`);
+    },
+
     deleteMultiple: emailIds => {
         return axiosInstance.post(`${URL_EMAIL}/delete-multiple`, {
             ids: emailIds,

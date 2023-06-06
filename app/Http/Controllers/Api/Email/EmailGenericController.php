@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Email;
 
 
 use App\Eco\Contact\Contact;
+use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Person\Person;
@@ -178,5 +179,32 @@ class EmailGenericController extends Controller
         $emailAddress->save();
 
         $email->contacts()->attach($contact->id);
+    }
+
+    public function storeGroupMail(ContactGroup $contactGroup)
+    {
+        $this->authorize('create', Email::class);
+
+        $user = Auth::user();
+
+        $mailbox = $user->mailboxes()
+            ->where('is_active', true)
+            ->first();
+
+        $email = new Email([
+            'from' => $mailbox->email,
+            'to' => [],
+            'cc' => [],
+            'bcc' => [],
+            'html_body' => view('emails.new_email_wrapper')->render(),
+            'mailbox_id' => $mailbox->id,
+            'folder' => 'concept',
+            'contact_group_id' => $contactGroup->id,
+        ]);
+        $email->save();
+
+        return response()->json([
+            'id' => $email->id,
+        ]);
     }
 }

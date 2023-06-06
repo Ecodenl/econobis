@@ -464,14 +464,19 @@ const DefaultContactPersonalEdit = function({
                         />
                     </Col>
                 </Row>
-                <FormLabel
-                    htmlFor="ean_electricity"
-                    className={
-                        projectTypeCodeRef === 'postalcode_link_capital' ? 'field-label required' : 'field-label'
-                    }
-                >
-                    EAN nummer electriciteit
-                </FormLabel>
+                {projectTypeCodeRef === 'postalcode_link_capital' || projectTypeCodeRef === undefined ? (
+                    <FormLabel
+                        htmlFor="ean_electricity"
+                        className={
+                            projectTypeCodeRef === 'postalcode_link_capital' ? 'field-label required' : 'field-label'
+                        }
+                    >
+                        EAN nummer electriciteit
+                    </FormLabel>
+                ) : (
+                    ''
+                )}
+
                 {((!isNaN(values.primaryAddress.number) && values.primaryAddress.number == 0) ||
                     (isNaN(values.primaryAddress.number) && values.primaryAddress.number.trim() == '') ||
                     values.primaryAddress.postalCode.trim() == '') &&
@@ -488,25 +493,36 @@ const DefaultContactPersonalEdit = function({
                 ) : (
                     ''
                 )}
-                <Row>
-                    <Col xs={12} sm={10} md={6}>
-                        <Field
-                            name="primaryAddress.eanElectricity"
-                            render={({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="eanElectricity"
-                                    placeholder={'EAN nummer electriciteit'}
-                                />
-                            )}
-                        />
-                    </Col>
-                </Row>
-                <FormLabel htmlFor="ean_gas" className={'field-label'}>
-                    EAN nummer gas
-                </FormLabel>
+
+                {projectTypeCodeRef === 'postalcode_link_capital' || projectTypeCodeRef === undefined ? (
+                    <Row>
+                        <Col xs={12} sm={10} md={6}>
+                            <Field
+                                name="primaryAddress.eanElectricity"
+                                render={({ field }) => (
+                                    <InputText
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="eanElectricity"
+                                        placeholder={'EAN nummer electriciteit'}
+                                    />
+                                )}
+                            />
+                        </Col>
+                    </Row>
+                ) : (
+                    ''
+                )}
+
+                {projectTypeCodeRef === 'postalcode_link_capital' || projectTypeCodeRef === undefined ? (
+                    <FormLabel htmlFor="ean_gas" className={'field-label'}>
+                        EAN nummer gas
+                    </FormLabel>
+                ) : (
+                    ''
+                )}
+
                 {((!isNaN(values.primaryAddress.number) && values.primaryAddress.number == 0) ||
                     (isNaN(values.primaryAddress.number) && values.primaryAddress.number.trim() == '') ||
                     values.primaryAddress.postalCode.trim() == '') &&
@@ -523,22 +539,27 @@ const DefaultContactPersonalEdit = function({
                 ) : (
                     ''
                 )}
-                <Row>
-                    <Col xs={12} sm={10} md={6}>
-                        <Field
-                            name="primaryAddress.eanGas"
-                            render={({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="eanGas"
-                                    placeholder={'EAN nummer gas'}
-                                />
-                            )}
-                        />
-                    </Col>
-                </Row>
+
+                {projectTypeCodeRef === 'postalcode_link_capital' || projectTypeCodeRef === undefined ? (
+                    <Row>
+                        <Col xs={12} sm={10} md={6}>
+                            <Field
+                                name="primaryAddress.eanGas"
+                                render={({ field }) => (
+                                    <InputText
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="eanGas"
+                                        placeholder={'EAN nummer gas'}
+                                    />
+                                )}
+                            />
+                        </Col>
+                    </Row>
+                ) : (
+                    ''
+                )}
 
                 <FormLabel className={'field-label'}>Contactnummer</FormLabel>
                 <Row>

@@ -29,6 +29,8 @@ class OpportunityFormEdit extends Component {
             quotationText,
             status,
             datePlannedToSendWfEmailStatus,
+            numberOfM2Executed,
+            numberOfWpInstalled
         } = props.opportunity;
 
         this.state = {
@@ -45,6 +47,8 @@ class OpportunityFormEdit extends Component {
                 quotationText: quotationText,
                 evaluationAgreedDate: evaluationAgreedDate ? evaluationAgreedDate : '',
                 desiredDate: desiredDate ? desiredDate : '',
+                numberOfM2Executed: numberOfM2Executed ? numberOfM2Executed : '',
+                numberOfWpInstalled: numberOfWpInstalled ? numberOfWpInstalled : '',
                 // evaluationIsRealised: props.opportunity ? props.opportunity.evaluationIsRealised : 1,
                 // evaluationIsStatisfied: props.opportunity ? props.opportunity.evaluationIsStatisfied : 1,
                 // evaluationWouldRecommendOrganisation: props.opportunity
@@ -151,6 +155,8 @@ class OpportunityFormEdit extends Component {
             evaluationAgreedDate,
             measureIds,
             measureIdsSelected,
+            numberOfM2Executed,
+            numberOfWpInstalled,
         } = this.state.opportunity;
         const { intake, measureCategory } = this.props.opportunity;
         const measuresMatchToCategory = MeasuresOfCategory(this.props.measures, measureCategory.id);
@@ -184,6 +190,30 @@ class OpportunityFormEdit extends Component {
                         value={measureIdsSelected}
                         options={measuresMatchToCategory}
                         onChangeAction={this.handleMeasureIds}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputText
+                        label="Aantal m2 uitgevoerd"
+                        name={'numberOfM2Executed'}
+                        type={'number'}
+                        min={'0'}
+                        value={numberOfM2Executed}
+                        onChangeAction={this.handleInputChange}
+                        error={this.state.errors.numberOfM2Executed}
+                        allowZero={true}
+                    />
+
+                    <InputText
+                        label="Aantal Wp ge&iuml;nstalleerd"
+                        name={'numberOfWpInstalled'}
+                        type={'number'}
+                        min={'0'}
+                        value={numberOfWpInstalled}
+                        onChangeAction={this.handleInputChange}
+                        error={this.state.errors.numberOfWpInstalled}
+                        allowZero={true}
                     />
                 </div>
 

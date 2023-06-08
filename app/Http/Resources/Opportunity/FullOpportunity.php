@@ -54,6 +54,8 @@ class FullOpportunity extends JsonResource
             'relatedEmailsSent' => $this->relatedEmailsSent,
             'relatedQuotationRequestsStatuses' => $this->relatedQuotationRequestsStatuses,
             'defaultStatusId' => $this->defaultStatusId,
+            'numberOfM2Executed' => $this->number_of_m2_executed,
+            'numberOfWpInstalled' => $this->number_of_wp_installed,
         ];
     }
 }

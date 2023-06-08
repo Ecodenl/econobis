@@ -14,6 +14,8 @@ const OpportunityFormView = props => {
         intake,
         measureCategory,
         measures,
+        numberOfM2Executed,
+        numberOfWpInstalled
     } = props.opportunity;
 
     return (
@@ -35,6 +37,10 @@ const OpportunityFormView = props => {
                     label={'Maatregel - specifiek'}
                     value={measures && measures.map(measure => measure.name).join(', ')}
                 />
+            </div>
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText label={'Aantal m2 uitgevoerd'} value={numberOfM2Executed} />
+                <ViewText label={'Aantal Wp geïnstalleerd'} value={numberOfWpInstalled} />
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Status'} value={status && status.name} />

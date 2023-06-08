@@ -19,6 +19,8 @@ const OpportunityNew = props => {
         measureCategoryId,
         measureIds,
         measureIdsSelected,
+        numberOfM2Executed,
+        numberOfWpInstalled,
     } = props.opportunity;
 
     const measuresMatchToCategory = MeasuresOfCategory(props.measures, measureCategoryId);
@@ -64,7 +66,33 @@ const OpportunityNew = props => {
                     value={measureIdsSelected}
                     onChangeAction={props.handleMeasureIds}
                 />
+            </div>
 
+            <div className="row">
+                <InputText
+                    label="Aantal m2 uitgevoerd"
+                    name={'numberOfM2Executed'}
+                    type={'number'}
+                    min={'0'}
+                    value={numberOfM2Executed}
+                    onChangeAction={props.handleInputChange}
+                    error={props.errors.numberOfM2Executed}
+                    allowZero={true}
+                />
+
+                <InputText
+                    label="Aantal Wp ge&iuml;nstalleerd"
+                    name={'numberOfWpInstalled'}
+                    type={'number'}
+                    min={'0'}
+                    value={numberOfWpInstalled}
+                    onChangeAction={props.handleInputChange}
+                    error={props.errors.numberOfWpInstalled}
+                    allowZero={true}
+                />
+            </div>
+
+            <div className="row">
                 <InputSelect
                     label={'Status'}
                     size={'col-sm-6'}

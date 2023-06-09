@@ -189,8 +189,7 @@ export default {
             .required('Verplicht'),
         organisation: Yup.object().shape({
             chamberOfCommerceNumber: Yup.string()
-                .trim()
-                .required('Verplicht'),
+                .trim(),
         }),
     }),
 

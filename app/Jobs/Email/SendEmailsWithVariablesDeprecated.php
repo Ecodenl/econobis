@@ -20,8 +20,10 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Mail;
-use Config;
 
+/**
+ * @deprecated replaced by SendEmailsWithVariables
+ */
 class SendEmailsWithVariablesDeprecated implements ShouldQueue {
 
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;

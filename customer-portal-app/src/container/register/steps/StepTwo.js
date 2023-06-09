@@ -40,6 +40,7 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
             }
             break;
     }
+
     return (
         <div>
             <Formik

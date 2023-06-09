@@ -22,7 +22,10 @@ use Illuminate\Support\Facades\Log;
 use Mail;
 use Config;
 
-class SendGroupEmail implements ShouldQueue {
+/**
+ * @deprecated
+ */
+class SendGroupEmailDeprecated implements ShouldQueue {
 
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 

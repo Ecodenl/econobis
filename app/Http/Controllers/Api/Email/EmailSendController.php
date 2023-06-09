@@ -7,7 +7,7 @@ use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 use App\Http\Controllers\Controller;
 use App\Jobs\Email\SendEmailsWithVariables;
-use App\Jobs\Email\SendGroupEmail;
+use App\Jobs\Email\SendGroupEmailDeprecated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -85,7 +85,7 @@ class EmailSendController extends Controller
         $email->save();
 
         if ($email->contactGroup) {
-            SendGroupEmail::dispatch($email, $email->cc, Auth::id());
+            SendGroupEmailDeprecated::dispatch($email, $email->cc, Auth::id());
         } else {
             SendEmailsWithVariables::dispatch($email, Auth::user());
         }

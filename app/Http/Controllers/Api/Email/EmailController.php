@@ -23,7 +23,7 @@ use App\Http\RequestQueries\Email\Grid\RequestQuery;
 use App\Http\Resources\Email\FullEmail;
 use App\Http\Resources\Email\GridEmail;
 use App\Http\Resources\GenericResource;
-use App\Jobs\Email\SendGroupEmail;
+use App\Jobs\Email\SendGroupEmailDeprecated;
 use Carbon\Carbon;
 use Config;
 use Illuminate\Http\Request;
@@ -350,7 +350,7 @@ class EmailController extends Controller
         $email->save();
 
         if ($email->contact_group_id) {
-            SendGroupEmail::dispatch($email, json_decode($request['cc']), Auth::id());
+            SendGroupEmailDeprecated::dispatch($email, json_decode($request['cc']), Auth::id());
         } else {
             SendEmailsWithVariablesDeprecated::dispatch($email, json_decode($request['to']), Auth::id());
         }

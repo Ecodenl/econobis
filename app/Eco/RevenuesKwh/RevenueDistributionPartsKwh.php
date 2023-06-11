@@ -129,14 +129,23 @@ class RevenueDistributionPartsKwh extends Model
         // aflopend upToPartsKwhIds doorlopen opzoek naar een visible part
         foreach ($upToPartsKwhIds as $part){
             $distributionPart = RevenueDistributionPartsKwh::where('revenue_id', $this->revenue_id)->where('distribution_id', $this->distribution_id)->where('parts_id', $part->id)->first();
-            $isVisibleNotEndOfYear = $distributionPart->is_end_participation || $distributionPart->is_energy_supplier_switch || $distributionPart->is_end_total_period;
-            if($distributionPart && $distributionPart->id != $this->id && $isVisibleNotEndOfYear == true){
-                return $distributionPart->date_participant_report != null;
-            }
-            if($part->is_first_revenue_parts_kwh){
-                return true;
+            if($distributionPart){
+                $isVisibleNotEndOfYear = $distributionPart->is_end_participation || $distributionPart->is_energy_supplier_switch || $distributionPart->is_end_total_period;
+                if($distributionPart && $distributionPart->id != $this->id && $isVisibleNotEndOfYear == true){
+                    return $distributionPart->date_participant_report != null;
+                }
+                if($part->is_first_revenue_parts_kwh){
+                    return true;
+                }
             }
         }
+        // Geen enkele visible part gevonden en ook niet eerste periode, dan return voorlopig false.
+        // Dit komt bijv. voor als er eerdere distribution part records ontbreken, ik denk als een deelnemer toegevoegd wordt als er al definitieve deelperiode zijn.
+        // We moeten eerst uitzoeken hoe we hier mee omgaan ?!
+        if(!$distributionPart){
+            return false;
+        }
+
         return $distributionPart->partsKwh->is_first_revenue_parts_kwh ? true : $distributionPart->date_participant_report != null;
     }
 

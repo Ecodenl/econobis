@@ -160,30 +160,36 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
                     <div className="row">
                         {email.contactGroup ? (
                             <>
-                            <InputText
-                                label={
-                                    <span>
-                                    Groep
-                                    <br/>
-                                    <small style={{color: 'red', fontWeight: 'normal'}}>
-                                        Contacten in groep en extra contacten krijgen elk een aparte mail en zien niet
-                                        e-mail adressen van anderen. Samenvoegvelden werken niet voor extra contacten
-                                        waar alleen emailadres is toegevoegd.
-                                    </small>
-                                </span>
-                                }
-                                name={'contactGroupName'}
-                                value={email.contactGroup.name}
-                                readOnly={true}
-                            />
-                            <InputCheckbox name={'mailContactGroupWithSingleMail'} checked={email.mailContactGroupWithSingleMail} label={<span>
-                                    Verstuur in enkele mail
-                                    <br/>
-                                    <small style={{color: 'red', fontWeight: 'normal'}}>
-                                        Bij het versturen via enkele mail worden alle contacten van de groep in "aan" gezet en zijn ontvangers zichtbaar voor elkaar. Samenvoegvelden zijn bij inschakelen van deze optie niet beschikbaar.
-                                    </small>
-                                </span>
-                            } onChangeAction={(event) => updateEmail({mailContactGroupWithSingleMail: event.target.checked})}/>
+                                <InputText
+                                    label={
+                                        <span>
+                                        Groep
+                                        <br/>
+                                        <small style={{color: 'red', fontWeight: 'normal'}}>
+                                            Contacten in groep en extra contacten krijgen elk een aparte mail en zien niet
+                                            e-mail adressen van anderen. Samenvoegvelden werken niet voor extra contacten
+                                            waar alleen emailadres is toegevoegd.
+                                        </small>
+                                    </span>
+                                    }
+                                    name={'contactGroupName'}
+                                    value={email.contactGroup.name}
+                                    readOnly={true}
+                                />
+                                <InputCheckbox
+                                    name={'mailContactGroupWithSingleMail'}
+                                    checked={email.mailContactGroupWithSingleMail}
+                                    label={
+                                        <span>
+                                            Verstuur in enkele mail
+                                            <br/>
+                                            <small style={{color: 'red', fontWeight: 'normal'}}>
+                                                Bij het versturen via enkele mail worden alle contacten van de groep in "aan" gezet en zijn ontvangers zichtbaar voor elkaar. Samenvoegvelden zijn bij inschakelen van deze optie niet beschikbaar.
+                                            </small>
+                                        </span>
+                                    }
+                                    onChangeAction={(event) => updateEmail({mailContactGroupWithSingleMail: event.target.checked})}
+                                />
                             </>
                         ) : (
                             <AsyncSelectSet

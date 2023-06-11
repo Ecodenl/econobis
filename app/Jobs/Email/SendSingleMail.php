@@ -26,8 +26,6 @@ class SendSingleMail
 
     protected User $user;
 
-    protected $hasError = false;
-
     public function __construct(Email $email, EmailRecipientCollection $to, User $user)
     {
         $this->email = $email;
@@ -51,7 +49,7 @@ class SendSingleMail
         return $this;
     }
 
-    public function handle()
+    public function handle(): Email
     {
         $this->validateRequest();
 
@@ -65,8 +63,6 @@ class SendSingleMail
             $mailManager->cc($this->cc->getEmailAdresses()->toArray())
                 ->bcc($this->bcc->getEmailAdresses()->toArray())
                 ->send(new GenericMail($email, $email->html_body, null));
-
-            $email->save();
         } catch (\Exception $e) {
             Log::error('Mail ' . $email->id . ' naar e-mailadres kon niet worden verzonden');
             Log::error($e->getMessage());
@@ -77,13 +73,10 @@ class SendSingleMail
             $jobLog->job_category_id = 'email';
             $jobLog->save();
 
-            $this->hasError = true;
+            throw $e;
         }
-    }
 
-    public function hasError()
-    {
-        return $this->hasError;
+        return $email;
     }
 
     protected function validateRequest()
@@ -93,12 +86,10 @@ class SendSingleMail
 
     protected function getUpdatedEmail()
     {
-        $email = $this->email;
+        $email = $this->email->replicate(); // We don't want any side effects on the original email
 
         $email->subject = $this->getNewSubject($email->subject);
         $email->html_body = $this->getNewHtmlBody($email->html_body);
-        $email->date_sent = new Carbon();
-        $email->folder = 'sent';
 
         return $email;
     }

@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Mail;
 
 class SendSingleMailToContact extends SendSingleMail
 {
-    private EmailAddress $emailAddress;
+    protected EmailAddress $emailAddress;
 
     public function __construct(Email $email, EmailAddress $emailAddress, User $user)
     {
@@ -23,7 +23,7 @@ class SendSingleMailToContact extends SendSingleMail
         parent::__construct($email, new EmailRecipientCollection(), $user);
     }
 
-    public function handle()
+    public function handle(): Email
     {
         $this->validateRequest();
 
@@ -37,8 +37,6 @@ class SendSingleMailToContact extends SendSingleMail
             $mailManager->cc($this->cc->getEmailAdresses()->toArray())
                 ->bcc($this->bcc->getEmailAdresses()->toArray())
                 ->send(new GenericMail($email, $email->html_body, null));
-
-            $email->save();
         } catch (\Exception $e) {
             Log::error('Mail ' . $email->id . ' naar contact  kon niet worden verzonden');
             Log::error($e->getMessage());
@@ -48,16 +46,14 @@ class SendSingleMailToContact extends SendSingleMail
             $jobLog->user_id = $this->user->id;
             $jobLog->job_category_id = 'email';
             $jobLog->save();
-
-            $this->hasError = true;
         }
+
+        return $email;
     }
 
     protected function getNewSubject($oldSubject)
     {
-        $subject = $oldSubject ?: 'Econobis';
-
-        $subject = $this->replaceDefaultVariables($subject);
+        $subject = parent::getNewSubject($oldSubject);
 
         return $this->replaceContactVariables($subject);
     }

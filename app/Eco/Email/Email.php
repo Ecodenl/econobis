@@ -17,6 +17,7 @@ use App\Eco\Team\Team;
 use App\Eco\User\User;
 use App\Helpers\Email\EmailGeneratorService;
 use App\Helpers\Email\EmailInlineImagesService;
+use App\Jobs\Email\ProcessSendingEmail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -258,5 +259,10 @@ class Email extends Model
 
             $this->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
         }
+    }
+
+    public function send(User $byUser)
+    {
+        ProcessSendingEmail::dispatch($this, $byUser);
     }
 }

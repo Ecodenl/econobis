@@ -6,8 +6,6 @@ namespace App\Http\Controllers\Api\Email;
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 use App\Http\Controllers\Controller;
-use App\Jobs\Email\SendEmailsWithVariables;
-use App\Jobs\Email\SendGroupEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -68,26 +66,6 @@ class EmailSendController extends Controller
 
         set_time_limit(0);
 
-        if($email->contactGroup){
-            $email->syncContactsByGroup();
-            $email->attachGroupEmailAddressesFromGroup();
-        }else{
-            $email->syncContactsByRecipients();
-        }
-
-        // Add basic html tags for new emails
-        $email->html_body
-            = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
-            . $email->subject . '</title></head><body>'
-            . $email->html_body . '</body></html>';
-
-        $email->sent_by_user_id = Auth::id();
-        $email->save();
-
-        if ($email->contactGroup) {
-            SendGroupEmail::dispatch($email, Auth::user());
-        } else {
-            SendEmailsWithVariables::dispatch($email, Auth::user());
-        }
+        $email->send(Auth::user());
     }
 }

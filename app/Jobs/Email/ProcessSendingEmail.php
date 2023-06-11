@@ -6,6 +6,7 @@ namespace App\Jobs\Email;
 use App\Eco\Email\Email;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -13,37 +14,44 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class SendEmailsWithVariables implements ShouldQueue
+class ProcessSendingEmail implements ShouldQueue
 {
-
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private Email $email;
+    protected Email $email;
 
-    private User $user;
-
-    private int $errors = 0;
+    protected User $user;
 
     public function __construct(Email $email, User $user)
     {
         $this->email = $email;
         $this->user = $user;
-
-        $jobLog = new JobsLog();
-        $jobLog->value = 'Start e-mail(s) versturen.';
-        $jobLog->user_id = $user->id;
-        $jobLog->job_category_id = 'email';
-        $jobLog->save();
     }
 
     public function handle()
     {
-        $mailJob = $this->getMailJob();
-
-        $mailJob->handle();
+        if ($this->email->contactGroup) {
+            ProcessSendingGroupEmail::dispatch($this->email, $this->user);
+            return;
+        }
 
         $jobLog = new JobsLog();
-        $jobLog->value = 'E-mail(s) versturen klaar.' . ($mailJob->hasError() ? ' (met fouten)' : '');
+        $jobLog->value = 'Start e-mail(s) versturen.';
+        $jobLog->user_id = $this->user->id;
+        $jobLog->job_category_id = 'email';
+        $jobLog->save();
+
+        $hasError = false;
+        try{
+            $this->prepareEmailForSending();
+            $updatedEmail = $this->getMailJob()->handle();
+            $this->markEmailAsSent($updatedEmail);
+        }catch (\Exception $e){
+            $hasError = true;
+        }
+
+        $jobLog = new JobsLog();
+        $jobLog->value = 'E-mail versturen klaar.' . ($hasError ? ' (met fouten)' : '');
         $jobLog->user_id = $this->user->id;
         $jobLog->job_category_id = 'email';
         $jobLog->save();
@@ -52,7 +60,7 @@ class SendEmailsWithVariables implements ShouldQueue
     public function failed($exception)
     {
         $jobLog = new JobsLog();
-        $jobLog->value = 'E-mail(s) versturen mislukt.';
+        $jobLog->value = 'E-mail versturen mislukt.';
         $jobLog->user_id = $this->user->id;
         $jobLog->job_category_id = 'email';
         $jobLog->save();
@@ -73,5 +81,27 @@ class SendEmailsWithVariables implements ShouldQueue
         return (new SendSingleMail($this->email, $to, $this->user))
             ->setCC($this->email->getCcRecipients())
             ->setBCC($this->email->getBccRecipients());
+    }
+
+    protected function prepareEmailForSending()
+    {
+        $this->email->syncContactsByRecipients();
+
+        $this->email->html_body
+            = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
+            . $this->email->subject . '</title></head><body>'
+            . $this->email->html_body . '</body></html>';
+
+        $this->email->save();
+    }
+
+    protected function markEmailAsSent($updatedEmail)
+    {
+        $this->email->subject = $updatedEmail->subject;
+        $this->email->html_body = $updatedEmail->html_body;
+        $this->email->sent_by_user_id = $this->user->id;
+        $this->email->date_sent = new Carbon();
+        $this->email->folder = 'sent';
+        $this->email->save();
     }
 }

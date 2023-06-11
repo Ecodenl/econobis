@@ -14,7 +14,7 @@ class AddSendGroupmailWithoutBccToEmails extends Migration
     public function up()
     {
         Schema::table('emails', function (Blueprint $table) {
-            $table->boolean('mail_contact_group_as_to')->default(false)->after('contact_group_id');
+            $table->boolean('mail_contact_group_with_single_mail')->default(false)->after('contact_group_id');
         });
     }
 
@@ -26,7 +26,7 @@ class AddSendGroupmailWithoutBccToEmails extends Migration
     public function down()
     {
         Schema::table('emails', function (Blueprint $table) {
-            $table->dropColumn('mail_contact_group_as_to');
+            $table->dropColumn('mail_contact_group_with_single_mail');
         });
     }
 }

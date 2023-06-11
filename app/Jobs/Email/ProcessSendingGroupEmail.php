@@ -56,27 +56,10 @@ class ProcessSendingGroupEmail implements ShouldQueue
             $this->prepareEmailForSending();
         }
 
-        /**
-         * Send emails to GroupContacts when available.
-         *
-         * We send a maximum amount each time to prevent timeouts.
-         */
-        $groupEmailAdresses = $this->email->groupEmailAddresses()
-            ->limit(Config::get('queue.email.chunk_size'))
-            ->get();
-
-        foreach ($groupEmailAdresses as $emailAddress) {
-            try {
-                (new SendSingleMailToContact($this->email, $emailAddress, $this->user))->handle();
-            }catch (\Exception $e){
-                $this->errors++;
-            }
-
-            /**
-             * Email always detach from table otherwise the jobs
-             * can stay in a loop when error occur in try/catch while sending.
-             */
-            $this->email->groupEmailAddresses()->detach($emailAddress->id);
+        if($this->email->mail_contact_group_with_single_mail){
+            $this->sendSingleMailToAllGroupContacts();
+        }else{
+            $this->sendNextChunk();
         }
 
         /**
@@ -91,7 +74,7 @@ class ProcessSendingGroupEmail implements ShouldQueue
         }
 
         /**
-         * Als we hier komen zitten we dus in dus net de laatste chunk afgerond
+         * Als we hier komen is de laatste chunk net afgerond.
          */
         $this->sendToExtracontacten();
         $this->markEmailAsSent();
@@ -160,5 +143,43 @@ class ProcessSendingGroupEmail implements ShouldQueue
         $this->email->date_sent = new Carbon();
         $this->email->folder = 'sent';
         $this->email->save();
+    }
+
+    protected function sendSingleMailToAllGroupContacts()
+    {
+        try {
+            $emailAddressIds = $this->email->groupEmailAddresses()->pluck('email_addresses.id')->toArray();
+            $to = EmailRecipientCollection::createFromValues($emailAddressIds);
+
+            (new SendSingleMail($this->email, $to, $this->user))->handle();
+        }catch (\Exception $e){
+            $this->errors++;
+        }
+
+        $this->email->groupEmailAddresses()->detach();
+    }
+
+    protected function sendNextChunk()
+    {
+        /**
+         * We send a maximum amount each time to prevent timeouts.
+         */
+        $groupEmailAddresses = $this->email->groupEmailAddresses()
+            ->limit(Config::get('queue.email.chunk_size'))
+            ->get();
+
+        foreach ($groupEmailAddresses as $emailAddress) {
+            try {
+                (new SendSingleMailToContact($this->email, $emailAddress, $this->user))->handle();
+            }catch (\Exception $e){
+                $this->errors++;
+            }
+
+            /**
+             * Email always detach from table otherwise the jobs
+             * can stay in a loop when error occur in try/catch while sending.
+             */
+            $this->email->groupEmailAddresses()->detach($emailAddress->id);
+        }
     }
 }

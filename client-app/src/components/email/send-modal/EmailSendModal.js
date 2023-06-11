@@ -12,6 +12,7 @@ import InputTinyMCEUpdateable from "../../../components/form/InputTinyMCEUpdatea
 import EmailSendModalAttachments from "./EmailSendModalAttachments";
 import EmailAttachmentAPI from "../../../api/email/EmailAttachmentAPI";
 import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
+import InputCheckbox from "../../form/InputCheckbox";
 
 export default function EmailSendModal({emailId, showModal, setShowModal}) {
     const [isFirstLoad, setIsFirstLoad] = useState(true);
@@ -111,6 +112,7 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
             bcc: newEmail.bccAddresses.map(bcc => bcc.id),
             subject: newEmail.subject,
             htmlBody: newEmail.htmlBody,
+            mailContactGroupWithSingleMail: newEmail.mailContactGroupWithSingleMail,
         });
     }
 
@@ -157,6 +159,7 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
                     </div>
                     <div className="row">
                         {email.contactGroup ? (
+                            <>
                             <InputText
                                 label={
                                     <span>
@@ -173,6 +176,15 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
                                 value={email.contactGroup.name}
                                 readOnly={true}
                             />
+                            <InputCheckbox name={'mailContactGroupWithSingleMail'} checked={email.mailContactGroupWithSingleMail} label={<span>
+                                    Verstuur in enkele mail
+                                    <br/>
+                                    <small style={{color: 'red', fontWeight: 'normal'}}>
+                                        Bij het versturen via enkele mail worden alle contacten van de groep in "aan" gezet en zijn ontvangers zichtbaar voor elkaar. Samenvoegvelden zijn bij inschakelen van deze optie niet beschikbaar.
+                                    </small>
+                                </span>
+                            } onChangeAction={(event) => updateEmail({mailContactGroupWithSingleMail: event.target.checked})}/>
+                            </>
                         ) : (
                             <AsyncSelectSet
                                 label={

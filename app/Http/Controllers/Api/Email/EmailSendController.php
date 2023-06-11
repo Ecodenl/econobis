@@ -28,6 +28,7 @@ class EmailSendController extends Controller
             'bccAddresses' => $email->getBccRecipients()->toReactArray(),
             'subject' => $email->subject,
             'htmlBody' => $email->inlineImagesService()->getHtmlBodyWithCidsConvertedToEmbeddedImages(),
+            'mailContactGroupWithSingleMail' => $email->mail_contact_group_with_single_mail,
             'attachments' => $email->attachmentsWithoutCids->map(function (EmailAttachment $attachment) {
                 return [
                     'id' => $attachment->id,
@@ -48,6 +49,7 @@ class EmailSendController extends Controller
             'bcc' => ['array'],
             'subject' => ['string'],
             'htmlBody' => ['string'],
+            'mailContactGroupWithSingleMail' => ['boolean'],
         ]);
 
         $email->fill(Arr::keysToSnakeCase($data));

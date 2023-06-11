@@ -37,6 +37,7 @@ class Email extends Model
         'replyTypeId' => 'string',
         'oldEmailId' => 'integer',
         'contactGroupId' => 'integer',
+        'mail_contact_group_with_single_mail' => 'boolean',
     ];
 
     public function mailbox()

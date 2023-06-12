@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import ViewText from "../../../components/form/ViewText";
 import moment from "moment/moment";
 import Panel from "../../../components/panel/Panel";
@@ -15,6 +15,7 @@ import {trash} from 'react-icons-kit/fa/trash';
 import {pencil} from 'react-icons-kit/fa/pencil';
 import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 import {EmailModalContext} from "../../../context/EmailModalContext";
+
 
 export default function EmailDetailsModalLayout({
                                                     email,
@@ -55,6 +56,30 @@ export default function EmailDetailsModalLayout({
         EmailGenericAPI.update(email.id, {folder: 'removed'}).then(() => {
             onRemoved();
         });
+    }
+
+    useEffect(() => {
+        document.getElementById("details-modal-email-html").addEventListener("click", captureMailtoLinks);
+
+        return () => {
+            if(document.getElementById("details-modal-email-html")){
+                document.getElementById("details-modal-email-html").removeEventListener("click", captureMailtoLinks);
+            }
+        }
+    }, []);
+
+    const captureMailtoLinks = (event) => {
+        if (event.target.tagName === 'A' && event.target.href && event.target.href.indexOf('mailto:') !== -1) {
+            event.preventDefault();
+
+            if(confirm('Wil je een e-mail opstellen aan mailadres ' + event.target.href.replace('mailto:', '') + '?')) {
+                EmailGenericAPI.storeNew({
+                    to: [event.target.href.replace('mailto:', '')],
+                }).then(payload => {
+                    openEmailSendModal(payload.data.id)
+                });
+            }
+        }
     }
 
     return (
@@ -215,7 +240,7 @@ export default function EmailDetailsModalLayout({
                 </div>
             </div>
 
-            <div className="row" style={{paddingLeft: '15px', paddingRight: '15px'}}>
+            <div className="row" style={{paddingLeft: '15px', paddingRight: '15px'}} id="details-modal-email-html">
                 <Panel className="col-sm-12">
                     <div dangerouslySetInnerHTML={{__html: email.htmlBodyWithEmbeddedImages}}/>
                 </Panel>

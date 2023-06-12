@@ -16,9 +16,9 @@ export default {
             });
     },
 
-    storeNew: () => {
+    storeNew: (attributes) => {
         return axiosInstance
-            .post(`${URL_EMAIL}`);
+            .post(`${URL_EMAIL}`, attributes);
     },
 
     storeReply: (id) => {

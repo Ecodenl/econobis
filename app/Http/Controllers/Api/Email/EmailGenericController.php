@@ -96,15 +96,19 @@ class EmailGenericController extends Controller
         }
     }
 
-    public function store()
+    public function store(Request $request)
     {
+        $request->validate([
+            'to' => ['sometimes', 'array'],
+        ]);
+
         $this->authorize('create', Email::class);
 
         $mailbox = Auth::user()->defaultMailbox;
 
         $email = new Email([
             'from' => $mailbox->email,
-            'to' => [],
+            'to' => $request->input('to', []),
             'cc' => [],
             'bcc' => [],
             'html_body' => view('emails.new_email_wrapper')->render(),

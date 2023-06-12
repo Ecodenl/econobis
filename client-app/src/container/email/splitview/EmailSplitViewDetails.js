@@ -8,6 +8,7 @@ import {EmailModalContext} from "../../../context/EmailModalContext";
 export default function EmailSplitViewDetails({emailId, updatedEmailHandler}) {
     const { isEmailDetailsModalOpen, isEmailSendModalOpen, modalEmailId } = useContext(EmailModalContext);
     const [email, setEmail] = useState({attachments: []});
+    const {openEmailSendModal} = useContext(EmailModalContext);
 
     useEffect(() => {
         if(!isEmailDetailsModalOpen && email.id === modalEmailId) {
@@ -46,6 +47,30 @@ export default function EmailSplitViewDetails({emailId, updatedEmailHandler}) {
         });
     }
 
+    useEffect(() => {
+        document.getElementById("split-view-email-html").addEventListener("click", captureMailtoLinks);
+
+        return () => {
+            if(document.getElementById("split-view-email-html")){
+                document.getElementById("split-view-email-html").removeEventListener("click", captureMailtoLinks);
+            }
+        }
+    }, []);
+
+    const captureMailtoLinks = (event) => {
+        if (event.target.tagName === 'A' && event.target.href && event.target.href.indexOf('mailto:') !== -1) {
+            event.preventDefault();
+
+            if(confirm('Wil je een e-mail opstellen aan mailadres ' + event.target.href.replace('mailto:', '') + '?')) {
+                EmailGenericAPI.storeNew({
+                    to: [event.target.href.replace('mailto:', '')],
+                }).then(payload => {
+                    openEmailSendModal(payload.data.id)
+                });
+            }
+        }
+    }
+
     if (!email) {
         return (
             <></>
@@ -57,7 +82,7 @@ export default function EmailSplitViewDetails({emailId, updatedEmailHandler}) {
             <EmailSplitViewDetailsHeaderPanel email={email} updateEmailAttributes={updateEmailAttributes} />
 
             <div className="panel panel-default">
-                <div className="panel-body panel-small" style={{padding: '20px'}}>
+                <div className="panel-body panel-small" style={{padding: '20px'}} id="split-view-email-html">
                     <div dangerouslySetInnerHTML={{__html: email.htmlBodyWithEmbeddedImages}}/>
                 </div>
             </div>

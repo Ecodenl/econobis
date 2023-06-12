@@ -25,8 +25,6 @@ class SendSingleMailToContact extends SendSingleMail
 
     public function handle(): Email
     {
-        $this->validateRequest();
-
         $email = $this->getUpdatedEmail();
 
         try {

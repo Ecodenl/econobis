@@ -51,8 +51,6 @@ class SendSingleMail
 
     public function handle(): Email
     {
-        $this->validateRequest();
-
         $email = $this->getUpdatedEmail();
 
         try {
@@ -77,11 +75,6 @@ class SendSingleMail
         }
 
         return $email;
-    }
-
-    protected function validateRequest()
-    {
-        if ($this->email->from != $this->email->mailbox->email) throw new \Exception('A mail can only be send with the same address as the sending mailbox');
     }
 
     protected function getUpdatedEmail()

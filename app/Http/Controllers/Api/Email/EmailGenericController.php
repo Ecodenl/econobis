@@ -100,11 +100,7 @@ class EmailGenericController extends Controller
     {
         $this->authorize('create', Email::class);
 
-        $user = Auth::user();
-
-        $mailbox = $user->mailboxes()
-            ->where('is_active', true)
-            ->first();
+        $mailbox = Auth::user()->defaultMailbox;
 
         $email = new Email([
             'from' => $mailbox->email,
@@ -126,7 +122,12 @@ class EmailGenericController extends Controller
     {
         $this->authorize('manage', $email);
 
-        $reply = $email->generator()->reply();
+        $mailbox = Auth::user()->defaultMailbox;
+
+        $reply = $email->generator()->reply([
+            'from' => optional($mailbox)->email,
+            'mailbox_id' => optional($mailbox)->id,
+        ]);
 
         return response()->json([
             'id' => $reply->id,
@@ -137,7 +138,12 @@ class EmailGenericController extends Controller
     {
         $this->authorize('manage', $email);
 
-        $reply = $email->generator()->replyAll();
+        $mailbox = Auth::user()->defaultMailbox;
+
+        $reply = $email->generator()->replyAll([
+            'from' => optional($mailbox)->email,
+            'mailbox_id' => optional($mailbox)->id,
+        ]);
 
         return response()->json([
             'id' => $reply->id,
@@ -148,7 +154,12 @@ class EmailGenericController extends Controller
     {
         $this->authorize('manage', $email);
 
-        $forward = $email->generator()->forward();
+        $mailbox = Auth::user()->defaultMailbox;
+
+        $forward = $email->generator()->forward([
+            'from' => optional($mailbox)->email,
+            'mailbox_id' => optional($mailbox)->id,
+        ]);
 
         return response()->json([
             'id' => $forward->id,
@@ -185,19 +196,15 @@ class EmailGenericController extends Controller
     {
         $this->authorize('create', Email::class);
 
-        $user = Auth::user();
-
-        $mailbox = $user->mailboxes()
-            ->where('is_active', true)
-            ->first();
+        $mailbox = Auth::user()->defaultMailbox;
 
         $email = new Email([
-            'from' => $mailbox->email,
+            'from' => optional($mailbox)->email,
             'to' => [],
             'cc' => [],
             'bcc' => [],
             'html_body' => view('emails.new_email_wrapper')->render(),
-            'mailbox_id' => $mailbox->id,
+            'mailbox_id' => optional($mailbox)->id,
             'folder' => 'concept',
             'contact_group_id' => $contactGroup->id,
         ]);

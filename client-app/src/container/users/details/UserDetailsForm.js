@@ -7,6 +7,7 @@ import UserDetailsFormGeneral from './general/UserDetailsFormGeneral';
 import UserDetailsFormLog from './log/UserDetailsFormLog';
 import UserDetailsFormRoles from './roles/UserDetailsFormRoles';
 import UserDetailsFormTwoFactor from './two-factor/UserDetailsFormTwoFactor';
+import UserDetailsFormMailbox from "./mailbox/UserDetailsFormMailbox";
 
 class UserDetailsForm extends Component {
     constructor(props) {
@@ -34,7 +35,8 @@ class UserDetailsForm extends Component {
         ) : (
             <div>
                 <UserDetailsFormGeneral />
-                {permissions.manageCooperationSettings ? <UserDetailsFormTwoFactor /> : null};
+                {permissions.manageCooperationSettings ? <UserDetailsFormTwoFactor /> : null}
+                <UserDetailsFormMailbox />
                 <UserDetailsFormRoles />
                 <UserDetailsFormLog />
             </div>

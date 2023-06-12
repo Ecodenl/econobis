@@ -11,13 +11,14 @@ class EmailGeneratorService
     {
     }
 
-    public function reply()
+    public function reply(array $attributes = []): Email
     {
         $email = $this->getBaseReplyOrForwardEmail();
         $email->to = $this->matchEmailAddressesToIds([$this->email->from]);
         $email->cc = [];
         $email->reply_type_id = 'reply';
         $email->subject = 'Re: ' . $this->email->subject;
+        $email->fill($attributes);
         $email->save();
 
         $this->copyInlineImages($email);
@@ -25,7 +26,7 @@ class EmailGeneratorService
         return $email;
     }
 
-    public function replyAll()
+    public function replyAll(array $attributes = []): Email
     {
         $to = collect($this->email->to)->filter(function ($toEmailAddress) {
             return $toEmailAddress !== $this->email->mailbox->email;
@@ -40,6 +41,7 @@ class EmailGeneratorService
         $email->cc = $this->matchEmailAddressesToIds($cc->toArray());
         $email->reply_type_id = 'reply-all';
         $email->subject = 'Re: ' . $this->email->subject;
+        $email->fill($attributes);
         $email->save();
 
         $this->copyInlineImages($email);
@@ -47,7 +49,7 @@ class EmailGeneratorService
         return $email;
     }
 
-    public function forward()
+    public function forward(array $attributes = []): Email
     {
         $email = $this->getBaseReplyOrForwardEmail();
         $email->to = [];
@@ -55,6 +57,7 @@ class EmailGeneratorService
         $email->bcc = [];
         $email->reply_type_id = 'forward';
         $email->subject = 'Fwd: ' . $this->email->subject;
+        $email->fill($attributes);
         $email->save();
 
         $this->copyAttachments($email);

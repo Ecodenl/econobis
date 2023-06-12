@@ -42,10 +42,14 @@ class contactGroupsContactsForReport extends Command
      */
     public function handle()
     {
+        ini_set('memory_limit', '512M');
+        DB::disableQueryLog();
+
         Auth::setUser(User::find(1));
 
         /* first truncate the 'contact_groups_contacts_for_report' table */
         DB::table('contact_groups_contacts_for_report')->truncate();
+        Log::info('contact_groups_contacts_for_report truncated.');
 
         /* now repopulate the table again with the current data */
         $contactGroups = ContactGroup::whereIn('type_id', ['dynamic', 'composed', 'static'])->where('closed', 0)->get();
@@ -53,7 +57,7 @@ class contactGroupsContactsForReport extends Command
         foreach($contactGroups as $contactGroup) {
             $allContacts = $contactGroup->all_contact_group_contacts;
 
-            foreach($allContacts->chunk(500) as $chunks) {
+            foreach($allContacts->chunk(300) as $chunks) {
                 foreach($chunks as $contact) {
                     DB::insert('insert into contact_groups_contacts_for_report (
                         contact_id,

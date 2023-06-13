@@ -298,7 +298,6 @@ Route::namespace('Api')
 
         Route::get('email/grid/in-folder/{folder}', 'Email\EmailController@grid');
         Route::get('email/search', 'Email\EmailController@search');
-        Route::get('email/amount-open', 'Email\EmailController@getAmountOfOpenEmails');
         Route::get('email/{email}', 'Email\EmailController@show');
         Route::get('email/{email}/reply', 'Email\EmailController@getReply');
         Route::get('email/{email}/reply-all', 'Email\EmailController@getReplyAll');
@@ -336,6 +335,7 @@ Route::namespace('Api')
         Route::post('email-generic/{email}/store-reply-all', [EmailGenericController::class, 'storeReplyAll']);
         Route::post('email-generic/{email}/store-forward', [EmailGenericController::class, 'storeForward']);
         Route::post('email-generic/{email}/create-contact', [EmailGenericController::class, 'createContact']);
+        Route::get('email-generic/amount-open', [EmailGenericController::class, 'getAmountOfOpenEmails']);
 
         /**
          * Email details

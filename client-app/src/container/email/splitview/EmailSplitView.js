@@ -92,7 +92,7 @@ export default function EmailSplitView({router}) {
     }
 
     const getFilter = () => {
-        return getJoryFilter(filters, router.params.folder, router.location.query.contact);
+        return getJoryFilter(filters, router.params.folder, router.location.query.contact, router.location.query.eigen);
     }
 
     const getSorts = () => {

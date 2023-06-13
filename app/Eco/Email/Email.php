@@ -224,4 +224,9 @@ class Email extends Model
     {
         ProcessSendingEmail::dispatch($this, $byUser);
     }
+
+    public function newEloquentBuilder($query)
+    {
+        return new EmailBuilder($query);
+    }
 }

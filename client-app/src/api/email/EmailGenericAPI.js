@@ -49,5 +49,13 @@ export default {
 
     createContact: id => {
         return axiosInstance.post(`${URL_EMAIL}/${id}/create-contact`);
-    }
+    },
+
+    getAmountOpen: () => {
+        const requestUrl = `${URL_EMAIL}/amount-open`;
+
+        return axiosInstance
+            .get(requestUrl)
+            .then(response => response.data);
+    },
 };

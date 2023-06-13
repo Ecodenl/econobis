@@ -14,10 +14,9 @@ class EmailSplitviewController extends Controller
 {
     public function selectList(Request $request)
     {
-        $baseQuery = Email::whereIn('mailbox_id', Auth::user()->mailboxes->pluck('id'))
-            ->whereHas('mailbox', function ($query) {
-                $query->where('is_active', true);
-            });
+        $this->authorize('view', Email::class);
+
+        $baseQuery = Email::whereAuthorized(Auth::user());
 
         $query = Jory::on($baseQuery)
             ->apply($request->input('jory'))

@@ -218,4 +218,10 @@ class EmailGenericController extends Controller
             'id' => $email->id,
         ]);
     }
+
+    public function getAmountOfOpenEmails(){
+        $this->authorize('view', Email::class);
+
+        return Email::whereEigenOpenstaand(Auth::user())->count();
+    }
 }

@@ -1,4 +1,4 @@
-export function getJoryFilter(values, folder, contactId) {
+export function getJoryFilter(values, folder, contactId, eigen = false) {
     let filter = {
         and: [
             {
@@ -113,6 +113,12 @@ export function getJoryFilter(values, folder, contactId) {
         filter.and.push({
             f: 'contacts.contactId',
             d: contactId,
+        })
+    }
+
+    if (eigen) {
+        filter.and.push({
+            f: 'eigenOpenstaand',
         })
     }
 

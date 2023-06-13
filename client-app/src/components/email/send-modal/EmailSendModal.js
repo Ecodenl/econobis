@@ -13,6 +13,7 @@ import EmailSendModalAttachments from "./EmailSendModalAttachments";
 import EmailAttachmentAPI from "../../../api/email/EmailAttachmentAPI";
 import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 import InputCheckbox from "../../form/InputCheckbox";
+import ContactsAPI from "../../../api/contact/ContactsAPI";
 
 export default function EmailSendModal({emailId, showModal, setShowModal}) {
     const [isFirstLoad, setIsFirstLoad] = useState(true);
@@ -110,6 +111,7 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
             to: newEmail.toAddresses.map(to => to.id),
             cc: newEmail.ccAddresses.map(cc => cc.id),
             bcc: newEmail.bccAddresses.map(bcc => bcc.id),
+            contactIds: newEmail.contacts.map(c => c.id),
             subject: newEmail.subject,
             htmlBody: newEmail.htmlBody,
             mailContactGroupWithSingleMail: newEmail.mailContactGroupWithSingleMail,
@@ -122,8 +124,12 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
         });
     }
 
-    const getContactOptions = async (searchTerm) => {
+    const getContactEmailOptions = async (searchTerm) => {
         return EmailAddressAPI.fetchEmailAddressessSearch(searchTerm).then(payload => payload.data)
+    };
+
+    const getContactOptions = async (searchTerm) => {
+        return ContactsAPI.fetchContactSearch(searchTerm).then(payload => payload.data.data)
     };
 
     if (!email) return null;
@@ -225,7 +231,7 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
                                 }
                                 name={'to'}
                                 value={email.toAddresses}
-                                loadOptions={getContactOptions}
+                                loadOptions={getContactEmailOptions}
                                 optionName={'name'}
                                 onChangeAction={(value) => updateEmail({toAddresses: value ? value : []})}
                                 allowCreate={true}
@@ -240,7 +246,7 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
                             label={email.contactGroup ? 'Extra contacten' : 'Cc selecteren'}
                             name={'cc'}
                             value={email.ccAddresses}
-                            loadOptions={getContactOptions}
+                            loadOptions={getContactEmailOptions}
                             optionName={'name'}
                             onChangeAction={(value) => updateEmail({ccAddresses: value ? value : []})}
                             allowCreate={true}
@@ -252,13 +258,24 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
                                 label="Bcc selecteren"
                                 name={'bcc'}
                                 value={email.bccAddresses}
-                                loadOptions={getContactOptions}
+                                loadOptions={getContactEmailOptions}
                                 optionName={'name'}
                                 onChangeAction={(value) => updateEmail({bccAddresses: value ? value : []})}
                                 allowCreate={true}
                             />
                         </div>
                     )}
+                    <div className="row">
+                        <AsyncSelectSet
+                            label="Te koppelen contacten"
+                            name={'contact_email'}
+                            value={email.contacts}
+                            loadOptions={getContactOptions}
+                            optionName={'fullName'}
+                            onChangeAction={(value) => updateEmail({contacts: value ? value : []})}
+                            allowCreate={false}
+                        />
+                    </div>
                     <div className="row">
                         <InputReactSelectLong
                             label="Template"

@@ -126,8 +126,8 @@ class ProcessSendingGroupEmail implements ShouldQueue
 
     protected function prepareEmailForSending()
     {
-        $this->email->syncContactsByGroup();
-        $this->email->attachGroupEmailAddressesFromGroup();
+        $this->syncContactsByGroup();
+        $this->attachGroupEmailAddressesFromGroup();
 
         $this->email->html_body
             = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
@@ -181,5 +181,26 @@ class ProcessSendingGroupEmail implements ShouldQueue
              */
             $this->email->groupEmailAddresses()->detach($emailAddress->id);
         }
+    }
+
+    protected function attachGroupEmailAddressesFromGroup()
+    {
+        foreach ($this->email->contactGroup->all_contacts as $contact) {
+            if (!$contact->primaryEmailAddress) {
+                continue;
+            }
+
+            $this->email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
+        }
+    }
+
+    protected function syncContactsByGroup()
+    {
+        $contactIds = $this->email->contactGroup->all_contacts->pluck('id');
+
+        /**
+         * Without detaching omdat bij het opstellen van de mail ook al "Te koppelen contacten" kunnen worden ingevoerd, deze moeten dan niet worden verwijderd.
+         */
+        $this->email->contacts()->syncWithoutDetaching($contactIds->unique()->toArray());
     }
 }

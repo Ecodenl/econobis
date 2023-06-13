@@ -4,6 +4,7 @@ namespace App\Jobs\Email;
 
 
 use App\Eco\Email\Email;
+use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
 use Carbon\Carbon;
@@ -85,7 +86,7 @@ class ProcessSendingEmail implements ShouldQueue
 
     protected function prepareEmailForSending()
     {
-        $this->email->syncContactsByRecipients();
+        $this->syncContactsByRecipients();
 
         $this->email->html_body
             = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
@@ -103,5 +104,26 @@ class ProcessSendingEmail implements ShouldQueue
         $this->email->date_sent = new Carbon();
         $this->email->folder = 'sent';
         $this->email->save();
+    }
+
+    protected function syncContactsByRecipients()
+    {
+        $email = $this->email;
+
+        $emailAddressIds = collect()
+            ->merge(collect($email->to))
+            ->merge(collect($email->cc))
+            ->merge(collect($email->bcc))
+            ->filter(function($idOrEmailAddress){
+                return is_numeric($idOrEmailAddress);
+            })
+            ->unique();
+
+        $contactIds = EmailAddress::whereIn('id', $emailAddressIds)->pluck('contact_id');
+
+        /**
+         * Without detaching omdat bij het opstellen van de mail ook al "Te koppelen contacten" kunnen worden ingevoerd, deze moeten dan niet worden verwijderd.
+         */
+        $email->contacts()->syncWithoutDetaching($contactIds->unique()->toArray());
     }
 }

@@ -22,6 +22,7 @@ class EmailGeneratorService
         $email->save();
 
         $this->copyInlineImages($email);
+        $this->attachPreviousContacts($email);
 
         return $email;
     }
@@ -45,6 +46,7 @@ class EmailGeneratorService
         $email->save();
 
         $this->copyInlineImages($email);
+        $this->attachPreviousContacts($email);
 
         return $email;
     }
@@ -62,6 +64,7 @@ class EmailGeneratorService
 
         $this->copyAttachments($email);
         $this->copyInlineImages($email);
+        $this->attachPreviousContacts($email);
 
         return $email;
     }
@@ -109,5 +112,10 @@ class EmailGeneratorService
         foreach ($this->email->inlineImageAttachments as $inlineImage) {
             EmailAttachmentCopyService::copy($inlineImage, $email);
         }
+    }
+
+    protected function attachPreviousContacts(Email $email)
+    {
+        $email->contacts()->sync($this->email->contacts()->pluck('contacts.id'));
     }
 }

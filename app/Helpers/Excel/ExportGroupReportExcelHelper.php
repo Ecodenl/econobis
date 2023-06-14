@@ -118,7 +118,7 @@ class ExportGroupReportExcelHelper
                     $rowData[] = '';
                     $rowData[] = '';
                 }
-                $contactGroupIds = $contact->selectedGroups->pluck('id')->toArray();
+                $contactGroupIds = $contact->selectedGroups()->whereTeamContactGroupIds(Auth::user())->pluck('id')->toArray();
                 foreach ($this->contactGroups as $contactGroup) {
                     if(in_array($contactGroup->id, $contactGroupIds)){
                         $contactGroupsPivot= $contactGroup->contacts()->where('contact_id', $contact->id)->first()->pivot;

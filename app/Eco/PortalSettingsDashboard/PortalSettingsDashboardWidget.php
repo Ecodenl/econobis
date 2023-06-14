@@ -25,13 +25,11 @@ class PortalSettingsDashboardWidget extends Model
 
     public function contactGroup()
     {
-        // Hier geen authorisatie check op TeamContactGroupdIds ! ( dus geen: whereTeamContactGroupIds(Auth::user()) )
         return $this->belongsTo(ContactGroup::class, 'show_group_id');
     }
 
     public function hideForContactGroup()
     {
-        // Hier geen authorisatie check op TeamContactGroupdIds ! ( dus geen: whereTeamContactGroupIds(Auth::user()) )
         return $this->belongsTo(ContactGroup::class, 'hide_group_id');
     }
 

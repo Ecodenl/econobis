@@ -167,13 +167,12 @@ class Contact extends Model
 
     public function groups()
     {
-        return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->whereTeamContactGroupIds(Auth::user())->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since')->orderBy('contact_groups.id', 'desc');
+        return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since')->orderBy('contact_groups.id', 'desc');
     }
 
     public function selectedGroups()
     {
         return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')
-            ->whereTeamContactGroupIds(Auth::user())
             ->where('contact_groups.type_id', 'static')
             ->where('contact_groups.include_into_export_group_report', true)
             ->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since')
@@ -443,25 +442,27 @@ class Contact extends Model
         return null;
     }
 
-    public function getAllStaticAndDynamicGroups()
-    {
-        //statische groepen
-        $staticGroups = $this->groups()->get()->pluck('id')->toArray();
-
-        //dynamische groepen
-        $dynamicGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('type_id', 'dynamic')->get();
-
-        $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
-            foreach ($dynamicGroup->all_contacts as $dynamic_contact) {
-                if ($dynamic_contact->id === $this->id) {
-                    return true;
-                }
-            }
-            return false;
-        })->pluck('id')->toArray();
-
-        return array_merge($staticGroups, $dynamicGroupsForContact);
-    }
+// todo WM: opschonen, deze function wordt volgens mij nergens gebruikt!
+//
+//    public function getAllStaticAndDynamicGroups()
+//    {
+//        //statische groepen
+//        $staticGroups = $this->groups()->get()->pluck('id')->toArray();
+//
+//        //dynamische groepen
+//        $dynamicGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('type_id', 'dynamic')->get();
+//
+//        $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
+//            foreach ($dynamicGroup->all_contacts as $dynamic_contact) {
+//                if ($dynamic_contact->id === $this->id) {
+//                    return true;
+//                }
+//            }
+//            return false;
+//        })->pluck('id')->toArray();
+//
+//        return array_merge($staticGroups, $dynamicGroupsForContact);
+//    }
 
     public function getAllGroups()
     {

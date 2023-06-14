@@ -11,13 +11,11 @@ use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Task\Task;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
-//use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Laracasts\Presenter\PresentableTrait;
 
 class ContactGroup extends Model
@@ -44,32 +42,6 @@ class ContactGroup extends Model
     //gebruikt om infinite loop te checken bij samengestelde groepen
     private $hasComposedIds = [];
     private $hasComposedExceptedIds = [];
-
-// todo WM: cleanup
-    /**
-     * The "booting" method of the model.
-     *
-     * @return void
-     */
-
-//    protected static function boot()
-//    {
-//        parent::boot();
-//
-//        static::addGlobalScope('authorizeGroups', function (Builder $builder) {
-//            if(Auth::user()){
-//                $userHasTeams = Auth::user()->teams()->whereHas('contactGroups', function(Builder $query){
-//                    $query->withoutGlobalScope('authorizeGroups');
-//                })->exists();
-//
-//                if($userHasTeams){
-//                    $builder->whereHas('teams.users', function($query){
-//                        $query->where('users.id', Auth::id());
-//                    });
-//                }
-//            }
-//        });
-//    }
 
     public static function getAutoIncrementedName(string $prefix)
     {
@@ -107,7 +79,6 @@ class ContactGroup extends Model
 
     public function simulatedGroup()
     {
-        // Hier geen authorisatie check op TeamContactGroupdIds ! ( dus geen: whereTeamContactGroupIds(Auth::user()) )
         return $this->belongsTo(ContactGroup::class);
     }
 
@@ -162,12 +133,11 @@ class ContactGroup extends Model
 
     public function contactGroups()
     {
-        return $this->belongsToMany(ContactGroup::class, 'composed_contact_group', 'parent_group_id', 'group_id')->whereTeamContactGroupIds(Auth::user());
+        return $this->belongsToMany(ContactGroup::class, 'composed_contact_group', 'parent_group_id', 'group_id');
     }
 
     public function contactGroupsExcepted()
     {
-        // Hier geen authorisatie check op TeamContactGroupdIds ! ( dus geen: whereTeamContactGroupIds(Auth::user()) )
         return $this->belongsToMany(ContactGroup::class, 'composed_contact_group_excepted', 'parent_group_id', 'group_id');
     }
 
@@ -368,7 +338,6 @@ class ContactGroup extends Model
 
     //prevents deleting in grid
     public function getIsUsedInComposedGroupAttribute(){
-        // Hier geen authorisatie check op TeamContactGroupdIds ! ( dus geen: whereTeamContactGroupIds(Auth::user()) )
         $composedGroups = ContactGroup::where('type_id', 'composed')->get();
 
         foreach ($composedGroups as $composedGroup){
@@ -388,11 +357,9 @@ class ContactGroup extends Model
         // Dynamic of Composed groups worden met simulated group gesyncroniseerd met laposta.
         if($this->type_id === 'dynamic' || $this->type_id === 'composed' ){
             if($this->simulatedGroup){
-                // Hier geen authorisatie check op TeamContactGroupdIds ! ( dus geen: whereTeamContactGroupIds(Auth::user()) )
                 return ContactGroup::where('id', $this->simulatedGroup->id)->whereNotNull('laposta_list_id')->exists();
             }
         }else{
-            // Hier geen authorisatie check op TeamContactGroupdIds ! ( dus geen: whereTeamContactGroupIds(Auth::user()) )
             return ContactGroup::where('id', $this->id)->whereNotNull('laposta_list_id')->exists();
         }
 

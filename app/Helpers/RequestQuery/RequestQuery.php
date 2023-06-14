@@ -55,11 +55,6 @@ abstract class RequestQuery
         $this->applyExtraFilter($query);
         $this->applySort($query);
         $this->applyPagination($query);
-// todo WM: cleanup
-//        Log::info($query->toSql());
-//        $sql = str_replace(array('?'), array('\'%s\''), $query->toSql());
-//        $sql = vsprintf($sql, $query->getBindings());
-//        Log::info($sql);
     }
 
     protected function init()

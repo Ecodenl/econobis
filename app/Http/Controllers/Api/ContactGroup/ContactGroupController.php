@@ -74,11 +74,6 @@ class ContactGroupController extends Controller
         $this->authorize('view', ContactGroup::class);
 
         $contactGroupAutorized = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('id', $contactGroup->id)->first();
-// todo WM: cleanup
-//        Log::info('test contactGroup');
-//        Log::info($contactGroup);
-//        Log::info('test contactGroupAutorized');
-//        Log::info($contactGroupAutorized);
 
         if(!$contactGroupAutorized){
             abort(403, 'Niet geautoriseerd.');
@@ -323,7 +318,9 @@ class ContactGroupController extends Controller
     public function excelGroupReport()
     {
         set_time_limit(0);
-        $contacts = Contact::whereHas('selectedGroups')->get();
+        $contacts = Contact::whereHas('selectedGroups', function($query){
+                $query->whereTeamContactGroupIds(Auth::user());
+            })->get();
 
         $exportGroupReportExcelHelper = new ExportGroupReportExcelHelper($contacts);
 

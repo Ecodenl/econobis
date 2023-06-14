@@ -2401,7 +2401,6 @@ class ExternalWebformController extends Controller
         if ($data['group_name']) {
             $this->log('Er is een contact groep meegegeven, groep koppelen.');
 
-            // Hier altijd alle groepen, dus geen authorisatie check op TeamContactGroupdIds ! ( dus geen: whereTeamContactGroupIds(Auth::user()) )
             $contactGroup = ContactGroup::where('name', $data['group_name'])->first();
 
             if (!$contactGroup) {
@@ -2442,7 +2441,6 @@ class ExternalWebformController extends Controller
         }
 
         if($data['contact_group_ids']){
-            // Hier altijd alle groepen, dus geen authorisatie check op TeamContactGroupdIds ! ( dus geen: whereTeamContactGroupIds(Auth::user()) )
             $contactGroups = ContactGroup::whereIn('id', explode(',', $data['contact_group_ids']))->get();
             if ($contactGroups->count() > 0) {
                 $this->log('Er is 1 of meerdere contactgroep meegegeven, groep(en) koppelen.');
@@ -2492,7 +2490,6 @@ class ExternalWebformController extends Controller
     {
         $contactToEmailNewContactGroup = Contact::find($this->contactIdToEmailNewContactToGroup);
         if ($data['group_name']) {
-            // Hier altijd alle groepen, dus geen authorisatie check op TeamContactGroupdIds ! ( dus geen: whereTeamContactGroupIds(Auth::user()) )
             $contactGroup = ContactGroup::where('name', $data['group_name'])->first();
             if($contactGroup->send_email_new_contact_link){
                 $contactGroupHelper = new ContactGroupHelper($contactGroup, $contactToEmailNewContactGroup);
@@ -2504,8 +2501,6 @@ class ExternalWebformController extends Controller
         }
 
         if($data['contact_group_ids']){
-
-            // Hier altijd alle groepen, dus geen authorisatie check op TeamContactGroupdIds ! ( dus geen: whereTeamContactGroupIds(Auth::user()) )
             $contactGroups = ContactGroup::whereIn('id', explode(',', $data['contact_group_ids']))->get();
             foreach ($contactGroups as $contactGroup)
             {

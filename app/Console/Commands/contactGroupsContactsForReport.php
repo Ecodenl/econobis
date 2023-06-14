@@ -48,7 +48,6 @@ class contactGroupsContactsForReport extends Command
         DB::table('contact_groups_contacts_for_report')->truncate();
 
         /* now repopulate the table again with the current data */
-        // Hier altijd alle groepen, dus geen authorisatie check op TeamContactGroupdIds ! ( dus geen: whereTeamContactGroupIds(Auth::user()) )
         $contactGroups = ContactGroup::whereIn('type_id', ['dynamic', 'composed', 'static'])->where('closed', 0)->get();
 
         foreach($contactGroups as $contactGroup) {

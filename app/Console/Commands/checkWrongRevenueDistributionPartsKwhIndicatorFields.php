@@ -52,7 +52,7 @@ class checkWrongRevenueDistributionPartsKwhIndicatorFields extends Command
 
         $wrongRevenueDistributionPartsKwh = [];
 
-        foreach(RevenueDistributionPartsKwh::get() as $revenueDistributionPartKwh) {
+        foreach(RevenueDistributionPartsKwh::where('status', '!=', 'processed')->get() as $revenueDistributionPartKwh) {
             $isEnergySupplierSwitch = false;
             $isEndParticipation = false;
             $isEndTotalPeriod = false;

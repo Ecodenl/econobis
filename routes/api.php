@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Email\EmailAttachmentController;
 use App\Http\Controllers\Api\Email\EmailDetailsController;
 use App\Http\Controllers\Api\Email\EmailGenericController;
+use App\Http\Controllers\Api\Email\EmailSendController;
 use App\Http\Controllers\Api\Email\EmailSplitviewController;
 use App\Http\Controllers\Api\Invoice\InvoiceMolliePaymentController;
 use App\Http\Controllers\Api\Mailbox\MailboxController;
@@ -333,7 +334,6 @@ Route::namespace('Api')
 
         Route::get('email/grid/in-folder/{folder}', 'Email\EmailController@grid');
         Route::get('email/search', 'Email\EmailController@search');
-        Route::get('email/amount-open', 'Email\EmailController@getAmountOfOpenEmails');
         Route::get('email/{email}', 'Email\EmailController@show');
         Route::get('email/{email}/reply', 'Email\EmailController@getReply');
         Route::get('email/{email}/reply-all', 'Email\EmailController@getReplyAll');
@@ -364,10 +364,14 @@ Route::namespace('Api')
          */
         Route::post('email-generic/delete-multiple', [EmailGenericController::class, 'deleteMultiple']);
         Route::post('email-generic/update-multiple', [EmailGenericController::class, 'updateMultiple']);
+        Route::post('email-generic', [EmailGenericController::class, 'store']);
+        Route::post('email-generic/store-group-mail/{contactGroup}', [EmailGenericController::class, 'storeGroupMail']);
         Route::post('email-generic/{email}', [EmailGenericController::class, 'update']);
         Route::post('email-generic/{email}/store-reply', [EmailGenericController::class, 'storeReply']);
         Route::post('email-generic/{email}/store-reply-all', [EmailGenericController::class, 'storeReplyAll']);
         Route::post('email-generic/{email}/store-forward', [EmailGenericController::class, 'storeForward']);
+        Route::post('email-generic/{email}/create-contact', [EmailGenericController::class, 'createContact']);
+        Route::get('email-generic/amount-open', [EmailGenericController::class, 'getAmountOfOpenEmails']);
 
         /**
          * Email details
@@ -375,9 +379,19 @@ Route::namespace('Api')
         Route::get('email-details/{email}', [EmailDetailsController::class, 'show']);
 
         /**
+         * Email send modal
+         */
+        Route::get('email-send/{email}', [EmailSendController::class, 'show']);
+        Route::post('email-send/{email}/save-concept', [EmailSendController::class, 'saveConcept']);
+        Route::post('email-send/{email}/send', [EmailSendController::class, 'send']);
+
+        /**
          * Email attachments
          */
         Route::get('email-attachment/{emailAttachment}/download', [EmailAttachmentController::class, 'download']);
+        Route::post('email-attachment/{emailAttachment}/delete', [EmailAttachmentController::class, 'delete']);
+        Route::post('email/{email}/add-documents-as-attachments', [EmailAttachmentController::class, 'addDocumentsAsAttachments']);
+        Route::post('email/{email}/attachment', [EmailAttachmentController::class, 'store']);
 
         Route::get('email-template/grid', 'EmailTemplate\EmailTemplateController@grid');
         Route::get('email-template/peek', 'EmailTemplate\EmailTemplateController@peek');

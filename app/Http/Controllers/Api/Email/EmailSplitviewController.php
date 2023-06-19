@@ -7,7 +7,6 @@ use App\Eco\Contact\Contact;
 use App\Eco\Email\Email;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use JosKolenberg\LaravelJory\Facades\Jory;
 
@@ -17,7 +16,9 @@ class EmailSplitviewController extends Controller
     {
         $this->authorize('view', Email::class);
 
-        $query = Jory::on(Email::class)
+        $baseQuery = Email::whereAuthorized(Auth::user());
+
+        $query = Jory::on($baseQuery)
             ->apply($request->input('jory'))
             ->getJoryBuilder()
             ->buildQuery();
@@ -36,8 +37,11 @@ class EmailSplitviewController extends Controller
                     'from' => $mail->from,
                     'subject' => $mail->subject,
                     'status' => $mail->status,
-                    'hasAttachmentsWithoutCids' => $mail->attachmentsWithoutCids->isNotEmpty(),
+                    'hasAttachments' => $mail->attachmentsWithoutCids->isNotEmpty(),
                     'responsibleName' => $mail->getResponsibleName(),
+                    'mailbox' => [
+                        'name' => $mail->mailbox->name,
+                    ],
                 ];
             }),
             'total' => $query->count()
@@ -46,13 +50,12 @@ class EmailSplitviewController extends Controller
 
     public function show(Email $email)
     {
-        $this->authorize('view', Email::class);
-        $this->checkMailboxAutorized($email->mailbox_id);
+        $this->authorize('manage', $email);
 
         return response()->json([
             'id' => $email->id,
             'status' => $email->status,
-            'attachmentsWithoutCids' => $email->attachmentsWithoutCids,
+            'attachments' => $email->attachmentsWithoutCids,
             'responsibleUserId' => $email->responsible_user_id,
             'responsibleTeamId' => $email->responsible_team_id,
             'contacts' => $email->contacts->map(function (Contact $contact) {
@@ -61,15 +64,10 @@ class EmailSplitviewController extends Controller
                     'fullName' => $contact->full_name,
                 ];
             }),
-            'ccAddresses' => $email->getCcAddresses(),
+            'toAddresses' => $email->getToRecipients()->toReactArray(),
+            'ccAddresses' => $email->getCcRecipients()->toReactArray(),
             'htmlBodyWithEmbeddedImages' => $email->inlineImagesService()->getHtmlBodyWithCidsConvertedToEmbeddedImages(),
+            'folder' => $email->folder,
         ]);
-    }
-
-    protected function checkMailboxAutorized($mailboxId): void
-    {
-        if (!Auth::user()->mailboxes()->where('mailboxes.id', $mailboxId)->exists()) {
-            abort(403, 'Niet geautoriseerd.');
-        }
     }
 }

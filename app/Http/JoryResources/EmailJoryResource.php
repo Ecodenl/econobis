@@ -2,6 +2,8 @@
 
 namespace App\Http\JoryResources;
 
+use App\Http\JoryResources\Base\CallbackFilterScope;
+use Illuminate\Support\Facades\Auth;
 use JosKolenberg\LaravelJory\JoryResource;
 use App\Eco\Email\Email;
 
@@ -60,5 +62,8 @@ class EmailJoryResource extends JoryResource
         $this->filter('responsibleUser.last_name');
         $this->filter('responsibleTeam.name');
         $this->filter('attachmentsWithoutCids.id');
+        $this->filter('eigen_openstaand', new CallbackFilterScope(function ($builder) {
+            $builder->whereEigenOpenstaand(Auth::user());
+        }));
     }
 }

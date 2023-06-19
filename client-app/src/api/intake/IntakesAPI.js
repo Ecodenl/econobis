@@ -29,6 +29,20 @@ export default {
             });
     },
 
+    peekIntakesForContacts: (contactIds) => {
+        const requestUrl = `${URL_INTAKES}/peek`;
+
+        return axiosInstance
+            .get(requestUrl, {
+                params: {
+                    contactIds: JSON.stringify(contactIds),
+                }
+            })
+            .then(function(response) {
+                return response.data.data;
+            });
+    },
+
     fetchIntakesByContact: contactId => {
         const requestUrl = `${URL_API}/api/contact/${contactId}/intakes`;
 

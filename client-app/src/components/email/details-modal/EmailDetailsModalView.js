@@ -1,12 +1,14 @@
 import React from 'react';
 import EmailDetailsModalLayout from "./EmailDetailsModalLayout";
-import {Link} from "react-router";
 import ViewText from "../../../components/form/ViewText";
+import {FaInfoCircle} from "react-icons/fa";
+import ReactTooltip from "react-tooltip";
 
-export default function EmailDetailsModalView({email, updateEmailAttributes}) {
+export default function EmailDetailsModalView({email, updateEmailAttributes, onRemoved, createContact, goTo}) {
     return (
         <EmailDetailsModalLayout
             email={email}
+            onRemoved={onRemoved}
             updateEmailAttributes={updateEmailAttributes}
             contactsComponent={(
                 <div className="col-sm-6">
@@ -17,13 +19,18 @@ export default function EmailDetailsModalView({email, updateEmailAttributes}) {
                             email.contacts.map(contact => {
                                 return (
                                     <span key={contact.id}>
-                                        <Link to={`/contact/${contact.id}`} className="link-underline">
-                                            {contact.fullName}
-                                        </Link>{' '}
+                                        <a className={'link-underline'}
+                                           onClick={() => goTo(`/contact/${contact.id}`)}>{contact.fullName}</a>
                                         <br/>
                                         </span>
                                 )
                             })
+                        }
+                        {
+                            email && email.contacts &&
+                            email.contacts.length === 0 && (
+                                <button className="btn btn-success btn-sm" onClick={createContact}>Contact aanmaken</button>
+                            )
                         }
                     </div>
                 </div>
@@ -76,6 +83,34 @@ export default function EmailDetailsModalView({email, updateEmailAttributes}) {
                     value={email.invoice ? email.invoice.number : ''}
                     link={email.invoice ? 'nota/' + email.invoice.id : ''}
                 />
+            )}
+            noteComponent={(
+                <>
+                    <div className="col-sm-3">
+                        <label htmlFor="note" className="col-sm-12">
+                            Opmerking
+                        </label>
+                    </div>
+                    <div className="col-sm-8" id="note">
+                        {email.note}
+                    </div>
+                    <div className="col-sm-1">
+                        <FaInfoCircle
+                            color={'blue'}
+                            size={'15px'}
+                            data-tip={"let op: deze opmerking is alleen zichtbaar bij deze specifieke e-mail. als iemand een reply stuurt is daar de opmerking niet meer te zien"}
+                            data-for={`tooltip-note`}
+                        />
+                        <ReactTooltip
+                            id={`tooltip-note`}
+                            effect="float"
+                            place="right"
+                            multiline={true}
+                            aria-haspopup="true"
+                        />
+                        &nbsp;
+                    </div>
+                </>
             )}
         />
     );

@@ -174,18 +174,24 @@ class OpportunityController extends ApiController
         return Opportunity::where('status_id', 1)->count();
     }
 
-    public function peek()
+    public function peek(Request $request)
     {
         $teamContactIds = Auth::user()->getTeamContactIds();
+
+        $query = Opportunity::query()->orderBy('id');
         if ($teamContactIds){
-            $opportunities = Opportunity::whereHas('intake', function($query) use($teamContactIds){
+            $query->whereHas('intake', function($query) use($teamContactIds){
                 $query->whereIn('contact_id', $teamContactIds);
-            })->orderBy('id')->get();
-        }else{
-            $opportunities = Opportunity::orderBy('id')->get();
+            });
         }
 
-        return OpportunityPeek::collection($opportunities);
+        if($request->has('contactIds')){
+            $query->whereHas('intake', function ($query) use ($request) {
+                $query->whereIn('contact_id', json_decode($request->input('contactIds')));
+            });
+        }
+
+        return OpportunityPeek::collection($query->get());
     }
 
     // Data for dashboard chart

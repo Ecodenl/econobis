@@ -2,8 +2,9 @@ import React, {useEffect, useState} from 'react';
 import moment from "moment/moment";
 import Icon from "react-icons-kit";
 import {paperclip} from 'react-icons-kit/fa/paperclip';
-import EmailSplitViewBulkDeleteModal from "./EmailSplitViewBulkDeleteModal";
+import {trash} from 'react-icons-kit/fa/trash';
 import EmailSplitViewBulkEditModal from "./EmailSplitViewBulkEditModal";
+import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 
 export default function EmailSplitViewSelectList({emails, folder, emailCount, fetchMoreEmails, selectedEmailId, setSelectedEmailId, onUpdated}) {
     const [selectEnabled, setSelectEnabled] = useState(false);
@@ -15,10 +16,10 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
                 return 'Inbox';
             case 'sent':
                 return 'Verzonden';
-            case 'drafts':
+            case 'concept':
                 return 'Concepten';
-            case 'trash':
-                return 'Prullenbak';
+            case 'removed':
+                return 'Verwijderd';
             default:
                 return 'Onbekend';
         }
@@ -44,6 +45,13 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
         } else {
             setSelectedEmailIds(emails.map(email => email.id));
         }
+    }
+
+    const doDelete = () => {
+        EmailGenericAPI.updateMultiple(selectedEmailIds, {folder: 'removed'}).then(() => {
+            setSelectedEmailIds([]);
+            onUpdated();
+        });
     }
 
     useEffect(() => {
@@ -78,7 +86,16 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
                                     </div>
                                 <div className="btn-group margin-small" role="group">
                                     <EmailSplitViewBulkEditModal emailIds={selectedEmailIds} onSaved={onUpdated}/>
-                                    <EmailSplitViewBulkDeleteModal emailIds={selectedEmailIds} onDeleted={() => {setSelectedEmailIds([]); onUpdated()}}/>
+                                    <button
+                                        type="button"
+                                        title="Verwijderen"
+                                        className={'btn btn-success btn-sm'}
+                                        onClick={() => {
+                                            doDelete(true);
+                                        }}
+                                    >
+                                        <Icon icon={trash} size={13}/>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -129,7 +146,7 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
                                             </div>
                                         )}
                                         <div style={{flex: 1}} onClick={() => selectEmail(email)}>
-                                            <span style={{fontSize: '15px'}}>{email.from}</span>
+                                            <span style={{fontSize: '15px'}}>{email.from}</span> <span style={{fontSize: '12px'}}>({email.mailbox.name})</span>
                                             <br/><span>{email.subject}</span>
                                         </div>
                                         <div style={{
@@ -142,7 +159,7 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
                                             <div>
                                                 <span style={{color: '#999'}}>{email.responsibleName}</span>
                                                 {
-                                                    email.hasAttachmentsWithoutCids && (
+                                                    email.hasAttachments && (
                                                         <Icon icon={paperclip} size={18}/>
                                                     )
                                                 }

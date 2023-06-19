@@ -52,6 +52,9 @@ class UpdateCooperation extends FormRequest
             'inspectionPlannedMailboxId' => [''],
             'inspectionRecordedEmailTemplateId' => [''],
             'inspectionReleasedEmailTemplateId' => [''],
+            'fontFamilyDefault' => [''],
+            'fontSizeDefault' => [''],
+            'fontColorDefault' => [''],
         ];
     }
 }

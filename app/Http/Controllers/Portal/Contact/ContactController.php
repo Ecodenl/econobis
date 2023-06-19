@@ -969,7 +969,7 @@ class ContactController extends ApiController
                 $projectType = $participation->project->projectType;
                 if ($projectType->code_ref === 'postalcode_link_capital') {
                     $revenuesKwhHelper = new RevenuesKwhHelper();
-                    $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkRevenuePartsKwh($participation, $currentAddressEnergySupplierElectricityNew->member_since, $currentAddressEnergySupplierElectricityNew);
+                    $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkAndSplitRevenuePartsKwh($participation, $currentAddressEnergySupplierElectricityNew->member_since, $currentAddressEnergySupplierElectricityNew);
                     if ($splitRevenuePartsKwhResponse) {
                         $revenuePartsKwhArray [] = $splitRevenuePartsKwhResponse;
                     }

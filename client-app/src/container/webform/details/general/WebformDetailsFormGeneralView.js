@@ -21,7 +21,7 @@ const WebformDetailsFormGeneralView = props => {
         dateStart,
         dateEnd,
         responsibleUser,
-        responsibleTeam
+        responsibleTeam,
     } = props.webformDetails;
 
     return (
@@ -40,7 +40,14 @@ const WebformDetailsFormGeneralView = props => {
                             <div className="col-sm-6" style={{ paddingRight: '5px' }} onClick={null}>
                                 {apiKey}
                                 <CopyToClipboard text={apiKey}>
-                                    <Icon className="mybtn-success pull-right" size={14} icon={copy} role="button" onClick={null} title={'Kopieer sleutel'} />
+                                    <Icon
+                                        className="mybtn-success pull-right"
+                                        size={14}
+                                        icon={copy}
+                                        role="button"
+                                        onClick={null}
+                                        title={'Kopieer sleutel'}
+                                    />
                                 </CopyToClipboard>
                             </div>
                         </div>
@@ -67,7 +74,7 @@ const WebformDetailsFormGeneralView = props => {
                     <div className="row" onClick={props.switchToEdit}>
                         <ViewText label={'Emailadres foutrapportage'} value={emailAddressErrorReport} />
 
-                        <ViewText label={'Mailen foutrapportage'} value={(mailErrorReport === 1) ? 'Ja' : 'Nee'} />
+                        <ViewText label={'Mailen foutrapportage'} value={mailErrorReport == true ? 'Ja' : 'Nee'} />
                     </div>
                 </PanelBody>
             </Panel>

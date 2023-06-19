@@ -42,22 +42,18 @@ class contactGroupsContactsForReport extends Command
      */
     public function handle()
     {
-        ini_set('memory_limit', '512M');
-        DB::disableQueryLog();
-
         Auth::setUser(User::find(1));
 
         /* first truncate the 'contact_groups_contacts_for_report' table */
         DB::table('contact_groups_contacts_for_report')->truncate();
-        Log::info('contact_groups_contacts_for_report truncated.');
 
         /* now repopulate the table again with the current data */
         $contactGroups = ContactGroup::whereIn('type_id', ['dynamic', 'composed', 'static'])->where('closed', 0)->get();
 
         foreach($contactGroups as $contactGroup) {
-            $allContacts = $contactGroup->all_contact_group_contacts;
+            $allContacts = $contactGroup->all_contact_group_contacts_for_report;
 
-            foreach($allContacts->chunk(300) as $chunks) {
+            foreach(array_chunk($allContacts,500) as $chunks){
                 foreach($chunks as $contact) {
                     DB::insert('insert into contact_groups_contacts_for_report (
                         contact_id,
@@ -65,9 +61,9 @@ class contactGroupsContactsForReport extends Command
                         member_to_group_since
                     ) values (?, ?, ?)',
                         [
-                            $contact->id,
+                            $contact['id'],
                             $contactGroup->id,
-                            $contact->member_to_group_since,
+                            $contact['member_to_group_since'],
                         ]
                     );
                 }

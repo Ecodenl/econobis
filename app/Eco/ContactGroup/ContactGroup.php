@@ -275,6 +275,24 @@ class ContactGroup extends Model
         return $groupContacts;
     }
 
+    public function getAllContactGroupContactsForReportAttribute()
+    {
+        $groupContactsForReport = [];
+        $groupContacts = $this->all_contacts;
+        foreach ($groupContacts as $groupContact){
+
+            $contactGroupsPivot = null;
+            if($groupContact->groups()->where('contact_group_id', ($this->simulatedGroup ? $this->simulatedGroup->id : $this->id))->exists()){
+                $contactGroupsPivot = $groupContact->groups()->where('contact_group_id', ($this->simulatedGroup ? $this->simulatedGroup->id : $this->id))->first()->pivot;
+            }
+            $groupContactsForReport[] = [
+                'id' => $groupContact->id,
+                'member_to_group_since' => ($contactGroupsPivot ? $contactGroupsPivot->member_to_group_since : null),
+            ];
+        }
+        return $groupContactsForReport;
+    }
+
     public function getAllContactsAttribute()
     {
         //gebruikt om infinite loop te checken bij samengestelde groepen

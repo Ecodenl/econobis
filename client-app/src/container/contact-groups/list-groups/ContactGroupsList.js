@@ -9,6 +9,7 @@ import ContactGroupsListHead from './ContactGroupsListHead';
 import ContactGroupsListFilter from './ContactGroupsListFilter';
 import DataTablePagination from '../../../components/dataTable/DataTablePagination';
 import { connect } from 'react-redux';
+import Modal from "../../../components/modal/Modal";
 
 class ContactGroupsList extends Component {
     constructor(props) {
@@ -21,6 +22,7 @@ class ContactGroupsList extends Component {
                 name: '',
                 contactGroupType: '',
             },
+            showPartOfComposedGroup: false,
         };
     }
 
@@ -55,6 +57,20 @@ class ContactGroupsList extends Component {
                 name: '',
                 contactGroupType: '',
             },
+        });
+    };
+
+    showPartOfComposedGroupModal = (parentGroupsArray) => {
+        this.setState({
+            ...this.state,
+            showPartOfComposedGroup: true,
+            parentGroupsArray: parentGroupsArray,
+        });
+    };
+
+    hidePartOfComposedGroup = () => {
+        this.setState({
+            showPartOfComposedGroup: false
         });
     };
 
@@ -99,6 +115,7 @@ class ContactGroupsList extends Component {
                                         key={contactGroup.id}
                                         {...contactGroup}
                                         showDeleteItemModal={this.showDeleteItemModal}
+                                        showPartOfComposedGroupModal={this.showPartOfComposedGroupModal}
                                         useLaposta={meta.useLaposta}
                                     />
                                 ))
@@ -120,6 +137,23 @@ class ContactGroupsList extends Component {
                         />
                     )}
                 </form>
+                {this.state.showPartOfComposedGroup && (
+                    <Modal
+                        title={'Waarschuwing'}
+                        closeModal={this.hidePartOfComposedGroup}
+                        showConfirmAction={false}
+                        buttonCancelText="Ok"
+                    >
+                        {'Je kan deze groep niet verwijderen omdat deze groep onderdeel is van een samengestelde groep. Verwijder eerst deze groep uit de samengestelde groep(en):'}
+                        <ul>
+                            {this.state.parentGroupsArray.map(parentGroupsArray => (
+                                <li>
+                                    {parentGroupsArray}
+                                </li>
+                            ))}
+                        </ul>
+                    </Modal>
+                )}
             </div>
         );
     }

@@ -16,10 +16,11 @@ export default function EmailSplitViewFiltersPanel({filters, setFilters}) {
                                 <th className="" width="10%">Van e-mail</th>
                                 <th className="" width="10%">Gekoppeld contact</th>
                                 <th className="" width="15%">Onderwerp</th>
-                                <th className="" width="10%">Datum</th>
-                                <th className="" width="15%">Mailbox</th>
+                                <th className="" width="7%">Van</th>
+                                <th className="" width="7%">T/m</th>
                                 <th className="" width="10%">Status</th>
                                 <th className="" width="10%">Verantwoordelijke</th>
+                                <th className="" width="11%">Mailbox</th>
                                 <th className="" width="10%">Aan</th>
                                 <th className="" width="5%">Bijlage</th>
                             </tr>
@@ -27,8 +28,8 @@ export default function EmailSplitViewFiltersPanel({filters, setFilters}) {
                                 <th><input type="text" className="form-control input-sm" value={filters.from} onChange={(e) => {setFilters({...filters, from: e.target.value})}}/></th>
                                 <th><input type="text" className="form-control input-sm" value={filters.contact} onChange={(e) => {setFilters({...filters, contact: e.target.value})}}/></th>
                                 <th><input type="text" className="form-control input-sm" value={filters.subject} onChange={(e) => {setFilters({...filters, subject: e.target.value})}}/></th>
-                                <th>Todo</th>
-                                <th><input type="text" className="form-control input-sm" value={filters.mailbox} onChange={(e) => {setFilters({...filters, mailbox: e.target.value})}}/></th>
+                                <th><input type="date" className="form-control input-sm" value={filters.dateSentStart} onChange={(e) => {setFilters({...filters, dateSentStart: e.target.value, fetch: true})}}/></th>
+                                <th><input type="date" className="form-control input-sm" value={filters.dateSentEnd} onChange={(e) => {setFilters({...filters, dateSentEnd: e.target.value, fetch: true})}}/></th>
                                 <th><select className="form-control input-sm" value={filters.status} onChange={(e) => {setFilters({...filters, status: e.target.value, fetch: true})}}>
                                     <option></option>
                                     {
@@ -38,6 +39,7 @@ export default function EmailSplitViewFiltersPanel({filters, setFilters}) {
                                     }
                                 </select></th>
                                 <th><input type="text" className="form-control input-sm" value={filters.responsible} onChange={(e) => {setFilters({...filters, responsible: e.target.value})}}/></th>
+                                <th><input type="text" className="form-control input-sm" value={filters.mailbox} onChange={(e) => {setFilters({...filters, mailbox: e.target.value})}}/></th>
                                 <th><input type="text" className="form-control input-sm" value={filters.to} onChange={(e) => {setFilters({...filters, to: e.target.value})}}/></th>
                                 <th><select className="form-control input-sm" value={filters.attachment} onChange={(e) => {setFilters({...filters, attachment: e.target.value, fetch: true})}}>
                                     <option></option>

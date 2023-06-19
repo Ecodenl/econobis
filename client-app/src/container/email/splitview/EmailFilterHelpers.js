@@ -1,4 +1,4 @@
-export function getJoryFilter(values, folder, contactId) {
+export function getJoryFilter(values, folder, contactId, eigen = false) {
     let filter = {
         and: [
             {
@@ -93,10 +93,32 @@ export function getJoryFilter(values, folder, contactId) {
         })
     }
 
+    if (values.dateSentStart) {
+        filter.and.push({
+            f: 'dateSent',
+            o: '>=',
+            d: values.dateSentStart,
+        })
+    }
+
+    if (values.dateSentEnd) {
+        filter.and.push({
+            f: 'dateSent',
+            o: '<=',
+            d: values.dateSentEnd + ' 23:59:59',
+        })
+    }
+
     if (contactId) {
         filter.and.push({
             f: 'contacts.contactId',
             d: contactId,
+        })
+    }
+
+    if (eigen) {
+        filter.and.push({
+            f: 'eigenOpenstaand',
         })
     }
 
@@ -129,4 +151,6 @@ export const defaultFilters = {
     responsible: '',
     to: '',
     attachment: '',
+    dateSentStart: '',
+    dateSentEnd: '',
 }

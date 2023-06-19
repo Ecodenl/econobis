@@ -17,8 +17,10 @@ use App\Eco\Project\Project;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
+use App\Helpers\Alfresco\AlfrescoHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Document extends Model
@@ -121,5 +123,20 @@ class Document extends Model
     public function newEloquentBuilder($query)
     {
         return new DocumentBuilder($query);
+    }
+
+    public function getFileContents()
+    {
+        if(config('app.ALFRESCO_COOP_USERNAME') === 'local') {
+            if($this->alfresco_node_id){
+                return null;
+            }
+
+            return Storage::disk('documents')->get($this->filename);
+        }
+
+        $alfrescoHelper = new AlfrescoHelper(config('app.ALFRESCO_COOP_USERNAME'), config('app.ALFRESCO_COOP_PASSWORD'));
+
+        return $alfrescoHelper->downloadFile($this->alfresco_node_id);
     }
 }

@@ -115,17 +115,6 @@ export default {
         return axiosInstance.post(requestUrl, email);
     },
 
-    getAmountOpen: () => {
-        const requestUrl = `${URL_EMAIL}/amount-open`;
-
-        return axiosInstance
-            .get(requestUrl)
-            .then(response => response.data)
-            .catch(error => {
-                console.log(error);
-            });
-    },
-
     updateEmail: email => {
         const requestUrl = `${URL_EMAIL}/${email.id}`;
 

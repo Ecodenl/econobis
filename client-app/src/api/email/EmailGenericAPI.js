@@ -16,6 +16,11 @@ export default {
             });
     },
 
+    storeNew: (attributes) => {
+        return axiosInstance
+            .post(`${URL_EMAIL}`, attributes);
+    },
+
     storeReply: (id) => {
         return axiosInstance
             .post(`${URL_EMAIL}/${id}/store-reply`);
@@ -31,9 +36,26 @@ export default {
             .post(`${URL_EMAIL}/${id}/store-forward`);
     },
 
+    storeGroupMail: (id) => {
+        return axiosInstance
+            .post(`${URL_EMAIL}/store-group-mail/${id}`);
+    },
+
     deleteMultiple: emailIds => {
         return axiosInstance.post(`${URL_EMAIL}/delete-multiple`, {
             ids: emailIds,
         });
+    },
+
+    createContact: id => {
+        return axiosInstance.post(`${URL_EMAIL}/${id}/create-contact`);
+    },
+
+    getAmountOpen: () => {
+        const requestUrl = `${URL_EMAIL}/amount-open`;
+
+        return axiosInstance
+            .get(requestUrl)
+            .then(response => response.data);
     },
 };

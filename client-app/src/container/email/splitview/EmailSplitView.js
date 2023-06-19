@@ -1,9 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
 import EmailSplitViewDetails from "./EmailSplitViewDetails";
 import EmailSplitViewSelectList from "./EmailSplitViewSelectList";
 import EmailSplitViewFiltersPanel from "./EmailSplitViewFiltersPanel";
 import {getJoryFilter, storeFiltersToStorage, getFiltersFromStorage, defaultFilters} from "./EmailFilterHelpers";
+import {EmailModalContext} from "../../../context/EmailModalContext";
+import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 
 export default function EmailSplitView({router}) {
     const perPage = 50;
@@ -11,6 +13,19 @@ export default function EmailSplitView({router}) {
     const [emailCount, setEmailCount] = useState(0);
     const [selectedEmailId, setSelectedEmailId] = useState(null);
     const [filters, setFilters] = useState({...defaultFilters});
+    const { isEmailDetailsModalOpen, isEmailSendModalOpen, openEmailSendModal } = useContext(EmailModalContext);
+
+    useEffect(() => {
+        if(!isEmailDetailsModalOpen && emailCount > 0) {
+            refetchCurrentEmails();
+        }
+    }, [isEmailDetailsModalOpen]);
+
+    useEffect(() => {
+        if(!isEmailSendModalOpen && emailCount > 0) {
+            refetchCurrentEmails();
+        }
+    }, [isEmailSendModalOpen]);
 
     useEffect(() => {
         setFilters({...getFiltersFromStorage(), fetch: true});
@@ -55,7 +70,7 @@ export default function EmailSplitView({router}) {
     const refetchCurrentEmails = () => {
         return EmailSplitviewAPI.fetchSelectList({
             filter: getFilter(),
-            limit: emails.length,
+            limit: Math.max(emails.length, perPage),
             offset: 0,
             sorts: getSorts(),
         }).then(response => {
@@ -77,7 +92,7 @@ export default function EmailSplitView({router}) {
     }
 
     const getFilter = () => {
-        return getJoryFilter(filters, router.params.folder, router.location.query.contact);
+        return getJoryFilter(filters, router.params.folder, router.location.query.contact, router.location.query.eigen);
     }
 
     const getSorts = () => {
@@ -90,10 +105,21 @@ export default function EmailSplitView({router}) {
         }
     };
 
+    const createMail = () => {
+        EmailGenericAPI.storeNew().then(payload => {
+            openEmailSendModal(payload.data.id);
+        });
+    }
+
     return (
         <div>
             <div className="row">
-                <div className="col-md-12" style={{marginTop: '-10px'}}>
+                <div className="col-md-12" style={{marginTop: '-10px', marginBottom: '5px'}}>
+                    <button type="button" className="btn btn-success pull-right" onClick={createMail}>Nieuwe email</button>
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-md-12">
                     <form onKeyUp={handleFilterKeyUp}>
                         <EmailSplitViewFiltersPanel filters={filters} setFilters={setFilters}/>
                     </form>

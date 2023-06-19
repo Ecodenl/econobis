@@ -9,6 +9,7 @@ import { ic_dashboard } from 'react-icons-kit/md/ic_dashboard';
 import { ic_business } from 'react-icons-kit/md/ic_business';
 import { ic_contacts } from 'react-icons-kit/md/ic_contacts';
 import { ic_email } from 'react-icons-kit/md/ic_email';
+import { ic_fiber_new } from 'react-icons-kit/md/ic_fiber_new';
 import { cog } from 'react-icons-kit/icomoon/cog';
 import { documents } from 'react-icons-kit/ikons/documents';
 import { calendar } from 'react-icons-kit/icomoon/calendar';
@@ -254,11 +255,11 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
             {permissions.menuEmail && (
                 <Nav id="mailclient">
                     <NavIcon>
-                        <SvgIcon size={20} icon={ic_email} />
+                        <SvgIcon size={20} icon={ic_fiber_new} />
                     </NavIcon>
                     <NavText>
                         <Link className="sidebar-link-header" to="mailclient/inbox">
-                            E-mail
+                            Mailclient (beta)
                         </Link>
                     </NavText>
                     <Nav id="inbox">

@@ -10,8 +10,9 @@ import InvoicesAPI from "../../../api/invoice/InvoicesAPI";
 import AsyncSelectSet from "../../../components/form/AsyncSelectSet";
 import ContactsAPI from "../../../api/contact/ContactsAPI";
 import EmailDetailsModalLayout from "./EmailDetailsModalLayout";
+import InputTextArea from "../../form/InputTextArea";
 
-export default function EmailDetailsModalEdit({email, updateEmailAttributes}) {
+export default function EmailDetailsModalEdit({email, updateEmailAttributes, onRemoved}) {
     const [intakes, setIntakes] = useState([]);
     const [tasks, setTasks] = useState([]);
     const [quotationRequests, setQuotationRequests] = useState([]);
@@ -19,51 +20,40 @@ export default function EmailDetailsModalEdit({email, updateEmailAttributes}) {
     const [opportunities, setOpportunities] = useState([]);
     const [orders, setOrders] = useState([]);
     const [invoices, setInvoices] = useState([]);
-    const [searchTermContact, setSearchTermContact] = useState('');
-    const [isLoadingContact, setLoadingContact] = useState(false);
 
     useEffect(() => {
-        IntakesAPI.peekIntakes().then(payload => {
+        IntakesAPI.peekIntakesForContacts(email.contacts.map(c => c.id)).then(payload => {
             setIntakes(payload);
         });
-        TasksAPI.peekTasks().then(payload => {
+        TasksAPI.peekTasksForContacts(email.contacts.map(c => c.id)).then(payload => {
             setTasks(payload);
         });
-        QuotationRequestsAPI.peekQuotationRequests().then(payload => {
+        QuotationRequestsAPI.peekQuotationRequestsForContacts(email.contacts.map(c => c.id)).then(payload => {
             setQuotationRequests(payload);
         });
         MeasureAPI.peekMeasures().then(payload => {
             setMeasures(payload);
         });
-        OpportunitiesAPI.peekOpportunities().then(payload => {
+        OpportunitiesAPI.peekOpportunitiesForContacts(email.contacts.map(c => c.id)).then(payload => {
             setOpportunities(payload);
         });
-        OrdersAPI.peekOrders().then(payload => {
+        OrdersAPI.peekOrdersForContacts(email.contacts.map(c => c.id)).then(payload => {
             setOrders(payload);
         });
         InvoicesAPI.peekInvoices().then(payload => {
             setInvoices(payload);
         });
-    }, []);
+    }, [email.contacts]);
 
-    const getContactOptions = async () => {
-        if (searchTermContact.length <= 1) return;
-
-        setLoadingContact(true);
-
-        try {
-            const results = await ContactsAPI.fetchContactSearch(searchTermContact);
-            setLoadingContact(false);
-            return results.data.data;
-        } catch (error) {
-            setLoadingContact(false);
-        }
+    const getContactOptions = (searchTerm) => {
+        return ContactsAPI.fetchContactSearch(searchTerm).then(payload => payload.data.data);
     };
 
     return (
         <EmailDetailsModalLayout
             email={email}
             updateEmailAttributes={updateEmailAttributes}
+            onRemoved={onRemoved}
             contactsComponent={(
                 <AsyncSelectSet
                     label={'Contacten'}
@@ -72,8 +62,6 @@ export default function EmailDetailsModalEdit({email, updateEmailAttributes}) {
                     loadOptions={getContactOptions}
                     optionName={'fullName'}
                     onChangeAction={(value) => updateEmailAttributes({contacts: value ? value : []})}
-                    isLoading={isLoadingContact}
-                    handleInputChange={setSearchTermContact}
                     clearable={true}
                 />
             )}
@@ -152,6 +140,16 @@ export default function EmailDetailsModalEdit({email, updateEmailAttributes}) {
                     value={email.invoiceId}
                     clearable={true}
                     onChangeAction={(value) => updateEmailAttributes({invoiceId: value})}
+                />
+            )}
+            noteComponent={(
+                <InputTextArea
+                    label={'Opmerking'}
+                    name={'note'}
+                    value={email.note ? email.note : ''}
+                    onChangeAction={(e) => updateEmailAttributes({note: e.target.value})}
+                    textToolTip={"let op: deze opmerking is alleen zichtbaar bij deze specifieke e-mail. als iemand een reply stuurt is daar de opmerking niet meer te zien"}
+                    sizeInput={'col-sm-8'}
                 />
             )}
         />

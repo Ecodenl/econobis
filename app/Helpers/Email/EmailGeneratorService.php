@@ -11,21 +11,23 @@ class EmailGeneratorService
     {
     }
 
-    public function reply()
+    public function reply(array $attributes = []): Email
     {
         $email = $this->getBaseReplyOrForwardEmail();
         $email->to = $this->matchEmailAddressesToIds([$this->email->from]);
         $email->cc = [];
         $email->reply_type_id = 'reply';
         $email->subject = 'Re: ' . $this->email->subject;
+        $email->fill($attributes);
         $email->save();
 
         $this->copyInlineImages($email);
+        $this->attachPreviousContacts($email);
 
         return $email;
     }
 
-    public function replyAll()
+    public function replyAll(array $attributes = []): Email
     {
         $to = collect($this->email->to)->filter(function ($toEmailAddress) {
             return $toEmailAddress !== $this->email->mailbox->email;
@@ -40,14 +42,16 @@ class EmailGeneratorService
         $email->cc = $this->matchEmailAddressesToIds($cc->toArray());
         $email->reply_type_id = 'reply-all';
         $email->subject = 'Re: ' . $this->email->subject;
+        $email->fill($attributes);
         $email->save();
 
         $this->copyInlineImages($email);
+        $this->attachPreviousContacts($email);
 
         return $email;
     }
 
-    public function forward()
+    public function forward(array $attributes = []): Email
     {
         $email = $this->getBaseReplyOrForwardEmail();
         $email->to = [];
@@ -55,10 +59,12 @@ class EmailGeneratorService
         $email->bcc = [];
         $email->reply_type_id = 'forward';
         $email->subject = 'Fwd: ' . $this->email->subject;
+        $email->fill($attributes);
         $email->save();
 
         $this->copyAttachments($email);
         $this->copyInlineImages($email);
+        $this->attachPreviousContacts($email);
 
         return $email;
     }
@@ -87,8 +93,8 @@ class EmailGeneratorService
         $toMixed = [];
 
         foreach ($emailAddresses as $emailAddress) {
-            $emailAddressesIds = EmailAddress::where('email', $emailAddress)->pluck('id');
-            $toMixed = array_merge($toMixed, $emailAddressesIds->count() > 0 ? $emailAddressesIds->toArray() : [$emailAddress]);
+            $emailAddressesModel = EmailAddress::where('email', $emailAddress)->first();
+            $toMixed[] = $emailAddressesModel ? $emailAddressesModel->id : $emailAddress;
         }
 
         return $toMixed;
@@ -106,5 +112,10 @@ class EmailGeneratorService
         foreach ($this->email->inlineImageAttachments as $inlineImage) {
             EmailAttachmentCopyService::copy($inlineImage, $email);
         }
+    }
+
+    protected function attachPreviousContacts(Email $email)
+    {
+        $email->contacts()->sync($this->email->contacts()->pluck('contacts.id'));
     }
 }

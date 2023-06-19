@@ -17,6 +17,7 @@ use App\Eco\Team\Team;
 use App\Eco\User\User;
 use App\Helpers\Email\EmailGeneratorService;
 use App\Helpers\Email\EmailInlineImagesService;
+use App\Jobs\Email\ProcessSendingEmail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -36,6 +37,7 @@ class Email extends Model
         'replyTypeId' => 'string',
         'oldEmailId' => 'integer',
         'contactGroupId' => 'integer',
+        'mail_contact_group_with_single_mail' => 'boolean',
     ];
 
     public function mailbox()
@@ -162,55 +164,19 @@ class Email extends Model
         return new EmailInlineImagesService($this);
     }
 
-    public function getCcAddresses()
+    public function getToRecipients(): EmailRecipientCollection
     {
-        return collect($this->cc)->map(function ($idOrEmailAddress) {
-            return $this->mapIdOrEmailAddressToValueObject($idOrEmailAddress);
-        })->filter(function ($value) {
-            return $value !== null;
-        })->values()
-            ->toArray();
+        return EmailRecipientCollection::createFromValues($this->to);
     }
 
-    public function getToAddresses()
+    public function getCcRecipients(): EmailRecipientCollection
     {
-        return collect($this->to)->map(function ($idOrEmailAddress) {
-            return $this->mapIdOrEmailAddressToValueObject($idOrEmailAddress);
-        })->filter(function ($value) {
-            return $value !== null;
-        })->values()
-            ->toArray();
+        return EmailRecipientCollection::createFromValues($this->cc);
     }
 
-    public function getBccAddresses()
+    public function getBccRecipients(): EmailRecipientCollection
     {
-        return collect($this->bcc)->map(function ($idOrEmailAddress) {
-            return $this->mapIdOrEmailAddressToValueObject($idOrEmailAddress);
-        })->filter(function ($value) {
-            return $value !== null;
-        })->values()
-            ->toArray();
-    }
-
-    protected function mapIdOrEmailAddressToValueObject(mixed $idOrEmailAddress)
-    {
-        if (is_numeric($idOrEmailAddress)) {
-            $emailAddress = EmailAddress::find($idOrEmailAddress);
-
-            if (!$emailAddress) {
-                return null;
-            }
-
-            return [
-                'name' => $emailAddress->contact->full_name,
-                'email' => $emailAddress->email,
-            ];
-        }
-
-        return [
-            'name' => null,
-            'email' => $idOrEmailAddress,
-        ];
+        return EmailRecipientCollection::createFromValues($this->bcc);
     }
 
     public function getResponsibleName()
@@ -252,5 +218,15 @@ class Email extends Model
             $emailAddress->contact_id = $contact->id;
             $emailAddress->save();
         }
+    }
+
+    public function send(User $byUser)
+    {
+        ProcessSendingEmail::dispatch($this, $byUser);
+    }
+
+    public function newEloquentBuilder($query)
+    {
+        return new EmailBuilder($query);
     }
 }

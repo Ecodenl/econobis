@@ -92,9 +92,8 @@ function StepOneCapital({ next, project, contactProjectData, initialRegisterValu
                             </Col>
                             <Col xs={12} md={6}>
                                 <Form.Label className={'field-label'}>Gewenst aantal participaties</Form.Label>
-                                <Field
-                                    name="participationsOptioned"
-                                    render={({ field }) => (
+                                <Field name="participationsOptioned">
+                                    {({ field }) => (
                                         <InputText
                                             field={field}
                                             errors={errors}
@@ -102,7 +101,7 @@ function StepOneCapital({ next, project, contactProjectData, initialRegisterValu
                                             id="participations_optioned"
                                         />
                                     )}
-                                />
+                                </Field>
                             </Col>
                             <Col xs={12} md={6}>
                                 <FormLabel className={'field-label'}>
@@ -126,9 +125,8 @@ function StepOneCapital({ next, project, contactProjectData, initialRegisterValu
                                 {!contactProjectData.belongsToMembershipGroup ? (
                                     <Row>
                                         <Col xs={12} md={10}>
-                                            <Field
-                                                name="choiceMembership"
-                                                render={({ field }) => (
+                                            <Field name="choiceMembership">
+                                                {({ field }) => (
                                                     <>
                                                         {get(errors, field.name, '') &&
                                                             get(touched, field.name, '') && (
@@ -166,7 +164,7 @@ function StepOneCapital({ next, project, contactProjectData, initialRegisterValu
                                                         </div>
                                                     </>
                                                 )}
-                                            />
+                                            </Field>
                                         </Col>
                                     </Row>
                                 ) : null}

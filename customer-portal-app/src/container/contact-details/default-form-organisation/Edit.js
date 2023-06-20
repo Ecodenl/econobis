@@ -104,7 +104,7 @@ const DefaultContactOrganisationEdit = function({
                     </Col>
                 </Row>
 
-                <FormLabel className={'field-label'}>KvK</FormLabel>
+                <FormLabel className={'field-label required'}>KvK</FormLabel>
                 <Row>
                     <Col xs={12} sm={8}>
                         <Field name="organisation.chamberOfCommerceNumber">

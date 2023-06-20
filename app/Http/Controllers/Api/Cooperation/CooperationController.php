@@ -36,8 +36,8 @@ class CooperationController extends ApiController
         $this->authorize('manage', Cooperation::class);
 
         $cooperation = new Cooperation($request->validatedSnake());
-        if($cooperation->hoom_email_template_id == '') {
-            $cooperation->hoom_email_template_id = null;
+        if($cooperation->hoom_campaign_id == '') {
+            $cooperation->hoom_campaign_id = null;
         }
         if($cooperation->hoom_group_id == '') {
             $cooperation->hoom_group_id = null;

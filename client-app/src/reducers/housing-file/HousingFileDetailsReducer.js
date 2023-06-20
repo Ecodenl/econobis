@@ -10,6 +10,11 @@ export default function(state = {}, action) {
                 ...state,
                 ...action.housingFileDetails,
             };
+        case 'UPDATE_HOUSING_FILE_USE':
+            return {
+                ...state,
+                ...action.housingFileDetails,
+            };
         case 'UPDATE_HOUSING_FILE_SPECIFICATION':
             return {
                 ...state,
@@ -39,6 +44,37 @@ export default function(state = {}, action) {
                 ...state,
                 housingFileSpecifications: state.housingFileSpecifications.filter(
                     housingFileSpecification => housingFileSpecification.id !== action.housingFileSpecificationId
+                ),
+            };
+        case 'UPDATE_HOUSING_FILE_HOUSING_STATUS':
+            return {
+                ...state,
+                housingFileHousingStatuses: [
+                    ...state.housingFileHousingStatuses.map(housingFileHousingStatus => {
+                        if (housingFileHousingStatus.id == action.housingFileHousingStatus.id) {
+                            housingFileHousingStatus = action.housingFileHousingStatus;
+                            return housingFileHousingStatus;
+                        } else {
+                            return housingFileHousingStatus;
+                        }
+                    }),
+                ],
+            };
+        case 'ADD_HOUSING_FILE_HOUSING_STATUS':
+            return {
+                ...state,
+                housingFileHousingStatuses: [
+                    ...state.housingFileHousingStatuses,
+                    {
+                        ...action.housingFileHousingStatus,
+                    },
+                ],
+            };
+        case 'DELETE_HOUSING_FILE_HOUSING_STATUS_SUCCESS':
+            return {
+                ...state,
+                housingFileHousingStatuses: state.housingFileHousingStatuses.filter(
+                    housingFileHousingStatus => housingFileHousingStatus.id !== action.housingFileHousingStatusId
                 ),
             };
         default:

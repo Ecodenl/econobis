@@ -220,6 +220,9 @@ class QuotationRequestController
         }
 
         $contact = $quotationRequest->opportunity->intake->contact;
+        if (!$contact->primaryEmailAddress) {
+            return;
+        }
 
         if ($cooperation->inspection_planned_mailbox_id) {
             $inspectionPlannedMailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
@@ -247,6 +250,9 @@ class QuotationRequestController
         }
 
         $contact = $quotationRequest->opportunity->intake->contact;
+        if (!$contact->primaryEmailAddress) {
+            return;
+        }
 
         if ($cooperation->inspection_planned_mailbox_id) {
             $inspectionPlannedMailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
@@ -274,6 +280,9 @@ class QuotationRequestController
         }
 
         $contact = $quotationRequest->opportunity->intake->contact;
+        if (!$contact->primaryEmailAddress) {
+            return;
+        }
 
         if ($cooperation->inspection_planned_mailbox_id) {
             $inspectionPlannedMailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);

@@ -9,8 +9,11 @@ class ContactGroupBuilder extends Builder
 {
     public function whereTeamContactGroupIds(User $user)
     {
-        if($user->getTeamContactGroupIds()){
-            $this->whereIn('contact_groups.id', $user->getTeamContactGroupIds());
+        $userHasTeams = $user->teams()->whereHas('contactGroups')->exists();
+        if($userHasTeams){
+            $this->whereHas('teams.users', function($query) use($user) {
+                $query->where('users.id', $user->id);
+            });
         }
         return $this;
     }

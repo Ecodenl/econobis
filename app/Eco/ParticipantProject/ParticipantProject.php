@@ -111,6 +111,13 @@ class ParticipantProject extends Model
         return $this->hasMany(ParticipantMutation::class, 'participation_id')->where('status_id', $mutationStatusFinal)->orderBy('date_entry', 'asc');
     }
 
+    public function mutationsDefinitiveDesc()
+    {
+        $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+
+        return $this->hasMany(ParticipantMutation::class, 'participation_id')->where('status_id', $mutationStatusFinal)->orderBy('date_entry', 'desc');
+    }
+
     public function mutationsDefinitiveForKwhPeriod()
     {
         $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
@@ -191,6 +198,16 @@ class ParticipantProject extends Model
         $mutationType = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id', $projectType->id)->first();
         $mutationFirstDeposit = $this->mutationsDefinitive()->where('type_id', $mutationType->id)->first();
         return $mutationFirstDeposit ? $mutationFirstDeposit->date_entry : null;
+    }
+
+    // Return last date entry of mutations
+    public function getDateEntryLastMutationAttribute()
+    {
+        $projectType = $this->project->projectType;
+        $lastMutationType = ParticipantMutationType::whereIn('code_ref', ['first_deposit', 'withDrawal'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
+        $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+        $mutationDefinitiveLast =  ParticipantMutation::where('participation_id', $this->id)->where('status_id', $mutationStatusFinal)->whereIn('type_id', $lastMutationType)->orderByDesc('date_entry')->first();
+        return $mutationDefinitiveLast ? $mutationDefinitiveLast->date_entry : null;
     }
 
     // Return if projectparicipant already has a link in a non-concept revenue distribution

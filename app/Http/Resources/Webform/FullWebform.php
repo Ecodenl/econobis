@@ -16,6 +16,8 @@ class FullWebform extends JsonResource
             'name' => $this->name,
             'apiKey' => $this->api_key,
             'apiKeyDate' => $this->api_key_date,
+            'emailAddressErrorReport' => $this->email_address_error_report,
+            'mailErrorReport' => $this->mail_error_report,
             'maxRequestsPerMinute' => $this->max_requests_per_minute,
             'dateStart' => $this->date_start,
             'dateEnd' => $this->date_end,

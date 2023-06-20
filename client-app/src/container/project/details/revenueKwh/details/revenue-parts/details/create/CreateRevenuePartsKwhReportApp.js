@@ -25,6 +25,7 @@ class CreateRevenuePartsKwhReportApp extends Component {
             // messages: '',
             redirect: '',
             isBusy: false,
+            isSubmitted: false,
             isLoading: false,
         };
     }
@@ -75,6 +76,7 @@ class CreateRevenuePartsKwhReportApp extends Component {
                 this.setState({
                     successMessage: 'De rapporten zijn aangeboden voor verzenden.',
                     isBusy: false,
+                    isSubmitted: true,
                 });
             } else {
                 this.setState({
@@ -82,6 +84,7 @@ class CreateRevenuePartsKwhReportApp extends Component {
                     // todo cleanup
                     // messages: payload.data,
                     isBusy: false,
+                    isSubmitted: true,
                 });
             }
         });
@@ -105,8 +108,39 @@ class CreateRevenuePartsKwhReportApp extends Component {
             busy = false;
         }
 
+        let submittedText = '';
+        let submitted = false;
+        if (this.state.isSubmitted) {
+            submittedText = 'Rapportage procedure aangevraagd.';
+            submitted = true;
+        }
+
         return busy ? (
             <div>{busyText}</div>
+        ) : submitted ? (
+            <div>
+                <div>{submittedText}</div>
+                {this.state.successMessage && (
+                    <Modal
+                        closeModal={this.redirect}
+                        buttonCancelText={'Ok'}
+                        showConfirmAction={false}
+                        title={'Succes'}
+                    >
+                        {this.state.successMessage}
+                    </Modal>
+                )}
+                {this.state.errorMessage && (
+                    <Modal
+                        closeModal={this.redirect}
+                        buttonCancelText={'Ok'}
+                        showConfirmAction={false}
+                        title={'Waarschuwing'}
+                    >
+                        <h4>{this.state.errorMessage}</h4>
+                    </Modal>
+                )}
+            </div>
         ) : (
             <div>
                 <div className="row">
@@ -185,26 +219,6 @@ class CreateRevenuePartsKwhReportApp extends Component {
                         </div>
                     </div>
                 </div>
-                {this.state.successMessage && (
-                    <Modal
-                        closeModal={this.redirect}
-                        buttonCancelText={'Ok'}
-                        showConfirmAction={false}
-                        title={'Succes'}
-                    >
-                        {this.state.successMessage}
-                    </Modal>
-                )}
-                {this.state.errorMessage && (
-                    <Modal
-                        closeModal={this.redirect}
-                        buttonCancelText={'Ok'}
-                        showConfirmAction={false}
-                        title={'Waarschuwing'}
-                    >
-                        <h4>{this.state.errorMessage}</h4>
-                    </Modal>
-                )}
             </div>
         );
     }

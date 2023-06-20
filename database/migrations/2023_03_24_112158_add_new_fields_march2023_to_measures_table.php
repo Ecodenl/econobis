@@ -48,6 +48,7 @@ class AddNewFieldsMarch2023ToMeasuresTable extends Migration
 //            'uses_wf_email_quotation_request' => false,
 //            'email_template_id_wf_create_quotation_request' => null,
 //        ]);
+        $onderhoud_new_MeasureCategoryId = MeasureCategory::where('name','Onderhoud')->first()->id;
         $vloerisolatie_1_MeasureCategoryId = MeasureCategory::where('name','Vloerisolatie')->first()->id;
         $gevelisolatie_2_MeasureCategoryId = MeasureCategory::where('name', 'Gevelisolatie')->first()->id;
         $isolatieglas_4_MeasureCategoryId = MeasureCategory::where('name', 'Isolatieglas')->first()->id;

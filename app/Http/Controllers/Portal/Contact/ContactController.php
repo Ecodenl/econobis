@@ -294,16 +294,16 @@ class ContactController extends ApiController
         $person = $contact->person;
         $personData = $request->person;
         if ($person) {
-            if (!isset($personData['titleId']) || empty($personData['titleId']) || $personData['titleId'] == 'null' || $personData['titleId'] == 0 ) {
+            if (!isset($personData['titleId']) || empty($personData['titleId']) || $personData['titleId'] == 'null' || $personData['titleId'] == '' || $personData['titleId'] == 0 ) {
                 $personData['titleId'] = null;
             }
-            if (!isset($personData['dateOfBirth']) || empty($personData['dateOfBirth']) || $personData['dateOfBirth'] == 'null' ) {
+            if (!isset($personData['dateOfBirth']) || empty($personData['dateOfBirth']) || $personData['dateOfBirth'] == 'null' || $personData['dateOfBirth'] == '' ) {
                 $personData['dateOfBirth'] = null;
             }
 
             $lnp = $person->last_name_prefix;
             if (isset($personData['lastNamePrefixId']) ) {
-                if ($personData['lastNamePrefixId'] == 'null' || $personData['lastNamePrefixId'] == 0) {
+                if ($personData['lastNamePrefixId'] == 'null' || $personData['lastNamePrefixId'] == '' || $personData['lastNamePrefixId'] == 0) {
                     $lnp = '';
                 } else {
                     $lnp = LastNamePrefix::where('id', $personData['lastNamePrefixId'])->pluck('name')[0];

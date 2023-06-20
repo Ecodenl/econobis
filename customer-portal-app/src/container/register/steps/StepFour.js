@@ -165,9 +165,8 @@ function StepFour({ project, contactProjectData, previous, next, registerValues,
                                 </Row>
                                 <Row>
                                     <Col xs={12} md={10}>
-                                        <Field
-                                            name="didAgreeRegistration"
-                                            render={({ field }) => (
+                                        <Field name="didAgreeRegistration">
+                                            {({ field }) => (
                                                 <label className="w-checkbox checkbox-fld">
                                                     <input
                                                         type="checkbox"
@@ -189,7 +188,7 @@ function StepFour({ project, contactProjectData, previous, next, registerValues,
                                                     ) : null}
                                                 </label>
                                             )}
-                                        />
+                                        </Field>
                                     </Col>
                                 </Row>
                                 <Row>

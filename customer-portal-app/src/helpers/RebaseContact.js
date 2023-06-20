@@ -2,7 +2,7 @@ export default function(contactData) {
     const typeContact = contactData.typeId ? contactData.typeId : null;
 
     let emptyCurrentAddressEnergySupplierElectricity = {
-        energySupplierId: null,
+        energySupplierId: '',
         esNumber: '',
         memberSince: '',
     };
@@ -12,7 +12,7 @@ export default function(contactData) {
         addition: '',
         postalCode: '',
         city: '',
-        countryId: null,
+        countryId: '',
         eanElectricity: '',
         eanGas: '',
         currentAddressEnergySupplierElectricity: emptyCurrentAddressEnergySupplierElectricity,
@@ -32,6 +32,13 @@ export default function(contactData) {
                     emptyCurrentAddressEnergySupplierElectricity,
                 };
             }
+            contactData.person.titleId = contactData.person.titleId ?? '';
+            contactData.person.initials = contactData.person.initials ?? '';
+            contactData.person.firstName = contactData.person.firstName ?? '';
+            contactData.person.lastNamePrefixId = contactData.person.lastNamePrefixId ?? '';
+            contactData.person.lastName = contactData.person.lastName ?? '';
+            contactData.person.dateOfBirth = contactData.person.dateOfBirth ?? '';
+
             break;
         case 'organisation':
             // Set visit, postal, invoice addresses
@@ -45,6 +52,7 @@ export default function(contactData) {
             }
             postalAddress = contactData.addresses.find(address => address.typeId === 'postal');
             contactData.postalAddress = postalAddress ? { ...emptyAddress, ...postalAddress } : emptyAddress;
+
             invoiceAddress = contactData.addresses.find(address => address.typeId === 'invoice');
             contactData.invoiceAddress = invoiceAddress ? { ...emptyAddress, ...invoiceAddress } : emptyAddress;
             break;
@@ -71,6 +79,9 @@ export default function(contactData) {
     // Set first phone number which is not primary
     const phoneNumberTwo = contactData.phoneNumbers.filter(phoneNumber => !phoneNumber.primary)[0];
     contactData.phoneNumberTwo = phoneNumberTwo ? { ...emptyPhoneNumber, ...phoneNumberTwo } : emptyPhoneNumber;
+
+    contactData.iban = contactData.iban ?? '';
+    contactData.ibanAttn = contactData.ibanAttn ?? '';
 
     return contactData;
 }

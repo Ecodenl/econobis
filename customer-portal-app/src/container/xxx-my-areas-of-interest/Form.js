@@ -9,7 +9,6 @@ const MyAreasOfInterestForm = function({ handleSubmit, initialValues }) {
             enableReinitialize={true}
             onSubmit={(values, actions) => {
                 actions.setSubmitting(true);
-                console.log(values);
             }}
             render={({ errors, touched, setFieldValue, isSubmitting, values }) => {
                 return (

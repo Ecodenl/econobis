@@ -15,40 +15,39 @@ class AddNewFieldsMarch2023ToMeasuresTable extends Migration
      */
     public function up()
     {
-//        Schema::table('measures', function (Blueprint $table) {
-//            $table->string('external_hoom_id')->nullable(true);
-//            $table->string('external_hoom_short_name')->nullable(true);
-//            $table->string('external_hoom_name')->nullable(true);
-//            $table->boolean('import_from_hoom')->default(false);
-//            $table->boolean('visible_in_econobis')->default(false);
-//        });
+        Schema::table('measures', function (Blueprint $table) {
+            $table->string('external_hoom_id')->nullable(true);
+            $table->string('external_hoom_short_name')->nullable(true);
+            $table->string('external_hoom_name')->nullable(true);
+            $table->boolean('import_from_hoom')->default(false);
+            $table->boolean('visible_in_econobis')->default(false);
+        });
 
-//        DB::table('measures')->where('number', 'M2018-1')->update(['external_hoom_id' => 1, 'external_hoom_short_name' => "floor-insulation", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
-//        DB::table('measures')->where('number', 'M2018-2')->update(['external_hoom_id' => 2, 'external_hoom_short_name' => "bottom-insulation", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
-//        DB::table('measures')->where('number', 'M2018-6')->update(['external_hoom_id' => 4, 'external_hoom_short_name' => "cavity-insulation", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
-//        DB::table('measures')->where('number', 'M2018-7')->update(['external_hoom_id' => 5, 'external_hoom_short_name' => "facade-insulation", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
-//        DB::table('measures')->where('number', 'M2018-9')->update(['external_hoom_id' => 12, 'external_hoom_short_name' => "roof-insulation-pitched-inside", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
-//        DB::table('measures')->where('number', 'M2018-10')->update(['external_hoom_id' => 13, 'external_hoom_short_name' => "roof-insulation-pitched-replace-tiles", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
-//        DB::table('measures')->where('number', 'M2018-11')->update(['external_hoom_id' => 14, 'external_hoom_short_name' => "roof-insulation-flat-current", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
-//        DB::table('measures')->where('number', 'M2018-12')->update(['external_hoom_id' => 15, 'external_hoom_short_name' => "roof-insulation-flat-replace-current", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
-//        DB::table('measures')->where('number', 'M2018-16')->update(['external_hoom_id' => 7, 'external_hoom_short_name' => "glass-in-lead", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
-//        DB::table('measures')->where('number', 'M2018-33')->update(['external_hoom_id' => 16, 'external_hoom_short_name' => "high-efficiency-boiler-replace", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
-//        DB::table('measures')->where('number', 'M2018-38')->update(['external_hoom_id' => 38, 'external_hoom_short_name' => "heat-pump-boiler-place-replace", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
-//        DB::table('measures')->where('number', 'M2018-52')->update(['external_hoom_id' => 18, 'external_hoom_short_name' => "solar-panels-place-replace", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
-//        DB::table('measures')->where('number', 'M2018-54')->update(['external_hoom_id' => 17, 'external_hoom_short_name' => "heater-place-replace", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
-//        DB::table('measures')->where('number', 'M2021-5')->update(['external_hoom_id' => 8, 'external_hoom_short_name' => "hrpp-glass-only", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
+        DB::table('measures')->where('number', 'M2018-1')->update(['external_hoom_id' => 1, 'external_hoom_short_name' => "floor-insulation", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
+        DB::table('measures')->where('number', 'M2018-2')->update(['external_hoom_id' => 2, 'external_hoom_short_name' => "bottom-insulation", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
+        DB::table('measures')->where('number', 'M2018-6')->update(['external_hoom_id' => 4, 'external_hoom_short_name' => "cavity-insulation", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
+        DB::table('measures')->where('number', 'M2018-7')->update(['external_hoom_id' => 5, 'external_hoom_short_name' => "facade-insulation", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
+        DB::table('measures')->where('number', 'M2018-9')->update(['external_hoom_id' => 12, 'external_hoom_short_name' => "roof-insulation-pitched-inside", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
+        DB::table('measures')->where('number', 'M2018-10')->update(['external_hoom_id' => 13, 'external_hoom_short_name' => "roof-insulation-pitched-replace-tiles", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
+        DB::table('measures')->where('number', 'M2018-11')->update(['external_hoom_id' => 14, 'external_hoom_short_name' => "roof-insulation-flat-current", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
+        DB::table('measures')->where('number', 'M2018-12')->update(['external_hoom_id' => 15, 'external_hoom_short_name' => "roof-insulation-flat-replace-current", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
+        DB::table('measures')->where('number', 'M2018-16')->update(['external_hoom_id' => 7, 'external_hoom_short_name' => "glass-in-lead", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
+        DB::table('measures')->where('number', 'M2018-33')->update(['external_hoom_id' => 16, 'external_hoom_short_name' => "high-efficiency-boiler-replace", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
+        DB::table('measures')->where('number', 'M2018-38')->update(['external_hoom_id' => 38, 'external_hoom_short_name' => "heat-pump-boiler-place-replace", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
+        DB::table('measures')->where('number', 'M2018-52')->update(['external_hoom_id' => 18, 'external_hoom_short_name' => "solar-panels-place-replace", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
+        DB::table('measures')->where('number', 'M2018-54')->update(['external_hoom_id' => 17, 'external_hoom_short_name' => "heater-place-replace", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
+        DB::table('measures')->where('number', 'M2021-5')->update(['external_hoom_id' => 8, 'external_hoom_short_name' => "hrpp-glass-only", 'import_from_hoom' => true, 'visible_in_econobis' => true]);
 
-//        $onderhoud_new_MeasureCategoryId = DB::table('measure_categories')->insertGetId([
-//            'name'=> 'Onderhoud',
-//            'uses_wf_create_opportunity' => false,
-//            'measure_id_wf_create_opportunity' => null,
-//            'opportunity_status_id_wf_create_opportunity' => null,
-//            'uses_wf_create_quotation_request' => false,
-//            'organisation_id_wf_create_quotation_request' => null,
-//            'uses_wf_email_quotation_request' => false,
-//            'email_template_id_wf_create_quotation_request' => null,
-//        ]);
-        $onderhoud_new_MeasureCategoryId = MeasureCategory::where('name','Onderhoud')->first()->id;
+        $onderhoud_new_MeasureCategoryId = DB::table('measure_categories')->insertGetId([
+            'name'=> 'Onderhoud',
+            'uses_wf_create_opportunity' => false,
+            'measure_id_wf_create_opportunity' => null,
+            'opportunity_status_id_wf_create_opportunity' => null,
+            'uses_wf_create_quotation_request' => false,
+            'organisation_id_wf_create_quotation_request' => null,
+            'uses_wf_email_quotation_request' => false,
+            'email_template_id_wf_create_quotation_request' => null,
+        ]);
         $vloerisolatie_1_MeasureCategoryId = MeasureCategory::where('name','Vloerisolatie')->first()->id;
         $gevelisolatie_2_MeasureCategoryId = MeasureCategory::where('name', 'Gevelisolatie')->first()->id;
         $isolatieglas_4_MeasureCategoryId = MeasureCategory::where('name', 'Isolatieglas')->first()->id;

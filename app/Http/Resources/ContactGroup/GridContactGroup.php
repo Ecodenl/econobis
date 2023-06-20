@@ -26,6 +26,7 @@ class GridContactGroup extends JsonResource
             'isUsedInLaposta' => $this->is_used_in_laposta,
             'groupUpToDateWithLaposta' => $this->group_up_to_date_with_laposta,
             'numberOfLapostaMembers' => $this->number_of_laposta_members,
+            'parentGroupsArray' => $this->parent_groups_array,
         ];
     }
 }

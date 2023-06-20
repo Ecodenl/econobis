@@ -5,6 +5,7 @@ namespace App\Helpers\Project;
 
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\EnergySupplier\EnergySupplierType;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
@@ -12,6 +13,7 @@ use App\Eco\RevenuesKwh\RevenueDistributionValuesKwh;
 use App\Eco\RevenuesKwh\RevenuePartsKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\RevenuesKwh\RevenueValuesKwh;
+use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Jobs\RevenueKwh\UpdateRevenuePartsKwh;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
@@ -302,6 +304,32 @@ class RevenuesKwhHelper
 
         // Address energy supplier niet meer wijzigen bij distributionPartsKwh als status processed is
         if(!in_array($distributionPartsKwh->status, ['processed'])){
+            // Indien geen $addressEnergySupplier gevonden, dan adhoc hier aanmaken met energySupllier Onbekend.
+            if(!$addressEnergySupplier){
+                $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
+                $energySupplierTypeElectriciteit = EnergySupplierType::where('name', 'Electriciteit')->first();
+                $firstNextAddressEnergySupplier = $this->getFirstNextAddressEnergySupplier($distributionPartsKwh->distributionKwh->participation->address_id, $distributionPartsKwh->partsKwh->date_begin);
+
+                // todo WM: hier direct onbekende energysupplier toevoegen aan addressEnergySupplier
+                $addressEnergySupplierData = [
+                    'address_id' => $distributionPartsKwh->distributionKwh->participation->address_id,
+                    'energy_supplier_id' => $energySupplierUnknown->id,
+                    'es_number' => '',
+                    'energy_supply_type_id' => $energySupplierTypeElectriciteit ? $energySupplierTypeElectriciteit->id : 2,
+                    'member_since' => $distributionPartsKwh->partsKwh->date_begin,
+                    'end_date' => $firstNextAddressEnergySupplier ? Carbon::parse($firstNextAddressEnergySupplier->member_since)->subDay(1)->format('Y-m-d') : null,
+                ];
+                $addressEnergySupplier = new AddressEnergySupplier();
+                $addressEnergySupplier->fill($addressEnergySupplierData);
+                $addressEnergySupplierController = new AddressEnergySupplierController();
+                // voor zekerheid nog even controleren met validateAddressEnergySupplier
+                $response = $addressEnergySupplierController->validateAddressEnergySupplier($addressEnergySupplier, false);
+                $addressEnergySupplier->save();
+            }
+            $distributionPartsKwh->es_id = $addressEnergySupplier ? $addressEnergySupplier->energy_supplier_id : null;
+            $distributionPartsKwh->energy_supplier_name = $addressEnergySupplier ? $addressEnergySupplier->energySupplier->name : null;
+            $distributionPartsKwh->energy_supplier_number = $addressEnergySupplier ? $addressEnergySupplier->es_number: null;
+
             if(AddressEnergySupplier::where('address_id', $distributionPartsKwh->distributionKwh->participation->address_id)->where('energy_supplier_id', $distributionPartsKwh->es_id)->where('end_date', $distributionPartsKwh->partsKwh->date_end)->exists()){
                 $distributionPartsKwh->is_energy_supplier_switch = true;
             } else {
@@ -322,24 +350,8 @@ class RevenuesKwhHelper
             } else {
                 $distributionPartsKwh->is_end_year_period = false;
             }
-
-            if($addressEnergySupplier){
-                $distributionPartsKwh->es_id = $addressEnergySupplier ? $addressEnergySupplier->energy_supplier_id : null;
-                $distributionPartsKwh->energy_supplier_name = $addressEnergySupplier ? $addressEnergySupplier->energySupplier->name : null;
-                $distributionPartsKwh->energy_supplier_number = $addressEnergySupplier ? $addressEnergySupplier->es_number: null;
-//                $distributionPartsKwh->is_visible = empty($distributionPartsKwh->remarks) ? false : true;
-                $distributionPartsKwh->is_visible = $this->determineIsVisible($distributionPartsKwh);
-                $distributionPartsKwh->save();
-            } else {
-                $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
-                if($energySupplierUnknown){
-                    $distributionPartsKwh->es_id = $energySupplierUnknown->id;
-                    $distributionPartsKwh->energy_supplier_name = $energySupplierUnknown->name;
-                    $distributionPartsKwh->energy_supplier_number = '';
-                    $distributionPartsKwh->is_visible = true;
-                    $distributionPartsKwh->save();
-                }
-            }
+            $distributionPartsKwh->is_visible = $this->determineIsVisible($distributionPartsKwh);
+            $distributionPartsKwh->save();
         }
     }
 
@@ -908,5 +920,18 @@ class RevenuesKwhHelper
         }
     }
 
+    protected function getFirstNextAddressEnergySupplier($addressId, $dateBegin)
+    {
+        $addressEnergySupplier = AddressEnergySupplier::where('address_id', $addressId)
+            ->where(function ($addressEnergySupplier) use ($dateBegin) {
+                $addressEnergySupplier
+                    ->where(function ($addressEnergySupplier) use ($dateBegin) {
+                        $addressEnergySupplier->whereNotNull('member_since')
+                            ->where('member_since', '>', $dateBegin);
+                    })
+                    ->orderBy('member_since', 'asc');
+            })->first();
+        return $addressEnergySupplier;
+    }
 
 }

@@ -156,7 +156,6 @@ class SystemData extends JsonResource
         });
         $sortedEnergySuppliers = $sortedEnergySuppliers->values();
 
-
         return [
 //            'housingFileHoomLinksBasic' => HousingFileHoomLink::select(['id as key', 'label as name', 'external_hoom_short_name as externalHoomShortName'])->where('housing_file_data_type', 'B')->where('visible_in_econobis', true)->orderBy('external_hoom_short_name')->get(),
 //            'housingFileHoomLinksUse' => HousingFileHoomLink::select(['id as key', 'label as name', 'external_hoom_short_name as externalHoomShortName'])->where('housing_file_data_type', 'G')->where('visible_in_econobis', true)->orderBy('external_hoom_short_name')->get(),

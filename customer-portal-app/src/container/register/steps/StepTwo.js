@@ -51,7 +51,8 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                     actions.setSubmitting(true);
                     handleSubmitContactValues(values, actions, next);
                 }}
-                render={({ errors, touched, setFieldValue, isSubmitting, status, values, handleSubmit }) => {
+            >
+                {({ errors, touched, setFieldValue, isSubmitting, status, values, handleSubmit }) => {
                     return (
                         <Form>
                             {/* If contact is person */}
@@ -130,7 +131,7 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                         </Form>
                     );
                 }}
-            />
+            </Formik>
         </div>
     );
 }

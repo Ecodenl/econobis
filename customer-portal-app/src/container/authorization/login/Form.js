@@ -21,12 +21,12 @@ const LoginForm = function({ handleSubmit, login }) {
                 actions.setSubmitting(true);
                 handleSubmit(values, actions, login);
             }}
-            render={({ isSubmitting, errors, touched }) => {
+        >
+            {({ isSubmitting, errors, touched }) => {
                 return (
                     <Form>
-                        <Field
-                            name="username"
-                            render={({ field }) => (
+                        <Field name="username">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     id="username"
@@ -37,10 +37,9 @@ const LoginForm = function({ handleSubmit, login }) {
                                     // showErrorMessage={false}
                                 />
                             )}
-                        />
-                        <Field
-                            name="password"
-                            render={({ field }) => (
+                        </Field>
+                        <Field name="password">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     id="password"
@@ -52,7 +51,7 @@ const LoginForm = function({ handleSubmit, login }) {
                                     // showErrorMessage={false}
                                 />
                             )}
-                        />
+                        </Field>
                         <ButtonText
                             buttonText={'Log in'}
                             buttonClassName={'authorization-button'}
@@ -63,7 +62,7 @@ const LoginForm = function({ handleSubmit, login }) {
                     </Form>
                 );
             }}
-        />
+        </Formik>
     );
 };
 

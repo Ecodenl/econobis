@@ -58,6 +58,7 @@ class Modal extends Component {
             extraButtonAction,
             modalClassName,
             modalMainClassName,
+            modalBodyClassName,
             buttonClassName,
             buttonCancelText,
             buttonConfirmText,
@@ -89,7 +90,7 @@ class Modal extends Component {
                             <div className={`modal-header` + (draggableDisabled ? '' : ' draggable-header')}>
                                 <h4 className="modal-title">{title}</h4>
                             </div>
-                            <div className="modal-body">{children}</div>
+                            <div className={`modal-body ${modalBodyClassName}`}>{children}</div>
                             <div className="modal-footer">
                                 {this.props.extraButtonLabel && (
                                     <ButtonTextNormalSize
@@ -122,6 +123,7 @@ Modal.defaultProps = {
     buttonClassName: 'btn-success',
     modalClassName: '',
     modalMainClassName: '',
+    modalBodyClassName: '',
     buttonConfirmText: 'Opslaan',
     buttonCancelText: 'Annuleren',
     showConfirmAction: true,

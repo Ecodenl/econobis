@@ -7,6 +7,7 @@ use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Task\GridTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class FullContactGroup extends JsonResource
 {
@@ -43,7 +44,7 @@ class FullContactGroup extends JsonResource
             'showContactForm' => $this->show_contact_form,
             'filters' => $this->filters,
             'extraFilters' => $this->extraFilters,
-            'composedGroups' => $this->contactGroups()->get(),
+            'composedGroups' => $this->contactGroups()->whereTeamContactGroupIds(Auth::user())->get(),
             'composedExceptGroups' => $this->contactGroupsExcepted()->get(),
             'isUsedInComposedGroup' => $this->is_used_in_composed_group,
             'contactGroupComposedType' => $this->composed_group_type,

@@ -26,6 +26,8 @@ use App\Eco\FinancialOverview\FinancialOverviewContactStatus;
 use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\HousingFile\EnergyLabelStatus;
+use App\Eco\HousingFile\HousingFileHoomHousingStatus;
+use App\Eco\HousingFile\HousingFileHoomLink;
 use App\Eco\HousingFile\HousingFileSpecificationFloor;
 use App\Eco\HousingFile\HousingFileSpecificationSide;
 use App\Eco\HousingFile\HousingFileSpecificationStatus;
@@ -100,9 +102,9 @@ use App\Http\Resources\QuotationRequest\FullQuotationRequestStatus;
 use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\Title\FullTitle;
 use App\Http\Resources\User\UserPeek;
-use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -155,6 +157,24 @@ class SystemData extends JsonResource
         $sortedEnergySuppliers = $sortedEnergySuppliers->values();
 
         return [
+//            'housingFileHoomLinksBasic' => HousingFileHoomLink::select(['id as key', 'label as name', 'external_hoom_short_name as externalHoomShortName'])->where('housing_file_data_type', 'B')->where('visible_in_econobis', true)->orderBy('external_hoom_short_name')->get(),
+//            'housingFileHoomLinksUse' => HousingFileHoomLink::select(['id as key', 'label as name', 'external_hoom_short_name as externalHoomShortName'])->where('housing_file_data_type', 'G')->where('visible_in_econobis', true)->orderBy('external_hoom_short_name')->get(),
+            'housingFileHoomLinks' => HousingFileHoomLink::select(['id as key', 'label as name', 'external_hoom_short_name as externalHoomShortName', 'external_hoom_short_name as externalHoomShortName'])->where('visible_in_econobis', true)->orderBy('housing_file_data_type')->orderBy('label')->get(),
+            'housingFileHoomLinksToShowInEconobis' => HousingFileHoomLink::select(['econobis_field_name as econobisFieldName'])->where('visible_in_econobis', true)->whereNotNull('econobis_field_name')->get(),
+            'housingFileHoomLinksStatus' => HousingFileHoomLink::select(['id as key', 'label as name', 'external_hoom_short_name as externalHoomShortName'])->where('housing_file_data_type', 'W')->where('visible_in_econobis', true)->orderBy('external_hoom_short_name')->get(),
+
+            'currentWallInsulationSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'current-wall-insulation')->get(),
+            'currentFloorInsulationSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'current-floor-insulation')->get(),
+            'currentRoofInsulationSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'current-roof-insulation')->get(),
+            'currentLivingRoomsWindowsSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'current-living-rooms-windows')->get(),
+            'currentSleepingRoomsWindowsSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'current-sleeping-rooms-windows')->get(),
+            'heatSourceWarmTapWaterSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'heat-source-warm-tap-water')->get(),
+            'buildingHeatingApplicationSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'building-heating-application')->get(),
+            'ventilationTypeSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'ventilation-type')->get(),
+            'crackSealingTypeSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'crack-sealing-type')->get(),
+            'hasCavityWallSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'has-cavity-wall')->get(),
+            'hasSolarPanelsSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'has-solar-panels')->get(),
+
             'addressTypes' => FullEnumWithIdAndName::collection(AddressType::collection()),
             'administrationsPeek' => AdministrationPeek::collection(Administration::orderBy('id')->get()),
             'appName' => config('app.name'),
@@ -164,43 +184,45 @@ class SystemData extends JsonResource
             'campaignTypes' => FullEnumWithIdAndName::collection(CampaignType::orderBy('name')->get()),
             'energySupplierStatuses' => GenericResource::collection(EnergySupplierStatus::all()),
             'energySupplierTypes' => GenericResource::collection(EnergySupplierType::all()),
-            'staticContactGroups' => ContactGroup::select(['id', 'name'])->where('type_id', 'static')->get(),
+            'staticContactGroups' => ContactGroup::whereTeamContactGroupIds(Auth::user())->select(['id', 'name'])->where('type_id', 'static')->get(),
             'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
             'contactStatuses' => FullEnumWithIdAndName::collection(ContactStatus::collection()),
             'contactTypes' => FullEnumWithIdAndName::collection(ContactType::collection()),
             'cooperation' => Cooperation::select(['id', 'hoom_link', 'use_laposta', 'use_export_address_consumption', 'require_two_factor_authentication'])->first(),
             'costCenters' => FullCostCenter::collection(CostCenter::all()),
             'countries' => GenericResource::collection(Country::all()),
+            'documentCreatedFroms' => FullDocumentCreatedFrom::collection(DocumentCreatedFrom::all()),
             'documentGroups' => FullEnumWithIdAndName::collection(DocumentGroup::collection()),
             'documentTemplateTypes' => FullEnumWithIdAndName::collection(DocumentTemplateType::collection()),
-            'documentCreatedFroms' => FullDocumentCreatedFrom::collection(DocumentCreatedFrom::all()),
             'documentTypes' => FullEnumWithIdAndName::collection(DocumentType::collection()),
             'emailAddressTypes' => FullEnumWithIdAndName::collection(EmailAddressType::collection()),
             'emailStatuses' => FullEnumWithIdAndName::collection(EmailStatus::collection()),
-            'energyLabels' => EnergyLabel::select(['id', 'name'])->get(),
             'energyLabelStatus' => FullEnumWithIdAndName::collection(EnergyLabelStatus::all()),
+            'energyLabels' => EnergyLabel::select(['id', 'name'])->get(),
+            'energySupplierStatuses' => GenericResource::collection(EnergySupplierStatus::all()),
+            'energySupplierTypes' => GenericResource::collection(EnergySupplierType::all()),
             'energySuppliers' => GenericResource::collection($sortedEnergySuppliers),
             'financialOverviewContactStatuses' => FullEnumWithIdAndName::collection(FinancialOverviewContactStatus::collection()),
-            'housingFileSpecificationStatuses' => HousingFileSpecificationStatus::select(['id', 'name'])->orderBy('name')->get(),
             'housingFileSpecificationFloors' => HousingFileSpecificationFloor::select(['id', 'name'])->orderBy('name')->get(),
             'housingFileSpecificationSides' => HousingFileSpecificationSide::select(['id', 'name'])->orderBy('name')->get(),
+            'housingFileSpecificationStatuses' => HousingFileSpecificationStatus::select(['id', 'name'])->orderBy('name')->get(),
             'industries' => FullIndustry::collection(Industry::all()),
             'inspectionPersonTypes' => FullEnumWithIdAndName::collection(InspectionPersonType::collection()),
+            'intakeReasons' => IntakeReason::select(['id', 'name'])->get(),
             'intakeSources' => IntakeSource::select(['id', 'name'])->get(),
             'intakeStatuses' => IntakeStatus::select(['id', 'name'])->get(),
-            'intakeReasons' => IntakeReason::select(['id', 'name'])->get(),
             'lastNamePrefixes' => FullLastNamePrefix::collection(LastNamePrefix::all()),
             'ledgers' => FullLedger::collection(Ledger::all()),
-            'mailboxesInvalid' => Mailbox::where('is_active', 1)->where('valid', 0)->count(),
             'mailboxIgnoreTypes' => FullEnumWithIdAndName::collection(MailboxIgnoreType::collection()),
             'mailboxServerTypes' => ['incomingServerTypes' => FullEnumWithIdAndName::collection(IncomingServerType::collection()), 'outgoingServerTypes' => FullEnumWithIdAndName::collection(OutgoingServerType::collection())],
+            'mailboxesInvalid' => Mailbox::where('is_active', 1)->where('valid', 0)->count(),
             'mailgunDomain' => MailgunDomain::select(['id', 'domain'])->get(),
             'measureCategories' => MeasureCategory::select(['id', 'name'])->orderBy('name')->get(),
             'measures' => MeasurePeek::collection(Measure::orderBy('name')->get()),
             'occupations' => FullOccupation::collection(Occupation::orderBy('primary_occupation')->get()),
             'opportunityActions' => GenericResource::collection(OpportunityAction::all()),
-            'opportunityStatus' => OpportunityStatusResource::collection(OpportunityStatus::all()),
             'opportunityEvaluationStatuses' => OpportunityEvaluationStatusResource::collection(OpportunityEvaluationStatus::all()),
+            'opportunityStatus' => OpportunityStatusResource::collection(OpportunityStatus::all()),
             'orderCollectionFrequencies' => FullEnumWithIdAndName::collection(OrderCollectionFrequency::collection()),
             'orderPaymentTypes' => FullEnumWithIdAndName::collection(OrderPaymentType::collection()),
             'orderStatuses' => FullEnumWithIdAndName::collection(OrderStatusToSelect::collection()),
@@ -212,6 +234,7 @@ class SystemData extends JsonResource
             'permissions' => FullEnumWithIdAndName::collection(Permission::all()),
             'personTypes' => FullPersonType::collection(PersonType::all()),
             'phoneNumberTypes' => FullEnumWithIdAndName::collection(PhoneNumberType::collection()),
+            'portalSettingsLayouts' => PortalSettingsLayout::select(['id', 'description'])->get(),
             'primaryOccupations' => PrimaryOccupation::collection(Occupation::all()),
             'productDurations' => FullEnumWithIdAndName::collection(ProductDuration::collection()),
             'productInvoiceFrequencies' => FullEnumWithIdAndName::collection(ProductInvoiceFrequency::collection()),
@@ -226,18 +249,18 @@ class SystemData extends JsonResource
             'quotationRequestStatus' => FullQuotationRequestStatus::collection(QuotationRequestStatus::orderBy('opportunity_action_id')->orderBy('name')->get()),
             'roles' => Role::select(['id', 'name'])->get()->toArray(),
             'roofTypes' => FullEnumWithIdAndName::collection(RoofType::all()),
+            'staticContactGroups' => ContactGroup::select(['id', 'name'])->where('type_id', 'static')->get(),
             'taskProperties' => GenericResource::collection(TaskProperty::all()),
             'taskTypes' => GenericResource::collection(TaskType::orderby('name')->get()),
             'teams' => FullTeam::collection(Team::orderBy('name', 'asc')->get()),
             'titles' => FullTitle::collection(Title::all()),
             'transactionCostsCodeRefs' => FullEnumWithIdAndName::collection(TransactionCostsCodeRef::collection()),
             'twinfieldConnectionTypes' => FullEnumWithIdAndName::collection(TwinfieldConnectionTypeWithIdAndName::collection()),
-            'usersAll' => $usersWithInactive,
             'users' => $users,
+            'usersAll' => $usersWithInactive,
             'usersExtraAdministration' => $usersExtraAdministration,
             'usesTwinfield' => Administration::whereUsesTwinfield(1)->count() > 0 ? true : false,
             'vatCodes' => VatCode::select(['id', 'description', 'percentage'])->get(),
-            'portalSettingsLayouts' => PortalSettingsLayout::select(['id', 'description'])->get(),
             'versionNumber' => 'Versie: ' . config('app.version_major') . '.' . config('app.version_minor') . '.' . config('app.version_fix'),
         ];
     }

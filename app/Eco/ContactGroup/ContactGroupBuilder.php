@@ -7,13 +7,15 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ContactGroupBuilder extends Builder
 {
-    public function whereTeamContactGroupIds(User $user)
+    public function whereTeamContactGroupIds($user)
     {
-        $userHasTeams = $user->teams()->whereHas('contactGroups')->exists();
-        if($userHasTeams){
-            $this->whereHas('teams.users', function($query) use($user) {
-                $query->where('users.id', $user->id);
-            });
+        if($user instanceof User) {
+            $userHasTeams = $user->teams()->whereHas('contactGroups')->exists();
+            if ($userHasTeams) {
+                $this->whereHas('teams.users', function ($query) use ($user) {
+                    $query->where('users.id', $user->id);
+                });
+            }
         }
         return $this;
     }

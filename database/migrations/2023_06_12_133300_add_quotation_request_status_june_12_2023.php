@@ -14,10 +14,13 @@ class AddQuotationRequestStatusJune122023 extends Migration
     {
         $opportunityAction = OpportunityAction::where('code_ref', 'quotation-request')->first();
 
+        DB::table('quotation_request_status')->where('opportunity_action_id', $opportunityAction->id)->where('code_ref', 'default')->update(['code_ref' => "made"]);
+
         DB::table('quotation_request_status')->insert([
-                ['name' => 'Offerte nog niet aangevraagd', 'code_ref' => 'not-yet-applied-for', 'opportunity_action_id' => $opportunityAction->id, 'uses_wf' => 0, 'email_template_id_wf' => null, 'number_of_days_to_send_email' => 0, 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now(), 'order' => 0, 'is_pending_status' => 0],
+                ['name' => 'Offerte nog niet aangevraagd', 'code_ref' => 'default', 'opportunity_action_id' => $opportunityAction->id, 'uses_wf' => 0, 'email_template_id_wf' => null, 'number_of_days_to_send_email' => 0, 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now(), 'order' => 0, 'is_pending_status' => 0],
             ]
         );
+
     }
 
     /**

@@ -222,6 +222,7 @@ class TwinfieldSalesTransactionHelper
             ->setLineType(LineType::TOTAL())
             ->setDim1($this->grootboekDebiteuren)
             ->setDim2($twinfieldCustomer->getCode())
+            ->setDim3($invoice->order->project_number)
             ->setValue($totaalBedragIncl)
             ->setDebitCredit($totaalBedragIncl->getAmount()<0 ? DebitCredit::CREDIT() : DebitCredit::DEBIT())
             ->setDescription(substr($invoice->subject, 0, 40));

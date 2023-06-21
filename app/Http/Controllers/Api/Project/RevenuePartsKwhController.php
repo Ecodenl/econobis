@@ -72,12 +72,19 @@ class RevenuePartsKwhController extends ApiController
 
     public function getRevenueDistributionParts(RevenuePartsKwh $revenuePartsKwh, Request $request)
     {
+//        todo origineel 100: voor testen op 10
         $limit = 100;
         $offset = $request->input('page') ? $request->input('page') * $limit : 0;
 
-        $distributionPartsKwh = $revenuePartsKwh->distributionPartsKwhVisible()->limit($limit)->offset($offset)->orderBy('status')->get();
-        $distributionPartsKwhIdsTotal = $revenuePartsKwh->distributionPartsKwhVisible()->pluck('id')->toArray();
         $total = $revenuePartsKwh->distributionPartsKwhVisible()->count();
+        $distributionPartsKwh = $revenuePartsKwh->distributionPartsKwhVisible()->limit($limit)->offset($offset)->orderBy('status')->get();
+        $distributionPartsKwhTotal = $revenuePartsKwh->distributionPartsKwhVisible()->whereNull('date_participant_report')->get();
+        $distributionPartsKwhIdsTotal = [];
+        foreach ($distributionPartsKwhTotal as $distributionPartKwhTotal){
+            if($distributionPartKwhTotal->is_previous_visible_part_reported){
+                $distributionPartsKwhIdsTotal[] = $distributionPartKwhTotal->id;
+            }
+        }
 
         return FullRevenueDistributionPartsKwh::collection($distributionPartsKwh)
             ->additional(['meta' => [
@@ -798,6 +805,18 @@ class RevenuePartsKwhController extends ApiController
         }
         else
         {
+            // Geen fouten bijwerken datum rapportage
+            $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $distributionPartsKwh->revenue_id)->where('date_begin', '<=', $distributionPartsKwh->partsKwh->date_begin)->orderBy('date_begin')->pluck('id')->toArray();
+            $upToDistributionPartsKwh = RevenueDistributionPartsKwh::where('revenue_id', $distributionPartsKwh->revenue_id)->where('distribution_id', $distributionPartsKwh->distribution_id)->whereIn('parts_id', $upToPartsKwhIds)->whereIn('status', ['confirmed', 'processed'])->whereNull('date_participant_report')->get();
+            $beginDateParticipantReport = $distributionPartsKwh->not_reported_date_begin;;
+            $endDateParticipantReport = $distributionPartsKwh->partsKwh->date_end;;
+
+            foreach ($upToDistributionPartsKwh as $distributionPartToUpdate) {
+                $distributionPartToUpdate->date_participant_report = Carbon::today();
+                $distributionPartToUpdate->begin_date_participant_report = $beginDateParticipantReport;
+                $distributionPartToUpdate->end_date_participant_report = $endDateParticipantReport;
+                $distributionPartToUpdate->save();
+            }
             return null;
         }
     }

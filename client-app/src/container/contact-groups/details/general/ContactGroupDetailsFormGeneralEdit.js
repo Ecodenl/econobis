@@ -14,6 +14,7 @@ import InputSelect from '../../../../components/form/InputSelect';
 import { fetchSystemData } from '../../../../actions/general/SystemDataActions';
 import InputReactSelect from '../../../../components/form/InputReactSelect';
 import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
+import Modal from '../../../../components/modal/Modal';
 
 class ContactGroupDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -36,10 +37,12 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
         } = props.contactGroupDetails;
 
         this.state = {
+            showConfirmValidatePeriodOverlap: false,
             contactsWithPermission: [],
             contactGroups: [],
             emailTemplates: [],
             oldName: props.contactGroupDetails.name ? props.contactGroupDetails.name : '',
+            oldType: props.contactGroupDetails.type ? props.contactGroupDetails.type : '',
             contactGroup: {
                 ...props.contactGroupDetails,
                 dateStarted: dateStarted ? moment(dateStarted).format('Y-MM-DD') : '',
@@ -114,6 +117,22 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
         });
     }
 
+    setShowConfirmDynamicToStatic() {
+        this.setState({
+            ...this.state,
+            showConfirmDynamicToStatic: true,
+        });
+    }
+    closeDynamicToStatic = () => {
+        this.setState({
+            ...this.state,
+            showConfirmDynamicToStatic: false,
+        });
+    };
+    confirmDynamicToStatic = () => {
+        this.doUpdateContactGroup();
+    };
+
     handleSubmit = event => {
         event.preventDefault();
 
@@ -149,13 +168,30 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
 
         this.setState({ ...this.state, errors, errorMessage });
 
+        //check if type has changed and is now static
+        let typeChanged = false;
+
+        if (contactGroup.type !== this.state.oldType.id && contactGroup.type == 'static') {
+            typeChanged = true;
+        }
+
         // If no errors send form
-        !hasErrors &&
-            ContactGroupAPI.updateContactGroup(contactGroup).then(payload => {
-                this.props.updateContactGroupDetails(payload);
-                this.props.fetchSystemData();
-                this.props.switchToView();
-            });
+        if (!hasErrors) {
+            if (typeChanged) {
+                this.setShowConfirmDynamicToStatic();
+            } else {
+                this.doUpdateContactGroup();
+            }
+        }
+    };
+
+    doUpdateContactGroup = () => {
+        const { contactGroup } = this.state;
+        ContactGroupAPI.updateContactGroup(contactGroup).then(payload => {
+            this.props.updateContactGroupDetails(payload);
+            this.props.fetchSystemData();
+            this.props.switchToView();
+        });
     };
 
     handleChangeStartedDate = date => {
@@ -507,6 +543,22 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                         <ButtonText buttonText={'Opslaan'} onClickAction={this.handleSubmit} />
                     </div>
                 </div>
+
+                {this.state.showConfirmDynamicToStatic && (
+                    <Modal
+                        buttonConfirmText="Bevestigen"
+                        buttonClassName={'btn-danger'}
+                        closeModal={this.closeDynamicToStatic}
+                        confirmAction={() => this.confirmDynamicToStatic()}
+                        title="Bevestig groep type aanpassing"
+                    >
+                        <>
+                            Weet je zeker dat je het groepstype van deze groep wilt wijzigen naar "statisch"? De filters
+                            die zijn ingesteld voor deze groep komen te vervallen. De groep wordt dan niet meer
+                            dynamisch bijgewerkt op basis van de filters.
+                        </>
+                    </Modal>
+                )}
             </form>
         );
     }

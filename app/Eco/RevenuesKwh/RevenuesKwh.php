@@ -62,6 +62,9 @@ class RevenuesKwh extends Model
     public function newPartsKwh(){
         return $this->hasMany(RevenuePartsKwh::class, 'revenue_id')->where('status', 'new');
     }
+    public function confirmedPartsKwh(){
+        return $this->hasMany(RevenuePartsKwh::class, 'revenue_id')->where('status', 'confirmed');
+    }
     public function conceptPartsKwh(){
         return $this->hasMany(RevenuePartsKwh::class, 'revenue_id')->where('status', 'concept');
     }
@@ -135,6 +138,10 @@ class RevenuesKwh extends Model
 
     public function getHasNewPartsKwh(){
         return $this->newPartsKwh()->count() > 0;
+    }
+
+    public function getHasConfirmedPartsKwh(){
+        return $this->confirmedPartsKwh()->count() > 0;
     }
 
 }

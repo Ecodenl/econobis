@@ -3,6 +3,7 @@
 namespace App\Eco\HousingFile;
 
 use App\Eco\Measure\Measure;
+use App\Eco\Opportunity\Opportunity;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -37,6 +38,11 @@ class HousingFileSpecification extends Model
         return $this->belongsTo(HousingFileSpecificationStatus::class);
     }
 
+    public function opportunities()
+    {
+        return $this->hasMany(Opportunity::class);
+    }
+
     public function floor()
     {
         return $this->belongsTo(HousingFileSpecificationFloor::class);
@@ -61,5 +67,11 @@ class HousingFileSpecification extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function getHasOpportunitiesAttribute()
+    {
+        return $this->opportunities()->exists();
+    }
+
 
 }

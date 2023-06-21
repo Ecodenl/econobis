@@ -51,7 +51,7 @@ export default {
             });
     },
 
-    getExcel: ({ filters, sorts }) => {
+    getExcelHousingFiles: ({ filters, sorts }) => {
         const requestUrl = `${URL_API}/api/housing-file/excel`;
         return axiosInstance.get(requestUrl, {
             params: {

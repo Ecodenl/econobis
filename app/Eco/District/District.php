@@ -41,22 +41,4 @@ class District extends Model
     {
         return $this->belongsTo(EmailTemplate::class, 'email_to_coach_template_id');
     }
-
-    public function getAvailableCoachesInWeek(Carbon $startDate)
-    {
-        $endDate = $startDate->copy()->addWeek();
-
-        $coaches = $this->coaches()->whereHas('availabilities', function($query) use ($startDate, $endDate){
-            $query->whereBetween('from', [$startDate, $endDate]);
-        })->get();
-
-        $coaches->loadCount(['quotationRequests' => function($query) use ($endDate, $startDate) {
-            $query->whereBetween('date_planned', [$startDate, $endDate])
-                ->where('status_id', '!=', QuotationRequestStatus::STATUS_VISIT_CANCELLED_ID);
-        }]);
-
-        return $coaches->filter(function(Contact $contact){
-            return $contact->quotation_requests_count < $contact->coach_max_appointments_per_week;
-        })->values();
-    }
 }

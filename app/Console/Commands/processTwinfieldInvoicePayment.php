@@ -3,8 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Eco\Administration\Administration;
+use App\Eco\User\User;
 use App\Helpers\Twinfield\TwinfieldInvoicePaymentHelper;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class processTwinfieldInvoicePayment extends Command
@@ -40,6 +42,11 @@ class processTwinfieldInvoicePayment extends Command
      */
     public function handle()
     {
+        $adminUser = User::where('email', config('app.admin_user.email'))->first();
+        if($adminUser){
+            Auth::setUser($adminUser);
+        }
+
         foreach (Administration::where('twinfield_is_valid', 1)->where('uses_twinfield', 1)->get() as $administration) {
             $twinfieldInvoicePaymentHelper = new TwinfieldInvoicePaymentHelper($administration, null);
             $twinfieldInvoicePaymentHelper->processTwinfieldInvoicePayment();

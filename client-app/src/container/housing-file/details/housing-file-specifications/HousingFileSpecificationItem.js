@@ -11,6 +11,7 @@ class HousingFileSpecificationItem extends Component {
         super(props);
 
         this.state = {
+            showEdit: false,
             showActionButtons: false,
             highlightLine: '',
             showDelete: false,
@@ -82,8 +83,11 @@ class HousingFileSpecificationItem extends Component {
                     housingFileSpecification={this.state.housingFileSpecification}
                     showEdit={this.state.showEdit}
                     openEdit={this.openEdit}
+                    showCheckboxList={this.props.showCheckboxList}
+                    toggleSpecificationCheck={this.props.toggleSpecificationCheck}
+                    specificationIds={this.props.specificationIds}
                 />
-                {this.state.showEdit && (
+                {!this.props.showCheckboxList && this.state.showEdit && (
                     <HousingFileSpecificationEdit
                         housingFileSpecification={this.state.housingFileSpecification}
                         setInputChange={this.setInputChange}

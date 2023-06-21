@@ -135,6 +135,7 @@ class InvoicesListItem extends Component {
             invoiceInTwinfield,
             invoicePaidInTwinfield,
             compatibleWithTwinfield,
+            okForSepa,
         } = this.props;
 
         const inProgressRowClass =
@@ -145,21 +146,24 @@ class InvoicesListItem extends Component {
             this.props.statusId === 'is-resending'
                 ? 'in-progress-row'
                 : '';
-        const compatibleStatus =
+        const errorStatus =
             (this.props.statusId === 'to-send' || this.props.statusId === 'sent') &&
-            usesTwinfield &&
-            !compatibleWithTwinfield;
-        const compatibleStatusRowClow = compatibleStatus ? 'missing-data-row' : '';
-        const compatibleStatusTitle =
-            'Er ontbreekt een Twinfield Grootboekrekening koppeling bij één of meerdere producten.';
+            ((usesTwinfield && !compatibleWithTwinfield) || okForSepa !== true);
+        const errorStatusRowClow = errorStatus ? 'missing-data-row' : '';
+
+        let errorStatusTitle = '';
+        if (usesTwinfield && !compatibleWithTwinfield)
+            errorStatusTitle +=
+                'Er ontbreekt een Twinfield Grootboekrekening koppeling bij één of meerdere producten.\n';
+        if (okForSepa !== true) errorStatusTitle += okForSepa;
 
         return (
             <tr
-                className={`${this.state.highlightRow} ${hideRowClass} ${inProgressRowClass} ${compatibleStatusRowClow}`}
+                className={`${this.state.highlightRow} ${hideRowClass} ${inProgressRowClass} ${errorStatusRowClow}`}
                 onDoubleClick={() => this.openItem(id)}
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
-                title={compatibleStatus ? compatibleStatusTitle : ''}
+                title={errorStatus ? errorStatusTitle : ''}
             >
                 {this.props.showSelectInvoicesToSend && (
                     <td>
@@ -208,28 +212,32 @@ class InvoicesListItem extends Component {
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)} title="Open nota">
-                            <Icon className="mybtn-success" size={14} icon={pencil} />&nbsp;
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
+                            &nbsp;
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.viewItem(id)} title="Preview nota">
-                            <Icon className="mybtn-success" size={14} icon={eye} />&nbsp;
+                            <Icon className="mybtn-success" size={14} icon={eye} />
+                            &nbsp;
                         </a>
                     ) : (
                         ''
                     )}
-                    {this.state.showActionButtons && this.props.statusId === 'to-send' && !compatibleStatus ? (
+                    {this.state.showActionButtons && this.props.statusId === 'to-send' && !errorStatus ? (
                         <a role="button" onClick={() => this.showSend()} title="Verstuur nota">
-                            <Icon className="mybtn-success" size={14} icon={envelopeO} />&nbsp;
+                            <Icon className="mybtn-success" size={14} icon={envelopeO} />
+                            &nbsp;
                         </a>
                     ) : (
                         ''
                     )}
-                    {this.state.showActionButtons && this.props.statusId === 'error-sending' && !compatibleStatus ? (
+                    {this.state.showActionButtons && this.props.statusId === 'error-sending' && !errorStatus ? (
                         <a role="button" onClick={() => this.showSend()} title="Verstuur nota opnieuw">
-                            <Icon className="mybtn-success" size={14} icon={envelopeO} />&nbsp;
+                            <Icon className="mybtn-success" size={14} icon={envelopeO} />
+                            &nbsp;
                         </a>
                     ) : (
                         ''
@@ -239,7 +247,8 @@ class InvoicesListItem extends Component {
                     this.state.showActionButtons &&
                     (this.props.statusId === 'sent' || this.props.statusId === 'exported') ? (
                         <a role="button" onClick={() => this.showSetPaid()} title="Zet op betaald">
-                            <Icon className="mybtn-success" size={14} icon={euro} />&nbsp;
+                            <Icon className="mybtn-success" size={14} icon={euro} />
+                            &nbsp;
                         </a>
                     ) : (
                         ''
@@ -249,7 +258,8 @@ class InvoicesListItem extends Component {
                     !this.props.dateExhortation &&
                     !this.props.isPaidByMollie ? (
                         <a role="button" onClick={() => this.showSendNotification()} title="Verstuur herinnering">
-                            <Icon className="mybtn-success" size={14} icon={bullhorn} />&nbsp;
+                            <Icon className="mybtn-success" size={14} icon={bullhorn} />
+                            &nbsp;
                         </a>
                     ) : (
                         ''

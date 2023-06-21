@@ -26,6 +26,7 @@ class Mailbox extends Model
         'primary' => 'boolean',
         'valid' => 'boolean',
         'link_contact_from_email_to_address' => 'boolean',
+        'inbound_mailgun_enabled' => 'boolean',
     ];
 
     public function users()

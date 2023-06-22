@@ -41,6 +41,8 @@ class WebformController extends Controller
 
         $data = $input->string('name')->validate('required')->next()
             ->string('apiKey')->alias('api_key')->validate('required')->next()
+            ->string('emailAddressErrorReport')->alias('email_address_error_report')->validate('required')->next()
+            ->boolean('mailErrorReport')->alias('mail_error_report')->next()
             ->integer('maxRequestsPerMinute')->alias('max_requests_per_minute')->validate('required')->next()
             ->date('dateStart')->alias('date_start')->whenMissing(null)->onEmpty(null)->next()
             ->date('dateEnd')->alias('date_end')->whenMissing(null)->onEmpty(null)->next()
@@ -61,6 +63,8 @@ class WebformController extends Controller
 
         $data = $input->string('name')->validate('required')->next()
             ->string('apiKey')->alias('api_key')->validate('required')->next()
+            ->string('emailAddressErrorReport')->alias('email_address_error_report')->next()
+            ->boolean('mailErrorReport')->alias('mail_error_report')->next()
             ->integer('maxRequestsPerMinute')->alias('max_requests_per_minute')->validate('required')->next()
             ->date('dateStart')->alias('date_start')->whenMissing(null)->onEmpty(null)->next()
             ->date('dateEnd')->alias('date_end')->whenMissing(null)->onEmpty(null)->next()

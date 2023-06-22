@@ -137,8 +137,8 @@ const MutationFormEdit = ({
 
 const mapStateToProps = state => {
     return {
-        projectTypeCodeRef: state.participantProjectDetails.project.projectType.codeRef,
-        projectTransactionCostsCodeRef: state.participantProjectDetails.project.transactionCostsCodeRef,
+        projectTypeCodeRef: state.participantProjectDetails.project?.projectType?.codeRef,
+        projectTransactionCostsCodeRef: state.participantProjectDetails.project?.transactionCostsCodeRef,
         projectCurrentBookWorth: state.participantProjectDetails.project.currentBookWorth,
         participantProjectDateRegister: state.participantProjectDetails.dateRegister,
         participantInDefinitiveRevenue: state.participantProjectDetails.participantInDefinitiveRevenue,

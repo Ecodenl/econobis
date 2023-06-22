@@ -12,6 +12,7 @@ import EnergySuppliers from '../../../data/EnergySuppliers';
 import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 import InputTextDate from '../../../components/form/InputTextDate';
+import { isEmpty } from 'lodash';
 
 const DefaultContactOrganisationEdit = function({
     portalSettings,
@@ -60,9 +61,8 @@ const DefaultContactOrganisationEdit = function({
                 <FormLabel className={'field-label required'}>Naam</FormLabel>
                 <Row>
                     <Col xs={12} sm={8}>
-                        <Field
-                            name="organisation.name"
-                            render={({ field }) => (
+                        <Field name="organisation.name">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -72,7 +72,7 @@ const DefaultContactOrganisationEdit = function({
                                     disabled={initialContact.disableChangeContactNameOnPortal}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                     <Col xs={12} sm={4}>
                         {initialContact.disableChangeContactNameOnPortal ? (
@@ -104,12 +104,11 @@ const DefaultContactOrganisationEdit = function({
                     </Col>
                 </Row>
 
-                <FormLabel className={'field-label'}>KvK</FormLabel>
+                <FormLabel className={'field-label required'}>KvK</FormLabel>
                 <Row>
                     <Col xs={12} sm={8}>
-                        <Field
-                            name="organisation.chamberOfCommerceNumber"
-                            render={({ field }) => (
+                        <Field name="organisation.chamberOfCommerceNumber">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -118,16 +117,15 @@ const DefaultContactOrganisationEdit = function({
                                     placeholder={'KvK'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
 
                 <FormLabel className={'field-label'}>BTW nummer</FormLabel>
                 <Row>
                     <Col xs={12} sm={8}>
-                        <Field
-                            name="organisation.vatNumber"
-                            render={({ field }) => (
+                        <Field name="organisation.vatNumber">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -136,7 +134,7 @@ const DefaultContactOrganisationEdit = function({
                                     placeholder={'BTW nummer'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
 
@@ -148,9 +146,8 @@ const DefaultContactOrganisationEdit = function({
                 </FormLabel>
                 <Row>
                     <Col xs={12} sm={8}>
-                        <Field
-                            name="iban"
-                            render={({ field }) => (
+                        <Field name="iban">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -162,14 +159,13 @@ const DefaultContactOrganisationEdit = function({
                                     }}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 <Row>
                     <Col xs={12} sm={8}>
-                        <Field
-                            name="ibanAttn"
-                            render={({ field }) => (
+                        <Field name="ibanAttn">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -178,16 +174,15 @@ const DefaultContactOrganisationEdit = function({
                                     placeholder={'IBAN te name van'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
 
                 <FormLabel className={'field-label'}>Website</FormLabel>
                 <Row>
                     <Col xs={12} sm={8}>
-                        <Field
-                            name="organisation.website"
-                            render={({ field }) => (
+                        <Field name="organisation.website">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -196,7 +191,7 @@ const DefaultContactOrganisationEdit = function({
                                     placeholder={'Website'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
 
@@ -205,9 +200,8 @@ const DefaultContactOrganisationEdit = function({
                 </FormLabel>
                 <Row>
                     <Col xs={12} sm={8}>
-                        <Field
-                            name="didAgreeAvg"
-                            render={({ field }) => (
+                        <Field name="didAgreeAvg">
+                            {({ field }) => (
                                 <label className="w-checkbox checkbox-fld">
                                     <input
                                         type="checkbox"
@@ -240,7 +234,7 @@ const DefaultContactOrganisationEdit = function({
                                     ) : null}
                                 </label>
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
 
@@ -249,9 +243,8 @@ const DefaultContactOrganisationEdit = function({
                 </FormLabel>
                 <Row>
                     <Col xs={12} sm={12} md={8}>
-                        <Field
-                            name="emailCorrespondence.email"
-                            render={({ field }) => (
+                        <Field name="emailCorrespondence.email">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -260,7 +253,7 @@ const DefaultContactOrganisationEdit = function({
                                     placeholder={'E-mailadres'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
 
@@ -269,9 +262,8 @@ const DefaultContactOrganisationEdit = function({
                 </FormLabel>
                 <Row>
                     <Col xs={12} sm={12} md={8}>
-                        <Field
-                            name="emailInvoice.email"
-                            render={({ field }) => (
+                        <Field name="emailInvoice.email">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -280,7 +272,7 @@ const DefaultContactOrganisationEdit = function({
                                     placeholder={'E-mailadres'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
 
@@ -292,9 +284,8 @@ const DefaultContactOrganisationEdit = function({
                 </FormLabel>
                 <Row>
                     <Col xs={12} sm={10} md={6}>
-                        <Field
-                            name="phoneNumberPrimary.number"
-                            render={({ field }) => (
+                        <Field name="phoneNumberPrimary.number">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -303,7 +294,7 @@ const DefaultContactOrganisationEdit = function({
                                     placeholder={'Nummer'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
 
@@ -312,9 +303,8 @@ const DefaultContactOrganisationEdit = function({
                 </FormLabel>
                 <Row>
                     <Col xs={12} sm={10} md={6}>
-                        <Field
-                            name="phoneNumberTwo.number"
-                            render={({ field }) => (
+                        <Field name="phoneNumberTwo.number">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -323,7 +313,7 @@ const DefaultContactOrganisationEdit = function({
                                     placeholder={'Nummer'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
 
@@ -394,14 +384,12 @@ const DefaultContactOrganisationEdit = function({
                         ''
                     )}
                 </FormLabel>
-                {((!isNaN(values.visitAddress.number) && values.visitAddress.number == 0) ||
-                    (isNaN(values.visitAddress.number) && values.visitAddress.number.trim() == '') ||
-                    values.visitAddress.postalCode.trim() == '') &&
-                (values.visitAddress.street.trim() != '' ||
-                    values.visitAddress.number.trim() != '' ||
-                    values.visitAddress.addition.trim() != '' ||
-                    values.visitAddress.postalCode.trim() != '' ||
-                    values.visitAddress.city.trim() != '') ? (
+                {(isEmpty(values.visitAddress.number + '') || isEmpty(values.visitAddress.postalCode + '')) &&
+                (!isEmpty(values.visitAddress.street + '') ||
+                    !isEmpty(values.visitAddress.number + '') ||
+                    !isEmpty(values.visitAddress.addition + '') ||
+                    !isEmpty(values.visitAddress.postalCode + '') ||
+                    !isEmpty(values.visitAddress.city + '')) ? (
                     <Row>
                         <Col xs={12} sm={12}>
                             <small className={'text-danger'}>
@@ -414,9 +402,8 @@ const DefaultContactOrganisationEdit = function({
                 )}
                 <Row>
                     <Col xs={12} sm={12}>
-                        <Field
-                            name="visitAddress.street"
-                            render={({ field }) => (
+                        <Field name="visitAddress.street">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -426,14 +413,13 @@ const DefaultContactOrganisationEdit = function({
                                     disabled={initialContact.blockChangeAddress}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 <Row>
                     <Col xs={12} sm={4}>
-                        <Field
-                            name="visitAddress.number"
-                            render={({ field }) => (
+                        <Field name="visitAddress.number">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -445,12 +431,11 @@ const DefaultContactOrganisationEdit = function({
                                     }
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                     <Col xs={12} sm={4}>
-                        <Field
-                            name="visitAddress.addition"
-                            render={({ field }) => (
+                        <Field name="visitAddress.addition">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -462,14 +447,13 @@ const DefaultContactOrganisationEdit = function({
                                     }
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 <Row>
                     <Col xs={12} sm={4}>
-                        <Field
-                            name="visitAddress.postalCode"
-                            render={({ field }) => (
+                        <Field name="visitAddress.postalCode">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -483,12 +467,11 @@ const DefaultContactOrganisationEdit = function({
                                     }
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                     <Col xs={12} sm={8}>
-                        <Field
-                            name="visitAddress.city"
-                            render={({ field }) => (
+                        <Field name="visitAddress.city">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -498,14 +481,13 @@ const DefaultContactOrganisationEdit = function({
                                     disabled={initialContact.blockChangeAddress}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 <Row>
                     <Col xs={12} sm={8}>
-                        <Field
-                            name="visitAddress.countryId"
-                            render={({ field }) => (
+                        <Field name="visitAddress.countryId">
+                            {({ field }) => (
                                 <Select
                                     field={field}
                                     errors={errors}
@@ -516,7 +498,7 @@ const DefaultContactOrganisationEdit = function({
                                     disabled={initialContact.blockChangeAddress}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 <FormLabel
@@ -527,11 +509,8 @@ const DefaultContactOrganisationEdit = function({
                 >
                     EAN nummer electriciteit
                 </FormLabel>
-                {((!isNaN(values.visitAddress.number) && values.visitAddress.number == 0) ||
-                    (isNaN(values.visitAddress.number) && values.visitAddress.number.trim() == '') ||
-                    values.visitAddress.postalCode.trim() == '') &&
-                values.visitAddress.eanElectricity != null &&
-                values.visitAddress.eanElectricity.trim() != '' ? (
+                {(isEmpty(values.visitAddress.number + '') || isEmpty(values.visitAddress.postalCode + '')) &&
+                !isEmpty(values.visitAddress.eanElectricity + '') ? (
                     <Row>
                         <Col xs={12} sm={12}>
                             <small className={'text-danger'}>
@@ -545,9 +524,8 @@ const DefaultContactOrganisationEdit = function({
                 )}
                 <Row>
                     <Col xs={12} sm={12} md={8}>
-                        <Field
-                            name="visitAddress.eanElectricity"
-                            render={({ field }) => (
+                        <Field name="visitAddress.eanElectricity">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -556,18 +534,15 @@ const DefaultContactOrganisationEdit = function({
                                     placeholder={'EAN nummer electriciteit'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
 
                 <FormLabel htmlFor="ean_gas" className={'field-label'}>
                     EAN nummer gas
                 </FormLabel>
-                {((!isNaN(values.visitAddress.number) && values.visitAddress.number == 0) ||
-                    (isNaN(values.visitAddress.number) && values.visitAddress.number.trim() == '') ||
-                    values.visitAddress.postalCode.trim() == '') &&
-                values.visitAddress.eanGas != null &&
-                values.visitAddress.eanGas.trim() != '' ? (
+                {(isEmpty(values.visitAddress.number + '') || isEmpty(values.visitAddress.postalCode + '')) &&
+                !isEmpty(values.visitAddress.eanGas + '') ? (
                     <Row>
                         <Col xs={12} sm={12}>
                             <small className={'text-danger'}>
@@ -581,9 +556,8 @@ const DefaultContactOrganisationEdit = function({
                 )}
                 <Row>
                     <Col xs={12} sm={12} md={8}>
-                        <Field
-                            name="visitAddress.eanGas"
-                            render={({ field }) => (
+                        <Field name="visitAddress.eanGas">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -592,7 +566,7 @@ const DefaultContactOrganisationEdit = function({
                                     placeholder={'EAN nummer gas'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
 
@@ -609,15 +583,10 @@ const DefaultContactOrganisationEdit = function({
                         >
                             Huidige energie leverancier
                         </FormLabel>
-                        {((!isNaN(values.visitAddress.number) && values.visitAddress.number == 0) ||
-                            (isNaN(values.visitAddress.number) && values.visitAddress.number.trim() == '') ||
-                            values.visitAddress.postalCode.trim() == '') &&
-                        (values.visitAddress.currentAddressEnergySupplierElectricity.energySupplierId != null ||
-                            (values.visitAddress.currentAddressEnergySupplierElectricity.esNumber &&
-                                values.visitAddress.currentAddressEnergySupplierElectricity.esNumber.trim() != '') ||
-                            (values.visitAddress.currentAddressEnergySupplierElectricity.memberSince &&
-                                values.visitAddress.currentAddressEnergySupplierElectricity.memberSince.trim() !=
-                                    '')) ? (
+                        {(isEmpty(values.visitAddress.number + '') || isEmpty(values.visitAddress.postalCode + '')) &&
+                        (!isEmpty(values.visitAddress.currentAddressEnergySupplierElectricity.energySupplierId + '') ||
+                            !isEmpty(values.visitAddress.currentAddressEnergySupplierElectricity.esNumber + '') ||
+                            !isEmpty(values.visitAddress.currentAddressEnergySupplierElectricity.memberSince + '')) ? (
                             <Row>
                                 <Col xs={12} sm={12}>
                                     <small className={'text-danger'}>
@@ -629,15 +598,10 @@ const DefaultContactOrganisationEdit = function({
                         ) : (
                             ''
                         )}
-                        {(!values.visitAddress.currentAddressEnergySupplierElectricity.memberSince ||
-                            values.visitAddress.currentAddressEnergySupplierElectricity.memberSince.trim() == '') &&
-                        ((values.visitAddress.currentAddressEnergySupplierElectricity.energySupplierId != null &&
-                            values.visitAddress.currentAddressEnergySupplierElectricity.energySupplierId != '') ||
-                            (values.visitAddress.currentAddressEnergySupplierElectricity.esNumber &&
-                                values.visitAddress.currentAddressEnergySupplierElectricity.esNumber.trim() != '') ||
-                            (values.visitAddress.currentAddressEnergySupplierElectricity.memberSince &&
-                                values.visitAddress.currentAddressEnergySupplierElectricity.memberSince.trim() !=
-                                    '')) ? (
+                        {isEmpty(values.visitAddress.currentAddressEnergySupplierElectricity.memberSince + '') &&
+                        (!isEmpty(values.visitAddress.currentAddressEnergySupplierElectricity.energySupplierId + '') ||
+                            !isEmpty(values.visitAddress.currentAddressEnergySupplierElectricity.esNumber + '') ||
+                            !isEmpty(values.visitAddress.currentAddressEnergySupplierElectricity.memberSince + '')) ? (
                             <Row>
                                 <Col xs={12} sm={12}>
                                     <small className={'text-danger'}>
@@ -651,9 +615,8 @@ const DefaultContactOrganisationEdit = function({
                         )}
                         <Row>
                             <Col xs={12} sm={12} md={8}>
-                                <Field
-                                    name="visitAddress.currentAddressEnergySupplierElectricity.energySupplierId"
-                                    render={({ field }) => (
+                                <Field name="visitAddress.currentAddressEnergySupplierElectricity.energySupplierId">
+                                    {({ field }) => (
                                         <Select
                                             field={field}
                                             errors={errors}
@@ -677,7 +640,7 @@ const DefaultContactOrganisationEdit = function({
                                             }}
                                         />
                                     )}
-                                />
+                                </Field>
                             </Col>
                         </Row>
 
@@ -696,9 +659,8 @@ const DefaultContactOrganisationEdit = function({
                                 </FormLabel>
                                 <Row>
                                     <Col xs={12} sm={12} md={8}>
-                                        <Field
-                                            name="visitAddress.currentAddressEnergySupplierElectricity.esNumber"
-                                            render={({ field }) => (
+                                        <Field name="visitAddress.currentAddressEnergySupplierElectricity.esNumber">
+                                            {({ field }) => (
                                                 <InputText
                                                     field={field}
                                                     errors={errors}
@@ -707,7 +669,7 @@ const DefaultContactOrganisationEdit = function({
                                                     placeholder={'Klant nummer bij leverancier'}
                                                 />
                                             )}
-                                        />
+                                        </Field>
                                     </Col>
                                 </Row>
 
@@ -716,9 +678,8 @@ const DefaultContactOrganisationEdit = function({
                                 </FormLabel>
                                 <Row>
                                     <Col xs={12} sm={12} md={8}>
-                                        <Field
-                                            name="visitAddress.currentAddressEnergySupplierElectricity.memberSince"
-                                            render={({ field }) => (
+                                        <Field name="visitAddress.currentAddressEnergySupplierElectricity.memberSince">
+                                            {({ field }) => (
                                                 <InputTextDate
                                                     field={field}
                                                     type="date"
@@ -731,7 +692,7 @@ const DefaultContactOrganisationEdit = function({
                                                     placeholder={'Klant sinds'}
                                                 />
                                             )}
-                                        />
+                                        </Field>
                                     </Col>
                                 </Row>
                             </>
@@ -744,14 +705,11 @@ const DefaultContactOrganisationEdit = function({
                 <FormLabel htmlFor="street" className="field-label">
                     Postadres
                 </FormLabel>
-                {((!isNaN(values.postalAddress.number) && values.postalAddress.number == 0) ||
-                    (isNaN(values.postalAddress.number) && values.postalAddress.number.trim() == '') ||
-                    values.postalAddress.postalCode.trim() == '') &&
-                (values.postalAddress.street.trim() != '' ||
-                    values.postalAddress.number.trim() != '' ||
-                    values.postalAddress.addition.trim() != '' ||
-                    values.postalAddress.postalCode.trim() != '' ||
-                    values.postalAddress.city.trim() != '') ? (
+                {(isEmpty(values.postalAddress.number + '') || isEmpty(values.postalAddress.postalCode + '')) &&
+                (!isEmpty(values.postalAddress.street + '') ||
+                    !isEmpty(values.postalAddress.addition + '') ||
+                    !isEmpty(values.postalAddress.postalCode + '') ||
+                    !isEmpty(values.postalAddress.city + '')) ? (
                     <Row>
                         <Col xs={12} sm={12}>
                             <small className={'text-danger'}>
@@ -764,9 +722,8 @@ const DefaultContactOrganisationEdit = function({
                 )}
                 <Row>
                     <Col xs={12} sm={12}>
-                        <Field
-                            name="postalAddress.street"
-                            render={({ field }) => (
+                        <Field name="postalAddress.street">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -775,14 +732,13 @@ const DefaultContactOrganisationEdit = function({
                                     placeholder={'Straat'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 <Row>
                     <Col xs={12} sm={4}>
-                        <Field
-                            name="postalAddress.number"
-                            render={({ field }) => (
+                        <Field name="postalAddress.number">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -791,12 +747,11 @@ const DefaultContactOrganisationEdit = function({
                                     placeholder={'Nummer'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                     <Col xs={12} sm={4}>
-                        <Field
-                            name="postalAddress.addition"
-                            render={({ field }) => (
+                        <Field name="postalAddress.addition">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -805,14 +760,13 @@ const DefaultContactOrganisationEdit = function({
                                     placeholder={'Toevoeging'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 <Row>
                     <Col xs={12} sm={4}>
-                        <Field
-                            name="postalAddress.postalCode"
-                            render={({ field }) => (
+                        <Field name="postalAddress.postalCode">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -821,12 +775,11 @@ const DefaultContactOrganisationEdit = function({
                                     placeholder={'Postcode'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                     <Col xs={12} sm={8}>
-                        <Field
-                            name="postalAddress.city"
-                            render={({ field }) => (
+                        <Field name="postalAddress.city">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -835,14 +788,13 @@ const DefaultContactOrganisationEdit = function({
                                     placeholder={'Plaats'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 <Row>
                     <Col xs={12} sm={8}>
-                        <Field
-                            name="postalAddress.countryId"
-                            render={({ field }) => (
+                        <Field name="postalAddress.countryId">
+                            {({ field }) => (
                                 <Select
                                     field={field}
                                     errors={errors}
@@ -852,20 +804,18 @@ const DefaultContactOrganisationEdit = function({
                                     options={Countries}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 <FormLabel htmlFor="street" className="field-label">
                     Nota adres
                 </FormLabel>
-                {((!isNaN(values.invoiceAddress.number) && values.invoiceAddress.number == 0) ||
-                    (isNaN(values.invoiceAddress.number) && values.invoiceAddress.number.trim() == '') ||
-                    values.invoiceAddress.postalCode.trim() == '') &&
-                (values.invoiceAddress.street.trim() != '' ||
-                    values.invoiceAddress.number.trim() != '' ||
-                    values.invoiceAddress.addition.trim() != '' ||
-                    values.invoiceAddress.postalCode.trim() != '' ||
-                    values.invoiceAddress.city.trim() != '') ? (
+                {(isEmpty(values.invoiceAddress.number + '') || isEmpty(values.invoiceAddress.postalCode + '')) &&
+                (!isEmpty(values.invoiceAddress.street + '') ||
+                    !isEmpty(values.invoiceAddress.number + '') ||
+                    !isEmpty(values.invoiceAddress.addition + '') ||
+                    !isEmpty(values.invoiceAddress.postalCode + '') ||
+                    !isEmpty(values.invoiceAddress.city + '')) ? (
                     <Row>
                         <Col xs={12} sm={12}>
                             <small className={'text-danger'}>
@@ -878,9 +828,8 @@ const DefaultContactOrganisationEdit = function({
                 )}
                 <Row>
                     <Col xs={12} sm={12}>
-                        <Field
-                            name="invoiceAddress.street"
-                            render={({ field }) => (
+                        <Field name="invoiceAddress.street">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -889,14 +838,13 @@ const DefaultContactOrganisationEdit = function({
                                     placeholder={'Straat'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 <Row>
                     <Col xs={12} sm={4}>
-                        <Field
-                            name="invoiceAddress.number"
-                            render={({ field }) => (
+                        <Field name="invoiceAddress.number">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -905,12 +853,11 @@ const DefaultContactOrganisationEdit = function({
                                     placeholder={'Nummer'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                     <Col xs={12} sm={4}>
-                        <Field
-                            name="invoiceAddress.addition"
-                            render={({ field }) => (
+                        <Field name="invoiceAddress.addition">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -919,14 +866,13 @@ const DefaultContactOrganisationEdit = function({
                                     placeholder={'Toevoeging'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 <Row>
                     <Col xs={12} sm={4}>
-                        <Field
-                            name="invoiceAddress.postalCode"
-                            render={({ field }) => (
+                        <Field name="invoiceAddress.postalCode">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -935,12 +881,11 @@ const DefaultContactOrganisationEdit = function({
                                     placeholder={'Postcode'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                     <Col xs={12} sm={8}>
-                        <Field
-                            name="invoiceAddress.city"
-                            render={({ field }) => (
+                        <Field name="invoiceAddress.city">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -949,14 +894,13 @@ const DefaultContactOrganisationEdit = function({
                                     placeholder={'Plaats'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 <Row>
                     <Col xs={12} sm={8}>
-                        <Field
-                            name="invoiceAddress.countryId"
-                            render={({ field }) => (
+                        <Field name="invoiceAddress.countryId">
+                            {({ field }) => (
                                 <Select
                                     field={field}
                                     errors={errors}
@@ -966,7 +910,7 @@ const DefaultContactOrganisationEdit = function({
                                     options={Countries}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
             </Col>

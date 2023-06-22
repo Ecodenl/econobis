@@ -4,13 +4,13 @@ namespace App\Http\Resources\Email\Templates;
 
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
-use App\Eco\Email\EmailAttachment;
 use App\Http\Controllers\Api\Document\DocumentController;
 use App\Mail\ConfigurableMailable;
 use Illuminate\Support\Facades\Storage;
 
 class GenericMail extends ConfigurableMailable
 {
+    public $email;
     public $html_body;
     public $subject;
     public $defaultAttachmentDocumentId;
@@ -34,9 +34,9 @@ class GenericMail extends ConfigurableMailable
      */
     public function build()
     {
-        $mail = $this->subject($this->email->subject)->view('emails.generic')->text('emails.genericText');
+        $mail = $this->subject($this->email->subject)->view('emails.generic_with_inline_images')->text('emails.genericText');
 
-        $attachments = EmailAttachment::where('email_id', '=', $this->email->id)->get();
+        $attachments = $this->email->attachments()->whereNull('cid')->get();
 
         //add attachments
         foreach($attachments as $attachment){

@@ -27,7 +27,8 @@ const RegisterForm = ({ handleSubmit, email }) => (
             actions.setSubmitting(true);
             handleSubmit(values, actions);
         }}
-        render={({ isSubmitting, errors, touched }) => (
+    >
+        {({ isSubmitting, errors, touched }) => (
             <Form>
                 <div className="mb-3">
                     <p className={'authorization-text'}>
@@ -36,9 +37,8 @@ const RegisterForm = ({ handleSubmit, email }) => (
                 </div>
                 <Row>
                     <Col>
-                        <Field
-                            name="password"
-                            render={({ field }) => (
+                        <Field name="password">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     id="password"
@@ -49,14 +49,13 @@ const RegisterForm = ({ handleSubmit, email }) => (
                                     classNameErrorMessage={'authorization-text'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 <Row>
                     <Col className="mt-2">
-                        <Field
-                            name="passwordConfirmation"
-                            render={({ field }) => (
+                        <Field name="passwordConfirmation">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     id="passwordConfirmation"
@@ -67,7 +66,7 @@ const RegisterForm = ({ handleSubmit, email }) => (
                                     classNameErrorMessage={'authorization-text mb-3'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 <Row>
@@ -88,7 +87,7 @@ const RegisterForm = ({ handleSubmit, email }) => (
                 />
             </Form>
         )}
-    />
+    </Formik>
 );
 
 export default RegisterForm;

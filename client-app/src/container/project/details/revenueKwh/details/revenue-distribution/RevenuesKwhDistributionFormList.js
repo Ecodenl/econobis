@@ -8,7 +8,7 @@ const RevenuesKwhDistributionFormList = props => {
     return (
         <div>
             <div className="row border header">
-                {props.revenuesKwh.confirmed && props.showCheckboxList ? (
+                {props.showCheckboxList ? (
                     <div className="col-sm-1">
                         <input type="checkbox" onChange={props.toggleCheckedAll} checked={props.checkedAll} />
                     </div>
@@ -22,11 +22,11 @@ const RevenuesKwhDistributionFormList = props => {
                 <div className="col-sm-2">Status</div>
             </div>
             {props.revenuesKwh.distributionKwh && props.revenuesKwh.distributionKwh.data.length > 0 ? (
-                props.revenuesKwh.distributionKwh.data.map(participation => {
+                props.revenuesKwh.distributionKwh.data.map(distributionKwh => {
                     return (
                         <RevenuesKwhDistributionFormView
-                            key={participation.id}
-                            participation={participation}
+                            key={distributionKwh.id}
+                            distributionKwh={distributionKwh}
                             showCheckboxList={props.showCheckboxList}
                             toggleDistributionCheck={props.toggleDistributionCheck}
                             projectRevenueCategoryCodeRef={props.revenuesKwh.category.codeRef}
@@ -39,7 +39,7 @@ const RevenuesKwhDistributionFormList = props => {
             ) : (
                 <div>Geen deelnemers bekend.</div>
             )}
-            {/* todo origineel 100: voor testen op 4*/}
+            {/* todo origineel 100: voor testen op 10*/}
             <DataTablePagination
                 initialPage={0}
                 onPageChangeAction={props.changePage}
@@ -56,7 +56,7 @@ const RevenuesKwhDistributionFormList = props => {
 
 const mapStateToProps = state => {
     return {
-        projectTypeCodeRef: state.revenuesKwh.project.projectType.codeRef,
+        projectTypeCodeRef: state.revenuesKwh.project?.projectType?.codeRef,
         revenuesKwh: state.revenuesKwh,
     };
 };

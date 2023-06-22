@@ -29,6 +29,7 @@ use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Portal\PortalUser;
 use App\Eco\QuotationRequest\QuotationRequest;
+use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\Task\Task;
 use App\Eco\Twinfield\TwinfieldCustomerNumber;
@@ -48,6 +49,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 class Contact extends Model
 {
     use PresentableTrait, RevisionableTrait, Encryptable, SoftDeletes, HasFactory;
+
     protected $presenter = ContactPresenter::class;
 
     protected $guarded = ['id'];
@@ -55,6 +57,7 @@ class Contact extends Model
     protected $casts = [
         'liable' => 'boolean',
         'coach_max_appointments_per_week' => 'integer',
+        'coach_max_appointments_per_month' => 'integer',
         'coach_min_minutes_between_appointments' => 'integer',
     ];
 
@@ -64,7 +67,7 @@ class Contact extends Model
     ];
 
     protected $encryptable = [
-      'iban'
+        'iban'
     ];
 
     //Per administratie heeft het contact een ander twinfield nummer
@@ -80,7 +83,7 @@ class Contact extends Model
 
     public function addressesWithoutOld()
     {
-        return $this->hasMany(Address::class)->where('type_id', '!=',  'old')->orderByDesc('primary')->orderByDesc('id');
+        return $this->hasMany(Address::class)->where('type_id', '!=', 'old')->orderByDesc('primary')->orderByDesc('id');
     }
 
     public function addressesActive()
@@ -140,35 +143,33 @@ class Contact extends Model
 
     public function getStatus()
     {
-        if(!$this->status_id) return null;
+        if (!$this->status_id) return null;
 
         return ContactStatus::get($this->status_id);
     }
 
     public function getInspectionPersonType()
     {
-        if(!$this->inspection_person_type_id) return null;
+        if (!$this->inspection_person_type_id) return null;
 
         return InspectionPersonType::get($this->inspection_person_type_id);
     }
 
-    public function createdBy(){
+    public function createdBy()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function updatedBy(){
+    public function updatedBy()
+    {
         return $this->belongsTo(User::class);
     }
 
     public function groups()
     {
-        $teamContactGroupIds = Auth::user()->getTeamContactGroupIds();
-        if ($teamContactGroupIds){
-            return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->whereIn('contact_groups.id', $teamContactGroupIds)->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since')->orderBy('contact_groups.id', 'desc');
-        }else{
-            return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since')->orderBy('contact_groups.id', 'desc');
-        }
+        return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since')->orderBy('contact_groups.id', 'desc');
     }
+
     public function selectedGroups()
     {
         return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')
@@ -215,7 +216,7 @@ class Contact extends Model
 
     public function getType()
     {
-        if(!$this->type_id) return null;
+        if (!$this->type_id) return null;
 
         return ContactType::get($this->type_id);
     }
@@ -230,13 +231,18 @@ class Contact extends Model
         return $this->hasManyThrough(Opportunity::class, Intake::class)->orderBy('opportunities.id', 'desc');
     }
 
-    public function quotationRequests(){
+    public function quotationRequests()
+    {
         return $this->hasMany(QuotationRequest::class);
     }
-    public function quotationRequestsAsProjectManager(){
+
+    public function quotationRequestsAsProjectManager()
+    {
         return $this->hasMany(QuotationRequest::class, 'project_manager_id');
     }
-    public function quotationRequestsAsExternalParty(){
+
+    public function quotationRequestsAsExternalParty()
+    {
         return $this->hasMany(QuotationRequest::class, 'external_party_id');
     }
 
@@ -252,19 +258,23 @@ class Contact extends Model
         return $this->hasMany(Task::class)->where('finished', true)->orderBy('tasks.id', 'desc');
     }
 
-    public function coachCampaigns(){
+    public function coachCampaigns()
+    {
         return $this->belongsToMany(Campaign::class, 'campaign_coach');
     }
 
-    public function projectManagerCampaigns(){
+    public function projectManagerCampaigns()
+    {
         return $this->belongsToMany(Campaign::class, 'campaign_project_manager');
     }
 
-    public function externalPartyCampaigns(){
+    public function externalPartyCampaigns()
+    {
         return $this->belongsToMany(Campaign::class, 'campaign_external_party');
     }
 
-    public function responses(){
+    public function responses()
+    {
         return $this->hasMany(CampaignResponse::class);
     }
 
@@ -277,6 +287,7 @@ class Contact extends Model
     {
         return $this->hasMany(ProjectRevenueDistribution::class);
     }
+
     public function revenueDistributionKwh()
     {
         return $this->hasMany(RevenueDistributionKwh::class);
@@ -291,6 +302,7 @@ class Contact extends Model
     {
         return $this->hasManyThrough(AddressEnergySupplier::class, Address::class)->orderBy('address_energy_suppliers.id', 'desc');
     }
+
     public function currentAddressEnergySuppliers()
     {
         return $this->hasManyThrough(AddressEnergySupplier::class, Address::class)->where('addresses.type_id', '!=', 'old')->where('address_energy_suppliers.is_current_supplier', true)->orderBy('address_energy_suppliers.id', 'desc');
@@ -395,14 +407,14 @@ class Contact extends Model
 
     //Returns addresses array as Type - Streetname - Number
     //Primary address always comes first
-    public function getPrettyAddresses(){
+    public function getPrettyAddresses()
+    {
         $this->load('addresses');
         $addresses = [];
-        foreach ($this->addresses as $address){
-            if($address->primary == 1){
+        foreach ($this->addresses as $address) {
+            if ($address->primary == 1) {
                 array_unshift($addresses, $address->getType()->name . ' - ' . $address->street . ' - ' . $address->number);
-            }
-            else{
+            } else {
                 $addresses[] = $address->getType()->name . ' - ' . $address->street . ' - ' . $address->number;
             }
         }
@@ -415,13 +427,13 @@ class Contact extends Model
     {
         $emailAddresses = $this->emailAddresses->reverse();
 
-        foreach($emailAddresses as $emailAddress) {
+        foreach ($emailAddresses as $emailAddress) {
             if ($emailAddress->type_id === 'invoice') {
                 return $emailAddress;
             }
         }
 
-        foreach($emailAddresses as $emailAddress) {
+        foreach ($emailAddresses as $emailAddress) {
             if ($emailAddress->primary) {
                 return $emailAddress;
             }
@@ -430,25 +442,27 @@ class Contact extends Model
         return null;
     }
 
-    public function getAllStaticAndDynamicGroups()
-    {
-        //statische groepen
-        $staticGroups = $this->groups()->get()->pluck('id')->toArray();
-
-        //dynamische groepen
-        $dynamicGroups = ContactGroup::where('type_id', 'dynamic')->get();
-
-        $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
-            foreach ($dynamicGroup->all_contacts as $dynamic_contact){
-                if($dynamic_contact->id === $this->id){
-                    return true;
-                }
-            }
-            return false;
-        })->pluck('id')->toArray();
-
-        return array_merge($staticGroups, $dynamicGroupsForContact);
-    }
+// todo WM: opschonen, deze function wordt volgens mij nergens gebruikt!
+//
+//    public function getAllStaticAndDynamicGroups()
+//    {
+//        //statische groepen
+//        $staticGroups = $this->groups()->get()->pluck('id')->toArray();
+//
+//        //dynamische groepen
+//        $dynamicGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('type_id', 'dynamic')->get();
+//
+//        $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
+//            foreach ($dynamicGroup->all_contacts as $dynamic_contact) {
+//                if ($dynamic_contact->id === $this->id) {
+//                    return true;
+//                }
+//            }
+//            return false;
+//        })->pluck('id')->toArray();
+//
+//        return array_merge($staticGroups, $dynamicGroupsForContact);
+//    }
 
     public function getAllGroups()
     {
@@ -456,11 +470,11 @@ class Contact extends Model
         $staticGroups = $this->groups()->get()->pluck('id')->toArray();
 
         //dynamische groepen
-        $dynamicGroups = ContactGroup::where('type_id', 'dynamic')->get();
+        $dynamicGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('type_id', 'dynamic')->get();
 
         $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
-            foreach ($dynamicGroup->all_contacts as $dynamic_contact){
-                if($dynamic_contact->id === $this->id){
+            foreach ($dynamicGroup->all_contacts as $dynamic_contact) {
+                if ($dynamic_contact->id === $this->id) {
                     return true;
                 }
             }
@@ -468,11 +482,11 @@ class Contact extends Model
         })->pluck('id')->toArray();
 
         //samengestelde groepen
-        $composedGroups = ContactGroup::where('type_id', 'composed')->get();
+        $composedGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('type_id', 'composed')->get();
 
         $composedGroupsForContact = $composedGroups->filter(function ($composedGroup) {
-            foreach ($composedGroup->all_contacts as $composed_contact){
-                if($composed_contact->id === $this->id){
+            foreach ($composedGroup->all_contacts as $composed_contact) {
+                if ($composed_contact->id === $this->id) {
                     return true;
                 }
             }
@@ -482,27 +496,18 @@ class Contact extends Model
         return array_merge($staticGroups, $dynamicGroupsForContact, $composedGroupsForContact);
     }
 
-    public function getVisibleGroups(){
-
-        $teamContactGroupIds = Auth::user()->getTeamContactGroupIds();
-
+    public function getVisibleGroups()
+    {
         //statische groepen
-        if($teamContactGroupIds){
-            $staticGroups = $this->groups()->where('show_contact_form', true)->whereIn('contact_groups.id', $teamContactGroupIds)->get();
-        } else{
-            $staticGroups = $this->groups()->where('show_contact_form', true)->get();
-        }
+        $staticGroups = $this->groups()->where('show_contact_form', true)->get();
 
         //dynamische groepen
-        if($teamContactGroupIds){
-            $dynamicGroups = ContactGroup::where('show_contact_form', true)->where('type_id', 'dynamic')->whereIn('contact_groups.id', $teamContactGroupIds)->get();
-        } else{
-            $dynamicGroups = ContactGroup::where('show_contact_form', true)->where('type_id', 'dynamic')->get();
-        }
+        $dynamicGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())
+            ->where('show_contact_form', true)->where('type_id', 'dynamic')->get();
 
         $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
-            foreach ($dynamicGroup->all_contacts as $dynamic_contact){
-                if($dynamic_contact->id === $this->id){
+            foreach ($dynamicGroup->all_contacts as $dynamic_contact) {
+                if ($dynamic_contact->id === $this->id) {
                     return true;
                 }
             }
@@ -512,15 +517,12 @@ class Contact extends Model
         $allGroups = $staticGroups->merge($dynamicGroupsForContact);
 
         //samengestelde groepen
-        if($teamContactGroupIds){
-            $composedGroups = ContactGroup::where('show_contact_form', true)->where('type_id', 'composed')->get()->whereIn('contact_groups.id', $teamContactGroupIds);
-        } else{
-            $composedGroups = ContactGroup::where('show_contact_form', true)->where('type_id', 'composed')->get();
-        }
+        $composedGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())
+            ->where('show_contact_form', true)->where('type_id', 'composed')->get();
 
         $composedGroupsForContact = $composedGroups->filter(function ($composedGroup) {
-            foreach ($composedGroup->all_contacts as $composed_contact){
-                if($composed_contact->id === $this->id){
+            foreach ($composedGroup->all_contacts as $composed_contact) {
+                if ($composed_contact->id === $this->id) {
                     return true;
                 }
             }
@@ -539,17 +541,19 @@ class Contact extends Model
         if ($this->type_id == 'person') {
             $firstName = $this->person->first_name ? $this->person->first_name . ' ' : ($this->person->initials ? $this->person->initials . ' ' : "");
             $prefix = $this->person->last_name_prefix ? $this->person->last_name_prefix . ' ' : '';
-            $fullNameFnf = ( $firstName . $prefix . $this->person->last_name );
+            $fullNameFnf = ($firstName . $prefix . $this->person->last_name);
         } else {
             $fullNameFnf = $this->full_name;
         }
         return $fullNameFnf;
     }
+
     // Has contact financialoverview documents ?.
     public function getHasFinancialOverviewsAttribute()
     {
         return $this->financialOverviewContactsSend()->exists();
     }
+
     // Contact firstname (only if person).
     public function getFirstNameAttribute()
     {
@@ -559,6 +563,7 @@ class Contact extends Model
             return '';
         }
     }
+
     // Contact lastname prefix (only if person).
     public function getLastNamePrefixAttribute()
     {
@@ -568,6 +573,7 @@ class Contact extends Model
             return '';
         }
     }
+
     // Contact lastname (only if person).
     public function getLastNameAttribute()
     {
@@ -578,20 +584,17 @@ class Contact extends Model
         }
     }
 
-    public function getAddressLinesAttribute(){
-        if(Address::where('contact_id', $this->id)->where('primary', true)->where('type_id', 'invoice')->exists()){
+    public function getAddressLinesAttribute()
+    {
+        if (Address::where('contact_id', $this->id)->where('primary', true)->where('type_id', 'invoice')->exists()) {
             $address = Address::where('contact_id', $this->id)->where('primary', true)->where('type_id', 'invoice')->first();
-        }
-        elseif(Address::where('contact_id', $this->id)->where('type_id', 'invoice')->exists()){
+        } elseif (Address::where('contact_id', $this->id)->where('type_id', 'invoice')->exists()) {
             $address = Address::where('contact_id', $this->id)->where('type_id', 'invoice')->first();
-        }
-        elseif(Address::where('contact_id', $this->id)->where('primary', true)->exists()){
+        } elseif (Address::where('contact_id', $this->id)->where('primary', true)->exists()) {
             $address = Address::where('contact_id', $this->id)->where('primary', true)->first();
-        }
-        elseif(Address::where('contact_id', $this->id)->exists()){
+        } elseif (Address::where('contact_id', $this->id)->exists()) {
             $address = Address::where('contact_id', $this->id)->first();
-        }
-        else{
+        } else {
             $addressLines['street'] = '';
             $addressLines['city'] = '';
             $addressLines['country'] = '';
@@ -608,13 +611,13 @@ class Contact extends Model
 
     public function getNumberOfActionsAttribute()
     {
-        if($this->isOrganisation() || $this->isCoach()){
+        if ($this->isOrganisation() || $this->isCoach()) {
             return $this->quotationRequests ? $this->quotationRequests->count() : 0;
         }
-        if($this->isProjectManager()){
+        if ($this->isProjectManager()) {
             return $this->quotationRequestsAsProjectManager ? $this->quotationRequestsAsProjectManager->count() : 0;
         }
-        if($this->isExternalParty()){
+        if ($this->isExternalParty()) {
             return $this->quotationRequestsAsExternalParty ? $this->quotationRequestsAsExternalParty->count() : 0;
         }
         return 0;
@@ -622,14 +625,13 @@ class Contact extends Model
 
     public function getIsParticipantAttribute()
     {
-        return( $this->participations && $this->participations->count() > 0 );
+        return ($this->participations && $this->participations->count() > 0);
     }
 
     public function getDisableChangeContactNameOnPortalAttribute()
     {
-        foreach($this->participations as $participation)
-        {
-            if($participation->project && $participation->project->disable_change_contact_name_on_portal ){
+        foreach ($this->participations as $participation) {
+            if ($participation->project && $participation->project->disable_change_contact_name_on_portal) {
                 return true;
             }
         }
@@ -638,10 +640,10 @@ class Contact extends Model
 
     public function getAddressForPostalCodeCheckAttribute()
     {
-        if($this->type_id === ContactType::PERSON) {
+        if ($this->type_id === ContactType::PERSON) {
             return $this->primaryAddress;
         }
-        if($this->type_id === ContactType::ORGANISATION) {
+        if ($this->type_id === ContactType::ORGANISATION) {
             return Address::where('contact_id', $this->id)->where('type_id', 'visit')->first();
         }
     }
@@ -649,19 +651,19 @@ class Contact extends Model
     public function getSingleRelatedAdministrationAttribute()
     {
         $contactId = $this->id;
-        $administrations = Administration::whereHas('projects', function($query) use($contactId){
-            $query->WhereHas('participantsProject', function($query2) use($contactId){
+        $administrations = Administration::whereHas('projects', function ($query) use ($contactId) {
+            $query->WhereHas('participantsProject', function ($query2) use ($contactId) {
                 $query2->where('contact_id', $contactId);
             });
         })->orderBy('name')->get();
-        if($administrations->count() == 0){
+        if ($administrations->count() == 0) {
             $defaultAdministrationId = PortalSettings::get('defaultAdministrationId');
-            if(!empty($defaultAdministrationId)){
+            if (!empty($defaultAdministrationId)) {
                 $administrations = Administration::whereId($defaultAdministrationId)->get();
             }
         }
 
-        if($administrations->count() === 1){
+        if ($administrations->count() === 1) {
             return $administrations->first()->id;
         }
 
@@ -671,15 +673,15 @@ class Contact extends Model
 
     public function getNoAddressesFoundAttribute()
     {
-        if($this->type_id === ContactType::PERSON) {
+        if ($this->type_id === ContactType::PERSON) {
             if ($this->primaryAddress) {
                 return false;
             } else {
                 return true;
             }
         }
-        if($this->type_id === ContactType::ORGANISATION) {
-            if(Address::where('contact_id', $this->id)->where('type_id', 'visit')->exists()){
+        if ($this->type_id === ContactType::ORGANISATION) {
+            if (Address::where('contact_id', $this->id)->where('type_id', 'visit')->exists()) {
                 return false;
             } else {
                 return true;
@@ -689,9 +691,8 @@ class Contact extends Model
 
     public function getIsParticipantPcrProjectAttribute()
     {
-        foreach($this->participations as $participation)
-        {
-            if($participation->project && $participation->project->projectType->code_ref == 'postalcode_link_capital' ){
+        foreach ($this->participations as $participation) {
+            if ($participation->project && $participation->project->projectType->code_ref == 'postalcode_link_capital') {
                 return true;
             }
         }
@@ -700,9 +701,8 @@ class Contact extends Model
 
     public function getIsParticipantSceProjectAttribute()
     {
-        foreach($this->participations as $participation)
-        {
-            if($participation->project && $participation->project->is_sce_project ){
+        foreach ($this->participations as $participation) {
+            if ($participation->project && $participation->project->is_sce_project) {
                 return true;
             }
         }
@@ -715,14 +715,14 @@ class Contact extends Model
      */
     public function getPrimaryAddressIdAttribute()
     {
-        return($this->primaryAddress ? $this->primaryAddress->id : 0);
+        return ($this->primaryAddress ? $this->primaryAddress->id : 0);
     }
 
     public function getBlockChangeAddressAttribute()
     {
         $hasIntakeOnPortalCheckAddress = false;
         $hasHousingFileOnPortalCheckAddress = false;
-        if($this->addressForPostalCodeCheck){
+        if ($this->addressForPostalCodeCheck) {
             $hasIntakeOnPortalCheckAddress = $this->intakes()
                 ->where('address_id', $this->addressForPostalCodeCheck->id)
                 ->exists();
@@ -736,9 +736,8 @@ class Contact extends Model
 
     public function getBlockChangeAddressNumberAttribute()
     {
-        foreach($this->participations as $participation)
-        {
-            if($participation->project && $participation->project->is_sce_project && !empty($participation->project->address_number_series) ){
+        foreach ($this->participations as $participation) {
+            if ($participation->project && $participation->project->is_sce_project && !empty($participation->project->address_number_series)) {
                 return true;
             }
         }
@@ -761,13 +760,13 @@ class Contact extends Model
     {
         $portalUser = Auth::user();
 
-        $query->where(function ($query) use($portalUser) {
+        $query->where(function ($query) use ($portalUser) {
             $query->where('id', $portalUser->contact_id);
 //todo nog even goed checken of dit nu in alle gevallen goed gaat
 //            $query->orWhereHas('occupations', function($query) use($portalUser){
 //                $query->where('primary_contact_id', $portalUser->contact_id);
 //            });
-            $query->orWhereHas('primaryOccupations', function($query) use($portalUser){
+            $query->orWhereHas('primaryOccupations', function ($query) use ($portalUser) {
                 $query->where('contact_id', $portalUser->contact_id);
             });
         });
@@ -785,7 +784,7 @@ class Contact extends Model
         $pcr = 0;
         $loan = 0;
 
-        foreach ($this->participations as $participation){
+        foreach ($this->participations as $participation) {
             $projectCodeRef = $participation->project->projectType->code_ref;
             switch ($projectCodeRef) {
                 case 'obligation':
@@ -809,5 +808,84 @@ class Contact extends Model
         $this->loan_current = $loan;
 
         return $this;
+    }
+
+    /**
+     * Geef alleen de beschikbaarheden die ook echt beschikbaar zijn.
+     * Als er al een x aantal afspraken in een week of maand zijn kan de beschikbaarheid vervallen obv max aantal afspraken instellingen.
+     */
+    public function getPlannableAvailabilitiesInPeriod(Carbon $start, Carbon $end)
+    {
+        return $this->availabilities()
+            ->whereBetween('from', [$start, $end])
+            ->get()
+            ->filter(function (ContactAvailability $availability) {
+                return !$this->hasReachedAppointmentLimitAtDate($availability->from);
+            });
+    }
+
+    /**
+     * Check of een coach nog beschikbaar is op een bepaalde datum obv max aantal afspraken instellingen.
+     */
+    private function hasReachedAppointmentLimitAtDate(Carbon $date)
+    {
+        return $this->hasReachedAppointmentLimitInMonth($date)
+            || $this->hasReachedAppointmentLimitInWeek($date);
+    }
+
+    /**
+     * Variabele om de berekende maandlimiet op te slaan om niet elke keer opnieuw te hoeven berekenen.
+     */
+    private $reachedAppointmentLimitsByMonth = [];
+
+    /**
+     * Check of een coach nog beschikbaar is in een bepaalde maand obv coach_max_appointments_per_month.
+     */
+    private function hasReachedAppointmentLimitInMonth(Carbon $date)
+    {
+        if(!$this->coach_max_appointments_per_month){
+            return false;
+        }
+
+        $startDate = $date->copy()->startOfMonth();
+
+        if(!isset($this->reachedAppointmentLimitsByMonth[$startDate->format('Y-m')])){
+            $reachedLimit = $this->quotationRequests()
+                ->whereBetween('date_planned', [$startDate, $date->copy()->endOfMonth()])
+                ->where('status_id', '!=', QuotationRequestStatus::STATUS_VISIT_CANCELLED_ID)
+                ->count() >= $this->coach_max_appointments_per_month;
+
+            $this->reachedAppointmentLimitsByMonth[$startDate->format('Y-m')] = $reachedLimit;
+        }
+
+        return $this->reachedAppointmentLimitsByMonth[$startDate->format('Y-m')];
+    }
+
+    /**
+     * Variabele om de berekende weeklimiet op te slaan om niet elke keer opnieuw te hoeven berekenen.
+     */
+    private $reachedAppointmentLimitsByWeek = [];
+
+    /**
+     * Check of een coach nog beschikbaar is in een bepaalde week obv coach_max_appointments_per_week.
+     */
+    private function hasReachedAppointmentLimitInWeek(Carbon $date)
+    {
+        if(!$this->coach_max_appointments_per_week){
+            return false;
+        }
+
+        $startDate = $date->copy()->startOfWeek();
+
+        if(!isset($this->reachedAppointmentLimitsByWeek[$startDate->format('Y-m-d')])){
+            $reachedLimit = $this->quotationRequests()
+                ->whereBetween('date_planned', [$startDate, $date->copy()->endOfWeek()])
+                ->where('status_id', '!=', QuotationRequestStatus::STATUS_VISIT_CANCELLED_ID)
+                ->count() >= $this->coach_max_appointments_per_week;
+
+            $this->reachedAppointmentLimitsByWeek[$startDate->format('Y-m-d')] = $reachedLimit;
+        }
+
+        return $this->reachedAppointmentLimitsByWeek[$startDate->format('Y-m-d')];
     }
 }

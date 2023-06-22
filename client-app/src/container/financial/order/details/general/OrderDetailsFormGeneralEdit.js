@@ -35,6 +35,7 @@ class OrderDetailsFormGeneralEdit extends Component {
             ibanAttn,
             numberOfInvoiceReminders,
             poNumber,
+            projectNumber,
             invoiceText,
             dateRequested,
             administrationId,
@@ -63,6 +64,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                 ibanAttn: ibanAttn ? ibanAttn : '',
                 numberOfInvoiceReminders: numberOfInvoiceReminders ? numberOfInvoiceReminders : '',
                 poNumber: poNumber ? poNumber : '',
+                projectNumber: projectNumber ? projectNumber : '',
                 invoiceText: invoiceText ? invoiceText : '',
                 dateRequested: dateRequested ? dateRequested : '',
                 dateNextInvoice: dateNextInvoice ? dateNextInvoice : '',
@@ -232,6 +234,7 @@ class OrderDetailsFormGeneralEdit extends Component {
             ibanAttn,
             numberOfInvoiceReminders,
             poNumber,
+            projectNumber,
             invoiceText,
             dateRequested,
             administrationId,
@@ -401,11 +404,21 @@ class OrderDetailsFormGeneralEdit extends Component {
                             />
                         </div>
                         <div className="row">
-                            <div className="col-sm-6" />
+                            <div className="col-sm-6 form-group" />
                             <InputText
                                 label="Opdracht nummer klant"
                                 name={'poNumber'}
                                 value={poNumber}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-6 form-group" />
+                            <InputText
+                                label="Projectnummer"
+                                name={'projectNumber'}
+                                value={projectNumber}
+                                maxLength={'25'}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>

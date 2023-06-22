@@ -51,20 +51,22 @@ class contactGroupsContactsForReport extends Command
         $contactGroups = ContactGroup::whereIn('type_id', ['dynamic', 'composed', 'static'])->where('closed', 0)->get();
 
         foreach($contactGroups as $contactGroup) {
-            $allContacts = $contactGroup->all_contact_group_contacts;
+            $allContacts = $contactGroup->all_contact_group_contacts_for_report;
 
-            foreach($allContacts as $contact) {
-                DB::insert('insert into contact_groups_contacts_for_report (
-                    contact_id,
-                    contact_group_id,
-                    member_to_group_since
-                ) values (?, ?, ?)',
-                    [
-                        $contact->id,
-                        $contactGroup->id,
-                        $contact->member_to_group_since,
-                    ]
-                );
+            foreach(array_chunk($allContacts,500) as $chunks){
+                foreach($chunks as $contact) {
+                    DB::insert('insert into contact_groups_contacts_for_report (
+                        contact_id,
+                        contact_group_id,
+                        member_to_group_since
+                    ) values (?, ?, ?)',
+                        [
+                            $contact['id'],
+                            $contactGroup->id,
+                            $contact['member_to_group_since'],
+                        ]
+                    );
+                }
             }
         }
 

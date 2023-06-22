@@ -31,15 +31,20 @@ export default {
                 .nullable()
                 .trim()
                 .test('number', 'Alleen nummers', value => {
+                    if (!value) {
+                        return true;
+                    }
                     return Number.isInteger(+value);
                 }),
             postalCode: Yup.string()
                 .trim()
                 .test('postal-code-nl-check', 'Formaat Nederlandse postcode is 1234 AB', function(value) {
                     if (
-                        (this.parent.countryId !== 'NL' &&
+                        (this.parent.countryId &&
+                            this.parent.countryId !== 'NL' &&
                             this.parent.countryId !== null &&
                             this.parent.countryId != '') ||
+                        !value ||
                         value.trim() == ''
                     ) {
                         return true;
@@ -55,15 +60,20 @@ export default {
                 .nullable()
                 .trim()
                 .test('number', 'Alleen nummers', value => {
+                    if (!value) {
+                        return true;
+                    }
                     return Number.isInteger(+value);
                 }),
             postalCode: Yup.string()
                 .trim()
                 .test('postal-code-nl-check', 'Formaat Nederlandse postcode is 1234 AB', function(value) {
                     if (
-                        (this.parent.countryId !== 'NL' &&
+                        (this.parent.countryId &&
+                            this.parent.countryId !== 'NL' &&
                             this.parent.countryId !== null &&
                             this.parent.countryId != '') ||
+                        !value ||
                         value.trim() == ''
                     ) {
                         return true;
@@ -85,16 +95,22 @@ export default {
             street: Yup.string().trim(),
             number: Yup.string()
                 .nullable()
+                .trim()
                 .test('number', 'Alleen nummers', value => {
+                    if (!value) {
+                        return true;
+                    }
                     return Number.isInteger(+value);
                 }),
             postalCode: Yup.string()
                 .trim()
                 .test('postal-code-nl-check', 'Formaat Nederlandse postcode is 1234 AB', function(value) {
                     if (
-                        (this.parent.countryId !== 'NL' &&
+                        (this.parent.countryId &&
+                            this.parent.countryId !== 'NL' &&
                             this.parent.countryId !== null &&
                             this.parent.countryId != '') ||
+                        !value ||
                         value.trim() == ''
                     ) {
                         return true;
@@ -146,6 +162,7 @@ export default {
                 .trim()
                 .test('postal-code-nl-check', 'Formaat Nederlandse postcode is 1234 AB', function(value) {
                     if (
+                        this.parent.countryId &&
                         this.parent.countryId !== 'NL' &&
                         this.parent.countryId !== null &&
                         this.parent.countryId != ''
@@ -209,9 +226,11 @@ export default {
                 .required('Verplicht')
                 .test('postal-code-nl-check', 'Formaat Nederlandse postcode is 1234 AB', function(value) {
                     if (
-                        (this.parent.countryId !== 'NL' &&
+                        (this.parent.countryId &&
+                            this.parent.countryId !== 'NL' &&
                             this.parent.countryId !== null &&
                             this.parent.countryId != '') ||
+                        !value ||
                         value.trim() == ''
                     ) {
                         return true;

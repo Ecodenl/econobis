@@ -274,6 +274,7 @@ class TwinfieldSalesTransactionHelper
                 ->setLineType(LineType::DETAIL())
                 ->setDim1($ledgerCode)
                 ->setDim2($costCenterCode)
+                ->setDim3($invoice->order->project_number)
                 ->setDescription(substr($descriptionDetail, 0, 40))
                 ->setVatValue($invoiceVatAmount)
                 ->setValue($invoiceDetailExcl)

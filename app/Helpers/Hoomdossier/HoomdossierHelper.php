@@ -120,6 +120,9 @@ class HoomdossierHelper
 
     private function sendToHoomdossier()
     {
+        if(!$this->cooperation){
+            return;
+        }
         // If hoom link contains .test then return fake id
         if($this->cooperation && strpos($this->cooperation->hoom_link, '.test')) {
             $testResponse = json_encode(["account_id" => rand(1,3000),
@@ -200,6 +203,9 @@ class HoomdossierHelper
 
     public function connectCoachToHoomdossier(QuotationRequest $quotationRequest)
     {
+        if(!$this->cooperation){
+            return;
+        }
         if(!$this->cooperation->hoom_connect_coach_link){
             return;
         }

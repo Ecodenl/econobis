@@ -26,6 +26,7 @@ class Cooperation extends Model
         'updated_at' => 'date',
         'deleted_at' => 'date',
         'require_two_factor_authentication' => 'bool',
+        'create_contacts_for_report_table' => 'bool',
     ];
 
     protected $encryptable = [

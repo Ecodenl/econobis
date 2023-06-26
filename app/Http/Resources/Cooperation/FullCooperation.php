@@ -42,6 +42,7 @@ class FullCooperation extends JsonResource
             'useLaposta' => $this->use_laposta,
             'useExportAddressConsumption' => $this->use_export_address_consumption,
             'requireTwoFactorAuthentication' => $this->require_two_factor_authentication,
+            'createContactsForReportTable' => $this->create_contacts_for_report_table,
             'lapostaKey' => $this->laposta_key,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,

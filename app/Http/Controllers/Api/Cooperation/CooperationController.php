@@ -42,6 +42,9 @@ class CooperationController extends ApiController
         if($cooperation->hoom_group_id == '') {
             $cooperation->hoom_group_id = null;
         }
+        if($cooperation->hoom_email_template_id == '') {
+            $cooperation->hoom_email_template_id = null;
+        }
         if($cooperation->inspection_planned_email_template_id == '') {
             $cooperation->inspection_planned_email_template_id = null;
         }
@@ -58,6 +61,7 @@ class CooperationController extends ApiController
         $cooperation->use_laposta = $request->boolean('useLaposta');
         $cooperation->use_export_address_consumption = $request->boolean('useExportAddressConsumption');
         $cooperation->require_two_factor_authentication = $request->boolean('requireTwoFactorAuthentication');
+        $cooperation->create_contacts_for_report_table = $request->boolean('createContactsForReportTable');
         $cooperation->save();
 
         // Store attachment when given
@@ -74,11 +78,14 @@ class CooperationController extends ApiController
         $this->authorize('manage', Cooperation::class);
 
         $cooperation->fill($request->validatedSnake());
-        if($cooperation->hoom_email_template_id == '') {
-            $cooperation->hoom_email_template_id = null;
+        if($cooperation->hoom_campaign_id == '') {
+            $cooperation->hoom_campaign_id = null;
         }
         if($cooperation->hoom_group_id == '') {
             $cooperation->hoom_group_id = null;
+        }
+        if($cooperation->hoom_email_template_id == '') {
+            $cooperation->hoom_email_template_id = null;
         }
         if($cooperation->inspection_planned_mailbox_id == '') {
             $cooperation->inspection_planned_mailbox_id = null;
@@ -96,6 +103,7 @@ class CooperationController extends ApiController
         $cooperation->use_laposta = $request->boolean('useLaposta');
         $cooperation->use_export_address_consumption = $request->boolean('useExportAddressConsumption');
         $cooperation->require_two_factor_authentication = $request->boolean('requireTwoFactorAuthentication');
+        $cooperation->create_contacts_for_report_table = $request->boolean('createContactsForReportTable');
         $cooperation->save();
 
         // Store attachment when given

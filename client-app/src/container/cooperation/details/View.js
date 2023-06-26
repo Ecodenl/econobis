@@ -152,6 +152,15 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
 {verbruik_electriciteit_vaste_kosten_laag}`}
                         />
                     </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Vullen report tabel (tbv Power BI)'}
+                            value={formData.createContactsForReportTable ? 'Ja' : 'Nee'}
+                            size={'col-sm-5'}
+                            name={'createContactsForReportTable'}
+                            textToolTip={`Hiermee wordt er een tabel gevuld met alle contactgroep/contact koppelingen tbv Power BI.`}
+                        />
+                    </div>
                 </PanelBody>
             </Panel>
         </section>

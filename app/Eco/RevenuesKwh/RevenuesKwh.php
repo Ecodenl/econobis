@@ -63,7 +63,7 @@ class RevenuesKwh extends Model
         return $this->hasMany(RevenuePartsKwh::class, 'revenue_id')->where('status', 'new');
     }
     public function confirmedPartsKwh(){
-        return $this->hasMany(RevenuePartsKwh::class, 'revenue_id')->where('status', 'confirmed');
+        return $this->hasMany(RevenuePartsKwh::class, 'revenue_id')->whereIn('status', ['confirmed', 'processed']);
     }
     public function conceptPartsKwh(){
         return $this->hasMany(RevenuePartsKwh::class, 'revenue_id')->where('status', 'concept');
@@ -134,6 +134,12 @@ class RevenuesKwh extends Model
     public function getLastPartsKwhAttribute()
     {
         return $this->partsKwh()->orderByDesc('date_end')->first();
+    }
+
+    public function getDateEndLastConfirmedPartsKwhAttribute()
+    {
+        $lastConfirmedPartsKwh = $this->confirmedPartsKwh()->orderByDesc('date_end')->first();
+        return $lastConfirmedPartsKwh ? $lastConfirmedPartsKwh->date_end : null;
     }
 
     public function getHasNewPartsKwh(){

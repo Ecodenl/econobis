@@ -87,6 +87,7 @@ class recoverWrongEnergySupplierDataInParts extends Command
     private function getAddressEnergySupplierInAPeriod($addressid, $dateBegin, $dateEnd)
     {
         $addressEnergySupplier = AddressEnergySupplier::where('address_id', '=', $addressid)
+            ->whereIn('energy_supply_type_id', [2, 3] )
             ->where(function ($addressEnergySupplier) use ($dateBegin) {
                 $addressEnergySupplier
                     ->where(function ($addressEnergySupplier) use ($dateBegin) {

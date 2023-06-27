@@ -45,11 +45,11 @@ class contactGroupsContactsForReport extends Command
     {
         Auth::setUser(User::find(1));
 
-        /* first truncate the 'contact_groups_contacts_for_report' table */
-        DB::table('contact_groups_contacts_for_report')->truncate();
-
         $cooperation = Cooperation::first();
         if($cooperation && $cooperation->create_contacts_for_report_table) {
+
+            /* first truncate the 'contact_groups_contacts_for_report' table */
+            DB::table('contact_groups_contacts_for_report')->truncate();
 
             Log::info('Start opnieuw vullen contact_groups_contacts_for_report tabel.');
 

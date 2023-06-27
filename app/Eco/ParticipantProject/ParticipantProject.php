@@ -267,6 +267,7 @@ class ParticipantProject extends Model
     public function getAddressEnergySupplierInAPeriod($dateBegin, $dateEnd)
     {
         $addressEnergySupplier = AddressEnergySupplier::where('address_id', '=', $this->address_id)
+            ->whereIn('energy_supply_type_id', [2, 3] )
             ->where(function ($addressEnergySupplier) use ($dateBegin) {
                 $addressEnergySupplier
                     ->where(function ($addressEnergySupplier) use ($dateBegin) {

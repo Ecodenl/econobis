@@ -452,8 +452,8 @@ class RevenuesKwhHelper
 
         // indien part gevonden.
         if($revenuePartsKwh){
-            // indien beeindigsdatum participant na splitdatum, dan hoeven we niet opnieuw te splitsen.
-            if($dateTerminated != null && $splitDateString > $dateTerminated) {
+            // indien ES switch en splitdatum na beeindigsdatum participant, dan hoeven we niet te splitsen.
+            if($addressEnergySupplier != null && $dateTerminated != null && $splitDateString > $dateTerminated) {
                 return false;
             }
 

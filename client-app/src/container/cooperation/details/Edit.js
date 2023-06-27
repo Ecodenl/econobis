@@ -417,7 +417,7 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
                         </div>
                         <div className="row">
                             <InputToggle
-                                label={'Vullen report tabel (tbv Power BI)'}
+                                label={'Vullen contactgroep/contact koppelingen report tabel (tbv Power BI)'}
                                 name={'createContactsForReportTable'}
                                 value={!!values.createContactsForReportTable}
                                 onChangeAction={e => setFieldValue('createContactsForReportTable', e.target.checked)}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import RevenuePartsKwhListFormView from './RevenuePartsKwhListFormView';
-// import RevenuePartsKwhListFormDelete from './RevenuePartsKwhListFormDelete';
+import RevenuePartsKwhListFormDelete from './RevenuePartsKwhListFormDelete';
 
 class RevenuePartsKwhListFormItem extends Component {
     constructor(props) {
@@ -9,7 +9,7 @@ class RevenuePartsKwhListFormItem extends Component {
         this.state = {
             showActionButtons: false,
             highlightLine: '',
-            // showDelete: false,
+            showDelete: false,
             revenuePartKwh: {
                 ...props.revenuePartKwh,
             },
@@ -30,9 +30,9 @@ class RevenuePartsKwhListFormItem extends Component {
         });
     };
 
-    // toggleDelete = () => {
-    //     this.setState({ showDelete: !this.state.showDelete });
-    // };
+    toggleDelete = () => {
+        this.setState({ showDelete: !this.state.showDelete });
+    };
 
     render() {
         return (
@@ -42,15 +42,15 @@ class RevenuePartsKwhListFormItem extends Component {
                     showActionButtons={this.state.showActionButtons}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
-                    // toggleDelete={this.toggleDelete}
+                    toggleDelete={this.toggleDelete}
                     revenuePartKwh={this.state.revenuePartKwh}
                 />
-                {/*{this.state.showDelete && (*/}
-                {/*    <RevenuePartsKwhListFormDelete*/}
-                {/*        closeDeleteItemModal={this.toggleDelete}*/}
-                {/*        {...this.props.revenuePartKwh}*/}
-                {/*    />*/}
-                {/*)}*/}
+                {this.state.showDelete && (
+                    <RevenuePartsKwhListFormDelete
+                        closeDeleteItemModal={this.toggleDelete}
+                        {...this.props.revenuePartKwh}
+                    />
+                )}
             </div>
         );
     }

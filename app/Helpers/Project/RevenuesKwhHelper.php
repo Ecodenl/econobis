@@ -57,15 +57,22 @@ class RevenuesKwhHelper
      */
     public function createNewLastRevenuePartsKwh(RevenuesKwh $revenuesKwh)
     {
-        if(!$revenuesKwh->last_parts_kwh){
+        $oldLastPartKwh = $revenuesKwh->last_parts_kwh;
+        if(!$oldLastPartKwh){
             return false;
         }
-        $fromDate = Carbon::parse($revenuesKwh->last_parts_kwh->date_end)->addDay()->format('Y-m-d');
-        if($revenuesKwh->last_parts_kwh->date_begin >= $fromDate){
+        $fromDate = Carbon::parse($oldLastPartKwh->date_end)->addDay()->format('Y-m-d');
+        if($oldLastPartKwh->date_begin >= $fromDate){
             return false;
         }
         $toDate = Carbon::parse($revenuesKwh->date_end)->format('Y-m-d');
         $this->createNewParts($revenuesKwh, $fromDate, $toDate);
+
+        foreach ($oldLastPartKwh->distributionPartsKwh as $distributionPartsKwh) {
+            $distributionPartsKwh->is_end_total_period = false;
+            $distributionPartsKwh->is_visible = $this->determineIsVisible($distributionPartsKwh);
+            $distributionPartsKwh->save();
+        }
 
         return true;
     }
@@ -436,9 +443,11 @@ class RevenuesKwhHelper
     {
         $projectName = $participant ? $participant->project->name : '?';
         $projectId = $participant ? $participant->project->id : 'onbekend';
-        $projectDateNextRevenuesKwh = $participant ? $participant->project->date_interest_bearing_kwh : Carbon::parse($splitDate)->startOfYear()->format('Y-m-d');
+// todo WM: clenanup
+//        $projectDateNextRevenuesKwh = $participant ? $participant->project->date_interest_bearing_kwh : Carbon::parse($splitDate)->startOfYear()->format('Y-m-d');
         $splitDateString = Carbon::parse($splitDate)->format('Y-m-d');
-        $endDateBeforeSplitDate = Carbon::parse($splitDate)->subDay()->format('Y-m-d');
+// todo WM: clenanup
+//        $endDateBeforeSplitDate = Carbon::parse($splitDate)->subDay()->format('Y-m-d');
         $splitDateReadable = Carbon::parse($splitDate)->format('d-m-Y');
 
         $dateTerminated = $participant->date_terminated ? Carbon::parse($participant->date_terminated)->format('Y-m-d') : null;
@@ -450,6 +459,12 @@ class RevenuesKwhHelper
                 $query->where('project_id', $participant->project_id);
             })->first();
 
+        // indien part niet gevonden, dan hoeven we niet te spitsen.
+        if(!$revenuePartsKwh){
+// todo WM: clenanup
+//            Log::info('part niet gevonden');
+            return false;
+        }
         // indien part gevonden.
         if($revenuePartsKwh){
             // indien ES switch en splitdatum na beeindigsdatum participant, dan hoeven we niet te splitsen.
@@ -505,114 +520,116 @@ class RevenuesKwhHelper
 
         }
 
+// todo WM: clenanup
         // indien niet gevonden, dan nieuwe part maken.
-        if(!$revenuePartsKwh){
-            // Zoek laatste revenue part voor participant.
-            $lastRevenuePartsKwh = RevenuePartsKwh::whereHas('revenuesKwh', function ($query) use($participant) {
-                    $query->where('project_id', $participant->project_id);
-                })->orderByDesc('date_end')->first();
-            if($lastRevenuePartsKwh){
-
-                If($lastRevenuePartsKwh->confirmed){
-                    // Check of einddatum niet meer dan 1,5 jaar voor splitsdatum ligt.
-                    if(Carbon::parse($splitDate)->diffInDays(Carbon::parse($lastRevenuePartsKwh->revenuesKwh->date_end)->addYear()->addMonths(6)->subDay(), false) < 0){
-                        $message = 'Datum ' . $splitDateReadable . ' valt meer dan 1,5 jaar na laatste definitieve opbrengstverdeling.';
-                        return [
-                            'success' => false,
-                            'errorMessage' => $message,
-                            'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
-                        ];
-                    }else{
-                        if(Carbon::parse($splitDate)->format('Y-m-d') < Carbon::parse($lastRevenuePartsKwh->date_end)->addDay()){
-                            return false;
-                        }else {
-                            $message = 'Nieuwe periode ' . Carbon::parse($lastRevenuePartsKwh->date_end)->addDay()->format('d-m-Y') . ' t/m ' . Carbon::parse($splitDate)->subDay()->format('d-m-Y');
-                            return [
-                                'success' => true,
-                                'newRevenue' => true,
-                                'revenuesId' => 0,
-                                'revenuePartsId' => 0,
-                                'projectId' => $projectId,
-                                'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
-                            ];
-                        }
-                    }
-                } else {
-                    if(Carbon::parse($splitDate)->diffInDays(Carbon::parse($lastRevenuePartsKwh->revenuesKwh->date_begin)->addYear()->addMonths(6)->subDay(), false) < 0){
-                        $message = 'Datum ' . $splitDateReadable . ' valt meer dan 1,5 jaar na begindatum onderhanden opbrengstverdeling.';
-                        return [
-                            'success' => false,
-                            'errorMessage' => $message,
-                            'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
-                        ];
-                    }else{
-                        if(Carbon::parse($splitDate)->format('Y-m-d') < Carbon::parse($lastRevenuePartsKwh->revenuesKwh->date_end)->addDay()->format('Y-m-d')) {
-                            return false;
-                        } else if(Carbon::parse($splitDate)->format('Y-m-d') == Carbon::parse($lastRevenuePartsKwh->revenuesKwh->date_end)->addDay()->format('Y-m-d')) {
-
-                            $message = 'Periode ' . Carbon::parse($lastRevenuePartsKwh->date_begin)->format('d-m-Y') . ' t/m ' . Carbon::parse($lastRevenuePartsKwh->date_end)->format('d-m-Y');
-                            return [
-                                'success' => true,
-                                'newRevenue' => false,
-                                'revenuesId' => $lastRevenuePartsKwh->revenuesKwh->id,
-                                'revenuePartsId' => $lastRevenuePartsKwh->revenuesKwh->last_parts_kwh->id,
-                                'projectId' => $projectId,
-                                'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
-                            ];
-                        } else {
-                            $lastRevenuePartsKwh->revenuesKwh->date_end = $endDateBeforeSplitDate;
-                            $lastRevenuePartsKwh->revenuesKwh->save();
-                            $createdOk = $this->createNewLastRevenuePartsKwh($lastRevenuePartsKwh->revenuesKwh);
-                            if($createdOk){
-                                $message = 'Periode ' . Carbon::parse($lastRevenuePartsKwh->date_begin)->format('d-m-Y') . ' t/m ' . Carbon::parse($lastRevenuePartsKwh->date_end)->format('d-m-Y');
-                                return [
-                                    'success' => true,
-                                    'newRevenue' => false,
-                                    'revenuesId' => $lastRevenuePartsKwh->revenuesKwh->id,
-                                    'revenuePartsId' => $lastRevenuePartsKwh->revenuesKwh->last_parts_kwh->id,
-                                    'projectId' => $projectId,
-                                    'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
-                                ];
-                            } else {
-                                $message = 'Onbekende fout bij nieuwe laatste periode opbrengstverdeling aanmaken.';
-                                return [
-                                    'success' => false,
-                                    'errorMessage' => $message,
-                                    'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
-                                ];
-                            }
-
-
-                        }
-                    }
-
-                }
-            } else {
-                if(Carbon::parse($splitDate)->diffInDays(Carbon::parse($projectDateNextRevenuesKwh)->addYear()->addMonths(6)->subDay(), false) < 0){
-                    $message = 'Datum ' . $splitDateReadable . ' valt meer dan 1,5 jaar na begindatum nieuwe opbrengstverdeling.';
-                    return [
-                        'success' => false,
-                        'errorMessage' => $message,
-                        'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
-                    ];
-                }else {
-                    if(Carbon::parse($splitDate)->format('Y-m-d') < Carbon::parse($projectDateNextRevenuesKwh)){
-                        return false;
-                    }else {
-                        $message = 'Nieuwe periode ' . Carbon::parse($projectDateNextRevenuesKwh)->format('d-m-Y') . ' t/m ' . Carbon::parse($splitDate)->subDay()->format('d-m-Y');
-                        return [
-                            'success' => true,
-                            'newRevenue' => true,
-                            'revenuesId' => 0,
-                            'revenuePartsId' => 0,
-                            'projectId' => $projectId,
-                            'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
-                        ];
-                    }
-                }
-            }
-
-        }
+//        if(!$revenuePartsKwh){
+//            // Zoek laatste revenue part voor participant.
+//            $lastRevenuePartsKwh = RevenuePartsKwh::whereHas('revenuesKwh', function ($query) use($participant) {
+//                    $query->where('project_id', $participant->project_id);
+//                })->orderByDesc('date_end')->first();
+//
+//            if($lastRevenuePartsKwh){
+//
+//                If($lastRevenuePartsKwh->confirmed){
+//                    // Check of einddatum niet meer dan 1,5 jaar voor splitsdatum ligt.
+//                    if(Carbon::parse($splitDate)->diffInDays(Carbon::parse($lastRevenuePartsKwh->revenuesKwh->date_end)->addYear()->addMonths(6)->subDay(), false) < 0){
+//                        $message = 'Datum ' . $splitDateReadable . ' valt meer dan 1,5 jaar na laatste definitieve opbrengstverdeling.';
+//                        return [
+//                            'success' => false,
+//                            'errorMessage' => $message,
+//                            'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
+//                        ];
+//                    }else{
+//                        if(Carbon::parse($splitDate)->format('Y-m-d') < Carbon::parse($lastRevenuePartsKwh->date_end)->addDay()){
+//                            return false;
+//                        }else {
+//                            $message = 'Nieuwe periode ' . Carbon::parse($lastRevenuePartsKwh->date_end)->addDay()->format('d-m-Y') . ' t/m ' . Carbon::parse($splitDate)->subDay()->format('d-m-Y');
+//                            return [
+//                                'success' => true,
+//                                'newRevenue' => true,
+//                                'revenuesId' => 0,
+//                                'revenuePartsId' => 0,
+//                                'projectId' => $projectId,
+//                                'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
+//                            ];
+//                        }
+//                    }
+//                } else {
+//                    if(Carbon::parse($splitDate)->diffInDays(Carbon::parse($lastRevenuePartsKwh->revenuesKwh->date_begin)->addYear()->addMonths(6)->subDay(), false) < 0){
+//                        $message = 'Datum ' . $splitDateReadable . ' valt meer dan 1,5 jaar na begindatum onderhanden opbrengstverdeling.';
+//                        return [
+//                            'success' => false,
+//                            'errorMessage' => $message,
+//                            'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
+//                        ];
+//                    }else{
+//                        if(Carbon::parse($splitDate)->format('Y-m-d') < Carbon::parse($lastRevenuePartsKwh->revenuesKwh->date_end)->addDay()->format('Y-m-d')) {
+//                            return false;
+//                        } else if(Carbon::parse($splitDate)->format('Y-m-d') == Carbon::parse($lastRevenuePartsKwh->revenuesKwh->date_end)->addDay()->format('Y-m-d')) {
+//
+//                            $message = 'Periode ' . Carbon::parse($lastRevenuePartsKwh->date_begin)->format('d-m-Y') . ' t/m ' . Carbon::parse($lastRevenuePartsKwh->date_end)->format('d-m-Y');
+//                            return [
+//                                'success' => true,
+//                                'newRevenue' => false,
+//                                'revenuesId' => $lastRevenuePartsKwh->revenuesKwh->id,
+//                                'revenuePartsId' => $lastRevenuePartsKwh->revenuesKwh->last_parts_kwh->id,
+//                                'projectId' => $projectId,
+//                                'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
+//                            ];
+//                        } else {
+//                            $lastRevenuePartsKwh->revenuesKwh->date_end = $endDateBeforeSplitDate;
+//                            $lastRevenuePartsKwh->revenuesKwh->save();
+//                            $createdOk = $this->createNewLastRevenuePartsKwh($lastRevenuePartsKwh->revenuesKwh);
+//                            if($createdOk){
+//                                $message = 'Periode ' . Carbon::parse($lastRevenuePartsKwh->date_begin)->format('d-m-Y') . ' t/m ' . Carbon::parse($lastRevenuePartsKwh->date_end)->format('d-m-Y');
+//                                return [
+//                                    'success' => true,
+//                                    'newRevenue' => false,
+//                                    'revenuesId' => $lastRevenuePartsKwh->revenuesKwh->id,
+//                                    'revenuePartsId' => $lastRevenuePartsKwh->revenuesKwh->last_parts_kwh->id,
+//                                    'projectId' => $projectId,
+//                                    'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
+//                                ];
+//                            } else {
+//                                $message = 'Onbekende fout bij nieuwe laatste periode opbrengstverdeling aanmaken.';
+//                                return [
+//                                    'success' => false,
+//                                    'errorMessage' => $message,
+//                                    'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
+//                                ];
+//                            }
+//
+//
+//                        }
+//                    }
+//
+//                }
+//            } else {
+//                if(Carbon::parse($splitDate)->diffInDays(Carbon::parse($projectDateNextRevenuesKwh)->addYear()->addMonths(6)->subDay(), false) < 0){
+//                    $message = 'Datum ' . $splitDateReadable . ' valt meer dan 1,5 jaar na begindatum nieuwe opbrengstverdeling.';
+//                    return [
+//                        'success' => false,
+//                        'errorMessage' => $message,
+//                        'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
+//                    ];
+//                }else {
+//                    if(Carbon::parse($splitDate)->format('Y-m-d') < Carbon::parse($projectDateNextRevenuesKwh)){
+//                        return false;
+//                    }else {
+//                        $message = 'Nieuwe periode ' . Carbon::parse($projectDateNextRevenuesKwh)->format('d-m-Y') . ' t/m ' . Carbon::parse($splitDate)->subDay()->format('d-m-Y');
+//                        return [
+//                            'success' => true,
+//                            'newRevenue' => true,
+//                            'revenuesId' => 0,
+//                            'revenuePartsId' => 0,
+//                            'projectId' => $projectId,
+//                            'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
+//                        ];
+//                    }
+//                }
+//            }
+//
+//        }
 
         return ['success' => false, 'errorMessage' => 'Onbekende fout'];
 

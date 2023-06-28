@@ -461,11 +461,9 @@ class RevenuesKwhHelper
 
         // indien part niet gevonden, dan hoeven we niet te spitsen.
         if(!$revenuePartsKwh){
-// todo WM: clenanup
-//            Log::info('part niet gevonden');
             return false;
         }
-        // indien part gevonden.
+        // indien part wel gevonden.
         if($revenuePartsKwh){
             // indien ES switch en splitdatum na beeindigsdatum participant, dan hoeven we niet te splitsen.
             if($addressEnergySupplier != null && $dateTerminated != null && $splitDateString > $dateTerminated) {

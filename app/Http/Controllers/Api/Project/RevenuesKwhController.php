@@ -173,10 +173,7 @@ class RevenuesKwhController extends ApiController
 
         }
 
-        return FullRevenuesKwh::collection(RevenuesKwh::where('project_id',
-            $revenuesKwh->project_id)
-            ->with('createdBy', 'project', 'partsKwh', 'distributionKwh')
-            ->orderBy('date_begin')->get());
+        return FullRevenuesKwh::make(RevenuesKwh::find($revenuesKwh->id));
     }
 
     public function recalculateRevenuesDistribution(RevenuesKwh $revenuesKwh)

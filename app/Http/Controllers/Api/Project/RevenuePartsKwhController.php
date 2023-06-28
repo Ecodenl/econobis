@@ -19,6 +19,7 @@ use App\Eco\RevenuesKwh\RevenuePartsKwh;
 use App\Eco\RevenuesKwh\RevenueValuesKwh;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\RevenueDistributionPartsKwhCSVHelper;
+use App\Helpers\Delete\Models\DeleteRevenuePartsKwh;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Excel\EnergySupplierExcelHelper;
 use App\Helpers\Project\RevenueDistributionKwhHelper;
@@ -41,6 +42,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -136,6 +138,41 @@ class RevenuePartsKwhController extends ApiController
         return FullRevenuePartsKwh::collection(RevenuePartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)
             ->with('distributionPartsKwh')
             ->orderBy('date_begin')->get());
+    }
+
+    public function destroy(RevenuePartsKwh $revenuePartsKwh)
+    {
+        $this->authorize('manage', RevenuesKwh::class);
+
+        $newEndDate = Carbon::parse($revenuePartsKwh->date_begin)->subDay(1)->format('Y-m-d');
+
+        try {
+            DB::beginTransaction();
+
+            $deleteRevenuePartsKwh = new DeleteRevenuePartsKwh($revenuePartsKwh);
+            $result = $deleteRevenuePartsKwh->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
+
+        $revenuePartsKwh->revenuesKwh->date_end = $newEndDate;
+        $revenuePartsKwh->revenuesKwh->save();
+        if($revenuePartsKwh->previous_revenue_parts_kwh){
+            foreach ($revenuePartsKwh->previous_revenue_parts_kwh->distributionPartsKwh as $distributionPartsKwh) {
+                $distributionPartsKwh->is_end_total_period = true;
+                $distributionPartsKwh->is_visible = $this->determineIsVisible($distributionPartsKwh);
+                $distributionPartsKwh->save();
+            }
+        }
     }
 
     public function reportEnergySupplier(
@@ -968,6 +1005,21 @@ class RevenuePartsKwhController extends ApiController
             (new EmailHelper())->setConfigToMailbox($mailboxToSendFrom);
         }
         return $mailboxToSendFrom;
+    }
+
+    /**
+     * @param RevenueDistributionPartsKwh $distributionPartsKwh
+     */
+    protected function determineIsVisible(RevenueDistributionPartsKwh $distributionPartsKwh): bool
+    {
+        if ($distributionPartsKwh->is_energy_supplier_switch
+            || $distributionPartsKwh->is_end_participation
+            || $distributionPartsKwh->is_end_total_period
+            || $distributionPartsKwh->is_end_year_period) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     protected function translateToValidCharacterSet($field){

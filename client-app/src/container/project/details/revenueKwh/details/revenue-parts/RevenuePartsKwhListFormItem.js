@@ -10,9 +10,6 @@ class RevenuePartsKwhListFormItem extends Component {
             showActionButtons: false,
             highlightLine: '',
             showDelete: false,
-            revenuePartKwh: {
-                ...props.revenuePartKwh,
-            },
         };
     }
 
@@ -43,7 +40,7 @@ class RevenuePartsKwhListFormItem extends Component {
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
                     toggleDelete={this.toggleDelete}
-                    revenuePartKwh={this.state.revenuePartKwh}
+                    revenuePartKwh={this.props.revenuePartKwh}
                 />
                 {this.state.showDelete && (
                     <RevenuePartsKwhListFormDelete

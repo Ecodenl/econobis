@@ -154,7 +154,7 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Vullen report tabel (tbv Power BI)'}
+                            label={'Vullen contactgroep/contact koppelingen report tabel (tbv Power BI)'}
                             value={formData.createContactsForReportTable ? 'Ja' : 'Nee'}
                             size={'col-sm-5'}
                             name={'createContactsForReportTable'}

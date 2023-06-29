@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\Project\Project;
+use App\Eco\RevenuesKwh\RevenueDistributionKwh;
+use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Helpers\Email\EmailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
@@ -65,6 +67,7 @@ class checkTerminationDateParticipants extends Command
                 }
                 $participantProjectDateTerminated = Carbon::parse($participantProject->date_terminated)->format('Y-m-d');
                 $participantProjectDateTerminatedDayAfter = Carbon::parse($participantProject->date_terminated)->addDay(1)->format('Y-m-d');
+
 //Log::info('Deelnemer: ' . $participantProject->id);
 //Log::info('Date Terminated: ' . $participantProjectDateTerminated);
 //Log::info('Date Terminated (next day): ' . $participantProjectDateTerminatedDayAfter);
@@ -74,11 +77,28 @@ class checkTerminationDateParticipants extends Command
                     && ($lastmutationDateEntry != null)
                     && ($participantProjectDateTerminatedDayAfter != $lastmutationDateEntry)
                 ) {
-                    $wrongParticipantProjects[] = [
-                        'project' => $project->id . ' - ' . $project->name,
-                        'participant' => $participantProject->id . ' - ' . $participantProject->contact->full_name,
-                        'dates' => Carbon::parse($participantProjectDateTerminated)->format('d-m-Y') . ' - ' . Carbon::parse($lastmutationDateEntry)->format('d-m-Y')
-                    ];
+                    // zijn er reeds verwerkte revenues (bij project) met einddatum na beeindingsdatum?
+                    $revenuesKwhProcessedExists = RevenuesKwh::where('project_id', $participantProject->project_id)->where('date_end', '>=', $participantProjectDateTerminated)->where('status', 'processed')->exists();
+                    // zo ja, dan laten we hem maar even voor wat het is.
+                    // zo niet, dan controleren of hij nog voorkomt in een niet verwerkte revenue.
+                    if(!$revenuesKwhProcessedExists){
+                        // komt participant nog voor in een niet verwerkte revenue.
+                        $participantInNotProcessedDistributionExists = RevenueDistributionKwh::where('participation_id', $participantProject->id)->where('status', '!=', 'processed')->exists();
+                        // zo niet, dan laten we hem maar even voor wat het is.
+                        // zo ja, dan willen we hem herstellen, melding van maken dus.
+                        // zijn er nog niet verwerkt revenues (bij project) met begindatum voor beeindigsdatum.
+                        $revenuesKwhBeforeDateTerminatedExists = RevenuesKwh::where('project_id', $participantProject->project_id)->where('date_begin', '<=', $participantProjectDateTerminated)->exists();
+                        // zo niet, dan laten we hem maar even voor wat het is.
+                        // zo ja, dan willen we hem herstellen, melding van maken dus.
+                        if($participantInNotProcessedDistributionExists || $revenuesKwhBeforeDateTerminatedExists) {
+                            $wrongParticipantProjects[] = [
+                                'project' => $project->id . ' - ' . $project->name,
+                                'participant' => $participantProject->id . ' - ' . $participantProject->contact->full_name,
+                                'dateTerminated' => Carbon::parse($participantProjectDateTerminated)->format('d-m-Y'),
+                                'dateLastMutationDateEntry' => Carbon::parse($lastmutationDateEntry)->format('d-m-Y')
+                            ];
+                        }
+                    }
                 }
             }
         }
@@ -104,7 +124,8 @@ class checkTerminationDateParticipants extends Command
             $wrongParticipantProjectsHtml .=
                 "<p>Project: " . $wrongParticipantProject['project'] . ", " .
                 "Deelnemer: " . $wrongParticipantProject['participant'] . ", " .
-                "Datums: " . $wrongParticipantProject['dates'] . "</p>"
+                "Datum beeindigd: " . $wrongParticipantProject['dateTerminated'] . ", " .
+                "Datum Laatste mutatie: " . $wrongParticipantProject['dateLastMutationDateEntry'] . "</p>"
             ;
         }
 

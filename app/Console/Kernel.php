@@ -118,6 +118,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('workflow:processWorkflowEmailExpiredTask')->timezone('Europe/Amsterdam')->dailyAt('05:05');
         $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->timezone('Europe/Amsterdam')->dailyAt('05:10');
         $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->timezone('Europe/Amsterdam')->dailyAt('05:15');
+
+        $schedule->command('revenue:checkMissingRevenueDistributionParts')->timezone('Europe/Amsterdam')->dailyAt('05:30');
     }
 
     /**

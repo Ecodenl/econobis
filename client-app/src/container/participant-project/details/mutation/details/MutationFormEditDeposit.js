@@ -12,6 +12,7 @@ import ButtonText from '../../../../../components/button/ButtonText';
 import * as PropTypes from 'prop-types';
 import React from 'react';
 import ParticipantDetailsMutationMolliePayments from './mollie-payments';
+import moment from 'moment';
 
 function MutationFormEditDeposit({
     readOnly,
@@ -30,7 +31,15 @@ function MutationFormEditDeposit({
     buttonText,
     participantProjectDateRegister,
     participantInDefinitiveRevenue,
+    projectDateInterestBearingKwh,
 }) {
+    let disableBeforeEntryDate = '';
+    if (projectTypeCodeRef === 'postalcode_link_capital') {
+        if (projectDateInterestBearingKwh) {
+            disableBeforeEntryDate = moment(projectDateInterestBearingKwh).format('YYYY-MM-DD');
+        }
+    }
+
     return (
         <PanelBody>
             <div className="row">
@@ -134,6 +143,7 @@ function MutationFormEditDeposit({
                     errors={errors}
                     errorMessage={errorMessage}
                     projectTypeCodeRef={projectTypeCodeRef}
+                    disableBeforeEntryDate={disableBeforeEntryDate}
                 />
             )}
             {participantMutationFromProps.status.codeRef === 'final' && (
@@ -148,6 +158,7 @@ function MutationFormEditDeposit({
                     projectTypeCodeRef={projectTypeCodeRef}
                     participantProjectDateRegister={participantProjectDateRegister}
                     participantInDefinitiveRevenue={participantInDefinitiveRevenue}
+                    disableBeforeEntryDate={disableBeforeEntryDate}
                 />
             )}
 

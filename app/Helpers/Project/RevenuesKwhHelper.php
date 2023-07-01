@@ -261,6 +261,84 @@ class RevenuesKwhHelper
         }
     }
 
+    public function saveNewDistributionPartsKwh(RevenuePartsKwh $revenuePartsKwh, RevenueDistributionKwh $distributionKwh):void
+    {
+        // Bepalen energiesupplier
+        $partDateBegin = Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d');
+        $partDateEnd = Carbon::parse($revenuePartsKwh->date_end)->format('Y-m-d');
+        $addressEnergySupplier = AddressEnergySupplier::where('address_id', '=', $distributionKwh->participation->address_id)
+            ->whereIn('energy_supply_type_id', [2, 3] )
+            ->where(function ($addressEnergySupplier) use ($partDateBegin) {
+                $addressEnergySupplier
+                    ->where(function ($addressEnergySupplier) use ($partDateBegin) {
+                        $addressEnergySupplier->whereNotNull('member_since')
+                            ->where('member_since', '<=', $partDateBegin);
+                    })
+                    ->orWhereNull('member_since');
+            })
+            ->where(function ($addressEnergySupplier) use ($partDateBegin) {
+                $addressEnergySupplier
+                    ->where(function ($addressEnergySupplier) use ($partDateBegin) {
+                        $addressEnergySupplier->whereNotNull('end_date')
+                            ->where('end_date', '>=', $partDateBegin);
+                    })
+                    ->orWhereNull('end_date');
+            })->first();
+        $isEnergySupplierSwitch = false;
+        $isEndParticipation = false;
+        $isEndTotalPeriod = false;
+        $isEndYearPeriod = false;
+        $isVisible = false;
+        if ($addressEnergySupplier->end_date == $revenuePartsKwh->date_end) {
+            $isEnergySupplierSwitch = true;
+        }
+        if ($distributionKwh->participation->date_terminated == $revenuePartsKwh->date_end) {
+            $isEndParticipation = true;
+        }
+        if ($revenuePartsKwh->date_end && $revenuePartsKwh->date_end == $revenuePartsKwh->revenuesKwh->date_end) {
+            $isEndTotalPeriod = true;
+        }
+        if ($revenuePartsKwh->date_end && Carbon::parse($revenuePartsKwh->date_end)->day == 31 && Carbon::parse($revenuePartsKwh->date_end)->month == 12) {
+            $isEndYearPeriod = true;
+        }
+
+        if ($isEnergySupplierSwitch || $isEndParticipation || $isEndTotalPeriod || $isEndYearPeriod) {
+            $isVisible = true;
+        }
+
+        $distributionPartsKwh = RevenueDistributionPartsKwh::create(
+            [
+                'parts_id' => $revenuePartsKwh->id,
+                'distribution_id' => $distributionKwh->id,
+                'revenue_id' => $revenuePartsKwh->revenue_id,
+                'status' => (($revenuePartsKwh->status == 'concept-to-update') ? 'concept' : $revenuePartsKwh->status),
+                'participations_quantity_at_start' => 0,
+                'participations_quantity' => 0,
+                'delivered_kwh' => 0,
+                'es_id' => ($addressEnergySupplier ? $addressEnergySupplier->energy_supplier_id : null),
+                'energy_supplier_name' => ($addressEnergySupplier ? $addressEnergySupplier->energySupplier->name : null),
+                'energy_supplier_number' => ($addressEnergySupplier ? $addressEnergySupplier->es_number: null),
+                'is_energy_supplier_switch' => $isEnergySupplierSwitch,
+                'is_end_participation' => $isEndParticipation,
+                'is_end_total_period' => $isEndTotalPeriod,
+                'is_end_year_period' => $isEndYearPeriod,
+                'is_visible' => $isVisible,
+            ]);
+        $distributionValuesKwh = RevenueDistributionValuesKwh::create(
+            [
+                'date_begin' => $partDateBegin,
+                'date_end' => $partDateEnd,
+                'distribution_id' => $distributionPartsKwh->distribution_id,
+                'revenue_id' => $distributionPartsKwh->revenue_id,
+                'parts_id' => $distributionPartsKwh->parts_id,
+                'status' => $distributionPartsKwh->status,
+                'days_of_period' => 0,
+                'participations_quantity' => 0,
+                'quantity_multiply_by_days' => 0,
+                'delivered_kwh' => 0
+            ]);
+    }
+
     protected function saveDistributionPartsKwh(RevenuePartsKwh $revenuePartsKwh, RevenueDistributionKwh $distributionKwh):void
     {
         // Bepalen energiesupplier

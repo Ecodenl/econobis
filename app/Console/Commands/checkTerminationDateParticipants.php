@@ -77,20 +77,20 @@ class checkTerminationDateParticipants extends Command
                     && ($lastmutationDateEntry != null)
                     && ($participantProjectDateTerminatedDayAfter != $lastmutationDateEntry)
                 ) {
-                    // zijn er reeds verwerkte revenues (bij project) met einddatum na beeindingsdatum?
-                    $revenuesKwhProcessedExists = RevenuesKwh::where('project_id', $participantProject->project_id)->where('date_end', '>=', $participantProjectDateTerminated)->where('status', 'processed')->exists();
+                    // zijn er reeds definitieve revenues (bij project) met einddatum na beeindingsdatum?
+                    $revenuesKwhProcessedExists = RevenuesKwh::where('project_id', $participantProject->project_id)->where('date_end', '>=', $participantProjectDateTerminated)->whereIn('status', ['confirmed', 'processed'])->exists();
                     // zo ja, dan laten we hem maar even voor wat het is.
                     // zo niet, dan controleren of hij nog voorkomt in een niet verwerkte revenue.
                     if(!$revenuesKwhProcessedExists){
-                        // komt participant nog voor in een niet verwerkte revenue.
-                        $participantInNotProcessedDistributionExists = RevenueDistributionKwh::where('participation_id', $participantProject->id)->where('status', '!=', 'processed')->exists();
+                        // komt participant nog voor in een niet definitieve revenue.
+                        $participantInNotConfirmedDistributionExists = RevenueDistributionKwh::where('participation_id', $participantProject->id)->whereNotIn('status', ['confirmed', 'processed'])->exists();
                         // zo niet, dan laten we hem maar even voor wat het is.
                         // zo ja, dan willen we hem herstellen, melding van maken dus.
                         // zijn er nog niet verwerkt revenues (bij project) met begindatum voor beeindigsdatum.
                         $revenuesKwhBeforeDateTerminatedExists = RevenuesKwh::where('project_id', $participantProject->project_id)->where('date_begin', '<=', $participantProjectDateTerminated)->exists();
                         // zo niet, dan laten we hem maar even voor wat het is.
                         // zo ja, dan willen we hem herstellen, melding van maken dus.
-                        if($participantInNotProcessedDistributionExists || $revenuesKwhBeforeDateTerminatedExists) {
+                        if($participantInNotConfirmedDistributionExists || $revenuesKwhBeforeDateTerminatedExists) {
                             $wrongParticipantProjects[] = [
                                 'project' => $project->id . ' - ' . $project->name,
                                 'participant' => $participantProject->id . ' - ' . $participantProject->contact->full_name,

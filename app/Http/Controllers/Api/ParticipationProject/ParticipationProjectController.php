@@ -682,6 +682,7 @@ class ParticipationProjectController extends ApiController
 
     public function createParticipantReport(Request $request, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate)
     {
+
         $this->authorize('manage', ParticipantProject::class);
 
         set_time_limit(0);
@@ -778,11 +779,14 @@ class ParticipationProjectController extends ApiController
 
             file_put_contents($filePath, $pdf);
 
-            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+                $alfrescoResponse = $alfrescoHelper->createFile($filePath, $document->filename, $document->getDocumentGroup()->name);
+                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+            }else{
+                $document->alfresco_node_id = null;
+            }
 
-            $alfrescoResponse = $alfrescoHelper->createFile($filePath, $document->filename, $document->getDocumentGroup()->name);
-
-            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
             $document->save();
         } catch (\Exception $e) {
             Log::error('Fout bij maken rapport document voor ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
@@ -828,8 +832,10 @@ class ParticipationProjectController extends ApiController
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'administratie', $project->administration);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
 
+                $defaultAttachmentDocumentId = $emailTemplate->defaultAttachmentDocument ? $emailTemplate->defaultAttachmentDocument->id : null;
+
                 $email->send(new ParticipantReportMail($email, $fromEmail, $fromName,
-                    $htmlBodyWithContactVariables, $document));
+                    $htmlBodyWithContactVariables, $document, $defaultAttachmentDocumentId));
             } catch (\Exception $e) {
                 Log::error( 'Fout bij verzenden email naar ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
                 Log::error($e->getMessage());
@@ -837,7 +843,9 @@ class ParticipationProjectController extends ApiController
             }
 
             //delete file on server, still saved on alfresco.
-            Storage::disk('documents')->delete($document->filename);
+            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+                Storage::disk('documents')->delete($document->filename);
+            }
         }
         if(count($messages) > 0)
         {

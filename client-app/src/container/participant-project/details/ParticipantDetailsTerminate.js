@@ -10,22 +10,24 @@ import ParticipantProjectDetailsAPI from '../../../api/participant-project/Parti
 import InputToggle from '../../../components/form/InputToggle';
 import { hashHistory } from 'react-router';
 import ViewText from '../../../components/form/ViewText';
-import validator from "validator";
+import validator from 'validator';
 
 const ParticipantDetailsTerminate = ({
-                                         participantProject,
-                                         setErrorModal,
-                                         closeDeleteItemModal,
-                                         projectTypeCodeRef,
-                                         fetchParticipantProjectDetails,
-                                         projectRevenueCategories,
-                                     }) => {
+    participantProject,
+    setErrorModal,
+    closeDeleteItemModal,
+    projectTypeCodeRef,
+    fetchParticipantProjectDetails,
+    projectRevenueCategories,
+}) => {
     const [dateTerminated, setDateTerminated] = useState(
-        participantProject.participationsDefinitive != 0 || participantProject.amountDefinitive != 0
+        !participantProject.dateEntryLastMutation ||
+            participantProject.participationsDefinitive != 0 ||
+            participantProject.amountDefinitive != 0
             ? moment().format('Y-MM-DD')
             : moment(participantProject.dateEntryLastMutation)
-                .subtract(1, 'days')
-                .format('Y-MM-DD')
+                  .subtract(1, 'days')
+                  .format('Y-MM-DD')
     );
     const [payoutPercentageTerminated, setPayoutPercentageTerminated] = useState(0);
     const [redirectRevenueSplit, setRedirectRevenueSplit] = useState(true);
@@ -65,7 +67,7 @@ const ParticipantDetailsTerminate = ({
 
         if (validator.isEmpty(dateTerminated)) {
             errors.dateTerminated = true;
-            errorMessages.dateTerminated = "Ongeldige datum";
+            errorMessages.dateTerminated = 'Ongeldige datum';
             hasErrors = true;
         }
 
@@ -113,7 +115,11 @@ const ParticipantDetailsTerminate = ({
                 <div className="row">
                     <ViewText
                         label={'Datum laatste mutatie storting/terugbetaling'}
-                        value={moment(participantProject.dateEntryLastMutation).format('DD-MM-Y')}
+                        value={
+                            participantProject.dateEntryLastMutation
+                                ? moment(participantProject.dateEntryLastMutation).format('DD-MM-Y')
+                                : ''
+                        }
                     />
                 </div>
                 <div className="row">
@@ -129,8 +135,8 @@ const ParticipantDetailsTerminate = ({
                             participantProject.participationsDefinitive != 0 || participantProject.amountDefinitive != 0
                                 ? moment().format('Y-MM-DD')
                                 : moment(participantProject.dateEntryLastMutation)
-                                    .subtract(1, 'days')
-                                    .format('Y-MM-DD')
+                                      .subtract(1, 'days')
+                                      .format('Y-MM-DD')
                         }
                         error={errors.dateTerminated}
                         errorMessage={errorMessages.dateTerminated}

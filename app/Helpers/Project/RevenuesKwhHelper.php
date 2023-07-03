@@ -18,6 +18,7 @@ use App\Jobs\RevenueKwh\UpdateRevenuePartsKwh;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class RevenuesKwhHelper
 {
@@ -259,6 +260,111 @@ class RevenuesKwhHelper
         foreach ($revenuesKwh->distributionKwh as $distributionKwh) {
             $this->saveDistributionPartsKwh($revenuePartsKwh, $distributionKwh);
         }
+    }
+
+    public function saveNewDistributionPartsKwh(RevenuePartsKwh $revenuePartsKwh, RevenueDistributionKwh $distributionKwh):void
+    {
+        // Bepalen energiesupplier
+        $partDateBegin = Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d');
+        $partDateEnd = Carbon::parse($revenuePartsKwh->date_end)->format('Y-m-d');
+        $addressEnergySupplier = AddressEnergySupplier::where('address_id', '=', $distributionKwh->participation->address_id)
+            ->whereIn('energy_supply_type_id', [2, 3] )
+            ->where(function ($addressEnergySupplier) use ($partDateBegin) {
+                $addressEnergySupplier
+                    ->where(function ($addressEnergySupplier) use ($partDateBegin) {
+                        $addressEnergySupplier->whereNotNull('member_since')
+                            ->where('member_since', '<=', $partDateBegin);
+                    })
+                    ->orWhereNull('member_since');
+            })
+            ->where(function ($addressEnergySupplier) use ($partDateBegin) {
+                $addressEnergySupplier
+                    ->where(function ($addressEnergySupplier) use ($partDateBegin) {
+                        $addressEnergySupplier->whereNotNull('end_date')
+                            ->where('end_date', '>=', $partDateBegin);
+                    })
+                    ->orWhereNull('end_date');
+            })->first();
+        // indien geen geldige addressEnergySupplier gevonden, dan aanmaken met onbekende energieleverancier
+        if(!$addressEnergySupplier) {
+            $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
+            $energySupplierTypeElectriciteit = EnergySupplierType::where('name', 'Electriciteit')->first();
+            $firstNextAddressEnergySupplier = $this->getFirstNextAddressEnergySupplier($distributionKwh->participation->address_id, $partDateBegin);
+            $addressEnergySupplierData = [
+                'address_id' => $distributionKwh->participation->address_id,
+                'energy_supplier_id' => $energySupplierUnknown->id,
+                'es_number' => '',
+                'energy_supply_type_id' => $energySupplierTypeElectriciteit ? $energySupplierTypeElectriciteit->id : 2,
+                'member_since' => $partDateBegin,
+                'end_date' => $firstNextAddressEnergySupplier ? Carbon::parse($firstNextAddressEnergySupplier->member_since)->subDay(1)->format('Y-m-d') : null,
+            ];
+            $addressEnergySupplier = new AddressEnergySupplier();
+            $addressEnergySupplier->fill($addressEnergySupplierData);
+            $addressEnergySupplierController = new AddressEnergySupplierController();
+            // voor zekerheid nog even controleren met validateAddressEnergySupplier
+            $response = $addressEnergySupplierController->validateAddressEnergySupplier($addressEnergySupplier, false);
+
+            if($response){
+                Log::error('Koppeling adres met energieleverancier ' . $energySupplierUnknown->name . ' NIET gemaakt.');
+                Log::info($response);
+                return;
+            } else {
+                $addressEnergySupplier->save();
+            }
+        }
+        $isEnergySupplierSwitch = false;
+        $isEndParticipation = false;
+        $isEndTotalPeriod = false;
+        $isEndYearPeriod = false;
+        $isVisible = false;
+        if ($addressEnergySupplier->end_date == $revenuePartsKwh->date_end) {
+            $isEnergySupplierSwitch = true;
+        }
+        if ($distributionKwh->participation->date_terminated == $revenuePartsKwh->date_end) {
+            $isEndParticipation = true;
+        }
+        if ($revenuePartsKwh->date_end && $revenuePartsKwh->date_end == $revenuePartsKwh->revenuesKwh->date_end) {
+            $isEndTotalPeriod = true;
+        }
+        if ($revenuePartsKwh->date_end && Carbon::parse($revenuePartsKwh->date_end)->day == 31 && Carbon::parse($revenuePartsKwh->date_end)->month == 12) {
+            $isEndYearPeriod = true;
+        }
+
+        if ($isEnergySupplierSwitch || $isEndParticipation || $isEndTotalPeriod || $isEndYearPeriod) {
+            $isVisible = true;
+        }
+
+        $distributionPartsKwh = RevenueDistributionPartsKwh::create(
+            [
+                'parts_id' => $revenuePartsKwh->id,
+                'distribution_id' => $distributionKwh->id,
+                'revenue_id' => $revenuePartsKwh->revenue_id,
+                'status' => (($revenuePartsKwh->status == 'concept-to-update') ? 'concept' : $revenuePartsKwh->status),
+                'participations_quantity_at_start' => 0,
+                'participations_quantity' => 0,
+                'delivered_kwh' => 0,
+                'es_id' => ($addressEnergySupplier ? $addressEnergySupplier->energy_supplier_id : null),
+                'energy_supplier_name' => ($addressEnergySupplier ? $addressEnergySupplier->energySupplier->name : null),
+                'energy_supplier_number' => ($addressEnergySupplier ? $addressEnergySupplier->es_number: null),
+                'is_energy_supplier_switch' => $isEnergySupplierSwitch,
+                'is_end_participation' => $isEndParticipation,
+                'is_end_total_period' => $isEndTotalPeriod,
+                'is_end_year_period' => $isEndYearPeriod,
+                'is_visible' => $isVisible,
+            ]);
+        $distributionValuesKwh = RevenueDistributionValuesKwh::create(
+            [
+                'date_begin' => $partDateBegin,
+                'date_end' => $partDateEnd,
+                'distribution_id' => $distributionPartsKwh->distribution_id,
+                'revenue_id' => $distributionPartsKwh->revenue_id,
+                'parts_id' => $distributionPartsKwh->parts_id,
+                'status' => $distributionPartsKwh->status,
+                'days_of_period' => 0,
+                'participations_quantity' => 0,
+                'quantity_multiply_by_days' => 0,
+                'delivered_kwh' => 0
+            ]);
     }
 
     protected function saveDistributionPartsKwh(RevenuePartsKwh $revenuePartsKwh, RevenueDistributionKwh $distributionKwh):void
@@ -938,6 +1044,7 @@ class RevenuesKwhHelper
     protected function getFirstNextAddressEnergySupplier($addressId, $dateBegin)
     {
         $addressEnergySupplier = AddressEnergySupplier::where('address_id', $addressId)
+            ->whereIn('energy_supply_type_id', [2, 3] )
             ->where(function ($addressEnergySupplier) use ($dateBegin) {
                 $addressEnergySupplier
                     ->where(function ($addressEnergySupplier) use ($dateBegin) {

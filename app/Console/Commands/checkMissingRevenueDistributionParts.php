@@ -2,18 +2,12 @@
 
 namespace App\Console\Commands;
 
-use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
-use App\Eco\EnergySupplier\EnergySupplier;
-use App\Eco\EnergySupplier\EnergySupplierType;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
 use App\Eco\RevenuesKwh\RevenuePartsKwh;
-use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
-use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
-use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;

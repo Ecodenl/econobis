@@ -298,19 +298,18 @@ class RevenuesKwhHelper
                 'member_since' => $partDateBegin,
                 'end_date' => $firstNextAddressEnergySupplier ? Carbon::parse($firstNextAddressEnergySupplier->member_since)->subDay(1)->format('Y-m-d') : null,
             ];
-            $addressEnergySupplierNew = new AddressEnergySupplier();
-            $addressEnergySupplierNew->fill($addressEnergySupplierData);
+            $addressEnergySupplier = new AddressEnergySupplier();
+            $addressEnergySupplier->fill($addressEnergySupplierData);
             $addressEnergySupplierController = new AddressEnergySupplierController();
             // voor zekerheid nog even controleren met validateAddressEnergySupplier
-            $response = $addressEnergySupplierController->validateAddressEnergySupplier($addressEnergySupplierNew, false);
+            $response = $addressEnergySupplierController->validateAddressEnergySupplier($addressEnergySupplier, false);
 
             if($response){
-                Log::info('Koppeling adres met energieleverancier ' . $energySupplierUnknown->name . ' NIET gemaakt.');
+                Log::error('Koppeling adres met energieleverancier ' . $energySupplierUnknown->name . ' NIET gemaakt.');
                 Log::info($response);
+                return;
             } else {
-                $addressEnergySupplierNew->save();
-                Log::info('Koppeling adres met energieleverancier NIEUW gemaakt.');
-                Log::info($addressEnergySupplierNew);
+                $addressEnergySupplier->save();
             }
         }
         $isEnergySupplierSwitch = false;

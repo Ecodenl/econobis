@@ -18,6 +18,7 @@ use App\Jobs\RevenueKwh\UpdateRevenuePartsKwh;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class RevenuesKwhHelper
 {
@@ -284,6 +285,34 @@ class RevenuesKwhHelper
                     })
                     ->orWhereNull('end_date');
             })->first();
+        // indien geen geldige addressEnergySupplier gevonden, dan aanmaken met onbekende energieleverancier
+        if(!$addressEnergySupplier) {
+            $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
+            $energySupplierTypeElectriciteit = EnergySupplierType::where('name', 'Electriciteit')->first();
+            $firstNextAddressEnergySupplier = $this->getFirstNextAddressEnergySupplier($distributionKwh->participation->address_id, $partDateBegin);
+            $addressEnergySupplierData = [
+                'address_id' => $distributionKwh->participation->address_id,
+                'energy_supplier_id' => $energySupplierUnknown->id,
+                'es_number' => '',
+                'energy_supply_type_id' => $energySupplierTypeElectriciteit ? $energySupplierTypeElectriciteit->id : 2,
+                'member_since' => $partDateBegin,
+                'end_date' => $firstNextAddressEnergySupplier ? Carbon::parse($firstNextAddressEnergySupplier->member_since)->subDay(1)->format('Y-m-d') : null,
+            ];
+            $addressEnergySupplierNew = new AddressEnergySupplier();
+            $addressEnergySupplierNew->fill($addressEnergySupplierData);
+            $addressEnergySupplierController = new AddressEnergySupplierController();
+            // voor zekerheid nog even controleren met validateAddressEnergySupplier
+            $response = $addressEnergySupplierController->validateAddressEnergySupplier($addressEnergySupplierNew, false);
+
+            if($response){
+                Log::info('Koppeling adres met energieleverancier ' . $energySupplierUnknown->name . ' NIET gemaakt.');
+                Log::info($response);
+            } else {
+                $addressEnergySupplierNew->save();
+                Log::info('Koppeling adres met energieleverancier NIEUW gemaakt.');
+                Log::info($addressEnergySupplierNew);
+            }
+        }
         $isEnergySupplierSwitch = false;
         $isEndParticipation = false;
         $isEndTotalPeriod = false;
@@ -1016,6 +1045,7 @@ class RevenuesKwhHelper
     protected function getFirstNextAddressEnergySupplier($addressId, $dateBegin)
     {
         $addressEnergySupplier = AddressEnergySupplier::where('address_id', $addressId)
+            ->whereIn('energy_supply_type_id', [2, 3] )
             ->where(function ($addressEnergySupplier) use ($dateBegin) {
                 $addressEnergySupplier
                     ->where(function ($addressEnergySupplier) use ($dateBegin) {

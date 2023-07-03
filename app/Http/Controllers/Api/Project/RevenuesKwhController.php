@@ -230,6 +230,13 @@ class RevenuesKwhController extends ApiController
             $distributionKwh->participations_quantity_at_start = $quantityOfParticipationsAtStart;
             $distributionKwh->participations_quantity = $quantityOfParticipations;
             $distributionKwh->save();
+            // Indien distribution Nieuw toegevoegd, dan voor alle parts (behalve met status new) alvast distribution parts en values toeveogen met delivered 0.
+            if ($distributionKwhIsNew) {
+                $revenuesKwhHelper = new RevenuesKwhHelper();
+                foreach ($distributionKwh->revenuesKwh->partsKwh()->whereNotIn('status', ['new', 'in-progress-update'])->orderBy('date_begin')->get() as $partsKwh){
+                    $revenuesKwhHelper->saveNewDistributionPartsKwh($partsKwh, $distributionKwh);
+                }
+            }
         } else {
             // Indien $quantityOfParticipationsAtStart 0 is en er zijn geen mutaties
             if (!$distributionKwhIsNew) {
@@ -240,13 +247,6 @@ class RevenuesKwhController extends ApiController
                     $deleteRevenueDistributionKwh = new DeleteRevenueDistributionKwh($distributionKwh);
                     $deleteRevenueDistributionKwh->delete();
                 }
-            }
-        }
-        // Indien distribution Nieuw toegevoegd, dan voor alle parts (behalve met status new) alvast distribution parts en values toeveogen met delivered 0.
-        if ($distributionKwhIsNew) {
-            $revenuesKwhHelper = new RevenuesKwhHelper();
-            foreach ($distributionKwh->revenuesKwh->partsKwh()->where('status', '!=', 'new')->orderBy('date_begin')->get() as $partsKwh){
-                $revenuesKwhHelper->saveNewDistributionPartsKwh($partsKwh, $distributionKwh);
             }
         }
     }

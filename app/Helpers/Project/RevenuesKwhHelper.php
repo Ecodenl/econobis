@@ -284,6 +284,9 @@ class RevenuesKwhHelper
                     })
                     ->orWhereNull('end_date');
             })->first();
+        if(!$addressEnergySupplier){
+            return;
+        }
         $isEnergySupplierSwitch = false;
         $isEndParticipation = false;
         $isEndTotalPeriod = false;

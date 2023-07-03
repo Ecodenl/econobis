@@ -10,6 +10,7 @@ use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
 use App\Eco\RevenuesKwh\RevenuePartsKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Helpers\Email\EmailHelper;
+use App\Helpers\Project\RevenuesKwhHelper;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
@@ -60,6 +61,8 @@ class checkMissingRevenueDistributionParts extends Command
 
         $revenuesDistributionKwh = RevenueDistributionKwh::all();
 
+        $revenuesKwhHelper = new RevenuesKwhHelper();
+
         // alle revenues kwh controleren
         foreach($revenuesDistributionKwh as $revenueDistributionKwh) {
             //alle RevenuePartsKwh ophalen van hetzelfde revenue_id als de $revenueDistributionKwh
@@ -80,6 +83,10 @@ class checkMissingRevenueDistributionParts extends Command
                         'part_date_end' => $revenuePartKwh->date_end,
                     ];
                     $missingRevenueDistributionParts[] = $missingRevenueDistributionPart;
+
+                    if($doRecover){
+                        $revenuesKwhHelper->saveNewDistributionPartsKwh($revenuePartKwh, $revenueDistributionKwh);
+                    }
                 }
             }
         }

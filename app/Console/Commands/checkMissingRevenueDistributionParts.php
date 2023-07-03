@@ -26,7 +26,7 @@ class checkMissingRevenueDistributionParts extends Command
      * @var string
      */
     protected $signature = 'revenue:checkMissingRevenueDistributionParts {--recover=false}';
-    protected $mailTo = 'patrick.koeman@xaris.nl';
+    protected $mailTo = 'wim.mosman@xaris.nl';
 
     /**
      * The console command description.
@@ -66,7 +66,7 @@ class checkMissingRevenueDistributionParts extends Command
         // alle revenues kwh controleren
         foreach($revenuesDistributionKwh as $revenueDistributionKwh) {
             //alle RevenuePartsKwh ophalen van hetzelfde revenue_id als de $revenueDistributionKwh
-            $revenuePartsKwh = RevenuePartsKwh::where('revenue_id', $revenueDistributionKwh->revenue_id)->whereNotIn('status', ['new'])->get();
+            $revenuePartsKwh = RevenuePartsKwh::where('revenue_id', $revenueDistributionKwh->revenue_id)->whereNotIn('status', ['new', 'in-progress-update'])->orderBy('date_begin')->get();
 
             foreach($revenuePartsKwh as $revenuePartKwh) {
                 //per RevenuePartsKwh nakijken of er een RevenueDistributionPartsKwh bestaat voor deze combinatie

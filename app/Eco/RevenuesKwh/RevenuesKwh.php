@@ -78,13 +78,13 @@ class RevenuesKwh extends Model
         return $this->hasMany(RevenueDistributionPartsKwh::class, 'revenue_id')->where('status', 'concept');
     }
     public function conceptDistributionValuesKwh(){
-        return $this->hasMany(RevenueDistributionValuesKwh::class, 'revenue_id')->where('status', 'çoncept');
+        return $this->hasMany(RevenueDistributionValuesKwh::class, 'revenue_id')->where('status', 'concept');
     }
     public function newOrConceptDistributionPartsKwh(){
         return $this->hasMany(RevenueDistributionPartsKwh::class, 'revenue_id')->whereIn('status', ['new', 'concept']);
     }
     public function newOrConceptDistributionValuesKwh(){
-        return $this->hasMany(RevenueDistributionValuesKwh::class, 'revenue_id')->whereIn('status', ['new', 'çoncept']);
+        return $this->hasMany(RevenueDistributionValuesKwh::class, 'revenue_id')->whereIn('status', ['new', 'concept']);
     }
     public function conceptValuesKwh(){
         return $this->hasMany(RevenueValuesKwh::class, 'revenue_id')->where('status', 'çoncept');

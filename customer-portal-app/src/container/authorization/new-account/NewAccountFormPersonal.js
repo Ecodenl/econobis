@@ -35,7 +35,8 @@ const NewAccountFormPersonal = ({ handleSubmit, showSuccessMessage }) => (
             actions.setSubmitting(true);
             handleSubmit(values, actions);
         }}
-        render={({ isSubmitting, errors, touched }) => (
+    >
+        {({ isSubmitting, errors, touched }) => (
             <Form>
                 <>
                     <Row className="justify-content-center">
@@ -45,9 +46,8 @@ const NewAccountFormPersonal = ({ handleSubmit, showSuccessMessage }) => (
                         <p className={'authorization-text'}>Gegevens</p>
                     </Row>
                     <Row className="justify-content-center">
-                        <Field
-                            name="personTitleId"
-                            render={({ field }) => (
+                        <Field name="personTitleId">
+                            {({ field }) => (
                                 <Select
                                     field={field}
                                     errors={errors}
@@ -58,12 +58,11 @@ const NewAccountFormPersonal = ({ handleSubmit, showSuccessMessage }) => (
                                     options={Titles}
                                 />
                             )}
-                        />
+                        </Field>
                     </Row>
                     <Row className="justify-content-center">
-                        <Field
-                            name="personFirstName"
-                            render={({ field }) => (
+                        <Field name="personFirstName">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -73,12 +72,11 @@ const NewAccountFormPersonal = ({ handleSubmit, showSuccessMessage }) => (
                                     placeholder={'Voornaam'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Row>
                     <Row className="justify-content-center">
-                        <Field
-                            name="personLastNamePrefixId"
-                            render={({ field }) => (
+                        <Field name="personLastNamePrefixId">
+                            {({ field }) => (
                                 <Select
                                     field={field}
                                     errors={errors}
@@ -89,10 +87,9 @@ const NewAccountFormPersonal = ({ handleSubmit, showSuccessMessage }) => (
                                     placeholder={'Tussenvoegsel'}
                                 />
                             )}
-                        />
-                        <Field
-                            name="personLastName"
-                            render={({ field }) => (
+                        </Field>
+                        <Field name="personLastName">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -102,12 +99,11 @@ const NewAccountFormPersonal = ({ handleSubmit, showSuccessMessage }) => (
                                     placeholder={'Achternaam'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Row>
                     <Row className="justify-content-center">
-                        <Field
-                            name="email"
-                            render={({ field }) => (
+                        <Field name="email">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     id="email-new-acount"
@@ -117,7 +113,7 @@ const NewAccountFormPersonal = ({ handleSubmit, showSuccessMessage }) => (
                                     touched={touched}
                                 />
                             )}
-                        />
+                        </Field>
                     </Row>
 
                     <Row className="justify-content-center">
@@ -136,7 +132,7 @@ const NewAccountFormPersonal = ({ handleSubmit, showSuccessMessage }) => (
                 </>
             </Form>
         )}
-    />
+    </Formik>
 );
 
 export default NewAccountFormPersonal;

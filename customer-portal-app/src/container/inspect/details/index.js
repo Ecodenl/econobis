@@ -83,15 +83,8 @@ function InspectDetails({ match, history, user }) {
                             enableReinitialize={true}
                             validationSchema={validationSchema}
                             onSubmit={handleSubmit}
-                            render={({
-                                errors,
-                                touched,
-                                setFieldValue,
-                                isSubmitting,
-                                status,
-                                values,
-                                handleSubmit,
-                            }) => {
+                        >
+                            {({ errors, touched, setFieldValue, isSubmitting, status, values, handleSubmit }) => {
                                 return (
                                     <Form>
                                         <Row>
@@ -135,9 +128,8 @@ function InspectDetails({ match, history, user }) {
                                                 />
                                                 <FormLabel className={'field-label'}>Status</FormLabel>
                                                 {user.inspectionPersonTypeId === 'coach' ? (
-                                                    <Field
-                                                        name="status.id"
-                                                        render={({ field }) => (
+                                                    <Field name="status.id">
+                                                        {({ field }) => (
                                                             <Select
                                                                 name="status.id"
                                                                 field={field}
@@ -149,7 +141,7 @@ function InspectDetails({ match, history, user }) {
                                                                 emptyOption={false}
                                                             />
                                                         )}
-                                                    />
+                                                    </Field>
                                                 ) : (
                                                     <input
                                                         type="text"
@@ -183,9 +175,8 @@ function InspectDetails({ match, history, user }) {
                                                         <FormLabel htmlFor="date_planned" className={'field-label'}>
                                                             Datum afspraak
                                                         </FormLabel>
-                                                        <Field
-                                                            name="datePlanned"
-                                                            render={({ field }) => (
+                                                        <Field name="datePlanned">
+                                                            {({ field }) => (
                                                                 <InputTextDate
                                                                     name="datePlanned"
                                                                     field={field}
@@ -198,7 +189,7 @@ function InspectDetails({ match, history, user }) {
                                                                     step="900"
                                                                 />
                                                             )}
-                                                        />
+                                                        </Field>
                                                     </>
                                                 ) : null}
                                                 {(user.inspectionPersonTypeId === 'coach' &&
@@ -209,9 +200,8 @@ function InspectDetails({ match, history, user }) {
                                                         <FormLabel htmlFor="date_recorded" className={'field-label'}>
                                                             Datum opname
                                                         </FormLabel>
-                                                        <Field
-                                                            name="dateRecorded"
-                                                            render={({ field }) => (
+                                                        <Field name="dateRecorded">
+                                                            {({ field }) => (
                                                                 <InputTextDate
                                                                     name="dateRecorded"
                                                                     field={field}
@@ -224,7 +214,7 @@ function InspectDetails({ match, history, user }) {
                                                                     step="900"
                                                                 />
                                                             )}
-                                                        />
+                                                        </Field>
                                                     </>
                                                 ) : null}
 
@@ -238,9 +228,8 @@ function InspectDetails({ match, history, user }) {
                                                         <FormLabel htmlFor="date_released" className={'field-label'}>
                                                             Datum uitgebracht
                                                         </FormLabel>
-                                                        <Field
-                                                            name="dateReleased"
-                                                            render={({ field }) => (
+                                                        <Field name="dateReleased">
+                                                            {({ field }) => (
                                                                 <InputTextDate
                                                                     name="dateReleased"
                                                                     field={field}
@@ -254,7 +243,7 @@ function InspectDetails({ match, history, user }) {
                                                                     step="900"
                                                                 />
                                                             )}
-                                                        />
+                                                        </Field>
                                                     </>
                                                 ) : null}
 
@@ -268,9 +257,8 @@ function InspectDetails({ match, history, user }) {
                                                         >
                                                             Datum akkoord bewoner
                                                         </FormLabel>
-                                                        <Field
-                                                            name="dateApprovedClient"
-                                                            render={({ field }) => (
+                                                        <Field name="dateApprovedClient">
+                                                            {({ field }) => (
                                                                 <InputTextDate
                                                                     field={field}
                                                                     type="date"
@@ -279,7 +267,7 @@ function InspectDetails({ match, history, user }) {
                                                                     readOnly={true}
                                                                 />
                                                             )}
-                                                        />
+                                                        </Field>
                                                     </>
                                                 ) : null}
                                                 {user.inspectionPersonTypeId === 'projectmanager' ? (
@@ -295,9 +283,8 @@ function InspectDetails({ match, history, user }) {
                                                                 </FormLabel>
                                                                 <div style={{ display: 'flex' }}>
                                                                     <div>
-                                                                        <Field
-                                                                            name="dateApprovedProjectManager"
-                                                                            render={({ field }) => (
+                                                                        <Field name="dateApprovedProjectManager">
+                                                                            {({ field }) => (
                                                                                 <InputTextDate
                                                                                     field={field}
                                                                                     type="date"
@@ -317,7 +304,7 @@ function InspectDetails({ match, history, user }) {
                                                                                     }
                                                                                 />
                                                                             )}
-                                                                        />
+                                                                        </Field>
                                                                     </div>
                                                                     {user.inspectionPersonTypeId ===
                                                                     'projectmanager' ? (
@@ -390,9 +377,8 @@ function InspectDetails({ match, history, user }) {
                                                                 </FormLabel>
                                                                 <div style={{ display: 'flex' }}>
                                                                     <div>
-                                                                        <Field
-                                                                            name="dateUnderReview"
-                                                                            render={({ field }) => (
+                                                                        <Field name="dateUnderReview">
+                                                                            {({ field }) => (
                                                                                 <InputTextDate
                                                                                     field={field}
                                                                                     type="date"
@@ -412,7 +398,7 @@ function InspectDetails({ match, history, user }) {
                                                                                     }
                                                                                 />
                                                                             )}
-                                                                        />
+                                                                        </Field>
                                                                     </div>
                                                                     {user.inspectionPersonTypeId === 'externalparty' ? (
                                                                         <div>
@@ -463,9 +449,8 @@ function InspectDetails({ match, history, user }) {
                                                         </FormLabel>
                                                         <div style={{ display: 'flex' }}>
                                                             <div>
-                                                                <Field
-                                                                    name="dateApprovedExternal"
-                                                                    render={({ field }) => (
+                                                                <Field name="dateApprovedExternal">
+                                                                    {({ field }) => (
                                                                         <InputTextDate
                                                                             field={field}
                                                                             type="date"
@@ -493,7 +478,7 @@ function InspectDetails({ match, history, user }) {
                                                                             }
                                                                         />
                                                                     )}
-                                                                />
+                                                                </Field>
                                                             </div>
                                                             {user.inspectionPersonTypeId === 'externalparty' ? (
                                                                 <div>
@@ -592,7 +577,7 @@ function InspectDetails({ match, history, user }) {
                                     </Form>
                                 );
                             }}
-                        />
+                        </Formik>
                     </div>
 
                     <InspectDetailsDocumentTable

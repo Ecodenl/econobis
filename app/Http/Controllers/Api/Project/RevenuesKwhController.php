@@ -70,6 +70,7 @@ class RevenuesKwhController extends ApiController
 
     public function getRevenueDistribution(RevenuesKwh $revenuesKwh, Request $request)
     {
+//        todo origineel 100: voor testen op 10
         $limit = 100;
         $offset = $request->input('page') ? $request->input('page') * $limit : 0;
 
@@ -172,10 +173,7 @@ class RevenuesKwhController extends ApiController
 
         }
 
-        return FullRevenuesKwh::collection(RevenuesKwh::where('project_id',
-            $revenuesKwh->project_id)
-            ->with('createdBy', 'project', 'partsKwh', 'distributionKwh')
-            ->orderBy('date_begin')->get());
+        return FullRevenuesKwh::make(RevenuesKwh::find($revenuesKwh->id));
     }
 
     public function recalculateRevenuesDistribution(RevenuesKwh $revenuesKwh)
@@ -844,9 +842,12 @@ class RevenuesKwhController extends ApiController
         if(count($messages) > 0)
         {
             return ['messages' => $messages];
-        }
-        else
-        {
+        } else {
+            // Geen fouten bijwerken datum rapportage
+            $distributionKwh->date_participant_report = Carbon::today();
+            $distributionKwh->begin_date_participant_report = $distributionKwh->revenuesKwh->date_begin;
+            $distributionKwh->end_date_participant_report = $distributionKwh->date_end_last_confirmed_parts_kwh;
+            $distributionKwh->save();
             return null;
         }
     }

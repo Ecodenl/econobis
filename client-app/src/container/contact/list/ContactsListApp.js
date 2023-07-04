@@ -250,7 +250,7 @@ class ContactsListApp extends Component {
     handleExtraFiltersChange(extraFilters, amountOfFilters, filterType) {
         this.setState({
             filterType: filterType,
-            amountOfFilters: extraFilters,
+            amountOfFilters: amountOfFilters,
             extraFilters: extraFilters,
         });
 

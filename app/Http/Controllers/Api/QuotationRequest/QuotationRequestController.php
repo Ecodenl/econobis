@@ -8,7 +8,6 @@
 
 namespace App\Http\Controllers\Api\QuotationRequest;
 
-
 use App\Eco\Email\Email;
 use App\Eco\Occupation\Occupation;
 use App\Eco\Occupation\OccupationContact;
@@ -31,6 +30,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use App\Helpers\Hoomdossier\HoomdossierHelper;
 
 class QuotationRequestController extends ApiController
 {
@@ -81,16 +81,22 @@ class QuotationRequestController extends ApiController
         ]);
 
         $quotationRequest->relatedEmailsSent = $this->getRelatedEmails($quotationRequest->id, 'sent');
+
+        $quotationRequest->relatedOccupantEmailsSent = $quotationRequest->relatedEmailsSent->filter(function (Email $email) use ($quotationRequest) {
+            return in_array(optional(optional($quotationRequest->opportunity->intake->contact)->primaryEmailAddress)->email, $email->to);
+        })->values();
         $quotationRequest->relatedCoachEmailsSent = $quotationRequest->relatedEmailsSent->filter(function (Email $email) use ($quotationRequest) {
             return in_array(optional(optional($quotationRequest->organisationOrCoach)->primaryEmailAddress)->email, $email->to);
         })->values();
-        $quotationRequest->relatedOccupantEmailsSent = $quotationRequest->relatedEmailsSent->filter(function (Email $email) use ($quotationRequest) {
-            return in_array(optional($quotationRequest->opportunity->intake->contact->primaryEmailAddress)->email, $email->to);
+        $quotationRequest->relatedExternalpartyEmailsSent = $quotationRequest->relatedEmailsSent->filter(function (Email $email) use ($quotationRequest) {
+            return in_array(optional(optional($quotationRequest->Externalparty)->primaryEmailAddress)->email, $email->to);
         })->values();
         $quotationRequest->relatedCoachAndOccupantEmailsSent = $quotationRequest->relatedEmailsSent->filter(function (Email $email) use ($quotationRequest) {
-            return in_array(optional(optional($quotationRequest->organisationOrCoach)->primaryEmailAddress)->email, $email->to) && in_array(optional($quotationRequest->opportunity->intake->contact->primaryEmailAddress)->email, $email->to);
+            return in_array(optional(optional($quotationRequest->organisationOrCoach)->primaryEmailAddress)->email, $email->cc) && in_array(optional($quotationRequest->opportunity->intake->contact->primaryEmailAddress)->email, $email->to);
         })->values();
-
+        $quotationRequest->relatedExternalpartyAndOccupantEmailsSent = $quotationRequest->relatedEmailsSent->filter(function (Email $email) use ($quotationRequest) {
+            return in_array(optional(optional($quotationRequest->externalParty)->primaryEmailAddress)->email, $email->cc) && in_array(optional($quotationRequest->opportunity->intake->contact->primaryEmailAddress)->email, $email->to);
+        })->values();
         $quotationRequest->relatedQuotationRequestsStatuses = $this->getRelatedQuotationRequestsStatuses($quotationRequest->opportunityAction);
 
         $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
@@ -130,7 +136,7 @@ class QuotationRequestController extends ApiController
         ]);
 
         $opportunity->relatedQuotationRequestsStatuses = $this->getRelatedQuotationRequestsStatuses($opportunityAction);
-        $defaultStatusId = QuotationRequestStatus::where('opportunity_action_id', $opportunityAction->id)->orderBy('order')->first()->id;
+        $defaultStatusId = QuotationRequestStatus::where('opportunity_action_id', $opportunityAction->id)->where('code_ref', 'default')->orderBy('order')->first()->id;
         $opportunity->defaultStatusId = $defaultStatusId;
 
         return FullOpportunity::make($opportunity);
@@ -251,11 +257,16 @@ class QuotationRequestController extends ApiController
 
         $this->creatEnergyCoachOccupation($quotationRequest);
 
+        //if contact has a hoom_account_id, coach is set and coach has a hoom_account_id connect the coach to the hoom dossier
+        if($quotationRequest->organisationOrCoach && $quotationRequest->organisationOrCoach->isCoach()){
+            $HoomdossierHelper = new HoomdossierHelper($quotationRequest->opportunity->intake->contact);
+            $HoomdossierHelper->connectCoachToHoomdossier($quotationRequest);
+        }
+
         $quotationRequest->sendPlannedInDistrictMails();
 
         return $this->show($quotationRequest);
     }
-
 
     public function update(Request $request, QuotationRequest $quotationRequest)
     {

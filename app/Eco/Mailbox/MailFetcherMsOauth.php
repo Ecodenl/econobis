@@ -77,7 +77,7 @@ class MailFetcherMsOauth
 //                Log::info('Aantal messages: ' . $messages->count());
                 $moreAvailable = $this->processMessages($messages, $dateLastFetched);
                 if($moreAvailable){
-                    Log::error('Niet alle email ingelezen, totaal messages was: ' . $messages->count());
+                    Log::error('Niet alle email ingelezen voor mailbox ' . $this->mailbox->id . ', totaal messages was: ' . $messages->count());
                 }
             } catch (Exception $e) {
                 Log::error('Error getting user\'s inbox: '.$e->getMessage());
@@ -212,10 +212,8 @@ class MailFetcherMsOauth
         //if from email exists in any of the email addresses make a pivot record.
         $this->addRelationToContacts($email);
 
-        if($message->getHasAttachments()){
-            $this->storeAttachments($message->getId(), $email);
-        }
-//
+        $this->storeAttachments($message->getId(), $email);
+
 //        $this->fetchedEmails[] = $email;
     }
 
@@ -226,6 +224,16 @@ class MailFetcherMsOauth
             ->setReturnType(Attachment::class);
         if($requestResult){
             foreach ($requestResult->getPage() as $attachment){
+                /**
+                 * De cid's zijn de verwijzingen in de html van images.
+                 * Ook overige bijlages (excel bijv.) krijgen een cid, zet hem voor deze bijlages op null.
+                 * Op die manier kunnen we afbeeldingen die in de html staan verbergen als bijlage.
+                 *
+                 * contentId is niet rechtsreeks benaderbaar maar zit wel in json.
+                 * Daarom maar via deze omweg uit $attachment halen.
+                 */
+                $cid = json_decode(json_encode($attachment))->contentId;
+
                 $contents = base64_decode( $attachment->getProperties()['contentBytes']);
                 $name = $attachment->getName();
                 $filePathAndName = $this->getAttachmentDBName() . \bin2hex(\random_bytes(16)).'.bin';
@@ -233,6 +241,7 @@ class MailFetcherMsOauth
                     'filename' => $filePathAndName,
                     'name' => $name,
                     'email_id' => $email->id,
+                    'cid' => str_contains($email->html_body, $cid) ? $cid : null,
                 ]);
                 $emailAttachment->save();
                 \Illuminate\Support\Facades\Storage::disk('mail_attachments')->put($filePathAndName, $contents);

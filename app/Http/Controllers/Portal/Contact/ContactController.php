@@ -294,16 +294,16 @@ class ContactController extends ApiController
         $person = $contact->person;
         $personData = $request->person;
         if ($person) {
-            if (!isset($personData['titleId']) || empty($personData['titleId']) || $personData['titleId'] == 'null' || $personData['titleId'] == 0 ) {
+            if (!isset($personData['titleId']) || empty($personData['titleId']) || $personData['titleId'] == 'null' || $personData['titleId'] == '' || $personData['titleId'] == 0 ) {
                 $personData['titleId'] = null;
             }
-            if (!isset($personData['dateOfBirth']) || empty($personData['dateOfBirth']) || $personData['dateOfBirth'] == 'null' ) {
+            if (!isset($personData['dateOfBirth']) || empty($personData['dateOfBirth']) || $personData['dateOfBirth'] == 'null' || $personData['dateOfBirth'] == '' ) {
                 $personData['dateOfBirth'] = null;
             }
 
             $lnp = $person->last_name_prefix;
             if (isset($personData['lastNamePrefixId']) ) {
-                if ($personData['lastNamePrefixId'] == 'null' || $personData['lastNamePrefixId'] == 0) {
+                if ($personData['lastNamePrefixId'] == 'null' || $personData['lastNamePrefixId'] == '' || $personData['lastNamePrefixId'] == 0) {
                     $lnp = '';
                 } else {
                     $lnp = LastNamePrefix::where('id', $personData['lastNamePrefixId'])->pluck('name')[0];
@@ -671,10 +671,16 @@ class ContactController extends ApiController
 
                     $currentAddressEnergySupplierElectricityNew->save();
                 }else{
+
                     // new
                     $currentAddressEnergySupplierElectricityNew = $this->createNewAddressEnergySupplier($address, $currentAddressEnergySupplierElectricityData);
+
+                    $addressEnergySupplierController = new AddressEnergySupplierController();
+                    $addressEnergySupplierController->validateAddressEnergySupplier($currentAddressEnergySupplierElectricityNew, true);
+
                     $currentAddressEnergySupplierElectricityNew->save();
                     $this->checkSplitRevenuePart($currentAddressEnergySupplierElectricityNew);
+
                 }
 
                 $currentAddressEnergySupplierElectricityNew->save();
@@ -963,7 +969,7 @@ class ContactController extends ApiController
                 $projectType = $participation->project->projectType;
                 if ($projectType->code_ref === 'postalcode_link_capital') {
                     $revenuesKwhHelper = new RevenuesKwhHelper();
-                    $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkRevenuePartsKwh($participation, $currentAddressEnergySupplierElectricityNew->member_since, $currentAddressEnergySupplierElectricityNew);
+                    $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkAndSplitRevenuePartsKwh($participation, $currentAddressEnergySupplierElectricityNew->member_since, $currentAddressEnergySupplierElectricityNew);
                     if ($splitRevenuePartsKwhResponse) {
                         $revenuePartsKwhArray [] = $splitRevenuePartsKwhResponse;
                     }

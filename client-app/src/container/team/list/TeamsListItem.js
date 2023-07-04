@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
+import { check } from 'react-icons-kit/fa/check';
 
 class TeamsListItem extends Component {
     constructor(props) {
@@ -35,7 +36,7 @@ class TeamsListItem extends Component {
     }
 
     render() {
-        const { id, name, users = [] } = this.props;
+        const { id, name, users, contactGroups, documentCreatedFroms = [] } = this.props;
 
         return (
             <tr
@@ -46,6 +47,10 @@ class TeamsListItem extends Component {
             >
                 <td>{name}</td>
                 <td>{users.map(user => user.fullName).join(', ')}</td>
+                <td>{contactGroups.length > 0 ? <Icon className="mybtn-success" size={14} icon={check} /> : ''}</td>
+                <td>
+                    {documentCreatedFroms.length > 0 ? <Icon className="mybtn-success" size={14} icon={check} /> : ''}
+                </td>
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>

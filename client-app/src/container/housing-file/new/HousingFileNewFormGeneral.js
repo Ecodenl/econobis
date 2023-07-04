@@ -28,6 +28,7 @@ class HousingFileNewFormGeneral extends Component {
                 floors: 0,
                 energyLabelStatusId: '',
                 isMonument: false,
+                numberOfResidents: 0,
             },
         };
     }
@@ -68,6 +69,7 @@ class HousingFileNewFormGeneral extends Component {
             floors,
             energyLabelStatusId,
             isMonument,
+            numberOfResidents,
         } = this.state.housingFile;
         const { addresses = [], fullName } = this.props.contactDetails;
 
@@ -186,6 +188,13 @@ class HousingFileNewFormGeneral extends Component {
                 </div>
 
                 <div className="row">
+                    <InputText
+                        label={'Aantal bewoners'}
+                        name={'numberOfResidents'}
+                        value={numberOfResidents}
+                        min={0}
+                        onChangeAction={this.handleInputChange}
+                    />
                     <InputToggle
                         label={'Koophuis'}
                         name={'isHouseForSale'}

@@ -5,6 +5,7 @@ namespace App\Helpers\Project;
 
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\EnergySupplier\EnergySupplierType;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
@@ -12,10 +13,12 @@ use App\Eco\RevenuesKwh\RevenueDistributionValuesKwh;
 use App\Eco\RevenuesKwh\RevenuePartsKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\RevenuesKwh\RevenueValuesKwh;
+use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Jobs\RevenueKwh\UpdateRevenuePartsKwh;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class RevenuesKwhHelper
 {
@@ -55,15 +58,22 @@ class RevenuesKwhHelper
      */
     public function createNewLastRevenuePartsKwh(RevenuesKwh $revenuesKwh)
     {
-        if(!$revenuesKwh->last_parts_kwh){
+        $oldLastPartKwh = $revenuesKwh->last_parts_kwh;
+        if(!$oldLastPartKwh){
             return false;
         }
-        $fromDate = Carbon::parse($revenuesKwh->last_parts_kwh->date_end)->addDay()->format('Y-m-d');
-        if($revenuesKwh->last_parts_kwh->date_begin >= $fromDate){
+        $fromDate = Carbon::parse($oldLastPartKwh->date_end)->addDay()->format('Y-m-d');
+        if($oldLastPartKwh->date_begin >= $fromDate){
             return false;
         }
         $toDate = Carbon::parse($revenuesKwh->date_end)->format('Y-m-d');
         $this->createNewParts($revenuesKwh, $fromDate, $toDate);
+
+        foreach ($oldLastPartKwh->distributionPartsKwh as $distributionPartsKwh) {
+            $distributionPartsKwh->is_end_total_period = false;
+            $distributionPartsKwh->is_visible = $this->determineIsVisible($distributionPartsKwh);
+            $distributionPartsKwh->save();
+        }
 
         return true;
     }
@@ -252,6 +262,111 @@ class RevenuesKwhHelper
         }
     }
 
+    public function saveNewDistributionPartsKwh(RevenuePartsKwh $revenuePartsKwh, RevenueDistributionKwh $distributionKwh):void
+    {
+        // Bepalen energiesupplier
+        $partDateBegin = Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d');
+        $partDateEnd = Carbon::parse($revenuePartsKwh->date_end)->format('Y-m-d');
+        $addressEnergySupplier = AddressEnergySupplier::where('address_id', '=', $distributionKwh->participation->address_id)
+            ->whereIn('energy_supply_type_id', [2, 3] )
+            ->where(function ($addressEnergySupplier) use ($partDateBegin) {
+                $addressEnergySupplier
+                    ->where(function ($addressEnergySupplier) use ($partDateBegin) {
+                        $addressEnergySupplier->whereNotNull('member_since')
+                            ->where('member_since', '<=', $partDateBegin);
+                    })
+                    ->orWhereNull('member_since');
+            })
+            ->where(function ($addressEnergySupplier) use ($partDateBegin) {
+                $addressEnergySupplier
+                    ->where(function ($addressEnergySupplier) use ($partDateBegin) {
+                        $addressEnergySupplier->whereNotNull('end_date')
+                            ->where('end_date', '>=', $partDateBegin);
+                    })
+                    ->orWhereNull('end_date');
+            })->first();
+        // indien geen geldige addressEnergySupplier gevonden, dan aanmaken met onbekende energieleverancier
+        if(!$addressEnergySupplier) {
+            $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
+            $energySupplierTypeElectriciteit = EnergySupplierType::where('name', 'Electriciteit')->first();
+            $firstNextAddressEnergySupplier = $this->getFirstNextAddressEnergySupplier($distributionKwh->participation->address_id, $partDateBegin);
+            $addressEnergySupplierData = [
+                'address_id' => $distributionKwh->participation->address_id,
+                'energy_supplier_id' => $energySupplierUnknown->id,
+                'es_number' => '',
+                'energy_supply_type_id' => $energySupplierTypeElectriciteit ? $energySupplierTypeElectriciteit->id : 2,
+                'member_since' => $partDateBegin,
+                'end_date' => $firstNextAddressEnergySupplier ? Carbon::parse($firstNextAddressEnergySupplier->member_since)->subDay(1)->format('Y-m-d') : null,
+            ];
+            $addressEnergySupplier = new AddressEnergySupplier();
+            $addressEnergySupplier->fill($addressEnergySupplierData);
+            $addressEnergySupplierController = new AddressEnergySupplierController();
+            // voor zekerheid nog even controleren met validateAddressEnergySupplier
+            $response = $addressEnergySupplierController->validateAddressEnergySupplier($addressEnergySupplier, false);
+
+            if($response){
+                Log::error('Koppeling adres met energieleverancier ' . $energySupplierUnknown->name . ' NIET gemaakt.');
+                Log::info($response);
+                return;
+            } else {
+                $addressEnergySupplier->save();
+            }
+        }
+        $isEnergySupplierSwitch = false;
+        $isEndParticipation = false;
+        $isEndTotalPeriod = false;
+        $isEndYearPeriod = false;
+        $isVisible = false;
+        if ($addressEnergySupplier->end_date == $revenuePartsKwh->date_end) {
+            $isEnergySupplierSwitch = true;
+        }
+        if ($distributionKwh->participation->date_terminated == $revenuePartsKwh->date_end) {
+            $isEndParticipation = true;
+        }
+        if ($revenuePartsKwh->date_end && $revenuePartsKwh->date_end == $revenuePartsKwh->revenuesKwh->date_end) {
+            $isEndTotalPeriod = true;
+        }
+        if ($revenuePartsKwh->date_end && Carbon::parse($revenuePartsKwh->date_end)->day == 31 && Carbon::parse($revenuePartsKwh->date_end)->month == 12) {
+            $isEndYearPeriod = true;
+        }
+
+        if ($isEnergySupplierSwitch || $isEndParticipation || $isEndTotalPeriod || $isEndYearPeriod) {
+            $isVisible = true;
+        }
+
+        $distributionPartsKwh = RevenueDistributionPartsKwh::create(
+            [
+                'parts_id' => $revenuePartsKwh->id,
+                'distribution_id' => $distributionKwh->id,
+                'revenue_id' => $revenuePartsKwh->revenue_id,
+                'status' => (($revenuePartsKwh->status == 'concept-to-update') ? 'concept' : $revenuePartsKwh->status),
+                'participations_quantity_at_start' => 0,
+                'participations_quantity' => 0,
+                'delivered_kwh' => 0,
+                'es_id' => ($addressEnergySupplier ? $addressEnergySupplier->energy_supplier_id : null),
+                'energy_supplier_name' => ($addressEnergySupplier ? $addressEnergySupplier->energySupplier->name : null),
+                'energy_supplier_number' => ($addressEnergySupplier ? $addressEnergySupplier->es_number: null),
+                'is_energy_supplier_switch' => $isEnergySupplierSwitch,
+                'is_end_participation' => $isEndParticipation,
+                'is_end_total_period' => $isEndTotalPeriod,
+                'is_end_year_period' => $isEndYearPeriod,
+                'is_visible' => $isVisible,
+            ]);
+        $distributionValuesKwh = RevenueDistributionValuesKwh::create(
+            [
+                'date_begin' => $partDateBegin,
+                'date_end' => $partDateEnd,
+                'distribution_id' => $distributionPartsKwh->distribution_id,
+                'revenue_id' => $distributionPartsKwh->revenue_id,
+                'parts_id' => $distributionPartsKwh->parts_id,
+                'status' => $distributionPartsKwh->status,
+                'days_of_period' => 0,
+                'participations_quantity' => 0,
+                'quantity_multiply_by_days' => 0,
+                'delivered_kwh' => 0
+            ]);
+    }
+
     protected function saveDistributionPartsKwh(RevenuePartsKwh $revenuePartsKwh, RevenueDistributionKwh $distributionKwh):void
     {
         // Bepalen energiesupplier
@@ -302,6 +417,32 @@ class RevenuesKwhHelper
 
         // Address energy supplier niet meer wijzigen bij distributionPartsKwh als status processed is
         if(!in_array($distributionPartsKwh->status, ['processed'])){
+            // Indien geen $addressEnergySupplier gevonden, dan adhoc hier aanmaken met energySupllier Onbekend.
+            if(!$addressEnergySupplier){
+                $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
+                $energySupplierTypeElectriciteit = EnergySupplierType::where('name', 'Electriciteit')->first();
+                $firstNextAddressEnergySupplier = $this->getFirstNextAddressEnergySupplier($distributionPartsKwh->distributionKwh->participation->address_id, $distributionPartsKwh->partsKwh->date_begin);
+
+                // todo WM: hier direct onbekende energysupplier toevoegen aan addressEnergySupplier
+                $addressEnergySupplierData = [
+                    'address_id' => $distributionPartsKwh->distributionKwh->participation->address_id,
+                    'energy_supplier_id' => $energySupplierUnknown->id,
+                    'es_number' => '',
+                    'energy_supply_type_id' => $energySupplierTypeElectriciteit ? $energySupplierTypeElectriciteit->id : 2,
+                    'member_since' => $distributionPartsKwh->partsKwh->date_begin,
+                    'end_date' => $firstNextAddressEnergySupplier ? Carbon::parse($firstNextAddressEnergySupplier->member_since)->subDay(1)->format('Y-m-d') : null,
+                ];
+                $addressEnergySupplier = new AddressEnergySupplier();
+                $addressEnergySupplier->fill($addressEnergySupplierData);
+                $addressEnergySupplierController = new AddressEnergySupplierController();
+                // voor zekerheid nog even controleren met validateAddressEnergySupplier
+                $response = $addressEnergySupplierController->validateAddressEnergySupplier($addressEnergySupplier, false);
+                $addressEnergySupplier->save();
+            }
+            $distributionPartsKwh->es_id = $addressEnergySupplier ? $addressEnergySupplier->energy_supplier_id : null;
+            $distributionPartsKwh->energy_supplier_name = $addressEnergySupplier ? $addressEnergySupplier->energySupplier->name : null;
+            $distributionPartsKwh->energy_supplier_number = $addressEnergySupplier ? $addressEnergySupplier->es_number: null;
+
             if(AddressEnergySupplier::where('address_id', $distributionPartsKwh->distributionKwh->participation->address_id)->where('energy_supplier_id', $distributionPartsKwh->es_id)->where('end_date', $distributionPartsKwh->partsKwh->date_end)->exists()){
                 $distributionPartsKwh->is_energy_supplier_switch = true;
             } else {
@@ -322,24 +463,8 @@ class RevenuesKwhHelper
             } else {
                 $distributionPartsKwh->is_end_year_period = false;
             }
-
-            if($addressEnergySupplier){
-                $distributionPartsKwh->es_id = $addressEnergySupplier ? $addressEnergySupplier->energy_supplier_id : null;
-                $distributionPartsKwh->energy_supplier_name = $addressEnergySupplier ? $addressEnergySupplier->energySupplier->name : null;
-                $distributionPartsKwh->energy_supplier_number = $addressEnergySupplier ? $addressEnergySupplier->es_number: null;
-//                $distributionPartsKwh->is_visible = empty($distributionPartsKwh->remarks) ? false : true;
-                $distributionPartsKwh->is_visible = $this->determineIsVisible($distributionPartsKwh);
-                $distributionPartsKwh->save();
-            } else {
-                $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
-                if($energySupplierUnknown){
-                    $distributionPartsKwh->es_id = $energySupplierUnknown->id;
-                    $distributionPartsKwh->energy_supplier_name = $energySupplierUnknown->name;
-                    $distributionPartsKwh->energy_supplier_number = '';
-                    $distributionPartsKwh->is_visible = true;
-                    $distributionPartsKwh->save();
-                }
-            }
+            $distributionPartsKwh->is_visible = $this->determineIsVisible($distributionPartsKwh);
+            $distributionPartsKwh->save();
         }
     }
 
@@ -420,14 +545,18 @@ class RevenuesKwhHelper
             ]);
     }
 
-    public function checkRevenuePartsKwh(ParticipantProject $participant, $splitDate, AddressEnergySupplier $addressEnergySupplier = null)
+    public function checkAndSplitRevenuePartsKwh(ParticipantProject $participant, $splitDate, AddressEnergySupplier $addressEnergySupplier = null)
     {
         $projectName = $participant ? $participant->project->name : '?';
         $projectId = $participant ? $participant->project->id : 'onbekend';
-        $projectDateNextRevenuesKwh = $participant ? $participant->project->date_interest_bearing_kwh : Carbon::parse($splitDate)->startOfYear()->format('Y-m-d');
+// todo WM: clenanup
+//        $projectDateNextRevenuesKwh = $participant ? $participant->project->date_interest_bearing_kwh : Carbon::parse($splitDate)->startOfYear()->format('Y-m-d');
         $splitDateString = Carbon::parse($splitDate)->format('Y-m-d');
-        $endDateBeforeSplitDate = Carbon::parse($splitDate)->subDay()->format('Y-m-d');
+// todo WM: clenanup
+//        $endDateBeforeSplitDate = Carbon::parse($splitDate)->subDay()->format('Y-m-d');
         $splitDateReadable = Carbon::parse($splitDate)->format('d-m-Y');
+
+        $dateTerminated = $participant->date_terminated ? Carbon::parse($participant->date_terminated)->format('Y-m-d') : null;
 
         // Zoek revenue part waar splitdatum in valt.
         $revenuePartsKwh = RevenuePartsKwh::where('date_begin', '<=', $splitDateString)
@@ -436,8 +565,17 @@ class RevenuesKwhHelper
                 $query->where('project_id', $participant->project_id);
             })->first();
 
-        // indien part gevonden.
+        // indien part niet gevonden, dan hoeven we niet te spitsen.
+        if(!$revenuePartsKwh){
+            return false;
+        }
+        // indien part wel gevonden.
         if($revenuePartsKwh){
+            // indien ES switch en splitdatum na beeindigsdatum participant, dan hoeven we niet te splitsen.
+            if($addressEnergySupplier != null && $dateTerminated != null && $splitDateString > $dateTerminated) {
+                return false;
+            }
+
             // indien begindatum is splitdatum, dan hoeven we niet opnieuw te splitsen.
             if($splitDateString == Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d')) {
                 // indien gevonden part helemaal verwerkt, dan geen splitsing meer.
@@ -486,114 +624,116 @@ class RevenuesKwhHelper
 
         }
 
+// todo WM: clenanup
         // indien niet gevonden, dan nieuwe part maken.
-        if(!$revenuePartsKwh){
-            // Zoek laatste revenue part voor participant.
-            $lastRevenuePartsKwh = RevenuePartsKwh::whereHas('revenuesKwh', function ($query) use($participant) {
-                    $query->where('project_id', $participant->project_id);
-                })->orderByDesc('date_end')->first();
-            if($lastRevenuePartsKwh){
-
-                If($lastRevenuePartsKwh->confirmed){
-                    // Check of einddatum niet meer dan 1,5 jaar voor splitsdatum ligt.
-                    if(Carbon::parse($splitDate)->diffInDays(Carbon::parse($lastRevenuePartsKwh->revenuesKwh->date_end)->addYear()->addMonths(6)->subDay(), false) < 0){
-                        $message = 'Datum ' . $splitDateReadable . ' valt meer dan 1,5 jaar na laatste definitieve opbrengstverdeling.';
-                        return [
-                            'success' => false,
-                            'errorMessage' => $message,
-                            'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
-                        ];
-                    }else{
-                        if(Carbon::parse($splitDate)->format('Y-m-d') < Carbon::parse($lastRevenuePartsKwh->date_end)->addDay()){
-                            return false;
-                        }else {
-                            $message = 'Nieuwe periode ' . Carbon::parse($lastRevenuePartsKwh->date_end)->addDay()->format('d-m-Y') . ' t/m ' . Carbon::parse($splitDate)->subDay()->format('d-m-Y');
-                            return [
-                                'success' => true,
-                                'newRevenue' => true,
-                                'revenuesId' => 0,
-                                'revenuePartsId' => 0,
-                                'projectId' => $projectId,
-                                'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
-                            ];
-                        }
-                    }
-                } else {
-                    if(Carbon::parse($splitDate)->diffInDays(Carbon::parse($lastRevenuePartsKwh->revenuesKwh->date_begin)->addYear()->addMonths(6)->subDay(), false) < 0){
-                        $message = 'Datum ' . $splitDateReadable . ' valt meer dan 1,5 jaar na begindatum onderhanden opbrengstverdeling.';
-                        return [
-                            'success' => false,
-                            'errorMessage' => $message,
-                            'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
-                        ];
-                    }else{
-                        if(Carbon::parse($splitDate)->format('Y-m-d') < Carbon::parse($lastRevenuePartsKwh->revenuesKwh->date_end)->addDay()->format('Y-m-d')) {
-                            return false;
-                        } else if(Carbon::parse($splitDate)->format('Y-m-d') == Carbon::parse($lastRevenuePartsKwh->revenuesKwh->date_end)->addDay()->format('Y-m-d')) {
-
-                            $message = 'Periode ' . Carbon::parse($lastRevenuePartsKwh->date_begin)->format('d-m-Y') . ' t/m ' . Carbon::parse($lastRevenuePartsKwh->date_end)->format('d-m-Y');
-                            return [
-                                'success' => true,
-                                'newRevenue' => false,
-                                'revenuesId' => $lastRevenuePartsKwh->revenuesKwh->id,
-                                'revenuePartsId' => $lastRevenuePartsKwh->revenuesKwh->last_parts_kwh->id,
-                                'projectId' => $projectId,
-                                'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
-                            ];
-                        } else {
-                            $lastRevenuePartsKwh->revenuesKwh->date_end = $endDateBeforeSplitDate;
-                            $lastRevenuePartsKwh->revenuesKwh->save();
-                            $createdOk = $this->createNewLastRevenuePartsKwh($lastRevenuePartsKwh->revenuesKwh);
-                            if($createdOk){
-                                $message = 'Periode ' . Carbon::parse($lastRevenuePartsKwh->date_begin)->format('d-m-Y') . ' t/m ' . Carbon::parse($lastRevenuePartsKwh->date_end)->format('d-m-Y');
-                                return [
-                                    'success' => true,
-                                    'newRevenue' => false,
-                                    'revenuesId' => $lastRevenuePartsKwh->revenuesKwh->id,
-                                    'revenuePartsId' => $lastRevenuePartsKwh->revenuesKwh->last_parts_kwh->id,
-                                    'projectId' => $projectId,
-                                    'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
-                                ];
-                            } else {
-                                $message = 'Onbekende fout bij nieuwe laatste periode opbrengstverdeling aanmaken.';
-                                return [
-                                    'success' => false,
-                                    'errorMessage' => $message,
-                                    'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
-                                ];
-                            }
-
-
-                        }
-                    }
-
-                }
-            } else {
-                if(Carbon::parse($splitDate)->diffInDays(Carbon::parse($projectDateNextRevenuesKwh)->addYear()->addMonths(6)->subDay(), false) < 0){
-                    $message = 'Datum ' . $splitDateReadable . ' valt meer dan 1,5 jaar na begindatum nieuwe opbrengstverdeling.';
-                    return [
-                        'success' => false,
-                        'errorMessage' => $message,
-                        'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
-                    ];
-                }else {
-                    if(Carbon::parse($splitDate)->format('Y-m-d') < Carbon::parse($projectDateNextRevenuesKwh)){
-                        return false;
-                    }else {
-                        $message = 'Nieuwe periode ' . Carbon::parse($projectDateNextRevenuesKwh)->format('d-m-Y') . ' t/m ' . Carbon::parse($splitDate)->subDay()->format('d-m-Y');
-                        return [
-                            'success' => true,
-                            'newRevenue' => true,
-                            'revenuesId' => 0,
-                            'revenuePartsId' => 0,
-                            'projectId' => $projectId,
-                            'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
-                        ];
-                    }
-                }
-            }
-
-        }
+//        if(!$revenuePartsKwh){
+//            // Zoek laatste revenue part voor participant.
+//            $lastRevenuePartsKwh = RevenuePartsKwh::whereHas('revenuesKwh', function ($query) use($participant) {
+//                    $query->where('project_id', $participant->project_id);
+//                })->orderByDesc('date_end')->first();
+//
+//            if($lastRevenuePartsKwh){
+//
+//                If($lastRevenuePartsKwh->confirmed){
+//                    // Check of einddatum niet meer dan 1,5 jaar voor splitsdatum ligt.
+//                    if(Carbon::parse($splitDate)->diffInDays(Carbon::parse($lastRevenuePartsKwh->revenuesKwh->date_end)->addYear()->addMonths(6)->subDay(), false) < 0){
+//                        $message = 'Datum ' . $splitDateReadable . ' valt meer dan 1,5 jaar na laatste definitieve opbrengstverdeling.';
+//                        return [
+//                            'success' => false,
+//                            'errorMessage' => $message,
+//                            'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
+//                        ];
+//                    }else{
+//                        if(Carbon::parse($splitDate)->format('Y-m-d') < Carbon::parse($lastRevenuePartsKwh->date_end)->addDay()){
+//                            return false;
+//                        }else {
+//                            $message = 'Nieuwe periode ' . Carbon::parse($lastRevenuePartsKwh->date_end)->addDay()->format('d-m-Y') . ' t/m ' . Carbon::parse($splitDate)->subDay()->format('d-m-Y');
+//                            return [
+//                                'success' => true,
+//                                'newRevenue' => true,
+//                                'revenuesId' => 0,
+//                                'revenuePartsId' => 0,
+//                                'projectId' => $projectId,
+//                                'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
+//                            ];
+//                        }
+//                    }
+//                } else {
+//                    if(Carbon::parse($splitDate)->diffInDays(Carbon::parse($lastRevenuePartsKwh->revenuesKwh->date_begin)->addYear()->addMonths(6)->subDay(), false) < 0){
+//                        $message = 'Datum ' . $splitDateReadable . ' valt meer dan 1,5 jaar na begindatum onderhanden opbrengstverdeling.';
+//                        return [
+//                            'success' => false,
+//                            'errorMessage' => $message,
+//                            'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
+//                        ];
+//                    }else{
+//                        if(Carbon::parse($splitDate)->format('Y-m-d') < Carbon::parse($lastRevenuePartsKwh->revenuesKwh->date_end)->addDay()->format('Y-m-d')) {
+//                            return false;
+//                        } else if(Carbon::parse($splitDate)->format('Y-m-d') == Carbon::parse($lastRevenuePartsKwh->revenuesKwh->date_end)->addDay()->format('Y-m-d')) {
+//
+//                            $message = 'Periode ' . Carbon::parse($lastRevenuePartsKwh->date_begin)->format('d-m-Y') . ' t/m ' . Carbon::parse($lastRevenuePartsKwh->date_end)->format('d-m-Y');
+//                            return [
+//                                'success' => true,
+//                                'newRevenue' => false,
+//                                'revenuesId' => $lastRevenuePartsKwh->revenuesKwh->id,
+//                                'revenuePartsId' => $lastRevenuePartsKwh->revenuesKwh->last_parts_kwh->id,
+//                                'projectId' => $projectId,
+//                                'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
+//                            ];
+//                        } else {
+//                            $lastRevenuePartsKwh->revenuesKwh->date_end = $endDateBeforeSplitDate;
+//                            $lastRevenuePartsKwh->revenuesKwh->save();
+//                            $createdOk = $this->createNewLastRevenuePartsKwh($lastRevenuePartsKwh->revenuesKwh);
+//                            if($createdOk){
+//                                $message = 'Periode ' . Carbon::parse($lastRevenuePartsKwh->date_begin)->format('d-m-Y') . ' t/m ' . Carbon::parse($lastRevenuePartsKwh->date_end)->format('d-m-Y');
+//                                return [
+//                                    'success' => true,
+//                                    'newRevenue' => false,
+//                                    'revenuesId' => $lastRevenuePartsKwh->revenuesKwh->id,
+//                                    'revenuePartsId' => $lastRevenuePartsKwh->revenuesKwh->last_parts_kwh->id,
+//                                    'projectId' => $projectId,
+//                                    'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
+//                                ];
+//                            } else {
+//                                $message = 'Onbekende fout bij nieuwe laatste periode opbrengstverdeling aanmaken.';
+//                                return [
+//                                    'success' => false,
+//                                    'errorMessage' => $message,
+//                                    'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
+//                                ];
+//                            }
+//
+//
+//                        }
+//                    }
+//
+//                }
+//            } else {
+//                if(Carbon::parse($splitDate)->diffInDays(Carbon::parse($projectDateNextRevenuesKwh)->addYear()->addMonths(6)->subDay(), false) < 0){
+//                    $message = 'Datum ' . $splitDateReadable . ' valt meer dan 1,5 jaar na begindatum nieuwe opbrengstverdeling.';
+//                    return [
+//                        'success' => false,
+//                        'errorMessage' => $message,
+//                        'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
+//                    ];
+//                }else {
+//                    if(Carbon::parse($splitDate)->format('Y-m-d') < Carbon::parse($projectDateNextRevenuesKwh)){
+//                        return false;
+//                    }else {
+//                        $message = 'Nieuwe periode ' . Carbon::parse($projectDateNextRevenuesKwh)->format('d-m-Y') . ' t/m ' . Carbon::parse($splitDate)->subDay()->format('d-m-Y');
+//                        return [
+//                            'success' => true,
+//                            'newRevenue' => true,
+//                            'revenuesId' => 0,
+//                            'revenuePartsId' => 0,
+//                            'projectId' => $projectId,
+//                            'projectMessage' => 'Project: ' . $projectName . ' melding: ' . $message
+//                        ];
+//                    }
+//                }
+//            }
+//
+//        }
 
         return ['success' => false, 'errorMessage' => 'Onbekende fout'];
 
@@ -755,6 +895,27 @@ class RevenuesKwhHelper
                 }
                 $totalDeliveredKwh = RevenueDistributionValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('distribution_id', $distributionPartsKwh->distribution_id)->where('parts_id', $revenuePartsKwh->id)->sum('delivered_kwh');
                 $distributionPartsKwh->delivered_kwh = $totalDeliveredKwh;
+                // hier nieuwe checks op is_energy_supplier_switch, is_end_participation, is_end_total_period, is_end_year_period en is_visible
+                if(AddressEnergySupplier::where('address_id', $distributionPartsKwh->distributionKwh->participation->address_id)->where('energy_supplier_id', $distributionPartsKwh->es_id)->where('end_date', $distributionPartsKwh->partsKwh->date_end)->exists()){
+                    $distributionPartsKwh->is_energy_supplier_switch = true;
+                } else {
+                    $distributionPartsKwh->is_energy_supplier_switch = false;
+                }
+                if($distributionPartsKwh->distributionKwh->participation->date_terminated == $distributionPartsKwh->partsKwh->date_end){
+                    $distributionPartsKwh->is_end_participation = true;
+                } else {
+                    $distributionPartsKwh->is_end_participation = false;
+                }
+                if( $distributionPartsKwh->partsKwh->date_end && $distributionPartsKwh->partsKwh->date_end == $distributionPartsKwh->partsKwh->revenuesKwh->date_end ){
+                    $distributionPartsKwh->is_end_total_period = true;
+                } else {
+                    $distributionPartsKwh->is_end_total_period = false;
+                }
+                if( $distributionPartsKwh->partsKwh->date_end && Carbon::parse($distributionPartsKwh->partsKwh->date_end)->day == 31 && Carbon::parse($distributionPartsKwh->partsKwh->date_end)->month == 12 ){
+                    $distributionPartsKwh->is_end_year_period = true;
+                } else {
+                    $distributionPartsKwh->is_end_year_period = false;
+                }
                 $distributionPartsKwh->is_visible = $this->determineIsVisible($distributionPartsKwh);
                 $distributionPartsKwh->save();
 
@@ -880,5 +1041,18 @@ class RevenuesKwhHelper
         }
     }
 
+    protected function getFirstNextAddressEnergySupplier($addressId, $dateBegin)
+    {
+        $addressEnergySupplier = AddressEnergySupplier::where('address_id', $addressId)
+            ->whereIn('energy_supply_type_id', [2, 3] )
+            ->where(function ($addressEnergySupplier) use ($dateBegin) {
+                $addressEnergySupplier
+                    ->where(function ($addressEnergySupplier) use ($dateBegin) {
+                        $addressEnergySupplier->whereNotNull('member_since')
+                            ->where('member_since', '>', $dateBegin);
+                    });
+            })->orderBy('member_since', 'asc')->first();
+        return $addressEnergySupplier;
+    }
 
 }

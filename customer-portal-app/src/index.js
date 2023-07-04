@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import './css/normalize.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-day-picker/lib/style.css';
@@ -9,7 +9,10 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import 'moment/locale/nl';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+// ReactDOM.render(<App />, document.getElementById('root'));
+const container = document.getElementById('root');
+const root = createRoot(container); // createRoot(container!) if you use TypeScript
+root.render(<App />);
 
 // Server data is set and can now removed
 var serverDataScript = document.getElementById('server-data');

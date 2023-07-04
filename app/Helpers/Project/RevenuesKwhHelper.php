@@ -1050,9 +1050,8 @@ class RevenuesKwhHelper
                     ->where(function ($addressEnergySupplier) use ($dateBegin) {
                         $addressEnergySupplier->whereNotNull('member_since')
                             ->where('member_since', '>', $dateBegin);
-                    })
-                    ->orderBy('member_since', 'asc');
-            })->first();
+                    });
+            })->orderBy('member_since', 'asc')->first();
         return $addressEnergySupplier;
     }
 

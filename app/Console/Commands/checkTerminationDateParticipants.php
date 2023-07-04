@@ -78,10 +78,10 @@ class checkTerminationDateParticipants extends Command
                     && ($participantProjectDateTerminatedDayAfter != $lastmutationDateEntry)
                 ) {
                     // zijn er reeds definitieve revenues (bij project) met einddatum na beeindingsdatum?
-                    $revenuesKwhProcessedExists = RevenuesKwh::where('project_id', $participantProject->project_id)->where('date_end', '>=', $participantProjectDateTerminated)->whereIn('status', ['confirmed', 'processed'])->exists();
+                    $revenuesKwhConfirmedExists = RevenuesKwh::where('project_id', $participantProject->project_id)->where('date_end', '>=', $participantProjectDateTerminated)->whereIn('status', ['confirmed', 'processed'])->exists();
                     // zo ja, dan laten we hem maar even voor wat het is.
                     // zo niet, dan controleren of hij nog voorkomt in een niet verwerkte revenue.
-                    if(!$revenuesKwhProcessedExists){
+                    if(!$revenuesKwhConfirmedExists){
                         // komt participant nog voor in een niet definitieve revenue.
                         $participantInNotConfirmedDistributionExists = RevenueDistributionKwh::where('participation_id', $participantProject->id)->whereNotIn('status', ['confirmed', 'processed'])->exists();
                         // zo niet, dan laten we hem maar even voor wat het is.

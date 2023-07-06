@@ -310,7 +310,7 @@ class ContactGroupController extends Controller
     {
         set_time_limit(0);
 
-        $contactCSVHelper = new ContactCSVHelper($contactGroup->all_contacts);
+        $contactCSVHelper = new ContactCSVHelper($contactGroup->all_contacts, $contactGroup);
 
         return $contactCSVHelper->downloadCSV();
     }

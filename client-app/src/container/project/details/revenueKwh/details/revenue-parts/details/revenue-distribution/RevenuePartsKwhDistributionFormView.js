@@ -153,7 +153,7 @@ const RevenuePartsKwhDistributionFormView = props => {
                         />
                     </>
                 ) : null}
-                {!isPreviousVisiblePartReported ? (
+                {(status == 'confirmed' || status == 'processed') && !isPreviousVisiblePartReported ? (
                     <>
                         {' '}
                         <FaExclamationCircle

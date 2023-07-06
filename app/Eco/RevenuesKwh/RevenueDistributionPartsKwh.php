@@ -117,8 +117,8 @@ class RevenueDistributionPartsKwh extends Model
 
     public function getPreviousVisiblePartNotReportedDateBeginAttribute()
     {
-        $distributionPartsNotReported = RevenueDistributionPartsKwh::where('revenue_id', $this->revenue_id)->where('distribution_id', $this->distribution_id)->whereIn('status', ['confirmed', 'processed'])->whereNull('date_participant_report')->get()->pluck('parts_id')->toArray();
-        $previousVisiblePartNotReportedDateBegin = RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_end', '<', Carbon::parse($this->partsKwh->date_end)->format('Y-m-d'))->whereIn('id', $distributionPartsNotReported)->orderBy('date_begin', 'desc')->first();
+        $distributionPartsNotReported = RevenueDistributionPartsKwh::where('revenue_id', $this->revenue_id)->where('distribution_id', $this->distribution_id)->where('is_visible', true)->whereIn('status', ['confirmed', 'processed'])->whereNull('date_participant_report')->get()->pluck('parts_id')->toArray();
+        $previousVisiblePartNotReportedDateBegin = RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_end', '<', Carbon::parse($this->partsKwh->date_end)->format('Y-m-d'))->whereIn('id', $distributionPartsNotReported)->orderBy('date_begin', 'asc')->first();
         return $previousVisiblePartNotReportedDateBegin ? $previousVisiblePartNotReportedDateBegin->date_begin : null;
     }
     public function getIsPreviousVisiblePartReportedAttribute()

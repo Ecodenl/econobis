@@ -153,7 +153,7 @@ const RevenuePartsKwhDistributionFormView = props => {
                         />
                     </>
                 ) : null}
-                {!isPreviousVisiblePartReported ? (
+                {(status == 'confirmed' || status == 'processed') && !isPreviousVisiblePartReported ? (
                     <>
                         {' '}
                         <FaExclamationCircle
@@ -182,12 +182,14 @@ const RevenuePartsKwhDistributionFormView = props => {
                             color={'green'}
                             size={'15px'}
                             data-tip={
-                                'Rapport Deelnemer gemaakt op ' +
-                                moment(dateParticipantReport).format('L') +
-                                '. Verwerkingsperiode vanaf ' +
-                                moment(beginDateParticipantReport).format('L') +
-                                ' t/m ' +
-                                moment(endDateParticipantReport).format('L')
+                                moment(dateParticipantReport).format('Y-MM-DD') === '1900-01-01'
+                                    ? 'Rapport deelnemer uitgesloten om te maken'
+                                    : 'Rapport deelnemer gemaakt op ' +
+                                      moment(dateParticipantReport).format('L') +
+                                      '. Verwerkingsperiode vanaf ' +
+                                      moment(beginDateParticipantReport).format('L') +
+                                      ' t/m ' +
+                                      moment(endDateParticipantReport).format('L')
                             }
                             data-for={`tooltip-remark`}
                         />

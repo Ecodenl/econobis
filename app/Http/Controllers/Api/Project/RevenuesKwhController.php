@@ -233,7 +233,7 @@ class RevenuesKwhController extends ApiController
             // Indien distribution Nieuw toegevoegd, dan voor alle parts (behalve met status new) alvast distribution parts en values toeveogen met delivered 0.
             if ($distributionKwhIsNew) {
                 $revenuesKwhHelper = new RevenuesKwhHelper();
-                foreach ($distributionKwh->revenuesKwh->partsKwh()->whereNotIn('status', ['new', 'in-progress-update'])->orderBy('date_begin')->get() as $partsKwh){
+                foreach ($distributionKwh->revenuesKwh->partsKwh()->whereNotIn('status', ['new', 'in-progress-update', 'in-progress-process', 'in-progress-report'])->orderBy('date_begin')->get() as $partsKwh){
                     $revenuesKwhHelper->saveNewDistributionPartsKwh($partsKwh, $distributionKwh);
                 }
             }

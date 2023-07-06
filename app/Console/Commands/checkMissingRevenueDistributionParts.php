@@ -66,6 +66,7 @@ class checkMissingRevenueDistributionParts extends Command
                 //per RevenuePartsKwh nakijken of er een RevenueDistributionPartsKwh bestaat voor deze combinatie
                 if(RevenueDistributionPartsKwh::where('distribution_id', $revenueDistributionKwh->id)->where('parts_id', $revenuePartKwh->id)->count() != 1) {
                     $missingRevenueDistributionPart = [
+                        'project_id' => $revenueDistributionKwh->revenuesKwh->project_id,
                         'revenue_id' => $revenueDistributionKwh->revenue_id,
                         'revenue_date_begin' => $revenueDistributionKwh->revenuesKwh->date_begin,
                         'revenue_date_end' => $revenueDistributionKwh->revenuesKwh->date_end,
@@ -110,7 +111,8 @@ class checkMissingRevenueDistributionParts extends Command
         foreach($missingRevenueDistributionParts as $missingRevenueDistributionPart) {
             $missingRevenueDistributionPartsHtml .=
                 //'revenue_id' => $revenueDistributionKwh->revenue_id,
-                "<p>Revenue Id: " . $missingRevenueDistributionPart['revenue_id'] . ", " .
+                "<p>Project Id: " . $missingRevenueDistributionPart['project_id'] . ", " .
+                "Revenue Id: " . $missingRevenueDistributionPart['revenue_id'] . ", " .
                 "Revenue begin datum: " . $missingRevenueDistributionPart['revenue_date_begin'] . ", " .
                 "Revenue eind datum: " . $missingRevenueDistributionPart['revenue_date_end'] . ", " .
                 "Distribution Id: " . $missingRevenueDistributionPart['distribution_id'] . ", " .

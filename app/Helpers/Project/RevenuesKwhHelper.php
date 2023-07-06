@@ -267,6 +267,8 @@ class RevenuesKwhHelper
         // Bepalen energiesupplier
         $partDateBegin = Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d');
         $partDateEnd = Carbon::parse($revenuePartsKwh->date_end)->format('Y-m-d');
+        $daysOfPeriod = Carbon::parse($revenuePartsKwh->date_end)->addDay(1)->diffInDays(Carbon::parse($revenuePartsKwh->date_begin));
+
         $addressEnergySupplier = AddressEnergySupplier::where('address_id', '=', $distributionKwh->participation->address_id)
             ->whereIn('energy_supply_type_id', [2, 3] )
             ->where(function ($addressEnergySupplier) use ($partDateBegin) {
@@ -360,11 +362,18 @@ class RevenuesKwhHelper
                 'revenue_id' => $distributionPartsKwh->revenue_id,
                 'parts_id' => $distributionPartsKwh->parts_id,
                 'status' => $distributionPartsKwh->status,
-                'days_of_period' => 0,
+                'days_of_period' => $daysOfPeriod,
                 'participations_quantity' => 0,
                 'quantity_multiply_by_days' => 0,
                 'delivered_kwh' => 0
             ]);
+        $partsToUpdate = RevenuePartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('date_begin', '>=', $partDateBegin)->get();
+        foreach($partsToUpdate as $partToUpdate) {
+            if($partToUpdate->status == 'concept'){
+                $partToUpdate->status = 'concept-to-update';
+                $partToUpdate->save();
+            }
+        }
     }
 
     protected function saveDistributionPartsKwh(RevenuePartsKwh $revenuePartsKwh, RevenueDistributionKwh $distributionKwh):void

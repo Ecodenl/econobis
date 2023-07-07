@@ -30,7 +30,6 @@ class ParticipantMutationObserver
 
     public function saved(ParticipantMutation $participantMutation)
     {
-        Log::info('ParticipantMutationObserver saved');
         if($participantMutation->isDirty('status_id')) {
             $userId = Auth::id();
 

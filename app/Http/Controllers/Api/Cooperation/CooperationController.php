@@ -112,6 +112,8 @@ class CooperationController extends ApiController
         //empty contact_groups_contacts_for_report if create_contacts_for_report_table is set to false
         if($currentCreateContactsForReportTable === true && $cooperation->create_contacts_for_report_table === false) {
             DB::table('contact_groups_contacts_for_report')->truncate();
+            $cooperation->create_contacts_for_report_table_last_created = null;
+            $cooperation->save();
         }
 
         // Store attachment when given

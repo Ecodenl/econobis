@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Cooperation\CreateCooperation;
 use App\Http\Requests\Cooperation\UpdateCooperation;
 use App\Http\Resources\Cooperation\FullCooperation;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class CooperationController extends ApiController
@@ -77,6 +78,8 @@ class CooperationController extends ApiController
     {
         $this->authorize('manage', Cooperation::class);
 
+        $currentCreateContactsForReportTable = $cooperation->create_contacts_for_report_table;
+
         $cooperation->fill($request->validatedSnake());
         if($cooperation->hoom_campaign_id == '') {
             $cooperation->hoom_campaign_id = null;
@@ -105,6 +108,11 @@ class CooperationController extends ApiController
         $cooperation->require_two_factor_authentication = $request->boolean('requireTwoFactorAuthentication');
         $cooperation->create_contacts_for_report_table = $request->boolean('createContactsForReportTable');
         $cooperation->save();
+
+        //empty contact_groups_contacts_for_report if create_contacts_for_report_table is set to false
+        if($currentCreateContactsForReportTable === true && $cooperation->create_contacts_for_report_table === false) {
+            DB::table('contact_groups_contacts_for_report')->truncate();
+        }
 
         // Store attachment when given
         if($request->file('attachment')){

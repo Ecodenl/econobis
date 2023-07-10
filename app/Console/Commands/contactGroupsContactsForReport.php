@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\User\User;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -75,6 +76,10 @@ class contactGroupsContactsForReport extends Command
                     }
                 }
             }
+
+            //now also update the create_contacts_for_report_table_last_created column in the cooperations table
+            $cooperation->create_contacts_for_report_table_last_created = Carbon::now();
+            $cooperation->save();
 
             Log::info('contact_groups_contacts_for_report tabel opnieuw gevuld.');
         } else {

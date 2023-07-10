@@ -926,6 +926,20 @@ class RevenuePartsKwhController extends ApiController
                     if ($distributionPartsKwh->status === 'in-progress-process') {
                         $distributionPartsKwh->status = 'confirmed';
                         $distributionPartsKwh->save();
+                        // Indien part visible en nog niet gerapporteerd (zou ook nog niet gedaan moeten zijn bij definitief maken, want deelnemer rapportage kan je niet maken van concepten)
+                        // en) not_reported_delivered_kwh is 0, dan gaan we t/m deze deelperiode uitsluiten van deelnemer rapportage. We willen niet delivered_kwh 0 rapporteren nl.
+                        if( $distributionPartsKwh->is_visible == true && $distributionPartsKwh->date_participant_report == null && $distributionPartsKwh->not_reported_delivered_kwh == 0 ){
+                            $upToPartsKwhExcludeForReportIds = RevenuePartsKwh::where('revenue_id', $distributionPartsKwh->revenue_id)->where('date_begin', '<=', $distributionPartsKwh->partsKwh->date_begin)->orderBy('date_begin')->pluck('id')->toArray();
+                            $upToDistributionPartsKwh = RevenueDistributionPartsKwh::where('revenue_id', $distributionPartsKwh->revenue_id)->where('distribution_id', $distributionPartsKwh->distribution_id)->whereIn('parts_id', $upToPartsKwhExcludeForReportIds)->whereIn('status', ['confirmed', 'processed'])->whereNull('date_participant_report')->get();
+                            $beginDateParticipantReport = $distributionPartsKwh->not_reported_date_begin;;
+                            $endDateParticipantReport = $distributionPartsKwh->partsKwh->date_end;;
+                            foreach ($upToDistributionPartsKwh as $distributionPartToUpdate) {
+                                $distributionPartToUpdate->date_participant_report = '1900-01-01';
+                                $distributionPartToUpdate->begin_date_participant_report = $beginDateParticipantReport;
+                                $distributionPartToUpdate->end_date_participant_report = $endDateParticipantReport;
+                                $distributionPartToUpdate->save();
+                            }
+                        }
                     }
                 }
                 $distributionsValuesKwh = $distributionKwh->distributionValuesKwh->whereIn('parts_id', $upToPartsKwhIds);

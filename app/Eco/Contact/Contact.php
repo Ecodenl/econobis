@@ -691,7 +691,7 @@ class Contact extends Model
     {
         foreach($this->participations as $participation)
         {
-            if(!isSet($participation->date_terminated) && $participation->project && $participation->project->projectType->code_ref == 'postalcode_link_capital' ){
+            if(!isset($participation->date_terminated) && $participation->project && $participation->project->projectType->code_ref == 'postalcode_link_capital' ){
                 return true;
             }
         }
@@ -702,7 +702,7 @@ class Contact extends Model
     {
         foreach($this->participations as $participation)
         {
-            if(!isSet($participation->date_terminated) && $participation->project && $participation->project->is_sce_project ){
+            if(!isset($participation->date_terminated) && $participation->project && $participation->project->is_sce_project ){
                 return true;
             }
         }

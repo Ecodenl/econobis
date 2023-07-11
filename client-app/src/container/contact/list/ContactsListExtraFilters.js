@@ -49,7 +49,8 @@ class ContactsListExtraFilters extends Component {
         if (
             filters[filterNumber].field === 'product' ||
             filters[filterNumber].field === 'opportunityMeasureCategory' ||
-            filters[filterNumber].field === 'intakeMeasureCategory'
+            filters[filterNumber].field === 'intakeMeasureCategory' ||
+            filters[filterNumber].field === 'housingFileFieldName'
         ) {
             filters = filters.filter(filter => filter.connectedTo !== filters[filterNumber].connectName);
             delete filters[filterNumber].connectName;
@@ -153,6 +154,23 @@ class ContactsListExtraFilters extends Component {
             });
 
             amountOfFilters = filters.length;
+        } else if (data === 'housingFileFieldName') {
+            filters[filterNumber] = {
+                field: 'housingFileFieldName',
+                type: 'eq',
+                data: '',
+                connectName: data + filterNumber,
+            };
+
+            filters.splice(filterNumber + 1, 0, {
+                field: 'housingFileFieldValue',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
+                housingFileField: '',
+            });
+
+            amountOfFilters = filters.length;
         } else {
             filters[filterNumber].field = data;
             filters[filterNumber].data = '';
@@ -176,6 +194,25 @@ class ContactsListExtraFilters extends Component {
         let filters = this.state.filters;
 
         filters[filterNumber][field] = data;
+
+        if (filters[filterNumber].field == 'housingFileFieldName') {
+            if (filters[filterNumber].data) {
+                let housingFileHoomLink = this.props.housingFileHoomLinks.find(
+                    housingFileHoomLink => housingFileHoomLink.key === Number(filters[filterNumber].data)
+                );
+                if (housingFileHoomLink) {
+                    let filterConnectName = filters[filterNumber].connectName;
+                    filters.map(filter => {
+                        if (filter.connectedTo == filterConnectName) {
+                            filter.data = '';
+                            filter.type = 'eq';
+                            filter.housingFileField = housingFileHoomLink.externalHoomShortName;
+                        }
+                        return filter;
+                    });
+                }
+            }
+        }
 
         this.setState({
             ...this.state,
@@ -212,7 +249,8 @@ class ContactsListExtraFilters extends Component {
         if (
             newFilters[filterNumber].field === 'product' ||
             newFilters[filterNumber].field === 'opportunityMeasureCategory' ||
-            newFilters[filterNumber].field === 'intakeMeasureCategory'
+            newFilters[filterNumber].field === 'intakeMeasureCategory' ||
+            newFilters[filterNumber].field === 'housingFileFieldName'
         ) {
             newFilters = newFilters.filter(filter => filter.connectedTo !== newFilters[filterNumber].connectName);
         }
@@ -325,10 +363,15 @@ class ContactsListExtraFilters extends Component {
                 type: 'boolean',
                 dropDownOptions: this.state.yesNoOptions,
             },
-            housingFile: {
+            housingFileExists: {
                 name: 'Woningdossier aanwezig',
                 type: 'boolean',
                 dropDownOptions: this.state.yesNoOptions,
+            },
+            housingFileFieldName: {
+                name: 'Woningdossier kenmerk',
+                type: 'dropdownHousingFileFields',
+                dropDownOptions: this.props.housingFileHoomLinks,
             },
             inspectionPersonType: {
                 name: 'Rol in buurtaanpak',
@@ -395,9 +438,18 @@ class ContactsListExtraFilters extends Component {
             },
         };
 
+        // Options only if housingFileFieldName is set
+        const customHousingFileFields = {
+            housingFileFieldValue: {
+                name: 'Status/waarde',
+                type: 'housingFileFieldValue',
+            },
+        };
+
         return (
             <Modal
                 title="Extra filters"
+                modalBodyClassName="scrollable-modal-body"
                 buttonConfirmText="Toepassen"
                 confirmAction={this.confirmAction}
                 closeModal={this.closeModal}
@@ -458,6 +510,7 @@ class ContactsListExtraFilters extends Component {
                                             ...customProductFields,
                                             ...customOpportunityFields,
                                             ...customIntakeFields,
+                                            ...customHousingFileFields,
                                         }}
                                         handleFilterFieldChange={this.handleFilterFieldChange}
                                         deleteFilterRow={this.deleteFilterRow}
@@ -496,6 +549,7 @@ const mapStateToProps = state => {
         orderStatuses: state.systemData.orderStatuses,
         quotationRequestStatus: state.systemData.quotationRequestStatus,
         inspectionPersonTypes: state.systemData.inspectionPersonTypes,
+        housingFileHoomLinks: state.systemData.housingFileHoomLinks,
     };
 };
 

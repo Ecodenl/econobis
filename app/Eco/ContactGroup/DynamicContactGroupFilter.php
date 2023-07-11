@@ -4,6 +4,12 @@ namespace App\Eco\ContactGroup;
 
 use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
+use App\Eco\HousingFile\BuildingType;
+use App\Eco\HousingFile\EnergyLabel;
+use App\Eco\HousingFile\EnergyLabelStatus;
+use App\Eco\HousingFile\HousingFileHoomHousingStatus;
+use App\Eco\HousingFile\HousingFileHoomLink;
+use App\Eco\HousingFile\RoofType;
 use App\Eco\Intake\IntakeStatus;
 use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureCategory;
@@ -13,6 +19,7 @@ use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Order\OrderStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use JosKolenberg\Enum\EnumNotFoundException;
 
 class DynamicContactGroupFilter extends Model
@@ -27,6 +34,10 @@ class DynamicContactGroupFilter extends Model
     {
         return $this->belongsTo(ContactGroup::class);
     }
+    public function parentDynamicContactGroupFilter()
+    {
+        return DynamicContactGroupFilter::where('contact_group_id', $this->contact_group_id)->where('field', 'housingFileFieldName')->where('connect_name', $this->connected_to)->first();
+    }
 
     public function getDataNameAttribute()
     {
@@ -35,7 +46,7 @@ class DynamicContactGroupFilter extends Model
             if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $this->data))  return Carbon::parse($this->data)->format('d-m-Y');
 
             // Booleans omzetten
-            $yesNoFields = ['didAcceptAgreement', 'didAgreeAvg', 'portalUser', 'housingFile'];
+            $yesNoFields = ['didAcceptAgreement', 'didAgreeAvg', 'portalUser', 'housingFileExists'];
             if (in_array($this->field, $yesNoFields)) return $this->data ? 'Ja' : 'Nee';
 
             // opportunityMeasureCategory omzetten
@@ -101,6 +112,39 @@ class DynamicContactGroupFilter extends Model
                     return OrderStatus::get($this->data)->name;
                 }
                 return '';
+            }
+            // housingFileFieldName omzetten
+            if ($this->field == 'housingFileFieldName'){
+                if($this->data){
+                    $housingFileHoomLink = HousingFileHoomLink::find($this->data);
+                    return $housingFileHoomLink ? $housingFileHoomLink->label : '';
+                }
+                return '';
+            }
+            // housingFileFieldValue omzetten
+            if ($this->field == 'housingFileFieldValue'){
+                if($this->data){
+                    $parentDynamicContactGroupFilter = $this->parentDynamicContactGroupFilter();
+                    $arrayHousingFileHoomLinkSelectDropdownFieldsIds = HousingFileHoomLink::whereIn('external_hoom_short_name', HousingFileHoomLink::SELECT_DROPDOWN_FIELDS)->pluck('id')->toArray();
+
+                    if($parentDynamicContactGroupFilter && in_array($parentDynamicContactGroupFilter->data, $arrayHousingFileHoomLinkSelectDropdownFieldsIds ) ){
+                        $housingFileHoomLink = HousingFileHoomLink::find($parentDynamicContactGroupFilter->data);
+                        if($housingFileHoomLink){
+                            if($housingFileHoomLink->external_hoom_short_name == 'building-type-category') {
+                                return BuildingType::find($this->data)->name;
+                            } elseif ($housingFileHoomLink->external_hoom_short_name == 'roof-type') {
+                                return RoofType::find($this->data)->name;
+                            } elseif ($housingFileHoomLink->external_hoom_short_name == 'energy-label') {
+                                return EnergyLabel::find($this->data)->name;
+                            } elseif ($housingFileHoomLink->external_hoom_short_name == 'energy-label-status') {
+                                return EnergyLabelStatus::find($this->data)->name;
+                            } else {
+                                $housingFileHoomHousingStatus = HousingFileHoomHousingStatus::where('external_hoom_short_name', $housingFileHoomLink->external_hoom_short_name)->where('hoom_status_value', $this->data)->first();
+                                return $housingFileHoomHousingStatus ? $housingFileHoomHousingStatus->hoom_status_name : 'onbekend';
+                            }
+                        }
+                    }
+                }
             }
 
             return $this->data;

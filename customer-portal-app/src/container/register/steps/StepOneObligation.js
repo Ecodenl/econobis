@@ -92,9 +92,8 @@ function StepOneObligation({ next, project, contactProjectData, initialRegisterV
                             </Col>
                             <Col xs={12} md={6}>
                                 <Form.Label className={'field-label'}>Gewenst aantal obligaties</Form.Label>
-                                <Field
-                                    name="participationsOptioned"
-                                    render={({ field }) => (
+                                <Field name="participationsOptioned">
+                                    {({ field }) => (
                                         <InputText
                                             field={field}
                                             errors={errors}
@@ -102,7 +101,7 @@ function StepOneObligation({ next, project, contactProjectData, initialRegisterV
                                             id="participations_optioned"
                                         />
                                     )}
-                                />
+                                </Field>
                             </Col>
                             <Col xs={12} md={6}>
                                 <FormLabel className={'field-label'}>
@@ -126,9 +125,8 @@ function StepOneObligation({ next, project, contactProjectData, initialRegisterV
                                 {!contactProjectData.belongsToMembershipGroup ? (
                                     <Row>
                                         <Col xs={12} md={10}>
-                                            <Field
-                                                name="choiceMembership"
-                                                render={({ field }) => (
+                                            <Field name="choiceMembership">
+                                                {({ field }) => (
                                                     <>
                                                         {get(errors, field.name, '') &&
                                                             get(touched, field.name, '') && (
@@ -166,7 +164,7 @@ function StepOneObligation({ next, project, contactProjectData, initialRegisterV
                                                         </div>
                                                     </>
                                                 )}
-                                            />
+                                            </Field>
                                         </Col>
                                     </Row>
                                 ) : null}

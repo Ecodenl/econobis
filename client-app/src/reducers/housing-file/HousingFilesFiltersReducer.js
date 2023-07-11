@@ -27,6 +27,14 @@ const filtersReducerDefaultState = {
         field: 'energyLabelId',
         data: '',
     },
+    isHouseForSale: {
+        field: 'isHouseForSale',
+        data: '',
+    },
+    buildYear: {
+        field: 'buildYear',
+        data: '',
+    },
 };
 
 export default (state = filtersReducerDefaultState, action) => {
@@ -85,6 +93,22 @@ export default (state = filtersReducerDefaultState, action) => {
                 energyLabelId: {
                     ...state.energyLabelId,
                     data: action.energyLabelId,
+                },
+            };
+        case 'SET_FILTER_IS_HOUSE_FOR_SALE':
+            return {
+                ...state,
+                isHouseForSale: {
+                    ...state.isHouseForSale,
+                    data: action.isHouseForSale,
+                },
+            };
+        case 'SET_FILTER_BUILD_YEAR':
+            return {
+                ...state,
+                buildYear: {
+                    ...state.buildYear,
+                    data: action.buildYear,
                 },
             };
         case 'CLEAR_FILTER_HOUSING_FILES':

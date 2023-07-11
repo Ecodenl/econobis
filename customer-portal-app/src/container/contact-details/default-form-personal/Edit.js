@@ -14,6 +14,7 @@ import moment from 'moment';
 import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 import InputTextDate from '../../../components/form/InputTextDate';
+import { isEmpty } from 'lodash';
 
 const DefaultContactPersonalEdit = function({
     portalSettings,
@@ -62,9 +63,8 @@ const DefaultContactPersonalEdit = function({
                 <FormLabel className={'field-label required'}>Naam</FormLabel>
                 <Row>
                     <Col xs={12} sm={6}>
-                        <Field
-                            name="person.titleId"
-                            render={({ field }) => (
+                        <Field name="person.titleId">
+                            {({ field }) => (
                                 <Select
                                     field={field}
                                     errors={errors}
@@ -75,7 +75,7 @@ const DefaultContactPersonalEdit = function({
                                     disabled={initialContact.disableChangeContactNameOnPortal}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                     <Col xs={12} sm={6}>
                         {initialContact.disableChangeContactNameOnPortal ? (
@@ -108,9 +108,8 @@ const DefaultContactPersonalEdit = function({
                 </Row>
                 <Row>
                     <Col xs={12} sm={4}>
-                        <Field
-                            name="person.initials"
-                            render={({ field }) => (
+                        <Field name="person.initials">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -120,12 +119,11 @@ const DefaultContactPersonalEdit = function({
                                     disabled={initialContact.disableChangeContactNameOnPortal}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                     <Col xs={12} sm={8}>
-                        <Field
-                            name="person.firstName"
-                            render={({ field }) => (
+                        <Field name="person.firstName">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -135,14 +133,13 @@ const DefaultContactPersonalEdit = function({
                                     disabled={initialContact.disableChangeContactNameOnPortal}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 <Row>
                     <Col xs={12} sm={4}>
-                        <Field
-                            name="person.lastNamePrefixId"
-                            render={({ field }) => (
+                        <Field name="person.lastNamePrefixId">
+                            {({ field }) => (
                                 <Select
                                     field={field}
                                     errors={errors}
@@ -153,12 +150,11 @@ const DefaultContactPersonalEdit = function({
                                     disabled={initialContact.disableChangeContactNameOnPortal}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                     <Col xs={12} sm={8}>
-                        <Field
-                            name="person.lastName"
-                            render={({ field }) => (
+                        <Field name="person.lastName">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -168,7 +164,7 @@ const DefaultContactPersonalEdit = function({
                                     disabled={initialContact.disableChangeContactNameOnPortal}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 <FormLabel
@@ -179,9 +175,8 @@ const DefaultContactPersonalEdit = function({
                 </FormLabel>
                 <Row>
                     <Col xs={12} sm={12} md={8}>
-                        <Field
-                            name="person.dateOfBirth"
-                            render={({ field }) => (
+                        <Field name="person.dateOfBirth">
+                            {({ field }) => (
                                 <InputTextDate
                                     field={field}
                                     type="date"
@@ -192,7 +187,7 @@ const DefaultContactPersonalEdit = function({
                                     placeholder={'Geboortedatum'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
 
@@ -201,9 +196,8 @@ const DefaultContactPersonalEdit = function({
                 </FormLabel>
                 <Row>
                     <Col xs={12} sm={12} md={8}>
-                        <Field
-                            name="emailCorrespondence.email"
-                            render={({ field }) => (
+                        <Field name="emailCorrespondence.email">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -212,7 +206,7 @@ const DefaultContactPersonalEdit = function({
                                     placeholder={'E-mailadres'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
 
@@ -221,9 +215,8 @@ const DefaultContactPersonalEdit = function({
                 </FormLabel>
                 <Row>
                     <Col xs={12} sm={12} md={8}>
-                        <Field
-                            name="emailInvoice.email"
-                            render={({ field }) => (
+                        <Field name="emailInvoice.email">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -232,7 +225,7 @@ const DefaultContactPersonalEdit = function({
                                     placeholder={'E-mailadres'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
 
@@ -244,9 +237,8 @@ const DefaultContactPersonalEdit = function({
                 </FormLabel>
                 <Row>
                     <Col xs={12} sm={10} md={6}>
-                        <Field
-                            name="phoneNumberPrimary.number"
-                            render={({ field }) => (
+                        <Field name="phoneNumberPrimary.number">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -255,7 +247,7 @@ const DefaultContactPersonalEdit = function({
                                     placeholder={'Nummer'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
 
@@ -264,9 +256,8 @@ const DefaultContactPersonalEdit = function({
                 </FormLabel>
                 <Row>
                     <Col xs={12} sm={10} md={6}>
-                        <Field
-                            name="phoneNumberTwo.number"
-                            render={({ field }) => (
+                        <Field name="phoneNumberTwo.number">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -275,7 +266,7 @@ const DefaultContactPersonalEdit = function({
                                     placeholder={'Nummer'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
 
@@ -339,14 +330,12 @@ const DefaultContactPersonalEdit = function({
                         ''
                     )}
                 </FormLabel>
-                {((!isNaN(values.primaryAddress.number) && values.primaryAddress.number == 0) ||
-                    (isNaN(values.primaryAddress.number) && values.primaryAddress.number.trim() == '') ||
-                    values.primaryAddress.postalCode.trim() == '') &&
-                (values.primaryAddress.street.trim() != '' ||
-                    values.primaryAddress.number.trim() != '' ||
-                    values.primaryAddress.addition.trim() != '' ||
-                    values.primaryAddress.postalCode.trim() != '' ||
-                    values.primaryAddress.city.trim() != '') ? (
+                {(isEmpty(values.primaryAddress.number + '') || isEmpty(values.primaryAddress.postalCode + '')) &&
+                (!isEmpty(values.primaryAddress.street + '') ||
+                    !isEmpty(values.primaryAddress.number + '') ||
+                    !isEmpty(values.primaryAddress.addition + '') ||
+                    !isEmpty(values.primaryAddress.postalCode + '') ||
+                    !isEmpty(values.primaryAddress.city + '')) ? (
                     <Row>
                         <Col xs={12} sm={12}>
                             <small className={'text-danger'}>
@@ -359,9 +348,8 @@ const DefaultContactPersonalEdit = function({
                 )}
                 <Row>
                     <Col xs={12} sm={12}>
-                        <Field
-                            name="primaryAddress.street"
-                            render={({ field }) => (
+                        <Field name="primaryAddress.street">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -371,14 +359,13 @@ const DefaultContactPersonalEdit = function({
                                     disabled={initialContact.blockChangeAddress}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 <Row>
                     <Col xs={12} sm={4}>
-                        <Field
-                            name="primaryAddress.number"
-                            render={({ field }) => (
+                        <Field name="primaryAddress.number">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -390,12 +377,11 @@ const DefaultContactPersonalEdit = function({
                                     }
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                     <Col xs={12} sm={4}>
-                        <Field
-                            name="primaryAddress.addition"
-                            render={({ field }) => (
+                        <Field name="primaryAddress.addition">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -407,14 +393,13 @@ const DefaultContactPersonalEdit = function({
                                     }
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 <Row>
                     <Col xs={12} sm={4}>
-                        <Field
-                            name="primaryAddress.postalCode"
-                            render={({ field }) => (
+                        <Field name="primaryAddress.postalCode">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -428,12 +413,11 @@ const DefaultContactPersonalEdit = function({
                                     }
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                     <Col xs={12} sm={8}>
-                        <Field
-                            name="primaryAddress.city"
-                            render={({ field }) => (
+                        <Field name="primaryAddress.city">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -443,14 +427,13 @@ const DefaultContactPersonalEdit = function({
                                     disabled={initialContact.blockChangeAddress}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 <Row>
                     <Col xs={12} sm={8}>
-                        <Field
-                            name="primaryAddress.countryId"
-                            render={({ field }) => (
+                        <Field name="primaryAddress.countryId">
+                            {({ field }) => (
                                 <Select
                                     field={field}
                                     errors={errors}
@@ -461,7 +444,7 @@ const DefaultContactPersonalEdit = function({
                                     disabled={initialContact.blockChangeAddress}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 {projectTypeCodeRef === 'postalcode_link_capital' || projectTypeCodeRef === undefined ? (
@@ -477,11 +460,8 @@ const DefaultContactPersonalEdit = function({
                     ''
                 )}
 
-                {((!isNaN(values.primaryAddress.number) && values.primaryAddress.number == 0) ||
-                    (isNaN(values.primaryAddress.number) && values.primaryAddress.number.trim() == '') ||
-                    values.primaryAddress.postalCode.trim() == '') &&
-                values.primaryAddress.eanElectricity != null &&
-                values.primaryAddress.eanElectricity.trim() != '' ? (
+                {(isEmpty(values.primaryAddress.number + '') || isEmpty(values.primaryAddress.postalCode + '')) &&
+                !isEmpty(values.primaryAddress.eanElectricity + '') ? (
                     <Row>
                         <Col xs={12} sm={12}>
                             <small className={'text-danger'}>
@@ -498,8 +478,8 @@ const DefaultContactPersonalEdit = function({
                     <Row>
                         <Col xs={12} sm={10} md={6}>
                             <Field
-                                name="primaryAddress.eanElectricity"
-                                render={({ field }) => (
+                                name="primaryAddress.eanElectricity">
+                                {({ field }) => (
                                     <InputText
                                         field={field}
                                         errors={errors}
@@ -508,7 +488,7 @@ const DefaultContactPersonalEdit = function({
                                         placeholder={'EAN nummer electriciteit'}
                                     />
                                 )}
-                            />
+                            </Field>
                         </Col>
                     </Row>
                 ) : (
@@ -523,11 +503,8 @@ const DefaultContactPersonalEdit = function({
                     ''
                 )}
 
-                {((!isNaN(values.primaryAddress.number) && values.primaryAddress.number == 0) ||
-                    (isNaN(values.primaryAddress.number) && values.primaryAddress.number.trim() == '') ||
-                    values.primaryAddress.postalCode.trim() == '') &&
-                values.primaryAddress.eanGas != null &&
-                values.primaryAddress.eanGas.trim() != '' ? (
+                {(isEmpty(values.primaryAddress.number + '') || isEmpty(values.primaryAddress.postalCode + '')) &&
+                !isEmpty(values.primaryAddress.eanGas + '') ? (
                     <Row>
                         <Col xs={12} sm={12}>
                             <small className={'text-danger'}>
@@ -544,8 +521,8 @@ const DefaultContactPersonalEdit = function({
                     <Row>
                         <Col xs={12} sm={10} md={6}>
                             <Field
-                                name="primaryAddress.eanGas"
-                                render={({ field }) => (
+                                name="primaryAddress.eanGas">
+                                {({ field }) => (
                                     <InputText
                                         field={field}
                                         errors={errors}
@@ -554,7 +531,7 @@ const DefaultContactPersonalEdit = function({
                                         placeholder={'EAN nummer gas'}
                                     />
                                 )}
-                            />
+                            </Field>
                         </Col>
                     </Row>
                 ) : (
@@ -576,9 +553,8 @@ const DefaultContactPersonalEdit = function({
                 </FormLabel>
                 <Row>
                     <Col xs={12} sm={8}>
-                        <Field
-                            name="iban"
-                            render={({ field }) => (
+                        <Field name="iban">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -590,14 +566,13 @@ const DefaultContactPersonalEdit = function({
                                     }}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 <Row>
                     <Col xs={12} sm={8}>
-                        <Field
-                            name="ibanAttn"
-                            render={({ field }) => (
+                        <Field name="ibanAttn">
+                            {({ field }) => (
                                 <InputText
                                     field={field}
                                     errors={errors}
@@ -606,7 +581,7 @@ const DefaultContactPersonalEdit = function({
                                     placeholder={'IBAN te name van'}
                                 />
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 <FormLabel htmlFor="did_agree_avg" className={'field-label required'}>
@@ -614,9 +589,8 @@ const DefaultContactPersonalEdit = function({
                 </FormLabel>
                 <Row>
                     <Col xs={12} sm={8}>
-                        <Field
-                            name="didAgreeAvg"
-                            render={({ field }) => (
+                        <Field name="didAgreeAvg">
+                            {({ field }) => (
                                 <label className="w-checkbox checkbox-fld">
                                     <input
                                         type="checkbox"
@@ -629,7 +603,7 @@ const DefaultContactPersonalEdit = function({
                                     />
                                     <span htmlFor="did_agree_avg" className="checkbox-label w-form-label">
                                         Ik ga akkoord met{' '}
-                                        <a href={portalSettings['linkPrivacyPolicy']} target="_blank">
+                                        <a href={portalSettings['linkPrivacyPolicy']} target="_blank" rel="noreferrer">
                                             privacybeleid
                                         </a>{' '}
                                         {values.didAgreeAvg ? (
@@ -649,7 +623,7 @@ const DefaultContactPersonalEdit = function({
                                     ) : null}
                                 </label>
                             )}
-                        />
+                        </Field>
                     </Col>
                 </Row>
                 {projectTypeCodeRef === 'postalcode_link_capital' || projectTypeCodeRef === undefined ? (
@@ -665,15 +639,16 @@ const DefaultContactPersonalEdit = function({
                         >
                             Huidige energie leverancier
                         </FormLabel>
-                        {((!isNaN(values.primaryAddress.number) && values.primaryAddress.number == 0) ||
-                            (isNaN(values.primaryAddress.number) && values.primaryAddress.number.trim() == '') ||
-                            values.primaryAddress.postalCode.trim() == '') &&
-                        (values.primaryAddress.currentAddressEnergySupplierElectricity.energySupplierId != null ||
-                            (values.primaryAddress.currentAddressEnergySupplierElectricity.esNumber &&
-                                values.primaryAddress.currentAddressEnergySupplierElectricity.esNumber.trim() != '') ||
-                            (values.primaryAddress.currentAddressEnergySupplierElectricity.memberSince &&
-                                values.primaryAddress.currentAddressEnergySupplierElectricity.memberSince.trim() !=
-                                    '')) ? (
+
+                        {(isEmpty(values.primaryAddress.number + '') ||
+                            isEmpty(values.primaryAddress.postalCode + '')) &&
+                        (!isEmpty(
+                            values.primaryAddress.currentAddressEnergySupplierElectricity.energySupplierId + ''
+                        ) ||
+                            !isEmpty(values.primaryAddress.currentAddressEnergySupplierElectricity.esNumber + '') ||
+                            !isEmpty(
+                                values.primaryAddress.currentAddressEnergySupplierElectricity.memberSince + ''
+                            )) ? (
                             <Row>
                                 <Col xs={12} sm={12}>
                                     <small className={'text-danger'}>
@@ -685,15 +660,14 @@ const DefaultContactPersonalEdit = function({
                         ) : (
                             ''
                         )}
-                        {(!values.primaryAddress.currentAddressEnergySupplierElectricity.memberSince ||
-                            values.primaryAddress.currentAddressEnergySupplierElectricity.memberSince.trim() == '') &&
-                        ((values.primaryAddress.currentAddressEnergySupplierElectricity.energySupplierId != null &&
-                            values.primaryAddress.currentAddressEnergySupplierElectricity.energySupplierId != '') ||
-                            (values.primaryAddress.currentAddressEnergySupplierElectricity.esNumber &&
-                                values.primaryAddress.currentAddressEnergySupplierElectricity.esNumber.trim() != '') ||
-                            (values.primaryAddress.currentAddressEnergySupplierElectricity.memberSince &&
-                                values.primaryAddress.currentAddressEnergySupplierElectricity.memberSince.trim() !=
-                                    '')) ? (
+                        {isEmpty(values.primaryAddress.currentAddressEnergySupplierElectricity.memberSince + '') &&
+                        (!isEmpty(
+                            values.primaryAddress.currentAddressEnergySupplierElectricity.energySupplierId + ''
+                        ) ||
+                            !isEmpty(values.primaryAddress.currentAddressEnergySupplierElectricity.esNumber + '') ||
+                            !isEmpty(
+                                values.primaryAddress.currentAddressEnergySupplierElectricity.memberSince + ''
+                            )) ? (
                             <Row>
                                 <Col xs={12} sm={12}>
                                     <small className={'text-danger'}>
@@ -707,9 +681,8 @@ const DefaultContactPersonalEdit = function({
                         )}
                         <Row>
                             <Col xs={12} sm={12} md={8}>
-                                <Field
-                                    name="primaryAddress.currentAddressEnergySupplierElectricity.energySupplierId"
-                                    render={({ field }) => (
+                                <Field name="primaryAddress.currentAddressEnergySupplierElectricity.energySupplierId">
+                                    {({ field }) => (
                                         <Select
                                             field={field}
                                             errors={errors}
@@ -733,7 +706,7 @@ const DefaultContactPersonalEdit = function({
                                             }}
                                         />
                                     )}
-                                />
+                                </Field>
                             </Col>
                         </Row>
 
@@ -752,9 +725,8 @@ const DefaultContactPersonalEdit = function({
                                 </FormLabel>
                                 <Row>
                                     <Col xs={12} sm={12} md={8}>
-                                        <Field
-                                            name="primaryAddress.currentAddressEnergySupplierElectricity.esNumber"
-                                            render={({ field }) => (
+                                        <Field name="primaryAddress.currentAddressEnergySupplierElectricity.esNumber">
+                                            {({ field }) => (
                                                 <InputText
                                                     field={field}
                                                     errors={errors}
@@ -763,7 +735,7 @@ const DefaultContactPersonalEdit = function({
                                                     placeholder={'Klant nummer bij leverancier'}
                                                 />
                                             )}
-                                        />
+                                        </Field>
                                     </Col>
                                 </Row>
 
@@ -772,9 +744,8 @@ const DefaultContactPersonalEdit = function({
                                 </FormLabel>
                                 <Row>
                                     <Col xs={12} sm={12} md={8}>
-                                        <Field
-                                            name="primaryAddress.currentAddressEnergySupplierElectricity.memberSince"
-                                            render={({ field }) => (
+                                        <Field name="primaryAddress.currentAddressEnergySupplierElectricity.memberSince">
+                                            {({ field }) => (
                                                 <InputTextDate
                                                     field={field}
                                                     type="date"
@@ -787,7 +758,7 @@ const DefaultContactPersonalEdit = function({
                                                     placeholder={'Klant sinds'}
                                                 />
                                             )}
-                                        />
+                                        </Field>
                                     </Col>
                                 </Row>
                             </>

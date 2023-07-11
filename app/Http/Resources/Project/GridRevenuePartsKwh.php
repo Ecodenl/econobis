@@ -29,6 +29,7 @@ class GridRevenuePartsKwh extends JsonResource
                 'deliveredTotalConfirmed' => $this->delivered_total_confirmed_string,
                 'deliveredTotalProcessed' => $this->delivered_total_processed_string,
                 'payoutKwh' => $this->payout_kwh,
+                'isLastRevenuePartsKwh' => $this->is_last_revenue_parts_kwh,
             ];
     }
 }

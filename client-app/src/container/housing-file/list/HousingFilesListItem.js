@@ -34,7 +34,7 @@ class HousingFilesListItem extends Component {
     }
 
     render() {
-        const { id, fullName, createdAt, fullAddress, postalCode, city, buildingType, energyLabel } = this.props;
+        const { id, fullName, createdAt, fullAddress, postalCode, city, buildYear, buildingType, isHouseForSale, energyLabel } = this.props;
 
         return (
             <tr
@@ -48,8 +48,11 @@ class HousingFilesListItem extends Component {
                 <td>{postalCode}</td>
                 <td>{city}</td>
                 <td>{fullName}</td>
+                <td>{buildYear ? buildYear : ''}</td>
                 <td>{buildingType ? buildingType : ''}</td>
+                <td>{isHouseForSale ? 'Ja' : 'Nee'}</td>
                 <td>{energyLabel ? energyLabel : ''}</td>
+
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>

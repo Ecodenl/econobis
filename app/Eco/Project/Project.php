@@ -308,4 +308,20 @@ class Project extends Model
         return false;
     }
 
+    public function getKwhStartHighNextRevenueWrong() {
+        $confirmedRevenuesKwh = $this->revenuesKwh()->where('confirmed', 1)->orderBy('date_end', 'desc');
+
+        //wel date_interest_bearing_kwh en revenuesKwh, maar kwh_start_high_next_revenue is niet goed
+        if(
+            $this->date_interest_bearing_kwh !== null &&
+            $confirmedRevenuesKwh->count() > 0 &&
+            (
+                $this->kwh_start_high_next_revenue != $confirmedRevenuesKwh->first()->kwh_end_high
+            )
+        ) {
+            return true;
+        }
+
+        return false;
+    }
 }

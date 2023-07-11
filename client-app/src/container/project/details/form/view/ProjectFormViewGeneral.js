@@ -39,6 +39,7 @@ const ProjectFormViewGeneral = ({
     dateEntry,
     dateProduction,
     dateInterestBearingKwh,
+    dateInterestBearing,
     isMembershipRequired,
     visibleForAllContacts,
     textInfoProjectOnlyMembers,
@@ -244,6 +245,13 @@ const ProjectFormViewGeneral = ({
                     <ViewText
                         label={'Volgende begin periode opbrengst kWh'}
                         value={dateInterestBearingKwh ? moment(dateInterestBearingKwh).format('L') : ''}
+                    />
+                </div>
+
+                <div className="row">
+                    <ViewText
+                        label={'Volgende begin periode opbrengst Euro'}
+                        value={dateInterestBearing ? moment(dateInterestBearing).format('L') : ''}
                     />
                 </div>
             </section>

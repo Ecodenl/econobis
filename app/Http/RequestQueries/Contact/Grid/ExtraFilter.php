@@ -47,7 +47,7 @@ class ExtraFilter extends RequestExtraFilter
         'portalUser',
         'didAgreeAvg',
         'quotationRequestStatusOrganisationOrCoach',
-        'quotationRequestStatusClient',
+        'quotationRequestStatusOccupant',
         'housingFileExists',
         'housingFileFieldName',
         'housingFileFieldValue',
@@ -300,7 +300,7 @@ class ExtraFilter extends RequestExtraFilter
         }
     }
 
-    protected function applyQuotationRequestStatusClientFilter($query, $type, $data)
+    protected function applyQuotationRequestStatusOccupantFilter($query, $type, $data)
     {
 
         if(empty($data)){

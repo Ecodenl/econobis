@@ -7,6 +7,16 @@ import PanelHeader from '../../../components/panel/PanelHeader';
 function CooperationDetailsFormView({ formData, toggleEdit }) {
     return (
         <section className={'panel-hover'} onClick={toggleEdit}>
+            {formData.createContactsForReportTableLastCreated == true && (
+                <Panel>
+                    <PanelHeader>
+                            <span className="h5" style={{ color: '#e64a4a' }}>
+                                Report tabel wordt momenteel bijgewerkt…
+                            </span>
+                    </PanelHeader>
+                </Panel>
+            )}
+
             <Panel>
                 <PanelBody>
                     <div className="row">

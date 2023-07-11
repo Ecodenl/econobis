@@ -58,6 +58,7 @@ class FullCooperation extends JsonResource
             'inspectionReleasedEmailTemplate' => ['name' => $this->inspectionReleasedEmailTemplate ? $this->inspectionReleasedEmailTemplate->name : ''],
             'inspectionPlannedMailboxId' => $this->inspection_planned_mailbox_id ? $this->inspection_planned_mailbox_id : '',
             'inspectionPlannedMailbox' => ['name' => $this->inspectionPlannedMailbox ? $this->inspectionPlannedMailbox->name : ''],
+            'createContactsForReportTableLastCreated' => $this->create_contacts_for_report_table_in_progress,
         ];
     }
 }

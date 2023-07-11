@@ -47,7 +47,10 @@ class contactGroupsContactsForReport extends Command
         Auth::setUser(User::find(1));
 
         $cooperation = Cooperation::first();
-        if($cooperation && $cooperation->create_contacts_for_report_table) {
+        if($cooperation && $cooperation->create_contacts_for_report_table && $cooperation->create_contacts_for_report_table_in_progress == false) {
+            //at the start of the cronjob set create_contacts_for_report_table_in_progress to true
+            $cooperation->create_contacts_for_report_table_in_progress = true;
+            $cooperation->save();
 
             /* first truncate the 'contact_groups_contacts_for_report' table */
             DB::table('contact_groups_contacts_for_report')->truncate();
@@ -79,11 +82,19 @@ class contactGroupsContactsForReport extends Command
 
             //now also update the create_contacts_for_report_table_last_created column in the cooperations table
             $cooperation->create_contacts_for_report_table_last_created = Carbon::now();
+
+            //at the start of the cronjob set create_contacts_for_report_table_in_progress to true
+            $cooperation->create_contacts_for_report_table_in_progress = false;
+
             $cooperation->save();
 
             Log::info('contact_groups_contacts_for_report tabel opnieuw gevuld.');
-        } else {
+        } else if (!$cooperation->create_contacts_for_report_table) {
             Log::info('Vullen contact_groups_contacts_for_report tabel staat niet aan.');
+        } else if ($cooperation->create_contacts_for_report_table_in_progress == true) {
+            Log::info('De cronjob draait al, create_contacts_for_report_table_in_progress is nog true.');
+        } else {
+            Log::info('Er ging iets anders mis tijdens de contactGroupsContactsForReport cronjob');
         }
     }
 }

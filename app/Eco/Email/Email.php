@@ -15,6 +15,7 @@ use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\Task\Task;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
+use App\Helpers\Email\EmailInlineImagesService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -116,6 +117,10 @@ class Email extends Model
         return $this->belongsTo(User::class, 'sent_by_user_id');
     }
 
+    public function oldEmail(){
+        return $this->belongsTo(Email::class);
+    }
+
     /**
      * optional
      */
@@ -130,5 +135,10 @@ class Email extends Model
     public function responsibleTeam()
     {
         return $this->belongsTo(Team::class);
+    }
+
+    public function inlineImagesService(): EmailInlineImagesService
+    {
+        return new EmailInlineImagesService($this);
     }
 }

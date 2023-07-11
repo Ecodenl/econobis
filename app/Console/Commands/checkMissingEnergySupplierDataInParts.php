@@ -19,6 +19,7 @@ class checkMissingEnergySupplierDataInParts extends Command
      * @var string
      */
     protected $signature = 'revenue:checkMissingEnergySupplierDataInParts';
+    protected $mailTo = 'wim.mosman@xaris.nl';
 
     /**
      * The console command description.
@@ -62,64 +63,71 @@ class checkMissingEnergySupplierDataInParts extends Command
                 $dateBegin = Carbon::parse($partKwh->date_begin)->format('Y-m-d');
                 $dateEnd = Carbon::parse($partKwh->date_end)->format('Y-m-d');
                 foreach ($revenueKwh->distributionKwh as $distributionKwh) {
-                    $addressEnergySuppliers = $distributionKwh->participation->address->addressEnergySuppliers()
-                        ->whereIn('energy_supply_type_id', [2, 3])
-                        ->where(function ($addressEnergySupplier) use ($dateBegin, $dateEnd) {
-                            $addressEnergySupplier
-                                ->where(function ($addressEnergySupplier) use ($dateBegin, $dateEnd) {
-                                    $addressEnergySupplier->whereNotNull('member_since')
-                                        ->where('member_since', '>', $dateBegin)
-                                        ->where('member_since', '<', $dateEnd);
-                                });
-                        })
-                        ->get();
-                    if ($addressEnergySuppliers->count() > 0) {
-                        foreach ($addressEnergySuppliers as $addressEnergySupplier){
-                            $comment = 'Geen splitsing deelperiode data gevonden voor switch datum deelnemer:';
-                            $comment .= " \n";
-                            $comment .= ' - Project: ' . $revenueKwh->project_id . ' ' . $revenueKwh->project->name;
-                            $comment .= " \n";
-                            $comment .= ' - Revenue: ' . $revenueKwh->id;
-                            $comment .= ' (' . Carbon::parse($revenueKwh->date_begin)->format('d-m-Y') . ' t/m ' . Carbon::parse($revenueKwh->date_end)->format('d-m-Y') . ')';
-                            $comment .= " \n";
-                            $comment .= ' - PartKwh: ' . $partKwh->id;
-                            $comment .= ' (' . Carbon::parse($partKwh->date_begin)->format('d-m-Y') . ' t/m ' . Carbon::parse($partKwh->date_end)->format('d-m-Y') . ')';
-                            $comment .= " \n";
-                            $comment .= ' - Distribution: ' . $distributionKwh->id . ' ' . $distributionKwh->contact->full_name;
-                            $comment .= ' Contact id: ' . $distributionKwh->contact_id;
-                            $comment .= " \n";
-                            $comment .= ' - Participation id: ' . $distributionKwh->participation_id;
-                            $comment .= " \n";
-                            $comment .= ' - AddressEnergySupplier id: ' . $addressEnergySupplier->id;
-                            $comment .= ' (' . Carbon::parse($addressEnergySupplier->member_since)->format('d-m-Y') . ' t/m ' . ($addressEnergySupplier->end_date ? Carbon::parse($addressEnergySupplier->end_date)->format('d-m-Y') : '31-12-9999'). ')';
-                            $comment .= " \n";
-                            $comment .= ' - Adres: ' . $addressEnergySupplier->address->id . ' ' . $addressEnergySupplier->street_postal_code_city;
-                            $comment .= " \n";
+                    $dateTerminated = Carbon::parse($distributionKwh->participation->date_terminated)->addDay()->format('Y-m-d');
+
+                    // controleer addressEnergySuppliers als deelnemer niet beeindigd is of als beeindigsdatum na begindatum ligt.
+                    if($dateTerminated == null || $dateTerminated > $dateBegin){
+
+                        $addressEnergySuppliers = $distributionKwh->participation->address->addressEnergySuppliers()
+                            ->whereIn('energy_supply_type_id', [2, 3])
+                            ->where(function ($addressEnergySupplier) use ($dateBegin, $dateEnd) {
+                                $addressEnergySupplier
+                                    ->where(function ($addressEnergySupplier) use ($dateBegin, $dateEnd) {
+                                        $addressEnergySupplier->whereNotNull('member_since')
+                                            ->where('member_since', '>', $dateBegin)
+                                            ->where('member_since', '<=', $dateEnd);
+                                    });
+                            })
+                            ->get();
+                        if ($addressEnergySuppliers->count() > 0) {
+                            foreach ($addressEnergySuppliers as $addressEnergySupplier){
+                                $comment = 'Geen splitsing deelperiode data gevonden voor switch datum deelnemer:';
+                                $comment .= " \n";
+                                $comment .= ' - Project: ' . $revenueKwh->project_id . ' ' . $revenueKwh->project->name;
+                                $comment .= " \n";
+                                $comment .= ' - Revenue: ' . $revenueKwh->id;
+                                $comment .= ' (' . Carbon::parse($revenueKwh->date_begin)->format('d-m-Y') . ' t/m ' . Carbon::parse($revenueKwh->date_end)->format('d-m-Y') . ')';
+                                $comment .= " \n";
+                                $comment .= ' - PartKwh: ' . $partKwh->id;
+                                $comment .= ' (' . Carbon::parse($partKwh->date_begin)->format('d-m-Y') . ' t/m ' . Carbon::parse($partKwh->date_end)->format('d-m-Y') . ')';
+                                $comment .= " \n";
+                                $comment .= ' - Distribution: ' . $distributionKwh->id . ' ' . $distributionKwh->contact->full_name;
+                                $comment .= ' Contact id: ' . $distributionKwh->contact_id;
+                                $comment .= " \n";
+                                $comment .= ' - Participation id: ' . $distributionKwh->participation_id;
+                                $comment .= " \n";
+                                $comment .= ' - AddressEnergySupplier id: ' . $addressEnergySupplier->id;
+                                $comment .= ' (' . Carbon::parse($addressEnergySupplier->member_since)->format('d-m-Y') . ' t/m ' . ($addressEnergySupplier->end_date ? Carbon::parse($addressEnergySupplier->end_date)->format('d-m-Y') : '31-12-9999'). ')';
+                                $comment .= " \n";
+                                $comment .= ' - Adres: ' . $addressEnergySupplier->address->id . ' ' . $addressEnergySupplier->street_postal_code_city;
+                                $comment .= " \n";
 //                            Log::info($comment);
-                            $missingEnergySupplierDataInPartsData = [
-                                'project_id' => $revenueKwh->project_id,
-                                'revenue_id' => $revenueKwh->id,
-                                'revenue_date_begin' => $revenueKwh->date_begin,
-                                'revenue_date_end' => $revenueKwh->date_end,
-                                'parts_id' => $partKwh->id,
-                                'part_date_begin' => $partKwh->date_begin,
-                                'part_date_end' => $partKwh->date_end,
-                                'distribution_id' => $distributionKwh->id,
-                                'participation_id' => $distributionKwh->participation_id,
-                                'participation_date_terminated' => $distributionKwh->participation->date_terminated,
-                                'address_supplier_energy_id' => $addressEnergySupplier->id,
-                                'address_supplier_energy_member_since' => $addressEnergySupplier->member_since,
-                                'address_supplier_energy_end_date' => $addressEnergySupplier->end_date,
-                                'comment' => $comment,
-                            ];
-                            DB::table('_missing_energy_supplier_data_in_parts')
-                                ->insert($missingEnergySupplierDataInPartsData);
+                                $missingEnergySupplierDataInPartsData = [
+                                    'project_id' => $revenueKwh->project_id,
+                                    'revenue_id' => $revenueKwh->id,
+                                    'revenue_date_begin' => $revenueKwh->date_begin,
+                                    'revenue_date_end' => $revenueKwh->date_end,
+                                    'parts_id' => $partKwh->id,
+                                    'part_date_begin' => $partKwh->date_begin,
+                                    'part_date_end' => $partKwh->date_end,
+                                    'distribution_id' => $distributionKwh->id,
+                                    'participation_id' => $distributionKwh->participation_id,
+                                    'participation_date_terminated' => $distributionKwh->participation->date_terminated,
+                                    'address_supplier_energy_id' => $addressEnergySupplier->id,
+                                    'address_supplier_energy_member_since' => $addressEnergySupplier->member_since,
+                                    'address_supplier_energy_end_date' => $addressEnergySupplier->end_date,
+                                    'comment' => $comment,
+                                ];
+                                DB::table('_missing_energy_supplier_data_in_parts')
+                                    ->insert($missingEnergySupplierDataInPartsData);
+                            }
                         }
+
                     }
 
                     if ($distributionKwh->participation->date_terminated != null) {
                         $dayAfterTerminated = Carbon::parse($distributionKwh->participation->date_terminated)->addDay()->format('Y-m-d');
-                        if ($dayAfterTerminated > $dateBegin and $dayAfterTerminated < $dateEnd) {
+                        if ($dayAfterTerminated > $dateBegin and $dayAfterTerminated <= $dateEnd) {
                             $comment = 'Geen splitsing deelperiode data gevonden voor dag na beeindiging deelnemer:';
                             $comment .= " \n";
                             $comment .= ' - Project: ' . $revenueKwh->project_id . ' ' . $revenueKwh->project->name;
@@ -177,11 +185,9 @@ class checkMissingEnergySupplierDataInParts extends Command
     {
         (new EmailHelper())->setConfigToDefaultMailbox();
 
-        $mail = Mail::to('wim.mosman@xaris.nl');
+        $mail = Mail::to($this->mailTo);
         $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>Missing parts</title></head><body><p>'. $subject . '</p><p>' . \Config::get("app.name") .'</p></body></html>';
 
-//        Log::info($subject);
-//        Log::info($htmlBody);
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
 

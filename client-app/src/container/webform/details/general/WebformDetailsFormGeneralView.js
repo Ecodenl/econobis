@@ -15,6 +15,8 @@ const WebformDetailsFormGeneralView = props => {
         name,
         apiKey,
         apiKeyDate,
+        emailAddressErrorReport,
+        mailErrorReport,
         maxRequestsPerMinute,
         dateStart,
         dateEnd,
@@ -38,7 +40,14 @@ const WebformDetailsFormGeneralView = props => {
                             <div className="col-sm-6" style={{ paddingRight: '5px' }} onClick={null}>
                                 {apiKey}
                                 <CopyToClipboard text={apiKey}>
-                                    <Icon className="mybtn-success pull-right" size={14} icon={copy} role="button" onClick={null} title={'Kopieer sleutel'} />
+                                    <Icon
+                                        className="mybtn-success pull-right"
+                                        size={14}
+                                        icon={copy}
+                                        role="button"
+                                        onClick={null}
+                                        title={'Kopieer sleutel'}
+                                    />
                                 </CopyToClipboard>
                             </div>
                         </div>
@@ -60,6 +69,12 @@ const WebformDetailsFormGeneralView = props => {
                             value={responsibleUser ? responsibleUser.fullName : responsibleTeam.name}
                             link={responsibleUser ? 'gebruiker/' + responsibleUser.id : 'team/' + responsibleTeam.id}
                         />
+                    </div>
+
+                    <div className="row" onClick={props.switchToEdit}>
+                        <ViewText label={'Emailadres foutrapportage'} value={emailAddressErrorReport} />
+
+                        <ViewText label={'Mailen foutrapportage'} value={mailErrorReport == true ? 'Ja' : 'Nee'} />
                     </div>
                 </PanelBody>
             </Panel>

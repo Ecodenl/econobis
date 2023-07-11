@@ -10,10 +10,10 @@ import HousingFilesListToolbar from './HousingFilesListToolbar';
 import filterHelper from '../../../helpers/FilterHelper';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import HousingFilesAPI from "../../../api/housing-file/HousingFilesAPI";
-import fileDownload from "js-file-download";
-import moment from "moment";
-import {blockUI, unblockUI} from "../../../actions/general/BlockUIActions";
+import HousingFilesAPI from '../../../api/housing-file/HousingFilesAPI';
+import fileDownload from 'js-file-download';
+import moment from 'moment';
+import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
 
 class HousingFilesListApp extends Component {
     constructor(props) {
@@ -40,13 +40,13 @@ class HousingFilesListApp extends Component {
         }, 100);
     };
 
-    getExcel = () => {
+    getExcelHousingFiles = () => {
         this.props.blockUI();
         setTimeout(() => {
             const filters = filterHelper(this.props.housingFilesFilters);
             const sorts = this.props.housingFilesSorts;
 
-            HousingFilesAPI.getExcel({ filters, sorts })
+            HousingFilesAPI.getExcelHousingFiles({ filters, sorts })
                 .then(payload => {
                     fileDownload(payload.data, 'Woningdossiers-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.xlsx');
                     this.props.unblockUI();
@@ -92,7 +92,7 @@ class HousingFilesListApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <HousingFilesListToolbar
                             resetHousingFileFilters={() => this.resetHousingFileFilters()}
-                            getExcel={this.getExcel}
+                            getExcelHousingFiles={this.getExcelHousingFiles}
                         />
                     </div>
 
@@ -122,7 +122,14 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
-        { fetchHousingFiles, clearHousingFiles, setHousingFilesPagination, clearFilterHousingFiles, blockUI, unblockUI },
+        {
+            fetchHousingFiles,
+            clearHousingFiles,
+            setHousingFilesPagination,
+            clearFilterHousingFiles,
+            blockUI,
+            unblockUI,
+        },
         dispatch
     );
 };

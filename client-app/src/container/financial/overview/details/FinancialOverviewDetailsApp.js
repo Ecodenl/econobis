@@ -50,32 +50,46 @@ class FinancialOverviewDetailsApp extends Component {
     };
 
     render() {
-        return (
-            <div className="row">
-                <div className="col-md-9">
-                    <div className="col-md-12 margin-10-top">
-                        <Panel>
-                            <PanelBody className={'panel-small'}>
-                                <FinancialOverviewDetailsToolbar
-                                    financialOverview={this.state.financialOverview}
-                                    deleteFinancialOverview={this.deleteFinancialOverview}
-                                />
-                            </PanelBody>
-                        </Panel>
-                    </div>
+        // list of administration ids that the current user has access to
+        const administrationIds = this.props.administrations.map((administration) => administration.id);
 
-                    <div className="col-md-12 margin-10-top">
-                        <FinancialOverviewDetailsForm
-                            financialOverview={this.state.financialOverview}
-                            isLoading={this.state.isLoading}
-                            hasError={this.state.hasError}
-                            callFetchFinancialOverviewDetails={this.callFetchFinancialOverviewDetails}
-                        />
+        if (administrationIds.indexOf(this.state.financialOverview.administrationId) > -1) {
+            return (
+                <div className="row">
+                    <div className="col-md-9">
+                        <div className="col-md-12 margin-10-top">
+                            <Panel>
+                                <PanelBody className={'panel-small'}>
+                                    <FinancialOverviewDetailsToolbar
+                                        financialOverview={this.state.financialOverview}
+                                        deleteFinancialOverview={this.deleteFinancialOverview}
+                                    />
+                                </PanelBody>
+                            </Panel>
+                        </div>
+
+                        <div className="col-md-12 margin-10-top">
+                            <FinancialOverviewDetailsForm
+                                financialOverview={this.state.financialOverview}
+                                isLoading={this.state.isLoading}
+                                hasError={this.state.hasError}
+                                callFetchFinancialOverviewDetails={this.callFetchFinancialOverviewDetails}
+                            />
+                        </div>
+                    </div>
+                    <div className="col-md-3" />
+                </div>
+            );
+        } else {
+            return (
+                <div className="row">
+                    <div className="col-md-9 margin-10-top text-center">
+                        Je hebt geen recht om deze administratie in te zien. Vraag je administrator/key user jou toe te voegen aan
+                        deze administratie via instellingen > administraties
                     </div>
                 </div>
-                <div className="col-md-3" />
-            </div>
-        );
+            );
+        }
     }
 }
 
@@ -85,4 +99,10 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(FinancialOverviewDetailsApp);
+const mapStateToProps = state => {
+    return {
+        administrations: state.meDetails.administrations,
+    };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(FinancialOverviewDetailsApp);
+

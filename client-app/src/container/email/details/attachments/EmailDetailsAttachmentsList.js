@@ -4,7 +4,10 @@ import { connect } from 'react-redux';
 import EmailDetailsAttachmentsItem from './EmailDetailsAttachmentsItem';
 
 const EmailDetailsAttachmentsList = props => {
-    const { attachments = [] } = props.email;
+    let { attachments = [] } = props.email;
+
+    attachments = attachments.filter(a => !a.cid);
+
     return (
         <div>
             <div className="row border header">

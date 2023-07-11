@@ -85,19 +85,17 @@ function ChangeAccountEmail() {
                     <Row>
                         <Col xs={12} md={9}>
                             <Form.Label className={'field-label pt-1'}>Nieuw e-mailadres</Form.Label>
-                            <Field
-                                name="email"
-                                render={({ field }) => (
+                            <Field name="email">
+                                {({ field }) => (
                                     <InputText field={field} errors={errors} touched={touched} id="email" />
                                 )}
-                            />
+                            </Field>
                         </Col>
                     </Row>
                     <Row>
                         <Col xs={12} md={9}>
-                            <Field
-                                name="changePrimaryEmailAddress"
-                                render={({ field }) => (
+                            <Field name="changePrimaryEmailAddress">
+                                {({ field }) => (
                                     <label className="w-checkbox checkbox-fld">
                                         <input
                                             type="checkbox"
@@ -114,7 +112,7 @@ function ChangeAccountEmail() {
                                         </span>
                                     </label>
                                 )}
-                            />
+                            </Field>
                         </Col>
                     </Row>
 

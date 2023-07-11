@@ -21,6 +21,7 @@ class checkWrongEnergySupplierDataInParts extends Command
      * @var string
      */
     protected $signature = 'revenue:checkWrongEnergySupplierDataInParts';
+    protected $mailTo = 'wim.mosman@xaris.nl';
 
     /**
      * The console command description.
@@ -66,6 +67,7 @@ class checkWrongEnergySupplierDataInParts extends Command
                 if ($address) {
                     $addressEnergySupplier = $this->getAddressEnergySupplierInAPeriod($address->id, $distributionPartKwh->partsKwh->date_begin, $distributionPartKwh->partsKwh->date_end);
                     if(!$addressEnergySupplier){
+                        //todo WM: $distributionPartKwh->es_id != $energySupplierUnknown->id moet nog weg.
                         if ( $distributionPartKwh->es_id != $energySupplierUnknown->id &&
                             ($distributionPartKwh->es_id != null
                             || ($distributionPartKwh->energy_supplier_name != null && $distributionPartKwh->energy_supplier_name != '')
@@ -170,6 +172,7 @@ class checkWrongEnergySupplierDataInParts extends Command
     private function getAddressEnergySupplierInAPeriod($addressid, $dateBegin, $dateEnd)
     {
         $addressEnergySupplier = AddressEnergySupplier::where('address_id', '=', $addressid)
+            ->whereIn('energy_supply_type_id', [2, 3] )
             ->where(function ($addressEnergySupplier) use ($dateBegin) {
                 $addressEnergySupplier
                     ->where(function ($addressEnergySupplier) use ($dateBegin) {
@@ -193,7 +196,7 @@ class checkWrongEnergySupplierDataInParts extends Command
     {
         (new EmailHelper())->setConfigToDefaultMailbox();
 
-        $mail = Mail::to('wim.mosman@xaris.nl');
+        $mail = Mail::to($this->mailTo);
         $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>Wrong energy supplier data in parts</title></head><body><p>'. $subject . '</p><p>' . \Config::get("app.name") .'</p></body></html>';
 
         $mail->subject = $subject;

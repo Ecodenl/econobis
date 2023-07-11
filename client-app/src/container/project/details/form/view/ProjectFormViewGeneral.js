@@ -40,6 +40,8 @@ const ProjectFormViewGeneral = ({
     dateProduction,
     dateInterestBearingKwh,
     dateInterestBearing,
+    dateInterestBearingRedemption,
+    kwhStartHighNextRevenue,
     isMembershipRequired,
     visibleForAllContacts,
     textInfoProjectOnlyMembers,
@@ -252,6 +254,20 @@ const ProjectFormViewGeneral = ({
                     <ViewText
                         label={'Volgende begin periode opbrengst Euro'}
                         value={dateInterestBearing ? moment(dateInterestBearing).format('L') : ''}
+                    />
+                </div>
+
+                <div className="row">
+                    <ViewText
+                        label={'Begindatum volgende Aflossing opbrengstverdeling'}
+                        value={dateInterestBearingRedemption ? moment(dateInterestBearingRedemption).format('L') : ''}
+                    />
+                </div>
+
+                <div className="row">
+                    <ViewText
+                        label={'Beginstand hoog volgende kwh opbrengstverdeling'}
+                        value={kwhStartHighNextRevenue ? kwhStartHighNextRevenue : ''}
                     />
                 </div>
             </section>

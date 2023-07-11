@@ -75,6 +75,7 @@ class FullParticipantProject extends JsonResource
                 'dateTerminated' => $this->date_terminated,
                 'dateRegister' => $this->date_register,
                 'dateEntryFirstDeposit' => $this->dateEntryFirstDeposit,
+                'dateEntryLastMutation' => $this->dateEntryLastMutation,
                 'participantInDefinitiveRevenue' => $this->participantInDefinitiveRevenue,
                 'hasNotConfirmedRevenuesKwh' => $this->getHasNotConfirmedRevenuesKwh(),
             ];

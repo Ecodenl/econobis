@@ -16,7 +16,7 @@ import MeasureAPI from '../../../api/measure/MeasureAPI';
 import TasksAPI from '../../../api/task/TasksAPI';
 import { setError } from '../../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
-import CampaignAPI from '../../../api/campaign/CampaignsAPI';
+import CampaignsAPI from '../../../api/campaign/CampaignsAPI';
 import HousingFileAPI from '../../../api/housing-file/HousingFilesAPI';
 import QuotationRequestsAPI from '../../../api/quotation-request/QuotationRequestsAPI';
 import ProjectsAPI from '../../../api/project/ProjectsAPI';
@@ -175,7 +175,7 @@ class DocumentNewApp extends Component {
             this.setState({ templates: payload });
         });
 
-        CampaignAPI.peekCampaigns().then(payload => {
+        CampaignsAPI.peekCampaigns().then(payload => {
             this.setState({ campaigns: payload });
         });
 

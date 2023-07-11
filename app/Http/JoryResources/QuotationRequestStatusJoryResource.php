@@ -23,6 +23,7 @@ class QuotationRequestStatusJoryResource extends JoryResource
         $this->field('name')->filterable()->sortable();
         $this->field('uses_wf')->filterable()->sortable();
         $this->field('email_template_id_wf')->filterable()->sortable();
+        $this->field('mail_cc_to_coach_wf')->filterable()->sortable();
         $this->field('number_of_days_to_send_email')->filterable()->sortable();
         $this->field('created_at')->filterable()->sortable();
         $this->field('updated_at')->filterable()->sortable();

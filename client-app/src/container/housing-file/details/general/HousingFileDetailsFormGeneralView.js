@@ -18,7 +18,21 @@ const HousingFileDetailsFormGeneralView = props => {
         floors,
         energyLabelStatus,
         isMonument,
+        remark,
+        remarkCoach,
+        hoomBuildingId,
+        wallSurface,
+        totalWindowSurface,
+        frameType,
+        floorSurface,
+        pitchedRoofSurface,
+        flatRoofSurface,
+        cookType,
+        heatSource,
+        waterComfort,
     } = props.housingFileDetails;
+
+    const showFields = props.housingFileHoomLinksToShowInEconobis;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -30,29 +44,100 @@ const HousingFileDetailsFormGeneralView = props => {
                 />
                 <ViewText label={'Adres'} value={fullAddress && fullAddress} />
             </div>
-
             <div className="row">
-                <ViewText label="Woningtype" value={buildingType && buildingType.name} />
-                <ViewText label="Bouwjaar" value={buildYear && buildYear} />
+                {showFields.some(showField => showField.econobisFieldName === 'building_type_id') ? (
+                    <ViewText label="Woningtype" value={buildingType && buildingType.name} />
+                ) : null}
+                {showFields.some(showField => showField.econobisFieldName === 'build_year') ? (
+                    <ViewText label="Bouwjaar" value={buildYear && buildYear} />
+                ) : null}
             </div>
-
             <div className="row">
-                <ViewText label="Gebruiksoppervlakte" value={surface && surface} />
-                <ViewText label="Daktype" value={roofType && roofType.name} />
+                {showFields.some(showField => showField.econobisFieldName === 'surface') ? (
+                    <ViewText label="Gebruiksoppervlakte" value={surface && surface} />
+                ) : null}
+                {showFields.some(showField => showField.econobisFieldName === 'roof_type_id') ? (
+                    <ViewText label="Daktype" value={roofType && roofType.name} />
+                ) : null}
             </div>
-
             <div className="row">
-                <ViewText label="Energielabel" value={energyLabel && energyLabel.name} />
-                <ViewText label="Aantal bouwlagen" value={floors && floors} />
+                {showFields.some(showField => showField.econobisFieldName === 'energy_label_id') ? (
+                    <ViewText label="Energielabel" value={energyLabel && energyLabel.name} />
+                ) : null}
+                {showFields.some(showField => showField.econobisFieldName === 'floors') ? (
+                    <ViewText label="Aantal bouwlagen" value={floors && floors} />
+                ) : null}
             </div>
-
             <div className="row">
-                <ViewText label="Status energielabel" value={energyLabelStatus && energyLabelStatus.name} />
-                <ViewText label="Monument" value={isMonument ? 'Ja' : 'Nee'} />
+                {showFields.some(showField => showField.econobisFieldName === 'energy_label_status_id') ? (
+                    <ViewText label="Status energielabel" value={energyLabelStatus && energyLabelStatus.name} />
+                ) : null}
+                {showFields.some(showField => showField.econobisFieldName === 'is_monument') ? (
+                    <ViewText label="Monument" value={isMonument ? 'Ja' : 'Nee'} />
+                ) : null}
             </div>
-
             <div className="row">
-                <ViewText label="Koophuis" value={isHouseForSale ? 'Ja' : 'Nee'} />
+                <ViewText label="Hoom building Id" value={hoomBuildingId && hoomBuildingId} />
+                {showFields.some(showField => showField.econobisFieldName === 'is_house_for_sale') ? (
+                    <ViewText label="Koophuis" value={isHouseForSale ? 'Ja' : 'Nee'} />
+                ) : null}
+            </div>
+            <div className="row">
+                {showFields.some(showField => showField.econobisFieldName === 'wall_surface') ? (
+                    <ViewText label="Geveloppervlakte" value={wallSurface && wallSurface} />
+                ) : null}
+                {showFields.some(showField => showField.econobisFieldName === 'total_window_surface') ? (
+                    <ViewText label="Raamoppervlakte" value={totalWindowSurface && totalWindowSurface} />
+                ) : null}
+            </div>
+            <div className="row">
+                {showFields.some(showField => showField.econobisFieldName === 'frame_type') ? (
+                    <ViewText label="Kozijntype" value={frameType && frameType.hoomStatusName} />
+                ) : null}
+                {showFields.some(showField => showField.econobisFieldName === 'floor_surface') ? (
+                    <ViewText label="Vloeroppervlakte" value={floorSurface && floorSurface} />
+                ) : null}
+            </div>
+            <div className="row">
+                {showFields.some(showField => showField.econobisFieldName === 'pitched_roof_surface') ? (
+                    <ViewText label="Hellend dakoppervlakte" value={pitchedRoofSurface && pitchedRoofSurface} />
+                ) : null}
+                {showFields.some(showField => showField.econobisFieldName === 'flat_roof_surface') ? (
+                    <ViewText label="Platte dakoppervlakte" value={flatRoofSurface && flatRoofSurface} />
+                ) : null}
+            </div>
+            <div className="row">
+                {showFields.some(showField => showField.econobisFieldName === 'cook_type') ? (
+                    <ViewText label="Manier koken" value={cookType && cookType.hoomStatusName} />
+                ) : null}
+                {showFields.some(showField => showField.econobisFieldName === 'heat_source') ? (
+                    <ViewText label="Verwarming" value={heatSource && heatSource.hoomStatusName} />
+                ) : null}
+            </div>
+            <div className="row">
+                {showFields.some(showField => showField.econobisFieldName === 'water_comfort') ? (
+                    <ViewText label="Water comfort" value={waterComfort && waterComfort.hoomStatusName} />
+                ) : null}
+            </div>
+            <div className="row">
+                <div className="col-sm-3">
+                    <label htmlFor="remark" className="col-sm-12">
+                        Opmerkingen bewoner
+                    </label>
+                </div>
+                <div className="col-sm-9" id="remark">
+                    {remark}
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-sm-3">
+                    <label htmlFor="remarkCoach" className="col-sm-12">
+                        Opmerkingen coach
+                    </label>
+                </div>
+                <div className="col-sm-9" id="remarkCoach">
+                    {remarkCoach}
+                </div>
             </div>
         </div>
     );
@@ -61,6 +146,7 @@ const HousingFileDetailsFormGeneralView = props => {
 const mapStateToProps = state => {
     return {
         housingFileDetails: state.housingFileDetails,
+        housingFileHoomLinksToShowInEconobis: state.systemData.housingFileHoomLinksToShowInEconobis,
     };
 };
 

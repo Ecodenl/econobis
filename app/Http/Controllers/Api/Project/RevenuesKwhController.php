@@ -7,15 +7,10 @@ use App\Eco\Document\Document;
 use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
-use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Occupation\OccupationContact;
-use App\Eco\ParticipantMutation\ParticipantMutation;
-use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\ParticipantProject\ParticipantProject;
-use App\Eco\Project\ProjectType;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
-use App\Eco\RevenuesKwh\RevenuePartsKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\RevenueDistributionKwhCSVHelper;
@@ -41,8 +36,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use PhpOffice\PhpSpreadsheet\Writer\Xls;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class RevenuesKwhController extends ApiController
 {
@@ -70,6 +63,7 @@ class RevenuesKwhController extends ApiController
 
     public function getRevenueDistribution(RevenuesKwh $revenuesKwh, Request $request)
     {
+//        todo origineel 100: voor testen op 10
         $limit = 100;
         $offset = $request->input('page') ? $request->input('page') * $limit : 0;
 
@@ -172,10 +166,7 @@ class RevenuesKwhController extends ApiController
 
         }
 
-        return FullRevenuesKwh::collection(RevenuesKwh::where('project_id',
-            $revenuesKwh->project_id)
-            ->with('createdBy', 'project', 'partsKwh', 'distributionKwh')
-            ->orderBy('date_begin')->get());
+        return FullRevenuesKwh::make(RevenuesKwh::find($revenuesKwh->id));
     }
 
     public function recalculateRevenuesDistribution(RevenuesKwh $revenuesKwh)
@@ -235,12 +226,21 @@ class RevenuesKwhController extends ApiController
 
         list($quantityOfParticipationsAtStart, $quantityOfParticipations, $hasMutationQuantity) = $this->determineParticipationsQuantity($distributionKwh);
         if ($quantityOfParticipationsAtStart != 0 || $hasMutationQuantity) {
+            // Indien $quantityOfParticipationsAtStart niet 0 is of er zijn geen mutaties
             $distributionKwh->participations_quantity_at_start = $quantityOfParticipationsAtStart;
             $distributionKwh->participations_quantity = $quantityOfParticipations;
             $distributionKwh->save();
+            // Indien distribution Nieuw toegevoegd, dan voor alle parts (behalve met status new) alvast distribution parts en values toeveogen met delivered 0.
+            if ($distributionKwhIsNew) {
+                $revenuesKwhHelper = new RevenuesKwhHelper();
+                foreach ($distributionKwh->revenuesKwh->partsKwh()->whereNotIn('status', ['new', 'in-progress-update', 'in-progress-process', 'in-progress-report'])->orderBy('date_begin')->get() as $partsKwh){
+                    $revenuesKwhHelper->saveNewDistributionPartsKwh($partsKwh, $distributionKwh);
+                }
+            }
         } else {
-            // Indien $quantityOfParticipationsAtStart 0 is en er zijn geen mutaties en distribution niet was niet nieuw
+            // Indien $quantityOfParticipationsAtStart 0 is en er zijn geen mutaties
             if (!$distributionKwhIsNew) {
+                // Indien distribution niet nieuw
                 $revenuePartsKwhHasConfirmed = $revenuesKwh->partsKwh()->where('confirmed', true)->exists();
                 // en er is ook nog geen deelperiode bevestigd, dan verwijderen distributionKwh
                 if (!$revenuePartsKwhHasConfirmed) {
@@ -844,9 +844,12 @@ class RevenuesKwhController extends ApiController
         if(count($messages) > 0)
         {
             return ['messages' => $messages];
-        }
-        else
-        {
+        } else {
+            // Geen fouten bijwerken datum rapportage
+            $distributionKwh->date_participant_report = Carbon::today();
+            $distributionKwh->begin_date_participant_report = $distributionKwh->revenuesKwh->date_begin;
+            $distributionKwh->end_date_participant_report = $distributionKwh->date_end_last_confirmed_parts_kwh;
+            $distributionKwh->save();
             return null;
         }
     }

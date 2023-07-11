@@ -105,6 +105,7 @@ class FullProject extends JsonResource
                 'usesMollie' => $this->uses_mollie,
                 'hasPaymentInvoices' => $this->getHasPaymentInvoices(),
                 'hasRevenueKwh' => $this->getHasRevenueKwh(),
+                'dateInterestBearingWrong' => $this->getDateInterestBearingWrong(),
                 'requiresContactGroups' => GenericResource::make($this->whenLoaded('requiresContactGroups')),
                 'amountOfLoanNeeded' => $this->amount_of_loan_needed,
                 'minAmountLoan' => $this->min_amount_loan,

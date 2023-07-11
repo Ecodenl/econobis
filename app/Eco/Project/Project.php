@@ -18,6 +18,7 @@ use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Project extends Model
@@ -234,6 +235,41 @@ class Project extends Model
         $financialOverviewProjectIds = $this->financialOverviewProjects()->where('definitive', true)->pluck('financial_overview_id')->toArray();;
         $financialOverviews = FinancialOverview::whereIn('id', $financialOverviewProjectIds)->get()->sortByDesc('year')->first();
         return $financialOverviews ? $financialOverviews->year : null;
+    }
+
+    public function getDateInterestBearingWrong() {
+        $projectRevenueCategoryRevenueEuro = ProjectRevenueCategory::where('code_ref', 'revenueEuro' )->first()->id;
+        $confirmedProjectRevenuesEuro = $this->projectRevenues()->where('category_id', $projectRevenueCategoryRevenueEuro)->where('confirmed', 1)->orderBy('date_end', 'desc');
+        $dateEnd = $confirmedProjectRevenuesEuro->count() > 0 ? Carbon::parse($confirmedProjectRevenuesEuro->first()->date_end) : null;
+        $dateEndPlusOneDay = $dateEnd ? $dateEnd->addDay(1)->format('Y-m-d') : 'onbekend';
+
+        //Geen date_interest_bearing maar wel confirmed projectRevenues van category 2 revenueEuro
+        if (
+            $this->date_interest_bearing === null &&
+            $confirmedProjectRevenuesEuro->count() > 0
+        ) {
+            return true;
+        }
+        //Wel date_interest_bearing maar geen confirmed projectRevenues van category 2 revenueEuro
+        if (
+            $this->date_interest_bearing !== null &&
+            $confirmedProjectRevenuesEuro->count() === 0
+        ) {
+            return true;
+        }
+
+        //Wel date_interest_bearing en projectRevenues van category 2 revenueEuro, maar nieuwe startdatum is niet goed
+        if ($confirmedProjectRevenuesEuro->count() > 0) {
+            if (
+                $this->date_interest_bearing !== null &&
+                $confirmedProjectRevenuesEuro->count() > 0 &&
+                Carbon::parse($this->date_interest_bearing)->format('Y-m-d') != $dateEndPlusOneDay
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

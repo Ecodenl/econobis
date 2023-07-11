@@ -65,6 +65,10 @@ class ProjectFormEdit extends Component {
                     (props.project.kwhStartHighNextRevenueWrong != null && props.project.kwhStartHighNextRevenueWrong != undefined)
                         ? props.project.kwhStartHighNextRevenueWrong
                         : false,
+                allowChangeKwhStartLowNextRevenue:
+                    (props.project.kwhStartLowNextRevenueWrong != null && props.project.kwhStartLowNextRevenueWrong != undefined)
+                        ? props.project.kwhStartLowNextRevenueWrong
+                        : false,
             },
             errors: {
                 name: false,
@@ -776,6 +780,8 @@ class ProjectFormEdit extends Component {
             allowChangeDateInterestBearingRedemption,
             kwhStartHighNextRevenue,
             allowChangeKwhStartHighNextRevenue,
+            kwhStartLowNextRevenue,
+            allowChangeKwhStartLowNextRevenue,
             isMembershipRequired,
             contactGroupIds,
             contactGroupIdsSelected,
@@ -899,6 +905,8 @@ class ProjectFormEdit extends Component {
                     allowChangeDateInterestBearingRedemption={allowChangeDateInterestBearingRedemption}
                     kwhStartHighNextRevenue={kwhStartHighNextRevenue}
                     allowChangeKwhStartHighNextRevenue={allowChangeKwhStartHighNextRevenue}
+                    kwhStartLowNextRevenue={kwhStartLowNextRevenue}
+                    allowChangeKwhStartLowNextRevenue={allowChangeKwhStartLowNextRevenue}
                     contactGroupIds={contactGroupIds}
                     contactGroupIdsSelected={contactGroupIdsSelected}
                     isMembershipRequired={isMembershipRequired}

@@ -57,6 +57,8 @@ const ProjectFormEditGeneral = ({
     allowChangeDateInterestBearingRedemption,
     kwhStartHighNextRevenue,
     allowChangeKwhStartHighNextRevenue,
+    kwhStartLowNextRevenue,
+    allowChangeKwhStartLowNextRevenue,
     isMembershipRequired,
     visibleForAllContacts,
     textInfoProjectOnlyMembers,
@@ -493,6 +495,16 @@ const ProjectFormEditGeneral = ({
                     value={kwhStartHighNextRevenue}
                     onChangeAction={handleInputChangeDate}
                     readOnly={!allowChangeKwhStartHighNextRevenue}
+                />
+            </div>
+
+            <div className="row">
+                <InputText
+                    label={'Beginstand laag volgende kwh opbrengstverdeling'}
+                    name={'kwhStartLowNextRevenue'}
+                    value={kwhStartLowNextRevenue}
+                    onChangeAction={handleInputChangeDate}
+                    readOnly={!allowChangeKwhStartLowNextRevenue}
                 />
             </div>
 

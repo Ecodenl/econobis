@@ -108,6 +108,7 @@ class FullProject extends JsonResource
                 'dateInterestBearingWrong' => $this->getDateInterestBearingWrong(),
                 'dateInterestBearingRedemptionWrong' => $this->getDateInterestBearingRedemptionWrong(),
                 'kwhStartHighNextRevenueWrong' => $this->getKwhStartHighNextRevenueWrong(),
+                'kwhStartLowNextRevenueWrong' => $this->getKwhStartLowNextRevenueWrong(),
                 'requiresContactGroups' => GenericResource::make($this->whenLoaded('requiresContactGroups')),
                 'amountOfLoanNeeded' => $this->amount_of_loan_needed,
                 'minAmountLoan' => $this->min_amount_loan,

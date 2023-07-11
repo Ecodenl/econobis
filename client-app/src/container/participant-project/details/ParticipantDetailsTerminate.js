@@ -130,7 +130,11 @@ const ParticipantDetailsTerminate = ({
                 <div className="row">
                     <ViewText
                         label={'Datum laatste mutatie storting/terugbetaling'}
-                        value={moment(participantProject.dateEntryLastMutation).format('DD-MM-Y')}
+                        value={
+                            participantProject.dateEntryLastMutation
+                                ? moment(participantProject.dateEntryLastMutation).format('DD-MM-Y')
+                                : ''
+                        }
                     />
                 </div>
                 <div className="row">

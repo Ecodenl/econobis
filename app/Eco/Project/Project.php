@@ -18,7 +18,7 @@ use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Project extends Model
@@ -264,6 +264,42 @@ class Project extends Model
                 $this->date_interest_bearing !== null &&
                 $confirmedProjectRevenuesEuro->count() > 0 &&
                 Carbon::parse($this->date_interest_bearing)->format('Y-m-d') != $dateEndPlusOneDay
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getDateInterestBearingRedemptionWrong() {
+        $projectRevenueCategoryRedemptionEuro = ProjectRevenueCategory::where('code_ref', 'redemptionEuro' )->first()->id;
+        $confirmedProjectRedemptionsEuro = $this->projectRevenues()->where('category_id', $projectRevenueCategoryRedemptionEuro)->where('confirmed', 1)->orderBy('date_end', 'desc');
+
+        //Geen date_interest_bearing_redemption maar wel confirmed projectRevenues van category 3 redemptionEuro
+        if (
+            $this->date_interest_bearing_redemption === null &&
+            $confirmedProjectRedemptionsEuro->count() > 0
+        ) {
+            return true;
+        }
+        //wel date_interest_bearing_redemption maar geen confirmed projectRevenues van category 3 redemptionEuro
+        if(
+            $this->date_interest_bearing_redemption !== null &&
+            $confirmedProjectRedemptionsEuro->count() === 0
+        ) {
+            return true;
+        }
+        //wel date_interest_bearing_redemption en confirmed projectRevenues van category 3, maar nieuwe startdatum is niet goed
+        if(
+            $confirmedProjectRedemptionsEuro->count() > 0
+        ) {
+            $dateEnd = Carbon::parse($confirmedProjectRedemptionsEuro->first()->date_end);
+            $dateEndPlusOneDay = $dateEnd->addDay(1)->format('Y-m-d');
+            if (
+                $this->date_interest_bearing_redemption !== null &&
+                $confirmedProjectRedemptionsEuro->count() > 0 &&
+                Carbon::parse($this->date_interest_bearing_redemption)->format('Y-m-d') != $dateEndPlusOneDay
             ) {
                 return true;
             }

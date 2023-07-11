@@ -57,6 +57,10 @@ class ProjectFormEdit extends Component {
                     (props.project.dateInterestBearingWrong != null && props.project.dateInterestBearingWrong != undefined)
                         ? props.project.dateInterestBearingWrong
                         : false,
+                allowChangeDateInterestBearingRedemption:
+                    (props.project.dateInterestBearingRedemptionWrong != null && props.project.dateInterestBearingRedemptionWrong != undefined)
+                        ? props.project.dateInterestBearingRedemptionWrong
+                        : false,
             },
             errors: {
                 name: false,
@@ -764,6 +768,8 @@ class ProjectFormEdit extends Component {
             allowChangeDateInterestBearingKwh,
             dateInterestBearing,
             allowChangeDateInterestBearing,
+            dateInterestBearingRedemption,
+            allowChangeDateInterestBearingRedemption,
             isMembershipRequired,
             contactGroupIds,
             contactGroupIdsSelected,
@@ -883,6 +889,8 @@ class ProjectFormEdit extends Component {
                     allowChangeDateInterestBearingKwh={allowChangeDateInterestBearingKwh}
                     dateInterestBearing={dateInterestBearing}
                     allowChangeDateInterestBearing={allowChangeDateInterestBearing}
+                    dateInterestBearingRedemption={dateInterestBearingRedemption}
+                    allowChangeDateInterestBearingRedemption={allowChangeDateInterestBearingRedemption}
                     contactGroupIds={contactGroupIds}
                     contactGroupIdsSelected={contactGroupIdsSelected}
                     isMembershipRequired={isMembershipRequired}

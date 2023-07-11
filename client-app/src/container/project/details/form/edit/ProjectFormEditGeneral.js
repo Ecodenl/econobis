@@ -53,6 +53,8 @@ const ProjectFormEditGeneral = ({
     allowChangeDateInterestBearingKwh,
     dateInterestBearing,
     allowChangeDateInterestBearing,
+    dateInterestBearingRedemption,
+    allowChangeDateInterestBearingRedemption,
     isMembershipRequired,
     visibleForAllContacts,
     textInfoProjectOnlyMembers,
@@ -468,6 +470,17 @@ const ProjectFormEditGeneral = ({
                     onChangeAction={handleInputChangeDate}
                     disabledBefore={dateProduction}
                     readOnly={!allowChangeDateInterestBearing}
+                />
+            </div>
+
+            <div className="row">
+                <InputDate
+                    label={'Begindatum volgende Aflossing opbrengstverdeling'}
+                    name={'dateInterestBearingRedemption'}
+                    value={dateInterestBearingRedemption}
+                    onChangeAction={handleInputChangeDate}
+                    disabledBefore={dateProduction}
+                    readOnly={!allowChangeDateInterestBearingRedemption}
                 />
             </div>
 

@@ -6,12 +6,13 @@ import { connect } from 'react-redux';
 import Icon from 'react-icons-kit';
 import { eye } from 'react-icons-kit/fa/eye';
 import { pencil } from 'react-icons-kit/fa/pencil';
+import { trash } from 'react-icons-kit/fa/trash';
 
 const RevenuePartsKwhListFormView = ({
     revenuePartKwh: revenuePartKwhDetails,
     showActionButtons,
     permissions,
-    // toggleDelete,
+    toggleDelete,
     highlightLine,
     onLineEnter,
     onLineLeave,
@@ -26,6 +27,7 @@ const RevenuePartsKwhListFormView = ({
         deliveredTotalConcept,
         deliveredTotalConfirmed,
         deliveredTotalProcessed,
+        isLastRevenuePartsKwh,
     } = revenuePartKwhDetails;
 
     const statusText = status => {
@@ -75,13 +77,14 @@ const RevenuePartsKwhListFormView = ({
                 ) : (
                     ''
                 )}
-                {/*{showActionButtons && permissions.manageFinancial && !confirmed ? (*/}
-                {/*    <a className="btn btn-success btn-sm" role="button" onClick={toggleDelete}>*/}
-                {/*        <Icon size={14} icon={trash} />{' '}*/}
-                {/*    </a>*/}
-                {/*) : (*/}
-                {/*    ''*/}
-                {/*)}*/}
+                {/* Laatste deelperiode met nog status new mag je verwijderen */}
+                {showActionButtons && permissions.manageFinancial && isLastRevenuePartsKwh && status === 'new' ? (
+                    <a role="button" onClick={toggleDelete}>
+                        <Icon className="mybtn-danger" size={14} icon={trash} />
+                    </a>
+                ) : (
+                    ''
+                )}
             </div>
         </div>
     );

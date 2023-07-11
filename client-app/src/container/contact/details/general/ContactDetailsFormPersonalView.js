@@ -13,7 +13,13 @@ const ContactDetailsFormPersonalView = props => {
         dateDidAgreeAvg,
         portalUser,
         inspectionPersonType,
+        hoomAccountId,
     } = props.contactDetails;
+
+    let isCoach = false;
+    if (inspectionPersonType && inspectionPersonType.id === 'coach') {
+        isCoach = true;
+    }
 
     return (
         <div>
@@ -76,6 +82,18 @@ const ContactDetailsFormPersonalView = props => {
                     value={inspectionPersonType ? inspectionPersonType.name : ''}
                 />
             </div>
+
+            {isCoach ? (
+                <div className="row">
+                    <ViewText
+                        className={'col-xs-12'}
+                        label={'Hoom account id'}
+                        value={hoomAccountId ? hoomAccountId : ''}
+                    />
+                </div>
+            ) : (
+                ''
+            )}
 
             <div className="row">
                 <ViewText label="Portal gebruiker" value={portalUser ? 'Ja' : 'Nee'} className={'col-xs-12'} />

@@ -24,6 +24,7 @@ import emailTemplateDetailsReducer from './email-template/EmailTemplateDetailsRe
 import errorReducer from './general/ErrorReducer';
 import housingFileDetailsReducer from './housing-file/HousingFileDetailsReducer';
 import housingFilesReducer from './housing-file/HousingFilesReducer';
+import housingFileSpecificationsReducer from './housing-file-specification/HousingFileSpecificationsReducer';
 import mailboxDetailsReducer from './mailbox/MailboxDetailsReducer';
 import mailboxesReducer from './mailbox/MailboxesReducer';
 import mailgunDomainsReducer from './mailgun-domain/MailgunDomainReducer';
@@ -120,6 +121,8 @@ const rootReducer = combineReducers({
     // Housing file
     housingFiles: housingFilesReducer,
     housingFileDetails: housingFileDetailsReducer,
+    // Housing file Specification
+    housingFileSpecifications: housingFileSpecificationsReducer,
     // Opportunity
     opportunities: opportunitiesReducer,
     opportunityDetails: opportunityDetailsReducer,

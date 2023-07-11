@@ -25,7 +25,8 @@ function PersonalAddressEdit({ initialContact, handleSubmitContactAddressValues 
                     actions.setSubmitting(true);
                     handleSubmitContactAddressValues(values, actions);
                 }}
-                render={({ errors, touched, setFieldValue, isSubmitting, status, values, handleSubmit }) => {
+            >
+                {({ errors, touched, setFieldValue, isSubmitting, status, values, handleSubmit }) => {
                     return (
                         <Form>
                             <Row>
@@ -45,9 +46,8 @@ function PersonalAddressEdit({ initialContact, handleSubmitContactAddressValues 
                                     <FormLabel className={'field-label'}>Postcode en huisnummer</FormLabel>
                                     <Row>
                                         <Col xs={12} sm={4}>
-                                            <Field
-                                                name="primaryAddress.postalCode"
-                                                render={({ field }) => (
+                                            <Field name="primaryAddress.postalCode">
+                                                {({ field }) => (
                                                     <InputText
                                                         field={field}
                                                         errors={errors}
@@ -56,14 +56,13 @@ function PersonalAddressEdit({ initialContact, handleSubmitContactAddressValues 
                                                         placeholder={'Postcode'}
                                                     />
                                                 )}
-                                            />
+                                            </Field>
                                         </Col>
                                     </Row>
                                     <Row>
                                         <Col xs={12} sm={4}>
-                                            <Field
-                                                name="primaryAddress.number"
-                                                render={({ field }) => (
+                                            <Field name="primaryAddress.number">
+                                                {({ field }) => (
                                                     <InputText
                                                         field={field}
                                                         errors={errors}
@@ -72,12 +71,11 @@ function PersonalAddressEdit({ initialContact, handleSubmitContactAddressValues 
                                                         placeholder={'Nummer'}
                                                     />
                                                 )}
-                                            />
+                                            </Field>
                                         </Col>
                                         <Col xs={12} sm={4}>
-                                            <Field
-                                                name="primaryAddress.addition"
-                                                render={({ field }) => (
+                                            <Field name="primaryAddress.addition">
+                                                {({ field }) => (
                                                     <InputText
                                                         field={field}
                                                         errors={errors}
@@ -86,7 +84,7 @@ function PersonalAddressEdit({ initialContact, handleSubmitContactAddressValues 
                                                         placeholder={'Toevoeging'}
                                                     />
                                                 )}
-                                            />
+                                            </Field>
                                         </Col>
                                     </Row>
                                 </Col>
@@ -143,7 +141,7 @@ function PersonalAddressEdit({ initialContact, handleSubmitContactAddressValues 
                         </Form>
                     );
                 }}
-            />
+            </Formik>
         </div>
     );
 }

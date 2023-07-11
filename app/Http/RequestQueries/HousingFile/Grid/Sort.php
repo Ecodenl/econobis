@@ -19,19 +19,29 @@ class Sort extends RequestSort
         'address',
         'fullName',
         'buildingType',
-        'energyLabel'
+        'energyLabel',
+        'buildYear',
+        'isHouseForSale',
+        'postalCode',
+        'city'
     ];
 
     protected $mapping = [
         'createdAt' => 'housing_files.created_at',
-        'address' => 'address.street',
-        'fullName' => 'contact.full_name',
-        'buildingType' => 'building_type.name',
+        'address' => 'addresses.street',
+        'postalCode' => 'addresses.postal_code',
+        'city' => 'addresses.city',
+        'buildingType' => 'building_types.name',
         'energyLabel' => 'energy_labels.name',
+        'buildYear' => 'housing_files.build_year',
+        'isHouseForSale' => 'housing_files.is_house_for_sale',
+        'fullName' => 'contacts.full_name',
     ];
 
     protected $joins = [
         'address' => 'address',
+        'postalCode' => 'address',
+        'city' => 'address',
         'fullName' => 'contact',
         'buildingType' => 'building_type',
         'energyLabel' => 'energy_label',

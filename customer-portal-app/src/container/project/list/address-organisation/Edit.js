@@ -25,7 +25,8 @@ function OrganisationAddressEdit({ initialContact, handleSubmitContactAddressVal
                     actions.setSubmitting(true);
                     handleSubmitContactAddressValues(values, actions);
                 }}
-                render={({ errors, touched, setFieldValue, isSubmitting, status, values, handleSubmit }) => {
+            >
+                {({ errors, touched, setFieldValue, isSubmitting, status, values, handleSubmit }) => {
                     return (
                         <Form>
                             <Row>
@@ -45,9 +46,8 @@ function OrganisationAddressEdit({ initialContact, handleSubmitContactAddressVal
                                     <FormLabel className={'field-label'}>Postcode en huisnummer</FormLabel>
                                     <Row>
                                         <Col xs={12} sm={4}>
-                                            <Field
-                                                name="visitAddress.postalCode"
-                                                render={({ field }) => (
+                                            <Field name="visitAddress.postalCode">
+                                                {({ field }) => (
                                                     <InputText
                                                         field={field}
                                                         errors={errors}
@@ -56,14 +56,13 @@ function OrganisationAddressEdit({ initialContact, handleSubmitContactAddressVal
                                                         placeholder={'Postcode'}
                                                     />
                                                 )}
-                                            />
+                                            </Field>
                                         </Col>
                                     </Row>
                                     <Row>
                                         <Col xs={12} sm={4}>
-                                            <Field
-                                                name="visitAddress.number"
-                                                render={({ field }) => (
+                                            <Field name="visitAddress.number">
+                                                {({ field }) => (
                                                     <InputText
                                                         field={field}
                                                         errors={errors}
@@ -72,12 +71,11 @@ function OrganisationAddressEdit({ initialContact, handleSubmitContactAddressVal
                                                         placeholder={'Nummer'}
                                                     />
                                                 )}
-                                            />
+                                            </Field>
                                         </Col>
                                         <Col xs={12} sm={4}>
-                                            <Field
-                                                name="visitAddress.addition"
-                                                render={({ field }) => (
+                                            <Field name="visitAddress.addition">
+                                                {({ field }) => (
                                                     <InputText
                                                         field={field}
                                                         errors={errors}
@@ -86,7 +84,7 @@ function OrganisationAddressEdit({ initialContact, handleSubmitContactAddressVal
                                                         placeholder={'Toevoeging'}
                                                     />
                                                 )}
-                                            />
+                                            </Field>
                                         </Col>
                                     </Row>
                                 </Col>
@@ -143,7 +141,7 @@ function OrganisationAddressEdit({ initialContact, handleSubmitContactAddressVal
                         </Form>
                     );
                 }}
-            />
+            </Formik>
         </div>
     );
 }

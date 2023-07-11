@@ -25,7 +25,7 @@ class ContactNewFormAddress extends Component {
                             size={'col-sm-4'}
                             name={'postalCode'}
                             value={postalCode}
-                            onChangeAction={this.props.handleInputPicoChange}
+                            onChangeAction={this.props.handleInputLvbagChange}
                             required={'required'}
                             error={this.props.errors.postalCode}
                         />
@@ -40,7 +40,7 @@ class ContactNewFormAddress extends Component {
                                     id={'number'}
                                     name={'number'}
                                     value={number}
-                                    onChange={this.props.handleInputPicoChange}
+                                    onChange={this.props.handleInputLvbagChange}
                                 />
                             </div>
                             <div className={`col-sm-2`}>

@@ -42,6 +42,7 @@ const ProjectFormViewGeneral = ({
     dateInterestBearing,
     dateInterestBearingRedemption,
     kwhStartHighNextRevenue,
+    kwhStartLowNextRevenue,
     isMembershipRequired,
     visibleForAllContacts,
     textInfoProjectOnlyMembers,
@@ -268,6 +269,13 @@ const ProjectFormViewGeneral = ({
                     <ViewText
                         label={'Beginstand hoog volgende kwh opbrengstverdeling'}
                         value={kwhStartHighNextRevenue ? kwhStartHighNextRevenue : ''}
+                    />
+                </div>
+
+                <div className="row">
+                    <ViewText
+                        label={'Beginstand laag volgende kwh opbrengstverdeling'}
+                        value={kwhStartLowNextRevenue ? kwhStartLowNextRevenue : ''}
                     />
                 </div>
             </section>

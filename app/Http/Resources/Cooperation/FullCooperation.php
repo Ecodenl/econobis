@@ -59,6 +59,7 @@ class FullCooperation extends JsonResource
             'inspectionPlannedMailboxId' => $this->inspection_planned_mailbox_id ? $this->inspection_planned_mailbox_id : '',
             'inspectionPlannedMailbox' => ['name' => $this->inspectionPlannedMailbox ? $this->inspectionPlannedMailbox->name : ''],
             'createContactsForReportTableLastCreated' => $this->create_contacts_for_report_table_in_progress,
+            'emailReportTableProblems' => $this->email_report_table_problems,
         ];
     }
 }

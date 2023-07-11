@@ -170,6 +170,9 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
                             name={'createContactsForReportTable'}
                             textToolTip={`Hiermee wordt er een tabel gevuld met alle contactgroep/contact koppelingen tbv Power BI.`}
                         />
+                        {formData.createContactsForReportTable == true && (
+                            <ViewText label={'Email vullen report table problemen'} value={formData.emailReportTableProblems} />
+                        )}
                     </div>
                 </PanelBody>
             </Panel>

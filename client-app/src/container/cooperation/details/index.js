@@ -39,6 +39,7 @@ const INITIAL_STATE = {
         inspectionReleasedEmailTemplateId: '',
         inspectionPlannedMailboxId: '',
         createContactsForReportTableLastCreated: true,
+        emailReportTableProblems: '',
     },
     isLoading: true,
     showEdit: false,

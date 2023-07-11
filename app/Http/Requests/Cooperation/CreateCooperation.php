@@ -52,6 +52,7 @@ class CreateCooperation extends FormRequest
             'inspectionPlannedMailboxId' => [''],
             'inspectionRecordedEmailTemplateId' => [''],
             'inspectionReleasedEmailTemplateId' => [''],
+            'emailReportTableProblems' => ['email'],
         ];
     }
 }

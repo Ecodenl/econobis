@@ -63,6 +63,9 @@ class CooperationController extends ApiController
         $cooperation->use_export_address_consumption = $request->boolean('useExportAddressConsumption');
         $cooperation->require_two_factor_authentication = $request->boolean('requireTwoFactorAuthentication');
         $cooperation->create_contacts_for_report_table = $request->boolean('createContactsForReportTable');
+        if($cooperation->email_report_table_problems == '') {
+            $cooperation->email_report_table_problems = null;
+        }
         $cooperation->save();
 
         // Store attachment when given
@@ -107,6 +110,9 @@ class CooperationController extends ApiController
         $cooperation->use_export_address_consumption = $request->boolean('useExportAddressConsumption');
         $cooperation->require_two_factor_authentication = $request->boolean('requireTwoFactorAuthentication');
         $cooperation->create_contacts_for_report_table = $request->boolean('createContactsForReportTable');
+        if($cooperation->email_report_table_problems == '') {
+            $cooperation->email_report_table_problems = null;
+        }
         $cooperation->save();
 
         //empty contact_groups_contacts_for_report if create_contacts_for_report_table is set to false

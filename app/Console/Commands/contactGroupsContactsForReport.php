@@ -4,12 +4,14 @@ namespace App\Console\Commands;
 
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\User\User;
+use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Eco\ContactGroup\ContactGroup;
+use Illuminate\Support\Facades\Mail;
 
 class contactGroupsContactsForReport extends Command
 {
@@ -93,6 +95,17 @@ class contactGroupsContactsForReport extends Command
             Log::info('Vullen contact_groups_contacts_for_report tabel staat niet aan.');
         } else if ($cooperation->create_contacts_for_report_table_in_progress == true) {
             Log::info('De cronjob draait al, create_contacts_for_report_table_in_progress is nog true.');
+
+            $mail = Mail::to($cooperation->email_report_table_problems);
+            $subject = $cooperation->name . ": Probleem bij vullen contactgroep/contact koppelingen report tabel";
+            $bodyText = "De job report:contactGroupsContacts is aangeroepen maar create_contacts_for_report_table_in_progress is true";
+
+            $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'.$subject.'</title></head><body><p>'. $subject . '</p>' . $bodyText . '</body></html>';
+
+            $mail->subject = $subject;
+            $mail->html_body = $htmlBody;
+
+            $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody));
         } else {
             Log::info('Er ging iets anders mis tijdens de contactGroupsContactsForReport cronjob');
         }

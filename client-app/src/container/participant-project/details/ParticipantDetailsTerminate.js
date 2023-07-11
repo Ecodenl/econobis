@@ -21,14 +21,29 @@ const ParticipantDetailsTerminate = ({
     projectRevenueCategories,
 }) => {
     const [dateTerminated, setDateTerminated] = useState(
-        !participantProject.dateEntryLastMutation ||
-            participantProject.participationsDefinitive != 0 ||
-            participantProject.amountDefinitive != 0
-            ? moment().format('Y-MM-DD')
-            : moment(participantProject.dateEntryLastMutation)
+        participantProject.participationsDefinitive == 0 && participantProject.amountDefinitive == 0
+            ? moment(participantProject.dateEntryLastMutation)
                   .subtract(1, 'days')
                   .format('Y-MM-DD')
+            : moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
     );
+    const [dateTerminatedAllowedFrom, setDateTerminatedAllowedFrom] = useState(
+        participantProject.participationsDefinitive == 0 && participantProject.amountDefinitive == 0
+            ? moment(participantProject.dateEntryLastMutation)
+                  .subtract(1, 'days')
+                  .format('Y-MM-DD')
+            : moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
+    );
+    const [dateTerminatedAllowedTo, setDateTerminatedAllowedTo] = useState(
+        participantProject.participationsDefinitive == 0 && participantProject.amountDefinitive == 0
+            ? moment(participantProject.dateEntryLastMutation)
+                  .subtract(1, 'days')
+                  .format('Y-MM-DD')
+            : moment()
+                  .add(1, 'years')
+                  .format('Y-MM-DD')
+    );
+
     const [payoutPercentageTerminated, setPayoutPercentageTerminated] = useState(0);
     const [redirectRevenueSplit, setRedirectRevenueSplit] = useState(true);
     const [errors, setErrors] = useState({
@@ -128,16 +143,8 @@ const ParticipantDetailsTerminate = ({
                         name="dateTerminated"
                         value={dateTerminated}
                         onChangeAction={onChangeDateTerminated}
-                        disabledBefore={moment(participantProject.dateEntryLastMutation)
-                            .subtract(1, 'days')
-                            .format('Y-MM-DD')}
-                        disabledAfter={
-                            participantProject.participationsDefinitive != 0 || participantProject.amountDefinitive != 0
-                                ? moment().format('Y-MM-DD')
-                                : moment(participantProject.dateEntryLastMutation)
-                                      .subtract(1, 'days')
-                                      .format('Y-MM-DD')
-                        }
+                        disabledBefore={dateTerminatedAllowedFrom}
+                        disabledAfter={dateTerminatedAllowedTo}
                         error={errors.dateTerminated}
                         errorMessage={errorMessages.dateTerminated}
                         // readOnly={participantProject.participationsDefinitive == 0  && participantProject.amountDefinitive == 0}

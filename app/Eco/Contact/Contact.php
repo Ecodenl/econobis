@@ -692,7 +692,7 @@ class Contact extends Model
     public function getIsParticipantPcrProjectAttribute()
     {
         foreach ($this->participations as $participation) {
-            if ($participation->project && $participation->project->projectType->code_ref == 'postalcode_link_capital') {
+            if (!isset($participation->date_terminated) && $participation->project && $participation->project->projectType->code_ref == 'postalcode_link_capital') {
                 return true;
             }
         }
@@ -702,7 +702,7 @@ class Contact extends Model
     public function getIsParticipantSceProjectAttribute()
     {
         foreach ($this->participations as $participation) {
-            if ($participation->project && $participation->project->is_sce_project) {
+            if (!isset($participation->date_terminated) && $participation->project && $participation->project->is_sce_project) {
                 return true;
             }
         }
@@ -731,7 +731,7 @@ class Contact extends Model
                 ->exists();
         }
 
-        return $hasIntakeOnPortalCheckAddress || $hasHousingFileOnPortalCheckAddress;
+        return false;
     }
 
     public function getBlockChangeAddressNumberAttribute()

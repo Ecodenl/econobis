@@ -20,14 +20,18 @@ class Filter extends RequestFilter
         'postalCode',
         'city',
         'buildingTypeId',
-        'energyLabelId'
+        'energyLabelId',
+        'buildYear',
+        'isHouseForSale'
     ];
 
     protected $mapping = [
-        'createdAt' => 'housing_files.created_at',
-        'fullName' => 'contacts.full_name',
-        'buildingTypeId' => 'housing_files.building_type_id',
-        'energyLabelId' => 'housing_files.energy_label_id',
+        'createdAt' => 'created_at',
+        'fullName' => 'full_name',
+        'buildingTypeId' => 'building_type_id',
+        'energyLabelId' => 'energy_label_id',
+        'buildYear' => 'build_year',
+        'isHouseForSale' => 'is_house_for_sale',
     ];
 
     protected $joins = [

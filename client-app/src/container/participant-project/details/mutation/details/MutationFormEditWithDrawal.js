@@ -11,6 +11,7 @@ import ParticipantDetailsMutationConclusion from './conclusion';
 import ButtonText from '../../../../../components/button/ButtonText';
 import * as PropTypes from 'prop-types';
 import React from 'react';
+import moment from 'moment';
 
 function MutationFormEditWithDrawal({
     readOnly,
@@ -27,7 +28,14 @@ function MutationFormEditWithDrawal({
     buttonText,
     participantProjectDateRegister,
     participantInDefinitiveRevenue,
+    projectDateInterestBearingKwh,
 }) {
+    let disableBeforeEntryDate = '';
+    if (projectTypeCodeRef === 'postalcode_link_capital') {
+        if (projectDateInterestBearingKwh) {
+            disableBeforeEntryDate = moment(projectDateInterestBearingKwh).format('YYYY-MM-DD');
+        }
+    }
     return (
         <PanelBody>
             <div className="row">
@@ -98,6 +106,7 @@ function MutationFormEditWithDrawal({
                     errors={errors}
                     errorMessage={errorMessage}
                     projectTypeCodeRef={projectTypeCodeRef}
+                    disableBeforeEntryDate={disableBeforeEntryDate}
                 />
             )}
             {participantMutationFromProps.status.codeRef === 'final' && (
@@ -112,6 +121,7 @@ function MutationFormEditWithDrawal({
                     projectTypeCodeRef={projectTypeCodeRef}
                     participantProjectDateRegister={participantProjectDateRegister}
                     participantInDefinitiveRevenue={participantInDefinitiveRevenue}
+                    disableBeforeEntryDate={disableBeforeEntryDate}
                 />
             )}
 

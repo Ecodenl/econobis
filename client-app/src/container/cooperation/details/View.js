@@ -42,6 +42,10 @@ function CooperationDetailsFormView({ formData, toggleEdit }) {
                         <ViewText label={'Hoom key'} value={formData.hoomKey} />
                     </div>
                     <div className="row">
+                        <ViewText label={'Hoom bewoner/coach link'} value={formData.hoomConnectCoachLink} />
+                        <ViewText label={'Hoom campagne'} value={formData.hoomCampaign && formData.hoomCampaign.name} />
+                    </div>
+                    <div className="row">
                         <ViewText
                             label={'Hoom e-mail template'}
                             value={formData.hoomEmailTemplate && formData.hoomEmailTemplate.name}
@@ -146,6 +150,15 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
 {verbruik_electriciteit_variabele_kosten_laag}<br/>
 {verbruik_electriciteit_vaste_kosten_hoog}<br/>
 {verbruik_electriciteit_vaste_kosten_laag}`}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Vullen contactgroep/contact koppelingen report tabel (tbv Power BI)'}
+                            value={formData.createContactsForReportTable ? 'Ja' : 'Nee'}
+                            size={'col-sm-5'}
+                            name={'createContactsForReportTable'}
+                            textToolTip={`Hiermee wordt er een tabel gevuld met alle contactgroep/contact koppelingen tbv Power BI.`}
                         />
                     </div>
                 </PanelBody>

@@ -146,6 +146,26 @@ class Invoice extends Model
         return $compatibleCount === $this->invoiceProducts()->count();
     }
 
+    public function isInvoiceOkForSepa() {
+        $error = "";
+
+        if($this->payment_type_id == 'collection'){
+            if(!$this->order->contact->collect_mandate_signature_date) $error .= "Contact ondertekeningsdatum is niet bekend\n";
+            if(!$this->order->contact->collect_mandate_code) $error .= "Contact machtigingskenmerk is niet bekend\n";
+            if(!$this->iban_contact_or_invoice) $error .= "Het IBAN nummer is niet bekend\n";
+            if($this->order->contact->primaryAddress && $this->order->contact->primaryAddress->country_id !== null && $this->order->contact->primaryAddress->country_id !== "NL") $error .= "Contact komt niet uit Nederland\n";
+            if(!$this->administration->sepa_creditor_id) $error .= "Het administratie Sepa crediteur id is niet bekend\n";
+            if(!$this->administration->bic) $error .= "Het administratie BIC nummer is niet bekend\n";
+            if(!$this->administration->IBAN) $error .= "Het administratie IBAN nummer is niet bekend\n";
+        }
+
+        if($error != "") {
+            return $error;
+        } else {
+            return true;
+        }
+    }
+
     public function getTotalExclVatInclReductionAttribute()
     {
         $amountExclVat = 0;

@@ -8,7 +8,7 @@
 
 namespace App\Http\Controllers\Api\TwinfieldLog;
 
-use App\Eco\Jobs\JobsLog;
+use App\Eco\Twinfield\TwinfieldLog;
 use App\Http\Controllers\Api\ApiController;
 use JosKolenberg\LaravelJory\Facades\Jory;
 

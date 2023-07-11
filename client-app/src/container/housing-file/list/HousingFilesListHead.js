@@ -15,23 +15,15 @@ const HousingFilesListHead = props => {
 
     return (
         <tr className="thead-title">
-            <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'20%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'20%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'15%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'postalCode'} title={'Postcode'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'city'} title={'Woonplaats'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'fullName'} title={'Contact'} width={'10%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort
-                sortColumn={'buildingType'}
-                title={'Type woning'}
-                width={'20%'}
-                setSorts={setSorts}
-            />
-            <DataTableHeadTitleAndSort
-                sortColumn={'energyLabel'}
-                title={'Energielabel'}
-                width={'5%'}
-                setSorts={setSorts}
-            />
+            <DataTableHeadTitleAndSort sortColumn={'buildYear'} title={'Bouwjaar'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'buildingType'} title={'Type woning'} width={'15%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'isHouseForSale'} title={'Koophuis'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'energyLabel'} title={'Energielabel'} width={'5%'} setSorts={setSorts} />
             <th width="5%" />
         </tr>
     );

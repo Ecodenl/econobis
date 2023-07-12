@@ -17,8 +17,10 @@ import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import { connect } from 'react-redux';
 import Modal from '../../../components/modal/Modal';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
+import CampaignsAPI from '../../../api/campaign/CampaignsAPI';
 
 function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchSystemData }) {
+    const [campaigns, setCampaigns] = useState([]);
     const [emailTemplates, setEmailTemplates] = useState([]);
     const [staticContactGroups, setStaticContactGroups] = useState([]);
     const [mailboxAddresses, setMailboxAddresses] = useState([]);
@@ -38,13 +40,15 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
     useEffect(function() {
         axios
             .all([
+                CampaignsAPI.peekCampaigns(),
                 EmailTemplateAPI.fetchEmailTemplatesPeek(),
                 MailboxAPI.fetchMailboxesLoggedInUserPeek(),
                 ContactGroupAPI.peekStaticContactGroups(),
             ])
             .then(
-                axios.spread((emailTemplates, mailboxAddresses, staticContactGroups) => {
+                axios.spread((campaigns, emailTemplates, mailboxAddresses, staticContactGroups) => {
                     setMailboxAddresses(mailboxAddresses.data.data);
+                    setCampaigns(campaigns);
                     setEmailTemplates(emailTemplates);
                     setStaticContactGroups(staticContactGroups);
                     setIsLoading(false);
@@ -57,6 +61,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
         const cleanUpFormFields = [
             'hoomGroup',
             'hoomEmailTemplate',
+            'hoomCampaign',
             'createdAt',
             'createdBy',
             'createdById',
@@ -236,6 +241,26 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                             />
                         </div>
                         <div className="row">
+                            <InputText
+                                label="Hoom bewoner/coach link"
+                                name={'hoomConnectCoachLink'}
+                                value={values.hoomConnectCoachLink}
+                                onChangeAction={handleChange}
+                                onBlurAction={handleBlur}
+                                error={errors.hoomConnectCoachLink && touched.hoomConnectCoachLink}
+                                errorMessage={errors.hoomConnectCoachLink}
+                            />
+                            <InputReactSelect
+                                label={'Hoom campagne'}
+                                name={'hoomCampaignId'}
+                                options={campaigns}
+                                value={values.hoomCampaignId}
+                                onChangeAction={(value, name) => setFieldValue(name, value)}
+                                isLoading={isLoading}
+                                clearable={true}
+                            />
+                        </div>
+                        <div className="row">
                             <InputReactSelect
                                 label={'Hoom e-mail template'}
                                 name={'hoomEmailTemplateId'}
@@ -388,6 +413,16 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
 {verbruik_electriciteit_variabele_kosten_laag}<br/>
 {verbruik_electriciteit_vaste_kosten_hoog}<br/>
 {verbruik_electriciteit_vaste_kosten_laag}`}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputToggle
+                                label={'Vullen contactgroep/contact koppelingen report tabel (tbv Power BI)'}
+                                name={'createContactsForReportTable'}
+                                value={!!values.createContactsForReportTable}
+                                onChangeAction={e => setFieldValue('createContactsForReportTable', e.target.checked)}
+                                size={'col-sm-5'}
+                                textToolTip={`Hiermee wordt er een tabel gevuld met alle contactgroep/contact koppelingen tbv Power BI.`}
                             />
                         </div>
                     </PanelBody>

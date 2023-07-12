@@ -224,7 +224,7 @@ class TwinfieldSalesTransactionHelper
             ->setDim2($twinfieldCustomer->getCode())
             ->setValue($totaalBedragIncl)
             ->setDebitCredit($totaalBedragIncl->getAmount()<0 ? DebitCredit::CREDIT() : DebitCredit::DEBIT())
-            ->setDescription(substr($invoice->subject, 0, 40));
+            ->setDescription(substr($this->translateToValidCharacterSet($invoice->subject), 0, 40));
         $twinfieldSalesTransaction->addLine($twinfieldTransactionLineTotal);
 
         //Vanuit invoice products bedragen per product (omzet) / bedragen per btw code alvast doortellen voor VAT regels hierna
@@ -265,7 +265,7 @@ class TwinfieldSalesTransactionHelper
             $exclAmount = round($invoiceProduct->getAmountInclReductionExclVat()*100, 0);
             $invoiceDetailExcl = new Money($exclAmount, $this->currency );
 //            $descriptionDetail = $twinfieldCustomer ? ($twinfieldCustomer->getCode() . " " . $twinfieldCustomer->getName()) : ($invoice->contact->number . " " . $invoice->contact->full_name);
-            $descriptionDetail = $invoice->order->contact->number . " " . $invoice->order->contact->full_name;
+            $descriptionDetail = $invoice->order->contact->number . " " . $this->translateToValidCharacterSet($invoice->order->contact->full_name);
 
             $twinfieldTransactionLineDetail = new SalesTransactionLine();
             $idTeller++;
@@ -274,6 +274,7 @@ class TwinfieldSalesTransactionHelper
                 ->setLineType(LineType::DETAIL())
                 ->setDim1($ledgerCode)
                 ->setDim2($costCenterCode)
+                ->setDim3($invoice->order->project_number)
                 ->setDescription(substr($descriptionDetail, 0, 40))
                 ->setVatValue($invoiceVatAmount)
                 ->setValue($invoiceDetailExcl)
@@ -398,5 +399,13 @@ class TwinfieldSalesTransactionHelper
 
     }
 
+    protected function translateToValidCharacterSet($field){
+
+        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
+//        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
+        $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
+
+        return $field;
+    }
 
 }

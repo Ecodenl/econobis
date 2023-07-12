@@ -18,6 +18,7 @@ class checkWrongTwinfieldInvoices extends Command
      * @var string
      */
     protected $signature = 'invoice:checkWrongTwinfieldInvoices';
+    protected $mailTo = 'wim.mosman@xaris.nl';
 
     /**
      * The console command description.
@@ -61,11 +62,9 @@ class checkWrongTwinfieldInvoices extends Command
     {
         (new EmailHelper())->setConfigToDefaultMailbox();
 
-//        $subject = 'Ongeldige twinfield nota\'s gevonden';
         $subject = 'Ongeldige twinfield nota\'s gevonden ! (' . count($wrongTwinfieldInvoices) . ') - ' . \Config::get('app.APP_COOP_NAME');
 
         $wrongTwinfieldInvoicesHtml = "";
-
         foreach($wrongTwinfieldInvoices as $wrongTwinfieldInvoice) {
             $wrongTwinfieldInvoicesHtml .=
                 "<p>ID: " . $wrongTwinfieldInvoice->id . ", " .
@@ -74,7 +73,7 @@ class checkWrongTwinfieldInvoices extends Command
                 "Nota status: " . $wrongTwinfieldInvoice->status_id . "</p>";
         }
 
-        $mail = Mail::to('wim.mosman@xaris.nl');
+        $mail = Mail::to($this->mailTo);
         $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'.$subject.'</title></head><body><p>'.$subject.'</p>' . $wrongTwinfieldInvoicesHtml .'</body></html>';
 
         $mail->subject = $subject;

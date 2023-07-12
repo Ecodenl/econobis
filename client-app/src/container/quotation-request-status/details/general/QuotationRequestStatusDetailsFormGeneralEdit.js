@@ -109,7 +109,7 @@ class QuotationRequestStatusDetailsFormGeneralEdit extends Component {
     };
 
     render() {
-        const { name, usesWf, emailTemplateIdWf, numberOfDaysToSendEmail } = this.state.quotationRequestStatus;
+        const { name, usesWf, emailTemplateIdWf, numberOfDaysToSendEmail, mailCcToCoachWf } = this.state.quotationRequestStatus;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -167,6 +167,15 @@ class QuotationRequestStatusDetailsFormGeneralEdit extends Component {
                                         onChangeAction={this.handleInputChange}
                                         required={'required'}
                                         error={this.state.errors.numberOfDaysToSendEmail}
+                                    />
+                                </div>
+                                <div className="row">
+                                    <InputToggle
+                                        label={'Email cc naar coach'}
+                                        divSize={'col-sm-10'}
+                                        name={'mailCcToCoachWf'}
+                                        value={mailCcToCoachWf}
+                                        onChangeAction={this.handleInputChange}
                                     />
                                 </div>
                             </React.Fragment>

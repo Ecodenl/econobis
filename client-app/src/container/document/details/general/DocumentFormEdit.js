@@ -15,7 +15,7 @@ import ContactsAPI from '../../../../api/contact/ContactsAPI';
 import TasksAPI from '../../../../api/task/TasksAPI';
 import HousingFileAPI from '../../../../api/housing-file/HousingFilesAPI';
 import MeasureAPI from '../../../../api/measure/MeasureAPI';
-import CampaignAPI from '../../../../api/campaign/CampaignsAPI';
+import CampaignsAPI from '../../../../api/campaign/CampaignsAPI';
 import QuotationRequestsAPI from '../../../../api/quotation-request/QuotationRequestsAPI';
 import ParticipantsProjectAPI from '../../../../api/participant-project/ParticipantsProjectAPI';
 import ProjectsAPI from '../../../../api/project/ProjectsAPI';
@@ -129,7 +129,7 @@ class DocumentDetailsFormEdit extends Component {
             this.setState({ opportunities: payload });
         });
 
-        CampaignAPI.peekCampaigns().then(payload => {
+        CampaignsAPI.peekCampaigns().then(payload => {
             this.setState({ campaigns: payload });
         });
 

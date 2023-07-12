@@ -102,6 +102,7 @@ class FullContact extends JsonResource
             'collectMandateCollectionSchema' => $this->collect_mandate_collection_schema,
             'inspectionPersonTypeId' =>  $this->inspection_person_type_id,
             'inspectionPersonType' =>  FullEnumWithIdAndName::make($this->getInspectionPersonType()),
+            'hoomAccountId' => $this->hoom_account_id,
         ];
     }
 }

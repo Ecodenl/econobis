@@ -30,4 +30,9 @@ class Joiner extends RequestJoiner
         $query->join('energy_labels', 'housing_files.energy_label_id', '=', 'energy_labels.id', 'left outer');
     }
 
+    protected function applyBuildingTypeJoin($query)
+    {
+        $query->join('building_types', 'housing_files.building_type_id', '=', 'building_types.id', 'left outer');
+    }
+
 }

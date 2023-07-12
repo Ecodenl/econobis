@@ -532,6 +532,7 @@ class ExternalWebformController extends Controller
                 'woondossier_aantal_bewoners' => 'number_of_residents',
                 'woondossier_opbrengst_zonnepanelen' => 'revenue_solar_panels',
                 'woondossier_opmerking' => 'remark',
+                'woondossier_opmerking_coach' => 'remark_coach',
             ],
             'quotation_request_visit' => [
                 'kansactie_update_afspraak_status' => 'status_id',
@@ -1820,7 +1821,7 @@ class ExternalWebformController extends Controller
             $intake->measuresRequested()->sync($measureCategories->pluck('id'));
             $this->log("Intake gekoppeld aan interesses: " . $measureCategories->implode('name', ', '));
 
-            $statusIdClosedWithOpportunity = IntakeStatus::where('name', 'Afgesloten met kans')->first()->id;
+            $statusIdClosedWithOpportunity = IntakeStatus::where('code_ref', 'closed_with_opportunity')->first()->id;
             // Intake maatregelen meegegeven, aanmaken kansen (per intake maatregel)
             $firstOpportunity = true;
             $saveOpportunity = null;
@@ -1885,7 +1886,7 @@ class ExternalWebformController extends Controller
         $tmpFileName = Str::random(9) . '-' . $fileName;
 
         $document = new Document();
-        $document->description = 'Test';
+        $document->description = 'Intake kans bijlage';
         $document->document_type = 'upload';
         $document->document_group = 'general';
         $document->filename = $fileName;
@@ -1903,11 +1904,11 @@ class ExternalWebformController extends Controller
         $document->document_created_from_id = $documentCreatedFromId;
 
         // voor alsnog deze Ids niet vullen
-//        $document->templateId = ??;
-//        $document->campaignId = ??;
-//        $document->housingFileId = ??;
-//        $document->quotationRequestId = ??;
-//        $document->measureId = ??;
+//        $document->template_id = ??;
+//        $document->campaign_id = ??;
+//        $document->housing_file_id = ??;
+//        $document->quotation_request_id = ??;
+//        $document->measure_id = ??;
 
         $document->save();
 
@@ -1983,6 +1984,7 @@ class ExternalWebformController extends Controller
             && $data['number_of_residents'] == ''
             && $data['revenue_solar_panels'] == ''
             && $data['remark'] == ''
+            && $data['remark_coach'] == ''
         ){
             $this->log('Er zijn geen woondossiergegevens meegegeven.');
             return null;
@@ -2097,6 +2099,7 @@ class ExternalWebformController extends Controller
                 'number_of_residents' => is_numeric($data['number_of_residents']) ? $data['number_of_residents'] : 0,
                 'revenue_solar_panels' => is_numeric($data['revenue_solar_panels']) ? $data['revenue_solar_panels'] : 0,
                 'remark' => $data['remark'],
+                'remark_coach' => $data['remark_coach'],
             ]);
             $this->log("Woondossier met id " . $housingFile->id . " aangemaakt en gekoppeld aan adres id " . $address->id . ".");
 
@@ -2158,6 +2161,7 @@ class ExternalWebformController extends Controller
             $housingFile->number_of_residents = is_numeric($data['number_of_residents']) ? $data['number_of_residents'] : 0;
             $housingFile->revenue_solar_panels = is_numeric($data['revenue_solar_panels']) ? $data['revenue_solar_panels'] : 0;
             $housingFile->remark = $data['remark'];
+            $housingFile->remark_coach = $data['remark_coach'];
             $housingFile->save();
             $this->log("Woondossier met id " . $housingFile->id . " is gewijzigd voor adres id " . $address->id . ".");
 
@@ -2872,13 +2876,24 @@ class ExternalWebformController extends Controller
             }
 
             $users = (new User())->newCollection();
-            if ($webform->responsibleUser) {
-                $users->push($webform->responsibleUser);
-            } elseif ($webform->responsibleTeam && $webform->responsibleTeam->users()->exists()) {
-                $users = $webform->responsibleTeam->users;
+
+            if($webform->mail_error_report == 1) {
+                if ($webform->email_address_error_report == "") {
+                    if ($webform->responsibleUser) {
+                        $users->push($webform->responsibleUser);
+                    } elseif ($webform->responsibleTeam && $webform->responsibleTeam->users()->exists()) {
+                        $users = $webform->responsibleTeam->users;
+                    }
+                } else {
+                    $dummyUser = new User();
+                    $dummyUser->email = $webform->email_address_error_report;
+
+                    $users->push($dummyUser);
+                }
+
+                (new EmailHelper())->setConfigToDefaultMailbox();
+                Notification::send($users, new WebformRequestProcessed($this->logs, $data, $success, $webform));
             }
-            (new EmailHelper())->setConfigToDefaultMailbox();
-            Notification::send($users, new WebformRequestProcessed($this->logs, $data, $success, $webform));
         } catch (\Exception $e) {
             report($e);
             $this->log('Fout bij mailen naar verantwoordelijken, fout is gerapporteerd.');

@@ -27,9 +27,18 @@ export function* deleteHousingFileSaga({ id }) {
 
 export function* deleteHousingFileSpecificationSaga({ housingFileSpecificationId }) {
     try {
-        yield call(HousingFileDetailsAPI.deleteSpecification, housingFileSpecificationId);
+        yield call(HousingFileDetailsAPI.deleteHousingFileSpecification, housingFileSpecificationId);
         yield put({ type: 'DELETE_HOUSING_FILE_SPECIFICATION_SUCCESS', housingFileSpecificationId });
     } catch (error) {
         yield put({ type: 'DELETE_HOUSING_FILE_SPECIFICATION_ERROR', error });
+    }
+}
+
+export function* deleteHousingFileHousingStatusSaga({ housingFileHousingStatusId }) {
+    try {
+        yield call(HousingFileDetailsAPI.deleteHousingFileHousingStatus, housingFileHousingStatusId);
+        yield put({ type: 'DELETE_HOUSING_FILE_HOUSING_STATUS_SUCCESS', housingFileHousingStatusId });
+    } catch (error) {
+        yield put({ type: 'DELETE_HOUSING_FILE_HOUSING_STATUS_ERROR', error });
     }
 }

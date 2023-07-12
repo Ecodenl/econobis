@@ -326,6 +326,7 @@ class RevenuesKwhDistributionForm extends Component {
                             <ButtonIcon iconName={'refresh'} onClickAction={this.reloadDistributions} />
                             {/*{this.props.revenuesKwh.confirmed == 1 &&*/}
                             {administrationIds.includes(this.props.revenuesKwh.project.administrationId) &&
+                            this.props.revenuesKwh.hasConfirmedPartsKwh === true &&
                             this.state.createType === '' ? (
                                 <React.Fragment>
                                     <ButtonText

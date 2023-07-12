@@ -33,6 +33,16 @@ export const setFilterHousingFileEnergyLabel = energyLabelId => ({
     energyLabelId,
 });
 
+export const setFilterIsHouseForSale = isHouseForSale => ({
+    type: 'SET_FILTER_IS_HOUSE_FOR_SALE',
+    isHouseForSale,
+});
+
+export const setFilterBuildYear = buildYear => ({
+    type: 'SET_FILTER_BUILD_YEAR',
+    buildYear,
+});
+
 export const clearFilterHousingFiles = () => ({
     type: 'CLEAR_FILTER_HOUSING_FILES',
 });

@@ -13,6 +13,7 @@ import Panel from '../../../components/panel/Panel';
 import WebformDetailsAPI from '../../../api/webform/WebformDetailsAPI';
 import InputSelectGroup from '../../../components/form/InputSelectGroup';
 import InputDate from '../../../components/form/InputDate';
+import InputCheckbox from "../../../components/form/InputCheckbox";
 
 class WebformNewForm extends Component {
     constructor(props) {
@@ -113,7 +114,7 @@ class WebformNewForm extends Component {
     }
 
     render() {
-        const { name, apiKey, maxRequestsPerMinute, dateStart, dateEnd, responsible } = this.state.webform;
+        const { name, apiKey, emailAddressErrorReport, mailErrorReport, maxRequestsPerMinute, dateStart, dateEnd, responsible } = this.state.webform;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -186,6 +187,22 @@ class WebformNewForm extends Component {
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
                                 error={this.state.errors.responsible}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Emailadres foutrapportage"
+                                name={'emailAddressErrorReport'}
+                                value={emailAddressErrorReport}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.emailAddressErrorReport}
+                            />
+                            <InputCheckbox
+                                label="Mailen foutrapportage"
+                                name={'mailErrorReport'}
+                                value={mailErrorReport}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.mailErrorReport}
                             />
                         </div>
                     </PanelBody>

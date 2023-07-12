@@ -11,6 +11,7 @@ const QuotationRequestStatusDetailsFormGeneralView = ({
     numberOfDaysToSendEmail,
     switchToEdit,
     explanationWf,
+    mailCcToCoachWf,
 }) => {
     return (
         <div onClick={switchToEdit}>
@@ -56,6 +57,14 @@ const QuotationRequestStatusDetailsFormGeneralView = ({
                                     label={'Aantal dagen e-mail na deze status'}
                                     divSize={'col-sm-10'}
                                     value={numberOfDaysToSendEmail}
+                                    className={'col-sm-10 form-group'}
+                                />
+                            </div>
+                            <div className="row">
+                                <ViewText
+                                    label={'Email cc naar coach'}
+                                    divSize={'col-sm-10'}
+                                    value={mailCcToCoachWf ? 'Ja' : 'Nee'}
                                     className={'col-sm-10 form-group'}
                                 />
                             </div>

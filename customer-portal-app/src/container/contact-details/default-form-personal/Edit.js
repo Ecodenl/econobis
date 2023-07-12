@@ -447,93 +447,84 @@ const DefaultContactPersonalEdit = function({
                         </Field>
                     </Col>
                 </Row>
-                {projectTypeCodeRef === 'postalcode_link_capital' || projectTypeCodeRef === undefined ? (
-                    <FormLabel
-                        htmlFor="ean_electricity"
-                        className={
-                            projectTypeCodeRef === 'postalcode_link_capital' ? 'field-label required' : 'field-label'
-                        }
-                    >
-                        EAN nummer electriciteit
-                    </FormLabel>
-                ) : (
-                    ''
-                )}
+                {initialContact.isParticipantPcrProject || projectTypeCodeRef === 'postalcode_link_capital' ? (
+                    <>
+                        <FormLabel
+                            htmlFor="ean_electricity"
+                            className={
+                                projectTypeCodeRef === 'postalcode_link_capital'
+                                    ? 'field-label required'
+                                    : 'field-label'
+                            }
+                        >
+                            EAN nummer electriciteit
+                        </FormLabel>
 
-                {(isEmpty(values.primaryAddress.number + '') || isEmpty(values.primaryAddress.postalCode + '')) &&
-                !isEmpty(values.primaryAddress.eanElectricity + '') ? (
-                    <Row>
-                        <Col xs={12} sm={12}>
-                            <small className={'text-danger'}>
-                                EAN nummer electriciteit wordt alleen opgeslagen als minimaal nummer en postcode zijn
-                                ingevuld bij adres.
-                            </small>
-                        </Col>
-                    </Row>
-                ) : (
-                    ''
-                )}
+                        {(isEmpty(values.primaryAddress.number + '') ||
+                            isEmpty(values.primaryAddress.postalCode + '')) &&
+                        !isEmpty(values.primaryAddress.eanElectricity + '') ? (
+                            <Row>
+                                <Col xs={12} sm={12}>
+                                    <small className={'text-danger'}>
+                                        EAN nummer electriciteit wordt alleen opgeslagen als minimaal nummer en postcode
+                                        zijn ingevuld bij adres.
+                                    </small>
+                                </Col>
+                            </Row>
+                        ) : (
+                            ''
+                        )}
 
-                {projectTypeCodeRef === 'postalcode_link_capital' || projectTypeCodeRef === undefined ? (
-                    <Row>
-                        <Col xs={12} sm={10} md={6}>
-                            <Field
-                                name="primaryAddress.eanElectricity">
-                                {({ field }) => (
-                                    <InputText
-                                        field={field}
-                                        errors={errors}
-                                        touched={touched}
-                                        id="eanElectricity"
-                                        placeholder={'EAN nummer electriciteit'}
-                                    />
-                                )}
-                            </Field>
-                        </Col>
-                    </Row>
-                ) : (
-                    ''
-                )}
+                        <Row>
+                            <Col xs={12} sm={10} md={6}>
+                                <Field name="primaryAddress.eanElectricity">
+                                    {({ field }) => (
+                                        <InputText
+                                            field={field}
+                                            errors={errors}
+                                            touched={touched}
+                                            id="eanElectricity"
+                                            placeholder={'EAN nummer electriciteit'}
+                                        />
+                                    )}
+                                </Field>
+                            </Col>
+                        </Row>
+                        <FormLabel htmlFor="ean_gas" className={'field-label'}>
+                            EAN nummer gas
+                        </FormLabel>
 
-                {projectTypeCodeRef === 'postalcode_link_capital' || projectTypeCodeRef === undefined ? (
-                    <FormLabel htmlFor="ean_gas" className={'field-label'}>
-                        EAN nummer gas
-                    </FormLabel>
-                ) : (
-                    ''
-                )}
+                        {(isEmpty(values.primaryAddress.number + '') ||
+                            isEmpty(values.primaryAddress.postalCode + '')) &&
+                        !isEmpty(values.primaryAddress.eanGas + '') ? (
+                            <Row>
+                                <Col xs={12} sm={12}>
+                                    <small className={'text-danger'}>
+                                        EAN nummer gas wordt alleen opgeslagen als minimaal nummer en postcode zijn
+                                        ingevuld bij adres.
+                                    </small>
+                                </Col>
+                            </Row>
+                        ) : (
+                            ''
+                        )}
 
-                {(isEmpty(values.primaryAddress.number + '') || isEmpty(values.primaryAddress.postalCode + '')) &&
-                !isEmpty(values.primaryAddress.eanGas + '') ? (
-                    <Row>
-                        <Col xs={12} sm={12}>
-                            <small className={'text-danger'}>
-                                EAN nummer gas wordt alleen opgeslagen als minimaal nummer en postcode zijn ingevuld bij
-                                adres.
-                            </small>
-                        </Col>
-                    </Row>
-                ) : (
-                    ''
-                )}
-
-                {projectTypeCodeRef === 'postalcode_link_capital' || projectTypeCodeRef === undefined ? (
-                    <Row>
-                        <Col xs={12} sm={10} md={6}>
-                            <Field
-                                name="primaryAddress.eanGas">
-                                {({ field }) => (
-                                    <InputText
-                                        field={field}
-                                        errors={errors}
-                                        touched={touched}
-                                        id="eanGas"
-                                        placeholder={'EAN nummer gas'}
-                                    />
-                                )}
-                            </Field>
-                        </Col>
-                    </Row>
+                        <Row>
+                            <Col xs={12} sm={10} md={6}>
+                                <Field name="primaryAddress.eanGas">
+                                    {({ field }) => (
+                                        <InputText
+                                            field={field}
+                                            errors={errors}
+                                            touched={touched}
+                                            id="eanGas"
+                                            placeholder={'EAN nummer gas'}
+                                        />
+                                    )}
+                                </Field>
+                            </Col>
+                        </Row>
+                    </>
                 ) : (
                     ''
                 )}

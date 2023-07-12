@@ -123,19 +123,19 @@ class Address extends Model
         return $postalCode;
     }
 
-    public function getUsedInActiveParticipationAttribute()
+//    public function getUsedInActiveParticipationAttribute()
+//    {
+//        return $this->participations->whereNull('date_terminated')->count() > 0;
+//    }
+
+    public function getUsedInActiveParticipationInSceOrPcrProjectAttribute()
     {
-        return $this->participations->whereNull('date_terminated')->count() > 0;
+        return $this->participations->where('participant_in_sce_or_pcr_project', true)->count() > 0;
     }
 
-    public function getUsedInActiveParticipationWithSceAttribute()
+    public function getUsedInActiveParticipationNotInSceOrPcrProjectAttribute()
     {
-        return $this->participations->whereNull('date_terminated')->where('project.is_sce_project', 1)->count() > 0;
-    }
-
-    public function getUsedInActiveParticipationWithoutSceAttribute()
-    {
-        return $this->participations->whereNull('date_terminated')->where('project.is_sce_project', 0)->count() > 0;
+        return $this->participations->where('participant_not_in_sce_or_pcr_project', true)->count() > 0;
     }
 
     public function getMemberSinceGasDisabledBeforeAttribute()

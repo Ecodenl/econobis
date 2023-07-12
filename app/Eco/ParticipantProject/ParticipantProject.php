@@ -13,6 +13,7 @@ use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\Project\Project;
 use App\Eco\Project\ProjectRevenueDistribution;
+use App\Eco\Project\ProjectType;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
@@ -216,6 +217,28 @@ class ParticipantProject extends Model
         $projectRevenueDistributions = $this->projectRevenueDistributions()->whereNotIn('status', ['concept']);
         $revenueDistributionKwh = $this->revenueDistributionKwh()->whereNotIn('status', ['concept']);
         return $projectRevenueDistributions->count() > 0 || $revenueDistributionKwh->count() > 0;
+    }
+
+    // Return if projectparicipant is in a sce or pcr project
+    public function getParticipantInSceOrPcrProjectAttribute()
+    {
+        if($this->date_terminated != null){
+            return false;
+        }
+
+        $pcrTypeId = ProjectType::where('code_ref', 'postalcode_link_capital')->first()->id;
+        return ($this->project->is_sce_project == true || $this->project->project_type_id == $pcrTypeId);
+    }
+
+    // Return if projectparicipant is not in a sce and not in pcr project
+    public function getParticipantNotInSceOrPcrProjectAttribute()
+    {
+        if($this->date_terminated != null){
+            return false;
+        }
+
+        $pcrTypeId = ProjectType::where('code_ref', 'postalcode_link_capital')->first()->id;
+        return ($this->project->is_sce_project == false && $this->project->project_type_id != $pcrTypeId);
     }
 
     public function getHasNotConfirmedRevenuesKwh(){

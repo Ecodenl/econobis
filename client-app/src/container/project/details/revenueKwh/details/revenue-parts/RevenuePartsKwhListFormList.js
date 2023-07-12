@@ -28,7 +28,6 @@ const RevenuePartsKwhListFormList = props => {
 
 const mapStateToProps = state => {
     return {
-        revenuePartsKwh: state.revenuePartsKwh,
         revenuesKwh: state.revenuesKwh,
     };
 };

@@ -4,6 +4,7 @@ namespace App\Helpers\Excel;
 
 use App\Eco\ContactGroup\ContactGroup;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -15,7 +16,8 @@ class ExportGroupReportExcelHelper
     public function __construct($contacts)
     {
         $this->contacts = $contacts;
-        $this->contactGroups = ContactGroup::where('include_into_export_group_report', true)
+        $this->contactGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())
+            ->where('include_into_export_group_report', true)
             ->where('type_id', 'static')
             ->orderBy('name')
             ->get();
@@ -116,7 +118,7 @@ class ExportGroupReportExcelHelper
                     $rowData[] = '';
                     $rowData[] = '';
                 }
-                $contactGroupIds = $contact->selectedGroups->pluck('id')->toArray();
+                $contactGroupIds = $contact->selectedGroups()->whereTeamContactGroupIds(Auth::user())->pluck('id')->toArray();
                 foreach ($this->contactGroups as $contactGroup) {
                     if(in_array($contactGroup->id, $contactGroupIds)){
                         $contactGroupsPivot= $contactGroup->contacts()->where('contact_id', $contact->id)->first()->pivot;

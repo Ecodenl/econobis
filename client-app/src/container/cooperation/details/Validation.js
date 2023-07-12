@@ -16,4 +16,5 @@ export const CooperationValidation = Yup.object().shape({
     email: Yup.string().email('Ongeldige e-mail'),
     website: Yup.string().url('Ongeldige url'),
     hoomLink: Yup.string().url('Ongeldige url'),
+    hoomConnectCoachLink: Yup.string().url('Ongeldige url'),
 });

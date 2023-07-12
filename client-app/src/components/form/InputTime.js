@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import TimePicker from 'react-bootstrap-time-picker';
 import moment from 'moment';
@@ -24,18 +24,23 @@ const InputTime = props => {
         // Workaround for converting seconds to HH:mm:ss
         const formattedTime = moment('1900-01-01 00:00:00')
             .add(timeInSeconds, 'seconds')
-            .format('HH:mm:ss');
+            .format('HH:mm');
         onChangeAction(formattedTime, name);
     };
 
+    const [nullableChecked, setNullableChecked] = useState(value == '00:00');
 
-    const [nullableChecked, setNullableChecked] = useState(false);
-    const handleChange = () => {
-        setNullableChecked(!nullableChecked);
-        onChangeAction('00:00', name);
+    const handleChangeNullableChecked = event => {
+        const target = event.target;
+        const changedValue = target.type === 'checkbox' ? target.checked : target.value;
+
+        setNullableChecked(changedValue);
+        if (changedValue) {
+            onChangeAction('00:00', name);
+        } else {
+            onChangeAction('08:00', name);
+        }
     };
-
-    console.log(nullableChecked);
 
     return (
         <div className="form-group col-sm-6">
@@ -43,7 +48,7 @@ const InputTime = props => {
                 {label}
             </label>
             <div className={`${size}`}>
-                {(!readOnly && !nullableChecked) ? (
+                {!readOnly && !nullableChecked ? (
                     <TimePicker
                         name={name}
                         value={value}
@@ -54,8 +59,7 @@ const InputTime = props => {
                         format={24}
                         className={'input-sm'}
                     />
-                )
-                : (
+                ) : (
                     <input
                         name={name}
                         value={value}
@@ -66,17 +70,21 @@ const InputTime = props => {
                 )}
             </div>
             {nullable ? (
-                    <div className={`${nullableSize}`}>
-                        <label className={'col-sm'}>
-                            <input type={'checkbox'} name={'nullableChecked'} value={true} checked={nullableChecked} onChange={handleChange} />
-                            &nbsp;{nullableLabel}
-                        </label>
-                    </div>
-                ) : (
-                    ''
-                )
-            }
-
+                <div className={`${nullableSize}`}>
+                    <label className={'col-sm'}>
+                        <input
+                            type={'checkbox'}
+                            name={'nullableChecked'}
+                            value={true}
+                            checked={nullableChecked}
+                            onChange={handleChangeNullableChecked}
+                        />
+                        &nbsp;{nullableLabel}
+                    </label>
+                </div>
+            ) : (
+                ''
+            )}
         </div>
     );
 };

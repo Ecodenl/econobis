@@ -457,7 +457,7 @@ const ProjectFormEditGeneral = ({
             </div>
             <div className="row">
                 <InputDate
-                    label={'Volgende begin periode opbrengst kWh'}
+                    label={'Begindatum volgende periode opbrengst kWh'}
                     name={'dateInterestBearingKwh'}
                     value={dateInterestBearingKwh}
                     onChangeAction={handleInputChangeDate}
@@ -468,7 +468,7 @@ const ProjectFormEditGeneral = ({
 
             <div className="row">
                 <InputDate
-                    label={'Volgende begin periode opbrengst'}
+                    label={'Begindatum volgende periode opbrengst'}
                     name={'dateInterestBearing'}
                     value={dateInterestBearing}
                     onChangeAction={handleInputChangeDate}

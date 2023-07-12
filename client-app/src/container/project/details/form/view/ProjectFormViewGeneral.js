@@ -246,14 +246,14 @@ const ProjectFormViewGeneral = ({
                 </div>
                 <div className="row">
                     <ViewText
-                        label={'Volgende begin periode opbrengst kWh'}
+                        label={'Begindatum volgende periode opbrengst kWh'}
                         value={dateInterestBearingKwh ? moment(dateInterestBearingKwh).format('L') : ''}
                     />
                 </div>
 
                 <div className="row">
                     <ViewText
-                        label={'Volgende begin periode opbrengst Euro'}
+                        label={'Begindatum volgende periode opbrengst Euro'}
                         value={dateInterestBearing ? moment(dateInterestBearing).format('L') : ''}
                     />
                 </div>

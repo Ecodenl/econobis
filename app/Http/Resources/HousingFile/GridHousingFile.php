@@ -24,6 +24,8 @@ class GridHousingFile extends JsonResource
                 'fullName' => $this->address->contact()->value('full_name'),
                 'buildingType' => optional($this->buildingType)->name,
                 'energyLabel' => optional($this->energyLabel)->name,
+                'buildYear' => $this->build_year,
+                'isHouseForSale' => $this->is_house_for_sale,
             ];
     }
 }

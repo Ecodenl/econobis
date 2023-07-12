@@ -19,11 +19,11 @@ const ForgotForm = ({ handleSubmit, showSuccessMessage }) => (
             actions.setSubmitting(true);
             handleSubmit(values, actions);
         }}
-        render={({ isSubmitting, errors, touched }) => (
+    >
+        {({ isSubmitting, errors, touched }) => (
             <Form>
-                <Field
-                    name="email"
-                    render={({ field }) => (
+                <Field name="email">
+                    {({ field }) => (
                         <InputText
                             field={field}
                             id="email"
@@ -35,7 +35,7 @@ const ForgotForm = ({ handleSubmit, showSuccessMessage }) => (
                             // showErrorMessage={false}
                         />
                     )}
-                />
+                </Field>
                 <ButtonText
                     buttonText={showSuccessMessage ? 'E-mail is verstuurd!' : 'Verstuur wachtwoord reset link'}
                     buttonClassName={'authorization-button'}
@@ -47,7 +47,7 @@ const ForgotForm = ({ handleSubmit, showSuccessMessage }) => (
                 />
             </Form>
         )}
-    />
+    </Formik>
 );
 
 export default ForgotForm;

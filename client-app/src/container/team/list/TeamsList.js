@@ -65,14 +65,16 @@ class TeamsList extends Component {
                     <DataTableHead>
                         <tr className="thead-title">
                             <DataTableHeadTitle title={'Team'} width={'30%'} />
-                            <DataTableHeadTitle title={'Gebruikers'} width={'65%'} />
+                            <DataTableHeadTitle title={'Gebruikers'} width={'55%'} />
+                            <DataTableHeadTitle title={'Groepen'} width={'10%'} />
+                            <DataTableHeadTitle title={'Documenten'} width={'10%'} />
                             <DataTableHeadTitle title={''} width={'5%'} />
                         </tr>
                     </DataTableHead>
                     <DataTableBody>
                         {loading ? (
                             <tr>
-                                <td colSpan={3}>{loadingText}</td>
+                                <td colSpan={5}>{loadingText}</td>
                             </tr>
                         ) : (
                             this.props.teams.map(team => {

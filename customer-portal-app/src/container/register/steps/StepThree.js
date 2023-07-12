@@ -66,9 +66,8 @@ function StepThree({ project, contactProjectData, previous, next, initialRegiste
                             </Row>
                             <Row>
                                 <Col xs={12} md={10}>
-                                    <Field
-                                        name="didAcceptAgreement"
-                                        render={({ field }) => (
+                                    <Field name="didAcceptAgreement">
+                                        {({ field }) => (
                                             <label className="w-checkbox checkbox-fld">
                                                 <input
                                                     type="checkbox"
@@ -111,14 +110,13 @@ function StepThree({ project, contactProjectData, previous, next, initialRegiste
                                                 ) : null}
                                             </label>
                                         )}
-                                    />
+                                    </Field>
                                 </Col>
                             </Row>
                             <Row>
                                 <Col xs={12} md={10}>
-                                    <Field
-                                        name="didUnderstandInfo"
-                                        render={({ field }) => (
+                                    <Field name="didUnderstandInfo">
+                                        {({ field }) => (
                                             <label className="w-checkbox checkbox-fld">
                                                 <input
                                                     type="checkbox"
@@ -161,7 +159,7 @@ function StepThree({ project, contactProjectData, previous, next, initialRegiste
                                                 ) : null}
                                             </label>
                                         )}
-                                    />
+                                    </Field>
                                 </Col>
                             </Row>
                             <Row>

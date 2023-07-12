@@ -9,9 +9,9 @@
 namespace App\Http\RequestQueries\Contact\Grid;
 
 
+use App\Eco\HousingFile\HousingFileHoomLink;
 use App\Helpers\RequestQuery\RequestExtraFilter;
 use App\Helpers\RequestQuery\RequestFilter;
-use Config;
 
 class ExtraFilter extends RequestExtraFilter
 {
@@ -47,7 +47,9 @@ class ExtraFilter extends RequestExtraFilter
         'portalUser',
         'didAgreeAvg',
         'quotationRequestStatus',
-        'housingFile',
+        'housingFileExists',
+        'housingFileFieldName',
+        'housingFileFieldValue',
         'inspectionPersonType',
     ];
 
@@ -86,6 +88,11 @@ class ExtraFilter extends RequestExtraFilter
         foreach ($this->filters as $filter) {
             $this->applySingleByArray($query, $filter);
         }
+//        Log::info("debug query");
+//        $sql = str_replace(array('?'), array('\'%s\''), $query->toSql());
+//        $sql = vsprintf($sql, $query->getBindings());
+//        Log::info($sql);
+
     }
 
     /**
@@ -141,8 +148,20 @@ class ExtraFilter extends RequestExtraFilter
             return;
         }
 
+        // Ook Uitzondering voor housingfile filters, hier zitten extra argumenten bij. Aparte routine laten doorlopen
+        if($filter['field'] == 'housingFileFieldName' ){
+            if($filterType === 'or'){
+                $query->orWhere(function ($query) use ($filter) {
+                    $this->applyHousingFileFilter($query, $filter['type'], $filter['data'], $filter['connectName']);
+                });
+            }else{
+                $this->applyHousingFileFilter($query, $filter['type'], $filter['data'], $filter['connectName']);
+            }
+            return;
+        }
+
         // Als er een connectedTo waarde is, dan is het een subfilter van product of kans. Niet op standaard wijze filteren.
-        // Filtering hierop wordt in applyProductFilter, applyOpportunityMeasureCategoryFilter of applyIntakeMeasureCategoryFilter geregeld.
+        // Filtering hierop wordt in applyProductFilter, applyOpportunityMeasureCategoryFilter, applyIntakeMeasureCategoryFilter of applyHousingFileFilter geregeld.
         if($filter['connectedTo']) return;
 
         // Betreft geen uitzondering; standaard functie doorlopen:
@@ -650,7 +669,7 @@ class ExtraFilter extends RequestExtraFilter
         }
     }
 
-    protected function applyHousingFileFilter($query, $type, $data)
+    protected function applyHousingFileExistsFilter($query, $type, $data)
     {
         if($data){
             $query->whereHas('housingFiles');
@@ -873,6 +892,111 @@ class ExtraFilter extends RequestExtraFilter
                     });
                     break;
             }
+        }
+
+    }
+
+    protected function applyHousingFileFilter($query, $housingFileFieldNameType, $housingFileFieldNameData, $housingFileFieldNameConnectName)
+    {
+        if(empty($housingFileFieldNameData)){
+            return;
+        }
+
+        $housingFileHoomLink = HousingFileHoomLink::find($housingFileFieldNameData);
+        if(!$housingFileHoomLink){
+            return;
+        }
+
+        $econobisFieldName = $housingFileHoomLink->econobis_field_name;
+
+        $housingFileFieldValueFilter = array_values(array_filter($this->filters, function($element) use($housingFileFieldNameConnectName){
+            return ($element['connectedTo'] == $housingFileFieldNameConnectName && $element['field'] == 'housingFileFieldValue');
+        }));
+        $housingFileFieldValueFilter = $housingFileFieldValueFilter ? $housingFileFieldValueFilter[0] : null;
+
+        $housingFileFieldValueType = $housingFileFieldValueFilter['type'];
+        $housingFileFieldValueData = $housingFileFieldValueFilter['data'];
+
+        switch($housingFileHoomLink->housing_file_data_type) {
+            // Filter op Woningdossier Basis en Gebruikgegevens
+            case 'B':
+            case 'G':
+                $query->whereHas('housingFiles', function ($query) use ($econobisFieldName, $housingFileFieldValueData, $housingFileFieldValueType) {
+                    if($housingFileFieldValueType == 'lt'
+                        || $housingFileFieldValueType == 'lte'
+                        || $housingFileFieldValueType == 'gt'
+                        || $housingFileFieldValueType == 'gte'
+                    ){
+                        static::applyFilterWhereRaw($query, '`housing_files`.`'.$econobisFieldName.'`', $housingFileFieldValueType, 'cast("' . $housingFileFieldValueData . '" AS int)');
+                    } else {
+                        static::applyFilter($query, 'housing_files.'.$econobisFieldName, $housingFileFieldValueType, $housingFileFieldValueData);
+                    }
+                });
+                break;
+
+            case 'W':
+                if($housingFileFieldValueData != 0 && empty($housingFileFieldValueData)) {
+                    switch ($housingFileFieldValueType) {
+                        case 'eq':
+                            $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                    $query->where('housing_file_hoom_links_id', '=', $housingFileHoomLink->id);
+                                    $query->whereNull('status')->orWhere('status', '=', '');
+                                });
+                            });
+                            break;
+                        case 'neq':
+                            $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                    $query->where('housing_file_hoom_links_id', '=', $housingFileHoomLink->id);
+                                    $query->whereNotNull('status')->orWhere('status', '!=', '');
+                                });
+                            });
+                            break;
+                        case 'nl':
+                            $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                    $query->where('housing_file_hoom_links_id', '=', $housingFileHoomLink->id);
+                                    $query->whereNull('status')->orWhere('status', '=', '');
+                                });
+                                $query->orWheredoesntHave('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                    $query->where('housing_file_hoom_links_id', '=', $housingFileHoomLink->id);
+                                });
+                            });
+                            break;
+                        case 'nnl':
+                            $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                    $query->where('housing_file_hoom_links_id', '=', $housingFileHoomLink->id);
+                                });
+                            });
+                            break;
+                        default:
+                            break;
+                    }
+                } else {
+                    switch ($housingFileFieldValueType) {
+                        case 'eq':
+                            $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                    $query->where('housing_file_hoom_links_id', '=', $housingFileHoomLink->id);
+                                    $query->where('status', '=', $housingFileFieldValueData);
+                                });
+                            });
+                            break;
+                        case 'neq':
+                            $query->whereHas('housingFiles', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                $query->whereHas('housingFileHousingStatuses', function ($query) use ($housingFileHoomLink, $housingFileFieldValueData) {
+                                    $query->where('housing_file_hoom_links_id', '=', $housingFileHoomLink->id);
+                                    $query->where('status', '!=', $housingFileFieldValueData);
+                                });
+                            });
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                break;
         }
 
     }

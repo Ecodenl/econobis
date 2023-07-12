@@ -117,9 +117,9 @@ class ContactDetailsFormAddressItem extends Component {
         });
 
         //if this is the primary address or used in Sce participation
-// todo WM: cleanup
-//         console.log('usedInActiveParticipationInSceOrPcrProject');
-//         console.log(this.state.address.usedInActiveParticipationInSceOrPcrProject);
+        // todo WM: cleanup
+        //         console.log('usedInActiveParticipationInSceOrPcrProject');
+        //         console.log(this.state.address.usedInActiveParticipationInSceOrPcrProject);
         if (
             name == 'typeId' &&
             value == 'old' &&

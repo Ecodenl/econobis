@@ -67,9 +67,8 @@ function ChangeAccountPassword() {
                     <Row>
                         <Col xs={12} md={9}>
                             <Form.Label className={'field-label'}>Nieuw wachtwoord</Form.Label>
-                            <Field
-                                name="password"
-                                render={({ field }) => (
+                            <Field name="password">
+                                {({ field }) => (
                                     <InputText
                                         field={field}
                                         id="password"
@@ -79,15 +78,14 @@ function ChangeAccountPassword() {
                                         touched={touched}
                                     />
                                 )}
-                            />
+                            </Field>
                         </Col>
                     </Row>
                     <Row>
                         <Col xs={12} md={9}>
                             <Form.Label className={'field-label mt-0'}>Herhaal nieuw wachtwoord</Form.Label>
-                            <Field
-                                name="passwordConfirmation"
-                                render={({ field }) => (
+                            <Field name="passwordConfirmation">
+                                {({ field }) => (
                                     <InputText
                                         field={field}
                                         id="passwordConfirmation"
@@ -97,7 +95,7 @@ function ChangeAccountPassword() {
                                         touched={touched}
                                     />
                                 )}
-                            />
+                            </Field>
                         </Col>
                     </Row>
 

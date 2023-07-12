@@ -32,6 +32,8 @@ use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverviewPolicy;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\HousingFile\HousingFilePolicy;
+use App\Eco\HousingFile\HousingFileLog;
+use App\Eco\HousingFile\HousingFileLogPolicy;
 use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakePolicy;
 use App\Eco\Invoice\Invoice;
@@ -132,6 +134,7 @@ class AuthServiceProvider extends ServiceProvider
         Task::class => TaskPolicy::class,
         Intake::class => IntakePolicy::class,
         HousingFile::class => HousingFilePolicy::class,
+        HousingFileLog::class => HousingFileLogPolicy::class,
         Campaign::class => CampaignPolicy::class,
         Measure::class => MeasurePolicy::class,
         MeasureCategory::class => MeasureCategoryPolicy::class,

@@ -26,8 +26,7 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
 
     protected function baseQuery()
     {
-        return ContactGroup::query()
-            ->whereTeamContactGroupIds(Auth::user())
+        return ContactGroup::whereTeamContactGroupIds(Auth::user())
             ->select('contact_groups.*')
             ->whereNotIn('type_id', ['simulated']);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Eco\Cooperation;
 
+use App\Eco\Campaign\Campaign;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Mailbox\Mailbox;
@@ -25,6 +26,7 @@ class Cooperation extends Model
         'updated_at' => 'date',
         'deleted_at' => 'date',
         'require_two_factor_authentication' => 'bool',
+        'create_contacts_for_report_table' => 'bool',
     ];
 
     protected $encryptable = [
@@ -44,6 +46,11 @@ class Cooperation extends Model
     public function contactGroup()
     {
         return $this->belongsTo(ContactGroup::class, 'hoom_group_id');
+    }
+
+    public function hoomCampaign()
+    {
+        return $this->belongsTo(Campaign::class, 'hoom_campaign_id');
     }
 
     public function emailTemplate()

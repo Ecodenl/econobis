@@ -50,8 +50,8 @@ class ProjectFormEdit extends Component {
                     props.project.requiresContactGroups.map(requiresContactGroup => requiresContactGroup.id).join(','),
                 contactGroupIdsSelected: props.project.requiresContactGroups ? props.project.requiresContactGroups : [],
                 allowChangeDateInterestBearingKwh:
-                    props.project.hasRevenueKwh != null && props.project.hasRevenueKwh != undefined
-                        ? !props.project.hasRevenueKwh
+                    (props.project.dateInterestBearingKwhWrong != null && props.project.dateInterestBearingKwhWrong != undefined)
+                        ? props.project.dateInterestBearingKwhWrong
                         : false,
                 allowChangeDateInterestBearing:
                     (props.project.dateInterestBearingWrong != null && props.project.dateInterestBearingWrong != undefined)

@@ -106,6 +106,7 @@ class FullProject extends JsonResource
                 'hasPaymentInvoices' => $this->getHasPaymentInvoices(),
                 'hasRevenueKwh' => $this->getHasRevenueKwh(),
                 'dateInterestBearingWrong' => $this->getDateInterestBearingWrong(),
+                'dateInterestBearingKwhWrong' => $this->getDateInterestBearingKwhWrong(),
                 'dateInterestBearingRedemptionWrong' => $this->getDateInterestBearingRedemptionWrong(),
                 'kwhStartHighNextRevenueWrong' => $this->getKwhStartHighNextRevenueWrong(),
                 'kwhStartLowNextRevenueWrong' => $this->getKwhStartLowNextRevenueWrong(),

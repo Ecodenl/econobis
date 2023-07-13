@@ -42,7 +42,6 @@ class FullCooperation extends JsonResource
             'useLaposta' => $this->use_laposta,
             'useExportAddressConsumption' => $this->use_export_address_consumption,
             'requireTwoFactorAuthentication' => $this->require_two_factor_authentication,
-            'createContactsForReportTable' => $this->create_contacts_for_report_table,
             'lapostaKey' => $this->laposta_key,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
@@ -58,8 +57,10 @@ class FullCooperation extends JsonResource
             'inspectionReleasedEmailTemplate' => ['name' => $this->inspectionReleasedEmailTemplate ? $this->inspectionReleasedEmailTemplate->name : ''],
             'inspectionPlannedMailboxId' => $this->inspection_planned_mailbox_id ? $this->inspection_planned_mailbox_id : '',
             'inspectionPlannedMailbox' => ['name' => $this->inspectionPlannedMailbox ? $this->inspectionPlannedMailbox->name : ''],
-            'createContactsForReportTableLastCreated' => $this->create_contacts_for_report_table_in_progress,
+            'createContactsForReportTable' => $this->create_contacts_for_report_table,
             'emailReportTableProblems' => $this->email_report_table_problems,
+            'createContactsForReportTableLastCreated' => $this->create_contacts_for_report_table_last_created,
+            'createContactsForReportTableInProgress' => $this->create_contacts_for_report_table_in_progress,
         ];
     }
 }

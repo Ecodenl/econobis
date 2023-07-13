@@ -7,12 +7,12 @@ import PanelHeader from '../../../components/panel/PanelHeader';
 function CooperationDetailsFormView({ formData, toggleEdit }) {
     return (
         <section className={'panel-hover'} onClick={toggleEdit}>
-            {formData.createContactsForReportTableLastCreated == true && (
+            {formData.createContactsForReportTableInProgress == true && (
                 <Panel>
                     <PanelHeader>
-                            <span className="h5" style={{ color: '#e64a4a' }}>
-                                Report tabel wordt momenteel bijgewerkt…
-                            </span>
+                        <span className="h5" style={{ color: '#e64a4a' }}>
+                            Report tabel wordt momenteel bijgewerkt…
+                        </span>
                     </PanelHeader>
                 </Panel>
             )}
@@ -171,7 +171,10 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
                             textToolTip={`Hiermee wordt er een tabel gevuld met alle contactgroep/contact koppelingen tbv Power BI.`}
                         />
                         {formData.createContactsForReportTable == true && (
-                            <ViewText label={'Email vullen report table problemen'} value={formData.emailReportTableProblems} />
+                            <ViewText
+                                label={'Email vullen report table problemen'}
+                                value={formData.emailReportTableProblems}
+                            />
                         )}
                     </div>
                 </PanelBody>

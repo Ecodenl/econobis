@@ -48,12 +48,14 @@ class UpdateCooperation extends FormRequest
             'lapostaKey' => [''],
             'useExportAddressConsumption' => [''],
             'requireTwoFactorAuthentication' => [''],
-            'createContactsForReportTable' => [''],
             'inspectionPlannedEmailTemplateId' => [''],
             'inspectionPlannedMailboxId' => [''],
             'inspectionRecordedEmailTemplateId' => [''],
             'inspectionReleasedEmailTemplateId' => [''],
+            'createContactsForReportTable' => [''],
             'emailReportTableProblems' => ['email'],
+            'create_contacts_for_report_table_last_created' => [''],
+            'create_contacts_for_report_table_in_progress' => [''],
         ];
     }
 }

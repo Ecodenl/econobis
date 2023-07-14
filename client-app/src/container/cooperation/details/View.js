@@ -3,6 +3,7 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ViewText from '../../../components/form/ViewText';
 import PanelHeader from '../../../components/panel/PanelHeader';
+import moment from "moment/moment";
 
 function CooperationDetailsFormView({ formData, toggleEdit }) {
     return (
@@ -11,7 +12,7 @@ function CooperationDetailsFormView({ formData, toggleEdit }) {
                 <Panel>
                     <PanelHeader>
                         <span className="h5" style={{ color: '#e64a4a' }}>
-                            Report tabel wordt momenteel bijgewerkt…
+                             Contactgroep/contact koppelingen report tabel wordt momenteel bijgewerkt…
                         </span>
                     </PanelHeader>
                 </Panel>
@@ -126,6 +127,34 @@ function CooperationDetailsFormView({ formData, toggleEdit }) {
                         />
                     </div>
                 </PanelBody>
+
+                <PanelHeader>
+                    <span className="h5 text-bold">Contactgroep/contact koppelingen </span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <ViewText
+                            label={'Vullen report tabel (tbv Power BI)'}
+                            value={formData.createContactsForReportTable ? 'Ja' : 'Nee'}
+                            size={'col-sm-5'}
+                            name={'createContactsForReportTable'}
+                            textToolTip={`Hiermee wordt er een tabel gevuld met alle contactgroep/contact koppelingen tbv Power BI.`}
+                        />
+                        {formData.createContactsForReportTable == true && (
+                            <ViewText
+                                label={'Email vullen report table problemen'}
+                                value={formData.emailReportTableProblems}
+                            />
+                        )}
+                        {formData.createContactsForReportTable == true && (
+                            <ViewText
+                                label={'Datum laatste keer gevuld'}
+                                value={formData.createContactsForReportTableLastCreated ? moment(formData.createContactsForReportTableLastCreated).format('L') : ''}
+                            />
+                        )}
+                    </div>
+                </PanelBody>
+
                 <PanelHeader>
                     <span className="h5 text-bold">Overig</span>
                 </PanelHeader>
@@ -161,21 +190,6 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
 {verbruik_electriciteit_vaste_kosten_hoog}<br/>
 {verbruik_electriciteit_vaste_kosten_laag}`}
                         />
-                    </div>
-                    <div className="row">
-                        <ViewText
-                            label={'Vullen contactgroep/contact koppelingen report tabel (tbv Power BI)'}
-                            value={formData.createContactsForReportTable ? 'Ja' : 'Nee'}
-                            size={'col-sm-5'}
-                            name={'createContactsForReportTable'}
-                            textToolTip={`Hiermee wordt er een tabel gevuld met alle contactgroep/contact koppelingen tbv Power BI.`}
-                        />
-                        {formData.createContactsForReportTable == true && (
-                            <ViewText
-                                label={'Email vullen report table problemen'}
-                                value={formData.emailReportTableProblems}
-                            />
-                        )}
                     </div>
                 </PanelBody>
             </Panel>

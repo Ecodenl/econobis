@@ -18,6 +18,8 @@ import { connect } from 'react-redux';
 import Modal from '../../../components/modal/Modal';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import CampaignsAPI from '../../../api/campaign/CampaignsAPI';
+import ViewText from "../../../components/form/ViewText";
+import moment from "moment";
 
 function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchSystemData }) {
     const [campaigns, setCampaigns] = useState([]);
@@ -379,6 +381,60 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                     </PanelBody>
 
                     <PanelHeader>
+                        <span className="h5 text-bold">Contactgroep/contact koppelingen </span>
+                    </PanelHeader>
+                    <PanelBody>
+                        <div className="row">
+                            <InputToggle
+                                label={
+                                    <span>
+                                        Vullen report tabel (tbv Power BI)
+                                        {values.createContactsForReportTable
+                                            ?
+                                            <>
+                                                <br />
+                                                <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                                     Wanneer je dit uitzet wordt de report tabel geleegd.
+                                                </small>
+                                            </>
+                                            : null
+                                        }
+                                    </span>
+                                }
+                                name={'createContactsForReportTable'}
+                                value={!!values.createContactsForReportTable}
+                                onChangeAction={e => setFieldValue('createContactsForReportTable', e.target.checked)}
+                                size={'col-sm-5'}
+                                textToolTip={`Hiermee wordt er een tabel gevuld met alle contactgroep/contact koppelingen tbv Power BI.`}
+                            />
+                            {values.createContactsForReportTable == true && (
+                                <InputText
+                                    label="Email vullen report table problemen"
+                                    name={'emailReportTableProblems'}
+                                    value={values.emailReportTableProblems}
+                                    onChangeAction={handleChange}
+                                    onBlurAction={handleBlur}
+                                    error={errors.emailReportTableProblems && touched.emailReportTableProblems}
+                                    errorMessage={errors.emailReportTableProblems}
+                                />
+                            )}
+                        </div>
+                        <div className="row">
+                            {formData.createContactsForReportTable == true && (
+                                <ViewText
+                                    label={'Datum laatste keer gevuld'}
+                                    value={formData.createContactsForReportTableLastCreated ? moment(formData.createContactsForReportTableLastCreated).format('L') : ''}
+                                />
+                            )}
+                            {formData.createContactsForReportTableInProgress == true && (
+                                <span class="form-group col-sm-6">
+                                    <span class="form-group col-sm-12" style={{ color: '#e64a4a' }}>Report tabel wordt momenteel bijgewerkt…</span>
+                                </span>
+                            )}
+                        </div>
+                    </PanelBody>
+
+                    <PanelHeader>
                         <span className="h5 text-bold">Overig</span>
                     </PanelHeader>
                     <PanelBody>
@@ -414,27 +470,6 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
 {verbruik_electriciteit_vaste_kosten_hoog}<br/>
 {verbruik_electriciteit_vaste_kosten_laag}`}
                             />
-                        </div>
-                        <div className="row">
-                            <InputToggle
-                                label={'Vullen contactgroep/contact koppelingen report tabel (tbv Power BI)'}
-                                name={'createContactsForReportTable'}
-                                value={!!values.createContactsForReportTable}
-                                onChangeAction={e => setFieldValue('createContactsForReportTable', e.target.checked)}
-                                size={'col-sm-5'}
-                                textToolTip={`Hiermee wordt er een tabel gevuld met alle contactgroep/contact koppelingen tbv Power BI.`}
-                            />
-                            {values.createContactsForReportTable == true && (
-                                <InputText
-                                    label="Email vullen report table problemen"
-                                    name={'emailReportTableProblems'}
-                                    value={values.emailReportTableProblems}
-                                    onChangeAction={handleChange}
-                                    onBlurAction={handleBlur}
-                                    error={errors.emailReportTableProblems && touched.emailReportTableProblems}
-                                    errorMessage={errors.emailReportTableProblems}
-                                />
-                            )}
                         </div>
                     </PanelBody>
 

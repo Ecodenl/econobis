@@ -53,8 +53,6 @@ class CreateCooperation extends FormRequest
             'inspectionReleasedEmailTemplateId' => [''],
             'createContactsForReportTable' => [''],
             'emailReportTableProblems' => ['email'],
-            'create_contacts_for_report_table_last_created' => [''],
-            'create_contacts_for_report_table_in_progress' => [''],
         ];
     }
 }

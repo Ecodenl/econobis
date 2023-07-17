@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\User\User;
+use App\Helpers\Email\EmailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -96,18 +97,29 @@ class contactGroupsContactsForReport extends Command
         } else if ($cooperation->create_contacts_for_report_table_in_progress == true) {
             Log::info('De cronjob draait al, create_contacts_for_report_table_in_progress is nog true.');
 
-            $mail = Mail::to($cooperation->email_report_table_problems);
-            $subject = $cooperation->name . ": Probleem bij vullen contactgroep/contact koppelingen report tabel";
-            $bodyText = "De job report:contactGroupsContacts is aangeroepen maar create_contacts_for_report_table_in_progress is true";
-
-            $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'.$subject.'</title></head><body><p>'. $subject . '</p>' . $bodyText . '</body></html>';
-
-            $mail->subject = $subject;
-            $mail->html_body = $htmlBody;
-
-            $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody));
+            $this->sendMail($cooperation);
         } else {
             Log::info('Er ging iets anders mis tijdens de contactGroupsContactsForReport cronjob');
         }
     }
+
+    /**
+     * @param $cooperation
+     */
+    private function sendMail($cooperation): void
+    {
+        (new EmailHelper())->setConfigToDefaultMailbox();
+
+        $mail = Mail::to($cooperation->email_report_table_problems);
+        $subject = "Probleem bij vullen contactgroep/contact koppelingen report tabel - " . \Config::get('app.APP_COOP_NAME');
+        $bodyText = "De taak voor het automatische vullen van contactgroep/contact koppelingen report tabel (tbv Power BI) is aangeroepen terwijl deze nog bezig was.";
+
+        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>' . $subject . '</title></head><body><p>' . $subject . '</p>' . $bodyText . '</body></html>';
+
+        $mail->subject = $subject;
+        $mail->html_body = $htmlBody;
+
+        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody));
+    }
+
 }

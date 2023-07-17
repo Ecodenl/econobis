@@ -120,15 +120,35 @@ const RevenueNew = props => {
                             category.codeRef === 'redemptionEuro' &&
                             moment(dateBegin).format('Y-MM-DD') <
                                 moment(props.project.dateInterestBearingRedemption).format('Y-MM-DD') ? (
-                                <React.Fragment>
+                                <>
                                     <br />
                                     <small style={{ color: 'red', fontWeight: 'normal' }}>
                                         Let op de begin periode ligt voor de eind periode van de vorige aflossing.
                                     </small>
-                                </React.Fragment>
+                                </>
                             ) : (
                                 ''
                             )}
+                            {category.codeRef === 'revenueEuro' && props.project.dateInterestBearingWrong
+                                ?
+                                <>
+                                    <br />
+                                    <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                        Afwijkende begindatum verwacht
+                                    </small>
+                                </>
+                                : null
+                            }
+                            {category.codeRef === 'redemptionEuro' && props.project.dateInterestBearingRedemptionWrong
+                                ?
+                                <>
+                                    <br />
+                                    <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                        Afwijkende begindatum verwacht
+                                    </small>
+                                </>
+                                : null
+                            }
                         </span>
                     }
                     name={'dateBegin'}
@@ -193,7 +213,7 @@ const RevenueNew = props => {
             </div>
 
             {category.codeRef === 'revenueKwh' ? (
-                <React.Fragment>
+                <>
                     <div className="row">
                         <div className={'panel-part panel-heading'}>
                             <span className={'h5 text-bold'}>Opbrengst kWh</span>
@@ -384,18 +404,18 @@ const RevenueNew = props => {
                             readOnly={true}
                         />
                     </div>
-                </React.Fragment>
+                </>
             ) : null}
 
             {category.codeRef === 'revenueEuro' ? (
-                <React.Fragment>
+                <>
                     <div className="row">
                         <div className={'panel-part panel-heading'}>
                             <span className={'h5 text-bold'}>Opbrengst euro</span>
                         </div>
                     </div>
                     {projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation' ? (
-                        <React.Fragment>
+                        <>
                             <div className="row">
                                 <InputText
                                     type={'number'}
@@ -419,9 +439,9 @@ const RevenueNew = props => {
                             <div className="row">
                                 <InputText
                                     label={
-                                        <React.Fragment>
+                                        <>
                                             Bedrag <StyledEm>(uitkering % geldig tot en met)</StyledEm>
-                                        </React.Fragment>
+                                        </>
                                     }
                                     name={'keyAmountFirstPercentage'}
                                     value={keyAmountFirstPercentage}
@@ -433,7 +453,7 @@ const RevenueNew = props => {
                                 <div className="row">
                                     <InputText
                                         type={'number'}
-                                        label={<React.Fragment>Uitkering (rente) % vanaf bedrag</React.Fragment>}
+                                        label={<>Uitkering (rente) % vanaf bedrag</>}
                                         name={'payPercentageValidFromKeyAmount'}
                                         value={payPercentageValidFromKeyAmount}
                                         onChangeAction={props.handleInputChange}
@@ -441,10 +461,10 @@ const RevenueNew = props => {
                                     />
                                 </div>
                             ) : null}
-                        </React.Fragment>
+                        </>
                     ) : null}
                     {projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital' ? (
-                        <React.Fragment>
+                        <>
                             <div className="row">
                                 <InputText
                                     type={'number'}
@@ -456,20 +476,20 @@ const RevenueNew = props => {
                                     textToolTip={'Vul hier hier het totaal resultaat in dat je wilt verdelen over alle deelnemers. Econobis maakt vanuit dit totaal de verdeling per deelnemer'}
                                 />
                             </div>
-                        </React.Fragment>
+                        </>
                     ) : null}
-                </React.Fragment>
+                </>
             ) : null}
 
             {category.codeRef === 'redemptionEuro' ? (
-                <React.Fragment>
+                <>
                     <div className="row">
                         <div className={'panel-part panel-heading'}>
                             <span className={'h5 text-bold'}>Aflossing euro</span>
                         </div>
                     </div>
                     {projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation' ? (
-                        <React.Fragment>
+                        <>
                             <div className="row">
                                 <InputText
                                     type={'number'}
@@ -490,9 +510,9 @@ const RevenueNew = props => {
                                     errorMessage={props.errorMessage.payAmount}
                                 />
                             </div>
-                        </React.Fragment>
+                        </>
                     ) : null}
-                </React.Fragment>
+                </>
             ) : null}
 
             <PanelFooter>

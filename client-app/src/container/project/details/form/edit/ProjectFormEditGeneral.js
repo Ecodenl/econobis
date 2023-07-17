@@ -455,20 +455,10 @@ const ProjectFormEditGeneral = ({
                     error={errors.dateEntry}
                 />
             </div>
-            <div className="row">
-                <InputDate
-                    label={'Begindatum volgende periode opbrengst kWh'}
-                    name={'dateInterestBearingKwh'}
-                    value={dateInterestBearingKwh}
-                    onChangeAction={handleInputChangeDate}
-                    disabledBefore={dateProduction}
-                    readOnly={!allowChangeDateInterestBearingKwh}
-                />
-            </div>
 
             <div className="row">
                 <InputDate
-                    label={'Begindatum volgende periode opbrengst'}
+                    label={'Begindatum volgende periode opbrengst euro'}
                     name={'dateInterestBearing'}
                     value={dateInterestBearing}
                     onChangeAction={handleInputChangeDate}
@@ -477,36 +467,50 @@ const ProjectFormEditGeneral = ({
                 />
             </div>
 
-            <div className="row">
-                <InputDate
-                    label={'Begindatum volgende Aflossing opbrengstverdeling'}
-                    name={'dateInterestBearingRedemption'}
-                    value={dateInterestBearingRedemption}
-                    onChangeAction={handleInputChangeDate}
-                    disabledBefore={dateProduction}
-                    readOnly={!allowChangeDateInterestBearingRedemption}
-                />
-            </div>
-
-            <div className="row">
-                <InputText
-                    label={'Beginstand hoog volgende kwh opbrengstverdeling'}
-                    name={'kwhStartHighNextRevenue'}
-                    value={kwhStartHighNextRevenue}
-                    onChangeAction={handleInputChangeDate}
-                    readOnly={!allowChangeKwhStartHighNextRevenue}
-                />
-            </div>
-
-            <div className="row">
-                <InputText
-                    label={'Beginstand laag volgende kwh opbrengstverdeling'}
-                    name={'kwhStartLowNextRevenue'}
-                    value={kwhStartLowNextRevenue}
-                    onChangeAction={handleInputChangeDate}
-                    readOnly={!allowChangeKwhStartLowNextRevenue}
-                />
-            </div>
+            {projectType.codeRef === 'loan' || projectType.codeRef === 'obligation' ? (
+                <div className="row">
+                    <InputDate
+                        label={'Begindatum volgende periode aflossing euro'}
+                        name={'dateInterestBearingRedemption'}
+                        value={dateInterestBearingRedemption}
+                        onChangeAction={handleInputChangeDate}
+                        disabledBefore={dateProduction}
+                        readOnly={!allowChangeDateInterestBearingRedemption}
+                    />
+                </div>
+            ) : null}
+            {projectType.codeRef === 'postalcode_link_capital' ? (
+                <>
+                    <div className="row">
+                        <InputDate
+                            label={'Begindatum volgende periode opbrengst kWh'}
+                            name={'dateInterestBearingKwh'}
+                            value={dateInterestBearingKwh}
+                            onChangeAction={handleInputChangeDate}
+                            disabledBefore={dateProduction}
+                            readOnly={!allowChangeDateInterestBearingKwh}
+                        />
+                    </div>
+                    <div className="row">
+                        <InputText
+                            label={'Beginstand hoog volgende kwh opbrengstverdeling'}
+                            name={'kwhStartHighNextRevenue'}
+                            value={kwhStartHighNextRevenue}
+                            onChangeAction={handleInputChangeDate}
+                            readOnly={!allowChangeKwhStartHighNextRevenue}
+                        />
+                    </div>
+                    <div className="row">
+                        <InputText
+                            label={'Beginstand laag volgende kwh opbrengstverdeling'}
+                            name={'kwhStartLowNextRevenue'}
+                            value={kwhStartLowNextRevenue}
+                            onChangeAction={handleInputChangeDate}
+                            readOnly={!allowChangeKwhStartLowNextRevenue}
+                        />
+                    </div>
+                </>
+            ) : null}
 
             <hr />
             <h4 onClick={() => toggleCustomerPortalSettings(!showCustomerPortalSettings)}>

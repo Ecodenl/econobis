@@ -309,6 +309,11 @@ class Project extends Model
     }
 
     public function getKwhStartHighNextRevenueWrong() {
+        // kwh_start_high_next_revenue alleen van belang bij pcr project.
+        if($this->projectType->code_ref != 'postalcode_link_capital') {
+            return false;
+        }
+
         $confirmedRevenuesKwh = $this->revenuesKwh()->where('confirmed', 1)->orderBy('date_end', 'desc');
 
         //wel date_interest_bearing_kwh en revenuesKwh, maar kwh_start_high_next_revenue is niet goed
@@ -326,6 +331,11 @@ class Project extends Model
     }
 
     public function getKwhStartLowNextRevenueWrong() {
+        // kwh_start_low_next_revenue alleen van belang bij pcr project.
+        if($this->projectType->code_ref != 'postalcode_link_capital') {
+            return false;
+        }
+
         $confirmedRevenuesKwh = $this->revenuesKwh()->where('confirmed', 1)->orderBy('date_end', 'desc');
 
         //wel date_interest_bearing_kwh en revenuesKwh, maar kwh_start_low_next_revenue is niet goed
@@ -343,8 +353,12 @@ class Project extends Model
     }
 
     public function getDateInterestBearingKwhWrong() {
-        $confirmedRevenuesKwh = $this->revenuesKwh()->where('confirmed', 1)->orderBy('date_end', 'desc');
+        // date_interest_bearing_kwh alleen van belang bij pcr project.
+        if($this->projectType->code_ref != 'postalcode_link_capital') {
+            return false;
+        }
 
+        $confirmedRevenuesKwh = $this->revenuesKwh()->where('confirmed', 1)->orderBy('date_end', 'desc');
         //wel date_interest_bearing_kwh en revenuesKwh, maar kwh_start_low_next_revenue is niet goed
         if(
             $this->date_interest_bearing_kwh === null &&

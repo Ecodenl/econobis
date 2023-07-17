@@ -39,6 +39,10 @@ const ProjectFormViewGeneral = ({
     dateEntry,
     dateProduction,
     dateInterestBearingKwh,
+    dateInterestBearing,
+    dateInterestBearingRedemption,
+    kwhStartHighNextRevenue,
+    kwhStartLowNextRevenue,
     isMembershipRequired,
     visibleForAllContacts,
     textInfoProjectOnlyMembers,
@@ -242,10 +246,42 @@ const ProjectFormViewGeneral = ({
                 </div>
                 <div className="row">
                     <ViewText
-                        label={'Volgende begin periode opbrengst kWh'}
-                        value={dateInterestBearingKwh ? moment(dateInterestBearingKwh).format('L') : ''}
+                        label={'Begindatum volgende periode opbrengst euro'}
+                        value={dateInterestBearing ? moment(dateInterestBearing).format('L') : ''}
                     />
                 </div>
+                {projectType.codeRef === 'loan' || projectType.codeRef === 'obligation' ? (
+                    <div className="row">
+                        <ViewText
+                            label={'Begindatum volgende periode aflossing euro'}
+                            value={
+                                dateInterestBearingRedemption ? moment(dateInterestBearingRedemption).format('L') : ''
+                            }
+                        />
+                    </div>
+                ) : null}
+                {projectType.codeRef === 'postalcode_link_capital' ? (
+                    <>
+                        <div className="row">
+                            <ViewText
+                                label={'Begindatum volgende periode opbrengst kWh'}
+                                value={dateInterestBearingKwh ? moment(dateInterestBearingKwh).format('L') : ''}
+                            />
+                        </div>
+                        <div className="row">
+                            <ViewText
+                                label={'Beginstand hoog volgende kwh opbrengstverdeling'}
+                                value={kwhStartHighNextRevenue ? kwhStartHighNextRevenue : ''}
+                            />
+                        </div>
+                        <div className="row">
+                            <ViewText
+                                label={'Beginstand laag volgende kwh opbrengstverdeling'}
+                                value={kwhStartLowNextRevenue ? kwhStartLowNextRevenue : ''}
+                            />
+                        </div>
+                    </>
+                ) : null}
             </section>
             <section>
                 <hr />

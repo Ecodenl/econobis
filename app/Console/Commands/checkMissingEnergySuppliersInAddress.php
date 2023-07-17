@@ -234,6 +234,7 @@ class checkMissingEnergySuppliersInAddress extends Command
     private function getAddressEnergySupplierInAPeriod($addressId, $dateBegin, $dateEnd)
     {
         $addressEnergySupplier = AddressEnergySupplier::where('address_id', $addressId)
+            ->whereIn('energy_supply_type_id', [2, 3] )
             ->where(function ($addressEnergySupplier) use ($dateBegin) {
                 $addressEnergySupplier
                     ->where(function ($addressEnergySupplier) use ($dateBegin) {
@@ -255,14 +256,14 @@ class checkMissingEnergySuppliersInAddress extends Command
     private function getFirstNextAddressEnergySupplier($addressId, $dateBegin)
     {
         $addressEnergySupplier = AddressEnergySupplier::where('address_id', $addressId)
+            ->whereIn('energy_supply_type_id', [2, 3] )
             ->where(function ($addressEnergySupplier) use ($dateBegin) {
                 $addressEnergySupplier
                     ->where(function ($addressEnergySupplier) use ($dateBegin) {
                         $addressEnergySupplier->whereNotNull('member_since')
                             ->where('member_since', '>', $dateBegin);
-                    })
-                    ->orderBy('member_since', 'asc');
-            })->first();
+                    });
+            })->orderBy('member_since', 'asc')->first();
         return $addressEnergySupplier;
     }
 

@@ -33,6 +33,7 @@ const INITIAL_STATE = {
         lapostaKey: '',
         useExportAddressConsumption: false,
         requireTwoFactorAuthentication: false,
+        createContactsForReportTable: false,
         inspectionPlannedEmailTemplateId: '',
         inspectionRecordedEmailTemplateId: '',
         inspectionReleasedEmailTemplateId: '',

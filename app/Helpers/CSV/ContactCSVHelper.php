@@ -17,11 +17,12 @@ class ContactCSVHelper
     private $csvExporter;
     private $contacts;
 
-    public function __construct($contacts)
+    public function __construct($contacts, $contactGroup = false)
     {
         $this->csvExporter = new Export();
         $this->csvExporter->getCsv()->setDelimiter(';');
         $this->contacts = $contacts;
+        $this->contactGroup = $contactGroup;
     }
 
     public function downloadCSV()
@@ -205,6 +206,15 @@ class ContactCSVHelper
                     $contact->date_of_birth_partner = $this->formatDate($contact->person->date_of_birth_partner);
                 }
 
+                //optional member_to_group_since field if the export is for a specific group
+                if($this->contactGroup) {
+                    if ($this->contactGroup->contacts()->where('id', $contact->id)->count() > 0) {
+                        $contact->member_to_group_since = $this->contactGroup->contacts()->where('id', $contact->id)->first()->pivot->member_to_group_since;
+                    } else {
+                        $contact->member_to_group_since = '';
+                    }
+                }
+
                 // Reformat energy supplier fields
                 if ($contact->primaryAddress && $contact->primaryAddress->currentAddressEnergySupplierElectricity) {
                     $contact->energy_supplier_name_electricity = $contact->primaryAddress->currentAddressEnergySupplierElectricity->energySupplier->name;
@@ -236,7 +246,7 @@ class ContactCSVHelper
                 $contact->updated_at_date = $this->formatDate($contact->updated_at);
             });
 
-            $csv = $this->csvExporter->build($chunk, [
+            $mapping = [
                 'number' => '#',
                 'full_name' => 'Naam',
                 'organisation.name' => 'Organisatie',
@@ -321,7 +331,18 @@ class ContactCSVHelper
                 'occupationPrimaryEmailAddress.email' => 'Primair e-mailadres',
                 'occupationPrimaryTelephoneNumber.number' => 'Primair telefoonnummer',
                 'occupationRole' => 'Rol van contact',
-            ], $headers);
+            ];
+
+            if($this->contactGroup) {
+                $mappingForMemberToGroupSince = [
+                    'member_to_group_since' => 'Toegevoegd aan groep op',
+                ];
+                $mapping = array_merge($mapping, $mappingForMemberToGroupSince);
+            }
+
+
+
+            $csv = $this->csvExporter->build($chunk, $mapping, $headers);
             $headers = false;
         }
         if (empty($csv)) abort(422, 'Geen gegevens om te downloaden');

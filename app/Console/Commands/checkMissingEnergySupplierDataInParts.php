@@ -75,7 +75,7 @@ class checkMissingEnergySupplierDataInParts extends Command
                                     ->where(function ($addressEnergySupplier) use ($dateBegin, $dateEnd) {
                                         $addressEnergySupplier->whereNotNull('member_since')
                                             ->where('member_since', '>', $dateBegin)
-                                            ->where('member_since', '<', $dateEnd);
+                                            ->where('member_since', '<=', $dateEnd);
                                     });
                             })
                             ->get();
@@ -127,7 +127,7 @@ class checkMissingEnergySupplierDataInParts extends Command
 
                     if ($distributionKwh->participation->date_terminated != null) {
                         $dayAfterTerminated = Carbon::parse($distributionKwh->participation->date_terminated)->addDay()->format('Y-m-d');
-                        if ($dayAfterTerminated > $dateBegin and $dayAfterTerminated < $dateEnd) {
+                        if ($dayAfterTerminated > $dateBegin and $dayAfterTerminated <= $dateEnd) {
                             $comment = 'Geen splitsing deelperiode data gevonden voor dag na beeindiging deelnemer:';
                             $comment .= " \n";
                             $comment .= ' - Project: ' . $revenueKwh->project_id . ' ' . $revenueKwh->project->name;

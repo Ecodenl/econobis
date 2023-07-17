@@ -37,7 +37,8 @@ function ContactDetailsPersonal({
                         actions.setSubmitting(true);
                         handleSubmitContactValues(values, actions, () => setEditForm(false));
                     }}
-                    render={({ errors, touched, setFieldValue, isSubmitting, status, values, handleSubmit }) => {
+                >
+                    {({ errors, touched, setFieldValue, isSubmitting, status, values, handleSubmit }) => {
                         return (
                             <Form>
                                 <DefaultContactPersonalEdit
@@ -103,7 +104,7 @@ function ContactDetailsPersonal({
                             </Form>
                         );
                     }}
-                />
+                </Formik>
             ) : (
                 <>
                     <DefaultContactPersonalView portalSettings={portalSettings} initialContact={initialContact} />

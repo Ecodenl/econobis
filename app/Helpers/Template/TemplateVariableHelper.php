@@ -1835,7 +1835,8 @@ class TemplateVariableHelper
     public static function getRevenuesKwhVar($model, $varname){
         $valuesStart = RevenueValuesKwh::where('revenue_id', $model->id)->where('date_registration', Carbon::parse($model->date_begin)->format('Y-m-d'))->first();
         $startKhw = $valuesStart ? $valuesStart->kwh_start : 0;
-        $valuesEnd = RevenueValuesKwh::where('revenue_id', $model->id)->where('date_registration', Carbon::parse($model->date_end)->addDay()->format('Y-m-d'))->first();
+
+        $valuesEnd = RevenueValuesKwh::where('revenue_id', $model->id)->where('date_registration', Carbon::parse($model->date_end_last_confirmed_parts_kwh)->addDay()->format('Y-m-d'))->first();
         $endKhw = $valuesEnd ? $valuesEnd->kwh_start : 0;
 
         switch ($varname) {
@@ -2084,6 +2085,19 @@ class TemplateVariableHelper
             case 'kwh':
 //                return $model->delivered_total_string;
                 return $model->not_reported_delivered_kwh_string;
+                break;
+            case 'kwh_totaal':
+                $dateBegin = $model->not_reported_date_begin ? $model->not_reported_date_begin : null;
+                $dateEnd = $model->partsKwh->date_end ? $model->partsKwh->date_end : null;
+                $kwhTotaal = 0;
+                if($dateBegin && $dateEnd){
+                    $valuesStart = RevenueValuesKwh::where('revenue_id', $model->revenue_id)->where('date_registration', Carbon::parse($dateBegin)->format('Y-m-d'))->first();
+                    $startKhw = $valuesStart ? $valuesStart->kwh_start : 0;
+                    $valuesEnd = RevenueValuesKwh::where('revenue_id', $model->revenue_id)->where('date_registration', Carbon::parse($dateEnd)->addDay()->format('Y-m-d'))->first();
+                    $endKhw = $valuesEnd ? $valuesEnd->kwh_start : 0;
+                    $kwhTotaal = $endKhw - $startKhw;
+                }
+                return $kwhTotaal;
                 break;
             case 'teruggave_energiebelasting':
 //                return number_format($model->kwh_return, 2, ',', '');

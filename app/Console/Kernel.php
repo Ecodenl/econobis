@@ -92,10 +92,11 @@ class Kernel extends ConsoleKernel
         $schedule->command('revenue:checkMissingEnergySupplierDataInParts')->timezone('Europe/Amsterdam')->dailyAt('21:10');
         $schedule->command('revenue:checkWrongRevenueDistributionKwhStatus')->timezone('Europe/Amsterdam')->dailyAt('21:15');
         $schedule->command('revenue:checkWrongRevenueDistributionPartsKwhIndicatorFields')->timezone('Europe/Amsterdam')->dailyAt('21:20');
-//        $schedule->command('addressEnergySupplier:checkOverlappingEnergySuppliers')->timezone('Europe/Amsterdam')->dailyAt('21:25');
-        $schedule->command('participants:checkFirstStartingDate')->timezone('Europe/Amsterdam')->dailyAt('21:30');
-//        $schedule->command('participants:checkTerminationDate')->timezone('Europe/Amsterdam')->dailyAt('21:35');
-//        $schedule->command('project:checkWrongProjectDataForLastProjectRevenue')->timezone('Europe/Amsterdam')->dailyAt('21:40');
+        $schedule->command('revenue:checkMissingRevenueDistributionParts')->timezone('Europe/Amsterdam')->dailyAt('21:25');
+        $schedule->command('addressEnergySupplier:checkOverlappingEnergySuppliers')->timezone('Europe/Amsterdam')->dailyAt('21:30');
+        $schedule->command('participants:checkFirstStartingDate')->timezone('Europe/Amsterdam')->dailyAt('21:35');
+        $schedule->command('participants:checkTerminationDate')->timezone('Europe/Amsterdam')->dailyAt('21:40');
+//        $schedule->command('project:checkWrongProjectDataForLastProjectRevenue')->timezone('Europe/Amsterdam')->dailyAt('21:45');
 
         $schedule->command('laposta:processStateAllMembersLaposta')->timezone('Europe/Amsterdam')->dailyAt('23:45');
 

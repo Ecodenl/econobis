@@ -96,9 +96,8 @@ function StepOneLoan({ next, project, contactProjectData, initialRegisterValues,
 
                             <Col xs={12} md={6}>
                                 <Form.Label className={'field-label'}>In te leggen bedrag</Form.Label>
-                                <Field
-                                    name="amountOptioned"
-                                    render={({ field }) => (
+                                <Field name="amountOptioned">
+                                    {({ field }) => (
                                         <InputTextCurrency
                                             field={field}
                                             errors={errors}
@@ -106,7 +105,7 @@ function StepOneLoan({ next, project, contactProjectData, initialRegisterValues,
                                             id="amount_optioned"
                                         />
                                     )}
-                                />
+                                </Field>
                             </Col>
                             <Col xs={12} md={6}>
                                 <FormLabel className={'field-label'}>
@@ -130,9 +129,8 @@ function StepOneLoan({ next, project, contactProjectData, initialRegisterValues,
                                 {!contactProjectData.belongsToMembershipGroup ? (
                                     <Row>
                                         <Col xs={12} md={10}>
-                                            <Field
-                                                name="choiceMembership"
-                                                render={({ field }) => (
+                                            <Field name="choiceMembership">
+                                                {({ field }) => (
                                                     <>
                                                         {get(errors, field.name, '') &&
                                                             get(touched, field.name, '') && (
@@ -170,7 +168,7 @@ function StepOneLoan({ next, project, contactProjectData, initialRegisterValues,
                                                         </div>
                                                     </>
                                                 )}
-                                            />
+                                            </Field>
                                         </Col>
                                     </Row>
                                 ) : null}

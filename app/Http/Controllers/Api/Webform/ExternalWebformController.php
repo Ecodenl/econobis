@@ -2498,17 +2498,17 @@ class ExternalWebformController extends Controller
     protected function addContactToGroupContactperson(array $data, Contact $contact, $ownerAndResponsibleUser)
     {
         if ($data['group_name']) {
-            $this->log('Er is een contact groep meegegeven, groep koppelen.');
+            $this->log('Er is een contact groep contactpersoon meegegeven, groep koppelen.');
 
             $contactGroup = ContactGroup::where('name', $data['group_name'])->first();
 
             if (!$contactGroup) {
-                $this->log('Groep met naam ' . $data['group_name'] . ' is niet gevonden, geen groep gekoppeld.');
+                $this->log('Groep met naam ' . $data['group_name'] . ' is niet gevonden, geen groep gekoppeld aan de persoon.');
                 return;
             }
 
             if ($contactGroup->type_id != 'static') {
-                $this->log('Een contact kan alleen aan een statische groep worden gekoppeld, geen groep gekoppeld.');
+                $this->log('Een contact kan alleen aan een statische groep worden gekoppeld, geen groep gekoppeld aan de persoon.');
                 return;
             }
 
@@ -2542,7 +2542,7 @@ class ExternalWebformController extends Controller
         if ($data['contact_group_ids_contactperson']) {
             $contactGroups = ContactGroup::whereIn('id', explode(',', $data['contact_group_ids_contactperson']))->get();
             if ($contactGroups->count() > 0) {
-                $this->log('Er is 1 of meerdere contactgroep meegegeven, groep(en) koppelen aan de persoon.');
+                $this->log('Er is 1 of meerdere contactgroep contactpersoon meegegeven, groep(en) koppelen aan de persoon.');
 
                 foreach ($contactGroups as $contactGroup) {
                     if ($contactGroup->type_id != 'static') {
@@ -2575,12 +2575,12 @@ class ExternalWebformController extends Controller
                 }
                 $this->contactGroups = $contactGroups;
             } else {
-                $this->log('Er is geen contact groep meegegeven, geen groep koppelen aan de persoon.');
+                $this->log('Er is geen contact groep contactpersoon meegegeven, geen groep koppelen aan de persoon.');
             }
         }
 
         if (!$data['group_name'] && !$data['contact_group_ids_contactperson']) {
-            $this->log('Er is geen contact groep meegegeven, geen groep koppelen aan de persoon.');
+            $this->log('Er is geen contact groep contactpersoon meegegeven, geen groep koppelen aan de persoon.');
         }
     }
 

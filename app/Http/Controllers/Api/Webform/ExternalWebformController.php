@@ -1358,6 +1358,9 @@ class ExternalWebformController extends Controller
                     'primary' => true,
                 ]);
 
+                // Overige gegevens aan person hangen
+                $this->addEmailToContact($data, $contactPerson);
+
                 $this->log('Persoon met id ' . $person->id
                     . ' aangemaakt en gekoppeld aan organisatie als medewerker.');
 

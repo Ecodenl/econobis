@@ -5,7 +5,6 @@ namespace App\Eco\RevenuesKwh;
 use App\Helpers\Project\RevenueDistributionKwhHelper;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class RevenuePartsKwh extends Model

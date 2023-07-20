@@ -31,11 +31,11 @@ class CreateMemberToLaposta implements ShouldQueue
         $this->contact = $contact;
         $this->userId = $userId;
 
-        $jobLog = new JobsLog();
-        $jobLog->value = 'Start aanmaken relatie '.$this->contact->primaryEmailAddress->email.' in Laposta.';
-        $jobLog->user_id = $userId;
-        $jobLog->job_category_id = 'sync-laposta';
-        $jobLog->save();
+//        $jobLog = new JobsLog();
+//        $jobLog->value = 'Start aanmaken relatie '.$this->contact->primaryEmailAddress->email.' in Laposta.';
+//        $jobLog->user_id = $userId;
+//        $jobLog->job_category_id = 'sync-laposta';
+//        $jobLog->save();
     }
 
     public function handle()
@@ -79,44 +79,44 @@ class CreateMemberToLaposta implements ShouldQueue
                     'laposta_member_state' => $lapostaMemberState,
                 ]);
 
-            $value = 'Relatie '.$this->contact->primaryEmailAddress->email.') in Laposta aangemaakt.';
-            $jobLog = new JobsLog();
-            $jobLog->value = $value;
-            $jobLog->user_id = $this->userId;
-            $jobLog->job_category_id = 'sync-laposta';
-            $jobLog->save();
+//            $value = 'Relatie '.$this->contact->primaryEmailAddress->email.') in Laposta aangemaakt.';
+//            $jobLog = new JobsLog();
+//            $jobLog->value = $value;
+//            $jobLog->user_id = $this->userId;
+//            $jobLog->job_category_id = 'sync-laposta';
+//            $jobLog->save();
 
         } catch (\Exception $e) {
             $this->contactGroup->contacts()->updateExistingPivot($this->contact->id, ['laposta_member_state' => 'unknown']);
-            $message = 'Groep: ' . $this->contactGroup->name . ' - Fout bij het aanmaken van een Laposta relatie ' . $memberData['email'] . ', melding Laposta: ' ;
-            if ($e->getMessage()) {
-                $message = $message . $e->getMessage();
-            } else {
-                $message = $message . 'Onbekend';
-            }
-            if($e->getMessage() && $e->getMessage() == 'API error: Email address exists'){
-                Log::info( $message . '. Contactgroup id: ' . $this->contactGroup->id . '. Http status: ' . $e->getHttpStatus() . '.');
-            }else{
-                Log::error( $message . '. Contactgroup id: ' . $this->contactGroup->id . '. Http status: ' . $e->getHttpStatus() . '.');
-            }
-            $value = $message;
-            $jobLog = new JobsLog();
-            $jobLog->value = $value;
-            $jobLog->user_id = $this->userId;
-            $jobLog->job_category_id = 'sync-laposta';
-            $jobLog->save();
+//            $message = 'Groep: ' . $this->contactGroup->name . ' - Fout bij het aanmaken van een Laposta relatie ' . $memberData['email'] . ', melding Laposta: ' ;
+//            if ($e->getMessage()) {
+//                $message = $message . $e->getMessage();
+//            } else {
+//                $message = $message . 'Onbekend';
+//            }
+//            if($e->getMessage() && $e->getMessage() == 'API error: Email address exists'){
+//                Log::info( $message . '. Contactgroup id: ' . $this->contactGroup->id . '. Http status: ' . $e->getHttpStatus() . '.');
+//            }else{
+//                Log::error( $message . '. Contactgroup id: ' . $this->contactGroup->id . '. Http status: ' . $e->getHttpStatus() . '.');
+//            }
+//            $value = $message;
+//            $jobLog = new JobsLog();
+//            $jobLog->value = $value;
+//            $jobLog->user_id = $this->userId;
+//            $jobLog->job_category_id = 'sync-laposta';
+//            $jobLog->save();
         }
     }
 
     public function failed(\Exception $exception)
     {
-        $jobLog = new JobsLog();
-        $jobLog->value = 'Aanmaken relatie '.$this->contact->primaryEmailAddress->email.' in Laposta mislukt.';
-        $jobLog->user_id = $this->userId;
-        $jobLog->job_category_id = 'sync-laposta';
-        $jobLog->save();
-
-        Log::error('Aanmaken relatie '.$this->contact->primaryEmailAddress->email.' in Laposta mislukt: ' . $exception->getMessage());
+//        $jobLog = new JobsLog();
+//        $jobLog->value = 'Aanmaken relatie '.$this->contact->primaryEmailAddress->email.' in Laposta mislukt.';
+//        $jobLog->user_id = $this->userId;
+//        $jobLog->job_category_id = 'sync-laposta';
+//        $jobLog->save();
+//
+//        Log::error('Aanmaken relatie '.$this->contact->primaryEmailAddress->email.' in Laposta mislukt: ' . $exception->getMessage());
     }
 
 }

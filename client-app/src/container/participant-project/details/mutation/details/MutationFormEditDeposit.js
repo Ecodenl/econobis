@@ -13,6 +13,7 @@ import * as PropTypes from 'prop-types';
 import React from 'react';
 import ParticipantDetailsMutationMolliePayments from './mollie-payments';
 import moment from 'moment';
+import calculateTransactionCosts from '../../../../../helpers/CalculateTransactionCosts';
 
 function MutationFormEditDeposit({
     readOnly,
@@ -32,12 +33,34 @@ function MutationFormEditDeposit({
     participantProjectDateRegister,
     participantInDefinitiveRevenue,
     projectDateInterestBearingKwh,
+    project,
 }) {
     let disableBeforeEntryDate = '';
     if (projectTypeCodeRef === 'postalcode_link_capital') {
         if (projectDateInterestBearingKwh) {
             disableBeforeEntryDate = moment(projectDateInterestBearingKwh).format('YYYY-MM-DD');
         }
+    }
+
+    function calculateAmount(participationsOptioned) {
+        return participationsOptioned ? participationsOptioned * projectCurrentBookWorth : 0;
+    }
+    function calculateTransactionCostsAmount(participationsOptioned, choiceMembership) {
+        if (!project.useTransactionCostsWithMembership) {
+            if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
+                return 0;
+            }
+            if (project.showQuestionAboutMembership && choiceMembership === 1) {
+                return 0;
+            }
+        }
+        return calculateTransactionCosts(project, null, participationsOptioned);
+    }
+    function calculateTotalAmount(participationsOptioned, choiceMembership) {
+        return (
+            calculateAmount(participationsOptioned) +
+            calculateTransactionCostsAmount(participationsOptioned, choiceMembership)
+        ).toFixed(2);
     }
 
     return (
@@ -105,7 +128,12 @@ function MutationFormEditDeposit({
                         label={'Transactiekosten'}
                         id={'transactionCostsAmount'}
                         className={'col-sm-6 form-group'}
-                        value={MoneyPresenter(participantMutationFromProps.transactionCostsAmount)}
+                        value={MoneyPresenter(
+                            calculateTransactionCostsAmount(
+                                participantMutationFromState.quantityOption,
+                                0
+                            )
+                        )}
                     />
                 </div>
             )}

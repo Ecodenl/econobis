@@ -327,12 +327,12 @@ class ContactsListExtraFilters extends Component {
             quotationRequestStatusOrganisationOrCoach: {
                 name: 'Kansactie status (org/coach)',
                 type: 'dropdownHas',
-                dropDownOptions: this.props.quotationRequestStatusOrganisationOrCoach,
+                dropDownOptions: this.props.quotationRequestStatus,
             },
             quotationRequestStatusOccupant: {
                 name: 'Kansactie status (bewoner)',
                 type: 'dropdownHas',
-                dropDownOptions: this.props.quotationRequestStatusOccupant,
+                dropDownOptions: this.props.quotationRequestStatus,
             },
             intakeMeasureCategory: {
                 name: 'Intake interesse',
@@ -552,8 +552,7 @@ const mapStateToProps = state => {
         energySupplierTypes: state.systemData.energySupplierTypes,
         countries: state.systemData.countries,
         orderStatuses: state.systemData.orderStatuses,
-        quotationRequestStatusOrganisationOrCoach: state.systemData.quotationRequestStatusOrganisationOrCoach,
-        quotationRequestStatusOccupant: state.systemData.quotationRequestStatusOccupant,
+        quotationRequestStatus: state.systemData.quotationRequestStatus,
         inspectionPersonTypes: state.systemData.inspectionPersonTypes,
         housingFileHoomLinks: state.systemData.housingFileHoomLinks,
     };

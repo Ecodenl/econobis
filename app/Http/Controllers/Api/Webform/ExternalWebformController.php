@@ -420,6 +420,7 @@ class ExternalWebformController extends Controller
                 // Groep
                 'contact_groep' => 'group_name',
                 'contact_groep_ids' => 'contact_group_ids',
+                'contact_groep_ids_contactpersoon' => 'contact_group_ids_contactperson',
                 // Hoomdossier aanmaken
                 'hoomdossier_aanmaken' => 'create_hoom_dossier',
                 'forceer_nieuw_contact' => 'force_new_contact',
@@ -1357,6 +1358,10 @@ class ExternalWebformController extends Controller
                     'contact_id' => $person->contact_id,
                     'primary' => true,
                 ]);
+
+                // Overige gegevens aan person hangen
+                $this->addEmailToContact($data, $contactPerson);
+                $this->addContactToGroupContactperson($data, $contactPerson, $ownerAndResponsibleUser);
 
                 $this->log('Persoon met id ' . $person->id
                     . ' aangemaakt en gekoppeld aan organisatie als medewerker.');
@@ -2417,15 +2422,15 @@ class ExternalWebformController extends Controller
                 return;
             }
 
-            if($contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
-                $this->log('Groep ' . $data['group_name'] . ' al gekoppeld aan: ' . $contact->id );
-            }else{
-                $contactGroup->contacts()->syncWithoutDetaching([ $contact->id => ['member_created_at' => \Illuminate\Support\Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
+            if ($contactGroup->contacts()->where('contact_id', $contact->id)->exists()) {
+                $this->log('Groep ' . $data['group_name'] . ' al gekoppeld aan: ' . $contact->id);
+            } else {
+                $contactGroup->contacts()->syncWithoutDetaching([$contact->id => ['member_created_at' => \Illuminate\Support\Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
 
                 $this->contactGroup = $contactGroup;
                 $this->log('Contact ' . $contact->id . ' aan groep ' . $data['group_name'] . ' gekoppeld.');
 
-                if($contactGroup->laposta_list_id){
+                if ($contactGroup->laposta_list_id) {
                     Auth::setUser($ownerAndResponsibleUser);
                     $this->log('Laposta contact groep verantwoordelijke gebruiker (zelfde als eigenaar) : ' . $ownerAndResponsibleUser->id);
                     $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, false);
@@ -2433,34 +2438,33 @@ class ExternalWebformController extends Controller
                     $this->log('Contact ' . $contact->id . ' als laposta relatie ' . $lapostaMemberId . ' aangemaakt.');
                 }
 
-                if($contactGroup->send_email_new_contact_link){
+                if ($contactGroup->send_email_new_contact_link) {
                     $this->contactIdToEmailNewContactToGroup = $contact->id;
                     $this->processEmailNewContactToGroup = true;
                 }
-                if($contactGroup->inspection_person_type_id != null){
+                if ($contactGroup->inspection_person_type_id != null) {
                     $contact->inspection_person_type_id = $contactGroup->inspection_person_type_id;
                     $contact->save();
                 }
             }
         }
 
-        if($data['contact_group_ids']){
+        if ($data['contact_group_ids']) {
             $contactGroups = ContactGroup::whereIn('id', explode(',', $data['contact_group_ids']))->get();
             if ($contactGroups->count() > 0) {
-                $this->log('Er is 1 of meerdere contactgroep meegegeven, groep(en) koppelen.');
+                $this->log('Er is/zijn 1 of meerdere contactgroep(en) meegegeven, groep(en) koppelen.');
 
-                foreach ($contactGroups as $contactGroup)
-                {
+                foreach ($contactGroups as $contactGroup) {
                     if ($contactGroup->type_id != 'static') {
                         $this->log('Een contact kan alleen aan een statische groep worden gekoppeld, groep ' . $contactGroup->group_name . ' niet gekoppeld aan contact ' . $contact->id . '.');
-                    }else{
-                        if($contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
-                            $this->log('Groep ' . $data['group_name'] . ' al gekoppeld aan: ' . $contact->id );
-                        }else {
-                            $contactGroup->contacts()->syncWithoutDetaching([ $contact->id => ['member_created_at' => \Illuminate\Support\Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
+                    } else {
+                        if ($contactGroup->contacts()->where('contact_id', $contact->id)->exists()) {
+                            $this->log('Groep ' . $data['group_name'] . ' al gekoppeld aan: ' . $contact->id);
+                        } else {
+                            $contactGroup->contacts()->syncWithoutDetaching([$contact->id => ['member_created_at' => \Illuminate\Support\Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
                             $this->log('Contact ' . $contact->id . ' aan groep ' . $contactGroup->name . ' gekoppeld.');
 
-                            if($contactGroup->laposta_list_id){
+                            if ($contactGroup->laposta_list_id) {
                                 Auth::setUser($ownerAndResponsibleUser);
                                 $this->log('Laposta contact groep verantwoordelijke gebruiker (zelfde als eigenaar) : ' . $ownerAndResponsibleUser->id);
                                 $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, false);
@@ -2472,7 +2476,7 @@ class ExternalWebformController extends Controller
                                 $this->contactIdToEmailNewContactToGroup = $contact->id;
                                 $this->processEmailNewContactToGroup = true;
                             }
-                            if($contactGroup->inspection_person_type_id != null){
+                            if ($contactGroup->inspection_person_type_id != null) {
                                 $contact->inspection_person_type_id = $contactGroup->inspection_person_type_id;
                                 $contact->save();
                             }
@@ -2487,6 +2491,52 @@ class ExternalWebformController extends Controller
 
         if (!$data['group_name'] && !$data['contact_group_ids']) {
             $this->log('Er is geen contact groep meegegeven, geen groep koppelen.');
+        }
+    }
+
+
+    protected function addContactToGroupContactperson(array $data, Contact $contact, $ownerAndResponsibleUser)
+    {
+        if ($data['contact_group_ids_contactperson']) {
+            $contactGroups = ContactGroup::whereIn('id', explode(',', $data['contact_group_ids_contactperson']))->get();
+            if ($contactGroups->count() > 0) {
+                $this->log('Er is/zijn 1 of meerdere contactgroep(en) contactpersoon meegegeven, groep(en) koppelen aan de persoon.');
+
+                foreach ($contactGroups as $contactGroup) {
+                    if ($contactGroup->type_id != 'static') {
+                        $this->log('Een contact kan alleen aan een statische groep worden gekoppeld, groep ' . $contactGroup->group_name . ' niet gekoppeld aan contact ' . $contact->id . '.');
+                    } else {
+                        if ($contactGroup->contacts()->where('contact_id', $contact->id)->exists()) {
+                            $this->log('Groep ' . $data['group_name'] . ' al gekoppeld aan: ' . $contact->id);
+                        } else {
+                            $contactGroup->contacts()->syncWithoutDetaching([$contact->id => ['member_created_at' => \Illuminate\Support\Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
+                            $this->log('Contact ' . $contact->id . ' aan groep ' . $contactGroup->name . ' gekoppeld.');
+
+                            if ($contactGroup->laposta_list_id) {
+                                Auth::setUser($ownerAndResponsibleUser);
+                                $this->log('Laposta contact groep verantwoordelijke gebruiker (zelfde als eigenaar) : ' . $ownerAndResponsibleUser->id);
+                                $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, false);
+                                $lapostaMemberId = $lapostaMemberHelper->createMember();
+                                $this->log('Contact ' . $contact->id . ' als laposta relatie ' . $lapostaMemberId . ' aangemaakt.');
+                            }
+
+                            if ($contactGroup->send_email_new_contact_link) {
+                                $this->contactIdToEmailNewContactToGroup = $contact->id;
+                                $this->processEmailNewContactToGroup = true;
+                            }
+                            if ($contactGroup->inspection_person_type_id != null) {
+                                $contact->inspection_person_type_id = $contactGroup->inspection_person_type_id;
+                                $contact->save();
+                            }
+                        }
+                    }
+                }
+                $this->contactGroups = $contactGroups;
+            } else {
+                $this->log('Er is geen contact groep contactpersoon meegegeven, geen groep koppelen aan de persoon.');
+            }
+        } else {
+            $this->log('Er is geen contact groep contactpersoon meegegeven, geen groep koppelen aan de persoon.');
         }
     }
 

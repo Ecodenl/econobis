@@ -410,7 +410,7 @@ class ParticipantMutationController extends ApiController
                 if ($project->projectType->code_ref === 'loan') {
                     $transactionCosts = $project->transaction_costs_amount;
                 } else {
-                    $transactionCosts = $project->transaction_costs_amount * 0;
+                    $transactionCosts = $project->transaction_costs_amount * $varQuantity;
                 }
                 break;
             case 'percentage':

@@ -309,6 +309,7 @@ class ParticipantMutationController extends ApiController
 
     protected function calculationTransactionCosts($participantMutation)
     {
+        Log::info('participantMutation id: ' . $participantMutation->id);
         $project = $participantMutation->participation->project;
 
         // Indien Transactie kosten ook bij lidmaatschap (use_transaction_costs_with_membership) = false
@@ -334,6 +335,7 @@ class ParticipantMutationController extends ApiController
 
         switch ($participantMutation->status->code_ref) {
             case 'interest':
+                Log::info('status: interest');
                 if ($project->projectType->code_ref === 'loan' ) {
                     // indien amount niet gewijzigd is dan laten we transaction_costs_amount zoals het was.
                     if($participantMutation->getOriginal('amount_interest') == $participantMutation->amount_interest){
@@ -349,6 +351,7 @@ class ParticipantMutationController extends ApiController
                 }
                 break;
             case 'option':
+                Log::info('status: option');
                 if ($project->projectType->code_ref === 'loan' ) {
                     // indien amount niet gewijzigd is dan laten we transaction_costs_amount zoals het was.
                     if($participantMutation->getOriginal('amount_option') == $participantMutation->amount_option){
@@ -364,6 +367,7 @@ class ParticipantMutationController extends ApiController
                 }
                 break;
             case 'granted':
+                Log::info('status: granted');
                 if ($project->projectType->code_ref === 'loan' ) {
                     // indien amount niet gewijzigd is dan laten we transaction_costs_amount zoals het was.
                     if($participantMutation->getOriginal('amount_granted') == $participantMutation->amount_granted){
@@ -379,6 +383,7 @@ class ParticipantMutationController extends ApiController
                 }
                 break;
             case 'final':
+                Log::info('status: final');
                 if ($project->projectType->code_ref === 'loan' ) {
                     // indien amount niet gewijzigd is dan laten we transaction_costs_amount zoals het was.
                     if($participantMutation->getOriginal('amount_final') == $participantMutation->amount_final){
@@ -397,9 +402,11 @@ class ParticipantMutationController extends ApiController
 
         switch ($project->getTransactionCostsCodeRef()) {
             case 'amount-once':
+                Log::info('TransactionCosts : amount-once');
                 $transactionCosts = $project->transaction_costs_amount;
                 break;
             case 'amount':
+                Log::info('TransactionCosts: amount');
                 if ($project->projectType->code_ref === 'loan') {
                     $transactionCosts = $project->transaction_costs_amount;
                 } else {
@@ -407,6 +414,7 @@ class ParticipantMutationController extends ApiController
                 }
                 break;
             case 'percentage':
+                Log::info('TransactionCosts: percentage');
                 if ($project->projectType->code_ref === 'loan') {
                     $amount = $varAmount;
                 } else {
@@ -426,19 +434,24 @@ class ParticipantMutationController extends ApiController
                 }
                 break;
             default:
+                Log::info('TransactionCosts: default');
                 $transactionCosts = 0;
                 break;
         }
 
-        if ($project->getTransactionCostsCodeRef() !== 'none') {
+        Log::info('TransactionCosts 111: ' . $transactionCosts);
+
+        if ($project->getTransactionCostsCodeRef() !== 'none' && $participantMutation->type->code_ref !== 'withDrawal') {
             if ($project->transaction_costs_amount_min !== null && $transactionCosts < $project->transaction_costs_amount_min) {
                 $transactionCosts = $project->transaction_costs_amount_min;
             }
             if ($project->transaction_costs_amount_max !== null && $transactionCosts > $project->transaction_costs_amount_max) {
                 $transactionCosts = $project->transaction_costs_amount_max;
             }
+        } else if($participantMutation->type->code_ref === 'withDrawal') {
+            $transactionCosts = 0;
         }
-
+        Log::info('TransactionCosts 999: ' . $transactionCosts);
         return $transactionCosts;
     }
 }

@@ -14,8 +14,7 @@ const OpportunityFormView = props => {
         intake,
         measureCategory,
         measures,
-        numberOfM2Executed,
-        numberOfWpInstalled
+        amount
     } = props.opportunity;
 
     return (
@@ -39,10 +38,6 @@ const OpportunityFormView = props => {
                 />
             </div>
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Aantal m2 uitgevoerd'} value={numberOfM2Executed} />
-                <ViewText label={'Aantal Wp geïnstalleerd'} value={numberOfWpInstalled} />
-            </div>
-            <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Status'} value={status && status.name} />
                 {status && status.usesWf ? (
                     <ViewText
@@ -52,6 +47,7 @@ const OpportunityFormView = props => {
                 ) : (
                     ''
                 )}
+                <ViewText label={'Aantal'} value={amount} textToolTip={`aantal, m2 of Wattpiek`} />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>

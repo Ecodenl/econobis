@@ -19,8 +19,7 @@ const OpportunityNew = props => {
         measureCategoryId,
         measureIds,
         measureIdsSelected,
-        numberOfM2Executed,
-        numberOfWpInstalled,
+        amount,
     } = props.opportunity;
 
     const measuresMatchToCategory = MeasuresOfCategory(props.measures, measureCategoryId);
@@ -69,30 +68,6 @@ const OpportunityNew = props => {
             </div>
 
             <div className="row">
-                <InputText
-                    label="Aantal m2 uitgevoerd"
-                    name={'numberOfM2Executed'}
-                    type={'number'}
-                    min={'0'}
-                    value={numberOfM2Executed}
-                    onChangeAction={props.handleInputChange}
-                    error={props.errors.numberOfM2Executed}
-                    allowZero={true}
-                />
-
-                <InputText
-                    label="Aantal Wp ge&iuml;nstalleerd"
-                    name={'numberOfWpInstalled'}
-                    type={'number'}
-                    min={'0'}
-                    value={numberOfWpInstalled}
-                    onChangeAction={props.handleInputChange}
-                    error={props.errors.numberOfWpInstalled}
-                    allowZero={true}
-                />
-            </div>
-
-            <div className="row">
                 <InputSelect
                     label={'Status'}
                     size={'col-sm-6'}
@@ -102,6 +77,19 @@ const OpportunityNew = props => {
                     onChangeAction={props.handleInputChange}
                     required={'required'}
                     error={props.errors.statusId}
+                />
+
+                <InputText
+                    label="Aantal"
+                    size={'col-sm-5'}
+                    name={'amount'}
+                    type={'number'}
+                    min={'0'}
+                    value={amount}
+                    onChangeAction={props.handleInputChange}
+                    error={props.errors.amount}
+                    allowZero={true}
+                    textToolTip={`aantal, m2 of Wattpiek`}
                 />
             </div>
 

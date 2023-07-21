@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddNumberOfM2ExecutedAndNumberOfWpInstalledToOpportunitiesTable extends Migration
+class AddAmountToOpportunitiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,7 @@ class AddNumberOfM2ExecutedAndNumberOfWpInstalledToOpportunitiesTable extends Mi
     public function up()
     {
         Schema::table('opportunities', function (Blueprint $table) {
-            $table->integer('number_of_m2_executed')->nullable();
-            $table->integer('number_of_wp_installed')->nullable();
+            $table->integer('amount')->nullable();
         });
     }
 
@@ -27,8 +26,7 @@ class AddNumberOfM2ExecutedAndNumberOfWpInstalledToOpportunitiesTable extends Mi
     public function down()
     {
         Schema::table('opportunities', function (Blueprint $table) {
-            $table->dropColumn('number_of_m2_executed');
-            $table->dropColumn('number_of_wp_installed');
+            $table->dropColumn('amount');
         });
     }
 }

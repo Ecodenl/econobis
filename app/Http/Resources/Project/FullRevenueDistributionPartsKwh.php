@@ -33,6 +33,7 @@ class FullRevenueDistributionPartsKwh extends JsonResource
                 'participationsQuantity' => $this->participations_quantity,
                 'deliveredKwh' => $this->delivered_kwh,
                 'deliveredTotalString' => $this->delivered_total_string,
+                'notReportedDeliveredKwhString' => $this->not_reported_delivered_kwh_string,
                 'kwhReturn' => $this->kwh_return,
                 'deliveredTotalThisPartString' => $this->delivered_total_this_part_string,
                 'kwhReturnThisPart' => $this->kwh_return_this_part,
@@ -42,7 +43,11 @@ class FullRevenueDistributionPartsKwh extends JsonResource
                 'isEndParticipation' => $this->is_end_participation,
                 'isEndYearPeriod' => $this->is_end_year_period,
                 'isEndTotalPeriod' => $this->is_end_total_period,
-
+                'previousVisiblePartNotReportedDateBegin' => $this->previous_visible_part_not_reported_date_begin,
+                'isPreviousVisiblePartReported' => $this->is_previous_visible_part_reported,
+                'dateParticipantReport' => $this->date_participant_report,
+                'beginDateParticipantReport' => $this->begin_date_participant_report,
+                'endDateParticipantReport' => $this->end_date_participant_report,
                 'dateEnergySupplierReport' => $this->date_energy_supplier_report,
             ];
     }

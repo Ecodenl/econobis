@@ -40,7 +40,8 @@ function ContactDetailsOrganisation({
                         actions.setSubmitting(true);
                         handleSubmitContactValues(values, actions, () => setEditForm(false));
                     }}
-                    render={({ errors, touched, setFieldValue, isSubmitting, status, values, handleSubmit }) => {
+                >
+                    {({ errors, touched, setFieldValue, isSubmitting, status, values, handleSubmit }) => {
                         return (
                             <Form>
                                 <DefaultContactOrganisationEdit
@@ -106,7 +107,7 @@ function ContactDetailsOrganisation({
                             </Form>
                         );
                     }}
-                />
+                </Formik>
             ) : (
                 <>
                     <DefaultContactOrganisationView portalSettings={portalSettings} initialContact={initialContact} />

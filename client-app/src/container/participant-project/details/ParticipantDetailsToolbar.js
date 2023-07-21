@@ -100,17 +100,11 @@ class ParticipantDetailsToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-3">
                                 <div className="btn-group btn-group-flex margin-small" role="group">
-                                    <ButtonIcon
-                                        iconName={'arrowLeft'}
-                                        onClickAction={browserHistory.goBack}
-                                    />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                                     {allowDeleteAndTerminateButtons && (
                                         <>
                                             {this.props.permissions.manageParticipation && (
-                                                <ButtonIcon
-                                                    iconName={'trash'}
-                                                    onClickAction={this.toggleDelete}
-                                                />
+                                                <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                             )}
                                             {projectTypeCodeRef === 'capital' ||
                                             projectTypeCodeRef === 'postalcode_link_capital' ? (

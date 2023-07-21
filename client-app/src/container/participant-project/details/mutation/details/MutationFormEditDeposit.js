@@ -14,6 +14,7 @@ import React from 'react';
 import ParticipantDetailsMutationMolliePayments from './mollie-payments';
 import moment from 'moment';
 import calculateTransactionCosts from '../../../../../helpers/CalculateTransactionCosts';
+import { connect } from 'react-redux';
 
 function MutationFormEditDeposit({
     readOnly,
@@ -129,10 +130,7 @@ function MutationFormEditDeposit({
                         id={'transactionCostsAmount'}
                         className={'col-sm-6 form-group'}
                         value={MoneyPresenter(
-                            calculateTransactionCostsAmount(
-                                participantMutationFromState.quantityOption,
-                                0
-                            )
+                            calculateTransactionCostsAmount(participantMutationFromState.quantityOption, 0)
                         )}
                     />
                 </div>
@@ -243,4 +241,11 @@ MutationFormEditDeposit.propTypes = {
     participantInDefinitiveRevenue: PropTypes.bool,
 };
 
-export default MutationFormEditDeposit;
+const mapStateToProps = state => {
+    console.log(state.participantProjectDetails.project);
+    return {
+        project: state.participantProjectDetails.project,
+    };
+};
+
+export default connect(mapStateToProps, null)(MutationFormEditDeposit);

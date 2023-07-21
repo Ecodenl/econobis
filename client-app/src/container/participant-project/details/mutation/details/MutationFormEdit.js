@@ -26,7 +26,6 @@ const MutationFormEdit = ({
     participantProjectDateRegister,
     participantInDefinitiveRevenue,
     projectDateInterestBearingKwh,
-    project
 }) => {
     const { type, statusId } = participantMutationFromState;
     let buttonTextSubmit = 'Opslaan';
@@ -95,7 +94,6 @@ const MutationFormEdit = ({
                             participantProjectDateRegister={participantProjectDateRegister}
                             participantInDefinitiveRevenue={participantInDefinitiveRevenue}
                             projectDateInterestBearingKwh={projectDateInterestBearingKwh}
-                            project={project}
                         />
                     ) : null}
                     {type.codeRef === 'withDrawal' || type.codeRef === 'sell' ? (
@@ -149,7 +147,6 @@ const mapStateToProps = state => {
         participantInDefinitiveRevenue: state.participantProjectDetails.participantInDefinitiveRevenue,
         projectDateInterestBearingKwh: state.participantProjectDetails.project.dateInterestBearingKwh,
         participantMutationStatuses: state.systemData.participantMutationStatuses,
-        project: state.participantProjectDetails.project,
     };
 };
 

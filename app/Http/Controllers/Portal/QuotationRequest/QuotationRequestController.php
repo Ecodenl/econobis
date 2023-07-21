@@ -23,12 +23,23 @@ class QuotationRequestController
     {
         $portalUser = Auth::user();
 
+        $quotationRequestsQuery = null;
         if ($portalUser->contact->isExternalParty()) {
             $quotationRequestsQuery = $portalUser->contact->quotationRequestsAsExternalParty();
         } elseif ($portalUser->contact->isProjectManager()) {
             $quotationRequestsQuery = $portalUser->contact->quotationRequestsAsProjectManager();
-        } else {
+        } elseif ($portalUser->contact->isCoach()) {
             $quotationRequestsQuery = $portalUser->contact->quotationRequests();
+        } elseif ($portalUser->contact->isOrganisation()) {
+            $quotationRequestsQuery = $portalUser->contact->quotationRequests();
+        } else {
+            $organisationContact = $portalUser->contact->getOrganisationContact();
+            if ($organisationContact) {
+                $quotationRequestsQuery = $organisationContact->quotationRequests();
+            }
+        }
+        if(!$quotationRequestsQuery){
+            return;
         }
 
         /**

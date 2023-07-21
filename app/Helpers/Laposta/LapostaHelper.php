@@ -162,6 +162,8 @@ class LapostaHelper
         // Sync state all members from laposta
         $this->syncStateAllMembersLaposta();
 
+        Log::info("SyncLapostaList start voor alle groepen");
+
         $allContactGroups = ContactGroup::whereNotIn('type_id', ['simulated'])->get();
         foreach ($allContactGroups as $contactGroup) {
             $checkContactGroup = $contactGroup->simulatedGroup ? $contactGroup->simulatedGroup : $contactGroup;
@@ -175,16 +177,20 @@ class LapostaHelper
                         $checkContactGroup->contacts()->updateExistingPivot($lapostaContact->id, ['laposta_member_state' => 'unknown']);
                     }
                 }
-
                 //find contactgroup again, because data of check group can be changed.
                 $syncContactGroup = ContactGroup::find($contactGroup->id);
 
                 $contactGroupController = new ContactGroupController();
                 $contactGroupController->syncLapostaList($syncContactGroup);
 
+                Log::info("SyncLapostaList klaar voor : " . $contactGroup->name . ". Wacht 30 seconden...");
+                // tussen elke update list 30 seconden niets
+                sleep(30);
+
                 $messages = array_merge($messages, $contactGroupController->getErrorMessagesLaposta());
             }
         }
+        Log::info("SyncLapostaList klaar voor alle groepen");
         return $messages;
     }
 

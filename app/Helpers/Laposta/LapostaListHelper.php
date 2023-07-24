@@ -69,6 +69,9 @@ class LapostaListHelper
         $this->validateRequiredUpdateListFields();
 
         $lapostaResponse = $this->updateListToLaposta();
+        if($lapostaResponse == false){
+            return false;
+        }
 
         // Return list id
         return $this->contactGroup->laposta_list_id;
@@ -266,11 +269,21 @@ class LapostaListHelper
             return $response;
         } catch (\Exception $e) {
             if ($e->getMessage()) {
-                Log::error('Er is iets misgegaan bij het synchroniseren naar Laposta voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage() );
-                abort($e->getHttpStatus(), $e->getMessage());
+                if($this->collectMessages){
+                    $this->messages[] = 'Er is iets misgegaan bij het synchroniseren naar Laposta voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage();
+                    return false;
+                } else {
+                    Log::error('Er is iets misgegaan bij het synchroniseren naar Laposta voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage() );
+                    abort($e->getHttpStatus(), $e->getMessage());
+                }
             } else {
-                Log::error('Er is iets misgegaan met bij het synchroniseren naar Laposta voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() );
-                abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
+                if($this->collectMessages){
+                    $this->messages[] = 'Er is iets misgegaan met bij het synchroniseren naar Laposta voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus();
+                    return false;
+                } else {
+                    Log::error('Er is iets misgegaan met bij het synchroniseren naar Laposta voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus());
+                    abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
+                }
             }
         }
     }

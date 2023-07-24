@@ -59,8 +59,8 @@ class checkMissingEnergySuppliersInAddress extends Command
 
         $missingEnergySuppliersInAddressData = [];
 
-        $revenuesKwh = RevenuesKwh::all();
-        // alle revenues kwh controleren
+        $revenuesKwh = RevenuesKwh::where('status', '!=', 'processed')->get();
+        // alle revenues kwh controleren die nog niet verwerkt zijn
         foreach($revenuesKwh as $revenueKwh) {
 
             // alle parts controleren op volgorde van begindatum (bij een revenue)

@@ -65,7 +65,7 @@ class LapostaMemberHelper
             return null;
         }
 
-        $this->contactGroup->contacts()->updateExistingPivot($this->contact->id, ['laposta_member_state' => 'inprogress']);
+        $this->contactGroup->contacts()->updateExistingPivot($this->contact->id, ['laposta_member_state' => 'inprogress', 'laposta_last_error_message' => null]);
 
         // create member(s) to Laposta
         // (unset relation contact->groups first, gives an error on function getTeamContactGroupIds() when busy with load model in job

@@ -496,7 +496,7 @@ const ProjectFormEditGeneral = ({
                             label={'Beginstand hoog volgende kwh opbrengstverdeling'}
                             name={'kwhStartHighNextRevenue'}
                             value={kwhStartHighNextRevenue}
-                            onChangeAction={handleInputChangeDate}
+                            onChangeAction={handleInputChange}
                             readOnly={!allowChangeKwhStartHighNextRevenue}
                         />
                     </div>
@@ -505,7 +505,7 @@ const ProjectFormEditGeneral = ({
                             label={'Beginstand laag volgende kwh opbrengstverdeling'}
                             name={'kwhStartLowNextRevenue'}
                             value={kwhStartLowNextRevenue}
-                            onChangeAction={handleInputChangeDate}
+                            onChangeAction={handleInputChange}
                             readOnly={!allowChangeKwhStartLowNextRevenue}
                         />
                     </div>

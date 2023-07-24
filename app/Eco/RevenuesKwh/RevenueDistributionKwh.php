@@ -5,11 +5,9 @@ namespace App\Eco\RevenuesKwh;
 use App\Eco\Contact\Contact;
 use App\Eco\ParticipantProject\ParticipantProject;
 use Illuminate\Database\Eloquent\Model;
-use Venturecraft\Revisionable\RevisionableTrait;
 
 class RevenueDistributionKwh extends Model
 {
-    use RevisionableTrait;
 
     protected $table = 'revenue_distribution_kwh';
 

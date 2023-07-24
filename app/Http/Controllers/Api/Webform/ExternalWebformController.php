@@ -868,7 +868,7 @@ class ExternalWebformController extends Controller
                     $contactNameQuery = clone($contactAddressQuery);
                     if($this->onlyCheckLastName){
                         $contactNameQuery = $contactNameQuery->whereHas('person', function ($queryName) use ($data) {
-                            $queryName->where('name', 'like', $data['last_name']);
+                            $queryName->where('last_name', 'like', $data['last_name']);
                         });
                         $naamForLog = 'achternaam ' . $data['last_name'];
                         $this->log('Check op persoon achternaam ?');

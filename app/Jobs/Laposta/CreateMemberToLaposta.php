@@ -69,6 +69,7 @@ class CreateMemberToLaposta implements ShouldQueue
                 [
                     'laposta_member_id' => $lapostaMemberId,
                     'laposta_member_state' => $lapostaMemberState,
+                    'laposta_last_error_message' => null,
                 ]);
 
         } catch (\Exception $e) {

@@ -221,6 +221,8 @@ class ProjectController extends ApiController
             ->date('dateInterestBearing')->validate('nullable|date')->onEmpty(null)->alias('date_interest_bearing')->next()
             ->date('dateInterestBearingRedemption')->validate('nullable|date')->onEmpty(null)->alias('date_interest_bearing_redemption')->next()
             ->date('dateInterestBearingKwh')->validate('nullable|date')->onEmpty(null)->alias('date_interest_bearing_kwh')->next()
+            ->integer('kwhStartHighNextRevenue')->alias('kwh_start_high_next_revenue')->onEmpty(null)->next()
+            ->integer('kwhStartLowNextRevenue')->alias('kwh_start_low_next_revenue')->onEmpty(null)->next()
             ->date('dateStartRegistrations')->validate('nullable|date')->onEmpty(null)->alias('date_start_registrations')->next()
             ->date('dateEndRegistrations')->validate('nullable|date')->onEmpty(null)->alias('date_end_registrations')->next()
             ->integer('projectTypeId')->validate('required|exists:project_type,id')->onEmpty(null)->alias('project_type_id')->next()

@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
+import { FaExclamationCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 
 class ContactsInGroupListItem extends Component {
     constructor(props) {
@@ -44,6 +46,7 @@ class ContactsInGroupListItem extends Component {
             emailAddress,
             lapostaMemberId,
             lapostaMemberState,
+            lapostaLastErrorMessage,
             memberToGroupSince,
             permissions,
             isUsedInLaposta,
@@ -97,7 +100,31 @@ class ContactsInGroupListItem extends Component {
                 <td className="hidden-xs hidden-sm">{typeName} </td>
                 <td>{fullName}</td>
                 <td className="hidden-xs">{emailAddress}</td>
-                {isUsedInLaposta && <td className="hidden-xs">{lapostaMemberStatus}</td>}
+                {isUsedInLaposta && (
+                    <td className="hidden-xs">
+                        {lapostaMemberStatus}
+                        {lapostaLastErrorMessage ? (
+                            <>
+                                {' '}
+                                <FaExclamationCircle
+                                    color={'red'}
+                                    size={'15px'}
+                                    data-tip={
+                                        'Laatste (fout) melding synchronistatie Laposta: ' + lapostaLastErrorMessage
+                                    }
+                                    data-for={`tooltip-lapostaLastErrorMessage`}
+                                />
+                                <ReactTooltip
+                                    id={`tooltip-lapostaLastErrorMessage`}
+                                    effect="float"
+                                    place="right"
+                                    multiline={true}
+                                    aria-haspopup="true"
+                                />
+                            </>
+                        ) : null}
+                    </td>
+                )}
                 <td className="hidden-xs hidden-sm">
                     {memberToGroupSince ? moment(memberToGroupSince).format('DD-MM-Y') : ''}
                 </td>

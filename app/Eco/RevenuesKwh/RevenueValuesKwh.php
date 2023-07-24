@@ -3,11 +3,11 @@
 namespace App\Eco\RevenuesKwh;
 
 use Illuminate\Database\Eloquent\Model;
-use Venturecraft\Revisionable\RevisionableTrait;
+//use Venturecraft\Revisionable\RevisionableTrait;
 
 class RevenueValuesKwh extends Model
 {
-    use RevisionableTrait;
+//    use RevisionableTrait;
 
     protected $table = 'revenue_values_kwh';
 

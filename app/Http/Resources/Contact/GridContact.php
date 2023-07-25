@@ -31,6 +31,7 @@ class GridContact extends JsonResource
             'phoneNumber' => optional($phoneNumber)->number,
             'statusName' => $this->present()->status,
             'createdAt' => $this->created_at,
+            'areaName' => optional(optional(optional($address)->sharedPostalcodehousenumber())->sharedArea())->area_name,
         ];
     }
 }

@@ -51,6 +51,7 @@ class ContactsListItem extends Component {
             streetAndNumber,
             postalCode,
             city,
+            areaName,
             emailAddress,
             phoneNumber,
             statusName,
@@ -76,6 +77,7 @@ class ContactsListItem extends Component {
                 <td className="hidden-xs">{streetAndNumber}</td>
                 <td className="hidden-xs">{postalCode}</td>
                 <td className="hidden-xs">{city}</td>
+                <td className="hidden-xs">{areaName}</td>
                 <td className="hidden-xs">{emailAddress}</td>
                 <td>{phoneNumber}</td>
                 <td className="hidden-xs hidden-sm">{moment(createdAt).format('DD-MM-Y')}</td>

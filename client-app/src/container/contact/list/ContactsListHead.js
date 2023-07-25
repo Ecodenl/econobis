@@ -54,6 +54,13 @@ const ContactsListHead = props => {
             />
             <DataTableHeadTitleAndSort
                 RowClassName={'hidden-xs'}
+                sortColumn={'areaName'}
+                title={'Buurt'}
+                width={'10%'}
+                setSorts={setSorts}
+            />
+            <DataTableHeadTitleAndSort
+                RowClassName={'hidden-xs'}
                 sortColumn={'emailAddress'}
                 title={'E-mail'}
                 width={'12%'}

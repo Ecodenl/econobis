@@ -51,6 +51,14 @@ const ProjectFormEditGeneral = ({
     dateProduction,
     dateInterestBearingKwh,
     allowChangeDateInterestBearingKwh,
+    dateInterestBearing,
+    allowChangeDateInterestBearing,
+    dateInterestBearingRedemption,
+    allowChangeDateInterestBearingRedemption,
+    kwhStartHighNextRevenue,
+    allowChangeKwhStartHighNextRevenue,
+    kwhStartLowNextRevenue,
+    allowChangeKwhStartLowNextRevenue,
     isMembershipRequired,
     visibleForAllContacts,
     textInfoProjectOnlyMembers,
@@ -447,16 +455,62 @@ const ProjectFormEditGeneral = ({
                     error={errors.dateEntry}
                 />
             </div>
+
             <div className="row">
                 <InputDate
-                    label={'Volgende begin periode opbrengst kWh'}
-                    name={'dateInterestBearingKwh'}
-                    value={dateInterestBearingKwh}
+                    label={'Begindatum volgende periode opbrengst euro'}
+                    name={'dateInterestBearing'}
+                    value={dateInterestBearing}
                     onChangeAction={handleInputChangeDate}
                     disabledBefore={dateProduction}
-                    readOnly={!allowChangeDateInterestBearingKwh}
+                    readOnly={!allowChangeDateInterestBearing}
                 />
             </div>
+
+            {projectType.codeRef === 'loan' || projectType.codeRef === 'obligation' ? (
+                <div className="row">
+                    <InputDate
+                        label={'Begindatum volgende periode aflossing euro'}
+                        name={'dateInterestBearingRedemption'}
+                        value={dateInterestBearingRedemption}
+                        onChangeAction={handleInputChangeDate}
+                        disabledBefore={dateProduction}
+                        readOnly={!allowChangeDateInterestBearingRedemption}
+                    />
+                </div>
+            ) : null}
+            {projectType.codeRef === 'postalcode_link_capital' ? (
+                <>
+                    <div className="row">
+                        <InputDate
+                            label={'Begindatum volgende periode opbrengst kWh'}
+                            name={'dateInterestBearingKwh'}
+                            value={dateInterestBearingKwh}
+                            onChangeAction={handleInputChangeDate}
+                            disabledBefore={dateProduction}
+                            readOnly={!allowChangeDateInterestBearingKwh}
+                        />
+                    </div>
+                    <div className="row">
+                        <InputText
+                            label={'Beginstand hoog volgende kwh opbrengstverdeling'}
+                            name={'kwhStartHighNextRevenue'}
+                            value={kwhStartHighNextRevenue}
+                            onChangeAction={handleInputChange}
+                            readOnly={!allowChangeKwhStartHighNextRevenue}
+                        />
+                    </div>
+                    <div className="row">
+                        <InputText
+                            label={'Beginstand laag volgende kwh opbrengstverdeling'}
+                            name={'kwhStartLowNextRevenue'}
+                            value={kwhStartLowNextRevenue}
+                            onChangeAction={handleInputChange}
+                            readOnly={!allowChangeKwhStartLowNextRevenue}
+                        />
+                    </div>
+                </>
+            ) : null}
 
             <hr />
             <h4 onClick={() => toggleCustomerPortalSettings(!showCustomerPortalSettings)}>

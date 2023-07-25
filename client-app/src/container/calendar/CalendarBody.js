@@ -73,6 +73,7 @@ class CalendarBody extends Component {
                     title: item.noteSummary,
                     start: new Date(momentStartDate.toDate()),
                     end: new Date(momentEndDate.toDate()),
+                    finished: item.finished,
                 });
             });
 
@@ -128,6 +129,7 @@ class CalendarBody extends Component {
                 // max={new Date('2018-01-01T23:00:00.000Z')}
                 popup
                 startAccessor="start"
+                eventPropGetter={eventPropGetter}
             />
         );
     }
@@ -147,5 +149,16 @@ const mapDispatchToProps = dispatch => ({
         dispatch(setSelectedView(view));
     },
 });
+
+const eventPropGetter = event => {
+    switch (event.finished) {
+        case 1:
+            return {
+                style: {
+                    backgroundColor: '#1f883d',
+                },
+            };
+    }
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(CalendarBody);

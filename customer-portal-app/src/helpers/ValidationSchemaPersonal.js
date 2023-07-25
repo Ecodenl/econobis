@@ -88,7 +88,7 @@ export default {
                 .trim()
                 // .required('Verplicht'),
                 .test('initials-and-first-name-check', 'Voornaam of initialen verplicht', function(value) {
-                    if (value.trim() != '' || this.parent.initials.trim() != '') {
+                    if ((value && value.trim() != '') || (this.parent.initials && this.parent.initials.trim() != '')) {
                         return true;
                     } else {
                         return false;

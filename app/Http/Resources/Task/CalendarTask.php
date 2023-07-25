@@ -21,6 +21,7 @@ class CalendarTask extends JsonResource
                 'noteSummary' => $this->present()->noteSummary(),
                 'start' => $this->datePlannedWithStartTime(),
                 'end' => $this->datePlannedWithEndTime(),
+                'finished' => $this->finished,
             ];
     }
 }

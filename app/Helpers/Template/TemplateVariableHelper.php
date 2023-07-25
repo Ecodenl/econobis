@@ -2226,6 +2226,24 @@ class TemplateVariableHelper
             case 'organisatie_of_coach_naam':
                 return optional($model->organisationOrCoach)->full_name_fnf;
                 break;
+            case 'organisatie_of_coach_voornaam':
+                if(optional($model->organisationOrCoach)->type_id == 'person'){
+                    return optional($model->organisationOrCoach)->first_name;
+                }
+                elseif(optional($model->organisationOrCoach)->type_id == 'organisation'){
+                    return '';
+                }
+                break;
+            case 'organisatie_of_coach_achternaam':
+                if(optional($model->organisationOrCoach)->type_id == 'person'){
+
+                    $prefix = optional($model->organisationOrCoach)->last_name_prefix;
+                    return $prefix ? $prefix . ' ' . optional($model->organisationOrCoach)->last_name : optional($model->organisationOrCoach)->last_name;
+                }
+                elseif(optional($model->organisationOrCoach)->type_id == 'organisation'){
+                    return optional($model->organisationOrCoach)->full_name;
+                }
+                break;
             case 'organisatie_of_coach_adres':
                 return optional(optional($model->organisationOrCoach)->primaryAddress)->street . ' ' . optional(optional($model->organisationOrCoach)->primaryAddress)->number . (optional(optional($model->organisationOrCoach)->primaryAddress)->addition ? ('-' . optional(optional($model->organisationOrCoach)->primaryAddress)->addition) : '');
                 break;
@@ -2242,6 +2260,13 @@ class TemplateVariableHelper
             case 'projectmanager_naam':
                 return optional($model->projectManager)->full_name;
                 break;
+            case 'projectmanager_voornaam':
+                return optional($model->projectManager)->first_name;
+                break;
+            case 'projectmanager_achternaam':
+                $prefix = optional($model->projectManager)->last_name_prefix;
+                return $prefix ? $prefix . ' ' . optional($model->projectManager)->last_name : optional($model->projectManager)->last_name;
+                break;
             case 'projectmanager_adres':
                 return optional(optional($model->projectManager)->primaryAddress)->street . ' ' . optional(optional($model->projectManager)->primaryAddress)->number . (optional(optional($model->projectManager)->primaryAddress)->addition ? ('-' . optional(optional($model->projectManager)->primaryAddress)->addition) : '');
                 break;
@@ -2257,6 +2282,13 @@ class TemplateVariableHelper
 
             case 'externe_partij_naam':
                 return optional($model->externalParty)->full_name;
+                break;
+            case 'externe_partij_voornaam':
+                return optional($model->externalParty)->first_name;
+                break;
+            case 'externe_partij_achternaam':
+                $prefix = optional($model->externalParty)->last_name_prefix;
+                return $prefix ? $prefix . ' ' . optional($model->externalParty)->last_name : optional($model->externalParty)->last_name;
                 break;
             case 'externe_partij_adres':
                 return optional(optional($model->externalParty)->primaryAddress)->street . ' ' . optional(optional($model->externalParty)->primaryAddress)->number . (optional(optional($model->externalParty)->primaryAddress)->addition ? ('-' . optional(optional($model->externalParty)->primaryAddress)->addition) : '');

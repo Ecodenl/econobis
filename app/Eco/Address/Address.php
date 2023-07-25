@@ -123,11 +123,20 @@ class Address extends Model
         return $postalCode;
     }
 
-    public function getUsedInActiveParticipationAttribute()
+//    public function getUsedInActiveParticipationAttribute()
+//    {
+//        return $this->participations->whereNull('date_terminated')->count() > 0;
+//    }
+
+    public function getUsedInActiveParticipationInSceOrPcrProjectAttribute()
     {
-        return $this->participations->whereNull('date_terminated')->count() > 0;
+        return $this->participations->where('participant_in_sce_or_pcr_project', true)->count() > 0;
     }
 
+    public function getUsedInActiveParticipationNotInSceOrPcrProjectAttribute()
+    {
+        return $this->participations->where('participant_not_in_sce_or_pcr_project', true)->count() > 0;
+    }
 
     public function getMemberSinceGasDisabledBeforeAttribute()
     {

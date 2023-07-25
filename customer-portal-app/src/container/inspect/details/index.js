@@ -15,6 +15,7 @@ import InspectDetailsDocumentTable from './document-table';
 import { PortalUserConsumer } from '../../../context/PortalUserContext';
 import Select from '../../../components/form/Select';
 import moment from 'moment/moment';
+import DropZone from '../../../components/dropzone/DropZone';
 
 function InspectDetails({ match, history, user }) {
     const [isLoading, setLoading] = useState(true);
@@ -25,6 +26,24 @@ function InspectDetails({ match, history, user }) {
     const [notApproved, setNotApproved] = useState(false);
     const [pmApproved, setPmApproved] = useState(false);
     const [pmNotApproved, setPmNotApproved] = useState(false);
+    const [showUpload, setShowUpload] = useState(false);
+    const [reload, setReload] = useState(false);
+
+    const toggleShowUpload = () => {
+        setShowUpload(!showUpload);
+    };
+    const addUpload = files => {
+        const data = new FormData();
+        files.map((file, key) => {
+            data.append('uploads[' + key + ']', file);
+        });
+
+        QuotationRequestAPI.addUploads(match.params.id, data)
+            .then(() => {
+                setReload(true);
+            })
+            .catch(function(error) {});
+    };
 
     const validationSchema = Yup.object().shape({});
 
@@ -60,7 +79,7 @@ function InspectDetails({ match, history, user }) {
             });
             setLoading(false);
         });
-    }, []);
+    }, [reload]);
 
     const getStatusOptions = () => {
         return statuses.map(status => {
@@ -544,8 +563,14 @@ function InspectDetails({ match, history, user }) {
                                                 ) : null}
                                             </Col>
                                         </Row>
+                                        <br />
                                         <Row>
                                             <Col>
+                                                <ButtonGroup className="float-left">
+                                                    <Button className={'w-button'} size="sm" onClick={toggleShowUpload}>
+                                                        Upload PDF of afbeelding
+                                                    </Button>
+                                                </ButtonGroup>
                                                 <ButtonGroup className="float-right">
                                                     <Button
                                                         variant={'outline-dark'}
@@ -574,11 +599,21 @@ function InspectDetails({ match, history, user }) {
                                                 </ButtonGroup>
                                             </Col>
                                         </Row>
+                                        <br />
                                     </Form>
                                 );
                             }}
                         </Formik>
                     </div>
+
+                    {showUpload && (
+                        <DropZone
+                            maxSize={5767168}
+                            maxSizeText={'5MB'}
+                            toggleShowUpload={toggleShowUpload}
+                            addUpload={addUpload}
+                        />
+                    )}
 
                     <InspectDetailsDocumentTable
                         quotationRequestId={match.params.id}

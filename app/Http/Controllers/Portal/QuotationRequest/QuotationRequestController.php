@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Portal\QuotationRequest;
 
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Document\Document;
+use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Portal\PortalUser;
 use App\Eco\QuotationRequest\QuotationRequest;
@@ -122,6 +123,74 @@ class QuotationRequestController
         }
     }
 
+    public function uploads(Request $request, QuotationRequest $quotationRequest)
+    {
+        $portalUser = Auth::user();
+
+        $this->authorizeQuotationRequest($portalUser, $quotationRequest);
+
+        $responsibleUserId = PortalSettings::get('responsibleUserId');
+        if (!$responsibleUserId) {
+            abort(501, 'Er is helaas een fout opgetreden (onbekende klanten portaal verantwoordelijke).');
+        }
+
+        //get uploads
+        $uploads = $request->file('uploads')
+            ? $request->file('uploads') : [];
+
+        $this->storeQuotationRequestUploads($quotationRequest, $uploads);
+
+    }
+    protected function storeQuotationRequestUploads($quotationRequest, $uploads){
+
+        $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'quotationrequest')->first()->id;
+
+        //store uploads
+        foreach ($uploads as $file) {
+            if(!$file->isValid()) abort('422', 'Error uploading file');
+
+            $document = new Document();
+            $document->fill(
+                [
+                    'filename' => $file->getClientOriginalName(),
+                    'description' => 'Test upload',
+                    'document_type' => 'upload',
+                    'document_group' => 'general',
+                    'contact_id' => $quotationRequest->opportunity->intake->contact_id,
+                    'opportunity_id' => $quotationRequest->opportunity_id,
+                    'document_created_from_id' => $documentCreatedFromId,
+                    'intake_id' => $quotationRequest->opportunity->intake_id,
+                    'campaign_id' => $quotationRequest->opportunity->intake->campaign_id,
+                    'quotation_request_id' => $quotationRequest->id,
+                    'show_on_portal' => true,
+                ]
+            );
+            $document->save();
+
+            $file_tmp = $file->store('', 'documents');
+            $filePath_tmp = Storage::disk('documents')->getDriver()->getAdapter()->applyPathPrefix($file_tmp);
+
+//            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+//                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+//                $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $file->getClientOriginalName(), $document->getDocumentGroup()->name);
+//                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+//            } else {
+                $tmpFileName = str_replace('\\', '/', $filePath_tmp);
+                $pos = strrpos($tmpFileName, '/');
+                $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
+                Storage::disk('documents')->copy($tmpFileName,$file->getClientOriginalName() );
+                $document->alfresco_node_id = null;
+//            }
+
+            $document->filename = $file->getClientOriginalName();
+            $document->save();
+
+            //delete file on server, still saved on alfresco.
+            Storage::disk('documents')->delete($file_tmp);
+
+
+        }
+    }
     public function downloadDocument(QuotationRequest $quotationRequest, Document $document)
     {
         $portalUser = Auth::user();
@@ -345,15 +414,23 @@ class QuotationRequestController
 
     private function authorizeQuotationRequest(PortalUser $portalUser, QuotationRequest $quotationRequest)
     {
+        $quotationRequests = null;
         if ($portalUser->contact->isExternalParty()) {
             $quotationRequests = $portalUser->contact->quotationRequestsAsExternalParty;
         } elseif ($portalUser->contact->isProjectManager()) {
             $quotationRequests = $portalUser->contact->quotationRequestsAsProjectManager;
-        } else {
+        } elseif ($portalUser->contact->isCoach()) {
             $quotationRequests = $portalUser->contact->quotationRequests;
+        } elseif ($portalUser->contact->isOrganisation()) {
+            $quotationRequests = $portalUser->contact->quotationRequests;
+        } else {
+            $organisationContact = $portalUser->contact->getOrganisationContact();
+            if ($organisationContact) {
+                $quotationRequests = $organisationContact->quotationRequests;
+            }
         }
 
-        if (!$quotationRequests->contains($quotationRequest)) {
+        if (!$quotationRequests || !$quotationRequests->contains($quotationRequest)) {
             abort(403, 'Geen toegang tot deze offerteaanvraag.');
         }
     }

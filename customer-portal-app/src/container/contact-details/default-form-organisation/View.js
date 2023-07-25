@@ -21,6 +21,7 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
         dateDidAgreeAvg,
         number,
         primaryOccupations,
+        isParticipantPcrProject,
     } = initialContact;
 
     return (
@@ -147,18 +148,24 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                         {visitAddress.country ? visitAddress.country.name : ''}
                     </TextBlock>
                 </Row>
-                <FormLabel className={'field-label'}>EAN nummer electriciteit</FormLabel>
-                <Row>
-                    <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer electriciteit'}>
-                        {visitAddress.eanElectricity}
-                    </TextBlock>
-                </Row>
-                <FormLabel className={'field-label'}>EAN nummer gas</FormLabel>
-                <Row>
-                    <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer gas'}>
-                        {visitAddress.eanGas}
-                    </TextBlock>
-                </Row>
+                {isParticipantPcrProject ? (
+                    <>
+                        <FormLabel className={'field-label'}>EAN nummer electriciteit</FormLabel>
+                        <Row>
+                            <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer electriciteit'}>
+                                {visitAddress.eanElectricity}
+                            </TextBlock>
+                        </Row>
+                        <FormLabel className={'field-label'}>EAN nummer gas</FormLabel>
+                        <Row>
+                            <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer gas'}>
+                                {visitAddress.eanGas}
+                            </TextBlock>
+                        </Row>
+                    </>
+                ) : (
+                    ''
+                )}
                 <FormLabel className={'field-label'}>Huidige energie leverancier</FormLabel>
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'} placeholder={'Energieleverancier'}>

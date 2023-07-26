@@ -24,6 +24,7 @@ class GridContactGroupContacts extends JsonResource
             'statusName' => $this->present()->status,
             'lapostaMemberId' => $this->laposta_member_id,
             'lapostaMemberState' => $this->laposta_member_state,
+            'lapostaLastErrorMessage' => $this->laposta_last_error_message,
             'memberCreatedAt' => $this->member_created_at,
             'memberToGroupSince' => $this->member_to_group_since,
         ];

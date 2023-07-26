@@ -47,11 +47,12 @@ class CreateCooperation extends FormRequest
             'lapostaKey' => [''],
             'useExportAddressConsumption' => [''],
             'requireTwoFactorAuthentication' => [''],
-            'createContactsForReportTable' => [''],
             'inspectionPlannedEmailTemplateId' => [''],
             'inspectionPlannedMailboxId' => [''],
             'inspectionRecordedEmailTemplateId' => [''],
             'inspectionReleasedEmailTemplateId' => [''],
+            'createContactsForReportTable' => [''],
+            'emailReportTableProblems' => ['email'],
         ];
     }
 }

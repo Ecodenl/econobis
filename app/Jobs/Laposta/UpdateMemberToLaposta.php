@@ -69,6 +69,7 @@ class UpdateMemberToLaposta implements ShouldQueue
             $this->contactGroup->contacts()->updateExistingPivot($this->contact->id,
                 [
                     'laposta_member_state' => $lapostaMemberState,
+                    'laposta_last_error_message' => null,
                 ]);
 
         } catch (\Exception $e) {

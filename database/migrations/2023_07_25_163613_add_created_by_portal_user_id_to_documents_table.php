@@ -14,10 +14,15 @@ class AddCreatedByPortalUserIdToDocumentsTable extends Migration
     public function up()
     {
         Schema::table('documents', function (Blueprint $table) {
+            $table->string('file_path_and_name')->nullable()->after('filename');
             $table->unsignedInteger('created_by_portal_user_id')->after('created_by_id')->nullable();
             $table->foreign('created_by_portal_user_id')->references('id')->on('portal_users');
         });
-        Schema::dropIfExists('xxx_document_created_from');
+        if (Schema::hasColumn('documents', 'xxx_document_created_from')) {
+            Schema::table('documents', function (Blueprint $table) {
+                $table->dropColumn('xxx_document_created_from');
+            });
+        }
     }
 
     /**
@@ -31,6 +36,7 @@ class AddCreatedByPortalUserIdToDocumentsTable extends Migration
             Schema::table('documents', function (Blueprint $table) {
                 $table->dropForeign(['created_by_portal_user_id']);
                 $table->dropColumn('created_by_portal_user_id');
+                $table->dropColumn('file_path_and_name');
             });
         }
     }

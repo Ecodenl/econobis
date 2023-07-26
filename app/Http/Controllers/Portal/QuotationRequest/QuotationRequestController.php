@@ -345,15 +345,23 @@ class QuotationRequestController
 
     private function authorizeQuotationRequest(PortalUser $portalUser, QuotationRequest $quotationRequest)
     {
+        $quotationRequests = null;
         if ($portalUser->contact->isExternalParty()) {
             $quotationRequests = $portalUser->contact->quotationRequestsAsExternalParty;
         } elseif ($portalUser->contact->isProjectManager()) {
             $quotationRequests = $portalUser->contact->quotationRequestsAsProjectManager;
-        } else {
+        } elseif ($portalUser->contact->isCoach()) {
             $quotationRequests = $portalUser->contact->quotationRequests;
+        } elseif ($portalUser->contact->isOrganisation()) {
+            $quotationRequests = $portalUser->contact->quotationRequests;
+        } else {
+            $organisationContact = $portalUser->contact->getOrganisationContact();
+            if ($organisationContact) {
+                $quotationRequests = $organisationContact->quotationRequests;
+            }
         }
 
-        if (!$quotationRequests->contains($quotationRequest)) {
+        if (!$quotationRequests || !$quotationRequests->contains($quotationRequest)) {
             abort(403, 'Geen toegang tot deze offerteaanvraag.');
         }
     }

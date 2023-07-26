@@ -78,8 +78,9 @@ function InspectDetails({ match, history, user }) {
                 setStatuses(payload.data.data);
             });
             setLoading(false);
+            setReload(false);
         });
-    }, [reload]);
+    }, [reload == true]);
 
     const getStatusOptions = () => {
         return statuses.map(status => {
@@ -619,6 +620,7 @@ function InspectDetails({ match, history, user }) {
                         quotationRequestId={match.params.id}
                         documents={initialQuotationRequest.documents}
                         previewDocument={previewDocument}
+                        setReload={setReload}
                     />
                 </>
             )}

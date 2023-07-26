@@ -65,7 +65,7 @@ class QuotationRequestController
 
         $this->authorizeQuotationRequest($portalUser, $quotationRequest);
 
-        return response()->json($this->getDetailJson($quotationRequest));
+        return response()->json($this->getDetailJson($portalUser->id, $quotationRequest));
     }
 
     public function update(Request $request, QuotationRequest $quotationRequest)
@@ -154,7 +154,7 @@ class QuotationRequestController
             abort(403, 'Geen toegang tot dit document.');
         }
 
-        // indien document niet in alfresco en document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
+        // indien document niet in alfresco maar document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
         if ($document->alfresco_node_id == null && $document->file_path_and_name != null) {
             $filePath = Storage::disk('documents')->getDriver()
                 ->getAdapter()->applyPathPrefix($document->file_path_and_name);
@@ -182,6 +182,31 @@ class QuotationRequestController
 
         $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
         return $alfrescoHelper->downloadFile($document->alfresco_node_id);
+    }
+
+    public function deleteDocument(QuotationRequest $quotationRequest, Document $document)
+    {
+        $portalUser = Auth::user();
+
+        $this->authorizeQuotationRequest($portalUser, $quotationRequest);
+
+        if ($document->created_by_portal_user_id != $portalUser->id) {
+            abort(403, 'Niet bevoegd om dit document te verwijderen.');
+        }
+
+        // indien document niet in alfresco maar document was gemaakt in a storage map (file_path_and_name ingevuld), dan ook verwijderen in die storage map.
+        if ($document->alfresco_node_id == null && $document->file_path_and_name != null) {
+            Storage::disk('documents')->delete($document->file_path_and_name);
+        } else {
+            //delete file in Alfresco(to trashbin)
+//            $user = Auth::user();
+            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local' && $document->alfresco_node_id) {
+                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+                $alfrescoHelper->deleteFile($document->alfresco_node_id);
+            }
+        }
+
+        $document->delete();
     }
 
     private function storeQuotationRequestUploads($quotationRequest, $uploads, $portalUser){
@@ -266,15 +291,16 @@ class QuotationRequestController
         ];
     }
 
-    private function getDetailJson(QuotationRequest $quotationRequest)
+    private function getDetailJson($portalUserId, QuotationRequest $quotationRequest)
     {
         $data = $this->getJson($quotationRequest);
 
-        $data['documents'] = $this->getPortalDocuments($quotationRequest)->map(function (Document $document) {
+        $data['documents'] = $this->getPortalDocuments($quotationRequest)->map(function (Document $document) use ($portalUserId){
             return [
                 'id' => $document->id,
                 'filename' => $document->filename,
                 'description' => $document->description,
+                'allowDelete' => $document->created_by_portal_user_id == $portalUserId,
             ];
         });
 

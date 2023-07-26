@@ -39,6 +39,10 @@ export default {
         return axiosInstance.post('quotation-request/' + quotationRequestId + '/uploads', uploads);
     },
 
+    quotationRequestDeleteDocument: function(quotationRequestId, id) {
+        return axiosInstance.get('quotation-request/' + quotationRequestId + '/document/' + id + '/delete');
+    },
+
     quotationRequestDownloadDocument: function(quotationRequestId, id) {
         const requestUrl = `quotation-request/${quotationRequestId}/document/${id}/download`;
 

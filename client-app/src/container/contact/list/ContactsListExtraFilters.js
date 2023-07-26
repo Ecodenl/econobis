@@ -324,8 +324,13 @@ class ContactsListExtraFilters extends Component {
                 type: 'dropdownHas',
                 dropDownOptions: this.props.measureCategories,
             },
-            quotationRequestStatus: {
-                name: 'Kansactie status',
+            quotationRequestStatusOrganisationOrCoach: {
+                name: 'Kansactie status (org/coach)',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.quotationRequestStatus,
+            },
+            quotationRequestStatusOccupant: {
+                name: 'Kansactie status (bewoner)',
                 type: 'dropdownHas',
                 dropDownOptions: this.props.quotationRequestStatus,
             },

@@ -91,7 +91,7 @@ class EndPointAfspraakController extends EndPointHoomDossierController
         $quotationRequest->date_planned = Carbon::parse($dataContent->appointment_date);
         $quotationRequest->save();
 
-        $this->log('Afspraak ' .  Carbon::parse($quotationRequest->date_planned)->format('d-m-Y H:i'). ' bijgewerkt voor bezoek coach ' . $this->coach->full_name_fnf . ' bij bewoner ' . $this->contact->full_name_fnf);
+        $this->log('Afspraak ' .  ($quotationRequest->date_planned ? Carbon::parse($quotationRequest->date_planned)->format('d-m-Y H:i') : 'onbekend') . ' bijgewerkt voor bezoek coach ' . ($this->coach ? $this->coach->full_name_fnf : 'onbekend') . ' bij bewoner ' . ($this->contact ? $this->contact->full_name_fnf : 'onbekend') );
     }
 
 }

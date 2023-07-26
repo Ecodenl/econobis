@@ -501,75 +501,82 @@ const DefaultContactOrganisationEdit = function({
                         </Field>
                     </Col>
                 </Row>
-                <FormLabel
-                    htmlFor="ean_electricity"
-                    className={
-                        projectTypeCodeRef === 'postalcode_link_capital' ? 'field-label required' : 'field-label'
-                    }
-                >
-                    EAN nummer electriciteit
-                </FormLabel>
-                {(isEmpty(values.visitAddress.number + '') || isEmpty(values.visitAddress.postalCode + '')) &&
-                !isEmpty(values.visitAddress.eanElectricity + '') ? (
-                    <Row>
-                        <Col xs={12} sm={12}>
-                            <small className={'text-danger'}>
-                                EAN nummer electriciteit wordt alleen opgeslagen als minimaal nummer en postcode zijn
-                                ingevuld bij bezoekadres.
-                            </small>
-                        </Col>
-                    </Row>
+                {initialContact.isParticipantPcrProject || projectTypeCodeRef === 'postalcode_link_capital' ? (
+                    <>
+                        <FormLabel
+                            htmlFor="ean_electricity"
+                            className={
+                                projectTypeCodeRef === 'postalcode_link_capital'
+                                    ? 'field-label required'
+                                    : 'field-label'
+                            }
+                        >
+                            EAN nummer electriciteit
+                        </FormLabel>
+                        {(isEmpty(values.visitAddress.number + '') || isEmpty(values.visitAddress.postalCode + '')) &&
+                        !isEmpty(values.visitAddress.eanElectricity + '') ? (
+                            <Row>
+                                <Col xs={12} sm={12}>
+                                    <small className={'text-danger'}>
+                                        EAN nummer electriciteit wordt alleen opgeslagen als minimaal nummer en postcode
+                                        zijn ingevuld bij bezoekadres.
+                                    </small>
+                                </Col>
+                            </Row>
+                        ) : (
+                            ''
+                        )}
+                        <Row>
+                            <Col xs={12} sm={12} md={8}>
+                                <Field name="visitAddress.eanElectricity">
+                                    {({ field }) => (
+                                        <InputText
+                                            field={field}
+                                            errors={errors}
+                                            touched={touched}
+                                            id="ean_electricity"
+                                            placeholder={'EAN nummer electriciteit'}
+                                        />
+                                    )}
+                                </Field>
+                            </Col>
+                        </Row>
+
+                        <FormLabel htmlFor="ean_gas" className={'field-label'}>
+                            EAN nummer gas
+                        </FormLabel>
+                        {(isEmpty(values.visitAddress.number + '') || isEmpty(values.visitAddress.postalCode + '')) &&
+                        !isEmpty(values.visitAddress.eanGas + '') ? (
+                            <Row>
+                                <Col xs={12} sm={12}>
+                                    <small className={'text-danger'}>
+                                        EAN nummer gas wordt alleen opgeslagen als minimaal nummer en postcode zijn
+                                        ingevuld bij bezoekadres.
+                                    </small>
+                                </Col>
+                            </Row>
+                        ) : (
+                            ''
+                        )}
+                        <Row>
+                            <Col xs={12} sm={12} md={8}>
+                                <Field name="visitAddress.eanGas">
+                                    {({ field }) => (
+                                        <InputText
+                                            field={field}
+                                            errors={errors}
+                                            touched={touched}
+                                            id="ean_gas"
+                                            placeholder={'EAN nummer gas'}
+                                        />
+                                    )}
+                                </Field>
+                            </Col>
+                        </Row>
+                    </>
                 ) : (
                     ''
                 )}
-                <Row>
-                    <Col xs={12} sm={12} md={8}>
-                        <Field name="visitAddress.eanElectricity">
-                            {({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="ean_electricity"
-                                    placeholder={'EAN nummer electriciteit'}
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                </Row>
-
-                <FormLabel htmlFor="ean_gas" className={'field-label'}>
-                    EAN nummer gas
-                </FormLabel>
-                {(isEmpty(values.visitAddress.number + '') || isEmpty(values.visitAddress.postalCode + '')) &&
-                !isEmpty(values.visitAddress.eanGas + '') ? (
-                    <Row>
-                        <Col xs={12} sm={12}>
-                            <small className={'text-danger'}>
-                                EAN nummer gas wordt alleen opgeslagen als minimaal nummer en postcode zijn ingevuld bij
-                                bezoekadres.
-                            </small>
-                        </Col>
-                    </Row>
-                ) : (
-                    ''
-                )}
-                <Row>
-                    <Col xs={12} sm={12} md={8}>
-                        <Field name="visitAddress.eanGas">
-                            {({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="ean_gas"
-                                    placeholder={'EAN nummer gas'}
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                </Row>
-
                 {projectTypeCodeRef === 'postalcode_link_capital' || projectTypeCodeRef === undefined ? (
                     <>
                         <FormLabel

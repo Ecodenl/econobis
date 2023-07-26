@@ -6,7 +6,7 @@ export default {
         return axiosInstance.get('me/quotation-request', {
             params: {
                 campaignId: campaignId,
-            }
+            },
         });
     },
 
@@ -33,6 +33,14 @@ export default {
 
     update: function(quotationRequest) {
         return axiosInstance.post('quotation-request/' + quotationRequest.id, quotationRequest);
+    },
+
+    addUploads: function(quotationRequestId, uploads) {
+        return axiosInstance.post('quotation-request/' + quotationRequestId + '/uploads', uploads);
+    },
+
+    quotationRequestDeleteDocument: function(quotationRequestId, id) {
+        return axiosInstance.get('quotation-request/' + quotationRequestId + '/document/' + id + '/delete');
     },
 
     quotationRequestDownloadDocument: function(quotationRequestId, id) {

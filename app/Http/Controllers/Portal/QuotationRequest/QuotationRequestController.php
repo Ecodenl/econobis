@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Portal\QuotationRequest;
 
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Document\Document;
+use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Portal\PortalUser;
 use App\Eco\QuotationRequest\QuotationRequest;
@@ -12,6 +13,7 @@ use App\Helpers\Email\EmailHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -63,7 +65,7 @@ class QuotationRequestController
 
         $this->authorizeQuotationRequest($portalUser, $quotationRequest);
 
-        return response()->json($this->getDetailJson($quotationRequest));
+        return response()->json($this->getDetailJson($portalUser->id, $quotationRequest));
     }
 
     public function update(Request $request, QuotationRequest $quotationRequest)
@@ -122,6 +124,24 @@ class QuotationRequestController
         }
     }
 
+    public function uploads(Request $request, QuotationRequest $quotationRequest)
+    {
+        $portalUser = Auth::user();
+
+        $this->authorizeQuotationRequest($portalUser, $quotationRequest);
+
+        $responsibleUserId = PortalSettings::get('responsibleUserId');
+        if (!$responsibleUserId) {
+            abort(501, 'Er is helaas een fout opgetreden (onbekende klanten portaal verantwoordelijke).');
+        }
+
+        //get uploads
+        $uploads = $request->file('uploads')
+            ? $request->file('uploads') : [];
+
+        $this->storeQuotationRequestUploads($quotationRequest, $uploads, $portalUser);
+
+    }
     public function downloadDocument(QuotationRequest $quotationRequest, Document $document)
     {
         $portalUser = Auth::user();
@@ -132,6 +152,15 @@ class QuotationRequestController
 
         if (!$documents->contains($document)) {
             abort(403, 'Geen toegang tot dit document.');
+        }
+
+        // indien document niet in alfresco maar document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
+        if ($document->alfresco_node_id == null && $document->file_path_and_name != null) {
+            $filePath = Storage::disk('documents')->getDriver()
+                ->getAdapter()->applyPathPrefix($document->file_path_and_name);
+            header('X-Filename:' . $document->filename);
+            header('Access-Control-Expose-Headers: X-Filename');
+            return response()->download($filePath, $document->filename);
         }
 
         if (\Config::get('app.ALFRESCO_COOP_USERNAME') == 'local') {
@@ -146,9 +175,76 @@ class QuotationRequestController
             }
         }
 
-        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+        // hier verwachten we alleen nog documenten opgslagen in Alfresco. Indien geen alfresco_node_id bekend, dan valt er ook niets op te halen.
+        if ($document->alfresco_node_id == null) {
+            return null;
+        }
 
+        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
         return $alfrescoHelper->downloadFile($document->alfresco_node_id);
+    }
+
+    public function deleteDocument(QuotationRequest $quotationRequest, Document $document)
+    {
+        $portalUser = Auth::user();
+
+        $this->authorizeQuotationRequest($portalUser, $quotationRequest);
+
+        if ($document->created_by_portal_user_id != $portalUser->id) {
+            abort(403, 'Niet bevoegd om dit document te verwijderen.');
+        }
+
+        // indien document niet in alfresco maar document was gemaakt in a storage map (file_path_and_name ingevuld), dan ook verwijderen in die storage map.
+        if ($document->alfresco_node_id == null && $document->file_path_and_name != null) {
+            Storage::disk('documents')->delete($document->file_path_and_name);
+        } else {
+            //delete file in Alfresco(to trashbin)
+//            $user = Auth::user();
+            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local' && $document->alfresco_node_id) {
+                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+                $alfrescoHelper->deleteFile($document->alfresco_node_id);
+            }
+        }
+
+        $document->delete();
+    }
+
+    private function storeQuotationRequestUploads($quotationRequest, $uploads, $portalUser){
+
+        $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'quotationrequest')->first()->id;
+
+        $documentDescription = 'Upload document door ' . ($portalUser->contact ? $portalUser->contact->full_name_fnf : 'onbekend');
+
+        //store uploads
+        foreach ($uploads as $file) {
+            if(!$file->isValid()) abort('422', 'Error uploading file');
+
+            $document = new Document();
+            $document->fill(
+                [
+                    'filename' => $file->getClientOriginalName(),
+                    'description' => strlen($documentDescription)>191 ? substr($documentDescription, 0, 188) . '...' : $documentDescription,
+                    'document_type' => 'upload',
+                    'document_group' => 'general',
+                    'contact_id' => $quotationRequest->opportunity->intake->contact_id,
+                    'opportunity_id' => $quotationRequest->opportunity_id,
+                    'document_created_from_id' => $documentCreatedFromId,
+                    'intake_id' => $quotationRequest->opportunity->intake_id,
+                    'campaign_id' => $quotationRequest->opportunity->intake->campaign_id,
+                    'quotation_request_id' => $quotationRequest->id,
+                    'show_on_portal' => true,
+                ]
+            );
+            $document->save();
+
+            $filepath = 'portal_uploads' . DIRECTORY_SEPARATOR . (Carbon::parse($document->created_at)->year);
+            $file_tmp = $file->store($filepath, 'documents');
+
+            $document->file_path_and_name = $file_tmp;
+            $document->save();
+
+            Storage::disk('documents')->getDriver()->getAdapter()->applyPathPrefix($file_tmp);
+        }
     }
 
     private function getJson(QuotationRequest $quotationRequest)
@@ -195,15 +291,16 @@ class QuotationRequestController
         ];
     }
 
-    private function getDetailJson(QuotationRequest $quotationRequest)
+    private function getDetailJson($portalUserId, QuotationRequest $quotationRequest)
     {
         $data = $this->getJson($quotationRequest);
 
-        $data['documents'] = $this->getPortalDocuments($quotationRequest)->map(function (Document $document) {
+        $data['documents'] = $this->getPortalDocuments($quotationRequest)->map(function (Document $document) use ($portalUserId){
             return [
                 'id' => $document->id,
                 'filename' => $document->filename,
                 'description' => $document->description,
+                'allowDelete' => $document->created_by_portal_user_id == $portalUserId,
             ];
         });
 

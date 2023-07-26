@@ -13,6 +13,7 @@ use App\Helpers\Email\EmailHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -141,7 +142,49 @@ class QuotationRequestController
         $this->storeQuotationRequestUploads($quotationRequest, $uploads, $portalUser);
 
     }
-    protected function storeQuotationRequestUploads($quotationRequest, $uploads, $portalUser){
+    public function downloadDocument(QuotationRequest $quotationRequest, Document $document)
+    {
+        $portalUser = Auth::user();
+
+        $this->authorizeQuotationRequest($portalUser, $quotationRequest);
+
+        $documents = $this->getPortalDocuments($quotationRequest);
+
+        if (!$documents->contains($document)) {
+            abort(403, 'Geen toegang tot dit document.');
+        }
+
+        // indien document niet in alfresco en document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
+        if ($document->alfresco_node_id == null && $document->file_path_and_name != null) {
+            $filePath = Storage::disk('documents')->getDriver()
+                ->getAdapter()->applyPathPrefix($document->file_path_and_name);
+            header('X-Filename:' . $document->filename);
+            header('Access-Control-Expose-Headers: X-Filename');
+            return response()->download($filePath, $document->filename);
+        }
+
+        if (\Config::get('app.ALFRESCO_COOP_USERNAME') == 'local') {
+            if ($document->alfresco_node_id == null) {
+                $filePath = Storage::disk('documents')->getDriver()
+                    ->getAdapter()->applyPathPrefix($document->filename);
+                header('X-Filename:' . $document->filename);
+                header('Access-Control-Expose-Headers: X-Filename');
+                return response()->download($filePath, $document->filename);
+            } else {
+                return null;
+            }
+        }
+
+        // hier verwachten we alleen nog documenten opgslagen in Alfresco. Indien geen alfresco_node_id bekend, dan valt er ook niets op te halen.
+        if ($document->alfresco_node_id == null) {
+            return null;
+        }
+
+        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+        return $alfrescoHelper->downloadFile($document->alfresco_node_id);
+    }
+
+    private function storeQuotationRequestUploads($quotationRequest, $uploads, $portalUser){
 
         $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'quotationrequest')->first()->id;
 
@@ -169,57 +212,14 @@ class QuotationRequestController
             );
             $document->save();
 
-            $file_tmp = $file->store('', 'documents');
-            $filePath_tmp = Storage::disk('documents')->getDriver()->getAdapter()->applyPathPrefix($file_tmp);
+            $filepath = 'portal_uploads' . DIRECTORY_SEPARATOR . (Carbon::parse($document->created_at)->year);
+            $file_tmp = $file->store($filepath, 'documents');
 
-//            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-//                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-//                $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $file->getClientOriginalName(), $document->getDocumentGroup()->name);
-//                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-//            } else {
-                $tmpFileName = str_replace('\\', '/', $filePath_tmp);
-                $pos = strrpos($tmpFileName, '/');
-                $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
-                Storage::disk('documents')->copy($tmpFileName,$file->getClientOriginalName() );
-                $document->alfresco_node_id = null;
-//            }
-
-            $document->filename = $file->getClientOriginalName();
+            $document->file_path_and_name = $file_tmp;
             $document->save();
 
-            //delete file on server, still saved on alfresco.
-            Storage::disk('documents')->delete($file_tmp);
-
-
+            Storage::disk('documents')->getDriver()->getAdapter()->applyPathPrefix($file_tmp);
         }
-    }
-    public function downloadDocument(QuotationRequest $quotationRequest, Document $document)
-    {
-        $portalUser = Auth::user();
-
-        $this->authorizeQuotationRequest($portalUser, $quotationRequest);
-
-        $documents = $this->getPortalDocuments($quotationRequest);
-
-        if (!$documents->contains($document)) {
-            abort(403, 'Geen toegang tot dit document.');
-        }
-
-        if (\Config::get('app.ALFRESCO_COOP_USERNAME') == 'local') {
-            if ($document->alfresco_node_id == null) {
-                $filePath = Storage::disk('documents')->getDriver()
-                    ->getAdapter()->applyPathPrefix($document->filename);
-                header('X-Filename:' . $document->filename);
-                header('Access-Control-Expose-Headers: X-Filename');
-                return response()->download($filePath, $document->filename);
-            } else {
-                return null;
-            }
-        }
-
-        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-
-        return $alfrescoHelper->downloadFile($document->alfresco_node_id);
     }
 
     private function getJson(QuotationRequest $quotationRequest)

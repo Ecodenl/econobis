@@ -280,6 +280,15 @@ class DocumentController extends Controller
         $this->authorize('view', Document::class);
         $this->checkDocumentAutorized($document);
 
+        // indien document niet in alfresco en document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
+        if ($document->alfresco_node_id == null && $document->file_path_and_name != null) {
+            $filePath = Storage::disk('documents')->getDriver()
+                ->getAdapter()->applyPathPrefix($document->file_path_and_name);
+            header('X-Filename:' . $document->filename);
+            header('Access-Control-Expose-Headers: X-Filename');
+            return response()->download($filePath, $document->filename);
+        }
+
         if(\Config::get('app.ALFRESCO_COOP_USERNAME') == 'local') {
             if($document->alfresco_node_id == null){
                 $filePath = Storage::disk('documents')->getDriver()
@@ -299,6 +308,11 @@ class DocumentController extends Controller
 
     public function downLoadRawDocument(Document $document)
     {
+        // indien document niet in alfresco en document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
+        if ($document->alfresco_node_id == null && $document->file_path_and_name != null) {
+            return Storage::disk('documents')->get($document->file_path_and_name);
+        }
+
         if (\Config::get('app.ALFRESCO_COOP_USERNAME') == 'local') {
             if ($document->alfresco_node_id == null) {
                 return Storage::disk('documents')->get($document->filename);

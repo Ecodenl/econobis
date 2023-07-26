@@ -15,6 +15,7 @@ const ContactDetailsFormAddressView = props => {
         addition,
         postalCode,
         city,
+        areaName,
         primary,
         country,
         currentAddressEnergySupplierElectricity,
@@ -51,8 +52,11 @@ const ContactDetailsFormAddressView = props => {
                 </div>
                 <div className="col-sm-2">{street + ' ' + number + (addition ? '-' + addition : '')}</div>
                 <div className="col-sm-1">{postalCode}</div>
-                <div className="col-sm-2">
+                <div className="col-sm-1">
                     {city} {country ? '(' + country.id + ')' : ''}
+                </div>
+                <div className="col-sm-2">
+                    {areaName}
                 </div>
                 {/*<div className="col-sm-2">{country ? country.name : ''}</div>*/}
                 <div className="col-sm-2">
@@ -65,7 +69,7 @@ const ContactDetailsFormAddressView = props => {
                         );
                     })}
                 </div>
-                <div className="col-sm-2">
+                <div className="col-sm-1">
                     {currentAddressEnergySupplierNumbers.map(energySupplierNumber => {
                         return (
                             <>

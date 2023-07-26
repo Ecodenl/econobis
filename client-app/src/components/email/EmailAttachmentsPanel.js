@@ -94,6 +94,7 @@ export default function EmailAttachmentsPanel({email, allowView = true}) {
                     modalClassName="modal-lg"
                     showConfirmAction={false}
                     buttonCancelText="Ok"
+                    modalMainClassName={'modal-align-top'}
                 >
                     <div style={{ maxHeight: 'calc(100vh - 300px)', overflow: 'auto' }}>
                         {

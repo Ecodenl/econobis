@@ -155,6 +155,48 @@ class ContactDetailsFormAddressItem extends Component {
                     'Er is een deelname in een project op dit adres. Deze deelname zal worden overgezet naar het primaire adres.',
             });
         }
+
+        setTimeout(() => {
+            const { address } = this.state;
+            if (
+                !validator.isEmpty(address.postalCode) &&
+                validator.isPostalCode(address.postalCode, 'NL') &&
+                !validator.isEmpty(address.number) &&
+                validator.isEmpty(address.city) &&
+                validator.isEmpty(address.street)
+            ) {
+                AddressAPI.getLvbagAddress(address.postalCode, address.number).then(payload => {
+                    this.setState({
+                        ...this.state,
+                        address: {
+                            ...this.state.address,
+                            street: payload.street,
+                            city: payload.city,
+                        },
+                    });
+                });
+            }
+        }, 100);
+
+        setTimeout(() => {
+            const { address } = this.state;
+            if (
+                !validator.isEmpty(address.postalCode) &&
+                validator.isPostalCode(address.postalCode, 'NL') &&
+                !validator.isEmpty(address.number)
+            ) {
+                AddressAPI.getSharedAddressDetails(address.postalCode, address.number).then(payload => {
+                    this.setState({
+                        ...this.state,
+                        address: {
+                            ...this.state.address,
+                            areaName: payload.areaName,
+                            districtName: payload.districtName,
+                        },
+                    });
+                });
+            }
+        }, 100);
     };
 
     handleInputChangeDate = (value, name) => {

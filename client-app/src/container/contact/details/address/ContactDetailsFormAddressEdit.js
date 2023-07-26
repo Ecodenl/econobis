@@ -16,6 +16,8 @@ const ContactDetailsFormAddressEdit = props => {
         addition,
         postalCode,
         city,
+        areaName,
+        districtName,
         typeId,
         endDate,
         primary,
@@ -135,6 +137,27 @@ const ContactDetailsFormAddressEdit = props => {
                                     error={props.endDateError}
                                 />
                             )}
+                        </div>
+
+                        <div className="row">
+                            <InputText
+                                label={'Buurt'}
+                                id={'areaName'}
+                                size={'col-sm-6'}
+                                name={'areaName'}
+                                value={areaName}
+                                disabled={true}
+                                onChangeAction={props.handleInputChange}
+                            />
+                            <InputText
+                                label={'Wijk'}
+                                id={'districtName'}
+                                size={'col-sm-6'}
+                                name={'districtName'}
+                                value={districtName}
+                                disabled={true}
+                                onChangeAction={props.handleInputChange}
+                            />
                         </div>
 
                         <div className="row">

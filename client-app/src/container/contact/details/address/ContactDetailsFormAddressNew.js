@@ -29,6 +29,8 @@ class ContactDetailsFormAddressNew extends Component {
                 addition: '',
                 postalCode: '',
                 city: '',
+                areaName: '',
+                districtName: '',
                 typeId: 'visit',
                 endDate: '',
                 primary: numberOfAddressesNotOld == 0 ? true : false,
@@ -76,6 +78,37 @@ class ContactDetailsFormAddressNew extends Component {
                             ...this.state.address,
                             street: payload.street,
                             city: payload.city,
+                        },
+                    });
+                });
+
+                AddressAPI.getSharedAddressDetails(address.postalCode, address.number).then(payload => {
+                    this.setState({
+                        ...this.state,
+                        address: {
+                            ...this.state.address,
+                            areaName: payload.areaName,
+                            districtName: payload.districtName,
+                        },
+                    });
+                });
+            }
+        }, 100);
+
+        setTimeout(() => {
+            const { address } = this.state;
+            if (
+                !validator.isEmpty(address.postalCode) &&
+                validator.isPostalCode(address.postalCode, 'NL') &&
+                !validator.isEmpty(address.number)
+            ) {
+                AddressAPI.getSharedAddressDetails(address.postalCode, address.number).then(payload => {
+                    this.setState({
+                        ...this.state,
+                        address: {
+                            ...this.state.address,
+                            areaName: payload.areaName,
+                            districtName: payload.districtName,
                         },
                     });
                 });
@@ -185,6 +218,8 @@ class ContactDetailsFormAddressNew extends Component {
             addition,
             postalCode,
             city,
+            areaName,
+            districtName,
             typeId,
             endDate,
             primary,
@@ -275,6 +310,25 @@ class ContactDetailsFormAddressNew extends Component {
                                 />
                             )}
                         </div>
+                        <div className="row">
+                            <InputText
+                                label={'Buurt'}
+                                id={'areaName'}
+                                size={'col-sm-6'}
+                                name={'areaName'}
+                                value={areaName}
+                                disabled={true}
+                            />
+                            <InputText
+                                label={'Wijk'}
+                                id={'districtName'}
+                                size={'col-sm-6'}
+                                name={'districtName'}
+                                value={districtName}
+                                disabled={true}
+                            />
+                        </div>
+
 
                         <div className="row">
                             <InputSelect

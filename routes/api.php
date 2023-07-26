@@ -143,6 +143,7 @@ Route::namespace('Api')
         Route::post('/user/{user}/reset-two-factor', 'User\UserController@resetTwoFactor');
 
         Route::post('/address/lvbag', 'Address\AddressController@getLvbagAddress');
+        Route::post('/address/sharedaddressdetails', 'Address\AddressController@getSharedAddressDetails');
         Route::post('/address', 'Address\AddressController@store');
         Route::post('/address/{address}', 'Address\AddressController@update');
         Route::post('/address/{address}/delete', 'Address\AddressController@destroy');

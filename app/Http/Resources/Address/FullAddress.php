@@ -71,6 +71,7 @@ class FullAddress extends JsonResource
             'memberSinceElectricityDisabledBefore' => $memberSinceElectricityDisabledBefore,
             'memberSinceGasAndElectricityDisabledBefore' => $memberSinceGasAndElectricityDisabledBefore,
             'areaName' => optional(optional($this->sharedPostalcodehousenumber())->sharedArea())->area_name,
+            'districtName' => optional(optional($this->sharedPostalcodehousenumber())->sharedArea())->district_name,
         ];
     }
 }

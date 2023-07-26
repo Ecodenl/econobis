@@ -138,12 +138,14 @@ class QuotationRequestController
         $uploads = $request->file('uploads')
             ? $request->file('uploads') : [];
 
-        $this->storeQuotationRequestUploads($quotationRequest, $uploads);
+        $this->storeQuotationRequestUploads($quotationRequest, $uploads, $portalUser);
 
     }
-    protected function storeQuotationRequestUploads($quotationRequest, $uploads){
+    protected function storeQuotationRequestUploads($quotationRequest, $uploads, $portalUser){
 
         $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'quotationrequest')->first()->id;
+
+        $documentDescription = 'Upload document door ' . ($portalUser->contact ? $portalUser->contact->full_name_fnf : 'onbekend');
 
         //store uploads
         foreach ($uploads as $file) {
@@ -153,7 +155,7 @@ class QuotationRequestController
             $document->fill(
                 [
                     'filename' => $file->getClientOriginalName(),
-                    'description' => 'Test upload',
+                    'description' => strlen($documentDescription)>191 ? substr($documentDescription, 0, 188) . '...' : $documentDescription,
                     'document_type' => 'upload',
                     'document_group' => 'general',
                     'contact_id' => $quotationRequest->opportunity->intake->contact_id,

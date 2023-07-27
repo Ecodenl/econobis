@@ -7,6 +7,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
+use App\Eco\Mailbox\Mailbox;
 use App\Eco\Person\Person;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
@@ -105,6 +106,9 @@ class EmailGenericController extends Controller
         $this->authorize('create', Email::class);
 
         $mailbox = Auth::user()->defaultMailbox;
+        if(!$mailbox){
+            $mailbox = Mailbox::getDefault();
+        }
 
         $email = new Email([
             'from' => $mailbox->email,
@@ -127,6 +131,9 @@ class EmailGenericController extends Controller
         $this->authorize('manage', $email);
 
         $mailbox = Auth::user()->defaultMailbox;
+        if(!$mailbox){
+            $mailbox = Mailbox::getDefault();
+        }
 
         $reply = $email->generator()->reply([
             'from' => optional($mailbox)->email,
@@ -143,6 +150,9 @@ class EmailGenericController extends Controller
         $this->authorize('manage', $email);
 
         $mailbox = Auth::user()->defaultMailbox;
+        if(!$mailbox){
+            $mailbox = Mailbox::getDefault();
+        }
 
         $reply = $email->generator()->replyAll([
             'from' => optional($mailbox)->email,
@@ -159,6 +169,9 @@ class EmailGenericController extends Controller
         $this->authorize('manage', $email);
 
         $mailbox = Auth::user()->defaultMailbox;
+        if(!$mailbox){
+            $mailbox = Mailbox::getDefault();
+        }
 
         $forward = $email->generator()->forward([
             'from' => optional($mailbox)->email,
@@ -201,6 +214,9 @@ class EmailGenericController extends Controller
         $this->authorize('create', Email::class);
 
         $mailbox = Auth::user()->defaultMailbox;
+        if(!$mailbox){
+            $mailbox = Mailbox::getDefault();
+        }
 
         $email = new Email([
             'from' => optional($mailbox)->email,

@@ -43,6 +43,7 @@ class QuotationRequestsListItem extends Component {
             status,
             datePlanned,
             dateReleased,
+            areaName
         } = this.props;
 
         return (
@@ -55,6 +56,7 @@ class QuotationRequestsListItem extends Component {
                 <td>{organisationOrCoach && organisationOrCoach.fullName}</td>
                 <td>{opportunity && opportunity.intake.contact.fullName}</td>
                 <td>{opportunity && opportunity.intake.fullAddress}</td>
+                <td>{areaName}</td>
                 <td>{opportunity && opportunity.measureCategory.name}</td>
                 <td>{moment(createdAt).format('DD-MM-Y')}</td>
                 <td>{datePlanned && moment(datePlanned).format('DD-MM-Y HH:mm')}</td>

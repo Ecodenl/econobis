@@ -116,6 +116,8 @@ const QuotationRequestsListFilter = props => {
                 />
             </th>
             <th>
+            </th>
+            <th>
                 <input
                     type="text"
                     className="form-control input-sm"

@@ -1,51 +1,51 @@
-import React, {useContext, useEffect, useState} from 'react';
-import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
-import EmailSplitViewDetails from "./EmailSplitViewDetails";
-import EmailSplitViewSelectList from "./EmailSplitViewSelectList";
-import EmailSplitViewFiltersPanel from "./EmailSplitViewFiltersPanel";
-import {getJoryFilter, storeFiltersToStorage, getFiltersFromStorage, defaultFilters} from "./EmailFilterHelpers";
-import {EmailModalContext} from "../../../context/EmailModalContext";
-import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
-import MailboxAPI from "../../../api/mailbox/MailboxAPI";
-import ButtonIcon from "../../../components/button/ButtonIcon";
-import axiosInstance from "../../../api/default-setup/AxiosInstance";
-import {hashHistory} from "react-router";
-import Icon from "react-icons-kit";
+import React, { useContext, useEffect, useState } from 'react';
+import EmailSplitviewAPI from '../../../api/email/EmailSplitviewAPI';
+import EmailSplitViewDetails from './EmailSplitViewDetails';
+import EmailSplitViewSelectList from './EmailSplitViewSelectList';
+import EmailSplitViewFiltersPanel from './EmailSplitViewFiltersPanel';
+import { getJoryFilter, storeFiltersToStorage, getFiltersFromStorage, defaultFilters } from './EmailFilterHelpers';
+import { EmailModalContext } from '../../../context/EmailModalContext';
+import EmailGenericAPI from '../../../api/email/EmailGenericAPI';
+import MailboxAPI from '../../../api/mailbox/MailboxAPI';
+import ButtonIcon from '../../../components/button/ButtonIcon';
+import axiosInstance from '../../../api/default-setup/AxiosInstance';
+import { hashHistory } from 'react-router';
+import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
 
-export default function EmailSplitView({router}) {
+export default function EmailSplitView({ router }) {
     const perPage = 50;
     const [emails, setEmails] = useState([]);
     const [emailCount, setEmailCount] = useState(0);
     const [selectedEmailId, setSelectedEmailId] = useState(null);
     const [contact, setContact] = useState(null);
-    const [filters, setFilters] = useState({...defaultFilters});
+    const [filters, setFilters] = useState({ ...defaultFilters });
     const { isEmailDetailsModalOpen, isEmailSendModalOpen, openEmailSendModal } = useContext(EmailModalContext);
 
     useEffect(() => {
-        if(!isEmailDetailsModalOpen && emailCount > 0) {
+        if (!isEmailDetailsModalOpen && emailCount > 0) {
             refetchCurrentEmails();
         }
     }, [isEmailDetailsModalOpen]);
 
     useEffect(() => {
-        if(!isEmailSendModalOpen && emailCount > 0) {
+        if (!isEmailSendModalOpen && emailCount > 0) {
             refetchCurrentEmails();
         }
     }, [isEmailSendModalOpen]);
 
     useEffect(() => {
-        setFilters({...getFiltersFromStorage(), fetch: true});
+        setFilters({ ...getFiltersFromStorage(), fetch: true });
     }, [router.params.folder]);
 
     useEffect(() => {
-        setFilters({...getFiltersFromStorage(), fetch: true});
+        setFilters({ ...getFiltersFromStorage(), fetch: true });
 
-        if(router.location.query.contact) {
+        if (router.location.query.contact) {
             fetchContactName(router.location.query.contact).then(response => {
                 setContact(response.data.data);
             });
-        }else{
+        } else {
             setContact(null);
         }
     }, [router.location.query.contact]);
@@ -55,11 +55,11 @@ export default function EmailSplitView({router}) {
          * We willen niet bij elke letter die je typt de lijst opnieuw ophalen.
          * Daarom zetten we een fetch flag die we op true zetten als je op enter drukt of een select optie selecteert.
          */
-        if(!filters.fetch) {
+        if (!filters.fetch) {
             return;
         }
 
-        setFilters({...filters, fetch: false});
+        setFilters({ ...filters, fetch: false });
 
         storeFiltersToStorage(filters);
 
@@ -81,10 +81,10 @@ export default function EmailSplitView({router}) {
             offset: emails.length,
             sorts: getSorts(),
         }).then(response => {
-            setEmails([...emails, ...response.data.items])
+            setEmails([...emails, ...response.data.items]);
             setEmailCount(response.data.total);
         });
-    }
+    };
 
     const refetchCurrentEmails = () => {
         return EmailSplitviewAPI.fetchSelectList({
@@ -93,34 +93,34 @@ export default function EmailSplitView({router}) {
             offset: 0,
             sorts: getSorts(),
         }).then(response => {
-            setEmails(response.data.items)
+            setEmails(response.data.items);
             setEmailCount(response.data.total);
         });
-    }
+    };
 
     const updateEmailAttributes = (emailId, attributes) => {
         const newEmails = emails.map(email => {
             if (email.id === emailId) {
-                return {...email, ...attributes};
+                return { ...email, ...attributes };
             }
 
             return email;
         });
 
         setEmails(newEmails);
-    }
+    };
 
     const getFilter = () => {
         return getJoryFilter(filters, router.params.folder, router.location.query.contact, router.location.query.eigen);
-    }
+    };
 
     const getSorts = () => {
         return ['-dateSent'];
-    }
+    };
 
     const handleFilterKeyUp = e => {
         if (e.keyCode === 13) {
-            setFilters({...filters, fetch: true})
+            setFilters({ ...filters, fetch: true });
         }
     };
 
@@ -128,30 +128,36 @@ export default function EmailSplitView({router}) {
         EmailGenericAPI.storeNew().then(payload => {
             openEmailSendModal(payload.data.id);
         });
-    }
+    };
 
     const refreshData = () => {
-        MailboxAPI.receiveMailFromMailboxesUser()
-            .then(() => {
-                refetchCurrentEmails();
-            });
-    }
+        MailboxAPI.receiveMailFromMailboxesUser().then(() => {
+            refetchCurrentEmails();
+        });
+    };
 
     return (
         <div>
             <div className="row">
-                <div className="col-md-6" style={{paddingLeft: '20px'}}>
-                    { contact && (
+                <div className="col-md-6" style={{ paddingLeft: '20px' }}>
+                    {contact && (
                         <p>
                             Email voor contact <strong>{contact?.fullName}</strong>
-                            <a role="button" onClick={() => hashHistory.push(router.location.pathname )}>
+                            <a role="button" onClick={() => hashHistory.push(router.location.pathname)}>
                                 <Icon className="mybtn-danger" size={14} icon={trash} />
                             </a>
                         </p>
                     )}
                 </div>
-                <div className="col-md-6" style={{marginTop: '-10px', marginBottom: '5px'}}>
-                    <button type="button" className="btn btn-success pull-right" style={{marginLeft: '4px'}} onClick={createMail}>Nieuwe email</button>
+                <div className="col-md-6" style={{ marginTop: '-10px', marginBottom: '5px' }}>
+                    <button
+                        type="button"
+                        className="btn btn-success pull-right"
+                        style={{ marginLeft: '4px' }}
+                        onClick={createMail}
+                    >
+                        Nieuwe e-mail
+                    </button>
                     <ButtonIcon
                         iconName={'refresh'}
                         onClickAction={refreshData}
@@ -163,12 +169,12 @@ export default function EmailSplitView({router}) {
             <div className="row">
                 <div className="col-md-12">
                     <form onKeyUp={handleFilterKeyUp}>
-                        <EmailSplitViewFiltersPanel filters={filters} setFilters={setFilters}/>
+                        <EmailSplitViewFiltersPanel filters={filters} setFilters={setFilters} />
                     </form>
                 </div>
             </div>
             <div className="row">
-                <div className="col-md-4 margin-10-top" style={{paddingRight: '0px'}}>
+                <div className="col-md-4 margin-10-top" style={{ paddingRight: '0px' }}>
                     <EmailSplitViewSelectList
                         emails={emails}
                         folder={router.params.folder}
@@ -181,21 +187,19 @@ export default function EmailSplitView({router}) {
                     />
                 </div>
                 <div className="col-md-8 margin-10-top">
-                    <EmailSplitViewDetails emailId={selectedEmailId} updatedEmailHandler={refetchCurrentEmails}/>
+                    <EmailSplitViewDetails emailId={selectedEmailId} updatedEmailHandler={refetchCurrentEmails} />
                 </div>
             </div>
         </div>
     );
 }
 
-const fetchContactName = (contactId) => {
+const fetchContactName = contactId => {
     return axiosInstance.get('/jory/contact/' + contactId, {
         params: {
             jory: {
-                fld: [
-                    'fullName',
-                ]
-            }
-        }
+                fld: ['fullName'],
+            },
+        },
     });
-}
+};

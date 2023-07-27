@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import DataTableHeadTitleAndSort from '../../../components/dataTable/DataTableHeadTitleAndSort';
+import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import { setQuotationRequestsSortsFilter } from '../../../actions/quotation-request/QuotationRequestsSortsActions';
 
 const QuotationRequestsListHead = props => {
@@ -23,8 +24,8 @@ const QuotationRequestsListHead = props => {
             />
             <DataTableHeadTitleAndSort sortColumn={'contact'} title={'Contact'} width={'9%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'14%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'areaName'} title={'Buurt'} width={'10%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'measure'} title={'Maatregel'} width={'9%'} setSorts={setSorts} />
+            <DataTableHeadTitle sortColumn={'areaName'} title={'Buurt'} width={'10%'} />
+            <DataTableHeadTitleAndSort sortColumn={'measure'} title={'Maatregel'} width={'9%'}  setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'7%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'datePlanned'} title={'Afspraak'} width={'7%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'dateRecorded'} title={'Opname'} width={'7%'} setSorts={setSorts} />
